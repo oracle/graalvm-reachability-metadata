@@ -108,6 +108,12 @@ intended to make routing and current-version resolution demonstrable for those
 labels; the primary `9101` fixture remains the default dynamic-access acceptance
 target. §E2E-forge-workflow-testing.5
 
+The `9107` fixture is a publication-continuation smoke test: its marker starts at
+`publication` and points at durable execution metrics plus marker-local PR
+extras, so it verifies `.pending_metrics.json` reconstruction and dry-run PR
+body generation without invoking an agent-backed generation workflow.
+§FS-forge-run-continuation.2
+
 For `library-new-request` fixtures that use an already-supported dynamic-access
 library, fixture setup removes the requested version entry and version-scoped
 metadata, tests, and stats from the isolated worktree before workflow routing.
@@ -199,10 +205,38 @@ body: |
 comments:
   - author: fixture-author
     body: "Please cover reflective field metadata, data models, and I/O helpers."
+worktree_files:
+  tests/src/com.google.http-client/google-http-client/1.42.2/.baseline-stats.json:
+    stats: null
+    metadata_entries: 0
+    test_only_metadata_entries: 0
+continuation_marker:
+  schemaVersion: 1
+  continueFrom: explore
+  preservedBranch: fixture/preserved-work/issue-9101
+  strategyName: dynamic_access_main_sources_pi_gpt-5.5
+  issueNumber: 9101
+  label: library-new-request
+  coordinate: com.google.http-client:google-http-client:1.42.2
+  newVersion: null
+  libraryUpdateRoute: null
+  libraryPreparationPreflight: null
+  phases:
+    setup: {status: completed, preflightDone: true, setupDone: true}
+    fix: {status: skipped, iteration: null}
+    explore: {status: running, iteration: 1, exhaustedClasses: []}
+    finalization: {status: pending}
+    publication: {status: pending, isPushed: false, branch: null}
 ```
 
 Fixture queue scanning is local to the loaded YAML issues. It does not perform
 live GitHub search, live issue claiming, or live project-board mutation.
+The optional `continuation_marker` block is written to the isolated fixture
+worktree as `forge/.continuation-marker.json` before dispatch, allowing fixture
+E2E to exercise run-continuation entry points without a live preserved branch.
+The optional `worktree_files` map writes small fixture-owned files into the
+isolated checkout before dispatch; continuation fixtures use it for preserved
+worktree state such as improve-coverage baseline snapshots.
 
 ## 3. Live GitHub Smoke E2E
 

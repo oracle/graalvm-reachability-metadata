@@ -55,8 +55,9 @@ class LocalCIVerificationTests(unittest.TestCase):
                 stderr=None,
                 text: bool | None = None,
                 check: bool | None = None,
+                **kwargs,
         ) -> subprocess.CompletedProcess[str]:
-            del cwd, stdout, stderr, text, check
+            del cwd, stdout, stderr, text, check, kwargs
             commands.append(command)
             if command == ["git", "remote", "get-url", "upstream"]:
                 return subprocess.CompletedProcess(command, 1, stdout="")
@@ -85,8 +86,9 @@ class LocalCIVerificationTests(unittest.TestCase):
                 stderr=None,
                 text: bool | None = None,
                 check: bool | None = None,
+                **kwargs,
         ) -> subprocess.CompletedProcess[str]:
-            del cwd, stdout, stderr, text, check
+            del cwd, stdout, stderr, text, check, kwargs
             commands.append(command)
             if command == ["git", "remote", "get-url", "upstream"]:
                 return subprocess.CompletedProcess(command, 1, stdout="")

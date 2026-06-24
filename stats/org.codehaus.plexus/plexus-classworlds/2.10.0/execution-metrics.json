@@ -1,0 +1,144 @@
+{
+  "fix_javac_fail:2026-06-09": {
+    "timestamp": "2026-06-09T05:23:21.433786Z",
+    "library": "org.codehaus.plexus:plexus-classworlds:2.10.0",
+    "starting_commit": "332f997ea8159b1d8011054dde99e0b3e127db38",
+    "ending_commit": "9ac9fb74cbd4aa13657ea131a1133d172572b011",
+    "previous_library": "org.codehaus.plexus:plexus-classworlds:2.4.2",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "2.10.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 7,
+            "totalCalls": 7
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 8,
+            "totalCalls": 8
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 15,
+        "totalCalls": 15
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1020,
+          "missed": 1612,
+          "ratio": 0.387538,
+          "total": 2632
+        },
+        "line": {
+          "covered": 278,
+          "missed": 383,
+          "ratio": 0.420575,
+          "total": 661
+        },
+        "method": {
+          "covered": 72,
+          "missed": 63,
+          "ratio": 0.533333,
+          "total": 135
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "2.4.2",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 7,
+            "totalCalls": 7
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 7,
+            "totalCalls": 7
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 14,
+        "totalCalls": 14
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 982,
+          "missed": 2457,
+          "ratio": 0.285548,
+          "total": 3439
+        },
+        "line": {
+          "covered": 274,
+          "missed": 607,
+          "ratio": 0.31101,
+          "total": 881
+        },
+        "method": {
+          "covered": 74,
+          "missed": 160,
+          "ratio": 0.316239,
+          "total": 234
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8229,
+      "issue_label": "fails-javac-compile",
+      "library": "org.codehaus.plexus:plexus-classworlds:2.10.0",
+      "summary": "No deterministic setup is needed: plexus-classworlds 2.10.0 has no runtime Maven dependencies and does not require Docker or external services. The compile failure comes from tests using the removed legacy org.codehaus.classworlds package instead of the current org.codehaus.plexus.classworlds API.",
+      "deterministic_setup": [],
+      "agent_guidance": "Use the 2.10.0 public API packages: org.codehaus.plexus.classworlds.ClassWorld and org.codehaus.plexus.classworlds.realm.ClassRealm. Exercise coverage by creating ClassWorld/ClassRealm instances, adding/importing URLs or resources, and optionally configuring Launcher with classworlds.conf; do not add or rely on legacy org.codehaus.classworlds classes.",
+      "risks": [
+        "Latest upstream documentation mentions restored legacy compatibility in later versions, but the resolved 2.10.0 artifact itself does not contain org.codehaus.classworlds classes.",
+        "Tests that add old classworlds artifacts as extra dependencies may mask the actual 2.10.0 API surface and provide misleading coverage."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8229 [Automation] javac compile fails for org.codehaus.plexus:plexus-classworlds:2.10.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "13 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.codehaus.plexus:plexus-classworlds:2.4.2",
+      "new_version": "2.10.0",
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 28995,
+      "output_tokens_used": 3267,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.codehaus.plexus:plexus-classworlds:2.10.0/library-preparation-preflight/pi-generation-2026-06-09T05-14-43-192493Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 40735,
+      "cached_input_tokens_used": 376832,
+      "output_tokens_used": 3097,
+      "iterations": 2,
+      "cost_usd": 0.2813,
+      "tested_library_loc": 278,
+      "metadata_entries": 1,
+      "test_only_metadata_entries": 23,
+      "previous_library_metadata_entries": 1,
+      "previous_library_test_only_metadata_entries": 23,
+      "code_coverage_percent": 42.06,
+      "previous_library_coverage_percent": 31.1
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.codehaus.plexus/plexus-classworlds/2.10.0/src/test/java/org_codehaus_plexus/plexus_classworlds/DefaultStrategyTest.java",
+      "metadata_file": "metadata/org.codehaus.plexus/plexus-classworlds/2.10.0/reachability-metadata.json"
+    }
+  }
+}

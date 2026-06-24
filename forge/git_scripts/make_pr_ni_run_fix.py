@@ -4,6 +4,7 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 import argparse
+import json
 import os
 import subprocess
 import sys
@@ -17,30 +18,34 @@ from git_scripts.common_git import (
     find_issue_for_coordinates as find_issue_common,
     format_stats_diff,
     format_forge_revision_section,
-    build_ai_branch_name,
-    delete_remote_branch_if_exists,
-    get_configured_reviewers,
+    get_model_display_name,
+    get_agent_name,
 )
+from git_scripts.pr_publication import (
+    BASE_BRANCH,
+    REPO,
+    REVIEWERS,
+    generate_diff_text,
+    publish_branch,
+)
+from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.metrics_writer import (
     count_metadata_entries,
     count_test_only_metadata_entries,
     collect_version_coverage_metrics,
+    read_pending_metrics,
 )
 from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.local_ci_verification import (
     HUMAN_INTERVENTION_LABEL,
     LocalCIVerificationResult,
-    fetch_pr_base_ref,
     format_local_ci_verification_pr_section,
-    run_local_ci_verification,
 )
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 
-REPO = "oracle/graalvm-reachability-metadata"
-BASE_BRANCH = 'master'
-REVIEWERS = get_configured_reviewers()
 SEVERE_METADATA_DROP_RATIO = 0.25
 TEST_SOURCE_DIR_NAMES: tuple[str, ...] = ("java", "kotlin", "groovy", "scala")
+DEFAULT_PR_LABEL = "fixes-native-image-run-fail"
 
 
 def is_severe_metadata_drop(previous_entries: int, new_entries: int) -> bool:
@@ -139,6 +144,8 @@ def create_pull_request(
         repo_path: str,
         local_ci_verification: LocalCIVerificationResult | None = None,
         issue_number: int | None = None,
+        metrics_repo_path: str | None = None,
+        pr_label: str = DEFAULT_PR_LABEL,
 ):
     """Create a GitHub pull request for the current branch."""
     origin_owner = get_origin_owner(cwd=repo_path)
@@ -157,6 +164,7 @@ def create_pull_request(
         repo_path=repo_path,
         local_ci_verification=local_ci_verification,
         issue_number=issue_number,
+        metrics_repo_path=metrics_repo_path,
     )
     cmd = [
         "gh", "pr", "create",
@@ -165,13 +173,59 @@ def create_pull_request(
         "--body", body,
         "--base", BASE_BRANCH,
         "--head", f"{origin_owner}:{branch}",
-        "--label", "fixes-native-image-run-fail",
+        "--label", pr_label,
     ]
     if severe_metadata_drop or local_ci_human_intervention:
         cmd.extend(["--label", HUMAN_INTERVENTION_LABEL])
     for r in REVIEWERS:
         cmd.extend(["--reviewer", r])
     gh(*cmd[1:])
+
+
+def build_forge_metrics_summary_section(metrics_repo_path: str | None) -> str:
+    """Format the strategy/agent/token summary from pending run metrics, when available."""
+    if not metrics_repo_path:
+        return ""
+    try:
+        metrics_entry = read_pending_metrics(metrics_repo_path)
+    except (json.JSONDecodeError, TypeError, FileNotFoundError, OSError):
+        return ""
+    if not isinstance(metrics_entry, dict):
+        return ""
+    metrics = metrics_entry.get("metrics", {})
+    if not isinstance(metrics, dict):
+        metrics = {}
+    strategy_name = metrics_entry.get("strategy_name", "")
+    if not strategy_name and not metrics:
+        return ""
+    return (
+        "\n"
+        f"- Strategy: {strategy_name}\n"
+        f"- Agent: {get_agent_name(strategy_name)}\n"
+        f"- Model: {get_model_display_name(strategy_name)}\n"
+        f"- Input tokens: {int(metrics.get('input_tokens_used', 0) or 0)}\n"
+        f"- Cached input tokens: {int(metrics.get('cached_input_tokens_used', 0) or 0)}\n"
+        f"- Output tokens: {int(metrics.get('output_tokens_used', 0) or 0)}\n"
+        f"- Iterations: {int(metrics.get('iterations', 0) or 0)}"
+    )
+
+
+def build_test_comparison_section(group: str, artifact: str, old_version: str, new_version: str, repo_path: str) -> str:
+    """Format an old-vs-new test diff when exploration produced a version-specific suite.
+
+    The metadata-first seed keeps tests shared under the old version (no new-version
+    test dir), so the diff section is emitted only when exploration split a
+    version-specific suite (§WF-native-image-run-fix-workflow.3).
+    """
+    new_test_dir = os.path.join(repo_path, "tests", "src", group, artifact, new_version)
+    if not os.path.isdir(new_test_dir):
+        return ""
+    return (
+        "\n\n**Comparison between existing test version and AI-Generated update**\n\n"
+        "```diff\n"
+        f"{generate_diff_text(group, artifact, old_version, new_version, repo_path)}\n"
+        "```"
+    )
 
 
 def build_pull_request_preview(
@@ -182,6 +236,7 @@ def build_pull_request_preview(
         repo_path: str,
         local_ci_verification: LocalCIVerificationResult | None = None,
         issue_number: int | None = None,
+        metrics_repo_path: str | None = None,
 ) -> tuple[str, str, bool, bool]:
     """Build the PR title/body without creating a GitHub pull request."""
     issue_no = issue_number if issue_number is not None else find_issue_common(new_coordinates, REPO)
@@ -203,7 +258,7 @@ def build_pull_request_preview(
     if new_test_entries > 0:
         new_test_entries_line = f"- Test-only metadata entries (new `{new_coordinates}`): {new_test_entries}\n"
     metrics_section = (
-        f"\n\n"
+        f"\n\nSummary:\n"
         f"- Metadata entries (previous `{old_coordinates}`): {previous_entries}\n"
         f"{previous_test_entries_line}"
         f"- Metadata entries (new `{new_coordinates}`): {new_entries}\n"
@@ -213,12 +268,15 @@ def build_pull_request_preview(
     )
     title = f"[Automation] Generated metadata for {new_coordinates}"
     body = (
+        f"## What does this PR do?\n\n"
         f"Fixes: {REPO}#{issue_no}\n\n"
         f"This PR provides new metadata needed for the {new_coordinates}, "
         f"addressing Native Image run failures caused by changes in the updated library version."
         f"{metrics_section}"
+        f"{build_forge_metrics_summary_section(metrics_repo_path)}"
         f"\n\n{format_forge_revision_section()}"
         f"{format_stats_diff(repo_path, old_coordinates, new_coordinates)}"
+        f"{build_test_comparison_section(group, artifact, old_version, new_version, repo_path)}"
     )
     if severe_metadata_drop:
         body += format_severe_metadata_drop_pr_section(
@@ -277,6 +335,11 @@ def build_parser():
         help="Path to the metrics repository root.",
     )
     parser.add_argument("--issue-number", type=int, help="Explicit backing GitHub issue number.")
+    parser.add_argument(
+        "--pr-label",
+        default=DEFAULT_PR_LABEL,
+        help="Primary label to apply to the generated pull request.",
+    )
     return parser
 
 
@@ -288,7 +351,7 @@ def parse_flags(argv_list):
         flags.reachability_metadata_path,
         flags.metrics_repo_path,
     )
-    return flags.coordinates, flags.new_version, repo_path, metrics_repo_path, flags.issue_number
+    return flags.coordinates, flags.new_version, repo_path, metrics_repo_path, flags.issue_number, flags.pr_label
 
 
 def push_current_branch_to_origin(
@@ -304,38 +367,27 @@ def push_current_branch_to_origin(
     group, artifact, old_version = parse_coordinate_parts(old_coordinates)
     new_coordinates = f"{group}:{artifact}:{new_version}"
 
-    branch = build_ai_branch_name(
-        f"fix-native-image-run-{group}-{artifact}-{new_version}",
-        cwd=repo_path,
-    )
-    delete_remote_branch_if_exists(branch, cwd=repo_path)
-    subprocess.run(
-        ["git", "switch", "-C", branch],
-        cwd=repo_path,
-        check=True,
-    )
-    stage_and_commit(
-        group=group,
-        artifact=artifact,
-        test_version=old_version,
-        metadata_version=new_version,
-        coordinates=new_coordinates,
-        repo_path=repo_path,
-    )
-    assert_no_tracked_worktree_changes(repo_path)
-    base_ref = fetch_pr_base_ref(repo_path, REPO, BASE_BRANCH)
-    subprocess.run(["git", "rebase", base_ref], cwd=repo_path, check=True)
-    local_ci_verification = run_local_ci_verification(
-        repo_path=repo_path,
-        coordinates=new_coordinates,
-        base_commit=base_ref,
-        metrics_repo_path=metrics_repo_path,
-    )
+    def stage() -> None:
+        # Exploration splits the seed's shared entry into a version-specific one, so
+        # the resolved test version is the new version; otherwise tests stay shared
+        # under the old version (metadata-first seed).
+        resolved_test_version = resolve_test_version(repo_path, group, artifact, new_version)
+        stage_and_commit(
+            group=group,
+            artifact=artifact,
+            test_version=resolved_test_version,
+            metadata_version=new_version,
+            coordinates=new_coordinates,
+            repo_path=repo_path,
+        )
 
-    subprocess.run(
-        ["git", "push", "origin", branch],
-        cwd=repo_path,
-        check=True,
+    branch, local_ci_verification = publish_branch(
+        repo_path=repo_path,
+        branch_suffix=f"fix-native-image-run-{group}-{artifact}-{new_version}",
+        coordinates=new_coordinates,
+        stage=stage,
+        metrics_repo_path=metrics_repo_path,
+        before_rebase=lambda: assert_no_tracked_worktree_changes(repo_path),
     )
 
     return branch, group, artifact, new_coordinates, local_ci_verification
@@ -344,7 +396,7 @@ def push_current_branch_to_origin(
 def main(argv=None):
     ensure_gh_authenticated()
 
-    old_coordinates, new_version, repo_path, metrics_repo_path, issue_number = parse_flags(
+    old_coordinates, new_version, repo_path, metrics_repo_path, issue_number, pr_label = parse_flags(
         argv if argv is not None else sys.argv[1:]
     )
 
@@ -363,6 +415,8 @@ def main(argv=None):
         repo_path=repo_path,
         local_ci_verification=local_ci_verification,
         issue_number=issue_number,
+        metrics_repo_path=metrics_repo_path,
+        pr_label=pr_label,
     )
 
 

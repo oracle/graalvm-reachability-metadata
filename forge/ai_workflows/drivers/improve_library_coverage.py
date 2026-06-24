@@ -26,7 +26,6 @@ import re
 import shutil
 import subprocess
 import sys
-import tempfile
 from typing import Any, Callable
 
 if __package__ in (None, ""):
@@ -36,19 +35,28 @@ import ai_workflows.agents  # noqa: F401 - triggers agent registration
 import ai_workflows.core  # noqa: F401 - triggers strategy registration
 from ai_workflows.agents import Agent
 from ai_workflows.core.workflow_strategy import (
-    RUN_STATUS_FAILURE,
     RUN_STATUS_CHUNK_READY,
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
     WorkflowStrategy,
+    strategy_skips_initial_fix_phase,
 )
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated, load_library_stats
 from utility_scripts import metrics_writer
+from utility_scripts.continuation_marker import (
+    PHASE_FINALIZATION,
+    PHASE_SETUP,
+    load_continuation_marker,
+    save_phase_update,
+)
+from utility_scripts.dynamic_access_exhaust_report import resolve_workflow_exhaust_report
 from utility_scripts.issue_requested_metadata import (
     NO_REPORTER_METADATA_CONTEXT,
     format_issue_requested_test_requirements,
 )
-from utility_scripts.large_library_progress import resolve_workflow_progress_state
+from utility_scripts.library_preparation_preflight import (
+    prepare_library_preparation_preflight,
+)
 from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.metadata_index import (
     MATCH_NEW_VERSION,
@@ -58,34 +66,28 @@ from utility_scripts.metadata_index import (
     resolve_library_update_target,
 )
 from utility_scripts.metrics_writer import count_metadata_entries, count_test_only_metadata_entries, create_failure_run_metrics_output
-from utility_scripts.repo_path_resolver import resolve_repo_roots
-from utility_scripts.schema_validator import validate_run_metrics
 from utility_scripts.source_context import (
     normalize_source_context_types,
     populate_artifact_urls,
     prepare_source_contexts,
     resolve_test_source_layout,
+    source_context_urls_available,
 )
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.strategy_loader import require_strategy_by_name
-from utility_scripts.workflow_setup import resolve_graalvm_java_home, validate_repo_paths
+from utility_scripts.workflow_setup import (
+    list_all_files,
+    resolve_graalvm_java_home,
+    resolve_workflow_repo_paths,
+    validate_repo_paths,
+)
+from utility_scripts.worktree_reset import reset_worktree_preserving_paths
 
 DEFAULT_MODEL_NAME = "oca/gpt-5.5"
 DEFAULT_STRATEGY_NAME = "library_update_pi_gpt-5.5"
 METRICS_TASK_TYPE = "improve_library_coverage"
 BASELINE_STATS_FILENAME = ".baseline-stats.json"
 LIBRARY_UPDATE_TARGET_FILENAME = ".library_update_target.json"
-
-
-def list_all_files(directory_path: str) -> list[str]:
-    """Recursively list all file paths in the given directory."""
-    files: list[str] = []
-    if not directory_path or not os.path.isdir(directory_path):
-        return files
-    for root_dir, _, file_names in os.walk(directory_path):
-        for file_name in file_names:
-            files.append(os.path.join(root_dir, file_name))
-    return files
 
 
 def format_resolved_edit_scope_context(
@@ -149,35 +151,28 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("-v", "--verbose", action="store_true", help="enable verbose mode for the configured agent")
     parser.add_argument(
-        "--large-library-series",
-        action="store_true",
-        help="Enable resumable large-library chunking for dynamic-access workflows.",
-    )
-    parser.add_argument(
-        "--chunk-class-limit",
+        "--chunk-class-count",
         type=int,
         default=0,
-        help="Stop a large-library part after this many resolved, skipped, or exhausted classes. 0 disables it.",
-    )
-    parser.add_argument(
-        "--chunk-call-limit",
-        type=int,
-        default=0,
-        help="Stop a large-library part after this many newly covered calls. 0 disables it.",
-    )
-    parser.add_argument(
-        "--resume-artifact",
-        help="Path to a large-library progress state JSON artifact to resume from.",
+        help="Stop a chunked dynamic-access run after this many processed classes. 0 disables chunking.",
     )
     parser.add_argument(
         "--issue-number",
         type=int,
-        help="GitHub issue number for durable large-library progress state.",
+        help="GitHub issue number for the dynamic-access exhaust report.",
     )
     parser.add_argument(
         "--issue-requested-metadata-context",
         default="",
         help="Reporter-provided missing metadata context extracted from the GitHub issue body.",
+    )
+    parser.add_argument(
+        "--library-preparation-preflight-path",
+        help="Path to the dispatcher-created library preparation preflight JSON record.",
+    )
+    parser.add_argument(
+        "--continuation-marker-path",
+        help="Path to the Forge run-continuation marker for this issue run.",
     )
     return parser
 
@@ -202,50 +197,12 @@ def parse_flags(argv_list: list[str]):
         flags.verbose,
         flags.reachability_metadata_path,
         flags.metrics_repo_path,
-        flags.large_library_series,
-        flags.chunk_class_limit,
-        flags.chunk_call_limit,
-        flags.resume_artifact,
+        flags.chunk_class_count,
         flags.issue_number,
         flags.issue_requested_metadata_context,
+        flags.library_preparation_preflight_path,
+        flags.continuation_marker_path,
     )
-
-
-def resolve_repo_paths(
-        explicit_repo_path: str | None,
-        explicit_metrics_repo_path: str | None,
-) -> tuple[str, str, str]:
-    """Resolve repository paths for code and metrics outputs."""
-    resolved_reachability_repo, resolved_metrics_repo = resolve_repo_roots(
-        explicit_repo_path,
-        explicit_metrics_repo_path,
-    )
-    resolved_metrics_dir = os.path.join(resolved_metrics_repo, "script_run_metrics")
-    os.makedirs(resolved_metrics_dir, exist_ok=True)
-    return resolved_reachability_repo, resolved_metrics_dir, resolved_metrics_repo
-
-
-def resolve_metrics_json(run_metrics: dict, metrics_repo_dir: str, metrics_repo_root: str | None) -> str:
-    """Resolve the metrics JSON path for the current execution."""
-    in_repo_root = metrics_writer.in_metadata_repo_metrics_root(metrics_repo_root)
-    if in_repo_root:
-        return metrics_writer.execution_metrics_path(in_repo_root, run_metrics)
-    return os.path.join(metrics_repo_dir, f"{METRICS_TASK_TYPE}.json")
-
-
-def write_metrics(run_metrics: dict, metrics_repo_dir: str, metrics_repo_root: str | None) -> None:
-    """Append metrics to JSON, write pending metrics, and validate schema."""
-    metrics_json = resolve_metrics_json(run_metrics, metrics_repo_dir, metrics_repo_root)
-    in_repo_root = metrics_writer.in_metadata_repo_metrics_root(metrics_repo_root)
-    if in_repo_root:
-        written = metrics_writer.append_execution_metrics(in_repo_root, run_metrics, METRICS_TASK_TYPE)
-        if written != metrics_json:
-            raise ValueError(f"ERROR: Resolved metrics path {metrics_json} does not match written path {written}")
-    else:
-        metrics_writer.append_run_metrics(run_metrics, metrics_json)
-    if metrics_repo_root:
-        metrics_writer.write_pending_metrics(metrics_repo_root, run_metrics)
-    validate_run_metrics(metrics_json)
 
 
 def _version_numbers(version: str) -> tuple[int, ...]:
@@ -704,43 +661,6 @@ def write_library_update_target_sidecar(metrics_repo_root: str | None, target: L
         sidecar_file.write("\n")
 
 
-def _snapshot_existing_paths(paths: list[str]) -> str | None:
-    snapshot_root = tempfile.mkdtemp(prefix="forge-update-failure-")
-    copied = False
-    for index, path in enumerate(paths):
-        if not os.path.exists(path):
-            continue
-        destination = os.path.join(snapshot_root, str(index))
-        if os.path.isdir(path):
-            shutil.copytree(path, destination)
-        else:
-            shutil.copy2(path, destination)
-        copied = True
-    if copied:
-        return snapshot_root
-    shutil.rmtree(snapshot_root, ignore_errors=True)
-    return None
-
-
-def _restore_snapshot_paths(snapshot_root: str | None, paths: list[str]) -> None:
-    if snapshot_root is None:
-        return
-    for index, path in enumerate(paths):
-        source = os.path.join(snapshot_root, str(index))
-        if not os.path.exists(source):
-            continue
-        if os.path.exists(path):
-            if os.path.isdir(path):
-                shutil.rmtree(path)
-            else:
-                os.remove(path)
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        if os.path.isdir(source):
-            shutil.copytree(source, path)
-        else:
-            shutil.copy2(source, path)
-
-
 def reset_failed_library_update_worktree(
         repo_path: str,
         checkpoint_commit: str,
@@ -754,14 +674,7 @@ def reset_failed_library_update_worktree(
         target.metadata_dir,
         stats_artifact_dir(repo_path, group, artifact),
     ]
-    snapshot_root = _snapshot_existing_paths(paths)
-    try:
-        subprocess.run(["git", "reset", "--hard", checkpoint_commit], cwd=repo_path, check=True)
-        _restore_snapshot_paths(snapshot_root, paths)
-    finally:
-        if snapshot_root is not None:
-            shutil.rmtree(snapshot_root, ignore_errors=True)
-    return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_path, text=True).strip()
+    return reset_worktree_preserving_paths(repo_path, checkpoint_commit, paths)
 
 
 def format_issue_requested_metadata_context(context: str) -> str:
@@ -800,20 +713,39 @@ def main(argv=None) -> int:
         is_verbose,
         explicit_repo_path,
         explicit_metrics_repo_path,
-        large_library_series,
-        chunk_class_limit,
-        chunk_call_limit,
-        resume_artifact,
+        chunk_class_count,
         issue_number,
         issue_requested_metadata_context,
+        library_preparation_preflight_path,
+        continuation_marker_path,
     ) = parse_flags(argv if argv is not None else sys.argv[1:])
 
     library = f"{group}:{artifact}:{version}"
     strategy = require_strategy_by_name(strategy_name)
-    reachability_repo_path, metrics_repo_dir, metrics_repo_root = resolve_repo_paths(
+    continuation_marker = load_continuation_marker(continuation_marker_path)
+    resume_from = None if continuation_marker is None else continuation_marker.continue_from
+    resume_existing_tree = resume_from in {"fix", "explore", PHASE_FINALIZATION, "publication"}
+    resume_finalization = resume_from == PHASE_FINALIZATION
+    reachability_repo_path, metrics_repo_dir, metrics_repo_root = resolve_workflow_repo_paths(
         explicit_repo_path,
         explicit_metrics_repo_path,
     )
+    # Apply deterministic preflight setup into the resolved worktree before
+    # generation; only advisory guidance reaches the prompt context.
+    library_preparation_preflight, library_preparation_preflight_context = (
+        prepare_library_preparation_preflight(
+            library_preparation_preflight_path,
+            reachability_repo_path,
+        )
+    )
+    if not resume_existing_tree:
+        save_phase_update(
+            continuation_marker_path,
+            lambda marker: (
+                marker.mark_phase_running(PHASE_SETUP),
+                marker.mark_setup_preflight_done(),
+            ),
+        )
     ensure_gh_authenticated()
     resolve_graalvm_java_home()
     validate_repo_paths(reachability_repo_path, metrics_repo_dir)
@@ -837,24 +769,29 @@ def main(argv=None) -> int:
             ),
         )
     model_name = strategy.get("model") or DEFAULT_MODEL_NAME
-    large_library_state, large_library_state_path = resolve_workflow_progress_state(
-        metrics_repo_root=metrics_repo_root,
-        issue_number=issue_number,
-        coordinate=library,
-        request_label="library-update-request",
-        strategy_name=strategy_name,
-        large_library_series=large_library_series,
-        resume_artifact=resume_artifact,
-    )
-
-    # Create feature branch
-    new_branch = build_ai_branch_name(f"improve-coverage-{group}-{artifact}-{version}")
-    delete_remote_branch_if_exists(new_branch)
-    subprocess.run(["git", "switch", "-C", new_branch], check=True)
+    if not resume_existing_tree:
+        # Create feature branch
+        new_branch = build_ai_branch_name(f"improve-coverage-{group}-{artifact}-{version}")
+        delete_remote_branch_if_exists(new_branch)
+        subprocess.run(["git", "switch", "-C", new_branch], check=True)
+        save_phase_update(
+            continuation_marker_path,
+            lambda marker: marker.mark_setup_done(
+                skip_fix_phase=strategy_skips_initial_fix_phase(strategy),
+            ),
+        )
+    else:
+        log_stage("continuation", f"Resuming {library} from preserved branch at phase {resume_from}")
 
     # Commit existing state as checkpoint
     test_version = update_target.resolved_test_version
     tests_dir = update_target.test_dir
+    dynamic_access_exhaust_report, dynamic_access_exhaust_report_path = resolve_workflow_exhaust_report(
+        repo_path=reachability_repo_path,
+        issue_number=issue_number,
+        coordinate=library,
+        chunk_class_count=chunk_class_count,
+    )
     if not os.path.isdir(tests_dir):
         print(
             "ERROR: Test directory for {library} does not exist: {path}".format(
@@ -875,36 +812,51 @@ def main(argv=None) -> int:
             ),
         )
     index_json = os.path.join(reachability_repo_path, "metadata", group, artifact, "index.json")
-    subprocess.run(["git", "add", tests_dir, index_json], check=False)
-    subprocess.run(
-        ["git", "commit", "--allow-empty", "-m", f"Checkpoint for coverage improvement of {library}"],
-        capture_output=True, text=True, check=False,
-    )
+    if not resume_existing_tree:
+        subprocess.run(["git", "add", tests_dir, index_json], check=False)
+        subprocess.run(
+            ["git", "commit", "--allow-empty", "-m", f"Checkpoint for coverage improvement of {library}"],
+            capture_output=True, text=True, check=False,
+        )
     checkpoint_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     log_stage("setup", f"Checkpoint commit: {checkpoint_commit}")
 
-    # Snapshot baseline stats and metadata entry counts before the workflow modifies them
-    baseline_stats = load_library_stats(reachability_repo_path, library)
-    baseline_metadata_entries = count_metadata_entries(reachability_repo_path, group, artifact, version)
-    baseline_test_only_entries = count_test_only_metadata_entries(reachability_repo_path, group, artifact, version)
-    baseline_snapshot = {
-        "stats": baseline_stats,
-        "metadata_entries": baseline_metadata_entries,
-        "test_only_metadata_entries": baseline_test_only_entries,
-    }
-    if large_library_state is not None and large_library_state.baseline_stats is None:
-        large_library_state.baseline_stats = baseline_stats
-        large_library_state.baseline_metadata_entries = baseline_metadata_entries
-        large_library_state.baseline_test_only_metadata_entries = baseline_test_only_entries
-        large_library_state.save(large_library_state_path)
     baseline_stats_path = os.path.join(tests_dir, BASELINE_STATS_FILENAME)
-    with open(baseline_stats_path, "w", encoding="utf-8") as f:
-        json.dump(baseline_snapshot, f, indent=2)
-    log_stage("setup", f"Saved baseline snapshot to {BASELINE_STATS_FILENAME}")
-
-    populate_artifact_urls(reachability_repo_path, library)
+    if resume_existing_tree:
+        if not os.path.isfile(baseline_stats_path):
+            print(
+                f"ERROR: Resumed {library} is missing cached baseline snapshot: "
+                f"{os.path.relpath(baseline_stats_path, reachability_repo_path)}",
+                file=sys.stderr,
+            )
+            return 1
+        log_stage("setup", f"Reusing cached baseline snapshot from {BASELINE_STATS_FILENAME}")
+    else:
+        # Snapshot baseline stats and metadata entry counts before the workflow modifies them.
+        baseline_stats = load_library_stats(reachability_repo_path, library)
+        baseline_metadata_entries = count_metadata_entries(reachability_repo_path, group, artifact, version)
+        baseline_test_only_entries = count_test_only_metadata_entries(reachability_repo_path, group, artifact, version)
+        baseline_snapshot = {
+            "stats": baseline_stats,
+            "metadata_entries": baseline_metadata_entries,
+            "test_only_metadata_entries": baseline_test_only_entries,
+        }
+        with open(baseline_stats_path, "w", encoding="utf-8") as f:
+            json.dump(baseline_snapshot, f, indent=2)
+        log_stage("setup", f"Saved baseline snapshot to {BASELINE_STATS_FILENAME}")
 
     source_context_types = normalize_source_context_types(strategy.get("parameters", {}).get("source-context-types"))
+    if not resume_existing_tree or not source_context_urls_available(
+            reachability_repo_path,
+            library,
+            source_context_types,
+    ):
+        populate_artifact_urls(reachability_repo_path, library)
+    else:
+        log_stage(
+            "populate-artifact-urls",
+            f"Skipping artifact URL population for resumed {library}; index.json already has requested source-context URLs.",
+        )
     prepared_source_context = prepare_source_contexts(
         repo_root=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
         reachability_repo_path=reachability_repo_path,
@@ -940,14 +892,11 @@ def main(argv=None) -> int:
         test_language_display_name=test_source_layout.display_language,
         test_source_dir_name=test_source_layout.source_dir_name,
         metadata_version=update_target.resolved_metadata_version,
-        large_library_progress_state=large_library_state,
-        large_library_progress_state_path=large_library_state_path,
-        large_library_issue_number=issue_number,
-        large_library_request_label="library-update-request",
-        large_library_metrics_repo_root=metrics_repo_root,
-        large_library_strategy_name=strategy_name,
-        chunk_class_limit=chunk_class_limit,
-        chunk_call_limit=chunk_call_limit,
+        library_preparation_preflight_context=library_preparation_preflight_context,
+        dynamic_access_exhaust_report=dynamic_access_exhaust_report,
+        dynamic_access_exhaust_report_path=dynamic_access_exhaust_report_path,
+        chunk_class_count=chunk_class_count,
+        continuation_marker_path=continuation_marker_path,
     )
 
     # Initialize agent
@@ -976,18 +925,18 @@ def main(argv=None) -> int:
         persistent_instructions=strategy_obj.persistent_instructions,
     )
 
-    run_result = strategy_obj.run(
-        agent=agent,
-        checkpoint_commit_hash=checkpoint_commit,
-    )
-    workflow_status, iterations = run_result[0], run_result[1]
+    if resume_finalization:
+        workflow_status = RUN_STATUS_SUCCESS
+        iterations = 0
+    else:
+        run_result = strategy_obj.run(
+            agent=agent,
+            checkpoint_commit_hash=checkpoint_commit,
+        )
+        workflow_status, iterations = run_result[0], run_result[1]
 
     if workflow_status in {RUN_STATUS_SUCCESS, RUN_STATUS_CHUNK_READY}:
-        finalize_status, _ = strategy_obj._finalize_successful_iteration(base_commit=checkpoint_commit)
-        if finalize_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS} and workflow_status == RUN_STATUS_CHUNK_READY:
-            workflow_status = RUN_STATUS_CHUNK_READY
-        else:
-            workflow_status = finalize_status
+        workflow_status = strategy_obj.finalize_run(checkpoint_commit, workflow_status)
 
     ending_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
 
@@ -1008,6 +957,7 @@ def main(argv=None) -> int:
             strategy_name=strategy_name,
             starting_commit=checkpoint_commit,
             ending_commit=ending_commit,
+            library_preparation_preflight=library_preparation_preflight,
         )
     else:
         if workflow_status == SUCCESS_WITH_INTERVENTION_STATUS:
@@ -1028,10 +978,11 @@ def main(argv=None) -> int:
             starting_commit=checkpoint_commit,
             ending_commit=ending_commit,
             post_generation_intervention=strategy_obj.post_generation_intervention,
+            library_preparation_preflight=library_preparation_preflight,
         )
 
     write_library_update_target_sidecar(metrics_repo_root, update_target)
-    write_metrics(run_metrics, metrics_repo_dir, metrics_repo_root)
+    metrics_writer.write_workflow_run_metrics(run_metrics, metrics_repo_dir, metrics_repo_root, METRICS_TASK_TYPE)
     return 0 if workflow_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS, RUN_STATUS_CHUNK_READY} else 1
 
 

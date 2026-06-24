@@ -1,0 +1,145 @@
+{
+  "fix_java_run_fail:2026-06-09": {
+    "timestamp": "2026-06-09T09:16:19.853227Z",
+    "library": "javassist:javassist:3.12.0.SP1",
+    "starting_commit": "6c114757803e703f14ad96afe36877a941a9b2f2",
+    "ending_commit": "813e0face90dbec74907acea53606b75cba57ebf",
+    "previous_library": "javassist:javassist:3.12.0.GA",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "3.12.0.SP1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 85,
+            "totalCalls": 85
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 7,
+            "totalCalls": 7
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 92,
+        "totalCalls": 92
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 17519,
+          "missed": 65252,
+          "ratio": 0.211656,
+          "total": 82771
+        },
+        "line": {
+          "covered": 4141,
+          "missed": 15302,
+          "ratio": 0.212982,
+          "total": 19443
+        },
+        "method": {
+          "covered": 871,
+          "missed": 2467,
+          "ratio": 0.260935,
+          "total": 3338
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "3.12.0.GA",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.959184,
+            "coveredCalls": 94,
+            "totalCalls": 98
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 7,
+            "totalCalls": 7
+          }
+        },
+        "coverageRatio": 0.961905,
+        "coveredCalls": 101,
+        "totalCalls": 105
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 17567,
+          "missed": 65303,
+          "ratio": 0.211983,
+          "total": 82870
+        },
+        "line": {
+          "covered": 4124,
+          "missed": 15299,
+          "ratio": 0.212326,
+          "total": 19423
+        },
+        "method": {
+          "covered": 868,
+          "missed": 2469,
+          "ratio": 0.260114,
+          "total": 3337
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8242,
+      "issue_label": "fails-java-run",
+      "library": "javassist:javassist:3.12.0.SP1",
+      "summary": "Javassist is a self-contained bytecode-manipulation library with no runtime Maven add-ons or Docker service needs, but tests need deliberate ClassPool/classpath initialization and care with old classfile/JPMS behavior.",
+      "deterministic_setup": [],
+      "agent_guidance": "Initialize Javassist explicitly in tests: create a ClassPool, insert the test/library class paths, and exercise CtClass creation, bytecode inspection, proxy/reflection helpers, or serialization paths. Avoid relying on parsing freshly compiled JDK 21/25 test classes unless verified; prefer generated/simple fixtures or bytecode produced through Javassist. Be cautious with CtClass.toClass and other paths that use ClassLoader.defineClass or JDK internals on modern JDKs.",
+      "risks": [
+        "The 3.12.0.SP1 POM has no runtime dependencies; only test-scoped JUnit and obsolete optional tools.jar profiles, so adding Maven dependencies is not justified.",
+        "This old Javassist release predates modern classfile versions and may fail when reading helper classes compiled by current JDKs.",
+        "Some auxiliary APIs such as HotSwapper, RMI, webserver/viewer, or applet-related tooling can touch JDI, networking, or deprecated JDK areas, but they do not require Docker-backed services."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8242 [Automation] java run fails for javassist:javassist:3.12.0.SP1; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "32 existing test file path(s) included"
+        }
+      ],
+      "current_library": "javassist:javassist:3.12.0.GA",
+      "new_version": "3.12.0.SP1",
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 26240,
+      "output_tokens_used": 2084,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/javassist:javassist:3.12.0.SP1/library-preparation-preflight/pi-generation-2026-06-09T08-52-04-063810Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 120899,
+      "cached_input_tokens_used": 933376,
+      "output_tokens_used": 9206,
+      "iterations": 3,
+      "cost_usd": 0.7429,
+      "tested_library_loc": 4141,
+      "metadata_entries": 51,
+      "test_only_metadata_entries": 52,
+      "previous_library_metadata_entries": 69,
+      "previous_library_test_only_metadata_entries": 43,
+      "code_coverage_percent": 21.3,
+      "previous_library_coverage_percent": 21.23
+    },
+    "artifacts": {
+      "test_file": "tests/src/javassist/javassist/3.12.0.SP1/src/test/java/javassist/javassist/SerializedProxyTest.java",
+      "metadata_file": "metadata/javassist/javassist/3.12.0.SP1/reachability-metadata.json"
+    }
+  }
+}

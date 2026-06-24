@@ -1,0 +1,131 @@
+{
+  "fix_javac_fail:2026-06-09": {
+    "timestamp": "2026-06-09T07:48:12.558577Z",
+    "library": "org.apache.maven.plugins:maven-jar-plugin:3.4.0",
+    "starting_commit": "726bc13f0674109f239787c6d30069912b02b895",
+    "ending_commit": "eb54d82513bdeecaa09a7906daaa61209355f2b1",
+    "previous_library": "org.apache.maven.plugins:maven-jar-plugin:3.3.0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "3.4.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 538,
+          "missed": 922,
+          "ratio": 0.368493,
+          "total": 1460
+        },
+        "line": {
+          "covered": 103,
+          "missed": 175,
+          "ratio": 0.370504,
+          "total": 278
+        },
+        "method": {
+          "covered": 14,
+          "missed": 33,
+          "ratio": 0.297872,
+          "total": 47
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "3.3.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 538,
+          "missed": 671,
+          "ratio": 0.444996,
+          "total": 1209
+        },
+        "line": {
+          "covered": 102,
+          "missed": 125,
+          "ratio": 0.449339,
+          "total": 227
+        },
+        "method": {
+          "covered": 14,
+          "missed": 21,
+          "ratio": 0.4,
+          "total": 35
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8227,
+      "issue_label": "fails-javac-compile",
+      "library": "org.apache.maven.plugins:maven-jar-plugin:3.4.0",
+      "summary": "No extra deterministic setup is needed. The 3.4.0 artifact contains the plugin implementation and its normal transitive runtime dependencies; the javac failure is caused by the generated HelpMojo class moving from org.apache.maven.plugins.jar.HelpMojo in 3.3.0 to org.apache.maven.plugins.maven_jar_plugin.HelpMojo in 3.4.0, not by a missing dependency, service, or initialization step.",
+      "deterministic_setup": [],
+      "agent_guidance": "Do not assume the generated help mojo stays in org.apache.maven.plugins.jar; for 3.4.0 use org.apache.maven.plugins.maven_jar_plugin.HelpMojo or exercise stable plugin classes such as org.apache.maven.plugins.jar.JarMojo/TestJarMojo with local temporary files only if additional coverage is needed.",
+      "risks": [
+        "Directly executing the real jar/test-jar mojos is more involved than executing the help mojo because Maven normally injects project/session/output-directory fields; avoid adding broad Maven harness setup unless the generated test intentionally covers archive creation."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8227 [Automation] javac compile fails for org.apache.maven.plugins:maven-jar-plugin:3.4.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.apache.maven.plugins:maven-jar-plugin:3.3.0",
+      "new_version": "3.4.0",
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 25372,
+      "output_tokens_used": 2755,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.maven.plugins:maven-jar-plugin:3.4.0/library-preparation-preflight/pi-generation-2026-06-09T07-38-15-865991Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 10899,
+      "cached_input_tokens_used": 90112,
+      "output_tokens_used": 900,
+      "iterations": 1,
+      "cost_usd": 0.0721,
+      "tested_library_loc": 103,
+      "metadata_entries": 6,
+      "previous_library_metadata_entries": 6,
+      "code_coverage_percent": 37.05,
+      "previous_library_coverage_percent": 44.93
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.apache.maven.plugins/maven-jar-plugin/3.4.0/src/test/java/org_apache_maven_plugins/maven_jar_plugin/HelpMojoTest.java",
+      "metadata_file": "metadata/org.apache.maven.plugins/maven-jar-plugin/3.4.0/reachability-metadata.json"
+    }
+  }
+}

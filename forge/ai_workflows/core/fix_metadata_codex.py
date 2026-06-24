@@ -22,6 +22,7 @@ def run_codex_metadata_fix(
         reproduction_command: str | None = None,
         graalvm_home: str | None = None,
         base_env: dict[str, str] | None = None,
+        library_preparation_preflight_context: str | None = None,
 ) -> tuple[int, str, bool]:
     """Run Codex to update metadata entries for the target library.
 
@@ -53,6 +54,11 @@ def run_codex_metadata_fix(
     )
     if reproduction_command:
         prompt += f"\n\nReproduce the failure with:\n{reproduction_command}"
+    if library_preparation_preflight_context:
+        prompt += (
+            "\n\nLibrary preparation preflight context:\n"
+            f"{library_preparation_preflight_context}"
+        )
     cmd = [
         "codex", "exec",
         "--dangerously-bypass-approvals-and-sandbox",

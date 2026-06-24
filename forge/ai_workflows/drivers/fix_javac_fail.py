@@ -25,12 +25,6 @@ if __package__ in (None, ""):
 
 from ai_workflows.drivers.java_fail_workflow import JAVAC_CONFIG, run_java_fail_workflow
 
-# Re-export symbols used by forge_metadata.py and other callers
-from ai_workflows.drivers.java_fail_workflow import (  # noqa: F401
-    list_all_files,
-    init_agent,
-)
-
 
 def main(argv=None):
     """Execute the end-to-end javac-fix driver for a version bump.

@@ -19,13 +19,14 @@ import utility_scripts.count_reachability_entries as reachability_metadata_count
 import utility_scripts.count_native_image_config_entries as legacy_metadata_count
 from utility_scripts.library_stats import load_library_stats_entry
 from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
+from utility_scripts.schema_validator import validate_run_metrics
 from utility_scripts.native_image_config_policy import (
     find_changed_legacy_test_native_image_config_files_for_coordinate,
     format_legacy_test_native_image_config_error,
 )
 from utility_scripts.source_context import resolve_test_source_layout
 from utility_scripts.strategy_loader import load_strategy_by_name
-from git_scripts.common_git import git_remote_exists
+from git_scripts.common_git import GitTransportError, git_remote_exists, run_git_transport
 
 # Rates are attached to the workflow model name.
 DEFAULT_INPUT_RATE_PER_1M = 3.00
@@ -413,6 +414,7 @@ def build_run_metrics_dict(
         stats: dict | None = None,
         previous_library_stats: dict | None = None,
         post_generation_intervention: dict | None = None,
+        library_preparation_preflight: dict | None = None,
 ):
     """Assemble the run_metrics dict."""
     metrics = {
@@ -459,6 +461,8 @@ def build_run_metrics_dict(
         run_metrics["previous_library_stats"] = previous_library_stats
     if post_generation_intervention is not None:
         run_metrics["post_generation_intervention"] = post_generation_intervention
+    if library_preparation_preflight is not None:
+        run_metrics["library_preparation_preflight"] = library_preparation_preflight
     run_metrics["metrics"] = metrics
     run_metrics["artifacts"] = {
         "test_file": test_file,
@@ -535,6 +539,7 @@ def create_run_metrics_output_json(
         starting_commit: str | None = None,
         ending_commit: str | None = None,
         post_generation_intervention: dict | None = None,
+        library_preparation_preflight: dict | None = None,
 ):
     """
     Build a run_metrics dict using collected metrics.
@@ -577,6 +582,7 @@ def create_run_metrics_output_json(
         metadata_file=metadata_file,
         stats=stats,
         post_generation_intervention=post_generation_intervention,
+        library_preparation_preflight=library_preparation_preflight,
     )
 
 
@@ -595,6 +601,7 @@ def create_javac_fix_run_metrics_output_json(
         starting_commit: str | None = None,
         ending_commit: str | None = None,
         post_generation_intervention: dict | None = None,
+        library_preparation_preflight: dict | None = None,
 ):
     """Build run metrics for fix_javac_fail workflow including previous-version metrics."""
     metrics = collect_base_metrics(
@@ -649,6 +656,7 @@ def create_javac_fix_run_metrics_output_json(
         stats=stats,
         previous_library_stats=previous_stats,
         post_generation_intervention=post_generation_intervention,
+        library_preparation_preflight=library_preparation_preflight,
     )
 
 
@@ -666,6 +674,7 @@ def create_failure_run_metrics_output(
         strategy_name,
         starting_commit: str | None = None,
         ending_commit: str | None = None,
+        library_preparation_preflight: dict | None = None,
 ):
     """Builds failure metrics when no valid unit tests were generated."""
     token_metrics = collect_token_usage_metrics(agent, model_name)
@@ -692,6 +701,7 @@ def create_failure_run_metrics_output(
         total_entries=0,
         test_file="None",
         metadata_file="None",
+        library_preparation_preflight=library_preparation_preflight,
     )
 
 
@@ -744,6 +754,17 @@ def execution_metrics_path(repo_path: str, run_metrics: dict) -> str:
     return os.path.join(repo_path, "stats", group, artifact, metadata_version, "execution-metrics.json")
 
 
+def execution_metrics_path_for_library(repo_path: str, library: str) -> str:
+    """Return the per-library execution metrics path for a coordinate."""
+    parts = library.split(":")
+    if len(parts) != 3 or any(not part for part in parts):
+        raise ValueError(f"ERROR: library must be group:artifact:version: {library}")
+
+    group, artifact, version = parts
+    metadata_version = resolve_metadata_version(repo_path, group, artifact, version)
+    return os.path.join(repo_path, "stats", group, artifact, metadata_version, "execution-metrics.json")
+
+
 def _load_execution_metrics_entries(path: str) -> dict:
     """Load an execution-metrics object from disk."""
     if not os.path.isfile(path):
@@ -755,6 +776,29 @@ def _load_execution_metrics_entries(path: str) -> dict:
     if not isinstance(data, dict):
         raise TypeError(f"ERROR: Expected execution metrics object in {path}")
     return data
+
+
+def load_execution_metrics_for_timestamp(
+        repo_path: str,
+        library: str,
+        timestamp: str,
+        task_type: str | None = None,
+) -> dict | None:
+    """Load the committed execution metrics entry for a library and timestamp."""
+    metrics_path = execution_metrics_path_for_library(repo_path, library)
+    entries = _load_execution_metrics_entries(metrics_path)
+    if task_type is not None:
+        entries = {
+            key: entry
+            for key, entry in entries.items()
+            if key.startswith(f"{task_type}:")
+        }
+    for entry in entries.values():
+        if not isinstance(entry, dict):
+            continue
+        if entry.get("library") == library and entry.get("timestamp") == timestamp:
+            return dict(entry)
+    return None
 
 
 def _public_execution_metrics_entry(run_metrics: dict) -> dict:
@@ -899,6 +943,47 @@ def read_pending_metrics(metrics_repo_root: str) -> dict:
         return json.load(f)
 
 
+def resolve_workflow_metrics_json(
+        run_metrics: dict,
+        metrics_repo_dir: str,
+        metrics_repo_root: str | None,
+        task_type: str,
+) -> str:
+    """Resolve the run-metrics JSON path for a workflow driver execution."""
+    in_repo_root = in_metadata_repo_metrics_root(metrics_repo_root)
+    if in_repo_root:
+        return execution_metrics_path(in_repo_root, run_metrics)
+    return os.path.join(metrics_repo_dir, f"{task_type}.json")
+
+
+def write_workflow_run_metrics(
+        run_metrics: dict,
+        metrics_repo_dir: str,
+        metrics_repo_root: str | None,
+        task_type: str,
+) -> str:
+    """Append run metrics, write pending metrics, and validate the written file.
+
+    The shared metrics-publication path for all workflow drivers
+    (§WF-forge-workflow-drivers.3); drivers contribute only their task type and
+    the per-workflow metrics payload.
+    """
+    metrics_json = resolve_workflow_metrics_json(run_metrics, metrics_repo_dir, metrics_repo_root, task_type)
+    in_repo_root = in_metadata_repo_metrics_root(metrics_repo_root)
+    if in_repo_root:
+        written_metrics_json = append_execution_metrics(in_repo_root, run_metrics, task_type)
+        if written_metrics_json != metrics_json:
+            raise ValueError(
+                f"ERROR: Resolved metrics path {metrics_json} does not match written path {written_metrics_json}"
+            )
+    else:
+        append_run_metrics(run_metrics, metrics_json)
+    if metrics_repo_root:
+        write_pending_metrics(metrics_repo_root, run_metrics)
+    validate_run_metrics(metrics_json)
+    return metrics_json
+
+
 def _resolve_primary_worktree_root(repo_root: str) -> str:
     """Resolve the main checkout root that owns the shared git metadata."""
     result = subprocess.run(
@@ -1005,7 +1090,7 @@ def commit_run_metrics_with_retry(
 
     `extra_paths_to_stage` lists repo-relative paths whose working-tree contents must survive the
     hard reset to origin/master and be staged alongside the metrics file (used for durable
-    large-library progress state). Both files and directories are supported.
+    dynamic-access exhaust report). Both files and directories are supported.
     """
     metrics_json_absolute_path = os.path.join(metrics_repo_root, metrics_json_relative_path)
     has_origin = git_remote_exists("origin", cwd=metrics_repo_root)
@@ -1024,7 +1109,7 @@ def commit_run_metrics_with_retry(
     snapshot_root = _snapshot_extra_paths(metrics_repo_root, extra_paths)
     try:
         for attempt in range(1, max_attempts + 1):
-            subprocess.run(["git", "fetch", "origin", "master"], check=True, cwd=metrics_repo_root)
+            run_git_transport(["fetch", "origin", "master"], cwd=metrics_repo_root)
             subprocess.run(["git", "reset", "--hard", "origin/master"], check=True, cwd=metrics_repo_root)
 
             append_run_metrics(run_metrics, metrics_json_absolute_path)
@@ -1040,33 +1125,24 @@ def commit_run_metrics_with_retry(
                 return
 
             subprocess.run(["git", "commit", "-m", commit_message], check=True, cwd=metrics_repo_root)
-            push_result = subprocess.run(
-                ["git", "push", "origin", "HEAD:master"],
-                cwd=metrics_repo_root,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-            )
-            if push_result.returncode == 0:
+            try:
+                run_git_transport(["push", "origin", "HEAD:master"], cwd=metrics_repo_root)
                 return
+            except GitTransportError as exc:
+                push_output = exc.output or str(exc)
 
-            if attempt < max_attempts:
+                if attempt < max_attempts:
+                    print(
+                        f"Retrying metrics push after attempt {attempt} failed: {push_output}",
+                        file=sys.stderr,
+                    )
+                    continue
+
                 print(
-                    f"Retrying metrics push after attempt {attempt} failed: {push_result.stdout}",
+                    f"ERROR: Failed to push metrics after {max_attempts} attempts: {push_output}",
                     file=sys.stderr,
                 )
-                continue
-
-            if attempt == max_attempts:
-                print(
-                    f"ERROR: Failed to push metrics after {max_attempts} attempts: {push_result.stdout}",
-                    file=sys.stderr,
-                )
-                raise subprocess.CalledProcessError(
-                    push_result.returncode,
-                    ["git", "push", "origin", "HEAD:master"],
-                    output=push_result.stdout,
-                )
+                raise
     finally:
         if snapshot_root:
             shutil.rmtree(snapshot_root, ignore_errors=True)

@@ -122,7 +122,7 @@ python3 ai_workflows/drivers/add_new_library_support.py \
 ```
 
 Options:
-- `--strategy-name NAME` select a predefined workflow strategy from `strategies/predefined_strategies.json`. Defaults to `basic_iterative_pi_gpt-5.4` (Pi agent).
+- `--strategy-name NAME` select a predefined workflow strategy from `strategies/predefined_strategies.json`. Defaults to `dynamic_access_main_sources_pi_gpt-5.5` (Pi agent).
 - `--keep-tests-without-dynamic-access` keeps generated tests for dynamic-access workflows even if no dynamic-access call sites are covered.
 - `-v`, `--verbose` enable verbose agent output.
 

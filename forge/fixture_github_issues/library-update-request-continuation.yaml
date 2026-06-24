@@ -1,0 +1,82 @@
+# Fixture-backed continuation scenario. The marker starts after setup and enters
+# the dynamic-access exploration phase for an already supported library-update
+# request, so fixture E2E exercises marker-backed route restoration and resume.
+number: 9106
+title: "Resume coverage improvement for commons-net:commons-net:3.13.0"
+state: OPEN
+labels:
+  - library-update-request
+assignees: []
+project:
+  number: 30
+  item_id: fixture-project-item-9106
+  status: Todo
+blocked_by: []
+body: |
+  Please resume dynamic-access coverage improvement for
+  `commons-net:commons-net:3.13.0`.
+
+  This fixture uses a continuation marker to start from the exploration phase.
+  The underlying test suite is already present through the shared
+  `commons-net:commons-net:3.1` metadata version and resolves the requested
+  tested version through `metadata/commons-net/commons-net/index.json`.
+
+  Requested coordinate:
+  `commons-net:commons-net:3.13.0`
+comments:
+  - author: fixture-runner
+    created_at: "2026-06-16T16:00:00Z"
+    body: |
+      Fixture preserved work branch for continuation.
+
+      Branch name: `fixture/preserved-work/issue-9106-library-update-request-commons-net`
+worktree_files:
+  tests/src/commons-net/commons-net/3.1/.baseline-stats.json:
+    stats: null
+    metadata_entries: 0
+    test_only_metadata_entries: 0
+continuation_marker:
+  schemaVersion: 1
+  continueFrom: explore
+  preservedBranch: fixture/preserved-work/issue-9106-library-update-request-commons-net
+  strategyName: dynamic_access_main_sources_pi_gpt-5.5
+  issueNumber: 9106
+  label: library-update-request
+  coordinate: commons-net:commons-net:3.13.0
+  newVersion: null
+  libraryUpdateRoute:
+    selected_driver: improve_library_coverage
+    baseline_coordinates: null
+    new_version: 3.13.0
+  libraryPreparationPreflight:
+    status: degraded
+    action: no_action
+    issue_number: 9106
+    issue_label: library-update-request
+    library: commons-net:commons-net:3.13.0
+    summary: Fixture continuation preflight was preserved in the marker.
+    deterministic_setup: []
+    agent_guidance: ""
+    risks: []
+    applied_setup: []
+    input_evidence: []
+    failure_reason: fixture no-op preflight
+  phases:
+    setup:
+      status: completed
+      preflightDone: true
+      setupDone: true
+    fix:
+      status: skipped
+      iteration: null
+    explore:
+      status: running
+      iteration: 1
+      exhaustedClasses:
+        - fixture.AlreadyExplored
+    finalization:
+      status: pending
+    publication:
+      status: pending
+      isPushed: false
+      branch: null

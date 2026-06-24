@@ -5,6 +5,9 @@ Task:
 Source context:
 {source_context_overview}
 
+Library Preparation Preflight:
+{library_preparation_preflight_context}
+
 How to use the source context:
 - Focus on source files for the classes explicitly named in the Gradle error output below.
 - Look for API changes, including renamed methods, changed signatures, removed classes, changed behavior, or new exceptions that explain the runtime failures.

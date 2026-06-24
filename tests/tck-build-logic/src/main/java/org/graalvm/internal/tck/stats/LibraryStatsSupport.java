@@ -49,6 +49,8 @@ import java.util.stream.Stream;
  */
 public final class LibraryStatsSupport {
 
+    public static final String DYNAMIC_ACCESSES_METRIC = "dynamic-accesses";
+
     private static final TypeReference<LibraryStatsModels.LibraryStats> LIBRARY_STATS_TYPE = new TypeReference<>() {
     };
     private static final TypeReference<LibraryStatsModels.MetadataVersionStats> METADATA_VERSION_STATS_TYPE = new TypeReference<>() {
@@ -134,6 +136,95 @@ public final class LibraryStatsSupport {
             throw new GradleException("Failed to traverse repository stats root " + statsRoot, e);
         }
         return libraryStats;
+    }
+
+    public static List<LibraryStatsModels.CoordinateMetric> topCoordinatesByMetric(
+            LibraryStatsModels.LibraryStats libraryStats,
+            String metric,
+            int limit
+    ) {
+        if (limit < 1) {
+            throw new GradleException("Top coordinate limit must be positive. Got: " + limit);
+        }
+        if (!DYNAMIC_ACCESSES_METRIC.equals(metric)) {
+            throw new GradleException("Unsupported library stats metric '" + metric + "'. Supported metrics: " + DYNAMIC_ACCESSES_METRIC);
+        }
+
+        Map<String, Long> metricByCoordinate = new HashMap<>();
+        LibraryStatsModels.LibraryStats normalizedStats = normalizeLibraryStats(libraryStats);
+        for (Map.Entry<String, LibraryStatsModels.ArtifactStats> artifactEntry : normalizedStats.entries().entrySet()) {
+            String artifact = artifactEntry.getKey();
+            LibraryStatsModels.ArtifactStats artifactStats = artifactEntry.getValue();
+            for (LibraryStatsModels.MetadataVersionStats metadataVersionStats : artifactStats.metadataVersions().values()) {
+                for (LibraryStatsModels.VersionStats versionStats : metadataVersionStats.versions()) {
+                    if (versionStats.dynamicAccess() == null || !versionStats.dynamicAccess().isAvailable()) {
+                        continue;
+                    }
+                    String coordinate = artifact + ":" + versionStats.version();
+                    metricByCoordinate.merge(coordinate, versionStats.dynamicAccess().totalCalls(), Math::max);
+                }
+            }
+        }
+
+        return metricByCoordinate.entrySet().stream()
+                .map(entry -> new LibraryStatsModels.CoordinateMetric(entry.getKey(), entry.getValue()))
+                .sorted(Comparator
+                        .comparingLong(LibraryStatsModels.CoordinateMetric::value)
+                        .reversed()
+                        .thenComparing(LibraryStatsModels.CoordinateMetric::coordinate))
+                .limit(limit)
+                .toList();
+    }
+
+    public static void requireCoordinatesInMetadata(Path metadataRoot, List<String> coordinates) {
+        List<String> missing = coordinates.stream()
+                .filter(coordinate -> !isCoordinateInMetadata(metadataRoot, coordinate))
+                .toList();
+        if (!missing.isEmpty()) {
+            throw new GradleException("Unknown reachability metadata coordinates: " + String.join(", ", missing));
+        }
+    }
+
+    private static boolean isCoordinateInMetadata(Path metadataRoot, String coordinate) {
+        String[] parts = coordinate.split(":", 3);
+        if (parts.length != 3) {
+            return false;
+        }
+        String group = parts[0];
+        String artifact = parts[1];
+        String version = parts[2];
+        Path artifactRoot = metadataRoot.resolve(group).resolve(artifact);
+        Path indexFile = artifactRoot.resolve("index.json");
+        if (!Files.isRegularFile(indexFile)) {
+            return false;
+        }
+        try {
+            JsonNode index = OBJECT_MAPPER.readTree(indexFile.toFile());
+            if (!index.isArray()) {
+                return false;
+            }
+            for (JsonNode entry : index) {
+                JsonNode testedVersions = entry.path("tested-versions");
+                String metadataVersion = entry.path("metadata-version").asText("");
+                if (testedVersions.isArray()
+                        && containsTextValue(testedVersions, version)
+                        && Files.isDirectory(artifactRoot.resolve(metadataVersion))) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (IOException e) {
+            throw new GradleException("Failed to read metadata index " + indexFile, e);
+        }
+    }
+
+    private static boolean containsTextValue(JsonNode values, String expected) {
+        for (JsonNode value : values) {
+            if (expected.equals(value.asText())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void writeJsonWithTrailingNewline(Path targetFile, Object value, String errorPrefix) {

@@ -11,6 +11,9 @@ Source Context:
 Issue-Requested Metadata:
 {issue_requested_metadata_context}
 
+Library Preparation Preflight:
+{library_preparation_preflight_context}
+
 Active class:
 - Class: {active_class_name}
 - Source file: {active_class_source_file}

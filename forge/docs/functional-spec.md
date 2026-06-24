@@ -107,8 +107,8 @@ metadata-relevant coverage from broader behavior coverage.
 | **Human intervention** | A maintainer follow-up signal applied through the `human-intervention` issue or PR label when Forge has evidence that generated work, repository automation, or library execution semantics require human judgment. It is distinct from post-generation intervention, which is an automated recovery step. The policy is defined in §FS-human-intervention-policy. |
 | **Dynamic access** | Reflection, JNI, resource access, serialization, or proxy use that GraalVM `native-image` cannot determine statically. |
 | **Dynamic-access report** | JSON written by Gradle task `generateDynamicAccessCoverageReport` to `tests/src/<group>/<artifact>/<version>/build/reports/dynamic-access/dynamic-access-coverage.json`, listing classes and per-class call sites that require dynamic-access metadata, marked covered/uncovered. |
-| **Dynamic-access exhaust report** | Durable coordinate-scoped JSON state for chunked dynamic-access work. It records the coordinate, issue number, class threshold, processed/exhausted/failed classes, and the latest published chunk PR/commit. It is stored in a stable location derived from the target test suite (for example under `tests/src/<group>/<artifact>/<version>/`) so orchestration scripts can find it from the coordinate alone. It does not predefine all chunks; each resume regenerates the current dynamic-access report and filters out exhausted classes. Specified by §WF-dynamic-access-exhaust-report. |
-| **Chunked dynamic-access workflow** | Dynamic-access generation mode for oversized `library-new-request` and `library-update-request` issues. `forge_metadata.py` owns the class threshold decision and passes the current chunk size to the workflow. The workflow processes at most that many uncovered classes, publishes that chunk, then resumes after the chunk PR merges. PR linking rules are in §WF-chunked-dynamic-access-pr-linking. |
+| **Dynamic-access exhaust report** | Durable coordinate-scoped JSON state for chunked dynamic-access work. It records the coordinate, issue number, class threshold, completed/skipped/exhausted/failed classes, and the latest published chunk PR/commit. It is stored in a stable location derived from the target test suite (for example under `tests/src/<group>/<artifact>/<version>/`) so orchestration scripts can find it from the coordinate alone. It does not predefine all chunks; each resume regenerates the current dynamic-access report and filters out processed classes. Specified by §WF-dynamic-access-exhaust-report. |
+| **Chunked dynamic-access workflow** | Dynamic-access generation mode for oversized `library-new-request` issues and `library-update-request` issues routed to dynamic-access coverage improvement. `forge_metadata.py` owns the class threshold decision and passes the current chunk size to the workflow. The workflow processes at most that many uncovered classes, publishes that chunk, then resumes after the chunk PR merges. PR linking rules are in §WF-chunked-dynamic-access-pr-linking. |
 | **Source context** | Read-only files supplied to the agent. Types: `main` (library source), `test` (upstream tests), `documentation` (Javadoc). Selected by the strategy parameter `source-context-types`. |
 | **Library update target** | The metadata and test directories selected for a `library-update-request` coordinate (§WF-improve-library-coverage.3). Resolution records the requested coordinate, match type (`tested-version`, `metadata-version`, `default-for`, or `new-version`), matched index entry, resolved metadata version, resolved test version, and edit directories. |
 
@@ -164,9 +164,13 @@ this functional spec.
   may run concurrently. Valid values are `1` through `4`; the default is `1`.
 - `FORGE_DO_WORK_STOP_FILE` overrides the shared stop marker path used by
   `do-work` loops. The default is `~/.metadata-forge-stop`.
+- `FORGE_USER_REQUESTED_ISSUES_ONLY=1` restricts issue queue scans to
+  user-requested issues by excluding configured automation and maintainer
+  authors locally before claim processing (§ORCH-forge-orchestration-spec).
 - `FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD` configures the class-count threshold
-  used by `forge_metadata.py` for `library-new-request` and
-  `library-update-request` issues. The implementation-defined default is `5`.
+  used by `forge_metadata.py` for `library-new-request` issues and
+  `library-update-request` issues routed to dynamic-access coverage improvement.
+  The implementation-defined default is `15`.
   If the current dynamic-access report has more uncovered classes than this
   threshold, Forge uses chunked mode. The value is not passed through as a
   generic workflow policy; `forge_metadata.py` computes the concrete chunk size
@@ -316,6 +320,54 @@ paths. If any shared repository file changed, the PR must be labeled
 the repository-level paths that require maintainer review, following
 §FS-human-intervention-policy.
 
+### FS-library-update-tested-version-split: Library-update tested-version split
+
+A `library-update-request` entry often lists several tested versions of the same
+library at once (for example `["1.1", "1.2", "1.3"]`). When a coverage-improvement
+run regenerates the JVM tests for such an entry, the new tests can pass on the
+entry's own version yet stop compiling or running against a *later* tested
+version. Forge must catch that break before the branch becomes PR-eligible and
+split the entry, so the PR keeps the regenerated progress for the versions that
+still pass while the repository keeps its existing support for the rest.
+
+**Version sweep.** Before publication (§FS-local-ci-equivalent-verification),
+Forge runs a Java-only sweep. It runs `javaTest` for the changed coordinate once
+per tested version, walking the entry's `tested-versions` in order with
+`GVM_TCK_LV` set to each version, and stops at the first version that fails. The
+sweep is deliberately narrower than full CI — it skips the native-image matrix —
+because it only needs to catch JVM test code that no longer works on a later
+version.
+
+**Progress output.** Forge must report the sweep on the CLI: the changed
+coordinate, how many versions it will check, each version as it starts, the log
+path for that version, and whether the version passed or failed. When every
+version passes, the output must say plainly that no split is needed.
+
+**Outcome.** If the *first* version fails there is no passing prefix to keep, so
+Forge fails publication instead of splitting. If a *later* version fails, Forge
+splits the index entry at that first failing version into two entries:
+
+| | `metadata-version` | `tested-versions` | `latest` | contents |
+|---|---|---|---|---|
+| **Current entry** | unchanged | the passing prefix | kept unless it moves to the successor | the regenerated metadata and tests from this PR |
+| **Successor entry** | the first failing version | the failing version and every later one | inherited when the split entry had `latest: true` | baseline metadata and tests copied from the PR base commit |
+
+**Successor contents.** The successor entry must preserve the repository's
+pre-generation support for the failing range. Forge copies the metadata and test
+directories from the PR base commit entry that originally covered the failing
+version — using that entry's `metadata-version` and `test-version` when present —
+into `metadata/<group>/<artifact>/<failing-version>` and
+`tests/src/<group>/<artifact>/<failing-version>`. The PR then ships the new
+generated progress for the passing prefix and keeps baseline support for the
+successor range.
+
+**Follow-up issue.** On every split, Forge also opens a `library-update-request`
+issue for the successor metadata version and holds it in `In Progress` so the
+queue cannot claim it early. The PR references this issue but does not close it,
+through the `Refs:` line and `Forge-Unblocks-Issue:` trailer of §GIT-pr-body.
+Once the PR merges, Forge releases the issue — clearing its assignees and moving
+its project status to `Todo` — so the successor update enters normal processing.
+
 ### FS-human-intervention-policy: Human intervention policy
 
 The `human-intervention` label is a maintainer follow-up signal, not a generic
@@ -341,12 +393,23 @@ Forge's responsibility boundary, including:
   the PR unsafe to auto-review as a normal generated result.
 
 Forge must not use `human-intervention` for failures that are only external or
-transient infrastructure conditions. Connection errors, Maven repository
-download failures, GitHub API/status failures, rate limits, runner outages,
-temporary registry unavailability, and similar environmental failures must be
-reported as infrastructure failures, retried or preserved with diagnostics as
-appropriate, and left without the `human-intervention` label unless later
-evidence shows a semantic Forge, repository, generation, or library problem.
+transient infrastructure conditions. The issue-side classification is by failure
+origin, not by log keywords: a workflow failure is **logical** — and gets the
+label — when it comes from the driver script, the core workflow, or the local
+CI-equivalent verification (compile, test, native-test, and finalization gates),
+which includes the rare case of an agent timeout. A workflow failure is
+**external** — and must not get the label — only when it surfaces as a typed
+exception from the dependency boundary Forge itself crosses: GitHub (`gh`: rate
+limits and 5xx/network) as `GitHubError` / `GitHubRateLimitExceeded`, and remote
+git operations (push/pull/fetch/clone/ls-remote) as `GitTransportError`. Maven
+Central and Docker registry failures have no such boundary — Gradle owns them
+inside `./gradlew test` and they reach Forge only as an opaque CI-check `rc != 0`,
+indistinguishable from a real test failure once the in-workflow retries have run —
+so they are not special-cased and fall through to the safe logical default. When a
+failure is external, Forge takes no issue action: it applies no
+`human-intervention` label and posts no comment, and silently releases the issue
+claim (status back to `Todo`, assignees cleared) so the issue is retried later.
+Rate limits additionally stop the current run for retry after reset.
 
 The label can appear on issues or pull requests. On an issue, it means Forge
 could not safely produce a PR-ready result and posted enough diagnostics for a
@@ -354,7 +417,12 @@ maintainer to continue. On a pull request, it means Forge produced a reviewable
 artifact, but some part of the result needs explicit maintainer judgment before
 normal review automation may treat it as safe. The companion
 `human-intervention-fixed` PR label means a maintainer has addressed the manual
-follow-up and review automation may resume after normal merge gates pass.
+follow-up and review automation may resume after normal merge gates pass. The
+resulting labeled backlog is drained by automated resolution, not per-item
+manual triage (§FS-human-intervention-resolution). The preserved work branch
+additionally carries a continuation marker, so a later run can resume the issue
+from the phase that failed instead of regenerating from scratch
+(§FS-forge-run-continuation).
 
 Post-generation intervention is different: it is an automated recovery step
 inside a workflow. `SUCCESS_WITH_INTERVENTION_STATUS` is PR-eligible when the
@@ -362,6 +430,70 @@ automated intervention changed the working tree and the local CI-equivalent
 verification still passed. That status should not by itself add the
 `human-intervention` label unless the result also meets one of the policy cases
 above.
+
+### FS-human-intervention-resolution: Human intervention resolution
+
+Items that carry `human-intervention` must not depend on per-item manual triage
+to be resolved. Reading why the label was applied and turning recurring causes
+into actionable, tracked work is an automated responsibility, not a manual one.
+
+This resolution is currently automated by Rhei. The `human-intervention-scanner`
+workspace template periodically scans the open `human-intervention` queue —
+pull requests, where the reason is read from the PR comments, reviews, and PR
+description together (PR comments are frequently absent, so the requested-changes
+review carries the reason), or issues, where the reason lives in the issue
+comment and its linked log — clusters the items by the
+common observed cause that earned the label. Groups below the configured support
+threshold are recorded but not escalated. Supported groups get follow-up
+investigation tasks that search the current checkout for a still-current system
+cause; stale, already-fixed, one-off, library-specific, or unsupported groups are
+cancelled without opening an issue. Only groups backed by current code, prompt,
+workflow, or policy evidence may open or reuse a tracking issue, so each live
+system cause is addressed once instead of per source item. The automation only
+investigates, groups, and opens tracking issues: it never edits, relabels,
+closes, or merges the source items, so it preserves the labeling guarantees of
+§FS-human-intervention-policy.
+
+Metadata-entry-count and coverage-depth objections for libraries that report
+zero dynamic-access calls are never human-intervention on their own, because the
+zero-call report does not provide enough information to decide whether metadata
+is unnecessary or whether an entry-count drop is meaningful
+(§FS-zero-dynamic-access-tolerance).
+
+### FS-zero-dynamic-access-tolerance: Zero dynamic-access library tolerance
+
+A zero dynamic-access report means the current evidence did not observe
+reflection, resource, proxy, serialization, or JNI call sites for the tested
+version. It is not proof that the target coordinate and its transitive
+dependencies need no reachability metadata: dynamic-access stats can miss
+metadata required through downstream libraries. Review automation must therefore
+treat metadata entry totals, metadata entry drops, and metadata-depth heuristics
+as low-signal evidence for such libraries.
+
+When the PR evidence reports zero dynamic-access calls for the tested version
+(for example `dynamicAccess.totalCalls == 0` in stats, or a `{}`
+`reachability-metadata.json` with no claimed dynamic-access behavior), the
+following must not be escalated to `human-intervention` or a requested-changes
+review on coverage-depth grounds (§FS-human-intervention-policy):
+
+- A drop in total metadata entry count between the previous and new metadata
+  version, including a drop below the normal severe-drop guardrail. The zero-call
+  report does not give enough information to decide whether the entries were
+  unnecessary or whether the drop is a regression.
+- A test that is shallow or exercises behavior that is not strictly the
+  library's responsibility, when that objection depends on metadata-depth
+  expectations inferred from the zero-call report.
+
+This tolerance applies to `library-new-request`, `library-update-request`,
+`fixes-javac-fail`, `fixes-java-run-fail`, and
+`fixes-native-image-run-fail` review labels (§FS-automated-pr-review). It does
+not relax the label-specific gates that prove the submitted support or fix:
+new-library tests must still be library-specific, compilation, JVM execution,
+and native-image execution must still pass where the label requires them, and
+reviewers must still reject tests that swallow the failing exception or disable
+native-image behavior. It only removes metadata-entry-count and coverage-depth
+objections when the zero dynamic-access signal leaves review automation without
+enough information to judge metadata relevance.
 
 ### FS-automated-pr-review: Automated pull request review
 
@@ -445,24 +577,31 @@ The exit code is `0` for PR-eligible statuses and `1` for failure.
 
 ## 8. Chunked Dynamic-Access Semantics
 
-For `library-new-request` and `library-update-request` issues, `forge_metadata.py`
-must run or refresh the dynamic-access report before choosing the execution
-mode. If the current report has more uncovered dynamic-access classes than the
-configured class threshold, `forge_metadata.py` must invoke the matching
-orchestration script with chunking flags: issue number and current chunk size.
+For `library-new-request` issues and `library-update-request` issues routed to
+dynamic-access coverage improvement, `forge_metadata.py` must run or refresh the
+dynamic-access report before choosing the execution mode. If the current report
+has more uncovered dynamic-access classes than the configured class threshold,
+`forge_metadata.py` must invoke the matching orchestration script with chunking
+flags: issue number and current chunk size.
 The current chunk size is normally equal to the threshold; when fewer
 unexhausted classes remain than the threshold, it is equal to the remaining
-class count. For example, with threshold `5` and `7` uncovered classes, the
-first chunk size is `5` and the second chunk size is `2`.
+class count. For example, with threshold `15` and `22` uncovered classes, the
+first chunk size is `15` and the second chunk size is `7`.
 
 Chunked mode is automatic after the issue is marked with the
 `chunked-dynamic-access` label. The normal project status remains the run-state
 signal: `Todo` means Forge may claim the next chunk, `In Progress` means a chunk
 is currently being generated or reviewed, and the final PR's `Fixes: #<issue>`
-transition moves the issue to `Done`. Forge must not require an explicit
-resume-state CLI flag; the exhaust report location must be derived from the
-coordinate and loaded automatically by the orchestration scripts, as specified
-by §WF-dynamic-access-exhaust-report.
+transition moves the issue to `Done`. If a non-final chunk PR has failed CI and
+no failed-job rerun remains available, Forge must move the issue back to `Todo`
+and mark that PR for human follow-up so a replacement chunk can be generated.
+Forge must not require an explicit resume-state CLI flag; the exhaust report
+location must be derived from the coordinate and loaded automatically by the
+orchestration scripts, as specified by §WF-dynamic-access-exhaust-report. When
+the issue is being resumed from a preserved failed-run continuation marker,
+Forge may proceed without a coordinate-local exhaust report and use
+`explore.exhaustedClasses` from the marker as the processed-class set for the
+resumed run (§FS-forge-run-continuation.2).
 
 Chunk PRs use `Refs: #<issue>` until the final chunk. Only the final chunk PR
 may use `Fixes: #<issue>` and move the issue to `Done`. Non-final chunk PRs
@@ -481,7 +620,7 @@ they run:
 | Queue | Driver script | Workflow spec |
 | --- | --- | --- |
 | `library-new-request` | `add_new_library_support.py` | new library support (§WF-add-new-library-support), which runs dynamic-access generation plus native metadata tracing and verification |
-| `library-update-request` | `improve_library_coverage.py`, or the missing-version router | dynamic-access coverage improvement (§WF-improve-library-coverage) |
+| `library-update-request` | `improve_library_coverage.py`, or the missing-version router | dynamic-access coverage improvement (§WF-improve-library-coverage), Java repair (§WF-java-fail-fix-workflow), or native-image run repair (§WF-native-image-run-fix-workflow) depending on the compatibility probe |
 | `fails-javac-compile` | `fix_javac_fail.py` | Java failure repair (§WF-java-fail-fix-workflow) |
 | `fails-java-run` | `fix_java_run_fail.py` | Java failure repair (§WF-java-fail-fix-workflow) |
 | `fails-native-image-run` | `fix_ni_run.py` | native-image run repair (§WF-native-image-run-fix-workflow) |

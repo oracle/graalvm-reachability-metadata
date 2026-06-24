@@ -80,6 +80,12 @@ iterative phase refines remaining call sites; and library-update coverage
 strategies, where Forge improves dynamic-access coverage on existing tests
 without first generating a new library test suite.
 
+When the iterative dynamic-access phase returns `RUN_STATUS_CHUNK_READY`, the
+composite returns that status immediately. A chunk-ready part is a reviewable
+boundary, so reporter-requested metadata work is deferred until a later resumed
+run reaches final workflow success instead of blocking publication of the
+current chunk.
+
 ### WF-dynamic-access-fallback-and-failure: Required fallback and failure behavior
 
 Dynamic-access fallback is intentionally narrow. The iterative and bulk engines
@@ -148,8 +154,9 @@ coverage phase.
 ### 2.5 Chunked issue runs
 
 Issue-driven runs add a chunk class count computed by `forge_metadata.py`. It
-is required only for chunked `library-new-request` / `library-update-request`
-work and is absent for direct CLI invocations.
+is required only for chunked `library-new-request` work and chunked
+coverage-improvement `library-update-request` work, and is absent for direct
+CLI invocations.
 
 ## 3. Outputs
 
@@ -161,7 +168,7 @@ work and is absent for direct CLI invocations.
   `Anonymous<digit>` and `$<name>` with `Inner<name>` to avoid `$` in filenames.
 - Iterative runs produce one git commit per resolved or partially resolved
   class. Bulk runs produce one commit per accepted broad-pass iteration.
-- A final **metadata commit** produced by the standard `_finalize_successful_iteration`
+- A final **metadata commit** produced by the standard `finalize_run` finalization
   / `generateMetadata` step (in benchmark mode, only `generateMetadata` runs).
 - A per-run metrics record persisted to
   `stats/<group>/<artifact>/<version>/execution-metrics.json`; in-flight metrics
@@ -222,7 +229,9 @@ runs never populate them (§WF-dynamic-access-exhaust-report):
 - `chunk_class_count` — maximum number of newly selected dynamic-access classes
   this chunk may process. `forge_metadata.py` computes it from the global class
   threshold and the number of unexhausted classes remaining. A class is never
-  split across chunks.
+  split across chunks. Failed-run continuation also records how many classes in
+  the active chunk already reached a terminal state, so the resumed invocation
+  receives only the remaining budget for that same chunk.
 
 ## 6. Workflow
 
@@ -263,7 +272,7 @@ flowchart TD
     Phase2 --> P2[See section 6.2]
 ```
 
-The fallback strategy is `basic_iterative_pi_gpt-5.4` (constant
+The fallback strategy is `basic_iterative_pi_gpt-5.5` (constant
 `FALLBACK_STRATEGY_NAME` in `dynamic_access_iterative_strategy.py`). The
 fallback runs only when no usable dynamic-access guidance exists at the
 **start** of the run; once Phase 2 begins, a missing report mid-run is a hard
@@ -468,14 +477,14 @@ flowchart TD
     Final --> EntryFinalize[add_new_library_support.main]
     EntryFinalize --> Mode{benchmark mode?}
     Mode -- yes --> GenMeta[gradle generateMetadata,<br/>commit library iteration]
-    Mode -- no --> StdFinalize[strategy._finalize_successful_iteration<br/>see 6.6]
+    Mode -- no --> StdFinalize[strategy.finalize_run<br/>see 6.6]
     GenMeta --> Metrics[Write run metrics, validate schema]
     StdFinalize --> Metrics
 ```
 
 ### 6.6 Finalization order
 
-`_finalize_successful_iteration` runs in this order:
+The underlying finalization (driven through `finalize_run`) runs in this order:
 
 ```mermaid
 flowchart LR
@@ -505,10 +514,10 @@ useful.
 
 ### 6.7 Chunked issue orchestration
 
-Chunked mode applies only to issue-driven `library-new-request` and
-`library-update-request` work. `forge_metadata.py` owns the class threshold and
-is responsible for deciding whether to invoke the normal workflow or the
-chunked workflow:
+Chunked mode applies only to issue-driven `library-new-request` work and
+`library-update-request` work routed to dynamic-access coverage improvement.
+`forge_metadata.py` owns the class threshold and is responsible for deciding
+whether to invoke the normal workflow or the chunked workflow:
 
 1. Claim the issue normally and keep the project item in `In Progress`.
 2. Run setup far enough to generate or refresh the dynamic-access report for
@@ -520,13 +529,16 @@ chunked workflow:
    with the issue number and current chunk class count.
 5. The current chunk class count is normally the threshold. If the exhaust
    report shows fewer unexhausted classes remain than the threshold, pass the
-   remaining class count instead. For example, with threshold `5` and `7`
-   classes, Forge invokes one chunk with count `5` and a second chunk with
-   count `2` (§WF-dynamic-access-exhaust-report).
+   remaining class count instead. For example, with threshold `15` and `22`
+   classes, Forge invokes one chunk with count `15` and a second chunk with
+   count `7` (§WF-dynamic-access-exhaust-report).
 6. The workflow loads the exhaust report from the coordinate-derived persistent
    location, regenerates the current dynamic-access report from the checked-out
    base, and selects the next uncovered classes not present in the exhaust
-   report (§WF-dynamic-access-exhaust-report).
+   report (§WF-dynamic-access-exhaust-report). If this is a failed-run resume
+   with a continuation marker but no coordinate-local exhaust report, the
+   dispatcher uses `explore.exhaustedClasses` from the marker as the processed
+   class set for that resumed invocation (§FS-forge-run-continuation.2).
 7. The workflow processes at most the current chunk class count. Each selected
    class owns all of its dynamic-access call sites; call sites inside one class
    must not be split across chunks.
@@ -535,18 +547,24 @@ chunked workflow:
    chunk PR using the linking contract in
    §WF-chunked-dynamic-access-pr-linking.
 9. The issue project status controls continuation: `Todo` means Forge may claim
-   the next chunk, `In Progress` means the current chunk is active. No separate
-   ready/in-progress chunk labels are required.
+   the next chunk, `In Progress` means the current chunk is active. A non-final
+   chunk PR with failed CI is no longer an active chunk after Forge exhausts
+   available reruns; Forge releases the issue back to `Todo` and marks that PR
+   for human follow-up. No separate ready/in-progress chunk labels are required.
 10. Before resuming, Forge verifies that the latest recorded chunk PR commit is
     present in the base branch (§WF-dynamic-access-exhaust-report).
 
 #### WF-chunked-dynamic-access-pr-linking: Chunk PR linking
 
 After a chunk passes local CI-equivalent verification, PR creation must link the
-chunk to the issue without completing it unless the chunk is final. Non-final
-chunk PRs use `Refs: #<issue>` and commit the exhaust-report state required for
-the next run to skip classes already completed, skipped, exhausted, or failed.
-Only the final chunk PR may use `Fixes: #<issue>` and move the issue to `Done`.
+chunk to the issue without completing it unless the chunk is final. Chunk PRs
+carry the `chunked-dynamic-access` label. Non-final chunk PRs use
+`Refs: #<issue>` and commit the exhaust-report state required for the next run
+to skip classes already completed, skipped, exhausted, or failed. Only the final
+chunk PR may use `Fixes: #<issue>` and move the issue to `Done`. If a non-final
+chunk PR has failed CI and no eligible failed GitHub Actions job remains to
+rerun, Forge releases the linked issue back to `Todo` so a replacement chunk can
+be generated.
 
 #### WF-dynamic-access-exhaust-report: Dynamic-access exhaust report
 
@@ -563,6 +581,8 @@ dynamic-access report and filters out classes recorded in the exhaust report.
 The exhaust report path is not passed as an explicit resume-state argument. It
 is derived from the coordinate and stored persistently with the library test
 suite so that each merged chunk carries the state needed by the next run.
+Failed-run continuation can resume without this file when the preserved
+continuation marker already records the processed dynamic-access classes.
 Global repository stats remain authoritative: `generateLibraryStats` reports
 dynamic-access coverage against the full current dynamic-access surface, while
 the chunk PR body may additionally report how many classes were processed in
@@ -572,7 +592,7 @@ that chunk and how many uncovered classes remain.
 
 | Component | Responsibility |
 | --- | --- |
-| `forge_metadata.py` | Issue queue orchestration. For `library-new-request` and `library-update-request`, owns the dynamic-access class threshold, computes the current chunk class count, passes chunk flags to the workflow drivers when needed, and adds the `chunked-dynamic-access` issue label. |
+| `forge_metadata.py` | Issue queue orchestration. For `library-new-request` and coverage-improvement `library-update-request` work, owns the dynamic-access class threshold, computes the current chunk class count, passes chunk flags to the workflow drivers when needed, and adds the `chunked-dynamic-access` issue label. |
 | `ai_workflows/drivers/add_new_library_support.py::main` | Driver setup, branch, scaffold, artifact URL population, source-context preparation, agent init, post-workflow finalization, metrics. |
 | `ai_workflows/core/dynamic_access_iterative_strategy.py` | Iterative per-class engine: fallback selection, class prompting, coverage deltas, class checkpoints, native-test gate batching, chunk-ready returns. |
 | `ai_workflows/core/optimistic_dynamic_access_strategy.py` | Bulk full-report engine: optimistic prompts, broad-pass test repair, report regeneration, commit attempts, global native-test gate. |
@@ -603,8 +623,8 @@ support iff **all** requirements for its selected engine hold at exit:
    returned success before any dynamic-access coverage phase started. If the
    primary failed, the composite result is that primary failure and no
    dynamic-access coverage phase is required.
-5. `_finalize_successful_iteration` (or, in benchmark mode, `generateMetadata`
-   followed by a commit) returns success. In `_finalize_successful_iteration`,
+5. `finalize_run` (or, in benchmark mode, `generateMetadata`
+   followed by a commit) returns success. In the shared finalization,
    a failing post-generation `./gradlew test` is repaired by Codex metadata
    fixup and, if needed, Pi before finalization commits (§6.6).
 6. After each configured batch of per-class iterations that committed a

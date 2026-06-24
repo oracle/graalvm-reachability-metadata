@@ -10,6 +10,7 @@ from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_SUCCESS,
     WorkflowStrategy,
 )
+from utility_scripts.continuation_marker import PHASE_FIX, save_phase_update
 
 
 @WorkflowStrategy.register("increase_dynamic_access_coverage")
@@ -41,6 +42,10 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
     def run(self, agent, **kwargs):
         if self.primary is None:
             self._print_message("no primary workflow configured, skipping to dynamic-access coverage phase")
+            save_phase_update(
+                self.continuation_marker_path,
+                lambda marker: marker.mark_phase_skipped_if_pending(PHASE_FIX),
+            )
             status = RUN_STATUS_SUCCESS
             iterations = 0
         else:
@@ -85,6 +90,14 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
                 )
         elif da._last_phase_status == RUN_STATUS_CHUNK_READY:
             status = RUN_STATUS_CHUNK_READY
+            self._print_message(
+                "dynamic-access chunk boundary reached; deferring reporter-requested metadata phase"
+            )
+            if self.primary is None:
+                return status, iterations
+            if len(result) == 2:
+                return status, iterations
+            return (status, iterations) + result[2:]
 
         if has_issue_requested_metadata:
             self._print_message("starting reporter-requested metadata phase")

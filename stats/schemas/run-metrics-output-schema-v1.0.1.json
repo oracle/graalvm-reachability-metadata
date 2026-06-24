@@ -153,6 +153,212 @@
         }
       }
     },
+    "libraryPreparationPreflightEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "summary"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "libraryPreparationDeterministicSetup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "dependency",
+            "docker_image"
+          ]
+        },
+        "coordinate": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[^:]+$"
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "image": {
+          "type": "string",
+          "minLength": 1
+        },
+        "slug": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "libraryPreparationAppliedSetup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "result"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result": {
+          "type": "string",
+          "enum": [
+            "applied",
+            "already_present",
+            "skipped"
+          ]
+        },
+        "coordinate": {
+          "type": "string",
+          "minLength": 1
+        },
+        "image": {
+          "type": "string",
+          "minLength": 1
+        },
+        "slug": {
+          "type": "string",
+          "minLength": 1
+        },
+        "target": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "libraryPreparationPreflight": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "action",
+        "issue_number",
+        "issue_label",
+        "library",
+        "summary",
+        "deterministic_setup",
+        "agent_guidance",
+        "risks",
+        "applied_setup",
+        "input_evidence"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "completed",
+            "degraded"
+          ]
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "no_action",
+            "advisory_preparation"
+          ]
+        },
+        "issue_number": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "issue_label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "library": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[^:]+$"
+        },
+        "current_library": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[^:]+$"
+        },
+        "new_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "summary": {
+          "type": "string"
+        },
+        "deterministic_setup": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/libraryPreparationDeterministicSetup"
+          }
+        },
+        "agent_guidance": {
+          "type": "string"
+        },
+        "risks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "applied_setup": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/libraryPreparationAppliedSetup"
+          }
+        },
+        "input_evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/libraryPreparationPreflightEvidence"
+          }
+        },
+        "failure_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "input_tokens_used": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "output_tokens_used": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "prompt_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "raw_response_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "session_log_path": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
     "runMetrics": {
       "type": "object",
       "additionalProperties": false,
@@ -240,6 +446,10 @@
               "description": "Markdown explanation generated for the post-generation failure."
             }
           }
+        },
+        "library_preparation_preflight": {
+          "$ref": "#/definitions/libraryPreparationPreflight",
+          "description": "Dispatcher advisory preflight record collected before workflow-driver dispatch."
         },
         "stats": {
           "$ref": "#/definitions/statsSnapshot",

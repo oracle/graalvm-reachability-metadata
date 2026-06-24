@@ -1,0 +1,92 @@
+# Fixture-backed publication continuation scenario. The marker starts at the
+# publication phase and points at durable execution metrics plus local-only
+# extras, so fixture E2E verifies pending metrics reconstruction without running
+# an agent-backed generation workflow.
+number: 9107
+title: "Add support for org.example:publication-resume:1.0.0"
+state: OPEN
+labels:
+  - library-new-request
+assignees: []
+project:
+  number: 30
+  item_id: fixture-project-item-9107
+  status: Todo
+blocked_by: []
+body: |
+  Please resume publication for `org.example:publication-resume:1.0.0`.
+
+comments:
+  - author: fixture-runner
+    created_at: "2026-06-19T10:00:00Z"
+    body: |
+      Fixture preserved work branch for publication resume.
+
+      Branch name: `fixture/preserved-work/issue-9107-library-new-request-publication-resume`
+worktree_files:
+  metadata/org.example/publication-resume/index.json:
+    - metadata-version: "1.0.0"
+      tested-versions:
+        - "1.0.0"
+  stats/org.example/publication-resume/1.0.0/execution-metrics.json:
+    add_new_library_support:2026-06-19T10:00:00.000000Z:
+      timestamp: "2026-06-19T10:00:00.000000Z"
+      library: "org.example:publication-resume:1.0.0"
+      status: "success_with_intervention"
+      strategy_name: "dynamic_access_main_sources_pi_gpt-5.5"
+      metrics:
+        iterations: 1
+        input_tokens_used: 10
+        cached_input_tokens_used: 2
+        output_tokens_used: 3
+        metadata_entries: 1
+        test_only_metadata_entries: 0
+        code_coverage_percent: 0
+        generated_loc: 4
+        tested_library_loc: 8
+continuation_marker:
+  schemaVersion: 1
+  continueFrom: publication
+  preservedBranch: fixture/preserved-work/issue-9107-library-new-request-publication-resume
+  strategyName: dynamic_access_main_sources_pi_gpt-5.5
+  issueNumber: 9107
+  label: library-new-request
+  coordinate: org.example:publication-resume:1.0.0
+  newVersion: null
+  libraryUpdateRoute: null
+  libraryPreparationPreflight: null
+  publicationMetrics:
+    library: org.example:publication-resume:1.0.0
+    timestamp: "2026-06-19T10:00:00.000000Z"
+    extras:
+      post_generation_intervention:
+        stage: current-defaults
+        intervention_file: forge/logs/org.example:publication-resume:1.0.0/fix.log
+        analysis_markdown: "Fixture post-generation intervention details."
+      local_ci_verification:
+        status: success
+        base_commit: fixture-base
+        final_commit: fixture-final
+        commands: []
+        fixups: []
+        repo_fix_paths: []
+        human_intervention_required: false
+        failure_gate: null
+        failure_command: null
+  phases:
+    setup:
+      status: completed
+      preflightDone: true
+      setupDone: true
+    fix:
+      status: skipped
+      iteration: null
+    explore:
+      status: skipped
+      exhaustedClasses: []
+    finalization:
+      status: completed
+    publication:
+      status: pending
+      isPushed: false
+      branch: null

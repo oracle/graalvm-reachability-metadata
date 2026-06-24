@@ -9,6 +9,9 @@ Source Context:
 Issue-Requested Metadata:
 {issue_requested_metadata_context}
 
+Library Preparation Preflight:
+{library_preparation_preflight_context}
+
 Iteration progress:
 {iteration_progress}
 

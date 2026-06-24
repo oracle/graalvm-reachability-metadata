@@ -274,7 +274,7 @@ class Zio_test_3Test {
 
     val identical = Diff.stringDiff.diff("zio", "zio")
     val changed = Diff.stringDiff.diff("zio", "zio-test")
-    val listChanged = Diff.listDiff(Diff.stringDiff).diff(List("a", "b"), List("a", "c", "d"))
+    val listChanged = Diff.listDiff(using Diff.stringDiff).diff(List("a", "b"), List("a", "c", "d"))
 
     assertThat(identical.noDiff).isTrue()
     assertThat(changed.hasDiff).isTrue()

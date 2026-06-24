@@ -2,8 +2,9 @@
 
 Git scripts are Forge's publication component for issue resolution
 (§FS-forge-issue-resolution-goal). The `git_scripts/` directory holds
-workflow-specific `make_pr_*.py` publishers plus shared GitHub and git helpers
-in `common_git.py`. Orchestration (§ORCH-forge-orchestration-spec) chooses when
+workflow-specific `make_pr_*.py` publishers, the shared branch-publication
+pipeline in `pr_publication.py` (§GIT-shared-publication-pipeline), and shared
+GitHub and git helpers in `common_git.py`. Orchestration (§ORCH-forge-orchestration-spec) chooses when
 publication is allowed and invokes the matching publisher after a workflow
 returns a PR-eligible status (§GIT-pr-eligibility); git scripts own how the
 verified diff becomes a labeled, linked pull request. A publisher reads the
@@ -25,6 +26,28 @@ classified as PR-eligible: `RUN_STATUS_SUCCESS`,
 turn a failed workflow into a PR, and they must preserve the verification,
 intervention, metrics, and diagnostics context produced by
 §FS-local-ci-equivalent-verification in the commit or PR body.
+
+## GIT-shared-publication-pipeline: Shared branch publication pipeline
+
+Every `make_pr_*.py` publisher must route branch publication through the shared
+pipeline in `git_scripts/pr_publication.py`: feature-branch creation in the AI
+branch namespace, stale remote-branch deletion, workflow-specific staging,
+fork-aware base fetch and rebase, local CI-equivalent verification
+(§FS-local-ci-equivalent-verification), and the final push. Publishers
+contribute only their workflow-specific parts — the staging policy
+(§GIT-expected-paths), optional pre-rebase, pre-verification, and
+post-verification assertions, and the PR title/body/label construction
+(§GIT-pr-body, §GIT-issue-linking) —
+so there is exactly one code path for how a verified diff becomes a pushed
+branch. Publication bookkeeping needed by several publishers (PR-number
+parsing and the old-vs-new test diff embedded in PR bodies) lives in the same
+module instead of per-script copies. Coordinate-local chunked dynamic-access
+publication state remains with the publishers that update the exhaust report.
+If a publisher creates a follow-up bookkeeping commit after the shared branch
+push, it must push that commit to the explicit PR branch instead of depending
+on upstream tracking configuration.
+The target repository, base branch, and configured reviewer list are declared
+once there and shared by every publisher.
 
 ## GIT-expected-paths: Expected path staging
 
@@ -65,7 +88,7 @@ They differ only in the stats view: new-library support reports the generated
 library stats plus an explanation when covered-call and metadata-entry counts
 diverge, while coverage improvement reports a before/after stats diff computed
 from the run's baseline snapshot. New-library PRs link with `Fixes:` for a
-single-PR run and `Refs:` for non-final large-library parts
+single-PR run and `Refs:` for non-final chunked dynamic-access chunks
 (§GIT-chunked-linking).
 
 ### Java fail-fix (javac and java-run)
@@ -113,15 +136,21 @@ references, review text, metrics summaries, and human-intervention visibility.
 It must apply the PR label that corresponds to the successful workflow result,
 not the issue queue label when those differ. A single-PR workflow links the PR
 to its claimed issue with `Fixes: #<issue>`, so merging the PR closes the issue.
+When a library-update publication splits tested versions according to
+§FS-library-update-tested-version-split, the PR body must also include a
+human-visible `Refs: #<follow-up-issue>` line and a machine-readable
+`Forge-Unblocks-Issue: #<follow-up-issue>` trailer. Forge automation must use
+the trailer, not casual issue references, to release the follow-up issue after
+the PR merges.
 
 ## GIT-chunked-linking: Chunked dynamic-access PR linking
 
-Chunked dynamic-access PRs must use `Refs: #<issue>` until the final chunk;
-only the final chunk may use `Fixes: #<issue>`, as specified by
-§WF-chunked-dynamic-access-pr-linking. This keeps the backing issue open
-across chunks and preserves it until the final PR closes it. The exhaust report
-state committed by non-final chunks lets the next run resume without
-reprocessing classes (§WF-dynamic-access-exhaust-report).
+Chunked dynamic-access PRs must carry the `chunked-dynamic-access` label and use
+`Refs: #<issue>` until the final chunk; only the final chunk may use
+`Fixes: #<issue>`, as specified by §WF-chunked-dynamic-access-pr-linking. This
+keeps the backing issue open across chunks and preserves it until the final PR
+closes it. The exhaust report state committed by non-final chunks lets the next
+run resume without reprocessing classes (§WF-dynamic-access-exhaust-report).
 
 ## GIT-not-for-native-image-publication: Not-for-native-image publication
 

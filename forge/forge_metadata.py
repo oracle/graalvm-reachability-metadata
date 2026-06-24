@@ -50,9 +50,11 @@ from urllib.parse import quote
 import ai_workflows.core  # noqa: F401 - triggers strategy registration
 from ai_workflows.drivers.add_new_library_support import (
     DEFAULT_MODEL_NAME,
+    ScaffoldError,
+    create_feature_branch_for_library,
     init_agent as init_workflow_agent,
-    list_all_files,
     main as run_add_new_library_support_workflow,
+    run_scaffold as run_new_library_scaffold,
 )
 from ai_workflows.drivers.fix_javac_fail import (
     main as run_fix_javac_workflow,
@@ -65,11 +67,30 @@ from ai_workflows.drivers.fix_ni_run import (
 )
 from ai_workflows.drivers.improve_library_coverage import (
     main as run_improve_library_coverage_workflow,
+    prepare_library_update_target,
 )
-from ai_workflows.core.workflow_strategy import RUN_STATUS_CHUNK_READY, RUN_STATUS_FAILURE
+from ai_workflows.drivers.library_update_router import (
+    ROUTE_FIX_JAVA_RUN,
+    ROUTE_FIX_JAVAC,
+    ROUTE_FIX_NI_RUN,
+    ROUTE_IMPROVE_COVERAGE,
+    LibraryUpdateRoute,
+    load_library_update_route,
+    select_library_update_route,
+    write_library_update_route,
+)
+from ai_workflows.core.workflow_strategy import (
+    RUN_STATUS_CHUNK_READY,
+    RUN_STATUS_FAILURE,
+    RUN_STATUS_SUCCESS,
+    SUCCESS_WITH_INTERVENTION_STATUS,
+)
 from git_scripts.common_git import (
     GITHUB_TRANSIENT_RETRY_ATTEMPTS,
+    GitHubError,
     GitHubRateLimitExceeded,
+    GitTransportError,
+    _format_github_retry_reason,
     _github_retry_delay_seconds,
     _log_github_transient_retry,
     ensure_gh_authenticated,
@@ -78,6 +99,7 @@ from git_scripts.common_git import (
     is_github_rate_limit_text,
     is_github_transient_failure_text,
     log_github_query,
+    run_git_transport,
     run_github_command_with_retries,
     run_github_json_with_retries,
     run_github_with_retries,
@@ -107,18 +129,31 @@ from git_scripts.make_pr_improve_coverage import (
     load_baseline_snapshot,
     main as run_make_pr_improve_coverage,
 )
+from utility_scripts.dynamic_access_exhaust_report import (
+    DynamicAccessExhaustReport,
+    dynamic_access_exhaust_report_path,
+    find_dynamic_access_exhaust_report_path,
+)
+from utility_scripts.continuation_marker import (
+    CONTINUATION_MARKER_FILENAME,
+    PHASE_EXPLORE,
+    PHASE_PUBLICATION,
+    ContinuationMarker,
+    continuation_marker_path,
+    load_continuation_marker,
+    save_phase_update,
+)
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
 from utility_scripts.fixture_github import FixtureGitHubState, load_fixture_github_state
+from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_stats import resolve_stats_file_path
-from utility_scripts.large_library_progress import (
-    LABEL_LARGE_LIBRARY_BLOCKED,
-    LABEL_LARGE_LIBRARY_NEXT_PART,
-    LABEL_LARGE_LIBRARY_PART,
-    LABEL_LARGE_LIBRARY_SERIES,
-    LargeLibraryProgressState,
-    copy_progress_artifacts,
-    find_progress_state_path,
+from utility_scripts.library_preparation_preflight import (
+    LIBRARY_PREPARATION_PREFLIGHT_FILENAME,
+    load_library_preparation_preflight,
+    run_library_preparation_preflight as run_preflight_decision,
+    write_library_preparation_preflight,
 )
+from utility_scripts.library_update_alias_split import extract_follow_up_issue_numbers
 from utility_scripts.metadata_index import (
     coordinate_parts as metadata_coordinate_parts,
     get_not_for_native_image_marker,
@@ -126,7 +161,12 @@ from utility_scripts.metadata_index import (
     resolve_metadata_version,
     resolve_test_dir,
 )
-from utility_scripts.metrics_writer import read_pending_metrics
+from utility_scripts.metrics_writer import (
+    PENDING_METRICS_FILENAME,
+    load_execution_metrics_for_timestamp,
+    read_pending_metrics,
+    write_pending_metrics,
+)
 from utility_scripts.repo_path_resolver import (
     git_env_limited_to_repo_root,
     get_forge_subdir_name,
@@ -143,7 +183,7 @@ from utility_scripts.task_logs import (
     resolve_logs_root,
     sanitize_library_log_segment,
 )
-from utility_scripts.workflow_setup import require_graalvm_home_env
+from utility_scripts.workflow_setup import list_all_files, require_graalvm_home_env
 
 try:
     import fcntl
@@ -166,14 +206,15 @@ ISSUE_CLAIM_CACHE_VERSION = 1
 ISSUE_CLAIM_CACHE_FILENAME = "issue-cache-v1.json"
 ISSUE_CLAIM_CACHE_LOCK_FILENAME = "issue-cache-v1.lock"
 DEFAULT_ISSUE_CLAIM_CACHE_TTL_SECONDS = 15 * 60
-ISSUE_SEARCH_CACHE_VERSION = 1
-ISSUE_SEARCH_CACHE_FILENAME = "issue-search-cache-v1.json"
+ISSUE_SEARCH_CACHE_VERSION = 2
+ISSUE_SEARCH_CACHE_FILENAME = "issue-search-cache-v2.json"
 ISSUE_SEARCH_CACHE_LOCK_FILENAME = "issue-search-cache-v1.lock"
 DEFAULT_ISSUE_SEARCH_CACHE_TTL_SECONDS = 10 * 60
 GITHUB_RATE_LIMIT_EXIT_CODE = 75
 FIXTURE_E2E_LOG_DIRNAME = "fixture-e2e-logs"
 FIXTURE_RUN_LOG_FILENAME = "run.log"
 FIXTURE_PUBLICATION_FILENAME = "publication.md"
+FIXTURE_PREFLIGHT_EVIDENCE_DIRNAME = "preflight-evidence"
 REVIEW_PERIOD_SUFFIX_SECONDS = {
     "s": 1,
     "m": 60,
@@ -206,9 +247,20 @@ LABEL_PRIORITY = "priority"
 LABEL_HUMAN_INTERVENTION = "human-intervention"
 LABEL_HUMAN_INTERVENTION_FIXED = "human-intervention-fixed"
 LABEL_NOT_FOR_NATIVE_IMAGE = "not-for-native-image"
+LABEL_CHUNKED_DYNAMIC_ACCESS = "chunked-dynamic-access"
+LABEL_RESUMABLE = "resumable"
 FIXTURE_AUTHENTICATED_USER = "fixture-runner"
+NON_USER_REQUESTED_ISSUE_AUTHORS: tuple[str, ...] = (
+    "graalvmbot",
+    "github-actions[bot]",
+    "github-actions-bot",
+    "vjovanov",
+    "kimeta",
+    "jormundur00",
+)
 
 SCRATCH_WORKTREE_DIRNAME = "forge_worktrees"
+PREFLIGHT_INFO_DIRNAME = "preflight_info"
 SCRATCH_REVIEW_WORKTREE_DIRNAME = "forge_review_worktrees"
 SCRATCH_FINAL_INDEX_VALIDATION_WORKTREE_DIRNAME = "forge_final_index_validation_worktrees"
 SCRATCH_METRICS_DIRNAME = "forge_run_metrics"
@@ -241,17 +293,34 @@ HUMAN_INTERVENTION_LABEL_COLOR = "B60205"
 HUMAN_INTERVENTION_LABEL_DESCRIPTION = (
     "Requires manual follow-up because automated processing needs human attention"
 )
+HUMAN_INTERVENTION_NON_FAILURE_STATUSES = {
+    RUN_STATUS_SUCCESS,
+    RUN_STATUS_CHUNK_READY,
+    SUCCESS_WITH_INTERVENTION_STATUS,
+}
+PUBLICATION_METRICS_EXTRA_KEYS: tuple[str, ...] = (
+    "post_generation_intervention",
+    "local_ci_verification",
+    "library_update_alias_split",
+)
+# A workflow failure is logical (driver/core/CI-check) and gets `human-intervention`
+# by default. The only exception is an external dependency failure, which surfaces
+# as a typed exception at the Python boundary that issues it: GitHub (`gh`) as
+# `GitHubError` / `GitHubRateLimitExceeded`, and remote git as `GitTransportError`.
+# Maven Central and Docker registry failures have no such boundary (Gradle owns
+# them inside `./gradlew test`); they fall through to the safe logical default.
+# §FS-human-intervention-policy
 NOT_FOR_NATIVE_IMAGE_LABEL_COLOR = "5319E7"
 NOT_FOR_NATIVE_IMAGE_LABEL_DESCRIPTION = (
     "Artifact is tracked but is not applicable to GraalVM Native Image reachability metadata"
 )
 PRIORITY_LABEL_COLOR = "FBCA04"
 PRIORITY_LABEL_DESCRIPTION = "Automation should process this issue before regular queue items"
-LARGE_LIBRARY_LABEL_COLOR = "C5DEF5"
-LARGE_LIBRARY_SERIES_LABEL_DESCRIPTION = "Issue is intentionally split across multiple reviewable PR parts"
-LARGE_LIBRARY_NEXT_PART_LABEL_DESCRIPTION = "Previous large-library part merged; automation may resume the next part"
-LARGE_LIBRARY_BLOCKED_LABEL_DESCRIPTION = "Large-library series cannot continue without manual help"
-LARGE_LIBRARY_PART_LABEL_DESCRIPTION = "Pull request is one part of a large-library series"
+CHUNKED_DYNAMIC_ACCESS_LABEL_COLOR = "C5DEF5"
+CHUNKED_DYNAMIC_ACCESS_LABEL_DESCRIPTION = "Issue uses chunked dynamic-access processing"
+RESUMABLE_LABEL_COLOR = "0E8A16"
+RESUMABLE_LABEL_DESCRIPTION = "Issue has preserved automation work that Forge can resume"
+DEFAULT_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD = 15
 
 
 DEFAULT_REVIEW_MODEL = "gpt-5.4"
@@ -281,8 +350,8 @@ class ClaimedIssue:
     issue_coordinates: str
     current_coordinates: str | None = None
     new_version: str | None = None
-    large_library_resume_artifact: str | None = None
-    large_library_part: int | None = None
+    preflight_info_path: str | None = None
+    continuation_marker: ContinuationMarker | None = None
 
 
 @dataclass(frozen=True)
@@ -334,6 +403,7 @@ class WorkflowRunResult:
     claimed_issue: ClaimedIssue
     success: bool
     started_at: float | None = None
+    failure_was_external: bool = False
 
 
 @dataclass(frozen=True)
@@ -391,12 +461,11 @@ class PublicationHandoff:
     worktree_path: str
     scratch_metrics_path: str
     workflow_status: str | None
-    large_library_args: list[str]
-    large_library_state_path: str | None
-    large_library_part: int | None
-    large_library_final: bool | None
-    large_library_series_id: str | None
+    chunked_dynamic_access_args: list[str]
+    dynamic_access_exhaust_report_path: str | None
+    chunked_dynamic_access_final: bool | None
     not_for_native_image: bool = False
+    publication_kind: str | None = None
 
     def to_json(self) -> dict:
         return {
@@ -412,12 +481,11 @@ class PublicationHandoff:
             "worktree_path": self.worktree_path,
             "scratch_metrics_path": self.scratch_metrics_path,
             "workflow_status": self.workflow_status,
-            "large_library_args": list(self.large_library_args),
-            "large_library_state_path": self.large_library_state_path,
-            "large_library_part": self.large_library_part,
-            "large_library_final": self.large_library_final,
-            "large_library_series_id": self.large_library_series_id,
+            "chunked_dynamic_access_args": list(self.chunked_dynamic_access_args),
+            "dynamic_access_exhaust_report_path": self.dynamic_access_exhaust_report_path,
+            "chunked_dynamic_access_final": self.chunked_dynamic_access_final,
             "not_for_native_image": self.not_for_native_image,
+            "publication_kind": self.publication_kind,
         }
 
 
@@ -555,10 +623,19 @@ def gh(
         error_text = "\n".join(part for part in (result.stderr, result.stdout) if part)
         if check and is_github_rate_limit_text(error_text):
             raise GitHubRateLimitExceeded("GitHub API rate limit exceeded")
-        if attempt < max_attempts and is_github_transient_failure_text(error_text):
-            _log_github_transient_retry(error_text, attempt, max_attempts, quiet)
-            time.sleep(_github_retry_delay_seconds(attempt))
-            continue
+        if is_github_transient_failure_text(error_text):
+            if attempt < max_attempts:
+                _log_github_transient_retry(error_text, attempt, max_attempts, quiet)
+                time.sleep(_github_retry_delay_seconds(attempt))
+                continue
+            # Only type the failure when this loop owns the retries; a single attempt
+            # (max_attempts == 1) is driven by an outer retrier that needs the raw
+            # CalledProcessError so it can retry and decide.
+            if max_attempts > 1:
+                raise GitHubError(
+                    f"GitHub transient failure after {max_attempts} attempts: "
+                    f"{_format_github_retry_reason(error_text)}"
+                )
         if check:
             if not quiet:
                 print(f"ERROR: {' '.join(cmd)}\n{result.stderr}", file=sys.stderr)
@@ -657,9 +734,12 @@ def build_issue_search_query(
 
 def normalize_github_issue_search_item(item: dict) -> dict:
     """Convert a GitHub Search API issue item to the shape used by `gh issue list --json`."""
+    author = item.get("user") if isinstance(item.get("user"), dict) else {}
+    author_login = author.get("login")
     return {
         "number": item["number"],
         "title": item.get("title", ""),
+        "author": {"login": author_login} if author_login else None,
         "url": item.get("html_url") or item.get("url"),
         "labels": [
             {"name": label["name"]}
@@ -738,7 +818,11 @@ def get_issue_search_page(query: str, page: int, per_page: int) -> list[dict]:
         return issues
 
 
-def count_issues_with_label(label: str, extra_labels: list[str] | None = None) -> int:
+def count_issues_with_label(
+        label: str,
+        extra_labels: list[str] | None = None,
+        user_requested_only: bool = False,
+) -> int:
     """Return GitHub's count of open issues carrying the given label set."""
     if is_fixture_testing_enabled():
         return require_fixture_github_state().count_open_issues_by_label(label, extra_labels)
@@ -783,11 +867,28 @@ def get_issue_search_count(query: str) -> int:
         return total_count
 
 
-def get_issues_with_label(label: str, limit: int, offset: int = 0, extra_labels: list[str] | None = None) -> list[dict]:
+def get_issues_with_label(
+        label: str,
+        limit: int,
+        offset: int = 0,
+        extra_labels: list[str] | None = None,
+        user_requested_only: bool = False,
+) -> list[dict]:
     """Fetch open issues that carry the given label (and any extra labels)."""
     if is_fixture_testing_enabled():
-        return require_fixture_github_state().list_open_issues_by_label(label, limit, offset, extra_labels)
-    return search_issues_with_label(label, limit, offset, extra_labels)
+        return require_fixture_github_state().list_open_issues_by_label(
+            label,
+            limit,
+            offset,
+            extra_labels,
+            excluded_authors=get_user_requested_issue_excluded_authors(user_requested_only),
+        )
+    return search_issues_with_label(
+        label,
+        limit,
+        offset,
+        extra_labels,
+    )
 
 
 def get_pull_requests_with_label(label: str, fetch_limit: int) -> list[dict]:
@@ -853,6 +954,11 @@ def issue_has_label(issue: dict, label_name: str) -> bool:
         if isinstance(label, dict) and label.get("name") == label_name:
             return True
     return False
+
+
+def issue_is_resumable(issue: dict) -> bool:
+    """Return True when an issue is explicitly eligible for run continuation."""
+    return issue_has_label(issue, LABEL_RESUMABLE)
 
 
 def add_issue_label_to_payload(issue: dict, label_name: str) -> None:
@@ -1631,14 +1737,20 @@ def get_prioritized_issues_with_label(
         priority_offset: int = 0,
         regular_offset: int = 0,
         priority_exhausted: bool = False,
+        user_requested_only: bool = False,
 ) -> tuple[list[dict], int, int, bool, bool]:
     """Fetch one issue batch and return priority issues first within that batch."""
-    regular_issues = get_issues_with_label(label, limit, regular_offset)
+    regular_issues = get_issues_with_label(
+        label,
+        limit,
+        regular_offset,
+    )
     regular_offset += len(regular_issues)
+    filtered_issues = filter_user_requested_issues(regular_issues, user_requested_only)
     if not is_fixture_testing_enabled():
-        try_mark_issues_blocking_many_libraries_as_priority(regular_issues)
+        try_mark_issues_blocking_many_libraries_as_priority(filtered_issues)
     sorted_issues = sorted(
-        regular_issues,
+        filtered_issues,
         key=lambda issue: not issue_has_label(issue, LABEL_PRIORITY),
     )
     exhausted = len(regular_issues) == 0
@@ -2034,6 +2146,7 @@ def get_pull_request_state(pr_number: int) -> dict:
           id
           number
           url
+          body
           headRefOid
           reviewDecision
           mergeStateStatus
@@ -2293,11 +2406,17 @@ def validate_index_files_on_current_master_candidate(
         f"Failed to create final index validation worktree for PR #{pr_number}",
     )
     try:
-        run_checked_command(
-            ["git", "fetch", "--quiet", "origin", f"refs/pull/{pr_number}/head"],
-            validation_worktree_path,
-            f"Failed to fetch PR #{pr_number} head for final index validation",
-        )
+        try:
+            run_git_transport(
+                ["fetch", "--quiet", "origin", f"refs/pull/{pr_number}/head"],
+                cwd=validation_worktree_path,
+            )
+        except GitTransportError as exc:
+            print(
+                f"ERROR: Failed to fetch PR #{pr_number} head for final index validation: {exc}",
+                file=sys.stderr,
+            )
+            raise
         fetched_head = run_checked_command(
             ["git", "rev-parse", "FETCH_HEAD"],
             validation_worktree_path,
@@ -2355,6 +2474,88 @@ def validate_pull_request_indexes_before_merge(
     )
 
 
+def resolve_non_final_chunked_dynamic_access_issue(pr: dict) -> int | None:
+    """Return the linked issue for a non-final chunked dynamic-access PR body."""
+    body = pr.get("body")
+    if not isinstance(body, str):
+        return None
+    if "Chunked dynamic-access: yes" not in body:
+        return None
+    if re.search(r"(?m)^Fixes:\s*#\d+\b", body):
+        return None
+    match = re.search(r"(?m)^Refs:\s*#(\d+)\b", body)
+    if match is None:
+        return None
+    return int(match.group(1))
+
+
+def release_non_final_chunked_dynamic_access_issue(pr: dict, reason: str) -> int | None:
+    """Move a non-final chunk issue back to Todo and return the issue number."""
+    issue_number = resolve_non_final_chunked_dynamic_access_issue(pr)
+    if issue_number is None:
+        return None
+
+    item_id = get_project_item_id(issue_number)
+    if item_id is None:
+        raise RuntimeError(
+            f"Chunked dynamic-access PR #{pr.get('number')} references issue #{issue_number}, "
+            f"but the issue is not linked to project {PROJECT_NUMBER}."
+        )
+    set_item_status(item_id, STATUS_TODO)
+    clear_issue_assignees(issue_number)
+    invalidate_issue_claim_cache_entry(issue_number)
+    log_stage(
+        "chunked-dynamic-access",
+        f"Released issue #{issue_number} for the next chunk after PR #{pr.get('number')} {reason}.",
+    )
+    return issue_number
+
+
+def apply_chunked_dynamic_access_merge_follow_up(pr: dict) -> None:
+    """Move a merged non-final chunk issue back to Todo for the next chunk."""
+    release_non_final_chunked_dynamic_access_issue(pr, "merged")
+
+
+def apply_chunked_dynamic_access_failed_ci_follow_up(pr: dict) -> None:
+    """Release a non-final chunk issue when its PR has failed CI and no rerun remains."""
+    issue_number = release_non_final_chunked_dynamic_access_issue(pr, "failed CI")
+    if issue_number is None:
+        return
+    pr_number = pr.get("number")
+    if isinstance(pr_number, int):
+        add_pull_request_label(pr_number, LABEL_HUMAN_INTERVENTION)
+        log_stage(
+            "chunked-dynamic-access",
+            (
+                f"Marked failed non-final chunk PR #{pr_number} as "
+                f"'{LABEL_HUMAN_INTERVENTION}' after releasing issue #{issue_number}."
+            ),
+        )
+
+
+def apply_library_update_alias_split_merge_follow_up(pr: dict) -> None:
+    """Release parked successor issues after their splitting PR merges.
+
+    Library-update alias splits park successor issues in `In Progress`; the PR
+    trailer is the explicit automation signal to move them to `Todo`.
+    §FS-library-update-tested-version-split
+    """
+    for issue_number in extract_follow_up_issue_numbers(pr.get("body")):
+        item_id = get_project_item_id(issue_number)
+        if item_id is None:
+            raise RuntimeError(
+                f"PR #{pr.get('number')} unblocks issue #{issue_number}, "
+                f"but the issue is not linked to project {PROJECT_NUMBER}."
+            )
+        set_item_status(item_id, STATUS_TODO)
+        clear_issue_assignees(issue_number)
+        invalidate_issue_claim_cache_entry(issue_number)
+        log_stage(
+            "library-update-alias-split",
+            f"Released successor issue #{issue_number} after PR #{pr.get('number')} merged.",
+        )
+
+
 def merge_pull_request(pr: dict, reachability_metadata_path: str | None = None) -> None:
     """Merge a pull request using the repository's configured merge method."""
     pr_number = pr.get("number")
@@ -2384,6 +2585,9 @@ def merge_pull_request(pr: dict, reachability_metadata_path: str | None = None) 
 
     print(f"[Merging PR #{pr_number}: {pr_url}]")
     gh(*merge_args)
+    if not pr.get("isMergeQueueEnabled"):
+        apply_chunked_dynamic_access_merge_follow_up(pr)
+        apply_library_update_alias_split_merge_follow_up(pr)
 
 
 def reconcile_reviewed_pull_request(
@@ -2403,6 +2607,21 @@ def reconcile_reviewed_pull_request(
             f"mergeStateStatus={pr.get('mergeStateStatus')}, "
             f"ci={((pr.get('statusCheckRollup') or {}).get('state'))}]"
         )
+
+        if has_failed_pull_request_ci(pr) and resolve_non_final_chunked_dynamic_access_issue(pr) is not None:
+            head_sha = pr.get("headRefOid")
+            if not isinstance(head_sha, str) or not head_sha:
+                print(f"ERROR: Missing head SHA for chunked PR #{pr_number} with failed CI.", file=sys.stderr)
+                raise RuntimeError(f"Missing head SHA for chunked PR #{pr_number} with failed CI")
+            rerun_count = rerun_failed_pull_request_workflow_jobs(pr_number, head_sha)
+            if rerun_count:
+                print(
+                    f"[Reran failed GitHub Actions job(s) in {rerun_count} workflow run(s) "
+                    f"for chunked PR #{pr_number}; keeping the backing issue in progress for this pass.]"
+                )
+                return True
+            apply_chunked_dynamic_access_failed_ci_follow_up(pr)
+            return True
 
         if review_decision == "CHANGES_REQUESTED":
             add_pull_request_label(pr_number, LABEL_HUMAN_INTERVENTION)
@@ -3081,20 +3300,35 @@ def _load_dynamic_access_snapshot_from_report(claimed_issue: ClaimedIssue) -> Dy
     )
 
 
+def is_external_failure_exception(exc: BaseException | None) -> bool:
+    """Return True when a workflow exception is an external dependency failure.
+
+    GitHub (rate-limit or transient) and git transport surface as typed exceptions
+    (`GitHubError` / `GitTransportError`). An external failure releases the issue
+    claim for retry without `human-intervention`, while any other exception
+    (including agent timeouts) is logical. The cause/context chain is walked so a
+    wrapped external error is still recognized. §FS-human-intervention-policy
+    """
+    error: BaseException | None = exc
+    while error is not None:
+        if isinstance(error, (GitHubError, GitTransportError)):
+            return True
+        error = error.__cause__ or error.__context__
+    return False
+
+
 def resolve_human_intervention_candidate(
         claimed_issue: ClaimedIssue,
         workflow_success: bool = True,
 ) -> HumanInterventionCandidate | None:
-    """Return follow-up data when an issue run needs human intervention."""
+    """Return follow-up data for a logical issue failure that needs human intervention.
+
+    External failures are filtered out upstream (see `handle_failed_claimed_issue`),
+    so any library-issue failure that reaches here is logical (driver/core/CI check,
+    including agent timeouts) and is labeled. §FS-human-intervention-policy
+    """
     if claimed_issue.label not in {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE}:
-        if workflow_success:
-            return None
-        return HumanInterventionCandidate(
-            strategy_name=None,
-            workflow_status=RUN_STATUS_FAILURE,
-            coverage=None,
-            reason="job_failed",
-        )
+        return None
 
     run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
     if not workflow_success:
@@ -3105,6 +3339,8 @@ def resolve_human_intervention_candidate(
             strategy_name = run_metrics.get("strategy_name")
             workflow_status = str(run_metrics.get("status") or RUN_STATUS_FAILURE)
             coverage_snapshot = _load_dynamic_access_snapshot_from_metrics(run_metrics)
+        if workflow_status in HUMAN_INTERVENTION_NON_FAILURE_STATUSES:
+            return None
         if coverage_snapshot is None:
             coverage_snapshot = _load_dynamic_access_snapshot_from_report(claimed_issue)
         return HumanInterventionCandidate(
@@ -3631,18 +3867,12 @@ def add_issue_label(issue_number: int, label_name: str) -> None:
     elif label_name == LABEL_PRIORITY:
         label_color = PRIORITY_LABEL_COLOR
         label_description = PRIORITY_LABEL_DESCRIPTION
-    elif label_name == LABEL_LARGE_LIBRARY_SERIES:
-        label_color = LARGE_LIBRARY_LABEL_COLOR
-        label_description = LARGE_LIBRARY_SERIES_LABEL_DESCRIPTION
-    elif label_name == LABEL_LARGE_LIBRARY_NEXT_PART:
-        label_color = LARGE_LIBRARY_LABEL_COLOR
-        label_description = LARGE_LIBRARY_NEXT_PART_LABEL_DESCRIPTION
-    elif label_name == LABEL_LARGE_LIBRARY_BLOCKED:
-        label_color = LARGE_LIBRARY_LABEL_COLOR
-        label_description = LARGE_LIBRARY_BLOCKED_LABEL_DESCRIPTION
-    elif label_name == LABEL_LARGE_LIBRARY_PART:
-        label_color = LARGE_LIBRARY_LABEL_COLOR
-        label_description = LARGE_LIBRARY_PART_LABEL_DESCRIPTION
+    elif label_name == LABEL_CHUNKED_DYNAMIC_ACCESS:
+        label_color = CHUNKED_DYNAMIC_ACCESS_LABEL_COLOR
+        label_description = CHUNKED_DYNAMIC_ACCESS_LABEL_DESCRIPTION
+    elif label_name == LABEL_RESUMABLE:
+        label_color = RESUMABLE_LABEL_COLOR
+        label_description = RESUMABLE_LABEL_DESCRIPTION
     ensure_repo_label_exists(
         label_name,
         label_color,
@@ -3705,12 +3935,29 @@ def _sanitize_branch_segment(value: str) -> str:
 
 def build_failure_preservation_branch_name(claimed_issue: ClaimedIssue) -> str:
     """Build a unique branch name for preserving a failed issue run."""
-    authenticated_login = _sanitize_branch_segment(get_authenticated_user())
-    coordinate = _sanitize_branch_segment(claimed_issue.issue_coordinates)
-    label = _sanitize_branch_segment(claimed_issue.label)
+    branch_prefix = build_failure_preservation_branch_prefix(
+        issue_number=int(claimed_issue.issue["number"]),
+        label=claimed_issue.label,
+        coordinate=claimed_issue.issue_coordinates,
+        github_login=get_authenticated_user(),
+    )
+    return f"{branch_prefix}{uuid.uuid4().hex[:8]}"
+
+
+def build_failure_preservation_branch_prefix(
+        *,
+        issue_number: int,
+        label: str,
+        coordinate: str,
+        github_login: str,
+) -> str:
+    """Build the deterministic prefix for failed-work preservation branches."""
+    authenticated_login = _sanitize_branch_segment(github_login)
+    coordinate_segment = _sanitize_branch_segment(coordinate)
+    label_segment = _sanitize_branch_segment(label)
     return (
         f"ai/{authenticated_login}/human-intervention/"
-        f"issue-{claimed_issue.issue['number']}-{label}-{coordinate}-{uuid.uuid4().hex[:8]}"
+        f"issue-{issue_number}-{label_segment}-{coordinate_segment}-"
     )
 
 
@@ -3724,6 +3971,334 @@ def build_origin_branch_url(repo_path: str, branch_name: str) -> str:
         origin_owner = REPO.split("/", 1)[0]
     repo_name = REPO.split("/", 1)[1]
     return f"https://github.com/{origin_owner}/{repo_name}/tree/{quote(branch_name, safe='')}"
+
+
+def get_issue_comments(issue_number: int) -> list[dict]:
+    """Fetch issue comments used for continuation branch discovery."""
+    if is_fixture_testing_enabled():
+        return require_fixture_github_state().get_issue_comments(issue_number)
+    data = gh_json(
+        "issue",
+        "view",
+        str(issue_number),
+        "--repo",
+        REPO,
+        "--json",
+        "comments",
+    )
+    comments = data.get("comments")
+    return comments if isinstance(comments, list) else []
+
+
+def comment_author_login(comment: dict) -> str | None:
+    """Return the GitHub login that posted an issue comment."""
+    author = comment.get("author")
+    if isinstance(author, dict):
+        login = author.get("login")
+        return login if isinstance(login, str) and login else None
+    if isinstance(author, str) and author:
+        return author
+    return None
+
+
+def list_remote_branches_by_prefix(repo_path: str, branch_prefix: str) -> list[str]:
+    """Return remote branch names whose heads match the given prefix."""
+    result = run_git_transport(
+        ["ls-remote", "--heads", "origin", f"{branch_prefix}*"],
+        cwd=repo_path,
+        env=git_env_limited_to_repo_root(repo_path),
+    )
+    branch_names = []
+    for line in result.stdout.splitlines():
+        parts = line.split()
+        if len(parts) < 2:
+            continue
+        ref_name = parts[1]
+        if not ref_name.startswith("refs/heads/"):
+            continue
+        branch_name = ref_name[len("refs/heads/"):]
+        if branch_name.startswith(branch_prefix):
+            branch_names.append(branch_name)
+    return sorted(set(branch_names))
+
+
+def remote_branch_commit_timestamp(repo_path: str, branch_name: str) -> int:
+    """Fetch a remote branch and return its tip commit timestamp."""
+    remote_ref = fetch_remote_branch(repo_path, branch_name)
+    result = subprocess.run(
+        ["git", "show", "-s", "--format=%ct", remote_ref],
+        cwd=repo_path,
+        env=git_env_limited_to_repo_root(repo_path),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=True,
+    )
+    return int(result.stdout.strip())
+
+
+def sort_remote_branches_by_commit_time(repo_path: str, branch_names: list[str]) -> list[str]:
+    """Return remote branch names newest-first by tip commit time."""
+    return sorted(
+        branch_names,
+        key=lambda branch_name: remote_branch_commit_timestamp(repo_path, branch_name),
+        reverse=True,
+    )
+
+
+def find_preserved_branch_candidates(
+        issue: dict,
+        label: str,
+        coordinate: str,
+        repo_path: str,
+) -> list[str]:
+    """Return likely preserved-work branches derived from recent comment authors."""
+    issue_number = int(issue["number"])
+    candidates = []
+    seen_branches = set()
+    seen_prefixes = set()
+    for comment in reversed(get_issue_comments(issue_number)):
+        author_login = comment_author_login(comment)
+        if author_login is None:
+            continue
+        branch_prefix = build_failure_preservation_branch_prefix(
+            issue_number=issue_number,
+            label=label,
+            coordinate=coordinate,
+            github_login=author_login,
+        )
+        if branch_prefix in seen_prefixes:
+            continue
+        seen_prefixes.add(branch_prefix)
+        for branch_name in sort_remote_branches_by_commit_time(
+                repo_path,
+                list_remote_branches_by_prefix(repo_path, branch_prefix),
+        ):
+            if branch_name in seen_branches:
+                continue
+            candidates.append(branch_name)
+            seen_branches.add(branch_name)
+    return candidates
+
+
+def fetch_remote_branch(repo_path: str, branch_name: str) -> str:
+    """Fetch a remote branch and return its local remote-tracking ref."""
+    remote_ref = f"refs/remotes/origin/{branch_name}"
+    run_git_transport(
+        ["fetch", "origin", f"+refs/heads/{branch_name}:{remote_ref}"],
+        cwd=repo_path,
+        env=git_env_limited_to_repo_root(repo_path),
+    )
+    return remote_ref
+
+
+def load_continuation_marker_from_branch(
+        repo_path: str,
+        branch_name: str,
+) -> ContinuationMarker | None:
+    """Load the continuation marker stored on a remote preserved branch."""
+    remote_ref = fetch_remote_branch(repo_path, branch_name)
+    marker_relpath = f"forge/{CONTINUATION_MARKER_FILENAME}"
+    result = subprocess.run(
+        ["git", "show", f"{remote_ref}:{marker_relpath}"],
+        cwd=repo_path,
+        env=git_env_limited_to_repo_root(repo_path),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        log_stage(
+            "continuation",
+            f"Preserved branch {branch_name} has no {marker_relpath}; running issue from scratch.",
+        )
+        return None
+    try:
+        marker = ContinuationMarker.from_dict(json.loads(result.stdout))
+    except Exception as exc:
+        print(
+            f"ERROR: Failed to parse continuation marker on branch {branch_name}: {exc!r}",
+            file=sys.stderr,
+        )
+        return None
+    if marker.preserved_branch != branch_name:
+        marker.record_preserved_branch(branch_name)
+    return marker
+
+
+def resolve_issue_continuation_marker(
+        issue: dict,
+        label: str,
+        coordinate: str,
+        base_reachability_metadata_path: str,
+) -> ContinuationMarker | None:
+    """Resolve a previously preserved continuation marker for this claim."""
+    if not issue_is_resumable(issue):
+        return None
+    issue_number = int(issue["number"])
+    for branch_name in find_preserved_branch_candidates(
+            issue,
+            label,
+            coordinate,
+            base_reachability_metadata_path,
+    ):
+        marker = load_continuation_marker_from_branch(base_reachability_metadata_path, branch_name)
+        if marker is None:
+            continue
+        if marker.issue_number == issue_number and marker.label == label:
+            return marker
+        log_stage(
+            "continuation",
+            (
+                f"Ignoring preserved marker on {branch_name}: "
+                f"marker issue/label #{marker.issue_number} {marker.label} does not match "
+                f"#{issue_number} {label}."
+            ),
+        )
+    return None
+
+
+def checkout_continuation_branch(
+        worktree_path: str,
+        marker: ContinuationMarker,
+) -> bool:
+    """Check out and rebase the preserved branch into the isolated worktree."""
+    branch_name = marker.preserved_branch
+    if not branch_name:
+        return False
+    git_env = git_env_limited_to_repo_root(worktree_path)
+    remote_ref = fetch_remote_branch(worktree_path, branch_name)
+    subprocess.run(
+        ["git", "switch", "-C", branch_name, remote_ref],
+        cwd=worktree_path,
+        env=git_env,
+        check=True,
+    )
+    base_ref = fetch_remote_branch(worktree_path, DEFAULT_WORKTREE_BASE_REF)
+    rebase_result = subprocess.run(
+        ["git", "rebase", base_ref],
+        cwd=worktree_path,
+        env=git_env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=False,
+    )
+    if rebase_result.returncode == 0:
+        log_stage(
+            "continuation",
+            f"Resuming issue #{marker.issue_number} from {branch_name} at phase {marker.continue_from}.",
+        )
+        return True
+    print(
+        (
+            f"ERROR: Could not rebase preserved branch {branch_name} onto "
+            f"{DEFAULT_WORKTREE_BASE_REF}; falling back to a clean run.\n{rebase_result.stdout}"
+        ),
+        file=sys.stderr,
+    )
+    subprocess.run(["git", "rebase", "--abort"], cwd=worktree_path, env=git_env, check=False)
+    subprocess.run(["git", "switch", "--detach", base_ref], cwd=worktree_path, env=git_env, check=True)
+    marker_path = continuation_marker_path(worktree_path)
+    if os.path.exists(marker_path):
+        os.remove(marker_path)
+    return False
+
+
+def create_or_load_run_continuation_marker(
+        claimed_issue: ClaimedIssue,
+        strategy_name: str,
+) -> str:
+    """Ensure this claimed run has an eager continuation marker."""
+    marker_path = continuation_marker_path(claimed_issue.worktree_path)
+    marker = load_continuation_marker(marker_path)
+    if marker is None:
+        marker = claimed_issue.continuation_marker or ContinuationMarker.create(
+            strategy_name=strategy_name,
+            issue_number=int(claimed_issue.issue["number"]),
+            label=claimed_issue.label,
+            coordinate=claimed_issue.issue_coordinates,
+            new_version=claimed_issue.new_version,
+        )
+    marker.save(marker_path)
+    return marker_path
+
+
+def library_update_route_from_marker(marker: ContinuationMarker | None) -> LibraryUpdateRoute | None:
+    """Return the marker-backed library-update route when continuation has one."""
+    if marker is None or marker.library_update_route is None:
+        return None
+    return LibraryUpdateRoute.from_json(marker.library_update_route)
+
+
+def restore_library_update_route_from_marker(
+        claimed_issue: ClaimedIssue,
+        marker: ContinuationMarker | None,
+        *,
+        required: bool = False,
+) -> LibraryUpdateRoute | None:
+    """Restore marker-backed library-update route state into the run sidecar."""
+    if claimed_issue.label != LABEL_LIBRARY_UPDATE:
+        return None
+    route = library_update_route_from_marker(marker)
+    if route is None:
+        if required:
+            raise ValueError(
+                f"Issue #{claimed_issue.issue['number']} resumes publication without a library-update route."
+            )
+        return None
+    write_library_update_route(library_update_route_artifact_root(claimed_issue), route)
+    log_stage(
+        "continuation",
+        f"Restored library-update route {route.selected_driver} for issue #{claimed_issue.issue['number']}.",
+    )
+    return route
+
+
+def record_library_update_route_in_marker(marker_path: str | None, route: LibraryUpdateRoute | None) -> None:
+    """Persist the selected library-update route into the continuation marker."""
+    if marker_path is None or route is None:
+        return
+    save_phase_update(
+        marker_path,
+        lambda marker: marker.record_library_update_route(route.to_json()),
+    )
+
+
+def restore_library_preparation_preflight_from_marker(
+        claimed_issue: ClaimedIssue,
+        marker: ContinuationMarker | None,
+) -> str | None:
+    """Restore marker-backed dispatcher preflight state into the run sidecar."""
+    if marker is None or marker.library_preparation_preflight is None:
+        return None
+    preflight_root = claimed_issue.preflight_info_path or claimed_issue.scratch_metrics_repo_path
+    preflight_path = write_library_preparation_preflight(
+        preflight_root,
+        marker.library_preparation_preflight,
+    )
+    log_stage(
+        "continuation",
+        f"Restored library preparation preflight for issue #{claimed_issue.issue['number']}.",
+    )
+    return preflight_path
+
+
+def record_library_preparation_preflight_in_marker(
+        marker_path: str | None,
+        preflight_path: str | None,
+) -> None:
+    """Persist dispatcher preflight output into the continuation marker."""
+    if marker_path is None or preflight_path is None:
+        return
+    preflight = load_library_preparation_preflight(preflight_path)
+    if preflight is None:
+        return
+    save_phase_update(
+        marker_path,
+        lambda marker: marker.record_library_preparation_preflight(preflight),
+    )
 
 
 def require_claimed_issue_worktree(claimed_issue: ClaimedIssue, stage: str) -> str:
@@ -3788,9 +4363,24 @@ def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservat
     log_stage("preserve-failed-work", f"Preserving failed work for issue #{issue_number} on branch {branch_name}")
     subprocess.run(["git", "switch", "-C", branch_name], cwd=repo_path, env=git_env, check=True)
     logs_destination_relpath = copy_library_logs_to_preserved_worktree(claimed_issue)
+    marker_path = continuation_marker_path(repo_path)
+    marker = load_continuation_marker(marker_path)
+    if marker is not None:
+        record_publication_metrics_from_pending(marker, claimed_issue.scratch_metrics_repo_path)
+        marker.record_preserved_branch(branch_name)
+        marker.save(marker_path)
     subprocess.run(["git", "add", "-A"], cwd=repo_path, env=git_env, check=True)
     if logs_destination_relpath is not None:
         subprocess.run(["git", "add", "-f", "--", logs_destination_relpath], cwd=repo_path, env=git_env, check=True)
+    force_add_paths = []
+    marker_relpath = os.path.relpath(marker_path, repo_path)
+    if os.path.exists(marker_path):
+        force_add_paths.append(marker_relpath)
+    pending_metrics_relpath = os.path.join(get_forge_subdir_name(), PENDING_METRICS_FILENAME)
+    if os.path.exists(os.path.join(repo_path, pending_metrics_relpath)):
+        force_add_paths.append(pending_metrics_relpath)
+    if force_add_paths:
+        subprocess.run(["git", "add", "-f", "--", *force_add_paths], cwd=repo_path, env=git_env, check=True)
     diff_result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=repo_path, env=git_env, check=False)
     committed_changes = diff_result.returncode != 0
     if committed_changes:
@@ -3803,7 +4393,7 @@ def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservat
     else:
         log_stage("preserve-failed-work", f"No uncommitted work found for issue #{issue_number}; pushing branch at current HEAD.")
 
-    subprocess.run(["git", "push", "-u", "origin", branch_name], cwd=repo_path, env=git_env, check=True)
+    run_git_transport(["push", "-u", "origin", branch_name], cwd=repo_path, env=git_env)
     branch_url = build_origin_branch_url(repo_path, branch_name)
     log_stage("preserve-failed-work", f"Preserved failed work for issue #{issue_number}: {branch_url}")
     return FailurePreservationResult(
@@ -3890,7 +4480,7 @@ def refresh_preserved_branch_logs(
         env=git_env,
         check=True,
     )
-    subprocess.run(["git", "push"], cwd=repo_path, env=git_env, check=True)
+    run_git_transport(["push"], cwd=repo_path, env=git_env)
     log_stage("preserve-failed-work", f"Updated preserved branch logs for issue #{issue_number}.")
 
 
@@ -3908,7 +4498,12 @@ def ensure_preserved_branch_link_in_comment(
     )
 
 
-def post_human_intervention_comment_and_label(issue_number: int, comment_body: str | None) -> None:
+def post_human_intervention_comment_and_label(
+        issue_number: int,
+        comment_body: str | None,
+        *,
+        resumable: bool = False,
+) -> None:
     """Post the human-intervention comment and always attempt to apply the label."""
     if is_user_interrupt_requested():
         return
@@ -3931,6 +4526,23 @@ def post_human_intervention_comment_and_label(issue_number: int, comment_body: s
             file=sys.stderr,
         )
         traceback.print_exc()
+
+    if resumable:
+        try:
+            add_issue_label(issue_number, LABEL_RESUMABLE)
+        except Exception as exc:
+            print(
+                f"ERROR: Failed to add '{LABEL_RESUMABLE}' label to issue #{issue_number}: {exc!r}",
+                file=sys.stderr,
+            )
+            traceback.print_exc()
+
+
+def preservation_result_has_continuation_marker(preservation_result: FailurePreservationResult | None) -> bool:
+    """Return True when preserved work carries a continuation marker."""
+    if preservation_result is None:
+        return False
+    return os.path.isfile(continuation_marker_path(preservation_result.reviewable_worktree_path))
 
 
 def maybe_apply_human_intervention_follow_up(
@@ -3964,7 +4576,11 @@ def maybe_apply_human_intervention_follow_up(
         comment_body = None
     if is_user_interrupt_requested():
         return False
-    post_human_intervention_comment_and_label(claimed_issue.issue["number"], comment_body)
+    post_human_intervention_comment_and_label(
+        claimed_issue.issue["number"],
+        comment_body,
+        resumable=preservation_result_has_continuation_marker(preservation_result),
+    )
     return True
 
 
@@ -3973,18 +4589,20 @@ def apply_failed_run_follow_up(
         started_at: float | None = None,
         preservation_result: FailurePreservationResult | None = None,
 ) -> None:
-    """Run Codex failure analysis and post the failed-run follow-up comment."""
+    """Run Codex failure analysis and apply the `human-intervention` follow-up.
+
+    Only reached for logical failures; external failures are released upstream
+    without any issue action. §FS-human-intervention-policy
+    """
     if is_user_interrupt_requested():
         raise KeyboardInterrupt
 
-    candidate = resolve_human_intervention_candidate(claimed_issue, workflow_success=False)
+    candidate = resolve_human_intervention_candidate(
+        claimed_issue,
+        workflow_success=False,
+    )
     if candidate is None:
-        candidate = HumanInterventionCandidate(
-            strategy_name=None,
-            workflow_status=RUN_STATUS_FAILURE,
-            coverage=None,
-            reason="job_failed",
-        )
+        return
 
     try:
         comment_body = run_codex_failed_generation_analysis(
@@ -4003,10 +4621,284 @@ def apply_failed_run_follow_up(
         comment_body = None
     if is_user_interrupt_requested():
         raise KeyboardInterrupt
-    post_human_intervention_comment_and_label(claimed_issue.issue["number"], comment_body)
+    post_human_intervention_comment_and_label(
+        claimed_issue.issue["number"],
+        comment_body,
+        resumable=preservation_result_has_continuation_marker(preservation_result),
+    )
 
 
-def append_large_library_workflow_args(pipeline_argv: list[str], claimed_issue: ClaimedIssue) -> None:
+def dynamic_access_chunk_class_threshold() -> int:
+    """Return the configured chunked dynamic-access class threshold."""
+    raw_value = os.environ.get("FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD")
+    if raw_value is None or raw_value.strip() == "":
+        return DEFAULT_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD
+    try:
+        threshold = int(raw_value)
+    except ValueError as exc:
+        raise ValueError("FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD must be an integer") from exc
+    if threshold < 1:
+        raise ValueError("FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD must be >= 1")
+    return threshold
+
+
+def _issue_has_chunked_dynamic_access_state(issue: dict) -> bool:
+    """Return whether the issue is already in chunked dynamic-access mode."""
+    return issue_has_label(issue, LABEL_CHUNKED_DYNAMIC_ACCESS)
+
+
+def _processed_dynamic_access_classes(report: DynamicAccessExhaustReport | None) -> set[str]:
+    """Return classes that a resumed chunk must not select again."""
+    if report is None:
+        return set()
+    return report.processed_classes()
+
+
+def _continuation_processed_dynamic_access_classes(marker: ContinuationMarker | None) -> set[str]:
+    """Return dynamic-access classes recorded in the continuation marker."""
+    if marker is None:
+        return set()
+    explore_phase: dict[str, object] = marker.phases.get(PHASE_EXPLORE, {})
+    exhausted_classes: object = explore_phase.get("exhaustedClasses", [])
+    if not isinstance(exhausted_classes, list):
+        return set()
+    return {
+        class_name
+        for class_name in exhausted_classes
+        if isinstance(class_name, str) and class_name
+    }
+
+
+def _dynamic_access_processed_class_count(
+        report: DynamicAccessExhaustReport | None,
+        marker: ContinuationMarker | None,
+) -> int:
+    """Return the processed class count used for chunking logs."""
+    processed_classes = _processed_dynamic_access_classes(report)
+    processed_classes.update(_continuation_processed_dynamic_access_classes(marker))
+    return len(processed_classes)
+
+
+def _continuation_active_chunk_remaining_budget(marker: ContinuationMarker | None) -> int | None:
+    """Return the remaining class budget for a resumed active chunk."""
+    if marker is None or marker.continue_from != PHASE_EXPLORE:
+        return None
+    explore_phase: dict[str, object] = marker.phases.get(PHASE_EXPLORE, {})
+    raw_chunk_class_count: object = explore_phase.get("chunkClassCount")
+    if raw_chunk_class_count is None:
+        return None
+    try:
+        chunk_class_count = int(raw_chunk_class_count)
+        chunk_processed_class_count = int(explore_phase.get("chunkProcessedClassCount") or 0)
+    except (TypeError, ValueError):
+        return None
+    if chunk_class_count <= 0:
+        return None
+    return max(chunk_class_count - max(chunk_processed_class_count, 0), 0)
+
+
+def _remaining_uncovered_dynamic_access_classes(
+        report,
+        exhaust_report: DynamicAccessExhaustReport | None,
+        continuation_marker: ContinuationMarker | None,
+) -> list[str]:
+    """Return current uncovered classes not already recorded as processed."""
+    processed_classes = _processed_dynamic_access_classes(exhaust_report)
+    processed_classes.update(_continuation_processed_dynamic_access_classes(continuation_marker))
+    return [
+        class_coverage.class_name
+        for class_coverage in report.classes
+        if class_coverage.uncovered_calls > 0 and class_coverage.class_name not in processed_classes
+    ]
+
+
+def _prepare_new_library_dynamic_access_report(claimed_issue: ClaimedIssue) -> None:
+    """Run new-library setup far enough for the dispatcher dynamic-access report."""
+    group, artifact, version = claimed_issue.issue_coordinates.split(":")
+    with contextlib.chdir(claimed_issue.worktree_path):
+        create_feature_branch_for_library(group, artifact, version)
+        try:
+            run_new_library_scaffold(claimed_issue.issue_coordinates)
+        except ScaffoldError as exc:
+            print(
+                f"ERROR: Dispatcher scaffold failed for {claimed_issue.issue_coordinates}: {exc}",
+                file=sys.stderr,
+            )
+            raise
+
+
+def _prepare_library_update_dynamic_access_report(claimed_issue: ClaimedIssue) -> None:
+    """Run library-update setup far enough for the dispatcher dynamic-access report."""
+    group, artifact, version = claimed_issue.issue_coordinates.split(":")
+    prepare_library_update_target(claimed_issue.worktree_path, group, artifact, version)
+
+
+def _generate_dispatcher_dynamic_access_report(claimed_issue: ClaimedIssue) -> None:
+    """Generate or refresh the dynamic-access report used for dispatcher chunking."""
+    result = subprocess.run(
+        [
+            "./gradlew",
+            "generateDynamicAccessCoverageReport",
+            f"-Pcoordinates={claimed_issue.issue_coordinates}",
+        ],
+        cwd=claimed_issue.worktree_path,
+        env=gradle_command_environment(claimed_issue.worktree_path),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        log_stage(
+            "dynamic-access-chunking",
+            (
+                "Dispatcher dynamic-access report refresh failed for "
+                f"{claimed_issue.issue_coordinates}; workflow fallback/failure handling will decide the run."
+            ),
+        )
+
+
+def _load_dispatcher_dynamic_access_report(claimed_issue: ClaimedIssue):
+    """Load the dispatcher-generated dynamic-access report if it is usable."""
+    try:
+        report = load_dynamic_access_coverage_report(_resolve_dynamic_access_report_path(claimed_issue))
+    except FileNotFoundError:
+        return None
+    if not report.has_dynamic_access or report.total_calls <= 0:
+        return None
+    return report
+
+
+def _resolve_dynamic_access_exhaust_report(
+        claimed_issue: ClaimedIssue,
+) -> tuple[DynamicAccessExhaustReport | None, str | None]:
+    """Load the existing exhaust report for this issue, if one exists."""
+    report_path = find_dynamic_access_exhaust_report_path(
+        claimed_issue.worktree_path,
+        claimed_issue.issue_coordinates,
+    )
+    if report_path is not None:
+        return DynamicAccessExhaustReport.load(report_path), report_path
+    return None, None
+
+
+def _create_dynamic_access_exhaust_report(
+        claimed_issue: ClaimedIssue,
+) -> tuple[DynamicAccessExhaustReport, str]:
+    """Create the coordinate-derived exhaust report for a newly chunked issue."""
+    exhaust_report = DynamicAccessExhaustReport.create(
+        coordinate=claimed_issue.issue_coordinates,
+        issue_number=claimed_issue.issue["number"],
+    )
+    return exhaust_report, exhaust_report.default_path(claimed_issue.worktree_path)
+
+
+def prepare_dynamic_access_chunking(
+        claimed_issue: ClaimedIssue,
+        strategy_name: str | None,
+) -> int | None:
+    """Prepare dispatcher-owned chunking state and return the concrete chunk size.
+
+    The control plane owns the class threshold decision for issue-driven
+    dynamic-access work (§WF-chunked-dynamic-access-pr-linking): it refreshes
+    the report, records the exhaust-report chunk fields, applies the public
+    label, and passes only the concrete chunk count to the workflow.
+    """
+    if claimed_issue.label not in {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE}:
+        return None
+
+    if claimed_issue.label == LABEL_LIBRARY_NEW:
+        _prepare_new_library_dynamic_access_report(claimed_issue)
+    else:
+        _prepare_library_update_dynamic_access_report(claimed_issue)
+    _generate_dispatcher_dynamic_access_report(claimed_issue)
+    report = _load_dispatcher_dynamic_access_report(claimed_issue)
+    if report is None:
+        log_stage(
+            "dynamic-access-chunking",
+            (
+                f"No dispatcher dynamic-access report for issue #{claimed_issue.issue['number']} "
+                f"({claimed_issue.issue_coordinates}); chunking disabled for this run."
+            ),
+        )
+        return None
+
+    threshold = dynamic_access_chunk_class_threshold()
+    exhaust_report, exhaust_report_path = _resolve_dynamic_access_exhaust_report(claimed_issue)
+    already_chunked = _issue_has_chunked_dynamic_access_state(claimed_issue.issue) or exhaust_report is not None
+    current_uncovered_classes = [
+        class_coverage.class_name
+        for class_coverage in report.classes
+        if class_coverage.uncovered_calls > 0
+    ]
+    if not already_chunked and len(current_uncovered_classes) <= threshold:
+        log_stage(
+            "dynamic-access-chunking",
+            (
+                f"Chunking not selected for issue #{claimed_issue.issue['number']}: "
+                f"uncovered_classes={len(current_uncovered_classes)} <= threshold={threshold}."
+            ),
+        )
+        return None
+
+    remaining_classes = _remaining_uncovered_dynamic_access_classes(
+        report,
+        exhaust_report,
+        claimed_issue.continuation_marker,
+    )
+    current_chunk_class_count = min(threshold, len(remaining_classes))
+    active_chunk_remaining_budget = _continuation_active_chunk_remaining_budget(
+        claimed_issue.continuation_marker
+    )
+    if active_chunk_remaining_budget is not None:
+        current_chunk_class_count = min(current_chunk_class_count, active_chunk_remaining_budget)
+    if current_chunk_class_count <= 0:
+        log_stage(
+            "dynamic-access-chunking",
+            (
+                f"No chunk selected for issue #{claimed_issue.issue['number']}: "
+                f"all {len(current_uncovered_classes)} uncovered class(es) are already recorded "
+                "as processed."
+            ),
+        )
+        return None
+
+    if exhaust_report is None or exhaust_report_path is None:
+        exhaust_report, exhaust_report_path = _create_dynamic_access_exhaust_report(claimed_issue)
+    exhaust_report.update_chunk_limits(threshold, current_chunk_class_count)
+    exhaust_report.save(exhaust_report_path)
+
+    if not issue_has_label(claimed_issue.issue, LABEL_CHUNKED_DYNAMIC_ACCESS):
+        add_issue_label(claimed_issue.issue["number"], LABEL_CHUNKED_DYNAMIC_ACCESS)
+        add_issue_label_to_payload(claimed_issue.issue, LABEL_CHUNKED_DYNAMIC_ACCESS)
+
+    log_stage(
+        "dynamic-access-chunking",
+        "Chunked dynamic-access selected for issue #{issue_number}: "
+        "already_chunked={already_chunked}, total_uncovered_classes={uncovered_count}, "
+        "processed_classes={processed_count}, remaining_classes={remaining_count}, "
+        "threshold={threshold}, chunk_class_count={chunk_count}, exhaust_report={report_path}.".format(
+            issue_number=claimed_issue.issue["number"],
+            already_chunked=already_chunked,
+            uncovered_count=len(current_uncovered_classes),
+            processed_count=_dynamic_access_processed_class_count(
+                exhaust_report,
+                claimed_issue.continuation_marker,
+            ),
+            remaining_count=len(remaining_classes),
+            threshold=threshold,
+            chunk_count=current_chunk_class_count,
+            report_path=os.path.relpath(exhaust_report_path, claimed_issue.worktree_path),
+        ),
+    )
+    return current_chunk_class_count
+
+
+def append_chunked_dynamic_access_workflow_args(
+        pipeline_argv: list[str],
+        claimed_issue: ClaimedIssue,
+        chunk_class_count: int | None,
+) -> None:
     """Append issue context and concrete chunk limits for oversized dynamic-access runs.
 
     The dispatcher (§AR-forge-control-plane) computes the issue-scoped chunking
@@ -4016,24 +4908,52 @@ def append_large_library_workflow_args(pipeline_argv: list[str], claimed_issue: 
     """
     issue_number = claimed_issue.issue["number"]
     pipeline_argv.extend(["--issue-number", str(issue_number)])
-    if (
-            claimed_issue.large_library_resume_artifact
-            or issue_has_label(claimed_issue.issue, LABEL_LARGE_LIBRARY_SERIES)
-            or issue_has_label(claimed_issue.issue, LABEL_LARGE_LIBRARY_NEXT_PART)
-    ):
-        pipeline_argv.append("--large-library-series")
-    chunk_class_limit = os.environ.get("FORGE_LARGE_LIBRARY_CHUNK_CLASS_LIMIT")
-    if chunk_class_limit:
-        pipeline_argv.extend(["--chunk-class-limit", chunk_class_limit])
-    chunk_call_limit = os.environ.get("FORGE_LARGE_LIBRARY_CHUNK_CALL_LIMIT")
-    if chunk_call_limit:
-        pipeline_argv.extend(["--chunk-call-limit", chunk_call_limit])
+    if chunk_class_count is not None:
+        pipeline_argv.extend(["--chunk-class-count", str(chunk_class_count)])
+
+
+def run_library_preparation_preflight(
+        claimed_issue: ClaimedIssue,
+        strategy_name: str | None,
+) -> str | None:
+    """Run and persist the library-specific preparation preflight before workflow dispatch."""
+    if claimed_issue.preflight_info_path is None:
+        return None
+    return run_preflight_decision(
+        claimed_issue=claimed_issue,
+        strategy_name=strategy_name,
+        issue_body_provider=get_issue_body,
+        init_agent=init_workflow_agent,
+        default_strategy_name=DEFAULT_WORK_QUEUE_STRATEGY_NAME,
+        default_model_name=DEFAULT_MODEL_NAME,
+    )
+
+
+def append_library_preparation_preflight_arg(pipeline_argv: list[str], preflight_path: str | None) -> None:
+    """Append the dispatcher preflight path when one was produced."""
+    if preflight_path:
+        pipeline_argv.extend(["--library-preparation-preflight-path", preflight_path])
+
+
+def append_continuation_marker_arg(pipeline_argv: list[str], marker_path: str | None) -> None:
+    """Append the continuation marker path when continuation tracking is active."""
+    if marker_path:
+        pipeline_argv.extend(["--continuation-marker-path", marker_path])
+
+
+def library_update_route_artifact_root(claimed_issue: ClaimedIssue) -> str:
+    """Return the non-worktree artifact root for library-update route handoff."""
+    return claimed_issue.preflight_info_path or claimed_issue.scratch_metrics_repo_path
 
 
 def build_workflow_driver_invocation(
         claimed_issue: ClaimedIssue,
         strategy_name: str | None,
         keep_tests_without_dynamic_access: bool,
+        library_preparation_preflight_path: str | None = None,
+        chunk_class_count: int | None = None,
+        library_update_route: LibraryUpdateRoute | None = None,
+        continuation_marker_path: str | None = None,
 ) -> WorkflowDriverInvocation:
     """Build the routed workflow-driver command for a claimed issue."""
     issue_number = claimed_issue.issue["number"]
@@ -4043,11 +4963,13 @@ def build_workflow_driver_invocation(
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
+        append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+        append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         if keep_tests_without_dynamic_access:
             pipeline_argv.append("--keep-tests-without-dynamic-access")
-        append_large_library_workflow_args(pipeline_argv, claimed_issue)
+        append_chunked_dynamic_access_workflow_args(pipeline_argv, claimed_issue, chunk_class_count)
         return WorkflowDriverInvocation(
             driver_name="add_new_library_support",
             script_name="add_new_library_support.py",
@@ -4074,6 +4996,8 @@ def build_workflow_driver_invocation(
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
+        append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+        append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         return WorkflowDriverInvocation(
@@ -4102,6 +5026,8 @@ def build_workflow_driver_invocation(
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
+        append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+        append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         return WorkflowDriverInvocation(
@@ -4128,7 +5054,10 @@ def build_workflow_driver_invocation(
             "--coordinates", claimed_issue.current_coordinates,
             "--new-version", claimed_issue.new_version,
             "--reachability-metadata-path", claimed_issue.worktree_path,
+            "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
+        append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+        append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
         return WorkflowDriverInvocation(
             driver_name="fix_ni_run",
             script_name="fix_ni_run.py",
@@ -4149,17 +5078,111 @@ def build_workflow_driver_invocation(
         )
 
     elif claimed_issue.label == LABEL_LIBRARY_UPDATE:
+        if library_update_route is None:
+            raise ValueError("Library-update workflow invocation requires a selected route.")
+        route = library_update_route
+        if route.selected_driver == ROUTE_FIX_JAVAC:
+            if route.baseline_coordinates is None:
+                raise ValueError(f"Missing baseline coordinates for route {route.selected_driver}.")
+            pipeline_argv = [
+                "--coordinates", route.baseline_coordinates,
+                "--new-version", route.new_version,
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            ]
+            append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+            append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
+            return WorkflowDriverInvocation(
+                driver_name="fix_javac_fail",
+                script_name="fix_javac_fail.py",
+                runner_name="run_fix_javac_workflow",
+                runner=run_fix_javac_workflow,
+                argv=pipeline_argv,
+                issue_number=issue_number,
+                issue_label=claimed_issue.label,
+                coordinates=None,
+                current_coordinates=route.baseline_coordinates,
+                new_version=route.new_version,
+                log_stage_name="javac-fix-workflow",
+                log_message=(
+                    f"Invoking fix_javac_fail workflow for library-update issue #{issue_number}: "
+                    f"{route.baseline_coordinates} -> {route.new_version}"
+                ),
+                failure_name="fix_javac",
+            )
+        if route.selected_driver == ROUTE_FIX_JAVA_RUN:
+            if route.baseline_coordinates is None:
+                raise ValueError(f"Missing baseline coordinates for route {route.selected_driver}.")
+            pipeline_argv = [
+                "--coordinates", route.baseline_coordinates,
+                "--new-version", route.new_version,
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            ]
+            append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+            append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
+            return WorkflowDriverInvocation(
+                driver_name="fix_java_run_fail",
+                script_name="fix_java_run_fail.py",
+                runner_name="run_fix_java_run_workflow",
+                runner=run_fix_java_run_workflow,
+                argv=pipeline_argv,
+                issue_number=issue_number,
+                issue_label=claimed_issue.label,
+                coordinates=None,
+                current_coordinates=route.baseline_coordinates,
+                new_version=route.new_version,
+                log_stage_name="java-run-fix-workflow",
+                log_message=(
+                    f"Invoking fix_java_run_fail workflow for library-update issue #{issue_number}: "
+                    f"{route.baseline_coordinates} -> {route.new_version}"
+                ),
+                failure_name="fix_java_run",
+            )
+        if route.selected_driver == ROUTE_FIX_NI_RUN:
+            if route.baseline_coordinates is None:
+                raise ValueError(f"Missing baseline coordinates for route {route.selected_driver}.")
+            pipeline_argv = [
+                "--coordinates", route.baseline_coordinates,
+                "--new-version", route.new_version,
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            ]
+            append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+            append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
+            return WorkflowDriverInvocation(
+                driver_name="fix_ni_run",
+                script_name="fix_ni_run.py",
+                runner_name="run_fix_ni_run_workflow",
+                runner=run_fix_ni_run_workflow,
+                argv=pipeline_argv,
+                issue_number=issue_number,
+                issue_label=claimed_issue.label,
+                coordinates=None,
+                current_coordinates=route.baseline_coordinates,
+                new_version=route.new_version,
+                log_stage_name="native-image-fix-workflow",
+                log_message=(
+                    f"Invoking fix_ni_run workflow for library-update issue #{issue_number}: "
+                    f"{route.baseline_coordinates} -> {route.new_version}"
+                ),
+                failure_name="fix_ni_run",
+            )
+        if route.selected_driver != ROUTE_IMPROVE_COVERAGE:
+            raise ValueError(f"Unknown library-update route '{route.selected_driver}'")
         pipeline_argv = [
             "--coordinates", claimed_issue.issue_coordinates,
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
+        append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
+        append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
         issue_requested_metadata_context = extract_issue_requested_metadata_context(get_issue_body(issue_number))
         if issue_requested_metadata_context:
             pipeline_argv.extend(["--issue-requested-metadata-context", issue_requested_metadata_context])
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
-        append_large_library_workflow_args(pipeline_argv, claimed_issue)
+        append_chunked_dynamic_access_workflow_args(pipeline_argv, claimed_issue, chunk_class_count)
         return WorkflowDriverInvocation(
             driver_name="improve_library_coverage",
             script_name="improve_library_coverage.py",
@@ -4169,8 +5192,8 @@ def build_workflow_driver_invocation(
             issue_number=issue_number,
             issue_label=claimed_issue.label,
             coordinates=claimed_issue.issue_coordinates,
-            current_coordinates=claimed_issue.current_coordinates,
-            new_version=claimed_issue.new_version,
+            current_coordinates=route.baseline_coordinates,
+            new_version=route.new_version,
             log_stage_name="improve-coverage-workflow",
             log_message=(
                 f"Invoking improve_library_coverage workflow for issue #{issue_number}: "
@@ -4195,22 +5218,81 @@ def invoke_pipeline(
     strategy names, and chunk context.
     """
     require_claimed_issue_worktree(claimed_issue, "workflow execution")
-    invocation = build_workflow_driver_invocation(
+    effective_strategy_name = strategy_name or DEFAULT_WORK_QUEUE_STRATEGY_NAME
+    if claimed_issue.continuation_marker is not None:
+        effective_strategy_name = claimed_issue.continuation_marker.strategy_name
+    continuation_path = create_or_load_run_continuation_marker(
         claimed_issue,
-        strategy_name,
-        keep_tests_without_dynamic_access,
+        effective_strategy_name,
     )
+    marker = load_continuation_marker(continuation_path)
+    if marker is not None and marker.continue_from == PHASE_PUBLICATION:
+        restore_library_update_route_from_marker(claimed_issue, marker, required=True)
+        log_stage(
+            "continuation",
+            f"Issue #{claimed_issue.issue['number']} resumes at publication; skipping workflow driver.",
+        )
+        return True
+    setup_phase = {} if marker is None else marker.phases.get("setup", {})
+    if bool(setup_phase.get("preflightDone")):
+        library_preparation_preflight_path = restore_library_preparation_preflight_from_marker(
+            claimed_issue,
+            marker,
+        )
+        log_stage(
+            "continuation",
+            f"Issue #{claimed_issue.issue['number']} skips completed setup preflight.",
+        )
+    else:
+        library_preparation_preflight_path = run_library_preparation_preflight(
+            claimed_issue,
+            effective_strategy_name,
+        )
+        record_library_preparation_preflight_in_marker(
+            continuation_path,
+            library_preparation_preflight_path,
+        )
+    library_update_route = None
+    if claimed_issue.label == LABEL_LIBRARY_UPDATE:
+        library_update_route = restore_library_update_route_from_marker(claimed_issue, marker)
+        if library_update_route is None:
+            library_update_route = select_library_update_route(
+                claimed_issue.worktree_path,
+                library_update_route_artifact_root(claimed_issue),
+                claimed_issue.issue_coordinates,
+            )
+            record_library_update_route_in_marker(continuation_path, library_update_route)
+
+    chunk_class_count = None
+    if (
+            claimed_issue.label == LABEL_LIBRARY_NEW
+            or (
+                    claimed_issue.label == LABEL_LIBRARY_UPDATE
+                    and library_update_route is not None
+                    and library_update_route.selected_driver == ROUTE_IMPROVE_COVERAGE
+            )
+    ):
+        chunk_class_count = prepare_dynamic_access_chunking(
+            claimed_issue,
+            effective_strategy_name,
+        )
+    invocation = build_workflow_driver_invocation(
+            claimed_issue,
+            effective_strategy_name,
+            keep_tests_without_dynamic_access,
+            library_preparation_preflight_path,
+            chunk_class_count,
+            library_update_route,
+            continuation_path,
+        )
 
     print()
     log_stage(invocation.log_stage_name, invocation.log_message)
     if is_fixture_testing_enabled():
-        display_argv, issue_context = list(invocation.argv), None
+        display_argv = list(invocation.argv)
         if "--issue-requested-metadata-context" in display_argv:
             context_flag_index = display_argv.index("--issue-requested-metadata-context")
-            issue_context = display_argv[context_flag_index + 1]
             del display_argv[context_flag_index:context_flag_index + 2]
-        if issue_context:
-            log_stage("workflow-driver", f"Issue body/context passed to workflow:\n{issue_context}")
         log_stage(
             "workflow-driver",
             (
@@ -4309,6 +5391,44 @@ def get_env_zero_one_bool(name: str, default: bool) -> bool:
         print(f"ERROR: {name} must be 0 or 1.", file=sys.stderr)
         sys.exit(1)
     return raw_value == "1"
+
+
+def resolve_user_requested_only(cli_override: bool | None = None) -> bool:
+    """Return whether issue queues should exclude configured non-user authors."""
+    if cli_override is not None:
+        return cli_override
+    return get_env_zero_one_bool("FORGE_USER_REQUESTED_ISSUES_ONLY", False)
+
+
+def get_user_requested_issue_excluded_authors(user_requested_only: bool) -> tuple[str, ...]:
+    """Return issue authors excluded when processing only user-requested issues."""
+    if user_requested_only:
+        return NON_USER_REQUESTED_ISSUE_AUTHORS
+    return ()
+
+
+def get_issue_author_login(issue: dict) -> str | None:
+    """Return the issue author login when the issue payload contains it."""
+    author = issue.get("author")
+    if isinstance(author, dict):
+        login = author.get("login")
+        return login if isinstance(login, str) and login else None
+    if isinstance(author, str) and author:
+        return author
+    return None
+
+
+def filter_user_requested_issues(issues: list[dict], user_requested_only: bool) -> list[dict]:
+    """Remove configured automation and maintainer-authored issues when requested."""
+    excluded_authors = get_user_requested_issue_excluded_authors(user_requested_only)
+    if not excluded_authors:
+        return issues
+    excluded_author_set = set(excluded_authors)
+    return [
+        issue
+        for issue in issues
+        if get_issue_author_login(issue) not in excluded_author_set
+    ]
 
 
 def get_work_queue_configs_from_environment(
@@ -4473,6 +5593,19 @@ def build_issue_run_id(issue_number: int) -> str:
     return f"{issue_number}-{uuid.uuid4().hex[:8]}"
 
 
+def create_preflight_info_dir(worktree_path: str) -> str:
+    """Create the ignored per-run directory for preflight handoff and evidence."""
+    run_id = os.path.basename(os.path.abspath(worktree_path))
+    preflight_info_path = os.path.join(
+        get_repo_root(),
+        "local_repositories",
+        PREFLIGHT_INFO_DIRNAME,
+        run_id,
+    )
+    os.makedirs(preflight_info_path, exist_ok=True)
+    return preflight_info_path
+
+
 def build_review_run_id(pr_number: int) -> str:
     """Create a unique ID for an isolated pull-request review run."""
     return f"pr-{pr_number}-{uuid.uuid4().hex[:8]}"
@@ -4503,23 +5636,18 @@ def fetch_review_base_ref(repo_path: str) -> None:
     """Refresh the upstream PR base ref used by local review diffs."""
     remote_tracking_ref = f"refs/remotes/origin/{DEFAULT_WORKTREE_BASE_REF}"
     try:
-        subprocess.run(
+        run_git_transport(
             [
-                "git",
                 "fetch",
                 "--quiet",
                 "origin",
                 f"+{DEFAULT_WORKTREE_BASE_REF}:{remote_tracking_ref}",
             ],
             cwd=repo_path,
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
         )
-    except subprocess.CalledProcessError as exc:
+    except GitTransportError as exc:
         print(
-            f"ERROR: Failed to fetch origin/{DEFAULT_WORKTREE_BASE_REF} before PR review: {exc.stdout}",
+            f"ERROR: Failed to fetch origin/{DEFAULT_WORKTREE_BASE_REF} before PR review: {exc}",
             file=sys.stderr,
         )
         raise
@@ -4614,17 +5742,15 @@ def create_issue_workspace(
         raise
 
     scratch_metrics_repo_path = os.path.join(worktree_path, get_forge_subdir_name())
-    copy_progress_artifacts(canonical_metrics_repo_path, scratch_metrics_repo_path, issue_number)
+    del canonical_metrics_repo_path, issue_number
     return worktree_path, scratch_metrics_repo_path
 
 
 def cleanup_issue_workspace(claimed_issue: ClaimedIssue, canonical_metrics_repo_path: str) -> None:
     """Remove the isolated issue worktrees for reachability-metadata and metrics."""
-    copy_progress_artifacts(
-        claimed_issue.scratch_metrics_repo_path,
-        canonical_metrics_repo_path,
-        claimed_issue.issue["number"],
-    )
+    del canonical_metrics_repo_path
+    if claimed_issue.preflight_info_path:
+        shutil.rmtree(claimed_issue.preflight_info_path, ignore_errors=True)
     if claimed_issue.worktree_path in preservation_failed_worktree_paths:
         print(
             (
@@ -4693,32 +5819,48 @@ def extract_issue_requested_metadata_context(issue_body: str | None, max_chars: 
     return context
 
 
-def resolve_large_library_resume_artifact(issue: dict, canonical_metrics_repo_path: str) -> str | None:
-    """Resolve a durable resume artifact for a large-library continuation issue."""
-    if not issue_has_label(issue, LABEL_LARGE_LIBRARY_NEXT_PART):
+def resolve_chunked_dynamic_access_exhaust_report(
+        issue: dict,
+        base_reachability_metadata_path: str,
+        coordinate: str,
+        continuation_marker: ContinuationMarker | None = None,
+) -> DynamicAccessExhaustReport | None:
+    """Resolve the persisted exhaust report for an already chunked issue."""
+    if not issue_has_label(issue, LABEL_CHUNKED_DYNAMIC_ACCESS):
         return None
-    state_path = find_progress_state_path(canonical_metrics_repo_path, issue["number"])
-    if state_path is None:
-        raise RuntimeError(f"No large-library progress state found for issue #{issue['number']}")
-    state = LargeLibraryProgressState.load(state_path)
-    verify_large_library_previous_part_merged(state)
-    return state_path
+    report_path = find_dynamic_access_exhaust_report_path(base_reachability_metadata_path, coordinate)
+    if report_path is None:
+        if continuation_marker is not None:
+            log_stage(
+                "chunked-dynamic-access",
+                (
+                    f"Resuming chunked dynamic-access issue #{issue['number']} without an exhaust report; "
+                    "processed classes will be read from the continuation marker."
+                ),
+            )
+            return None
+        raise RuntimeError(
+            f"Chunked dynamic-access issue #{issue['number']} has no exhaust report for {coordinate}."
+        )
+    exhaust_report = DynamicAccessExhaustReport.load(report_path)
+    verify_chunked_dynamic_access_previous_pr_merged(exhaust_report)
+    return exhaust_report
 
 
-def verify_large_library_previous_part_merged(state: LargeLibraryProgressState) -> None:
+def verify_chunked_dynamic_access_previous_pr_merged(exhaust_report: DynamicAccessExhaustReport) -> None:
     """Fail fast when continuation is requested before the previous PR merged."""
-    if not state.created_pull_requests:
+    if exhaust_report.latest_chunk_pull_request is None:
         return
     if is_fixture_testing_enabled():
         log_stage(
-            "large-library",
+            "chunked-dynamic-access",
             (
-                f"Fixture mode: treating previous large-library PR "
-                f"#{state.created_pull_requests[-1]} as merged."
+                f"Fixture mode: treating previous chunk PR "
+                f"#{exhaust_report.latest_chunk_pull_request} as merged."
             ),
         )
         return
-    previous_pr = state.created_pull_requests[-1]
+    previous_pr = exhaust_report.latest_chunk_pull_request
     result = gh(
         "pr",
         "view",
@@ -4732,17 +5874,18 @@ def verify_large_library_previous_part_merged(state: LargeLibraryProgressState) 
     payload = json.loads(result.stdout)
     if not payload.get("merged"):
         raise RuntimeError(
-            f"Large-library series {state.series_id} cannot continue before PR #{previous_pr} is merged "
+            f"Chunked dynamic-access issue #{exhaust_report.issue_number} cannot continue "
+            f"before PR #{previous_pr} is merged "
             f"(state={payload.get('state')})."
         )
 
 
-def verify_large_library_base_contains_published_commit(
-        state: LargeLibraryProgressState,
+def verify_chunked_dynamic_access_base_contains_published_commit(
+        exhaust_report: DynamicAccessExhaustReport,
         worktree_path: str,
 ) -> None:
-    """Ensure the continuation worktree includes the latest published part commit."""
-    commit = resolve_large_library_published_base_commit(state)
+    """Ensure the continuation worktree includes the latest published chunk commit."""
+    commit = resolve_chunked_dynamic_access_published_base_commit(exhaust_report)
     if not commit:
         return
     result = subprocess.run(
@@ -4752,16 +5895,18 @@ def verify_large_library_base_contains_published_commit(
     )
     if result.returncode != 0:
         raise RuntimeError(
-            f"Base branch does not contain latest large-library published commit {commit}"
+            f"Base branch does not contain latest chunked dynamic-access published commit {commit}"
         )
 
 
-def resolve_large_library_published_base_commit(state: LargeLibraryProgressState) -> str | None:
+def resolve_chunked_dynamic_access_published_base_commit(
+        exhaust_report: DynamicAccessExhaustReport,
+) -> str | None:
     """Return the commit that should be present on the continuation base."""
     if is_fixture_testing_enabled():
-        return state.last_published_commit
-    if state.created_pull_requests:
-        previous_pr = state.created_pull_requests[-1]
+        return exhaust_report.latest_chunk_commit
+    if exhaust_report.latest_chunk_pull_request is not None:
+        previous_pr = exhaust_report.latest_chunk_pull_request
         result = gh(
             "pr",
             "view",
@@ -4777,7 +5922,7 @@ def resolve_large_library_published_base_commit(state: LargeLibraryProgressState
         oid = merge_commit.get("oid")
         if oid:
             return str(oid)
-    return state.last_published_commit
+    return exhaust_report.latest_chunk_commit
 
 
 def maybe_handle_not_for_native_image_issue(issue: dict, base_reachability_metadata_path: str) -> bool:
@@ -4823,15 +5968,14 @@ def claim_issue_for_processing(
         base_reachability_metadata_path: str,
         canonical_metrics_repo_path: str,
         authenticated_user: str,
-        large_library_resume_artifact_override: str | None = None,
         take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
 ) -> Optional[ClaimedIssue]:
     """Claim an issue and prepare its isolated execution workspace.
 
     Claiming, assignment validation, and worktree creation are orchestration
-    responsibilities, not strategy logic (§AR-forge-control-plane); resume-artifact
-    transfer carries the exhaust report forward between chunks
-    (§WF-dynamic-access-exhaust-report).
+    responsibilities, not strategy logic (§AR-forge-control-plane). Chunked
+    dynamic-access continuation derives its exhaust report from the coordinate
+    in the checked-out repository (§WF-dynamic-access-exhaust-report).
     """
     if not refresh_issue_payload_for_claim(issue, label, authenticated_user):
         return None
@@ -4842,17 +5986,32 @@ def claim_issue_for_processing(
     claim_metadata = build_claim_metadata(issue, label, base_reachability_metadata_path)
     if claim_metadata is None:
         return None
-    try:
-        large_library_resume_artifact = (
-            large_library_resume_artifact_override
-            or resolve_large_library_resume_artifact(issue, canonical_metrics_repo_path)
+    issue_coordinates, current_coordinates, new_version = claim_metadata
+    continuation_marker = resolve_issue_continuation_marker(
+        issue,
+        label,
+        issue_coordinates,
+        base_reachability_metadata_path,
+    )
+    if issue_is_resumable(issue) and continuation_marker is None:
+        log_stage(
+            "continuation",
+            (
+                f"Skipping issue #{issue['number']}: label '{LABEL_RESUMABLE}' is present, "
+                "but no valid continuation marker was found on a preserved branch."
+            ),
         )
-        large_library_part = None
-        if large_library_resume_artifact:
-            large_library_part = LargeLibraryProgressState.load(large_library_resume_artifact).part
+        return None
+    try:
+        chunked_exhaust_report = resolve_chunked_dynamic_access_exhaust_report(
+            issue,
+            base_reachability_metadata_path,
+            issue_coordinates,
+            continuation_marker,
+        )
     except Exception as exc:
         print(
-            f"ERROR: Cannot resume large-library issue #{issue['number']}: {exc}",
+            f"ERROR: Cannot resume chunked dynamic-access issue #{issue['number']}: {exc}",
             file=sys.stderr,
         )
         return None
@@ -4867,10 +6026,14 @@ def claim_issue_for_processing(
             canonical_metrics_repo_path,
             issue["number"],
         )
-        if large_library_resume_artifact:
-            large_library_state = LargeLibraryProgressState.load(large_library_resume_artifact)
-            large_library_state.save(large_library_state.default_path(scratch_metrics_repo_path))
-            verify_large_library_base_contains_published_commit(large_library_state, worktree_path)
+        preflight_info_path = create_preflight_info_dir(worktree_path)
+        if continuation_marker is not None and not checkout_continuation_branch(worktree_path, continuation_marker):
+            continuation_marker = None
+        if chunked_exhaust_report is not None:
+            verify_chunked_dynamic_access_base_contains_published_commit(
+                chunked_exhaust_report,
+                worktree_path,
+            )
     except BaseException as exc:
         revert_issue_claim(
             item_id,
@@ -4882,7 +6045,6 @@ def claim_issue_for_processing(
             return None
         raise
 
-    issue_coordinates, current_coordinates, new_version = claim_metadata
     return ClaimedIssue(
         issue=issue,
         label=label,
@@ -4893,8 +6055,8 @@ def claim_issue_for_processing(
         issue_coordinates=issue_coordinates,
         current_coordinates=current_coordinates,
         new_version=new_version,
-        large_library_resume_artifact=large_library_resume_artifact,
-        large_library_part=large_library_part,
+        preflight_info_path=preflight_info_path,
+        continuation_marker=continuation_marker,
     )
 
 
@@ -4923,11 +6085,13 @@ def build_fixture_claimed_issue(
             canonical_metrics_repo_path,
             issue_number,
         )
+        preflight_info_path = create_preflight_info_dir(worktree_path)
         log_stage(
             "fixture-worktree",
             (
                 f"Created isolated fixture worktree for issue #{issue_number}: "
-                f"worktree={worktree_path}, metrics={scratch_metrics_repo_path}"
+                f"worktree={worktree_path}, metrics={scratch_metrics_repo_path}, "
+                f"preflight={preflight_info_path}"
             ),
         )
     except BaseException as exc:
@@ -4968,6 +6132,7 @@ def build_fixture_claimed_issue(
         return None
 
     issue_coordinates, current_coordinates, new_version = claim_metadata
+    continuation_marker = load_continuation_marker(continuation_marker_path(worktree_path))
     return ClaimedIssue(
         issue=issue,
         label=label,
@@ -4978,6 +6143,8 @@ def build_fixture_claimed_issue(
         issue_coordinates=issue_coordinates,
         current_coordinates=current_coordinates,
         new_version=new_version,
+        preflight_info_path=preflight_info_path,
+        continuation_marker=continuation_marker,
     )
 
 
@@ -4988,6 +6155,7 @@ def run_claimed_issue(
 ) -> WorkflowRunResult:
     """Execute the claimed issue workflow inside its isolated worktree."""
     started_at = time.time()
+    failure_was_external = False
     try:
         success = invoke_pipeline(
             claimed_issue,
@@ -5006,9 +6174,15 @@ def run_claimed_issue(
         )
         traceback.print_exc()
         success = False
+        failure_was_external = is_external_failure_exception(exc)
     if is_user_interrupt_requested():
         raise KeyboardInterrupt
-    return WorkflowRunResult(claimed_issue=claimed_issue, success=success, started_at=started_at)
+    return WorkflowRunResult(
+        claimed_issue=claimed_issue,
+        success=success,
+        started_at=started_at,
+        failure_was_external=failure_was_external,
+    )
 
 
 def revert_issue_claim(item_id: str, issue_number: int, reason: str) -> None:
@@ -5065,39 +6239,21 @@ def revert_claimed_issue(claimed_issue: ClaimedIssue, reason: str) -> None:
     revert_issue_claim(claimed_issue.item_id, claimed_issue.issue["number"], reason)
 
 
-def ensure_large_library_labels_exist_if_needed(claimed_issue: ClaimedIssue) -> None:
-    """Ensure supplemental large-library labels exist before PR creation uses them."""
-    label_descriptions = {
-        LABEL_LARGE_LIBRARY_SERIES: LARGE_LIBRARY_SERIES_LABEL_DESCRIPTION,
-        LABEL_LARGE_LIBRARY_NEXT_PART: LARGE_LIBRARY_NEXT_PART_LABEL_DESCRIPTION,
-        LABEL_LARGE_LIBRARY_BLOCKED: LARGE_LIBRARY_BLOCKED_LABEL_DESCRIPTION,
-        LABEL_LARGE_LIBRARY_PART: LARGE_LIBRARY_PART_LABEL_DESCRIPTION,
-    }
-    for label_name, description in label_descriptions.items():
-        ensure_repo_label_exists(label_name, LARGE_LIBRARY_LABEL_COLOR, description)
-
-
-def build_large_library_pr_args(
-        claimed_issue: ClaimedIssue,
-        large_library_state: LargeLibraryProgressState | None,
-        large_library_state_path: str | None,
+def build_chunked_dynamic_access_pr_args(
+        exhaust_report_path: str | None,
         workflow_status: str | None,
 ) -> list[str]:
-    """Build part-aware PR flags for an active large-library series.
+    """Build PR flags for an active chunked dynamic-access issue.
 
     Non-final chunks publish with continuation state and must not close the
     backing issue, per the chunk PR linking contract
     (§WF-chunked-dynamic-access-pr-linking, §GIT-issue-linking).
     """
-    if large_library_state is None:
+    if exhaust_report_path is None:
         return []
-    args = [
-        "--large-library-part", str(large_library_state.part),
-        "--series-id", large_library_state.series_id,
-        "--large-library-state-path", large_library_state_path or "",
-    ]
+    args = ["--chunked-dynamic-access"]
     if workflow_status != RUN_STATUS_CHUNK_READY:
-        args.append("--large-library-final")
+        args.append("--chunk-final")
     return args
 
 
@@ -5109,6 +6265,98 @@ def _require_publication_value(value: str | None, field_name: str, claimed_issue
     return value
 
 
+def _load_library_update_publication_route(claimed_issue: ClaimedIssue) -> LibraryUpdateRoute | None:
+    if claimed_issue.label != LABEL_LIBRARY_UPDATE:
+        return None
+    return load_library_update_route(library_update_route_artifact_root(claimed_issue))
+
+
+def _pending_run_metrics_path(claimed_issue: ClaimedIssue) -> str:
+    """Return the transient metrics file path for this claimed issue."""
+    return os.path.join(
+        claimed_issue.scratch_metrics_repo_path,
+        PENDING_METRICS_FILENAME,
+    )
+
+
+def record_publication_metrics_from_pending(
+        marker: ContinuationMarker,
+        metrics_repo_path: str,
+) -> bool:
+    """Copy local-only pending metrics fields into the continuation marker."""
+    pending_metrics_path = os.path.join(metrics_repo_path, PENDING_METRICS_FILENAME)
+    if not os.path.isfile(pending_metrics_path):
+        return False
+    try:
+        run_metrics = read_pending_metrics(metrics_repo_path)
+    except (OSError, json.JSONDecodeError, TypeError) as exc:
+        log_stage(
+            "publication",
+            f"Could not snapshot pending metrics into continuation marker: {exc!r}.",
+        )
+        return False
+    marker.record_publication_metrics(run_metrics, PUBLICATION_METRICS_EXTRA_KEYS)
+    return marker.publication_metrics is not None
+
+
+def record_pending_publication_metrics_for_resume(claimed_issue: ClaimedIssue) -> None:
+    """Persist the pending metrics reconstruction inputs in the continuation marker."""
+    marker_path = continuation_marker_path(claimed_issue.worktree_path)
+    marker = load_continuation_marker(marker_path)
+    if marker is None:
+        return
+    if record_publication_metrics_from_pending(marker, claimed_issue.scratch_metrics_repo_path):
+        marker.save(marker_path)
+
+
+def _restore_pending_run_metrics_from_marker(
+        claimed_issue: ClaimedIssue,
+        marker: ContinuationMarker,
+) -> bool:
+    """Restore transient metrics from durable metrics plus marker-local extras."""
+    marker_metrics = marker.publication_metrics
+    if not isinstance(marker_metrics, dict):
+        return False
+    library = marker_metrics.get("library")
+    timestamp = marker_metrics.get("timestamp")
+    if not isinstance(library, str) or not isinstance(timestamp, str):
+        return False
+    run_metrics = load_execution_metrics_for_timestamp(claimed_issue.worktree_path, library, timestamp)
+    if run_metrics is None:
+        log_stage(
+            "publication",
+            (
+                "Could not restore pending metrics from continuation marker because no durable "
+                f"execution metrics entry matched {library} at {timestamp}."
+            ),
+        )
+        return False
+    extras = marker_metrics.get("extras")
+    if isinstance(extras, dict):
+        run_metrics.update(extras)
+    write_pending_metrics(claimed_issue.scratch_metrics_repo_path, run_metrics)
+    log_stage(
+        "publication",
+        (
+            "Restored missing pending metrics from durable execution metrics and "
+            f"continuation marker extras for {library}."
+        ),
+    )
+    return True
+
+
+def restore_pending_run_metrics_from_execution_metrics(claimed_issue: ClaimedIssue) -> None:
+    """Restore or snapshot transient publication metrics for resumable PR creation."""
+    pending_metrics_path = _pending_run_metrics_path(claimed_issue)
+    if os.path.isfile(pending_metrics_path):
+        record_pending_publication_metrics_for_resume(claimed_issue)
+        return
+
+    marker = load_continuation_marker(continuation_marker_path(claimed_issue.worktree_path))
+    if marker is not None:
+        _restore_pending_run_metrics_from_marker(claimed_issue, marker)
+
+
 def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff:
     """Build the live-or-fixture PR publication handoff.
 
@@ -5118,33 +6366,33 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
     """
     require_claimed_issue_worktree(claimed_issue, "successful finalization")
     issue_number = claimed_issue.issue["number"]
-    large_library_state_path = find_progress_state_path(
-        claimed_issue.scratch_metrics_repo_path,
-        issue_number,
+    restore_pending_run_metrics_from_execution_metrics(claimed_issue)
+    exhaust_report_path = find_dynamic_access_exhaust_report_path(
+        claimed_issue.worktree_path,
+        claimed_issue.issue_coordinates,
     )
-    large_library_state = LargeLibraryProgressState.load(large_library_state_path) if large_library_state_path else None
-    if large_library_state is not None:
-        ensure_large_library_labels_exist_if_needed(claimed_issue)
     run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
     workflow_status = None if run_metrics is None else run_metrics.get("status")
     issue_number_args = ["--issue-number", str(issue_number)]
-    large_library_pr_args = build_large_library_pr_args(
-        claimed_issue,
-        large_library_state,
-        large_library_state_path,
+    chunked_dynamic_access_args = build_chunked_dynamic_access_pr_args(
+        exhaust_report_path,
         workflow_status,
     )
-    large_library_final = None
-    if large_library_state is not None:
-        large_library_final = workflow_status != RUN_STATUS_CHUNK_READY
+    chunked_dynamic_access_final = None
+    if exhaust_report_path is not None:
+        chunked_dynamic_access_final = workflow_status != RUN_STATUS_CHUNK_READY
 
     script_name: str
     runner_name: str
     runner: Callable[[list[str]], None]
     argv: list[str]
     result_label: str
+    publication_kind: str | None = None
     coordinates: str | None = claimed_issue.issue_coordinates
+    current_coordinates: str | None = claimed_issue.current_coordinates
+    new_version: str | None = claimed_issue.new_version
     not_for_native_image = False
+    library_update_route = _load_library_update_publication_route(claimed_issue)
 
     if claimed_issue.label == LABEL_LIBRARY_NEW:
         group, artifact, _version = metadata_coordinate_parts(claimed_issue.issue_coordinates)
@@ -5170,7 +6418,7 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
                 *issue_number_args,
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
-                *large_library_pr_args,
+                *chunked_dynamic_access_args,
             ]
     elif claimed_issue.label == LABEL_JAVAC_FAIL:
         script_name = "git_scripts/make_pr_javac_fix.py"
@@ -5230,17 +6478,81 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
         ]
     elif claimed_issue.label == LABEL_LIBRARY_UPDATE:
-        script_name = "git_scripts/make_pr_improve_coverage.py"
-        runner_name = "run_make_pr_improve_coverage"
-        runner = run_make_pr_improve_coverage
-        result_label = LABEL_PR_LIBRARY_UPDATE
-        argv = [
-            "--coordinates", claimed_issue.issue_coordinates,
-            *issue_number_args,
-            "--reachability-metadata-path", claimed_issue.worktree_path,
-            "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
-            *large_library_pr_args,
-        ]
+        if library_update_route is not None and library_update_route.selected_driver == ROUTE_FIX_JAVAC:
+            script_name = "git_scripts/make_pr_javac_fix.py"
+            runner_name = "run_make_pr_javac_fix"
+            runner = run_make_pr_javac_fix
+            result_label = LABEL_PR_LIBRARY_UPDATE
+            publication_kind = LABEL_PR_JAVAC_FIX
+            current_coordinates = _require_publication_value(
+                library_update_route.baseline_coordinates,
+                "library_update_route.baseline_coordinates",
+                claimed_issue,
+            )
+            new_version = library_update_route.new_version
+            coordinates = None
+            argv = [
+                "--coordinates", current_coordinates,
+                "--new-version", new_version,
+                "--issue-number", str(issue_number),
+                "--pr-label", result_label,
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            ]
+        elif library_update_route is not None and library_update_route.selected_driver == ROUTE_FIX_JAVA_RUN:
+            script_name = "git_scripts/make_pr_java_run_fix.py"
+            runner_name = "run_make_pr_java_run_fix"
+            runner = run_make_pr_java_run_fix
+            result_label = LABEL_PR_LIBRARY_UPDATE
+            publication_kind = LABEL_PR_JAVA_RUN_FIX
+            current_coordinates = _require_publication_value(
+                library_update_route.baseline_coordinates,
+                "library_update_route.baseline_coordinates",
+                claimed_issue,
+            )
+            new_version = library_update_route.new_version
+            coordinates = None
+            argv = [
+                "--coordinates", current_coordinates,
+                "--new-version", new_version,
+                "--issue-number", str(issue_number),
+                "--pr-label", result_label,
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            ]
+        elif library_update_route is not None and library_update_route.selected_driver == ROUTE_FIX_NI_RUN:
+            script_name = "git_scripts/make_pr_ni_run_fix.py"
+            runner_name = "run_make_pr_ni_run_fix"
+            runner = run_make_pr_ni_run_fix
+            result_label = LABEL_PR_LIBRARY_UPDATE
+            publication_kind = LABEL_PR_NI_RUN_FIX
+            current_coordinates = _require_publication_value(
+                library_update_route.baseline_coordinates,
+                "library_update_route.baseline_coordinates",
+                claimed_issue,
+            )
+            new_version = library_update_route.new_version
+            coordinates = None
+            argv = [
+                "--coordinates", current_coordinates,
+                "--new-version", new_version,
+                "--issue-number", str(issue_number),
+                "--pr-label", result_label,
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            ]
+        else:
+            script_name = "git_scripts/make_pr_improve_coverage.py"
+            runner_name = "run_make_pr_improve_coverage"
+            runner = run_make_pr_improve_coverage
+            result_label = LABEL_PR_LIBRARY_UPDATE
+            argv = [
+                "--coordinates", claimed_issue.issue_coordinates,
+                *issue_number_args,
+                "--reachability-metadata-path", claimed_issue.worktree_path,
+                "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+                *chunked_dynamic_access_args,
+            ]
     else:
         raise ValueError(f"Unknown label '{claimed_issue.label}'")
 
@@ -5253,17 +6565,16 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
         issue_label=claimed_issue.label,
         result_label=result_label,
         coordinates=coordinates,
-        current_coordinates=claimed_issue.current_coordinates,
-        new_version=claimed_issue.new_version,
+        current_coordinates=current_coordinates,
+        new_version=new_version,
         worktree_path=claimed_issue.worktree_path,
         scratch_metrics_path=claimed_issue.scratch_metrics_repo_path,
         workflow_status=workflow_status,
-        large_library_args=large_library_pr_args,
-        large_library_state_path=large_library_state_path,
-        large_library_part=None if large_library_state is None else large_library_state.part,
-        large_library_final=large_library_final,
-        large_library_series_id=None if large_library_state is None else large_library_state.series_id,
+        chunked_dynamic_access_args=chunked_dynamic_access_args,
+        dynamic_access_exhaust_report_path=exhaust_report_path,
+        chunked_dynamic_access_final=chunked_dynamic_access_final,
         not_for_native_image=not_for_native_image,
+        publication_kind=publication_kind or result_label,
     )
 
 
@@ -5282,6 +6593,7 @@ def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[st
     §GIT-pr-preview-builders
     """
     new_coordinates = _publication_new_coordinates(handoff)
+    publication_kind = handoff.publication_kind or handoff.result_label
     if handoff.not_for_native_image and new_coordinates:
         title, body, _local_ci_metrics = build_not_for_native_image_pull_request_preview(
             coordinates=new_coordinates,
@@ -5290,19 +6602,18 @@ def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[st
         )
         return title, body
 
-    if handoff.issue_label == LABEL_LIBRARY_NEW and new_coordinates:
+    if publication_kind == LABEL_LIBRARY_NEW and new_coordinates:
         title, body, _matched = build_new_library_pull_request_preview(
             coordinates=new_coordinates,
             metrics_repo_root=handoff.scratch_metrics_path,
             repo_path=handoff.worktree_path,
             issue_number=handoff.issue_number,
-            large_library_part=handoff.large_library_part,
-            is_final_large_library_part=handoff.large_library_final is not False,
-            series_id=handoff.large_library_series_id,
+            chunked_dynamic_access=handoff.dynamic_access_exhaust_report_path is not None,
+            chunk_final=handoff.chunked_dynamic_access_final is not False,
         )
         return title, body
 
-    if handoff.issue_label == LABEL_LIBRARY_UPDATE and new_coordinates:
+    if publication_kind == LABEL_PR_LIBRARY_UPDATE and new_coordinates:
         group, artifact, version = metadata_coordinate_parts(new_coordinates)
         title, body, _matched = build_improve_coverage_pull_request_preview(
             coordinates=new_coordinates,
@@ -5313,16 +6624,15 @@ def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[st
             version=version,
             baseline_snapshot=load_baseline_snapshot(handoff.worktree_path, group, artifact, version),
             issue_number=handoff.issue_number,
-            large_library_part=handoff.large_library_part,
-            is_final_large_library_part=handoff.large_library_final is not False,
-            series_id=handoff.large_library_series_id,
+            chunked_dynamic_access=handoff.dynamic_access_exhaust_report_path is not None,
+            chunk_final=handoff.chunked_dynamic_access_final is not False,
         )
         return title, body
 
     if handoff.current_coordinates and new_coordinates:
         group, artifact, old_version = metadata_coordinate_parts(handoff.current_coordinates)
         _new_group, _new_artifact, new_version = metadata_coordinate_parts(new_coordinates)
-        if handoff.issue_label == LABEL_JAVAC_FAIL:
+        if publication_kind == LABEL_PR_JAVAC_FIX:
             title, body, _metrics_entry = build_javac_fix_pull_request_preview(
                 old_coordinates=handoff.current_coordinates,
                 new_coordinates=new_coordinates,
@@ -5335,7 +6645,7 @@ def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[st
                 issue_number=handoff.issue_number,
             )
             return title, body
-        if handoff.issue_label == LABEL_JAVA_RUN_FAIL:
+        if publication_kind == LABEL_PR_JAVA_RUN_FIX:
             title, body, _metrics_entry = build_java_run_fix_pull_request_preview(
                 old_coordinates=handoff.current_coordinates,
                 new_coordinates=new_coordinates,
@@ -5348,7 +6658,7 @@ def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[st
                 issue_number=handoff.issue_number,
             )
             return title, body
-        if handoff.issue_label == LABEL_NI_RUN_FAIL:
+        if publication_kind == LABEL_PR_NI_RUN_FIX:
             title, body, _local_ci_human_intervention, _severe_metadata_drop = (
                 build_ni_run_fix_pull_request_preview(
                     old_coordinates=handoff.current_coordinates,
@@ -5405,21 +6715,63 @@ def write_fixture_publication_handoff(handoff: PublicationHandoff) -> str:
     return publication_path
 
 
-def apply_large_library_completion_follow_up(claimed_issue: ClaimedIssue) -> None:
-    """Apply issue labels after a large-library part was published."""
+def preserve_fixture_preflight_evidence(claimed_issue: ClaimedIssue) -> None:
+    """Copy fixture metrics/preflight files before scratch worktree cleanup."""
+    issue_number = int(claimed_issue.issue["number"])
+    evidence_dir = os.path.join(
+        get_fixture_issue_artifact_dir(issue_number),
+        FIXTURE_PREFLIGHT_EVIDENCE_DIRNAME,
+    )
+    os.makedirs(evidence_dir, exist_ok=True)
+    evidence_files = [
+        (claimed_issue.scratch_metrics_repo_path, PENDING_METRICS_FILENAME, "pending-metrics.json"),
+        (
+            claimed_issue.preflight_info_path or claimed_issue.scratch_metrics_repo_path,
+            LIBRARY_PREPARATION_PREFLIGHT_FILENAME,
+            LIBRARY_PREPARATION_PREFLIGHT_FILENAME,
+        ),
+        (
+            claimed_issue.preflight_info_path or claimed_issue.scratch_metrics_repo_path,
+            "library-preflight-prompt.txt",
+            "library-preflight-prompt.txt",
+        ),
+        (
+            claimed_issue.preflight_info_path or claimed_issue.scratch_metrics_repo_path,
+            "library-preflight-response.txt",
+            "library-preflight-response.txt",
+        ),
+    ]
+    copied_files: list[str] = []
+    for source_root, source_name, target_name in evidence_files:
+        source_path = os.path.join(source_root, source_name)
+        if not os.path.isfile(source_path):
+            continue
+        target_path = os.path.join(evidence_dir, target_name)
+        shutil.copy2(source_path, target_path)
+        copied_files.append(target_name)
+    if copied_files:
+        log_stage(
+            "fixture-evidence",
+            (
+                f"Preserved fixture preflight evidence for issue #{issue_number}: "
+                f"{', '.join(copied_files)}"
+            ),
+        )
+
+
+def apply_chunked_dynamic_access_completion_follow_up(claimed_issue: ClaimedIssue) -> None:
+    """Apply issue labels after a chunked dynamic-access part was published."""
     run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
     workflow_status = None if run_metrics is None else run_metrics.get("status")
-    state_path = find_progress_state_path(claimed_issue.scratch_metrics_repo_path, claimed_issue.issue["number"])
-    if state_path is None and not issue_has_label(claimed_issue.issue, LABEL_LARGE_LIBRARY_SERIES):
+    exhaust_report_path = find_dynamic_access_exhaust_report_path(
+        claimed_issue.worktree_path,
+        claimed_issue.issue_coordinates,
+    )
+    if exhaust_report_path is None:
         return
     issue_number = claimed_issue.issue["number"]
     if workflow_status == RUN_STATUS_CHUNK_READY:
-        add_issue_label(issue_number, LABEL_LARGE_LIBRARY_SERIES)
-        add_issue_label(issue_number, LABEL_LARGE_LIBRARY_NEXT_PART)
-        remove_issue_label(issue_number, LABEL_LARGE_LIBRARY_BLOCKED)
-        return
-    remove_issue_label(issue_number, LABEL_LARGE_LIBRARY_NEXT_PART)
-    remove_issue_label(issue_number, LABEL_LARGE_LIBRARY_BLOCKED)
+        add_issue_label(issue_number, LABEL_CHUNKED_DYNAMIC_ACCESS)
 
 
 def finalize_successful_issue(
@@ -5434,6 +6786,7 @@ def finalize_successful_issue(
     if is_fixture_testing_enabled():
         handoff = build_publication_handoff(claimed_issue)
         publication_path = write_fixture_publication_handoff(handoff)
+        preserve_fixture_preflight_evidence(claimed_issue)
         log_stage(
             "publication",
             (
@@ -5475,14 +6828,70 @@ def preserve_failed_work_for_follow_up(claimed_issue: ClaimedIssue) -> FailurePr
         return None
 
 
+def _repeated_resume_failure_phase(claimed_issue: ClaimedIssue) -> str | None:
+    """Return the phase when a resumed run failed again without advancing."""
+    resumed_marker = claimed_issue.continuation_marker
+    if resumed_marker is None:
+        return None
+    active_marker = load_continuation_marker(continuation_marker_path(claimed_issue.worktree_path))
+    if active_marker is None:
+        return None
+    resumed_phase = resumed_marker.continue_from
+    if resumed_phase and active_marker.continue_from == resumed_phase:
+        return resumed_phase
+    return None
+
+
+def handle_repeated_resume_failure(claimed_issue: ClaimedIssue, phase_name: str, reason: str) -> None:
+    """Stop automatic continuation after the same resumed phase fails again."""
+    issue_number = claimed_issue.issue["number"]
+    log_stage(
+        "continuation",
+        (
+            f"Issue #{issue_number} resumed at phase {phase_name} and failed there again; "
+            f"removing '{LABEL_RESUMABLE}' without posting another human-intervention report."
+        ),
+    )
+    try:
+        remove_issue_label(issue_number, LABEL_RESUMABLE)
+    except Exception as exc:
+        print(
+            f"ERROR: Failed to remove '{LABEL_RESUMABLE}' label from issue #{issue_number}: {exc!r}",
+            file=sys.stderr,
+        )
+        traceback.print_exc()
+    revert_claimed_issue(claimed_issue, f"{reason}; repeated resume failure at {phase_name}")
+
+
 def handle_failed_claimed_issue(
         claimed_issue: ClaimedIssue,
         reason: str,
         started_at: float | None = None,
+        external: bool = False,
 ) -> None:
-    """Preserve failed work, run Codex analysis, apply follow-up, and revert the claim."""
+    """Handle a failed claimed issue, then revert its claim.
+
+    An external failure (a typed GitHub or git-transport exception) is not the
+    issue's fault: release the claim silently so it is retried, with no preserved
+    branch, comment, or `human-intervention` label. A logical failure preserves
+    work and applies the follow-up. §FS-human-intervention-policy
+    """
     if is_user_interrupt_requested():
         raise KeyboardInterrupt
+    if external:
+        log_stage(
+            "issue-external-failure",
+            (
+                f"Issue #{claimed_issue.issue['number']} failed on an external dependency "
+                f"({reason}); releasing the claim for retry without human-intervention."
+            ),
+        )
+        revert_claimed_issue(claimed_issue, reason)
+        return
+    repeated_resume_failure_phase = _repeated_resume_failure_phase(claimed_issue)
+    if repeated_resume_failure_phase is not None:
+        handle_repeated_resume_failure(claimed_issue, repeated_resume_failure_phase, reason)
+        return
     preservation_result = preserve_failed_work_for_follow_up(claimed_issue)
     if is_user_interrupt_requested():
         raise KeyboardInterrupt
@@ -5513,6 +6922,7 @@ def handle_completed_run(run_result: WorkflowRunResult) -> bool:
                 claimed_issue,
                 "workflow failure",
                 started_at=run_result.started_at,
+                external=run_result.failure_was_external,
             )
             return False
         try:
@@ -5527,9 +6937,10 @@ def handle_completed_run(run_result: WorkflowRunResult) -> bool:
                 claimed_issue,
                 "finalization failure",
                 started_at=run_result.started_at,
+                external=is_external_failure_exception(exc),
             )
             return False
-        apply_large_library_completion_follow_up(claimed_issue)
+        apply_chunked_dynamic_access_completion_follow_up(claimed_issue)
         maybe_apply_human_intervention_follow_up(
             claimed_issue,
             workflow_success=True,
@@ -5598,6 +7009,7 @@ def process_claimed_issue_lifecycle(
                         claimed_issue,
                         f"unhandled lifecycle failure ({type(exc).__name__})",
                         started_at=started_at,
+                        external=is_external_failure_exception(exc),
                     )
                     log_failure_banner(
                         format_issue_result_message(
@@ -5790,7 +7202,7 @@ def get_issue_claim_cache_observation_from_payload(
     issue_number = issue.get("number")
     if not isinstance(issue_number, int):
         return None
-    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
+    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION) and not issue_is_resumable(issue):
         return IssueClaimCacheObservation(
             issue_number=issue_number,
             reason=ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
@@ -5983,7 +7395,7 @@ def get_issue_claim_preflights(
 
 def issue_needs_claim_preflight(issue: dict, authenticated_user: str | None = None) -> bool:
     """Return True when an issue needs GraphQL preflight before claim attempts."""
-    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION):
+    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION) and not issue_is_resumable(issue):
         return False
     if issue_has_label(issue, LABEL_NOT_FOR_NATIVE_IMAGE):
         return False
@@ -6027,14 +7439,20 @@ def should_skip_issue_from_preflight(
 ) -> bool:
     number = issue["number"]
 
-    cached_large_library_continuation = (
+    cached_chunked_issue_in_progress = (
         cached_skip is not None
         and cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS
-        and issue_has_label(issue, LABEL_LARGE_LIBRARY_NEXT_PART)
+        and issue_has_label(issue, LABEL_CHUNKED_DYNAMIC_ACCESS)
+    )
+    cached_human_intervention_now_resumable = (
+        cached_skip is not None
+        and cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION
+        and issue_is_resumable(issue)
     )
     if (
             cached_skip is not None
-            and not cached_large_library_continuation
+            and not cached_chunked_issue_in_progress
+            and not cached_human_intervention_now_resumable
             and cached_skip_blocks_authenticated_user(cached_skip, authenticated_user, take_blocked_issues)
     ):
         return True
@@ -6055,11 +7473,7 @@ def should_skip_issue_from_preflight(
         )
         return True
 
-    large_library_continuation = (
-        issue_has_label(issue, LABEL_LARGE_LIBRARY_NEXT_PART)
-        and preflight.project_status == STATUS_IN_PROGRESS
-    )
-    if preflight.project_status != STATUS_TODO and not large_library_continuation:
+    if preflight.project_status != STATUS_TODO:
         return True
 
     return False
@@ -6170,11 +7584,7 @@ def try_claim_issue_with_local_lock(
         ])
         return None
 
-    large_library_continuation = (
-        issue_has_label(issue, LABEL_LARGE_LIBRARY_NEXT_PART)
-        and current_status == STATUS_IN_PROGRESS
-    )
-    if current_status != STATUS_TODO and not large_library_continuation:
+    if current_status != STATUS_TODO:
         reason = (
             ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS
             if current_status == STATUS_IN_PROGRESS
@@ -6300,9 +7710,9 @@ def log_issue_scan_progress(
     )
 
 
-def resolve_random_issue_scan_offset(label: str) -> int:
+def resolve_random_issue_scan_offset(label: str, user_requested_only: bool = False) -> int:
     """Choose a random searchable offset for an issue label."""
-    issue_count = count_issues_with_label(label)
+    issue_count = count_issues_with_label(label, user_requested_only=user_requested_only)
     searchable_count = min(issue_count, GITHUB_SEARCH_MAX_RESULTS)
     if searchable_count <= 0:
         return 0
@@ -6317,17 +7727,22 @@ def process_fixture_issues_for_label(
         strategy_name: str | None,
         keep_tests_without_dynamic_access: bool,
         environment_already_validated: bool = False,
+        user_requested_only: bool = False,
 ) -> int:
     """Run the local fixture issues for one label, sequentially, one `run.log` each.
 
-    Fixture selection is local to the loaded YAML and has no live claim, preflight,
-    or work-queue concurrency to model, so a queue/label run is simply each matching
+    Fixture selection is local to the loaded YAML and has no live claim or
+    work-queue concurrency to model, so a queue/label run is simply each matching
     issue processed in turn under its own issue-scoped tee (§E2E-forge-workflow-testing.2).
     """
     if not environment_already_validated:
         validate_issue_processing_environment()
 
-    issues = require_fixture_github_state().list_open_issues_by_label(label, limit)
+    issues = require_fixture_github_state().list_open_issues_by_label(
+        label,
+        limit,
+        excluded_authors=get_user_requested_issue_excluded_authors(user_requested_only),
+    )
     if not issues:
         print()
         log_stage("issue-scan", f"No open fixture issues found with label '{label}'")
@@ -6366,6 +7781,7 @@ def process_issues_with_label(
         parallelism: int,
         take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
         environment_already_validated: bool = False,
+        user_requested_only: bool = False,
 ) -> int:
     """
     Process up to `limit` claimable issues, skipping over unclaimed candidates.
@@ -6420,6 +7836,7 @@ def process_issues_with_label(
                                     priority_offset,
                                     regular_offset,
                                     priority_exhausted,
+                                    user_requested_only,
                                 )
                             )
                             if not issues:
@@ -6428,14 +7845,21 @@ def process_issues_with_label(
                                     log_stage("issue-scan", f"No open issues found with label '{label}'")
                                 break
                         else:
-                            issues = get_issues_with_label(label, fetch_limit, current_offset)
-                            current_offset += len(issues)
-                            if not issues:
+                            raw_issues = get_issues_with_label(
+                                label,
+                                fetch_limit,
+                                current_offset,
+                            )
+                            current_offset += len(raw_issues)
+                            if not raw_issues:
                                 if current_offset == offset:
                                     print()
                                     log_stage("issue-scan", f"No open issues found with label '{label}'")
                                 exhausted = True
                                 break
+                            issues = filter_user_requested_issues(raw_issues, user_requested_only)
+                            if not issues:
+                                continue
 
                         payload_cache_observations = [
                             observation
@@ -6561,6 +7985,7 @@ def process_work_queues(
         keep_tests_without_dynamic_access_override: bool = False,
         parallelism_default: int = DEFAULT_PARALLELISM,
         random_offset_override: bool | None = None,
+        user_requested_only_override: bool | None = None,
 ) -> None:
     """Process all configured issue and review queues in one Python process."""
     queue_configs = get_work_queue_configs_from_environment(work_strategy_name_override, random_offset_override)
@@ -6572,6 +7997,7 @@ def process_work_queues(
         or os.environ.get("FORGE_KEEP_TESTS_WITHOUT_DYNAMIC_ACCESS") == "1"
     )
     parallelism = get_env_parallelism("FORGE_PARALLELISM", parallelism_default)
+    user_requested_only = resolve_user_requested_only(user_requested_only_override)
     enabled_issue_queues = [queue_config for queue_config in queue_configs if queue_config.limit > 0]
 
     if is_shutdown_requested():
@@ -6609,6 +8035,7 @@ def process_work_queues(
                 canonical_metrics_repo_path,
                 queue_config.strategy_name,
                 keep_tests_without_dynamic_access,
+                user_requested_only=user_requested_only,
                 environment_already_validated=True,
             )
             continue
@@ -6616,7 +8043,10 @@ def process_work_queues(
         authenticated_user = resolve_authenticated_user(authenticated_user)
         issue_scan_offset = 0
         if queue_config.random_offset:
-            issue_scan_offset = resolve_random_issue_scan_offset(queue_config.label)
+            issue_scan_offset = resolve_random_issue_scan_offset(
+                queue_config.label,
+                user_requested_only=user_requested_only,
+            )
             print()
             log_stage(
                 "issue-scan",
@@ -6632,6 +8062,7 @@ def process_work_queues(
             keep_tests_without_dynamic_access,
             authenticated_user,
             parallelism,
+            user_requested_only=user_requested_only,
             environment_already_validated=True,
         )
 
@@ -6687,11 +8118,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--run-work-queues",
         action="store_true",
         help="Process all configured issue and review queues in one Python process.",
-    )
-    mode.add_argument(
-        "--continue-large-library-artifact",
-        metavar="PATH",
-        help="Resume a large-library series from a durable progress state JSON artifact.",
     )
     mode.add_argument(
         "--clear-issue-caches",
@@ -6765,6 +8191,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Disable random issue scan offsets for run-work-queues or selected-label runs.",
     )
     parser.add_argument(
+        "--user-requested-only",
+        dest="user_requested_only",
+        action="store_true",
+        default=None,
+        help=(
+            "Fetch only user-requested issue queue items by excluding configured "
+            "automation and maintainer issue authors."
+        ),
+    )
+    parser.add_argument(
         "--parallelism",
         type=validate_parallelism,
         default=DEFAULT_PARALLELISM,
@@ -6784,8 +8220,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     if args.fixture_testing:
         if args.review_pr is not None:
             parser.error("--fixture-testing cannot be combined with --review-pr")
-        if args.continue_large_library_artifact is not None:
-            parser.error("--fixture-testing cannot be combined with --continue-large-library-artifact")
         if args.offset != 0:
             parser.error("--fixture-testing cannot be combined with --offset")
         if args.random_offset is not None:
@@ -6872,44 +8306,6 @@ def process_single_issue(
     )
 
 
-def process_large_library_continuation(
-        resume_artifact: str,
-        base_reachability_metadata_path: str,
-        canonical_metrics_repo_path: str,
-        strategy_name: str | None,
-        keep_tests_without_dynamic_access: bool,
-        authenticated_user: str,
-        take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
-) -> bool:
-    """Resume a large-library issue from a durable progress artifact."""
-    state = LargeLibraryProgressState.load(resume_artifact)
-    if state.issue_number is None:
-        raise ValueError("Large-library continuation requires `issueNumber` in the progress state")
-    verify_large_library_previous_part_merged(state)
-    issue, label = get_issue_by_number(state.issue_number)
-    claim_kwargs: dict[str, bool] = {}
-    if not take_blocked_issues:
-        claim_kwargs["take_blocked_issues"] = False
-    claimed_issue = claim_issue_for_processing(
-        issue,
-        label,
-        base_reachability_metadata_path,
-        canonical_metrics_repo_path,
-        authenticated_user,
-        large_library_resume_artifact_override=resume_artifact,
-        **claim_kwargs,
-    )
-    if not claimed_issue:
-        log_failure_banner(f"Could not claim issue #{state.issue_number}.", file=sys.stderr)
-        sys.exit(1)
-    return process_claimed_issue_lifecycle(
-        claimed_issue,
-        strategy_name,
-        keep_tests_without_dynamic_access,
-        canonical_metrics_repo_path,
-    )
-
-
 def main() -> None:
     clear_user_interrupt_requested()
     previous_sigint_handler = signal.getsignal(signal.SIGINT)
@@ -6960,6 +8356,7 @@ def main() -> None:
                 args.keep_tests_without_dynamic_access,
                 args.parallelism,
                 random_offset_override=args.random_offset,
+                user_requested_only_override=args.user_requested_only,
             )
         elif args.review_pr is not None:
             authenticated_user = resolve_authenticated_user()
@@ -6982,17 +8379,6 @@ def main() -> None:
                 authenticated_user,
                 args.take_blocked_issues,
             )
-        elif args.continue_large_library_artifact is not None:
-            authenticated_user = resolve_authenticated_user()
-            process_large_library_continuation(
-                args.continue_large_library_artifact,
-                reachability_metadata_path,
-                metrics_repo_path,
-                args.strategy_name,
-                args.keep_tests_without_dynamic_access,
-                authenticated_user,
-                args.take_blocked_issues,
-            )
         elif is_fixture_testing_enabled():
             process_fixture_issues_for_label(
                 args.label,
@@ -7001,12 +8387,17 @@ def main() -> None:
                 metrics_repo_path,
                 args.strategy_name,
                 args.keep_tests_without_dynamic_access,
+                user_requested_only=resolve_user_requested_only(args.user_requested_only),
             )
         else:
             authenticated_user = resolve_authenticated_user()
+            user_requested_only = resolve_user_requested_only(args.user_requested_only)
             issue_scan_offset = args.offset
             if args.random_offset is True:
-                issue_scan_offset = resolve_random_issue_scan_offset(args.label)
+                issue_scan_offset = resolve_random_issue_scan_offset(
+                    args.label,
+                    user_requested_only=user_requested_only,
+                )
                 print()
                 log_stage("issue-scan", f"Selected random start offset {issue_scan_offset} for label '{args.label}'")
             process_issues_with_label(
@@ -7020,6 +8411,7 @@ def main() -> None:
                 authenticated_user,
                 args.parallelism,
                 take_blocked_issues=args.take_blocked_issues,
+                user_requested_only=user_requested_only,
             )
         normal_exit = True
     except KeyboardInterrupt:

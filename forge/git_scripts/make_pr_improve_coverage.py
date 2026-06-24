@@ -6,7 +6,6 @@
 import argparse
 import json
 import os
-import re
 import shutil
 import subprocess
 import sys
@@ -23,9 +22,14 @@ from git_scripts.common_git import (
     load_library_stats,
     format_stats_before_after,
     format_forge_revision_section,
-    build_ai_branch_name,
-    delete_remote_branch_if_exists,
-    get_configured_reviewers,
+    run_git_transport,
+)
+from git_scripts.pr_publication import (
+    BASE_BRANCH,
+    REPO,
+    REVIEWERS,
+    parse_pr_number,
+    publish_branch,
 )
 from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
@@ -34,24 +38,26 @@ from utility_scripts.metrics_writer import (
     count_test_only_metadata_entries,
     read_pending_metrics,
 )
-from utility_scripts.large_library_progress import LABEL_LARGE_LIBRARY_PART, LargeLibraryProgressState
+from utility_scripts.dynamic_access_exhaust_report import (
+    DynamicAccessExhaustReport,
+    find_dynamic_access_exhaust_report_path,
+)
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 from utility_scripts.local_ci_verification import (
     HUMAN_INTERVENTION_LABEL,
     LOCAL_CI_VERIFICATION_KEY,
     format_local_ci_verification_pr_section,
     local_ci_requires_human_intervention,
-    run_local_ci_verification,
+)
+from utility_scripts.library_update_alias_split import (
+    ensure_alias_split_follow_up_issue,
+    format_alias_split_pr_section,
+    load_alias_split_metrics,
+    maybe_split_library_update_tested_versions,
 )
 
-REPO = "oracle/graalvm-reachability-metadata"
-BASE_BRANCH = "master"
-REVIEWERS = get_configured_reviewers()
 BASELINE_STATS_FILENAME = ".baseline-stats.json"
 LIBRARY_UPDATE_TARGET_FILENAME = ".library_update_target.json"
-IGNORED_FINALIZATION_DIRTY_PATHS = {
-    f"forge/{LIBRARY_UPDATE_TARGET_FILENAME}",
-}
 
 
 def build_pull_request_body(
@@ -69,11 +75,11 @@ def build_pull_request_body(
         current_test_only_entries: int | None = None,
         post_generation_intervention: dict | None = None,
         library_update_target: dict | None = None,
-        is_large_library_part: bool = False,
-        is_final_large_library_part: bool = True,
-        large_library_part: int | None = None,
-        series_id: str | None = None,
+        chunked_dynamic_access: bool = False,
+        chunk_final: bool = True,
+        dynamic_access_exhaust_report: DynamicAccessExhaustReport | None = None,
         local_ci_verification: dict | None = None,
+        alias_split: dict | None = None,
 ) -> str:
     """Build the PR body with metrics and optional stats."""
     input_tokens_used = metrics.get("input_tokens_used", 0)
@@ -127,11 +133,12 @@ def build_pull_request_body(
     )
 
     issue_reference = f"Fixes: #{issue_no}"
-    if is_large_library_part and not is_final_large_library_part:
+    if chunked_dynamic_access and not chunk_final:
         issue_reference = f"Refs: #{issue_no}"
-    part_line = ""
-    if is_large_library_part:
-        part_line = f"- Large-library series: `{series_id or 'unknown'}`\n- Part: {large_library_part}\n"
+    chunk_line = format_chunked_dynamic_access_summary(
+        chunked_dynamic_access,
+        dynamic_access_exhaust_report,
+    )
 
     body = f"""
 ## What does this PR do?
@@ -141,7 +148,7 @@ def build_pull_request_body(
 This PR improves dynamic-access coverage for {coordinates} by generating additional tests.
 
 Summary:
-{part_line}\
+{chunk_line}\
 - Validation commands: {validation_commands}
 - Validation result: `{validation_status}`
 {update_target_lines}\
@@ -165,8 +172,30 @@ Summary:
         body += f"- Stage: `{post_generation_intervention.get('stage', 'unknown')}`\n\n"
         body += f"- Intervention file: `{post_generation_intervention.get('intervention_file', 'unknown')}`\n\n"
         body += str(post_generation_intervention.get("analysis_markdown", "")).strip() + "\n"
+    body += format_alias_split_pr_section(alias_split)
     body += format_local_ci_verification_pr_section(local_ci_verification)
     return body
+
+
+def format_chunked_dynamic_access_summary(
+        chunked_dynamic_access: bool,
+        exhaust_report: DynamicAccessExhaustReport | None,
+) -> str:
+    """Return compact PR body lines for a chunked dynamic-access run."""
+    if not chunked_dynamic_access:
+        return ""
+    if exhaust_report is None:
+        return "- Chunked dynamic-access: yes\n"
+    return (
+        "- Chunked dynamic-access: yes\n"
+        f"- Chunk class threshold: {exhaust_report.class_threshold or 'unknown'}\n"
+        f"- Current chunk class count: {exhaust_report.current_chunk_class_count or 'unknown'}\n"
+        "- Processed dynamic-access classes: "
+        f"completed={len(exhaust_report.completed_classes)}, "
+        f"skipped={len(exhaust_report.skipped_classes)}, "
+        f"exhausted={len(exhaust_report.exhausted_classes)}, "
+        f"failed={len(exhaust_report.failed_classes)}\n"
+    )
 
 
 def baseline_snapshot_path(repo_path: str, group: str, artifact: str, version: str) -> str:
@@ -216,12 +245,6 @@ def _normalize_relative_path(path: str) -> str:
     return os.path.normpath(path).replace(os.sep, "/")
 
 
-def _path_is_within(path: str, candidate_root: str) -> bool:
-    normalized_path = _normalize_relative_path(path)
-    normalized_root = _normalize_relative_path(candidate_root)
-    return normalized_path == normalized_root or normalized_path.startswith(f"{normalized_root}/")
-
-
 def expected_update_paths(
         group: str,
         artifact: str,
@@ -242,50 +265,6 @@ def expected_update_paths(
         for path in candidate_paths
         if os.path.exists(os.path.join(repo_path, path))
     ]
-
-
-def _status_paths(repo_path: str) -> list[str]:
-    """Return paths with pending git status entries."""
-    result = subprocess.run(
-        ["git", "status", "--porcelain=v1"],
-        cwd=repo_path,
-        check=True,
-        capture_output=True,
-        text=True,
-    )
-    paths: list[str] = []
-    for line in result.stdout.splitlines():
-        if not line:
-            continue
-        path = line[3:].strip()
-        if " -> " in path:
-            paths.extend(part.strip() for part in path.split(" -> ", 1))
-        else:
-            paths.append(path)
-    return [_normalize_relative_path(path) for path in paths if path]
-
-
-def assert_no_out_of_scope_changes(repo_path: str, expected_paths: list[str]) -> None:
-    """Reject generated changes outside the resolved library-update target paths."""
-    unexpected_paths = sorted({
-        path
-        for path in _status_paths(repo_path)
-        if path not in IGNORED_FINALIZATION_DIRTY_PATHS
-        and not any(_path_is_within(path, expected_path) for expected_path in expected_paths)
-    })
-    if not unexpected_paths:
-        return
-
-    expected_lines = "\n".join(f"  - {path}" for path in expected_paths)
-    unexpected_lines = "\n".join(f"  - {path}" for path in unexpected_paths)
-    raise RuntimeError(
-        "Out-of-scope generated changes remain after staging expected PR paths; "
-        "refusing to rebase.\n"
-        "Expected PR paths:\n"
-        f"{expected_lines}\n"
-        "Unexpected dirty paths:\n"
-        f"{unexpected_lines}"
-    )
 
 
 def stage_and_commit(
@@ -309,32 +288,13 @@ def stage_and_commit(
     return candidate_paths
 
 
-def _fetch_pr_base(repo_path: str) -> str:
-    """Fetch the upstream PR base and return the ref to rebase onto."""
-    upstream_url = f"https://github.com/{REPO}.git"
-    upstream_remote_url = subprocess.run(
-        ["git", "remote", "get-url", "upstream"],
-        cwd=repo_path,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,
-        text=True,
-        check=False,
-    )
-    if upstream_remote_url.returncode == 0 and REPO in upstream_remote_url.stdout.strip():
-        subprocess.run(["git", "fetch", "upstream", BASE_BRANCH], check=True, cwd=repo_path)
-        return f"upstream/{BASE_BRANCH}"
-    subprocess.run(["git", "fetch", upstream_url, BASE_BRANCH], check=True, cwd=repo_path)
-    return "FETCH_HEAD"
-
-
 def create_pull_request(
         branch: str, coordinates: str, metrics_repo_root: str, repo_path: str,
         group: str, artifact: str, version: str,
         baseline_snapshot: dict | None = None,
         issue_number: int | None = None,
-        large_library_part: int | None = None,
-        is_final_large_library_part: bool = True,
-        series_id: str | None = None,
+        chunked_dynamic_access: bool = False,
+        chunk_final: bool = True,
 ) -> int | None:
     """Create a GitHub pull request for the current branch."""
     if shutil.which("gh") is None:
@@ -348,6 +308,12 @@ def create_pull_request(
         print(f"Pull request already exists for branch {branch}.")
         return
 
+    ensure_alias_split_follow_up_issue(
+        metrics_repo_path=metrics_repo_root,
+        current_issue_number=issue_number,
+        repo=REPO,
+    )
+
     title, body, matched = build_pull_request_preview(
         coordinates=coordinates,
         metrics_repo_root=metrics_repo_root,
@@ -357,9 +323,8 @@ def create_pull_request(
         version=version,
         baseline_snapshot=baseline_snapshot,
         issue_number=issue_number,
-        large_library_part=large_library_part,
-        is_final_large_library_part=is_final_large_library_part,
-        series_id=series_id,
+        chunked_dynamic_access=chunked_dynamic_access,
+        chunk_final=chunk_final,
     )
 
     cmd = [
@@ -372,15 +337,15 @@ def create_pull_request(
         "--label", "GenAI",
         "--label", "library-update-request",
     ]
+    if chunked_dynamic_access:
+        cmd.extend(["--label", "chunked-dynamic-access"])
     if local_ci_requires_human_intervention(matched.get(LOCAL_CI_VERIFICATION_KEY)):
         cmd.extend(["--label", HUMAN_INTERVENTION_LABEL])
-    if large_library_part is not None:
-        cmd.extend(["--label", LABEL_LARGE_LIBRARY_PART])
     if REVIEWERS:
         for r in REVIEWERS:
             cmd.extend(["--reviewer", r])
     result = gh(*cmd[1:])
-    return _parse_pr_number(result.stdout)
+    return parse_pr_number(result.stdout)
 
 
 def build_pull_request_preview(
@@ -392,9 +357,8 @@ def build_pull_request_preview(
         version: str,
         baseline_snapshot: dict | None = None,
         issue_number: int | None = None,
-        large_library_part: int | None = None,
-        is_final_large_library_part: bool = True,
-        series_id: str | None = None,
+        chunked_dynamic_access: bool = False,
+        chunk_final: bool = True,
 ) -> tuple[str, str, dict]:
     """Build the PR title/body without creating a GitHub pull request."""
     issue_no = issue_number if issue_number is not None else find_issue_common(coordinates, REPO)
@@ -404,8 +368,8 @@ def build_pull_request_preview(
     model_display_name = get_model_display_name(strategy_name)
     agent_name = get_agent_name(strategy_name)
     title = f"[GenAI] Improve coverage for {coordinates} using {model_display_name}"
-    if large_library_part is not None:
-        title = f"{title} (part {large_library_part})"
+    if chunked_dynamic_access and not chunk_final:
+        title = f"{title} (chunked dynamic-access)"
     body = build_pull_request_body(
         issue_no=issue_no,
         coordinates=coordinates,
@@ -422,12 +386,38 @@ def build_pull_request_preview(
         post_generation_intervention=matched.get("post_generation_intervention"),
         library_update_target=load_library_update_target_sidecar(metrics_repo_root),
         local_ci_verification=matched.get(LOCAL_CI_VERIFICATION_KEY),
-        is_large_library_part=large_library_part is not None,
-        is_final_large_library_part=is_final_large_library_part,
-        large_library_part=large_library_part,
-        series_id=series_id,
+        alias_split=load_alias_split_metrics(metrics_repo_root),
+        chunked_dynamic_access=chunked_dynamic_access,
+        chunk_final=chunk_final,
+        dynamic_access_exhaust_report=load_dynamic_access_exhaust_report(repo_path, coordinates),
     )
     return title, body, matched
+
+
+def load_dynamic_access_exhaust_report(
+        repo_path: str,
+        coordinates: str,
+) -> DynamicAccessExhaustReport | None:
+    """Load the coordinate-derived exhaust report when this run is chunked."""
+    report_path = find_dynamic_access_exhaust_report_path(repo_path, coordinates)
+    if report_path is None:
+        return None
+    return DynamicAccessExhaustReport.load(report_path)
+
+
+def remove_dynamic_access_exhaust_report_for_final_chunk(
+        repo_path: str,
+        coordinates: str,
+        chunked_dynamic_access: bool,
+        chunk_final: bool,
+) -> None:
+    """Remove the resumable exhaust report from the final chunk PR."""
+    if not chunked_dynamic_access or not chunk_final:
+        return
+    report_path = find_dynamic_access_exhaust_report_path(repo_path, coordinates)
+    if report_path is None:
+        return
+    os.remove(report_path)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -460,14 +450,16 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     parser.add_argument("--issue-number", type=int, help="Explicit backing GitHub issue number.")
-    parser.add_argument("--large-library-part", type=int, help="Part number for a large-library PR series.")
     parser.add_argument(
-        "--large-library-final",
+        "--chunked-dynamic-access",
         action="store_true",
-        help="Use Fixes instead of Refs for a large-library part.",
+        help="Publish this PR as part of a chunked dynamic-access run.",
     )
-    parser.add_argument("--series-id", help="Large-library series identifier for the PR body.")
-    parser.add_argument("--large-library-state-path", help="Progress state JSON path to update after publishing.")
+    parser.add_argument(
+        "--chunk-final",
+        action="store_true",
+        help="Use Fixes instead of Refs for a chunked dynamic-access run.",
+    )
     return parser
 
 
@@ -483,10 +475,8 @@ def parse_flags(argv_list: list[str]):
         repo_path,
         metrics_repo_path,
         flags.issue_number,
-        flags.large_library_part,
-        flags.large_library_final,
-        flags.series_id,
-        flags.large_library_state_path,
+        flags.chunked_dynamic_access,
+        flags.chunk_final,
     )
 
 
@@ -494,56 +484,74 @@ def push_current_branch_to_origin(
         coordinates: str,
         repo_path: str,
         metrics_repo_path: str | None = None,
-        large_library_part: int | None = None,
+        chunked_dynamic_access: bool = False,
+        chunk_final: bool = True,
 ) -> str:
     """Create and push a feature branch, returning the branch name."""
     group, artifact, library_version = parse_coordinate_parts(coordinates)
 
     branch_suffix = f"improve-coverage-{group}-{artifact}-{library_version}"
-    if large_library_part is not None:
-        branch_suffix = f"{branch_suffix}-part-{large_library_part:04d}"
-    new_branch = build_ai_branch_name(branch_suffix, cwd=repo_path)
-    delete_remote_branch_if_exists(new_branch, cwd=repo_path)
-    subprocess.run(["git", "switch", "-C", new_branch], check=True, cwd=repo_path)
+    if chunked_dynamic_access:
+        branch_suffix = f"{branch_suffix}-chunked"
 
-    expected_paths = stage_and_commit(group, artifact, library_version, coordinates, repo_path)
-    assert_no_out_of_scope_changes(repo_path, expected_paths)
+    def stage() -> None:
+        remove_dynamic_access_exhaust_report_for_final_chunk(
+            repo_path,
+            coordinates,
+            chunked_dynamic_access,
+            chunk_final,
+        )
+        stage_and_commit(group, artifact, library_version, coordinates, repo_path)
 
-    base_ref = _fetch_pr_base(repo_path)
-    subprocess.run(["git", "rebase", base_ref], check=True, cwd=repo_path)
-    run_local_ci_verification(
+    def before_verification(base_ref: str) -> None:
+        maybe_split_library_update_tested_versions(
+            repo_path=repo_path,
+            coordinates=coordinates,
+            base_ref=base_ref,
+            metrics_repo_path=metrics_repo_path,
+        )
+
+    new_branch, _ = publish_branch(
         repo_path=repo_path,
+        branch_suffix=branch_suffix,
         coordinates=coordinates,
-        base_commit=base_ref,
+        stage=stage,
         metrics_repo_path=metrics_repo_path,
+        before_verification=before_verification,
     )
-    subprocess.run(["git", "push", "origin", new_branch], check=True, cwd=repo_path)
 
     return new_branch
 
 
-def _parse_pr_number(output: str) -> int | None:
-    """Extract a PR number from gh pr create output."""
-    match = re.search(r"/pull/(\d+)", output)
-    return int(match.group(1)) if match else None
-
-
-def update_large_library_state_after_publish(
-        state_path: str | None,
-        branch: str,
+def update_dynamic_access_exhaust_report_after_publish(
+        coordinates: str,
         repo_path: str,
+        branch: str,
         pr_number: int | None,
-        final_part: bool,
+        chunked_dynamic_access: bool,
 ) -> None:
-    """Record the published branch/commit in the large-library progress artifact."""
-    if not state_path:
+    """Record the published chunk PR/commit in the coordinate-local exhaust report."""
+    if not chunked_dynamic_access:
         return
-    state = LargeLibraryProgressState.load(state_path)
+    report_path = find_dynamic_access_exhaust_report_path(repo_path, coordinates)
+    if report_path is None:
+        return
+    report = DynamicAccessExhaustReport.load(report_path)
     commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_path, text=True).strip()
-    state.record_published_pr(branch, commit, pr_number)
-    if not final_part:
-        state.advance_to_next_part()
-    state.save(state_path)
+    report.record_published_chunk(commit, pr_number)
+    report.save(report_path)
+
+    relative_report_path = os.path.relpath(report_path, repo_path)
+    subprocess.run(["git", "add", "--", relative_report_path], cwd=repo_path, check=True)
+    diff_result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=repo_path, check=False)
+    if diff_result.returncode == 0:
+        return
+    subprocess.run(
+        ["git", "commit", "-m", f"Record chunked dynamic-access publication for {coordinates}"],
+        cwd=repo_path,
+        check=True,
+    )
+    run_git_transport(["push", "origin", f"HEAD:{branch}"], cwd=repo_path)
 
 
 def main(argv=None) -> None:
@@ -552,10 +560,8 @@ def main(argv=None) -> None:
         repo_path,
         metrics_repo_path,
         issue_number,
-        large_library_part,
-        large_library_final,
-        series_id,
-        large_library_state_path,
+        chunked_dynamic_access,
+        chunk_final,
     ) = parse_flags(argv if argv is not None else sys.argv[1:])
 
     ensure_gh_authenticated()
@@ -566,7 +572,8 @@ def main(argv=None) -> None:
         coordinates=coordinates,
         repo_path=repo_path,
         metrics_repo_path=metrics_repo_path,
-        large_library_part=large_library_part,
+        chunked_dynamic_access=chunked_dynamic_access,
+        chunk_final=chunk_final,
     )
     pr_number = create_pull_request(
         branch,
@@ -578,16 +585,15 @@ def main(argv=None) -> None:
         version,
         baseline_snapshot,
         issue_number=issue_number,
-        large_library_part=large_library_part,
-        is_final_large_library_part=large_library_final or large_library_part is None,
-        series_id=series_id,
+        chunked_dynamic_access=chunked_dynamic_access,
+        chunk_final=chunk_final or not chunked_dynamic_access,
     )
-    update_large_library_state_after_publish(
-        large_library_state_path,
-        branch,
+    update_dynamic_access_exhaust_report_after_publish(
+        coordinates,
         repo_path,
+        branch,
         pr_number,
-        large_library_final or large_library_part is None,
+        chunked_dynamic_access,
     )
 
 
