@@ -12,11 +12,13 @@ Workflow rules:
   expects; do not rely on classloader resource lookup for paths such as `/tmp/...`,
   JUnit temp dirs, or `build/...`.
 - Do not create tests for behavior that depends on runtime bytecode generation,
-  runtime class definition or loading, Java agent self-attach, class redefinition,
-  instrumentation, or native-image substitutions. This includes Byte Buddy-backed
-  inline mocking, static mocking, construction mocking, and concrete-class mocking.
-  Prefer statically representable behavior such as public APIs and known-interface
-  JDK dynamic proxies; leave unsupported dynamic behavior untested.
+  runtime class definition or loading, runtime lambda definition, Java agent
+  self-attach, class redefinition, instrumentation, native-image substitutions,
+  URL/plugin/OSGi class loader paths, custom class loaders that introduce classes
+  not already in the native image, or classes that exist only through a custom
+  class loader. This includes Byte Buddy-backed inline mocking, static mocking,
+  construction mocking, and concrete-class mocking. Prefer statically representable
+  behavior such as public APIs.
 - Do not skip Native Image execution with runtime guards or native-image-specific disables.
 - Do not compile, run, or verify tests yourself; the workflow runs validation externally.
 - Keep edits focused on the active library and requested workflow task.
