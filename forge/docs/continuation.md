@@ -122,9 +122,10 @@ because the marker never enters a successful run's publication staging
   `post_generation_intervention`, `local_ci_verification`, and
   `library_update_alias_split` when they exist.
 - Improve-coverage runs write the original `.baseline-stats.json` into the
-  resolved test directory during setup. Resume treats that as preserved worktree
-  state and reuses it instead of recomputing the baseline after generation may
-  already have changed the tree.
+  resolved test directory during setup and include it in the setup checkpoint.
+  Resume treats that committed checkpoint file as preserved state and reuses it
+  instead of recomputing the baseline after generation may already have changed
+  the tree.
 - `explore.exhaustedClasses` is the only EXPLORE state worth keeping: a fresh
   report cannot distinguish an uncovered-but-abandoned class from an
   uncovered-but-untried one.
