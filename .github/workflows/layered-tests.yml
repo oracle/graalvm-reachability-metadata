@@ -94,4 +94,30 @@ jobs:
 
       - name: "Run shared layer tests"
         run: |
-          ./gradlew testSharedLayer -Pcoordinates="${{ matrix.coordinates }}" --stacktrace
+          set +e
+          failure_report="${RUNNER_TEMP}/shared-layer-test-failures.txt"
+          ./gradlew testSharedLayer \
+            -Pcoordinates="${{ matrix.coordinates }}" \
+            -Ptck.layered.continueOnCoordinateFailure=true \
+            -Ptck.layered.coordinateFailureReport="${failure_report}" \
+            --stacktrace
+          result=$?
+          set -e
+
+          if [[ -s "${failure_report}" ]]; then
+            failure_count="$(wc -l < "${failure_report}" | tr -d ' ')"
+            {
+              echo "### Shared layer test failures"
+              echo
+              echo "Failing libraries: ${failure_count}"
+              echo
+              while IFS= read -r coordinates; do
+                echo "- \`${coordinates}\`"
+              done < "${failure_report}"
+            } >> "${GITHUB_STEP_SUMMARY}"
+
+            echo "Shared layer test failures (${failure_count}):"
+            sed 's/^/ - /' "${failure_report}"
+          fi
+
+          exit "${result}"

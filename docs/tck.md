@@ -83,6 +83,11 @@ base-layer module set (`java.base`, `java.management`, `java.naming`, `java.sql`
 so a stale or mismatched layer is rejected before any per-coordinate native
 image is built.
 
+`testSharedLayer` can run a coordinate batch in collecting mode with
+`-Ptck.layered.continueOnCoordinateFailure=true`; when combined with
+`-Ptck.layered.coordinateFailureReport=<file>`, it writes one failed coordinate
+per line before failing the task at the end of the batch.
+
 ## 4. Native-image metadata tracing
 
 Helpers for collecting metadata with the native-image tracing agent (see also
