@@ -44,7 +44,7 @@ public class GetDeclaredConstructorTest {
             Set<ConstraintViolation<ConstructorValidatedBean>> violations = executableValidator
                     .validateConstructorParameters(
                             constructor,
-                            new Object[] { "" }
+                            new Object[] {""}
                     );
 
             assertThat(violations).singleElement().satisfies(violation -> {

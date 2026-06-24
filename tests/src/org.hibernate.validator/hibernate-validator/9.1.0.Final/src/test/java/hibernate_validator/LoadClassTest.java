@@ -90,8 +90,7 @@ public class LoadClassTest {
         thread.setContextClassLoader(null);
         try (ValidatorFactory factory = configuration.buildValidatorFactory()) {
             assertDefaultInterpolation(factory.getValidator());
-        }
-        finally {
+        } finally {
             thread.setContextClassLoader(originalContextClassLoader);
         }
     }
@@ -115,8 +114,7 @@ public class LoadClassTest {
                     .addProperty(LOCALE_RESOLVER_CLASSNAME, localeResolverName)
                     .buildValidatorFactory();
             factory.close();
-        }
-        finally {
+        } finally {
             thread.setContextClassLoader(originalContextClassLoader);
         }
     }
