@@ -18,11 +18,13 @@ Rules:
   expects; do not rely on classloader resource lookup for paths such as `/tmp/...`,
   JUnit temp dirs, or `build/...`.
 - Do not create tests for behavior that depends on runtime bytecode generation,
-  runtime class definition or loading, Java agent self-attach, class redefinition,
-  instrumentation, or native-image substitutions. This includes Byte Buddy-backed
-  inline mocking, static mocking, construction mocking, and concrete-class mocking.
-  Prefer statically representable behavior such as public APIs and known-interface
-  JDK dynamic proxies; leave unsupported dynamic behavior untested.
+  runtime class definition or loading, runtime lambda definition, Java agent
+  self-attach, class redefinition, instrumentation, native-image substitutions,
+  URL/plugin/OSGi class loader paths, custom class loaders that introduce classes
+  not already in the native image, or classes that exist only through a custom
+  class loader. This includes Byte Buddy-backed inline mocking, static mocking,
+  construction mocking, and concrete-class mocking. Prefer statically representable
+  behavior such as public APIs.
 - Never generate, write, or modify reachability metadata or Native Image config entries. Do not create or edit `reachability-metadata.json`, `reflect-config.json`, `resource-config.json`, `proxy-config.json`, `serialization-config.json`, `jni-config.json`, `predefined-classes-config.json`, or any other file under `src/test/resources/META-INF/native-image`; Forge handles metadata generation and merging externally.
 
 Native Image execution contract (non-negotiable):

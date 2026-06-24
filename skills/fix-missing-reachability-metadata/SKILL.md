@@ -7,7 +7,7 @@ description: Fix missing GraalVM reachability metadata for a specific library. U
 
 ## Overview
 
-Run a reproduce-fix-verify loop for missing metadata errors. Keep running the target test until it passes with no new missing metadata entries.
+Run a reproduce-fix-verify loop for missing metadata errors. Keep running the target test until it passes with no new missing metadata entries. If the failure is native-image-incompatible generated test behavior rather than missing metadata, fix the test instead of adding more metadata.
 
 Library coordinates should be provided in the prompt in the format `group:artifact:version`. If you are not sure what the coordinates are, ask the user.
 
@@ -15,19 +15,23 @@ Library coordinates should be provided in the prompt in the format `group:artifa
 
 1. Reproduce the failure:
    - Run `./gradlew test -Pcoordinates=<coordinates>` from repository root.
-2. Capture the missing metadata from the error message:
+2. Classify the failure:
+   - If the failure is a `Missing*RegistrationError` or GraalVM reports matching metadata that is inactive because its condition was not satisfied, continue with metadata repair.
+   - If the failure is dynamic class loading, runtime bytecode or class definition, runtime lambda definition, URL/plugin/OSGi class loader assumptions, or a class that exists only through a custom class loader, do not keep adding metadata.
+   - For unsupported native-image behavior, remove the specific generated test method or class that exercises that unsupported native path, or rewrite it to a native-compatible public API path that still validates metadata.
+3. Capture the missing metadata from the error message:
    - Locate any `Missing*RegistrationError` (e.g. `MissingReflectionRegistrationError`, `MissingResourceRegistrationError`, or any other variant).
    - Copy the suggested JSON entry for the missing type into the corresponding section of the reachability-metadata.
-3. Choose the target file and insert the entry:
+4. Choose the target file and insert the entry:
    - Write to `metadata/<library-specific-metadata-directory>/reachability-metadata.json`.
    - Keep valid JSON and avoid duplicating an existing equivalent entry. If the type already exists but a method or field is missing, add only that method or field.
-4. Add the missing `condition` field:
+5. Add the missing `condition` field:
    - Infer it from the error stack trace.
    - Set the `condition` field to `{ "typeReached": "<class>" }`, where `<class>` is the first class on the stack trace whose package shares the leading namespace with the tested library's package.
    - Package overlap can be partial, full package equality is not required.
    - Example: tested library's group `org.hibernate.orm...` and the class from a stack trace `org.hibernate.resource...` is a valid match.
 
-5. Verify and iterate:
+6. Verify and iterate:
    - Run `./gradlew test -Pcoordinates=<coordinates>` again.
    - If another missing entry appears, repeat from step 2.
    - Finish only when the test run succeeds.
