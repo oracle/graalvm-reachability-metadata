@@ -1,0 +1,93 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "org.hibernate.validator:hibernate-validator:9.1.0.Final",
+  "issueNumber": 8397,
+  "label": "library-update-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No environment variables or system properties are needed. Generated tests should exercise the standard Jakarta Validation bootstrap/default ValidatorFactory path and should not switch to ParameterMessageInterpolator, since that bypasses the specification-compliant EL interpolation path.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "coordinate": "org.glassfish.expressly:expressly:6.0.0",
+        "kind": "dependency",
+        "reason": "Required EL implementation for Hibernate Validator's default message interpolation in Java SE tests; Hibernate Validator 9.1.0.Final does not bring an EL implementation transitively.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8397 Update existing library: org.hibernate.validator:hibernate-validator:9.1.0.Final; label=library-update-request; body_chars=6808"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "8 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 72630,
+    "issue_label": "library-update-request",
+    "issue_number": 8397,
+    "library": "org.hibernate.validator:hibernate-validator:9.1.0.Final",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 4608,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The existing 7.x scaffold uses the older org.glassfish:jakarta.el:4.0.2 dependency; Hibernate Validator 9.x documentation recommends an EL 6 implementation instead.",
+      "The reporter reproduced through Spring Boot, whose validation starter supplies Tomcat's EL implementation, but direct Hibernate Validator bootstrap should still reach the same validator/logger initialization path without adding Spring Boot."
+    ],
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.hibernate.validator:hibernate-validator:9.1.0.Final/library-preparation-preflight/pi-generation-2026-06-24T15-00-34-236539Z.log",
+    "status": "completed",
+    "summary": "Hibernate Validator 9.1.0.Final needs a Jakarta Expression Language implementation for normal Java SE validation coverage; the artifact only provides/declares the EL API as optional/provided, while the reference documentation says an EL implementation must be added outside a Jakarta EE container."
+  },
+  "libraryUpdateRoute": {
+    "baseline_coordinates": null,
+    "new_version": "9.1.0.Final",
+    "selected_driver": "improve_library_coverage"
+  },
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": 15,
+      "chunkProcessedClassCount": 7,
+      "exhaustedClasses": [
+        "org.hibernate.validator.internal.util.ConcurrentReferenceHashMap",
+        "org.hibernate.validator.internal.util.ReflectionHelper",
+        "org.hibernate.validator.internal.util.actions.GetAnnotationAttribute",
+        "org.hibernate.validator.internal.util.actions.GetDeclaredMethod",
+        "org.hibernate.validator.internal.util.actions.GetDeclaredMethodHandle",
+        "org.hibernate.validator.internal.util.actions.LoadClass",
+        "org.hibernate.validator.internal.xml.config.ResourceLoaderHelper",
+        "org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator"
+      ],
+      "iteration": 14,
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-8397-library-update-request-org.hibernate.validator-hibernate-validator-9.1.0.Final-1e76e91b",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.hibernate.validator:hibernate-validator:9.1.0.Final",
+    "timestamp": "2026-06-24T16:25:21.194267Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
