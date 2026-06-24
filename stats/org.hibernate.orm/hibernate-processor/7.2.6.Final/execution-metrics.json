@@ -110,5 +110,102 @@
       "test_file": "None",
       "metadata_file": "None"
     }
+  },
+  "add_new_library_support:2026-06-24": {
+    "timestamp": "2026-06-24T09:56:38.378790Z",
+    "library": "org.hibernate.orm:hibernate-processor:7.2.6.Final",
+    "starting_commit": "116e9566084a75cc1e96926492075ff32ebdd481",
+    "ending_commit": "99ed8c3acb9400c2795d99385f5da24f801eead0",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "7.2.6.Final",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.666667,
+            "coveredCalls": 4,
+            "totalCalls": 6
+          },
+          "resources": {
+            "coverageRatio": 0.25,
+            "coveredCalls": 1,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.5,
+        "coveredCalls": 5,
+        "totalCalls": 10
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1018,
+          "missed": 29236,
+          "ratio": 0.033648,
+          "total": 30254
+        },
+        "line": {
+          "covered": 261,
+          "missed": 7339,
+          "ratio": 0.034342,
+          "total": 7600
+        },
+        "method": {
+          "covered": 74,
+          "missed": 1284,
+          "ratio": 0.054492,
+          "total": 1358
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "action": "no_action",
+      "agent_guidance": "",
+      "applied_setup": [],
+      "deterministic_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8506 Support for org.hibernate.orm:hibernate-processor:7.2.6.Final; label=library-new-request; body_chars=863"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "input_tokens_used": 92780,
+      "issue_label": "library-new-request",
+      "issue_number": 8506,
+      "library": "org.hibernate.orm:hibernate-processor:7.2.6.Final",
+      "model": "oca/gpt-5.5",
+      "output_tokens_used": 4130,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "risks": [
+        "Meaningful coverage must actually invoke annotation processing, for example by compiling an in-memory or temporary @Entity source with JavaCompiler/javac and org.hibernate.processor.HibernateProcessor, rather than only instantiating processor classes.",
+        "Jakarta Data repository generation is an optional feature; testing that path may require a Jakarta Data API dependency, but the requested issue is about Jakarta Persistence static metamodel generation, which is already covered by transitive dependencies."
+      ],
+      "session_log_path": "/home/jovan/Work/graalvm-reachability-metadata/forge/logs/org.hibernate.orm:hibernate-processor:7.2.6.Final/library-preparation-preflight/pi-generation-2026-06-19T12-31-33-448093Z.log",
+      "status": "completed",
+      "summary": "No extra setup is required: org.hibernate.orm:hibernate-processor:7.2.6.Final is a standard javac annotation processor, and its resolved transitive dependencies already include the Jakarta Persistence API, Hibernate Core, JAXB, Jandex, validation, annotation, ANTLR, Byte Buddy, and JBoss Logging needed for static metamodel generation. It does not require a database, Docker service, environment variable, or system property for the static metamodel use case."
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 0,
+      "cost_usd": 0.0,
+      "generated_loc": 484,
+      "tested_library_loc": 261,
+      "metadata_entries": 240,
+      "test_only_metadata_entries": 3,
+      "code_coverage_percent": 3.43
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.hibernate.orm/hibernate-processor/7.2.6.Final/src/test/java/org_hibernate_orm/hibernate_processor/ResourceStreamLocatorImplTest.java",
+      "metadata_file": "metadata/org.hibernate.orm/hibernate-processor/7.2.6.Final/reachability-metadata.json"
+    }
   }
 }
