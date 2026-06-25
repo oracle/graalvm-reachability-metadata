@@ -13,8 +13,11 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.InstanciationStrategy;
@@ -168,6 +171,23 @@ public class Maven_plugin_annotationsTest {
         assertThat(completeMojo.execute()).isEqualTo("complete");
     }
 
+    @Test
+    void parameterAnnotationsCanModelTypedMojoConfigurationValues() {
+        TypedConfigurationMojo mojo = new TypedConfigurationMojo();
+
+        mojo.includes = new ArrayList<>(List.of("src/main/java", "src/generated/java"));
+        mojo.thresholds = new LinkedHashMap<>();
+        mojo.thresholds.put("compile", 1);
+        mojo.thresholds.put("test", 2);
+        mojo.skip = false;
+
+        assertThat(mojo.includes).containsExactly("src/main/java", "src/generated/java");
+        assertThat(mojo.thresholds)
+                .containsEntry("compile", 1)
+                .containsEntry("test", 2);
+        assertThat(mojo.skip).isFalse();
+    }
+
     @Mojo(name = "minimal")
     private static final class MinimalMojo {
         @Parameter
@@ -179,6 +199,18 @@ public class Maven_plugin_annotationsTest {
 
     @Execute
     private static final class MinimalLifecycleExecution {
+    }
+
+    @Mojo(name = "typed-configuration")
+    private static final class TypedConfigurationMojo {
+        @Parameter(property = "plugin.includes", required = true)
+        private List<String> includes;
+
+        @Parameter(defaultValue = "${project.properties}", readonly = true)
+        private Map<String, Integer> thresholds;
+
+        @Parameter(property = "plugin.skip", defaultValue = "false")
+        private boolean skip;
     }
 
     @Mojo(
