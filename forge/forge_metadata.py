@@ -54,6 +54,7 @@ from ai_workflows.drivers.add_new_library_support import (
     create_feature_branch_for_library,
     init_agent as init_workflow_agent,
     main as run_add_new_library_support_workflow,
+    prepare_native_image_eligible_artifact,
     run_scaffold as run_new_library_scaffold,
 )
 from ai_workflows.drivers.fix_javac_fail import (
@@ -4727,11 +4728,23 @@ def _remaining_uncovered_dynamic_access_classes(
     ]
 
 
-def _prepare_new_library_dynamic_access_report(claimed_issue: ClaimedIssue) -> None:
+def _prepare_new_library_dynamic_access_report(claimed_issue: ClaimedIssue) -> bool:
     """Run new-library setup far enough for the dispatcher dynamic-access report."""
     group, artifact, version = claimed_issue.issue_coordinates.split(":")
     with contextlib.chdir(claimed_issue.worktree_path):
         create_feature_branch_for_library(group, artifact, version)
+        if not prepare_native_image_eligible_artifact(
+            claimed_issue.worktree_path,
+            claimed_issue.issue_coordinates,
+        ):
+            log_stage(
+                "native-image-eligibility",
+                (
+                    f"{group}:{artifact} is not a Native Image metadata target; "
+                    "skipping dispatcher dynamic-access pre-scan"
+                ),
+            )
+            return False
         try:
             run_new_library_scaffold(claimed_issue.issue_coordinates)
         except ScaffoldError as exc:
@@ -4740,6 +4753,7 @@ def _prepare_new_library_dynamic_access_report(claimed_issue: ClaimedIssue) -> N
                 file=sys.stderr,
             )
             raise
+    return True
 
 
 def _prepare_library_update_dynamic_access_report(claimed_issue: ClaimedIssue) -> None:
@@ -4823,7 +4837,8 @@ def prepare_dynamic_access_chunking(
         return None
 
     if claimed_issue.label == LABEL_LIBRARY_NEW:
-        _prepare_new_library_dynamic_access_report(claimed_issue)
+        if not _prepare_new_library_dynamic_access_report(claimed_issue):
+            return None
     else:
         _prepare_library_update_dynamic_access_report(claimed_issue)
     _generate_dispatcher_dynamic_access_report(claimed_issue)

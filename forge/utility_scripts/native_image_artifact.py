@@ -159,6 +159,14 @@ def inspect_maven_artifact(coordinate: str) -> NativeImageEligibility:
         )
 
     jar_bytes = fetch_url(f"{base_url}.jar")
+    if jar_bytes is None and packaging == "pom":
+        return NativeImageEligibility(
+            True,
+            (
+                "Maven packaging is `pom` and no artifact JAR is published, "
+                "so there are no JVM class files for native-image to analyze."
+            ),
+        )
     if jar_bytes is None:
         return NativeImageEligibility(False)
 
