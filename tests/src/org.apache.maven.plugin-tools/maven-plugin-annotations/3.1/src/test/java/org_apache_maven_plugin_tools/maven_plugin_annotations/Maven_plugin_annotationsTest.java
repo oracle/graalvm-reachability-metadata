@@ -130,10 +130,11 @@ public class Maven_plugin_annotationsTest {
                 Component.class);
 
         for (Class<? extends Annotation> annotationType : annotationTypes) {
-            Retention retention = annotationType.getAnnotation(Retention.class);
+            Class<? extends Annotation> annotationTypeAnnotationAccess = annotationType;
+            Retention retention = annotationTypeAnnotationAccess.getAnnotation(Retention.class);
 
-            assertThat(annotationType.getAnnotation(Documented.class)).isNotNull();
-            assertThat(annotationType.getAnnotation(Inherited.class)).isNotNull();
+            assertThat(annotationTypeAnnotationAccess.getAnnotation(Documented.class)).isNotNull();
+            assertThat(annotationTypeAnnotationAccess.getAnnotation(Inherited.class)).isNotNull();
             assertThat(retention.value()).isEqualTo(RetentionPolicy.CLASS);
         }
     }
@@ -247,8 +248,8 @@ public class Maven_plugin_annotationsTest {
     }
 
     private static void assertAnnotationTarget(
-            Class<? extends Annotation> annotationType, ElementType target) {
-        Target targetAnnotation = annotationType.getAnnotation(Target.class);
+            Class<? extends Annotation> annotationTypeAnnotationAccess, ElementType target) {
+        Target targetAnnotation = annotationTypeAnnotationAccess.getAnnotation(Target.class);
 
         assertThat(targetAnnotation.value()).containsExactly(target);
     }
