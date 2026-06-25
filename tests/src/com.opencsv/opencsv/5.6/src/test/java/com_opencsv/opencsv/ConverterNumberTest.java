@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class ConverterNumberTest {
 
@@ -66,6 +67,8 @@ public class ConverterNumberTest {
 
     @Test
     void nonDecimalNumberFormatProviderIsRejectedWhenConverterIsCreated() {
+        assumeFalse(isNativeImageRuntime(),
+                "Native-image runtime does not route custom NumberFormatProvider fixtures through NumberFormat");
         assertThat(System.getProperty("java.locale.providers"))
                 .contains(REQUIRED_LOCALE_PROVIDER);
         assertThat(NumberFormat.getInstance(NON_DECIMAL_FORMAT_LOCALE))
@@ -100,6 +103,10 @@ public class ConverterNumberTest {
     private static ConverterNumber numberConverter(
             Class<?> type, String readFormat, String writeFormat) {
         return new ConverterNumber(type, US_LOCALE, US_LOCALE, ERROR_LOCALE, readFormat, writeFormat);
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     public static class NonDecimalNumberFormatProvider extends NumberFormatProvider {
