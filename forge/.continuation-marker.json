@@ -1,0 +1,83 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "com.beachape:enumeratum-macros_3:1.9.0",
+  "issueNumber": 5082,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Use Scala 3 test sources that define small enumeratum Enum and, if covering ValueEnumMacros, ValueEnum examples through the public enumeratum API. For Scala 3 ValueEnum coverage, configure the Scala compiler option -Yretain-trees as documented by Enumeratum; otherwise ValueEnum macro use may fail or be incomplete. Do not try to exercise EnumMacros or ValueEnumMacros directly from Java because their public signatures require Scala quoted macro internals.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "coordinate": "com.beachape:enumeratum_3:1.9.0",
+        "kind": "dependency",
+        "reason": "The documented user-facing API is com.beachape:enumeratum_3; it depends on enumeratum-macros_3 and exposes Enum/ValueEnum methods such as findValues that invoke these macros during Scala compilation.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#5082 Support for com.beachape:enumeratum-macros_3:1.9.0; label=library-new-request; body_chars=107"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 61381,
+    "issue_label": "library-new-request",
+    "issue_number": 5082,
+    "library": "com.beachape:enumeratum-macros_3:1.9.0",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 4196,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The macro implementation runs at Scala test compilation time, while native-image runtime tests may only execute the generated enum code; local Gradle and Native Image verification remain authoritative for whether this produces useful reachability coverage.",
+      "The Scala 3 compiler version in the artifact POM is 3.3.5; the repository's normal Scala 3 scaffold should use a compatible compiler."
+    ],
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/com.beachape:enumeratum-macros_3:1.9.0/library-preparation-preflight/pi-generation-2026-06-25T20-42-35-543854Z.log",
+    "status": "completed",
+    "summary": "enumeratum-macros_3 is a Scala 3 compile-time macro implementation normally reached through the public enumeratum_3 API, not by direct Java/runtime calls to the macro classes."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 2,
+      "exhaustedClasses": [
+        "enumeratum.ValueEnumMacros$",
+        "enumeratum.ValueEnumMacros$ValueOfFromExpr"
+      ],
+      "iteration": 9,
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-5082-library-new-request-com.beachape-enumeratum-macros_3-1.9.0-dfa5f8c1",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "com.beachape:enumeratum-macros_3:1.9.0",
+    "timestamp": "2026-06-25T21:27:55.514097Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
