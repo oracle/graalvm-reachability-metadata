@@ -582,7 +582,7 @@ class GateRoutingTests(unittest.TestCase):
             finalized_test_failed_task="nativeTest",
         )
         with patch("utility_scripts.native_test_verification.subprocess.run", side_effect=fake), patch(
-            "utility_scripts.native_test_verification.run_codex_metadata_fix",
+            "utility_scripts.native_test_verification.run_codex_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ) as codex_mock:
             result = ntv.verify_native_test_passes(
@@ -671,7 +671,7 @@ class GateRoutingTests(unittest.TestCase):
                 "utility_scripts.native_test_verification.subprocess.run",
                 side_effect=fake,
         ), patch(
-            "utility_scripts.native_test_verification.run_codex_metadata_fix",
+            "utility_scripts.native_test_verification.run_codex_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ), redirect_stdout(output):
             result = ntv.verify_native_test_passes(
@@ -797,7 +797,7 @@ class GateRoutingTests(unittest.TestCase):
             "utility_scripts.native_test_verification.subprocess.run",
             side_effect=merge_fails,
         ), patch(
-            "utility_scripts.native_test_verification.run_codex_metadata_fix",
+            "utility_scripts.native_test_verification.run_codex_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ) as codex_mock:
             result = ntv.verify_native_test_passes(
@@ -826,7 +826,7 @@ class GateRoutingTests(unittest.TestCase):
             "utility_scripts.native_test_verification.subprocess.run",
             side_effect=fake,
         ), patch(
-            "utility_scripts.native_test_verification.run_codex_metadata_fix",
+            "utility_scripts.native_test_verification.run_codex_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ) as codex_mock:
             result = ntv.verify_native_test_passes(
@@ -872,7 +872,7 @@ class GateRoutingTests(unittest.TestCase):
             "utility_scripts.native_test_verification.subprocess.run",
             side_effect=fake,
         ), patch(
-            "utility_scripts.native_test_verification.run_codex_metadata_fix",
+            "utility_scripts.native_test_verification.run_codex_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ), redirect_stdout(output):
             result = ntv.verify_native_test_passes(
@@ -924,7 +924,7 @@ class GateRoutingTests(unittest.TestCase):
             "utility_scripts.native_test_verification.subprocess.run",
             side_effect=_fake_run,
         ), patch(
-            "utility_scripts.native_test_verification.run_codex_metadata_fix",
+            "utility_scripts.native_test_verification.run_codex_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ), redirect_stdout(output):
             result = ntv.verify_native_test_passes(
@@ -947,7 +947,7 @@ class GateRoutingTests(unittest.TestCase):
     def test_routes_to_codex_when_budget_exhausted_with_only_172(self) -> None:
         fake, _calls = self._fake_run_factory([172, 172])
         with patch("utility_scripts.native_test_verification.subprocess.run", side_effect=fake), patch(
-            "utility_scripts.native_test_verification.run_codex_metadata_fix",
+            "utility_scripts.native_test_verification.run_codex_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ) as codex_mock:
             result = ntv.verify_native_test_passes(
@@ -977,7 +977,7 @@ class GateRoutingTests(unittest.TestCase):
         )
         output = io.StringIO()
         with patch("utility_scripts.native_test_verification.subprocess.run", side_effect=fake), patch(
-            "utility_scripts.native_test_verification.run_codex_metadata_fix",
+            "utility_scripts.native_test_verification.run_codex_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ) as codex_mock, redirect_stdout(output):
             result = ntv.verify_native_test_passes(
@@ -1003,7 +1003,7 @@ class GateRoutingTests(unittest.TestCase):
     def test_routes_to_codex_after_native_trace_failure_when_generate_metadata_fails(self) -> None:
         fake, calls = self._fake_run_factory([1], generate_metadata_rc=1)
         with patch("utility_scripts.native_test_verification.subprocess.run", side_effect=fake), patch(
-            "utility_scripts.native_test_verification.run_codex_metadata_fix",
+            "utility_scripts.native_test_verification.run_codex_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ) as codex_mock:
             result = ntv.verify_native_test_passes(
@@ -1019,7 +1019,7 @@ class GateRoutingTests(unittest.TestCase):
     def test_routes_to_codex_when_test_fails_before_native_test(self) -> None:
         fake, calls = self._fake_run_factory([], test_rc=1, test_failed_task="compileTestJava")
         with patch("utility_scripts.native_test_verification.subprocess.run", side_effect=fake), patch(
-            "utility_scripts.native_test_verification.run_codex_metadata_fix",
+            "utility_scripts.native_test_verification.run_codex_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ) as codex_mock:
             result = ntv.verify_native_test_passes(
@@ -1038,7 +1038,7 @@ class GateRoutingTests(unittest.TestCase):
                 "utility_scripts.native_test_verification.subprocess.run",
                 side_effect=fake,
         ), patch(
-            "utility_scripts.native_test_verification.run_codex_metadata_fix",
+            "utility_scripts.native_test_verification.run_codex_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ) as codex_mock:
             result = ntv.verify_native_test_passes(
@@ -1062,7 +1062,7 @@ class GateRoutingTests(unittest.TestCase):
                 "utility_scripts.native_test_verification.subprocess.run",
                 side_effect=fake,
         ), patch(
-            "utility_scripts.native_test_verification.run_codex_metadata_fix",
+            "utility_scripts.native_test_verification.run_codex_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ) as codex_mock:
             result = ntv.verify_native_test_passes(
@@ -1074,8 +1074,8 @@ class GateRoutingTests(unittest.TestCase):
 
         self.assertEqual(result.status, ntv.STATUS_PASSED_WITH_INTERVENTION)
         self.assertEqual(codex_mock.call_args.kwargs["graalvm_home"], graalvm_home)
-        self.assertEqual(codex_mock.call_args.kwargs["base_env"]["GRAALVM_HOME"], graalvm_home)
-        self.assertEqual(codex_mock.call_args.kwargs["base_env"]["JAVA_HOME"], graalvm_home)
+        self.assertEqual(codex_mock.call_args.kwargs["env"]["GRAALVM_HOME"], graalvm_home)
+        self.assertEqual(codex_mock.call_args.kwargs["env"]["JAVA_HOME"], graalvm_home)
 
     def test_failed_when_codex_does_not_converge(self) -> None:
         fake, _calls = self._fake_run_factory([1])
@@ -1083,7 +1083,7 @@ class GateRoutingTests(unittest.TestCase):
                 "utility_scripts.native_test_verification.subprocess.run",
                 side_effect=fake,
         ), patch(
-            "utility_scripts.native_test_verification.run_codex_metadata_fix",
+            "utility_scripts.native_test_verification.run_codex_native_test_fix",
             return_value=(2, "/tmp/codex.log", False),
         ):
             result = ntv.verify_native_test_passes(

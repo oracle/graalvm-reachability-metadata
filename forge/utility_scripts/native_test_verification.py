@@ -26,7 +26,6 @@ import shutil
 import subprocess
 import tempfile
 from dataclasses import dataclass, field
-from typing import Any
 
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import resolve_metadata_version
@@ -84,15 +83,108 @@ class NativeTestVerificationResult:
     intervention_records: list[InterventionRecord] = field(default_factory=list)
 
 
-def run_codex_metadata_fix(*args: Any, **kwargs: Any) -> tuple[int, str, bool]:
-    """Lazy wrapper around Codex repair to avoid workflow import cycles."""
-    from ai_workflows.core.fix_metadata_codex import run_codex_metadata_fix as _run_codex_metadata_fix
-
-    return _run_codex_metadata_fix(*args, **kwargs)
-
-
 DEFAULT_CYCLE_TIMEOUT_SECONDS = 30 * 60
 DEFAULT_MAX_ITERATIONS = 40
+
+# Quick Codex fixup used as the terminal gate recovery. Unlike the metadata-only
+# ``fix_metadata_codex`` path (kept for the metadata-fix workflows), this lets the
+# agent either repair reachability metadata or remove a native-image-unsupported
+# generated test, then re-run until the native test passes.
+_CODEX_MODEL_NAME = "oca/gpt-5.4"
+_CODEX_FIX_TIMEOUT_SECONDS = 30 * 60
+
+
+def run_codex_native_test_fix(
+        repo_path: str,
+        coordinates: str,
+        reproduction_command: str,
+        env: dict[str, str],
+        graalvm_home: str | None = None,
+        failure_log_path: str | None = None,
+) -> tuple[int, str, bool]:
+    """Run a quick Codex fixup for a failing native test.
+
+    Returns ``(return_code, log_path, timed_out)``. The reproduction command and
+    GraalVM home are pinned to the environment that produced the failed native
+    run so Codex verifies with the exact same distribution.
+    """
+    log_path = build_timestamped_task_log_path(_LOG_TASK_TYPE, coordinates, "codex-fix")
+    prompt = _build_native_test_fix_prompt(
+        coordinates, reproduction_command, graalvm_home, failure_log_path
+    )
+    command = [
+        "codex", "exec",
+        "--dangerously-bypass-approvals-and-sandbox",
+        "--json",
+        "-c", 'reasoning.effort="high"',
+        "-m", _CODEX_MODEL_NAME,
+        prompt,
+    ]
+    print(f"[Codex running... Output: {display_log_path(log_path)}]")
+    try:
+        with open(log_path, "w", encoding="utf-8") as log_file:
+            result = subprocess.run(
+                command,
+                cwd=repo_path,
+                env=env,
+                stdout=log_file,
+                stderr=subprocess.STDOUT,
+                timeout=_CODEX_FIX_TIMEOUT_SECONDS,
+                check=False,
+            )
+    except subprocess.TimeoutExpired:
+        print(
+            f"ERROR: Codex native-test fix timed out after {_CODEX_FIX_TIMEOUT_SECONDS} seconds "
+            f"for {coordinates}.",
+        )
+        return (1, log_path, True)
+    if result.returncode != 0:
+        print(
+            f"ERROR: Codex native-test fix failed for {coordinates} with exit code {result.returncode}.",
+        )
+    return (result.returncode, log_path, False)
+
+
+def _build_native_test_fix_prompt(
+        coordinates: str,
+        reproduction_command: str,
+        graalvm_home: str | None,
+        failure_log_path: str | None,
+) -> str:
+    """Build the diagnose-first prompt for the quick native-test Codex fixup."""
+    lines = [
+        f"Reproduce the failure first and read the FULL stack trace, including every `Caused by:`",
+        "line, to find the real cause before changing anything.",
+        "- If the cause is missing or inactive-condition for metadata, fix that condition.",
+        "- If the cause is native-image-unsupported behavior (dynamic class loading, runtime bytecode",
+        "  or class definition, runtime lambda definition, URL/plugin/OSGi class-loader assumptions,",
+        "  or a class reachable only through a custom class loader), Remove the",
+        "  generated test that exercises it, or rewrite it to a native-compatible public-API path that",
+        "  still validates metadata.",
+        "Re-run the reproduce command after each change and keep running until the test passes.",
+        "Do not use any skill for this."
+    ]
+    if graalvm_home:
+        lines += [
+            "",
+            "Use this exact GraalVM for every command; do not switch to another that appears on PATH:",
+            f"- GRAALVM_HOME={graalvm_home}",
+            f"- JAVA_HOME={graalvm_home}",
+        ]
+    lines += [
+        "",
+        "Reproduce with:",
+        reproduction_command,
+    ]
+    if failure_log_path:
+        lines += [
+            "",
+            "Failure output excerpt:",
+            "```text",
+            _extract_failure_log_tail(failure_log_path),
+            "```",
+        ]
+    return "\n".join(lines)
 
 
 def verify_native_test_passes(
@@ -164,12 +256,13 @@ def verify_native_test_passes(
             f"{stage}: {reason}; routing to codex (terminal)",
         )
         require_complete_reachability_repo(reachability_repo_path)
-        codex_rc, codex_log_path, codex_timed_out = run_codex_metadata_fix(
+        codex_rc, codex_log_path, codex_timed_out = run_codex_native_test_fix(
             reachability_repo_path,
             coordinate,
             reproduction_command=reproduction_command,
+            env=command_env,
             graalvm_home=required_graalvm_home,
-            base_env=command_env,
+            failure_log_path=last_log_path,
         )
         intervention_records.append(
             InterventionRecord(
