@@ -1,27 +1,17 @@
 {
-  "timestamp": "2026-06-25T18:05:27.291336Z",
+  "timestamp": "2026-06-25T22:45:00.093142Z",
   "library": "org.xerial.snappy:snappy-java:1.0.4.1",
-  "starting_commit": "0454d4af108aa468b5d33d5c3874052ab51e6feb",
-  "ending_commit": "0454d4af108aa468b5d33d5c3874052ab51e6feb",
+  "starting_commit": "cfd2c6a41849fcb3ccf2ae7288abed3733b87bb9",
+  "ending_commit": "39869189245535bf7725a3b33156cadb5b577469",
   "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
   "agent": "pi",
   "model": "oca/gpt-5.5",
   "status": "failure",
   "library_preparation_preflight": {
-    "status": "completed",
     "action": "advisory_preparation",
-    "issue_number": 1296,
-    "issue_label": "library-new-request",
-    "library": "org.xerial.snappy:snappy-java:1.0.4.1",
-    "summary": "org.xerial.snappy:snappy-java:1.0.4.1 has no required runtime dependencies or services, but its old native-loader path reflectively opens ClassLoader#defineClass and fails on modular JDKs unless the test JVM opens java.lang.",
-    "deterministic_setup": [],
     "agent_guidance": "Configure the generated JVM test task to run with `--add-opens=java.base/java.lang=ALL-UNNAMED` before exercising `org.xerial.snappy.Snappy`, `SnappyInputStream`, or `SnappyOutputStream`. On JDK 24+ also consider `--enable-native-access=ALL-UNNAMED` for the JNI `System.load` path documented by snappy-java, though local Gradle/Native Image verification remains authoritative.",
-    "risks": [
-      "The artifact bundles JNI native libraries and extracts/loads them at runtime; meaningful tests can be in-memory compression/decompression, but native-image may still need reachability metadata for bundled native resources and JNI access.",
-      "The POM only declares test/provided dependencies such as JUnit, xerial-core, plexus-classworlds, and OSGi core; normal Snappy API usage does not require adding them.",
-      "Version 1.0.4.1 only bundles older platform native libraries such as Linux amd64/i386, Mac x86/x86_64, and Windows x86/amd64, so non-x86 platforms are a portability risk."
-    ],
     "applied_setup": [],
+    "deterministic_setup": [],
     "input_evidence": [
       {
         "name": "issue",
@@ -32,19 +22,29 @@
         "summary": "0 existing test file path(s) included"
       }
     ],
-    "model": "oca/gpt-5.5",
     "input_tokens_used": 27783,
+    "issue_label": "library-new-request",
+    "issue_number": 1296,
+    "library": "org.xerial.snappy:snappy-java:1.0.4.1",
+    "model": "oca/gpt-5.5",
     "output_tokens_used": 4098,
     "prompt_path": "library-preflight-prompt.txt",
     "raw_response_path": "library-preflight-response.txt",
-    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.xerial.snappy:snappy-java:1.0.4.1/library-preparation-preflight/pi-generation-2026-06-25T17-40-20-199139Z.log"
+    "risks": [
+      "The artifact bundles JNI native libraries and extracts/loads them at runtime; meaningful tests can be in-memory compression/decompression, but native-image may still need reachability metadata for bundled native resources and JNI access.",
+      "The POM only declares test/provided dependencies such as JUnit, xerial-core, plexus-classworlds, and OSGi core; normal Snappy API usage does not require adding them.",
+      "Version 1.0.4.1 only bundles older platform native libraries such as Linux amd64/i386, Mac x86/x86_64, and Windows x86/amd64, so non-x86 platforms are a portability risk."
+    ],
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.xerial.snappy:snappy-java:1.0.4.1/library-preparation-preflight/pi-generation-2026-06-25T17-40-20-199139Z.log",
+    "status": "completed",
+    "summary": "org.xerial.snappy:snappy-java:1.0.4.1 has no required runtime dependencies or services, but its old native-loader path reflectively opens ClassLoader#defineClass and fails on modular JDKs unless the test JVM opens java.lang."
   },
   "metrics": {
-    "input_tokens_used": 189238,
-    "cached_input_tokens_used": 2445824,
-    "output_tokens_used": 24908,
-    "iterations": 3,
-    "cost_usd": 1.9701,
+    "input_tokens_used": 452199,
+    "cached_input_tokens_used": 4575232,
+    "output_tokens_used": 47136,
+    "iterations": 5,
+    "cost_usd": 3.7016,
     "generated_loc": 0,
     "tested_library_loc": 0,
     "metadata_entries": 0,

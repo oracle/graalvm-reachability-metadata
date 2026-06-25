@@ -1,21 +1,534 @@
-> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
-> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
-> Task :tck-build-logic:compileJava UP-TO-DATE
-> Task :tck-build-logic:compileGroovy UP-TO-DATE
-> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
-> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
-> Task :tck-build-logic:processResources UP-TO-DATE
-> Task :tck-build-logic:classes UP-TO-DATE
-> Task :tck-build-logic:jar UP-TO-DATE
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1296-85266a4d/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1296-85266a4d/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
 
 > Configure project :
 GraalVM Reachability Metadata TCK
 ---------------------------------
 
 > Task :discoverArtifactMetadata
-Skipping org.xerial.snappy:snappy-java:1.0.4.1 because discovered metadata already exists at /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1296-2f8a2dee/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json.
+Reading additional input from stdin...
+OpenAI Codex v0.133.0
+--------
+workdir: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1296-85266a4d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f00d8-135e-7961-b73a-f4cf197da641
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.xerial.snappy:snappy-java:1.0.4.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "1.0.4.1" when "$version$" is replaced with "1.0.4.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
 
-[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1296-2f8a2dee/build/reports/problems/problems-report.html
+Update this file directly:
+- File: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1296-85266a4d/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "org.xerial.snappy:snappy-java:1.0.4.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.0.4.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven Central and the upstream repo, then patch only the requested JSON file.
+exec
+/usr/bin/zsh -lc "pwd && ls -l build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json && sed -n '1,160p' build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1296-85266a4d
+ succeeded in 0ms:
+/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1296-85266a4d
+-rw-rw-r-- 1 mihailo mihailo 62 Jun 26 00:13 build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json
+{
+  "coordinates" : "org.xerial.snappy:snappy-java:1.0.4.1"
+}
+
+exec
+/usr/bin/zsh -lc "rg -n 'org\\.xerial\\.snappy|snappy-java' metadata build/discovered-artifact-metadata tests docs -g '*.json' -g '*.md'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1296-85266a4d
+ succeeded in 147ms:
+tests/src/org.xerial.snappy/snappy-java/1.0.4.1/user-code-filter.json:7:      "includeClasses": "org.xerial.snappy.**"
+metadata/org.xerial.snappy/snappy-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/$version$/snappy-java-$version$-sources.jar",
+metadata/org.xerial.snappy/snappy-java/index.json:6:    "repository-url" : "https://github.com/xerial/snappy-java",
+metadata/org.xerial.snappy/snappy-java/index.json:7:    "test-code-url" : "https://github.com/xerial/snappy-java/tree/snappy-java-$version$/src/test/java",
+metadata/org.xerial.snappy/snappy-java/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/$version$/snappy-java-$version$-javadoc.jar",
+metadata/org.xerial.snappy/snappy-java/index.json:9:    "description" : "snappy-java provides Java bindings and a packaged native implementation for Google's Snappy compression codec. It lets JVM applications compress and decompress byte arrays, streams, and files with Snappy's high-speed format.",
+metadata/org.xerial.snappy/snappy-java/index.json:14:      "org.xerial.snappy"
+
+web search: 
+web search: Maven Central org.xerial.snappy snappy-java 1.0.4.1 sources jar javadoc
+codex
+The repo already has a matching metadata entry for this coordinate, but I’m checking the upstream artifacts before copying it so the Maven-vs-tag preference is applied correctly.
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/1.0.4.1/ | sed -n '1,220p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1296-85266a4d
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/1.0.4.1/snappy-java-1.0.4.1.pom | sed -n '1,220p'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1296-85266a4d
+exec
+/usr/bin/zsh -lc "git ls-remote --tags https://github.com/xerial/snappy-java.git 'refs/tags/*1.0.4.1*'" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1296-85266a4d
+ succeeded in 171ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.xerial.snappy</groupId>
+  <artifactId>snappy-java</artifactId>
+  <version>1.0.4.1</version>
+  <name>Snappy for Java</name>
+  <description>snappy-java: A fast compression/decompression library</description>
+  <packaging>bundle</packaging>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>leo</id>
+      <name>Taro L. Saito</name>
+      <email>leo@xerial.org</email>
+      <organization>Xerial Project</organization>
+      <roles>
+        <role>Architect</role>
+        <role>Project Manager</role>
+        <role>Chief Developer</role>
+      </roles>
+      <timezone>+9</timezone>
+    </developer>
+  </developers>
+
+  <organization>
+  	<name>xerial.org</name>
+  	<url>http://www.xerial.org/</url>
+  </organization>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>org/xerial/snappy/VERSION</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>org/xerial/snappy/*.bytecode</include>
+          <include>org/xerial/snappy/native/**</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>${basedir}</directory>
+        <targetPath>META-INF/maven/${project.groupId}/${project.artifactId}</targetPath>
+        <includes>
+          <include>LICENSE*</include>
+        </includes>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <directory>src/test/java</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </testResource>
+      <testResource>
+        <directory>src/test/resources</directory>
+      </testResource>
+    </testResources>
+
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.5</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.0.2</version>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+          <!-- do not run site-deploy goal, included in the default settings -->
+          <goals>deploy</goals>
+          <connectionUrl>scm:hg:https://snappy-java.googlecode.com/hg/</connectionUrl>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.8</version>
+        <configuration>
+          <charset>UTF-8</charset>
+          <locale>en_US</locale>
+          <show>public</show>
+          <stylesheetfile>stylesheet.css</stylesheetfile>
+        </configuration>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.1.2</version>
+        <configuration>
+          <excludeResources>true</excludeResources>
+        </configuration>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>2.3.4</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+            <Bundle-Name>${pproject.name}</Bundle-Name>
+            <Bundle-Version>${project.version}</Bundle-Version>
+            <Bundle-Activator>org.xerial.snappy.SnappyBundleActivator</Bundle-Activator>
+            <Export-Package>org.xerial.snappy</Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2.1</version>
+        <configuration>
+          <descriptors>
+            <descriptor>src/assembly/project.xml</descriptor>
+          </descriptors>
+          <appendAssemblyId>false</appendAssemblyId>
+          <attach>false</attach>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-external</artifactId>
+        <version>1.0-beta-7</version>
+      </extension>
+    </extensions>
+
+  </build>
+
+
+  <url>http://code.google.com/p/snappy-java/</url>
+  <issueManagement>
+  	<system>Google Code</system>
+  	<url>http://code.google.com/p/snappy-java/issues/list</url>
+  </issueManagement>
+  <inceptionYear>2011</inceptionYear>
+  <scm>
+    <connection>scm:hg:https://snappy-java.googlecode.com/hg/</connection>
+    <developerConnection>scm:hg:default</developerConnection>
+    <url>scm:hg:https://snappy-java.googlecode.com/hg/</url>
+  </scm>
+
+  <distributionManagement>
+    <!-- for development releases -->
+    <site>
+      <id>xerial.scp</id>
+      <url>scpexe://www.xerial.org/home/web/maven.xerial.org/repository/site</url>
+    </site>
+    <repository>
+      <id>xerial.scp</id>
+      <name>Xerial Maven Repository</name>
+      <url>scpexe://www.xerial.org/home/web/maven.xerial.org/repository/artifact</url>
+    </repository>
+    <snapshotRepository>
+
+ succeeded in 175ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/xerial/snappy/snappy-java/1.0.4.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/xerial/snappy/snappy-java/1.0.4.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="snappy-java-1.0.4.1-javadoc.jar" title="snappy-java-1.0.4.1-javadoc.jar">snappy-java-1.0.4.1-javadoc.jar</a>                   2011-10-05 01:35     88436      
+<a href="snappy-java-1.0.4.1-javadoc.jar.md5" title="snappy-java-1.0.4.1-javadoc.jar.md5">snappy-java-1.0.4.1-javadoc.jar.md5</a>               2011-10-05 01:35        32      
+<a href="snappy-java-1.0.4.1-javadoc.jar.sha1" title="snappy-java-1.0.4.1-javadoc.jar.sha1">snappy-java-1.0.4.1-javadoc.jar.sha1</a>              2011-10-05 01:35        40      
+<a href="snappy-java-1.0.4.1-sources.jar" title="snappy-java-1.0.4.1-sources.jar">snappy-java-1.0.4.1-sources.jar</a>                   2011-10-05 01:35     27078      
+<a href="snappy-java-1.0.4.1-sources.jar.md5" title="snappy-java-1.0.4.1-sources.jar.md5">snappy-java-1.0.4.1-sources.jar.md5</a>               2011-10-05 01:35        32      
+<a href="snappy-java-1.0.4.1-sources.jar.sha1" title="snappy-java-1.0.4.1-sources.jar.sha1">snappy-java-1.0.4.1-sources.jar.sha1</a>              2011-10-05 01:35        40      
+<a href="snappy-java-1.0.4.1.jar" title="snappy-java-1.0.4.1.jar">snappy-java-1.0.4.1.jar</a>                           2011-10-05 01:35    995968      
+<a href="snappy-java-1.0.4.1.jar.md5" title="snappy-java-1.0.4.1.jar.md5">snappy-java-1.0.4.1.jar.md5</a>                       2011-10-05 01:35        32      
+<a href="snappy-java-1.0.4.1.jar.sha1" title="snappy-java-1.0.4.1.jar.sha1">snappy-java-1.0.4.1.jar.sha1</a>                      2011-10-05 01:35        40      
+<a href="snappy-java-1.0.4.1.pom" title="snappy-java-1.0.4.1.pom">snappy-java-1.0.4.1.pom</a>                           2011-10-05 01:35      9273      
+<a href="snappy-java-1.0.4.1.pom.md5" title="snappy-java-1.0.4.1.pom.md5">snappy-java-1.0.4.1.pom.md5</a>                       2011-10-05 01:35        32      
+<a href="snappy-java-1.0.4.1.pom.sha1" title="snappy-java-1.0.4.1.pom.sha1">snappy-java-1.0.4.1.pom.sha1</a>                      2011-10-05 01:35        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 645ms:
+487f82d753e98b20e69595b5b7f3e0fc3426ac88	refs/tags/snappy-java-1.0.4.1
+
+web search: 
+web search: https://github.com/xerial/snappy-java/tree/snappy-java-1.0.4.1/src/test/java
+web search: 
+web search: repo1.maven.org org/xerial/snappy/snappy-java/1.0.4.1 snappy-java-1.0.4.1-sources.jar
+codex
+Maven Central has the main, sources, and javadoc jars for `1.0.4.1`, but no test-sources jar in that version directory. The GitHub tag `snappy-java-1.0.4.1` exists and contains `src/test/java`, so I’ll use Maven for source/docs and the tag for tests.
+apply patch
+patch: completed
+/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1296-85266a4d/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json
+diff --git a/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json b/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json
+index f247ac0704ddc645dcb521e03d0e4ea8dad0cc18..6f406d015c35455f27a76cec99919dedf7db6456
+--- a/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json
++++ b/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.xerial.snappy:snappy-java:1.0.4.1"
++  "coordinates" : "org.xerial.snappy:snappy-java:1.0.4.1",
++  "repository-url" : "https://github.com/xerial/snappy-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/$version$/snappy-java-$version$-sources.jar",
++  "test-code-url" : "https://github.com/xerial/snappy-java/tree/snappy-java-$version$/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/$version$/snappy-java-$version$-javadoc.jar",
++  "description" : "snappy-java provides Java bindings and a packaged native implementation for Google's Snappy compression codec. It lets JVM applications compress and decompress byte arrays, streams, and files with Snappy's high-speed format."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json b/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json
+index f247ac0704ddc645dcb521e03d0e4ea8dad0cc18..6f406d015c35455f27a76cec99919dedf7db6456
+--- a/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json
++++ b/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.xerial.snappy:snappy-java:1.0.4.1"
++  "coordinates" : "org.xerial.snappy:snappy-java:1.0.4.1",
++  "repository-url" : "https://github.com/xerial/snappy-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/$version$/snappy-java-$version$-sources.jar",
++  "test-code-url" : "https://github.com/xerial/snappy-java/tree/snappy-java-$version$/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/$version$/snappy-java-$version$-javadoc.jar",
++  "description" : "snappy-java provides Java bindings and a packaged native implementation for Google's Snappy compression codec. It lets JVM applications compress and decompress byte arrays, streams, and files with Snappy's high-speed format."
+ }
+
+codex
+The JSON is patched. I’m doing a quick syntax check and confirming the rendered URLs resolve for version `1.0.4.1`.
+exec
+/usr/bin/zsh -lc 'jq . build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1296-85266a4d
+ succeeded in 0ms:
+{
+  "coordinates": "org.xerial.snappy:snappy-java:1.0.4.1",
+  "repository-url": "https://github.com/xerial/snappy-java",
+  "source-code-url": "https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/$version$/snappy-java-$version$-sources.jar",
+  "test-code-url": "https://github.com/xerial/snappy-java/tree/snappy-java-$version$/src/test/java",
+  "documentation-url": "https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/$version$/snappy-java-$version$-javadoc.jar",
+  "description": "snappy-java provides Java bindings and a packaged native implementation for Google's Snappy compression codec. It lets JVM applications compress and decompress byte arrays, streams, and files with Snappy's high-speed format."
+}
+
+exec
+/usr/bin/zsh -lc "for url in 'https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/1.0.4.1/snappy-java-1.0.4.1-sources.jar' 'https://github.com/xerial/snappy-java/tree/snappy-java-1.0.4.1/src/test/java' 'https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/1.0.4.1/snappy-java-1.0.4.1-javadoc.jar'; do curl -fsSI -L \""'$url" | sed -n '"'1p;/"'^location:/Ip;/''^content-type:/Ip'"'; done" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1296-85266a4d
+diff --git a/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json b/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json
+index f247ac0704ddc645dcb521e03d0e4ea8dad0cc18..6f406d015c35455f27a76cec99919dedf7db6456
+--- a/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json
++++ b/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.xerial.snappy:snappy-java:1.0.4.1"
++  "coordinates" : "org.xerial.snappy:snappy-java:1.0.4.1",
++  "repository-url" : "https://github.com/xerial/snappy-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/$version$/snappy-java-$version$-sources.jar",
++  "test-code-url" : "https://github.com/xerial/snappy-java/tree/snappy-java-$version$/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/$version$/snappy-java-$version$-javadoc.jar",
++  "description" : "snappy-java provides Java bindings and a packaged native implementation for Google's Snappy compression codec. It lets JVM applications compress and decompress byte arrays, streams, and files with Snappy's high-speed format."
+ }
+
+ succeeded in 1089ms:
+HTTP/2 200 
+content-type: application/java-archive
+HTTP/2 200 
+content-type: text/html; charset=utf-8
+HTTP/2 200 
+content-type: application/java-archive
+
+codex
+The URL checks returned `200` for sources, tests, and javadoc, and `jq` accepts the file. I’ll inspect the final diff once before wrapping up.
+exec
+/usr/bin/zsh -lc 'git diff -- build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json' in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1296-85266a4d
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json b/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json
+index f247ac0704ddc645dcb521e03d0e4ea8dad0cc18..6f406d015c35455f27a76cec99919dedf7db6456
+--- a/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json
++++ b/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.xerial.snappy:snappy-java:1.0.4.1"
++  "coordinates" : "org.xerial.snappy:snappy-java:1.0.4.1",
++  "repository-url" : "https://github.com/xerial/snappy-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/$version$/snappy-java-$version$-sources.jar",
++  "test-code-url" : "https://github.com/xerial/snappy-java/tree/snappy-java-$version$/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/$version$/snappy-java-$version$-javadoc.jar",
++  "description" : "snappy-java provides Java bindings and a packaged native implementation for Google's Snappy compression codec. It lets JVM applications compress and decompress byte arrays, streams, and files with Snappy's high-speed format."
+ }
+
+codex
+`git diff` is empty because this build metadata path appears to be ignored or otherwise not tracked in the worktree. I’m checking status for the exact file so I can report the real state accurately.
+exec
+/usr/bin/zsh -lc "git status --short -- build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json && git ls-files --stage -- build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json && sed -n '1,120p' build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json" in /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1296-85266a4d
+diff --git a/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json b/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json
+index f247ac0704ddc645dcb521e03d0e4ea8dad0cc18..6f406d015c35455f27a76cec99919dedf7db6456
+--- a/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json
++++ b/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.xerial.snappy:snappy-java:1.0.4.1"
++  "coordinates" : "org.xerial.snappy:snappy-java:1.0.4.1",
++  "repository-url" : "https://github.com/xerial/snappy-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/$version$/snappy-java-$version$-sources.jar",
++  "test-code-url" : "https://github.com/xerial/snappy-java/tree/snappy-java-$version$/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/$version$/snappy-java-$version$-javadoc.jar",
++  "description" : "snappy-java provides Java bindings and a packaged native implementation for Google's Snappy compression codec. It lets JVM applications compress and decompress byte arrays, streams, and files with Snappy's high-speed format."
+ }
+
+ succeeded in 146ms:
+{
+  "coordinates" : "org.xerial.snappy:snappy-java:1.0.4.1",
+  "repository-url" : "https://github.com/xerial/snappy-java",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/$version$/snappy-java-$version$-sources.jar",
+  "test-code-url" : "https://github.com/xerial/snappy-java/tree/snappy-java-$version$/src/test/java",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/$version$/snappy-java-$version$-javadoc.jar",
+  "description" : "snappy-java provides Java bindings and a packaged native implementation for Google's Snappy compression codec. It lets JVM applications compress and decompress byte arrays, streams, and files with Snappy's high-speed format."
+}
+
+web search: 
+web search: https://github.com/xerial/snappy-java/tree/snappy-java-1.0.4.1/src/test/java
+web search: 
+web search: "snappy-java-1.0.4.1-sources.jar"
+codex
+Updated [org.xerial.snappy-snappy-java-1.0.4.1.json](/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1296-85266a4d/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json).
+
+I used Maven Central for sources and javadocs because `1.0.4.1` publishes `-sources.jar` and `-javadoc.jar`, and used the upstream `snappy-java-1.0.4.1` GitHub tag for tests. ([repo1.maven.org](https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/1.0.4.1/?utm_source=openai)) No `language` field was added because this is a Java/JVM library, and no `not-for-native-image` fields were added because it remains a JVM artifact usable from JVM code.
+diff --git a/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json b/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json
+index f247ac0704ddc645dcb521e03d0e4ea8dad0cc18..6f406d015c35455f27a76cec99919dedf7db6456
+--- a/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json
++++ b/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.xerial.snappy:snappy-java:1.0.4.1"
++  "coordinates" : "org.xerial.snappy:snappy-java:1.0.4.1",
++  "repository-url" : "https://github.com/xerial/snappy-java",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/$version$/snappy-java-$version$-sources.jar",
++  "test-code-url" : "https://github.com/xerial/snappy-java/tree/snappy-java-$version$/src/test/java",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/$version$/snappy-java-$version$-javadoc.jar",
++  "description" : "snappy-java provides Java bindings and a packaged native implementation for Google's Snappy compression codec. It lets JVM applications compress and decompress byte arrays, streams, and files with Snappy's high-speed format."
+ }
+
+tokens used
+48,618
+Updated [org.xerial.snappy-snappy-java-1.0.4.1.json](/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1296-85266a4d/build/discovered-artifact-metadata/org.xerial.snappy-snappy-java-1.0.4.1.json).
+
+I used Maven Central for sources and javadocs because `1.0.4.1` publishes `-sources.jar` and `-javadoc.jar`, and used the upstream `snappy-java-1.0.4.1` GitHub tag for tests. ([repo1.maven.org](https://repo1.maven.org/maven2/org/xerial/snappy/snappy-java/1.0.4.1/?utm_source=openai)) No `language` field was added because this is a Java/JVM library, and no `not-for-native-image` fields were added because it remains a JVM artifact usable from JVM code.
+Ran agent for org.xerial.snappy:snappy-java:1.0.4.1 (exit 0). Log: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1296-85266a4d/build/agent-artifact-discovery-logs/org.xerial.snappy-snappy-java-1.0.4.1.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/1296-85266a4d/build/reports/problems/problems-report.html
 
 Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
 
@@ -23,5 +536,5 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD SUCCESSFUL in 3s
-9 actionable tasks: 1 executed, 8 up-to-date
+BUILD SUCCESSFUL in 2m 25s
+9 actionable tasks: 9 executed

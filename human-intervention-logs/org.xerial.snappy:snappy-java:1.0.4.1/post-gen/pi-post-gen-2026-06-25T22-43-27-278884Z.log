@@ -1,0 +1,8 @@
+Done.
+
+- Wrote report: `post-gen-interventions/org.xerial.snappy_snappy-java_1.0.4.1.md`
+- Removed remaining generated test-only file: `tests/src/org.xerial.snappy/snappy-java/1.0.4.1/user-code-filter.json`
+- The generated test project files are now deleted.
+- I did not modify metadata files.
+
+Root cause: the native failures are not metadata-related. `snappy-java` `1.0.4.1` depends on runtime native-loader bytecode injection/class definition through `SnappyNativeLoader.bytecode`, which is unsupported native-image behavior. The final Gradle “No matching coordinates” failure is a consequence of the coordinate already being removed/not-for-native-image classified, not a missing reachability metadata error.
