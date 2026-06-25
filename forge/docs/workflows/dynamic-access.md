@@ -521,7 +521,9 @@ whether to invoke the normal workflow or the chunked workflow:
 
 1. Claim the issue normally and keep the project item in `In Progress`.
 2. Run setup far enough to generate or refresh the dynamic-access report for
-   the target coordinate.
+   the target coordinate. For new-library issues, this setup first applies the
+   Native Image eligibility gate and stops before scaffold when the artifact is
+   marked `not-for-native-image` (§WF-forge-workflow-drivers).
 3. If the number of uncovered classes is within the configured threshold, invoke
    the normal orchestration script without chunk flags.
 4. If the uncovered class count is greater than the threshold, add the
