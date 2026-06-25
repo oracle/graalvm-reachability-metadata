@@ -51,6 +51,8 @@ public class SnappyLoaderTest {
             assertThat(Files.size(extractedLibrary)).isGreaterThan(0L);
         } catch (Error error) {
             rethrowUnlessUnsupportedDynamicClassDefinition(error);
+        } finally {
+            System.clearProperty(SnappyLoader.KEY_SNAPPY_TEMPDIR);
         }
     }
 
