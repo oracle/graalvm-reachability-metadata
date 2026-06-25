@@ -29,6 +29,10 @@ def skipJacoco = providers.gradleProperty("skipJacoco").map { it.toBoolean() }.g
 repositories {
     mavenLocal()
     mavenCentral()
+    maven {
+        name = "Confluent"
+        url = uri("https://packages.confluent.io/maven/")
+    }
 }
 
 Integer explicitTestJvmVersion(File buildFile) {

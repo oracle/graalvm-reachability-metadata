@@ -16,6 +16,13 @@ index and stats validation, reporting, CI matrix generation, and packaging
 resolves the selected coordinates and delegates each one to the per-coordinate
 layer.
 
+The harness resolves public library artifacts from Maven Central first. When a
+target artifact or transitive dependency is not present there, Gradle may fall
+through to the Confluent Maven repository at
+`https://packages.confluent.io/maven/`. Confluent publishes some artifacts and
+their transitive dependencies under non-`io.confluent` groups, so the fallback
+is intentionally available for any dependency after Maven Central is tried.
+
 ## 2. Per-coordinate layer
 
 For each selected coordinate the harness delegates to a separate Gradle build
