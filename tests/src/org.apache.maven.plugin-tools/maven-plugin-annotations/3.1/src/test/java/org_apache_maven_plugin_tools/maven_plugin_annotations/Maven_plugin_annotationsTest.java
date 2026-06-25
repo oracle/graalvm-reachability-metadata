@@ -6,6 +6,13 @@
  */
 package org_apache_maven_plugin_tools.maven_plugin_annotations;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.maven.plugins.annotations.Component;
@@ -112,6 +119,31 @@ public class Maven_plugin_annotationsTest {
     }
 
     @Test
+    void annotationTypesExposeClassFileRetentionForMavenDescriptorExtraction() {
+        List<Class<? extends Annotation>> annotationTypes = List.of(
+                Mojo.class,
+                Execute.class,
+                Parameter.class,
+                Component.class);
+
+        for (Class<? extends Annotation> annotationType : annotationTypes) {
+            Retention retention = annotationType.getAnnotation(Retention.class);
+
+            assertThat(annotationType.getAnnotation(Documented.class)).isNotNull();
+            assertThat(annotationType.getAnnotation(Inherited.class)).isNotNull();
+            assertThat(retention.value()).isEqualTo(RetentionPolicy.CLASS);
+        }
+    }
+
+    @Test
+    void annotationTypesDeclareSupportedJavaProgramElements() {
+        assertAnnotationTarget(Mojo.class, ElementType.TYPE);
+        assertAnnotationTarget(Execute.class, ElementType.TYPE);
+        assertAnnotationTarget(Parameter.class, ElementType.FIELD);
+        assertAnnotationTarget(Component.class, ElementType.FIELD);
+    }
+
+    @Test
     void annotationTypesCanDescribeMojoClassesUsingRequiredAndDefaultedElements() {
         MinimalMojo minimalMojo = new MinimalMojo();
         MinimalLifecycleExecution minimalLifecycleExecution = new MinimalLifecycleExecution();
@@ -180,6 +212,13 @@ public class Maven_plugin_annotationsTest {
         private String execute() {
             return "complete";
         }
+    }
+
+    private static void assertAnnotationTarget(
+            Class<? extends Annotation> annotationType, ElementType target) {
+        Target targetAnnotation = annotationType.getAnnotation(Target.class);
+
+        assertThat(targetAnnotation.value()).containsExactly(target);
     }
 
     private interface NamedService {
