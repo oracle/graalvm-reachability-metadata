@@ -7,13 +7,24 @@
 package io_mockk.mockk_jvm
 
 import io.mockk.impl.InternalPlatform
+import io.mockk.impl.JvmMockKGateway
 import io.mockk.impl.platform.JvmWeakConcurrentMap
 import io.mockk.proxy.MockKAgentFactory
 import io.mockk.proxy.jvm.JvmMockKAgentFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Timeout
 
 public class InternalPlatformTest {
+    @Test
+    @Timeout(60)
+    fun initializesJvmGatewayThroughPluginLoader(): Unit {
+        val gateway: JvmMockKGateway = JvmMockKGateway()
+
+        assertThat(gateway.mockFactory).isNotNull()
+        assertThat(gateway.clearer).isNotNull()
+    }
+
     @Test
     fun loadsJvmAgentPluginByClassName(): Unit {
         val explicitPlugin: MockKAgentFactory = InternalPlatform.loadPlugin(
