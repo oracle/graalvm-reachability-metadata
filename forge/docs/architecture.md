@@ -89,7 +89,8 @@ VM isolation lives at the worker and orchestration boundary
 prompts. The opt-in flag is `--incus` on `forge_metadata.py`, forwarded by the
 `do-work.sh` / `do_up_to_date_work.sh` loops (which stay on the host). The
 realization is re-entrant: the *same* script runs twice — on the host to claim
-work, then again inside a fresh VM to do the generation.
+work (the host owns the claim and its queue accounting), then again inside a
+fresh VM to process that already-claimed work without claiming it again.
 
 ```mermaid
 flowchart TB
@@ -123,13 +124,18 @@ For each claimed run, the VM runner executes this per-run sequence:
    credentials; stop with an actionable error if anything is missing. The runner
    never installs or configures Incus itself.
 2. **Launch** a fresh VM from the cached base image (the image is never modified).
-3. **Mount** a per-run host log directory at a clean top-level path and point the
-   configurable log destination (`FORGE_LOGS_DIR`) at it.
-4. **Seed** — inject GitHub credentials and refresh the baked checkout to `master`.
+3. **Mount** a per-run host log directory at a clean top-level path (with
+   `FORGE_LOGS_DIR` pointed at it) and the operator's host checkout read-only.
+4. **Refresh** the VM's Forge checkout by re-cloning it from the mounted host
+   repo, so the run uses the operator's *current* code rather than the snapshot
+   baked into the image (which otherwise drifts between base-image rebuilds);
+   then **seed** GitHub credentials and agent config.
 5. **Run** the run's existing per-issue workflow (`forge_metadata.py
-   --issue-number N`) inside the VM.
+   --issue-number N`) inside the VM, told via `FORGE_ALREADY_CLAIMED` to process
+   the host-claimed issue without claiming again.
 6. **Publish** — branches, PRs, and metrics leave over the network.
-7. **Destroy** the VM; mounted logs remain on the host.
+7. **Destroy** the VM; mounted logs remain on the host. If the run failed, the
+   host reverts its claim so the issue returns to `Todo`.
 
 Two invariants hold the boundary. `--incus` is the only Incus-aware surface:
 workflow drivers, engines, and agents run the same code as on the host and never
@@ -170,8 +176,11 @@ single time and reused, not rebuilt per run:
   Teardown deletes the VM and its worktree; the base image and host logs remain.
 ```
 
-Rebuilding the base image (to refresh GraalVM, caches, or the baked checkout) is
-the only time the expensive setup is paid for again.
+Rebuilding the base image (to refresh GraalVM, Gradle caches, or other baked
+dependencies) is the only time the expensive setup is paid for again. The Forge
+checkout is *not* a reason to rebuild: each run re-clones it from the operator's
+host repo (step 4), so Forge code changes take effect on the next run without a
+rebuild.
 
 ## AR-forge-workflow-boundary: Workflow drivers compose setup, workflow engine, and metrics
 

@@ -69,6 +69,25 @@ DEFAULT_PI_DIR = "~/.pi"
 VM_CODEX_DIR = "/root/.codex"
 VM_PI_AGENT_DIR = "/root/.pi/agent"
 
+# The operator's host checkout is mounted read-only into each run VM and the
+# baked checkout is re-cloned from it per run, so a run uses the CURRENT Forge
+# code instead of the snapshot baked into the image (which otherwise goes stale
+# between base-image rebuilds). §FS-forge-vm-isolated-execution
+FORGE_INCUS_HOST_REPO_ENV = "FORGE_INCUS_HOST_REPO"
+VM_HOST_REPO_MOUNT_PATH = "/forge-host-repo"
+HOST_REPO_DEVICE_NAME = "forge-host-repo-src"
+# Remote that generated branches/PRs push to. The per-run clone comes from the
+# read-only host mount, whose origin is just a local path, so origin is repointed
+# here afterwards (mirrors build-base-image.sh).
+FORGE_INCUS_REPO_URL_ENV = "FORGE_INCUS_REPO_URL"
+DEFAULT_REPO_URL = "https://github.com/oracle/graalvm-reachability-metadata.git"
+
+# Signals passed to the inner VM run telling it the host already owns the issue
+# claim, so it processes the already-claimed work without claiming again
+# (§AR-forge-vm-runner-boundary, §AR-forge-control-plane).
+FORGE_ALREADY_CLAIMED_ENV = "FORGE_ALREADY_CLAIMED"
+FORGE_CLAIMED_ITEM_ID_ENV = "FORGE_CLAIMED_ITEM_ID"
+
 # Environment variables forwarded into the VM run. The behavior-shaping FORGE_*
 # settings are forwarded dynamically; these are the credentials and fixed names.
 FORWARDED_TOKEN_ENV_NAMES = ("GH_TOKEN", "GITHUB_TOKEN")
@@ -80,6 +99,8 @@ _INCUS_ONLY_ENV_NAMES = frozenset(
         FORGE_INCUS_REPO_PATH_ENV,
         FORGE_INCUS_LOGS_ROOT_ENV,
         FORGE_INCUS_LAUNCH_TIMEOUT_ENV,
+        FORGE_INCUS_HOST_REPO_ENV,
+        FORGE_INCUS_REPO_URL_ENV,
         FORGE_LOGS_DIR_ENV,
     }
 )
@@ -110,6 +131,37 @@ def incus_profile_name() -> str:
 def vm_repo_path() -> str:
     """Return the baked reachability checkout path inside the VM."""
     return os.environ.get(FORGE_INCUS_REPO_PATH_ENV) or DEFAULT_VM_REPO_PATH
+
+
+def host_repo_path() -> str:
+    """Return the operator's host checkout to mount into each run VM.
+
+    Defaults to the git toplevel of the running Forge code, so a run uses the
+    operator's current checkout rather than the image's baked snapshot; override
+    with FORGE_INCUS_HOST_REPO (§FS-forge-vm-isolated-execution).
+    """
+    override = os.environ.get(FORGE_INCUS_HOST_REPO_ENV)
+    if override:
+        return os.path.abspath(os.path.expanduser(override))
+    here = os.path.dirname(os.path.abspath(__file__))
+    result = subprocess.run(
+        ["git", "-C", here, "rev-parse", "--show-toplevel"],
+        check=False,
+        text=True,
+        capture_output=True,
+    )
+    toplevel = (result.stdout or "").strip()
+    if not toplevel:
+        raise IncusPreflightError(
+            "Could not resolve the host repository to mount into the VM. Run --incus from inside "
+            "the Forge git checkout, or set FORGE_INCUS_HOST_REPO to the repository root."
+        )
+    return toplevel
+
+
+def repo_url() -> str:
+    """Return the remote the VM's `origin` is repointed to for branch/PR pushes."""
+    return os.environ.get(FORGE_INCUS_REPO_URL_ENV) or DEFAULT_REPO_URL
 
 
 def host_logs_root() -> str:
@@ -390,6 +442,51 @@ def _launched_vm(vm_name: str) -> Iterator[None]:
         _run_incus(["delete", vm_name, "--force"], capture=True, check=False)
 
 
+def _mount_host_repo_source(vm_name: str) -> None:
+    """Mount the operator's host checkout read-only into the VM as the refresh source."""
+    host_repo = host_repo_path()
+    log_stage("incus", f"Mounting host repo '{host_repo}' into '{vm_name}' (read-only)")
+    _run_incus(
+        [
+            "config",
+            "device",
+            "add",
+            vm_name,
+            HOST_REPO_DEVICE_NAME,
+            "disk",
+            f"source={host_repo}",
+            f"path={VM_HOST_REPO_MOUNT_PATH}",
+            "readonly=true",
+        ],
+        capture=True,
+    )
+
+
+def _refresh_vm_checkout(vm_name: str) -> None:
+    """Re-clone the VM's Forge checkout from the mounted host repo before running.
+
+    The base image bakes a checkout only so its Python package install and Gradle
+    caches are warmed; that snapshot drifts from the operator's checkout between
+    base-image rebuilds. Re-cloning from the read-only host mount per run makes
+    every run use the operator's current Forge code, pinned to that commit. The
+    clone's origin is the local mount path, so it is repointed at the real remote
+    afterwards (mirrors build-base-image.sh). `file://` forces an object copy
+    rather than hardlinks into the read-only mount (§FS-forge-vm-isolated-execution).
+    """
+    repo = vm_repo_path()
+    log_stage("incus", f"Refreshing VM Forge checkout at {repo} from the host mount")
+    script = (
+        "set -euo pipefail\n"
+        f"rm -rf {shlex.quote(repo)}\n"
+        f"git clone --quiet file://{VM_HOST_REPO_MOUNT_PATH} {shlex.quote(repo)}\n"
+        f"git -C {shlex.quote(repo)} remote set-url origin {shlex.quote(repo_url())}\n"
+        f"git -C {shlex.quote(repo)} rev-parse --short HEAD\n"
+    )
+    result = _run_incus(["exec", vm_name, "--", "bash", "-c", script], capture=True)
+    commit = (result.stdout or "").strip().splitlines()[-1] if result.stdout else "?"
+    log_stage("incus", f"VM Forge checkout now at host commit {commit}")
+
+
 def _mount_host_logs(vm_name: str, host_log_dir: str) -> None:
     """Mount the per-run host log directory into the VM at the logs mount path."""
     os.makedirs(host_log_dir, exist_ok=True)
@@ -411,9 +508,9 @@ def _mount_host_logs(vm_name: str, host_log_dir: str) -> None:
 def _seed_credentials(vm_name: str, github_token: str) -> None:
     """Inject GitHub credentials and author identity into the VM.
 
-    The forge code is already baked into the image (a full-history copy of the
-    operator's local repository), so there is no checkout to refresh here
-    (§FS-forge-vm-isolated-execution).
+    Runs after `_refresh_vm_checkout`, which re-clones the Forge checkout from the
+    operator's host repo so the run uses current code rather than the image's
+    baked snapshot (§FS-forge-vm-isolated-execution).
     """
     log_stage("incus", f"Seeding credentials in '{vm_name}'")
     _run_incus(
@@ -494,14 +591,18 @@ def run_issue_in_vm(
         *,
         strategy_name: str | None = None,
         keep_tests_without_dynamic_access: bool = False,
+        claimed_item_id: str,
 ) -> bool:
-    """Run one issue's generation inside a fresh, single-use Incus VM.
+    """Run one already-claimed issue's generation inside a fresh, single-use Incus VM.
 
     Implements the per-run sequence of §AR-forge-vm-runner-boundary: preflight,
-    launch, mount logs, seed credentials, run the per-issue workflow, then
-    destroy the VM. Branches, PRs, and metrics leave the VM over the network;
-    only logs cross through the mounted host directory. Returns whether the
-    inner run reported success.
+    launch, mount logs + the host repo, re-clone the Forge checkout from the host
+    mount, seed credentials, run the per-issue workflow, then destroy the VM. The
+    host has already claimed the issue (§AR-forge-control-plane), so the inner run
+    is told to process the claimed work without claiming again via
+    `FORGE_ALREADY_CLAIMED`/`FORGE_CLAIMED_ITEM_ID`. Branches, PRs, and metrics
+    leave the VM over the network; only logs cross through the mounted host
+    directory. Returns whether the inner run reported success.
     """
     preflight()
     github_token = _resolve_github_token()
@@ -514,14 +615,20 @@ def run_issue_in_vm(
         keep_tests_without_dynamic_access=keep_tests_without_dynamic_access,
     )
 
+    forwarded_env = _forwarded_run_environment()
+    forwarded_env[FORGE_ALREADY_CLAIMED_ENV] = "1"
+    forwarded_env[FORGE_CLAIMED_ITEM_ID_ENV] = claimed_item_id
+
     with _launched_vm(vm_name):
         _mount_host_logs(vm_name, host_log_dir)
+        _mount_host_repo_source(vm_name)
+        _refresh_vm_checkout(vm_name)
         _seed_credentials(vm_name, github_token)
         _seed_agent_config(vm_name)
         exec_command = build_incus_exec_command(
             vm_name,
             inner_command,
-            _forwarded_run_environment(),
+            forwarded_env,
         )
         log_stage(
             "incus",

@@ -58,8 +58,8 @@ is a template that bakes in the expensive setup — GraalVM installations, Gradl
 caches, Docker layers, and a reachability checkout — is built once and cached in
 the host's local Incus image store for reuse across runs, and is rebuilt only to
 refresh tooling. Each run launches a fresh VM from the image without modifying it,
-refreshes the baked checkout to current `master`, and injects GitHub
-authentication at launch.
+re-clones the Forge checkout from the operator's host repo so it runs current
+code, and injects GitHub authentication at launch.
 It must also add a configurable log destination (for example a `FORGE_LOGS_DIR`
 setting routed through `resolve_logs_root()`) so a per-run host directory mounted
 at a clean top-level path in the VM captures logs that land on the host as the
