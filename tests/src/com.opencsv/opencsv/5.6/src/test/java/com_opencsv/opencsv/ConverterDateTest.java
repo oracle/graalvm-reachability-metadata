@@ -17,6 +17,8 @@ import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.util.Locale;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -85,6 +87,19 @@ public class ConverterDateTest {
     }
 
     @Test
+    void xmlGregorianCalendarFactoryConfigurationProblemsAreReported() {
+        ConverterDate converter = dateConverter(XMLGregorianCalendar.class, DATE_FORMAT, DATE_FORMAT);
+        String previousFactory = System.getProperty(DatatypeFactory.DATATYPEFACTORY_PROPERTY);
+        System.setProperty(DatatypeFactory.DATATYPEFACTORY_PROPERTY, "example.MissingDatatypeFactory");
+        try {
+            assertThatThrownBy(() -> converter.convertToRead("2022-03-04"))
+                    .isInstanceOf(CsvDataTypeMismatchException.class);
+        } finally {
+            restoreSystemProperty(DatatypeFactory.DATATYPEFACTORY_PROPERTY, previousFactory);
+        }
+    }
+
+    @Test
     void unsupportedTypeIsReportedWhenWritingNonNullValue() {
         ConverterDate converter = dateConverter(String.class, DATE_FORMAT, DATE_FORMAT);
 
@@ -103,6 +118,14 @@ public class ConverterDateTest {
                 writeFormat,
                 ISO_CHRONOLOGY,
                 ISO_CHRONOLOGY);
+    }
+
+    private static void restoreSystemProperty(String key, String value) {
+        if (value == null) {
+            System.clearProperty(key);
+        } else {
+            System.setProperty(key, value);
+        }
     }
 
     public static class UnsupportedTemporalAccessor implements TemporalAccessor {
