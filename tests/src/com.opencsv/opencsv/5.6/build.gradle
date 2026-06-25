@@ -12,6 +12,7 @@ String libraryVersion = tck.testedLibraryVersion.get()
 String localeProviders = "SPI,CLDR"
 String nonDecimalNumberFormatProvider =
         'com_opencsv.opencsv.ConverterNumberTest$NonDecimalNumberFormatProvider'
+String javaHome = System.getenv("JAVA_HOME")
 
 dependencies {
     testImplementation "com.opencsv:opencsv:$libraryVersion"
@@ -22,11 +23,16 @@ tasks.named("test", Test) {
     jvmArgs("-Djava.locale.providers=${localeProviders}")
 }
 
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Djava.home=${javaHome}")
+}
+
 graalvmNative {
     binaries {
         test {
             buildArgs("-Djava.locale.providers=${localeProviders}")
             buildArgs("--initialize-at-build-time=${nonDecimalNumberFormatProvider}")
+            runtimeArgs("-Djava.home=${javaHome}")
             runtimeArgs("-Djava.locale.providers=${localeProviders}")
         }
     }
