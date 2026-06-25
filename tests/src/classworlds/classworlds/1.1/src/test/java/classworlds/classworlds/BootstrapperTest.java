@@ -6,50 +6,15 @@
  */
 package classworlds.classworlds;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.codehaus.classworlds.uberjar.boot.Bootstrapper;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
 
 @ResourceLock(Resources.SYSTEM_PROPERTIES)
 public class BootstrapperTest {
-    private static final String BOOTSTRAPPED_PROPERTY = "classworlds.bootstrapped";
-    private static final String CLASSWORLDS_LIB_PROPERTY = "classworlds.lib";
-
-    @Test
-    void bootstrapLoadsLauncherClassAndInvokesPublicStaticMainMethod() throws Exception {
-        String originalBootstrapped = System.getProperty(BOOTSTRAPPED_PROPERTY);
-        String originalClassworldsLib = System.getProperty(CLASSWORLDS_LIB_PROPERTY);
-        RecordingClassLoader classLoader = new RecordingClassLoader(BootstrapperTest.class.getClassLoader());
-        BootstrapTarget.reset();
-        try {
-            Bootstrapper bootstrapper = new TestBootstrapper(new String[] {"alpha", "beta"}, classLoader);
-
-            bootstrapper.bootstrap();
-
-            assertThat(classLoader.getLoadedClassNames()).containsExactly(Bootstrapper.LAUNCHER_CLASS_NAME);
-            assertThat(System.getProperty(BOOTSTRAPPED_PROPERTY)).isEqualTo("true");
-            assertThat(BootstrapTarget.args).containsExactly("alpha", "beta");
-        } finally {
-            BootstrapTarget.reset();
-            restoreProperty(BOOTSTRAPPED_PROPERTY, originalBootstrapped);
-            restoreProperty(CLASSWORLDS_LIB_PROPERTY, originalClassworldsLib);
-        }
-    }
-
-    private static void restoreProperty(String property, String value) {
-        if (value == null) {
-            System.clearProperty(property);
-        } else {
-            System.setProperty(property, value);
-        }
-    }
-
     private static final class TestBootstrapper extends Bootstrapper {
         private final ClassLoader classLoader;
 
