@@ -1,0 +1,74 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "org.xerial.snappy:snappy-java:1.0.4.1",
+  "issueNumber": 1296,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Configure the generated JVM test task to run with `--add-opens=java.base/java.lang=ALL-UNNAMED` before exercising `org.xerial.snappy.Snappy`, `SnappyInputStream`, or `SnappyOutputStream`. On JDK 24+ also consider `--enable-native-access=ALL-UNNAMED` for the JNI `System.load` path documented by snappy-java, though local Gradle/Native Image verification remains authoritative.",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#1296 Support for org.xerial.snappy:snappy-java:1.0.4.1; label=library-new-request; body_chars=182"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 27783,
+    "issue_label": "library-new-request",
+    "issue_number": 1296,
+    "library": "org.xerial.snappy:snappy-java:1.0.4.1",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 4098,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The artifact bundles JNI native libraries and extracts/loads them at runtime; meaningful tests can be in-memory compression/decompression, but native-image may still need reachability metadata for bundled native resources and JNI access.",
+      "The POM only declares test/provided dependencies such as JUnit, xerial-core, plexus-classworlds, and OSGi core; normal Snappy API usage does not require adding them.",
+      "Version 1.0.4.1 only bundles older platform native libraries such as Linux amd64/i386, Mac x86/x86_64, and Windows x86/amd64, so non-x86 platforms are a portability risk."
+    ],
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.xerial.snappy:snappy-java:1.0.4.1/library-preparation-preflight/pi-generation-2026-06-25T17-40-20-199139Z.log",
+    "status": "completed",
+    "summary": "org.xerial.snappy:snappy-java:1.0.4.1 has no required runtime dependencies or services, but its old native-loader path reflectively opens ClassLoader#defineClass and fails on modular JDKs unless the test JVM opens java.lang."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 3,
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-1296-library-new-request-org.xerial.snappy-snappy-java-1.0.4.1-6745f735",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.xerial.snappy:snappy-java:1.0.4.1",
+    "timestamp": "2026-06-25T18:05:27.291336Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
