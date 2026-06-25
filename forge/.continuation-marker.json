@@ -1,0 +1,82 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "io.mockk:mockk-jvm:1.14.9",
+  "issueNumber": 5315,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#5315 Support for io.mockk:mockk-jvm:1.14.9; label=library-new-request; body_chars=276"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 56498,
+    "issue_label": "library-new-request",
+    "issue_number": 5315,
+    "library": "io.mockk:mockk-jvm:1.14.9",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 4418,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "MockK is Kotlin-first and uses Byte Buddy/Objenesis/agent machinery for many mocking paths, so Native Image verification may constrain which examples are viable.",
+      "Coroutine-specific examples that import additional kotlinx.coroutines test helpers could need extra dependencies, but basic MockK mocking/stubbing/verification coverage does not require them."
+    ],
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/io.mockk:mockk-jvm:1.14.9/library-preparation-preflight/pi-generation-2026-06-25T01-47-29-492409Z.log",
+    "status": "completed",
+    "summary": "The resolved MockK JVM artifact already brings its normal MockK modules and runtime stack through transitive dependencies; no required Docker image, extra Maven dependency, environment variable, or system property was found for meaningful basic coverage."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 8,
+      "exhaustedClasses": [
+        "io.mockk.impl.InternalPlatform",
+        "io.mockk.impl.JvmMockKGateway",
+        "io.mockk.impl.annotations.InjectionHelpers",
+        "io.mockk.impl.instantiation.JvmAnyValueGenerator$anyValue$2",
+        "io.mockk.impl.instantiation.JvmMockFactoryHelper$findBackingField$2$1$1",
+        "io.mockk.impl.instantiation.JvmMockFactoryHelper$findBackingField$2$1$2",
+        "io.mockk.impl.recording.JvmAutoHinter",
+        "io.mockk.impl.restrict.MockkValidator"
+      ],
+      "iteration": 12,
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-5315-library-new-request-io.mockk-mockk-jvm-1.14.9-562a3b26",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "io.mockk:mockk-jvm:1.14.9",
+    "timestamp": "2026-06-25T03:23:10.561765Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
