@@ -1,0 +1,68 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "io.confluent:kafka-schema-registry-client:8.2.1",
+  "issueNumber": 7010,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment variables or system properties are required. Meaningful tests should prefer the included MockSchemaRegistryClient or MockSchemaRegistry mock:// support with AvroSchema rather than starting a live Schema Registry/Kafka service.",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7010 Support for io.confluent:kafka-schema-registry-client:8.2.1; label=library-new-request; body_chars=116"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 81710,
+    "issue_label": "library-new-request",
+    "issue_number": 7010,
+    "library": "io.confluent:kafka-schema-registry-client:8.2.1",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 4304,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "JSON Schema, Protobuf, and Kafka serializer/serde coverage may require separate Confluent artifacts, but those are not required for meaningful coverage of io.confluent:kafka-schema-registry-client itself.",
+      "FIPS/TLS-specific paths reference provided Bouncy Castle TLS/FIPS support; avoid making those paths mandatory unless an explicit dependency is added and verified."
+    ],
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/io.confluent:kafka-schema-registry-client:8.2.1/library-preparation-preflight/pi-generation-2026-06-25T09-58-44-181798Z.log",
+    "status": "completed",
+    "summary": "No setup beyond the normal test scaffold is required: the client artifact includes an in-memory MockSchemaRegistryClient/MockSchemaRegistry and Avro schema support, while Kafka clients, Avro, Jackson, Guava, SnakeYAML, commons-compress, Swagger annotations, and HttpClient are declared as normal transitive dependencies."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": false,
+      "setupDone": false,
+      "status": "pending"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-7010-library-new-request-io.confluent-kafka-schema-registry-client-8.2.1-1f049f36",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
