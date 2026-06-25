@@ -254,6 +254,38 @@ def create_feature_branch_for_library(group, artifact, library_version):
     )
 
 
+def prepare_native_image_eligible_artifact(reachability_repo_path: str, library: str) -> bool:
+    """Return true when the coordinate should proceed to Native Image scaffold."""
+    package, artifact, _library_version = library.split(":")
+    if is_not_for_native_image(reachability_repo_path, package, artifact):
+        log_stage(
+            "native-image-eligibility",
+            f"{package}:{artifact} is already marked not-for-native-image",
+        )
+        return False
+
+    discover_artifact_metadata(reachability_repo_path, library)
+    eligibility = evaluate_native_image_eligibility(reachability_repo_path, library)
+    if not eligibility.not_for_native_image:
+        return True
+
+    marker_path = write_not_for_native_image_marker(
+        reachability_repo_path,
+        package,
+        artifact,
+        eligibility.reason or "Artifact is not applicable to GraalVM Native Image metadata.",
+        eligibility.replacement,
+    )
+    log_stage(
+        "native-image-eligibility",
+        (
+            f"Marked {package}:{artifact} as not-for-native-image in "
+            f"{os.path.relpath(marker_path, reachability_repo_path)}"
+        ),
+    )
+    return False
+
+
 def _metadata_already_exists(scaffold_proc: subprocess.CompletedProcess) -> bool:
     """Return True when Gradle reports that metadata for the library already exists."""
     output = "\n".join(
@@ -455,24 +487,8 @@ def main(argv=None):
     os.chdir(reachability_repo_path)
     if not resume_existing_tree:
         create_feature_branch_for_library(package, artifact, library_version)
-        if is_not_for_native_image(reachability_repo_path, package, artifact):
-            log_stage("native-image-eligibility", f"{package}:{artifact} is already marked not-for-native-image")
-            return 0
         try:
-            discover_artifact_metadata(reachability_repo_path, library)
-            eligibility = evaluate_native_image_eligibility(reachability_repo_path, library)
-            if eligibility.not_for_native_image:
-                marker_path = write_not_for_native_image_marker(
-                    reachability_repo_path,
-                    package,
-                    artifact,
-                    eligibility.reason or "Artifact is not applicable to GraalVM Native Image metadata.",
-                    eligibility.replacement,
-                )
-                log_stage(
-                    "native-image-eligibility",
-                    f"Marked {package}:{artifact} as not-for-native-image in {os.path.relpath(marker_path, reachability_repo_path)}",
-                )
+            if not prepare_native_image_eligible_artifact(reachability_repo_path, library):
                 return 0
             run_scaffold(library)
         except ScaffoldError as exc:
