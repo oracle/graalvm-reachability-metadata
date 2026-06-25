@@ -32,7 +32,7 @@ public class CustomBearerAuthCredentialProviderTest {
 
         provider.configure(configs);
 
-        URL schemaRegistryUrl = URI.create("https://schema-registry.example.test/subjects").toURL();
+        URL schemaRegistryUrl = URI.create("file:///schema-registry/subjects").toURL();
         assertThat(provider.alias()).isEqualTo("CUSTOM");
         assertThat(provider.getBearerToken(schemaRegistryUrl)).isEqualTo("configured-token");
         assertThat(provider.getTargetSchemaRegistry()).isEqualTo("logical-cluster-1");
