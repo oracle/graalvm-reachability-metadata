@@ -7,7 +7,7 @@ description: Fix missing GraalVM reachability metadata for a specific library. U
 
 ## Overview
 
-Run a reproduce-fix-verify loop for missing metadata errors. Keep running the target test until it passes with no new missing metadata entries. If the failure is native-image-incompatible generated test behavior rather than missing metadata, fix the test instead of adding more metadata.
+Run a reproduce-fix-verify loop for missing metadata errors. Keep running the target test until it passes with no new missing metadata entries.
 
 Library coordinates should be provided in the prompt in the format `group:artifact:version`. If you are not sure what the coordinates are, ask the user.
 
@@ -17,8 +17,6 @@ Library coordinates should be provided in the prompt in the format `group:artifa
    - Run `./gradlew test -Pcoordinates=<coordinates>` from repository root.
 2. Classify the failure:
    - If the failure is a `Missing*RegistrationError` or GraalVM reports matching metadata that is inactive because its condition was not satisfied, continue with metadata repair.
-   - If the failure is dynamic class loading, runtime bytecode or class definition, runtime lambda definition, URL/plugin/OSGi class loader assumptions, or a class that exists only through a custom class loader, do not keep adding metadata.
-   - For unsupported native-image behavior, remove the specific generated test method or class that exercises that unsupported native path, or rewrite it to a native-compatible public API path that still validates metadata.
 3. Capture the missing metadata from the error message:
    - Locate any `Missing*RegistrationError` (e.g. `MissingReflectionRegistrationError`, `MissingResourceRegistrationError`, or any other variant).
    - Copy the suggested JSON entry for the missing type into the corresponding section of the reachability-metadata.
@@ -65,6 +63,14 @@ For missing type `org.hibernate.id.enhanced.SequenceStyleGenerator`, a valid con
 `org.hibernate.boot.model.internal.GeneratorBinder`
 
 Reason: both share the leading namespace `org.hibernate`, which is sufficient for this workflow.
+
+### Inactive Condition (metadata present but too late)
+
+If GraalVM reports that metadata for an access was found but is inactive because its runtime
+condition was not satisfied, treat the existing `condition` as too late for that access. Read the
+access stack and move or duplicate the matching entry under the narrowest library type that is
+reached *before* the access occurs. Do not reuse an unsatisfied condition merely because it relates
+to the same library feature.
 
 ## Environment Troubleshooting
 
