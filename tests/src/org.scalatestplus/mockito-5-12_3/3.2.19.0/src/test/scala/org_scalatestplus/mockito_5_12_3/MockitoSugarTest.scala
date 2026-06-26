@@ -6,11 +6,13 @@
  */
 package org_scalatestplus.mockito_5_12_3
 
+import java.util.function.BiConsumer
 import java.util.function.Consumer
 import java.util.function.Function
 import java.util.function.Predicate
 
 import scala.jdk.CollectionConverters.*
+import scala.language.implicitConversions
 
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mockingDetails
@@ -87,6 +89,18 @@ class MockitoSugarTest extends MockitoSugar:
 
     verify(sink, times(2)).accept(capturedPayload.capture())
     assert(capturedPayload.getAllValues.asScala.toVector == Vector("payload-1", "payload-2"))
+
+  @Test
+  def captorCanBePassedDirectlyToVerifiedMethodArguments(): Unit =
+    val publisher: BiConsumer[String, String] = mock[BiConsumer[String, String]]
+    val topicCaptor = capture[String]
+    val payloadCaptor = capture[String]
+
+    publisher.accept("orders", "created:42")
+
+    verify(publisher).accept(topicCaptor, payloadCaptor)
+    assert(topicCaptor.getValue == "orders")
+    assert(payloadCaptor.getValue == "created:42")
 
   @Test
   def companionObjectMembersCanBeImportedWithoutMixingInTheTrait(): Unit =
