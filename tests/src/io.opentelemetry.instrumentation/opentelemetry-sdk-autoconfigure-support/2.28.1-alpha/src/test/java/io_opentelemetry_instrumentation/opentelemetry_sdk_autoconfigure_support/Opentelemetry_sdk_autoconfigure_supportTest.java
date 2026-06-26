@@ -20,8 +20,10 @@ import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizer;
 import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizerProvider;
 import io.opentelemetry.sdk.autoconfigure.spi.ConfigProperties;
 import io.opentelemetry.sdk.common.CompletableResultCode;
+import io.opentelemetry.sdk.declarativeconfig.internal.model.BatchSpanProcessorModel;
 import io.opentelemetry.sdk.declarativeconfig.internal.model.ConsoleExporterModel;
 import io.opentelemetry.sdk.declarativeconfig.internal.model.OpenTelemetryConfigurationModel;
+import io.opentelemetry.sdk.declarativeconfig.internal.model.OtlpHttpExporterModel;
 import io.opentelemetry.sdk.declarativeconfig.internal.model.SimpleSpanProcessorModel;
 import io.opentelemetry.sdk.declarativeconfig.internal.model.SpanExporterModel;
 import io.opentelemetry.sdk.declarativeconfig.internal.model.SpanProcessorModel;
@@ -203,6 +205,27 @@ public class Opentelemetry_sdk_autoconfigure_supportTest {
 
         assertThat(customizedModel.getTracerProvider().getProcessors()).hasSize(1);
         assertThat(customizedModel.getTracerProvider().getProcessors().get(0)).isSameAs(existingConsoleProcessor);
+    }
+
+    @Test
+    void spanLoggingCustomizerPreservesExistingNonConsoleProcessorWhenAddingConsoleExporter() {
+        SpanProcessorModel existingBatchProcessor = new SpanProcessorModel()
+                .withBatch(new BatchSpanProcessorModel()
+                        .withExporter(new SpanExporterModel().withOtlpHttp(new OtlpHttpExporterModel())));
+        OpenTelemetryConfigurationModel model = new OpenTelemetryConfigurationModel()
+                .withTracerProvider(new TracerProviderModel()
+                        .withProcessors(new ArrayList<>(List.of(existingBatchProcessor))));
+        CapturingDeclarativeConfigurationCustomizer customizer = new CapturingDeclarativeConfigurationCustomizer();
+        EnabledSpanLoggingCustomizerProvider provider = new EnabledSpanLoggingCustomizerProvider();
+
+        provider.customize(customizer);
+        OpenTelemetryConfigurationModel customizedModel = customizer.modelCustomizers.get(0).apply(model);
+
+        List<SpanProcessorModel> processors = customizedModel.getTracerProvider().getProcessors();
+        assertThat(processors).hasSize(2);
+        assertThat(processors.get(0)).isSameAs(existingBatchProcessor);
+        assertThat(processors.get(0).getBatch()).isNotNull();
+        assertThat(consoleExporter(processors.get(1))).isNotNull();
     }
 
     private static ConsoleExporterModel consoleExporter(SpanProcessorModel processor) {
