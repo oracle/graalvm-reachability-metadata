@@ -7,6 +7,7 @@
 package io_opentelemetry_instrumentation.opentelemetry_spring_kafka_2_7;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.instrumentation.spring.kafka.v2_7.SpringKafkaTelemetry;
@@ -122,6 +123,24 @@ public class Opentelemetry_spring_kafka_2_7Test {
                         "setup", "intercept", "failure", "clear");
     }
 
+    @Test
+    void recordInterceptorPropagatesDecoratedSuccessCallbackFailure() {
+        SpringKafkaTelemetry telemetry = SpringKafkaTelemetry.create(OpenTelemetry.noop());
+        IllegalStateException callbackFailure = new IllegalStateException("success callback failed");
+        ThrowingSuccessRecordInterceptor decorated = new ThrowingSuccessRecordInterceptor(callbackFailure);
+        RecordInterceptor<String, String> interceptor = telemetry.createRecordInterceptor(decorated);
+        ConsumerRecord<String, String> record = record(2, 40L, "failed", "value");
+
+        ConsumerRecord<String, String> result = interceptor.intercept(record, null);
+        IllegalStateException thrown = assertThrows(
+                IllegalStateException.class,
+                () -> interceptor.success(record, null));
+
+        assertThat(result).isSameAs(record);
+        assertThat(thrown).isSameAs(callbackFailure);
+        assertThat(decorated.callbacks).containsExactly("intercept", "success");
+    }
+
     private static ConsumerRecord<String, String> record(int partition, long offset, String key, String value) {
         ConsumerRecord<String, String> record = new ConsumerRecord<>(TOPIC, partition, offset, key, value);
         record.headers().add("trace-test-header", (key + ":" + value).getBytes(StandardCharsets.UTF_8));
@@ -233,6 +252,34 @@ public class Opentelemetry_spring_kafka_2_7Test {
         @Override
         public void clearThreadState(Consumer<?, ?> consumer) {
             callbacks.add("clear");
+        }
+    }
+
+    private static final class ThrowingSuccessRecordInterceptor implements RecordInterceptor<String, String> {
+        private final IllegalStateException exception;
+        private final List<String> callbacks = new ArrayList<>();
+
+        private ThrowingSuccessRecordInterceptor(IllegalStateException exception) {
+            this.exception = exception;
+        }
+
+        @Override
+        @SuppressWarnings("deprecation")
+        public ConsumerRecord<String, String> intercept(ConsumerRecord<String, String> record) {
+            return intercept(record, null);
+        }
+
+        @Override
+        public ConsumerRecord<String, String> intercept(
+                ConsumerRecord<String, String> record, Consumer<String, String> consumer) {
+            callbacks.add("intercept");
+            return record;
+        }
+
+        @Override
+        public void success(ConsumerRecord<String, String> record, Consumer<String, String> consumer) {
+            callbacks.add("success");
+            throw exception;
         }
     }
 }
