@@ -16,10 +16,12 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
+import liquibase.changelog.ChangeSet.ExecType;
 import liquibase.integration.spring.SpringLiquibase;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.Test;
@@ -29,6 +31,10 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.liquibase.actuate.endpoint.LiquibaseEndpoint;
+import org.springframework.boot.liquibase.actuate.endpoint.LiquibaseEndpoint.ChangeSetDescriptor;
+import org.springframework.boot.liquibase.actuate.endpoint.LiquibaseEndpoint.ContextLiquibaseBeansDescriptor;
+import org.springframework.boot.liquibase.actuate.endpoint.LiquibaseEndpoint.LiquibaseBeanDescriptor;
 import org.springframework.boot.liquibase.autoconfigure.DataSourceClosingSpringLiquibase;
 import org.springframework.boot.liquibase.autoconfigure.LiquibaseConnectionDetails;
 import org.springframework.boot.liquibase.autoconfigure.LiquibaseProperties;
@@ -166,6 +172,53 @@ public class Spring_boot_liquibaseTest {
             assertThat(liquibase).isInstanceOf(DataSourceClosingSpringLiquibase.class);
             assertThat(tableExists(applicationJdbcTemplate, "CONNECTION_DETAIL_ITEM")).isFalse();
             assertConnectionDetailsChangelogWasApplied(migrationUrl);
+        }
+    }
+
+    @Test
+    void liquibaseEndpointReportsExecutedChangeSetsForApplicationContext() throws Exception {
+        Path changelog = writeChangelog("endpoint-report.sql", """
+                --liquibase formatted sql
+
+                --changeset endpoint-test:create-endpoint-item
+                CREATE TABLE ENDPOINT_ITEM (ID INT PRIMARY KEY, DESCRIPTION VARCHAR(100));
+
+                --changeset endpoint-test:insert-endpoint-item
+                INSERT INTO ENDPOINT_ITEM (ID, DESCRIPTION) VALUES (20, 'reported by endpoint');
+                """);
+        String url = "jdbc:h2:mem:endpoint-report-liquibase;DB_CLOSE_DELAY=-1";
+
+        try (ConfigurableApplicationContext context = runApplication(DataSourceApplication.class,
+                "test.datasource.url=" + url, "spring.liquibase.change-log=" + changelog.toUri())) {
+            LiquibaseEndpoint endpoint = new LiquibaseEndpoint(context);
+            Map<String, ContextLiquibaseBeansDescriptor> contexts = endpoint.liquibaseBeans().getContexts();
+            ContextLiquibaseBeansDescriptor contextDescriptor = contexts.get(context.getId());
+            String[] liquibaseBeanNames = context.getBeanNamesForType(SpringLiquibase.class);
+
+            assertThat(contexts).containsOnlyKeys(context.getId());
+            assertThat(contextDescriptor).isNotNull();
+            assertThat(contextDescriptor.getParentId()).isNull();
+            assertThat(liquibaseBeanNames).hasSize(1);
+
+            String liquibaseBeanName = liquibaseBeanNames[0];
+            LiquibaseBeanDescriptor liquibaseBean = contextDescriptor.getLiquibaseBeans().get(liquibaseBeanName);
+
+            assertThat(contextDescriptor.getLiquibaseBeans()).containsOnlyKeys(liquibaseBeanName);
+            assertThat(liquibaseBean).isNotNull();
+
+            List<ChangeSetDescriptor> changeSets = liquibaseBean.getChangeSets();
+            assertThat(changeSets).hasSize(2);
+            assertThat(changeSets).extracting(ChangeSetDescriptor::getId)
+                    .containsExactly("create-endpoint-item", "insert-endpoint-item");
+            assertThat(changeSets).extracting(ChangeSetDescriptor::getAuthor).containsOnly("endpoint-test");
+            assertThat(changeSets).extracting(ChangeSetDescriptor::getChangeLog)
+                    .containsOnly(changelog.toUri().toURL().toString());
+            assertThat(changeSets).extracting(ChangeSetDescriptor::getExecType).containsOnly(ExecType.EXECUTED);
+            assertThat(changeSets).allSatisfy((changeSet) -> {
+                assertThat(changeSet.getChecksum()).isNotBlank();
+                assertThat(changeSet.getDateExecuted()).isNotNull();
+                assertThat(changeSet.getOrderExecuted()).isPositive();
+            });
         }
     }
 
