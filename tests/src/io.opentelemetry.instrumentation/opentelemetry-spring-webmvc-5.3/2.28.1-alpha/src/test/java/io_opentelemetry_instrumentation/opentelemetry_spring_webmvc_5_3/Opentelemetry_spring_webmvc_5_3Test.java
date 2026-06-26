@@ -28,6 +28,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+import javax.servlet.AsyncContext;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -91,6 +93,36 @@ public class Opentelemetry_spring_webmvc_5_3Test {
             assertThat(span.getStatus().getStatusCode()).isEqualTo(StatusCode.UNSET);
             assertThat(span.getAttributes().get(REQUEST_URI)).isEqualTo("/shop/orders/42");
             assertThat(span.getAttributes().get(RESPONSE_STATUS)).isEqualTo(202L);
+        }
+    }
+
+    @Test
+    void createServletFilterFinishesSpanWhenAsyncRequestCompletes() throws Exception {
+        try (TelemetryFixture fixture = TelemetryFixture.create()) {
+            Filter filter = SpringWebMvcTelemetry.create(fixture.openTelemetry())
+                    .createServletFilter();
+            init(filter);
+            MockHttpServletRequest request = new MockHttpServletRequest("GET", "/async");
+            request.setServerName("example.test");
+            request.setAsyncSupported(true);
+            MockHttpServletResponse response = new MockHttpServletResponse();
+            AtomicReference<AsyncContext> asyncContext = new AtomicReference<>();
+
+            filter.doFilter(request, response, (chainRequest, chainResponse) -> {
+                assertThat(Span.current().getSpanContext().isValid()).isTrue();
+                asyncContext.set(chainRequest.startAsync());
+                ((HttpServletResponse) chainResponse).setStatus(HttpServletResponse.SC_NO_CONTENT);
+            });
+
+            assertThat(request.isAsyncStarted()).isTrue();
+            assertThat(asyncContext.get()).isNotNull();
+            assertThat(fixture.spanExporter().getFinishedSpanItems()).isEmpty();
+
+            asyncContext.get().complete();
+
+            SpanData span = onlyFinishedSpan(fixture);
+            assertThat(span.getKind()).isEqualTo(SpanKind.SERVER);
+            assertThat(span.getStatus().getStatusCode()).isEqualTo(StatusCode.UNSET);
         }
     }
 
