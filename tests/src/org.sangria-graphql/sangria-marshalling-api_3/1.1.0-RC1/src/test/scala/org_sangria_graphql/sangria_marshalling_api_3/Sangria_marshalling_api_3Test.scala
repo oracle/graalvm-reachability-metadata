@@ -179,7 +179,7 @@ class Sangria_marshalling_api_3Test {
     assertEquals(Some("configured"), optionInput.fromResult(Some("configured").asInstanceOf[optionInput.marshaller.Node]))
     assertEquals(None, optionInput.fromResult(None.asInstanceOf[optionInput.marshaller.Node]))
 
-    val seqInput: FromInput.SeqFromInput[String @@ FromInput.CoercedScalaResult] =
+    val seqInput: FromInput.IterableFromInput[String @@ FromInput.CoercedScalaResult, Seq] =
       FromInput.seqInput[String @@ FromInput.CoercedScalaResult](using scalarInput)
     val seqResult: seqInput.marshaller.Node = Vector("first", Some("second"), None).asInstanceOf[seqInput.marshaller.Node]
     assertEquals(Vector("first", Some("second"), None), seqInput.fromResult(seqResult).toVector)
