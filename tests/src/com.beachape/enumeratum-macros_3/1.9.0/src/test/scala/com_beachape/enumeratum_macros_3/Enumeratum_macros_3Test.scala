@@ -68,6 +68,16 @@ class Enumeratum_macros_3Test {
   }
 
   @Test
+  def valueEnumMacrosReadNamedConstructorValueArguments(): Unit = {
+    val entries: IndexedSeq[MacroHttpStatus] = MacroHttpStatus.values
+
+    assertEquals(IndexedSeq(MacroHttpStatus.Ok, MacroHttpStatus.NotFound), entries)
+    assertEquals(IndexedSeq(200, 404), entries.map(_.value))
+    assertEquals(IndexedSeq("ok", "not-found"), entries.map(_.label))
+    assertSame(MacroHttpStatus.Ok, entries.head)
+  }
+
+  @Test
   def valueEnumMacrosAllowDuplicateValuesWhenTheEnumExtendsAllowAlias(): Unit = {
     val entries: IndexedSeq[MacroAliasCode] = MacroAliasCode.values
 
@@ -192,6 +202,15 @@ object MacroCharCode {
   case object B extends MacroCharCode('B')
 
   val values: IndexedSeq[MacroCharCode] = findMacroCharValueEntries[MacroCharCode]
+}
+
+sealed abstract class MacroHttpStatus(val value: Int, val label: String)
+
+object MacroHttpStatus {
+  case object Ok extends MacroHttpStatus(value = 200, label = "ok")
+  case object NotFound extends MacroHttpStatus(value = 404, label = "not-found")
+
+  val values: IndexedSeq[MacroHttpStatus] = findMacroIntValueEntries[MacroHttpStatus]
 }
 
 sealed abstract class MacroAliasCode(val value: String) extends AllowAlias
