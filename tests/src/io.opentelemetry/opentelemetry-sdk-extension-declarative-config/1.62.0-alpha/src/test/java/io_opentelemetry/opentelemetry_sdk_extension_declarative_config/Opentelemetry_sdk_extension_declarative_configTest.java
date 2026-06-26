@@ -156,6 +156,41 @@ public class Opentelemetry_sdk_extension_declarative_configTest {
     }
 
     @Test
+    void disabledConfigurationDoesNotApplySdkSections() {
+        DeclarativeConfigResult result = DeclarativeConfiguration.parseAndCreate(yaml("""
+                file_format: "1.0"
+                disabled: true
+                resource:
+                  schema_url: https://opentelemetry.io/schemas/1.37.0
+                  attributes:
+                    - name: service.name
+                      value: disabled-config-test
+                propagator:
+                  composite:
+                    - b3: {}
+                tracer_provider:
+                  sampler:
+                    always_off: {}
+                  processors: []
+                meter_provider:
+                  readers: []
+                logger_provider:
+                  processors: []
+                """));
+        try {
+            Resource resource = result.getResource();
+
+            assertThat(resource.getSchemaUrl()).isNull();
+            assertThat(resource.getAttribute(AttributeKey.stringKey("service.name")))
+                    .isNotEqualTo("disabled-config-test");
+            assertThat(result.getSdk().getPropagators().getTextMapPropagator().fields())
+                    .doesNotContain("b3");
+        } finally {
+            result.getSdk().close();
+        }
+    }
+
+    @Test
     void unsupportedFileFormatIsReportedAsDeclarativeConfigException() {
         assertThatExceptionOfType(DeclarativeConfigException.class)
                 .isThrownBy(() -> DeclarativeConfiguration.parseAndCreate(yaml("""
