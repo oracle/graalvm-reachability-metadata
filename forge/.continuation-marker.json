@@ -1,0 +1,71 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "io.netty:netty-transport-classes-kqueue:4.2.7.Final",
+  "issueNumber": 8595,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment or system property setup is required. On Linux, treat kqueue as unavailable: tests should guard native channel/event-loop construction with KQueue.isAvailable() and assert broad unavailable behavior such as LinkageError or UnsatisfiedLinkError, not a fixed message substring. Netty 4.2.7 can throw raw JNI missing-method UnsatisfiedLinkError messages from io.netty.channel.unix.Socket constructors when the native library is absent.",
+    "applied_setup": [],
+    "current_library": "io.netty:netty-transport-classes-kqueue:4.2.2.Final",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8595 [Automation] java run fails for io.netty:netty-transport-classes-kqueue:4.2.7.Final; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "7 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 75518,
+    "issue_label": "fails-java-run",
+    "issue_number": 8595,
+    "library": "io.netty:netty-transport-classes-kqueue:4.2.7.Final",
+    "model": "oca/gpt-5.5",
+    "new_version": "4.2.7.Final",
+    "output_tokens_used": 4462,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Meaningful positive-path kqueue transport execution requires macOS/BSD plus the platform classifier native artifact, which the Ubuntu workflow cannot provide with a normal unclassified Maven coordinate.",
+      "Adding io.netty:netty-transport-native-kqueue without an OS classifier would not supply the needed native library and is unlikely to improve coverage.",
+      "Coverage will primarily validate Java API contracts and unavailable-native behavior on the standard Linux runner."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/io.netty:netty-transport-classes-kqueue:4.2.7.Final/library-preparation-preflight/pi-generation-2026-06-26T11-26-59-910918Z.log",
+    "status": "completed",
+    "summary": "No deterministic dependency, Docker image, environment variable, or system property is needed; the artifact already resolves its Java dependencies, and kqueue native availability is OS/classifier-specific rather than something the Ubuntu scaffold can enable generically."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "4.2.7.Final",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8595-fails-java-run-io.netty-netty-transport-classes-kqueue-4.2.7.Final-633431ad",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
