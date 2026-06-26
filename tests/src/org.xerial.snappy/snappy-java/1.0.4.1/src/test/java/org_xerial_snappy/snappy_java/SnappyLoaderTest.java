@@ -21,7 +21,6 @@ import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.xerial.snappy.Snappy;
-import org.xerial.snappy.SnappyError;
 import org.xerial.snappy.SnappyLoader;
 
 public class SnappyLoaderTest {
@@ -31,13 +30,13 @@ public class SnappyLoaderTest {
     Path tempDir;
 
     @Test
-    void loadsSystemLibraryAndBundledNativeLibraryFallback() throws Exception {
+    void loadsSystemLibraryFallbackAndBundledNativeLibrary() throws Exception {
         clearSnappyProperties();
 
         try {
-            loadBundledNativeLibraryInIsolatedClassLoader();
-            System.setProperty(SnappyLoader.KEY_SNAPPY_USE_SYSTEMLIB, "true");
-            loadSystemLibraryThroughPublicApi();
+            System.setProperty(CHILD_TEMPDIR_PROPERTY, tempDir.resolve("child-loader").toString());
+            assertThat(runCallableProvider(SystemLibraryCallable.class.getName())).isTrue();
+            assertThat(runCallableProvider(BundledLibraryCallable.class.getName())).isTrue();
         } catch (Error error) {
             rethrowUnlessUnsupportedFeatureError(error);
         } finally {
@@ -46,28 +45,14 @@ public class SnappyLoaderTest {
         }
     }
 
-    private void loadSystemLibraryThroughPublicApi() throws Exception {
-        try {
-            byte[] input = "SnappyLoader loads a preinstalled JNI library".getBytes(StandardCharsets.UTF_8);
-            byte[] compressed = Snappy.compress(input);
-            assertThat(Snappy.uncompress(compressed)).isEqualTo(input);
-            assertThat(SnappyLoader.isNativeLibraryLoaded()).isTrue();
-        } catch (SnappyError error) {
-            assertThat(error.getMessage()).contains("FAILED_TO_LOAD_NATIVE_LIBRARY");
-        }
-    }
-
-    private void loadBundledNativeLibraryInIsolatedClassLoader() throws Exception {
+    private boolean runCallableProvider(String providerClassName) throws Exception {
         Path providerConfiguration = tempDir.resolve("META-INF/services/java.util.concurrent.Callable");
         Files.createDirectories(providerConfiguration.getParent());
-        Files.writeString(providerConfiguration, BundledLibraryCallable.class.getName(), StandardCharsets.UTF_8);
+        Files.writeString(providerConfiguration, providerClassName + System.lineSeparator(), StandardCharsets.UTF_8);
 
-        System.setProperty(CHILD_TEMPDIR_PROPERTY, tempDir.resolve("child-loader").toString());
         try (URLClassLoader classLoader = new URLClassLoader(currentClasspathUrlsWithProviderRoot(), null)) {
-            Callable<?> bundledLibraryLoader = ServiceLoader.load(Callable.class, classLoader)
-                    .findFirst()
-                    .orElseThrow();
-            assertThat(bundledLibraryLoader.call()).isEqualTo(Boolean.TRUE);
+            Callable<?> loader = ServiceLoader.load(Callable.class, classLoader).findFirst().orElseThrow();
+            return (Boolean) loader.call();
         }
     }
 
@@ -106,7 +91,7 @@ public class SnappyLoaderTest {
             Thread.currentThread().setContextClassLoader(BundledLibraryCallable.class.getClassLoader());
             try {
                 clearSnappyProperties();
-                Path nativeLibraryDirectory = Path.of(System.getProperty(CHILD_TEMPDIR_PROPERTY));
+                Path nativeLibraryDirectory = Path.of(System.getProperty(CHILD_TEMPDIR_PROPERTY), "bundled");
                 Files.createDirectories(nativeLibraryDirectory);
 
                 String libraryFileName = System.mapLibraryName("snappyjava");
@@ -119,6 +104,25 @@ public class SnappyLoaderTest {
                 byte[] compressed = Snappy.compress(input);
                 assertThat(Snappy.uncompress(compressed)).isEqualTo(input);
                 assertThat(Files.size(staleExtractedLibrary)).isGreaterThan((long) "stale native library".length());
+                return SnappyLoader.isNativeLibraryLoaded();
+            } finally {
+                clearSnappyProperties();
+                Thread.currentThread().setContextClassLoader(previousClassLoader);
+            }
+        }
+    }
+
+    public static class SystemLibraryCallable implements Callable<Boolean> {
+        @Override
+        public Boolean call() throws Exception {
+            ClassLoader previousClassLoader = Thread.currentThread().getContextClassLoader();
+            Thread.currentThread().setContextClassLoader(SystemLibraryCallable.class.getClassLoader());
+            try {
+                clearSnappyProperties();
+                System.setProperty(SnappyLoader.KEY_SNAPPY_USE_SYSTEMLIB, "true");
+                byte[] input = "SnappyLoader invokes loadLibrary on the native loader".getBytes(StandardCharsets.UTF_8);
+                byte[] compressed = Snappy.compress(input);
+                assertThat(Snappy.uncompress(compressed)).isEqualTo(input);
                 return SnappyLoader.isNativeLibraryLoaded();
             } finally {
                 clearSnappyProperties();

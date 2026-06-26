@@ -9,14 +9,39 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String nativeOs = translateOsName(System.getProperty('os.name'))
+String nativeArch = translateArchName(System.getProperty('os.arch'))
+String nativeLibraryFolder = "${nativeOs}/${nativeArch}"
+Provider<Directory> nativeLibraryDirectory = layout.buildDirectory.dir('snappy-native-library')
 
 dependencies {
     testImplementation "org.xerial.snappy:snappy-java:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.register('extractSnappyNativeLibrary', Copy) {
+    String nativeLibraryName = System.mapLibraryName('snappyjava')
+    String nativeLibraryResource = "org/xerial/snappy/native/${nativeLibraryFolder}/${nativeLibraryName}"
+    from({
+        File snappyJavaJar = configurations.testRuntimeClasspath.find { it.name == "snappy-java-${libraryVersion}.jar" }
+        zipTree(snappyJavaJar)
+    }) {
+        include nativeLibraryResource
+        eachFile { details ->
+            details.path = details.name
+        }
+        includeEmptyDirs = false
+    }
+    into nativeLibraryDirectory
+    doLast {
+        file("${nativeLibraryDirectory.get().asFile}/${nativeLibraryName}").setExecutable(true, false)
+    }
+}
+
 tasks.withType(Test).configureEach {
-    jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED"
+    dependsOn tasks.named('extractSnappyNativeLibrary')
+    jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED",
+            "-Djava.library.path=${nativeLibraryDirectory.get().asFile.absolutePath}"
 }
 
 graalvmNative {
@@ -33,4 +58,21 @@ graalvmNative {
             buildArgs.add("--add-opens=java.base/java.lang=ALL-UNNAMED")
         }
     }
+}
+
+String translateOsName(String osName) {
+    if (osName.contains('Windows')) {
+        return 'Windows'
+    }
+    if (osName.contains('Mac')) {
+        return 'Mac'
+    }
+    if (osName.contains('Linux')) {
+        return 'Linux'
+    }
+    return osName.replaceAll('\\W', '')
+}
+
+String translateArchName(String archName) {
+    return archName.replaceAll('\\W', '')
 }
