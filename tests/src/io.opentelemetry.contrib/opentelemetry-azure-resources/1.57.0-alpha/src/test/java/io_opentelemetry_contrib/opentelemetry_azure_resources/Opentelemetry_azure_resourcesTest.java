@@ -178,6 +178,24 @@ public class Opentelemetry_azure_resourcesTest {
     }
 
     @Test
+    void aksResourceFallsBackToMetadataResourceGroupNameWhenNameDoesNotFollowManagedPattern() {
+        String metadataJson = """
+                {
+                  "compute": {
+                    "resourceGroupName": "custom-node-resource-group"
+                  }
+                }
+                """;
+        Map<String, String> env = Map.of("KUBERNETES_SERVICE_HOST", "10.0.0.1");
+        Supplier<Optional<String>> metadataSupplier = () -> Optional.of(metadataJson);
+
+        Resource resource = new AzureAksResourceProvider(metadataSupplier, env).createResource();
+
+        assertAzureCloud(resource, "azure.aks");
+        assertThat(attribute(resource, "k8s.cluster.name")).isEqualTo("custom-node-resource-group");
+    }
+
+    @Test
     void aksResourceDoesNotQueryMetadataOutsideKubernetes() {
         Supplier<Optional<String>> failingSupplier = () -> {
             throw new AssertionError(
