@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "jakarta.persistence:jakarta.persistence-api:4.0.0-M5",
+  "issueNumber": 8596,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "Do not add Hibernate, EclipseLink, H2, or a database container just to compile or exercise the API. Keep coverage focused on the Jakarta Persistence API surface using in-test stubs/fakes. For 4.0.0-M5, Query and TypedQuery include the new setParameters(Object...) method, so any local Query/TypedQuery test doubles must implement it.",
+    "applied_setup": [],
+    "current_library": "jakarta.persistence:jakarta.persistence-api:4.0.0-M3",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8596 [Automation] javac compile fails for jakarta.persistence:jakarta.persistence-api:4.0.0-M5; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "7 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 38425,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8596,
+    "library": "jakarta.persistence:jakarta.persistence-api:4.0.0-M5",
+    "model": "oca/gpt-5.5",
+    "new_version": "4.0.0-M5",
+    "output_tokens_used": 1976,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "A generated integration-style test that calls Persistence.createEntityManagerFactory without installing a fake PersistenceProviderResolver or adding a real provider will fail because the API artifact does not include an implementation.",
+      "Adding a real provider/database would shift coverage toward the provider rather than the jakarta.persistence-api artifact and is not required for the reported javac failure."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/jakarta.persistence:jakarta.persistence-api:4.0.0-M5/library-preparation-preflight/pi-generation-2026-06-26T14-43-24-228107Z.log",
+    "status": "completed",
+    "summary": "jakarta.persistence-api is an API-only artifact; its only Maven dependency is the normal transitive compile dependency on jakarta.annotation-api, and meaningful API coverage can be reached with annotations, SPI/resolver stubs, and in-test EntityManager/Query implementations without a real JPA provider, database, Docker image, or system properties."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "4.0.0-M5",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8596-fails-javac-compile-jakarta.persistence-jakarta.persistence-api-4.0.0-M5-de085be7",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
