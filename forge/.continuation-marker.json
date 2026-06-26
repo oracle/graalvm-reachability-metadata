@@ -1,0 +1,71 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "io.netty:netty-transport-classes-io_uring:4.2.4.Final",
+  "issueNumber": 8594,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Ensure the generated or updated test setup applies nativeTest runtime arguments for io.netty:netty-transport-classes-io_uring:4.2.4.Final: -Dsun.misc.unsafe.memory.access=allow and -Dio.netty.tryReflectionSetAccessible=true. Prefer making the existing Netty 4.2.x guard cover 4.2.4.Final rather than leaving it pinned to only 4.2.3.Final. Tests should tolerate IoUring.isAvailable() being false and assert the unavailable contract unless the platform-specific native io_uring classifier is deliberately added.",
+    "applied_setup": [],
+    "current_library": "io.netty:netty-transport-classes-io_uring:4.2.3.Final",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8594 [Automation] native-image run fails for io.netty:netty-transport-classes-io_uring:4.2.4.Final; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 38951,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 8594,
+    "library": "io.netty:netty-transport-classes-io_uring:4.2.4.Final",
+    "model": "oca/gpt-5.5",
+    "new_version": "4.2.4.Final",
+    "output_tokens_used": 3898,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Netty documentation says actual io_uring transport use requires a platform classifier such as io.netty:netty-transport-native-io_uring:${netty.version}:linux-x86_64 plus a Linux kernel with io_uring support and sufficient memlock; the deterministic dependency setup format cannot express that classifier.",
+      "Adding the plain netty-transport-native-io_uring artifact without a classifier would not provide the native library needed to make IoUring.isAvailable() true.",
+      "Local Gradle and Native Image verification remain authoritative for whether the JDK 25 runtime properties fully address the native-image run failure."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/io.netty:netty-transport-classes-io_uring:4.2.4.Final/library-preparation-preflight/pi-generation-2026-06-26T10-52-25-948365Z.log",
+    "status": "completed",
+    "summary": "The artifact is Netty's io_uring classes-only module; meaningful class/fallback coverage is reachable without Docker or an extra plain Maven dependency, but Netty 4.2.x native-image runs on JDK 25 need the same unsafe/reflection system properties already used for 4.2.3.Final."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "4.2.4.Final",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8594-fails-native-image-run-io.netty-netty-transport-classes-io_uring-4.2.4.Final-5a3afc5d",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
