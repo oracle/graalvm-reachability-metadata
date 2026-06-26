@@ -1,0 +1,70 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "io.netty:netty-transport-classes-io_uring:4.2.4.Final",
+  "issueNumber": 8594,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "For nativeTest/native-image execution of io.netty:netty-transport-classes-io_uring:4.2.4.Final, set runtime system properties `-Dsun.misc.unsafe.memory.access=allow` and `-Dio.netty.tryReflectionSetAccessible=true`. The existing 4.2.3 test scaffold already does this only for `4.2.3.Final`; extend that condition or make it apply to the tested 4.2.x version. Do not require the native io_uring classifier just to get coverage: the target artifact is the Java-side `classes` artifact, and tests can exercise the availability/unavailability contract when the native library is absent.",
+    "applied_setup": [],
+    "current_library": "io.netty:netty-transport-classes-io_uring:4.2.3.Final",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8594 [Automation] native-image run fails for io.netty:netty-transport-classes-io_uring:4.2.4.Final; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 44959,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 8594,
+    "library": "io.netty:netty-transport-classes-io_uring:4.2.4.Final",
+    "model": "oca/gpt-5.5",
+    "new_version": "4.2.4.Final",
+    "output_tokens_used": 4711,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Full io_uring transport round-trip tests require the platform classifier artifact such as `io.netty:netty-transport-native-io_uring:<version>:linux-x86_64`, a supported Linux kernel, and sufficient memlock limits; adding that would change test assumptions and may make CI environment-dependent.",
+      "If the system properties are only applied to JVM tests and not nativeTest runtime arguments, local Gradle verification may pass while native-image run still fails."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/io.netty:netty-transport-classes-io_uring:4.2.4.Final/library-preparation-preflight/pi-generation-2026-06-26T10-48-14-790049Z.log",
+    "status": "completed",
+    "summary": "No extra Maven dependency or Docker image is required for the classes artifact, but Java 25 native-image runs need Netty unsafe/reflection system properties before the existing meaningful tests can run."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "4.2.4.Final",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8594-fails-native-image-run-io.netty-netty-transport-classes-io_uring-4.2.4.Final-10eb3fc0",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
