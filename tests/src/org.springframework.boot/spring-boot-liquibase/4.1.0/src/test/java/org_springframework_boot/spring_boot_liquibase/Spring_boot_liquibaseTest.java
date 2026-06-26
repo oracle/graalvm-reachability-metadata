@@ -110,6 +110,39 @@ public class Spring_boot_liquibaseTest {
     }
 
     @Test
+    void customChangeLogAndLockTableNamesAreUsedForLiquibaseMetadata() throws Exception {
+        Path changelog = writeChangelog("custom-tracking-tables.sql", """
+                --liquibase formatted sql
+
+                --changeset spring-boot-test:create-custom-tracking-item
+                CREATE TABLE CUSTOM_TRACKING_ITEM (ID INT PRIMARY KEY, DESCRIPTION VARCHAR(100));
+
+                --changeset spring-boot-test:insert-custom-tracking-item
+                INSERT INTO CUSTOM_TRACKING_ITEM (ID, DESCRIPTION) VALUES (5, 'tracked in custom tables');
+                """);
+        String url = "jdbc:h2:mem:custom-tracking-liquibase;DB_CLOSE_DELAY=-1";
+
+        try (ConfigurableApplicationContext context = runApplication(DataSourceApplication.class,
+                "test.datasource.url=" + url,
+                "spring.liquibase.change-log=" + changelog.toUri(),
+                "spring.liquibase.database-change-log-table=BOOT_CHANGELOG",
+                "spring.liquibase.database-change-log-lock-table=BOOT_CHANGELOG_LOCK")) {
+            LiquibaseProperties properties = context.getBean(LiquibaseProperties.class);
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(context.getBean(DataSource.class));
+
+            assertThat(properties.getDatabaseChangeLogTable()).isEqualTo("BOOT_CHANGELOG");
+            assertThat(properties.getDatabaseChangeLogLockTable()).isEqualTo("BOOT_CHANGELOG_LOCK");
+            assertThat(jdbcTemplate.queryForObject(
+                    "SELECT DESCRIPTION FROM CUSTOM_TRACKING_ITEM WHERE ID = 5", String.class))
+                    .isEqualTo("tracked in custom tables");
+            assertThat(tableExists(jdbcTemplate, "BOOT_CHANGELOG")).isTrue();
+            assertThat(tableExists(jdbcTemplate, "BOOT_CHANGELOG_LOCK")).isTrue();
+            assertThat(tableExists(jdbcTemplate, "DATABASECHANGELOG")).isFalse();
+            assertThat(tableExists(jdbcTemplate, "DATABASECHANGELOGLOCK")).isFalse();
+        }
+    }
+
+    @Test
     void liquibaseConnectionDetailsCanSupplyDedicatedMigrationConnection() throws Exception {
         Path changelog = writeChangelog("connection-details.sql", """
                 --liquibase formatted sql
