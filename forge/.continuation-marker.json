@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.sonatype.sisu:sisu-inject-bean:2.4.1",
+  "issueNumber": 8602,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment variables or system properties are required. If adapting the existing 2.4.0 tests for 2.4.1, update calls to org.eclipse.sisu.space.QualifiedTypeBinder.hear to the current two-argument signature hear(Class, Object) rather than the older three-argument form.",
+    "applied_setup": [],
+    "current_library": "org.sonatype.sisu:sisu-inject-bean:2.4.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8602 [Automation] javac compile fails for org.sonatype.sisu:sisu-inject-bean:2.4.1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "14 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 46890,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8602,
+    "library": "org.sonatype.sisu:sisu-inject-bean:2.4.1",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.4.1",
+    "output_tokens_used": 2855,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The artifact is a deprecated legacy wrapper over Eclipse Sisu APIs, so generated tests should prefer public wrapper APIs and current method signatures.",
+      "The POM declares optional SLF4J, OSGi, JUnit, and TestNG integrations; do not add those dependencies unless tests deliberately target those optional integration paths."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.sonatype.sisu:sisu-inject-bean:2.4.1/library-preparation-preflight/pi-generation-2026-06-26T10-40-40-312065Z.log",
+    "status": "completed",
+    "summary": "No extra setup is needed: sisu-inject-bean 2.4.1 resolves its core Guice, CDI, and Eclipse Sisu dependencies transitively, and meaningful coverage is reachable with ordinary generated JUnit tests exercising bean scanning, URLClassSpace, SisuGuice, and binder behavior."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.4.1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8602-fails-javac-compile-org.sonatype.sisu-sisu-inject-bean-2.4.1-c5e7406a",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
