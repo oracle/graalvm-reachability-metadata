@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "com.mchange:mchange-commons-java:0.4.0",
+  "issueNumber": 2097,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "When testing com.mchange.v2.naming.ReferenceableUtils.referenceToObject(...), either call an overload that supplies an explicit allowedFactoryClassNames Set containing the test ObjectFactory class name, or set System property com.mchange.v2.naming.objectFactoryWhitelist to that fully-qualified factory class name for the duration of the test and clear it afterward. Avoid enabling remote factory class loading unless a test specifically covers that security behavior.",
+    "applied_setup": [],
+    "current_library": "com.mchange:mchange-commons-java:0.2.15",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#2097 [Automation] java run fails for com.mchange:mchange-commons-java:0.4.0; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "34 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 64299,
+    "issue_label": "fails-java-run",
+    "issue_number": 2097,
+    "library": "com.mchange:mchange-commons-java:0.4.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "0.4.0",
+    "output_tokens_used": 2513,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Tests copied from older 0.2.15 behavior that call ReferenceableUtils.referenceToObject(reference, name, context, env) without a whitelist will fail on 0.4.0.",
+      "Optional integrations such as Typesafe Config, SLF4J, Log4j, or Logback exist in the POM, but they are optional and not required for baseline meaningful coverage."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/com.mchange:mchange-commons-java:0.4.0/library-preparation-preflight/pi-generation-2026-06-26T18-18-30-121264Z.log",
+    "status": "completed",
+    "summary": "mchange-commons-java 0.4.0 is a standalone Java utility library with optional logging/config integrations and no required Docker service or extra dependency for meaningful tests, but its JNDI ReferenceableUtils API now requires an ObjectFactory whitelist for overloads that do not take an explicit allowed factory set."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "0.4.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-2097-fails-java-run-com.mchange-mchange-commons-java-0.4.0-9073d23c",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
