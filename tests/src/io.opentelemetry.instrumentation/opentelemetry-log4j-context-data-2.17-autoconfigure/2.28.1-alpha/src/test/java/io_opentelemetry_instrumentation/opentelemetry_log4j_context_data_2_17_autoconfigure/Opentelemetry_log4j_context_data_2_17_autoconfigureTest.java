@@ -154,6 +154,40 @@ public class Opentelemetry_log4j_context_data_2_17_autoconfigureTest {
                 .containsEntry(TRACE_FLAGS_KEY, TraceFlags.getSampled().asHex());
     }
 
+    @Test
+    void mergesOpenTelemetryContextDataWithApplicationThreadContextInLog4jEvents() {
+        String loggerName = getClass().getName() + ".merged-context-event";
+        String requestIdKey = "application.request.id";
+        String requestId = "request-123";
+        ThreadContext.put(requestIdKey, requestId);
+        CapturingAppender appender = new CapturingAppender("merged-context-appender");
+        LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
+        Configuration configuration = loggerContext.getConfiguration();
+        LoggerConfig loggerConfig = new LoggerConfig(loggerName, Level.INFO, false);
+        loggerConfig.addAppender(appender, Level.INFO, null);
+        appender.start();
+        configuration.addAppender(appender);
+        configuration.addLogger(loggerName, loggerConfig);
+        loggerContext.updateLoggers();
+
+        try (Scope scope = Span.wrap(sampledSpanContext()).makeCurrent()) {
+            LogManager.getLogger(loggerName).info("captured with application context");
+        } finally {
+            configuration.removeLogger(loggerName);
+            loggerConfig.removeAppender(appender.getName());
+            appender.stop();
+            loggerContext.updateLoggers();
+        }
+
+        LogEvent event = appender.getLastEvent();
+        assertThat(event).isNotNull();
+        assertThat(event.getContextData().toMap())
+                .containsEntry(requestIdKey, requestId)
+                .containsEntry(TRACE_ID_KEY, TRACE_ID)
+                .containsEntry(SPAN_ID_KEY, SPAN_ID)
+                .containsEntry(TRACE_FLAGS_KEY, TraceFlags.getSampled().asHex());
+    }
+
     private static SpanContext sampledSpanContext() {
         return SpanContext.create(
                 TRACE_ID, SPAN_ID, TraceFlags.getSampled(), TraceState.getDefault());
