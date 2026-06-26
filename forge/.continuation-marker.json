@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.sonatype.sisu:sisu-inject-bean:2.4.1",
+  "issueNumber": 8602,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.sonatype.sisu:sisu-inject-bean:2.4.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8602 [Automation] javac compile fails for org.sonatype.sisu:sisu-inject-bean:2.4.1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "14 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 46933,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8602,
+    "library": "org.sonatype.sisu:sisu-inject-bean:2.4.1",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.4.1",
+    "output_tokens_used": 4241,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The observed javac failure is an API-compatibility issue, not missing setup: org.eclipse.sisu.inject changes from 0.0.0.M3 to 0.0.0.M4, and QualifiedTypeBinder.hear now takes (Class, Object) instead of (Annotation, Class, Object).",
+      "Optional dependencies such as slf4j-api, OSGi APIs, JUnit, and TestNG appear in the POM/manifest, but normal meaningful coverage of bean binding, class-space scanning, SisuGuice lookup/injection, URLClassSpace, and bean-property reflection does not require adding them up front."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.sonatype.sisu:sisu-inject-bean:2.4.1/library-preparation-preflight/pi-generation-2026-06-26T11-39-12-632890Z.log",
+    "status": "completed",
+    "summary": "No concrete extra setup is needed: sisu-inject-bean is an in-process legacy Sisu/Guice wrapper, and its required runtime pieces are already resolved transitively by the library artifact."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.4.1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8602-fails-javac-compile-org.sonatype.sisu-sisu-inject-bean-2.4.1-eb1824de",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}

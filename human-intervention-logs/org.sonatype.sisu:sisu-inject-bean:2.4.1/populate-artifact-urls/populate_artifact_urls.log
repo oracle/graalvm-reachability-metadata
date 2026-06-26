@@ -1,0 +1,1408 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f03ba-92ed-7c31-96c3-23ffd4466230
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.sonatype.sisu:sisu-inject-bean:2.4.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.4.1].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+- Entry selector: "metadata-version" = "2.4.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.4.1
+- Entry metadata-version: 2.4.1
+- Entry test-version: 2.4.1
+- Entry tested-versions: [2.4.1]
+codex
+I’ll verify the artifact’s Maven and upstream project links first, then update only the missing fields in the selected `index.json` entry.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"2.4.1\")' metadata/org.sonatype.sisu/sisu-inject-bean/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "2.4.1",
+  "tested-versions": [
+    "2.4.1"
+  ],
+  "allowed-packages": [
+    "javax.enterprise.inject",
+    "javax.inject",
+    "org.aopalliance",
+    "org.sonatype",
+    "org.sonatype.guice.bean",
+    "org.sonatype.inject"
+  ]
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'sisu-inject-bean|org\\.sonatype\\.sisu' metadata tests docs -g 'index.json' -g '*.java' -g '*.md'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d
+ succeeded in 0ms:
+metadata/org.sonatype.sisu/sisu-inject-bean/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
+metadata/org.sonatype.sisu/sisu-inject-bean/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
+metadata/org.sonatype.sisu/sisu-inject-bean/index.json:38:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
+metadata/org.sonatype.sisu/sisu-inject-bean/index.json:41:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
+
+web search: 
+web search: org.sonatype.sisu sisu-inject-bean 2.4.1 pom repository URL scm tag
+codex
+The existing file already has URL templates on neighboring entries, so I’m checking whether those templates also resolve for `2.4.1` and whether Maven Central carries a tests artifact for this exact version.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' metadata/org.sonatype.sisu/sisu-inject-bean/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.4.1",
+    "tested-versions" : [
+      "2.4.1"
+    ],
+    "allowed-packages" : [
+      "javax.enterprise.inject",
+      "javax.inject",
+      "org.aopalliance",
+      "org.sonatype",
+      "org.sonatype.guice.bean",
+      "org.sonatype.inject"
+    ]
+  },
+  {
+    "metadata-version" : "2.4.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
+    "repository-url" : "https://github.com/sonatype/sisu",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
+    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+    "tested-versions" : [
+      "2.4.0"
+    ],
+    "allowed-packages" : [
+      "javax.enterprise.inject",
+      "javax.inject",
+      "org.aopalliance",
+      "org.sonatype",
+      "org.sonatype.guice.bean",
+      "org.sonatype.inject"
+    ]
+  },
+  {
+    "metadata-version" : "1.4.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
+    "repository-url" : "https://github.com/sonatype/sisu",
+    "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/sisu-inject/guice-bean",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
+    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+    "tested-versions" : [
+      "1.4.2",
+      "1.4.3.1",
+      "1.4.3.2",
+      "1.4.3-server",
+      "1.4.3",
+      "2.0.0",
+      "2.1.1-NEXUS-4312",
+      "2.1.1",
+      "2.2.0",
+      "2.2.1",
+      "2.2.2",
+      "2.2.3",
+      "2.3.0",
+      "2.3.1",
+      "2.3.2",
+      "2.3.3",
+      "2.3.4"
+    ],
+    "allowed-packages" : [
+      "javax.enterprise.inject",
+      "javax.inject",
+      "org.aopalliance",
+      "org.sonatype"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.1/' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/sonatype/sisu/sisu-inject-bean/2.4.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/sonatype/sisu/sisu-inject-bean/2.4.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="sisu-inject-bean-2.4.1-javadoc.jar" title="sisu-inject-bean-2.4.1-javadoc.jar">sisu-inject-bean-2.4.1-javadoc.jar</a>                2013-07-11 04:32    188242      
+<a href="sisu-inject-bean-2.4.1-javadoc.jar.asc" title="sisu-inject-bean-2.4.1-javadoc.jar.asc">sisu-inject-bean-2.4.1-javadoc.jar.asc</a>            2013-07-11 04:32       203      
+<a href="sisu-inject-bean-2.4.1-javadoc.jar.asc.md5" title="sisu-inject-bean-2.4.1-javadoc.jar.asc.md5">sisu-inject-bean-2.4.1-javadoc.jar.asc.md5</a>        2013-07-11 04:32        32      
+<a href="sisu-inject-bean-2.4.1-javadoc.jar.asc.sha1" title="sisu-inject-bean-2.4.1-javadoc.jar.asc.sha1">sisu-inject-bean-2.4.1-javadoc.jar.asc.sha1</a>       2013-07-11 04:32        40      
+<a href="sisu-inject-bean-2.4.1-javadoc.jar.md5" title="sisu-inject-bean-2.4.1-javadoc.jar.md5">sisu-inject-bean-2.4.1-javadoc.jar.md5</a>            2013-07-11 04:32        32      
+<a href="sisu-inject-bean-2.4.1-javadoc.jar.sha1" title="sisu-inject-bean-2.4.1-javadoc.jar.sha1">sisu-inject-bean-2.4.1-javadoc.jar.sha1</a>           2013-07-11 04:32        40      
+<a href="sisu-inject-bean-2.4.1-sources.jar" title="sisu-inject-bean-2.4.1-sources.jar">sisu-inject-bean-2.4.1-sources.jar</a>                2013-07-11 04:32     27383      
+<a href="sisu-inject-bean-2.4.1-sources.jar.asc" title="sisu-inject-bean-2.4.1-sources.jar.asc">sisu-inject-bean-2.4.1-sources.jar.asc</a>            2013-07-11 04:32       203      
+<a href="sisu-inject-bean-2.4.1-sources.jar.asc.md5" title="sisu-inject-bean-2.4.1-sources.jar.asc.md5">sisu-inject-bean-2.4.1-sources.jar.asc.md5</a>        2013-07-11 04:32        32      
+<a href="sisu-inject-bean-2.4.1-sources.jar.asc.sha1" title="sisu-inject-bean-2.4.1-sources.jar.asc.sha1">sisu-inject-bean-2.4.1-sources.jar.asc.sha1</a>       2013-07-11 04:32        40      
+<a href="sisu-inject-bean-2.4.1-sources.jar.md5" title="sisu-inject-bean-2.4.1-sources.jar.md5">sisu-inject-bean-2.4.1-sources.jar.md5</a>            2013-07-11 04:32        32      
+<a href="sisu-inject-bean-2.4.1-sources.jar.sha1" title="sisu-inject-bean-2.4.1-sources.jar.sha1">sisu-inject-bean-2.4.1-sources.jar.sha1</a>           2013-07-11 04:32        40      
+<a href="sisu-inject-bean-2.4.1.jar" title="sisu-inject-bean-2.4.1.jar">sisu-inject-bean-2.4.1.jar</a>                        2013-07-11 04:32     37598      
+<a href="sisu-inject-bean-2.4.1.jar.asc" title="sisu-inject-bean-2.4.1.jar.asc">sisu-inject-bean-2.4.1.jar.asc</a>                    2013-07-11 04:32       203      
+<a href="sisu-inject-bean-2.4.1.jar.asc.md5" title="sisu-inject-bean-2.4.1.jar.asc.md5">sisu-inject-bean-2.4.1.jar.asc.md5</a>                2013-07-11 04:32        32      
+<a href="sisu-inject-bean-2.4.1.jar.asc.sha1" title="sisu-inject-bean-2.4.1.jar.asc.sha1">sisu-inject-bean-2.4.1.jar.asc.sha1</a>               2013-07-11 04:32        40      
+<a href="sisu-inject-bean-2.4.1.jar.md5" title="sisu-inject-bean-2.4.1.jar.md5">sisu-inject-bean-2.4.1.jar.md5</a>                    2013-07-11 04:32        32      
+<a href="sisu-inject-bean-2.4.1.jar.sha1" title="sisu-inject-bean-2.4.1.jar.sha1">sisu-inject-bean-2.4.1.jar.sha1</a>                   2013-07-11 04:32        40      
+<a href="sisu-inject-bean-2.4.1.pom" title="sisu-inject-bean-2.4.1.pom">sisu-inject-bean-2.4.1.pom</a>                        2013-07-11 04:32      2265      
+<a href="sisu-inject-bean-2.4.1.pom.asc" title="sisu-inject-bean-2.4.1.pom.asc">sisu-inject-bean-2.4.1.pom.asc</a>                    2013-07-11 04:32       203      
+<a href="sisu-inject-bean-2.4.1.pom.asc.md5" title="sisu-inject-bean-2.4.1.pom.asc.md5">sisu-inject-bean-2.4.1.pom.asc.md5</a>                2013-07-11 04:32        32      
+<a href="sisu-inject-bean-2.4.1.pom.asc.sha1" title="sisu-inject-bean-2.4.1.pom.asc.sha1">sisu-inject-bean-2.4.1.pom.asc.sha1</a>               2013-07-11 04:32        40      
+<a href="sisu-inject-bean-2.4.1.pom.md5" title="sisu-inject-bean-2.4.1.pom.md5">sisu-inject-bean-2.4.1.pom.md5</a>                    2013-07-11 04:32        32      
+<a href="sisu-inject-bean-2.4.1.pom.sha1" title="sisu-inject-bean-2.4.1.pom.sha1">sisu-inject-bean-2.4.1.pom.sha1</a>                   2013-07-11 04:32        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.1/sisu-inject-bean-2.4.1.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ ~ Copyright (c) 2010, 2013 Sonatype, Inc.
+ ~ All rights reserved. This program and the accompanying materials
+ ~ are made available under the terms of the Eclipse Public License v1.0
+ ~ which accompanies this distribution, and is available at
+ ~ http://www.eclipse.org/legal/epl-v10.html
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.sisu.inject</groupId>
+    <artifactId>containers</artifactId>
+    <version>2.4.1</version>
+  </parent>
+
+  <groupId>org.sonatype.sisu</groupId>
+  <artifactId>sisu-inject-bean</artifactId>
+
+  <name>Sisu-Inject-Bean : legacy wrapper</name>
+
+  <dependencies>
+    <!-- external dependencies -->
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-guice</artifactId>
+      <classifier>no_aop</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.sisu</groupId>
+      <artifactId>org.eclipse.sisu.inject</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.inject</groupId>
+          <artifactId>guice</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- optional dependencies -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+</project>
+
+codex
+Maven Central has the `2.4.1` source and Javadoc jars but no tests jar in that artifact directory. I’m now resolving the canonical upstream tag and path for the project repository/test suite.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/sonatype/sisu/inject/containers/2.4.1/containers-2.4.1.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ ~ Copyright (c) 2010, 2013 Sonatype, Inc.
+ ~ All rights reserved. This program and the accompanying materials
+ ~ are made available under the terms of the Eclipse Public License v1.0
+ ~ which accompanies this distribution, and is available at
+ ~ http://www.eclipse.org/legal/epl-v10.html
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.sisu</groupId>
+    <artifactId>sisu-inject</artifactId>
+    <version>2.4.1</version>
+  </parent>
+
+  <groupId>org.sonatype.sisu.inject</groupId>
+  <artifactId>containers</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Sisu-Inject : Containers</name>
+
+  <modules>
+    <module>sisu-inject-bean</module>
+    <module>sisu-inject-plexus</module>
+  </modules>
+
+</project>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/sonatype/sisu.git 'refs/tags/*2.4.1*'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.1/sisu-inject-bean-2.4.1-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.1/sisu-inject-bean-2.4.1-javadoc.jar \\
+  https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.1/sisu-inject-bean-2.4.1-tests.jar \\
+  https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.1/sisu-inject-bean-2.4.1-test-sources.jar; do
+  code="'$(curl -o /dev/null -s -w '"'%{http_code}' -L \""'$url")
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d
+ succeeded in 184ms:
+404 https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.1/sisu-inject-bean-2.4.1-tests.jar
+404 https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.1/sisu-inject-bean-2.4.1-test-sources.jar
+
+ succeeded in 358ms:
+5757456c442feee14d8ed7437f023e8a1dc60e25	refs/tags/sisu-2.4.1
+6da21b3f806586a83d3f83a958aa7f3ae4bf3827	refs/tags/sisu-2.4.1^{}
+
+codex
+The upstream tag is `sisu-2.4.1`. I’m checking the tagged tree for the exact module test directory before writing the JSON.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject/2.4.1/sisu-inject-2.4.1.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ ~ Copyright (c) 2010, 2013 Sonatype, Inc.
+ ~ All rights reserved. This program and the accompanying materials
+ ~ are made available under the terms of the Eclipse Public License v1.0
+ ~ which accompanies this distribution, and is available at
+ ~ http://www.eclipse.org/legal/epl-v10.html
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.sisu</groupId>
+    <artifactId>sisu-parent</artifactId>
+    <version>2.4.1</version>
+  </parent>
+
+  <artifactId>sisu-inject</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Sisu-Inject</name>
+
+  <modules>
+    <module>containers</module>
+  </modules>
+
+  <properties>
+    <guava.version>11.0.2</guava.version>
+    <sisu.guice.version>3.1.5</sisu.guice.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+
+      <dependency>
+        <groupId>javax.enterprise</groupId>
+        <artifactId>cdi-api</artifactId>
+        <version>1.0</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.ejb3</groupId>
+            <artifactId>jboss-ejb3-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.interceptor</groupId>
+            <artifactId>jboss-interceptor-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu</groupId>
+        <artifactId>sisu-guice</artifactId>
+        <version>${sisu.guice.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu</groupId>
+        <artifactId>sisu-guice</artifactId>
+        <version>${sisu.guice.version}</version>
+        <classifier>no_aop</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.sisu</groupId>
+        <artifactId>org.eclipse.sisu.inject</artifactId>
+        <version>0.0.0.M4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.sisu</groupId>
+        <artifactId>org.eclipse.sisu.plexus</artifactId>
+        <version>0.0.0.M4</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/sonatype/sisu/contents/sisu-inject?ref=sisu-2.4.1' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d
+exec
+/usr/bin/bash -lc "for url in \\
+  https://github.com/sonatype/sisu \\
+  https://github.com/sonatype/sisu/tree/sisu-2.4.1 \\
+  https://github.com/sonatype/sisu/tree/sisu-2.4.1/sisu-inject/guice-bean \\
+  https://github.com/sonatype/sisu/tree/sisu-2.4.1/sisu-inject/guice-bean/src/test \\
+  https://github.com/sonatype/sisu/tree/sisu-2.4.1/sisu-inject/containers/sisu-inject-bean \\
+  https://github.com/sonatype/sisu/tree/sisu-2.4.1/sisu-inject/containers/sisu-inject-bean/src/test; do
+  code="'$(curl -o /dev/null -s -w '"'%{http_code}' -L \""'$url")
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d
+ exited 22 in 180ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 4241ms:
+200 https://github.com/sonatype/sisu
+200 https://github.com/sonatype/sisu/tree/sisu-2.4.1
+404 https://github.com/sonatype/sisu/tree/sisu-2.4.1/sisu-inject/guice-bean
+404 https://github.com/sonatype/sisu/tree/sisu-2.4.1/sisu-inject/guice-bean/src/test
+404 https://github.com/sonatype/sisu/tree/sisu-2.4.1/sisu-inject/containers/sisu-inject-bean
+404 https://github.com/sonatype/sisu/tree/sisu-2.4.1/sisu-inject/containers/sisu-inject-bean/src/test
+
+codex
+The tag resolves, but the older path used by neighboring metadata entries does not exist at `2.4.1`. I’m listing the tagged repository layout so the test URL points to the actual module path or falls back to `N/A` if tests are not present.
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.1/sisu-inject-bean-2.4.1-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.1/sisu-inject-bean-2.4.1-javadoc.jar; do
+  curl -fsSI \""'$url" | sed -n '"'1,4p'
+done" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 26 Jun 2026 11:40:22 GMT
+content-type: application/java-archive
+content-length: 27383
+HTTP/2 200 
+date: Fri, 26 Jun 2026 11:40:22 GMT
+content-type: application/java-archive
+content-length: 188242
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/sonatype/sisu/contents?ref=sisu-2.4.1' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/sonatype/sisu/git/trees/sisu-2.4.1?recursive=1 | jq -r '.tree[].path' | rg '("'^|/)sisu-inject-bean(/|$)|src/test|guice-bean|pom.xml$'"'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d
+ succeeded in 190ms:
+[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "d163d47debae3b336c3b3e92b11dd1f865d9e2e9",
+    "size": 37,
+    "url": "https://api.github.com/repos/sonatype/sisu/contents/.gitignore?ref=sisu-2.4.1",
+    "html_url": "https://github.com/sonatype/sisu/blob/sisu-2.4.1/.gitignore",
+    "git_url": "https://api.github.com/repos/sonatype/sisu/git/blobs/d163d47debae3b336c3b3e92b11dd1f865d9e2e9",
+    "download_url": "https://raw.githubusercontent.com/sonatype/sisu/sisu-2.4.1/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sonatype/sisu/contents/.gitignore?ref=sisu-2.4.1",
+      "git": "https://api.github.com/repos/sonatype/sisu/git/blobs/d163d47debae3b336c3b3e92b11dd1f865d9e2e9",
+      "html": "https://github.com/sonatype/sisu/blob/sisu-2.4.1/.gitignore"
+    }
+  },
+  {
+    "name": "LICENSE.txt",
+    "path": "LICENSE.txt",
+    "sha": "79e486c3d2c20397a987cc8785b8e62b8bbcbb52",
+    "size": 11232,
+    "url": "https://api.github.com/repos/sonatype/sisu/contents/LICENSE.txt?ref=sisu-2.4.1",
+    "html_url": "https://github.com/sonatype/sisu/blob/sisu-2.4.1/LICENSE.txt",
+    "git_url": "https://api.github.com/repos/sonatype/sisu/git/blobs/79e486c3d2c20397a987cc8785b8e62b8bbcbb52",
+    "download_url": "https://raw.githubusercontent.com/sonatype/sisu/sisu-2.4.1/LICENSE.txt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sonatype/sisu/contents/LICENSE.txt?ref=sisu-2.4.1",
+      "git": "https://api.github.com/repos/sonatype/sisu/git/blobs/79e486c3d2c20397a987cc8785b8e62b8bbcbb52",
+      "html": "https://github.com/sonatype/sisu/blob/sisu-2.4.1/LICENSE.txt"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "8b6f7741d41582455a514ec44d3d65305bf3acc8",
+    "size": 853,
+    "url": "https://api.github.com/repos/sonatype/sisu/contents/README.md?ref=sisu-2.4.1",
+    "html_url": "https://github.com/sonatype/sisu/blob/sisu-2.4.1/README.md",
+    "git_url": "https://api.github.com/repos/sonatype/sisu/git/blobs/8b6f7741d41582455a514ec44d3d65305bf3acc8",
+    "download_url": "https://raw.githubusercontent.com/sonatype/sisu/sisu-2.4.1/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sonatype/sisu/contents/README.md?ref=sisu-2.4.1",
+      "git": "https://api.github.com/repos/sonatype/sisu/git/blobs/8b6f7741d41582455a514ec44d3d65305bf3acc8",
+      "html": "https://github.com/sonatype/sisu/blob/sisu-2.4.1/README.md"
+    }
+  },
+  {
+    "name": "legacy",
+    "path": "legacy",
+    "sha": "ec84e8c4647d075de06247760bf206e849192eb6",
+    "size": 0,
+    "url": "https://api.github.com/repos/sonatype/sisu/contents/legacy?ref=sisu-2.4.1",
+    "html_url": "https://github.com/sonatype/sisu/tree/sisu-2.4.1/legacy",
+    "git_url": "https://api.github.com/repos/sonatype/sisu/git/trees/ec84e8c4647d075de06247760bf206e849192eb6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sonatype/sisu/contents/legacy?ref=sisu-2.4.1",
+      "git": "https://api.github.com/repos/sonatype/sisu/git/trees/ec84e8c4647d075de06247760bf206e849192eb6",
+      "html": "https://github.com/sonatype/sisu/tree/sisu-2.4.1/legacy"
+    }
+  },
+  {
+    "name": "pom.xml",
+    "path": "pom.xml",
+    "sha": "3a9f5be80d34e021d7b9d748d97ea805a1c9cdc6",
+    "size": 10773,
+    "url": "https://api.github.com/repos/sonatype/sisu/contents/pom.xml?ref=sisu-2.4.1",
+    "html_url": "https://github.com/sonatype/sisu/blob/sisu-2.4.1/pom.xml",
+    "git_url": "https://api.github.com/repos/sonatype/sisu/git/blobs/3a9f5be80d34e021d7b9d748d97ea805a1c9cdc6",
+    "download_url": "https://raw.githubusercontent.com/sonatype/sisu/sisu-2.4.1/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sonatype/sisu/contents/pom.xml?ref=sisu-2.4.1",
+      "git": "https://api.github.com/repos/sonatype/sisu/git/blobs/3a9f5be80d34e021d7b9d748d97ea805a1c9cdc6",
+      "html": "https://github.com/sonatype/sisu/blob/sisu-2.4.1/pom.xml"
+    }
+  },
+  {
+    "name": "sisu-examples",
+    "path": "sisu-examples",
+    "sha": "9020557d966f9730160b6e2f2cc3d41a45ac2ff5",
+    "size": 0,
+    "url": "https://api.github.com/repos/sonatype/sisu/contents/sisu-examples?ref=sisu-2.4.1",
+    "html_url": "https://github.com/sonatype/sisu/tree/sisu-2.4.1/sisu-examples",
+    "git_url": "https://api.github.com/repos/sonatype/sisu/git/trees/9020557d966f9730160b6e2f2cc3d41a45ac2ff5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sonatype/sisu/contents/sisu-examples?ref=sisu-2.4.1",
+      "git": "https://api.github.com/repos/sonatype/sisu/git/trees/9020557d966f9730160b6e2f2cc3d41a45ac2ff5",
+      "html": "https://github.com/sonatype/sisu/tree/sisu-2.4.1/sisu-examples"
+    }
+  }
+]
+
+ succeeded in 409ms:
+legacy/containers/pom.xml
+legacy/containers/sisu-inject-bean
+legacy/containers/sisu-inject-bean/pom.xml
+legacy/containers/sisu-inject-bean/src
+legacy/containers/sisu-inject-bean/src/main
+legacy/containers/sisu-inject-bean/src/main/java
+legacy/containers/sisu-inject-bean/src/main/java/org
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/binders
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/binders/ParameterKeys.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/binders/SpaceModule.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/binders/WireModule.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/containers
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/containers/InjectedTest.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/containers/InjectedTestCase.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/containers/Main.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/containers/SisuGuice.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/converters
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/converters/AbstractTypeConverter.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/locators
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/locators/BeanLocator.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/locators/DefaultBeanLocator.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/locators/DefaultRankingFunction.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/locators/MutableBeanLocator.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/locators/RankingFunction.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/reflect
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/reflect/ClassSpace.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/reflect/DeferredClass.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/reflect/IgnoreSetters.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/reflect/Logs.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/reflect/URLClassSpace.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/reflect/Weak.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/scanners
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/scanners/ClassSpaceScanner.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/scanners/ClassSpaceVisitor.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/scanners/EmptyAnnotationVisitor.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/scanners/EmptyClassVisitor.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/scanners/asm
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/scanners/asm/AnnotationVisitor.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/scanners/asm/ClassVisitor.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/scanners/asm/Opcodes.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/guice/bean/scanners/asm/Type.java
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/inject
+legacy/containers/sisu-inject-bean/src/main/java/org/sonatype/inject/Sisu.java
+legacy/containers/sisu-inject-bean/src/main/resources
+legacy/containers/sisu-inject-bean/src/main/resources/META-INF
+legacy/containers/sisu-inject-bean/src/main/resources/META-INF/LICENSE
+legacy/containers/sisu-inject-bean/src/main/resources/META-INF/plexus
+legacy/containers/sisu-inject-bean/src/main/resources/META-INF/plexus/components.xml
+legacy/containers/sisu-inject-plexus/pom.xml
+legacy/containers/sisu-inject-plexus/src/test
+legacy/containers/sisu-inject-plexus/src/test/java
+legacy/containers/sisu-inject-plexus/src/test/java/org
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/DefaultComponentLookupManagerTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/DyanamicComponentKungFuTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/PlexusTestCaseTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/PlexusTestCaseTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/TestMapOrientedComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/composition
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/composition/AbstractComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/composition/Component.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/composition/ComponentA.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/composition/ComponentB.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/composition/ComponentC.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/composition/ComponentD.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/composition/ComponentE.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/composition/ComponentF.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/composition/ComponentRealmCompositionTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/composition/ComponentWithSeveralFieldsOfTheSameType.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/composition/DefaultComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/composition/DefaultComponentA.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/composition/DefaultComponentB.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/composition/DefaultComponentC.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/composition/DefaultComponentComposerManagerTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/configurator
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/configurator/AbstractComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/configurator/AbstractComponentConfiguratorTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/configurator/AbstractThing.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/configurator/BasicComponentConfiguratorTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/configurator/Component.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/configurator/ComponentWithArrayFields.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/configurator/ComponentWithCollectionFields.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/configurator/ComponentWithCompositeFields.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/configurator/ComponentWithDefaultProperty.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/configurator/ComponentWithEnumFields.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/configurator/ComponentWithInlinedCollection.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/configurator/ComponentWithMapField.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/configurator/ComponentWithPropertiesField.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/configurator/ComponentWithSetters.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/configurator/ConfigurableComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/configurator/DefaultComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/configurator/ImportantThing.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/configurator/LegacyComponentConfiguratorTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/configurator/ThingInterface.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/discovery
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/discovery/DefaultDiscoveredComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/discovery/DiscoveredComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/factory
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/factory/Component.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/factory/ComponentImplA.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/factory/ComponentImplB.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/factory/ComponentImplC.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/factory/TestComponentFactory1.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/factory/TestComponentFactory2.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/factory/TestFactoryResultComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/factory/nonjava
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/factory/nonjava/NonJavaComponentFactory.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/factory/nonjava/NonJavaComponentFactoryTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/manager
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/manager/ClassicSingletonComponentManagerTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/manager/Component.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/manager/DefaultComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/manager/SlowComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/manager/SlowComponentClassicSingletonComponentManagerTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/registry
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/registry/DefaultComponentRegistryTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/registry/TestSynchronizedComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/repository
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/repository/ComponentDescriptorTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/repository/ComponentRequirementTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/repository/ComponentSetTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/repository/DefaultComponentRepositoryTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/repository/io
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/component/repository/io/PlexusTools.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/components
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/components/A.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/configuration
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/configuration/ConfigurationTestHelper.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/configuration/DefaultPlexusConfigurationTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/configuration/io
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/configuration/io/PlexusConfigurationReader.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/configuration/io/XmlPlexusConfigurationReader.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/configuration/io/XmlPlexusConfigurationReaderTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/configuration/xml
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/configuration/xml/XmlPlexusConfigurationTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/context
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/context/ContextMapAdapterTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/context/DefaultContextTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/hierarchy
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/hierarchy/PlexusHierarchyTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/hierarchy/PlexusTestService.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/hierarchy/TestServiceImpl.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/logging
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/logging/AbstractLoggerManagerTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/logging/CustomLoggerFactoryTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/logging/CustomLoggerManagerTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/logging/LogEnabledTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/logging/MockLogEnabled.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/logging/MockLogger.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/logging/MockLoggerFactory.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/logging/MockLoggerManager.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/logging/console
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/logging/console/ConsoleLoggerManagerTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/logging/console/ConsoleLoggerTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/AbstractStartableComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/Action.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/AddUserAction.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/CircularComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/Component.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/ComponentA.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/ComponentB.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/ComponentC.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/ComponentD.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/ComponentManager.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/ComponentWithRoleDefault.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/ConcreteThing.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/CountInstancesComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/DefaultCircularComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/DefaultComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/DefaultComponentA.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/DefaultComponentB.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/DefaultComponentC.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/DefaultComponentD.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/DefaultComponentManager.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/DefaultComponentWithOptionalRequirement.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/DefaultLoadOnStartService.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/DefaultLoadOnStartServiceWithRoleHint.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/DefaultServiceB.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/DefaultServiceC.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/DefaultServiceD.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/DefaultServiceE.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/DefaultStartableComponentA.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/DefaultStartableComponentB.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/DefaultStartableComponentC.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/DefaultStartableComponentD.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/DefaultStartableComponentE.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/DefaultThingUser.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/LiveComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/LoadOnStartService.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/LoadOnStartServiceWithRoleHint.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/PlexusContainerTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/ServiceB.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/ServiceC.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/ServiceD.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/ServiceE.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/ServiceH.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/StartableComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/Thing.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/ThingUser.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/cycle
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/cycle/CircularComponentTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/cycle/CycleComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/cycle/DefaultCycleComponentA.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/cycle/DefaultCycleComponentB.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/cycle/DefaultCycleComponentC.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/cycle/DefaultCycleComponentD.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/cycle/EagerComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/cycle/LazyComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/cycle/LockComponent.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/cycle/LockComponentTest.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/list
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/list/AbstractValve.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/list/DefaultPipeline.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/list/Pipeline.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/list/Valve.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/list/ValveFour.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/list/ValveOne.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/list/ValveThree.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/list/ValveTwo.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/map
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/map/AbstractActivity.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/map/Activity.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/map/ActivityManager.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/map/ActivityOne.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/map/ActivityTwo.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/map/DefaultActivityManager.java
+legacy/containers/sisu-inject-plexus/src/test/java/org/codehaus/plexus/test/map/NoComponentsMapTest.java
+legacy/containers/sisu-inject-plexus/src/test/resources
+legacy/containers/sisu-inject-plexus/src/test/resources/META-INF
+legacy/containers/sisu-inject-plexus/src/test/resources/META-INF/plexus
+legacy/containers/sisu-inject-plexus/src/test/resources/META-INF/plexus/components.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/META-INF/plexus/plexus.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/application
+legacy/containers/sisu-inject-plexus/src/test/resources/application/components.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/application/configuration-mapping.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/application/sentinel.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/inline-configuration.properties
+legacy/containers/sisu-inject-plexus/src/test/resources/inline-configuration.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/jar-repository
+legacy/containers/sisu-inject-plexus/src/test/resources/jar-repository/a.jar
+legacy/containers/sisu-inject-plexus/src/test/resources/jar-repository/b.jar
+legacy/containers/sisu-inject-plexus/src/test/resources/jar-repository/c.jar
+legacy/containers/sisu-inject-plexus/src/test/resources/jar-repository/d.jar
+legacy/containers/sisu-inject-plexus/src/test/resources/org
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/PlexusTestCaseTest.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/component
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/component/composition
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/component/composition/autowire
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/component/composition/autowire/AutowireCompositionTest.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/component/composition/components.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/component/composition/setter
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/component/composition/setter/SetterCompositionTest.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/component/factory
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/component/factory/nonjava
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/component/factory/nonjava/NonJavaComponentFactoryTest.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/component/manager
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/component/manager/ClassicSingletonComponentManagerTest.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/component/manager/SlowComponentClassicSingletonComponentManagerTest.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/components.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/configuration
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/configuration/avalon.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/configuration/source
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/configuration/source/ExtendingConfigurationSourceTest.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/configuration/source/OverridingConfigurationSourceTest.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/embed
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/embed/EmbedderTest.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/hierarchy
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/hierarchy/ChildPlexusOne.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/hierarchy/ChildPlexusTwo.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/hierarchy/PlexusHierarchyTest.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/logging
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/logging/CustomLoggerFactoryTest.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/logging/CustomLoggerManagerTest.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/logging/console
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/logging/console/ConsoleLoggerManagerTest.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/test
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/test/PlexusContainerTest.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/test/cycle
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/test/cycle/CircularComponentTest.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/test/cycle/LockComponentTest.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/test/map
+legacy/containers/sisu-inject-plexus/src/test/resources/org/codehaus/plexus/test/map/NoComponentsMapTest.xml
+legacy/containers/sisu-inject-plexus/src/test/resources/test.txt
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-a
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-a/pom.xml
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-a/src
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-a/src/main
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-a/src/main/java
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-a/src/main/java/org
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-a/src/main/java/org/codehaus
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-a/src/main/java/org/codehaus/plexus
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-a/src/main/java/org/codehaus/plexus/components
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-a/src/main/java/org/codehaus/plexus/components/A.java
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-a/src/main/java/org/codehaus/plexus/components/DefaultA.java
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-b
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-b/pom.xml
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-b/src
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-b/src/main
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-b/src/main/java
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-b/src/main/java/org
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-b/src/main/java/org/codehaus
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-b/src/main/java/org/codehaus/plexus
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-b/src/main/java/org/codehaus/plexus/components
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-b/src/main/java/org/codehaus/plexus/components/B.java
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-b/src/main/java/org/codehaus/plexus/components/DefaultB.java
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-c
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-c/pom.xml
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-c/src
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-c/src/main
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-c/src/main/java
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-c/src/main/java/org
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-c/src/main/java/org/codehaus
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-c/src/main/java/org/codehaus/plexus
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-c/src/main/java/org/codehaus/plexus/components
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-c/src/main/java/org/codehaus/plexus/components/C.java
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-c/src/main/java/org/codehaus/plexus/components/DefaultC.java
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-with-configuration
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/component-with-configuration/pom.xml
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin0
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin0/pom.xml
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin0/src
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin0/src/main
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin0/src/main/java
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin0/src/main/java/org
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin0/src/main/java/org/codehaus
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin0/src/main/java/org/codehaus/plexus
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin0/src/main/java/org/codehaus/plexus/plugins
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin0/src/main/java/org/codehaus/plexus/plugins/AltPlugin0.java
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin0/src/main/java/org/codehaus/plexus/plugins/DefaultPlugin0.java
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin0/src/main/java/org/codehaus/plexus/plugins/Plugin0.java
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin1
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin1/pom.xml
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin1/src
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin1/src/main
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin1/src/main/java
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin1/src/main/java/org
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin1/src/main/java/org/codehaus
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin1/src/main/java/org/codehaus/plexus
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin1/src/main/java/org/codehaus/plexus/plugins
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin1/src/main/java/org/codehaus/plexus/plugins/AltPlugin1.java
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin1/src/main/java/org/codehaus/plexus/plugins/DefaultPlugin1.java
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/plugin1/src/main/java/org/codehaus/plexus/plugins/Plugin1.java
+legacy/containers/sisu-inject-plexus/src/test/test-component-builds/pom.xml
+legacy/containers/sisu-inject-plexus/src/test/test-components
+legacy/containers/sisu-inject-plexus/src/test/test-components/component-a-1.0-SNAPSHOT.jar
+legacy/containers/sisu-inject-plexus/src/test/test-components/component-a-2.0-SNAPSHOT.jar
+legacy/containers/sisu-inject-plexus/src/test/test-components/component-b-1.0-SNAPSHOT.jar
+legacy/containers/sisu-inject-plexus/src/test/test-components/component-c-1.0-SNAPSHOT.jar
+legacy/containers/sisu-inject-plexus/src/test/test-components/component-with-configuration-1.0-SNAPSHOT.jar
+legacy/containers/sisu-inject-plexus/src/test/test-components/plexus-archiver-1.0-alpha-8.jar
+legacy/containers/sisu-inject-plexus/src/test/test-components/plugin0-1.0-SNAPSHOT.jar
+legacy/containers/sisu-inject-plexus/src/test/test-components/plugin1-1.0-SNAPSHOT.jar
+legacy/pom.xml
+legacy/registries/pom.xml
+legacy/registries/sisu-eclipse-registry/pom.xml
+pom.xml
+sisu-examples/guice-rcp/guice-rcp-app/pom.xml
+sisu-examples/guice-rcp/guice-rcp-plugin/pom.xml
+sisu-examples/guice-rcp/pom.xml
+sisu-examples/guice-swing/guice-swing-button-tab/pom.xml
+sisu-examples/guice-swing/guice-swing-checkbox-tab/pom.xml
+sisu-examples/guice-swing/guice-swing-main/pom.xml
+sisu-examples/guice-swing/guice-swing-nested-tab/pom.xml
+sisu-examples/guice-swing/guice-swing-window/pom.xml
+sisu-examples/guice-swing/pom.xml
+sisu-examples/pom.xml
+sisu-examples/sisu-peaberry/main/pom.xml
+sisu-examples/sisu-peaberry/peaberry-test-api/pom.xml
+sisu-examples/sisu-peaberry/peaberry-test-export/pom.xml
+sisu-examples/sisu-peaberry/peaberry-test-import/pom.xml
+sisu-examples/sisu-peaberry/pom.xml
+
+codex
+The tagged tree contains production code for `legacy/containers/sisu-inject-bean` but no test directory for that module, while the sibling Plexus module has tests. I’ll use Maven Central for sources/Javadoc, GitHub for the canonical repository, and `N/A` for tests.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-parent/2.4.1/sisu-parent-2.4.1.pom | rg -n '<url>|<scm>|<connection>|<developerConnection>|<tag>' -C 2" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d
+ succeeded in 0ms:
+24-
+25-  <name>Sisu</name>
+26:  <url>http://sisu.sonatype.org/</url>
+27-  <inceptionYear>2010</inceptionYear>
+28-  <organization>
+29-    <name>Sonatype, Inc.</name>
+30:    <url>http://www.sonatype.com/</url>
+31-  </organization>
+32-  <licenses>
+33-    <license>
+34-      <name>Eclipse Public License, Version 1.0</name>
+35:      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+36-      <distribution>repo</distribution>
+37-    </license>
+--
+68-  </modules>
+69-
+70:  <scm>
+71:    <connection>scm:git:git@github.com:sonatype/sisu.git</connection>
+72:    <developerConnection>scm:git:git@github.com:sonatype/sisu.git</developerConnection>
+73:    <url>git@github.com:sonatype/sisu.git</url>
+74:    <tag>sisu-2.4.1</tag>
+75-  </scm>
+76-  <issueManagement>
+77-    <system>jira</system>
+78:    <url>https://issues.sonatype.org/browse/SISU</url>
+79-  </issueManagement>
+80-  <ciManagement>
+81-    <system>Hudson</system>
+82:    <url>https://builds.sonatype.org/job/sisu/</url>
+83-  </ciManagement>
+84-
+--
+90-    <repository>
+91-      <id>ossrh-snapshots</id>
+92:      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+93-      <releases>
+94-        <enabled>false</enabled>
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://github.com/sonatype/sisu/tree/sisu-2.4.1/legacy/containers/sisu-inject-bean \\
+  https://github.com/sonatype/sisu/tree/sisu-2.4.1/legacy/containers/sisu-inject-bean/src/main/java \\
+  https://github.com/sonatype/sisu/tree/sisu-2.4.1/legacy/containers/sisu-inject-bean/src/test; do
+  code="'$(curl -o /dev/null -s -w '"'%{http_code}' -L \""'$url")
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d
+ succeeded in 2103ms:
+200 https://github.com/sonatype/sisu/tree/sisu-2.4.1/legacy/containers/sisu-inject-bean
+200 https://github.com/sonatype/sisu/tree/sisu-2.4.1/legacy/containers/sisu-inject-bean/src/main/java
+404 https://github.com/sonatype/sisu/tree/sisu-2.4.1/legacy/containers/sisu-inject-bean/src/test
+
+codex
+I’m going to update only the first entry’s missing fields now, matching the formatting and wording pattern already used for the other versions.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+diff --git a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+index 24a250ad675676183a7445e8a537c95f6fe9c373..34382cebe25d6e7c7d1de04b7f19df4d10902a31
+--- a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
++++ b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.4.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
++    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+     "tested-versions" : [
+       "2.4.1"
+     ],
+
+diff --git a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+index 24a250ad675676183a7445e8a537c95f6fe9c373..34382cebe25d6e7c7d1de04b7f19df4d10902a31
+--- a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
++++ b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.4.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
++    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+     "tested-versions" : [
+       "2.4.1"
+     ],
+
+codex
+The JSON entry is edited. I’m running a syntax check and the targeted metadata validation for `org.sonatype.sisu:sisu-inject-bean:2.4.1`.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"2.4.1\")' metadata/org.sonatype.sisu/sisu-inject-bean/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "2.4.1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
+  "repository-url": "https://github.com/sonatype/sisu",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
+  "description": "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+  "tested-versions": [
+    "2.4.1"
+  ],
+  "allowed-packages": [
+    "javax.enterprise.inject",
+    "javax.inject",
+    "org.aopalliance",
+    "org.sonatype",
+    "org.sonatype.guice.bean",
+    "org.sonatype.inject"
+  ]
+}
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.sonatype.sisu:sisu-inject-bean:2.4.1 --stacktrace' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d
+diff --git a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+index 24a250ad675676183a7445e8a537c95f6fe9c373..34382cebe25d6e7c7d1de04b7f19df4d10902a31
+--- a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
++++ b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.4.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
++    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+     "tested-versions" : [
+       "2.4.1"
+     ],
+
+ exited 1 in 7082ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.sonatype.sisu:sisu-inject-bean:2.4.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d/metadata/org.sonatype.sisu/sisu-inject-bean/2.4.1/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.sonatype.sisu:sisu-inject-bean:2.4.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d/metadata/org.sonatype.sisu/sisu-inject-bean/2.4.1/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.sonatype.sisu:sisu-inject-bean:2.4.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d/metadata/org.sonatype.sisu/sisu-inject-bean/2.4.1/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 6s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The JSON syntax check passed. The targeted Gradle metadata check fails on pre-existing repository structure for this coordinate because `metadata/org.sonatype.sisu/sisu-inject-bean/2.4.1/reachability-metadata.json` is missing, not because of the URL fields I changed.
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.sonatype.sisu/sisu-inject-bean/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.sonatype.sisu/sisu-inject-bean/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d
+ succeeded in 0ms:
+diff --git i/metadata/org.sonatype.sisu/sisu-inject-bean/index.json w/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+index 24a250ad67..34382cebe2 100644
+--- i/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
++++ w/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.4.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
++    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+     "tested-versions" : [
+       "2.4.1"
+     ],
+
+diff --git a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+index 24a250ad675676183a7445e8a537c95f6fe9c373..34382cebe25d6e7c7d1de04b7f19df4d10902a31
+--- a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
++++ b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.4.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
++    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+     "tested-versions" : [
+       "2.4.1"
+     ],
+
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d/metadata/org.sonatype.sisu/sisu-inject-bean/index.json:4) for metadata version `2.4.1`.
+
+Set:
+- `source-code-url`: Maven Central `$version$` sources jar template
+- `repository-url`: canonical `sonatype/sisu` GitHub root
+- `test-code-url`: `N/A` because no Maven tests artifact and no module test directory exists at tag `sisu-2.4.1`
+- `documentation-url`: Maven Central `$version$` Javadoc jar template
+- `description`: two sentences
+- `language`: left absent
+
+Verification:
+- `jq empty metadata/org.sonatype.sisu/sisu-inject-bean/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.sonatype.sisu:sisu-inject-bean:2.4.1 --stacktrace` failed because `metadata/org.sonatype.sisu/sisu-inject-bean/2.4.1/reachability-metadata.json` is missing.
+diff --git a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+index 24a250ad675676183a7445e8a537c95f6fe9c373..34382cebe25d6e7c7d1de04b7f19df4d10902a31
+--- a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
++++ b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.4.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
++    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+     "tested-versions" : [
+       "2.4.1"
+     ],
+
+tokens used
+47,147
+Updated [index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d/metadata/org.sonatype.sisu/sisu-inject-bean/index.json:4) for metadata version `2.4.1`.
+
+Set:
+- `source-code-url`: Maven Central `$version$` sources jar template
+- `repository-url`: canonical `sonatype/sisu` GitHub root
+- `test-code-url`: `N/A` because no Maven tests artifact and no module test directory exists at tag `sisu-2.4.1`
+- `documentation-url`: Maven Central `$version$` Javadoc jar template
+- `description`: two sentences
+- `language`: left absent
+
+Verification:
+- `jq empty metadata/org.sonatype.sisu/sisu-inject-bean/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.sonatype.sisu:sisu-inject-bean:2.4.1 --stacktrace` failed because `metadata/org.sonatype.sisu/sisu-inject-bean/2.4.1/reachability-metadata.json` is missing.
+Ran agent for org.sonatype.sisu:sisu-inject-bean:2.4.1 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d/build/agent-url-discovery-logs/org.sonatype.sisu-sisu-inject-bean-2.4.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8602-ea8e323d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 18s
+9 actionable tasks: 1 executed, 8 up-to-date
