@@ -26,6 +26,10 @@ import io.opentelemetry.instrumentation.resources.ProcessRuntimeResourceProvider
 import io.opentelemetry.sdk.autoconfigure.spi.ConfigProperties;
 import io.opentelemetry.sdk.autoconfigure.spi.ResourceProvider;
 import io.opentelemetry.sdk.resources.Resource;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,9 +38,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class Opentelemetry_resourcesTest {
     private static final AttributeKey<String> CONTAINER_ID = AttributeKey.stringKey("container.id");
@@ -187,6 +194,28 @@ public class Opentelemetry_resourcesTest {
     }
 
     @Test
+    void jarAndManifestProvidersCreateServiceAttributesFromCurrentJar(@TempDir Path tempDir)
+            throws IOException {
+        Path jarPath = createJar(tempDir.resolve("checkout-service.jar"), "inventory-app", "test-build");
+        ManifestResourceProvider manifestProvider = new ManifestResourceProvider();
+        Resource defaultServiceName = Resource.create(Attributes.of(SERVICE_NAME, UNKNOWN_JAVA_SERVICE_NAME));
+        String originalCommand = System.getProperty("sun.java.command");
+        try {
+            System.setProperty("sun.java.command", jarPath.toString());
+
+            Resource jarNameResource = new JarServiceNameDetector().createResource(EmptyConfigProperties.INSTANCE);
+            assertThat(jarNameResource.getAttribute(SERVICE_NAME)).isEqualTo("checkout-service");
+
+            assertThat(manifestProvider.shouldApply(EmptyConfigProperties.INSTANCE, defaultServiceName)).isTrue();
+            Resource manifestResource = manifestProvider.createResource(EmptyConfigProperties.INSTANCE);
+            assertThat(manifestResource.getAttribute(SERVICE_NAME)).isEqualTo("inventory-app");
+            assertThat(manifestResource.getAttribute(SERVICE_VERSION)).isEqualTo("test-build");
+        } finally {
+            restoreSystemProperty("sun.java.command", originalCommand);
+        }
+    }
+
+    @Test
     void manifestProviderRespectsConfiguredResourceAttributesBeforeExtractingManifestData() {
         ManifestResourceProvider provider = new ManifestResourceProvider();
         Resource defaultServiceName = Resource.create(Attributes.of(SERVICE_NAME, UNKNOWN_JAVA_SERVICE_NAME));
@@ -241,6 +270,31 @@ public class Opentelemetry_resourcesTest {
         Map<String, String> properties = new HashMap<>();
         resourceAttributes.forEach((key, value) -> properties.put("otel.resource.attributes." + key, value));
         return new TestConfigProperties(null, resourceAttributes, properties);
+    }
+
+    private static Path createJar(Path jarPath, String implementationTitle, String implementationVersion)
+            throws IOException {
+        Manifest manifest = new Manifest();
+        java.util.jar.Attributes mainAttributes = manifest.getMainAttributes();
+        mainAttributes.put(java.util.jar.Attributes.Name.MANIFEST_VERSION, "1.0");
+        if (implementationTitle != null) {
+            mainAttributes.putValue("Implementation-Title", implementationTitle);
+        }
+        if (implementationVersion != null) {
+            mainAttributes.putValue("Implementation-Version", implementationVersion);
+        }
+        try (OutputStream outputStream = Files.newOutputStream(jarPath);
+                JarOutputStream ignored = new JarOutputStream(outputStream, manifest)) {
+            return jarPath;
+        }
+    }
+
+    private static void restoreSystemProperty(String key, String value) {
+        if (value == null) {
+            System.clearProperty(key);
+        } else {
+            System.setProperty(key, value);
+        }
     }
 
     private static ConfigProperties configWithServiceName(String serviceName) {
