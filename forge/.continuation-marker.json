@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.sonatype.sisu:sisu-inject-bean:2.4.1",
+  "issueNumber": 8602,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.sonatype.sisu:sisu-inject-bean:2.4.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8602 [Automation] javac compile fails for org.sonatype.sisu:sisu-inject-bean:2.4.1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "14 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 43355,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8602,
+    "library": "org.sonatype.sisu:sisu-inject-bean:2.4.1",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.4.1",
+    "output_tokens_used": 6494,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The failing compile is an API drift issue: org.eclipse.sisu.space.QualifiedTypeBinder.hear in the resolved 2.4.1 dependency expects the newer two-argument form, so tests copied from 2.4.0 may need source adjustment rather than setup.",
+      "The artifact exposes deprecated legacy wrappers and optional test-framework integrations, but meaningful coverage is reachable through core Guice/Sisu classpath-scanning and locator APIs without adding TestNG, OSGi, Docker, environment variables, or system properties."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.sonatype.sisu:sisu-inject-bean:2.4.1/library-preparation-preflight/pi-generation-2026-06-26T11-22-53-354230Z.log",
+    "status": "completed",
+    "summary": "No extra setup is needed: sisu-inject-bean is an in-process legacy Sisu/Guice wrapper, and its required runtime APIs resolve through normal Maven transitives plus the TCK scaffold."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.4.1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8602-fails-javac-compile-org.sonatype.sisu-sisu-inject-bean-2.4.1-1bdc98c5",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
