@@ -108,6 +108,21 @@ public class Spring_ai_template_stTest {
     }
 
     @Test
+    void validateStFunctionsIncludesFunctionNamedVariablesInValidation() {
+        StTemplateRenderer renderer = StTemplateRenderer.builder()
+                .validateStFunctions()
+                .build();
+
+        assertThatIllegalStateException()
+                .isThrownBy(() -> renderer.apply("First choice: {first}", Map.of()))
+                .withMessageContaining("first");
+
+        String rendered = renderer.apply("First choice: {first}", Map.of("first", "tea"));
+
+        assertThat(rendered).isEqualTo("First choice: tea");
+    }
+
+    @Test
     void propertyAccessRequiresOnlyTheTopLevelVariable() {
         StTemplateRenderer renderer = StTemplateRenderer.builder().build();
 
