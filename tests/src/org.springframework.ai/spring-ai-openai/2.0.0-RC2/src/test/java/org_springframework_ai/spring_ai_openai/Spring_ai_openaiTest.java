@@ -115,6 +115,48 @@ public class Spring_ai_openaiTest {
     }
 
     @Test
+    void chatModelSendsJsonSchemaResponseFormatForStructuredOutput() throws IOException {
+        try (OpenAiStubServer server = new OpenAiStubServer()) {
+            String jsonSchema = """
+                    {
+                      "type": "object",
+                      "properties": {
+                        "summary": {
+                          "type": "string"
+                        }
+                      },
+                      "required": ["summary"],
+                      "additionalProperties": false
+                    }
+                    """;
+            OpenAiChatOptions options = OpenAiChatOptions.builder()
+                    .baseUrl(server.baseUrl())
+                    .apiKey(API_KEY)
+                    .model("gpt-4o-mini")
+                    .temperature(0.0)
+                    .maxTokens(32)
+                    .responseFormat(OpenAiChatModel.ResponseFormat.builder()
+                            .type(OpenAiChatModel.ResponseFormat.Type.JSON_SCHEMA)
+                            .jsonSchema(jsonSchema)
+                            .build())
+                    .timeout(CLIENT_TIMEOUT)
+                    .maxRetries(0)
+                    .build();
+            OpenAiChatModel model = OpenAiChatModel.builder().options(options).build();
+
+            ChatResponse response = model.call(new Prompt("Return a weather summary as structured JSON"));
+
+            assertThat(response.getResult().getOutput().getText())
+                    .isEqualTo("{\"summary\":\"sunny with low metadata risk\"}");
+            StubRequest request = server.singleRequest();
+            assertThat(request.path()).isEqualTo("/v1/chat/completions");
+            assertThat(request.authorization()).isEqualTo("Bearer " + API_KEY);
+            assertThat(request.body()).contains("gpt-4o-mini", "Return a weather summary as structured JSON",
+                    "response_format", "json_schema", "summary", "additionalProperties");
+        }
+    }
+
+    @Test
     void embeddingModelPostsInputAndReturnsFloatingPointVector() throws IOException {
         try (OpenAiStubServer server = new OpenAiStubServer()) {
             OpenAiEmbeddingOptions options = OpenAiEmbeddingOptions.builder()
@@ -391,6 +433,31 @@ public class Spring_ai_openaiTest {
                                 }
                                 """);
                     }
+                    else if (isStructuredOutputChatRequest(body)) {
+                        sendJson(exchange, """
+                                {
+                                  "id": "chatcmpl-structured-local-1",
+                                  "object": "chat.completion",
+                                  "created": 1710000003,
+                                  "model": "gpt-4o-mini",
+                                  "choices": [
+                                    {
+                                      "index": 0,
+                                      "message": {
+                                        "role": "assistant",
+                                        "content": "{\\\"summary\\\":\\\"sunny with low metadata risk\\\"}"
+                                      },
+                                      "finish_reason": "stop"
+                                    }
+                                  ],
+                                  "usage": {
+                                    "prompt_tokens": 7,
+                                    "completion_tokens": 8,
+                                    "total_tokens": 15
+                                  }
+                                }
+                                """);
+                    }
                     else {
                         sendJson(exchange, """
                                 {
@@ -519,6 +586,10 @@ public class Spring_ai_openaiTest {
                     .replace("\r", "")
                     .replace("\t", "");
             return compactBody.contains("\"stream\":true") || body.contains("Stream a greeting");
+        }
+
+        private static boolean isStructuredOutputChatRequest(String body) {
+            return body.contains("Return a weather summary as structured JSON");
         }
 
         private static void sendJson(HttpExchange exchange, String body) throws IOException {
