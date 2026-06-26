@@ -8,7 +8,7 @@ package org_springframework_shell.spring_shell_jline;
 
 import org.junit.jupiter.api.Test;
 
-class Spring_shell_jlineTest {
+public class Spring_shell_jlineTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
