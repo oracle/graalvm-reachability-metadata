@@ -141,6 +141,26 @@ public class Opentelemetry_spring_kafka_2_7Test {
         assertThat(decorated.callbacks).containsExactly("intercept", "success");
     }
 
+    @Test
+    void batchInterceptorPropagatesDecoratedFailureCallbackFailure() {
+        SpringKafkaTelemetry telemetry = SpringKafkaTelemetry.create(OpenTelemetry.noop());
+        IllegalStateException callbackFailure = new IllegalStateException("failure callback failed");
+        ThrowingFailureBatchInterceptor decorated = new ThrowingFailureBatchInterceptor(callbackFailure);
+        BatchInterceptor<String, String> interceptor = telemetry.createBatchInterceptor(decorated);
+        ConsumerRecords<String, String> records = records(record(3, 50L, "failed", "value"));
+        IllegalArgumentException listenerError = new IllegalArgumentException("listener failed");
+
+        ConsumerRecords<String, String> result = interceptor.intercept(records, null);
+        IllegalStateException thrown = assertThrows(
+                IllegalStateException.class,
+                () -> interceptor.failure(records, listenerError, null));
+
+        assertThat(result).isSameAs(records);
+        assertThat(thrown).isSameAs(callbackFailure);
+        assertThat(decorated.callbacks).containsExactly("intercept", "failure");
+        assertThat(decorated.failure).isSameAs(listenerError);
+    }
+
     private static ConsumerRecord<String, String> record(int partition, long offset, String key, String value) {
         ConsumerRecord<String, String> record = new ConsumerRecord<>(TOPIC, partition, offset, key, value);
         record.headers().add("trace-test-header", (key + ":" + value).getBytes(StandardCharsets.UTF_8));
@@ -252,6 +272,31 @@ public class Opentelemetry_spring_kafka_2_7Test {
         @Override
         public void clearThreadState(Consumer<?, ?> consumer) {
             callbacks.add("clear");
+        }
+    }
+
+    private static final class ThrowingFailureBatchInterceptor implements BatchInterceptor<String, String> {
+        private final IllegalStateException exception;
+        private final List<String> callbacks = new ArrayList<>();
+        private Exception failure;
+
+        private ThrowingFailureBatchInterceptor(IllegalStateException exception) {
+            this.exception = exception;
+        }
+
+        @Override
+        public ConsumerRecords<String, String> intercept(
+                ConsumerRecords<String, String> records, Consumer<String, String> consumer) {
+            callbacks.add("intercept");
+            return records;
+        }
+
+        @Override
+        public void failure(
+                ConsumerRecords<String, String> records, Exception exception, Consumer<String, String> consumer) {
+            callbacks.add("failure");
+            failure = exception;
+            throw this.exception;
         }
     }
 
