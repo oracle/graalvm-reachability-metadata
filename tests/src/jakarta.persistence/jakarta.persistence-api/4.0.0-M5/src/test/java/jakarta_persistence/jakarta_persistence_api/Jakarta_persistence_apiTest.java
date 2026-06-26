@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -68,6 +69,7 @@ import jakarta.persistence.TemporalType;
 import jakarta.persistence.Timeout;
 import jakarta.persistence.TransactionRequiredException;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.TypedQuery.Option;
 import jakarta.persistence.TypedQueryReference;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.metamodel.Metamodel;
@@ -322,18 +324,22 @@ public class Jakarta_persistence_apiTest {
         assertThat(typedQuery.setParameter(titleParameter, "Jakarta Persistence")).isSameAs(typedQuery);
         assertThat(typedQuery.setParameter("createdBy", "test")).isSameAs(typedQuery);
         assertThat(typedQuery.setParameter(1, 42)).isSameAs(typedQuery);
+        assertThat(typedQuery.getParameterValue(1)).isEqualTo(42);
+        assertThat(typedQuery.setParameters("first", "second")).isSameAs(typedQuery);
         assertThat(typedQuery.setQueryFlushMode(QueryFlushMode.FLUSH)).isSameAs(typedQuery);
         assertThat(typedQuery.setLockMode(LockModeType.PESSIMISTIC_READ)).isSameAs(typedQuery);
         assertThat(typedQuery.setLockScope(PessimisticLockScope.EXTENDED)).isSameAs(typedQuery);
         assertThat(typedQuery.setCacheRetrieveMode(CacheRetrieveMode.BYPASS)).isSameAs(typedQuery);
         assertThat(typedQuery.setCacheStoreMode(CacheStoreMode.REFRESH)).isSameAs(typedQuery);
         assertThat(typedQuery.setTimeout(Timeout.ms(250))).isSameAs(typedQuery);
+        assertThat(typedQuery.addOption(BasicTypedQueryOption.INSTANCE)).isSameAs(typedQuery);
 
         assertThat(typedQuery.getMaxResults()).isEqualTo(25);
         assertThat(typedQuery.getFirstResult()).isEqualTo(5);
         assertThat(typedQuery.getHints()).containsEntry("graph", "books");
         assertThat(typedQuery.getParameterValue("createdBy")).isEqualTo("test");
-        assertThat(typedQuery.getParameterValue(1)).isEqualTo(42);
+        assertThat(typedQuery.getParameterValue(1)).isEqualTo("first");
+        assertThat(typedQuery.getParameterValue(2)).isEqualTo("second");
         assertThat(typedQuery.getParameterValue(titleParameter)).isEqualTo("Jakarta Persistence");
         assertThat(typedQuery.getQueryFlushMode()).isEqualTo(QueryFlushMode.FLUSH);
         assertThat(typedQuery.getLockMode()).isEqualTo(LockModeType.PESSIMISTIC_READ);
@@ -341,6 +347,7 @@ public class Jakarta_persistence_apiTest {
         assertThat(typedQuery.getCacheRetrieveMode()).isEqualTo(CacheRetrieveMode.BYPASS);
         assertThat(typedQuery.getCacheStoreMode()).isEqualTo(CacheStoreMode.REFRESH);
         assertThat(typedQuery.getTimeout()).isEqualTo(250);
+        assertThat(typedQuery.getOptions()).containsExactly(BasicTypedQueryOption.INSTANCE);
     }
 
     @Test
@@ -773,6 +780,10 @@ public class Jakarta_persistence_apiTest {
         }
     }
 
+    private enum BasicTypedQueryOption implements Option {
+        INSTANCE
+    }
+
     @SuppressWarnings({"deprecation", "removal"})
     private static class RecordingQuery implements Query {
         private final List<Object> results;
@@ -974,6 +985,15 @@ public class Jakarta_persistence_apiTest {
         }
 
         @Override
+        public Query setParameters(Object... arguments) {
+            parameterValuesByPosition.clear();
+            for (int i = 0; i < arguments.length; i++) {
+                parameterValuesByPosition.put(i + 1, arguments[i]);
+            }
+            return this;
+        }
+
+        @Override
         public Set<Parameter<?>> getParameters() {
             return parameterValuesByParameter.keySet();
         }
@@ -1112,6 +1132,7 @@ public class Jakarta_persistence_apiTest {
     private static final class RecordingTypedQuery<T> extends RecordingQuery implements TypedQuery<T> {
         private final List<T> typedResults;
         private final T typedSingleResult;
+        private final Set<Option> options = new LinkedHashSet<>();
         private EntityGraph<? super T> entityGraph;
         private PessimisticLockScope lockScope;
 
@@ -1267,6 +1288,12 @@ public class Jakarta_persistence_apiTest {
         }
 
         @Override
+        public TypedQuery<T> setParameters(Object... arguments) {
+            super.setParameters(arguments);
+            return this;
+        }
+
+        @Override
         public TypedQuery<T> setQueryFlushMode(QueryFlushMode flushMode) {
             super.setQueryFlushMode(flushMode);
             return this;
@@ -1318,31 +1345,37 @@ public class Jakarta_persistence_apiTest {
             super.setTimeout(timeout);
             return this;
         }
+
+        @Override
+        public TypedQuery<T> addOption(Option option) {
+            options.add(option);
+            return this;
+        }
+
+        @Override
+        public Set<Option> getOptions() {
+            return Collections.unmodifiableSet(options);
+        }
     }
 
     private static final class StubEntityManagerFactory implements EntityManagerFactory {
         @Override
-        public EntityManager createEntityManager() {
+        public EntityManager createEntityManager(EntityManager.CreationOption... options) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public EntityManager createEntityManager(Map map) {
+        public EntityManager createEntityManager(Map<?, ?> map) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public EntityManager createEntityManager(SynchronizationType synchronizationType) {
+        public EntityManager createEntityManager(SynchronizationType synchronizationType, Map<?, ?> map) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public EntityManager createEntityManager(SynchronizationType synchronizationType, Map map) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public EntityAgent createEntityAgent() {
+        public EntityAgent createEntityAgent(EntityAgent.CreationOption... options) {
             throw new UnsupportedOperationException();
         }
 
