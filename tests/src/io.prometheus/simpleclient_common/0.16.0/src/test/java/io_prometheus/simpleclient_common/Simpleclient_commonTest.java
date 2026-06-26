@@ -100,6 +100,21 @@ public class Simpleclient_commonTest {
     }
 
     @Test
+    void write004ExportsSampleTimestampsInMilliseconds() throws IOException {
+        MetricFamilySamples metric = metricFamily(
+                "process_start_time_seconds",
+                Type.GAUGE,
+                "Process start time",
+                new Sample("process_start_time_seconds", List.of(), List.of(), 1_700_000.25, 1_650_000_123_045L));
+
+        String output = write004(metric);
+
+        assertThat(output)
+                .contains("# TYPE process_start_time_seconds gauge")
+                .contains("process_start_time_seconds 1700000.25 1650000123045\n");
+    }
+
+    @Test
     void write004RendersHistogramAndSummaryFamilies() throws IOException {
         MetricFamilySamples histogram = metricFamily(
                 "request_duration_seconds",
