@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.neo4j.bolt:neo4j-bolt-connection-netty:4.0.0",
+  "issueNumber": 8667,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "For 4.0.0, use the public API exposed by the artifact: create providers through org.neo4j.bolt.connection.netty.NettyBoltConnectionProviderFactory or ServiceLoader, not the old org.neo4j.bolt.connection.netty.BootstrapFactory / NettyBoltConnectionProvider classes. For unencrypted bolt:// tests, pass null for SecurityPlan; SecurityPlans.unencrypted() no longer exists. If exercising message/value APIs, provide a small test ValueFactory implementation in the test code rather than relying on a missing published test-values artifact.",
+    "applied_setup": [],
+    "current_library": "org.neo4j.bolt:neo4j-bolt-connection-netty:3.0.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8667 [Automation] javac compile fails for org.neo4j.bolt:neo4j-bolt-connection-netty:4.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "7 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 41347,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8667,
+    "library": "org.neo4j.bolt:neo4j-bolt-connection-netty:4.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "4.0.0",
+    "output_tokens_used": 4904,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The library is an internal Neo4j driver component with no API stability guarantees, so 3.x test code is expected to require source adaptation for 4.0.0.",
+      "Real Bolt connection coverage requires either a fake in-process Bolt server or a reachable Neo4j-compatible endpoint; Docker is not concretely required because the existing test approach can emulate the protocol locally."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.neo4j.bolt:neo4j-bolt-connection-netty:4.0.0/library-preparation-preflight/pi-generation-2026-06-26T21-01-26-905767Z.log",
+    "status": "completed",
+    "summary": "No deterministic setup is required. The 4.0.0 artifact brings its runtime dependencies transitively, and meaningful coverage can be reached with in-process/fake Bolt protocol interaction rather than a Neo4j Docker service."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "4.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8667-fails-javac-compile-org.neo4j.bolt-neo4j-bolt-connection-netty-4.0.0-460fbcc9",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
