@@ -18,6 +18,7 @@ import io.micrometer.core.instrument.LongTaskTimer;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.config.NamingConvention;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.instrumentation.micrometer.v1_5.OpenTelemetryMeterRegistry;
 import io.opentelemetry.instrumentation.micrometer.v1_5.OpenTelemetryMeterRegistryBuilder;
@@ -163,6 +164,32 @@ public class Opentelemetry_micrometer_1_5Test {
                             TimeUnit.MILLISECONDS)
                     .register(registry);
             assertThat(functionTimer.baseTimeUnit()).isEqualTo(TimeUnit.MILLISECONDS);
+        } finally {
+            registry.close();
+        }
+    }
+
+    @Test
+    void prometheusModeNamingConventionAddsPrometheusCompatibleUnitSuffixes() {
+        MeterRegistry registry = OpenTelemetryMeterRegistry.builder(OpenTelemetry.noop())
+                .setPrometheusMode(true)
+                .build();
+        try {
+            NamingConvention namingConvention = registry.config().namingConvention();
+
+            assertThat(namingConvention.name("orders.processed", Meter.Type.COUNTER, "items"))
+                    .isEqualTo("orders.processed.items");
+            assertThat(namingConvention.name(
+                            "payload.size", Meter.Type.DISTRIBUTION_SUMMARY, "bytes"))
+                    .isEqualTo("payload.size.bytes");
+            assertThat(namingConvention.name("queue.depth", Meter.Type.GAUGE, ""))
+                    .isEqualTo("queue.depth");
+            assertThat(namingConvention.name("request.latency", Meter.Type.TIMER, null))
+                    .isEqualTo("request.latency.seconds");
+            assertThat(namingConvention.name("batch.active", Meter.Type.LONG_TASK_TIMER, "ignored"))
+                    .isEqualTo("batch.active.seconds");
+            assertThat(namingConvention.name("already.seconds", Meter.Type.TIMER, null))
+                    .isEqualTo("already.seconds");
         } finally {
             registry.close();
         }
