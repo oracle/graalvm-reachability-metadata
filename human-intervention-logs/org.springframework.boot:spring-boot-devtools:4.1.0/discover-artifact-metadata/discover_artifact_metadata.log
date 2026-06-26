@@ -1,0 +1,855 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f0525-f4df-7a72-b97a-082b32f717b2
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.springframework.boot:spring-boot-devtools:4.1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.1.0" when "$version$" is replaced with "4.1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json
+- Set "coordinates" to "org.springframework.boot:spring-boot-devtools:4.1.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.1.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact coordinates against Maven/Spring sources, then update the discovered metadata file in place using the repo’s existing JSON style.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626
+ succeeded in 0ms:
+{
+  "coordinates" : "org.springframework.boot:spring-boot-devtools:4.1.0"
+}
+
+exec
+/usr/bin/bash -lc "rg 'spring-boot-devtools|spring-boot' -n metadata build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json:2:  "coordinates" : "org.springframework.boot:spring-boot-devtools:4.1.0"
+metadata/org.springframework.boot/spring-boot-starter-validation/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-validation:3.4.3 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-validation/index.json:5:    "replacement": "Use class-bearing dependencies such as org.hibernate.validator:hibernate-validator:8.0.2.Final, org.apache.tomcat.embed:tomcat-embed-el:10.1.36, org.springframework.boot:spring-boot:3.4.3, and org.springframework.boot:spring-boot-autoconfigure:3.4.3."
+metadata/org.springframework.boot/spring-boot-starter-json/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-json:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter:2.6.3 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter/index.json:5:    "replacement": "Use the class-bearing dependencies such as org.springframework.boot:spring-boot:2.6.3 and org.springframework.boot:spring-boot-autoconfigure:2.6.3."
+metadata/org.springframework.boot/spring-boot-starter-data-redis/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-data-redis:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-data-redis/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.data:spring-data-redis:2.7.18, io.lettuce:lettuce-core:6.1.10.RELEASE, and org.springframework.boot:spring-boot-autoconfigure:2.7.18."
+metadata/org.springframework.boot/spring-boot-starter-data-jpa/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-data-jpa:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-data-jpa/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework.data:spring-data-jpa:2.7.18, org.hibernate:hibernate-core:5.6.15.Final, and org.springframework.boot:spring-boot-autoconfigure:2.7.18."
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-tools/spring-boot-configuration-processor/src/test",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-starter-aop/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-aop:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/org.springframework.boot/spring-boot-starter-aop/index.json:5:    "replacement": "Use class-bearing dependencies such as org.springframework:spring-aop:5.3.31, org.aspectj:aspectjweaver:1.9.7, and org.springframework.boot:spring-boot-autoconfigure:2.7.18."
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-actuator-autoconfigure/$version$/spring-boot-actuator-autoconfigure-$version$-sources.jar",
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/index.json:6:    "repository-url" : "https://github.com/spring-projects/spring-boot",
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/spring-boot-project/spring-boot-actuator-autoconfigure/src/test",
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-actuator-autoconfigure/$version$/spring-boot-actuator-autoconfigure-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-starter-tomcat/index.json:4:    "reason": "The published JAR for org.springframework.boot:spring-boot-starter-tomcat:2.7.18 contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies.",
+metadata/library-and-framework-list.json:2007:    "artifact": "org.springframework.boot:spring-boot-starter-actuator",
+metadata/library-and-framework-list.json:2013:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/health/HealthEndpointWebExtensionRuntimeHints.java"
+metadata/library-and-framework-list.json:2023:    "artifact": "org.springframework.boot:spring-boot-starter-amqp",
+metadata/library-and-framework-list.json:2039:    "artifact": "org.springframework.boot:spring-boot-starter-cache",
+metadata/library-and-framework-list.json:2055:    "artifact": "org.springframework.boot:spring-boot-starter-data-jdbc",
+metadata/library-and-framework-list.json:2071:    "artifact": "org.springframework.boot:spring-boot-starter-data-jpa",
+metadata/library-and-framework-list.json:2089:    "artifact": "org.springframework.boot:spring-boot-starter-data-mongodb",
+metadata/library-and-framework-list.json:2108:    "artifact": "org.springframework.boot:spring-boot-starter-data-mongodb-reactive",
+metadata/library-and-framework-list.json:2127:    "artifact": "org.springframework.boot:spring-boot-starter-data-r2dbc",
+metadata/library-and-framework-list.json:2143:    "artifact": "org.springframework.boot:spring-boot-starter-data-redis",
+metadata/library-and-framework-list.json:2160:    "artifact": "org.springframework.boot:spring-boot-starter-data-redis-reactive",
+metadata/library-and-framework-list.json:2177:    "artifact": "org.springframework.boot:spring-boot-starter-data-rest",
+metadata/library-and-framework-list.json:2194:    "artifact": "org.springframework.boot:spring-boot-starter-freemarker",
+metadata/library-and-framework-list.json:2200:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/template/TemplateRuntimeHints.java"
+metadata/library-and-framework-list.json:2210:    "artifact": "org.springframework.boot:spring-boot-starter-graphql",
+metadata/library-and-framework-list.json:2227:    "artifact": "org.springframework.boot:spring-boot-starter-hateoas",
+metadata/library-and-framework-list.json:2246:    "artifact": "org.springframework.boot:spring-boot-starter-integration",
+metadata/library-and-framework-list.json:2266:    "artifact": "org.springframework.boot:spring-boot-starter-jdbc",
+metadata/library-and-framework-list.json:2282:    "artifact": "org.springframework.boot:spring-boot-starter-jetty",
+metadata/library-and-framework-list.json:2283:    "description": "Starter for using Jetty as the embedded servlet container. An alternative to spring-boot-starter-tomcat",
+metadata/library-and-framework-list.json:2288:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2298:    "artifact": "org.springframework.boot:spring-boot-starter-json",
+metadata/library-and-framework-list.json:2304:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/jackson/JsonMixinModuleEntriesBeanRegistrationAotProcessor.java",
+metadata/library-and-framework-list.json:2305:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/json/JacksonRuntimeHints.java"
+metadata/library-and-framework-list.json:2315:    "artifact": "org.springframework.boot:spring-boot-starter-logging",
+metadata/library-and-framework-list.json:2321:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/logging/java/JavaLoggingSystemRuntimeHints.java",
+metadata/library-and-framework-list.json:2322:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/logging/logback/LogbackRuntimeHints.java"
+metadata/library-and-framework-list.json:2332:    "artifact": "org.springframework.boot:spring-boot-starter-mail",
+metadata/library-and-framework-list.json:2348:    "artifact": "org.springframework.boot:spring-boot-starter-mustache",
+metadata/library-and-framework-list.json:2354:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/template/TemplateRuntimeHints.java"
+metadata/library-and-framework-list.json:2364:    "artifact": "org.springframework.boot:spring-boot-starter-oauth2-client",
+metadata/library-and-framework-list.json:2380:    "artifact": "org.springframework.boot:spring-boot-starter-oauth2-resource-server",
+metadata/library-and-framework-list.json:2396:    "artifact": "org.springframework.boot:spring-boot-starter-quartz",
+metadata/library-and-framework-list.json:2412:    "artifact": "org.springframework.boot:spring-boot-starter-reactor-netty",
+metadata/library-and-framework-list.json:2429:    "artifact": "org.springframework.boot:spring-boot-starter-rsocket",
+metadata/library-and-framework-list.json:2446:    "artifact": "org.springframework.boot:spring-boot-starter-security",
+metadata/library-and-framework-list.json:2463:    "artifact": "org.springframework.boot:spring-boot-starter-test",
+metadata/library-and-framework-list.json:2479:    "artifact": "org.springframework.boot:spring-boot-starter-thymeleaf",
+metadata/library-and-framework-list.json:2485:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/template/TemplateRuntimeHints.java"
+metadata/library-and-framework-list.json:2495:    "artifact": "org.springframework.boot:spring-boot-starter-tomcat",
+metadata/library-and-framework-list.json:2496:    "description": "Starter for using Tomcat as the embedded servlet container. Default servlet container starter used by spring-boot-starter-web",
+metadata/library-and-framework-list.json:2501:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2511:    "artifact": "org.springframework.boot:spring-boot-starter-undertow",
+metadata/library-and-framework-list.json:2512:    "description": "Starter for using Undertow as the embedded servlet container. An alternative to spring-boot-starter-tomcat",
+metadata/library-and-framework-list.json:2517:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2527:    "artifact": "org.springframework.boot:spring-boot-starter-validation",
+metadata/library-and-framework-list.json:2543:    "artifact": "org.springframework.boot:spring-boot-starter-web",
+metadata/library-and-framework-list.json:2551:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/web/client/ClientHttpRequestFactoriesRuntimeHints.java",
+metadata/library-and-framework-list.json:2552:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2562:    "artifact": "org.springframework.boot:spring-boot-starter-webflux",
+metadata/library-and-framework-list.json:2570:          "https://github.com/spring-projects/spring-boot/blob/main/spring-boot-project/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/WebResourcesRuntimeHints.java"
+metadata/library-and-framework-list.json:2580:    "artifact": "org.springframework.boot:spring-boot-starter-websocket",
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'spring-boot|springframework.boot' | head -50" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626
+build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json
+
+web search: 
+web search: Maven Central org.springframework.boot spring-boot-devtools 4.1.0 sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-devtools/4.1.0/
+web search: 
+web search: site:github.com/spring-projects/spring-boot/tree/v4.1.0 spring-boot-devtools
+codex
+Maven Central confirms `spring-boot-devtools:4.1.0` is a published JVM artifact with sources and javadoc; I’m checking the source tree now because the Spring Boot 4 repository layout appears to differ from older metadata entries.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-devtools/4.1.0/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/springframework/boot/spring-boot-devtools/4.1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/springframework/boot/spring-boot-devtools/4.1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="spring-boot-devtools-4.1.0-javadoc.jar" title="spring-boot-devtools-4.1.0-javadoc.jar">spring-boot-devtools-4.1.0-javadoc.jar</a>            2026-06-10 17:58    388524      
+<a href="spring-boot-devtools-4.1.0-javadoc.jar.asc" title="spring-boot-devtools-4.1.0-javadoc.jar.asc">spring-boot-devtools-4.1.0-javadoc.jar.asc</a>        2026-06-10 17:58       833      
+<a href="spring-boot-devtools-4.1.0-javadoc.jar.md5" title="spring-boot-devtools-4.1.0-javadoc.jar.md5">spring-boot-devtools-4.1.0-javadoc.jar.md5</a>        2026-06-10 17:58        32      
+<a href="spring-boot-devtools-4.1.0-javadoc.jar.sha1" title="spring-boot-devtools-4.1.0-javadoc.jar.sha1">spring-boot-devtools-4.1.0-javadoc.jar.sha1</a>       2026-06-10 17:58        40      
+<a href="spring-boot-devtools-4.1.0-sources.jar" title="spring-boot-devtools-4.1.0-sources.jar">spring-boot-devtools-4.1.0-sources.jar</a>            2026-06-10 17:58    142506      
+<a href="spring-boot-devtools-4.1.0-sources.jar.asc" title="spring-boot-devtools-4.1.0-sources.jar.asc">spring-boot-devtools-4.1.0-sources.jar.asc</a>        2026-06-10 17:58       833      
+<a href="spring-boot-devtools-4.1.0-sources.jar.md5" title="spring-boot-devtools-4.1.0-sources.jar.md5">spring-boot-devtools-4.1.0-sources.jar.md5</a>        2026-06-10 17:58        32      
+<a href="spring-boot-devtools-4.1.0-sources.jar.sha1" title="spring-boot-devtools-4.1.0-sources.jar.sha1">spring-boot-devtools-4.1.0-sources.jar.sha1</a>       2026-06-10 17:58        40      
+<a href="spring-boot-devtools-4.1.0.jar" title="spring-boot-devtools-4.1.0.jar">spring-boot-devtools-4.1.0.jar</a>                    2026-06-10 17:58    215473      
+<a href="spring-boot-devtools-4.1.0.jar.asc" title="spring-boot-devtools-4.1.0.jar.asc">spring-boot-devtools-4.1.0.jar.asc</a>                2026-06-10 17:58       833      
+<a href="spring-boot-devtools-4.1.0.jar.md5" title="spring-boot-devtools-4.1.0.jar.md5">spring-boot-devtools-4.1.0.jar.md5</a>                2026-06-10 17:58        32      
+<a href="spring-boot-devtools-4.1.0.jar.sha1" title="spring-boot-devtools-4.1.0.jar.sha1">spring-boot-devtools-4.1.0.jar.sha1</a>               2026-06-10 17:58        40      
+<a href="spring-boot-devtools-4.1.0.module" title="spring-boot-devtools-4.1.0.module">spring-boot-devtools-4.1.0.module</a>                 2026-06-10 17:58      4340      
+<a href="spring-boot-devtools-4.1.0.module.asc" title="spring-boot-devtools-4.1.0.module.asc">spring-boot-devtools-4.1.0.module.asc</a>             2026-06-10 17:58       833      
+<a href="spring-boot-devtools-4.1.0.module.md5" title="spring-boot-devtools-4.1.0.module.md5">spring-boot-devtools-4.1.0.module.md5</a>             2026-06-10 17:58        32      
+<a href="spring-boot-devtools-4.1.0.module.sha1" title="spring-boot-devtools-4.1.0.module.sha1">spring-boot-devtools-4.1.0.module.sha1</a>            2026-06-10 17:58        40      
+<a href="spring-boot-devtools-4.1.0.pom" title="spring-boot-devtools-4.1.0.pom">spring-boot-devtools-4.1.0.pom</a>                    2026-06-10 17:58      2254      
+<a href="spring-boot-devtools-4.1.0.pom.asc" title="spring-boot-devtools-4.1.0.pom.asc">spring-boot-devtools-4.1.0.pom.asc</a>                2026-06-10 17:58       833      
+<a href="spring-boot-devtools-4.1.0.pom.md5" title="spring-boot-devtools-4.1.0.pom.md5">spring-boot-devtools-4.1.0.pom.md5</a>                2026-06-10 17:58        32      
+<a href="spring-boot-devtools-4.1.0.pom.sha1" title="spring-boot-devtools-4.1.0.pom.sha1">spring-boot-devtools-4.1.0.pom.sha1</a>               2026-06-10 17:58        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/git/ref/tags/v4.1.0' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/spring-projects/spring-boot/v4.1.0/settings.gradle | sed -n '1,220p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626
+ succeeded in 165ms:
+/*
+ * Copyright 2012-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+pluginManagement {
+	evaluate(new File("${rootDir}/buildSrc/SpringRepositorySupport.groovy")).apply(this)
+	repositories {
+		mavenCentral()
+		gradlePluginPortal()
+		spring.mavenRepositories()
+	}
+	resolutionStrategy {
+		eachPlugin {
+			if (requested.id.id == "org.jetbrains.kotlin.jvm") {
+				useVersion "${kotlinVersion}"
+			}
+			if (requested.id.id == "org.jetbrains.kotlin.plugin.spring") {
+				useVersion "${kotlinVersion}"
+			}
+			if (requested.id.id == "org.jetbrains.kotlin.plugin.serialization") {
+				useVersion "${kotlinVersion}"
+			}
+		}
+	}
+	includeBuild("gradle/plugins")
+}
+
+plugins {
+	id "io.spring.develocity.conventions" version "0.0.25"
+	id "org.springframework.boot.cycle-detection"
+}
+
+rootProject.name="spring-boot-build"
+
+enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
+
+settings.gradle.projectsLoaded {
+	develocity {
+		buildScan {
+			def toolchainVersion = settings.gradle.rootProject.findProperty('toolchainVersion')
+			if (toolchainVersion != null) {
+				value('Toolchain version', toolchainVersion)
+			}
+		}
+	}
+}
+
+include "platform:spring-boot-dependencies"
+include "platform:spring-boot-internal-dependencies"
+
+include "test-support:spring-boot-test-support"
+include "test-support:spring-boot-docker-test-support"
+include "test-support:spring-boot-gradle-test-support"
+
+include "configuration-metadata:spring-boot-configuration-metadata"
+include "configuration-metadata:spring-boot-configuration-metadata-changelog-generator"
+include "configuration-metadata:spring-boot-configuration-processor"
+
+include "core:spring-boot"
+include "core:spring-boot-autoconfigure"
+include "core:spring-boot-autoconfigure-processor"
+include "core:spring-boot-docker-compose"
+include "core:spring-boot-properties-migrator"
+include "core:spring-boot-test"
+include "core:spring-boot-test-autoconfigure"
+include "core:spring-boot-testcontainers"
+
+include "module:spring-boot-activemq"
+include "module:spring-boot-actuator"
+include "module:spring-boot-actuator-autoconfigure"
+include "module:spring-boot-amqp"
+include "module:spring-boot-artemis"
+include "module:spring-boot-autoconfigure-classic"
+include "module:spring-boot-autoconfigure-classic-modules"
+include "module:spring-boot-batch"
+include "module:spring-boot-batch-data-mongodb"
+include "module:spring-boot-batch-jdbc"
+include "module:spring-boot-cache"
+include "module:spring-boot-cache-test"
+include "module:spring-boot-cassandra"
+include "module:spring-boot-cloudfoundry"
+include "module:spring-boot-couchbase"
+include "module:spring-boot-data-cassandra"
+include "module:spring-boot-data-cassandra-test"
+include "module:spring-boot-data-commons"
+include "module:spring-boot-data-couchbase"
+include "module:spring-boot-data-couchbase-test"
+include "module:spring-boot-data-elasticsearch"
+include "module:spring-boot-data-elasticsearch-test"
+include "module:spring-boot-data-jdbc"
+include "module:spring-boot-data-jdbc-test"
+include "module:spring-boot-data-jpa"
+include "module:spring-boot-data-jpa-test"
+include "module:spring-boot-data-ldap"
+include "module:spring-boot-data-ldap-test"
+include "module:spring-boot-data-mongodb"
+include "module:spring-boot-data-mongodb-test"
+include "module:spring-boot-data-neo4j"
+include "module:spring-boot-data-neo4j-test"
+include "module:spring-boot-data-r2dbc"
+include "module:spring-boot-data-r2dbc-test"
+include "module:spring-boot-data-redis"
+include "module:spring-boot-data-redis-test"
+include "module:spring-boot-data-rest"
+include "module:spring-boot-devtools"
+include "module:spring-boot-elasticsearch"
+include "module:spring-boot-flyway"
+include "module:spring-boot-freemarker"
+include "module:spring-boot-graphql"
+include "module:spring-boot-graphql-test"
+include "module:spring-boot-grpc-client"
+include "module:spring-boot-grpc-server"
+include "module:spring-boot-grpc-test"
+include "module:spring-boot-groovy-templates"
+include "module:spring-boot-gson"
+include "module:spring-boot-h2console"
+include "module:spring-boot-hateoas"
+include "module:spring-boot-hazelcast"
+include "module:spring-boot-health"
+include "module:spring-boot-hibernate"
+include "module:spring-boot-http-client"
+include "module:spring-boot-http-codec"
+include "module:spring-boot-http-converter"
+include "module:spring-boot-integration"
+include "module:spring-boot-jackson"
+include "module:spring-boot-jackson2"
+include "module:spring-boot-jdbc"
+include "module:spring-boot-jdbc-test"
+include "module:spring-boot-jersey"
+include "module:spring-boot-jetty"
+include "module:spring-boot-jms"
+include "module:spring-boot-jooq"
+include "module:spring-boot-jooq-test"
+include "module:spring-boot-jpa"
+include "module:spring-boot-jpa-test"
+include "module:spring-boot-jsonb"
+include "module:spring-boot-kafka"
+include "module:spring-boot-kotlinx-serialization-json"
+include "module:spring-boot-ldap"
+include "module:spring-boot-liquibase"
+include "module:spring-boot-mail"
+include "module:spring-boot-micrometer-metrics"
+include "module:spring-boot-micrometer-metrics-test"
+include "module:spring-boot-micrometer-observation"
+include "module:spring-boot-micrometer-tracing"
+include "module:spring-boot-micrometer-tracing-brave"
+include "module:spring-boot-micrometer-tracing-opentelemetry"
+include "module:spring-boot-micrometer-tracing-test"
+include "module:spring-boot-mongodb"
+include "module:spring-boot-mustache"
+include "module:spring-boot-neo4j"
+include "module:spring-boot-netty"
+include "module:spring-boot-opentelemetry"
+include "module:spring-boot-persistence"
+include "module:spring-boot-pulsar"
+include "module:spring-boot-quartz"
+include "module:spring-boot-r2dbc"
+include "module:spring-boot-reactor"
+include "module:spring-boot-reactor-netty"
+include "module:spring-boot-restclient"
+include "module:spring-boot-restclient-test"
+include "module:spring-boot-restdocs"
+include "module:spring-boot-resttestclient"
+include "module:spring-boot-rsocket"
+include "module:spring-boot-rsocket-test"
+include "module:spring-boot-security"
+include "module:spring-boot-security-test"
+include "module:spring-boot-security-oauth2-authorization-server"
+include "module:spring-boot-security-oauth2-client"
+include "module:spring-boot-security-oauth2-resource-server"
+include "module:spring-boot-security-saml2"
+include "module:spring-boot-sendgrid"
+include "module:spring-boot-servlet"
+include "module:spring-boot-session"
+include "module:spring-boot-session-data-redis"
+include "module:spring-boot-session-jdbc"
+include "module:spring-boot-sql"
+include "module:spring-boot-test-classic-modules"
+include "module:spring-boot-thymeleaf"
+include "module:spring-boot-tomcat"
+include "module:spring-boot-transaction"
+include "module:spring-boot-validation"
+include "module:spring-boot-web-server"
+include "module:spring-boot-web-server-test"
+include "module:spring-boot-webclient"
+include "module:spring-boot-webclient-test"
+include "module:spring-boot-webflux"
+include "module:spring-boot-webflux-test"
+include "module:spring-boot-webmvc"
+include "module:spring-boot-webmvc-test"
+include "module:spring-boot-webtestclient"
+include "module:spring-boot-webservices"
+include "module:spring-boot-webservices-test"
+include "module:spring-boot-websocket"
+include "module:spring-boot-zipkin"
+
+include "starter:spring-boot-starter"
+include "starter:spring-boot-starter-activemq"
+include "starter:spring-boot-starter-activemq-test"
+include "starter:spring-boot-starter-actuator"
+include "starter:spring-boot-starter-actuator-test"
+include "starter:spring-boot-starter-amqp"
+include "starter:spring-boot-starter-amqp-test"
+include "starter:spring-boot-starter-artemis"
+include "starter:spring-boot-starter-artemis-test"
+include "starter:spring-boot-starter-aspectj"
+include "starter:spring-boot-starter-aspectj-test"
+include "starter:spring-boot-starter-batch"
+
+ succeeded in 213ms:
+{
+  "ref": "refs/tags/v4.1.0",
+  "node_id": "MDM6UmVmNjI5Njc5MDpyZWZzL3RhZ3MvdjQuMS4w",
+  "url": "https://api.github.com/repos/spring-projects/spring-boot/git/refs/tags/v4.1.0",
+  "object": {
+    "sha": "ac2cfe03538b87a0dc9d2619ed52a4c901eaea54",
+    "type": "commit",
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/git/commits/ac2cfe03538b87a0dc9d2619ed52a4c901eaea54"
+  }
+}
+
+web search: 
+web search: https://raw.githubusercontent.com/spring-projects/spring-boot/v4.1.0/settings.gradle
+web search: 
+web search: repo1.maven.org org/springframework/boot/spring-boot-devtools/4.1.0 spring-boot-devtools-4.1.0-sources.jar
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f | head -20 | xargs -r sed -n '1,120p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626
+ succeeded in 0ms:
+{
+  "coordinates" : "org.springframework.boot:spring-boot-devtools:4.1.0"
+}
+
+exec
+/usr/bin/bash -lc "rg 'documentation-url.*docs.spring.io/spring-boot|spring-boot-devtools|spring-boot-.*javadoc' -n build/discovered-artifact-metadata metadata | head -100" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json:2:  "coordinates" : "org.springframework.boot:spring-boot-devtools:4.1.0"
+metadata/org.springframework.boot/spring-boot-actuator-autoconfigure/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-actuator-autoconfigure/$version$/spring-boot-actuator-autoconfigure-$version$-javadoc.jar",
+metadata/org.springframework.boot/spring-boot-configuration-processor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-configuration-processor/$version$/spring-boot-configuration-processor-$version$-javadoc.jar",
+
+codex
+The tag exists as `v4.1.0`, and Spring Boot 4 places this module under `module/spring-boot-devtools`. I’m going to use Maven Central for sources and javadocs, and the GitHub tag for the test suite because no Maven test artifact is published for this module.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-devtools/src/test?ref=v4.1.0 | sed -n '1,80p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-devtools/4.1.0/spring-boot-devtools-4.1.0.pom | sed -n '1,180p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/devtools.jar" https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-devtools/4.1.0/spring-boot-devtools-4.1.0.jar; jar tf "$tmp/devtools.jar" | sed -n '"'1,120p'; rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-devtools/4.1.0/spring-boot-devtools-4.1.0-sources.jar \\
+  https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-devtools/4.1.0/spring-boot-devtools-4.1.0-javadoc.jar \\
+  https://github.com/spring-projects/spring-boot/tree/v4.1.0/module/spring-boot-devtools/src/test; do \\
+  printf '%s -> ' \""'$url"; curl -fsSI -L "$url" | awk '"'NR==1 {print "'$2; exit}'"'; \\
+done" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626
+ succeeded in 172ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-devtools</artifactId>
+  <version>4.1.0</version>
+  <name>spring-boot-devtools</name>
+  <description>Spring Boot Developer Tools</description>
+  <url>https://spring.io/projects/spring-boot</url>
+  <organization>
+    <name>VMware, Inc.</name>
+    <url>https://spring.io</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Spring</name>
+      <email>ask@spring.io</email>
+      <organization>VMware, Inc.</organization>
+      <organizationUrl>https://www.spring.io</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/spring-projects/spring-boot.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/spring-projects/spring-boot.git</developerConnection>
+    <url>https://github.com/spring-projects/spring-boot</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/spring-projects/spring-boot/issues</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+      <version>4.1.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <version>4.1.0</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>
+
+ succeeded in 236ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+META-INF/spring-autoconfigure-metadata.properties
+META-INF/spring-configuration-metadata.json
+org/
+org/springframework/
+org/springframework/boot/
+org/springframework/boot/devtools/
+org/springframework/boot/devtools/RemoteSpringApplication.class
+org/springframework/boot/devtools/RemoteUrlPropertyExtractor.class
+org/springframework/boot/devtools/package-info.class
+org/springframework/boot/devtools/autoconfigure/
+org/springframework/boot/devtools/autoconfigure/ConditionEvaluationDeltaLoggingListener.class
+org/springframework/boot/devtools/autoconfigure/ConditionalOnEnabledDevTools.class
+org/springframework/boot/devtools/autoconfigure/DevToolsDataSourceAutoConfiguration$DatabaseShutdownExecutorEntityManagerFactoryDependsOnConfiguration.class
+org/springframework/boot/devtools/autoconfigure/DevToolsDataSourceAutoConfiguration$DatabaseShutdownExecutorEntityManagerFactoryDependsOnPostProcessor.class
+org/springframework/boot/devtools/autoconfigure/DevToolsDataSourceAutoConfiguration$DevToolsDataSourceCondition.class
+org/springframework/boot/devtools/autoconfigure/DevToolsDataSourceAutoConfiguration$NonEmbeddedInMemoryDatabaseShutdownExecutor$InMemoryDatabase$ShutdownHandler.class
+org/springframework/boot/devtools/autoconfigure/DevToolsDataSourceAutoConfiguration$NonEmbeddedInMemoryDatabaseShutdownExecutor$InMemoryDatabase.class
+org/springframework/boot/devtools/autoconfigure/DevToolsDataSourceAutoConfiguration$NonEmbeddedInMemoryDatabaseShutdownExecutor.class
+org/springframework/boot/devtools/autoconfigure/DevToolsDataSourceAutoConfiguration.class
+org/springframework/boot/devtools/autoconfigure/DevToolsProperties$Livereload.class
+org/springframework/boot/devtools/autoconfigure/DevToolsProperties$Restart.class
+org/springframework/boot/devtools/autoconfigure/DevToolsProperties.class
+org/springframework/boot/devtools/autoconfigure/DevToolsR2dbcAutoConfiguration$DevToolsConnectionFactoryCondition.class
+org/springframework/boot/devtools/autoconfigure/DevToolsR2dbcAutoConfiguration$InMemoryR2dbcDatabaseShutdownExecutor.class
+org/springframework/boot/devtools/autoconfigure/DevToolsR2dbcAutoConfiguration$R2dbcDatabaseShutdownEvent.class
+org/springframework/boot/devtools/autoconfigure/DevToolsR2dbcAutoConfiguration.class
+org/springframework/boot/devtools/autoconfigure/FileWatchingFailureHandler$Listener.class
+org/springframework/boot/devtools/autoconfigure/FileWatchingFailureHandler.class
+org/springframework/boot/devtools/autoconfigure/LocalDevToolsAutoConfiguration$LiveReloadConfiguration.class
+org/springframework/boot/devtools/autoconfigure/LocalDevToolsAutoConfiguration$LiveReloadServerEventListener.class
+org/springframework/boot/devtools/autoconfigure/LocalDevToolsAutoConfiguration$RestartConfiguration.class
+org/springframework/boot/devtools/autoconfigure/LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener.class
+org/springframework/boot/devtools/autoconfigure/LocalDevToolsAutoConfiguration.class
+org/springframework/boot/devtools/autoconfigure/OnEnabledDevToolsCondition.class
+org/springframework/boot/devtools/autoconfigure/OptionalLiveReloadServer.class
+org/springframework/boot/devtools/autoconfigure/RemoteDevToolsAutoConfiguration$RemoteRestartConfiguration.class
+org/springframework/boot/devtools/autoconfigure/RemoteDevToolsAutoConfiguration.class
+org/springframework/boot/devtools/autoconfigure/RemoteDevToolsProperties$Proxy.class
+org/springframework/boot/devtools/autoconfigure/RemoteDevToolsProperties$Restart.class
+org/springframework/boot/devtools/autoconfigure/RemoteDevToolsProperties.class
+org/springframework/boot/devtools/autoconfigure/RemoteDevtoolsSecurityConfiguration.class
+org/springframework/boot/devtools/autoconfigure/TriggerFileFilter.class
+org/springframework/boot/devtools/autoconfigure/package-info.class
+org/springframework/boot/devtools/classpath/
+org/springframework/boot/devtools/classpath/ClassPathChangedEvent.class
+org/springframework/boot/devtools/classpath/ClassPathDirectories.class
+org/springframework/boot/devtools/classpath/ClassPathFileChangeListener.class
+org/springframework/boot/devtools/classpath/ClassPathFileSystemWatcher.class
+org/springframework/boot/devtools/classpath/ClassPathRestartStrategy.class
+org/springframework/boot/devtools/classpath/PatternClassPathRestartStrategy.class
+org/springframework/boot/devtools/classpath/package-info.class
+org/springframework/boot/devtools/env/
+org/springframework/boot/devtools/env/DevToolsHomePropertiesPostProcessor.class
+org/springframework/boot/devtools/env/DevToolsPropertyDefaultsPostProcessor.class
+org/springframework/boot/devtools/env/package-info.class
+org/springframework/boot/devtools/filewatch/
+org/springframework/boot/devtools/filewatch/ChangedFile$Type.class
+org/springframework/boot/devtools/filewatch/ChangedFile.class
+org/springframework/boot/devtools/filewatch/ChangedFiles.class
+org/springframework/boot/devtools/filewatch/DirectorySnapshot.class
+org/springframework/boot/devtools/filewatch/FileChangeListener.class
+org/springframework/boot/devtools/filewatch/FileSnapshot.class
+org/springframework/boot/devtools/filewatch/FileSystemWatcher$Watcher.class
+org/springframework/boot/devtools/filewatch/FileSystemWatcher.class
+org/springframework/boot/devtools/filewatch/FileSystemWatcherFactory.class
+org/springframework/boot/devtools/filewatch/SnapshotStateRepository$1.class
+org/springframework/boot/devtools/filewatch/SnapshotStateRepository.class
+org/springframework/boot/devtools/filewatch/StaticSnapshotStateRepository.class
+org/springframework/boot/devtools/filewatch/package-info.class
+org/springframework/boot/devtools/livereload/
+org/springframework/boot/devtools/livereload/Connection.class
+org/springframework/boot/devtools/livereload/ConnectionClosedException.class
+org/springframework/boot/devtools/livereload/ConnectionInputStream.class
+org/springframework/boot/devtools/livereload/ConnectionOutputStream.class
+org/springframework/boot/devtools/livereload/Frame$Type.class
+org/springframework/boot/devtools/livereload/Frame.class
+org/springframework/boot/devtools/livereload/LiveReloadServer$ConnectionHandler.class
+org/springframework/boot/devtools/livereload/LiveReloadServer$WorkerThreadFactory.class
+org/springframework/boot/devtools/livereload/LiveReloadServer.class
+org/springframework/boot/devtools/livereload/package-info.class
+org/springframework/boot/devtools/logger/
+org/springframework/boot/devtools/logger/DevToolsLogFactory$Listener.class
+org/springframework/boot/devtools/logger/DevToolsLogFactory.class
+org/springframework/boot/devtools/logger/package-info.class
+org/springframework/boot/devtools/remote/
+org/springframework/boot/devtools/remote/client/
+org/springframework/boot/devtools/remote/client/ClassPathChangeUploader.class
+org/springframework/boot/devtools/remote/client/DelayedLiveReloadTrigger.class
+org/springframework/boot/devtools/remote/client/HttpHeaderInterceptor.class
+org/springframework/boot/devtools/remote/client/RemoteClientConfiguration$LiveReloadConfiguration.class
+org/springframework/boot/devtools/remote/client/RemoteClientConfiguration$RemoteRestartClientConfiguration.class
+org/springframework/boot/devtools/remote/client/RemoteClientConfiguration.class
+org/springframework/boot/devtools/remote/client/package-info.class
+org/springframework/boot/devtools/remote/server/
+org/springframework/boot/devtools/remote/server/AccessManager.class
+org/springframework/boot/devtools/remote/server/Dispatcher.class
+org/springframework/boot/devtools/remote/server/DispatcherFilter.class
+org/springframework/boot/devtools/remote/server/Handler.class
+org/springframework/boot/devtools/remote/server/HandlerMapper.class
+org/springframework/boot/devtools/remote/server/HttpHeaderAccessManager.class
+org/springframework/boot/devtools/remote/server/HttpStatusHandler.class
+org/springframework/boot/devtools/remote/server/UrlHandlerMapper.class
+org/springframework/boot/devtools/remote/server/package-info.class
+org/springframework/boot/devtools/restart/
+org/springframework/boot/devtools/restart/AgentReloader.class
+org/springframework/boot/devtools/restart/ChangeableUrls.class
+org/springframework/boot/devtools/restart/ClassLoaderFilesResourcePatternResolver$ApplicationContextResourceLoader.class
+org/springframework/boot/devtools/restart/ClassLoaderFilesResourcePatternResolver$DeletedClassLoaderFileResource.class
+org/springframework/boot/devtools/restart/ClassLoaderFilesResourcePatternResolver$ResourcePatternResolverFactory.class
+org/springframework/boot/devtools/restart/ClassLoaderFilesResourcePatternResolver$WebApplicationContextResourceLoader.class
+org/springframework/boot/devtools/restart/ClassLoaderFilesResourcePatternResolver$WebResourcePatternResolverFactory.class
+org/springframework/boot/devtools/restart/ClassLoaderFilesResourcePatternResolver.class
+org/springframework/boot/devtools/restart/ConditionalOnInitializedRestarter.class
+org/springframework/boot/devtools/restart/DefaultRestartInitializer.class
+org/springframework/boot/devtools/restart/FailureHandler$Outcome.class
+org/springframework/boot/devtools/restart/FailureHandler.class
+
+ succeeded in 1147ms:
+200
+https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-devtools/4.1.0/spring-boot-devtools-4.1.0-javadoc.jar -> 200
+https://github.com/spring-projects/spring-boot/tree/v4.1.0/module/spring-boot-devtools/src/test -> 200
+
+codex
+I also confirmed the published JAR contains JVM `.class` files, so this is still a Native Image metadata target and should not get `not-for-native-image`. No Kotlin/Groovy/Scala language marker applies to this artifact.
+ succeeded in 5213ms:
+[
+  {
+    "name": "java",
+    "path": "module/spring-boot-devtools/src/test/java",
+    "sha": "823db188edbbca1013b225572f9fd2a6b5f2cc7f",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-devtools/src/test/java?ref=v4.1.0",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.1.0/module/spring-boot-devtools/src/test/java",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/823db188edbbca1013b225572f9fd2a6b5f2cc7f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-devtools/src/test/java?ref=v4.1.0",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/823db188edbbca1013b225572f9fd2a6b5f2cc7f",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.1.0/module/spring-boot-devtools/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "module/spring-boot-devtools/src/test/resources",
+    "sha": "d8913a1830746e2103940ce4cd5782d8cd145bb9",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-devtools/src/test/resources?ref=v4.1.0",
+    "html_url": "https://github.com/spring-projects/spring-boot/tree/v4.1.0/module/spring-boot-devtools/src/test/resources",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/d8913a1830746e2103940ce4cd5782d8cd145bb9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-boot/contents/module/spring-boot-devtools/src/test/resources?ref=v4.1.0",
+      "git": "https://api.github.com/repos/spring-projects/spring-boot/git/trees/d8913a1830746e2103940ce4cd5782d8cd145bb9",
+      "html": "https://github.com/spring-projects/spring-boot/tree/v4.1.0/module/spring-boot-devtools/src/test/resources"
+    }
+  }
+]
+
+codex
+I’m updating the JSON now with Maven Central source/javadoc URLs, the Spring Boot repository root, the versioned GitHub test tree, and a two-sentence description.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json
+index 6739297c22896204cab068dee0cb47cba5a02ce4..d38aa7d6c0b3a6e9a82fdd5574cdf28a52a3a4bb
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-devtools:4.1.0"
++  "coordinates" : "org.springframework.boot:spring-boot-devtools:4.1.0",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-devtools/$version$/spring-boot-devtools-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-devtools/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-devtools/$version$/spring-boot-devtools-$version$-javadoc.jar",
++  "description" : "Spring Boot DevTools provides development-time features for Spring Boot applications, including automatic restarts, LiveReload support, and remote update support. It is intended to improve local development feedback cycles and is typically disabled or omitted for production deployments."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json
+index 6739297c22896204cab068dee0cb47cba5a02ce4..d38aa7d6c0b3a6e9a82fdd5574cdf28a52a3a4bb
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-devtools:4.1.0"
++  "coordinates" : "org.springframework.boot:spring-boot-devtools:4.1.0",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-devtools/$version$/spring-boot-devtools-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-devtools/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-devtools/$version$/spring-boot-devtools-$version$-javadoc.jar",
++  "description" : "Spring Boot DevTools provides development-time features for Spring Boot applications, including automatic restarts, LiveReload support, and remote update support. It is intended to improve local development feedback cycles and is typically disabled or omitted for production deployments."
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626
+ succeeded in 0ms:
+{
+  "coordinates": "org.springframework.boot:spring-boot-devtools:4.1.0",
+  "repository-url": "https://github.com/spring-projects/spring-boot",
+  "source-code-url": "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-devtools/$version$/spring-boot-devtools-$version$-sources.jar",
+  "test-code-url": "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-devtools/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-devtools/$version$/spring-boot-devtools-$version$-javadoc.jar",
+  "description": "Spring Boot DevTools provides development-time features for Spring Boot applications, including automatic restarts, LiveReload support, and remote update support. It is intended to improve local development feedback cycles and is typically disabled or omitted for production deployments."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'for key in source-code-url test-code-url documentation-url; do url=$(jq -r --arg key "$key" '"'.["'$key] | gsub("'"\\\\"'$version'"\\\\"'$"; "4.1.0")'"' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json); printf '%s -> ' \""'$key"; curl -fsSI -L "$url" | awk '"'NR==1 {print "'$2; exit}'"'; done" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json
+index 6739297c22896204cab068dee0cb47cba5a02ce4..d38aa7d6c0b3a6e9a82fdd5574cdf28a52a3a4bb
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-devtools:4.1.0"
++  "coordinates" : "org.springframework.boot:spring-boot-devtools:4.1.0",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-devtools/$version$/spring-boot-devtools-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-devtools/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-devtools/$version$/spring-boot-devtools-$version$-javadoc.jar",
++  "description" : "Spring Boot DevTools provides development-time features for Spring Boot applications, including automatic restarts, LiveReload support, and remote update support. It is intended to improve local development feedback cycles and is typically disabled or omitted for production deployments."
+ }
+
+ succeeded in 169ms:
+200
+documentation-url -> 200
+
+codex
+Validation passed: the JSON parses, and all three `$version$` URLs resolve to HTTP 200 when substituted with `4.1.0`. I’m doing one final status check so I can report the exact touched file.
+exec
+/usr/bin/bash -lc "git status --short -- build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json && sed -n '1,120p' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json
+index 6739297c22896204cab068dee0cb47cba5a02ce4..d38aa7d6c0b3a6e9a82fdd5574cdf28a52a3a4bb
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-devtools:4.1.0"
++  "coordinates" : "org.springframework.boot:spring-boot-devtools:4.1.0",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-devtools/$version$/spring-boot-devtools-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-devtools/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-devtools/$version$/spring-boot-devtools-$version$-javadoc.jar",
++  "description" : "Spring Boot DevTools provides development-time features for Spring Boot applications, including automatic restarts, LiveReload support, and remote update support. It is intended to improve local development feedback cycles and is typically disabled or omitted for production deployments."
+ }
+
+ succeeded in 192ms:
+{
+  "coordinates" : "org.springframework.boot:spring-boot-devtools:4.1.0",
+  "repository-url" : "https://github.com/spring-projects/spring-boot",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-devtools/$version$/spring-boot-devtools-$version$-sources.jar",
+  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-devtools/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-devtools/$version$/spring-boot-devtools-$version$-javadoc.jar",
+  "description" : "Spring Boot DevTools provides development-time features for Spring Boot applications, including automatic restarts, LiveReload support, and remote update support. It is intended to improve local development feedback cycles and is typically disabled or omitted for production deployments."
+}
+
+codex
+Updated [org.springframework.boot-spring-boot-devtools-4.1.0.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json) with repository, source, test, documentation URLs, and the required two-sentence description.
+
+I left `language` absent and did not set `not-for-native-image` because the published JAR contains JVM `.class` files. Verified JSON parsing and confirmed the three `$version$` URLs resolve with `4.1.0`.
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json
+index 6739297c22896204cab068dee0cb47cba5a02ce4..d38aa7d6c0b3a6e9a82fdd5574cdf28a52a3a4bb
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-devtools:4.1.0"
++  "coordinates" : "org.springframework.boot:spring-boot-devtools:4.1.0",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-devtools/$version$/spring-boot-devtools-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-devtools/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-devtools/$version$/spring-boot-devtools-$version$-javadoc.jar",
++  "description" : "Spring Boot DevTools provides development-time features for Spring Boot applications, including automatic restarts, LiveReload support, and remote update support. It is intended to improve local development feedback cycles and is typically disabled or omitted for production deployments."
+ }
+
+tokens used
+47,942
+Updated [org.springframework.boot-spring-boot-devtools-4.1.0.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-devtools-4.1.0.json) with repository, source, test, documentation URLs, and the required two-sentence description.
+
+I left `language` absent and did not set `not-for-native-image` because the published JAR contains JVM `.class` files. Verified JSON parsing and confirmed the three `$version$` URLs resolve with `4.1.0`.
+Ran agent for org.springframework.boot:spring-boot-devtools:4.1.0 (exit 0). Log: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626/build/agent-artifact-discovery-logs/org.springframework.boot-spring-boot-devtools-4.1.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8460-dec85626/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 28s
+9 actionable tasks: 9 executed
