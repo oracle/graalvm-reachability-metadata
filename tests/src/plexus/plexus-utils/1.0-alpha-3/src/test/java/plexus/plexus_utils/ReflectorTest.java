@@ -54,17 +54,20 @@ public class ReflectorTest {
         ReflectorFixture fixture = new ReflectorFixture("property-value");
 
         // `getObjectProperty` finds `getValue`, but then looks for `value` on `Class.class`
-        // before invoking the accessor. `Class` exposes no public fields, so version 1.0.2
+        // before invoking the accessor. `Class` exposes no public fields, so version 1.0-alpha-3
         // fails at that field lookup before the final `Method.invoke` call site.
         assertThatThrownBy(() -> reflector.getObjectProperty(fixture, "value"))
                 .isInstanceOf(ReflectorException.class)
                 .hasCauseInstanceOf(NoSuchFieldException.class);
+        assertThat(fixture.accessorCalls).isZero();
     }
 
     public static class ReflectorFixture {
         public static final String STATIC_VALUE = "static-value";
 
         public String value;
+
+        public int accessorCalls;
 
         public ReflectorFixture() {
             this("default");
@@ -87,6 +90,7 @@ public class ReflectorTest {
         }
 
         public String getValue() {
+            accessorCalls++;
             return value;
         }
     }

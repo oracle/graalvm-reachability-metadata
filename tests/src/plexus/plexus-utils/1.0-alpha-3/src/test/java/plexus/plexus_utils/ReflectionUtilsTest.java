@@ -7,7 +7,6 @@
 package plexus.plexus_utils;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 import org.codehaus.plexus.util.ReflectionUtils;
 import org.junit.jupiter.api.Test;
@@ -25,13 +24,13 @@ public class ReflectionUtilsTest {
     }
 
     @Test
-    void findsPublicVoidInstanceSetter() {
-        Method setter = ReflectionUtils.getSetter("name", ChildBean.class);
+    void findsFieldsDeclaredOnTargetClass() {
+        Field field = ReflectionUtils.getFieldByNameIncludingSuperclasses("name", ChildBean.class);
 
-        assertThat(setter).isNotNull();
-        assertThat(setter.getName()).isEqualTo("setName");
-        assertThat(setter.getReturnType()).isEqualTo(Void.TYPE);
-        assertThat(setter.getParameterTypes()).containsExactly(String.class);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("name");
+        assertThat(field.getDeclaringClass()).isEqualTo(ChildBean.class);
+        assertThat(field.getType()).isEqualTo(String.class);
     }
 
     public static class ParentBean {
@@ -39,8 +38,6 @@ public class ReflectionUtilsTest {
     }
 
     public static class ChildBean extends ParentBean {
-        public void setName(String name) {
-            inheritedValue = name;
-        }
+        public String name;
     }
 }
