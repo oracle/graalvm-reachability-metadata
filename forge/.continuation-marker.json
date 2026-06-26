@@ -1,0 +1,71 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "com.mchange:mchange-commons-java:0.4.0",
+  "issueNumber": 2097,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "For tests covering com.mchange.v2.naming.ReferenceableUtils.referenceToObject(...) overloads that do not take an explicit allowedFactoryClassNames Set, or ReferenceIndirector.getObject(), set the system property com.mchange.v2.naming.objectFactoryWhitelist to the fully qualified test ObjectFactory class name(s), comma-separated, and restore/clear it after the test. Alternatively pass a PropertiesConfig containing that key or call an overload with an explicit allowed Set. Use local JNDI names such as java:comp/env/... unless deliberately testing name-guard rejection; non-local names may require targeted configuration of com.mchange.v2.naming.nameGuardClassName.",
+    "applied_setup": [],
+    "current_library": "com.mchange:mchange-commons-java:0.2.15",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#2097 [Automation] java run fails for com.mchange:mchange-commons-java:0.4.0; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "34 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 42571,
+    "issue_label": "fails-java-run",
+    "issue_number": 2097,
+    "library": "com.mchange:mchange-commons-java:0.4.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "0.4.0",
+    "output_tokens_used": 3724,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "A broad or stale whitelist can hide the security behavior introduced in 0.4.0; keep values limited to test ObjectFactory classes.",
+      "System properties are JVM-global, so tests should restore previous values to avoid order-dependent failures.",
+      "Optional integrations exist for Typesafe Config, log4j, log4j2, and slf4j, but they are not required for meaningful core utility/JNDI coverage."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/com.mchange:mchange-commons-java:0.4.0/library-preparation-preflight/pi-generation-2026-06-26T18-24-39-854744Z.log",
+    "status": "completed",
+    "summary": "mchange-commons-java 0.4.0 added mandatory JNDI ObjectFactory whitelist checks; tests that dereference javax.naming.Reference via convenience overloads fail unless the whitelist is configured."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "0.4.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-2097-fails-java-run-com.mchange-mchange-commons-java-0.4.0-907c878e",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
