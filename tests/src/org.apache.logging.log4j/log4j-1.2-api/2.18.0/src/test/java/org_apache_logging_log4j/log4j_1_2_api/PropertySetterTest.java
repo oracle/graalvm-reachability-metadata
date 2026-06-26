@@ -8,37 +8,39 @@ package org_apache_logging_log4j.log4j_1_2_api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.apache.log4j.Level;
+import java.util.Properties;
+
 import org.apache.log4j.config.PropertySetter;
+import org.apache.log4j.spi.OptionHandler;
 import org.junit.jupiter.api.Test;
 
 public class PropertySetterTest {
 
     @Test
     void setsBeanPropertiesFromStringValues() {
-        ConfigurableTarget target = new ConfigurableTarget();
-        PropertySetter setter = new PropertySetter(target);
+        Properties properties = new Properties();
+        properties.setProperty("target.name", "example-appender");
+        properties.setProperty("target.count", "42");
+        properties.setProperty("target.timeout", "123456789");
+        properties.setProperty("target.enabled", "true");
 
-        setter.setProperty("name", "example-appender");
-        setter.setProperty("count", "42");
-        setter.setProperty("timeout", "123456789");
-        setter.setProperty("enabled", "true");
-        setter.setProperty("threshold", "ERROR");
+        ConfigurableTarget target = new ConfigurableTarget();
+        PropertySetter.setProperties(target, properties, "target.");
 
         assertThat(target.getName()).isEqualTo("example-appender");
         assertThat(target.getCount()).isEqualTo(42);
         assertThat(target.getTimeout()).isEqualTo(123456789L);
         assertThat(target.isEnabled()).isTrue();
-        assertThat(target.getThreshold()).isEqualTo(Level.ERROR);
+        assertThat(target.isActivated()).isTrue();
     }
 
-    public static final class ConfigurableTarget {
+    public static final class ConfigurableTarget implements OptionHandler {
 
         private String name;
         private int count;
         private long timeout;
         private boolean enabled;
-        private Level threshold;
+        private boolean activated;
 
         public String getName() {
             return name;
@@ -72,12 +74,13 @@ public class PropertySetterTest {
             this.enabled = enabled;
         }
 
-        public Level getThreshold() {
-            return threshold;
+        public boolean isActivated() {
+            return activated;
         }
 
-        public void setThreshold(Level threshold) {
-            this.threshold = threshold;
+        @Override
+        public void activateOptions() {
+            activated = true;
         }
     }
 }
