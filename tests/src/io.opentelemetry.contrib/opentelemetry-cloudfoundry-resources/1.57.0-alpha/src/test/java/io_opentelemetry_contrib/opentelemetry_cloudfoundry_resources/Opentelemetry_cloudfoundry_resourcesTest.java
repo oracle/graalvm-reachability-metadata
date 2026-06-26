@@ -133,6 +133,30 @@ public class Opentelemetry_cloudfoundry_resourcesTest {
     }
 
     @Test
+    void autoconfigurationDiscoversCloudFoundryProviderByDefault() {
+        AtomicReference<Resource> configuredResource = new AtomicReference<>();
+        AutoConfiguredOpenTelemetrySdk configured = null;
+
+        try {
+            configured = AutoConfiguredOpenTelemetrySdk.builder()
+                    .disableShutdownHook()
+                    .setServiceClassLoader(Opentelemetry_cloudfoundry_resourcesTest.class.getClassLoader())
+                    .addPropertiesSupplier(() -> Map.of("otel.sdk.disabled", "true"))
+                    .addResourceCustomizer((resource, config) -> {
+                        configuredResource.set(resource);
+                        return resource;
+                    })
+                    .build();
+
+            assertCloudFoundryAttributes(configuredResource.get());
+        } finally {
+            if (configured != null) {
+                configured.getOpenTelemetrySdk().close();
+            }
+        }
+    }
+
+    @Test
     void autoconfigurationSkipsCloudFoundryProviderWhenItIsDisabled() {
         AtomicReference<Resource> configuredResource = new AtomicReference<>();
         AutoConfiguredOpenTelemetrySdk configured = null;
