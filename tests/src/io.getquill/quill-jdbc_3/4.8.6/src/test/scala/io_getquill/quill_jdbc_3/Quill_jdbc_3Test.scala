@@ -58,6 +58,19 @@ case class QuillLegacyAudit(
   displayLabel: String
 )
 
+case class QuillTopic(value: String)
+
+case class QuillArticle(
+  id: Int,
+  title: String,
+  topic: QuillTopic
+)
+
+given quillTopicEncoder: MappedEncoding[QuillTopic, String] =
+  MappedEncoding(_.value)
+given quillTopicDecoder: MappedEncoding[String, QuillTopic] =
+  MappedEncoding(QuillTopic.apply)
+
 class Quill_jdbc_3Test {
   @Test
   def h2JdbcContextRunsCrudQueriesJoinsAndOptionalColumns(): Unit = {
@@ -209,6 +222,40 @@ class Quill_jdbc_3Test {
   }
 
   @Test
+  def mappedEncodingsPersistFilterAndDecodeCustomValueTypes(): Unit = {
+    withH2Context { ctx =>
+      import ctx.*
+
+      val scalaTopic: QuillTopic = QuillTopic("scala")
+      val databaseTopic: QuillTopic = QuillTopic("database")
+      val articles: List[QuillArticle] = List(
+        QuillArticle(501, "Compile-Time Queries", scalaTopic),
+        QuillArticle(502, "Prepared Statements", databaseTopic),
+        QuillArticle(503, "Quoted Domain Models", scalaTopic)
+      )
+
+      assertEquals(
+        List(1L, 1L, 1L),
+        ctx.run(liftQuery(articles).foreach(a => query[QuillArticle].insertValue(a)))
+      )
+
+      val scalaArticles: List[QuillArticle] = ctx.run(
+        query[QuillArticle]
+          .filter(_.topic == lift(scalaTopic))
+          .sortBy(_.id)
+      )
+      assertEquals(List(articles.head, articles(2)), scalaArticles)
+
+      val decodedTopic: List[QuillTopic] = ctx.run(
+        query[QuillArticle]
+          .filter(_.title == lift("Prepared Statements"))
+          .map(_.topic)
+      )
+      assertEquals(List(databaseTopic), decodedTopic)
+    }
+  }
+
+  @Test
   def jdbcContextConfigBuildsAHikariDataSourceForH2AndSupportsGeneratedKeys(): Unit = {
     val databaseName: String = uniqueDatabaseName()
     val config: Config = ConfigFactory.parseString(s"""
@@ -315,6 +362,15 @@ class Quill_jdbc_3Test {
           CREATE TABLE legacy_audit_records (
             record_key INT PRIMARY KEY,
             label_text VARCHAR(100) NOT NULL
+          )
+          """
+        )
+        statement.execute(
+          """
+          CREATE TABLE quill_article (
+            id INT PRIMARY KEY,
+            title VARCHAR(100) NOT NULL,
+            topic VARCHAR(100) NOT NULL
           )
           """
         )
