@@ -53,6 +53,11 @@ case class QuillEvent(
   label: String
 )
 
+case class QuillLegacyAudit(
+  legacyId: Int,
+  displayLabel: String
+)
+
 class Quill_jdbc_3Test {
   @Test
   def h2JdbcContextRunsCrudQueriesJoinsAndOptionalColumns(): Unit = {
@@ -157,6 +162,32 @@ class Quill_jdbc_3Test {
 
       val remaining: List[QuillPerson] = ctx.run(query[QuillPerson])
       assertEquals(List(QuillPerson(102, "Adult", 45, active = true, Some("databases"))), remaining)
+    }
+  }
+
+  @Test
+  def querySchemaMapsCaseClassFieldsToCustomTableAndColumnNames(): Unit = {
+    withH2Context { ctx =>
+      import ctx.*
+
+      inline def legacyAudits: EntityQuery[QuillLegacyAudit] = querySchema[QuillLegacyAudit](
+        "legacy_audit_records",
+        _.legacyId -> "record_key",
+        _.displayLabel -> "label_text"
+      )
+
+      val firstAudit: QuillLegacyAudit = QuillLegacyAudit(401, "custom schema")
+      val secondAudit: QuillLegacyAudit = QuillLegacyAudit(402, "mapped columns")
+
+      assertEquals(1L, ctx.run(legacyAudits.insertValue(lift(firstAudit))))
+      assertEquals(1L, ctx.run(legacyAudits.insertValue(lift(secondAudit))))
+
+      val labels: List[String] = ctx.run(
+        legacyAudits
+          .filter(_.legacyId >= lift(402))
+          .map(_.displayLabel)
+      )
+      assertEquals(List("mapped columns"), labels)
     }
   }
 
@@ -276,6 +307,14 @@ class Quill_jdbc_3Test {
             created_on DATE NOT NULL,
             created_at TIMESTAMP NOT NULL,
             label VARCHAR(100) NOT NULL
+          )
+          """
+        )
+        statement.execute(
+          """
+          CREATE TABLE legacy_audit_records (
+            record_key INT PRIMARY KEY,
+            label_text VARCHAR(100) NOT NULL
           )
           """
         )
