@@ -19,6 +19,9 @@ import io.opentelemetry.sdk.logs.data.LogRecordData;
 import io.opentelemetry.sdk.logs.export.SimpleLogRecordProcessor;
 import io.opentelemetry.sdk.testing.exporter.InMemoryLogRecordExporter;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -30,10 +33,12 @@ import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.AppenderRef;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.apache.logging.log4j.message.StringMapMessage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class Opentelemetry_log4j_appender_2_17Test {
     private static final AtomicInteger LOGGER_SEQUENCE = new AtomicInteger();
@@ -191,6 +196,62 @@ public class Opentelemetry_log4j_appender_2_17Test {
                         .extracting(record -> record.getBody().asString())
                         .containsExactly(
                                 "first buffered log", "second buffered log", "after installation");
+            }
+        }
+    }
+
+    @Test
+    void log4jConfigurationCreatesAndConfiguresOpenTelemetryAppender(@TempDir Path tempDir)
+            throws IOException {
+        String loggerName = newLoggerName("xml-configuration");
+        Path configFile = tempDir.resolve("log4j2.xml");
+        Files.writeString(
+                configFile,
+                """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <Configuration status="WARN">
+                  <Appenders>
+                    <OpenTelemetry name="otel-configured-appender"
+                        captureMarkerAttribute="true"
+                        captureContextDataAttributes="request.id, tenant" />
+                  </Appenders>
+                  <Loggers>
+                    <Logger name="%s" level="info" additivity="false">
+                      <AppenderRef ref="otel-configured-appender" />
+                    </Logger>
+                  </Loggers>
+                </Configuration>
+                """
+                        .formatted(loggerName));
+
+        try (TestTelemetry telemetry = TestTelemetry.create()) {
+            LoggerContext loggerContext = Configurator.initialize(
+                    newLoggerName("xml-context"), null, configFile.toUri());
+            try {
+                OpenTelemetryAppender appender = (OpenTelemetryAppender) loggerContext
+                        .getConfiguration()
+                        .getAppender("otel-configured-appender");
+                assertThat(appender).isNotNull();
+                appender.setOpenTelemetry(telemetry.openTelemetry());
+
+                ThreadContext.put("request.id", "req-789");
+                ThreadContext.put("tenant", "contoso");
+                ThreadContext.put("not.captured", "ignored");
+
+                loggerContext
+                        .getLogger(loggerName)
+                        .info(MarkerManager.getMarker("CONFIGURED"), "configured appender log");
+
+                LogRecordData record = telemetry.singleRecord();
+                assertThat(record.getBody().asString()).isEqualTo("configured appender log");
+                assertThat(record.getAttributes().get(stringKey("log4j.marker")))
+                        .isEqualTo("CONFIGURED");
+                assertThat(record.getAttributes().get(stringKey("request.id")))
+                        .isEqualTo("req-789");
+                assertThat(record.getAttributes().get(stringKey("tenant"))).isEqualTo("contoso");
+                assertThat(record.getAttributes().get(stringKey("not.captured"))).isNull();
+            } finally {
+                Configurator.shutdown(loggerContext);
             }
         }
     }
