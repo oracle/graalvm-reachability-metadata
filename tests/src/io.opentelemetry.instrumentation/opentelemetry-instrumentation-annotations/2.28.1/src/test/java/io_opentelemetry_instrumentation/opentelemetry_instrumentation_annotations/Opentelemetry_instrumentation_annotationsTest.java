@@ -31,6 +31,22 @@ public class Opentelemetry_instrumentation_annotationsTest {
     }
 
     @Test
+    void interfaceMethodAnnotationsExposeSpanConfigurationAndParameterAttributes()
+            throws NoSuchMethodException {
+        Method method = InstrumentedClient.class.getDeclaredMethod("send", String.class, String.class);
+
+        WithSpan withSpan = method.getAnnotation(WithSpan.class);
+
+        assertThat(withSpan).isNotNull();
+        assertThat(withSpan.value()).isEqualTo("message.send");
+        assertThat(withSpan.kind()).isEqualTo(SpanKind.PRODUCER);
+        assertThat(method.getParameters()[0].getAnnotation(SpanAttribute.class).value())
+                .isEqualTo("message.destination");
+        assertThat(method.getParameters()[1].getAnnotation(SpanAttribute.class).value())
+                .isEqualTo("message.id");
+    }
+
+    @Test
     void withSpanDefaultValuesAreAvailableFromAnnotatedMethod() throws NoSuchMethodException {
         Method method =
                 InstrumentedOperations.class.getDeclaredMethod(
@@ -126,6 +142,13 @@ public class Opentelemetry_instrumentation_annotationsTest {
         Target target = annotationType.getAnnotation(Target.class);
         assertThat(target).isNotNull();
         assertThat(target.value()).containsExactlyInAnyOrder(targets);
+    }
+
+    public interface InstrumentedClient {
+        @WithSpan(value = "message.send", kind = SpanKind.PRODUCER)
+        void send(
+                @SpanAttribute("message.destination") String destination,
+                @SpanAttribute("message.id") String messageId);
     }
 
     public static final class InstrumentedOperations {
