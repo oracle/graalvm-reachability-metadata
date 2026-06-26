@@ -134,6 +134,24 @@ public class Opentelemetry_aws_resourcesTest {
         assertThat(new LambdaResourceProvider().createResource(null)).isSameAs(LambdaResource.get());
     }
 
+    @Test
+    @Order(5)
+    void cloudResourceProvidersOnlyApplyWhenCloudProviderIsUnset() {
+        Resource resourceWithoutCloudProvider = Resource.empty();
+        Resource resourceWithCloudProvider = Resource.create(Attributes.of(CLOUD_PROVIDER, "azure"));
+
+        assertThat(new BeanstalkResourceProvider().shouldApply(null, resourceWithoutCloudProvider)).isTrue();
+        assertThat(new BeanstalkResourceProvider().shouldApply(null, resourceWithCloudProvider)).isFalse();
+        assertThat(new Ec2ResourceProvider().shouldApply(null, resourceWithoutCloudProvider)).isTrue();
+        assertThat(new Ec2ResourceProvider().shouldApply(null, resourceWithCloudProvider)).isFalse();
+        assertThat(new EcsResourceProvider().shouldApply(null, resourceWithoutCloudProvider)).isTrue();
+        assertThat(new EcsResourceProvider().shouldApply(null, resourceWithCloudProvider)).isFalse();
+        assertThat(new EksResourceProvider().shouldApply(null, resourceWithoutCloudProvider)).isTrue();
+        assertThat(new EksResourceProvider().shouldApply(null, resourceWithCloudProvider)).isFalse();
+        assertThat(new LambdaResourceProvider().shouldApply(null, resourceWithoutCloudProvider)).isTrue();
+        assertThat(new LambdaResourceProvider().shouldApply(null, resourceWithCloudProvider)).isFalse();
+    }
+
     private static void handleEc2MetadataRequest(
             HttpExchange exchange, ConcurrentLinkedQueue<String> requests) throws IOException {
         String method = exchange.getRequestMethod();
