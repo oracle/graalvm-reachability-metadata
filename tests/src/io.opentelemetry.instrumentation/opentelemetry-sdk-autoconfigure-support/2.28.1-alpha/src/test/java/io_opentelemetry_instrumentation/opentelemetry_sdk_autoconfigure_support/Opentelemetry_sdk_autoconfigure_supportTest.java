@@ -190,6 +190,23 @@ public class Opentelemetry_sdk_autoconfigure_supportTest {
     }
 
     @Test
+    void spanLoggingCustomizerAddsProcessorListToExistingTracerProviderWhenEnabled() {
+        TracerProviderModel tracerProvider = new TracerProviderModel();
+        OpenTelemetryConfigurationModel model = new OpenTelemetryConfigurationModel()
+                .withTracerProvider(tracerProvider);
+        CapturingDeclarativeConfigurationCustomizer customizer = new CapturingDeclarativeConfigurationCustomizer();
+        EnabledSpanLoggingCustomizerProvider provider = new EnabledSpanLoggingCustomizerProvider();
+
+        provider.customize(customizer);
+        OpenTelemetryConfigurationModel customizedModel = customizer.modelCustomizers.get(0).apply(model);
+
+        assertThat(customizedModel).isSameAs(model);
+        assertThat(customizedModel.getTracerProvider()).isSameAs(tracerProvider);
+        assertThat(customizedModel.getTracerProvider().getProcessors()).hasSize(1);
+        assertThat(consoleExporter(customizedModel.getTracerProvider().getProcessors().get(0))).isNotNull();
+    }
+
+    @Test
     void spanLoggingCustomizerKeepsExistingConsoleExporterSingle() {
         SpanProcessorModel existingConsoleProcessor = new SpanProcessorModel()
                 .withSimple(new SimpleSpanProcessorModel()
