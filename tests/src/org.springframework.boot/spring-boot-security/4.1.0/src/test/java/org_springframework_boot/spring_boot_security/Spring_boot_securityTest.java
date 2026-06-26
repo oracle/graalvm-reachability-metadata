@@ -8,6 +8,10 @@ package org_springframework_boot.spring_boot_security;
 
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +24,7 @@ import org.springframework.boot.security.autoconfigure.web.servlet.PathRequest;
 import org.springframework.boot.security.autoconfigure.web.servlet.SecurityFilterAutoConfiguration;
 import org.springframework.boot.security.autoconfigure.web.servlet.SecurityFilterProperties;
 import org.springframework.boot.security.autoconfigure.web.servlet.ServletWebSecurityAutoConfiguration;
+import org.springframework.boot.security.web.servlet.ApplicationContextRequestMatcher;
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
 import org.springframework.boot.web.servlet.DelegatingFilterProxyRegistrationBean;
 import org.springframework.boot.web.servlet.DispatcherType;
@@ -208,10 +213,53 @@ public class Spring_boot_securityTest {
                 DispatcherType.ERROR);
     }
 
+    @Test
+    void applicationContextRequestMatcherUsesCurrentWebApplicationContext() {
+        this.requestMatcherContextRunner.run((context) -> {
+            context.getServletContext().setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE,
+                    context);
+            ContextIdRequestMatcher matcher = new ContextIdRequestMatcher();
+
+            MockHttpServletRequest matchingRequest = request(context, "/secure");
+            matchingRequest.setParameter("contextId", context.getId());
+            assertThat(matcher.matches(matchingRequest)).isTrue();
+            assertThat(matcher.getInitializedCount()).isOne();
+
+            MockHttpServletRequest nonMatchingRequest = request(context, "/secure");
+            nonMatchingRequest.setParameter("contextId", "other");
+            assertThat(matcher.matches(nonMatchingRequest)).isFalse();
+            assertThat(matcher.getInitializedCount()).isOne();
+        });
+    }
+
     private static MockHttpServletRequest request(WebApplicationContext context, String path) {
         MockHttpServletRequest request = new MockHttpServletRequest(context.getServletContext(), "GET", path);
         request.setServletPath(path);
         return request;
+    }
+
+    private static final class ContextIdRequestMatcher extends ApplicationContextRequestMatcher<WebApplicationContext> {
+
+        private final AtomicInteger initializedCount = new AtomicInteger();
+
+        private ContextIdRequestMatcher() {
+            super(WebApplicationContext.class);
+        }
+
+        int getInitializedCount() {
+            return this.initializedCount.get();
+        }
+
+        @Override
+        protected void initialized(Supplier<WebApplicationContext> context) {
+            this.initializedCount.incrementAndGet();
+        }
+
+        @Override
+        protected boolean matches(HttpServletRequest request, Supplier<WebApplicationContext> context) {
+            return context.get().getId().equals(request.getParameter("contextId"));
+        }
+
     }
 
     @Configuration(proxyBeanMethods = false)
