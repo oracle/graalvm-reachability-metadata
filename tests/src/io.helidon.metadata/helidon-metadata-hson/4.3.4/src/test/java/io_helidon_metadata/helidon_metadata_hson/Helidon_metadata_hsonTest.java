@@ -82,6 +82,32 @@ public class Helidon_metadata_hsonTest {
     }
 
     @Test
+    void parsesTopLevelArrayAndProvidesTypedStructView() {
+        String document = """
+                [
+                  {"name": "alpha", "index": 1},
+                  null,
+                  {"name": "beta", "index": 2}
+                ]
+                """;
+
+        Hson.Array array = parse(document).asArray();
+
+        assertThat(array.type()).isEqualTo(Hson.Type.ARRAY);
+        assertThat(array.value()).extracting(Hson.Value::type)
+                .containsExactly(Hson.Type.STRUCT, Hson.Type.NULL, Hson.Type.STRUCT);
+        assertThat(array.getStructs())
+                .extracting(item -> item.stringValue("name").orElseThrow())
+                .containsExactly("alpha", "beta");
+        assertThat(array.getStructs())
+                .extracting(item -> item.intValue("index").orElseThrow())
+                .containsExactly(1, 2);
+        assertThat(write(array, false)).isEqualTo("[{\"name\":\"alpha\",\"index\":1},null,"
+                + "{\"name\":\"beta\",\"index\":2}]");
+        assertThat(parse(write(array, false))).isEqualTo(array);
+    }
+
+    @Test
     void builderCreatesTypedValuesAndSupportsUnsetAndNull() {
         Hson.Struct firstChild = Hson.Struct.builder()
                 .set("name", "first")
