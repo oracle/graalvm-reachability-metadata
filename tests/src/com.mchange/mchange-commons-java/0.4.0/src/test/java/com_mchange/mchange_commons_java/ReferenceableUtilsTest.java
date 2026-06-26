@@ -18,8 +18,15 @@ import java.util.Hashtable;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 public class ReferenceableUtilsTest {
+    @Test
+    void assertAcceptableNameConstructsTheDefaultNameGuard() {
+        assertThatCode(() -> ReferenceableUtils.assertAcceptableName("java:comp/env/jdbc/example", null))
+            .doesNotThrowAnyException();
+    }
+
     @Test
     void referenceToObjectInstantiatesConfiguredFactoryAndDelegatesReferenceResolution() throws Exception {
         Reference reference = new Reference(String.class.getName(), CapturingObjectFactory.class.getName(), null);
