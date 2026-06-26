@@ -1,0 +1,93 @@
+{
+  "timestamp": "2026-06-26T21:50:21.093823Z",
+  "library": "org.springframework.boot:spring-boot-security:4.1.0",
+  "starting_commit": "edd1412db4e1b105411423072ead4288b665f92f",
+  "ending_commit": "9df3debf9d17990ba03d81a6d654380e0e3fce31",
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+  "agent": "pi",
+  "model": "oca/gpt-5.5",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 8464,
+    "issue_label": "library-new-request",
+    "library": "org.springframework.boot:spring-boot-security:4.1.0",
+    "summary": "spring-boot-security is an auto-configuration module normally exercised inside a Spring Boot web application; the resolved artifact itself lacks the Boot starter/autoconfigure and test-context pieces needed to activate and verify its servlet security auto-configuration meaningfully.",
+    "deterministic_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.boot:spring-boot-starter-webmvc:4.1.0",
+        "scope": "testImplementation",
+        "reason": "Provides the representative Spring MVC servlet web application stack, embedded servlet API, and spring-boot-autoconfigure that are normally present when Spring Boot security auto-configuration is active."
+      },
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.boot:spring-boot-test:4.1.0",
+        "scope": "testImplementation",
+        "reason": "Provides ApplicationContextRunner/WebApplicationContextRunner for testing Spring Boot auto-configuration without starting an external service."
+      },
+      {
+        "kind": "dependency",
+        "coordinate": "org.assertj:assertj-core:3.27.7",
+        "scope": "testImplementation",
+        "reason": "Required by Spring Boot's assertable application context test APIs exposed by spring-boot-test."
+      }
+    ],
+    "agent_guidance": "No Docker image or environment variable is needed. In generated tests, prefer a WebApplicationContextRunner or equivalent servlet Spring application context and set explicit Spring properties such as spring.security.user.name and spring.security.user.password when asserting the default user, so tests do not depend on the generated random password.",
+    "risks": [
+      "The artifact also contains optional actuator, reactive, and RSocket security auto-configuration paths; those paths may require additional targeted dependencies if the generated tests choose to cover them, but they are not necessary for baseline meaningful servlet security coverage."
+    ],
+    "applied_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.boot:spring-boot-starter-webmvc:4.1.0",
+        "result": "applied",
+        "target": "tests/src/org.springframework.boot/spring-boot-security/4.1.0/build.gradle"
+      },
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.boot:spring-boot-test:4.1.0",
+        "result": "applied",
+        "target": "tests/src/org.springframework.boot/spring-boot-security/4.1.0/build.gradle"
+      },
+      {
+        "kind": "dependency",
+        "coordinate": "org.assertj:assertj-core:3.27.7",
+        "result": "already_present",
+        "target": "tests/src/org.springframework.boot/spring-boot-security/4.1.0/build.gradle"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8464 Support for org.springframework.boot:spring-boot-security:4.1.0; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "oca/gpt-5.5",
+    "input_tokens_used": 63011,
+    "output_tokens_used": 8918,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.springframework.boot:spring-boot-security:4.1.0/library-preparation-preflight/pi-generation-2026-06-26T21-14-12-932424Z.log"
+  },
+  "metrics": {
+    "input_tokens_used": 189385,
+    "cached_input_tokens_used": 2260992,
+    "output_tokens_used": 22370,
+    "iterations": 6,
+    "cost_usd": 1.8016,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "test_file": "None",
+    "metadata_file": "None"
+  }
+}

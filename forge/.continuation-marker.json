@@ -1,0 +1,90 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.springframework.boot:spring-boot-security:4.1.0",
+  "issueNumber": 8464,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No Docker image or environment variable is needed. In generated tests, prefer a WebApplicationContextRunner or equivalent servlet Spring application context and set explicit Spring properties such as spring.security.user.name and spring.security.user.password when asserting the default user, so tests do not depend on the generated random password.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "coordinate": "org.springframework.boot:spring-boot-starter-webmvc:4.1.0",
+        "kind": "dependency",
+        "reason": "Provides the representative Spring MVC servlet web application stack, embedded servlet API, and spring-boot-autoconfigure that are normally present when Spring Boot security auto-configuration is active.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.springframework.boot:spring-boot-test:4.1.0",
+        "kind": "dependency",
+        "reason": "Provides ApplicationContextRunner/WebApplicationContextRunner for testing Spring Boot auto-configuration without starting an external service.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.assertj:assertj-core:3.27.7",
+        "kind": "dependency",
+        "reason": "Required by Spring Boot's assertable application context test APIs exposed by spring-boot-test.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8464 Support for org.springframework.boot:spring-boot-security:4.1.0; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 63011,
+    "issue_label": "library-new-request",
+    "issue_number": 8464,
+    "library": "org.springframework.boot:spring-boot-security:4.1.0",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 8918,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The artifact also contains optional actuator, reactive, and RSocket security auto-configuration paths; those paths may require additional targeted dependencies if the generated tests choose to cover them, but they are not necessary for baseline meaningful servlet security coverage."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.springframework.boot:spring-boot-security:4.1.0/library-preparation-preflight/pi-generation-2026-06-26T21-14-12-932424Z.log",
+    "status": "completed",
+    "summary": "spring-boot-security is an auto-configuration module normally exercised inside a Spring Boot web application; the resolved artifact itself lacks the Boot starter/autoconfigure and test-context pieces needed to activate and verify its servlet security auto-configuration meaningfully."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 6,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8464-library-new-request-org.springframework.boot-spring-boot-security-4.1.0-60d72f2f",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springframework.boot:spring-boot-security:4.1.0",
+    "timestamp": "2026-06-26T21:50:21.093823Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
