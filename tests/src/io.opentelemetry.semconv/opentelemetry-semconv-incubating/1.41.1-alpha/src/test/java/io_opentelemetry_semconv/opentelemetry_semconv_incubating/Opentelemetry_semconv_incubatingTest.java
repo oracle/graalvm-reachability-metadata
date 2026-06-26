@@ -51,6 +51,13 @@ import io.opentelemetry.semconv.incubating.ProcessIncubatingAttributes.ProcessSt
 import io.opentelemetry.semconv.incubating.RpcIncubatingAttributes;
 import io.opentelemetry.semconv.incubating.ServiceIncubatingAttributes;
 import io.opentelemetry.semconv.incubating.ServiceIncubatingAttributes.ServiceCriticalityIncubatingValues;
+import io.opentelemetry.semconv.incubating.VcsIncubatingAttributes;
+import io.opentelemetry.semconv.incubating.VcsIncubatingAttributes.VcsChangeStateIncubatingValues;
+import io.opentelemetry.semconv.incubating.VcsIncubatingAttributes.VcsLineChangeTypeIncubatingValues;
+import io.opentelemetry.semconv.incubating.VcsIncubatingAttributes.VcsProviderNameIncubatingValues;
+import io.opentelemetry.semconv.incubating.VcsIncubatingAttributes.VcsRefBaseTypeIncubatingValues;
+import io.opentelemetry.semconv.incubating.VcsIncubatingAttributes.VcsRefHeadTypeIncubatingValues;
+import io.opentelemetry.semconv.incubating.VcsIncubatingAttributes.VcsRevisionDeltaDirectionIncubatingValues;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -466,6 +473,56 @@ public class Opentelemetry_semconv_incubatingTest {
         assertThat(OsTypeIncubatingValues.SOLARIS).isEqualTo("solaris");
         assertThat(ProcessContextSwitchTypeIncubatingValues.INVOLUNTARY).isEqualTo("involuntary");
         assertThat(ProcessStateIncubatingValues.DEFUNCT).isEqualTo("defunct");
+    }
+
+    @Test
+    void vcsIncubatingAttributesRepresentChangeRefsProviderAndLineMetadata() {
+        Attributes attributes = Attributes.builder()
+                .put(VcsIncubatingAttributes.VCS_CHANGE_ID, "123")
+                .put(VcsIncubatingAttributes.VCS_CHANGE_STATE, VcsChangeStateIncubatingValues.OPEN)
+                .put(VcsIncubatingAttributes.VCS_CHANGE_TITLE, "Add checkout telemetry")
+                .put(VcsIncubatingAttributes.VCS_LINE_CHANGE_TYPE, VcsLineChangeTypeIncubatingValues.ADDED)
+                .put(VcsIncubatingAttributes.VCS_OWNER_NAME, "observability")
+                .put(VcsIncubatingAttributes.VCS_PROVIDER_NAME, VcsProviderNameIncubatingValues.GITHUB)
+                .put(VcsIncubatingAttributes.VCS_REF_BASE_NAME, "main")
+                .put(VcsIncubatingAttributes.VCS_REF_BASE_REVISION, "abc123")
+                .put(VcsIncubatingAttributes.VCS_REF_BASE_TYPE, VcsRefBaseTypeIncubatingValues.BRANCH)
+                .put(VcsIncubatingAttributes.VCS_REF_HEAD_NAME, "feature/checkout-telemetry")
+                .put(VcsIncubatingAttributes.VCS_REF_HEAD_REVISION, "def456")
+                .put(VcsIncubatingAttributes.VCS_REF_HEAD_TYPE, VcsRefHeadTypeIncubatingValues.BRANCH)
+                .put(
+                        VcsIncubatingAttributes.VCS_REVISION_DELTA_DIRECTION,
+                        VcsRevisionDeltaDirectionIncubatingValues.AHEAD)
+                .build();
+
+        assertThat(VcsIncubatingAttributes.VCS_CHANGE_ID).isEqualTo(AttributeKey.stringKey("vcs.change.id"));
+        assertThat(VcsIncubatingAttributes.VCS_CHANGE_STATE).isEqualTo(AttributeKey.stringKey("vcs.change.state"));
+        assertThat(VcsIncubatingAttributes.VCS_LINE_CHANGE_TYPE)
+                .isEqualTo(AttributeKey.stringKey("vcs.line_change.type"));
+        assertThat(VcsIncubatingAttributes.VCS_PROVIDER_NAME).isEqualTo(AttributeKey.stringKey("vcs.provider.name"));
+        assertThat(VcsIncubatingAttributes.VCS_REF_BASE_TYPE).isEqualTo(AttributeKey.stringKey("vcs.ref.base.type"));
+        assertThat(VcsIncubatingAttributes.VCS_REF_HEAD_TYPE).isEqualTo(AttributeKey.stringKey("vcs.ref.head.type"));
+        assertThat(VcsIncubatingAttributes.VCS_REVISION_DELTA_DIRECTION)
+                .isEqualTo(AttributeKey.stringKey("vcs.revision_delta.direction"));
+        assertThat(attributes.get(VcsIncubatingAttributes.VCS_CHANGE_ID)).isEqualTo("123");
+        assertThat(attributes.get(VcsIncubatingAttributes.VCS_CHANGE_STATE)).isEqualTo("open");
+        assertThat(attributes.get(VcsIncubatingAttributes.VCS_CHANGE_TITLE)).isEqualTo("Add checkout telemetry");
+        assertThat(attributes.get(VcsIncubatingAttributes.VCS_LINE_CHANGE_TYPE)).isEqualTo("added");
+        assertThat(attributes.get(VcsIncubatingAttributes.VCS_OWNER_NAME)).isEqualTo("observability");
+        assertThat(attributes.get(VcsIncubatingAttributes.VCS_PROVIDER_NAME)).isEqualTo("github");
+        assertThat(attributes.get(VcsIncubatingAttributes.VCS_REF_BASE_NAME)).isEqualTo("main");
+        assertThat(attributes.get(VcsIncubatingAttributes.VCS_REF_BASE_REVISION)).isEqualTo("abc123");
+        assertThat(attributes.get(VcsIncubatingAttributes.VCS_REF_BASE_TYPE)).isEqualTo("branch");
+        assertThat(attributes.get(VcsIncubatingAttributes.VCS_REF_HEAD_NAME)).isEqualTo("feature/checkout-telemetry");
+        assertThat(attributes.get(VcsIncubatingAttributes.VCS_REF_HEAD_REVISION)).isEqualTo("def456");
+        assertThat(attributes.get(VcsIncubatingAttributes.VCS_REF_HEAD_TYPE)).isEqualTo("branch");
+        assertThat(attributes.get(VcsIncubatingAttributes.VCS_REVISION_DELTA_DIRECTION)).isEqualTo("ahead");
+        assertThat(VcsChangeStateIncubatingValues.MERGED).isEqualTo("merged");
+        assertThat(VcsLineChangeTypeIncubatingValues.REMOVED).isEqualTo("removed");
+        assertThat(VcsProviderNameIncubatingValues.GITEA).isEqualTo("gitea");
+        assertThat(VcsRefBaseTypeIncubatingValues.TAG).isEqualTo("tag");
+        assertThat(VcsRefHeadTypeIncubatingValues.TAG).isEqualTo("tag");
+        assertThat(VcsRevisionDeltaDirectionIncubatingValues.BEHIND).isEqualTo("behind");
     }
 
     @Test
