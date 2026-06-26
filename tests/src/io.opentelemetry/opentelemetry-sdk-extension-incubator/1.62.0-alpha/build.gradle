@@ -9,9 +9,11 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String stableLibraryVersion = libraryVersion.replace('-alpha', '')
 
 dependencies {
     testImplementation "io.opentelemetry:opentelemetry-sdk-extension-incubator:$libraryVersion"
+    testImplementation "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi:$stableLibraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
