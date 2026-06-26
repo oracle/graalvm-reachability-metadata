@@ -1,0 +1,56 @@
+{
+  "timestamp": "2026-06-26T12:16:48.065344Z",
+  "library": "com.beachape:enumeratum-macros_3:1.9.0",
+  "starting_commit": "49418db750b5a9ffcc0f764355c169a70b9f0088",
+  "ending_commit": "49418db750b5a9ffcc0f764355c169a70b9f0088",
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+  "agent": "pi",
+  "model": "oca/gpt-5.5",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 5082,
+    "issue_label": "library-new-request",
+    "library": "com.beachape:enumeratum-macros_3:1.9.0",
+    "summary": "The artifact is a pure Scala 3 compile-time macro module with no service/Docker dependency and no required extra Maven dependency, but meaningful ValueEnumMacros coverage requires the Scala compiler option `-Yretain-trees`.",
+    "deterministic_setup": [],
+    "agent_guidance": "Use Scala 3 tests that exercise `enumeratum.EnumMacros` and `enumeratum.ValueEnumMacros` through small inline wrapper methods or the normal Enumeratum-style pattern. For any `ValueEnumMacros.find*ValueEntriesImpl` coverage, configure test Scala compilation with `-Yretain-trees`; the macro source explicitly aborts without it and the README documents this Scala 3 limitation. Keep values literal so the macro can inspect them at compile time.",
+    "risks": [
+      "Testing only runtime references to the macro classes will not provide meaningful coverage because the library's behavior happens at Scala compile time.",
+      "Adding `com.beachape:enumeratum_3` is not required for setup; it can make tests more idiomatic, but direct macro wrappers can exercise the requested artifact without an extra dependency."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#5082 Support for com.beachape:enumeratum-macros_3:1.9.0; label=library-new-request; body_chars=107"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "oca/gpt-5.5",
+    "input_tokens_used": 69116,
+    "output_tokens_used": 3219,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/com.beachape:enumeratum-macros_3:1.9.0/library-preparation-preflight/pi-generation-2026-06-26T11-49-53-033429Z.log"
+  },
+  "metrics": {
+    "input_tokens_used": 465215,
+    "cached_input_tokens_used": 3330560,
+    "output_tokens_used": 49723,
+    "iterations": 8,
+    "cost_usd": 3.157,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "test_file": "None",
+    "metadata_file": "None"
+  }
+}
