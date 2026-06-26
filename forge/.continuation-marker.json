@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "com.squareup.okhttp3:okhttp:3.8.1",
+  "issueNumber": 6518,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Set the GraalVM Native test build argument `-H:+AddAllCharsets` when tests exercise `okhttp3.internal.Util` or code paths that load it, because OkHttp 3.8.1 initializes UTF-32 charsets statically. For optional platform reachability coverage, keep tests self-contained with source-level stubs for Android and Jetty ALPN classes that OkHttp discovers reflectively rather than adding real Android or ALPN artifacts. Use the 3.8.x `Util.intersect(Util.NATURAL_ORDER, first, second)` signature if updating the existing compile-failing test.",
+    "applied_setup": [],
+    "current_library": "com.squareup.okhttp3:okhttp:3.8.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#6518 [Automation] javac compile fails for com.squareup.okhttp3:okhttp:3.8.1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "24 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 47528,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 6518,
+    "library": "com.squareup.okhttp3:okhttp:3.8.1",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.8.1",
+    "output_tokens_used": 3455,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Adding real Android or Jetty ALPN dependencies could change `Platform.get()` detection and make tests brittle.",
+      "Without `-H:+AddAllCharsets`, JVM compilation may pass while native-image verification can fail on charset initialization."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/com.squareup.okhttp3:okhttp:3.8.1/library-preparation-preflight/pi-generation-2026-06-26T17-02-27-104847Z.log",
+    "status": "completed",
+    "summary": "No extra Maven dependency or Docker image is needed; OkHttp 3.8.1 is self-contained apart from transitive Okio, but meaningful native coverage should preserve the known charset/platform test setup."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.8.1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-6518-fails-javac-compile-com.squareup.okhttp3-okhttp-3.8.1-fecfca46",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
