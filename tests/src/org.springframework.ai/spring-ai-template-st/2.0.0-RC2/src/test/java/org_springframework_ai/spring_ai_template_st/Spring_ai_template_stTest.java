@@ -13,6 +13,11 @@ import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
@@ -53,6 +58,31 @@ public class Spring_ai_template_stTest {
 
         assertThat(first).isEqualTo("Hello, Ada!");
         assertThat(second).isEqualTo("Hi, Grace!");
+    }
+
+    @Test
+    void sharedRendererRendersConcurrentCallsWithoutCrossTalk() throws Exception {
+        StTemplateRenderer renderer = StTemplateRenderer.builder().build();
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+        List<Callable<String>> tasks = List.of(
+                () -> renderer.apply("{greeting}, {name}!", Map.of("greeting", "Hello", "name", "Ada")),
+                () -> renderer.apply("{greeting}, {name}!", Map.of("greeting", "Hi", "name", "Grace")),
+                () -> renderer.apply("{greeting}, {name}!", Map.of("greeting", "Welcome", "name", "Katherine")),
+                () -> renderer.apply("{greeting}, {name}!", Map.of("greeting", "Good day", "name", "Margaret")));
+
+        try {
+            List<Future<String>> results = executor.invokeAll(tasks, 10, TimeUnit.SECONDS);
+
+            assertThat(results).noneMatch(Future::isCancelled);
+            assertThat(results.get(0).get(10, TimeUnit.SECONDS)).isEqualTo("Hello, Ada!");
+            assertThat(results.get(1).get(10, TimeUnit.SECONDS)).isEqualTo("Hi, Grace!");
+            assertThat(results.get(2).get(10, TimeUnit.SECONDS)).isEqualTo("Welcome, Katherine!");
+            assertThat(results.get(3).get(10, TimeUnit.SECONDS)).isEqualTo("Good day, Margaret!");
+        }
+        finally {
+            executor.shutdownNow();
+            assertThat(executor.awaitTermination(10, TimeUnit.SECONDS)).isTrue();
+        }
     }
 
     @Test
