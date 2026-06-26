@@ -1,0 +1,77 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.maven.shared:maven-common-artifact-filters:3.1.1",
+  "issueNumber": 8666,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No Docker image, environment variable, or system property appears necessary. For tests around ArtifactTransitivityFilter and ProjectBuilder stubs, use the Maven 3.1/Eclipse Aether API types exposed by maven-core 3.1.0 rather than the older org.sonatype.aether types used by the 3.0.x scaffold.",
+    "applied_setup": [],
+    "current_library": "org.apache.maven.shared:maven-common-artifact-filters:3.0.0",
+    "deterministic_setup": [
+      {
+        "coordinate": "org.eclipse.sisu:org.eclipse.sisu.plexus:0.3.5",
+        "kind": "dependency",
+        "reason": "maven-common-artifact-filters:3.1.1 depends on maven-core/maven-plugin-api 3.1.0, which transitively requests org.eclipse.sisu:org.eclipse.sisu.plexus:0.0.0.M2a; that old POM pulls a non-resolving org.sonatype.sisu:sisu-guice:3.1.0 classifier artifact under Gradle. A direct modern Sisu Plexus depend\n...[truncated]",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8666 [Automation] javac compile fails for org.apache.maven.shared:maven-common-artifact-filters:3.1.1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "8 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 59081,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8666,
+    "library": "org.apache.maven.shared:maven-common-artifact-filters:3.1.1",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.1.1",
+    "output_tokens_used": 4721,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The added Sisu Plexus dependency is a Gradle classpath repair for an old Maven transitive dependency; local Gradle and native-image verification remain authoritative.",
+      "Existing 3.0.0 tests that import org.sonatype.aether will still need source adaptation for Maven 3.1.0 APIs; the deterministic dependency only fixes dependency resolution."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.maven.shared:maven-common-artifact-filters:3.1.1/library-preparation-preflight/pi-generation-2026-06-26T20-45-36-404127Z.log",
+    "status": "completed",
+    "summary": "The artifact is a Maven filter utility with no Docker or environment needs, but version 3.1.1 moves to Maven 3.1.0 dependencies whose transitive Sisu metadata is not resolvable by Gradle without an added test dependency."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.1.1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8666-fails-javac-compile-org.apache.maven.shared-maven-common-artifact-filters-3.1.1-166f7af7",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
