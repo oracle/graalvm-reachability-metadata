@@ -1,0 +1,71 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "net.bytebuddy:byte-buddy-agent:1.11.17",
+  "issueNumber": 6309,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Tests that call ByteBuddyAgent.install(...) with a fake AttachmentProvider or fake VirtualMachine must make the fake loadAgent/loadAgentPath path initialize net.bytebuddy.agent.Installer with a non-null java.lang.instrument.Instrumentation, for example via Installer.agentmain/premain using a minimal RecordingInstrumentation. Byte Buddy 1.11.17 verifies getInstrumentation after attachment, so merely recording that loadAgent was called is not enough. If a test intentionally exercises real self-attachment instead of fakes, run it on a JDK with the jdk.attach module; set jdk.attach.allowAttachSelf=true only when the test specifically requires direct self-attach rather than Byte Buddy's external-attach fallback.",
+    "applied_setup": [],
+    "current_library": "net.bytebuddy:byte-buddy-agent:1.10.9",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#6309 [Automation] java run fails for net.bytebuddy:byte-buddy-agent:1.11.17; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "11 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 32955,
+    "issue_label": "fails-java-run",
+    "issue_number": 6309,
+    "library": "net.bytebuddy:byte-buddy-agent:1.11.17",
+    "model": "oca/gpt-5.5",
+    "new_version": "1.11.17",
+    "output_tokens_used": 5174,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Real dynamic agent loading is JVM- and version-sensitive and may emit warnings or fail under stricter future JDK defaults.",
+      "Native Image execution is unlikely to support real JVM attach behavior, so coverage should prefer deterministic fake attachment paths unless local Gradle and Native Image verification prove otherwise.",
+      "The artifact has provided/optional JNA-related paths for emulated attachment; do not test those paths unless intentionally adding JNA, which is not required for normal coverage."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/net.bytebuddy:byte-buddy-agent:1.11.17/library-preparation-preflight/pi-generation-2026-06-26T12-50-53-857265Z.log",
+    "status": "completed",
+    "summary": "No extra Maven dependency or Docker image is needed, but meaningful byte-buddy-agent tests must handle JVM attach semantics and Byte Buddy 1.11.17's post-attach Instrumentation check."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "1.11.17",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-6309-fails-java-run-net.bytebuddy-byte-buddy-agent-1.11.17-ea4cecaa",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
