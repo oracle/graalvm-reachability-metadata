@@ -1,0 +1,227 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: com.google.protobuf:protobuf-java-util:4.0.0-rc-1
+Command: `/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8082-45b4c997/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 3 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :protobufDummy UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :extractIncludeProto UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :extractIncludeTestProto UP-TO-DATE
+> Task :extractTestProto UP-TO-DATE
+> Task :generateTestProto UP-TO-DATE
+
+> Task :compileTestJava
+Note: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8082-45b4c997/tests/src/com.google.protobuf/protobuf-java-util/4.0.0-rc-1/build/generated/sources/proto/test/java/protobuf_unittest/UnittestProto.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :jar
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources
+> Task :testClasses
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by com.google.protobuf.UnsafeUtil$MemoryAccessor (file:/tmp/metadata-forge-gradle/b81c959d68773fb2/caches/modules-2/files-2.1/com.google.protobuf/protobuf-java/4.0.0-rc-1/8d7f4401bd386fc052246d1ecba9a34e01189ca/protobuf-java-4.0.0-rc-1.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.protobuf.UnsafeUtil$MemoryAccessor
+WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
+
+> Task :test
+
+FieldMaskTreeTest > testRemoveFieldPath FAILED
+    expected: bar.baz,foo
+    but was : bar.baz,bar.quz,foo
+        at app//com.google.protobuf.util.FieldMaskTreeTest.testRemoveFieldPath(FieldMaskTreeTest.java:68)
+
+JsonFormatTest > testRejectMalformedFloat FAILED
+    value of          : throwable.getCause()
+    expected not to be: null
+        at app//com.google.protobuf.util.JsonFormatTest.testRejectMalformedFloat(JsonFormatTest.java:349)
+
+        Caused by:
+        com.google.protobuf.InvalidProtocolBufferException: Not a float value: "3.5aa"
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.parseFloat(JsonFormat.java:1857)
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.parseFieldValue(JsonFormat.java:1972)
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.mergeField(JsonFormat.java:1665)
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.mergeMessage(JsonFormat.java:1502)
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1460)
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1342)
+            at app//com.google.protobuf.util.JsonFormat$Parser.merge(JsonFormat.java:477)
+            at app//com.google.protobuf.util.JsonFormatTest.mergeFromJson(JsonFormatTest.java:167)
+            at app//com.google.protobuf.util.JsonFormatTest.testRejectMalformedFloat(JsonFormatTest.java:346)
+
+JsonFormatTest > testArrayTypeMismatch FAILED
+    value of: throwable.getMessage()
+    expected: Expected an array for repeated_int32 but found 5
+    but was : Expect an array but found: 5
+        at app//com.google.protobuf.util.JsonFormatTest.testArrayTypeMismatch(JsonFormatTest.java:792)
+
+        Caused by:
+        com.google.protobuf.InvalidProtocolBufferException: Expect an array but found: 5
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.mergeRepeatedField(JsonFormat.java:1724)
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.mergeField(JsonFormat.java:1661)
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.mergeMessage(JsonFormat.java:1502)
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1460)
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1342)
+            at app//com.google.protobuf.util.JsonFormat$Parser.merge(JsonFormat.java:477)
+            at app//com.google.protobuf.util.JsonFormatTest.mergeFromJson(JsonFormatTest.java:167)
+            at app//com.google.protobuf.util.JsonFormatTest.testArrayTypeMismatch(JsonFormatTest.java:783)
+
+JsonFormatTest > testRejectFractionalInt32 FAILED
+    value of          : throwable.getCause()
+    expected not to be: null
+        at app//com.google.protobuf.util.JsonFormatTest.testRejectFractionalInt32(JsonFormatTest.java:373)
+
+        Caused by:
+        com.google.protobuf.InvalidProtocolBufferException: Not an int32 value: 1.5
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.parseInt32(JsonFormat.java:1754)
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.parseFieldValue(JsonFormat.java:1961)
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.mergeField(JsonFormat.java:1665)
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.mergeMessage(JsonFormat.java:1502)
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1460)
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1342)
+            at app//com.google.protobuf.util.JsonFormat$Parser.merge(JsonFormat.java:477)
+            at app//com.google.protobuf.util.JsonFormatTest.mergeFromJson(JsonFormatTest.java:167)
+            at app//com.google.protobuf.util.JsonFormatTest.testRejectFractionalInt32(JsonFormatTest.java:369)
+
+JsonFormatTest > testRejectFractionalInt64 FAILED
+    value of          : throwable.getCause()
+    expected not to be: null
+        at app//com.google.protobuf.util.JsonFormatTest.testRejectFractionalInt64(JsonFormatTest.java:361)
+
+        Caused by:
+        com.google.protobuf.InvalidProtocolBufferException: Not an int64 value: 1.5
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.parseInt64(JsonFormat.java:1771)
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.parseFieldValue(JsonFormat.java:1966)
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.mergeField(JsonFormat.java:1665)
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.mergeMessage(JsonFormat.java:1502)
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1460)
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1342)
+            at app//com.google.protobuf.util.JsonFormat$Parser.merge(JsonFormat.java:477)
+            at app//com.google.protobuf.util.JsonFormatTest.mergeFromJson(JsonFormatTest.java:167)
+            at app//com.google.protobuf.util.JsonFormatTest.testRejectFractionalInt64(JsonFormatTest.java:357)
+
+JsonFormatTest > testJsonException_forwardsJsonException FAILED
+    expected instance of: com.google.gson.JsonSyntaxException
+    but was             : null
+        at app//com.google.protobuf.util.JsonFormatTest.testJsonException_forwardsJsonException(JsonFormatTest.java:1910)
+
+JsonFormatTest > testParserRejectInvalidBase64 FAILED
+    value of          : throwable.getCause()
+    expected not to be: null
+        at app//com.google.protobuf.util.JsonFormatTest.testParserRejectInvalidBase64(JsonFormatTest.java:1358)
+
+        Caused by:
+        com.google.protobuf.InvalidProtocolBufferException: java.io.EOFException: End of input at line 1 column 23 path $.optionalBytes
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1347)
+            at app//com.google.protobuf.util.JsonFormat$Parser.merge(JsonFormat.java:477)
+            at app//com.google.protobuf.util.JsonFormatTest.mergeFromJson(JsonFormatTest.java:167)
+            at app//com.google.protobuf.util.JsonFormatTest.testParserRejectInvalidBase64(JsonFormatTest.java:1355)
+
+JsonFormatTest > testDurationMergeError FAILED
+    value of: throwable.getMessage()
+    expected: Failed to parse duration: {"seconds":10,"nanos":500}
+    but was : JsonObject
+        at app//com.google.protobuf.util.JsonFormatTest.testDurationMergeError(JsonFormatTest.java:921)
+
+        Caused by:
+        com.google.protobuf.InvalidProtocolBufferException: JsonObject
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1347)
+            at app//com.google.protobuf.util.JsonFormat$Parser.merge(JsonFormat.java:477)
+            at app//com.google.protobuf.util.JsonFormatTest.mergeFromJson(JsonFormatTest.java:167)
+            at app//com.google.protobuf.util.JsonFormatTest.testDurationMergeError(JsonFormatTest.java:916)
+
+JsonFormatTest > testTimestampMergeError FAILED
+    value of: throwable.getMessage()
+    expected: Failed to parse timestamp: {"seconds":1800,"nanos":0}
+    but was : JsonObject
+        at app//com.google.protobuf.util.JsonFormatTest.testTimestampMergeError(JsonFormatTest.java:894)
+
+        Caused by:
+        com.google.protobuf.InvalidProtocolBufferException: JsonObject
+            at app//com.google.protobuf.util.JsonFormat$ParserImpl.merge(JsonFormat.java:1347)
+            at app//com.google.protobuf.util.JsonFormat$Parser.merge(JsonFormat.java:477)
+            at app//com.google.protobuf.util.JsonFormatTest.mergeFromJson(JsonFormatTest.java:167)
+            at app//com.google.protobuf.util.JsonFormatTest.testTimestampMergeError(JsonFormatTest.java:889)
+
+FieldMaskUtilTest > testSubstract_usingVarArgs FAILED
+    expected to be empty
+    but was: bar
+        at app//com_google_protobuf.protobuf_java_util.FieldMaskUtilTest.testSubstract_usingVarArgs(FieldMaskUtilTest.java:176)
+
+> Task :test FAILED
+
+158 tests completed, 10 failed
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8082-45b4c997/tests/src/com.google.protobuf/protobuf-java-util/4.0.0-rc-1/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+
+FAILURE: Build failed with an exception.
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+19 actionable tasks: 5 executed, 14 up-to-date
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8082-45b4c997/tests/src/com.google.protobuf/protobuf-java-util/4.0.0-rc-1/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 16s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8082-45b4c997/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for com.google.protobuf:protobuf-java-util:4.0.0-rc-1 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 18s
+9 actionable tasks: 1 executed, 8 up-to-date
