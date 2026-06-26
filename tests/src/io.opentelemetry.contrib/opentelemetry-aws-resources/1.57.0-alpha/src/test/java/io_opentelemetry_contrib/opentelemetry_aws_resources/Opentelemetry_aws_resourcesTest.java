@@ -16,6 +16,7 @@ import io.opentelemetry.contrib.aws.resource.BeanstalkResource;
 import io.opentelemetry.contrib.aws.resource.BeanstalkResourceProvider;
 import io.opentelemetry.contrib.aws.resource.Ec2Resource;
 import io.opentelemetry.contrib.aws.resource.Ec2ResourceProvider;
+import io.opentelemetry.contrib.aws.resource.EcsResource;
 import io.opentelemetry.contrib.aws.resource.EcsResourceProvider;
 import io.opentelemetry.contrib.aws.resource.EksResourceProvider;
 import io.opentelemetry.contrib.aws.resource.LambdaResource;
@@ -150,6 +151,18 @@ public class Opentelemetry_aws_resourcesTest {
         assertThat(new EksResourceProvider().shouldApply(null, resourceWithCloudProvider)).isFalse();
         assertThat(new LambdaResourceProvider().shouldApply(null, resourceWithoutCloudProvider)).isTrue();
         assertThat(new LambdaResourceProvider().shouldApply(null, resourceWithCloudProvider)).isFalse();
+    }
+
+    @Test
+    @Order(6)
+    void ecsResourceIsEmptyWhenContainerMetadataEndpointIsNotConfigured() {
+        assertThat(System.getenv().getOrDefault("ECS_CONTAINER_METADATA_URI_V4", "")).isEmpty();
+        assertThat(System.getenv().getOrDefault("ECS_CONTAINER_METADATA_URI", "")).isEmpty();
+
+        Resource resource = EcsResource.get();
+
+        assertThat(resource.getAttributes().isEmpty()).isTrue();
+        assertThat(resource.getSchemaUrl()).isNull();
     }
 
     private static void handleEc2MetadataRequest(
