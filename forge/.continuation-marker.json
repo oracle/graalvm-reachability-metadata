@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.clojure:google-closure-library-third-party:0.0-1376",
+  "issueNumber": 8599,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.clojure:google-closure-library-third-party:0.0-20250515-f04e4c0e",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8599 [Automation] java run fails for org.clojure:google-closure-library-third-party:0.0-1376; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 54146,
+    "issue_label": "fails-java-run",
+    "issue_number": 8599,
+    "library": "org.clojure:google-closure-library-third-party:0.0-1376",
+    "model": "oca/gpt-5.5",
+    "new_version": "0.0-1376",
+    "output_tokens_used": 4109,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The 0.0-1376 artifact is much older than 0.0-20250515-f04e4c0e and has different resource names/content, so tests copied from the latest version will fail unless adapted to the resolved artifact.",
+      "Some bundled JavaScript files reference core Closure modules via goog.require, but the third-party POM does not declare org.clojure:google-closure-library as a dependency; only add it if tests intentionally execute Closure module loading rather than inspecting packaged resources."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.clojure:google-closure-library-third-party:0.0-1376/library-preparation-preflight/pi-generation-2026-06-26T10-46-51-562141Z.log",
+    "status": "completed",
+    "summary": "The artifact is a standalone Maven resource JAR with no transitive dependencies; meaningful coverage can be reached by testing packaged Closure third-party JavaScript resources on the classpath without Docker, extra Maven dependencies, or environment/system properties."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "0.0-1376",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8599-fails-java-run-org.clojure-google-closure-library-third-party-0.0-1376-d9e980ca",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
