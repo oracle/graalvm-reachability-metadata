@@ -40,7 +40,10 @@ public class ByteBuddyAgentInnerAttachmentProviderInnerAccessorInnerSimpleTest {
         ByteBuddyAgent.AttachmentProvider.Accessor accessor =
                 ByteBuddyAgent.AttachmentProvider.Accessor.Simple.ofJ9();
 
-        assertThat(accessor.isAvailable()).isTrue();
+        assertThat(accessor.isAvailable()).isEqualTo(isJ9VirtualMachineAvailableFromSystemClassLoader());
+        if (!accessor.isAvailable()) {
+            return;
+        }
         assertThat(accessor.isExternalAttachmentRequired()).isTrue();
         assertThat(accessor.getVirtualMachineType()).isEqualTo(VirtualMachine.class);
         assertThat(accessor.getExternalAttachment().getVirtualMachineType())
@@ -66,5 +69,15 @@ public class ByteBuddyAgentInnerAttachmentProviderInnerAccessorInnerSimpleTest {
     }
 
     public static final class RecordingVirtualMachine {
+    }
+
+    private static boolean isJ9VirtualMachineAvailableFromSystemClassLoader() {
+        try {
+            return ClassLoader.getSystemClassLoader()
+                    .loadClass(ByteBuddyAgent.AttachmentProvider.Accessor.VIRTUAL_MACHINE_TYPE_NAME_J9)
+                    == VirtualMachine.class;
+        } catch (ClassNotFoundException ignored) {
+            return false;
+        }
     }
 }
