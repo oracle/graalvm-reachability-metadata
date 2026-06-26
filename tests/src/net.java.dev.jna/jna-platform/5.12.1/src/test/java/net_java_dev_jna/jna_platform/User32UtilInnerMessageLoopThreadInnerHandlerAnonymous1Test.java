@@ -23,7 +23,7 @@ public class User32UtilInnerMessageLoopThreadInnerHandlerAnonymous1Test {
         CountingGreeter delegate = new CountingGreeter();
         GreetingService proxy = (GreetingService) Proxy.newProxyInstance(
                 GreetingService.class.getClassLoader(),
-                new Class<?>[] { GreetingService.class },
+                new Class<?>[] {GreetingService.class},
                 messageLoopThread.new Handler(delegate));
 
         String greeting = proxy.greet("JNA");

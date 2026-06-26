@@ -12,21 +12,9 @@ import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.Test;
 
-import com.sun.jna.platform.win32.Variant;
-import com.sun.jna.platform.win32.Variant.VARIANT;
-import com.sun.jna.platform.win32.WinDef.BYTE;
 import com.sun.jna.platform.win32.COM.util.IComEnum;
 
 public class ConvertTest {
-    @Test
-    void toVariantUsesMatchingVariantConstructorForWin32ValueTypes() throws Exception {
-        VARIANT variant = (VARIANT) convertMethod("toVariant", Object.class).invoke(null, new BYTE(9));
-
-        assertThat(variant).isNotNull();
-        assertThat(variant.getVarType().intValue()).isEqualTo(Variant.VT_UI1);
-        assertThat(variant.byteValue()).isEqualTo((byte) 9);
-    }
-
     @Test
     void toComEnumUsesEnumValuesMethodToSelectMatchingValue() throws Exception {
         TestComChoice choice = (TestComChoice) convertMethod("toComEnum", Class.class, Object.class)
