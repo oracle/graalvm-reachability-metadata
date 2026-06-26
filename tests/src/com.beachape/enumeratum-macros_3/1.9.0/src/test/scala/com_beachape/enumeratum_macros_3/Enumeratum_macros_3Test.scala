@@ -75,6 +75,18 @@ class Enumeratum_macros_3Test {
     assertEquals(IndexedSeq("primary", "primary"), entries.map(_.value))
     assertSame(MacroAliasCode.Primary, entries.head)
   }
+
+  @Test
+  def valueEnumMacrosExpandNestedSealedValueHierarchies(): Unit = {
+    val entries: IndexedSeq[MacroPermission] = MacroPermission.values
+
+    assertEquals(
+      IndexedSeq(MacroPermission.ReadArticle, MacroPermission.PublishArticle),
+      entries
+    )
+    assertEquals(IndexedSeq("article:read", "article:publish"), entries.map(_.value))
+    assertSame(MacroPermission.ReadArticle, entries.head)
+  }
 }
 
 inline def findMacroEnumValues[A]: IndexedSeq[A] =
@@ -189,4 +201,23 @@ object MacroAliasCode {
   case object AlsoPrimary extends MacroAliasCode("primary")
 
   val values: IndexedSeq[MacroAliasCode] = findMacroStringValueEntries[MacroAliasCode]
+}
+
+sealed trait MacroPermission {
+  def value: String
+}
+
+object MacroPermission {
+  sealed trait ReadPermission extends MacroPermission
+  sealed trait PublishPermission extends MacroPermission
+
+  case object ReadArticle extends ReadPermission {
+    override val value: String = "article:read"
+  }
+
+  case object PublishArticle extends PublishPermission {
+    override val value: String = "article:publish"
+  }
+
+  val values: IndexedSeq[MacroPermission] = findMacroStringValueEntries[MacroPermission]
 }
