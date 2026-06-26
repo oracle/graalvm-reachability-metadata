@@ -12,6 +12,7 @@ import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.instrumentation.resources.ContainerResource;
 import io.opentelemetry.instrumentation.resources.ContainerResourceProvider;
+import io.opentelemetry.instrumentation.resources.HostIdResource;
 import io.opentelemetry.instrumentation.resources.HostIdResourceProvider;
 import io.opentelemetry.instrumentation.resources.HostResource;
 import io.opentelemetry.instrumentation.resources.HostResourceProvider;
@@ -158,6 +159,20 @@ public class Opentelemetry_resourcesTest {
             assertThat(providerResource.getAttributes().isEmpty()).isTrue();
         } else {
             assertThat(containerId).isNotBlank();
+        }
+    }
+
+    @Test
+    void hostIdProviderCreatesHostIdResourceWhenAvailable() {
+        Resource directResource = HostIdResource.get();
+        Resource providerResource = new HostIdResourceProvider().createResource(EmptyConfigProperties.INSTANCE);
+
+        assertThat(providerResource.getAttributes()).isEqualTo(directResource.getAttributes());
+        String hostId = providerResource.getAttribute(HOST_ID);
+        if (hostId == null) {
+            assertThat(providerResource.getAttributes().isEmpty()).isTrue();
+        } else {
+            assertThat(hostId).isNotBlank();
         }
     }
 
