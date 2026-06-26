@@ -8,9 +8,10 @@ package io_opentelemetry_instrumentation.opentelemetry_jdbc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.mchange.v2.c3p0.impl.NewProxyConnection;
 import io.opentelemetry.instrumentation.jdbc.internal.JdbcUtils;
 import java.sql.Connection;
+import java.util.Properties;
 import java.sql.Statement;
 import org.junit.jupiter.api.Test;
 
@@ -20,36 +21,27 @@ public class JdbcUtilsTest {
                     + "mem:otel_jdbc_c3p0;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE";
 
     @Test
-    void unwrapsC3p0ConnectionFromStatement() throws Exception {
-        ComboPooledDataSource dataSource = new ComboPooledDataSource();
-        dataSource.setDriverClass(NonWrappingH2Driver.class.getName());
-        dataSource.setForceUseNamedDriverClass(true);
-        dataSource.setJdbcUrl(JDBC_URL);
-        dataSource.setUser("sa");
-        dataSource.setPassword("");
-        dataSource.setMinPoolSize(1);
-        dataSource.setMaxPoolSize(1);
-        dataSource.setAcquireIncrement(1);
-        dataSource.setCheckoutTimeout(10_000);
-        dataSource.setLoginTimeout(10);
+    void unwrapsC3p0ProxyConnection() throws Exception {
+        Properties properties = new Properties();
+        properties.setProperty("user", "sa");
+        properties.setProperty("password", "");
 
-        try (Connection connection = dataSource.getConnection();
-                Statement statement = connection.createStatement()) {
+        try (Connection innerConnection = new NonWrappingH2Driver().connect(JDBC_URL, properties)) {
+            Connection connection = new NewProxyConnection(innerConnection);
             assertThat(connection.getClass().getName())
                     .isEqualTo("com.mchange.v2.c3p0.impl.NewProxyConnection");
 
-            Connection unwrappedConnection = JdbcUtils.connectionFromStatement(statement);
+            Connection unwrappedConnection = JdbcUtils.unwrapConnection(connection);
             assertThat(unwrappedConnection).isNotNull();
             assertThat(unwrappedConnection.getClass().getName())
                     .isNotEqualTo("com.mchange.v2.c3p0.impl.NewProxyConnection");
+            assertThat(unwrappedConnection).isSameAs(innerConnection);
 
-            Connection cachedUnwrappedConnection = JdbcUtils.connectionFromStatement(statement);
+            Connection cachedUnwrappedConnection = JdbcUtils.unwrapConnection(connection);
             assertThat(cachedUnwrappedConnection).isSameAs(unwrappedConnection);
             try (Statement unwrappedStatement = cachedUnwrappedConnection.createStatement()) {
                 assertThat(unwrappedStatement.execute("SELECT 1")).isTrue();
             }
-        } finally {
-            dataSource.close();
         }
     }
 }

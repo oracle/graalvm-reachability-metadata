@@ -1,0 +1,72 @@
+{
+  "add_new_library_support:2026-06-26": {
+    "timestamp": "2026-06-26T19:01:35.310972Z",
+    "library": "io.opentelemetry.instrumentation:opentelemetry-jdbc:2.28.1-alpha",
+    "starting_commit": "cae03efc0d749852bb26dfa3faa531614f2699de",
+    "ending_commit": "a92d57a0fc2811c212b82c3e70ba416192696a78",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8526,
+      "issue_label": "library-new-request",
+      "library": "io.opentelemetry.instrumentation:opentelemetry-jdbc:2.28.1-alpha",
+      "summary": "The artifact is only an OpenTelemetry wrapper for JDBC and has no concrete JDBC driver dependency; meaningful coverage requires an underlying JDBC implementation. H2 in-memory is sufficient and matches the library documentation/examples and upstream test setup without requiring Docker.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.2.224",
+          "scope": "testImplementation",
+          "reason": "OpenTelemetry JDBC wraps a real JDBC Driver/DataSource; H2 provides an embedded in-memory JDBC implementation so tests can exercise OpenTelemetryDriver, JdbcTelemetry.wrap(...), connections, statements, prepared statements, and result sets without an external database."
+        }
+      ],
+      "agent_guidance": "Use an in-memory JDBC URL such as `jdbc:otel:h2:mem:otel_jdbc_test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE` for the driver path, and/or wrap `org.h2.jdbcx.JdbcDataSource` with `JdbcTelemetry.create(OpenTelemetry.noop()).wrap(...)` for the DataSource path. Call `OpenTelemetryDriver.install(OpenTelemetry.noop())` before obtaining driver connections. No Docker service or environment variable is needed.",
+      "risks": [
+        "The OpenTelemetry JDBC driver registers globally with DriverManager; tests should avoid deregistering unrelated drivers or leaking global state between test methods.",
+        "No-op OpenTelemetry is enough for wrapper/native reachability coverage, but it will not assert emitted spans unless the generated test adds SDK/test exporter infrastructure."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.2.224",
+          "result": "applied",
+          "target": "tests/src/io.opentelemetry.instrumentation/opentelemetry-jdbc/2.28.1-alpha/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8526 Support for io.opentelemetry.instrumentation:opentelemetry-jdbc:2.28.1-alpha; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 48261,
+      "output_tokens_used": 4015,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/io.opentelemetry.instrumentation:opentelemetry-jdbc:2.28.1-alpha/library-preparation-preflight/pi-generation-2026-06-26T18-30-16-741779Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 106684,
+      "cached_input_tokens_used": 1229824,
+      "output_tokens_used": 14871,
+      "iterations": 1,
+      "cost_usd": 1.061,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
+  }
+}
