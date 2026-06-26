@@ -110,7 +110,26 @@ class MockitoSugarTest extends MockitoSugar:
     assert(lookup.apply("key") == "value")
     verify(lookup).apply("key")
 
+  @Test
+  def companionObjectCaptureCanBeUsedWithoutMixingInTheTrait(): Unit =
+    val capturedValues: Vector[String] = CompanionOnlyCaptureUsage.captureAcceptedValues()
+
+    assert(capturedValues == Vector("alpha", "beta"))
+
 trait Catalog:
   def title(id: String): String
 
   def available(id: String): Boolean
+
+object CompanionOnlyCaptureUsage:
+  def captureAcceptedValues(): Vector[String] =
+    import org.scalatestplus.mockito.MockitoSugar.*
+
+    val sink: Consumer[String] = mock[Consumer[String]]
+    val payloadCaptor = capture[String]
+
+    sink.accept("alpha")
+    sink.accept("beta")
+
+    verify(sink, times(2)).accept(payloadCaptor)
+    payloadCaptor.getAllValues.asScala.toVector
