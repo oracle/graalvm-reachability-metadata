@@ -1,0 +1,12 @@
+Completed.
+
+Changes made:
+- Removed failing generated test:
+  - `tests/src/io.opentelemetry.instrumentation/opentelemetry-spring-boot-autoconfigure/2.28.1/src/test/java/io_opentelemetry_instrumentation/opentelemetry_spring_boot_autoconfigure/Opentelemetry_spring_boot_autoconfigureTest.java`
+- Removed generated test-only native-image resource directory that only supported that failing test.
+- Wrote intervention report:
+  - `post-gen-interventions/io.opentelemetry.instrumentation_opentelemetry-spring-boot-autoconfigure_2.28.1.md`
+
+Root cause classified as non-metadata: the failures come from generated tests bootstrapping Spring Boot test/native AOT infrastructure (`spring.factories`, Spring Boot test initializers, generated AOT initializer expectation), not from missing OpenTelemetry metadata.
+
+I did not modify metadata files.

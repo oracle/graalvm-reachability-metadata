@@ -1,0 +1,85 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "io.opentelemetry.instrumentation:opentelemetry-spring-boot-autoconfigure:2.28.1",
+  "issueNumber": 8548,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "When starting a Spring context, set test properties to avoid external telemetry export attempts, e.g. otel.traces.exporter=none, otel.metrics.exporter=none, and otel.logs.exporter=none. Prefer a small ApplicationContextRunner or non-network SpringApplication setup and close the context after assertions.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "coordinate": "org.springframework.boot:spring-boot-starter-web:3.5.16",
+        "kind": "dependency",
+        "reason": "Provides the Spring Boot, Spring Web, Spring MVC, servlet, and logging classes needed to load and exercise the autoconfiguration entries exposed by the artifact.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.springframework.boot:spring-boot-starter-test:3.5.16",
+        "kind": "dependency",
+        "reason": "Provides Spring Boot test utilities such as ApplicationContextRunner/Spring test support, matching how this autoconfiguration is normally verified without starting external services.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8548 Support for io.opentelemetry.instrumentation:opentelemetry-spring-boot-autoconfigure:2.28.1; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 84799,
+    "issue_label": "library-new-request",
+    "issue_number": 8548,
+    "library": "io.opentelemetry.instrumentation:opentelemetry-spring-boot-autoconfigure:2.28.1",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 7804,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The module has optional autoconfigurations for Kafka, MongoDB, JDBC, R2DBC, WebFlux, Micrometer, and AOP; full feature coverage would require more libraries or services, but core/web autoconfiguration coverage is reachable without Docker.",
+      "Native Image and local Gradle verification remain authoritative for whether Spring Boot 3.5.x is acceptable in this repository's test harness."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/io.opentelemetry.instrumentation:opentelemetry-spring-boot-autoconfigure:2.28.1/library-preparation-preflight/pi-generation-2026-06-26T14-31-15-568191Z.log",
+    "status": "completed",
+    "summary": "The artifact is a Spring Boot autoconfiguration module with Spring Boot and Spring Web classes as compile-only/optional usage; meaningful coverage requires a Spring Boot test/application classpath beyond the target artifact itself."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 4,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8548-library-new-request-io.opentelemetry.instrumentation-opentelemetry-spring-boot-autoconfigure-2.28.1-d0a715b1",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "io.opentelemetry.instrumentation:opentelemetry-spring-boot-autoconfigure:2.28.1",
+    "timestamp": "2026-06-26T15:08:39.768721Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
