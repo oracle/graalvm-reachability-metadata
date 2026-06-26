@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "io.netty:netty-pkitesting:4.2.2.Final",
+  "issueNumber": 5880,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment or system-property setup is needed. For test code, prefer normal CertificateBuilder flows such as RSA/ECP256 self-signed certificates, issued leaf certificates, SANs, PEM/key-store/trust-manager conversion, and local RevocationServer behavior if needed. Avoid fabricating an ML-DSA PublicKey just to trigger preferredSignatureAlgorithm on JDKs where java.security.AsymmetricKey is unavailable; that is the reported Java-run failure mode, not missing setup.",
+    "applied_setup": [],
+    "current_library": "io.netty:netty-pkitesting:4.2.1.Final",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#5880 [Automation] java run fails for io.netty:netty-pkitesting:4.2.2.Final; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 48122,
+    "issue_label": "fails-java-run",
+    "issue_number": 5880,
+    "library": "io.netty:netty-pkitesting:4.2.2.Final",
+    "model": "oca/gpt-5.5",
+    "new_version": "4.2.2.Final",
+    "output_tokens_used": 3249,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The reported failure is caused by a version-sensitive JDK API path for ML-DSA key introspection, not by a missing dependency or external setup.",
+      "Local Gradle/JDK verification remains authoritative because ML-DSA support and java.security.AsymmetricKey availability vary by JDK version."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/io.netty:netty-pkitesting:4.2.2.Final/library-preparation-preflight/pi-generation-2026-06-26T13-49-24-863201Z.log",
+    "status": "completed",
+    "summary": "io.netty:netty-pkitesting is a self-contained Netty test utility for building X.509 certificates and local PKI test artifacts; its Maven artifact already declares netty-common plus Bouncy Castle dependencies needed for certificate generation, and normal coverage does not require an external service, Docker image, extra Maven dependency, environment variable, or system property."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "4.2.2.Final",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-5880-fails-java-run-io.netty-netty-pkitesting-4.2.2.Final-a6f303ea",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
