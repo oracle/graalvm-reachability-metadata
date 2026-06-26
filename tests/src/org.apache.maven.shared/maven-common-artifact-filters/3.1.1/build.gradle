@@ -11,7 +11,10 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
-    testImplementation "org.apache.maven.shared:maven-common-artifact-filters:$libraryVersion"
+    testImplementation("org.apache.maven.shared:maven-common-artifact-filters:$libraryVersion") {
+        exclude group: "org.sonatype.sisu", module: "sisu-guice"
+    }
+    testImplementation "org.sonatype.sisu:sisu-guice:3.1.0:no_aop"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
