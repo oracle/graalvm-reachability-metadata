@@ -15,7 +15,9 @@ import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.StatusCode;
+import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
 import io.opentelemetry.context.Context;
+import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.instrumentation.api.instrumenter.AttributesExtractor;
 import io.opentelemetry.instrumentation.spring.webmvc.v5_3.SpringWebMvcTelemetry;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
@@ -149,6 +151,35 @@ public class Opentelemetry_spring_webmvc_5_3Test {
     }
 
     @Test
+    void createServletFilterExtractsRemoteParentFromTraceContextHeader() throws Exception {
+        try (TelemetryFixture fixture = TelemetryFixture.createWithPropagators(
+                ContextPropagators.create(W3CTraceContextPropagator.getInstance()))) {
+            Filter filter = SpringWebMvcTelemetry.create(fixture.openTelemetry())
+                    .createServletFilter();
+            init(filter);
+            String traceId = "4bf92f3577b34da6a3ce929d0e0e4736";
+            String parentSpanId = "00f067aa0ba902b7";
+            MockHttpServletRequest request = new MockHttpServletRequest("GET", "/propagated");
+            request.setServerName("example.test");
+            request.addHeader("traceparent", "00-" + traceId + "-" + parentSpanId + "-01");
+            MockHttpServletResponse response = new MockHttpServletResponse();
+            AtomicBoolean chainInvoked = new AtomicBoolean(false);
+
+            filter.doFilter(request, response, (chainRequest, chainResponse) -> {
+                chainInvoked.set(true);
+                assertThat(Span.current().getSpanContext().getTraceId()).isEqualTo(traceId);
+                assertThat(Span.current().getSpanContext().getSpanId()).isNotEqualTo(parentSpanId);
+            });
+
+            assertThat(chainInvoked).isTrue();
+            SpanData span = onlyFinishedSpan(fixture);
+            assertThat(span.getTraceId()).isEqualTo(traceId);
+            assertThat(span.getParentSpanContext().getSpanId()).isEqualTo(parentSpanId);
+            assertThat(span.getParentSpanContext().isRemote()).isTrue();
+        }
+    }
+
+    @Test
     void createServletFilterReturnsOrderedFilterWithNoopOpenTelemetry() throws Exception {
         Filter filter = SpringWebMvcTelemetry.create(OpenTelemetry.noop()).createServletFilter();
         init(filter);
@@ -221,6 +252,18 @@ public class Opentelemetry_spring_webmvc_5_3Test {
                     .build();
             OpenTelemetrySdk openTelemetry = OpenTelemetrySdk.builder()
                     .setTracerProvider(tracerProvider)
+                    .build();
+            return new TelemetryFixture(spanExporter, openTelemetry);
+        }
+
+        static TelemetryFixture createWithPropagators(ContextPropagators propagators) {
+            InMemorySpanExporter spanExporter = InMemorySpanExporter.create();
+            SdkTracerProvider tracerProvider = SdkTracerProvider.builder()
+                    .addSpanProcessor(SimpleSpanProcessor.create(spanExporter))
+                    .build();
+            OpenTelemetrySdk openTelemetry = OpenTelemetrySdk.builder()
+                    .setTracerProvider(tracerProvider)
+                    .setPropagators(propagators)
                     .build();
             return new TelemetryFixture(spanExporter, openTelemetry);
         }
