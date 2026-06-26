@@ -1,0 +1,77 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "jakarta.xml.bind:jakarta.xml.bind-api:4.1.0-M1",
+  "issueNumber": 4422,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No Docker image or environment variable is indicated. If the generated tests intentionally exercise provider discovery internals rather than real marshal/unmarshal behavior, use test-local JAXBContextFactory stubs and META-INF/services or JAXBContext.JAXB_CONTEXT_FACTORY properties, and avoid SecurityManager-based package-access tests on newer JDKs where SecurityManager behavior is terminally deprecated/fragile.",
+    "applied_setup": [],
+    "current_library": "jakarta.xml.bind:jakarta.xml.bind-api:4.0.0",
+    "deterministic_setup": [
+      {
+        "coordinate": "org.glassfish.jaxb:jaxb-runtime:4.0.9",
+        "kind": "dependency",
+        "reason": "Provides the Jakarta XML Binding reference implementation and service provider needed for ordinary JAXBContext creation, marshalling, and unmarshalling tests against the API artifact.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#4422 [Automation] java run fails for jakarta.xml.bind:jakarta.xml.bind-api:4.1.0-M1; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "31 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 59809,
+    "issue_label": "fails-java-run",
+    "issue_number": 4422,
+    "library": "jakarta.xml.bind:jakarta.xml.bind-api:4.1.0-M1",
+    "model": "oca/gpt-5.5",
+    "new_version": "4.1.0-M1",
+    "output_tokens_used": 4584,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "There is no matching org.glassfish.jaxb:jaxb-runtime:4.1.0-M1 release visible; 4.0.9 is the latest RI release and should be verified locally with Gradle/Native Image.",
+      "Adding the RI may exercise org.glassfish.jaxb runtime code and its native-image needs, so keep assertions focused on jakarta.xml.bind API behavior and rely on local verification as authoritative."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/jakarta.xml.bind:jakarta.xml.bind-api:4.1.0-M1/library-preparation-preflight/pi-generation-2026-06-26T17-41-46-371269Z.log",
+    "status": "completed",
+    "summary": "jakarta.xml.bind-api is an API artifact; normal JAXBContext/JAXB marshal/unmarshal usage requires a JAXB implementation provider because the resolved API jar contains discovery interfaces/classes but no META-INF/services provider implementation."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "4.1.0-M1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-4422-fails-java-run-jakarta.xml.bind-jakarta.xml.bind-api-4.1.0-M1-39be2d47",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
