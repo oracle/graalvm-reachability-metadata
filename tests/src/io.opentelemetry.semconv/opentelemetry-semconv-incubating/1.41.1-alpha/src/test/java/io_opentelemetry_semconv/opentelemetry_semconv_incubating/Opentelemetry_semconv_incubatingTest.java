@@ -11,6 +11,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.semconv.AttributeKeyTemplate;
+import io.opentelemetry.semconv.incubating.CicdIncubatingAttributes;
+import io.opentelemetry.semconv.incubating.CicdIncubatingAttributes.CicdPipelineActionNameIncubatingValues;
+import io.opentelemetry.semconv.incubating.CicdIncubatingAttributes.CicdPipelineResultIncubatingValues;
+import io.opentelemetry.semconv.incubating.CicdIncubatingAttributes.CicdPipelineRunStateIncubatingValues;
+import io.opentelemetry.semconv.incubating.CicdIncubatingAttributes.CicdPipelineTaskRunResultIncubatingValues;
+import io.opentelemetry.semconv.incubating.CicdIncubatingAttributes.CicdPipelineTaskTypeIncubatingValues;
+import io.opentelemetry.semconv.incubating.CicdIncubatingAttributes.CicdWorkerStateIncubatingValues;
 import io.opentelemetry.semconv.incubating.CloudIncubatingAttributes;
 import io.opentelemetry.semconv.incubating.CloudIncubatingAttributes.CloudProviderIncubatingValues;
 import io.opentelemetry.semconv.incubating.ContainerIncubatingAttributes;
@@ -48,6 +55,70 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class Opentelemetry_semconv_incubatingTest {
+    @Test
+    void cicdIncubatingAttributesRepresentPipelineTaskAndWorkerState() {
+        Attributes attributes = Attributes.builder()
+                .put(CicdIncubatingAttributes.CICD_PIPELINE_ACTION_NAME, CicdPipelineActionNameIncubatingValues.BUILD)
+                .put(CicdIncubatingAttributes.CICD_PIPELINE_NAME, "release-pipeline")
+                .put(CicdIncubatingAttributes.CICD_PIPELINE_RESULT, CicdPipelineResultIncubatingValues.SUCCESS)
+                .put(CicdIncubatingAttributes.CICD_PIPELINE_RUN_ID, "run-123")
+                .put(CicdIncubatingAttributes.CICD_PIPELINE_RUN_STATE, CicdPipelineRunStateIncubatingValues.EXECUTING)
+                .put(CicdIncubatingAttributes.CICD_PIPELINE_RUN_URL_FULL, "https://ci.example.test/runs/run-123")
+                .put(CicdIncubatingAttributes.CICD_PIPELINE_TASK_NAME, "native-test")
+                .put(CicdIncubatingAttributes.CICD_PIPELINE_TASK_RUN_ID, "task-run-456")
+                .put(
+                        CicdIncubatingAttributes.CICD_PIPELINE_TASK_RUN_RESULT,
+                        CicdPipelineTaskRunResultIncubatingValues.SUCCESS)
+                .put(
+                        CicdIncubatingAttributes.CICD_PIPELINE_TASK_RUN_URL_FULL,
+                        "https://ci.example.test/runs/run-123/tasks/task-run-456")
+                .put(CicdIncubatingAttributes.CICD_PIPELINE_TASK_TYPE, CicdPipelineTaskTypeIncubatingValues.TEST)
+                .put(CicdIncubatingAttributes.CICD_SYSTEM_COMPONENT, "worker")
+                .put(CicdIncubatingAttributes.CICD_WORKER_ID, "worker-7")
+                .put(CicdIncubatingAttributes.CICD_WORKER_NAME, "linux-arm64-7")
+                .put(CicdIncubatingAttributes.CICD_WORKER_STATE, CicdWorkerStateIncubatingValues.BUSY)
+                .put(CicdIncubatingAttributes.CICD_WORKER_URL_FULL, "https://ci.example.test/workers/worker-7")
+                .build();
+
+        assertThat(CicdIncubatingAttributes.CICD_PIPELINE_ACTION_NAME)
+                .isEqualTo(AttributeKey.stringKey("cicd.pipeline.action.name"));
+        assertThat(CicdIncubatingAttributes.CICD_PIPELINE_RESULT)
+                .isEqualTo(AttributeKey.stringKey("cicd.pipeline.result"));
+        assertThat(CicdIncubatingAttributes.CICD_PIPELINE_RUN_STATE)
+                .isEqualTo(AttributeKey.stringKey("cicd.pipeline.run.state"));
+        assertThat(CicdIncubatingAttributes.CICD_PIPELINE_TASK_RUN_RESULT)
+                .isEqualTo(AttributeKey.stringKey("cicd.pipeline.task.run.result"));
+        assertThat(CicdIncubatingAttributes.CICD_PIPELINE_TASK_TYPE)
+                .isEqualTo(AttributeKey.stringKey("cicd.pipeline.task.type"));
+        assertThat(CicdIncubatingAttributes.CICD_WORKER_STATE)
+                .isEqualTo(AttributeKey.stringKey("cicd.worker.state"));
+        assertThat(attributes.get(CicdIncubatingAttributes.CICD_PIPELINE_ACTION_NAME)).isEqualTo("BUILD");
+        assertThat(attributes.get(CicdIncubatingAttributes.CICD_PIPELINE_NAME)).isEqualTo("release-pipeline");
+        assertThat(attributes.get(CicdIncubatingAttributes.CICD_PIPELINE_RESULT)).isEqualTo("success");
+        assertThat(attributes.get(CicdIncubatingAttributes.CICD_PIPELINE_RUN_ID)).isEqualTo("run-123");
+        assertThat(attributes.get(CicdIncubatingAttributes.CICD_PIPELINE_RUN_STATE)).isEqualTo("executing");
+        assertThat(attributes.get(CicdIncubatingAttributes.CICD_PIPELINE_RUN_URL_FULL))
+                .isEqualTo("https://ci.example.test/runs/run-123");
+        assertThat(attributes.get(CicdIncubatingAttributes.CICD_PIPELINE_TASK_NAME)).isEqualTo("native-test");
+        assertThat(attributes.get(CicdIncubatingAttributes.CICD_PIPELINE_TASK_RUN_ID)).isEqualTo("task-run-456");
+        assertThat(attributes.get(CicdIncubatingAttributes.CICD_PIPELINE_TASK_RUN_RESULT)).isEqualTo("success");
+        assertThat(attributes.get(CicdIncubatingAttributes.CICD_PIPELINE_TASK_RUN_URL_FULL))
+                .isEqualTo("https://ci.example.test/runs/run-123/tasks/task-run-456");
+        assertThat(attributes.get(CicdIncubatingAttributes.CICD_PIPELINE_TASK_TYPE)).isEqualTo("test");
+        assertThat(attributes.get(CicdIncubatingAttributes.CICD_SYSTEM_COMPONENT)).isEqualTo("worker");
+        assertThat(attributes.get(CicdIncubatingAttributes.CICD_WORKER_ID)).isEqualTo("worker-7");
+        assertThat(attributes.get(CicdIncubatingAttributes.CICD_WORKER_NAME)).isEqualTo("linux-arm64-7");
+        assertThat(attributes.get(CicdIncubatingAttributes.CICD_WORKER_STATE)).isEqualTo("busy");
+        assertThat(attributes.get(CicdIncubatingAttributes.CICD_WORKER_URL_FULL))
+                .isEqualTo("https://ci.example.test/workers/worker-7");
+        assertThat(CicdPipelineActionNameIncubatingValues.SYNC).isEqualTo("SYNC");
+        assertThat(CicdPipelineResultIncubatingValues.TIMEOUT).isEqualTo("timeout");
+        assertThat(CicdPipelineRunStateIncubatingValues.FINALIZING).isEqualTo("finalizing");
+        assertThat(CicdPipelineTaskRunResultIncubatingValues.SKIP).isEqualTo("skip");
+        assertThat(CicdPipelineTaskTypeIncubatingValues.DEPLOY).isEqualTo("deploy");
+        assertThat(CicdWorkerStateIncubatingValues.OFFLINE).isEqualTo("offline");
+    }
+
     @Test
     void httpIncubatingAttributesExposeConnectionAndPayloadSizeKeys() {
         Attributes attributes = Attributes.builder()
