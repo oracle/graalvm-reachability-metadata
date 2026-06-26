@@ -1,0 +1,97 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.springframework.boot:spring-boot-webclient:4.1.0-RC1",
+  "issueNumber": 8432,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No Docker image or external service appears necessary. Prefer in-process loopback HTTP tests using JDK HttpServer or WebClient test doubles; no environment variables or system properties are required by the library.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.1.0-RC1",
+        "kind": "dependency",
+        "reason": "The artifact's auto-configuration classes use Spring Boot auto-configuration annotations and conditions, but this dependency is optional and is not present in the normal target-only compile classpath.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.springframework.boot:spring-boot-http-codec:4.1.0-RC1",
+        "kind": "dependency",
+        "reason": "The module has a runtime implementation dependency on Boot HTTP codecs; tests that exercise WebClientCodecCustomizer need CodecCustomizer on the test compile classpath.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.springframework.boot:spring-boot-test:4.1.0-RC1",
+        "kind": "dependency",
+        "reason": "Spring Boot's own tests for this module use ApplicationContextRunner to exercise auto-configuration behavior, which is the normal focused way to test this kind of module.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.springframework.boot:spring-boot-micrometer-metrics:4.1.0-RC1",
+        "kind": "dependency",
+        "reason": "The WebClient observation auto-configuration is conditional on Boot Micrometer observation properties from this optional module.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8432 Support for org.springframework.boot:spring-boot-webclient:4.1.0-RC1; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 59341,
+    "issue_label": "library-new-request",
+    "issue_number": 8432,
+    "library": "org.springframework.boot:spring-boot-webclient:4.1.0-RC1",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 8178,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Several Spring Boot 4 module dependencies are optional or runtime-only, so tests that only depend on spring-boot-webclient can silently avoid the primary auto-configuration paths.",
+      "The requested version is an RC; local Gradle dependency resolution and native-image verification remain authoritative if module metadata differs from the published POM."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.springframework.boot:spring-boot-webclient:4.1.0-RC1/library-preparation-preflight/pi-generation-2026-06-26T22-13-03-127124Z.log",
+    "status": "completed",
+    "summary": "Spring Boot WebClient is mainly an auto-configuration/support module; meaningful tests should compile and run against its optional/test support pieces rather than only the target artifact."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 4,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8432-library-new-request-org.springframework.boot-spring-boot-webclient-4.1.0-RC1-c230bc3c",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springframework.boot:spring-boot-webclient:4.1.0-RC1",
+    "timestamp": "2026-06-26T23:13:30.348852Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
