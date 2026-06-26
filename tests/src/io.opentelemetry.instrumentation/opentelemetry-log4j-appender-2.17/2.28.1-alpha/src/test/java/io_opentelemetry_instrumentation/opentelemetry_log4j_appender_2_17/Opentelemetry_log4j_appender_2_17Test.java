@@ -136,6 +136,35 @@ public class Opentelemetry_log4j_appender_2_17Test {
     }
 
     @Test
+    void wildcardContextDataCaptureExportsAllThreadContextAttributesAndEventName() {
+        String loggerName = newLoggerName("context-data-wildcard");
+
+        try (TestTelemetry telemetry = TestTelemetry.create()) {
+            OpenTelemetryAppender appender = OpenTelemetryAppender.builder()
+                    .setName("otel-context-data-wildcard-appender")
+                    .setOpenTelemetry(telemetry.openTelemetry())
+                    .setCaptureContextDataAttributes("*")
+                    .build();
+
+            try (RegisteredAppender ignored = RegisteredAppender.create(loggerName, appender)) {
+                ThreadContext.put("request.id", "req-456");
+                ThreadContext.put("tenant", "acme");
+                ThreadContext.put("otel.event.name", "inventory.checked");
+
+                LogManager.getLogger(loggerName).info("checked inventory");
+
+                LogRecordData record = telemetry.singleRecord();
+                assertThat(record.getBody().asString()).isEqualTo("checked inventory");
+                assertThat(record.getEventName()).isEqualTo("inventory.checked");
+                assertThat(record.getAttributes().get(stringKey("request.id")))
+                        .isEqualTo("req-456");
+                assertThat(record.getAttributes().get(stringKey("tenant"))).isEqualTo("acme");
+                assertThat(record.getAttributes().get(stringKey("otel.event.name"))).isNull();
+            }
+        }
+    }
+
+    @Test
     void installReplaysEventsLoggedBeforeOpenTelemetryWasAvailable() {
         String loggerName = newLoggerName("replay");
 
