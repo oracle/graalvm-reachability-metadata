@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "com.squareup.okhttp3:okhttp:3.8.1",
+  "issueNumber": 6518,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Retain or regenerate the local test stubs for Android, Conscrypt, dalvik CloseGuard, and Jetty ALPN classes when exercising okhttp3.internal.platform reflective code. Keep the native-image test build argument -H:+AddAllCharsets because okhttp3.internal.Util eagerly resolves UTF-32 charsets during static initialization. The javac failure is from OkHttp API drift: in 3.8.1 Util.intersect takes a Comparator as its first argument, not Class<String>.",
+    "applied_setup": [],
+    "current_library": "com.squareup.okhttp3:okhttp:3.8.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#6518 [Automation] javac compile fails for com.squareup.okhttp3:okhttp:3.8.1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "24 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 32861,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 6518,
+    "library": "com.squareup.okhttp3:okhttp:3.8.1",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.8.1",
+    "output_tokens_used": 3466,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Adding mockwebserver is useful for upstream-style HTTP integration tests but is not required for the existing metadata-oriented coverage and would be unnecessary setup for this compile fix.",
+      "If the optional platform stubs are omitted, tests may still compile but will miss the Android, dalvik CloseGuard, Conscrypt, and Jetty ALPN reflective paths that the existing metadata covers."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/com.squareup.okhttp3:okhttp:3.8.1/library-preparation-preflight/pi-generation-2026-06-26T17-37-32-540218Z.log",
+    "status": "completed",
+    "summary": "OkHttp 3.8.1 does not need an extra Maven dependency or Docker service; its meaningful metadata coverage depends on test-code/native-image setup for optional platform-reflection paths and charset initialization."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.8.1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-6518-fails-javac-compile-com.squareup.okhttp3-okhttp-3.8.1-21a84050",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
