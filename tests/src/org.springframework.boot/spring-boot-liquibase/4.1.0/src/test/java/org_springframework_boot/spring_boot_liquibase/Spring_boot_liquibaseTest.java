@@ -29,10 +29,13 @@ import liquibase.integration.spring.SpringLiquibase;
 import org.h2.Driver;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
+import org.springframework.beans.factory.support.AutowireCandidateQualifier;
 import org.springframework.boot.liquibase.actuate.endpoint.LiquibaseEndpoint;
 import org.springframework.boot.liquibase.autoconfigure.DataSourceClosingSpringLiquibase;
 import org.springframework.boot.liquibase.autoconfigure.LiquibaseAutoConfiguration;
 import org.springframework.boot.liquibase.autoconfigure.LiquibaseConnectionDetails;
+import org.springframework.boot.liquibase.autoconfigure.LiquibaseDataSource;
 import org.springframework.boot.liquibase.autoconfigure.LiquibaseEndpointAutoConfiguration;
 import org.springframework.boot.liquibase.autoconfigure.LiquibaseProperties;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -197,6 +200,32 @@ public class Spring_boot_liquibaseTest {
             assertThat(hasBooksTable(applicationDataSource)).isFalse();
             assertThat(applicationDataSource.isClosed()).isFalse();
             assertThat(readBookTitles(liquibase.getDataSource())).containsExactly("Auto Configured");
+        }
+    }
+
+    @Test
+    void liquibaseAutoConfigurationPrefersLiquibaseDataSourceBeanOverApplicationDataSource() throws Exception {
+        Path changeLog = writeChangeLog("qualified-datasource-migration.xml", "liquibase-datasource-change",
+                "Qualified DataSource", null);
+        CloseableH2DataSource applicationDataSource = new CloseableH2DataSource();
+        CloseableH2DataSource migrationDataSource = new CloseableH2DataSource();
+
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.getEnvironment().getPropertySources().addFirst(new MapPropertySource("liquibaseDataSourceTest",
+                    Map.of("spring.liquibase.change-log", changeLog.toUri().toString(),
+                            "spring.liquibase.analytics-enabled", "false")));
+            context.registerBean("dataSource", CloseableH2DataSource.class, () -> applicationDataSource);
+            context.registerBean("liquibaseDataSource", CloseableH2DataSource.class, () -> migrationDataSource,
+                    (beanDefinition) -> ((AbstractBeanDefinition) beanDefinition)
+                            .addQualifier(new AutowireCandidateQualifier(LiquibaseDataSource.class)));
+            context.register(LiquibaseAutoConfiguration.class);
+
+            context.refresh();
+
+            SpringLiquibase liquibase = context.getBean(SpringLiquibase.class);
+            assertThat(liquibase.getDataSource()).isSameAs(migrationDataSource);
+            assertThat(hasBooksTable(applicationDataSource)).isFalse();
+            assertThat(readBookTitles(migrationDataSource)).containsExactly("Qualified DataSource");
         }
     }
 
