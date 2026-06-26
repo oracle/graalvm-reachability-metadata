@@ -78,8 +78,7 @@ public class Spring_ai_template_stTest {
             assertThat(results.get(1).get(10, TimeUnit.SECONDS)).isEqualTo("Hi, Grace!");
             assertThat(results.get(2).get(10, TimeUnit.SECONDS)).isEqualTo("Welcome, Katherine!");
             assertThat(results.get(3).get(10, TimeUnit.SECONDS)).isEqualTo("Good day, Margaret!");
-        }
-        finally {
+        } finally {
             executor.shutdownNow();
             assertThat(executor.awaitTermination(10, TimeUnit.SECONDS)).isTrue();
         }
