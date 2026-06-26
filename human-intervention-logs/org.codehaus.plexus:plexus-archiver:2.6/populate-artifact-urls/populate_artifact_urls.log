@@ -1,0 +1,881 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f039d-f8e8-7790-8c35-f1fc53449461
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.codehaus.plexus:plexus-archiver:2.6
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.6].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06/metadata/org.codehaus.plexus/plexus-archiver/index.json
+- Entry selector: "metadata-version" = "2.6"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.6
+- Entry metadata-version: 2.6
+- Entry test-version: 2.6
+- Entry tested-versions: [2.6]
+codex
+I’ll verify the artifact’s upstream metadata and tag URLs first, then patch only the missing fields in the index entry. After that I’ll validate the rendered URLs and JSON formatting.
+exec
+/usr/bin/bash -lc "pwd && rg -n \"\\\"metadata-version\\\"|source-code-url|repository-url|test-code-url|documentation-url|description|language\" metadata/org.codehaus.plexus/plexus-archiver/index.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06
+4:    "metadata-version" : "2.1",
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-sources.jar",
+6:    "repository-url" : "https://github.com/sonatype/plexus-archiver",
+7:    "test-code-url" : "https://github.com/sonatype/plexus-archiver/tree/plexus-archiver-$version$/src/test",
+8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-javadoc.jar",
+9:    "description" : "Plexus Archiver is a Java component for creating and extracting archive formats such as ZIP, TAR, JAR, and related compressed variants. It provides archiver and unarchiver abstractions used by Plexus and Maven tooling to add files, directories, resources, permissions, and metadata to archives.",
+18:    "metadata-version" : "2.6",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.codehaus.plexus/plexus-archiver/index.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-sources.jar",
+    "repository-url" : "https://github.com/sonatype/plexus-archiver",
+    "test-code-url" : "https://github.com/sonatype/plexus-archiver/tree/plexus-archiver-$version$/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-javadoc.jar",
+    "description" : "Plexus Archiver is a Java component for creating and extracting archive formats such as ZIP, TAR, JAR, and related compressed variants. It provides archiver and unarchiver abstractions used by Plexus and Maven tooling to add files, directories, resources, permissions, and metadata to archives.",
+    "tested-versions" : [
+      "2.1"
+    ],
+    "allowed-packages" : [
+      "org.codehaus.plexus.archiver"
+    ]
+  },
+  {
+    "metadata-version" : "2.6",
+    "tested-versions" : [
+      "2.6"
+    ],
+    "allowed-packages" : [
+      "org.codehaus.plexus.archiver"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'rg -n "plexus-archiver" .' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06
+ succeeded in 0ms:
+./stats/org.codehaus.plexus/plexus-archiver/2.1/execution-metrics.json:4:    "library": "org.codehaus.plexus:plexus-archiver:2.1",
+./stats/org.codehaus.plexus/plexus-archiver/2.1/execution-metrics.json:58:      "test_file": "tests/src/org.codehaus.plexus/plexus-archiver/2.1/src/test/java/org_codehaus_plexus/plexus_archiver/ZipEntryTest.java",
+./stats/org.codehaus.plexus/plexus-archiver/2.1/execution-metrics.json:59:      "metadata_file": "metadata/org.codehaus.plexus/plexus-archiver/2.1/reachability-metadata.json"
+./metadata/org.codehaus.plexus/plexus-archiver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-sources.jar",
+./metadata/org.codehaus.plexus/plexus-archiver/index.json:6:    "repository-url" : "https://github.com/sonatype/plexus-archiver",
+./metadata/org.codehaus.plexus/plexus-archiver/index.json:7:    "test-code-url" : "https://github.com/sonatype/plexus-archiver/tree/plexus-archiver-$version$/src/test",
+./metadata/org.codehaus.plexus/plexus-archiver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-javadoc.jar",
+./tests/src/org.codehaus.plexus/plexus-archiver/2.6/build.gradle:14:    testImplementation "org.codehaus.plexus:plexus-archiver:$libraryVersion"
+./tests/src/org.codehaus.plexus/plexus-archiver/2.6/settings.gradle:20:rootProject.name = 'org.codehaus.plexus.plexus-archiver_tests'
+./tests/src/org.codehaus.plexus/plexus-archiver/2.6/gradle.properties:4:library.coordinates = org.codehaus.plexus:plexus-archiver:2.6
+./tests/src/org.codehaus.plexus/plexus-archiver/2.6/gradle.properties:6:metadata.dir = org.codehaus.plexus/plexus-archiver/2.6/
+./tests/src/org.codehaus.plexus/plexus-archiver/2.1/build.gradle:14:    testImplementation "org.codehaus.plexus:plexus-archiver:$libraryVersion"
+./tests/src/org.codehaus.plexus/plexus-archiver/2.1/settings.gradle:20:rootProject.name = 'org.codehaus.plexus.plexus-archiver_tests'
+./tests/src/org.codehaus.plexus/plexus-archiver/2.1/gradle.properties:4:library.coordinates = org.codehaus.plexus:plexus-archiver:2.1
+./tests/src/org.codehaus.plexus/plexus-archiver/2.1/gradle.properties:6:metadata.dir = org.codehaus.plexus/plexus-archiver/2.1/
+
+web search: 
+web search: org.codehaus.plexus plexus-archiver 2.6 maven sources javadoc repository scm tag
+codex
+The file already has a 2.1 entry with good-looking templates, but I’m checking 2.6 independently because the canonical repository appears to have moved from the older Sonatype URL to the codehaus-plexus GitHub organization.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/2.6/plexus-archiver-2.6.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.codehaus.plexus</groupId>
+    <artifactId>plexus-components</artifactId>
+    <version>1.3</version>
+  </parent>
+
+  <artifactId>plexus-archiver</artifactId>
+  <version>2.6</version>
+
+  <name>Plexus Archiver Component</name>
+
+  <scm>
+    <connection>scm:git:git@github.com:sonatype/plexus-archiver.git</connection>
+    <developerConnection>scm:git:git@github.com:sonatype/plexus-archiver.git</developerConnection>
+    <url>http://github.com/sonatype/plexus-archiver</url>
+    <tag>plexus-archiver-2.6</tag>
+  </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/PLXCOMP/component/12540</url>
+  </issueManagement>
+
+  <properties>
+    <useJvmChmod>true</useJvmChmod>
+  </properties>
+
+  <contributors>
+    <contributor>
+      <name>Dan Tran</name>
+    </contributor>
+    <contributor>
+      <name>Richard van der Hoff</name>
+    </contributor>
+    <contributor>
+      <name>Tomasz 'Trog' Welman</name>
+      <email>trog@swmud.pl</email>
+    </contributor>
+  </contributors>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>3.0.18</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-io</artifactId>
+      <version>2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>1.8.1</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <useJvmChmod>${useJvmChmod}</useJvmChmod>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <!-- olamy: exclude files with strange names as failed here on osx -->
+          <checkModificationExcludes>
+            <checkModificationExclude>**/src/test/resources/utf8/**</checkModificationExclude>
+          </checkModificationExcludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.1.1</version>
+        <executions>
+          <execution>
+            <id>enforce-java</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>1.7.0</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/2.6/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/codehaus/plexus/plexus-archiver/2.6</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/codehaus/plexus/plexus-archiver/2.6</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="plexus-archiver-2.6-javadoc.jar" title="plexus-archiver-2.6-javadoc.jar">plexus-archiver-2.6-javadoc.jar</a>                   2014-09-27 22:05    553558      
+<a href="plexus-archiver-2.6-javadoc.jar.asc" title="plexus-archiver-2.6-javadoc.jar.asc">plexus-archiver-2.6-javadoc.jar.asc</a>               2014-09-27 22:05       230      
+<a href="plexus-archiver-2.6-javadoc.jar.asc.md5" title="plexus-archiver-2.6-javadoc.jar.asc.md5">plexus-archiver-2.6-javadoc.jar.asc.md5</a>           2014-09-27 22:05        32      
+<a href="plexus-archiver-2.6-javadoc.jar.asc.sha1" title="plexus-archiver-2.6-javadoc.jar.asc.sha1">plexus-archiver-2.6-javadoc.jar.asc.sha1</a>          2014-09-27 22:05        40      
+<a href="plexus-archiver-2.6-javadoc.jar.md5" title="plexus-archiver-2.6-javadoc.jar.md5">plexus-archiver-2.6-javadoc.jar.md5</a>               2014-09-27 22:05        32      
+<a href="plexus-archiver-2.6-javadoc.jar.sha1" title="plexus-archiver-2.6-javadoc.jar.sha1">plexus-archiver-2.6-javadoc.jar.sha1</a>              2014-09-27 22:05        40      
+<a href="plexus-archiver-2.6-sources.jar" title="plexus-archiver-2.6-sources.jar">plexus-archiver-2.6-sources.jar</a>                   2014-09-27 22:05    101501      
+<a href="plexus-archiver-2.6-sources.jar.asc" title="plexus-archiver-2.6-sources.jar.asc">plexus-archiver-2.6-sources.jar.asc</a>               2014-09-27 22:05       230      
+<a href="plexus-archiver-2.6-sources.jar.asc.md5" title="plexus-archiver-2.6-sources.jar.asc.md5">plexus-archiver-2.6-sources.jar.asc.md5</a>           2014-09-27 22:05        32      
+<a href="plexus-archiver-2.6-sources.jar.asc.sha1" title="plexus-archiver-2.6-sources.jar.asc.sha1">plexus-archiver-2.6-sources.jar.asc.sha1</a>          2014-09-27 22:05        40      
+<a href="plexus-archiver-2.6-sources.jar.md5" title="plexus-archiver-2.6-sources.jar.md5">plexus-archiver-2.6-sources.jar.md5</a>               2014-09-27 22:05        32      
+<a href="plexus-archiver-2.6-sources.jar.sha1" title="plexus-archiver-2.6-sources.jar.sha1">plexus-archiver-2.6-sources.jar.sha1</a>              2014-09-27 22:05        40      
+<a href="plexus-archiver-2.6.jar" title="plexus-archiver-2.6.jar">plexus-archiver-2.6.jar</a>                           2014-09-27 22:05    131549      
+<a href="plexus-archiver-2.6.jar.asc" title="plexus-archiver-2.6.jar.asc">plexus-archiver-2.6.jar.asc</a>                       2014-09-27 22:05       230      
+<a href="plexus-archiver-2.6.jar.asc.md5" title="plexus-archiver-2.6.jar.asc.md5">plexus-archiver-2.6.jar.asc.md5</a>                   2014-09-27 22:05        32      
+<a href="plexus-archiver-2.6.jar.asc.sha1" title="plexus-archiver-2.6.jar.asc.sha1">plexus-archiver-2.6.jar.asc.sha1</a>                  2014-09-27 22:05        40      
+<a href="plexus-archiver-2.6.jar.md5" title="plexus-archiver-2.6.jar.md5">plexus-archiver-2.6.jar.md5</a>                       2014-09-27 22:05        32      
+<a href="plexus-archiver-2.6.jar.sha1" title="plexus-archiver-2.6.jar.sha1">plexus-archiver-2.6.jar.sha1</a>                      2014-09-27 22:05        40      
+<a href="plexus-archiver-2.6.pom" title="plexus-archiver-2.6.pom">plexus-archiver-2.6.pom</a>                           2014-09-27 22:05      3525      
+<a href="plexus-archiver-2.6.pom.asc" title="plexus-archiver-2.6.pom.asc">plexus-archiver-2.6.pom.asc</a>                       2014-09-27 22:05       230      
+<a href="plexus-archiver-2.6.pom.asc.md5" title="plexus-archiver-2.6.pom.asc.md5">plexus-archiver-2.6.pom.asc.md5</a>                   2014-09-27 22:05        32      
+<a href="plexus-archiver-2.6.pom.asc.sha1" title="plexus-archiver-2.6.pom.asc.sha1">plexus-archiver-2.6.pom.asc.sha1</a>                  2014-09-27 22:05        40      
+<a href="plexus-archiver-2.6.pom.md5" title="plexus-archiver-2.6.pom.md5">plexus-archiver-2.6.pom.md5</a>                       2014-09-27 22:05        32      
+<a href="plexus-archiver-2.6.pom.sha1" title="plexus-archiver-2.6.pom.sha1">plexus-archiver-2.6.pom.sha1</a>                      2014-09-27 22:05        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/2.6/plexus-archiver-2.6-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/2.6/plexus-archiver-2.6-javadoc.jar \\
+  https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/2.6/plexus-archiver-2.6-tests.jar \\
+  https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-2.6/src/test \\
+  https://github.com/sonatype/plexus-archiver/tree/plexus-archiver-2.6/src/test; do printf '%s -> ' \""'$url"; curl -fsSI -L -o /dev/null -w '"'%{http_code} %{url_effective}\\n' \""'$url" || true; done' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06
+ succeeded in 1258ms:
+200 https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-2.6/src/test
+https://github.com/sonatype/plexus-archiver/tree/plexus-archiver-2.6/src/test -> 200 https://github.com/sonatype/plexus-archiver/tree/plexus-archiver-2.6/src/test
+
+web search: 
+web search: Maven Central org.codehaus.plexus plexus-archiver 2.6
+web search: 
+web search: https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-2.6/src/test
+web search: 
+web search: central.sonatype.com/artifact/org.codehaus.plexus/plexus-archiver/2.6
+web search: 
+web search: repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/2.6/plexus-archiver-2.6-sources.jar
+codex
+Maven Central has the 2.6 sources and javadoc jars, and it does not publish a 2.6 tests jar. For tests I’m using the version tag’s `src/test` path on the canonical `codehaus-plexus/plexus-archiver` repository because that tag resolves and the project now identifies that repo as current.
+exec
+/usr/bin/bash -lc "rg -n \"codehaus-plexus/plexus-archiver|sonatype/plexus-archiver|plexus-archiver-\\"'$version'"\\"'$" metadata tests -g '"'index.json'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06
+ succeeded in 0ms:
+metadata/org.codehaus.plexus/plexus-archiver/index.json:6:    "repository-url" : "https://github.com/sonatype/plexus-archiver",
+metadata/org.codehaus.plexus/plexus-archiver/index.json:7:    "test-code-url" : "https://github.com/sonatype/plexus-archiver/tree/plexus-archiver-$version$/src/test",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/codehaus-plexus/plexus-archiver/plexus-archiver-2.6/pom.xml | sed -n '1,180p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06
+exec
+/usr/bin/bash -lc "for url in \\
+  https://github.com/codehaus-plexus/plexus-archiver \\
+  https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-2.6 \\
+  https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-2.6/src/main/java \\
+  https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-2.6/src/test \\
+  https://github.com/codehaus-plexus/plexus-archiver/blob/plexus-archiver-2.6/pom.xml; do printf '%s -> ' \""'$url"; curl -fsSI -L -o /dev/null -w '"'%{http_code} %{url_effective}\\n' \""'$url" || true; done' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06
+ succeeded in 247ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.codehaus.plexus</groupId>
+    <artifactId>plexus-components</artifactId>
+    <version>1.3</version>
+  </parent>
+
+  <artifactId>plexus-archiver</artifactId>
+  <version>2.6</version>
+
+  <name>Plexus Archiver Component</name>
+
+  <scm>
+    <connection>scm:git:git@github.com:sonatype/plexus-archiver.git</connection>
+    <developerConnection>scm:git:git@github.com:sonatype/plexus-archiver.git</developerConnection>
+    <url>http://github.com/sonatype/plexus-archiver</url>
+    <tag>plexus-archiver-2.6</tag>
+  </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/PLXCOMP/component/12540</url>
+  </issueManagement>
+
+  <properties>
+    <useJvmChmod>true</useJvmChmod>
+  </properties>
+
+  <contributors>
+    <contributor>
+      <name>Dan Tran</name>
+    </contributor>
+    <contributor>
+      <name>Richard van der Hoff</name>
+    </contributor>
+    <contributor>
+      <name>Tomasz 'Trog' Welman</name>
+      <email>trog@swmud.pl</email>
+    </contributor>
+  </contributors>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+      <version>3.0.18</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-io</artifactId>
+      <version>2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>1.8.1</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables>
+            <useJvmChmod>${useJvmChmod}</useJvmChmod>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <configuration>
+          <!-- olamy: exclude files with strange names as failed here on osx -->
+          <checkModificationExcludes>
+            <checkModificationExclude>**/src/test/resources/utf8/**</checkModificationExclude>
+          </checkModificationExcludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.1.1</version>
+        <executions>
+          <execution>
+            <id>enforce-java</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>1.7.0</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
+</project>
+
+ succeeded in 2713ms:
+200 https://github.com/codehaus-plexus/plexus-archiver
+https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-2.6 -> 200 https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-2.6
+https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-2.6/src/main/java -> 200 https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-2.6/src/main/java
+https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-2.6/src/test -> 200 https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-2.6/src/test
+https://github.com/codehaus-plexus/plexus-archiver/blob/plexus-archiver-2.6/pom.xml -> 200 https://github.com/codehaus-plexus/plexus-archiver/blob/plexus-archiver-2.6/pom.xml
+
+codex
+I’m going to patch the 2.6 object with Maven Central URLs for sources and javadocs, the resolved tag URL for tests, and no `language` field because this is a Java library rather than Kotlin/Groovy/Scala-specific.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06/metadata/org.codehaus.plexus/plexus-archiver/index.json
+diff --git a/metadata/org.codehaus.plexus/plexus-archiver/index.json b/metadata/org.codehaus.plexus/plexus-archiver/index.json
+index 9bcb24208c56ea193b731a7014f3d97131ccecba..b0ab361110addfa216f76ba7cf3176be76448a92
+--- a/metadata/org.codehaus.plexus/plexus-archiver/index.json
++++ b/metadata/org.codehaus.plexus/plexus-archiver/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "2.6",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-sources.jar",
++    "repository-url" : "https://github.com/codehaus-plexus/plexus-archiver",
++    "test-code-url" : "https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-$version$/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-javadoc.jar",
++    "description" : "Plexus Archiver is a Java component for creating and extracting archive formats such as ZIP, TAR, JAR, and related compressed variants. It provides archiver and unarchiver abstractions used by Plexus and Maven tooling to add files, directories, resources, permissions, and metadata to archives.",
+     "tested-versions" : [
+       "2.6"
+     ],
+
+diff --git a/metadata/org.codehaus.plexus/plexus-archiver/index.json b/metadata/org.codehaus.plexus/plexus-archiver/index.json
+index 9bcb24208c56ea193b731a7014f3d97131ccecba..b0ab361110addfa216f76ba7cf3176be76448a92
+--- a/metadata/org.codehaus.plexus/plexus-archiver/index.json
++++ b/metadata/org.codehaus.plexus/plexus-archiver/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "2.6",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-sources.jar",
++    "repository-url" : "https://github.com/codehaus-plexus/plexus-archiver",
++    "test-code-url" : "https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-$version$/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-javadoc.jar",
++    "description" : "Plexus Archiver is a Java component for creating and extracting archive formats such as ZIP, TAR, JAR, and related compressed variants. It provides archiver and unarchiver abstractions used by Plexus and Maven tooling to add files, directories, resources, permissions, and metadata to archives.",
+     "tested-versions" : [
+       "2.6"
+     ],
+
+codex
+The index is patched. I’m doing two checks now: rendered URL probes for the only tested alias (`2.6`) and the repo’s metadata validation for this coordinate.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"2.6\")' metadata/org.codehaus.plexus/plexus-archiver/index.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06
+ succeeded in 0ms:
+{
+  "metadata-version": "2.6",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-sources.jar",
+  "repository-url": "https://github.com/codehaus-plexus/plexus-archiver",
+  "test-code-url": "https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-$version$/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-javadoc.jar",
+  "description": "Plexus Archiver is a Java component for creating and extracting archive formats such as ZIP, TAR, JAR, and related compressed variants. It provides archiver and unarchiver abstractions used by Plexus and Maven tooling to add files, directories, resources, permissions, and metadata to archives.",
+  "tested-versions": [
+    "2.6"
+  ],
+  "allowed-packages": [
+    "org.codehaus.plexus.archiver"
+  ]
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/2.6/plexus-archiver-2.6-sources.jar \\
+  https://github.com/codehaus-plexus/plexus-archiver \\
+  https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-2.6/src/test \\
+  https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/2.6/plexus-archiver-2.6-javadoc.jar; do printf '%s -> ' \""'$url"; curl -fsSI -L -o /dev/null -w '"'%{http_code} %{url_effective}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.codehaus.plexus:plexus-archiver:2.6 --stacktrace' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06
+ succeeded in 247ms:
+200 https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-2.6/src/test
+https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/2.6/plexus-archiver-2.6-javadoc.jar -> 200 https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/2.6/plexus-archiver-2.6-javadoc.jar
+
+diff --git a/metadata/org.codehaus.plexus/plexus-archiver/index.json b/metadata/org.codehaus.plexus/plexus-archiver/index.json
+index 9bcb24208c56ea193b731a7014f3d97131ccecba..b0ab361110addfa216f76ba7cf3176be76448a92
+--- a/metadata/org.codehaus.plexus/plexus-archiver/index.json
++++ b/metadata/org.codehaus.plexus/plexus-archiver/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "2.6",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-sources.jar",
++    "repository-url" : "https://github.com/codehaus-plexus/plexus-archiver",
++    "test-code-url" : "https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-$version$/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-javadoc.jar",
++    "description" : "Plexus Archiver is a Java component for creating and extracting archive formats such as ZIP, TAR, JAR, and related compressed variants. It provides archiver and unarchiver abstractions used by Plexus and Maven tooling to add files, directories, resources, permissions, and metadata to archives.",
+     "tested-versions" : [
+       "2.6"
+     ],
+
+ exited 1 in 3346ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+Metadata files check failed for org.codehaus.plexus:plexus-archiver:2.6: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06/metadata/org.codehaus.plexus/plexus-archiver/2.6/
+> Task :checkMetadataFiles FAILED
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06/build/reports/problems/problems-report.html
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.codehaus.plexus:plexus-archiver:2.6: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06/metadata/org.codehaus.plexus/plexus-archiver/2.6/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.codehaus.plexus:plexus-archiver:2.6: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06/metadata/org.codehaus.plexus/plexus-archiver/2.6/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 3s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-2.6/src/test
+web search: 
+web search: https://central.sonatype.com/artifact/org.codehaus.plexus/plexus-archiver/2.6
+web search: 
+web search: org.codehaus.plexus plexus-archiver 2.6 sources jar javadoc jar
+web search: 
+web search: mvnrepository org.codehaus.plexus plexus-archiver 2.6 "Plexus Archiver Component"
+codex
+The URL probes and JSON parse succeeded. The repository validation task failed before it could validate this entry’s URL fields because `metadata/org.codehaus.plexus/plexus-archiver/2.6/reachability-metadata.json` is absent, which is outside the requested index update.
+exec
+/usr/bin/bash -lc "jq -e 'map(select(.\"metadata-version\" == \"2.6\")) | length == 1' metadata/org.codehaus.plexus/plexus-archiver/index.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06
+ succeeded in 0ms:
+true
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.codehaus.plexus/plexus-archiver/index.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06
+ succeeded in 0ms:
+diff --git i/metadata/org.codehaus.plexus/plexus-archiver/index.json w/metadata/org.codehaus.plexus/plexus-archiver/index.json
+index 9bcb24208c..b0ab361110 100644
+--- i/metadata/org.codehaus.plexus/plexus-archiver/index.json
++++ w/metadata/org.codehaus.plexus/plexus-archiver/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "2.6",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-sources.jar",
++    "repository-url" : "https://github.com/codehaus-plexus/plexus-archiver",
++    "test-code-url" : "https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-$version$/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-javadoc.jar",
++    "description" : "Plexus Archiver is a Java component for creating and extracting archive formats such as ZIP, TAR, JAR, and related compressed variants. It provides archiver and unarchiver abstractions used by Plexus and Maven tooling to add files, directories, resources, permissions, and metadata to archives.",
+     "tested-versions" : [
+       "2.6"
+     ],
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.codehaus.plexus/plexus-archiver/index.json metadata/org.codehaus.plexus/plexus-archiver/2.6 tests/src/org.codehaus.plexus/plexus-archiver/2.6' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06
+ succeeded in 0ms:
+ M metadata/org.codehaus.plexus/plexus-archiver/index.json
+
+diff --git a/metadata/org.codehaus.plexus/plexus-archiver/index.json b/metadata/org.codehaus.plexus/plexus-archiver/index.json
+index 9bcb24208c56ea193b731a7014f3d97131ccecba..b0ab361110addfa216f76ba7cf3176be76448a92
+--- a/metadata/org.codehaus.plexus/plexus-archiver/index.json
++++ b/metadata/org.codehaus.plexus/plexus-archiver/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "2.6",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-sources.jar",
++    "repository-url" : "https://github.com/codehaus-plexus/plexus-archiver",
++    "test-code-url" : "https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-$version$/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-javadoc.jar",
++    "description" : "Plexus Archiver is a Java component for creating and extracting archive formats such as ZIP, TAR, JAR, and related compressed variants. It provides archiver and unarchiver abstractions used by Plexus and Maven tooling to add files, directories, resources, permissions, and metadata to archives.",
+     "tested-versions" : [
+       "2.6"
+     ],
+
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.codehaus.plexus/plexus-archiver/index.json | sed -n '16,32p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06
+ succeeded in 0ms:
+    16	  },
+    17	  {
+    18	    "metadata-version" : "2.6",
+    19	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-sources.jar",
+    20	    "repository-url" : "https://github.com/codehaus-plexus/plexus-archiver",
+    21	    "test-code-url" : "https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-$version$/src/test",
+    22	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-javadoc.jar",
+    23	    "description" : "Plexus Archiver is a Java component for creating and extracting archive formats such as ZIP, TAR, JAR, and related compressed variants. It provides archiver and unarchiver abstractions used by Plexus and Maven tooling to add files, directories, resources, permissions, and metadata to archives.",
+    24	    "tested-versions" : [
+    25	      "2.6"
+    26	    ],
+    27	    "allowed-packages" : [
+    28	      "org.codehaus.plexus.archiver"
+    29	    ]
+    30	  }
+    31	]
+
+diff --git a/metadata/org.codehaus.plexus/plexus-archiver/index.json b/metadata/org.codehaus.plexus/plexus-archiver/index.json
+index 9bcb24208c56ea193b731a7014f3d97131ccecba..b0ab361110addfa216f76ba7cf3176be76448a92
+--- a/metadata/org.codehaus.plexus/plexus-archiver/index.json
++++ b/metadata/org.codehaus.plexus/plexus-archiver/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "2.6",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-sources.jar",
++    "repository-url" : "https://github.com/codehaus-plexus/plexus-archiver",
++    "test-code-url" : "https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-$version$/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-javadoc.jar",
++    "description" : "Plexus Archiver is a Java component for creating and extracting archive formats such as ZIP, TAR, JAR, and related compressed variants. It provides archiver and unarchiver abstractions used by Plexus and Maven tooling to add files, directories, resources, permissions, and metadata to archives.",
+     "tested-versions" : [
+       "2.6"
+     ],
+
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06/metadata/org.codehaus.plexus/plexus-archiver/index.json:18) for `metadata-version` `2.6` with source, repository, test, documentation, and two-sentence description fields. I left `language` absent because this is not Kotlin/Groovy/Scala-specific.
+
+Validation:
+- Rendered URL probes for `2.6`: all returned `200`.
+- `jq` JSON check passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.codehaus.plexus:plexus-archiver:2.6 --stacktrace` failed because `metadata/org.codehaus.plexus/plexus-archiver/2.6/reachability-metadata.json` is missing, which is outside this index-only update.
+diff --git a/metadata/org.codehaus.plexus/plexus-archiver/index.json b/metadata/org.codehaus.plexus/plexus-archiver/index.json
+index 9bcb24208c56ea193b731a7014f3d97131ccecba..b0ab361110addfa216f76ba7cf3176be76448a92
+--- a/metadata/org.codehaus.plexus/plexus-archiver/index.json
++++ b/metadata/org.codehaus.plexus/plexus-archiver/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "2.6",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-sources.jar",
++    "repository-url" : "https://github.com/codehaus-plexus/plexus-archiver",
++    "test-code-url" : "https://github.com/codehaus-plexus/plexus-archiver/tree/plexus-archiver-$version$/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/$version$/plexus-archiver-$version$-javadoc.jar",
++    "description" : "Plexus Archiver is a Java component for creating and extracting archive formats such as ZIP, TAR, JAR, and related compressed variants. It provides archiver and unarchiver abstractions used by Plexus and Maven tooling to add files, directories, resources, permissions, and metadata to archives.",
+     "tested-versions" : [
+       "2.6"
+     ],
+
+tokens used
+72,494
+Updated [index.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06/metadata/org.codehaus.plexus/plexus-archiver/index.json:18) for `metadata-version` `2.6` with source, repository, test, documentation, and two-sentence description fields. I left `language` absent because this is not Kotlin/Groovy/Scala-specific.
+
+Validation:
+- Rendered URL probes for `2.6`: all returned `200`.
+- `jq` JSON check passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.codehaus.plexus:plexus-archiver:2.6 --stacktrace` failed because `metadata/org.codehaus.plexus/plexus-archiver/2.6/reachability-metadata.json` is missing, which is outside this index-only update.
+Ran agent for org.codehaus.plexus:plexus-archiver:2.6 (exit 0). Log: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06/build/agent-url-discovery-logs/org.codehaus.plexus-plexus-archiver-2.6.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8600-580dab06/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 32s
+9 actionable tasks: 1 executed, 8 up-to-date
