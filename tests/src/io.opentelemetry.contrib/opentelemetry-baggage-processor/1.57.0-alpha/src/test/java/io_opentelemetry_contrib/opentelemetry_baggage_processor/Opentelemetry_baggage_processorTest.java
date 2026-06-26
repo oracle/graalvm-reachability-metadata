@@ -145,6 +145,49 @@ public class Opentelemetry_baggage_processorTest {
     }
 
     @Test
+    void predicateConstructorsUseCallerSuppliedBaggageKeyPredicate() {
+        RecordingSpanExporter spanExporter = new RecordingSpanExporter();
+        RecordingLogRecordExporter logExporter = new RecordingLogRecordExporter();
+        try (SdkTracerProvider tracerProvider = SdkTracerProvider.builder()
+                .addSpanProcessor(new BaggageSpanProcessor(key -> key.endsWith(".id")))
+                .addSpanProcessor(SimpleSpanProcessor.create(spanExporter))
+                .build();
+                SdkLoggerProvider loggerProvider = SdkLoggerProvider.builder()
+                        .addLogRecordProcessor(new BaggageLogRecordProcessor(key -> key.endsWith(".id")))
+                        .addLogRecordProcessor(SimpleLogRecordProcessor.create(logExporter))
+                        .build()) {
+            Context context = baggageContext(Map.of(
+                    "tenant.id", "acme",
+                    "request.id", "req-1",
+                    "deployment", "prod",
+                    "user.secret", "redacted"));
+
+            Span span = tracerProvider.get("baggage-test").spanBuilder("predicate-span")
+                    .setParent(context)
+                    .startSpan();
+            span.end();
+            loggerProvider.get("baggage-test").logRecordBuilder().setContext(context).setBody("predicate log")
+                    .emit();
+            assertSuccessful(tracerProvider.forceFlush());
+            assertSuccessful(loggerProvider.forceFlush());
+
+            assertThat(spanExporter.getFinishedSpans()).hasSize(1);
+            SpanData spanData = spanExporter.getFinishedSpans().get(0);
+            assertThat(spanData.getAttributes().get(TENANT_ID)).isEqualTo("acme");
+            assertThat(spanData.getAttributes().get(REQUEST_ID)).isEqualTo("req-1");
+            assertThat(spanData.getAttributes().get(DEPLOYMENT)).isNull();
+            assertThat(spanData.getAttributes().get(USER_SECRET)).isNull();
+
+            assertThat(logExporter.getLogRecords()).hasSize(1);
+            LogRecordData logRecord = logExporter.getLogRecords().get(0);
+            assertThat(logRecord.getAttributes().get(TENANT_ID)).isEqualTo("acme");
+            assertThat(logRecord.getAttributes().get(REQUEST_ID)).isEqualTo("req-1");
+            assertThat(logRecord.getAttributes().get(DEPLOYMENT)).isNull();
+            assertThat(logRecord.getAttributes().get(USER_SECRET)).isNull();
+        }
+    }
+
+    @Test
     void componentProvidersCreateTypedBaggageProcessorsFromDeclarativeConfiguration() {
         BaggageSpanComponentProvider spanProvider = new BaggageSpanComponentProvider();
         BaggageLogRecordComponentProvider logProvider = new BaggageLogRecordComponentProvider();
