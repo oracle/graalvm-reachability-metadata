@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "net.bytebuddy:byte-buddy-agent:1.11.17",
+  "issueNumber": 6309,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "net.bytebuddy:byte-buddy-agent:1.10.9",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#6309 [Automation] java run fails for net.bytebuddy:byte-buddy-agent:1.11.17; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "11 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 40462,
+    "issue_label": "fails-java-run",
+    "issue_number": 6309,
+    "library": "net.bytebuddy:byte-buddy-agent:1.11.17",
+    "model": "oca/gpt-5.5",
+    "new_version": "1.11.17",
+    "output_tokens_used": 3345,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Tests that exercise real runtime attachment depend on running on a full JDK with the jdk.attach module available; this is normally true in the Gradle/JDK test environment but remains subject to local verification.",
+      "Generated tests should not assume a fake AttachmentProvider makes ByteBuddyAgent.install return null; newer Byte Buddy versions validate that Instrumentation was initialized and can throw IllegalStateException if the mocked attach path does not call Installer.agentmain/premain."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/net.bytebuddy:byte-buddy-agent:1.11.17/library-preparation-preflight/pi-generation-2026-06-26T13-06-05-740600Z.log",
+    "status": "completed",
+    "summary": "No extra dependency, Docker service, environment variable, or system property is required before meaningful coverage is reachable for net.bytebuddy:byte-buddy-agent:1.11.17. The artifact is a self-contained Java agent helper; its optional/provided JNA path is not required for normal ByteBuddyAgent.install coverage on a JDK with the jdk.attach module."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "1.11.17",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-6309-fails-java-run-net.bytebuddy-byte-buddy-agent-1.11.17-514d58be",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
