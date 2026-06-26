@@ -1,0 +1,20 @@
+=== Pi checkstyle attempt 1 ===
+Fixed all reported checkstyle violations in:
+
+- `RestarterTest.java`
+- `RestartClassLoaderTest.java`
+- `MainMethodTest.java`
+- `RestartLauncherTest.java`
+- `ConnectionTest.java`
+
+Changes were limited to the violating lines:
+- Removed disallowed whitespace after `{` in array initializers.
+- Put `catch` / `finally` on the same line as the closing `}` for multi-block statements.
+
+Verified with:
+
+```bash
+./gradlew checkstyle -Pcoordinates=org.springframework.boot:spring-boot-devtools:4.1.0
+```
+
+Result: `BUILD SUCCESSFUL`.
