@@ -17,12 +17,14 @@ import java.util.stream.Collectors;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Meter;
+import io.micrometer.core.instrument.MockClock;
 import io.micrometer.core.instrument.Statistic;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.TimeGauge;
 import io.micrometer.core.instrument.config.MeterFilterReply;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
+import io.micrometer.core.instrument.simple.CountingMode;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -40,6 +42,8 @@ import org.springframework.boot.micrometer.metrics.autoconfigure.MeterValue;
 import org.springframework.boot.micrometer.metrics.autoconfigure.MetricsProperties;
 import org.springframework.boot.micrometer.metrics.autoconfigure.PropertiesMeterFilter;
 import org.springframework.boot.micrometer.metrics.autoconfigure.ServiceLevelObjectiveBoundary;
+import org.springframework.boot.micrometer.metrics.autoconfigure.export.simple.SimpleProperties;
+import org.springframework.boot.micrometer.metrics.autoconfigure.export.simple.SimplePropertiesConfigAdapter;
 import org.springframework.boot.micrometer.metrics.startup.StartupTimeMetricsListener;
 import org.springframework.boot.micrometer.metrics.system.DiskSpaceMetricsBinder;
 
@@ -132,6 +136,35 @@ public class Spring_boot_micrometer_metricsTest {
         assertThat(numericBoundary.getValue(Meter.Type.DISTRIBUTION_SUMMARY)).isEqualTo(3.5);
         assertThat(durationBoundary.getValue(Meter.Type.TIMER)).isEqualTo(2_000_000_000.0);
         assertThat(durationBoundary.getValue(Meter.Type.COUNTER)).isNull();
+    }
+
+    @Test
+    void simpleMetricsExportConfigAdapterControlsSimpleRegistryStepCounting() {
+        SimpleProperties properties = new SimpleProperties();
+        properties.setStep(Duration.ofSeconds(1));
+        properties.setMode(CountingMode.STEP);
+        SimplePropertiesConfigAdapter config = new SimplePropertiesConfigAdapter(properties);
+        MockClock clock = new MockClock();
+        SimpleMeterRegistry registry = new SimpleMeterRegistry(config, clock);
+        try {
+            Counter counter = registry.counter("configured.step.requests");
+
+            counter.increment(5.0);
+            assertThat(config.prefix()).isEqualTo("management.simple.metrics.export");
+            assertThat(config.step()).isEqualTo(Duration.ofSeconds(1));
+            assertThat(config.mode()).isEqualTo(CountingMode.STEP);
+            assertThat(counter.count()).isZero();
+
+            clock.add(Duration.ofSeconds(1));
+            assertThat(counter.count()).isEqualTo(5.0);
+            counter.increment(2.0);
+            assertThat(counter.count()).isEqualTo(5.0);
+            clock.add(Duration.ofSeconds(1));
+            assertThat(counter.count()).isEqualTo(2.0);
+        }
+        finally {
+            registry.close();
+        }
     }
 
     @Test
