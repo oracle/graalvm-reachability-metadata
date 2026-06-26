@@ -127,6 +127,21 @@ public class Opentelemetry_samplersTest {
     }
 
     @Test
+    void ruleBasedRoutingSamplerUsesFallbackWhenRulesDoNotApply() {
+        Sampler sampler = RuleBasedRoutingSampler.builder(SpanKind.SERVER, Sampler.alwaysOn())
+                .drop(HTTP_ROUTE, "/health")
+                .build();
+
+        assertThat(sample(sampler, Attributes.of(HTTP_ROUTE, "/health"), List.of()).getDecision())
+                .isEqualTo(SamplingDecision.DROP);
+        assertThat(sample(sampler, Attributes.of(HTTP_ROUTE, "/ready"), List.of()).getDecision())
+                .isEqualTo(SamplingDecision.RECORD_AND_SAMPLE);
+        assertThat(sampleClientSpan(sampler, Attributes.of(HTTP_ROUTE, "/health"))
+                        .getDecision())
+                .isEqualTo(SamplingDecision.RECORD_AND_SAMPLE);
+    }
+
+    @Test
     void ruleBasedRoutingSamplerCanRouteByThreadNameAndCustomDelegates() {
         String currentThreadNamePattern = Pattern.quote(Thread.currentThread().getName());
         Sampler sampler = RuleBasedRoutingSampler.builder(SpanKind.INTERNAL, Sampler.alwaysOff())
