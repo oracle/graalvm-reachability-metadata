@@ -129,6 +129,36 @@ public class Opentelemetry_declarative_config_bridgeTest {
     }
 
     @Test
+    void configPropertiesBackedDeclarativeConfigTranslatesGenericJavaKeysAndDevelopmentSuffix() {
+        Map<String, Object> values = new LinkedHashMap<>();
+        values.put("otel.instrumentation.spring-webmvc.controller.enabled", true);
+        values.put("otel.instrumentation.jdbc.statement-cache.size", 128);
+        values.put("otel.instrumentation.http.experimental-client-metrics.enabled", true);
+        values.put("otel.instrumentation.kafka.experimental.consumer-headers",
+                List.of("event-type", "tenant"));
+        ConfigProperties configProperties = new MapConfigProperties(values, NOOP_COMPONENT_LOADER);
+
+        DeclarativeConfigProperties javaConfig =
+                ConfigPropertiesBackedDeclarativeConfigProperties.createInstrumentationConfig(
+                        configProperties)
+                        .getStructured("java");
+
+        assertThat(javaConfig.getStructured("spring_webmvc").getStructured("controller")
+                .getBoolean("enabled"))
+                .isTrue();
+        assertThat(javaConfig.getStructured("jdbc").getStructured("statement_cache")
+                .getInt("size"))
+                .isEqualTo(128);
+        assertThat(javaConfig.getStructured("http")
+                .getStructured("experimental_client_metrics/development")
+                .getBoolean("enabled"))
+                .isTrue();
+        assertThat(javaConfig.getStructured("kafka")
+                .getScalarList("consumer_headers/development", String.class))
+                .containsExactly("event-type", "tenant");
+    }
+
+    @Test
     void configProviderExposesServicePeerMappingAsStructuredList() {
         Map<String, String> peerServiceMapping = new LinkedHashMap<>();
         peerServiceMapping.put("db.example.internal", "orders-database");
