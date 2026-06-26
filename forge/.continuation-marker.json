@@ -1,0 +1,77 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "com.graphql-java:graphql-java-extended-scalars:2021-06-29T01-19-32-8e19827",
+  "issueNumber": 8593,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No Docker image, environment variable, or system property setup appears necessary. Tests should exercise the scalars entirely in-process, for example by coercing ExtendedScalars values directly and registering them in a graphql-java schema/runtime wiring.",
+    "applied_setup": [],
+    "current_library": "com.graphql-java:graphql-java-extended-scalars:21.0",
+    "deterministic_setup": [
+      {
+        "coordinate": "com.graphql-java:graphql-java:0.0.0-2021-06-27T12-22-33-cd2bab76",
+        "kind": "dependency",
+        "reason": "The resolved graphql-java-extended-scalars 2021-06-29T01-19-32-8e19827 POM and Gradle module metadata declare graphql-java 0.0.0-2021-06-27T12-22-33-cd2bab76 as its compile/API dependency; the same-version graphql-java artifact is absent and causes dependency resolution failure.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8593 [Automation] javac compile fails for com.graphql-java:graphql-java-extended-scalars:2021-06-29T01-19-32-8e19827; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "8 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 51157,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8593,
+    "library": "com.graphql-java:graphql-java-extended-scalars:2021-06-29T01-19-32-8e19827",
+    "model": "oca/gpt-5.5",
+    "new_version": "2021-06-29T01-19-32-8e19827",
+    "output_tokens_used": 3256,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Avoid deriving companion graphql-java coordinates from the extended-scalars tested version; com.graphql-java:graphql-java:2021-06-29T01-19-32-8e19827 is not available.",
+      "APIs in this 2021 timestamped build may differ from current graphql-java-extended-scalars documentation, so generated tests should verify method signatures against the resolved artifacts."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/com.graphql-java:graphql-java-extended-scalars:2021-06-29T01-19-32-8e19827/library-preparation-preflight/pi-generation-2026-06-26T13-05-40-017171Z.log",
+    "status": "completed",
+    "summary": "graphql-java-extended-scalars is an in-memory scalar library, but this timestamped artifact is built against a different timestamped graphql-java artifact; meaningful GraphQL wiring coverage should use that resolved companion version rather than graphql-java at the extended-scalars version, which is not published."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2021-06-29T01-19-32-8e19827",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8593-fails-javac-compile-com.graphql-java-graphql-java-extended-scalars-2021-06-29T01-19-32-8e19827-e32e561e",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
