@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "jakarta.xml.bind:jakarta.xml.bind-api:4.1.0-M1",
+  "issueNumber": 4422,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "jakarta.xml.bind-api is API-only. If tests exercise JAXBContext discovery, use test-local JAXBContextFactory/service-provider stubs or simple API/helper classes rather than assuming a bundled JAXB implementation. Avoid relying on SecurityManager package-access behavior for JDK 25 compatibility.",
+    "applied_setup": [],
+    "current_library": "jakarta.xml.bind:jakarta.xml.bind-api:4.0.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#4422 [Automation] java run fails for jakarta.xml.bind:jakarta.xml.bind-api:4.1.0-M1; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "31 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 55224,
+    "issue_label": "fails-java-run",
+    "issue_number": 4422,
+    "library": "jakarta.xml.bind:jakarta.xml.bind-api:4.1.0-M1",
+    "model": "oca/gpt-5.5",
+    "new_version": "4.1.0-M1",
+    "output_tokens_used": 4322,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Full end-to-end marshalling/unmarshalling with JAXBContext.newInstance normally requires a JAXB runtime implementation such as Eclipse JAXB RI, but that is not necessary for meaningful reachability coverage of the API artifact itself.",
+      "Adding a runtime implementation could shift coverage toward the implementation dependency rather than the jakarta.xml.bind-api metadata under test."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/jakarta.xml.bind:jakarta.xml.bind-api:4.1.0-M1/library-preparation-preflight/pi-generation-2026-06-26T15-40-50-689157Z.log",
+    "status": "completed",
+    "summary": "No deterministic setup is required: the resolved artifact is an API jar with only jakarta.activation-api as a transitive dependency, and existing meaningful coverage can exercise JAXB API internals such as ContextFinder, ServiceLoaderUtil, message bundles, helpers, annotations, and DatatypeConverter without Docker, environment variables, or an external runtime."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "4.1.0-M1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-4422-fails-java-run-jakarta.xml.bind-jakarta.xml.bind-api-4.1.0-M1-c25e18a0",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
