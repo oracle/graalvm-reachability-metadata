@@ -1,0 +1,72 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.springframework.ai:spring-ai-openai:2.0.0-RC2",
+  "issueNumber": 8431,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "For tests that invoke OpenAiChatModel, OpenAiEmbeddingModel, OpenAiImageModel, OpenAiAudioSpeechModel, OpenAiAudioTranscriptionModel, or OpenAiModerationModel, configure options programmatically with a local OpenAI-compatible base URL, e.g. .baseUrl(\"http://127.0.0.1:<port>/v1\"), and .apiKey(\"\") for no-auth mode or a dummy key. Serve minimal OpenAI-compatible responses from an in-process JDK HttpServer rather than calling https://api.openai.com/v1 or relying on OPENAI_API_KEY. If testing Spring property-based configuration, set spring.ai.openai.base-url and spring.ai.openai.api-key to equivalent local test values. Avoid Azure/Microsoft Foundry/GitHub Models environment-detection paths unless intentionally covering them.",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8431 Support for org.springframework.ai:spring-ai-openai:2.0.0-RC2; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 85974,
+    "issue_label": "library-new-request",
+    "issue_number": 8431,
+    "library": "org.springframework.ai:spring-ai-openai:2.0.0-RC2",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 4949,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The OpenAI Java SDK response parsers are strict enough that local stub responses must match the expected endpoint JSON shape.",
+      "Azure/Microsoft Foundry passwordless paths rely on optional azure-identity classes and are not needed for normal OpenAI-provider coverage."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.springframework.ai:spring-ai-openai:2.0.0-RC2/library-preparation-preflight/pi-generation-2026-06-26T21-41-17-108253Z.log",
+    "status": "completed",
+    "summary": "No extra Maven dependency or Docker image is required, but meaningful model-call coverage needs tests to avoid the default live OpenAI endpoint and real API-key lookup."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 4,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8431-library-new-request-org.springframework.ai-spring-ai-openai-2.0.0-RC2-a66319bf",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springframework.ai:spring-ai-openai:2.0.0-RC2",
+    "timestamp": "2026-06-26T22:05:43.119950Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
