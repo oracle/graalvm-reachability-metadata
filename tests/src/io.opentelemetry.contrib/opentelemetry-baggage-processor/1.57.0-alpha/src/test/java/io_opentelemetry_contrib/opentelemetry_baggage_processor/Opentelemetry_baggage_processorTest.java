@@ -145,6 +145,33 @@ public class Opentelemetry_baggage_processorTest {
     }
 
     @Test
+    void logRecordProcessorAllowAllBaggageKeysCopiesUnfilteredBaggage() {
+        RecordingLogRecordExporter exporter = new RecordingLogRecordExporter();
+        BaggageLogRecordProcessor baggageProcessor = BaggageLogRecordProcessor.allowAllBaggageKeys();
+        try (SdkLoggerProvider loggerProvider = SdkLoggerProvider.builder()
+                .addLogRecordProcessor(baggageProcessor)
+                .addLogRecordProcessor(SimpleLogRecordProcessor.create(exporter))
+                .build()) {
+            Context context = baggageContext(Map.of(
+                    "user.id", "alice",
+                    "user.secret", "redacted",
+                    "deployment", "prod"));
+
+            loggerProvider.get("baggage-test").logRecordBuilder().setContext(context).setBody("all baggage").emit();
+            assertSuccessful(loggerProvider.forceFlush());
+
+            assertThat(exporter.getLogRecords()).hasSize(1);
+            LogRecordData logRecord = exporter.getLogRecords().get(0);
+            assertThat(logRecord.getAttributes().get(USER_ID)).isEqualTo("alice");
+            assertThat(logRecord.getAttributes().get(USER_SECRET)).isEqualTo("redacted");
+            assertThat(logRecord.getAttributes().get(DEPLOYMENT)).isEqualTo("prod");
+            assertThat(baggageProcessor.toString())
+                    .contains("BaggageLogRecordProcessor")
+                    .contains("baggageKeyPredicate");
+        }
+    }
+
+    @Test
     void predicateConstructorsUseCallerSuppliedBaggageKeyPredicate() {
         RecordingSpanExporter spanExporter = new RecordingSpanExporter();
         RecordingLogRecordExporter logExporter = new RecordingLogRecordExporter();
