@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.json4s:json4s-jackson_2.13:3.7.0-M16",
+  "issueNumber": 7182,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.json4s:json4s-jackson_2.13:3.7.0-M13",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7182 [Automation] java run fails for org.json4s:json4s-jackson_2.13:3.7.0-M16; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "7 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 53299,
+    "issue_label": "fails-java-run",
+    "issue_number": 7182,
+    "library": "org.json4s:json4s-jackson_2.13:3.7.0-M16",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.7.0-M16",
+    "output_tokens_used": 3154,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Version 3.7.0-M16 changes org.json4s.Reader to require readEither in addition to read; generated or existing tests that create custom Reader instances must adapt, but this is a source compatibility fix rather than setup.",
+      "The artifact is Scala 2.13-based; tests should stay on the repository's Scala 2 scaffold and avoid introducing Scala 3-only syntax or dependencies."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.json4s:json4s-jackson_2.13:3.7.0-M16/library-preparation-preflight/pi-generation-2026-06-26T20-48-41-000138Z.log",
+    "status": "completed",
+    "summary": "json4s-jackson_2.13 is an in-process Scala/Jackson JSON library; its runtime POM dependencies are already transitive from the target artifact, and normal usage exercises parsing, rendering, extraction, custom serializers, and Jackson ObjectMapper integration without external services, Docker, or environment/system properties."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.7.0-M16",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-7182-fails-java-run-org.json4s-json4s-jackson_2.13-3.7.0-M16-d9d6ea0b",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
