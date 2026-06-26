@@ -1,0 +1,499 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5880-81845bc3
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f0473-2af4-7bc3-9390-eab4fa206f59
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.netty:netty-pkitesting:4.2.2.Final
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [4.2.2.Final].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5880-81845bc3/metadata/io.netty/netty-pkitesting/index.json
+- Entry selector: "metadata-version" = "4.2.2.Final"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 4.2.2.Final
+- Entry metadata-version: 4.2.2.Final
+- Entry test-version: 4.2.2.Final
+- Entry tested-versions: [4.2.2.Final]
+codex
+I’ll verify the artifact metadata and versioned URLs first, then patch only the blank fields in the existing `index.json`.
+web search: 
+web search: io.netty netty-pkitesting 4.2.2.Final Maven Central
+codex
+The initial search points to Netty’s standard Maven/GitHub layout, but I need to confirm whether this artifact publishes source or test-source jars for `4.2.2.Final` before choosing GitHub paths.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/io.netty/netty-pkitesting/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5880-81845bc3
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.2.2.Final",
+    "tested-versions" : [
+      "4.2.2.Final"
+    ],
+    "allowed-packages" : [
+      "io.netty.pkitesting"
+    ]
+  },
+  {
+    "metadata-version" : "4.2.1.Final",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-sources.jar",
+    "repository-url" : "https://github.com/netty/netty",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-test-sources.jar",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-javadoc.jar",
+    "description" : "Netty PKITesting provides test support utilities for building X.509 certificates, certificate bundles, and certificate revocation data. It is used by Netty's TLS and PKI-related tests to generate and serve certificate material without relying on external infrastructure.",
+    "tested-versions" : [
+      "4.2.1.Final"
+    ],
+    "allowed-packages" : [
+      "io.netty.pkitesting"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/io/netty/netty-pkitesting/4.2.2.Final/netty-pkitesting-4.2.2.Final.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5880-81845bc3
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2024 The Netty Project
+  ~
+  ~ The Netty Project licenses this file to you under the Apache License,
+  ~ version 2.0 (the "License"); you may not use this file except in compliance
+  ~ with the License. You may obtain a copy of the License at:
+  ~
+  ~   https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+  ~ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>io.netty</groupId>
+    <artifactId>netty-parent</artifactId>
+    <version>4.2.2.Final</version>
+  </parent>
+
+  <artifactId>netty-pkitesting</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Netty/PKITesting</name>
+
+  <properties>
+    <javaModuleName>io.netty.pkitesting</javaModuleName>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>netty-common</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk18on</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk18on</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.github.dmlloyd.module-info</groupId>
+        <artifactId>module-info</artifactId>
+        <executions>
+          <execution>
+            <id>module-info</id>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/io/netty/netty-pkitesting/4.2.2.Final/netty-pkitesting-4.2.2.Final-sources.jar && curl -I -fsSL https://repo1.maven.org/maven2/io/netty/netty-pkitesting/4.2.2.Final/netty-pkitesting-4.2.2.Final-test-sources.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5880-81845bc3
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 26 Jun 2026 15:01:34 GMT
+content-type: application/java-archive
+content-length: 25414
+cf-ray: a11d1687ee3327a6-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2338
+etag: "38e2a6b32cbd3b4720558e9850ad55d3"
+last-modified: Thu, 05 Jun 2025 06:31:08 GMT
+x-checksum-md5: 38e2a6b32cbd3b4720558e9850ad55d3
+x-checksum-sha1: 0d4c813829d3c9d18fa66049f8039ee01d8b61c4
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Fri, 26 Jun 2026 15:01:34 GMT
+content-type: application/java-archive
+content-length: 6172
+cf-ray: a11d16884d04e7f3-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 2332
+etag: "6480642c45b37b4c9c39eafb63f127e8"
+last-modified: Thu, 05 Jun 2025 06:31:14 GMT
+x-checksum-md5: 6480642c45b37b4c9c39eafb63f127e8
+x-checksum-sha1: 5c29a9c9ddb701ecf2bcab40913a5269b8384cdc
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+The previous `4.2.1.Final` entry already uses Maven Central source, test-source, and javadoc jar templates. I’m checking the same templates against `4.2.2.Final` before reusing them for the new entry.
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/4.2.2.Final/netty-pkitesting-4.2.2.Final-javadoc.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5880-81845bc3
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 26 Jun 2026 15:01:40 GMT
+content-type: application/java-archive
+content-length: 364234
+cf-ray: a11d16ad5dda2db1-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 4263
+etag: "ac45b307a1c9f7e36bc2a4aa99b83f47"
+last-modified: Thu, 05 Jun 2025 06:31:18 GMT
+x-checksum-md5: ac45b307a1c9f7e36bc2a4aa99b83f47
+x-checksum-sha1: ed54188f721df7d59004b3c9de6384ec720dd8ea
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/4.2.2.Final/netty-pkitesting-4.2.2.Final-sources.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5880-81845bc3
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 26 Jun 2026 15:01:40 GMT
+content-type: application/java-archive
+content-length: 25414
+cf-ray: a11d16ad5f9a2793-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 4263
+etag: "38e2a6b32cbd3b4720558e9850ad55d3"
+last-modified: Thu, 05 Jun 2025 06:31:08 GMT
+x-checksum-md5: 38e2a6b32cbd3b4720558e9850ad55d3
+x-checksum-sha1: 0d4c813829d3c9d18fa66049f8039ee01d8b61c4
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/4.2.2.Final/netty-pkitesting-4.2.2.Final-test-sources.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5880-81845bc3
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 26 Jun 2026 15:01:40 GMT
+content-type: application/java-archive
+content-length: 6172
+cf-ray: a11d16ad4dde2787-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 4263
+etag: "6480642c45b37b4c9c39eafb63f127e8"
+last-modified: Thu, 05 Jun 2025 06:31:14 GMT
+x-checksum-md5: 6480642c45b37b4c9c39eafb63f127e8
+x-checksum-sha1: 5c29a9c9ddb701ecf2bcab40913a5269b8384cdc
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/netty/netty-parent/4.2.2.Final/netty-parent-4.2.2.Final.pom | sed -n '/<scm>/,/<\\/scm>/p; /<url>/p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5880-81845bc3
+ succeeded in 0ms:
+  <url>https://netty.io/</url>
+    <url>https://netty.io/</url>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+  <scm>
+    <url>https://github.com/netty/netty</url>
+    <url>https://github.com/netty/netty</url>
+    <connection>scm:git:git://github.com/netty/netty.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/netty/netty.git</developerConnection>
+    <tag>netty-4.2.2.Final</tag>
+  </scm>
+      <url>https://netty.io/</url>
+      <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+          <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/io/netty/netty-parent/4.2.2.Final/netty-parent-4.2.2.Final.pom
+web search: 
+web search: repo.maven.apache.org/maven2 io/netty/netty-pkitesting/4.2.2.Final netty-pkitesting-4.2.2.Final.pom
+web search: 
+web search: central.sonatype.com artifact io.netty netty-pkitesting 4.2.2.Final
+codex
+All three Maven Central template URLs return `200` for the tested alias `4.2.2.Final`, and the parent POM identifies the canonical SCM root as `https://github.com/netty/netty`. I’ll now add only the missing fields on the `4.2.2.Final` entry and leave `language` absent because this is a Java Netty module, not a Kotlin/Groovy/Scala-specific artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5880-81845bc3/metadata/io.netty/netty-pkitesting/index.json
+diff --git a/metadata/io.netty/netty-pkitesting/index.json b/metadata/io.netty/netty-pkitesting/index.json
+index 2f063569901e526d118645d2c95f5bf3fd28ab6d..8c9302e4911ab10e94a993511304837d04fb0be9
+--- a/metadata/io.netty/netty-pkitesting/index.json
++++ b/metadata/io.netty/netty-pkitesting/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.2.2.Final",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-sources.jar",
++    "repository-url" : "https://github.com/netty/netty",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-test-sources.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-javadoc.jar",
++    "description" : "Netty PKITesting provides test support utilities for building X.509 certificates, certificate bundles, and certificate revocation data. It is used by Netty's TLS and PKI-related tests to generate and serve certificate material without relying on external infrastructure.",
+     "tested-versions" : [
+       "4.2.2.Final"
+     ],
+
+diff --git a/metadata/io.netty/netty-pkitesting/index.json b/metadata/io.netty/netty-pkitesting/index.json
+index 2f063569901e526d118645d2c95f5bf3fd28ab6d..8c9302e4911ab10e94a993511304837d04fb0be9
+--- a/metadata/io.netty/netty-pkitesting/index.json
++++ b/metadata/io.netty/netty-pkitesting/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.2.2.Final",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-sources.jar",
++    "repository-url" : "https://github.com/netty/netty",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-test-sources.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-javadoc.jar",
++    "description" : "Netty PKITesting provides test support utilities for building X.509 certificates, certificate bundles, and certificate revocation data. It is used by Netty's TLS and PKI-related tests to generate and serve certificate material without relying on external infrastructure.",
+     "tested-versions" : [
+       "4.2.2.Final"
+     ],
+
+codex
+The JSON is patched. I’m doing a quick validity check and diff review so the final answer can be precise.
+exec
+/usr/bin/bash -lc 'jq empty metadata/io.netty/netty-pkitesting/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5880-81845bc3
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/io.netty/netty-pkitesting/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5880-81845bc3
+ succeeded in 0ms:
+diff --git i/metadata/io.netty/netty-pkitesting/index.json w/metadata/io.netty/netty-pkitesting/index.json
+index 2f06356990..8c9302e491 100644
+--- i/metadata/io.netty/netty-pkitesting/index.json
++++ w/metadata/io.netty/netty-pkitesting/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.2.2.Final",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-sources.jar",
++    "repository-url" : "https://github.com/netty/netty",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-test-sources.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-javadoc.jar",
++    "description" : "Netty PKITesting provides test support utilities for building X.509 certificates, certificate bundles, and certificate revocation data. It is used by Netty's TLS and PKI-related tests to generate and serve certificate material without relying on external infrastructure.",
+     "tested-versions" : [
+       "4.2.2.Final"
+     ],
+
+diff --git a/metadata/io.netty/netty-pkitesting/index.json b/metadata/io.netty/netty-pkitesting/index.json
+index 2f063569901e526d118645d2c95f5bf3fd28ab6d..8c9302e4911ab10e94a993511304837d04fb0be9
+--- a/metadata/io.netty/netty-pkitesting/index.json
++++ b/metadata/io.netty/netty-pkitesting/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.2.2.Final",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-sources.jar",
++    "repository-url" : "https://github.com/netty/netty",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-test-sources.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-javadoc.jar",
++    "description" : "Netty PKITesting provides test support utilities for building X.509 certificates, certificate bundles, and certificate revocation data. It is used by Netty's TLS and PKI-related tests to generate and serve certificate material without relying on external infrastructure.",
+     "tested-versions" : [
+       "4.2.2.Final"
+     ],
+
+web search: 
+web search: netty-pkitesting 4.2.2.Final javadoc jar Maven Central repo.maven.apache.org
+exec
+/usr/bin/bash -lc "nl -ba metadata/io.netty/netty-pkitesting/index.json | sed -n '1,28p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5880-81845bc3
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "4.2.2.Final",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/netty/netty",
+     7	    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-test-sources.jar",
+     8	    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-javadoc.jar",
+     9	    "description" : "Netty PKITesting provides test support utilities for building X.509 certificates, certificate bundles, and certificate revocation data. It is used by Netty's TLS and PKI-related tests to generate and serve certificate material without relying on external infrastructure.",
+    10	    "tested-versions" : [
+    11	      "4.2.2.Final"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "io.netty.pkitesting"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "4.2.1.Final",
+    19	    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-sources.jar",
+    20	    "repository-url" : "https://github.com/netty/netty",
+    21	    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-test-sources.jar",
+    22	    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-javadoc.jar",
+    23	    "description" : "Netty PKITesting provides test support utilities for building X.509 certificates, certificate bundles, and certificate revocation data. It is used by Netty's TLS and PKI-related tests to generate and serve certificate material without relying on external infrastructure.",
+    24	    "tested-versions" : [
+    25	      "4.2.1.Final"
+    26	    ],
+    27	    "allowed-packages" : [
+    28	      "io.netty.pkitesting"
+
+diff --git a/metadata/io.netty/netty-pkitesting/index.json b/metadata/io.netty/netty-pkitesting/index.json
+index 2f063569901e526d118645d2c95f5bf3fd28ab6d..8c9302e4911ab10e94a993511304837d04fb0be9
+--- a/metadata/io.netty/netty-pkitesting/index.json
++++ b/metadata/io.netty/netty-pkitesting/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.2.2.Final",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-sources.jar",
++    "repository-url" : "https://github.com/netty/netty",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-test-sources.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-javadoc.jar",
++    "description" : "Netty PKITesting provides test support utilities for building X.509 certificates, certificate bundles, and certificate revocation data. It is used by Netty's TLS and PKI-related tests to generate and serve certificate material without relying on external infrastructure.",
+     "tested-versions" : [
+       "4.2.2.Final"
+     ],
+
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5880-81845bc3/metadata/io.netty/netty-pkitesting/index.json:5) for `metadata-version` `4.2.2.Final`.
+
+Added the missing Maven Central source, test-source, and javadoc template URLs, the canonical Netty repository URL, and the two-sentence description. I left `language` absent because `netty-pkitesting` is not Kotlin/Groovy/Scala-specific.
+
+Verified:
+- Rendered Maven URLs for `4.2.2.Final` return `200`.
+- `jq empty metadata/io.netty/netty-pkitesting/index.json` passes.
+diff --git a/metadata/io.netty/netty-pkitesting/index.json b/metadata/io.netty/netty-pkitesting/index.json
+index 2f063569901e526d118645d2c95f5bf3fd28ab6d..8c9302e4911ab10e94a993511304837d04fb0be9
+--- a/metadata/io.netty/netty-pkitesting/index.json
++++ b/metadata/io.netty/netty-pkitesting/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "4.2.2.Final",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-sources.jar",
++    "repository-url" : "https://github.com/netty/netty",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-test-sources.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-pkitesting/$version$/netty-pkitesting-$version$-javadoc.jar",
++    "description" : "Netty PKITesting provides test support utilities for building X.509 certificates, certificate bundles, and certificate revocation data. It is used by Netty's TLS and PKI-related tests to generate and serve certificate material without relying on external infrastructure.",
+     "tested-versions" : [
+       "4.2.2.Final"
+     ],
+
+tokens used
+41,190
+Updated [index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5880-81845bc3/metadata/io.netty/netty-pkitesting/index.json:5) for `metadata-version` `4.2.2.Final`.
+
+Added the missing Maven Central source, test-source, and javadoc template URLs, the canonical Netty repository URL, and the two-sentence description. I left `language` absent because `netty-pkitesting` is not Kotlin/Groovy/Scala-specific.
+
+Verified:
+- Rendered Maven URLs for `4.2.2.Final` return `200`.
+- `jq empty metadata/io.netty/netty-pkitesting/index.json` passes.
+Ran agent for io.netty:netty-pkitesting:4.2.2.Final (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5880-81845bc3/build/agent-url-discovery-logs/io.netty-netty-pkitesting-4.2.2.Final.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5880-81845bc3/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 49s
+9 actionable tasks: 1 executed, 8 up-to-date
