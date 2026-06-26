@@ -31,11 +31,13 @@ import reactor.core.publisher.Mono;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.context.annotation.ImportCandidates;
+import org.springframework.boot.http.client.autoconfigure.service.HttpServiceClientPropertiesAutoConfiguration;
 import org.springframework.boot.http.client.reactive.ClientHttpConnectorBuilder;
 import org.springframework.boot.http.codec.CodecCustomizer;
 import org.springframework.boot.ssl.DefaultSslBundleRegistry;
 import org.springframework.boot.ssl.SslBundle;
 import org.springframework.boot.ssl.SslBundles;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.webclient.WebClientCustomizer;
 import org.springframework.boot.webclient.autoconfigure.WebClientAutoConfiguration;
 import org.springframework.boot.webclient.autoconfigure.WebClientCodecCustomizer;
@@ -43,7 +45,7 @@ import org.springframework.boot.webclient.autoconfigure.WebClientObservationAuto
 import org.springframework.boot.webclient.autoconfigure.WebClientSsl;
 import org.springframework.boot.webclient.autoconfigure.service.ReactiveHttpServiceClientAutoConfiguration;
 import org.springframework.boot.webclient.observation.ObservationWebClientCustomizer;
-import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.reactive.ClientHttpConnector;
 import org.springframework.http.client.reactive.JdkClientHttpConnector;
@@ -53,6 +55,10 @@ import org.springframework.web.reactive.function.client.ClientRequestObservation
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.ExchangeFunction;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.service.annotation.GetExchange;
+import org.springframework.web.service.registry.HttpServiceGroup;
+import org.springframework.web.service.registry.HttpServiceProxyRegistry;
+import org.springframework.web.service.registry.ImportHttpServices;
 
 public class Spring_boot_webclientTest {
 
@@ -194,6 +200,40 @@ public class Spring_boot_webclientTest {
     }
 
     @Test
+    void reactiveHttpServiceClientAutoConfigurationAppliesPropertiesAndCustomizers() throws IOException {
+        try (TestHttpServer server = TestHttpServer.start(exchange -> {
+            String body = "uri=%s propertyHeader=%s customizerHeader=%s".formatted(exchange.getRequestURI(),
+                    exchange.getRequestHeaders().getFirst("X-Http-Service-Property"),
+                    exchange.getRequestHeaders().getFirst("X-Http-Service-Customizer"));
+            send(exchange, HttpStatus.OK.value(), body);
+        })) {
+            ClientHttpConnectorBuilder<ClientHttpConnector> connectorBuilder = settings -> jdkClientHttpConnector();
+
+            new ApplicationContextRunner()
+                    .withConfiguration(AutoConfigurations.of(HttpServiceClientPropertiesAutoConfiguration.class,
+                            ReactiveHttpServiceClientAutoConfiguration.class))
+                    .withUserConfiguration(CatalogHttpServiceConfiguration.class)
+                    .withBean(ClientHttpConnectorBuilder.class, () -> connectorBuilder)
+                    .withBean(WebClientCustomizer.class,
+                            () -> builder -> builder.defaultHeader("X-Http-Service-Customizer", "from-customizer"))
+                    .withPropertyValues("spring.http.serviceclient.catalog.base-url=" + server.url("/api"),
+                            "spring.http.serviceclient.catalog.default-header.[X-Http-Service-Property][0]="
+                                    + "from-properties")
+                    .run(context -> {
+                        assertThat(context).hasSingleBean(CatalogClient.class);
+                        assertThat(context).hasSingleBean(HttpServiceProxyRegistry.class);
+
+                        CatalogClient client = context.getBean(HttpServiceProxyRegistry.class)
+                                .getClient("catalog", CatalogClient.class);
+                        String body = client.items().block(REQUEST_TIMEOUT);
+
+                        assertThat(body).isEqualTo(
+                                "uri=/api/items propertyHeader=from-properties customizerHeader=from-customizer");
+                    });
+        }
+    }
+
+    @Test
     void webClientSslAppliesNamedSslBundleToWebClientBuilder() throws IOException {
         try (TestHttpServer server = TestHttpServer.start(exchange -> send(exchange, HttpStatus.OK.value(),
                 "ssl-bundle-configured"))) {
@@ -224,6 +264,20 @@ public class Spring_boot_webclientTest {
                         assertThat(body).isEqualTo("ssl-bundle-configured");
                     });
         }
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @ImportHttpServices(types = CatalogClient.class, group = "catalog",
+            clientType = HttpServiceGroup.ClientType.WEB_CLIENT)
+    public static class CatalogHttpServiceConfiguration {
+
+    }
+
+    public interface CatalogClient {
+
+        @GetExchange("/items")
+        Mono<String> items();
+
     }
 
     private static ExchangeFunction okExchangeFunction(String body) {
