@@ -131,6 +131,14 @@ public class Opentelemetry_instrumentation_annotationsTest {
                 .isEqualTo("handler.route");
     }
 
+    @Test
+    void annotationsDoNotAlterConstructorOrMethodExecutionWithoutInstrumentation() {
+        AnnotatedCalculator calculator = new AnnotatedCalculator("orders");
+
+        assertThat(calculator.lookup("book", 3)).isEqualTo("orders:book:3");
+        assertThat(calculator.enrich("request-7", 201)).isEqualTo("request-7=201");
+    }
+
     private static void assertRuntimeAnnotation(
             Class<? extends Annotation> annotationType, ElementType... targets) {
         assertThat(annotationType.isAnnotation()).isTrue();
@@ -175,5 +183,28 @@ public class Opentelemetry_instrumentation_annotationsTest {
     public static final class ServerHandler {
         @WithSpan(value = "server.handler", kind = SpanKind.SERVER, inheritContext = true)
         public ServerHandler(@SpanAttribute("handler.route") String route) {}
+    }
+
+    public static final class AnnotatedCalculator {
+        private final String namespace;
+
+        @WithSpan("calculator.create")
+        public AnnotatedCalculator(@SpanAttribute("calculator.namespace") String namespace) {
+            this.namespace = namespace;
+        }
+
+        @WithSpan(value = "calculator.lookup", kind = SpanKind.CONSUMER)
+        public String lookup(
+                @SpanAttribute("item.name") String itemName,
+                @SpanAttribute("item.count") int itemCount) {
+            return namespace + ":" + itemName + ":" + itemCount;
+        }
+
+        @AddingSpanAttributes
+        public String enrich(
+                @SpanAttribute("request.id") String requestId,
+                @SpanAttribute("http.response.status_code") int statusCode) {
+            return requestId + "=" + statusCode;
+        }
     }
 }
