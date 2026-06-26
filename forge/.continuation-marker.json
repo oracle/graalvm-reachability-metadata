@@ -1,0 +1,85 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "io.opentelemetry.instrumentation:opentelemetry-log4j-appender-2.17:2.28.1-alpha",
+  "issueNumber": 8544,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Use a synchronous Log4j test path unless intentionally testing async loggers. Configure or build an OpenTelemetryAppender, install an OpenTelemetry SDK instance before logging, emit Log4j events, assert captured log records, and reset/stop Log4j/appender state between tests. No Docker image or required environment variable/system property is needed for the basic synchronous coverage path.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "coordinate": "org.apache.logging.log4j:log4j-core:2.17.2",
+        "kind": "dependency",
+        "reason": "The appender's public classes extend and consume Log4j Core/API types, but the published artifact declares Log4j as a compile-only/library dependency rather than a transitive Maven dependency.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "io.opentelemetry:opentelemetry-sdk-testing:1.62.0",
+        "kind": "dependency",
+        "reason": "The appender must be installed with an OpenTelemetry SDK instance for tests to assert forwarded log records instead of only exercising a no-op API path.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8544 Support for io.opentelemetry.instrumentation:opentelemetry-log4j-appender-2.17:2.28.1-alpha; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 43987,
+    "issue_label": "library-new-request",
+    "issue_number": 8544,
+    "library": "io.opentelemetry.instrumentation:opentelemetry-log4j-appender-2.17:2.28.1-alpha",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 5253,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Async logger coverage is optional and would require extra setup such as Disruptor plus Log4j system properties set before Log4j initializes.",
+      "XML/plugin-based Log4j configuration may exercise additional native-image resource/reflection paths compared with programmatic builder setup."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/io.opentelemetry.instrumentation:opentelemetry-log4j-appender-2.17:2.28.1-alpha/library-preparation-preflight/pi-generation-2026-06-26T14-53-45-794020Z.log",
+    "status": "completed",
+    "summary": "The artifact is a Log4j2 appender and does not publish Log4j as a transitive dependency; meaningful tests also need an OpenTelemetry SDK/testing implementation to observe emitted log records."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 4,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8544-library-new-request-io.opentelemetry.instrumentation-opentelemetry-log4j-appender-2.17-2.28.1-alpha-bd147aab",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "io.opentelemetry.instrumentation:opentelemetry-log4j-appender-2.17:2.28.1-alpha",
+    "timestamp": "2026-06-26T15:28:17.102060Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
