@@ -100,6 +100,44 @@ public class Simpleclient_commonTest {
     }
 
     @Test
+    void write004RendersHistogramAndSummaryFamilies() throws IOException {
+        MetricFamilySamples histogram = metricFamily(
+                "request_duration_seconds",
+                Type.HISTOGRAM,
+                "Request duration",
+                sample("request_duration_seconds_bucket", List.of("route", "le"), List.of("/api", "0.5"), 1.0),
+                sample("request_duration_seconds_bucket", List.of("route", "le"), List.of("/api", "+Inf"), 2.0),
+                sample("request_duration_seconds_count", List.of("route"), List.of("/api"), 2.0),
+                sample("request_duration_seconds_sum", List.of("route"), List.of("/api"), 0.9));
+        MetricFamilySamples summary = metricFamily(
+                "payload_size_bytes",
+                Type.SUMMARY,
+                "Payload size",
+                sample("payload_size_bytes", List.of("quantile"), List.of("0.5"), 512.0),
+                sample("payload_size_bytes_count", List.of(), List.of(), 3.0),
+                sample("payload_size_bytes_sum", List.of(), List.of(), 1536.0));
+
+        String output = write004(histogram, summary);
+
+        assertThat(output)
+                .contains("# HELP request_duration_seconds Request duration")
+                .contains("# TYPE request_duration_seconds histogram")
+                .contains("request_duration_seconds_bucket{route=\"/api\",le=\"0.5\"")
+                .contains(" 1.0")
+                .contains("request_duration_seconds_bucket{route=\"/api\",le=\"+Inf\"")
+                .contains("request_duration_seconds_count{route=\"/api\"")
+                .contains(" 2.0")
+                .contains("request_duration_seconds_sum{route=\"/api\"")
+                .contains(" 0.9")
+                .contains("# HELP payload_size_bytes Payload size")
+                .contains("# TYPE payload_size_bytes summary")
+                .contains("payload_size_bytes{quantile=\"0.5\"")
+                .contains(" 512.0")
+                .contains("payload_size_bytes_count 3.0")
+                .contains("payload_size_bytes_sum 1536.0");
+    }
+
+    @Test
     void writeOpenMetrics100ExportsUnitsTimestampsExemplarsAndEof() throws IOException {
         Exemplar exemplar = new Exemplar(7.0, 5_678L, "trace_id", "abc", "span", "s\\\"1");
         MetricFamilySamples metrics = new MetricFamilySamples(
