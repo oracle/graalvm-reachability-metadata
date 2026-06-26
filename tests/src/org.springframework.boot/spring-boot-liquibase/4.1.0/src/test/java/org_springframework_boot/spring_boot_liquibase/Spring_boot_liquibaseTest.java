@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
-import liquibase.changelog.ChangeSet;
 import liquibase.integration.spring.SpringLiquibase;
 import org.h2.Driver;
 import org.junit.jupiter.api.Test;
@@ -32,14 +31,12 @@ import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.AutowireCandidateQualifier;
 import org.springframework.boot.liquibase.actuate.endpoint.LiquibaseEndpoint;
-import org.springframework.boot.liquibase.autoconfigure.DataSourceClosingSpringLiquibase;
 import org.springframework.boot.liquibase.autoconfigure.LiquibaseAutoConfiguration;
 import org.springframework.boot.liquibase.autoconfigure.LiquibaseConnectionDetails;
 import org.springframework.boot.liquibase.autoconfigure.LiquibaseDataSource;
 import org.springframework.boot.liquibase.autoconfigure.LiquibaseEndpointAutoConfiguration;
 import org.springframework.boot.liquibase.autoconfigure.LiquibaseProperties;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.StaticApplicationContext;
 import org.springframework.core.env.MapPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -141,42 +138,6 @@ public class Spring_boot_liquibaseTest {
     }
 
     @Test
-    void dataSourceClosingSpringLiquibaseRunsMigrationAndClosesDataSourceAfterMigration() throws Exception {
-        Path changeLog = writeChangeLog("closing-migration.xml", "book-one", "Spring Native", "native");
-        CloseableH2DataSource dataSource = new CloseableH2DataSource();
-        DataSourceClosingSpringLiquibase liquibase = new DataSourceClosingSpringLiquibase();
-        liquibase.setDataSource(dataSource);
-        liquibase.setChangeLog(changeLog.toUri().toString());
-        liquibase.setContexts("native");
-        liquibase.setAnalyticsEnabled(false);
-
-        liquibase.afterPropertiesSet();
-
-        assertThat(dataSource.isClosed()).isTrue();
-        assertThat(readBookTitles(dataSource)).containsExactly("Spring Native");
-    }
-
-    @Test
-    void dataSourceClosingSpringLiquibaseCanDeferCloseUntilDestroy() throws Exception {
-        Path changeLog = writeChangeLog("destroy-migration.xml", "book-two", "Liquibase Destroy", null);
-        CloseableH2DataSource dataSource = new CloseableH2DataSource();
-        DataSourceClosingSpringLiquibase liquibase = new DataSourceClosingSpringLiquibase();
-        liquibase.setDataSource(dataSource);
-        liquibase.setChangeLog(changeLog.toUri().toString());
-        liquibase.setCloseDataSourceOnceMigrated(false);
-        liquibase.setAnalyticsEnabled(false);
-
-        liquibase.afterPropertiesSet();
-
-        assertThat(dataSource.isClosed()).isFalse();
-        assertThat(readBookTitles(dataSource)).containsExactly("Liquibase Destroy");
-
-        liquibase.destroy();
-
-        assertThat(dataSource.isClosed()).isTrue();
-    }
-
-    @Test
     void liquibaseAutoConfigurationUsesDedicatedJdbcUrlAndChangeLogParameters() throws Exception {
         Path changeLog = writeParameterizedChangeLog("auto-config-migration.xml");
         String migrationDatabaseName = "liquibase-auto-config-" + UUID.randomUUID();
@@ -226,57 +187,6 @@ public class Spring_boot_liquibaseTest {
             assertThat(liquibase.getDataSource()).isSameAs(migrationDataSource);
             assertThat(hasBooksTable(applicationDataSource)).isFalse();
             assertThat(readBookTitles(migrationDataSource)).containsExactly("Qualified DataSource");
-        }
-    }
-
-    @Test
-    void liquibaseEndpointReportsExecutedChangeSetsFromCurrentAndParentContexts() throws Exception {
-        Path parentChangeLog = writeChangeLog("parent-endpoint.xml", "parent-change", "Parent Context", null);
-        Path childChangeLog = writeChangeLog("child-endpoint.xml", "child-change", "Child Context", "endpoint");
-        CloseableH2DataSource parentDataSource = new CloseableH2DataSource();
-        CloseableH2DataSource childDataSource = new CloseableH2DataSource();
-        SpringLiquibase parentLiquibase = migratedLiquibase(parentDataSource, parentChangeLog, null);
-        SpringLiquibase childLiquibase = migratedLiquibase(childDataSource, childChangeLog, "endpoint");
-
-        try (StaticApplicationContext parent = new StaticApplicationContext();
-                StaticApplicationContext child = new StaticApplicationContext()) {
-            parent.setId("parent-context");
-            parent.getBeanFactory().registerSingleton("parentLiquibase", parentLiquibase);
-            parent.refresh();
-            child.setId("child-context");
-            child.setParent(parent);
-            child.getBeanFactory().registerSingleton("childLiquibase", childLiquibase);
-            child.refresh();
-
-            LiquibaseEndpoint.LiquibaseBeansDescriptor descriptor = new LiquibaseEndpoint(child).liquibaseBeans();
-
-            assertThat(descriptor.getContexts()).containsOnlyKeys("child-context", "parent-context");
-            LiquibaseEndpoint.ContextLiquibaseBeansDescriptor childContext = descriptor.getContexts()
-                    .get("child-context");
-            assertThat(childContext.getParentId()).isEqualTo("parent-context");
-            assertThat(childContext.getLiquibaseBeans()).containsOnlyKeys("childLiquibase");
-            LiquibaseEndpoint.ContextLiquibaseBeansDescriptor parentContext = descriptor.getContexts()
-                    .get("parent-context");
-            assertThat(parentContext.getParentId()).isNull();
-            assertThat(parentContext.getLiquibaseBeans()).containsOnlyKeys("parentLiquibase");
-
-            LiquibaseEndpoint.ChangeSetDescriptor childChangeSet = childContext.getLiquibaseBeans()
-                    .get("childLiquibase").getChangeSets().get(0);
-            assertThat(childChangeSet.getId()).isEqualTo("child-change");
-            assertThat(childChangeSet.getAuthor()).isEqualTo("test");
-            assertThat(childChangeSet.getExecType()).isEqualTo(ChangeSet.ExecType.EXECUTED);
-            assertThat(childChangeSet.getContexts()).containsExactly("endpoint");
-            assertThat(childChangeSet.getLabels()).isEmpty();
-            assertThat(childChangeSet.getDateExecuted()).isNotNull();
-            assertThat(childChangeSet.getDeploymentId()).isNotBlank();
-            assertThat(childChangeSet.getOrderExecuted()).isPositive();
-            assertThat(childChangeSet.getChecksum()).isNotBlank();
-            assertThat(childChangeSet.getTag()).isNull();
-
-            LiquibaseEndpoint.ChangeSetDescriptor parentChangeSet = parentContext.getLiquibaseBeans()
-                    .get("parentLiquibase").getChangeSets().get(0);
-            assertThat(parentChangeSet.getId()).isEqualTo("parent-change");
-            assertThat(parentChangeSet.getContexts()).isEmpty();
         }
     }
 
@@ -349,21 +259,6 @@ public class Spring_boot_liquibaseTest {
                 </databaseChangeLog>
                 """.formatted(changeSetId, contextAttribute, title));
         return changeLog;
-    }
-
-    private SpringLiquibase migratedLiquibase(CloseableH2DataSource dataSource, Path changeLog, String contexts)
-            throws Exception {
-        SpringLiquibase liquibase = new SpringLiquibase();
-        liquibase.setDataSource(dataSource);
-        liquibase.setChangeLog(changeLog.toUri().toString());
-        liquibase.setDatabaseChangeLogTable("DATABASECHANGELOG");
-        liquibase.setDatabaseChangeLogLockTable("DATABASECHANGELOGLOCK");
-        liquibase.setAnalyticsEnabled(false);
-        if (contexts != null) {
-            liquibase.setContexts(contexts);
-        }
-        liquibase.afterPropertiesSet();
-        return liquibase;
     }
 
     private List<String> readBookTitles(DataSource dataSource) throws SQLException {

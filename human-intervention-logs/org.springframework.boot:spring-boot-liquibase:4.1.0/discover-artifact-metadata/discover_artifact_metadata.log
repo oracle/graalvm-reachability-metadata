@@ -1,0 +1,838 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f05ec-a78d-7be0-94e9-d49fbf8f8765
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.springframework.boot:spring-boot-liquibase:4.1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "4.1.0" when "$version$" is replaced with "4.1.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json
+- Set "coordinates" to "org.springframework.boot:spring-boot-liquibase:4.1.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "4.1.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact coordinates against Maven/Spring sources, then update the discovered metadata JSON in place with version-templated URLs.
+exec
+/usr/bin/bash -lc 'pwd && ls -l build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b
+-rw-rw-r-- 1 vjovanov vjovanov 77 Jun 26 23:53 build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json
+
+ succeeded in 0ms:
+{
+  "coordinates" : "org.springframework.boot:spring-boot-liquibase:4.1.0"
+}
+
+web search: 
+web search: Maven Central org.springframework.boot spring-boot-liquibase 4.1.0
+codex
+The artifact exists as a normal Maven Central JVM artifact, so I’m checking the published POM and available classifiers before falling back to repository tag URLs for source/tests/docs.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/4.1.0/spring-boot-liquibase-4.1.0.pom' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-liquibase</artifactId>
+  <version>4.1.0</version>
+  <name>spring-boot-liquibase</name>
+  <description>Spring Boot Liquibase</description>
+  <url>https://spring.io/projects/spring-boot</url>
+  <organization>
+    <name>VMware, Inc.</name>
+    <url>https://spring.io</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Spring</name>
+      <email>ask@spring.io</email>
+      <organization>VMware, Inc.</organization>
+      <organizationUrl>https://www.spring.io</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/spring-projects/spring-boot.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/spring-projects/spring-boot.git</developerConnection>
+    <url>https://github.com/spring-projects/spring-boot</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/spring-projects/spring-boot/issues</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+      <version>4.1.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-jdbc</artifactId>
+      <version>4.1.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.liquibase</groupId>
+      <artifactId>liquibase-core</artifactId>
+      <version>5.0.3</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/4.1.0/' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/springframework/boot/spring-boot-liquibase/4.1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/springframework/boot/spring-boot-liquibase/4.1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="spring-boot-liquibase-4.1.0-javadoc.jar" title="spring-boot-liquibase-4.1.0-javadoc.jar">spring-boot-liquibase-4.1.0-javadoc.jar</a>           2026-06-10 17:58    163701      
+<a href="spring-boot-liquibase-4.1.0-javadoc.jar.asc" title="spring-boot-liquibase-4.1.0-javadoc.jar.asc">spring-boot-liquibase-4.1.0-javadoc.jar.asc</a>       2026-06-10 17:58       833      
+<a href="spring-boot-liquibase-4.1.0-javadoc.jar.md5" title="spring-boot-liquibase-4.1.0-javadoc.jar.md5">spring-boot-liquibase-4.1.0-javadoc.jar.md5</a>       2026-06-10 17:58        32      
+<a href="spring-boot-liquibase-4.1.0-javadoc.jar.sha1" title="spring-boot-liquibase-4.1.0-javadoc.jar.sha1">spring-boot-liquibase-4.1.0-javadoc.jar.sha1</a>      2026-06-10 17:58        40      
+<a href="spring-boot-liquibase-4.1.0-sources.jar" title="spring-boot-liquibase-4.1.0-sources.jar">spring-boot-liquibase-4.1.0-sources.jar</a>           2026-06-10 17:58     28935      
+<a href="spring-boot-liquibase-4.1.0-sources.jar.asc" title="spring-boot-liquibase-4.1.0-sources.jar.asc">spring-boot-liquibase-4.1.0-sources.jar.asc</a>       2026-06-10 17:58       833      
+<a href="spring-boot-liquibase-4.1.0-sources.jar.md5" title="spring-boot-liquibase-4.1.0-sources.jar.md5">spring-boot-liquibase-4.1.0-sources.jar.md5</a>       2026-06-10 17:58        32      
+<a href="spring-boot-liquibase-4.1.0-sources.jar.sha1" title="spring-boot-liquibase-4.1.0-sources.jar.sha1">spring-boot-liquibase-4.1.0-sources.jar.sha1</a>      2026-06-10 17:58        40      
+<a href="spring-boot-liquibase-4.1.0.jar" title="spring-boot-liquibase-4.1.0.jar">spring-boot-liquibase-4.1.0.jar</a>                   2026-06-10 17:58     49163      
+<a href="spring-boot-liquibase-4.1.0.jar.asc" title="spring-boot-liquibase-4.1.0.jar.asc">spring-boot-liquibase-4.1.0.jar.asc</a>               2026-06-10 17:58       833      
+<a href="spring-boot-liquibase-4.1.0.jar.md5" title="spring-boot-liquibase-4.1.0.jar.md5">spring-boot-liquibase-4.1.0.jar.md5</a>               2026-06-10 17:58        32      
+<a href="spring-boot-liquibase-4.1.0.jar.sha1" title="spring-boot-liquibase-4.1.0.jar.sha1">spring-boot-liquibase-4.1.0.jar.sha1</a>              2026-06-10 17:58        40      
+<a href="spring-boot-liquibase-4.1.0.module" title="spring-boot-liquibase-4.1.0.module">spring-boot-liquibase-4.1.0.module</a>                2026-06-10 17:58      4934      
+<a href="spring-boot-liquibase-4.1.0.module.asc" title="spring-boot-liquibase-4.1.0.module.asc">spring-boot-liquibase-4.1.0.module.asc</a>            2026-06-10 17:58       833      
+<a href="spring-boot-liquibase-4.1.0.module.md5" title="spring-boot-liquibase-4.1.0.module.md5">spring-boot-liquibase-4.1.0.module.md5</a>            2026-06-10 17:58        32      
+<a href="spring-boot-liquibase-4.1.0.module.sha1" title="spring-boot-liquibase-4.1.0.module.sha1">spring-boot-liquibase-4.1.0.module.sha1</a>           2026-06-10 17:58        40      
+<a href="spring-boot-liquibase-4.1.0.pom" title="spring-boot-liquibase-4.1.0.pom">spring-boot-liquibase-4.1.0.pom</a>                   2026-06-10 17:58      2589      
+<a href="spring-boot-liquibase-4.1.0.pom.asc" title="spring-boot-liquibase-4.1.0.pom.asc">spring-boot-liquibase-4.1.0.pom.asc</a>               2026-06-10 17:58       833      
+<a href="spring-boot-liquibase-4.1.0.pom.md5" title="spring-boot-liquibase-4.1.0.pom.md5">spring-boot-liquibase-4.1.0.pom.md5</a>               2026-06-10 17:58        32      
+<a href="spring-boot-liquibase-4.1.0.pom.sha1" title="spring-boot-liquibase-4.1.0.pom.sha1">spring-boot-liquibase-4.1.0.pom.sha1</a>              2026-06-10 17:58        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/4.1.0/spring-boot-liquibase-4.1.0-sources.jar && curl -I -fsSL https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/4.1.0/spring-boot-liquibase-4.1.0-test-sources.jar' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b
+ exited 22 in 271ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Fri, 26 Jun 2026 21:53:56 GMT
+content-type: text/html
+cf-ray: a11f72944fda27b2-LYS
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/springframework/boot/spring-boot-liquibase/4.1.0/spring-boot-liquibase-4.1.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/4.1.0/spring-boot-liquibase-4.1.0.pom
+web search: 
+web search: repo1.maven.org org.springframework.boot spring-boot-liquibase 4.1.0 pom
+codex
+Maven Central has `sources.jar` and `javadoc.jar` for 4.1.0 but no `test-sources.jar`; I’m checking existing metadata style and the Spring Boot tag layout for the test URL.
+exec
+/usr/bin/bash -lc "rg -n 'spring-boot-liquibase|spring-boot-starter-liquibase|source-code-url.*repo1.maven|documentation-url.*javadoc.jar|test-code-url.*github.com/spring-projects/spring-boot' metadata build/discovered-artifact-metadata | head -80" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json:2:  "coordinates" : "org.springframework.boot:spring-boot-liquibase:4.1.0"
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:12:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:15:    "documentation-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-javadoc.jar",
+metadata/log4j/log4j/index.json:7:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/log4j/log4j/index.json:10:    "documentation-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-javadoc.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:16:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:19:    "documentation-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-javadoc.jar",
+metadata/com.google.truth/truth/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/google/truth/truth/$version$/truth-$version$-javadoc.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-sources.jar",
+metadata/com.google.j2objc/j2objc-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/$version$/j2objc-annotations-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/mordant/mordant-core-jvm/$version$/mordant-core-jvm-$version$-javadoc.jar",
+metadata/com.diffplug.durian/durian-swt.os/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-swt.os/$version$/durian-swt.os-$version$-javadoc.jar",
+metadata/com.itextpdf/kernel/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-sources.jar",
+metadata/com.itextpdf/kernel/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/kernel/$version$/kernel-$version$-javadoc.jar",
+metadata/io.lettuce/lettuce-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-javadoc.jar",
+metadata/com.diffplug.durian/durian-collect/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-collect/$version$/durian-collect-$version$-javadoc.jar",
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ajalt/mordant/mordant-jvm-ffm-jvm/$version$/mordant-jvm-ffm-jvm-$version$-sources.jar",
+metadata/org.antlr/antlr4-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/$version$/antlr4-runtime-$version$-sources.jar",
+metadata/org.antlr/antlr4-runtime/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr4-runtime/$version$/antlr4-runtime-$version$-javadoc.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:9:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-javadoc.jar",
+metadata/com.github.javaparser/javaparser-core/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/javaparser/javaparser-core/$version$/javaparser-core-$version$-javadoc.jar",
+metadata/com.itextpdf/forms/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-sources.jar",
+metadata/com.itextpdf/forms/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/forms/$version$/forms-$version$-javadoc.jar",
+metadata/com.diffplug.durian/durian-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/diffplug/durian/durian-core/$version$/durian-core-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.apache.pulsar/pulsar-client-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/pulsar-client-api/$version$/pulsar-client-api-$version$-javadoc.jar",
+metadata/com.github.jknack/handlebars/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-sources.jar",
+metadata/com.github.jknack/handlebars/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-javadoc.jar",
+metadata/com.github.jknack/handlebars/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-sources.jar",
+metadata/com.github.jknack/handlebars/index.json:24:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-javadoc.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+metadata/com.itextpdf/layout/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-sources.jar",
+metadata/com.itextpdf/layout/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/layout/$version$/layout-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/com.github.ghostdogpr/caliban_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ghostdogpr/caliban_3/$version$/caliban_3-$version$-javadoc.jar",
+metadata/org.antlr/antlr-runtime/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr-runtime/$version$/antlr-runtime-$version$-sources.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:13:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-sources.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:16:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-javadoc.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:28:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-sources.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:31:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-javadoc.jar",
+metadata/oro/oro/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/oro/oro/$version$/oro-$version$-sources.jar",
+metadata/org.apache.pulsar/bouncy-castle-bc/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pulsar/bouncy-castle-bc/$version$/bouncy-castle-bc-$version$-javadoc.jar",
+metadata/org.mortbay.jetty/jetty-sslengine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty-sslengine/$version$/jetty-sslengine-$version$-javadoc.jar",
+metadata/com.itextpdf/svg/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/$version$/svg-$version$-sources.jar",
+metadata/com.itextpdf/svg/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/itextpdf/svg/$version$/svg-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.antlr/antlr/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/antlr/antlr/$version$/antlr-$version$-sources.jar",
+metadata/org.antlr/antlr/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/antlr/antlr/$version$/antlr-$version$-javadoc.jar",
+metadata/io.swagger/swagger-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
+metadata/com.github.jknack/handlebars-helpers/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/jknack/handlebars-helpers/4.4.0/handlebars-helpers-4.4.0-javadoc.jar",
+metadata/com.github.jknack/handlebars-helpers/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/jknack/handlebars-helpers/$version$/handlebars-helpers-$version$-javadoc.jar",
+metadata/com.squareup.moshi/moshi-adapters/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-adapters/$version$/moshi-adapters-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-spi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-spi/$version$/arquillian-container-spi-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-spi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-spi/$version$/arquillian-container-spi-$version$-javadoc.jar",
+metadata/org.antlr/ST4/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/antlr/ST4/$version$/ST4-$version$-javadoc.jar",
+metadata/com.ning/compress-lzf/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-sources.jar",
+metadata/com.ning/compress-lzf/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/ning/compress-lzf/$version$/compress-lzf-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-sources.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-javadoc.jar",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/ccil/cowan/tagsoup/tagsoup/$version$/tagsoup-$version$-sources.jar",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/ccil/cowan/tagsoup/tagsoup/$version$/tagsoup-$version$-javadoc.jar",
+metadata/com.twitter/hpack/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/twitter/hpack/$version$/hpack-$version$-sources.jar",
+metadata/com.twitter/hpack/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/twitter/hpack/$version$/hpack-$version$-javadoc.jar",
+metadata/com.sun.jersey.contribs/jersey-guice/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/contribs/jersey-guice/$version$/jersey-guice-$version$-javadoc.jar",
+metadata/com.sun.jersey.contribs/jersey-guice/index.json:33:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/jersey/contribs/jersey-guice/$version$/jersey-guice-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-impl-base/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-impl-base/$version$/arquillian-container-test-impl-base-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-impl-base/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-impl-base/$version$/arquillian-container-test-impl-base-$version$-javadoc.jar",
+metadata/org.web3j/core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/web3j/core/$version$/core-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-javadoc.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:44:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-test-api/index.json:47:    "documentation-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-test-api/$version$/arquillian-container-test-api-$version$-javadoc.jar",
+metadata/com.squareup.moshi/moshi-kotlin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-kotlin/$version$/moshi-kotlin-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/contents/spring-boot-project/spring-boot-liquibase/src/test/java?ref=v4.1.0' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/contents/spring-boot-project/spring-boot-liquibase/src/main/java?ref=v4.1.0' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b
+ exited 22 in 167ms:
+curl: (22) The requested URL returned error: 404
+
+ exited 22 in 173ms:
+curl: (22) The requested URL returned error: 404
+
+codex
+The expected module path was not present at that tag path, so I’m reading the published source jar to get the actual package/module layout and then matching that back to GitHub.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/4.1.0/spring-boot-liquibase-4.1.0.module' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b
+ succeeded in 0ms:
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "org.springframework.boot",
+    "module": "spring-boot-liquibase",
+    "version": "4.1.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "9.5.0"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot",
+          "version": {
+            "requires": "4.1.0"
+          }
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-jdbc",
+          "version": {
+            "requires": "4.1.0"
+          }
+        },
+        {
+          "group": "org.liquibase",
+          "module": "liquibase-core",
+          "version": {
+            "requires": "5.0.3"
+          },
+          "excludes": [
+            {
+              "group": "javax.xml.bind",
+              "module": "jaxb-api"
+            }
+          ]
+        }
+      ],
+      "files": [
+        {
+          "name": "spring-boot-liquibase-4.1.0.jar",
+          "url": "spring-boot-liquibase-4.1.0.jar",
+          "size": 49163,
+          "sha512": "b4bd7375ac35c49b92d631a127ae08764cafb6ee78efd18904bfb803f582c60aa884da0577f6fe65cb8b0a169a31893e62f998d530218bb9798fab62c987fa76",
+          "sha256": "98b9efc66c6ac7baf0c923e9b332ef33bba804904275f45363c66b80ccea0b2e",
+          "sha1": "2396a19ddd36ce5c07a36920b90ff8c18bcb14a4",
+          "md5": "fcffdb05c3aaef975107d9061198b9a5"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot",
+          "version": {
+            "requires": "4.1.0"
+          }
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-jdbc",
+          "version": {
+            "requires": "4.1.0"
+          }
+        },
+        {
+          "group": "org.liquibase",
+          "module": "liquibase-core",
+          "version": {
+            "requires": "5.0.3"
+          },
+          "excludes": [
+            {
+              "group": "javax.xml.bind",
+              "module": "jaxb-api"
+            }
+          ]
+        }
+      ],
+      "files": [
+        {
+          "name": "spring-boot-liquibase-4.1.0.jar",
+          "url": "spring-boot-liquibase-4.1.0.jar",
+          "size": 49163,
+          "sha512": "b4bd7375ac35c49b92d631a127ae08764cafb6ee78efd18904bfb803f582c60aa884da0577f6fe65cb8b0a169a31893e62f998d530218bb9798fab62c987fa76",
+          "sha256": "98b9efc66c6ac7baf0c923e9b332ef33bba804904275f45363c66b80ccea0b2e",
+          "sha1": "2396a19ddd36ce5c07a36920b90ff8c18bcb14a4",
+          "md5": "fcffdb05c3aaef975107d9061198b9a5"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "spring-boot-liquibase-4.1.0-javadoc.jar",
+          "url": "spring-boot-liquibase-4.1.0-javadoc.jar",
+          "size": 163701,
+          "sha512": "f7a7f858a40c04c0bea5373cb364bc50bb1c38063b833d588957647574178af43c15ff8bf9fa1bc4d67fb670cdef7a8005c3b48377bce46bd3b91ac7c43d3848",
+          "sha256": "b43d8add0f63ade036a70a75f2570cb626462f6763fef9362af200cd80f2ca94",
+          "sha1": "1cc31b78c4350eb5c9f08791274edfe3f92dfa98",
+          "md5": "3fca527f6e823931cfae4933eebe012a"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "spring-boot-liquibase-4.1.0-sources.jar",
+          "url": "spring-boot-liquibase-4.1.0-sources.jar",
+          "size": 28935,
+          "sha512": "30939c7ba742cc6509f06428998db976a7caaacb648066075b8799017bcaa5a440c27e2c2c71d9ec356789cd0433277890d91876b06b6a4c40cdff7c86044571",
+          "sha256": "5497ac161dc7bfcfcf74364f139aac77ac3644c42ea3b034f09aa54d078545b6",
+          "sha1": "3f360691b94d45ef934d8632d9910529e568c7a2",
+          "md5": "f47f9130b726d6516477557aabf2610f"
+        }
+      ]
+    }
+  ]
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/4.1.0/spring-boot-liquibase-4.1.0-sources.jar -o /tmp/spring-boot-liquibase-4.1.0-sources.jar && jar tf /tmp/spring-boot-liquibase-4.1.0-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+META-INF/additional-spring-configuration-metadata.json
+META-INF/spring.factories
+META-INF/spring/
+META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
+META-INF/spring/org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureDataSourceInitialization.imports
+org/
+org/springframework/
+org/springframework/boot/
+org/springframework/boot/liquibase/
+org/springframework/boot/liquibase/LiquibaseChangelogMissingFailureAnalyzer.java
+org/springframework/boot/liquibase/LiquibaseDatabaseInitializerDetector.java
+org/springframework/boot/liquibase/package-info.java
+org/springframework/boot/liquibase/actuate/
+org/springframework/boot/liquibase/actuate/endpoint/
+org/springframework/boot/liquibase/actuate/endpoint/LiquibaseEndpoint.java
+org/springframework/boot/liquibase/actuate/endpoint/package-info.java
+org/springframework/boot/liquibase/autoconfigure/
+org/springframework/boot/liquibase/autoconfigure/DataSourceClosingSpringLiquibase.java
+org/springframework/boot/liquibase/autoconfigure/LiquibaseAutoConfiguration.java
+org/springframework/boot/liquibase/autoconfigure/LiquibaseConnectionDetails.java
+org/springframework/boot/liquibase/autoconfigure/LiquibaseDataSource.java
+org/springframework/boot/liquibase/autoconfigure/LiquibaseEndpointAutoConfiguration.java
+org/springframework/boot/liquibase/autoconfigure/LiquibaseProperties.java
+org/springframework/boot/liquibase/autoconfigure/LiquibaseSchemaManagementProvider.java
+org/springframework/boot/liquibase/autoconfigure/package-info.java
+org/springframework/boot/liquibase/docker/
+org/springframework/boot/liquibase/docker/compose/
+org/springframework/boot/liquibase/docker/compose/JdbcAdaptingLiquibaseConnectionDetailsFactory.java
+org/springframework/boot/liquibase/docker/compose/package-info.java
+org/springframework/boot/liquibase/testcontainers/
+org/springframework/boot/liquibase/testcontainers/LiquibaseContainerConnectionDetailsFactory.java
+org/springframework/boot/liquibase/testcontainers/package-info.java
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/git/refs/tags/v4.1.0' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b
+ succeeded in 290ms:
+{
+  "ref": "refs/tags/v4.1.0",
+  "node_id": "MDM6UmVmNjI5Njc5MDpyZWZzL3RhZ3MvdjQuMS4w",
+  "url": "https://api.github.com/repos/spring-projects/spring-boot/git/refs/tags/v4.1.0",
+  "object": {
+    "sha": "ac2cfe03538b87a0dc9d2619ed52a4c901eaea54",
+    "type": "commit",
+    "url": "https://api.github.com/repos/spring-projects/spring-boot/git/commits/ac2cfe03538b87a0dc9d2619ed52a4c901eaea54"
+  }
+}
+
+codex
+The published module metadata confirms this is a Java runtime library (`org.gradle.jvm.version` 17) with ordinary jar, sources, and Javadoc variants. Next I’m locating the exact test directory in the Spring Boot 4.1.0 tag.
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/search/code?q=repo:spring-projects/spring-boot+LiquibaseAutoConfigurationTests+ref:v4.1.0'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/spring-projects/spring-boot/v4.1.0/settings.gradle | rg -n 'liquibase|spring-boot-liquibase' -C 3" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/spring-projects/spring-boot/git/trees/v4.1.0?recursive=1 | rg 'spring-boot-liquibase|LiquibaseAutoConfiguration|Liquibase' | head -120" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b
+ exited 22 in 130ms:
+curl: (22) The requested URL returned error: 401
+
+ succeeded in 158ms:
+149-include "module:spring-boot-kafka"
+150-include "module:spring-boot-kotlinx-serialization-json"
+151-include "module:spring-boot-ldap"
+152:include "module:spring-boot-liquibase"
+153-include "module:spring-boot-mail"
+154-include "module:spring-boot-micrometer-metrics"
+155-include "module:spring-boot-micrometer-metrics-test"
+--
+305-include "starter:spring-boot-starter-kotlinx-serialization-json-test"
+306-include "starter:spring-boot-starter-ldap"
+307-include "starter:spring-boot-starter-ldap-test"
+308:include "starter:spring-boot-starter-liquibase"
+309:include "starter:spring-boot-starter-liquibase-test"
+310-include "starter:spring-boot-starter-log4j2"
+311-include "starter:spring-boot-starter-logback"
+312-include "starter:spring-boot-starter-logging"
+--
+421-include ":smoke-test:spring-boot-smoke-test-data-mongodb"
+422-include ":smoke-test:spring-boot-smoke-test-data-r2dbc"
+423-include ":smoke-test:spring-boot-smoke-test-data-r2dbc-flyway"
+424:include ":smoke-test:spring-boot-smoke-test-data-r2dbc-liquibase"
+425-include ":smoke-test:spring-boot-smoke-test-data-redis"
+426-include ":smoke-test:spring-boot-smoke-test-data-rest"
+427-include ":smoke-test:spring-boot-smoke-test-devtools"
+--
+445-include ":smoke-test:spring-boot-smoke-test-jetty-jsp"
+446-include ":smoke-test:spring-boot-smoke-test-jetty-ssl"
+447-include ":smoke-test:spring-boot-smoke-test-kafka"
+448:include ":smoke-test:spring-boot-smoke-test-liquibase"
+449-include ":smoke-test:spring-boot-smoke-test-log4j2"
+450-include ":smoke-test:spring-boot-smoke-test-logback"
+451-include ":smoke-test:spring-boot-smoke-test-oauth2-authorization-server"
+
+ succeeded in 1369ms:
+      "path": "documentation/spring-boot-actuator-docs/src/test/java/org/springframework/boot/actuate/docs/liquibase/LiquibaseEndpointDocumentationTests.java",
+      "path": "module/spring-boot-liquibase",
+      "path": "module/spring-boot-liquibase/build.gradle",
+      "path": "module/spring-boot-liquibase/src",
+      "path": "module/spring-boot-liquibase/src/dockerTest",
+      "path": "module/spring-boot-liquibase/src/dockerTest/java",
+      "path": "module/spring-boot-liquibase/src/dockerTest/java/org",
+      "path": "module/spring-boot-liquibase/src/dockerTest/java/org/springframework",
+      "path": "module/spring-boot-liquibase/src/dockerTest/java/org/springframework/boot",
+      "path": "module/spring-boot-liquibase/src/dockerTest/java/org/springframework/boot/liquibase",
+      "path": "module/spring-boot-liquibase/src/dockerTest/java/org/springframework/boot/liquibase/docker",
+      "path": "module/spring-boot-liquibase/src/dockerTest/java/org/springframework/boot/liquibase/docker/compose",
+      "path": "module/spring-boot-liquibase/src/dockerTest/java/org/springframework/boot/liquibase/docker/compose/JdbcAdaptingLiquibaseConnectionDetailsFactoryIntegrationTests.java",
+      "path": "module/spring-boot-liquibase/src/dockerTest/java/org/springframework/boot/liquibase/testcontainers",
+      "path": "module/spring-boot-liquibase/src/dockerTest/java/org/springframework/boot/liquibase/testcontainers/LiquibaseContainerConnectionDetailsFactoryTests.java",
+      "path": "module/spring-boot-liquibase/src/dockerTest/resources",
+      "path": "module/spring-boot-liquibase/src/dockerTest/resources/db",
+      "path": "module/spring-boot-liquibase/src/dockerTest/resources/db/changelog",
+      "path": "module/spring-boot-liquibase/src/dockerTest/resources/db/changelog/db.changelog-master.yaml",
+      "path": "module/spring-boot-liquibase/src/dockerTest/resources/logback-test.xml",
+      "path": "module/spring-boot-liquibase/src/dockerTest/resources/org",
+      "path": "module/spring-boot-liquibase/src/dockerTest/resources/org/springframework",
+      "path": "module/spring-boot-liquibase/src/dockerTest/resources/org/springframework/boot",
+      "path": "module/spring-boot-liquibase/src/dockerTest/resources/org/springframework/boot/liquibase",
+      "path": "module/spring-boot-liquibase/src/dockerTest/resources/org/springframework/boot/liquibase/docker",
+      "path": "module/spring-boot-liquibase/src/dockerTest/resources/org/springframework/boot/liquibase/docker/compose",
+      "path": "module/spring-boot-liquibase/src/dockerTest/resources/org/springframework/boot/liquibase/docker/compose/liquibase-compose.yaml",
+      "path": "module/spring-boot-liquibase/src/dockerTest/resources/spring.properties",
+      "path": "module/spring-boot-liquibase/src/main",
+      "path": "module/spring-boot-liquibase/src/main/java",
+      "path": "module/spring-boot-liquibase/src/main/java/org",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/LiquibaseChangelogMissingFailureAnalyzer.java",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/LiquibaseDatabaseInitializerDetector.java",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/actuate",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/actuate/endpoint",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/actuate/endpoint/LiquibaseEndpoint.java",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/actuate/endpoint/package-info.java",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/autoconfigure",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/autoconfigure/DataSourceClosingSpringLiquibase.java",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/autoconfigure/LiquibaseAutoConfiguration.java",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/autoconfigure/LiquibaseConnectionDetails.java",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/autoconfigure/LiquibaseDataSource.java",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/autoconfigure/LiquibaseEndpointAutoConfiguration.java",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/autoconfigure/LiquibaseProperties.java",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/autoconfigure/LiquibaseSchemaManagementProvider.java",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/autoconfigure/package-info.java",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/docker",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/docker/compose",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/docker/compose/JdbcAdaptingLiquibaseConnectionDetailsFactory.java",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/docker/compose/package-info.java",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/package-info.java",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/testcontainers",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/testcontainers/LiquibaseContainerConnectionDetailsFactory.java",
+      "path": "module/spring-boot-liquibase/src/main/java/org/springframework/boot/liquibase/testcontainers/package-info.java",
+      "path": "module/spring-boot-liquibase/src/main/resources",
+      "path": "module/spring-boot-liquibase/src/main/resources/META-INF",
+      "path": "module/spring-boot-liquibase/src/main/resources/META-INF/additional-spring-configuration-metadata.json",
+      "path": "module/spring-boot-liquibase/src/main/resources/META-INF/spring.factories",
+      "path": "module/spring-boot-liquibase/src/main/resources/META-INF/spring",
+      "path": "module/spring-boot-liquibase/src/main/resources/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports",
+      "path": "module/spring-boot-liquibase/src/main/resources/META-INF/spring/org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureDataSourceInitialization.imports",
+      "path": "module/spring-boot-liquibase/src/test",
+      "path": "module/spring-boot-liquibase/src/test/java",
+      "path": "module/spring-boot-liquibase/src/test/java/org",
+      "path": "module/spring-boot-liquibase/src/test/java/org/springframework",
+      "path": "module/spring-boot-liquibase/src/test/java/org/springframework/boot",
+      "path": "module/spring-boot-liquibase/src/test/java/org/springframework/boot/liquibase",
+      "path": "module/spring-boot-liquibase/src/test/java/org/springframework/boot/liquibase/LiquibaseChangelogMissingFailureAnalyzerTests.java",
+      "path": "module/spring-boot-liquibase/src/test/java/org/springframework/boot/liquibase/actuate",
+      "path": "module/spring-boot-liquibase/src/test/java/org/springframework/boot/liquibase/actuate/endpoint",
+      "path": "module/spring-boot-liquibase/src/test/java/org/springframework/boot/liquibase/actuate/endpoint/LiquibaseEndpointTests.java",
+      "path": "module/spring-boot-liquibase/src/test/java/org/springframework/boot/liquibase/autoconfigure",
+      "path": "module/spring-boot-liquibase/src/test/java/org/springframework/boot/liquibase/autoconfigure/Liquibase423AutoConfigurationTests.java",
+      "path": "module/spring-boot-liquibase/src/test/java/org/springframework/boot/liquibase/autoconfigure/LiquibaseAutoConfigurationTests.java",
+      "path": "module/spring-boot-liquibase/src/test/java/org/springframework/boot/liquibase/autoconfigure/LiquibaseAutoConfigureDataSourceInitializationTests.java",
+      "path": "module/spring-boot-liquibase/src/test/java/org/springframework/boot/liquibase/autoconfigure/LiquibaseEndpointAutoConfigurationTests.java",
+      "path": "module/spring-boot-liquibase/src/test/java/org/springframework/boot/liquibase/autoconfigure/LiquibasePropertiesTests.java",
+      "path": "smoke-test/spring-boot-smoke-test-data-r2dbc-liquibase/src/main/java/smoketest/data/r2dbc/SampleR2dbcLiquibaseApplication.java",
+      "path": "smoke-test/spring-boot-smoke-test-liquibase/src/main/java/smoketest/liquibase/SampleLiquibaseApplication.java",
+      "path": "smoke-test/spring-boot-smoke-test-liquibase/src/test/java/smoketest/liquibase/SampleLiquibaseApplicationTests.java",
+
+codex
+I have the values now. I’m going to write the JSON with Maven Central source/Javadoc artifacts, the GitHub 4.1.0 module test tree, no language field, and no `not-for-native-image` marker because the artifact is a JVM jar.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json
+index 23162325046f951178b377345528d4859eaa41b9..41c9d4c4ff3de50a5174141f292807402482a31b
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-liquibase:4.1.0"
++  "coordinates" : "org.springframework.boot:spring-boot-liquibase:4.1.0",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/$version$/spring-boot-liquibase-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-liquibase/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/$version$/spring-boot-liquibase-$version$-javadoc.jar",
++  "description" : "Spring Boot Liquibase provides auto-configuration and integration support for running Liquibase database migrations in Spring Boot applications. It configures Liquibase from Spring Boot properties, coordinates database initialization, and exposes related endpoint, Testcontainers, and Docker Compose integration hooks."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json
+index 23162325046f951178b377345528d4859eaa41b9..41c9d4c4ff3de50a5174141f292807402482a31b
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-liquibase:4.1.0"
++  "coordinates" : "org.springframework.boot:spring-boot-liquibase:4.1.0",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/$version$/spring-boot-liquibase-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-liquibase/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/$version$/spring-boot-liquibase-$version$-javadoc.jar",
++  "description" : "Spring Boot Liquibase provides auto-configuration and integration support for running Liquibase database migrations in Spring Boot applications. It configures Liquibase from Spring Boot properties, coordinates database initialization, and exposes related endpoint, Testcontainers, and Docker Compose integration hooks."
+ }
+
+web search: 
+web search: central sonatype org.springframework.boot spring-boot-liquibase 4.1.0
+web search: 
+web search: https://github.com/spring-projects/spring-boot/tree/v4.1.0/module/spring-boot-liquibase/src/test
+codex
+The file is updated. I’m doing a final validation pass: JSON syntax, substituted URL reachability, and a quick diff so I only report what changed.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b
+ succeeded in 0ms:
+{
+  "coordinates": "org.springframework.boot:spring-boot-liquibase:4.1.0",
+  "repository-url": "https://github.com/spring-projects/spring-boot",
+  "source-code-url": "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/$version$/spring-boot-liquibase-$version$-sources.jar",
+  "test-code-url": "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-liquibase/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/$version$/spring-boot-liquibase-$version$-javadoc.jar",
+  "description": "Spring Boot Liquibase provides auto-configuration and integration support for running Liquibase database migrations in Spring Boot applications. It configures Liquibase from Spring Boot properties, coordinates database initialization, and exposes related endpoint, Testcontainers, and Docker Compose integration hooks."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  'https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/4.1.0/spring-boot-liquibase-4.1.0-sources.jar' \\
+  'https://github.com/spring-projects/spring-boot/tree/v4.1.0/module/spring-boot-liquibase/src/test' \\
+  'https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/4.1.0/spring-boot-liquibase-4.1.0-javadoc.jar'; do
+  printf '%s -> ' \""'$url"
+  curl -o /dev/null -s -L -w '"'%{http_code}\\n' \""'$url"
+done' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json
+index 23162325046f951178b377345528d4859eaa41b9..41c9d4c4ff3de50a5174141f292807402482a31b
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-liquibase:4.1.0"
++  "coordinates" : "org.springframework.boot:spring-boot-liquibase:4.1.0",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/$version$/spring-boot-liquibase-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-liquibase/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/$version$/spring-boot-liquibase-$version$-javadoc.jar",
++  "description" : "Spring Boot Liquibase provides auto-configuration and integration support for running Liquibase database migrations in Spring Boot applications. It configures Liquibase from Spring Boot properties, coordinates database initialization, and exposes related endpoint, Testcontainers, and Docker Compose integration hooks."
+ }
+
+ succeeded in 854ms:
+200
+https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/4.1.0/spring-boot-liquibase-4.1.0-javadoc.jar -> 200
+
+codex
+The substituted source, test, and documentation URLs each returned HTTP 200. The file is under `build/`, so it may not show in normal git diff if that directory is ignored; the JSON itself validates.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b
+ succeeded in 0ms:
+{
+  "coordinates" : "org.springframework.boot:spring-boot-liquibase:4.1.0",
+  "repository-url" : "https://github.com/spring-projects/spring-boot",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/$version$/spring-boot-liquibase-$version$-sources.jar",
+  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-liquibase/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/$version$/spring-boot-liquibase-$version$-javadoc.jar",
+  "description" : "Spring Boot Liquibase provides auto-configuration and integration support for running Liquibase database migrations in Spring Boot applications. It configures Liquibase from Spring Boot properties, coordinates database initialization, and exposes related endpoint, Testcontainers, and Docker Compose integration hooks."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored=matching build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json
+index 23162325046f951178b377345528d4859eaa41b9..41c9d4c4ff3de50a5174141f292807402482a31b
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-liquibase:4.1.0"
++  "coordinates" : "org.springframework.boot:spring-boot-liquibase:4.1.0",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/$version$/spring-boot-liquibase-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-liquibase/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/$version$/spring-boot-liquibase-$version$-javadoc.jar",
++  "description" : "Spring Boot Liquibase provides auto-configuration and integration support for running Liquibase database migrations in Spring Boot applications. It configures Liquibase from Spring Boot properties, coordinates database initialization, and exposes related endpoint, Testcontainers, and Docker Compose integration hooks."
+ }
+
+ succeeded in 234ms:
+!! build/
+
+codex
+Updated [org.springframework.boot-spring-boot-liquibase-4.1.0.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json).
+
+Set repository, source, test, documentation, and exactly two-sentence description. I left `language` absent and did not set `not-for-native-image` because this is a normal JVM jar artifact.
+
+Validation: `jq` passed, and the source/test/documentation URLs all returned HTTP 200 after replacing `$version$` with `4.1.0`.
+diff --git a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json
+index 23162325046f951178b377345528d4859eaa41b9..41c9d4c4ff3de50a5174141f292807402482a31b
+--- a/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json
++++ b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.boot:spring-boot-liquibase:4.1.0"
++  "coordinates" : "org.springframework.boot:spring-boot-liquibase:4.1.0",
++  "repository-url" : "https://github.com/spring-projects/spring-boot",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/$version$/spring-boot-liquibase-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-boot/tree/v$version$/module/spring-boot-liquibase/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/boot/spring-boot-liquibase/$version$/spring-boot-liquibase-$version$-javadoc.jar",
++  "description" : "Spring Boot Liquibase provides auto-configuration and integration support for running Liquibase database migrations in Spring Boot applications. It configures Liquibase from Spring Boot properties, coordinates database initialization, and exposes related endpoint, Testcontainers, and Docker Compose integration hooks."
+ }
+
+tokens used
+54,837
+Updated [org.springframework.boot-spring-boot-liquibase-4.1.0.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b/build/discovered-artifact-metadata/org.springframework.boot-spring-boot-liquibase-4.1.0.json).
+
+Set repository, source, test, documentation, and exactly two-sentence description. I left `language` absent and did not set `not-for-native-image` because this is a normal JVM jar artifact.
+
+Validation: `jq` passed, and the source/test/documentation URLs all returned HTTP 200 after replacing `$version$` with `4.1.0`.
+Ran agent for org.springframework.boot:spring-boot-liquibase:4.1.0 (exit 0). Log: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b/build/agent-artifact-discovery-logs/org.springframework.boot-spring-boot-liquibase-4.1.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8466-da029d1b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 27s
+9 actionable tasks: 9 executed

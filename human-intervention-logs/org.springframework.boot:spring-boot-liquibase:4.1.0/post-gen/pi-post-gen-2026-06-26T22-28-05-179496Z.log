@@ -1,0 +1,16 @@
+Done.
+
+Changed:
+- `tests/src/org.springframework.boot/spring-boot-liquibase/4.1.0/src/test/java/org_springframework_boot/spring_boot_liquibase/Spring_boot_liquibaseTest.java`
+  - Removed the 3 generated tests whose failures were non-metadata native-image `http` URL protocol/schema-resolution issues.
+- `post-gen-interventions/org.springframework.boot_spring-boot-liquibase_4.1.0.md`
+  - Wrote the required intervention report with the literal library line near the top.
+
+Preserved:
+- The remaining auto-configuration tests, because their failures are metadata-related and Codex only partially resolved the missing Spring Boot native metadata path.
+
+Verification:
+- Ran `./gradlew compileTestJava -Pcoordinates=org.springframework.boot:spring-boot-liquibase:4.1.0 --stacktrace`
+- Result: `BUILD SUCCESSFUL`
+
+Note: an untracked metadata directory from the prior metadata-fix workflow is present in the worktree, but I did not modify metadata files.
