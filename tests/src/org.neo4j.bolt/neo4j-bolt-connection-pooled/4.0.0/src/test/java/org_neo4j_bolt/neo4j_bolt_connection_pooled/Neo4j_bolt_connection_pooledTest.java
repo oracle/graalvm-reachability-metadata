@@ -9,6 +9,8 @@ package org_neo4j_bolt.neo4j_bolt_connection_pooled;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.net.URI;
+import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
@@ -30,10 +32,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
-import java.util.function.Supplier;
+
+import javax.net.ssl.SSLContext;
 
 import org.junit.jupiter.api.Test;
 import org.neo4j.bolt.connection.AccessMode;
@@ -42,25 +44,39 @@ import org.neo4j.bolt.connection.AuthToken;
 import org.neo4j.bolt.connection.AuthTokens;
 import org.neo4j.bolt.connection.BoltAgent;
 import org.neo4j.bolt.connection.BoltConnection;
+import org.neo4j.bolt.connection.BoltConnectionParameters;
 import org.neo4j.bolt.connection.BoltConnectionProvider;
 import org.neo4j.bolt.connection.BoltConnectionState;
 import org.neo4j.bolt.connection.BoltProtocolVersion;
 import org.neo4j.bolt.connection.BoltServerAddress;
 import org.neo4j.bolt.connection.DatabaseName;
-import org.neo4j.bolt.connection.DatabaseNameUtil;
 import org.neo4j.bolt.connection.ListenerEvent;
 import org.neo4j.bolt.connection.LoggingProvider;
 import org.neo4j.bolt.connection.MetricsListener;
 import org.neo4j.bolt.connection.NotificationConfig;
 import org.neo4j.bolt.connection.ResponseHandler;
-import org.neo4j.bolt.connection.RoutingContext;
 import org.neo4j.bolt.connection.SecurityPlan;
 import org.neo4j.bolt.connection.SecurityPlans;
 import org.neo4j.bolt.connection.TelemetryApi;
 import org.neo4j.bolt.connection.TransactionType;
 import org.neo4j.bolt.connection.exception.BoltFailureException;
 import org.neo4j.bolt.connection.exception.MinVersionAcquisitionException;
-import org.neo4j.bolt.connection.pooled.PooledBoltConnectionProvider;
+import org.neo4j.bolt.connection.message.BeginMessage;
+import org.neo4j.bolt.connection.message.CommitMessage;
+import org.neo4j.bolt.connection.message.DiscardMessage;
+import org.neo4j.bolt.connection.message.LogoffMessage;
+import org.neo4j.bolt.connection.message.LogonMessage;
+import org.neo4j.bolt.connection.message.Message;
+import org.neo4j.bolt.connection.message.Messages;
+import org.neo4j.bolt.connection.message.PullMessage;
+import org.neo4j.bolt.connection.message.ResetMessage;
+import org.neo4j.bolt.connection.message.RollbackMessage;
+import org.neo4j.bolt.connection.message.RouteMessage;
+import org.neo4j.bolt.connection.message.RunMessage;
+import org.neo4j.bolt.connection.message.TelemetryMessage;
+import org.neo4j.bolt.connection.pooled.AuthTokenManager;
+import org.neo4j.bolt.connection.pooled.PooledBoltConnectionSource;
+import org.neo4j.bolt.connection.pooled.SecurityPlanSupplier;
 import org.neo4j.bolt.connection.summary.ResetSummary;
 import org.neo4j.bolt.connection.values.IsoDuration;
 import org.neo4j.bolt.connection.values.Point;
@@ -69,12 +85,13 @@ import org.neo4j.bolt.connection.values.Value;
 
 public class Neo4j_bolt_connection_pooledTest {
     private static final int TEST_TIMEOUT_SECONDS = 5;
-    private static final BoltServerAddress ADDRESS = new BoltServerAddress("127.0.0.1", 7687);
-    private static final RoutingContext ROUTING_CONTEXT = RoutingContext.EMPTY;
+    private static final URI SERVER_URI = URI.create("bolt://127.0.0.1:7687");
+    private static final BoltServerAddress ADDRESS = new BoltServerAddress(SERVER_URI);
+    private static final String ROUTING_CONTEXT_ADDRESS = "neo4j://ignored.example.com";
     private static final BoltAgent AGENT = new BoltAgent("neo4j-bolt-pooled-test", "JVM", "Java", "JUnit");
     private static final String USER_AGENT = "pooled-test/1";
-    private static final SecurityPlan SECURITY_PLAN = SecurityPlans.unencrypted();
-    private static final DatabaseName DATABASE_NAME = DatabaseNameUtil.database("neo4j");
+    private static final SecurityPlan SECURITY_PLAN = securityPlan();
+    private static final DatabaseName DATABASE_NAME = DatabaseName.database("neo4j");
     private static final AuthToken AUTH_TOKEN = authToken("first-token");
     private static final AuthToken OTHER_AUTH_TOKEN = authToken("second-token");
     private static final BoltProtocolVersion BOLT_5_8 = new BoltProtocolVersion(5, 8);
@@ -84,11 +101,9 @@ public class Neo4j_bolt_connection_pooledTest {
         MutableClock clock = new MutableClock(1_000L);
         RecordingMetricsListener metrics = new RecordingMetricsListener();
         RecordingConnectionProvider delegateProvider = new RecordingConnectionProvider(clock);
-        PooledBoltConnectionProvider provider = newProvider(delegateProvider, metrics, 2, 1_000L, 0L, -1L, clock);
-        List<DatabaseName> selectedDatabases = new ArrayList<>();
-
+        PooledBoltConnectionSource provider = newProvider(delegateProvider, metrics, 2, 1_000L, 0L, -1L, clock);
         try {
-            BoltConnection first = await(connect(provider, AUTH_TOKEN, selectedDatabases::add));
+            BoltConnection first = await(connect(provider, AUTH_TOKEN));
             FakeBoltConnection delegate = delegateProvider.connections().get(0);
 
             assertThat(first.serverAddress()).isEqualTo(ADDRESS);
@@ -98,16 +113,17 @@ public class Neo4j_bolt_connection_pooledTest {
             assertThat(first.serverSideRoutingEnabled()).isTrue();
             assertThat(first.defaultReadTimeout()).contains(Duration.ofSeconds(30));
             assertThat(await(first.authInfo()).authToken()).isEqualTo(AUTH_TOKEN);
-            assertThat(await(first.onLoop(() -> "loop-value"))).isEqualTo("loop-value");
             assertThat(await(first.setReadTimeout(Duration.ofSeconds(3)))).isNull();
-            assertThat(await(first.run("RETURN 1", Map.of()))).isSameAs(first);
-            assertThat(await(first.pull(10, -1))).isSameAs(first);
-            assertThat(await(first.telemetry(TelemetryApi.AUTO_COMMIT_TRANSACTION))).isSameAs(first);
-            assertThat(delegate.operations()).contains("run:RETURN 1", "pull:10:-1", "telemetry:AUTO_COMMIT_TRANSACTION");
+            await(first.write(Messages.run("RETURN 1", Map.of())));
+            await(first.write(Messages.pull(10, -1)));
+            await(first.write(Messages.telemetry(TelemetryApi.AUTO_COMMIT_TRANSACTION)));
+            assertThat(delegate.operations())
+                    .contains("run:RETURN 1", "pull:10:-1", "telemetry:AUTO_COMMIT_TRANSACTION");
             assertThat(delegate.lastReadTimeout()).isEqualTo(Duration.ofSeconds(3));
             assertThat(delegateProvider.connectCalls()).hasSize(1);
-            assertThat(delegateProvider.connectCalls().get(0).address()).isEqualTo(ADDRESS);
-            assertThat(delegateProvider.connectCalls().get(0).routingContext()).isSameAs(ROUTING_CONTEXT);
+            assertThat(delegateProvider.connectCalls().get(0).uri()).isEqualTo(SERVER_URI);
+            assertThat(delegateProvider.connectCalls().get(0).routingContextAddress())
+                    .isEqualTo(ROUTING_CONTEXT_ADDRESS);
             assertThat(delegateProvider.connectCalls().get(0).userAgent()).isEqualTo(USER_AGENT);
             assertThat(metrics.inUse()).isEqualTo(1);
             assertThat(metrics.idle()).isZero();
@@ -120,16 +136,16 @@ public class Neo4j_bolt_connection_pooledTest {
             assertThat(metrics.inUse()).isZero();
             assertThat(metrics.idle()).isEqualTo(1);
 
-            BoltConnection second = await(connect(provider, AUTH_TOKEN, selectedDatabases::add));
+            BoltConnection second = await(connect(provider, AUTH_TOKEN));
             assertThat(second).isNotSameAs(first);
             assertThat(delegateProvider.connectCalls()).hasSize(1);
             assertThat(await(second.authInfo()).authToken()).isEqualTo(AUTH_TOKEN);
             assertThat(metrics.inUse()).isEqualTo(1);
 
             await(second.close());
-            assertThat(selectedDatabases).containsExactly(DATABASE_NAME, DATABASE_NAME);
-            assertThat(metrics.events()).contains("register", "beforeCreating", "afterCreated", "afterConnectionCreated",
-                    "afterConnectionReleased");
+            assertThat(metrics.events())
+                    .contains("register", "beforeCreating", "afterCreated", "afterConnectionCreated",
+                            "afterConnectionReleased");
         } finally {
             await(provider.close());
         }
@@ -139,28 +155,27 @@ public class Neo4j_bolt_connection_pooledTest {
     void pooledConnectionDelegatesRoutingAndTransactionOperations() throws Exception {
         MutableClock clock = new MutableClock(1_000L);
         RecordingConnectionProvider delegateProvider = new RecordingConnectionProvider(clock);
-        PooledBoltConnectionProvider provider = newProvider(
+        PooledBoltConnectionSource provider = newProvider(
                 delegateProvider, new RecordingMetricsListener(), 2, 1_000L, 0L, -1L, clock);
         Map<String, Value> parameters = Map.of("name", new SimpleValue("Ada"));
         Map<String, Value> metadata = Map.of("source", new SimpleValue("test"));
 
         try {
-            BoltConnection connection = await(connect(provider, AUTH_TOKEN, databaseName -> { }));
+            BoltConnection connection = await(connect(provider, AUTH_TOKEN));
             FakeBoltConnection delegate = delegateProvider.connections().get(0);
 
-            await(connection.route(DATABASE_NAME, "neo4j-user", Set.of("bookmark-2")));
-            await(connection.beginTransaction(
-                    DATABASE_NAME,
+            await(connection.write(Messages.route("neo4j", "neo4j-user", Set.of("bookmark-2"))));
+            await(connection.write(Messages.beginTransaction(
+                    "neo4j",
                     AccessMode.READ,
                     "neo4j-user",
                     Set.of("bookmark-2"),
                     TransactionType.UNCONSTRAINED,
                     Duration.ofSeconds(2),
                     metadata,
-                    "tx-2",
-                    NotificationConfig.defaultConfig()));
-            await(connection.runInAutoCommitTransaction(
-                    DATABASE_NAME,
+                    NotificationConfig.defaultConfig())));
+            await(connection.write(Messages.run(
+                    "neo4j",
                     AccessMode.WRITE,
                     "neo4j-user",
                     Set.of("bookmark-3"),
@@ -168,11 +183,11 @@ public class Neo4j_bolt_connection_pooledTest {
                     parameters,
                     Duration.ofSeconds(3),
                     metadata,
-                    NotificationConfig.defaultConfig()));
-            await(connection.discard(5, 42));
-            await(connection.commit());
-            await(connection.rollback());
-            await(connection.clear());
+                    NotificationConfig.defaultConfig())));
+            await(connection.write(Messages.discard(5, 42)));
+            await(connection.write(Messages.commit()));
+            await(connection.write(Messages.rollback()));
+            await(connection.write(Messages.reset()));
 
             assertThat(delegate.operations()).containsExactly(
                     "route",
@@ -193,12 +208,12 @@ public class Neo4j_bolt_connection_pooledTest {
     void pendingAcquisitionCompletesWhenTheOnlyConnectionIsReleased() throws Exception {
         MutableClock clock = new MutableClock(1_000L);
         RecordingConnectionProvider delegateProvider = new RecordingConnectionProvider(clock);
-        PooledBoltConnectionProvider provider = newProvider(
+        PooledBoltConnectionSource provider = newProvider(
                 delegateProvider, new RecordingMetricsListener(), 1, 1_000L, 0L, -1L, clock);
 
         try {
-            BoltConnection first = await(connect(provider, AUTH_TOKEN, databaseName -> { }));
-            CompletionStage<BoltConnection> pending = connect(provider, AUTH_TOKEN, databaseName -> { });
+            BoltConnection first = await(connect(provider, AUTH_TOKEN));
+            CompletionStage<BoltConnection> pending = connect(provider, AUTH_TOKEN);
 
             assertThat(pending.toCompletableFuture()).isNotDone();
             assertThat(delegateProvider.connectCalls()).hasSize(1);
@@ -219,11 +234,11 @@ public class Neo4j_bolt_connection_pooledTest {
         MutableClock clock = new MutableClock(1_000L);
         RecordingMetricsListener metrics = new RecordingMetricsListener();
         RecordingConnectionProvider delegateProvider = new RecordingConnectionProvider(clock);
-        PooledBoltConnectionProvider provider = newProvider(delegateProvider, metrics, 1, 25L, 0L, -1L, clock);
+        PooledBoltConnectionSource provider = newProvider(delegateProvider, metrics, 1, 25L, 0L, -1L, clock);
 
         try {
-            BoltConnection first = await(connect(provider, AUTH_TOKEN, databaseName -> { }));
-            CompletionStage<BoltConnection> pending = connect(provider, AUTH_TOKEN, databaseName -> { });
+            BoltConnection first = await(connect(provider, AUTH_TOKEN));
+            CompletionStage<BoltConnection> pending = connect(provider, AUTH_TOKEN);
 
             assertThatThrownBy(() -> await(pending))
                     .isInstanceOf(ExecutionException.class)
@@ -241,9 +256,9 @@ public class Neo4j_bolt_connection_pooledTest {
         MutableClock clock = new MutableClock(1_000L);
         RecordingMetricsListener metrics = new RecordingMetricsListener();
         RecordingConnectionProvider delegateProvider = new RecordingConnectionProvider(clock);
-        PooledBoltConnectionProvider provider = newProvider(delegateProvider, metrics, 2, 1_000L, 0L, -1L, clock);
+        PooledBoltConnectionSource provider = newProvider(delegateProvider, metrics, 2, 1_000L, 0L, -1L, clock);
 
-        BoltConnection first = await(connect(provider, AUTH_TOKEN, databaseName -> { }));
+        BoltConnection first = await(connect(provider, AUTH_TOKEN));
         FakeBoltConnection firstDelegate = delegateProvider.connections().get(0);
         await(first.forceClose("test failure"));
 
@@ -251,7 +266,7 @@ public class Neo4j_bolt_connection_pooledTest {
         assertThat(firstDelegate.forceCloseReasons()).containsExactly("test failure");
         assertThat(metrics.events()).contains("afterClosed");
 
-        BoltConnection second = await(connect(provider, AUTH_TOKEN, databaseName -> { }));
+        BoltConnection second = await(connect(provider, AUTH_TOKEN));
         FakeBoltConnection secondDelegate = delegateProvider.connections().get(1);
         assertThat(secondDelegate).isNotSameAs(firstDelegate);
         secondDelegate.state(BoltConnectionState.ERROR);
@@ -262,27 +277,27 @@ public class Neo4j_bolt_connection_pooledTest {
         assertThat(delegateProvider.closeCount()).isEqualTo(1);
         assertThat(metrics.events()).contains("removePoolMetrics");
 
-        assertThatThrownBy(() -> await(connect(provider, AUTH_TOKEN, databaseName -> { })))
+        assertThatThrownBy(() -> await(connect(provider, AUTH_TOKEN)))
                 .isInstanceOf(ExecutionException.class)
                 .hasRootCauseInstanceOf(IllegalStateException.class)
-                .hasRootCauseMessage("Connection provider is closed.");
+                .hasRootCauseMessage("Connection source is closed.");
     }
 
     @Test
     void expiredAuthenticationTriggersReauthOnReusableConnection() throws Exception {
         MutableClock clock = new MutableClock(1_000L);
         RecordingConnectionProvider delegateProvider = new RecordingConnectionProvider(clock);
-        PooledBoltConnectionProvider provider = newProvider(
+        PooledBoltConnectionSource provider = newProvider(
                 delegateProvider, new RecordingMetricsListener(), 2, 1_000L, 0L, -1L, clock);
 
         try {
-            BoltConnection first = await(connect(provider, AUTH_TOKEN, databaseName -> { }));
+            BoltConnection first = await(connect(provider, AUTH_TOKEN));
             FakeBoltConnection delegate = delegateProvider.connections().get(0);
             await(first.close());
 
             clock.advanceMillis(1_000L);
             provider.onExpired();
-            BoltConnection second = await(connect(provider, OTHER_AUTH_TOKEN, databaseName -> { }));
+            BoltConnection second = await(connect(provider, OTHER_AUTH_TOKEN));
 
             assertThat(delegateProvider.connectCalls()).hasSize(1);
             assertThat(delegate.logoffCount()).isEqualTo(1);
@@ -299,11 +314,11 @@ public class Neo4j_bolt_connection_pooledTest {
     void authorizationExpiredFlushErrorForcesReauthBeforeReuse() throws Exception {
         MutableClock clock = new MutableClock(1_000L);
         RecordingConnectionProvider delegateProvider = new RecordingConnectionProvider(clock);
-        PooledBoltConnectionProvider provider = newProvider(
+        PooledBoltConnectionSource provider = newProvider(
                 delegateProvider, new RecordingMetricsListener(), 2, 1_000L, 0L, -1L, clock);
 
         try {
-            BoltConnection first = await(connect(provider, AUTH_TOKEN, databaseName -> { }));
+            BoltConnection first = await(connect(provider, AUTH_TOKEN));
             FakeBoltConnection delegate = delegateProvider.connections().get(0);
             BoltFailureException authExpired = new BoltFailureException(
                     "Neo.ClientError.Security.AuthorizationExpired",
@@ -315,12 +330,12 @@ public class Neo4j_bolt_connection_pooledTest {
             RecordingResponseHandler responseHandler = new RecordingResponseHandler();
 
             delegate.nextFlushError(authExpired);
-            await(first.flush(responseHandler));
+            await(first.writeAndFlush(responseHandler, Messages.run("RETURN 1", Map.of())));
             await(first.close());
 
             assertThat(responseHandler.errors()).containsExactly(authExpired);
 
-            BoltConnection second = await(connect(provider, AUTH_TOKEN, databaseName -> { }));
+            BoltConnection second = await(connect(provider, AUTH_TOKEN));
 
             assertThat(delegateProvider.connectCalls()).hasSize(1);
             assertThat(delegate.logoffCount()).isEqualTo(1);
@@ -337,23 +352,23 @@ public class Neo4j_bolt_connection_pooledTest {
     void livenessChecksAndMaximumLifetimeProtectReusableConnections() throws Exception {
         MutableClock clock = new MutableClock(1_000L);
         RecordingConnectionProvider delegateProvider = new RecordingConnectionProvider(clock);
-        PooledBoltConnectionProvider provider = newProvider(
+        PooledBoltConnectionSource provider = newProvider(
                 delegateProvider, new RecordingMetricsListener(), 2, 1_000L, 1_000L, 10L, clock);
 
         try {
-            BoltConnection first = await(connect(provider, AUTH_TOKEN, databaseName -> { }));
+            BoltConnection first = await(connect(provider, AUTH_TOKEN));
             FakeBoltConnection firstDelegate = delegateProvider.connections().get(0);
             await(first.close());
             int resetCountAfterRelease = firstDelegate.resetCount();
 
             clock.advanceMillis(11L);
-            BoltConnection second = await(connect(provider, AUTH_TOKEN, databaseName -> { }));
+            BoltConnection second = await(connect(provider, AUTH_TOKEN));
             assertThat(delegateProvider.connectCalls()).hasSize(1);
             assertThat(firstDelegate.resetCount()).isEqualTo(resetCountAfterRelease + 1);
             await(second.close());
 
             clock.advanceMillis(1_001L);
-            BoltConnection third = await(connect(provider, AUTH_TOKEN, databaseName -> { }));
+            BoltConnection third = await(connect(provider, AUTH_TOKEN));
             FakeBoltConnection secondDelegate = delegateProvider.connections().get(1);
             assertThat(delegateProvider.connectCalls()).hasSize(2);
             assertThat(firstDelegate.closeCount()).isGreaterThanOrEqualTo(1);
@@ -369,17 +384,16 @@ public class Neo4j_bolt_connection_pooledTest {
     void minProtocolVersionIsEnforcedForReusableConnections() throws Exception {
         MutableClock clock = new MutableClock(1_000L);
         RecordingConnectionProvider delegateProvider = new RecordingConnectionProvider(clock);
-        PooledBoltConnectionProvider provider = newProvider(
+        PooledBoltConnectionSource provider = newProvider(
                 delegateProvider, new RecordingMetricsListener(), 1, 0L, 0L, -1L, clock);
 
         try {
-            BoltConnection first = await(connect(provider, AUTH_TOKEN, databaseName -> { }));
+            BoltConnection first = await(connect(provider, AUTH_TOKEN));
             await(first.close());
 
             assertThatThrownBy(() -> await(connect(
                             provider,
                             AUTH_TOKEN,
-                            databaseName -> { },
                             new BoltProtocolVersion(6, 0))))
                     .isInstanceOf(ExecutionException.class)
                     .hasRootCauseInstanceOf(MinVersionAcquisitionException.class);
@@ -393,15 +407,13 @@ public class Neo4j_bolt_connection_pooledTest {
     void connectivityHelpersAcquireConnectionsAndReportProtocolCapabilities() throws Exception {
         MutableClock clock = new MutableClock(1_000L);
         RecordingConnectionProvider delegateProvider = new RecordingConnectionProvider(clock);
-        PooledBoltConnectionProvider provider = newProvider(
+        PooledBoltConnectionSource provider = newProvider(
                 delegateProvider, new RecordingMetricsListener(), 2, 1_000L, 0L, -1L, clock);
 
         try {
-            await(provider.verifyConnectivity(ADDRESS, ROUTING_CONTEXT, AGENT, USER_AGENT, 100, SECURITY_PLAN, AUTH_TOKEN));
-            assertThat(await(provider.supportsMultiDb(ADDRESS, ROUTING_CONTEXT, AGENT, USER_AGENT, 100,
-                    SECURITY_PLAN, AUTH_TOKEN))).isTrue();
-            assertThat(await(provider.supportsSessionAuth(ADDRESS, ROUTING_CONTEXT, AGENT, USER_AGENT, 100,
-                    SECURITY_PLAN, AUTH_TOKEN))).isTrue();
+            await(provider.verifyConnectivity());
+            assertThat(await(provider.supportsMultiDb())).isTrue();
+            assertThat(await(provider.supportsSessionAuth())).isTrue();
 
             assertThat(delegateProvider.connectCalls()).hasSize(1);
             assertThat(delegateProvider.connections().get(0).resetCount()).isGreaterThanOrEqualTo(3);
@@ -410,37 +422,22 @@ public class Neo4j_bolt_connection_pooledTest {
         }
     }
 
-    private static CompletionStage<BoltConnection> connect(
-            PooledBoltConnectionProvider provider,
-            AuthToken authToken,
-            Consumer<DatabaseName> selectedDatabaseConsumer) {
-        return connect(provider, authToken, selectedDatabaseConsumer, null);
+    private static CompletionStage<BoltConnection> connect(PooledBoltConnectionSource provider, AuthToken authToken) {
+        return connect(provider, authToken, null);
     }
 
     private static CompletionStage<BoltConnection> connect(
-            PooledBoltConnectionProvider provider,
+            PooledBoltConnectionSource provider,
             AuthToken authToken,
-            Consumer<DatabaseName> selectedDatabaseConsumer,
             BoltProtocolVersion minVersion) {
-        return provider.connect(
-                new BoltServerAddress("ignored.example.com", 9999),
-                new RoutingContext(java.net.URI.create("neo4j://ignored.example.com")),
-                new BoltAgent("ignored", "ignored", "ignored", "ignored"),
-                "ignored-user-agent",
-                1,
-                SECURITY_PLAN,
-                DATABASE_NAME,
-                () -> CompletableFuture.completedFuture(authToken),
-                AccessMode.WRITE,
-                Set.of("bookmark-1"),
-                "tx-1",
-                minVersion,
-                NotificationConfig.defaultConfig(),
-                selectedDatabaseConsumer,
-                Map.of("ignored", true));
+        BoltConnectionParameters.Builder builder = BoltConnectionParameters.builder().withAuthToken(authToken);
+        if (minVersion != null) {
+            builder.withMinVersion(minVersion);
+        }
+        return provider.getConnection(builder.build());
     }
 
-    private static PooledBoltConnectionProvider newProvider(
+    private static PooledBoltConnectionSource newProvider(
             RecordingConnectionProvider delegateProvider,
             RecordingMetricsListener metrics,
             int maxSize,
@@ -448,20 +445,23 @@ public class Neo4j_bolt_connection_pooledTest {
             long maxLifetimeMillis,
             long idleBeforeTestMillis,
             Clock clock) {
-        return new PooledBoltConnectionProvider(
+        return new PooledBoltConnectionSource(
+                new TestLoggingProvider(),
+                clock,
+                SERVER_URI,
                 delegateProvider,
+                new TestAuthTokenManager(),
+                new TestSecurityPlanSupplier(),
                 maxSize,
                 acquisitionTimeoutMillis,
                 maxLifetimeMillis,
                 idleBeforeTestMillis,
-                clock,
-                new TestLoggingProvider(),
                 metrics,
-                ADDRESS,
-                ROUTING_CONTEXT,
+                ROUTING_CONTEXT_ADDRESS,
                 AGENT,
                 USER_AGENT,
-                100);
+                100,
+                NotificationConfig.defaultConfig());
     }
 
     private static <T> T await(CompletionStage<T> stage)
@@ -471,6 +471,33 @@ public class Neo4j_bolt_connection_pooledTest {
 
     private static AuthToken authToken(String name) {
         return AuthTokens.custom(Map.of("scheme", new SimpleValue(name)));
+    }
+
+    private static SecurityPlan securityPlan() {
+        try {
+            return SecurityPlans.encrypted(SSLContext.getDefault(), false);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("Default SSL context is unavailable", e);
+        }
+    }
+
+    private static final class TestAuthTokenManager implements AuthTokenManager {
+        @Override
+        public CompletionStage<AuthToken> getToken() {
+            return CompletableFuture.completedStage(AUTH_TOKEN);
+        }
+
+        @Override
+        public BoltFailureException handleBoltFailureException(AuthToken authToken, BoltFailureException exception) {
+            return exception;
+        }
+    }
+
+    private static final class TestSecurityPlanSupplier implements SecurityPlanSupplier {
+        @Override
+        public CompletionStage<SecurityPlan> getPlan() {
+            return CompletableFuture.completedStage(SECURITY_PLAN);
+        }
     }
 
     private static final class RecordingConnectionProvider implements BoltConnectionProvider {
@@ -497,65 +524,22 @@ public class Neo4j_bolt_connection_pooledTest {
 
         @Override
         public CompletionStage<BoltConnection> connect(
-                BoltServerAddress address,
-                RoutingContext routingContext,
+                URI uri,
+                String routingContextAddress,
                 BoltAgent boltAgent,
                 String userAgent,
                 int connectTimeoutMillis,
                 SecurityPlan securityPlan,
-                DatabaseName databaseName,
-                Supplier<CompletionStage<AuthToken>> authTokenSupplier,
-                AccessMode accessMode,
-                Set<String> bookmarks,
-                String transactionId,
+                AuthToken authToken,
                 BoltProtocolVersion minVersion,
-                NotificationConfig notificationConfig,
-                Consumer<DatabaseName> selectedDatabaseConsumer,
-                Map<String, Object> authInfo) {
-            AuthToken authToken = authTokenSupplier.get().toCompletableFuture().join();
-            ConnectCall call = new ConnectCall(address, routingContext, boltAgent, userAgent, connectTimeoutMillis,
-                    securityPlan, databaseName, authToken, accessMode, bookmarks, transactionId, minVersion,
-                    notificationConfig, authInfo);
+                NotificationConfig notificationConfig) {
+            ConnectCall call = new ConnectCall(uri, routingContextAddress, boltAgent, userAgent, connectTimeoutMillis,
+                    securityPlan, authToken, minVersion, notificationConfig);
             connectCalls.add(call);
-            FakeBoltConnection connection = new FakeBoltConnection(address, authToken, clock.millis());
+            FakeBoltConnection connection = new FakeBoltConnection(
+                    new BoltServerAddress(uri), authToken, clock.millis());
             connections.add(connection);
             return CompletableFuture.completedStage(connection);
-        }
-
-        @Override
-        public CompletionStage<Void> verifyConnectivity(
-                BoltServerAddress address,
-                RoutingContext routingContext,
-                BoltAgent boltAgent,
-                String userAgent,
-                int connectTimeoutMillis,
-                SecurityPlan securityPlan,
-                AuthToken authToken) {
-            return CompletableFuture.completedStage(null);
-        }
-
-        @Override
-        public CompletionStage<Boolean> supportsMultiDb(
-                BoltServerAddress address,
-                RoutingContext routingContext,
-                BoltAgent boltAgent,
-                String userAgent,
-                int connectTimeoutMillis,
-                SecurityPlan securityPlan,
-                AuthToken authToken) {
-            return CompletableFuture.completedStage(true);
-        }
-
-        @Override
-        public CompletionStage<Boolean> supportsSessionAuth(
-                BoltServerAddress address,
-                RoutingContext routingContext,
-                BoltAgent boltAgent,
-                String userAgent,
-                int connectTimeoutMillis,
-                SecurityPlan securityPlan,
-                AuthToken authToken) {
-            return CompletableFuture.completedStage(true);
         }
 
         @Override
@@ -566,20 +550,15 @@ public class Neo4j_bolt_connection_pooledTest {
     }
 
     private record ConnectCall(
-            BoltServerAddress address,
-            RoutingContext routingContext,
+            URI uri,
+            String routingContextAddress,
             BoltAgent boltAgent,
             String userAgent,
             int connectTimeoutMillis,
             SecurityPlan securityPlan,
-            DatabaseName databaseName,
             AuthToken authToken,
-            AccessMode accessMode,
-            Set<String> bookmarks,
-            String transactionId,
             BoltProtocolVersion minVersion,
-            NotificationConfig notificationConfig,
-            Map<String, Object> authInfo) {
+            NotificationConfig notificationConfig) {
     }
 
     private static final class FakeBoltConnection implements BoltConnection {
@@ -642,113 +621,8 @@ public class Neo4j_bolt_connection_pooledTest {
         }
 
         @Override
-        public <T> CompletionStage<T> onLoop(Supplier<T> supplier) {
-            return CompletableFuture.completedStage(supplier.get());
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> route(DatabaseName databaseName, String impersonatedUser,
-                Set<String> bookmarks) {
-            operations.add("route");
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> beginTransaction(
-                DatabaseName databaseName,
-                AccessMode mode,
-                String impersonatedUser,
-                Set<String> bookmarks,
-                TransactionType transactionType,
-                Duration timeout,
-                Map<String, Value> metadata,
-                String transactionId,
-                NotificationConfig notificationConfig) {
-            operations.add("begin:" + transactionType);
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> runInAutoCommitTransaction(
-                DatabaseName databaseName,
-                AccessMode mode,
-                String impersonatedUser,
-                Set<String> bookmarks,
-                String query,
-                Map<String, Value> parameters,
-                Duration timeout,
-                Map<String, Value> metadata,
-                NotificationConfig notificationConfig) {
-            operations.add("auto:" + query);
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> run(String query, Map<String, Value> parameters) {
-            operations.add("run:" + query);
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> pull(long n, long queryId) {
-            operations.add("pull:" + n + ":" + queryId);
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> discard(long n, long queryId) {
-            operations.add("discard:" + n + ":" + queryId);
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> commit() {
-            operations.add("commit");
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> rollback() {
-            operations.add("rollback");
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> reset() {
-            resetCount++;
-            operations.add("reset");
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> logoff() {
-            logoffCount++;
-            operations.add("logoff");
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> logon(AuthToken authToken) {
-            logonTokens.add(authToken);
-            authInfo = new TestAuthInfo(authToken, System.currentTimeMillis());
-            operations.add("logon");
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> telemetry(TelemetryApi telemetryApi) {
-            operations.add("telemetry:" + telemetryApi);
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<BoltConnection> clear() {
-            operations.add("clear");
-            return completedThis();
-        }
-
-        @Override
-        public CompletionStage<Void> flush(ResponseHandler handler) {
+        public CompletionStage<Void> writeAndFlush(ResponseHandler handler, List<Message> messages) {
+            recordMessages(messages);
             flushCount++;
             if (nextFlushError != null) {
                 Throwable error = nextFlushError;
@@ -760,6 +634,49 @@ public class Neo4j_bolt_connection_pooledTest {
             handler.onResetSummary(new TestResetSummary());
             handler.onComplete();
             return CompletableFuture.completedStage(null);
+        }
+
+        @Override
+        public CompletionStage<Void> write(List<Message> messages) {
+            recordMessages(messages);
+            return CompletableFuture.completedStage(null);
+        }
+
+        private void recordMessages(List<Message> messages) {
+            for (Message message : messages) {
+                if (message instanceof RouteMessage) {
+                    operations.add("route");
+                } else if (message instanceof BeginMessage beginMessage) {
+                    operations.add("begin:" + beginMessage.transactionType());
+                } else if (message instanceof RunMessage runMessage) {
+                    if (runMessage.extra().isPresent()) {
+                        operations.add("auto:" + runMessage.query());
+                    } else {
+                        operations.add("run:" + runMessage.query());
+                    }
+                } else if (message instanceof PullMessage pullMessage) {
+                    operations.add("pull:" + pullMessage.qid() + ":" + pullMessage.request());
+                } else if (message instanceof DiscardMessage discardMessage) {
+                    operations.add("discard:" + discardMessage.qid() + ":" + discardMessage.number());
+                } else if (message instanceof CommitMessage) {
+                    operations.add("commit");
+                } else if (message instanceof RollbackMessage) {
+                    operations.add("rollback");
+                } else if (message instanceof ResetMessage) {
+                    resetCount++;
+                    operations.add("clear");
+                } else if (message instanceof LogoffMessage) {
+                    logoffCount++;
+                    operations.add("logoff");
+                } else if (message instanceof LogonMessage logonMessage) {
+                    AuthToken authToken = logonMessage.authToken();
+                    logonTokens.add(authToken);
+                    authInfo = new TestAuthInfo(authToken, System.currentTimeMillis());
+                    operations.add("logon");
+                } else if (message instanceof TelemetryMessage telemetryMessage) {
+                    operations.add("telemetry:" + telemetryMessage.api());
+                }
+            }
         }
 
         @Override
@@ -820,10 +737,6 @@ public class Neo4j_bolt_connection_pooledTest {
         @Override
         public Optional<Duration> defaultReadTimeout() {
             return Optional.of(Duration.ofSeconds(30));
-        }
-
-        private CompletionStage<BoltConnection> completedThis() {
-            return CompletableFuture.completedStage(this);
         }
     }
 
