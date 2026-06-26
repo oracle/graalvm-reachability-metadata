@@ -23,6 +23,7 @@ import io.opentelemetry.context.Scope;
 import io.opentelemetry.context.propagation.TextMapGetter;
 import io.opentelemetry.context.propagation.TextMapPropagator;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -53,6 +54,31 @@ public class Opentelemetry_spring_boot_autoconfigureTest {
 
             assertConfiguredOpenTelemetrySdk(openTelemetry);
             assertRestTemplateTracePropagation(context.getBean(RestTemplate.class));
+        }
+    }
+
+    @Test
+    void sdkDisabledPropertyProvidesNoopOpenTelemetryBean() {
+        try (ConfigurableApplicationContext context = newApplicationContext("otel.sdk.disabled=true")) {
+            OpenTelemetry openTelemetry = context.getBean(OpenTelemetry.class);
+            Span span = openTelemetry.getTracer("reachability-metadata-disabled-test")
+                    .spanBuilder("disabled-sdk-span")
+                    .startSpan();
+
+            try {
+                assertThat(span.getSpanContext().isValid()).isFalse();
+
+                Map<String, String> carrier = new HashMap<>();
+                try (Scope ignored = span.makeCurrent()) {
+                    openTelemetry.getPropagators()
+                            .getTextMapPropagator()
+                            .inject(Context.current(), carrier, Map::put);
+                }
+
+                assertThat(carrier).isEmpty();
+            } finally {
+                span.end();
+            }
         }
     }
 
@@ -97,10 +123,20 @@ public class Opentelemetry_spring_boot_autoconfigureTest {
         server.verify(Duration.ofSeconds(10));
     }
 
-    private static ConfigurableApplicationContext newApplicationContext() {
+    private static ConfigurableApplicationContext newApplicationContext(String... additionalProperties) {
+        String[] properties = Arrays.copyOf(
+                SAFE_OTEL_PROPERTIES,
+                SAFE_OTEL_PROPERTIES.length + additionalProperties.length);
+        System.arraycopy(
+                additionalProperties,
+                0,
+                properties,
+                SAFE_OTEL_PROPERTIES.length,
+                additionalProperties.length);
+
         return new SpringApplicationBuilder(TestApplication.class)
                 .web(WebApplicationType.NONE)
-                .properties(SAFE_OTEL_PROPERTIES)
+                .properties(properties)
                 .run();
     }
 
