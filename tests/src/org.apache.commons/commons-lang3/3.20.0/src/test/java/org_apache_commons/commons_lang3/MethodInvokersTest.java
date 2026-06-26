@@ -7,6 +7,7 @@
 package org_apache_commons.commons_lang3;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.lang.reflect.Method;
 import java.util.function.Function;
@@ -19,6 +20,7 @@ public class MethodInvokersTest {
 
     @Test
     public void asFunctionInvokesPublicInstanceMethod() throws Exception {
+        assumeFalse(isNativeImageRuntime(), "MethodHandleProxies runtime class definition is not supported in native image");
         Method method = String.class.getMethod("length");
 
         Function<String, Integer> length = MethodInvokers.asFunction(method);
@@ -28,6 +30,7 @@ public class MethodInvokersTest {
 
     @Test
     public void asInterfaceInstanceInvokesPublicStaticMethod() throws Exception {
+        assumeFalse(isNativeImageRuntime(), "MethodHandleProxies runtime class definition is not supported in native image");
         Method method = MethodInvokersTest.class.getMethod("libraryName");
 
         Supplier<String> supplier = MethodInvokers.asInterfaceInstance(Supplier.class, method);
@@ -37,5 +40,9 @@ public class MethodInvokersTest {
 
     public static String libraryName() {
         return "commons-lang3";
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 }
