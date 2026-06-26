@@ -12,6 +12,7 @@ import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.contrib.gcp.resource.GCPResourceProvider;
 import io.opentelemetry.sdk.autoconfigure.spi.ResourceProvider;
+import io.opentelemetry.sdk.autoconfigure.spi.internal.ComponentProvider;
 import io.opentelemetry.sdk.resources.Resource;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -93,6 +94,17 @@ public class Opentelemetry_gcp_resourcesTest {
             assertPlatformSpecificAttributes(attributes);
             assertThat(resource.getAttributes().asMap()).containsAllEntriesOf(attributes.asMap());
         }
+    }
+
+    @Test
+    void serviceLoaderDiscoversDeclarativeGcpResourceComponentProvider() {
+        ServiceLoader<ComponentProvider> componentProviders = ServiceLoader.load(ComponentProvider.class);
+
+        assertThat(componentProviders)
+                .anySatisfy(componentProvider -> {
+                    assertThat(componentProvider.getType()).isEqualTo(Resource.class);
+                    assertThat(componentProvider.getName()).isEqualTo("gcp");
+                });
     }
 
     private static void assertCommonGcpAttributes(Attributes attributes) {
