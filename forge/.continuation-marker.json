@@ -1,0 +1,71 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.json4s:json4s-jackson_2.13:3.7.0-M16",
+  "issueNumber": 7182,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Do not add external services or environment setup. For org.json4s 3.7.0-M16, custom Reader implementations must provide readEither as well as read, or preferably be constructed with Reader.from / Reader.fromPartialFunction; anonymous Reader classes that only override read compile against M13 but fail against M16.",
+    "applied_setup": [],
+    "current_library": "org.json4s:json4s-jackson_2.13:3.7.0-M13",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7182 [Automation] java run fails for org.json4s:json4s-jackson_2.13:3.7.0-M16; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "7 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 43045,
+    "issue_label": "fails-java-run",
+    "issue_number": 7182,
+    "library": "org.json4s:json4s-jackson_2.13:3.7.0-M16",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.7.0-M16",
+    "output_tokens_used": 4296,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The existing failure is a Scala compile/API-compatibility issue in the generated test, not missing infrastructure setup.",
+      "Meaningful coverage should focus on pure in-process json4s-jackson APIs: JsonMethods parse/render/compact/pretty, JacksonSerialization read/write, case-class extraction, custom serializers, and Json4sScalaModule/ObjectMapper integration.",
+      "Optional json4s modules such as json4s-ext are documented as extras and should not be added unless tests intentionally cover those extra-module types."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.json4s:json4s-jackson_2.13:3.7.0-M16/library-preparation-preflight/pi-generation-2026-06-26T21-12-58-464386Z.log",
+    "status": "completed",
+    "summary": "No extra Maven dependency, Docker image, environment variable, or system property is needed; json4s-jackson is an in-process Scala/Jackson JSON library and its runtime dependencies resolve transitively. M16 does require updated test code for the changed Reader API if custom readers are exercised."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.7.0-M16",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-7182-fails-java-run-org.json4s-json4s-jackson_2.13-3.7.0-M16-010ff50f",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
