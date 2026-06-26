@@ -159,6 +159,55 @@ public class Opentelemetry_declarative_config_bridgeTest {
     }
 
     @Test
+    void configPropertiesBackedDeclarativeConfigTranslatesSpecialJavaKeys() {
+        Map<String, Object> values = new LinkedHashMap<>();
+        values.put("otel.instrumentation.http.client.emit-experimental-telemetry", true);
+        values.put("otel.instrumentation.http.server.emit-experimental-telemetry", false);
+        values.put("otel.instrumentation.messaging.experimental.receive-telemetry.enabled", true);
+        values.put("otel.instrumentation.genai.capture-message-content", true);
+        values.put("otel.instrumentation.experimental.span-suppression-strategy", "semconv");
+        values.put("otel.instrumentation.opentelemetry-annotations.exclude-methods",
+                List.of("example.Controller[health]", "example.Controller[ready]"));
+        values.put("otel.experimental.javascript-snippet", "console.log('otel');");
+        values.put("otel.jmx.config", "classpath:jmx.yaml");
+        values.put("otel.jmx.target.system", "tomcat");
+        ConfigProperties configProperties = new MapConfigProperties(values, NOOP_COMPONENT_LOADER);
+
+        DeclarativeConfigProperties javaConfig =
+                ConfigPropertiesBackedDeclarativeConfigProperties.createInstrumentationConfig(
+                        configProperties)
+                        .getStructured("java");
+
+        assertThat(javaConfig.getStructured("common").getStructured("http")
+                .getStructured("client")
+                .getBoolean("emit_experimental_telemetry/development"))
+                .isTrue();
+        assertThat(javaConfig.getStructured("common").getStructured("http")
+                .getStructured("server")
+                .getBoolean("emit_experimental_telemetry/development"))
+                .isFalse();
+        assertThat(javaConfig.getStructured("common").getStructured("messaging")
+                .getStructured("receive_telemetry/development")
+                .getBoolean("enabled"))
+                .isTrue();
+        assertThat(javaConfig.getStructured("common").getStructured("gen_ai")
+                .getBoolean("capture_message_content"))
+                .isTrue();
+        assertThat(javaConfig.getStructured("common")
+                .getString("span_suppression_strategy/development"))
+                .isEqualTo("semconv");
+        assertThat(javaConfig.getStructured("opentelemetry_extension_annotations")
+                .getScalarList("exclude_methods", String.class))
+                .containsExactly("example.Controller[health]", "example.Controller[ready]");
+        assertThat(javaConfig.getStructured("servlet").getString("javascript_snippet/development"))
+                .isEqualTo("console.log('otel');");
+        assertThat(javaConfig.getStructured("jmx").getString("config"))
+                .isEqualTo("classpath:jmx.yaml");
+        assertThat(javaConfig.getStructured("jmx").getStructured("target").getString("system"))
+                .isEqualTo("tomcat");
+    }
+
+    @Test
     void configProviderExposesServicePeerMappingAsStructuredList() {
         Map<String, String> peerServiceMapping = new LinkedHashMap<>();
         peerServiceMapping.put("db.example.internal", "orders-database");
