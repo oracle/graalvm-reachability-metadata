@@ -40,6 +40,26 @@ public class MongoDbAttributesGetterTest {
     private static final AttributeKey<String> DB_STATEMENT = AttributeKey.stringKey("db.statement");
 
     @Test
+    void commandListenerCanBeCreatedWhenLengthLimitFallsBackToLegacySettings() {
+        SdkTracerProvider tracerProvider = SdkTracerProvider.builder().build();
+        OpenTelemetrySdk openTelemetry = OpenTelemetrySdk.builder()
+                .setTracerProvider(tracerProvider)
+                .build();
+
+        try {
+            CommandListener listener = MongoTelemetry.builder(openTelemetry)
+                    .setMaxNormalizedQueryLength(-1)
+                    .build()
+                    .createCommandListener();
+
+            assertThat(listener).isNotNull();
+        } finally {
+            assertThat(tracerProvider.shutdown().join(10, TimeUnit.SECONDS).isSuccess()).isTrue();
+            openTelemetry.close();
+        }
+    }
+
+    @Test
     void commandListenerRecordsSanitizedMongoCommand() {
         RecordingSpanExporter spanExporter = new RecordingSpanExporter();
         SdkTracerProvider tracerProvider = SdkTracerProvider.builder()
