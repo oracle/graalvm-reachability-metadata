@@ -15,6 +15,7 @@ import io.opentelemetry.context.Context;
 import io.opentelemetry.sdk.autoconfigure.declarativeconfig.DeclarativeConfigResult;
 import io.opentelemetry.sdk.autoconfigure.declarativeconfig.DeclarativeConfiguration;
 import io.opentelemetry.sdk.resources.Resource;
+import io.opentelemetry.sdk.trace.SpanLimits;
 import io.opentelemetry.sdk.trace.samplers.Sampler;
 import io.opentelemetry.sdk.trace.samplers.SamplingDecision;
 import java.io.ByteArrayInputStream;
@@ -153,6 +154,36 @@ public class Opentelemetry_sdk_extension_declarative_configTest {
                         Collections.emptyList())
                 .getDecision())
                 .isEqualTo(SamplingDecision.DROP);
+    }
+
+    @Test
+    void parseAndCreateAppliesGlobalAndSpanSpecificLimits() {
+        DeclarativeConfigResult result = DeclarativeConfiguration.parseAndCreate(yaml("""
+                file_format: "1.0"
+                attribute_limits:
+                  attribute_value_length_limit: 11
+                  attribute_count_limit: 5
+                tracer_provider:
+                  limits:
+                    attribute_count_limit: 3
+                    event_count_limit: 2
+                    link_count_limit: 1
+                    event_attribute_count_limit: 4
+                    link_attribute_count_limit: 6
+                  processors: []
+                """));
+        try {
+            SpanLimits spanLimits = result.getSdk().getSdkTracerProvider().getSpanLimits();
+
+            assertThat(spanLimits.getMaxAttributeValueLength()).isEqualTo(11);
+            assertThat(spanLimits.getMaxNumberOfAttributes()).isEqualTo(3);
+            assertThat(spanLimits.getMaxNumberOfEvents()).isEqualTo(2);
+            assertThat(spanLimits.getMaxNumberOfLinks()).isEqualTo(1);
+            assertThat(spanLimits.getMaxNumberOfAttributesPerEvent()).isEqualTo(4);
+            assertThat(spanLimits.getMaxNumberOfAttributesPerLink()).isEqualTo(6);
+        } finally {
+            result.getSdk().close();
+        }
     }
 
     @Test
