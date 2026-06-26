@@ -1,0 +1,93 @@
+{
+  "add_new_library_support:2026-06-26": {
+    "timestamp": "2026-06-26T13:50:09.595916Z",
+    "library": "org.typelevel:cats-tagless-core_3:0.16.5",
+    "starting_commit": "42485740d27899c7b8559ca9b7e330a15e6b5985",
+    "ending_commit": "43839b620f28f94a50d78119a39663a4452703e9",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "0.16.5",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 19
+          }
+        },
+        "coverageRatio": 0.0,
+        "coveredCalls": 0,
+        "totalCalls": 19
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 246,
+          "missed": 17659,
+          "ratio": 0.013739,
+          "total": 17905
+        },
+        "line": {
+          "covered": 61,
+          "missed": 987,
+          "ratio": 0.058206,
+          "total": 1048
+        },
+        "method": {
+          "covered": 41,
+          "missed": 1096,
+          "ratio": 0.03606,
+          "total": 1137
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 5333,
+      "issue_label": "library-new-request",
+      "library": "org.typelevel:cats-tagless-core_3:0.16.5",
+      "summary": "No extra Maven dependency or Docker image is needed: the Scala 3 core artifact is class-bearing and its POM brings in scala3-library_3 and cats-core_3. Meaningful coverage can be reached with in-memory algebras using Try/Option and cats.FunctionK, but Scala 3 derivation APIs are marked experimental and tests that exercise them must opt in.",
+      "deterministic_setup": [],
+      "agent_guidance": "When exercising cats.tagless.Derive or Scala 3 `derives` support for FunctorK, InvariantK, SemigroupalK, ApplyK, Instrument, or Aspect, opt the relevant test class/traits into Scala 3 experimental APIs, e.g. `import scala.annotation.experimental` and annotate the test definitions with `@experimental`. No environment variables or system properties are required.",
+      "risks": [
+        "Upstream tests use cats-tagless-laws, ScalaCheck, and MUnit for law checking, but those are test-framework conveniences rather than required setup for meaningful repository coverage.",
+        "Avoid relying on old Scala 2 annotation-macro examples such as `@autoFunctorK`; the Scala 3 core artifact primarily exposes inline derivation through `Derive`/`derives`."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#5333 Support for org.typelevel:cats-tagless-core_3:0.16.5; label=library-new-request; body_chars=290"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 50130,
+      "output_tokens_used": 4698,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.typelevel:cats-tagless-core_3:0.16.5/library-preparation-preflight/pi-generation-2026-06-26T13-16-03-985800Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 343709,
+      "cached_input_tokens_used": 2873856,
+      "output_tokens_used": 39695,
+      "iterations": 8,
+      "cost_usd": 2.6277,
+      "generated_loc": 70,
+      "tested_library_loc": 61,
+      "metadata_entries": 0,
+      "code_coverage_percent": 5.82
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.typelevel/cats-tagless-core_3/0.16.5/src/test/scala/org_typelevel/cats_tagless_core_3/CatsTaglessMacrosDeriveMacrosTest.scala",
+      "metadata_file": "metadata/org.typelevel/cats-tagless-core_3/0.16.5/reachability-metadata.json"
+    }
+  }
+}
