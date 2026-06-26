@@ -1,26 +1,52 @@
 {
-  "timestamp": "2026-06-26T12:16:48.065344Z",
+  "timestamp": "2026-06-26T12:52:26.354592Z",
   "library": "com.beachape:enumeratum-macros_3:1.9.0",
-  "starting_commit": "49418db750b5a9ffcc0f764355c169a70b9f0088",
-  "ending_commit": "49418db750b5a9ffcc0f764355c169a70b9f0088",
+  "starting_commit": "1f7b4aebf765ebba8fda7a1969a63529f92afe4c",
+  "ending_commit": "ac526b8280e1acc77af2c1117a9682d957632933",
   "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
   "agent": "pi",
   "model": "oca/gpt-5.5",
-  "status": "failure",
+  "status": "success",
+  "stats": {
+    "version": "1.9.0",
+    "dynamicAccess": {
+      "breakdown": {
+        "reflection": {
+          "coverageRatio": 0.0,
+          "coveredCalls": 0,
+          "totalCalls": 3
+        }
+      },
+      "coverageRatio": 0.0,
+      "coveredCalls": 0,
+      "totalCalls": 3
+    },
+    "libraryCoverage": {
+      "instruction": {
+        "covered": 0,
+        "missed": 2640,
+        "ratio": 0.0,
+        "total": 2640
+      },
+      "line": {
+        "covered": 0,
+        "missed": 151,
+        "ratio": 0.0,
+        "total": 151
+      },
+      "method": {
+        "covered": 0,
+        "missed": 70,
+        "ratio": 0.0,
+        "total": 70
+      }
+    }
+  },
   "library_preparation_preflight": {
-    "status": "completed",
     "action": "advisory_preparation",
-    "issue_number": 5082,
-    "issue_label": "library-new-request",
-    "library": "com.beachape:enumeratum-macros_3:1.9.0",
-    "summary": "The artifact is a pure Scala 3 compile-time macro module with no service/Docker dependency and no required extra Maven dependency, but meaningful ValueEnumMacros coverage requires the Scala compiler option `-Yretain-trees`.",
-    "deterministic_setup": [],
     "agent_guidance": "Use Scala 3 tests that exercise `enumeratum.EnumMacros` and `enumeratum.ValueEnumMacros` through small inline wrapper methods or the normal Enumeratum-style pattern. For any `ValueEnumMacros.find*ValueEntriesImpl` coverage, configure test Scala compilation with `-Yretain-trees`; the macro source explicitly aborts without it and the README documents this Scala 3 limitation. Keep values literal so the macro can inspect them at compile time.",
-    "risks": [
-      "Testing only runtime references to the macro classes will not provide meaningful coverage because the library's behavior happens at Scala compile time.",
-      "Adding `com.beachape:enumeratum_3` is not required for setup; it can make tests more idiomatic, but direct macro wrappers can exercise the requested artifact without an extra dependency."
-    ],
     "applied_setup": [],
+    "deterministic_setup": [],
     "input_evidence": [
       {
         "name": "issue",
@@ -31,26 +57,35 @@
         "summary": "0 existing test file path(s) included"
       }
     ],
-    "model": "oca/gpt-5.5",
     "input_tokens_used": 69116,
+    "issue_label": "library-new-request",
+    "issue_number": 5082,
+    "library": "com.beachape:enumeratum-macros_3:1.9.0",
+    "model": "oca/gpt-5.5",
     "output_tokens_used": 3219,
     "prompt_path": "library-preflight-prompt.txt",
     "raw_response_path": "library-preflight-response.txt",
-    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/com.beachape:enumeratum-macros_3:1.9.0/library-preparation-preflight/pi-generation-2026-06-26T11-49-53-033429Z.log"
+    "risks": [
+      "Testing only runtime references to the macro classes will not provide meaningful coverage because the library's behavior happens at Scala compile time.",
+      "Adding `com.beachape:enumeratum_3` is not required for setup; it can make tests more idiomatic, but direct macro wrappers can exercise the requested artifact without an extra dependency."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/com.beachape:enumeratum-macros_3:1.9.0/library-preparation-preflight/pi-generation-2026-06-26T11-49-53-033429Z.log",
+    "status": "completed",
+    "summary": "The artifact is a pure Scala 3 compile-time macro module with no service/Docker dependency and no required extra Maven dependency, but meaningful ValueEnumMacros coverage requires the Scala compiler option `-Yretain-trees`."
   },
   "metrics": {
-    "input_tokens_used": 465215,
-    "cached_input_tokens_used": 3330560,
-    "output_tokens_used": 49723,
-    "iterations": 8,
-    "cost_usd": 3.157,
-    "generated_loc": 0,
+    "input_tokens_used": 698062,
+    "cached_input_tokens_used": 5277696,
+    "output_tokens_used": 69497,
+    "iterations": 13,
+    "cost_usd": 4.7238,
+    "generated_loc": 244,
     "tested_library_loc": 0,
     "metadata_entries": 0,
     "code_coverage_percent": 0.0
   },
   "artifacts": {
-    "test_file": "None",
-    "metadata_file": "None"
+    "test_file": "tests/src/com.beachape/enumeratum-macros_3/1.9.0/src/test/scala/com_beachape/enumeratum_macros_3/ValueEnumMacrosTest.scala",
+    "metadata_file": "metadata/com.beachape/enumeratum-macros_3/1.9.0/reachability-metadata.json"
   }
 }

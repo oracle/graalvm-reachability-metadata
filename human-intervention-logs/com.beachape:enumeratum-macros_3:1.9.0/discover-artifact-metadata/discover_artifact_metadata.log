@@ -1,21 +1,1878 @@
-> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
-> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
-> Task :tck-build-logic:compileJava UP-TO-DATE
-> Task :tck-build-logic:compileGroovy UP-TO-DATE
-> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
-> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
-> Task :tck-build-logic:processResources UP-TO-DATE
-> Task :tck-build-logic:classes UP-TO-DATE
-> Task :tck-build-logic:jar UP-TO-DATE
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
 
 > Configure project :
 GraalVM Reachability Metadata TCK
 ---------------------------------
 
 > Task :discoverArtifactMetadata
-Skipping com.beachape:enumeratum-macros_3:1.9.0 because discovered metadata already exists at /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-5223a62f/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json.
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f03f0-362d-70d2-abcc-e1660555b561
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: com.beachape:enumeratum-macros_3:1.9.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "1.9.0" when "$version$" is replaced with "1.9.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
 
-[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-5223a62f/build/reports/problems/problems-report.html
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "com.beachape:enumeratum-macros_3:1.9.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.9.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing artifact metadata format, then verify the library coordinates against Maven and upstream sources before editing the JSON.
+exec
+/usr/bin/bash -lc "test -f build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json && sed -n '1,160p' build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json || true" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+ succeeded in 0ms:
+{
+  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -20' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"|enumeratum|not-for-native-image|source-code-url' build/discovered-artifact-metadata metadata -g '*.json' | head -80" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+ succeeded in 0ms:
+build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json:2:  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0"
+metadata/com.comcast/ip4s-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-sources.jar",
+metadata/com.comcast/ip4s-core_3/index.json:10:    "language" : {
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.rabbitmq/amqp-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-web/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-web/$version$/spring-web-$version$-sources.jar",
+metadata/org.springframework/spring-context-support/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:91:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:126:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/org.springframework/spring-tx/index.json:140:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-tx/$version$/spring-tx-$version$-sources.jar",
+metadata/io.opencensus/opencensus-contrib-http-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-http-util/$version$/opencensus-contrib-http-util-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:92:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:109:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:126:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:143:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:160:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:177:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:194:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/org.springframework/spring-expression/index.json:211:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-expression/$version$/spring-expression-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-sources.jar",
+metadata/org.springframework/spring-context/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context/$version$/spring-context-$version$-sources.jar",
+metadata/org.springframework.cloud/spring-cloud-function-context/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-context/$version$/spring-cloud-function-context-$version$-sources.jar",
+metadata/org.slf4j/slf4j-ext/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-ext/$version$/slf4j-ext-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/$version$/smallrye-common-expression-$version$-sources.jar",
+metadata/org.example/library/index.json:9:    "source-code-url": "N/A",
+metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream-binder-rabbit/$version$/spring-cloud-stream-binder-rabbit-$version$-sources.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-yaml-provider/$version$/jackson-jakarta-rs-yaml-provider-$version$-sources.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-yaml-provider/$version$/jackson-jakarta-rs-yaml-provider-$version$-sources.jar",
+metadata/org.springframework.cloud/spring-cloud-starter-circuitbreaker-resilience4j/index.json:3:    "not-for-native-image": true,
+metadata/io.nats/jnats/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/nats/jnats/$version$/jnats-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:42:    "source-code-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-sources.jar",
+metadata/org.attoparser/attoparser/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/attoparser/attoparser/$version$/attoparser-$version$-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-sources.jar",
+metadata/org.slf4j/slf4j-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/$version$/slf4j-api-$version$-sources.jar",
+metadata/org.springframework.cloud/spring-cloud-function-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-function-core/$version$/spring-cloud-function-core-$version$-sources.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-json-provider/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-json-provider/$version$/jackson-jakarta-rs-json-provider-$version$-sources.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-json-provider/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-json-provider/$version$/jackson-jakarta-rs-json-provider-$version$-sources.jar",
+metadata/com.google.code.findbugs/findbugs-annotations/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/com/google/code/findbugs/findbugs-annotations/$version$/findbugs-annotations-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-io/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-io/$version$/smallrye-common-io-$version$-sources.jar",
+metadata/javax.portlet/portlet-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/portlet/portlet-api/$version$/portlet-api-$version$-sources.jar",
+metadata/org.lz4/lz4-java/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/org/lz4/lz4-java/$version$/lz4-java-$version$-sources.jar",
+metadata/com.google.code.findbugs/annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/findbugs/annotations/$version$/annotations-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-classloader/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-classloader/$version$/smallrye-common-classloader-$version$-sources.jar",
+metadata/org.slf4j/slf4j-simple/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-sources.jar",
+metadata/org.slf4j/slf4j-simple/index.json:45:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-sources.jar",
+metadata/org.slf4j/slf4j-simple/index.json:63:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/slf4j-simple/$version$/slf4j-simple-$version$-sources.jar",
+metadata/com.google.code.findbugs/jsr305/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/$version$/jsr305-$version$.jar",
+metadata/com.google.code.findbugs/jsr305/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/$version$/jsr305-$version$-sources.jar",
+metadata/org.springframework/spring-test/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
+metadata/org.springframework/spring-test/index.json:84:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-test/$version$/spring-test-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-os/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-os/$version$/smallrye-common-os-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-os/index.json:25:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-os/$version$/smallrye-common-os-$version$-sources.jar",
+metadata/javax.transaction/transaction-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/transaction/transaction-api/$version$/transaction-api-$version$-sources.jar",
+metadata/org.springframework/spring-aspects/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-sources.jar",
+metadata/org.slf4j/slf4j-nop/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/$version$/slf4j-nop-$version$-sources.jar",
+metadata/org.slf4j/slf4j-nop/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/$version$/slf4j-nop-$version$-sources.jar",
+metadata/org.springframework.cloud/spring-cloud-stream-binder-rabbit-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/cloud/spring-cloud-stream-binder-rabbit-core/$version$/spring-cloud-stream-binder-rabbit-core-$version$-sources.jar",
+metadata/javax.transaction/jta/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/javax/transaction/jta/$version$/jta-$version$-sources.jar",
+metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-base/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/jakarta/rs/jackson-jakarta-rs-base/$version$/jackson-jakarta-rs-base-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:37:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-sources.jar",
+metadata/com.formdev/flatlaf-extras/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/formdev/flatlaf-extras/$version$/flatlaf-extras-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-process/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-process/$version$/smallrye-common-process-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-process/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-process/$version$/smallrye-common-process-$version$-sources.jar",
+metadata/io.smallrye.common/smallrye-common-process/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-process/$version$/smallrye-common-process-$version$-sources.jar",
+metadata/org.slf4j/jcl-over-slf4j/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/jcl-over-slf4j/$version$/jcl-over-slf4j-$version$-sources.jar",
+metadata/org.slf4j/jcl-over-slf4j/index.json:82:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/jcl-over-slf4j/$version$/jcl-over-slf4j-$version$-sources.jar",
+metadata/org.slf4j/jcl-over-slf4j/index.json:108:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/slf4j/jcl-over-slf4j/$version$/jcl-over-slf4j-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-sources.jar",
+metadata/com.fasterxml.jackson.core/jackson-core/index.json:130:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/$version$/jackson-core-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+
+web search: 
+web search: Maven Central com.beachape enumeratum-macros_3 1.9.0
+codex
+The existing file only has coordinates. I’m checking Maven Central artifacts first because the request prefers Maven-hosted source and test artifacts when they exist, then I’ll fall back to the tagged upstream repository for anything not published there.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/1.9.0/enumeratum-macros_3-1.9.0.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.beachape</groupId>
+    <artifactId>enumeratum-macros_3</artifactId>
+    <packaging>jar</packaging>
+    <description>enumeratum-macros</description>
+    <version>1.9.0</version>
+    <name>enumeratum-macros</name>
+    <organization>
+        <name>com.beachape</name>
+    </organization>
+    <scm>
+        <url>https://github.com/lloydmeta/enumeratum</url>
+        <connection>scm:git:https://github.com/lloydmeta/enumeratum.git</connection>
+        <developerConnection>scm:git:git@github.com:lloydmeta/enumeratum.git</developerConnection>
+    </scm>
+    <url>https://github.com/lloydmeta/enumeratum</url>
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>http://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>lloydmeta</id>
+            <name>Lloyd Chan</name>
+            <url>https://beachape.com</url>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-compiler_3</artifactId>
+            <version>3.3.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.3.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_3</artifactId>
+            <version>3.2.19</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang.modules</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang.modules</groupId>
+            <artifactId>scala-xml_3</artifactId>
+            <version>2.1.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/1.9.0/' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: com/beachape/enumeratum-macros_3/1.9.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>com/beachape/enumeratum-macros_3/1.9.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="enumeratum-macros_3-1.9.0-javadoc.jar" title="enumeratum-macros_3-1.9.0-javadoc.jar">enumeratum-macros_3-1.9.0-javadoc.jar</a>             2025-05-23 12:01   2723052      
+<a href="enumeratum-macros_3-1.9.0-javadoc.jar.asc" title="enumeratum-macros_3-1.9.0-javadoc.jar.asc">enumeratum-macros_3-1.9.0-javadoc.jar.asc</a>         2025-05-23 12:01       488      
+<a href="enumeratum-macros_3-1.9.0-javadoc.jar.asc.md5" title="enumeratum-macros_3-1.9.0-javadoc.jar.asc.md5">enumeratum-macros_3-1.9.0-javadoc.jar.asc.md5</a>     2025-05-23 12:01        32      
+<a href="enumeratum-macros_3-1.9.0-javadoc.jar.asc.sha1" title="enumeratum-macros_3-1.9.0-javadoc.jar.asc.sha1">enumeratum-macros_3-1.9.0-javadoc.jar.asc.sha...</a>  2025-05-23 12:01        40      
+<a href="enumeratum-macros_3-1.9.0-javadoc.jar.md5" title="enumeratum-macros_3-1.9.0-javadoc.jar.md5">enumeratum-macros_3-1.9.0-javadoc.jar.md5</a>         2025-05-23 12:01        32      
+<a href="enumeratum-macros_3-1.9.0-javadoc.jar.sha1" title="enumeratum-macros_3-1.9.0-javadoc.jar.sha1">enumeratum-macros_3-1.9.0-javadoc.jar.sha1</a>        2025-05-23 12:01        40      
+<a href="enumeratum-macros_3-1.9.0-sources.jar" title="enumeratum-macros_3-1.9.0-sources.jar">enumeratum-macros_3-1.9.0-sources.jar</a>             2025-05-23 12:01      5449      
+<a href="enumeratum-macros_3-1.9.0-sources.jar.asc" title="enumeratum-macros_3-1.9.0-sources.jar.asc">enumeratum-macros_3-1.9.0-sources.jar.asc</a>         2025-05-23 12:01       488      
+<a href="enumeratum-macros_3-1.9.0-sources.jar.asc.md5" title="enumeratum-macros_3-1.9.0-sources.jar.asc.md5">enumeratum-macros_3-1.9.0-sources.jar.asc.md5</a>     2025-05-23 12:01        32      
+<a href="enumeratum-macros_3-1.9.0-sources.jar.asc.sha1" title="enumeratum-macros_3-1.9.0-sources.jar.asc.sha1">enumeratum-macros_3-1.9.0-sources.jar.asc.sha...</a>  2025-05-23 12:01        40      
+<a href="enumeratum-macros_3-1.9.0-sources.jar.md5" title="enumeratum-macros_3-1.9.0-sources.jar.md5">enumeratum-macros_3-1.9.0-sources.jar.md5</a>         2025-05-23 12:01        32      
+<a href="enumeratum-macros_3-1.9.0-sources.jar.sha1" title="enumeratum-macros_3-1.9.0-sources.jar.sha1">enumeratum-macros_3-1.9.0-sources.jar.sha1</a>        2025-05-23 12:01        40      
+<a href="enumeratum-macros_3-1.9.0.jar" title="enumeratum-macros_3-1.9.0.jar">enumeratum-macros_3-1.9.0.jar</a>                     2025-05-23 12:01     56188      
+<a href="enumeratum-macros_3-1.9.0.jar.asc" title="enumeratum-macros_3-1.9.0.jar.asc">enumeratum-macros_3-1.9.0.jar.asc</a>                 2025-05-23 12:01       488      
+<a href="enumeratum-macros_3-1.9.0.jar.asc.md5" title="enumeratum-macros_3-1.9.0.jar.asc.md5">enumeratum-macros_3-1.9.0.jar.asc.md5</a>             2025-05-23 12:01        32      
+<a href="enumeratum-macros_3-1.9.0.jar.asc.sha1" title="enumeratum-macros_3-1.9.0.jar.asc.sha1">enumeratum-macros_3-1.9.0.jar.asc.sha1</a>            2025-05-23 12:01        40      
+<a href="enumeratum-macros_3-1.9.0.jar.md5" title="enumeratum-macros_3-1.9.0.jar.md5">enumeratum-macros_3-1.9.0.jar.md5</a>                 2025-05-23 12:01        32      
+<a href="enumeratum-macros_3-1.9.0.jar.sha1" title="enumeratum-macros_3-1.9.0.jar.sha1">enumeratum-macros_3-1.9.0.jar.sha1</a>                2025-05-23 12:01        40      
+<a href="enumeratum-macros_3-1.9.0.pom" title="enumeratum-macros_3-1.9.0.pom">enumeratum-macros_3-1.9.0.pom</a>                     2025-05-23 12:01      2377      
+<a href="enumeratum-macros_3-1.9.0.pom.asc" title="enumeratum-macros_3-1.9.0.pom.asc">enumeratum-macros_3-1.9.0.pom.asc</a>                 2025-05-23 12:01       488      
+<a href="enumeratum-macros_3-1.9.0.pom.asc.md5" title="enumeratum-macros_3-1.9.0.pom.asc.md5">enumeratum-macros_3-1.9.0.pom.asc.md5</a>             2025-05-23 12:01        32      
+<a href="enumeratum-macros_3-1.9.0.pom.asc.sha1" title="enumeratum-macros_3-1.9.0.pom.asc.sha1">enumeratum-macros_3-1.9.0.pom.asc.sha1</a>            2025-05-23 12:01        40      
+<a href="enumeratum-macros_3-1.9.0.pom.md5" title="enumeratum-macros_3-1.9.0.pom.md5">enumeratum-macros_3-1.9.0.pom.md5</a>                 2025-05-23 12:01        32      
+<a href="enumeratum-macros_3-1.9.0.pom.sha1" title="enumeratum-macros_3-1.9.0.pom.sha1">enumeratum-macros_3-1.9.0.pom.sha1</a>                2025-05-23 12:01        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+ succeeded in 184ms:
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"https://repo.*javadoc|\"test-code-url\" : \"https://github.com/.*/tree/.*/.*test|\"language\" : \\{' metadata build/discovered-artifact-metadata -g '*.json' | head -120" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+ succeeded in 0ms:
+metadata/com.comcast/ip4s-core_3/index.json:7:    "test-code-url" : "https://github.com/Comcast/ip4s/tree/v$version$/test-kit/shared/src/test",
+metadata/com.comcast/ip4s-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+metadata/com.comcast/ip4s-core_3/index.json:10:    "language" : {
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:7:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+metadata/org.apache.thrift/libthrift/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:28:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+metadata/org.apache.thrift/libthrift/index.json:29:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-javadoc.jar",
+metadata/io.smallrye.reactive/mutiny/index.json:7:    "test-code-url" : "https://github.com/smallrye/smallrye-mutiny/tree/$version$/implementation/src/test",
+metadata/io.smallrye.reactive/mutiny/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/reactive/mutiny/$version$/mutiny-$version$-javadoc.jar",
+metadata/org.playframework.twirl/twirl-api_3/index.json:7:    "test-code-url" : "https://github.com/playframework/twirl/tree/$version$/api/shared/src/test",
+metadata/org.playframework.twirl/twirl-api_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/playframework/twirl/twirl-api_3/$version$/twirl-api_3-$version$-javadoc.jar",
+metadata/org.playframework.twirl/twirl-api_3/index.json:10:    "language" : {
+metadata/org.glassfish.hk2/hk2-api/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:22:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:37:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/io.getquill/quill-engine_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_3/$version$/quill-engine_3-$version$-javadoc.jar",
+metadata/io.getquill/quill-engine_3/index.json:10:    "language" : {
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/toml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/saaj-api/tree/$version$/api/src/test",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/$version$/jakarta.xml.soap-api-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/yaml/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:7:    "test-code-url" : "https://github.com/profunktor/redis4cats/tree/v$version$/modules/core/src/test",
+metadata/dev.profunktor/redis4cats-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:10:    "language" : {
+metadata/dev.profunktor/redis4cats-core_3/index.json:28:    "test-code-url" : "https://github.com/profunktor/redis4cats/tree/v$version$/modules/core/src/test",
+metadata/dev.profunktor/redis4cats-core_3/index.json:29:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+metadata/dev.profunktor/redis4cats-core_3/index.json:31:    "language" : {
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/junit-jupiter-engine/src/test",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:7:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:7:    "test-code-url" : "https://github.com/rabbitmq/rabbitmq-java-client/tree/v$version$/src/test",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/org.codehaus.janino/commons-compiler/index.json:7:    "test-code-url" : "https://github.com/janino-compiler/janino/tree/v$version$/commons-compiler-tests",
+metadata/org.codehaus.janino/commons-compiler/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/$version$/commons-compiler-$version$-javadoc.jar",
+metadata/io.getquill/quill-engine_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-javadoc.jar",
+metadata/io.getquill/quill-engine_2.13/index.json:10:    "language" : {
+metadata/io.getquill/quill-util_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-util_3/$version$/quill-util_3-$version$-javadoc.jar",
+metadata/io.getquill/quill-util_3/index.json:10:    "language" : {
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/$version$/jackrabbit-jcr-commons/src/test/java",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-javadoc.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:7:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:30:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:45:    "test-code-url" : "https://github.com/wildfly-security/wildfly-openssl/tree/$version$/java/src/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.9.2/junit-jupiter-params/src/test/java",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient/src/test",
+metadata/io.prometheus/simpleclient/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_agent",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala",
+metadata/com.typesafe.slick/slick_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick_2.13/index.json:10:    "language" : {
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-javadoc.jar",
+metadata/org.springframework/spring-web/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-web/src/test",
+metadata/org.springframework/spring-web/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-web/$version$/spring-web-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:27:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:46:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:7:    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala/slick/test/jdbc/hikaricp",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-javadoc.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:10:    "language" : {
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:31:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:44:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:45:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:58:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:59:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:75:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:76:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:89:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:90:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:103:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:104:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:117:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:132:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.springframework/spring-context-support/index.json:7:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-context-support/src/test",
+metadata/org.springframework/spring-context-support/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/spring-context-support/$version$/spring-context-support-$version$-javadoc.jar",
+metadata/io.opencensus/opencensus-contrib-http-util/index.json:7:    "test-code-url" : "https://github.com/census-instrumentation/opencensus-java/tree/v$version$/contrib/http_util/src/test/java",
+metadata/io.opencensus/opencensus-contrib-http-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-http-util/$version$/opencensus-contrib-http-util-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_sdk/src/test",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_tracer_otel/$version$/simpleclient_tracer_otel-$version$-javadoc.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-javadoc.jar",
+metadata/org.codehaus.jettison/jettison/index.json:7:    "test-code-url" : "https://github.com/jettison-json/jettison/tree/jettison-$version$/src/test/java",
+metadata/org.codehaus.jettison/jettison/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/jettison/jettison/$version$/jettison-$version$-javadoc.jar",
+metadata/io.lettuce/lettuce-core/index.json:7:    "test-code-url" : "https://github.com/redis/lettuce/tree/$version$/src/test",
+metadata/io.lettuce/lettuce-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/github/oshai/kotlin-logging-jvm/$version$/kotlin-logging-jvm-$version$-javadoc.jar",
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/com.github.stephenc.jcip/jcip-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/stephenc/jcip/jcip-annotations/$version$/jcip-annotations-$version$-javadoc.jar",
+metadata/io.prometheus/simpleclient_httpserver/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/simpleclient_httpserver/src/test",
+metadata/io.prometheus/simpleclient_httpserver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/prometheus/simpleclient_httpserver/$version$/simpleclient_httpserver-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/lloydmeta/enumeratum/contents?ref=v1.9.0' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+exec
+/usr/bin/bash -lc 'git ls-remote --tags https://github.com/lloydmeta/enumeratum.git | tail -80' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+ exited 22 in 196ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 413ms:
+79f43e9909701f6da21183c436579540b1e41429	refs/tags/v1.3.3
+6b300bd9893ed43e7c8a07721499924b5342a16a	refs/tags/v1.3.3^{}
+1c3445910d703245595a25ee9f08beee12d3f3e7	refs/tags/v1.3.4
+c362515f40d682f661f16ae364e2b883c0485dbc	refs/tags/v1.3.4^{}
+e2d2670833b83af9181a3a7a332fecd350f11539	refs/tags/v1.3.5
+da37ac52f892498edf07c1b45acb94d90fae027e	refs/tags/v1.3.5^{}
+68bdb1780be3cb2bdba6249e9991c5d5899f42c3	refs/tags/v1.3.6
+429f928d6f200a4e13e5f72bcfd49f66cd09a7dc	refs/tags/v1.3.6^{}
+97edc04fb47541d9e094d622e1618f3a4df58830	refs/tags/v1.3.7
+486795d71f7199060dbbad4a05143d5714327274	refs/tags/v1.3.7^{}
+eb8e1c6742c6c435f1b8175e0f8f25da4fc0336c	refs/tags/v1.4.0
+934b3671eefb61ce58a5996686900881a5eb18b2	refs/tags/v1.4.0^{}
+a98b8fad99ce8c29a9eb118b2339a9e608b57cb8	refs/tags/v1.4.1
+028c19554ac255f8a684d4dc9e99b97eef5c94c4	refs/tags/v1.4.1^{}
+bd9230c92ae217ee02cd80b53c5569cc55775ff5	refs/tags/v1.4.10
+57d13b99da6a8c8b1188326e7445bfc0680277f5	refs/tags/v1.4.10^{}
+f984eacee72289a96f9b32553cdb5d0c07b46321	refs/tags/v1.4.11
+034138587b2e7ec6579817a11a760bce8cafb7f3	refs/tags/v1.4.11^{}
+a561375d137be8334b7f3e6099f445e9c4d9c660	refs/tags/v1.4.12
+ceb871f083cf022c31e74936da4098e397a729a1	refs/tags/v1.4.12^{}
+3ade54f928244d247ecae7939427cacd88252f0e	refs/tags/v1.4.13
+6c55490fdb150c2832b045a2252c934c8a981a62	refs/tags/v1.4.13^{}
+2998c186beeb48aa4fb07caa634423442f68b3e5	refs/tags/v1.4.14
+c8dd24d9d70fdbb484f03fdb22e376077d0b4eb8	refs/tags/v1.4.14^{}
+7c4dfac24597d4333e6e35113e615cd4ac3f8773	refs/tags/v1.4.15
+ccbbbdecef76c3aad1f6d13f94607babf7856e53	refs/tags/v1.4.15^{}
+d697784fc6b153e71f42ea7bddaa997c6ac7820e	refs/tags/v1.4.16
+3697b09e85baab19a7447d9e8ef646d60e2aad91	refs/tags/v1.4.16^{}
+2d4562333c5fd7f7070328dfcce16fd8365f627a	refs/tags/v1.4.17
+9dcc07133f6e931413a5c9f95ce35cfe78f316d5	refs/tags/v1.4.17^{}
+8918d73159ac1c54f4e3e540d4a8769dc5f10828	refs/tags/v1.4.18
+2afc76465c634da00720475e9dfce5410317f3f6	refs/tags/v1.4.18^{}
+fae81dc80a6376727fb4459583755d37a15f9e09	refs/tags/v1.4.2
+12d9e03083d6cb407a0f8a4df7551cbd9453ecb0	refs/tags/v1.4.2^{}
+5277ac71af760960c91de9fa0035a68dbd65c926	refs/tags/v1.4.3
+05779555f79153fd6e1af9d0066166220c5331c1	refs/tags/v1.4.3^{}
+d32fd63601e24319891c81a807be68af2b8b702b	refs/tags/v1.4.4
+0068cb86e4f799db004e63e25cf41455d03c4082	refs/tags/v1.4.4^{}
+79b17787bf3b1a7983635136fdf4dcb46415a4a9	refs/tags/v1.4.5
+1543eed63328e25ed1b10e8cf548d2e6aacd34a7	refs/tags/v1.4.5^{}
+4e4f6b29d0921d2e968a7fbe8ea32a00ec882ebd	refs/tags/v1.4.6
+7932eaab80b858cbb5414f2f017b871a3d0338d7	refs/tags/v1.4.6^{}
+d82d759fc8c23994d30d35ba844a22b89532c6e4	refs/tags/v1.4.7
+1e6c6d59dceeee4e3519a306520efcfef22a5032	refs/tags/v1.4.7^{}
+99ec0c0838b2255b2194d01f76f136b61a5bcdce	refs/tags/v1.4.8
+060afb1983f2ab4745ae304f7c90055bd479cc4c	refs/tags/v1.4.8^{}
+ae4282727f02e644edb052253cc46e336c1fb1dd	refs/tags/v1.4.9
+0659849318b64bc1934109c78e856cd671468957	refs/tags/v1.4.9^{}
+2e660b2e8db5d9f18517a322d8cc81e9d654047c	refs/tags/v1.5.0
+772bbc6bc289f79764c7261c58cbc9811a41811e	refs/tags/v1.5.0^{}
+6d30c47c10a4da46836dcdc7e5ceb8f6491a68fe	refs/tags/v1.5.1
+ef97c66f8431f74ec0b310d077876a4631d68f48	refs/tags/v1.5.1^{}
+a8435258ab8263052e452db6e71457b51332682f	refs/tags/v1.5.11
+9aa5bd0592305256a554c1c05715343c63760439	refs/tags/v1.5.11^{}
+a2d3014fa65b4269e96af220f769f923ce6fe7dd	refs/tags/v1.5.12
+469c48e7fd41d78887289cf3e60492c057526a66	refs/tags/v1.5.12^{}
+4df9c91cf6a6a8803d995de8e8eb3fe9b6f21b5d	refs/tags/v1.5.13
+cef09dbefd838b53d005e8b3c2ac83cdbcf9acab	refs/tags/v1.5.13^{}
+4fe37474b659c74a56f553f27ba8d64db13963d5	refs/tags/v1.5.14-enumeratum-cats
+b0f4c96ebd49359d046efeaadbdb33d7500963c9	refs/tags/v1.5.14-enumeratum-cats^{}
+9483376dae3ea57724843a6c5e95b91afeba6be7	refs/tags/v1.5.18-enumeratum-circe
+4e08422e909fae51651cf448ba8d12a925ad9fa1	refs/tags/v1.5.18-enumeratum-circe^{}
+eae73b1eab0e8daa6e2f5263aee9003541e36c10	refs/tags/v1.5.2
+b1e39c0159bd93c43883a10d022e847595c579ea	refs/tags/v1.5.2^{}
+d658fe7a52c919bc45422e8066063ae9db4ac408	refs/tags/v1.5.3
+0503528400b0f9ad0c86e1c64f6cccaab3ed5d1a	refs/tags/v1.5.3^{}
+d58b905931a19c0b8ba549e5136156bbdb82fbee	refs/tags/v1.5.4
+255e372e100ed6aa7a730f276b9f7315dd70fd47	refs/tags/v1.5.4^{}
+f79bf6979bea8d6b16caeed200a06c46040da75a	refs/tags/v1.5.6
+352b30b81776b0007b9d99b193984bd8973d4d07	refs/tags/v1.5.6^{}
+bcf95812fb208878350e2b0841fc69d33436e827	refs/tags/v1.5.9
+e2251c896ece7dfea75741338dfbc02d25484281	refs/tags/v1.5.9^{}
+51a2dda18663da1005687993e15a18270a4de708	refs/tags/v1.6.1
+bec934a5761c02901eb0fc01b2ac5982995d48d0	refs/tags/v1.6.1^{}
+806bfbedd53df027d4c7355573eb56fd6baf8956	refs/tags/v1.7.0
+9e480e8fd5890297aba7c737ed0219c9ad3b5f8c	refs/tags/v1.7.0^{}
+e37da9e1d6ca225c7806aaf158f38e45b176b107	refs/tags/v1.7.1
+8bfe7679fac173609290477548918cafafda2a9a	refs/tags/v1.7.1^{}
+de46f5a8865c50aa87db49740af1ea3278ca8b60	refs/tags/v1.7.2
+74de3ebd720a62a015869fcc4607ce58ecdaf47b	refs/tags/v1.7.2^{}
+
+codex
+Maven Central publishes the main jar, sources jar, and javadoc jar for `1.9.0`, but no test-sources jar in that version directory. I found the POM SCM root and now need the exact upstream tag/path for tests.
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/lloydmeta/enumeratum.git 'refs/tags/*1.9*'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+exec
+/usr/bin/bash -lc 'curl -I -fsSL https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/1.9.0/enumeratum-macros_3-1.9.0-test-sources.jar || true' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/lloydmeta/enumeratum/tags?per_page=100 | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+ succeeded in 211ms:
+HTTP/2 404 
+date: Fri, 26 Jun 2026 12:38:55 GMT
+content-type: text/html
+cf-ray: a11c459118ea2799-LYS
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/com/beachape/enumeratum-macros_3/1.9.0/enumeratum-macros_3-1.9.0-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 386ms:
+845bb2ad8302ff3c308d3e8fb6d9deca42d72901	refs/tags/enumeratum-1.9.0
+636ccdfc0575aa46c5252837268df1be37678f78	refs/tags/enumeratum-1.9.0^{}
+a38354ebc347f5756efb9f2a238337683a11be31	refs/tags/enumeratum-1.9.1
+7f3b83143d6401d7acbf06b8e5831228212fe0d7	refs/tags/enumeratum-1.9.1^{}
+4b2d2063ed9695e09b01f1331631fa2dae4ff661	refs/tags/enumeratum-1.9.2
+4d84578b5db65528ea39dc4b494bf1c1fb4d81fd	refs/tags/enumeratum-1.9.2^{}
+9ae1dcff5c6a5b15fbf140a843905a09566b5e3c	refs/tags/enumeratum-1.9.3
+3f17fdf05afb48ddf7acb59514502aef8f201d4f	refs/tags/enumeratum-1.9.3^{}
+4e46c6e8cc4ebac984a8c4d6761ce1332f4b81ff	refs/tags/enumeratum-1.9.4
+62e66895d9bda09e9de19f89287eecf05131fdbc	refs/tags/enumeratum-1.9.4^{}
+653c86414586b9c0fb6dacf960061bd01872419d	refs/tags/enumeratum-1.9.5
+02bc880d05d48cb19c3a35542eaba8af56f4b5e8	refs/tags/enumeratum-1.9.5^{}
+6c92c3abdc9519d175eee9a95730ebb50d3e57bb	refs/tags/enumeratum-1.9.6
+423dfe38bcde6214ccc02dcf1841a16e58a3ec5b	refs/tags/enumeratum-1.9.6^{}
+47336c8e78e08189f5dd6ae7beca0ade8fc42b9a	refs/tags/enumeratum-1.9.7
+2bc71b461197eae227cceafea68d5cea3e00ddf0	refs/tags/enumeratum-1.9.7^{}
+d86295cc5b7720e5369f747df9e1767574615bac	refs/tags/enumeratum-1.9.8
+cd214e73b7935f85f43a24e71370e5969d7799aa	refs/tags/enumeratum-1.9.8^{}
+
+ succeeded in 453ms:
+[
+  {
+    "name": "v1.7.2",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.7.2",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.7.2",
+    "commit": {
+      "sha": "74de3ebd720a62a015869fcc4607ce58ecdaf47b",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/74de3ebd720a62a015869fcc4607ce58ecdaf47b"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjcuMg=="
+  },
+  {
+    "name": "v1.7.1",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.7.1",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.7.1",
+    "commit": {
+      "sha": "8bfe7679fac173609290477548918cafafda2a9a",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/8bfe7679fac173609290477548918cafafda2a9a"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjcuMQ=="
+  },
+  {
+    "name": "v1.7.0",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.7.0",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.7.0",
+    "commit": {
+      "sha": "9e480e8fd5890297aba7c737ed0219c9ad3b5f8c",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/9e480e8fd5890297aba7c737ed0219c9ad3b5f8c"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjcuMA=="
+  },
+  {
+    "name": "v1.6.1",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.6.1",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.6.1",
+    "commit": {
+      "sha": "bec934a5761c02901eb0fc01b2ac5982995d48d0",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/bec934a5761c02901eb0fc01b2ac5982995d48d0"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjYuMQ=="
+  },
+  {
+    "name": "v1.5.18-enumeratum-circe",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.5.18-enumeratum-circe",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.5.18-enumeratum-circe",
+    "commit": {
+      "sha": "4e08422e909fae51651cf448ba8d12a925ad9fa1",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/4e08422e909fae51651cf448ba8d12a925ad9fa1"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjUuMTgtZW51bWVyYXR1bS1jaXJjZQ=="
+  },
+  {
+    "name": "v1.5.14-enumeratum-cats",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.5.14-enumeratum-cats",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.5.14-enumeratum-cats",
+    "commit": {
+      "sha": "b0f4c96ebd49359d046efeaadbdb33d7500963c9",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/b0f4c96ebd49359d046efeaadbdb33d7500963c9"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjUuMTQtZW51bWVyYXR1bS1jYXRz"
+  },
+  {
+    "name": "v1.5.13",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.5.13",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.5.13",
+    "commit": {
+      "sha": "cef09dbefd838b53d005e8b3c2ac83cdbcf9acab",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/cef09dbefd838b53d005e8b3c2ac83cdbcf9acab"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjUuMTM="
+  },
+  {
+    "name": "v1.5.12",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.5.12",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.5.12",
+    "commit": {
+      "sha": "469c48e7fd41d78887289cf3e60492c057526a66",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/469c48e7fd41d78887289cf3e60492c057526a66"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjUuMTI="
+  },
+  {
+    "name": "v1.5.11",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.5.11",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.5.11",
+    "commit": {
+      "sha": "9aa5bd0592305256a554c1c05715343c63760439",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/9aa5bd0592305256a554c1c05715343c63760439"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjUuMTE="
+  },
+  {
+    "name": "v1.5.9",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.5.9",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.5.9",
+    "commit": {
+      "sha": "e2251c896ece7dfea75741338dfbc02d25484281",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/e2251c896ece7dfea75741338dfbc02d25484281"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjUuOQ=="
+  },
+  {
+    "name": "v1.5.6",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.5.6",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.5.6",
+    "commit": {
+      "sha": "352b30b81776b0007b9d99b193984bd8973d4d07",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/352b30b81776b0007b9d99b193984bd8973d4d07"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjUuNg=="
+  },
+  {
+    "name": "v1.5.4",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.5.4",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.5.4",
+    "commit": {
+      "sha": "255e372e100ed6aa7a730f276b9f7315dd70fd47",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/255e372e100ed6aa7a730f276b9f7315dd70fd47"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjUuNA=="
+  },
+  {
+    "name": "v1.5.3",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.5.3",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.5.3",
+    "commit": {
+      "sha": "0503528400b0f9ad0c86e1c64f6cccaab3ed5d1a",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/0503528400b0f9ad0c86e1c64f6cccaab3ed5d1a"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjUuMw=="
+  },
+  {
+    "name": "v1.5.2",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.5.2",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.5.2",
+    "commit": {
+      "sha": "b1e39c0159bd93c43883a10d022e847595c579ea",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/b1e39c0159bd93c43883a10d022e847595c579ea"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjUuMg=="
+  },
+  {
+    "name": "v1.5.1",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.5.1",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.5.1",
+    "commit": {
+      "sha": "ef97c66f8431f74ec0b310d077876a4631d68f48",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/ef97c66f8431f74ec0b310d077876a4631d68f48"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjUuMQ=="
+  },
+  {
+    "name": "v1.5.0",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.5.0",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.5.0",
+    "commit": {
+      "sha": "772bbc6bc289f79764c7261c58cbc9811a41811e",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/772bbc6bc289f79764c7261c58cbc9811a41811e"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjUuMA=="
+  },
+  {
+    "name": "v1.4.18",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.4.18",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.4.18",
+    "commit": {
+      "sha": "2afc76465c634da00720475e9dfce5410317f3f6",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/2afc76465c634da00720475e9dfce5410317f3f6"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjQuMTg="
+  },
+  {
+    "name": "v1.4.17",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.4.17",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.4.17",
+    "commit": {
+      "sha": "9dcc07133f6e931413a5c9f95ce35cfe78f316d5",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/9dcc07133f6e931413a5c9f95ce35cfe78f316d5"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjQuMTc="
+  },
+  {
+    "name": "v1.4.16",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.4.16",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.4.16",
+    "commit": {
+      "sha": "3697b09e85baab19a7447d9e8ef646d60e2aad91",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/3697b09e85baab19a7447d9e8ef646d60e2aad91"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjQuMTY="
+  },
+  {
+    "name": "v1.4.15",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.4.15",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.4.15",
+    "commit": {
+      "sha": "ccbbbdecef76c3aad1f6d13f94607babf7856e53",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/ccbbbdecef76c3aad1f6d13f94607babf7856e53"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjQuMTU="
+  },
+  {
+    "name": "v1.4.14",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.4.14",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.4.14",
+    "commit": {
+      "sha": "c8dd24d9d70fdbb484f03fdb22e376077d0b4eb8",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/c8dd24d9d70fdbb484f03fdb22e376077d0b4eb8"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjQuMTQ="
+  },
+  {
+    "name": "v1.4.13",
+    "zipball_url": "https://api.github.com/repos/lloydmeta/enumeratum/zipball/refs/tags/v1.4.13",
+    "tarball_url": "https://api.github.com/repos/lloydmeta/enumeratum/tarball/refs/tags/v1.4.13",
+    "commit": {
+      "sha": "6c55490fdb150c2832b045a2252c934c8a981a62",
+      "url": "https://api.github.com/repos/lloydmeta/enumeratum/commits/6c55490fdb150c2832b045a2252c934c8a981a62"
+    },
+    "node_id": "MDM6UmVmMjc1ODcyNzQ6cmVmcy90YWdzL3YxLjQuMTM="
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://raw.githubusercontent.com/lloydmeta/enumeratum/enumeratum-1.9.0/build.sbt' | sed -n '1,240p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); curl -fsSL -o "$tmp/enumeratum-macros.jar" https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/1.9.0/enumeratum-macros_3-1.9.0.jar && jar tf "$tmp/enumeratum-macros.jar" | sed -n '"'1,120p' && rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/lloydmeta/enumeratum/contents?ref=enumeratum-1.9.0'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+ succeeded in 127ms:
+META-INF/MANIFEST.MF
+enumeratum/
+enumeratum/values/
+enumeratum/EnumMacros$$anon$1.class
+enumeratum/EnumMacros$.class
+enumeratum/EnumMacros.class
+enumeratum/EnumMacros.tasty
+enumeratum/ValueEnumMacros$$anon$1.class
+enumeratum/ValueEnumMacros$$anon$2.class
+enumeratum/ValueEnumMacros$$anon$3.class
+enumeratum/ValueEnumMacros$$anon$4.class
+enumeratum/ValueEnumMacros$.class
+enumeratum/ValueEnumMacros$ConstVal$2$.class
+enumeratum/ValueEnumMacros$ValueOfFromExpr.class
+enumeratum/ValueEnumMacros.class
+enumeratum/ValueEnumMacros.tasty
+enumeratum/values/AllowAlias.class
+enumeratum/values/AllowAlias.tasty
+
+ succeeded in 137ms:
+import com.github.sbt.git.SbtGit.{GitKeys => git}
+import sbtbuildinfo.BuildInfoPlugin.autoImport._
+import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
+
+lazy val scala_2_12Version = "2.12.20"
+lazy val scala_2_13Version = "2.13.16"
+lazy val scala_3Version    = "3.3.5"
+lazy val scalaVersionsAll  = Seq(scala_2_12Version, scala_2_13Version, scala_3Version)
+
+lazy val theScalaVersion = scala_2_12Version
+
+lazy val scalaTestVersion = "3.2.19"
+
+lazy val baseProjectRefs =
+  Seq(macrosJS, macrosJVM, macrosNative, coreJS, coreJVM, coreNative, coreJVMTests).map(
+    Project.projectToRef
+  )
+
+lazy val scala213ProjectRefs = Seq(
+  enumeratumJson4s,
+  enumeratumScalacheckJvm,
+  enumeratumScalacheckJs,
+  enumeratumScalacheckNative,
+  enumeratumPlayJsonJvm,
+  enumeratumPlayJsonJs,
+  enumeratumArgonautJs,
+  enumeratumArgonautJvm,
+  enumeratumSlick,
+  enumeratumPlay,
+  enumeratumCirceJvm,
+  enumeratumCirceJs,
+  enumeratumCirceNative,
+  enumeratumReactiveMongoBson,
+  enumeratumCatsJvm,
+  enumeratumCatsJs,
+  enumeratumCatsNative,
+  enumeratumQuillJvm
+  // enumeratumQuillJs  TODO re-enable once quill supports Scala.js 1.0
+).map(Project.projectToRef)
+
+lazy val scala_2_13 = Project(id = "scala_2_13", base = file("scala_2_13"))
+  .settings(
+    commonSettings ++ publishSettings,
+    name               := "enumeratum-scala_2_13",
+    scalaVersion       := scala_2_13Version, // not sure if this and below are needed
+    crossScalaVersions := Seq(scala_2_13Version),
+    crossVersion       := CrossVersion.binary,
+    // Do not publish this  project (it just serves as an aggregate)
+    publishArtifact := false,
+    publishLocal    := {},
+    // doctestWithDependencies := false, // sbt-doctest is not yet compatible with this 2.13
+    publish / aggregate               := false,
+    PgpKeys.publishSigned / aggregate := false
+  )
+  .aggregate((baseProjectRefs ++ scala213ProjectRefs): _*)
+
+// Disable cats and circe js modules here, as they don't have versions compatible with Scala.js 1.0 on Scala 2.11
+
+lazy val integrationProjectRefs = Seq(
+  enumeratumPlay,
+  enumeratumPlayJsonJs,
+  enumeratumPlayJsonJvm,
+  enumeratumCirceJs,
+  enumeratumCirceJvm,
+  enumeratumCirceNative,
+  enumeratumReactiveMongoBson,
+  enumeratumArgonautJs,
+  enumeratumArgonautJvm,
+  enumeratumJson4s,
+  enumeratumScalacheckJs,
+  enumeratumScalacheckJvm,
+  enumeratumScalacheckNative,
+//  enumeratumQuillJs, TODO re-enable once quill supports Scala.js 1.0
+  enumeratumQuillJvm,
+  enumeratumDoobie,
+  enumeratumSlick,
+  enumeratumCatsJs,
+  enumeratumCatsJvm,
+  enumeratumCatsNative
+).map(Project.projectToRef)
+
+lazy val root =
+  Project(id = "enumeratum-root", base = file("."))
+    .settings(commonWithPublishSettings)
+    .settings(
+      name               := "enumeratum-root",
+      crossVersion       := CrossVersion.binary,
+      crossScalaVersions := Nil,
+      git.gitRemoteRepo  := "git@github.com:lloydmeta/enumeratum.git",
+      // Do not publish the root project (it just serves as an aggregate)
+      publishArtifact                   := false,
+      publishLocal                      := {},
+      publish / aggregate               := false,
+      PgpKeys.publishSigned / aggregate := false
+    )
+    .aggregate(baseProjectRefs ++ integrationProjectRefs: _*)
+
+lazy val macrosAggregate = aggregateProject("macros", macrosJS, macrosJVM, macrosNative)
+lazy val macros = crossProject(JSPlatform, JVMPlatform, NativePlatform)
+  .crossType(CrossType.Pure)
+  .in(file("macros"))
+  .settings(testSettings)
+  .jsSettings(jsTestSettings)
+  .nativeSettings(nativeTestSettings)
+  .settings(commonWithPublishSettings)
+  .settings(withCompatUnmanagedSources(jsJvmCrossProject = true, includeTestSrcs = false))
+  .settings(
+    name    := "enumeratum-macros",
+    version := Versions.Macros.head,
+    crossScalaVersions := scalaVersionsAll, // eventually move this to aggregateProject once more 2.13 libs are out
+    libraryDependencies += {
+      if (scalaBinaryVersion.value == "3") {
+        "org.scala-lang" %% "scala3-compiler" % scalaVersion.value % Provided
+      } else {
+        "org.scala-lang" % "scala-reflect" % scalaVersion.value
+      }
+    },
+    libraryDependencies += scalaXmlTest
+  )
+
+lazy val macrosJS     = macros.js
+lazy val macrosJVM    = macros.jvm
+lazy val macrosNative = macros.native
+
+lazy val useLocalVersion = sys.props.get("enumeratum.useLocalVersion").nonEmpty
+
+// Aggregates core
+lazy val coreAggregate = aggregateProject("core", coreJS, coreJVM, coreNative)
+lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
+  .crossType(CrossType.Pure)
+  .in(file("enumeratum-core"))
+  .settings(testSettings)
+  .jsSettings(jsTestSettings)
+  .nativeSettings(nativeTestSettings)
+  .settings(commonWithPublishSettings)
+  .settings(
+    name               := "enumeratum",
+    version            := Versions.Macros.head,
+    crossScalaVersions := scalaVersionsAll,
+    libraryDependencies ++= {
+      if (useLocalVersion) {
+        Seq.empty
+      } else {
+        Seq("com.beachape" %%% "enumeratum-macros" % Versions.Macros.stable)
+      }
+    },
+    libraryDependencies += scalaXmlTest
+  )
+
+def configureWithLocal(
+    dep: (Project, Option[String]),
+    deps: List[(Project, Option[String])] = Nil
+): Project => Project = {
+  if (useLocalVersion) { // used for testing macros
+    { (prj: Project) =>
+      (dep :: deps).foldLeft(prj) {
+        case (p, (m, Some(x))) =>
+          p.dependsOn(m % x)
+
+        case (p, (m, None)) =>
+          p.dependsOn(m)
+      }
+    }
+  } else {
+    identity[Project]
+  }
+}
+
+def configureWithLocal(m: Project): Project => Project =
+  configureWithLocal(m -> Option.empty[String])
+
+def configureWithLocal(m: Project, x: String): Project => Project =
+  configureWithLocal(m -> Some(x))
+
+lazy val coreJS     = core.js.configure(configureWithLocal(macrosJS))
+lazy val coreJVM    = core.jvm.configure(configureWithLocal(macrosJVM))
+lazy val coreNative = core.native.configure(configureWithLocal(macrosNative))
+
+lazy val coreJVMTests = Project(id = "coreJVMTests", base = file("enumeratum-core-jvm-tests"))
+  .enablePlugins(BuildInfoPlugin)
+  .settings(
+    buildInfoKeys := Seq[BuildInfoKey](
+      name,
+      version,
+      scalaVersion,
+      sbtVersion,
+      BuildInfoKey.action("macrosJVMClassesDir") {
+        (macrosJVM / Compile / classDirectory).value
+      }
+    ),
+    buildInfoPackage := "enumeratum"
+  )
+  .settings(commonWithPublishSettings)
+  .settings(testSettings)
+  .settings(
+    name               := "coreJVMTests",
+    version            := Versions.Core.head,
+    crossScalaVersions := scalaVersionsAll,
+    Test / sourceGenerators += CoreJVMTest.testsGenerator,
+    libraryDependencies += {
+      if (scalaBinaryVersion.value == "3") {
+        "org.scala-lang" %% "scala3-compiler" % scalaVersion.value % Test
+      } else {
+        "org.scala-lang" % "scala-compiler" % scalaVersion.value % Test
+      }
+    },
+    libraryDependencies += scalaXmlTest,
+    publishArtifact := false,
+    publishLocal    := {}
+  )
+  .dependsOn(coreJVM, macrosJVM)
+
+lazy val scalaXmlTest: ModuleID = "org.scala-lang.modules" %% "scala-xml" % "2.1.0" % Test
+
+lazy val testsAggregate =
+  aggregateProject("test", enumeratumTestJs, enumeratumTestJvm, enumeratumTestNative)
+// Project models used in test for some subprojects
+lazy val enumeratumTest = crossProject(JSPlatform, JVMPlatform, NativePlatform)
+  .crossType(CrossType.Pure)
+  .in(file("enumeratum-test"))
+  .settings(testSettings)
+  .jsSettings(jsTestSettings)
+  .nativeSettings(nativeTestSettings)
+  .settings(commonWithPublishSettings)
+  .settings(
+    name               := "enumeratum-test",
+    version            := Versions.Macros.head,
+    crossScalaVersions := scalaVersionsAll,
+    libraryDependencies += {
+      "com.beachape" %%% "enumeratum" % Versions.Core.stable
+    }
+  )
+lazy val enumeratumTestJs     = enumeratumTest.js
+lazy val enumeratumTestJvm    = enumeratumTest.jvm
+lazy val enumeratumTestNative = enumeratumTest.native
+
+lazy val enumeratumReactiveMongoBson =
+  Project(id = "enumeratum-reactivemongo-bson", base = file("enumeratum-reactivemongo-bson"))
+    .settings(commonWithPublishSettings)
+    .settings(testSettings)
+
+ succeeded in 236ms:
+[
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "efdcb26b62f135420fd1b6ac14700448e543efd5",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/.github?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/.github",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/efdcb26b62f135420fd1b6ac14700448e543efd5",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/.github?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/efdcb26b62f135420fd1b6ac14700448e543efd5",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "0f11578f91a88f0cecb760029a1933cd22481fcd",
+    "size": 343,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/.gitignore?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/blob/enumeratum-1.9.0/.gitignore",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/blobs/0f11578f91a88f0cecb760029a1933cd22481fcd",
+    "download_url": "https://raw.githubusercontent.com/lloydmeta/enumeratum/enumeratum-1.9.0/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/.gitignore?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/blobs/0f11578f91a88f0cecb760029a1933cd22481fcd",
+      "html": "https://github.com/lloydmeta/enumeratum/blob/enumeratum-1.9.0/.gitignore"
+    }
+  },
+  {
+    "name": ".scalafmt.conf",
+    "path": ".scalafmt.conf",
+    "sha": "35c8028ee621145734040628a24b870a94a600ae",
+    "size": 179,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/.scalafmt.conf?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/blob/enumeratum-1.9.0/.scalafmt.conf",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/blobs/35c8028ee621145734040628a24b870a94a600ae",
+    "download_url": "https://raw.githubusercontent.com/lloydmeta/enumeratum/enumeratum-1.9.0/.scalafmt.conf",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/.scalafmt.conf?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/blobs/35c8028ee621145734040628a24b870a94a600ae",
+      "html": "https://github.com/lloydmeta/enumeratum/blob/enumeratum-1.9.0/.scalafmt.conf"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "ea5df982a0f013d7863ee0fd0faf144075c9b7af",
+    "size": 1079,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/LICENSE?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/blob/enumeratum-1.9.0/LICENSE",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/blobs/ea5df982a0f013d7863ee0fd0faf144075c9b7af",
+    "download_url": "https://raw.githubusercontent.com/lloydmeta/enumeratum/enumeratum-1.9.0/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/LICENSE?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/blobs/ea5df982a0f013d7863ee0fd0faf144075c9b7af",
+      "html": "https://github.com/lloydmeta/enumeratum/blob/enumeratum-1.9.0/LICENSE"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "691a28a650e9ad5ee6645eafc866b3d76055dfac",
+    "size": 41671,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/README.md?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/blob/enumeratum-1.9.0/README.md",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/blobs/691a28a650e9ad5ee6645eafc866b3d76055dfac",
+    "download_url": "https://raw.githubusercontent.com/lloydmeta/enumeratum/enumeratum-1.9.0/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/README.md?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/blobs/691a28a650e9ad5ee6645eafc866b3d76055dfac",
+      "html": "https://github.com/lloydmeta/enumeratum/blob/enumeratum-1.9.0/README.md"
+    }
+  },
+  {
+    "name": "aggregates",
+    "path": "aggregates",
+    "sha": "af5e54e5bf5ced44e67c92a7d2ddc0c88f2d52f9",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/aggregates?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/aggregates",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/af5e54e5bf5ced44e67c92a7d2ddc0c88f2d52f9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/aggregates?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/af5e54e5bf5ced44e67c92a7d2ddc0c88f2d52f9",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/aggregates"
+    }
+  },
+  {
+    "name": "benchmarking",
+    "path": "benchmarking",
+    "sha": "878883ba39bd41a5b7e1eae120482a0ef06e1324",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/benchmarking?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/benchmarking",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/878883ba39bd41a5b7e1eae120482a0ef06e1324",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/benchmarking?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/878883ba39bd41a5b7e1eae120482a0ef06e1324",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/benchmarking"
+    }
+  },
+  {
+    "name": "build.sbt",
+    "path": "build.sbt",
+    "sha": "6a5f653eba8a5cc29427452e9486fb5452a3a9bd",
+    "size": 28471,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/build.sbt?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/blob/enumeratum-1.9.0/build.sbt",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/blobs/6a5f653eba8a5cc29427452e9486fb5452a3a9bd",
+    "download_url": "https://raw.githubusercontent.com/lloydmeta/enumeratum/enumeratum-1.9.0/build.sbt",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/build.sbt?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/blobs/6a5f653eba8a5cc29427452e9486fb5452a3a9bd",
+      "html": "https://github.com/lloydmeta/enumeratum/blob/enumeratum-1.9.0/build.sbt"
+    }
+  },
+  {
+    "name": "enumeratum-argonaut",
+    "path": "enumeratum-argonaut",
+    "sha": "11e8e6f26932ca6f54d67f069744bc675a9c25ca",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-argonaut?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-argonaut",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/11e8e6f26932ca6f54d67f069744bc675a9c25ca",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-argonaut?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/11e8e6f26932ca6f54d67f069744bc675a9c25ca",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-argonaut"
+    }
+  },
+  {
+    "name": "enumeratum-cats",
+    "path": "enumeratum-cats",
+    "sha": "999e1773e5d760a61593bf34d86d18b94d266e19",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-cats?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-cats",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/999e1773e5d760a61593bf34d86d18b94d266e19",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-cats?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/999e1773e5d760a61593bf34d86d18b94d266e19",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-cats"
+    }
+  },
+  {
+    "name": "enumeratum-circe",
+    "path": "enumeratum-circe",
+    "sha": "01fbbfe10fa840cf545c37917ce4855462dbd3c6",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-circe?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-circe",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/01fbbfe10fa840cf545c37917ce4855462dbd3c6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-circe?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/01fbbfe10fa840cf545c37917ce4855462dbd3c6",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-circe"
+    }
+  },
+  {
+    "name": "enumeratum-core-jvm-tests",
+    "path": "enumeratum-core-jvm-tests",
+    "sha": "c26af9f005fe13b191d897bf8179a0b65e8a59a9",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-core-jvm-tests?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-core-jvm-tests",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/c26af9f005fe13b191d897bf8179a0b65e8a59a9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-core-jvm-tests?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/c26af9f005fe13b191d897bf8179a0b65e8a59a9",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-core-jvm-tests"
+    }
+  },
+  {
+    "name": "enumeratum-core",
+    "path": "enumeratum-core",
+    "sha": "37711910786cdd9e2fbc0ec86a7fa37d5b0fcbbe",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-core?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-core",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/37711910786cdd9e2fbc0ec86a7fa37d5b0fcbbe",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-core?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/37711910786cdd9e2fbc0ec86a7fa37d5b0fcbbe",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-core"
+    }
+  },
+  {
+    "name": "enumeratum-doobie",
+    "path": "enumeratum-doobie",
+    "sha": "2da3ed26eaa1c30972a6298ef0f4b2ce66ccf4cf",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-doobie?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-doobie",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/2da3ed26eaa1c30972a6298ef0f4b2ce66ccf4cf",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-doobie?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/2da3ed26eaa1c30972a6298ef0f4b2ce66ccf4cf",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-doobie"
+    }
+  },
+  {
+    "name": "enumeratum-json4s",
+    "path": "enumeratum-json4s",
+    "sha": "32f1712a93ff6b6b96dcb8dc3000ae50dd11f1f9",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-json4s?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-json4s",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/32f1712a93ff6b6b96dcb8dc3000ae50dd11f1f9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-json4s?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/32f1712a93ff6b6b96dcb8dc3000ae50dd11f1f9",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-json4s"
+    }
+  },
+  {
+    "name": "enumeratum-play-json",
+    "path": "enumeratum-play-json",
+    "sha": "7c440e7eb8d31759d971c709ddbf28a1729a4d29",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-play-json?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-play-json",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/7c440e7eb8d31759d971c709ddbf28a1729a4d29",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-play-json?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/7c440e7eb8d31759d971c709ddbf28a1729a4d29",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-play-json"
+    }
+  },
+  {
+    "name": "enumeratum-play",
+    "path": "enumeratum-play",
+    "sha": "5225ff634f25fb6aef05f46517dbd6baf4636ef0",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-play?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-play",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/5225ff634f25fb6aef05f46517dbd6baf4636ef0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-play?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/5225ff634f25fb6aef05f46517dbd6baf4636ef0",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-play"
+    }
+  },
+  {
+    "name": "enumeratum-quill",
+    "path": "enumeratum-quill",
+    "sha": "ee70dd0cb179aba703fb4cd23d3e4a9d23fbe9e9",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-quill?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-quill",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/ee70dd0cb179aba703fb4cd23d3e4a9d23fbe9e9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-quill?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/ee70dd0cb179aba703fb4cd23d3e4a9d23fbe9e9",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-quill"
+    }
+  },
+  {
+    "name": "enumeratum-reactivemongo-bson",
+    "path": "enumeratum-reactivemongo-bson",
+    "sha": "84f4435eaedf8264bd227f45e1a70dc455969ff7",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-reactivemongo-bson?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-reactivemongo-bson",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/84f4435eaedf8264bd227f45e1a70dc455969ff7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-reactivemongo-bson?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/84f4435eaedf8264bd227f45e1a70dc455969ff7",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-reactivemongo-bson"
+    }
+  },
+  {
+    "name": "enumeratum-scalacheck",
+    "path": "enumeratum-scalacheck",
+    "sha": "d538305c189c64751a21449e2e9e1ff97a46bd47",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-scalacheck?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-scalacheck",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/d538305c189c64751a21449e2e9e1ff97a46bd47",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-scalacheck?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/d538305c189c64751a21449e2e9e1ff97a46bd47",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-scalacheck"
+    }
+  },
+  {
+    "name": "enumeratum-slick",
+    "path": "enumeratum-slick",
+    "sha": "09f55287ab80907ef515b5edeba4e0f8db17c5c4",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-slick?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-slick",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/09f55287ab80907ef515b5edeba4e0f8db17c5c4",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-slick?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/09f55287ab80907ef515b5edeba4e0f8db17c5c4",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-slick"
+    }
+  },
+  {
+    "name": "enumeratum-test",
+    "path": "enumeratum-test",
+    "sha": "f5bd92fe943521f0f0b97063f5fea2ab0e5fbd2f",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-test?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-test",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/f5bd92fe943521f0f0b97063f5fea2ab0e5fbd2f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-test?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/f5bd92fe943521f0f0b97063f5fea2ab0e5fbd2f",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-test"
+    }
+  },
+  {
+    "name": "integration-libs-do",
+    "path": "integration-libs-do",
+    "sha": "018addd3cc75d151af5337e326aa975bda7fe87b",
+    "size": 818,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/integration-libs-do?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/blob/enumeratum-1.9.0/integration-libs-do",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/blobs/018addd3cc75d151af5337e326aa975bda7fe87b",
+    "download_url": "https://raw.githubusercontent.com/lloydmeta/enumeratum/enumeratum-1.9.0/integration-libs-do",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/integration-libs-do?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/blobs/018addd3cc75d151af5337e326aa975bda7fe87b",
+      "html": "https://github.com/lloydmeta/enumeratum/blob/enumeratum-1.9.0/integration-libs-do"
+    }
+  },
+  {
+    "name": "macros",
+    "path": "macros",
+    "sha": "390336f2bcf67290893b14d2b8b12f54ef542991",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/macros?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/macros",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/390336f2bcf67290893b14d2b8b12f54ef542991",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/macros?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/390336f2bcf67290893b14d2b8b12f54ef542991",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/macros"
+    }
+  },
+  {
+    "name": "project",
+    "path": "project",
+    "sha": "91ccd64f548d2edd9222cd23c1ad658a12d1642b",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/project?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/project",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/91ccd64f548d2edd9222cd23c1ad658a12d1642b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/project?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/91ccd64f548d2edd9222cd23c1ad658a12d1642b",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/project"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://raw.githubusercontent.com/lloydmeta/enumeratum/enumeratum-1.9.0/README.md' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/lloydmeta/enumeratum/contents/macros?ref=enumeratum-1.9.0'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://raw.githubusercontent.com/lloydmeta/enumeratum/enumeratum-1.9.0/project/Versions.scala' | sed -n '1,120p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+ succeeded in 158ms:
+# Enumeratum [![Continuous integration](https://github.com/lloydmeta/enumeratum/actions/workflows/ci.yml/badge.svg)](https://github.com/lloydmeta/enumeratum/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/lloydmeta/enumeratum/branch/master/graph/badge.svg?token=HNg3LDxnuK)](https://codecov.io/gh/lloydmeta/enumeratum) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a71a20d8678f4ed3a5b74b0659c1bc4c)](https://www.codacy.com/app/lloydmeta/enumeratum?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=lloydmeta/enumeratum&amp;utm_campaign=Badge_Grade) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.12) [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.0.svg)](https://www.scala-js.org) [![Join the chat at https://gitter.im/lloydmeta/enumeratum](https://badges.gitter.im/lloydmeta/enumeratum.svg)](https://gitter.im/lloydmeta/enumeratum?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+
+Enumeratum is a type-safe and powerful enumeration implementation for Scala that offers exhaustive pattern match warnings,
+integrations with popular Scala libraries, and idiomatic usage that won't break your IDE. It aims to be similar enough
+to Scala's built in `Enumeration` to be easy-to-use and understand while offering more flexibility, type-safety (see [this blog
+post describing erasure on Scala's `Enumeration`](http://underscore.io/blog/posts/2014/09/03/enumerations.html)), and
+richer enum values without having to maintain your own collection of values.
+
+Enumeratum has the following niceties:
+
+- Zero dependencies
+- Performant: Faster than`Enumeration` in the standard library (see [benchmarks](#benchmarking))
+- Allows your Enum members to be full-fledged normal objects with methods, values, inheritance, etc.
+- [`ValueEnum`s](#valueenum) that map to various primitive values and have compile-time uniqueness constraints.
+- Idiomatic: you're very clearly still writing Scala, and no funny colours in your IDE means less cognitive overhead for your team
+- Simplicity; most of the complexity in this lib is in its macro, and the macro is fairly simple conceptually
+- No usage of reflection at runtime. This may also help with performance but it means Enumeratum is compatible with ScalaJS and other
+  environments where reflection is a best effort (such as Android)
+- No usage of `synchronized`, which may help with performance and deadlocks prevention
+- All magic happens at compile-time so you know right away when things go awry
+- Comprehensive automated testing to make sure everything is in tip-top shape
+
+Enumeratum is published for Scala 2.12.x, 2.13.x, 3.x as well as ScalaJS and ScalaNative.
+
+Note that there are a couple of limitations for 3.x:
+* All "immediate" parent types of enum entries need to be `sealed` (reasoning [here](https://github.com/lloydmeta/enumeratum/pull/349#discussion_r1034715979))
+* The `-Yretain-trees` Scalac option must be set when using ValueEnums
+
+Integrations are available for:
+
+- [Play](https://www.playframework.com/): JVM only
+- [Play JSON](https://www.playframework.com/documentation/2.8.x/ScalaJson): JVM (included in Play integration but also available separately) and ScalaJS
+- [Circe](https://github.com/travisbrown/circe): JVM and ScalaJS
+- [ReactiveMongo BSON](reactivemongo.org/releases/1.0/documentation/bson/overview.html): JVM only
+- [Argonaut](http://argonaut.io): JVM and ScalaJS
+- [Json4s](http://json4s.org): JVM only
+- [ScalaCheck](https://www.scalacheck.org): JVM and ScalaJS
+- [Slick](http://slick.lightbend.com/): JVM only
+- [Quill](http://getquill.io): JVM and ScalaJS
+- [sttp tapir](https://github.com/softwaremill/tapir): JVM and ScalaJS
+- [Scalafix](https://github.com/OlegYch/enumeratum-scalafix)
+
+### Table of Contents
+
+1. [Quick start](#quick-start)
+    - [SBT](#sbt)
+    - [Usage](#usage)
+2. [More examples](#more-examples)
+    - [Enum](#enum)
+      - [Manual override of name](#manual-override-of-name)
+      - [Mixins to override the name](#mixins-to-override-the-name)
+    - [ValueEnum](#valueenum)
+3. [ScalaJS](#scalajs)
+4. [Play integration](#play-integration)
+5. [Play JSON integration](#play-json)
+6. [Circe integration](#circe)
+8. [ReactiveMongo BSON integration](#reactivemongo-bson)
+9. [Argonaut integration](#argonaut)
+10. [Json4s integration](#json4s)
+11. [Slick integration](#slick-integration)
+12. [ScalaCheck](#scalacheck)
+13. [Quill integration](#quill)
+14. [Cats integration](#cats)
+15. [Doobie integration](#doobie)
+16. [Anorm integration](#anorm)
+17. [Benchmarking](#benchmarking)
+18. [Publishing](#publishing)
+
+
+## Quick start
+
+### SBT
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.beachape/enumeratum_2.12)
+
+In `build.sbt`, set the Enumeratum version in a variable (for the latest version, set `val enumeratumVersion = ` the version you see
+in the Maven badge above).
+
+```scala
+libraryDependencies ++= Seq(
+    "com.beachape" %% "enumeratum" % enumeratumVersion
+)
+```
+
+Enumeratum has different integrations that can be added to your build à la carte. For more info, see the respective sections in
+[the Table of Contents](#table-of-contents)
+
+### Usage
+
+Using Enumeratum is simple. Just declare your own sealed trait or class `A` that extends `EnumEntry` and implement it as case objects inside
+an object that extends from `Enum[A]` as shown below.
+
+```scala
+
+import enumeratum._
+
+sealed trait Greeting extends EnumEntry
+
+object Greeting extends Enum[Greeting] {
+
+  /*
+   `findValues` is a protected method that invokes a macro to find all `Greeting` object declarations inside an `Enum`
+
+   You use it to implement the `val values` member
+  */
+  val values = findValues
+
+  case object Hello   extends Greeting
+  case object GoodBye extends Greeting
+  case object Hi      extends Greeting
+  case object Bye     extends Greeting
+
+}
+
+// Object Greeting has a `withName(name: String)` method
+Greeting.withName("Hello")
+// => res0: Greeting = Hello
+
+Greeting.withName("Haro")
+
+ succeeded in 157ms:
+object Versions {
+
+  object Core {
+    val stable = "1.9.0"
+    val head   = "1.9.1-SNAPSHOT"
+  }
+
+  object Macros {
+    val stable = "1.9.0"
+    val head   = "1.9.1-SNAPSHOT"
+  }
+
+}
+
+ succeeded in 186ms:
+[
+  {
+    "name": "compat",
+    "path": "macros/compat",
+    "sha": "c11106e0b54aff20eeeced3ee53273e9e072a9e9",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/macros/compat?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/macros/compat",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/c11106e0b54aff20eeeced3ee53273e9e072a9e9",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/macros/compat?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/c11106e0b54aff20eeeced3ee53273e9e072a9e9",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/macros/compat"
+    }
+  },
+  {
+    "name": "src",
+    "path": "macros/src",
+    "sha": "029dc83c8d31d5708f51e1ddaeea94b8f81e01e6",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/macros/src?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/macros/src",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/029dc83c8d31d5708f51e1ddaeea94b8f81e01e6",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/macros/src?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/029dc83c8d31d5708f51e1ddaeea94b8f81e01e6",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/macros/src"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/lloydmeta/enumeratum/contents/macros/src?ref=enumeratum-1.9.0'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-core-jvm-tests?ref=enumeratum-1.9.0'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/repos/lloydmeta/enumeratum/git/trees/enumeratum-1.9.0?recursive=1' | rg '\"path\": \"(macros|enumeratum-core-jvm-tests|enumeratum-test)/.*(test|Test|Spec|Suite)' | head -120" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+ succeeded in 208ms:
+[
+  {
+    "name": "main",
+    "path": "macros/src/main",
+    "sha": "443bf5cd525caf277fe184f3239baf495787768b",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/macros/src/main?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/macros/src/main",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/443bf5cd525caf277fe184f3239baf495787768b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/macros/src/main?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/443bf5cd525caf277fe184f3239baf495787768b",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/macros/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "macros/src/test",
+    "sha": "8168d651e1916b3d431bd010dc0cd8bdfc44b2c7",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/macros/src/test?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/macros/src/test",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/8168d651e1916b3d431bd010dc0cd8bdfc44b2c7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/macros/src/test?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/8168d651e1916b3d431bd010dc0cd8bdfc44b2c7",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/macros/src/test"
+    }
+  }
+]
+
+ succeeded in 210ms:
+[
+  {
+    "name": "src",
+    "path": "enumeratum-core-jvm-tests/src",
+    "sha": "becc1afa9bc34237db3d0ff04617d342124cd69c",
+    "size": 0,
+    "url": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-core-jvm-tests/src?ref=enumeratum-1.9.0",
+    "html_url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-core-jvm-tests/src",
+    "git_url": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/becc1afa9bc34237db3d0ff04617d342124cd69c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/lloydmeta/enumeratum/contents/enumeratum-core-jvm-tests/src?ref=enumeratum-1.9.0",
+      "git": "https://api.github.com/repos/lloydmeta/enumeratum/git/trees/becc1afa9bc34237db3d0ff04617d342124cd69c",
+      "html": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/enumeratum-core-jvm-tests/src"
+    }
+  }
+]
+
+ succeeded in 338ms:
+      "path": "enumeratum-core-jvm-tests/src/test",
+      "path": "enumeratum-core-jvm-tests/src/test/scala",
+      "path": "enumeratum-core-jvm-tests/src/test/scala/enumeratum",
+      "path": "enumeratum-core-jvm-tests/src/test/scala/enumeratum/EnumJVMSpec.scala",
+      "path": "enumeratum-core-jvm-tests/src/test/scala/enumeratum/values",
+      "path": "enumeratum-core-jvm-tests/src/test/scala/enumeratum/values/ValueEnumJVMSpec.scala",
+      "path": "macros/src/test",
+      "path": "macros/src/test/scala-2",
+      "path": "macros/src/test/scala-2/enumeratum",
+      "path": "macros/src/test/scala-2/enumeratum/FindValEnums.scala",
+      "path": "macros/src/test/scala-3",
+      "path": "macros/src/test/scala-3/enumeratum",
+      "path": "macros/src/test/scala-3/enumeratum/FindValEnums.scala",
+      "path": "macros/src/test/scala",
+      "path": "macros/src/test/scala/enumeratum",
+      "path": "macros/src/test/scala/enumeratum/CompilationSpec.scala",
+
+codex
+I have the values now: the artifact is the JVM Scala 3 macro artifact, with class files in the jar, so it remains eligible as a JVM artifact and does not get `not-for-native-image`. I’m going to write the Maven sources/javadoc URLs and the tagged GitHub test path.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+diff --git a/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json b/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+index c15e369e22f33766a3f181f7515b0879484d8b47..b110086d669bf2ad489d8f2fad4eee67f8171541
+--- a/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
++++ b/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0"
++  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0",
++  "repository-url" : "https://github.com/lloydmeta/enumeratum",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/lloydmeta/enumeratum/tree/enumeratum-$version$/macros/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-javadoc.jar",
++  "description" : "Enumeratum provides type-safe, reflection-free enumeration support for Scala, including enum value discovery and integrations with common Scala libraries. The enumeratum-macros artifact contains the compile-time macros used to discover enum members and enforce value-enum constraints for Scala 3.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json b/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+index c15e369e22f33766a3f181f7515b0879484d8b47..b110086d669bf2ad489d8f2fad4eee67f8171541
+--- a/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
++++ b/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0"
++  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0",
++  "repository-url" : "https://github.com/lloydmeta/enumeratum",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/lloydmeta/enumeratum/tree/enumeratum-$version$/macros/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-javadoc.jar",
++  "description" : "Enumeratum provides type-safe, reflection-free enumeration support for Scala, including enum value discovery and integrations with common Scala libraries. The enumeratum-macros artifact contains the compile-time macros used to discover enum members and enforce value-enum constraints for Scala 3.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+ succeeded in 0ms:
+{
+  "coordinates": "com.beachape:enumeratum-macros_3:1.9.0",
+  "repository-url": "https://github.com/lloydmeta/enumeratum",
+  "source-code-url": "https://repo.maven.apache.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-sources.jar",
+  "test-code-url": "https://github.com/lloydmeta/enumeratum/tree/enumeratum-$version$/macros/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-javadoc.jar",
+  "description": "Enumeratum provides type-safe, reflection-free enumeration support for Scala, including enum value discovery and integrations with common Scala libraries. The enumeratum-macros artifact contains the compile-time macros used to discover enum members and enforce value-enum constraints for Scala 3.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -I -fsSL https://repo.maven.apache.org/maven2/com/beachape/enumeratum-macros_3/1.9.0/enumeratum-macros_3-1.9.0-sources.jar >/dev/null && curl -I -fsSL https://repo.maven.apache.org/maven2/com/beachape/enumeratum-macros_3/1.9.0/enumeratum-macros_3-1.9.0-javadoc.jar >/dev/null && curl -I -fsSL https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/macros/src/test >/dev/null && printf 'URLs OK\\n'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+diff --git a/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json b/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+index c15e369e22f33766a3f181f7515b0879484d8b47..b110086d669bf2ad489d8f2fad4eee67f8171541
+--- a/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
++++ b/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0"
++  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0",
++  "repository-url" : "https://github.com/lloydmeta/enumeratum",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/lloydmeta/enumeratum/tree/enumeratum-$version$/macros/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-javadoc.jar",
++  "description" : "Enumeratum provides type-safe, reflection-free enumeration support for Scala, including enum value discovery and integrations with common Scala libraries. The enumeratum-macros artifact contains the compile-time macros used to discover enum members and enforce value-enum constraints for Scala 3.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+ succeeded in 701ms:
+URLs OK
+
+codex
+The JSON parses cleanly and the three version-substituted URLs return successfully for `1.9.0`. I’m checking status now because this file may be ignored under `build/`, which can make `git diff` intentionally quiet.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+ succeeded in 0ms:
+{
+  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0",
+  "repository-url" : "https://github.com/lloydmeta/enumeratum",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-sources.jar",
+  "test-code-url" : "https://github.com/lloydmeta/enumeratum/tree/enumeratum-$version$/macros/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-javadoc.jar",
+  "description" : "Enumeratum provides type-safe, reflection-free enumeration support for Scala, including enum value discovery and integrations with common Scala libraries. The enumeratum-macros artifact contains the compile-time macros used to discover enum members and enforce value-enum constraints for Scala 3.",
+  "language" : {
+    "name" : "scala",
+    "version" : "3"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446
+ succeeded in 0ms:
+!! build/
+
+diff --git a/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json b/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+index c15e369e22f33766a3f181f7515b0879484d8b47..b110086d669bf2ad489d8f2fad4eee67f8171541
+--- a/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
++++ b/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0"
++  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0",
++  "repository-url" : "https://github.com/lloydmeta/enumeratum",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/lloydmeta/enumeratum/tree/enumeratum-$version$/macros/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-javadoc.jar",
++  "description" : "Enumeratum provides type-safe, reflection-free enumeration support for Scala, including enum value discovery and integrations with common Scala libraries. The enumeratum-macros artifact contains the compile-time macros used to discover enum members and enforce value-enum constraints for Scala 3.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+web search: 
+web search: https://github.com/lloydmeta/enumeratum/tree/enumeratum-1.9.0/macros/src/test
+web search: 
+web search: repo1.maven.org com.beachape enumeratum-macros_3 1.9.0 sources javadoc pom
+codex
+Updated [com.beachape-enumeratum-macros_3-1.9.0.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json) with repository, Maven sources/javadoc URLs, tagged GitHub tests, two-sentence description, and Scala 3 language metadata.
+
+Validation done: JSON parses with `jq`, and the substituted `1.9.0` source, documentation, and test URLs return successfully. Maven Central lists the `1.9.0` sources and javadoc artifacts, and the tagged GitHub test path exists. ([repo1.maven.org](https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/1.9.0/?utm_source=openai))
+diff --git a/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json b/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+index c15e369e22f33766a3f181f7515b0879484d8b47..b110086d669bf2ad489d8f2fad4eee67f8171541
+--- a/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
++++ b/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0"
++  "coordinates" : "com.beachape:enumeratum-macros_3:1.9.0",
++  "repository-url" : "https://github.com/lloydmeta/enumeratum",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-sources.jar",
++  "test-code-url" : "https://github.com/lloydmeta/enumeratum/tree/enumeratum-$version$/macros/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/com/beachape/enumeratum-macros_3/$version$/enumeratum-macros_3-$version$-javadoc.jar",
++  "description" : "Enumeratum provides type-safe, reflection-free enumeration support for Scala, including enum value discovery and integrations with common Scala libraries. The enumeratum-macros artifact contains the compile-time macros used to discover enum members and enforce value-enum constraints for Scala 3.",
++  "language" : {
++    "name" : "scala",
++    "version" : "3"
++  }
+ }
+
+tokens used
+70,661
+Updated [com.beachape-enumeratum-macros_3-1.9.0.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446/build/discovered-artifact-metadata/com.beachape-enumeratum-macros_3-1.9.0.json) with repository, Maven sources/javadoc URLs, tagged GitHub tests, two-sentence description, and Scala 3 language metadata.
+
+Validation done: JSON parses with `jq`, and the substituted `1.9.0` source, documentation, and test URLs return successfully. Maven Central lists the `1.9.0` sources and javadoc artifacts, and the tagged GitHub test path exists. ([repo1.maven.org](https://repo1.maven.org/maven2/com/beachape/enumeratum-macros_3/1.9.0/?utm_source=openai))
+Ran agent for com.beachape:enumeratum-macros_3:1.9.0 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446/build/agent-artifact-discovery-logs/com.beachape-enumeratum-macros_3-1.9.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5082-08b58446/build/reports/problems/problems-report.html
 
 Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
 
@@ -23,5 +1880,5 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD SUCCESSFUL in 620ms
-9 actionable tasks: 1 executed, 8 up-to-date
+BUILD SUCCESSFUL in 2m 13s
+9 actionable tasks: 9 executed
