@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "com.squareup.okhttp3:okhttp:3.8.1",
+  "issueNumber": 6518,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "com.squareup.okhttp3:okhttp:3.8.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#6518 [Automation] javac compile fails for com.squareup.okhttp3:okhttp:3.8.1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "24 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 25288,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 6518,
+    "library": "com.squareup.okhttp3:okhttp:3.8.1",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.8.1",
+    "output_tokens_used": 3098,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "OkHttp's MockWebServer module is the official helper for testing HTTP/HTTPS/HTTP2 clients and may be useful if the agent elects to write full client/server interaction tests, but it is not required to fix the javac failure or to reach meaningful non-network/public API coverage.",
+      "Existing OkHttp metadata tests include Android/Jetty platform stubs and native-image charset build arguments; local Gradle/native-image verification remains authoritative if generated changes alter those areas."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/com.squareup.okhttp3:okhttp:3.8.1/library-preparation-preflight/pi-generation-2026-06-26T17-09-06-156850Z.log",
+    "status": "completed",
+    "summary": "OkHttp 3.8.1 resolves as the core HTTP client with only Okio as a required runtime dependency; Android and jsr305 are provided/optional, and the reported failure is an API-signature compile mismatch in an existing test rather than missing setup. Meaningful coverage is reachable with the normal scaffold and in-process tests without Docker, environment variables, or extra Maven dependencies."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.8.1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-6518-fails-javac-compile-com.squareup.okhttp3-okhttp-3.8.1-6861dc12",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
