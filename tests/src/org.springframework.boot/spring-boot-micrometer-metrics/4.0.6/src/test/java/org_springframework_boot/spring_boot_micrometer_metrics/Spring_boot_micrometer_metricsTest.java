@@ -99,10 +99,10 @@ public class Spring_boot_micrometer_metricsTest {
         MetricsProperties.Distribution distribution = properties.getDistribution();
         distribution.getPercentilesHistogram().put("all", false);
         distribution.getPercentilesHistogram().put("http.server", true);
-        distribution.getPercentiles().put("http.server.requests", new double[] { 0.5, 0.95 });
+        distribution.getPercentiles().put("http.server.requests", new double[] {0.5, 0.95 });
         distribution.getSlo()
                 .put("http.server.requests",
-                        new ServiceLevelObjectiveBoundary[] { ServiceLevelObjectiveBoundary.valueOf("100ms"),
+                        new ServiceLevelObjectiveBoundary[] {ServiceLevelObjectiveBoundary.valueOf("100ms"),
                                 ServiceLevelObjectiveBoundary.valueOf("250ms") });
         distribution.getMinimumExpectedValue().put("http.server.requests", "10ms");
         distribution.getMaximumExpectedValue().put("http.server.requests", "2s");
@@ -161,8 +161,7 @@ public class Spring_boot_micrometer_metricsTest {
             assertThat(counter.count()).isEqualTo(5.0);
             clock.add(Duration.ofSeconds(1));
             assertThat(counter.count()).isEqualTo(2.0);
-        }
-        finally {
+        } finally {
             registry.close();
         }
     }
@@ -186,8 +185,7 @@ public class Spring_boot_micrometer_metricsTest {
             assertThat(registry.find("disk.total").tag("scope", "filesystem").gauges()).hasSize(2);
             assertThat(tags).contains(Tag.of("path", firstPath.getAbsolutePath()),
                     Tag.of("path", secondPath.getAbsolutePath()));
-        }
-        finally {
+        } finally {
             registry.close();
         }
     }
@@ -224,8 +222,7 @@ public class Spring_boot_micrometer_metricsTest {
             assertThat(ready.getId().getDescription())
                 .isEqualTo("Time taken for the application to be ready to service requests");
             assertThat(ready.value(TimeUnit.MILLISECONDS)).isEqualTo(2750.0);
-        }
-        finally {
+        } finally {
             registry.close();
         }
     }
@@ -272,8 +269,7 @@ public class Spring_boot_micrometer_metricsTest {
             assertThatThrownBy(() -> endpoint.metric("library.requests", List.of("status")))
                     .isInstanceOf(InvalidEndpointRequestException.class)
                     .hasMessageContaining("Each tag parameter must be in the form 'key:value'");
-        }
-        finally {
+        } finally {
             registry.close();
         }
     }
