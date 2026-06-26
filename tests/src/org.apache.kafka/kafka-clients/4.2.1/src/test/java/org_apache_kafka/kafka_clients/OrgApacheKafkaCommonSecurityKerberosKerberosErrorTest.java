@@ -30,10 +30,11 @@ public class OrgApacheKafkaCommonSecurityKerberosKerberosErrorTest {
     @Test
     @Timeout(60)
     void fromExceptionReadsKerberosReturnCodeFromNestedCause() throws Exception {
-        LoginException loginException = createKerberosLoginException();
         String previousJavaVendor = System.getProperty("java.vendor");
         System.setProperty("java.vendor", "IBM Corporation");
         try {
+            LoginException loginException = createKerberosLoginException();
+
             assertThat(KerberosError.fromException(loginException))
                     .isNull();
         } finally {

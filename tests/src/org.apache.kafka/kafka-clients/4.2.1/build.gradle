@@ -21,6 +21,7 @@ dependencies {
 }
 
 tasks.withType(Test).configureEach {
+    systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
     jvmArgs += [
         '--add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED'
     ]
@@ -38,6 +39,7 @@ graalvmNative {
     }
     binaries {
         all {
+            runtimeArgs.add('-Djunit.jupiter.extensions.autodetection.enabled=true')
             buildArgs.add('--add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED')
         }
     }
