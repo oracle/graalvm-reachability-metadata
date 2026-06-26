@@ -1,0 +1,77 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.logging.log4j:log4j-1.2-api:2.18.0",
+  "issueNumber": 6772,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "If tests exercise legacy Log4j 1 configuration-file compatibility, set the system property log4j1.compatibility=true and provide an explicit log4j.properties or log4j.xml test resource; isolate/reset Log4j state between tests because LogManager and logger configuration are global.",
+    "applied_setup": [],
+    "current_library": "org.apache.logging.log4j:log4j-1.2-api:2.17.2",
+    "deterministic_setup": [
+      {
+        "coordinate": "org.apache.logging.log4j:log4j-core:2.18.0",
+        "kind": "dependency",
+        "reason": "The artifact POM marks log4j-core as optional, but normal bridge usage and many org.apache.log4j APIs route to org.apache.logging.log4j.core classes when present; without it, important compatibility operations such as programmatic levels, appenders, additivity, and Log4j 1 configuration support are \n...[truncated]",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#6772 [Automation] java run fails for org.apache.logging.log4j:log4j-1.2-api:2.18.0; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "13 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 78332,
+    "issue_label": "fails-java-run",
+    "issue_number": 6772,
+    "library": "org.apache.logging.log4j:log4j-1.2-api:2.18.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.18.0",
+    "output_tokens_used": 6197,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The reported PropertySetter assertion may still require a test or metadata change; adding log4j-core is setup for meaningful bridge coverage, not a guaranteed fix for that specific failure.",
+      "Specialized optional integrations such as JMS are not included; only add their APIs if tests deliberately cover those optional classes."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.apache.logging.log4j:log4j-1.2-api:2.18.0/library-preparation-preflight/pi-generation-2026-06-26T14-26-57-947572Z.log",
+    "status": "completed",
+    "summary": "log4j-1.2-api is a Log4j 1.x compatibility bridge whose meaningful logger, appender, hierarchy, level, and configuration paths depend on the optional Log4j Core backend; the resolved artifact only brings log4j-api transitively."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.18.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-6772-fails-java-run-org.apache.logging.log4j-log4j-1.2-api-2.18.0-1fcf7c9b",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
