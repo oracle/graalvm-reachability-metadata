@@ -7,6 +7,8 @@
 package org_codehaus_plexus.plexus_archiver;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Path;
 
 import org.codehaus.plexus.archiver.util.ArchiveEntryUtils;
@@ -44,6 +46,33 @@ public class ArchiveEntryUtilsTest {
             }
         } finally {
             ArchiveEntryUtils.jvmFilePermAvailable = originalJvmFilePermAvailable;
+        }
+    }
+
+    @Test
+    void jvmPermissionApplierInvokesAllFilePermissionMethods() throws Throwable {
+        File file = temporaryDirectory.resolve("direct-jvm-permissions.txt").toFile();
+        assertThat(file.createNewFile()).isTrue();
+
+        invokeJvmPermissionApplier(file, "700", new ConsoleLogger(Logger.LEVEL_DISABLED, "archive-entry-utils-test"));
+
+        assertThat(file)
+            .isFile()
+            .canRead()
+            .canWrite();
+        if (Os.isFamily(Os.FAMILY_UNIX)) {
+            assertThat(file.canExecute()).isTrue();
+        }
+    }
+
+    private static void invokeJvmPermissionApplier(File file, String mode, Logger logger) throws Throwable {
+        Method method = ArchiveEntryUtils.class.getDeclaredMethod("applyPermissionsWithJvm", File.class, String.class,
+                Logger.class);
+        method.setAccessible(true);
+        try {
+            method.invoke(null, file, mode, logger);
+        } catch (InvocationTargetException exception) {
+            throw exception.getCause();
         }
     }
 }
