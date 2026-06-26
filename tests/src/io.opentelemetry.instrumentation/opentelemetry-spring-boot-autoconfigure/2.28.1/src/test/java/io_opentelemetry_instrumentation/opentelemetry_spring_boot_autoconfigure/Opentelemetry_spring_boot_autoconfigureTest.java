@@ -35,6 +35,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestTemplate;
 
 public class Opentelemetry_spring_boot_autoconfigureTest {
@@ -54,6 +55,13 @@ public class Opentelemetry_spring_boot_autoconfigureTest {
 
             assertConfiguredOpenTelemetrySdk(openTelemetry);
             assertRestTemplateTracePropagation(context.getBean(RestTemplate.class));
+        }
+    }
+
+    @Test
+    void restClientBuilderIsInstrumentedForTracePropagation() {
+        try (ConfigurableApplicationContext context = newApplicationContext()) {
+            assertRestClientTracePropagation(context.getBean(RestClient.Builder.class));
         }
     }
 
@@ -120,6 +128,23 @@ public class Opentelemetry_spring_boot_autoconfigureTest {
         String body = restTemplate.getForObject("https://example.test/messages", String.class);
 
         assertThat(body).isEqualTo("instrumented");
+        server.verify(Duration.ofSeconds(10));
+    }
+
+    private static void assertRestClientTracePropagation(RestClient.Builder builder) {
+        MockRestServiceServer server = MockRestServiceServer.bindTo(builder).build();
+        RestClient restClient = builder.build();
+
+        server.expect(once(), requestTo("https://example.test/rest-client"))
+                .andExpect(header("traceparent", startsWith("00-")))
+                .andRespond(withSuccess("rest-client-instrumented", MediaType.TEXT_PLAIN));
+
+        String body = restClient.get()
+                .uri("https://example.test/rest-client")
+                .retrieve()
+                .body(String.class);
+
+        assertThat(body).isEqualTo("rest-client-instrumented");
         server.verify(Duration.ofSeconds(10));
     }
 
