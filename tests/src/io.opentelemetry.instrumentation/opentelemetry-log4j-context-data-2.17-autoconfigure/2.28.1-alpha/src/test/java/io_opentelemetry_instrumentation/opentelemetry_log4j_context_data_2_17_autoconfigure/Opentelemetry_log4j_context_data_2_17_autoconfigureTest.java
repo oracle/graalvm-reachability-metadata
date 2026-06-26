@@ -18,7 +18,15 @@ import io.opentelemetry.context.Scope;
 import io.opentelemetry.instrumentation.log4j.contextdata.v2_17.OpenTelemetryContextDataProvider;
 import java.util.Map;
 import java.util.ServiceLoader;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.util.ContextDataProvider;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -116,8 +124,55 @@ public class Opentelemetry_log4j_context_data_2_17_autoconfigureTest {
         assertThat(ThreadContext.get(TRACE_FLAGS_KEY)).isEqualTo("existing-trace-flags");
     }
 
+    @Test
+    void addsOpenTelemetryContextDataToLog4jEvents() {
+        String loggerName = getClass().getName() + ".otel-context-event";
+        CapturingAppender appender = new CapturingAppender("otel-context-appender");
+        LoggerContext loggerContext = (LoggerContext) LogManager.getContext(false);
+        Configuration configuration = loggerContext.getConfiguration();
+        LoggerConfig loggerConfig = new LoggerConfig(loggerName, Level.INFO, false);
+        loggerConfig.addAppender(appender, Level.INFO, null);
+        appender.start();
+        configuration.addAppender(appender);
+        configuration.addLogger(loggerName, loggerConfig);
+        loggerContext.updateLoggers();
+
+        try (Scope scope = Span.wrap(sampledSpanContext()).makeCurrent()) {
+            LogManager.getLogger(loggerName).info("captured");
+        } finally {
+            configuration.removeLogger(loggerName);
+            loggerConfig.removeAppender(appender.getName());
+            appender.stop();
+            loggerContext.updateLoggers();
+        }
+
+        LogEvent event = appender.getLastEvent();
+        assertThat(event).isNotNull();
+        assertThat(event.getContextData().toMap())
+                .containsEntry(TRACE_ID_KEY, TRACE_ID)
+                .containsEntry(SPAN_ID_KEY, SPAN_ID)
+                .containsEntry(TRACE_FLAGS_KEY, TraceFlags.getSampled().asHex());
+    }
+
     private static SpanContext sampledSpanContext() {
         return SpanContext.create(
                 TRACE_ID, SPAN_ID, TraceFlags.getSampled(), TraceState.getDefault());
+    }
+
+    private static final class CapturingAppender extends AbstractAppender {
+        private LogEvent lastEvent;
+
+        private CapturingAppender(String name) {
+            super(name, null, null, false, Property.EMPTY_ARRAY);
+        }
+
+        @Override
+        public void append(LogEvent event) {
+            lastEvent = event.toImmutable();
+        }
+
+        private LogEvent getLastEvent() {
+            return lastEvent;
+        }
     }
 }
