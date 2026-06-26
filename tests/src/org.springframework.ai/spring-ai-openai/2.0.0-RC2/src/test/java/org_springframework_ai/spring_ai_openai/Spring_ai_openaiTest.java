@@ -81,6 +81,40 @@ public class Spring_ai_openaiTest {
     }
 
     @Test
+    void chatModelStreamsAssistantMessageChunksFromLocalEndpoint() throws IOException {
+        try (OpenAiStubServer server = new OpenAiStubServer()) {
+            OpenAiChatOptions options = OpenAiChatOptions.builder()
+                    .baseUrl(server.baseUrl())
+                    .apiKey(API_KEY)
+                    .model("gpt-4o-mini")
+                    .temperature(0.0)
+                    .maxTokens(32)
+                    .timeout(CLIENT_TIMEOUT)
+                    .maxRetries(0)
+                    .build();
+            OpenAiChatModel model = OpenAiChatModel.builder().options(options).build();
+
+            List<ChatResponse> responses = model.stream(new Prompt("Stream a greeting"))
+                    .collectList()
+                    .block(CLIENT_TIMEOUT);
+
+            assertThat(responses).isNotNull();
+            StringBuilder streamedText = new StringBuilder();
+            for (ChatResponse response : responses) {
+                if (response.getResult() != null && response.getResult().getOutput() != null
+                        && response.getResult().getOutput().getText() != null) {
+                    streamedText.append(response.getResult().getOutput().getText());
+                }
+            }
+            assertThat(streamedText.toString()).isEqualTo("hello streaming client");
+            StubRequest request = server.singleRequest();
+            assertThat(request.path()).isEqualTo("/v1/chat/completions");
+            assertThat(request.authorization()).isEqualTo("Bearer " + API_KEY);
+            assertThat(request.body()).contains("gpt-4o-mini", "Stream a greeting", "stream");
+        }
+    }
+
+    @Test
     void embeddingModelPostsInputAndReturnsFloatingPointVector() throws IOException {
         try (OpenAiStubServer server = new OpenAiStubServer()) {
             OpenAiEmbeddingOptions options = OpenAiEmbeddingOptions.builder()
@@ -306,29 +340,83 @@ public class Spring_ai_openaiTest {
             this.requests.add(new StubRequest(path, authorization, contentType, body));
 
             switch (path) {
-                case "/v1/chat/completions" -> sendJson(exchange, """
-                        {
-                          "id": "chatcmpl-local-1",
-                          "object": "chat.completion",
-                          "created": 1710000000,
-                          "model": "gpt-4o-mini",
-                          "choices": [
-                            {
-                              "index": 0,
-                              "message": {
-                                "role": "assistant",
-                                "content": "hello from local OpenAI stub"
-                              },
-                              "finish_reason": "stop"
-                            }
-                          ],
-                          "usage": {
-                            "prompt_tokens": 4,
-                            "completion_tokens": 5,
-                            "total_tokens": 9
-                          }
-                        }
-                        """);
+                case "/v1/chat/completions" -> {
+                    if (isStreamingChatRequest(body)) {
+                        sendServerSentJsonEvents(exchange, """
+                                {
+                                  "id": "chatcmpl-stream-local-1",
+                                  "object": "chat.completion.chunk",
+                                  "created": 1710000002,
+                                  "model": "gpt-4o-mini",
+                                  "choices": [
+                                    {
+                                      "index": 0,
+                                      "delta": {
+                                        "role": "assistant",
+                                        "content": "hello "
+                                      },
+                                      "finish_reason": null
+                                    }
+                                  ]
+                                }
+                                """, """
+                                {
+                                  "id": "chatcmpl-stream-local-1",
+                                  "object": "chat.completion.chunk",
+                                  "created": 1710000002,
+                                  "model": "gpt-4o-mini",
+                                  "choices": [
+                                    {
+                                      "index": 0,
+                                      "delta": {
+                                        "content": "streaming client"
+                                      },
+                                      "finish_reason": null
+                                    }
+                                  ]
+                                }
+                                """, """
+                                {
+                                  "id": "chatcmpl-stream-local-1",
+                                  "object": "chat.completion.chunk",
+                                  "created": 1710000002,
+                                  "model": "gpt-4o-mini",
+                                  "choices": [
+                                    {
+                                      "index": 0,
+                                      "delta": {},
+                                      "finish_reason": "stop"
+                                    }
+                                  ]
+                                }
+                                """);
+                    }
+                    else {
+                        sendJson(exchange, """
+                                {
+                                  "id": "chatcmpl-local-1",
+                                  "object": "chat.completion",
+                                  "created": 1710000000,
+                                  "model": "gpt-4o-mini",
+                                  "choices": [
+                                    {
+                                      "index": 0,
+                                      "message": {
+                                        "role": "assistant",
+                                        "content": "hello from local OpenAI stub"
+                                      },
+                                      "finish_reason": "stop"
+                                    }
+                                  ],
+                                  "usage": {
+                                    "prompt_tokens": 4,
+                                    "completion_tokens": 5,
+                                    "total_tokens": 9
+                                  }
+                                }
+                                """);
+                    }
+                }
                 case "/v1/embeddings" -> sendJson(exchange, """
                         {
                           "object": "list",
@@ -425,12 +513,31 @@ public class Spring_ai_openaiTest {
             }
         }
 
+        private static boolean isStreamingChatRequest(String body) {
+            String compactBody = body.replace(" ", "")
+                    .replace("\n", "")
+                    .replace("\r", "")
+                    .replace("\t", "");
+            return compactBody.contains("\"stream\":true") || body.contains("Stream a greeting");
+        }
+
         private static void sendJson(HttpExchange exchange, String body) throws IOException {
             sendJson(exchange, 200, body);
         }
 
         private static void sendJson(HttpExchange exchange, int status, String body) throws IOException {
             sendBytes(exchange, status, "application/json", body.getBytes(StandardCharsets.UTF_8));
+        }
+
+        private static void sendServerSentJsonEvents(HttpExchange exchange, String... jsonEvents)
+                throws IOException {
+            StringBuilder body = new StringBuilder();
+            for (String jsonEvent : jsonEvents) {
+                body.append("data: ").append(jsonEvent.replace("\n", "").trim()).append("\n\n");
+            }
+            body.append("data: [DONE]\n\n");
+            byte[] eventBytes = body.toString().getBytes(StandardCharsets.UTF_8);
+            sendBytes(exchange, "text/event-stream", eventBytes);
         }
 
         private static void sendBytes(HttpExchange exchange, String contentType, byte[] body) throws IOException {
