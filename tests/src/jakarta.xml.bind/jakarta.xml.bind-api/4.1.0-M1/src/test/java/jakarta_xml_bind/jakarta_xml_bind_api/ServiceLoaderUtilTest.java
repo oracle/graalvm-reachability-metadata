@@ -16,6 +16,7 @@ import java.util.Map;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.ServiceLoaderUtilInvoker;
+import jakarta_xml_bind.jakarta_xml_bind_api.factorybacked.FactoryBackedBoundType;
 import jakarta_xml_bind.jakarta_xml_bind_api.servicebound.ServiceBoundType;
 import jakarta_xml_bind.jakarta_xml_bind_api.support.FactoryBackedContextFactory;
 import jakarta_xml_bind.jakarta_xml_bind_api.support.StubJaxbContext;
@@ -54,6 +55,18 @@ public class ServiceLoaderUtilTest {
                 ServiceLoaderUtilInvoker::instantiateFactoryBackedContextFactory);
 
         assertThat(provider).isInstanceOf(FactoryBackedContextFactory.class);
+    }
+
+    @Test
+    public void loadsProviderClassByNameWithoutContextClassLoader() throws Exception {
+        JAXBContext context = withContextClassLoader(
+                null,
+                () -> JAXBContext.newInstance(
+                        new Class<?>[] {FactoryBackedBoundType.class},
+                        Map.of(JAXBContext.JAXB_CONTEXT_FACTORY, "UnqualifiedJaxbContextFactory")));
+
+        assertThat(context).isInstanceOf(StubJaxbContext.class);
+        assertThat(((StubJaxbContext) context).getSource()).isEqualTo("factory-backed-classes-factory");
     }
 
     @Test

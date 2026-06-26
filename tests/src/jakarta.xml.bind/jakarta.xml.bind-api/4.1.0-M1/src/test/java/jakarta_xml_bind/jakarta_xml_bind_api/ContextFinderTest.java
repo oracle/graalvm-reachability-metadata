@@ -13,11 +13,7 @@ import jakarta.xml.bind.JAXBException;
 import jakarta_xml_bind.jakarta_xml_bind_api.classproperties.PropertiesBoundType;
 import jakarta_xml_bind.jakarta_xml_bind_api.factorybacked.FactoryBackedBoundType;
 import jakarta_xml_bind.jakarta_xml_bind_api.servicebound.ServiceBoundType;
-import jakarta_xml_bind.jakarta_xml_bind_api.support.FactoryBackedContextFactory;
-import jakarta_xml_bind.jakarta_xml_bind_api.support.LegacyContextFactory;
-import jakarta_xml_bind.jakarta_xml_bind_api.support.PropertiesContextFactory;
 import jakarta_xml_bind.jakarta_xml_bind_api.support.StubJaxbContext;
-import jakarta_xml_bind.jakarta_xml_bind_api.support.WrongTypeContextFactory;
 import jakarta_xml_bind.jakarta_xml_bind_api.wrongtype.WrongTypeBoundType;
 import org.junit.jupiter.api.Test;
 
@@ -29,6 +25,11 @@ public class ContextFinderTest {
             "jakarta_xml_bind.jakarta_xml_bind_api.contextpath.properties";
     private static final String SERVICE_CONTEXT_PATH =
             "jakarta_xml_bind.jakarta_xml_bind_api.contextpath.service";
+    // JAXB 4.1 checks package access for qualified provider class names before loading them.
+    private static final String PROPERTIES_CONTEXT_FACTORY = "UnqualifiedPropertiesContextFactory";
+    private static final String LEGACY_CONTEXT_FACTORY = "UnqualifiedLegacyContextFactory";
+    private static final String JAXB_CONTEXT_FACTORY = "UnqualifiedJaxbContextFactory";
+    private static final String WRONG_TYPE_CONTEXT_FACTORY = "UnqualifiedWrongTypeContextFactory";
 
     @Test
     public void loadsThreeArgumentFactoryFromPropertiesMapForContextPath() throws Exception {
@@ -37,7 +38,7 @@ public class ContextFinderTest {
                 getClass().getClassLoader(),
                 Map.of(
                         JAXBContext.JAXB_CONTEXT_FACTORY,
-                        PropertiesContextFactory.class.getName(),
+                        PROPERTIES_CONTEXT_FACTORY,
                         "trigger",
                         "jaxb-properties"));
 
@@ -48,7 +49,7 @@ public class ContextFinderTest {
     public void loadsFactoryFromPropertiesMapForBoundClasses() throws Exception {
         JAXBContext context = JAXBContext.newInstance(
                 new Class<?>[] {PropertiesBoundType.class},
-                Map.of(JAXBContext.JAXB_CONTEXT_FACTORY, PropertiesContextFactory.class.getName()));
+                Map.of(JAXBContext.JAXB_CONTEXT_FACTORY, PROPERTIES_CONTEXT_FACTORY));
 
         assertContextSource(context, "properties-classes-factory");
     }
@@ -68,7 +69,7 @@ public class ContextFinderTest {
         JAXBContext context = JAXBContext.newInstance(
                 PROPERTIES_CONTEXT_PATH,
                 getClass().getClassLoader(),
-                Map.of(JAXBContext.JAXB_CONTEXT_FACTORY, LegacyContextFactory.class.getName()));
+                Map.of(JAXBContext.JAXB_CONTEXT_FACTORY, LEGACY_CONTEXT_FACTORY));
 
         assertContextSource(context, "legacy-context-path-factory");
     }
@@ -77,7 +78,7 @@ public class ContextFinderTest {
     public void instantiatesJaxbContextFactoryImplementations() throws Exception {
         JAXBContext context = JAXBContext.newInstance(
                 new Class<?>[] {FactoryBackedBoundType.class},
-                Map.of(JAXBContext.JAXB_CONTEXT_FACTORY, FactoryBackedContextFactory.class.getName()));
+                Map.of(JAXBContext.JAXB_CONTEXT_FACTORY, JAXB_CONTEXT_FACTORY));
 
         assertContextSource(context, "factory-backed-classes-factory");
     }
@@ -93,7 +94,7 @@ public class ContextFinderTest {
     public void throwsHelpfulExceptionWhenProviderReturnsWrongType() {
         assertThatThrownBy(() -> JAXBContext.newInstance(
                 new Class<?>[] {WrongTypeBoundType.class},
-                Map.of(JAXBContext.JAXB_CONTEXT_FACTORY, WrongTypeContextFactory.class.getName())))
+                Map.of(JAXBContext.JAXB_CONTEXT_FACTORY, WRONG_TYPE_CONTEXT_FACTORY)))
                 .isInstanceOf(JAXBException.class)
                 .hasMessageContaining("ClassCastException");
     }
