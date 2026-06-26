@@ -171,6 +171,34 @@ public class Helidon_metadata_hsonTest {
     }
 
     @Test
+    void arrayFactoryCombinesExistingValuesIntoDocumentArrays() {
+        Hson.Struct source = Hson.Struct.builder()
+                .set("name", "alpha")
+                .set("count", 2)
+                .set("empty", Hson.Struct.create())
+                .setNull("missing")
+                .build();
+        List<Hson.Value<?>> values = List.of(source.value("name").orElseThrow(),
+                source.value("count").orElseThrow(),
+                source.value("empty").orElseThrow(),
+                source.value("missing").orElseThrow());
+
+        Hson.Array array = Hson.Array.create(values);
+        Hson.Struct document = Hson.Struct.builder()
+                .set("values", array)
+                .build();
+
+        assertThat(array.value()).extracting(Hson.Value::type)
+                .containsExactly(Hson.Type.STRING, Hson.Type.NUMBER, Hson.Type.STRUCT, Hson.Type.NULL);
+        assertThat(array.value().get(0).value()).isEqualTo("alpha");
+        assertThat(array.value().get(1).value()).isEqualTo(new BigDecimal("2"));
+        assertThat(array.value().get(2).asStruct().keys()).isEmpty();
+        assertThat(array.value().get(3).value()).isNull();
+        assertThat(write(document, false)).isEqualTo("{\"values\":[\"alpha\",2,{},null]}");
+        assertThat(parse(write(document, false))).isEqualTo(document);
+    }
+
+    @Test
     void writesCompactAndPrettyDocumentsThatParseBackToEquivalentValues() {
         Hson.Struct document = Hson.Struct.builder()
                 .set("text", "line1\nline2\t\"quoted\"")
