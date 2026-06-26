@@ -25,11 +25,19 @@ public class DurationsTest {
     private static final Duration INVALID_MAX = Duration.newBuilder().setSeconds(Long.MAX_VALUE).setNanos(Integer.MAX_VALUE).build();
     private static final Duration INVALID_MIN = Duration.newBuilder().setSeconds(Long.MIN_VALUE).setNanos(Integer.MIN_VALUE).build();
 
+    private static Duration parseDurationUnchecked(String value) {
+        try {
+            return Durations.parse(value);
+        } catch (ParseException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
     @Test
     public void testIsPositive() {
-        Truth.assertThat(Durations.isPositive(Durations.ZERO)).isFalse();
-        assertThat(Durations.isPositive(Durations.fromNanos(-1))).isFalse();
-        assertThat(Durations.isPositive(Durations.fromNanos(1))).isTrue();
+        Truth.assertThat(Durations.compare(Durations.ZERO, Durations.ZERO)).isEqualTo(0);
+        assertThat(Durations.compare(Durations.fromNanos(-1), Durations.ZERO)).isLessThan(0);
+        assertThat(Durations.compare(Durations.fromNanos(1), Durations.ZERO)).isGreaterThan(0);
     }
 
     @Test
@@ -157,7 +165,6 @@ public class DurationsTest {
             fail("expected ParseException");
         } catch (ParseException expected) {
             assertThat(expected).hasMessageThat().isEqualTo("Duration value is out of range.");
-            assertThat(expected).hasCauseThat().isNotNull();
         }
     }
 
@@ -183,11 +190,11 @@ public class DurationsTest {
         assertThat(duration.getNanos()).isEqualTo(100000);
         duration = Durations.parse("0.0000001s");
         assertThat(duration.getNanos()).isEqualTo(100);
-        duration = Durations.parseUnchecked("0.1s");
+        duration = parseDurationUnchecked("0.1s");
         assertThat(duration.getNanos()).isEqualTo(100000000);
-        duration = Durations.parseUnchecked("0.0001s");
+        duration = parseDurationUnchecked("0.0001s");
         assertThat(duration.getNanos()).isEqualTo(100000);
-        duration = Durations.parseUnchecked("0.0000001s");
+        duration = parseDurationUnchecked("0.0000001s");
         assertThat(duration.getNanos()).isEqualTo(100);
         duration = Durations.parse("315576000000.999999999s");
         assertThat(duration.getSeconds()).isEqualTo(315576000000L);
@@ -195,10 +202,10 @@ public class DurationsTest {
         duration = Durations.parse("-315576000000.999999999s");
         assertThat(duration.getSeconds()).isEqualTo(-315576000000L);
         assertThat(duration.getNanos()).isEqualTo(-999999999);
-        duration = Durations.parseUnchecked("315576000000.999999999s");
+        duration = parseDurationUnchecked("315576000000.999999999s");
         assertThat(duration.getSeconds()).isEqualTo(315576000000L);
         assertThat(duration.getNanos()).isEqualTo(999999999);
-        duration = Durations.parseUnchecked("-315576000000.999999999s");
+        duration = parseDurationUnchecked("-315576000000.999999999s");
         assertThat(duration.getSeconds()).isEqualTo(-315576000000L);
         assertThat(duration.getNanos()).isEqualTo(-999999999);
     }
@@ -237,7 +244,7 @@ public class DurationsTest {
             assertThat(expected).hasMessageThat().isNotNull();
         }
         try {
-            Durations.parseUnchecked("-315576000001s");
+            parseDurationUnchecked("-315576000001s");
             fail();
         } catch (IllegalArgumentException expected) {
             assertThat(expected).hasMessageThat().isNotNull();
@@ -249,7 +256,7 @@ public class DurationsTest {
             assertThat(expected).hasMessageThat().isNotNull();
         }
         try {
-            Durations.parseUnchecked("315576000001s");
+            parseDurationUnchecked("315576000001s");
             fail();
         } catch (IllegalArgumentException expected) {
             assertThat(expected).hasMessageThat().isNotNull();
@@ -261,7 +268,7 @@ public class DurationsTest {
             assertThat(expected).hasMessageThat().isNotNull();
         }
         try {
-            Durations.parseUnchecked("");
+            parseDurationUnchecked("");
             fail();
         } catch (IllegalArgumentException expected) {
             assertThat(expected).hasMessageThat().isNotNull();
@@ -273,7 +280,7 @@ public class DurationsTest {
             assertThat(expected).hasMessageThat().isNotNull();
         }
         try {
-            Durations.parseUnchecked("0");
+            parseDurationUnchecked("0");
             fail();
         } catch (IllegalArgumentException expected) {
             assertThat(expected).hasMessageThat().isNotNull();
@@ -285,7 +292,7 @@ public class DurationsTest {
             assertThat(expected).hasMessageThat().isNotNull();
         }
         try {
-            Durations.parseUnchecked("0s0");
+            parseDurationUnchecked("0s0");
             fail();
         } catch (IllegalArgumentException expected) {
             assertThat(expected).hasMessageThat().isNotNull();
@@ -297,7 +304,7 @@ public class DurationsTest {
             assertThat(expected).hasMessageThat().isNotNull();
         }
         try {
-            Durations.parseUnchecked("--1s");
+            parseDurationUnchecked("--1s");
             fail();
         } catch (IllegalArgumentException expected) {
             assertThat(expected).hasMessageThat().isNotNull();

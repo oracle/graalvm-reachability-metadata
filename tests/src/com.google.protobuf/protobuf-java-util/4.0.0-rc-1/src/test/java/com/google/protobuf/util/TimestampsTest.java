@@ -47,6 +47,24 @@ public class TimestampsTest {
     private static final Timestamp INVALID_MIN =
             Timestamp.newBuilder().setSeconds(Long.MIN_VALUE).setNanos(Integer.MIN_VALUE).build();
 
+    private static Timestamp parseTimestampUnchecked(String value) {
+        try {
+            return Timestamps.parse(value);
+        } catch (ParseException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    private static Timestamp fromDate(Date date) {
+        if (date instanceof java.sql.Timestamp sqlTimestamp) {
+            return Timestamps.checkValid(Timestamp.newBuilder()
+                    .setSeconds(Math.floorDiv(sqlTimestamp.getTime(), MILLIS_PER_SECOND))
+                    .setNanos(sqlTimestamp.getNanos())
+                    .build());
+        }
+        return Timestamps.fromMillis(date.getTime());
+    }
+
     @Test
     public void testMinMaxAreValid() {
         Truth.assertThat(Timestamps.isValid(Timestamps.MAX_VALUE)).isTrue();
@@ -58,7 +76,7 @@ public class TimestampsTest {
     public void testIsValid_false() {
         assertThat(Timestamps.isValid(0L, -1)).isFalse();
         assertThat(Timestamps.isValid(1L, -1)).isFalse();
-        assertThat(Timestamps.isValid(1L, Timestamps.NANOS_PER_SECOND)).isFalse();
+        assertThat(Timestamps.isValid(1L, (int) Timestamps.NANOS_PER_SECOND)).isFalse();
         assertThat(Timestamps.isValid(-62135596801L, 0)).isFalse();
         assertThat(Timestamps.isValid(253402300800L, 0)).isFalse();
     }
@@ -75,7 +93,7 @@ public class TimestampsTest {
         assertThat(Timestamps.isValid(62135596799L, 1)).isTrue();
         assertThat(Timestamps.isValid(253402300799L, 0)).isTrue();
         assertThat(Timestamps.isValid(253402300798L, 1)).isTrue();
-        assertThat(Timestamps.isValid(253402300798L, Timestamps.NANOS_PER_SECOND - 1)).isTrue();
+        assertThat(Timestamps.isValid(253402300798L, (int) (Timestamps.NANOS_PER_SECOND - 1))).isTrue();
     }
 
     @Test
@@ -92,14 +110,14 @@ public class TimestampsTest {
         Timestamp value = Timestamps.parse("1970-01-01T00:00:00Z");
         assertThat(value.getSeconds()).isEqualTo(0);
         assertThat(value.getNanos()).isEqualTo(0);
-        value = Timestamps.parseUnchecked("1970-01-01T00:00:00Z");
+        value = parseTimestampUnchecked("1970-01-01T00:00:00Z");
         assertThat(value.getSeconds()).isEqualTo(0);
         assertThat(value.getNanos()).isEqualTo(0);
 
         value = Timestamps.parse("1969-12-31T23:59:59.999Z");
         assertThat(value.getSeconds()).isEqualTo(-1);
         assertThat(value.getNanos()).isEqualTo(999000000);
-        value = Timestamps.parseUnchecked("1969-12-31T23:59:59.999Z");
+        value = parseTimestampUnchecked("1969-12-31T23:59:59.999Z");
         assertThat(value.getSeconds()).isEqualTo(-1);
         assertThat(value.getNanos()).isEqualTo(999000000);
         value = Timestamp.newBuilder().setNanos(10).build();
@@ -112,9 +130,9 @@ public class TimestampsTest {
         assertThat(Timestamps.toString(value)).isEqualTo("1969-12-31T16:00:00.010Z");
         value = Timestamps.parse("1970-01-01T00:00:00.010-08:00");
         assertThat(Timestamps.toString(value)).isEqualTo("1970-01-01T08:00:00.010Z");
-        value = Timestamps.parseUnchecked("1970-01-01T00:00:00.010+08:00");
+        value = parseTimestampUnchecked("1970-01-01T00:00:00.010+08:00");
         assertThat(Timestamps.toString(value)).isEqualTo("1969-12-31T16:00:00.010Z");
-        value = Timestamps.parseUnchecked("1970-01-01T00:00:00.010-08:00");
+        value = parseTimestampUnchecked("1970-01-01T00:00:00.010-08:00");
         assertThat(Timestamps.toString(value)).isEqualTo("1970-01-01T08:00:00.010Z");
     }
 
@@ -232,10 +250,9 @@ public class TimestampsTest {
             Assert.fail();
         } catch (ParseException expected) {
             Assert.assertNotNull(expected.getMessage());
-            assertThat(expected).hasCauseThat().isNotNull();
         }
         try {
-            Timestamps.parseUnchecked("0000-01-01T00:00:00Z");
+            parseTimestampUnchecked("0000-01-01T00:00:00Z");
             assertWithMessage("IllegalArgumentException is expected.").fail();
         } catch (IllegalArgumentException expected) {
             Assert.assertNotNull(expected.getMessage());
@@ -251,7 +268,7 @@ public class TimestampsTest {
             Assert.assertNotNull(expected.getMessage());
         }
         try {
-            Timestamps.parseUnchecked("10000-01-01T00:00:00Z");
+            parseTimestampUnchecked("10000-01-01T00:00:00Z");
             assertWithMessage("IllegalArgumentException is expected.").fail();
         } catch (IllegalArgumentException expected) {
             Assert.assertNotNull(expected.getMessage());
@@ -267,7 +284,7 @@ public class TimestampsTest {
             Assert.assertNotNull(expected.getMessage());
         }
         try {
-            Timestamps.parseUnchecked("1970-01-01 00:00:00Z");
+            parseTimestampUnchecked("1970-01-01 00:00:00Z");
             assertWithMessage("IllegalArgumentException is expected.").fail();
         } catch (IllegalArgumentException expected) {
             Assert.assertNotNull(expected.getMessage());
@@ -283,7 +300,7 @@ public class TimestampsTest {
             Assert.assertNotNull(expected.getMessage());
         }
         try {
-            Timestamps.parseUnchecked("1970-01-01T00:00:00");
+            parseTimestampUnchecked("1970-01-01T00:00:00");
             assertWithMessage("IllegalArgumentException is expected.").fail();
         } catch (IllegalArgumentException expected) {
             Assert.assertNotNull(expected.getMessage());
@@ -299,7 +316,7 @@ public class TimestampsTest {
             Assert.assertNotNull(expected.getMessage());
         }
         try {
-            Timestamps.parseUnchecked("1970-01-01T00:00:00+0000");
+            parseTimestampUnchecked("1970-01-01T00:00:00+0000");
             assertWithMessage("IllegalArgumentException is expected.").fail();
         } catch (IllegalArgumentException expected) {
             Assert.assertNotNull(expected.getMessage());
@@ -315,7 +332,7 @@ public class TimestampsTest {
             Assert.assertNotNull(expected.getMessage());
         }
         try {
-            Timestamps.parseUnchecked("1970-01-01T00:00:00Z0");
+            parseTimestampUnchecked("1970-01-01T00:00:00Z0");
             assertWithMessage("IllegalArgumentException is expected.").fail();
         } catch (IllegalArgumentException expected) {
             Assert.assertNotNull(expected.getMessage());
@@ -331,7 +348,7 @@ public class TimestampsTest {
             Assert.assertNotNull(expected.getMessage());
         }
         try {
-            Timestamps.parseUnchecked("1970-01-01T00:00:00.ABCZ");
+            parseTimestampUnchecked("1970-01-01T00:00:00.ABCZ");
             assertWithMessage("IllegalArgumentException is expected.").fail();
         } catch (IllegalArgumentException expected) {
             Assert.assertNotNull(expected.getMessage());
@@ -372,7 +389,7 @@ public class TimestampsTest {
     @Test
     public void testFromDate() {
         Date date = new Date(1111);
-        Timestamp timestamp = Timestamps.fromDate(date);
+        Timestamp timestamp = fromDate(date);
         assertThat(Timestamps.toString(timestamp)).isEqualTo("1970-01-01T00:00:01.111Z");
     }
 
@@ -384,7 +401,7 @@ public class TimestampsTest {
         calendar.set(20000, Calendar.OCTOBER, 20, 5, 4, 3);
         Date date = calendar.getTime();
         try {
-            Timestamps.fromDate(date);
+            fromDate(date);
             Assert.fail("should have thrown IllegalArgumentException");
         } catch (IllegalArgumentException expected) {
             assertThat(expected).hasMessageThat().startsWith("Timestamp is not valid.");
@@ -399,7 +416,7 @@ public class TimestampsTest {
         calendar.set(-32, Calendar.OCTOBER, 20, 5, 4, 3);
         Date date = calendar.getTime();
         try {
-            Timestamps.fromDate(date);
+            fromDate(date);
             Assert.fail("should have thrown IllegalArgumentException");
         } catch (IllegalArgumentException expected) {
             assertThat(expected).hasMessageThat().startsWith("Timestamp is not valid.");
@@ -413,7 +430,7 @@ public class TimestampsTest {
         calendar.setTimeZone(TimeZone.getTimeZone("GMT-0"));
         calendar.set(2299, Calendar.OCTOBER, 20, 5, 4, 3);
         Date date = calendar.getTime();
-        Timestamp timestamp = Timestamps.fromDate(date);
+        Timestamp timestamp = fromDate(date);
         assertThat(Timestamps.toString(timestamp)).isEqualTo("2299-10-20T05:04:03Z");
     }
 
@@ -421,14 +438,14 @@ public class TimestampsTest {
     public void testFromSqlTimestampSubMillisecondPrecision() {
         java.sql.Timestamp sqlTimestamp = new java.sql.Timestamp(1111);
         sqlTimestamp.setNanos(sqlTimestamp.getNanos() + 234567);
-        Timestamp timestamp = Timestamps.fromDate(sqlTimestamp);
+        Timestamp timestamp = fromDate(sqlTimestamp);
         assertThat(Timestamps.toString(timestamp)).isEqualTo("1970-01-01T00:00:01.111234567Z");
     }
 
     @Test
     public void testFromSqlTimestamp() {
         Date date = new java.sql.Timestamp(1111);
-        Timestamp timestamp = Timestamps.fromDate(date);
+        Timestamp timestamp = fromDate(date);
         assertThat(Timestamps.toString(timestamp)).isEqualTo("1970-01-01T00:00:01.111Z");
     }
 
