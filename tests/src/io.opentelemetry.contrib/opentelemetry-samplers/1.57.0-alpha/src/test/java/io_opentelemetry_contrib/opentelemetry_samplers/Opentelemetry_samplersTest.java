@@ -17,6 +17,7 @@ import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.TraceFlags;
 import io.opentelemetry.api.trace.TraceState;
 import io.opentelemetry.contrib.sampler.LinksBasedSampler;
+import io.opentelemetry.contrib.sampler.LinksParentAlwaysOnSamplerProvider;
 import io.opentelemetry.contrib.sampler.RuleBasedRoutingSampler;
 import io.opentelemetry.contrib.sampler.RuleBasedRoutingSamplerBuilder;
 import io.opentelemetry.context.Context;
@@ -67,6 +68,38 @@ public class Opentelemetry_samplersTest {
                 .contains("LinksBased")
                 .contains(Sampler.alwaysOff().getDescription());
         assertThat(samplerWithDroppingRoot).hasToString(samplerWithDroppingRoot.getDescription());
+    }
+
+    @Test
+    void linksParentAlwaysOnProviderCreatesSamplerWithLinkAndParentBasedDecisions() {
+        LinksParentAlwaysOnSamplerProvider provider = new LinksParentAlwaysOnSamplerProvider();
+        Sampler sampler = provider.createSampler(null);
+
+        assertThat(provider.getName()).isEqualTo("linksbased_parentbased_always_on");
+        assertThat(sampleWithContext(sampler, Context.root(), Attributes.empty(), List.of())
+                        .getDecision())
+                .isEqualTo(SamplingDecision.RECORD_AND_SAMPLE);
+        assertThat(sampleWithContext(
+                                sampler,
+                                parentContext(true),
+                                Attributes.empty(),
+                                List.of())
+                        .getDecision())
+                .isEqualTo(SamplingDecision.RECORD_AND_SAMPLE);
+        assertThat(sampleWithContext(
+                                sampler,
+                                parentContext(false),
+                                Attributes.empty(),
+                                List.of())
+                        .getDecision())
+                .isEqualTo(SamplingDecision.DROP);
+        assertThat(sampleWithContext(
+                                sampler,
+                                parentContext(false),
+                                Attributes.empty(),
+                                List.of(LinkData.create(spanContext(true))))
+                        .getDecision())
+                .isEqualTo(SamplingDecision.RECORD_AND_SAMPLE);
     }
 
     @Test
@@ -223,8 +256,13 @@ public class Opentelemetry_samplersTest {
 
     private static SamplingResult sample(
             Sampler sampler, Attributes attributes, List<LinkData> links) {
+        return sampleWithContext(sampler, Context.root(), attributes, links);
+    }
+
+    private static SamplingResult sampleWithContext(
+            Sampler sampler, Context context, Attributes attributes, List<LinkData> links) {
         return sampler.shouldSample(
-                Context.root(), TRACE_ID, "operation", SpanKind.SERVER, attributes, links);
+                context, TRACE_ID, "operation", SpanKind.SERVER, attributes, links);
     }
 
     private static SamplingResult sampleClientSpan(Sampler sampler, Attributes attributes) {
@@ -235,6 +273,10 @@ public class Opentelemetry_samplersTest {
                 SpanKind.CLIENT,
                 attributes,
                 Collections.emptyList());
+    }
+
+    private static Context parentContext(boolean sampled) {
+        return Context.root().with(Span.wrap(spanContext(sampled)));
     }
 
     private static SpanContext spanContext(boolean sampled) {
