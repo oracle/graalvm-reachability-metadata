@@ -31,11 +31,16 @@ import reactor.core.publisher.Mono;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.context.annotation.ImportCandidates;
+import org.springframework.boot.http.client.reactive.ClientHttpConnectorBuilder;
 import org.springframework.boot.http.codec.CodecCustomizer;
+import org.springframework.boot.ssl.DefaultSslBundleRegistry;
+import org.springframework.boot.ssl.SslBundle;
+import org.springframework.boot.ssl.SslBundles;
 import org.springframework.boot.webclient.WebClientCustomizer;
 import org.springframework.boot.webclient.autoconfigure.WebClientAutoConfiguration;
 import org.springframework.boot.webclient.autoconfigure.WebClientCodecCustomizer;
 import org.springframework.boot.webclient.autoconfigure.WebClientObservationAutoConfiguration;
+import org.springframework.boot.webclient.autoconfigure.WebClientSsl;
 import org.springframework.boot.webclient.autoconfigure.service.ReactiveHttpServiceClientAutoConfiguration;
 import org.springframework.boot.webclient.observation.ObservationWebClientCustomizer;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -186,6 +191,39 @@ public class Spring_boot_webclientTest {
                     assertThat(context).hasSingleBean(ObservationWebClientCustomizer.class);
                     assertThat(context).hasSingleBean(ObservationRegistry.class);
                 });
+    }
+
+    @Test
+    void webClientSslAppliesNamedSslBundleToWebClientBuilder() throws IOException {
+        try (TestHttpServer server = TestHttpServer.start(exchange -> send(exchange, HttpStatus.OK.value(),
+                "ssl-bundle-configured"))) {
+            SslBundle sslBundle = SslBundle.systemDefault();
+            SslBundles sslBundles = new DefaultSslBundleRegistry("client", sslBundle);
+            AtomicReference<SslBundle> configuredSslBundle = new AtomicReference<>();
+            ClientHttpConnectorBuilder<ClientHttpConnector> connectorBuilder = settings -> {
+                configuredSslBundle.set(settings.sslBundle());
+                return jdkClientHttpConnector();
+            };
+
+            this.contextRunner
+                    .withBean(SslBundles.class, () -> sslBundles)
+                    .withBean(ClientHttpConnectorBuilder.class, () -> connectorBuilder)
+                    .run(context -> {
+                        assertThat(context).hasSingleBean(WebClientSsl.class);
+
+                        WebClient.Builder builder = WebClient.builder().baseUrl(server.url(""));
+                        context.getBean(WebClientSsl.class).fromBundle("client").accept(builder);
+                        WebClient client = builder.build();
+
+                        String body = client.get().uri("/secure-client")
+                                .retrieve()
+                                .bodyToMono(String.class)
+                                .block(REQUEST_TIMEOUT);
+
+                        assertThat(configuredSslBundle).hasValue(sslBundle);
+                        assertThat(body).isEqualTo("ssl-bundle-configured");
+                    });
+        }
     }
 
     private static ExchangeFunction okExchangeFunction(String body) {
