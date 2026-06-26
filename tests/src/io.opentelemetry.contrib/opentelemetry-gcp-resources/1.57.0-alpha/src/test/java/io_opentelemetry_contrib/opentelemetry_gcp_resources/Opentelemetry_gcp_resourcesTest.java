@@ -107,6 +107,30 @@ public class Opentelemetry_gcp_resourcesTest {
                 });
     }
 
+    @Test
+    void declarativeGcpResourceComponentProviderCreatesResource() throws Exception {
+        try (MetadataProxyServer metadataServer = MetadataProxyServer.start();
+                ProxyProperties ignored = ProxyProperties.use(metadataServer.getPort())) {
+            ComponentProvider componentProvider = declarativeGcpResourceComponentProvider();
+
+            Resource resource = (Resource) componentProvider.create(null);
+            Attributes attributes = resource.getAttributes();
+
+            assertCommonGcpAttributes(attributes);
+            assertPlatformSpecificAttributes(attributes);
+        }
+    }
+
+    private static ComponentProvider declarativeGcpResourceComponentProvider() {
+        ServiceLoader<ComponentProvider> componentProviders = ServiceLoader.load(ComponentProvider.class);
+        for (ComponentProvider componentProvider : componentProviders) {
+            if (componentProvider.getType().equals(Resource.class) && componentProvider.getName().equals("gcp")) {
+                return componentProvider;
+            }
+        }
+        throw new AssertionError("GCP declarative resource component provider was not found");
+    }
+
     private static void assertCommonGcpAttributes(Attributes attributes) {
         assertThat(attributes.get(CLOUD_PROVIDER)).isEqualTo("gcp");
         assertThat(attributes.get(CLOUD_ACCOUNT_ID)).isEqualTo(PROJECT_ID);
