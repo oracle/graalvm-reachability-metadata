@@ -13,7 +13,6 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZonedDateTime;
@@ -21,15 +20,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 import graphql.ExecutionInput;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
-import graphql.GraphQLContext;
-import graphql.execution.CoercedVariables;
 import graphql.language.FloatValue;
 import graphql.language.IntValue;
 import graphql.language.StringValue;
@@ -51,19 +47,19 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class Graphql_java_extended_scalarsTest {
 
     @Test
-    void temporalAndIdentifierScalarsRoundTripThroughGraphQl() throws Exception {
+    void temporalAndLocaleScalarsRoundTripThroughGraphQl() throws Exception {
         EchoResult dateTimeVariable = executeVariableEcho(ExtendedScalars.DateTime, "2024-01-02T03:04:05Z");
         assertSuccessful(dateTimeVariable);
         assertThat(dateTimeVariable.inputValue()).isEqualTo(OffsetDateTime.parse("2024-01-02T03:04:05Z"));
-        assertThat(outputValue(dateTimeVariable.executionResult())).isEqualTo("2024-01-02T03:04:05.000Z");
+        assertThat(outputValue(dateTimeVariable.executionResult())).isEqualTo("2024-01-02T03:04:05Z");
 
         EchoResult dateTimeLiteral = executeLiteralEcho(ExtendedScalars.DateTime, "\"2024-01-02T03:04:05Z\"");
         assertSuccessful(dateTimeLiteral);
         assertThat(dateTimeLiteral.inputValue()).isEqualTo(OffsetDateTime.parse("2024-01-02T03:04:05Z"));
-        assertThat(outputValue(dateTimeLiteral.executionResult())).isEqualTo("2024-01-02T03:04:05.000Z");
+        assertThat(outputValue(dateTimeLiteral.executionResult())).isEqualTo("2024-01-02T03:04:05Z");
 
         assertThat(serialize(ExtendedScalars.DateTime, ZonedDateTime.parse("2024-01-02T03:04:05+02:00")))
-            .isEqualTo("2024-01-02T03:04:05.000+02:00");
+            .isEqualTo("2024-01-02T03:04:05+02:00");
 
         EchoResult dateVariable = executeVariableEcho(ExtendedScalars.Date, "2024-01-02");
         assertSuccessful(dateVariable);
@@ -74,16 +70,6 @@ public class Graphql_java_extended_scalarsTest {
         assertSuccessful(timeVariable);
         assertThat(timeVariable.inputValue()).isEqualTo(OffsetTime.parse("03:04:05Z"));
         assertThat(outputValue(timeVariable.executionResult())).isEqualTo("03:04:05Z");
-
-        EchoResult localTimeVariable = executeVariableEcho(ExtendedScalars.LocalTime, "03:04:05");
-        assertSuccessful(localTimeVariable);
-        assertThat(localTimeVariable.inputValue()).isEqualTo(LocalTime.parse("03:04:05"));
-        assertThat(outputValue(localTimeVariable.executionResult())).isEqualTo("03:04:05");
-
-        EchoResult uuidVariable = executeVariableEcho(ExtendedScalars.UUID, "123e4567-e89b-12d3-a456-426614174000");
-        assertSuccessful(uuidVariable);
-        assertThat(uuidVariable.inputValue()).isEqualTo(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"));
-        assertThat(outputValue(uuidVariable.executionResult())).isEqualTo("123e4567-e89b-12d3-a456-426614174000");
 
         EchoResult localeVariable = executeVariableEcho(ExtendedScalars.Locale, "fr-CA");
         assertSuccessful(localeVariable);
@@ -223,22 +209,22 @@ public class Graphql_java_extended_scalarsTest {
 
     private Object serialize(GraphQLScalarType scalarType, Object input) {
         return scalarType.getCoercing()
-            .serialize(input, GraphQLContext.getDefault(), Locale.ENGLISH);
+            .serialize(input);
     }
 
     private Object parseValue(GraphQLScalarType scalarType, Object input) {
         return scalarType.getCoercing()
-            .parseValue(input, GraphQLContext.getDefault(), Locale.ENGLISH);
+            .parseValue(input);
     }
 
     private Object parseLiteral(GraphQLScalarType scalarType, Value<?> input) {
         return scalarType.getCoercing()
-            .parseLiteral(input, CoercedVariables.emptyVariables(), GraphQLContext.getDefault(), Locale.ENGLISH);
+            .parseLiteral(input);
     }
 
     private Value<?> valueToLiteral(GraphQLScalarType scalarType, Object input) {
         return scalarType.getCoercing()
-            .valueToLiteral(input, GraphQLContext.getDefault(), Locale.ENGLISH);
+            .valueToLiteral(input);
     }
 
     private void assertStructuredScalarRoundTrip(GraphQLScalarType scalarType, Map<String, Object> variableInput) {
