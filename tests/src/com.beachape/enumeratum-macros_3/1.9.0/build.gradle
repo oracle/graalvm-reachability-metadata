@@ -26,6 +26,12 @@ java {
     }
 }
 
+tasks.withType(ScalaCompile).configureEach {
+    scalaCompileOptions.additionalParameters = [
+            "-Yretain-trees"
+    ]
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
