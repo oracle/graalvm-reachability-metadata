@@ -1,0 +1,71 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "com.mchange:mchange-commons-java:0.4.0",
+  "issueNumber": 2097,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "When exercising com.mchange.v2.naming.ReferenceableUtils.referenceToObject(...) with overloads that do not pass an explicit allowedFactoryClassNames Set, set the system property com.mchange.v2.naming.objectFactoryWhitelist to the fully qualified test ObjectFactory class name(s) used by the test, for example in a JUnit setup method, and restore/clear it afterward. Prefer a concrete whitelist over '*'. Alternatively, call the overload that accepts an explicit Set containing the test ObjectFactory class name if that still covers the intended path.",
+    "applied_setup": [],
+    "current_library": "com.mchange:mchange-commons-java:0.2.15",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#2097 [Automation] java run fails for com.mchange:mchange-commons-java:0.4.0; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "34 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 42302,
+    "issue_label": "fails-java-run",
+    "issue_number": 2097,
+    "library": "com.mchange:mchange-commons-java:0.4.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "0.4.0",
+    "output_tokens_used": 3607,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "If the property is not restored after the test, it can affect other tests because ReferenceableUtils reads System properties globally.",
+      "Using '*' would make the test less representative of the library's intended 0.4.0 security posture.",
+      "The artifact has optional logging/config dependencies, but they are not required for the failing JNDI/ObjectFactory coverage path and no Docker service is indicated."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/com.mchange:mchange-commons-java:0.4.0/library-preparation-preflight/pi-generation-2026-06-26T19-27-47-965840Z.log",
+    "status": "completed",
+    "summary": "mchange-commons-java 0.4.0 adds mandatory security configuration for JNDI Reference/ObjectFactory resolution; tests that exercise ReferenceableUtils.referenceToObject overloads without an explicit allowed-factory set must provide com.mchange.v2.naming.objectFactoryWhitelist."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "0.4.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-2097-fails-java-run-com.mchange-mchange-commons-java-0.4.0-cc297fcb",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
