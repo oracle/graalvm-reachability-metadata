@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.sonatype.sisu:sisu-inject-bean:2.4.1",
+  "issueNumber": 8602,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.sonatype.sisu:sisu-inject-bean:2.4.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8602 [Automation] javac compile fails for org.sonatype.sisu:sisu-inject-bean:2.4.1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "14 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 69119,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8602,
+    "library": "org.sonatype.sisu:sisu-inject-bean:2.4.1",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.4.1",
+    "output_tokens_used": 3950,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The artifact declares optional integrations for slf4j, OSGi, JUnit 4, and TestNG; tests that deliberately exercise those optional surfaces may need additional dependencies, but they are not required for meaningful core coverage.",
+      "The library is a legacy/deprecated compatibility wrapper over Eclipse Sisu APIs, so generated tests should verify method signatures against the resolved 2.4.1 artifact rather than assuming the 2.4.0 test API still matches."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.sonatype.sisu:sisu-inject-bean:2.4.1/library-preparation-preflight/pi-generation-2026-06-26T11-57-43-606464Z.log",
+    "status": "completed",
+    "summary": "No extra deterministic setup is needed. The artifact is a deprecated legacy wrapper around Eclipse Sisu/Guice; its normal core usage is in-process dependency injection, class-space scanning, and bean location using transitive Maven dependencies already brought in by org.sonatype.sisu:sisu-inject-bean:2.4.1. The observed javac failure is an API/signature drift in the existing test, not a missing dependency, Docker service, or environment/system property."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.4.1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8602-fails-javac-compile-org.sonatype.sisu-sisu-inject-bean-2.4.1-5c964b2d",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
