@@ -19,19 +19,28 @@ import org.junit.jupiter.api.Test;
 
 public class Google_closure_library_third_partyTest {
     private static final List<String> DISTRIBUTED_RESOURCES = List.of(
+            "goog/base.js",
+            "goog/deps.js",
+            "goog/caja/string/html/htmlparser.js",
+            "goog/caja/string/html/htmlsanitizer.js",
             "goog/dojo/dom/query.js",
             "goog/dojo/dom/query_test.js",
-            "goog/dojo/dom/query_test_dom.html",
-            "goog/mochikit/BUILD",
-            "goog/mochikit/LICENSE",
-            "goog/mochikit/async/BUILD",
+            "goog/dojo/dom/query_test.html",
+            "goog/jpeg_encoder/jpeg_encoder_basic.js",
+            "goog/loremipsum/text/loremipsum.js",
+            "goog/loremipsum/text/loremipsum_test.html",
             "goog/mochikit/async/deferred.js",
-            "goog/mochikit/async/deferred_async_test.js",
-            "goog/mochikit/async/deferred_async_test_dom.html",
-            "goog/mochikit/async/deferred_test.js",
+            "goog/mochikit/async/deferred_test.html",
             "goog/mochikit/async/deferredlist.js",
-            "goog/mochikit/async/deferredlist_test.js",
-            "README.md",
+            "goog/mochikit/async/deferredlist_test.html",
+            "goog/osapi/osapi.js",
+            "goog/silverlight/AppManifest.xml",
+            "goog/silverlight/ClipboardButton.xaml",
+            "goog/silverlight/ClipboardButtonApp.xaml",
+            "goog/silverlight/clipboardbutton.js",
+            "goog/silverlight/silverlight.js",
+            "goog/silverlight/supporteduseragent.js",
+            "README",
             "AUTHORS",
             "LICENSE");
 
@@ -40,7 +49,7 @@ public class Google_closure_library_third_partyTest {
             List.of(
                     "goog.async.Deferred",
                     "goog.async.Deferred.AlreadyCalledError",
-                    "goog.async.Deferred.CanceledError"),
+                    "goog.async.Deferred.CancelledError"),
             "goog/mochikit/async/deferredlist.js",
             List.of("goog.async.DeferredList"),
             "goog/dojo/dom/query.js",
@@ -73,13 +82,14 @@ public class Google_closure_library_third_partyTest {
     @Test
     void closureModulesKeepExpectedThirdPartyIntegrationPoints() throws IOException {
         assertThat(readResource("goog/mochikit/async/deferred.js"))
-                .contains("goog.require('goog.Promise')")
                 .contains("goog.async.Deferred.prototype.callback")
                 .contains("goog.async.Deferred.prototype.errback")
                 .contains("goog.async.Deferred.prototype.cancel")
-                .contains("goog.async.Deferred.prototype.then")
-                .contains("goog.async.Deferred.fromPromise")
-                .contains("goog.async.Deferred.when");
+                .contains("goog.async.Deferred.prototype.chainDeferred")
+                .contains("goog.async.Deferred.prototype.awaitDeferred")
+                .contains("goog.async.Deferred.prototype.branch")
+                .contains("goog.async.Deferred.succeed")
+                .contains("goog.async.Deferred.fail");
 
         assertThat(readResource("goog/mochikit/async/deferredlist.js"))
                 .contains("goog.require('goog.async.Deferred')")
@@ -96,15 +106,17 @@ public class Google_closure_library_third_partyTest {
     }
 
     @Test
-    void deferredModuleCoversCancellationErrorsAndPromiseIntegration() throws IOException {
+    void deferredModuleCoversCancellationErrorsAndCallbackChaining() throws IOException {
         assertThat(readResource("goog/mochikit/async/deferred.js"))
-                .contains("goog.define('goog.async.Deferred.STRICT_ERRORS', false)")
-                .contains("goog.define('goog.async.Deferred.LONG_STACK_TRACES', false)")
-                .contains("goog.async.Deferred.prototype.makeStackTraceLong_")
-                .contains("goog.async.Deferred.AlreadyCalledError.prototype.name = 'AlreadyCalledError'")
-                .contains("goog.async.Deferred.CanceledError.prototype.name = 'CanceledError'")
-                .contains("goog.Thenable.addImplementation(goog.async.Deferred)")
-                .contains("goog.async.Deferred.assertNoErrors = function()");
+                .contains("this.canceller_.call(this.defaultScope_, this)")
+                .contains("this.errback(new goog.async.Deferred.CancelledError(this))")
+                .contains("throw new goog.async.Deferred.AlreadyCalledError(this)")
+                .contains("goog.async.Deferred.prototype.addCallbacks")
+                .contains("goog.async.Deferred.prototype.addErrback")
+                .contains("goog.async.Deferred.prototype.addBoth")
+                .contains("goog.async.Deferred.AlreadyCalledError.prototype.message = 'Already called'")
+                .contains("goog.async.Deferred.CancelledError.prototype.message = 'Deferred was cancelled'")
+                .contains("goog.global.setTimeout(function()");
     }
 
     @Test
@@ -127,44 +139,35 @@ public class Google_closure_library_third_partyTest {
 
     @Test
     void bundledJavascriptFixturesReferenceThePackagedModules() throws IOException {
-        assertThat(readResource("goog/mochikit/async/deferred_test.js"))
-                .contains("goog.module('goog.async.deferredTest')")
-                .contains("const Deferred = goog.require('goog.async.Deferred')")
-                .contains("testNormal()")
-                .contains("testCancel()")
-                .contains("testDeferredDependencies()");
+        assertThat(readResource("goog/mochikit/async/deferred_test.html"))
+                .contains("goog.require('goog.async.Deferred')")
+                .contains("var Deferred = goog.async.Deferred")
+                .contains("function testNormal()")
+                .contains("function testCancel()")
+                .contains("function testDeferredDependencies()");
 
-        assertThat(readResource("goog/mochikit/async/deferred_async_test.js"))
-                .contains("goog.module('goog.async.deferredAsyncTest')")
-                .contains("const Deferred = goog.require('goog.async.Deferred')")
-                .contains("testErrorStack()");
-
-        assertThat(readResource("goog/mochikit/async/deferredlist_test.js"))
-                .contains("goog.module('goog.async.deferredListTest')")
-                .contains("const DeferredList = goog.require('goog.async.DeferredList')")
-                .contains("testDeferredList()")
-                .contains("testGatherResults()");
-
-        assertThat(readResource("goog/mochikit/async/deferred_async_test_dom.html"))
-                .contains("goog.async.Deferred.LONG_STACK_TRACES = true;");
+        assertThat(readResource("goog/mochikit/async/deferredlist_test.html"))
+                .contains("goog.require('goog.async.DeferredList')")
+                .contains("var DeferredList = goog.async.DeferredList")
+                .contains("function testDeferredList()")
+                .contains("function testGatherResults()");
 
         assertThat(readResource("goog/dojo/dom/query_test.js"))
                 .contains("function testBasicSelectors()")
                 .contains("function testNthChild()")
                 .contains("function testAttributes()");
 
-        assertThat(readResource("goog/dojo/dom/query_test_dom.html"))
+        assertThat(readResource("goog/dojo/dom/query_test.html"))
                 .contains("<h1>testing goog.dom.query()</h1>")
                 .contains("id=iframe-test");
     }
 
     @Test
     void projectDocumentationAndLicenseArePackaged() throws IOException {
-        assertThat(readResource("README.md"))
-                .contains("# Closure Library")
-                .contains("*actively* maintained by the Clojure team")
-                .contains("Google stopped contributing to Closure Library on August 2024")
-                .contains("Previous version of this README can be found here");
+        assertThat(readResource("README"))
+                .contains("Closure Library is a powerful, low level JavaScript library designed")
+                .contains("for building complex and scalable web applications")
+                .contains("http://code.google.com/closure/library");
 
         assertThat(readResource("AUTHORS"))
                 .contains("Closure Library")
@@ -180,14 +183,20 @@ public class Google_closure_library_third_partyTest {
     void packagedModulesRemainInExpectedThirdPartyGroups() {
         Map<String, Long> resourceCountsByGroup = DISTRIBUTED_RESOURCES.stream()
                 .filter(resourcePath -> resourcePath.startsWith("goog/"))
+                .filter(resourcePath -> resourcePath.indexOf('/', "goog/".length()) > 0)
                 .collect(Collectors.groupingBy(
                         resourcePath -> resourcePath.substring(0, resourcePath.indexOf('/', "goog/".length())),
                         Collectors.counting()));
 
         assertThat(resourceCountsByGroup)
                 .contains(
+                        entry("goog/caja", 2L),
                         entry("goog/dojo", 3L),
-                        entry("goog/mochikit", 9L));
+                        entry("goog/jpeg_encoder", 1L),
+                        entry("goog/loremipsum", 2L),
+                        entry("goog/mochikit", 4L),
+                        entry("goog/osapi", 1L),
+                        entry("goog/silverlight", 6L));
     }
 
     private static String readResource(String resourcePath) throws IOException {
