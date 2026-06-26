@@ -132,6 +132,32 @@ public class Opentelemetry_cloudfoundry_resourcesTest {
         }
     }
 
+    @Test
+    void autoconfigurationSkipsCloudFoundryProviderWhenItIsDisabled() {
+        AtomicReference<Resource> configuredResource = new AtomicReference<>();
+        AutoConfiguredOpenTelemetrySdk configured = null;
+
+        try {
+            configured = AutoConfiguredOpenTelemetrySdk.builder()
+                    .disableShutdownHook()
+                    .setServiceClassLoader(Opentelemetry_cloudfoundry_resourcesTest.class.getClassLoader())
+                    .addPropertiesSupplier(() -> Map.of(
+                            "otel.sdk.disabled", "true",
+                            "otel.java.disabled.resource.providers", CLOUD_FOUNDRY_PROVIDER_NAME))
+                    .addResourceCustomizer((resource, config) -> {
+                        configuredResource.set(resource);
+                        return resource;
+                    })
+                    .build();
+
+            assertNoCloudFoundryAttributes(configuredResource.get());
+        } finally {
+            if (configured != null) {
+                configured.getOpenTelemetrySdk().close();
+            }
+        }
+    }
+
     private static void assertCloudFoundryAttributes(Resource resource) {
         assertThat(resource).isNotNull();
         assertThat(resource.getAttribute(CLOUDFOUNDRY_APP_ID)).isEqualTo("app-id-123");
@@ -143,6 +169,19 @@ public class Opentelemetry_cloudfoundry_resourcesTest {
         assertThat(resource.getAttribute(CLOUDFOUNDRY_PROCESS_TYPE)).isEqualTo("web");
         assertThat(resource.getAttribute(CLOUDFOUNDRY_SPACE_ID)).isEqualTo("space-id-abc");
         assertThat(resource.getAttribute(CLOUDFOUNDRY_SPACE_NAME)).isEqualTo("prod-space");
+    }
+
+    private static void assertNoCloudFoundryAttributes(Resource resource) {
+        assertThat(resource).isNotNull();
+        assertThat(resource.getAttribute(CLOUDFOUNDRY_APP_ID)).isNull();
+        assertThat(resource.getAttribute(CLOUDFOUNDRY_APP_INSTANCE_ID)).isNull();
+        assertThat(resource.getAttribute(CLOUDFOUNDRY_APP_NAME)).isNull();
+        assertThat(resource.getAttribute(CLOUDFOUNDRY_ORG_ID)).isNull();
+        assertThat(resource.getAttribute(CLOUDFOUNDRY_ORG_NAME)).isNull();
+        assertThat(resource.getAttribute(CLOUDFOUNDRY_PROCESS_ID)).isNull();
+        assertThat(resource.getAttribute(CLOUDFOUNDRY_PROCESS_TYPE)).isNull();
+        assertThat(resource.getAttribute(CLOUDFOUNDRY_SPACE_ID)).isNull();
+        assertThat(resource.getAttribute(CLOUDFOUNDRY_SPACE_NAME)).isNull();
     }
 
     private enum EmptyConfigProperties implements ConfigProperties {
