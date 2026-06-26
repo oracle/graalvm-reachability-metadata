@@ -1,0 +1,101 @@
+{
+  "add_new_library_support:2026-06-26": {
+    "timestamp": "2026-06-26T12:38:19.543301Z",
+    "library": "io.getquill:quill-jdbc_3:4.8.6",
+    "starting_commit": "13f43691de1035f650d5c579f0ce9a950a0449af",
+    "ending_commit": "a3dd935101126d6a25f3a9d5d62dfa2b8ad14419",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "4.8.6",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1425,
+          "missed": 2951,
+          "ratio": 0.32564,
+          "total": 4376
+        },
+        "line": {
+          "covered": 131,
+          "missed": 165,
+          "ratio": 0.442568,
+          "total": 296
+        },
+        "method": {
+          "covered": 168,
+          "missed": 465,
+          "ratio": 0.265403,
+          "total": 633
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 4875,
+      "issue_label": "library-new-request",
+      "library": "io.getquill:quill-jdbc_3:4.8.6",
+      "summary": "quill-jdbc is a JDBC Quill context library; meaningful tests need an actual JDBC driver/database, and the artifact only declares database drivers as test-scoped dependencies upstream.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.3.230",
+          "scope": "testImplementation",
+          "reason": "Upstream quill-jdbc tests use an in-memory H2 database for synchronous JDBC context coverage, but H2 is only a test dependency in quill-jdbc's own POM and is not transitively available to consumers."
+        }
+      ],
+      "agent_guidance": "Use an in-memory JDBC setup in the generated tests, e.g. construct an H2 DataSource or provide a test application.conf prefix for H2, create the schema/tables during test setup, then exercise H2JdbcContext/JdbcContextConfig and transactions/query execution. No external Docker database or environment variable is needed for H2.",
+      "risks": [
+        "The primary Quill query DSL is Scala 3 macro/inline based, so Java-only tests may have limited ability to cover normal quote/run usage beyond context construction, configuration, JDBC datasource behavior, and lower-level APIs.",
+        "If generated tests choose PostgreSQL/MySQL/SQL Server/Oracle paths instead of H2, they would need additional drivers and possibly Docker-backed services; H2 is the simplest documented upstream path for local meaningful JDBC coverage."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.3.230",
+          "result": "applied",
+          "target": "tests/src/io.getquill/quill-jdbc_3/4.8.6/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#4875 Support for io.getquill:quill-jdbc_3:4.8.6; label=library-new-request; body_chars=99"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 63050,
+      "output_tokens_used": 3141,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/io.getquill:quill-jdbc_3:4.8.6/library-preparation-preflight/pi-generation-2026-06-26T12-08-58-132542Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 357201,
+      "cached_input_tokens_used": 2508288,
+      "output_tokens_used": 26954,
+      "iterations": 5,
+      "cost_usd": 2.0627,
+      "generated_loc": 349,
+      "tested_library_loc": 131,
+      "metadata_entries": 8,
+      "code_coverage_percent": 44.26
+    },
+    "artifacts": {
+      "test_file": "tests/src/io.getquill/quill-jdbc_3/4.8.6/src/test/scala/io_getquill/quill_jdbc_3/Quill_jdbc_3Test.scala",
+      "metadata_file": "metadata/io.getquill/quill-jdbc_3/4.8.6/reachability-metadata.json"
+    }
+  }
+}
