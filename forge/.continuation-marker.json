@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "plexus:plexus-utils:1.0-alpha-3",
+  "issueNumber": 8603,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment variables or system properties are required. The reported javac failure is caused by a test calling ReflectionUtils.getSetter, which exists in plexus-utils 1.0.2 but not in 1.0-alpha-3; generated tests should target the 1.0-alpha-3 API surface instead of assuming newer helper methods.",
+    "applied_setup": [],
+    "current_library": "plexus:plexus-utils:1.0.2",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8603 [Automation] javac compile fails for plexus:plexus-utils:1.0-alpha-3; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "14 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 25997,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8603,
+    "library": "plexus:plexus-utils:1.0-alpha-3",
+    "model": "oca/gpt-5.5",
+    "new_version": "1.0-alpha-3",
+    "output_tokens_used": 2851,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The old artifact exposes fewer APIs than 1.0.2, so reusing existing tests unchanged can cause compile failures.",
+      "Some CLI/file utility coverage may be OS-sensitive; prefer portable temporary files and simple local commands if exercising those APIs."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/plexus:plexus-utils:1.0-alpha-3/library-preparation-preflight/pi-generation-2026-06-26T12-46-49-693915Z.log",
+    "status": "completed",
+    "summary": "plexus-utils 1.0-alpha-3 is a self-contained Java utility jar; meaningful tests can cover its string, file/path, reflection, introspection, XML, DAG, and CLI helper APIs without extra dependencies, Docker services, or environment/system properties."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "1.0-alpha-3",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8603-fails-javac-compile-plexus-plexus-utils-1.0-alpha-3-e5bba76c",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
