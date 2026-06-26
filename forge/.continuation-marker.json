@@ -1,0 +1,71 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.codehaus.plexus:plexus-archiver:2.6",
+  "issueNumber": 8600,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Before loading or referencing ZipArchiver, JarArchiver, WarArchiver, or AbstractZipArchiver, set System.setProperty(\"java.version\", \"1.8.0\") or another dotted legacy value, and restore the original value after the test if practical. Do this at the start of the relevant test class/method before any static reference to those archiver classes. The direct compile failure in the existing 2.5 tests is from using an obsolete Java7Reflector.isJava7() method; generated tests should avoid that method and use the 2.6 public API instead.",
+    "applied_setup": [],
+    "current_library": "org.codehaus.plexus:plexus-archiver:2.5",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8600 [Automation] javac compile fails for org.codehaus.plexus:plexus-archiver:2.6; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "9 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 38962,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8600,
+    "library": "org.codehaus.plexus:plexus-archiver:2.6",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.6",
+    "output_tokens_used": 4253,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Setting java.version is a compatibility workaround for a library bug and can mask behavior that differs from real JDK 25 execution.",
+      "The workaround only helps if applied before AbstractZipArchiver is initialized; applying it after class loading is too late.",
+      "Local Gradle compile, JVM run, and native-image verification remain authoritative."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.codehaus.plexus:plexus-archiver:2.6/library-preparation-preflight/pi-generation-2026-06-26T10-43-33-273019Z.log",
+    "status": "completed",
+    "summary": "No extra Maven dependency or Docker image is needed: plexus-archiver 2.6 resolves its normal runtime stack transitively. However, meaningful coverage of the primary Zip/Jar/War archiver path on JDK 25 needs test-code setup because 2.6 parses java.version as an old dotted value during AbstractZipArchiver class initialization."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.6",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8600-fails-javac-compile-org.codehaus.plexus-plexus-archiver-2.6-629336de",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
