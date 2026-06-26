@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.h2console.autoconfigure.H2ConsoleAutoConfiguration;
 import org.springframework.boot.h2console.autoconfigure.H2ConsoleProperties;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 
@@ -23,6 +24,9 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 public class Spring_boot_h2consoleTest {
 
     private final WebApplicationContextRunner contextRunner = new WebApplicationContextRunner()
+            .withConfiguration(AutoConfigurations.of(H2ConsoleAutoConfiguration.class));
+
+    private final ApplicationContextRunner nonWebContextRunner = new ApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(H2ConsoleAutoConfiguration.class));
 
     @Test
@@ -58,6 +62,15 @@ public class Spring_boot_h2consoleTest {
     @Test
     void autoConfigurationDoesNotCreateConsoleWhenConsoleIsDisabled() {
         this.contextRunner.run((context) -> {
+            assertThat(context).doesNotHaveBean(H2ConsoleProperties.class);
+            assertThat(context).doesNotHaveBean("h2Console");
+            assertThat(context).doesNotHaveBean(ServletRegistrationBean.class);
+        });
+    }
+
+    @Test
+    void enabledConsoleDoesNotCreateRegistrationForNonWebApplication() {
+        this.nonWebContextRunner.withPropertyValues("spring.h2.console.enabled=true").run((context) -> {
             assertThat(context).doesNotHaveBean(H2ConsoleProperties.class);
             assertThat(context).doesNotHaveBean("h2Console");
             assertThat(context).doesNotHaveBean(ServletRegistrationBean.class);
