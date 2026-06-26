@@ -192,6 +192,16 @@ public class Opentelemetry_azure_resourcesTest {
     }
 
     @Test
+    void metadataBackedResourceProvidersRunAfterEnvironmentResourceProviders() {
+        AzureAppServiceResourceProvider environmentProvider = new AzureAppServiceResourceProvider();
+        AzureVmResourceProvider vmProvider = new AzureVmResourceProvider();
+        AzureAksResourceProvider aksProvider = new AzureAksResourceProvider();
+
+        assertThat(vmProvider.order()).isGreaterThan(environmentProvider.order());
+        assertThat(aksProvider.order()).isEqualTo(vmProvider.order());
+    }
+
+    @Test
     void cloudResourceProvidersSkipWhenAnotherCloudProviderAlreadyExists() {
         Map<String, String> env = Map.of("WEBSITE_SITE_NAME", "app");
         AzureAppServiceResourceProvider provider = new AzureAppServiceResourceProvider(env);
