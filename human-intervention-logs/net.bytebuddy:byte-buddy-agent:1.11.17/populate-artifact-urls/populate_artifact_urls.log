@@ -1,0 +1,1043 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f040c-f1fb-7841-9c74-a8c592da8e47
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: net.bytebuddy:byte-buddy-agent:1.11.17
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [1.11.17].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142/metadata/net.bytebuddy/byte-buddy-agent/index.json
+- Entry selector: "metadata-version" = "1.11.17"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 1.11.17
+- Entry metadata-version: 1.11.17
+- Entry test-version: 1.11.17
+- Entry tested-versions: [1.11.17]
+codex
+I’ll update the metadata entry directly, but first I’m going to verify the Byte Buddy Agent artifact links against Maven Central and the upstream repository/tag so the templated URLs are not stale.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language|tested-versions|test-version' metadata/net.bytebuddy/byte-buddy-agent/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142
+4:    "metadata-version" : "1.11.17",
+5:    "tested-versions" : [
+13:    "metadata-version" : "1.10.9",
+14:    "source-code-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-sources.jar",
+15:    "repository-url" : "https://github.com/raphw/byte-buddy",
+16:    "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-agent/src/test/java",
+17:    "documentation-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-javadoc.jar",
+18:    "description" : "Byte Buddy Agent provides APIs and a Java agent for attaching instrumentation to the current JVM or to another running JVM. It is used to install Java instrumentation at runtime so applications and frameworks can redefine, rebase, or transform classes through Byte Buddy.",
+19:    "tested-versions" : [
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/net.bytebuddy/byte-buddy-agent/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.11.17",
+    "tested-versions" : [
+      "1.11.17"
+    ],
+    "allowed-packages" : [
+      "net.bytebuddy.agent"
+    ]
+  },
+  {
+    "metadata-version" : "1.10.9",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-sources.jar",
+    "repository-url" : "https://github.com/raphw/byte-buddy",
+    "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-agent/src/test/java",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-javadoc.jar",
+    "description" : "Byte Buddy Agent provides APIs and a Java agent for attaching instrumentation to the current JVM or to another running JVM. It is used to install Java instrumentation at runtime so applications and frameworks can redefine, rebase, or transform classes through Byte Buddy.",
+    "tested-versions" : [
+      "1.10.9",
+      "1.10.10",
+      "1.10.11",
+      "1.10.12",
+      "1.10.13",
+      "1.10.14",
+      "1.10.15",
+      "1.10.16",
+      "1.10.17",
+      "1.10.18",
+      "1.10.19",
+      "1.10.20",
+      "1.10.21",
+      "1.10.22",
+      "1.11.0",
+      "1.11.1",
+      "1.11.2",
+      "1.11.3",
+      "1.11.4",
+      "1.11.5",
+      "1.11.6",
+      "1.11.7",
+      "1.11.8",
+      "1.11.9",
+      "1.11.10",
+      "1.11.11",
+      "1.11.12",
+      "1.11.13",
+      "1.11.14",
+      "1.11.15",
+      "1.11.16"
+    ],
+    "allowed-packages" : [
+      "net.bytebuddy.agent"
+    ]
+  }
+]
+
+web search: 
+web search: Maven Central net.bytebuddy byte-buddy-agent 1.11.17 sources javadoc tests jar
+web search: 
+web search: https://github.com/raphw/byte-buddy/tree/byte-buddy-1.11.17/byte-buddy-agent/src/test/java
+codex
+The existing `1.10.9` entry already has a good pattern for this artifact, but the requested entry is missing all fields. I’m checking whether Maven publishes test artifacts for `1.11.17`; if not, I’ll use the versioned GitHub tag for tests.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/1.11.17/byte-buddy-agent-1.11.17.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>byte-buddy-parent</artifactId>
+        <groupId>net.bytebuddy</groupId>
+        <version>1.11.17</version>
+    </parent>
+
+    <artifactId>byte-buddy-agent</artifactId>
+    <packaging>jar</packaging>
+
+    <properties>
+        <bytebuddy.agent>net.bytebuddy.agent.Installer</bytebuddy.agent>
+        <attach.package.sun>com.sun.tools.attach</attach.package.sun>
+        <attach.package.ibm>com.ibm.tools.attach</attach.package.ibm>
+        <packages.list>net.bytebuddy.agent</packages.list>
+        <native.compiler.32>i686-w64-mingw32-gcc</native.compiler.32>
+        <native.compiler.64>x86_64-w64-mingw32-gcc</native.compiler.64>
+    </properties>
+
+    <name>Byte Buddy agent</name>
+    <description>The Byte Buddy agent offers convenience for attaching an agent to the local or a remote VM.</description>
+
+    <!--
+      The JNA dependency can be excluded safely. Byte Buddy will safely discover the
+      non-availability and not use the corresponding virtual machine implementation. The
+      implementation requires Java 7+ and is deactivated on Java 6 VMs.
+    -->
+
+    <dependencies>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>${jna.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna-platform</artifactId>
+            <version>${jna.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${version.junit}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${version.mockito}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>net.bytebuddy</groupId>
+                    <artifactId>byte-buddy</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>net.bytebuddy</groupId>
+                    <artifactId>byte-buddy-agent</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- Include last version of Byte Buddy manually. -->
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>1.11.16</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>..</directory>
+                <targetPath>META-INF</targetPath>
+                <filtering>true</filtering>
+                <includes>
+                    <include>LICENSE</include>
+                    <include>NOTICE</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+            <!-- Create manifest file which is required for creating an OSGi bundle. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>${version.plugin.jar}</version>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+            <!-- Specify OSGi packaging and agent manifest headers. -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>${version.plugin.bundle}</version>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <instructions>
+                        <Multi-Release>true</Multi-Release>
+                        <Premain-Class>${bytebuddy.agent}</Premain-Class>
+                        <Agent-Class>${bytebuddy.agent}</Agent-Class>
+                        <Can-Redefine-Classes>true</Can-Redefine-Classes>
+                        <Can-Retransform-Classes>true</Can-Retransform-Classes>
+                        <Can-Set-Native-Method-Prefix>true</Can-Set-Native-Method-Prefix>
+                        <Import-Package>
+                            ${attach.package.sun};resolution:="optional",
+                            ${attach.package.ibm};resolution:="optional"
+                        </Import-Package>
+                        <Export-Package>${packages.list}</Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <!-- Create a module-info.class file. -->
+            <plugin>
+                <groupId>codes.rafael.modulemaker</groupId>
+                <artifactId>modulemaker-maven-plugin</artifactId>
+                <version>${version.plugin.modulemaker}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm</artifactId>
+                        <version>${version.asm}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>inject-module</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <name>net.bytebuddy.agent</name>
+                    <version>${project.version}</version>
+                    <multirelease>true</multirelease>
+                    <packages>${packages.list}</packages>
+                    <exports>${packages.list}</exports>
+                    <requires>java.instrument</requires>
+                    <static-requires>
+                        jdk.attach,
+                        com.sun.jna,
+                        com.sun.jna.platform
+                    </static-requires>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>native-compile</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>${version.plugin.exec}</version>
+                        <executions>
+                            <execution>
+                                <id>compile-32</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>${native.compiler.32}</executable>
+                                    <arguments>
+                                        <argument>-shared</argument>
+                                        <argument>-o</argument>
+                                        <argument>${project.basedir}/src/main/resources/win32-x86/attach_hotspot_windows.dll</argument>
+                                        <argument>${project.basedir}/src/main/c/attach_hotspot_windows.c</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>compile-64</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>${native.compiler.64}</executable>
+                                    <arguments>
+                                        <argument>-shared</argument>
+                                        <argument>-o</argument>
+                                        <argument>${project.basedir}/src/main/resources/win32-x86-64/attach_hotspot_windows.dll</argument>
+                                        <argument>${project.basedir}/src/main/c/attach_hotspot_windows.c</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>checks</id>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/1.11.17/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: net/bytebuddy/byte-buddy-agent/1.11.17</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>net/bytebuddy/byte-buddy-agent/1.11.17</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="byte-buddy-agent-1.11.17-javadoc.jar" title="byte-buddy-agent-1.11.17-javadoc.jar">byte-buddy-agent-1.11.17-javadoc.jar</a>              2021-09-22 18:18    362944      
+<a href="byte-buddy-agent-1.11.17-javadoc.jar.asc" title="byte-buddy-agent-1.11.17-javadoc.jar.asc">byte-buddy-agent-1.11.17-javadoc.jar.asc</a>          2021-09-22 18:18       833      
+<a href="byte-buddy-agent-1.11.17-javadoc.jar.asc.md5" title="byte-buddy-agent-1.11.17-javadoc.jar.asc.md5">byte-buddy-agent-1.11.17-javadoc.jar.asc.md5</a>      2021-09-22 18:18        32      
+<a href="byte-buddy-agent-1.11.17-javadoc.jar.asc.sha1" title="byte-buddy-agent-1.11.17-javadoc.jar.asc.sha1">byte-buddy-agent-1.11.17-javadoc.jar.asc.sha1</a>     2021-09-22 18:18        40      
+<a href="byte-buddy-agent-1.11.17-javadoc.jar.asc.sha256" title="byte-buddy-agent-1.11.17-javadoc.jar.asc.sha256">byte-buddy-agent-1.11.17-javadoc.jar.asc.sha2...</a>  2021-09-22 18:18        64      
+<a href="byte-buddy-agent-1.11.17-javadoc.jar.asc.sha512" title="byte-buddy-agent-1.11.17-javadoc.jar.asc.sha512">byte-buddy-agent-1.11.17-javadoc.jar.asc.sha5...</a>  2021-09-22 18:18       128      
+<a href="byte-buddy-agent-1.11.17-javadoc.jar.md5" title="byte-buddy-agent-1.11.17-javadoc.jar.md5">byte-buddy-agent-1.11.17-javadoc.jar.md5</a>          2021-09-22 18:18        32      
+<a href="byte-buddy-agent-1.11.17-javadoc.jar.sha1" title="byte-buddy-agent-1.11.17-javadoc.jar.sha1">byte-buddy-agent-1.11.17-javadoc.jar.sha1</a>         2021-09-22 18:18        40      
+<a href="byte-buddy-agent-1.11.17-sources.jar" title="byte-buddy-agent-1.11.17-sources.jar">byte-buddy-agent-1.11.17-sources.jar</a>              2021-09-22 18:18    199711      
+<a href="byte-buddy-agent-1.11.17-sources.jar.asc" title="byte-buddy-agent-1.11.17-sources.jar.asc">byte-buddy-agent-1.11.17-sources.jar.asc</a>          2021-09-22 18:18       833      
+<a href="byte-buddy-agent-1.11.17-sources.jar.asc.md5" title="byte-buddy-agent-1.11.17-sources.jar.asc.md5">byte-buddy-agent-1.11.17-sources.jar.asc.md5</a>      2021-09-22 18:18        32      
+<a href="byte-buddy-agent-1.11.17-sources.jar.asc.sha1" title="byte-buddy-agent-1.11.17-sources.jar.asc.sha1">byte-buddy-agent-1.11.17-sources.jar.asc.sha1</a>     2021-09-22 18:18        40      
+<a href="byte-buddy-agent-1.11.17-sources.jar.asc.sha256" title="byte-buddy-agent-1.11.17-sources.jar.asc.sha256">byte-buddy-agent-1.11.17-sources.jar.asc.sha2...</a>  2021-09-22 18:18        64      
+<a href="byte-buddy-agent-1.11.17-sources.jar.asc.sha512" title="byte-buddy-agent-1.11.17-sources.jar.asc.sha512">byte-buddy-agent-1.11.17-sources.jar.asc.sha5...</a>  2021-09-22 18:18       128      
+<a href="byte-buddy-agent-1.11.17-sources.jar.md5" title="byte-buddy-agent-1.11.17-sources.jar.md5">byte-buddy-agent-1.11.17-sources.jar.md5</a>          2021-09-22 18:18        32      
+<a href="byte-buddy-agent-1.11.17-sources.jar.sha1" title="byte-buddy-agent-1.11.17-sources.jar.sha1">byte-buddy-agent-1.11.17-sources.jar.sha1</a>         2021-09-22 18:18        40      
+<a href="byte-buddy-agent-1.11.17.jar" title="byte-buddy-agent-1.11.17.jar">byte-buddy-agent-1.11.17.jar</a>                      2021-09-22 18:18    252345      
+<a href="byte-buddy-agent-1.11.17.jar.asc" title="byte-buddy-agent-1.11.17.jar.asc">byte-buddy-agent-1.11.17.jar.asc</a>                  2021-09-22 18:18       833      
+<a href="byte-buddy-agent-1.11.17.jar.asc.md5" title="byte-buddy-agent-1.11.17.jar.asc.md5">byte-buddy-agent-1.11.17.jar.asc.md5</a>              2021-09-22 18:18        32      
+<a href="byte-buddy-agent-1.11.17.jar.asc.sha1" title="byte-buddy-agent-1.11.17.jar.asc.sha1">byte-buddy-agent-1.11.17.jar.asc.sha1</a>             2021-09-22 18:18        40      
+<a href="byte-buddy-agent-1.11.17.jar.asc.sha256" title="byte-buddy-agent-1.11.17.jar.asc.sha256">byte-buddy-agent-1.11.17.jar.asc.sha256</a>           2021-09-22 18:18        64      
+<a href="byte-buddy-agent-1.11.17.jar.asc.sha512" title="byte-buddy-agent-1.11.17.jar.asc.sha512">byte-buddy-agent-1.11.17.jar.asc.sha512</a>           2021-09-22 18:18       128      
+<a href="byte-buddy-agent-1.11.17.jar.md5" title="byte-buddy-agent-1.11.17.jar.md5">byte-buddy-agent-1.11.17.jar.md5</a>                  2021-09-22 18:18        32      
+<a href="byte-buddy-agent-1.11.17.jar.sha1" title="byte-buddy-agent-1.11.17.jar.sha1">byte-buddy-agent-1.11.17.jar.sha1</a>                 2021-09-22 18:18        40      
+<a href="byte-buddy-agent-1.11.17.pom" title="byte-buddy-agent-1.11.17.pom">byte-buddy-agent-1.11.17.pom</a>                      2021-09-22 18:18     10886      
+<a href="byte-buddy-agent-1.11.17.pom.asc" title="byte-buddy-agent-1.11.17.pom.asc">byte-buddy-agent-1.11.17.pom.asc</a>                  2021-09-22 18:18       833      
+<a href="byte-buddy-agent-1.11.17.pom.asc.md5" title="byte-buddy-agent-1.11.17.pom.asc.md5">byte-buddy-agent-1.11.17.pom.asc.md5</a>              2021-09-22 18:18        32      
+<a href="byte-buddy-agent-1.11.17.pom.asc.sha1" title="byte-buddy-agent-1.11.17.pom.asc.sha1">byte-buddy-agent-1.11.17.pom.asc.sha1</a>             2021-09-22 18:18        40      
+<a href="byte-buddy-agent-1.11.17.pom.asc.sha256" title="byte-buddy-agent-1.11.17.pom.asc.sha256">byte-buddy-agent-1.11.17.pom.asc.sha256</a>           2021-09-22 18:18        64      
+<a href="byte-buddy-agent-1.11.17.pom.asc.sha512" title="byte-buddy-agent-1.11.17.pom.asc.sha512">byte-buddy-agent-1.11.17.pom.asc.sha512</a>           2021-09-22 18:18       128      
+<a href="byte-buddy-agent-1.11.17.pom.md5" title="byte-buddy-agent-1.11.17.pom.md5">byte-buddy-agent-1.11.17.pom.md5</a>                  2021-09-22 18:18        32      
+<a href="byte-buddy-agent-1.11.17.pom.sha1" title="byte-buddy-agent-1.11.17.pom.sha1">byte-buddy-agent-1.11.17.pom.sha1</a>                 2021-09-22 18:18        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/1.11.17/byte-buddy-agent-1.11.17-sources.jar \\
+  https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/1.11.17/byte-buddy-agent-1.11.17-javadoc.jar \\
+  https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/1.11.17/byte-buddy-agent-1.11.17-tests.jar \\
+  https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/1.11.17/byte-buddy-agent-1.11.17-test-sources.jar \\
+  https://github.com/raphw/byte-buddy/tree/byte-buddy-1.11.17/byte-buddy-agent/src/test/java \\
+  https://github.com/raphw/byte-buddy/tree/byte-buddy-1.11.17/byte-buddy-agent/src/main/java; do
+  printf '%s -> ' \""'$url"
+  curl -L -s -o /dev/null -w '"'%{http_code}\\n' \""'$url"
+done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142
+ succeeded in 2102ms:
+200
+https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/1.11.17/byte-buddy-agent-1.11.17-tests.jar -> 404
+https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/1.11.17/byte-buddy-agent-1.11.17-test-sources.jar -> 404
+https://github.com/raphw/byte-buddy/tree/byte-buddy-1.11.17/byte-buddy-agent/src/test/java -> 200
+https://github.com/raphw/byte-buddy/tree/byte-buddy-1.11.17/byte-buddy-agent/src/main/java -> 200
+
+codex
+Maven Central publishes the `sources` and `javadoc` jars for `1.11.17`, but no `tests` or `test-sources` classifier. The versioned GitHub test directory returns 200, so that is the correct fallback for `test-code-url`.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/1.11.17/byte-buddy-agent-1.11.17.pom | rg -n '<url>|<scm>|</scm>|<connection>|<developerConnection>|<tag>' -C 2" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142
+ exited 1 in 0ms:
+exec
+/usr/bin/bash -lc "curl -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/raphw/byte-buddy/tree/byte-buddy-1.11.17" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-parent/1.11.17/byte-buddy-parent-1.11.17.pom | rg -n '<url>|<scm>|</scm>|<connection>|<developerConnection>|<tag>' -C 2" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142
+ succeeded in 0ms:
+15-        The parent artifact contains configuration information that concern all modules.
+16-    </description>
+17:    <url>https://bytebuddy.net</url>
+18-
+19-    <!--
+--
+107-        <license>
+108-            <name>Apache License, Version 2.0</name>
+109:            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+110-            <distribution>repo</distribution>
+111-            <comments>A business-friendly OSS license</comments>
+--
+118-            <name>Rafael Winterhalter</name>
+119-            <email>rafael.wth@gmail.com</email>
+120:            <url>https://rafael.codes</url>
+121-            <roles>
+122-                <role>developer</role>
+--
+128-    <issueManagement>
+129-        <system>github.com</system>
+130:        <url>https://github.com/raphw/byte-buddy/issues</url>
+131-    </issueManagement>
+132-
+133:    <scm>
+134:        <connection>scm:git:${repository.url}</connection>
+135:        <developerConnection>scm:git:${repository.url}</developerConnection>
+136:        <url>${repository.url}</url>
+137:        <tag>byte-buddy-1.11.17</tag>
+138:    </scm>
+139-
+140-    <dependencies>
+--
+376-        <snapshotRepository>
+377-            <id>central</id>
+378:            <url>${nexus.url}/content/repositories/snapshots</url>
+379-        </snapshotRepository>
+380-        <repository>
+381-            <id>central</id>
+382:            <url>${nexus.url}/service/local/staging/deploy/maven2</url>
+383-        </repository>
+384-    </distributionManagement>
+
+ succeeded in 1079ms:
+200 https://github.com/raphw/byte-buddy/tree/byte-buddy-1.11.17
+
+codex
+The parent POM confirms the canonical SCM root and release tag, which matches the existing repository convention in this file. I’m going to add only the missing fields to the `1.11.17` object and leave the older entry unchanged.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/net.bytebuddy/byte-buddy-agent/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-parent/1.11.17/byte-buddy-parent-1.11.17.pom | rg -n '<repository.url>|<name>Byte Buddy|<description>' -C 2" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142
+ succeeded in 0ms:
+10-    <inceptionYear>2014</inceptionYear>
+11-
+12:    <name>Byte Buddy (parent)</name>
+13:    <description>
+14-        Byte Buddy is a Java library for creating Java classes at run time.
+15-        The parent artifact contains configuration information that concern all modules.
+--
+101-        <spotbugs.skip>false</spotbugs.skip>
+102-        <jacoco.skip>false</jacoco.skip>
+103:        <repository.url>git@github.com:raphw/byte-buddy.git</repository.url>
+104-    </properties>
+105-
+
+codex
+I found no indication this artifact is Kotlin, Groovy, or Scala-specific; it is a Java agent module, so I’m leaving `language` absent as requested.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142/metadata/net.bytebuddy/byte-buddy-agent/index.json
+diff --git a/metadata/net.bytebuddy/byte-buddy-agent/index.json b/metadata/net.bytebuddy/byte-buddy-agent/index.json
+index 6d58727730722b8072dc93bbabbf27a065207938..37e70d9b83c17fcb20e6313bbe2f01afc6983c09
+--- a/metadata/net.bytebuddy/byte-buddy-agent/index.json
++++ b/metadata/net.bytebuddy/byte-buddy-agent/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.11.17",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-sources.jar",
++    "repository-url" : "https://github.com/raphw/byte-buddy",
++    "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-agent/src/test/java",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-javadoc.jar",
++    "description" : "Byte Buddy Agent provides APIs and a Java agent for attaching instrumentation to the current JVM or to another running JVM. It is used to install Java instrumentation at runtime so applications and frameworks can redefine, rebase, or transform classes through Byte Buddy.",
+     "tested-versions" : [
+       "1.11.17"
+     ],
+
+diff --git a/metadata/net.bytebuddy/byte-buddy-agent/index.json b/metadata/net.bytebuddy/byte-buddy-agent/index.json
+index 6d58727730722b8072dc93bbabbf27a065207938..37e70d9b83c17fcb20e6313bbe2f01afc6983c09
+--- a/metadata/net.bytebuddy/byte-buddy-agent/index.json
++++ b/metadata/net.bytebuddy/byte-buddy-agent/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.11.17",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-sources.jar",
++    "repository-url" : "https://github.com/raphw/byte-buddy",
++    "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-agent/src/test/java",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-javadoc.jar",
++    "description" : "Byte Buddy Agent provides APIs and a Java agent for attaching instrumentation to the current JVM or to another running JVM. It is used to install Java instrumentation at runtime so applications and frameworks can redefine, rebase, or transform classes through Byte Buddy.",
+     "tested-versions" : [
+       "1.11.17"
+     ],
+
+codex
+The JSON is patched. I’m doing a syntax check and the targeted metadata validation now, since this file feeds repository validation.
+exec
+/usr/bin/bash -lc 'jq empty metadata/net.bytebuddy/byte-buddy-agent/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/net.bytebuddy/byte-buddy-agent/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142
+ succeeded in 0ms:
+diff --git i/metadata/net.bytebuddy/byte-buddy-agent/index.json w/metadata/net.bytebuddy/byte-buddy-agent/index.json
+index 6d58727730..37e70d9b83 100644
+--- i/metadata/net.bytebuddy/byte-buddy-agent/index.json
++++ w/metadata/net.bytebuddy/byte-buddy-agent/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.11.17",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-sources.jar",
++    "repository-url" : "https://github.com/raphw/byte-buddy",
++    "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-agent/src/test/java",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-javadoc.jar",
++    "description" : "Byte Buddy Agent provides APIs and a Java agent for attaching instrumentation to the current JVM or to another running JVM. It is used to install Java instrumentation at runtime so applications and frameworks can redefine, rebase, or transform classes through Byte Buddy.",
+     "tested-versions" : [
+       "1.11.17"
+     ],
+
+diff --git a/metadata/net.bytebuddy/byte-buddy-agent/index.json b/metadata/net.bytebuddy/byte-buddy-agent/index.json
+index 6d58727730722b8072dc93bbabbf27a065207938..37e70d9b83c17fcb20e6313bbe2f01afc6983c09
+--- a/metadata/net.bytebuddy/byte-buddy-agent/index.json
++++ b/metadata/net.bytebuddy/byte-buddy-agent/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.11.17",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-sources.jar",
++    "repository-url" : "https://github.com/raphw/byte-buddy",
++    "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-agent/src/test/java",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-javadoc.jar",
++    "description" : "Byte Buddy Agent provides APIs and a Java agent for attaching instrumentation to the current JVM or to another running JVM. It is used to install Java instrumentation at runtime so applications and frameworks can redefine, rebase, or transform classes through Byte Buddy.",
+     "tested-versions" : [
+       "1.11.17"
+     ],
+
+codex
+`jq` accepted the edited file, and the diff is limited to the missing fields on the `1.11.17` entry. I’m running the targeted Gradle metadata check next.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=net.bytebuddy:byte-buddy-agent:1.11.17 --stacktrace' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142
+diff --git a/metadata/net.bytebuddy/byte-buddy-agent/index.json b/metadata/net.bytebuddy/byte-buddy-agent/index.json
+index 6d58727730722b8072dc93bbabbf27a065207938..37e70d9b83c17fcb20e6313bbe2f01afc6983c09
+--- a/metadata/net.bytebuddy/byte-buddy-agent/index.json
++++ b/metadata/net.bytebuddy/byte-buddy-agent/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.11.17",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-sources.jar",
++    "repository-url" : "https://github.com/raphw/byte-buddy",
++    "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-agent/src/test/java",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-javadoc.jar",
++    "description" : "Byte Buddy Agent provides APIs and a Java agent for attaching instrumentation to the current JVM or to another running JVM. It is used to install Java instrumentation at runtime so applications and frameworks can redefine, rebase, or transform classes through Byte Buddy.",
+     "tested-versions" : [
+       "1.11.17"
+     ],
+
+ exited 1 in 3512ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for net.bytebuddy:byte-buddy-agent:1.11.17: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142/metadata/net.bytebuddy/byte-buddy-agent/1.11.17/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - net.bytebuddy:byte-buddy-agent:1.11.17: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142/metadata/net.bytebuddy/byte-buddy-agent/1.11.17/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - net.bytebuddy:byte-buddy-agent:1.11.17: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142/metadata/net.bytebuddy/byte-buddy-agent/1.11.17/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 3s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The targeted Gradle metadata check fails before URL fields matter because the `1.11.17` metadata directory has no `reachability-metadata.json`. I’ll still run the narrower JSON/index checks I can find, and I’ll report that validation blocker explicitly.
+exec
+/usr/bin/bash -lc 'find metadata/net.bytebuddy/byte-buddy-agent -maxdepth 3 -type f -print | sort' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142
+ succeeded in 0ms:
+metadata/net.bytebuddy/byte-buddy-agent/1.10.9/reachability-metadata.json
+metadata/net.bytebuddy/byte-buddy-agent/index.json
+
+exec
+/usr/bin/bash -lc "./gradlew tasks --all | rg -n 'Index|index|metadata|Metadata|json|Json|check'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142
+diff --git a/metadata/net.bytebuddy/byte-buddy-agent/index.json b/metadata/net.bytebuddy/byte-buddy-agent/index.json
+index 6d58727730722b8072dc93bbabbf27a065207938..37e70d9b83c17fcb20e6313bbe2f01afc6983c09
+--- a/metadata/net.bytebuddy/byte-buddy-agent/index.json
++++ b/metadata/net.bytebuddy/byte-buddy-agent/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.11.17",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-sources.jar",
++    "repository-url" : "https://github.com/raphw/byte-buddy",
++    "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-agent/src/test/java",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-javadoc.jar",
++    "description" : "Byte Buddy Agent provides APIs and a Java agent for attaching instrumentation to the current JVM or to another running JVM. It is used to install Java instrumentation at runtime so applications and frameworks can redefine, rebase, or transform classes through Byte Buddy.",
+     "tested-versions" : [
+       "1.11.17"
+     ],
+
+ succeeded in 1689ms:
+12:GraalVM Reachability Metadata TCK
+18:Tasks runnable from root project 'reachability-metadata'
+39:artifactTransforms - Displays the Artifact Transforms that can be executed in root project 'reachability-metadata'.
+40:buildEnvironment - Displays all buildscript dependencies declared in root project 'reachability-metadata'.
+41:dependencies - Displays all dependencies declared in root project 'reachability-metadata'.
+42:dependencyInsight - Displays the insight into a specific dependency in root project 'reachability-metadata'.
+45:outgoingVariants - Displays the outgoing variants of root project 'reachability-metadata'.
+46:projects - Displays the sub-projects of root project 'reachability-metadata'.
+47:properties - Displays the properties of root project 'reachability-metadata'.
+48:resolvableConfigurations - Displays the configurations that can be resolved in root project 'reachability-metadata'.
+49:tasks - Displays the tasks runnable from root project 'reachability-metadata'.
+51:Metadata tasks
+53:addLibraryAsLatestMetadataIndexJson - Marks given coordinates as latest in metadata/group/artifact/index.json
+54:addLibraryMetadataIndexJson - Adds given coordinates to metadata/group/artifact/index.json without changing the latest entry
+57:checkAllowedDockerImages - Returns list of allowed docker images
+58:checkMetadataFiles - Checks content of metadata files for matching coordinates
+59:contribute - Generates metadata and prepares pull request for contibuting on metadata repository based on provided tests.
+60:discoverArtifactMetadata - Uses a coding agent command to discover artifact metadata for a single coordinate and stores it under build/.
+67:generateChangedIndexFileCoordinatesList - Returns a list of changed coordinates for validation based on git diff
+68:generateChangedMetadataTestMatrix - Returns matrix definition populated with changed coordinates and batched tested versions from metadata index files
+73:generateLibraryStats - Generates local library stats and updates stats/<group>/<artifact>/<metadata-version>/stats.json
+76:generateMetadata - Generates metadata based on provided tests.
+83:mergeNativeTraceMetadata - Merges runtime metadata trace output directories with native-image-utils generate
+84:populateArtifactURLs - Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.
+86:scaffold - Creates a metadata and test scaffold for the given coordindates
+87:splitTestOnlyMetadata - Moves test-only entries from library reachability metadata into test resources metadata.
+91:package - Packages current repository to 'build/graalvm-reachability-metadata-1.0.0-SNAPSHOT.zip'
+95:check - Runs all checks.
+96:checkDocLinks - Verifies that every repo-local link in Markdown documentation resolves
+97:checkstyle - Runs checkstyle on all subprojects
+98:diff - Tests GraalVM Reflection Metadata that was changed between 'baseCommit' and 'newCommit'
+108:testInfra - Runs clean and pullAllowedDockerImages, then runs (validateIndexFiles, checkstyle, spotlessCheck, checkMetadataFiles, fetchExistingLibrariesWithNewerVersions, test, jacocoTestReport, listLibraryJars, generateDynamicAccessReport, generateDynamicAccessCoverageReport, generateLibraryStats, listTopCoordinatesByMetric, generateTopCoordinatesByMetricMatrix, listCoordinates, generateDependencyGraph, splitTestOnlyMetadata) concurrently with isolated logs for a single coordinate.
+110:validateIndexFiles - Checks content of index.json files for matching coordinates or files
+111:validateLibraryStats - Validates exploded stats/*.json files against the committed JSON schema
+129:spotlessJson
+130:spotlessJsonApply
+131:spotlessJsonCheck
+132:spotlessJsonDiagnose
+147:[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142/build/reports/problems/problems-report.html
+
+codex
+`metadata/net.bytebuddy/byte-buddy-agent/1.11.17/` indeed has no metadata file, so the full coordinate metadata check is outside the scope of this URL update. I found `validateIndexFiles`, which is the right narrower check for `index.json`, and I’m running that now.
+exec
+/usr/bin/bash -lc './gradlew validateIndexFiles -Pcoordinates=net.bytebuddy:byte-buddy-agent:1.11.17 --stacktrace' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142
+diff --git a/metadata/net.bytebuddy/byte-buddy-agent/index.json b/metadata/net.bytebuddy/byte-buddy-agent/index.json
+index 6d58727730722b8072dc93bbabbf27a065207938..37e70d9b83c17fcb20e6313bbe2f01afc6983c09
+--- a/metadata/net.bytebuddy/byte-buddy-agent/index.json
++++ b/metadata/net.bytebuddy/byte-buddy-agent/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.11.17",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-sources.jar",
++    "repository-url" : "https://github.com/raphw/byte-buddy",
++    "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-agent/src/test/java",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-javadoc.jar",
++    "description" : "Byte Buddy Agent provides APIs and a Java agent for attaching instrumentation to the current JVM or to another running JVM. It is used to install Java instrumentation at runtime so applications and frameworks can redefine, rebase, or transform classes through Byte Buddy.",
+     "tested-versions" : [
+       "1.11.17"
+     ],
+
+ succeeded in 942ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :validateIndexFiles
+✅ metadata/net.bytebuddy/byte-buddy-agent/index.json: Valid
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 918ms
+9 actionable tasks: 1 executed, 8 up-to-date
+
+exec
+/usr/bin/bash -lc "nl -ba metadata/net.bytebuddy/byte-buddy-agent/index.json | sed -n '1,28p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "1.11.17",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/raphw/byte-buddy",
+     7	    "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-agent/src/test/java",
+     8	    "documentation-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-javadoc.jar",
+     9	    "description" : "Byte Buddy Agent provides APIs and a Java agent for attaching instrumentation to the current JVM or to another running JVM. It is used to install Java instrumentation at runtime so applications and frameworks can redefine, rebase, or transform classes through Byte Buddy.",
+    10	    "tested-versions" : [
+    11	      "1.11.17"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "net.bytebuddy.agent"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "1.10.9",
+    19	    "source-code-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-sources.jar",
+    20	    "repository-url" : "https://github.com/raphw/byte-buddy",
+    21	    "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-agent/src/test/java",
+    22	    "documentation-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-javadoc.jar",
+    23	    "description" : "Byte Buddy Agent provides APIs and a Java agent for attaching instrumentation to the current JVM or to another running JVM. It is used to install Java instrumentation at runtime so applications and frameworks can redefine, rebase, or transform classes through Byte Buddy.",
+    24	    "tested-versions" : [
+    25	      "1.10.9",
+    26	      "1.10.10",
+    27	      "1.10.11",
+    28	      "1.10.12",
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142
+diff --git a/metadata/net.bytebuddy/byte-buddy-agent/index.json b/metadata/net.bytebuddy/byte-buddy-agent/index.json
+index 6d58727730722b8072dc93bbabbf27a065207938..37e70d9b83c17fcb20e6313bbe2f01afc6983c09
+--- a/metadata/net.bytebuddy/byte-buddy-agent/index.json
++++ b/metadata/net.bytebuddy/byte-buddy-agent/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.11.17",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-sources.jar",
++    "repository-url" : "https://github.com/raphw/byte-buddy",
++    "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-agent/src/test/java",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-javadoc.jar",
++    "description" : "Byte Buddy Agent provides APIs and a Java agent for attaching instrumentation to the current JVM or to another running JVM. It is used to install Java instrumentation at runtime so applications and frameworks can redefine, rebase, or transform classes through Byte Buddy.",
+     "tested-versions" : [
+       "1.11.17"
+     ],
+
+ succeeded in 339ms:
+ M metadata/net.bytebuddy/byte-buddy-agent/index.json
+
+web search: 
+web search: https://github.com/raphw/byte-buddy/tree/byte-buddy-1.11.17/byte-buddy-agent/src/test/java
+web search: 
+web search: repo.maven.apache.org maven2 net bytebuddy byte-buddy-agent 1.11.17 sources javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy-agent/1.11.17/
+web search: 
+web search: https://github.com/raphw/byte-buddy
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142/metadata/net.bytebuddy/byte-buddy-agent/index.json:5) for `metadata-version` `1.11.17`.
+
+I filled `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and the two-sentence `description`; I left `language` absent because this is not a Kotlin/Groovy/Scala-specific library. Maven Central has the `1.11.17` source and javadoc jars, and the versioned GitHub tag exposes the `byte-buddy-agent/src/test/java` test directory. ([repo1.maven.org](https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy-agent/1.11.17/))
+
+Verification:
+- `jq empty metadata/net.bytebuddy/byte-buddy-agent/index.json` passed.
+- `./gradlew validateIndexFiles -Pcoordinates=net.bytebuddy:byte-buddy-agent:1.11.17 --stacktrace` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=net.bytebuddy:byte-buddy-agent:1.11.17 --stacktrace` failed because `metadata/net.bytebuddy/byte-buddy-agent/1.11.17/reachability-metadata.json` is missing, which is outside this URL-field update.
+diff --git a/metadata/net.bytebuddy/byte-buddy-agent/index.json b/metadata/net.bytebuddy/byte-buddy-agent/index.json
+index 6d58727730722b8072dc93bbabbf27a065207938..37e70d9b83c17fcb20e6313bbe2f01afc6983c09
+--- a/metadata/net.bytebuddy/byte-buddy-agent/index.json
++++ b/metadata/net.bytebuddy/byte-buddy-agent/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.11.17",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-sources.jar",
++    "repository-url" : "https://github.com/raphw/byte-buddy",
++    "test-code-url" : "https://github.com/raphw/byte-buddy/tree/byte-buddy-$version$/byte-buddy-agent/src/test/java",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/net/bytebuddy/byte-buddy-agent/$version$/byte-buddy-agent-$version$-javadoc.jar",
++    "description" : "Byte Buddy Agent provides APIs and a Java agent for attaching instrumentation to the current JVM or to another running JVM. It is used to install Java instrumentation at runtime so applications and frameworks can redefine, rebase, or transform classes through Byte Buddy.",
+     "tested-versions" : [
+       "1.11.17"
+     ],
+
+tokens used
+58,754
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142/metadata/net.bytebuddy/byte-buddy-agent/index.json:5) for `metadata-version` `1.11.17`.
+
+I filled `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and the two-sentence `description`; I left `language` absent because this is not a Kotlin/Groovy/Scala-specific library. Maven Central has the `1.11.17` source and javadoc jars, and the versioned GitHub tag exposes the `byte-buddy-agent/src/test/java` test directory. ([repo1.maven.org](https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy-agent/1.11.17/))
+
+Verification:
+- `jq empty metadata/net.bytebuddy/byte-buddy-agent/index.json` passed.
+- `./gradlew validateIndexFiles -Pcoordinates=net.bytebuddy:byte-buddy-agent:1.11.17 --stacktrace` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=net.bytebuddy:byte-buddy-agent:1.11.17 --stacktrace` failed because `metadata/net.bytebuddy/byte-buddy-agent/1.11.17/reachability-metadata.json` is missing, which is outside this URL-field update.
+Ran agent for net.bytebuddy:byte-buddy-agent:1.11.17 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142/build/agent-url-discovery-logs/net.bytebuddy-byte-buddy-agent-1.11.17.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/6309-b3bcd142/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 50s
+9 actionable tasks: 1 executed, 8 up-to-date

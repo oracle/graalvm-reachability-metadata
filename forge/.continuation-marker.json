@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "net.bytebuddy:byte-buddy-agent:1.11.17",
+  "issueNumber": 6309,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "net.bytebuddy:byte-buddy-agent:1.10.9",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#6309 [Automation] java run fails for net.bytebuddy:byte-buddy-agent:1.11.17; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "11 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 50455,
+    "issue_label": "fails-java-run",
+    "issue_number": 6309,
+    "library": "net.bytebuddy:byte-buddy-agent:1.11.17",
+    "model": "oca/gpt-5.5",
+    "new_version": "1.11.17",
+    "output_tokens_used": 2886,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Tests that mock the attachment provider must account for ByteBuddyAgent.install returning instrumentation after attachment; a mocked VM that does not initialize Installer can fail with 'agent is not initialized or unavailable'. This is a test-design issue, not external setup.",
+      "Future JDKs may restrict dynamic agent loading more strongly; current JDK behavior emits warnings but does not require additional setup for basic JVM test coverage."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/net.bytebuddy:byte-buddy-agent:1.11.17/library-preparation-preflight/pi-generation-2026-06-26T13-09-28-819140Z.log",
+    "status": "completed",
+    "summary": "No extra Maven dependency, Docker image, environment variable, or system property is concretely required: byte-buddy-agent is normally used directly via its own artifact and self-attachment works on a JDK with the built-in jdk.attach module; optional emulated-attach dependencies are only fallback paths, not required for meaningful TCK coverage."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "1.11.17",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-6309-fails-java-run-net.bytebuddy-byte-buddy-agent-1.11.17-de2b2d78",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
