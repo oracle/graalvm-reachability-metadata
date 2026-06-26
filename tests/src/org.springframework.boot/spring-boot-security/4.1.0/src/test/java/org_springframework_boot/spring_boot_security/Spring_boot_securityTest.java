@@ -38,6 +38,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -101,6 +102,21 @@ public class Spring_boot_securityTest {
             assertThat(user.getPassword()).isEqualTo("{noop}" + properties.getPassword());
             assertThat(user.getAuthorities()).extracting(GrantedAuthority::getAuthority).isEmpty();
         });
+    }
+
+    @Test
+    void customPasswordEncoderKeepsConfiguredPasswordEncoded() {
+        this.userDetailsContextRunner.withUserConfiguration(PasswordEncoderConfiguration.class)
+                .withPropertyValues("spring.security.user.name=encoded", "spring.security.user.password=encoded:s3cr3t")
+                .run((context) -> {
+                    assertThat(context).hasSingleBean(PasswordEncoder.class);
+                    assertThat(context).hasSingleBean(InMemoryUserDetailsManager.class);
+
+                    PasswordEncoder passwordEncoder = context.getBean(PasswordEncoder.class);
+                    UserDetails user = context.getBean(InMemoryUserDetailsManager.class).loadUserByUsername("encoded");
+                    assertThat(user.getPassword()).isEqualTo("encoded:s3cr3t");
+                    assertThat(passwordEncoder.matches("s3cr3t", user.getPassword())).isTrue();
+                });
     }
 
     @Test
@@ -258,6 +274,30 @@ public class Spring_boot_securityTest {
         @Override
         protected boolean matches(HttpServletRequest request, Supplier<WebApplicationContext> context) {
             return context.get().getId().equals(request.getParameter("contextId"));
+        }
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    static class PasswordEncoderConfiguration {
+
+        @Bean
+        PasswordEncoder prefixPasswordEncoder() {
+            return new PrefixPasswordEncoder();
+        }
+
+    }
+
+    private static final class PrefixPasswordEncoder implements PasswordEncoder {
+
+        @Override
+        public String encode(CharSequence rawPassword) {
+            return "encoded:" + rawPassword;
+        }
+
+        @Override
+        public boolean matches(CharSequence rawPassword, String encodedPassword) {
+            return encode(rawPassword).equals(encodedPassword);
         }
 
     }
