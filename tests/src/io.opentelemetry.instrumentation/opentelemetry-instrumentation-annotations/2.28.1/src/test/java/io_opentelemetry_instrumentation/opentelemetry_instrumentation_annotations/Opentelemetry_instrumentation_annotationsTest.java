@@ -17,6 +17,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ public class Opentelemetry_instrumentation_annotationsTest {
             throws NoSuchMethodException {
         Method method = InstrumentedClient.class.getDeclaredMethod("send", String.class, String.class);
 
-        WithSpan withSpan = method.getAnnotation(WithSpan.class);
+        WithSpan withSpan = annotation(method, WithSpan.class);
 
         assertThat(withSpan).isNotNull();
         assertThat(withSpan.value()).isEqualTo("message.send");
@@ -52,7 +53,7 @@ public class Opentelemetry_instrumentation_annotationsTest {
                 InstrumentedOperations.class.getDeclaredMethod(
                         "operationWithDefaults", String.class);
 
-        WithSpan withSpan = method.getAnnotation(WithSpan.class);
+        WithSpan withSpan = annotation(method, WithSpan.class);
 
         assertThat(withSpan).isNotNull();
         assertThat(withSpan.value()).isEmpty();
@@ -66,7 +67,7 @@ public class Opentelemetry_instrumentation_annotationsTest {
         Method method = InstrumentedOperations.class.getDeclaredMethod(
                 "clientOperation", String.class, long.class, boolean.class);
 
-        WithSpan withSpan = method.getAnnotation(WithSpan.class);
+        WithSpan withSpan = annotation(method, WithSpan.class);
 
         assertThat(withSpan).isNotNull();
         assertThat(withSpan.value()).isEqualTo("inventory.lookup");
@@ -106,8 +107,8 @@ public class Opentelemetry_instrumentation_annotationsTest {
         Constructor<InstrumentedOperations> constructor =
                 InstrumentedOperations.class.getDeclaredConstructor(String.class);
 
-        assertThat(method.isAnnotationPresent(AddingSpanAttributes.class)).isTrue();
-        assertThat(constructor.isAnnotationPresent(AddingSpanAttributes.class)).isTrue();
+        assertThat(annotation(method, AddingSpanAttributes.class)).isNotNull();
+        assertThat(annotation(constructor, AddingSpanAttributes.class)).isNotNull();
 
         SpanAttribute constructorAttribute =
                 constructor.getParameters()[0].getAnnotation(SpanAttribute.class);
@@ -121,7 +122,7 @@ public class Opentelemetry_instrumentation_annotationsTest {
         Constructor<ServerHandler> constructor =
                 ServerHandler.class.getDeclaredConstructor(String.class);
 
-        WithSpan withSpan = constructor.getAnnotation(WithSpan.class);
+        WithSpan withSpan = annotation(constructor, WithSpan.class);
 
         assertThat(withSpan).isNotNull();
         assertThat(withSpan.value()).isEqualTo("server.handler");
@@ -143,11 +144,11 @@ public class Opentelemetry_instrumentation_annotationsTest {
             Class<? extends Annotation> annotationType, ElementType... targets) {
         assertThat(annotationType.isAnnotation()).isTrue();
 
-        Retention retention = annotationType.getAnnotation(Retention.class);
+        Retention retention = annotation(annotationType, Retention.class);
         assertThat(retention).isNotNull();
         assertThat(retention.value()).isEqualTo(RetentionPolicy.RUNTIME);
 
-        Target target = annotationType.getAnnotation(Target.class);
+        Target target = annotation(annotationType, Target.class);
         assertThat(target).isNotNull();
         assertThat(target.value()).containsExactlyInAnyOrder(targets);
     }
@@ -159,9 +160,17 @@ public class Opentelemetry_instrumentation_annotationsTest {
                 @SpanAttribute("message.id") String messageId);
     }
 
+    // Checkstyle: allow direct annotation access
+    private static <A extends Annotation> A annotation(
+            AnnotatedElement element, Class<A> annotationType) {
+        AnnotatedElement elementAnnotationAccess = element;
+        return elementAnnotationAccess.getAnnotation(annotationType);
+    }
+    // Checkstyle: disallow direct annotation access
+
     public static final class InstrumentedOperations {
         @AddingSpanAttributes
-        public InstrumentedOperations(@SpanAttribute("component.name") String componentName) {}
+        public InstrumentedOperations(@SpanAttribute("component.name") String componentName) { }
 
         @WithSpan
         public String operationWithDefaults(@SpanAttribute String value) {
@@ -177,12 +186,12 @@ public class Opentelemetry_instrumentation_annotationsTest {
         }
 
         @AddingSpanAttributes
-        public void addAttributes(@SpanAttribute("request.id") String requestId, int statusCode) {}
+        public void addAttributes(@SpanAttribute("request.id") String requestId, int statusCode) { }
     }
 
     public static final class ServerHandler {
         @WithSpan(value = "server.handler", kind = SpanKind.SERVER, inheritContext = true)
-        public ServerHandler(@SpanAttribute("handler.route") String route) {}
+        public ServerHandler(@SpanAttribute("handler.route") String route) { }
     }
 
     public static final class AnnotatedCalculator {
