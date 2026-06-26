@@ -71,7 +71,7 @@ public class MainMethodTest {
 
         @Override
         public StackTraceElement[] getStackTrace() {
-            return new StackTraceElement[] { this.stackTraceElement };
+            return new StackTraceElement[]{this.stackTraceElement};
         }
 
     }

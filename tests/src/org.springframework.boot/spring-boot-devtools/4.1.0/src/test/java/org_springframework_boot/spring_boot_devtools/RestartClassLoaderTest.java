@@ -70,8 +70,7 @@ public class RestartClassLoaderTest {
     private static URL resourceUrl(String contents) {
         try {
             return new URL(null, "memory:/" + contents, new StringUrlStreamHandler(contents));
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             throw new IllegalStateException(ex);
         }
     }
@@ -83,8 +82,7 @@ public class RestartClassLoaderTest {
     private static String read(URL url) {
         try (InputStream inputStream = url.openStream()) {
             return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             throw new IllegalStateException(ex);
         }
     }

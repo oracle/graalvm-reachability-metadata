@@ -33,7 +33,7 @@ public class RestarterTest {
 
     @Test
     void initializePreparesRestartAndRestartCleansCachesBeforeRelaunching() throws Exception {
-        RestartingApplication.main(new String[] { "restart" });
+        RestartingApplication.main(new String[]{"restart"});
 
         waitForRelaunch();
 
@@ -67,7 +67,7 @@ class RestartingApplication {
 
     static void main(String[] args) {
         if (args.length > 0 && "restart".equals(args[0])) {
-            Restarter.initialize(new String[] { "relaunched" }, false, RestartInitializer.NONE, false);
+            Restarter.initialize(new String[]{"relaunched"}, false, RestartInitializer.NONE, false);
             Restarter.getInstance().restart();
             return;
         }

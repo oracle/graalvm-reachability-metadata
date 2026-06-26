@@ -40,8 +40,7 @@ public class ConnectionTest {
             assertThat(response).startsWith("HTTP/1.1 200 OK\r\n");
             assertThat(response).contains("Content-Type: text/javascript");
             assertThat(response).contains("LiveReload");
-        }
-        finally {
+        } finally {
             server.stop();
         }
     }

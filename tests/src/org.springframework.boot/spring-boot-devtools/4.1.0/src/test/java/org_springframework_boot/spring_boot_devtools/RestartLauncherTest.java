@@ -19,7 +19,7 @@ public class RestartLauncherTest {
 
     @Test
     void restarterRelaunchInvokesMainMethodWithRestartClassLoader() throws Exception {
-        String[] args = { "one", "two" };
+        String[] args = {"one", "two"};
         RestartLauncherApplication.reset();
         TestRestarter restarter = new TestRestarter(args);
 
@@ -52,7 +52,7 @@ public class RestartLauncherTest {
 
         @Override
         public StackTraceElement[] getStackTrace() {
-            return new StackTraceElement[] { stackTraceElementForMainMethod() };
+            return new StackTraceElement[]{stackTraceElementForMainMethod()};
         }
 
     }
