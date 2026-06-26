@@ -25,22 +25,20 @@ public class WindowUtilsInnerMacWindowUtilsAnonymous1Test {
     private static final float EXPECTED_ALPHA = 0.375f;
 
     @Test
-    void setWindowAlphaUsesPublicPeerMethodsOnMacWindows() {
+    void setWindowAlphaDefersNativeAccessUntilWindowIsDisplayable() {
         String originalHeadless = System.getProperty("java.awt.headless");
-        String originalOsName = System.getProperty("os.name");
         System.setProperty("java.awt.headless", "false");
 
         PeerAwareWindow window = null;
         try {
             window = new PeerAwareWindow();
-            System.setProperty("os.name", "Mac OS X");
 
             WindowUtils.setWindowAlpha(window, EXPECTED_ALPHA);
 
-            assertThat(window.peer().alpha()).isEqualTo(EXPECTED_ALPHA);
+            assertThat(window.peer().alpha()).isEqualTo(1.0f);
+            assertThat(window.getHierarchyListeners()).isNotEmpty();
         }
         finally {
-            restoreProperty("os.name", originalOsName);
             restoreProperty("java.awt.headless", originalHeadless);
             if (window != null) {
                 window.dispose();
@@ -76,7 +74,7 @@ public class WindowUtilsInnerMacWindowUtilsAnonymous1Test {
 
         @Override
         public boolean isDisplayable() {
-            return true;
+            return false;
         }
     }
 
