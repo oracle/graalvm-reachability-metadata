@@ -41,8 +41,7 @@ public class ConnectionTest {
             assertTrue(response.startsWith("HTTP/1.1 200 OK"));
             assertTrue(response.contains("Content-Type: text/javascript"));
             assertTrue(response.contains("LiveReload"));
-        }
-        finally {
+        } finally {
             server.stop();
         }
     }

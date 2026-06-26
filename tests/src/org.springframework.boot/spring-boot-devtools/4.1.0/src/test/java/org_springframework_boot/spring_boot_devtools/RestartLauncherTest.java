@@ -28,7 +28,7 @@ public class RestartLauncherTest {
 
     @Test
     void relaunchInvokesMainMethodThroughRestartLauncher() throws Exception {
-        final String[] args = { "first", "second" };
+        final String[] args = {"first", "second"};
         final TestRestarter restarter = new TestRestarter(RestartLauncherTestApplication.class, args);
 
         restarter.startApplication();
