@@ -1,0 +1,94 @@
+{
+  "add_new_library_support:2026-06-26": {
+    "timestamp": "2026-06-26T11:49:13.071135Z",
+    "library": "io.helidon.metadata:helidon-metadata:4.3.4",
+    "starting_commit": "e43c46f9d25ed37ecdb693673b675730b4a59c73",
+    "ending_commit": "b6207852ff2528a4c065d64ee60f606b92f2d8bd",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "4.3.4",
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 2,
+        "totalCalls": 2
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 429,
+          "missed": 954,
+          "ratio": 0.310195,
+          "total": 1383
+        },
+        "line": {
+          "covered": 99,
+          "missed": 188,
+          "ratio": 0.344948,
+          "total": 287
+        },
+        "method": {
+          "covered": 30,
+          "missed": 26,
+          "ratio": 0.535714,
+          "total": 56
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 7781,
+      "issue_label": "library-new-request",
+      "library": "io.helidon.metadata:helidon-metadata:4.3.4",
+      "summary": "No extra Maven dependency or Docker image is needed, but meaningful tests must provide Helidon metadata resources and avoid native-image-incompatible classpath scanning.",
+      "deterministic_setup": [],
+      "agent_guidance": "Create synthetic test resources under `src/test/resources/META-INF/helidon`, such as `manifest` plus one or more known metadata files like `service.loader`, `service-registry.json`, `feature-registry.json`, or `config-metadata.json`. Exercise `MetadataDiscovery.create(MetadataDiscovery.Mode.RESOURCES)` directly, or set the system property `io.helidon.metadata.mode=RESOURCES` before using `MetadataDiscovery.instance()`. Do not rely on empty discovery or on `AUTO` choosing `SCANNING`, because the library documents scanning as unsuitable for native-image.",
+      "risks": [
+        "The resolved artifact has zero runtime dependencies and its own jar does not contain `META-INF/helidon` metadata files to discover, so a default scaffold that only calls `list(...)` will likely cover only empty results.",
+        "The artifact's embedded native-image resource config includes only `META-INF/helidon/manifest`; local native-image verification must confirm any synthetic test metadata resources are included as needed."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#7781 Support for io.helidon.metadata:helidon-metadata:4.3.4; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 107735,
+      "output_tokens_used": 4417,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/io.helidon.metadata:helidon-metadata:4.3.4/library-preparation-preflight/pi-generation-2026-06-26T11-34-19-408436Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 69410,
+      "cached_input_tokens_used": 263680,
+      "output_tokens_used": 5233,
+      "iterations": 1,
+      "cost_usd": 0.2888,
+      "generated_loc": 53,
+      "tested_library_loc": 99,
+      "metadata_entries": 7,
+      "test_only_metadata_entries": 4,
+      "code_coverage_percent": 34.49
+    },
+    "artifacts": {
+      "test_file": "tests/src/io.helidon.metadata/helidon-metadata/4.3.4/src/test/java/io_helidon_metadata/helidon_metadata/MetadataDiscoveryImplTest.java",
+      "metadata_file": "metadata/io.helidon.metadata/helidon-metadata/4.3.4/reachability-metadata.json"
+    }
+  }
+}
