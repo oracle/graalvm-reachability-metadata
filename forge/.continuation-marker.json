@@ -1,0 +1,71 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "io.netty:netty-transport-classes-kqueue:4.2.7.Final",
+  "issueNumber": 8595,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment variables or system properties are required. Generated tests should expect `KQueue.isAvailable()` to be false on Ubuntu/Linux and cover the unavailable-transport path plus pure Java API behavior instead of trying to force native kqueue availability.",
+    "applied_setup": [],
+    "current_library": "io.netty:netty-transport-classes-kqueue:4.2.2.Final",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8595 [Automation] java run fails for io.netty:netty-transport-classes-kqueue:4.2.7.Final; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "7 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 63231,
+    "issue_label": "fails-java-run",
+    "issue_number": 8595,
+    "library": "io.netty:netty-transport-classes-kqueue:4.2.7.Final",
+    "model": "oca/gpt-5.5",
+    "new_version": "4.2.7.Final",
+    "output_tokens_used": 3023,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Full available-native-channel behavior is not reachable on the standard Ubuntu runner because kqueue is a macOS/BSD transport.",
+      "Tests should avoid asserting overly specific `UnsatisfiedLinkError` messages; Netty 4.2.7 can report missing JNI symbols directly rather than the older 'required native library' text.",
+      "Adding `netty-transport-native-kqueue` would normally require an OS/architecture classifier such as `osx-x86_64`, which is not applicable to the Ubuntu runner and is not useful as generic test setup."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/io.netty:netty-transport-classes-kqueue:4.2.7.Final/library-preparation-preflight/pi-generation-2026-06-26T11-42-48-730767Z.log",
+    "status": "completed",
+    "summary": "The resolved artifact already brings the Netty classes and transitive dependencies needed for Linux/Ubuntu tests; real kqueue availability requires macOS/BSD native transport binaries and is not something normal Ubuntu test setup can enable."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "4.2.7.Final",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8595-fails-java-run-io.netty-netty-transport-classes-kqueue-4.2.7.Final-f2fe74ee",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
