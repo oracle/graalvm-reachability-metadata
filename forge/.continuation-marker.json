@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "plexus:plexus-utils:1.0-alpha-3",
+  "issueNumber": 8603,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment or system-property setup required. Generated tests should target APIs present in plexus-utils 1.0-alpha-3; avoid ReflectionUtils.getSetter or guard/replace that coverage with methods available in the resolved alpha artifact, such as getFieldByNameIncludingSuperclasses.",
+    "applied_setup": [],
+    "current_library": "plexus:plexus-utils:1.0.2",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8603 [Automation] javac compile fails for plexus:plexus-utils:1.0-alpha-3; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "14 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 18347,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8603,
+    "library": "plexus:plexus-utils:1.0-alpha-3",
+    "model": "oca/gpt-5.5",
+    "new_version": "1.0-alpha-3",
+    "output_tokens_used": 1469,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Existing tests written against plexus-utils 1.0.2 may call APIs absent from 1.0-alpha-3, causing compile failures unrelated to reachability metadata.",
+      "Because this is an early alpha artifact, useful coverage may require focusing on the smaller public API surface available in that version."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/plexus:plexus-utils:1.0-alpha-3/library-preparation-preflight/pi-generation-2026-06-26T12-26-51-183372Z.log",
+    "status": "completed",
+    "summary": "No extra dependency, Docker image, environment variable, or system property is needed. plexus-utils 1.0-alpha-3 is a self-contained utility JAR with no declared Maven dependencies; normal usage is direct calls to utility classes. The javac failure is API drift: ReflectionUtils.getSetter exists in 1.0.2 but not in 1.0-alpha-3."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "1.0-alpha-3",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8603-fails-javac-compile-plexus-plexus-utils-1.0-alpha-3-0c6b7569",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
