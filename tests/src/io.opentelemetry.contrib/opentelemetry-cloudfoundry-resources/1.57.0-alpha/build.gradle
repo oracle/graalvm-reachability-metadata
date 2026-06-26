@@ -9,12 +9,31 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String vcapApplication = '''{
+  "application_id": "app-id-123",
+  "application_name": "orders-service",
+  "instance_index": 7,
+  "organization_id": "org-id-456",
+  "organization_name": "payments-org",
+  "process_id": "process-id-789",
+  "process_type": "web",
+  "space_id": "space-id-abc",
+  "space_name": "prod-space"
+}'''
 
 dependencies {
     testImplementation "io.opentelemetry.contrib:opentelemetry-cloudfoundry-resources:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
     testImplementation "io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.62.0"
     testImplementation "io.opentelemetry:opentelemetry-api-incubator:1.62.0-alpha"
+}
+
+tasks.named("test") {
+    environment "VCAP_APPLICATION", vcapApplication
+}
+
+tasks.named("nativeTest") {
+    environment.put("VCAP_APPLICATION", vcapApplication)
 }
 
 graalvmNative {
