@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "com.graphql-java:graphql-java:2018-07-30T00-23-12-bfee885",
+  "issueNumber": 7995,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "com.graphql-java:graphql-java:19.7",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7995 [Automation] javac compile fails for com.graphql-java:graphql-java:2018-07-30T00-23-12-bfee885; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "16 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 58496,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 7995,
+    "library": "com.graphql-java:graphql-java:2018-07-30T00-23-12-bfee885",
+    "model": "oca/gpt-5.5",
+    "new_version": "2018-07-30T00-23-12-bfee885",
+    "output_tokens_used": 3237,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The javac failure is due to API drift from newer 19.x tests, not missing setup; tests must use the older API shape such as SchemaParser.parse(Reader/String/File).",
+      "The 19.7-specific relocated Guava workaround is not indicated for this 2018 artifact; the 2018 jar does not reference graphql.com.google.common classes."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/com.graphql-java:graphql-java:2018-07-30T00-23-12-bfee885/library-preparation-preflight/pi-generation-2026-06-26T16-12-30-361277Z.log",
+    "status": "completed",
+    "summary": "No extra setup is needed: graphql-java 2018-07-30 is an in-process GraphQL engine, and its published POM already brings the required ANTLR runtime, java-dataloader, reactive-streams, and slf4j-api dependencies transitively."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2018-07-30T00-23-12-bfee885",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-7995-fails-javac-compile-com.graphql-java-graphql-java-2018-07-30T00-23-12-bfee885-67bae0ac",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
