@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.json4s:json4s-jackson_2.13:3.7.0-M16",
+  "issueNumber": 7182,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment variables or system properties are needed. If tests define custom org.json4s.Reader instances for 3.7.0-M16, implement both read and readEither or use Reader.from/Reader.fromPartialFunction; the reported failure is an API-change compile issue, not missing external setup.",
+    "applied_setup": [],
+    "current_library": "org.json4s:json4s-jackson_2.13:3.7.0-M13",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7182 [Automation] java run fails for org.json4s:json4s-jackson_2.13:3.7.0-M16; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "7 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 53981,
+    "issue_label": "fails-java-run",
+    "issue_number": 7182,
+    "library": "org.json4s:json4s-jackson_2.13:3.7.0-M16",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.7.0-M16",
+    "output_tokens_used": 2971,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Existing M13 test code that implemented Reader.read only will not compile on M16 because Reader now also requires readEither.",
+      "Native-image reachability for json4s extraction/serialization still depends on exercising reflective case-class mappings and validating the generated metadata locally."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.json4s:json4s-jackson_2.13:3.7.0-M16/library-preparation-preflight/pi-generation-2026-06-26T21-32-34-855867Z.log",
+    "status": "completed",
+    "summary": "json4s-jackson_2.13 is an in-process Scala/Jackson JSON library; its resolved POM brings json4s-core, json4s-jackson-core, Jackson databind, scala-library, json4s-scalap, and paranamer transitively, and normal documented usage is just imports plus parsing/serialization APIs. No Docker service, environment/system property, or extra Maven dependency is needed for meaningful coverage."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.7.0-M16",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-7182-fails-java-run-org.json4s-json4s-jackson_2.13-3.7.0-M16-de7ecf15",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
