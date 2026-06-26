@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.neo4j.bolt:neo4j-bolt-connection-netty:4.0.0",
+  "issueNumber": 8667,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.neo4j.bolt:neo4j-bolt-connection-netty:3.0.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8667 [Automation] javac compile fails for org.neo4j.bolt:neo4j-bolt-connection-netty:4.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "7 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 89594,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8667,
+    "library": "org.neo4j.bolt:neo4j-bolt-connection-netty:4.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "4.0.0",
+    "output_tokens_used": 3719,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Existing 3.0.0 tests import classes and methods that changed or moved in 4.0.0, such as netty implementation classes and SecurityPlans APIs; generated fixes must adapt test code rather than add setup.",
+      "A live Neo4j server could exercise end-to-end Bolt behavior, but upstream evidence does not show it is required for meaningful coverage of this artifact."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.neo4j.bolt:neo4j-bolt-connection-netty:4.0.0/library-preparation-preflight/pi-generation-2026-06-26T22-40-28-176760Z.log",
+    "status": "completed",
+    "summary": "No concrete extra setup is needed: the 4.0.0 artifact declares its runtime dependencies transitively, upstream netty tests are unit-style without Docker or environment requirements, and the reported javac failures are caused by API/package changes between 3.0.0 and 4.0.0."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "4.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8667-fails-javac-compile-org.neo4j.bolt-neo4j-bolt-connection-netty-4.0.0-7d4ea44f",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
