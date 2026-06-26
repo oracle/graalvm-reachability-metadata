@@ -35,7 +35,9 @@ import org.springframework.boot.liquibase.autoconfigure.LiquibaseAutoConfigurati
 import org.springframework.boot.liquibase.autoconfigure.LiquibaseConnectionDetails;
 import org.springframework.boot.liquibase.autoconfigure.LiquibaseEndpointAutoConfiguration;
 import org.springframework.boot.liquibase.autoconfigure.LiquibaseProperties;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.StaticApplicationContext;
+import org.springframework.core.env.MapPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -172,6 +174,33 @@ public class Spring_boot_liquibaseTest {
     }
 
     @Test
+    void liquibaseAutoConfigurationUsesDedicatedJdbcUrlAndChangeLogParameters() throws Exception {
+        Path changeLog = writeParameterizedChangeLog("auto-config-migration.xml");
+        String migrationDatabaseName = "liquibase-auto-config-" + UUID.randomUUID();
+        String migrationUrl = "jdbc:h2:mem:" + migrationDatabaseName + ";DB_CLOSE_DELAY=-1";
+        CloseableH2DataSource applicationDataSource = new CloseableH2DataSource();
+
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.getEnvironment().getPropertySources().addFirst(new MapPropertySource("liquibaseTest", Map.of(
+                    "spring.liquibase.change-log", changeLog.toUri().toString(),
+                    "spring.liquibase.url", migrationUrl,
+                    "spring.liquibase.user", "sa",
+                    "spring.liquibase.parameters.title", "Auto Configured",
+                    "spring.liquibase.analytics-enabled", "false")));
+            context.getBeanFactory().registerSingleton("dataSource", applicationDataSource);
+            context.register(LiquibaseAutoConfiguration.class);
+
+            context.refresh();
+
+            SpringLiquibase liquibase = context.getBean(SpringLiquibase.class);
+            assertThat(liquibase.getDataSource()).isNotSameAs(applicationDataSource);
+            assertThat(hasBooksTable(applicationDataSource)).isFalse();
+            assertThat(applicationDataSource.isClosed()).isFalse();
+            assertThat(readBookTitles(liquibase.getDataSource())).containsExactly("Auto Configured");
+        }
+    }
+
+    @Test
     void liquibaseEndpointReportsExecutedChangeSetsFromCurrentAndParentContexts() throws Exception {
         Path parentChangeLog = writeChangeLog("parent-endpoint.xml", "parent-change", "Parent Context", null);
         Path childChangeLog = writeChangeLog("child-endpoint.xml", "child-change", "Child Context", "endpoint");
@@ -240,6 +269,32 @@ public class Spring_boot_liquibaseTest {
         assertThat(new LiquibaseEndpointAutoConfiguration()).isNotNull();
     }
 
+    private Path writeParameterizedChangeLog(String fileName) throws Exception {
+        Path changeLog = temporaryDirectory.resolve(fileName);
+        Files.writeString(changeLog, """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <databaseChangeLog
+                        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+                    <changeSet id="parameterized-change" author="test">
+                        <createTable tableName="books">
+                            <column name="id" type="INT">
+                                <constraints primaryKey="true" nullable="false"/>
+                            </column>
+                            <column name="title" type="VARCHAR(100)"/>
+                        </createTable>
+                        <insert tableName="books">
+                            <column name="id" valueNumeric="1"/>
+                            <column name="title" value="${title}"/>
+                        </insert>
+                    </changeSet>
+                </databaseChangeLog>
+                """);
+        return changeLog;
+    }
+
     private Path writeChangeLog(String fileName, String changeSetId, String title, String context) throws Exception {
         String contextAttribute = (context != null) ? " contextFilter=\"" + context + "\"" : "";
         Path changeLog = temporaryDirectory.resolve(fileName);
@@ -287,6 +342,13 @@ public class Spring_boot_liquibaseTest {
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery("SELECT title FROM books ORDER BY id")) {
             return readTitles(resultSet);
+        }
+    }
+
+    private boolean hasBooksTable(DataSource dataSource) throws SQLException {
+        try (Connection connection = dataSource.getConnection();
+                ResultSet resultSet = connection.getMetaData().getTables(null, null, "BOOKS", null)) {
+            return resultSet.next();
         }
     }
 
