@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import io.micrometer.core.instrument.Counter;
@@ -19,13 +20,17 @@ import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Statistic;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
+import io.micrometer.core.instrument.TimeGauge;
 import io.micrometer.core.instrument.config.MeterFilterReply;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.endpoint.InvalidEndpointRequestException;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.boot.micrometer.metrics.MaximumAllowableTagsMeterFilter;
 import org.springframework.boot.micrometer.metrics.actuate.endpoint.MetricsEndpoint;
 import org.springframework.boot.micrometer.metrics.actuate.endpoint.MetricsEndpoint.AvailableTag;
@@ -35,6 +40,7 @@ import org.springframework.boot.micrometer.metrics.autoconfigure.MeterValue;
 import org.springframework.boot.micrometer.metrics.autoconfigure.MetricsProperties;
 import org.springframework.boot.micrometer.metrics.autoconfigure.PropertiesMeterFilter;
 import org.springframework.boot.micrometer.metrics.autoconfigure.ServiceLevelObjectiveBoundary;
+import org.springframework.boot.micrometer.metrics.startup.StartupTimeMetricsListener;
 import org.springframework.boot.micrometer.metrics.system.DiskSpaceMetricsBinder;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -147,6 +153,44 @@ public class Spring_boot_micrometer_metricsTest {
             assertThat(registry.find("disk.total").tag("scope", "filesystem").gauges()).hasSize(2);
             assertThat(tags).contains(Tag.of("path", firstPath.getAbsolutePath()),
                     Tag.of("path", secondPath.getAbsolutePath()));
+        }
+        finally {
+            registry.close();
+        }
+    }
+
+    @Test
+    void startupTimeMetricsListenerRegistersStartedAndReadyGaugesWithApplicationTags() {
+        SimpleMeterRegistry registry = new SimpleMeterRegistry();
+        try {
+            StartupTimeMetricsListener listener = new StartupTimeMetricsListener(registry, "test.application.started",
+                    "test.application.ready", Tags.of("deployment", "test"));
+            SpringApplication application = new SpringApplication(Spring_boot_micrometer_metricsTest.class);
+            application.setMainApplicationClass(Spring_boot_micrometer_metricsTest.class);
+
+            assertThat(listener.supportsEventType(ApplicationStartedEvent.class)).isTrue();
+            assertThat(listener.supportsEventType(ApplicationReadyEvent.class)).isTrue();
+
+            listener.onApplicationEvent(new ApplicationStartedEvent(application, new String[0], null,
+                    Duration.ofMillis(1500)));
+            listener.onApplicationEvent(new ApplicationReadyEvent(application, new String[0], null,
+                    Duration.ofMillis(2750)));
+
+            String mainApplicationClass = Spring_boot_micrometer_metricsTest.class.getName();
+            TimeGauge started = registry.get("test.application.started")
+                .tag("deployment", "test")
+                .tag("main.application.class", mainApplicationClass)
+                .timeGauge();
+            TimeGauge ready = registry.get("test.application.ready")
+                .tag("deployment", "test")
+                .tag("main.application.class", mainApplicationClass)
+                .timeGauge();
+
+            assertThat(started.getId().getDescription()).isEqualTo("Time taken to start the application");
+            assertThat(started.value(TimeUnit.MILLISECONDS)).isEqualTo(1500.0);
+            assertThat(ready.getId().getDescription())
+                .isEqualTo("Time taken for the application to be ready to service requests");
+            assertThat(ready.value(TimeUnit.MILLISECONDS)).isEqualTo(2750.0);
         }
         finally {
             registry.close();
