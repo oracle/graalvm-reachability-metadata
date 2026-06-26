@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "com.mchange:mchange-commons-java:0.4.0",
+  "issueNumber": 2097,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "For tests that call ReferenceableUtils.referenceToObject(...) without the overload that accepts allowedFactoryClassNames, set the system property `com.mchange.v2.naming.objectFactoryWhitelist` to the fully qualified test ObjectFactory class name(s), comma-separated, before the call and clear/restore it afterward. Prefer a narrow whitelist for the specific test factory class. Alternatively, use the ReferenceableUtils overload that accepts an explicit Set of allowed factory class names.",
+    "applied_setup": [],
+    "current_library": "com.mchange:mchange-commons-java:0.2.15",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#2097 [Automation] java run fails for com.mchange:mchange-commons-java:0.4.0; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "34 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 49764,
+    "issue_label": "fails-java-run",
+    "issue_number": 2097,
+    "library": "com.mchange:mchange-commons-java:0.4.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "0.4.0",
+    "output_tokens_used": 3039,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The whitelist is a JVM-global system property, so tests should restore the previous value to avoid order-dependent behavior.",
+      "The artifact has optional integrations for Typesafe Config/HOCON and logging backends, but they are not required before meaningful coverage is reachable; tests that deliberately import those adapter APIs may need explicit optional dependencies."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/com.mchange:mchange-commons-java:0.4.0/library-preparation-preflight/pi-generation-2026-06-26T20-02-51-963173Z.log",
+    "status": "completed",
+    "summary": "mchange-commons-java 0.4.0 adds a security requirement for ReferenceableUtils: resolving a javax.naming.Reference through overloads without an explicit allowed-factory Set now requires an ObjectFactory whitelist configuration."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "0.4.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-2097-fails-java-run-com.mchange-mchange-commons-java-0.4.0-7270ea05",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
