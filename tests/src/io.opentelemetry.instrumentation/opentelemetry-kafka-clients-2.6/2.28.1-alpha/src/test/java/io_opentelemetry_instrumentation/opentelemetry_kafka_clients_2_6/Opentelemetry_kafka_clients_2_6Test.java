@@ -6,11 +6,5 @@
  */
 package io_opentelemetry_instrumentation.opentelemetry_kafka_clients_2_6;
 
-import org.junit.jupiter.api.Test;
-
-class Opentelemetry_kafka_clients_2_6Test {
-    @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
-    }
+public class Opentelemetry_kafka_clients_2_6Test {
 }
