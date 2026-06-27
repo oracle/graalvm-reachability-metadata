@@ -25,19 +25,16 @@ class LineNumbersTest {
 
   @Test
   def readsSourceInformationFromASerializableLambdaImplementationClassResource(): Unit = {
-    val target: SerializableThunk = () => "serializable-lambda"
+    val target: SerializableJavaLambdaFactory.SerializableCallable =
+      SerializableJavaLambdaFactory.create("serializable-lambda")
 
-    assertThat(target.value()).isEqualTo("serializable-lambda")
+    assertThat(target.call()).isEqualTo("serializable-lambda")
     val result: LineNumbers.Result = LineNumbers(target.asInstanceOf[AnyRef])
 
     assertThat(result).isNotEqualTo(LineNumbers.NoSourceInfo)
     assertThat(result).isNotInstanceOf(classOf[LineNumbers.UnknownSourceFormat])
-    assertThat(result.toString).contains("LineNumbersTest.scala")
+    assertThat(result.toString).contains("SerializableJavaLambdaFactory.java")
   }
 
   private final class PlainLineNumberTarget(val name: String)
-
-  private trait SerializableThunk extends Serializable {
-    def value(): String
-  }
 }
