@@ -1,0 +1,803 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f071a-8696-70c0-95b9-140e0d3deaf8
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.springframework.ai:spring-ai-autoconfigure-model-image-observation:2.0.0-RC2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.0.0-RC2" when "$version$" is replaced with "2.0.0-RC2".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json
+- Set "coordinates" to "org.springframework.ai:spring-ai-autoconfigure-model-image-observation:2.0.0-RC2".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.0.0-RC2".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll inspect the existing discovered metadata patterns first, then verify the artifact details from Maven/Spring sources before editing the JSON.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca
+ succeeded in 0ms:
+{
+  "coordinates" : "org.springframework.ai:spring-ai-autoconfigure-model-image-observation:2.0.0-RC2"
+}
+
+exec
+/usr/bin/bash -lc 'pwd && rg --files build/discovered-artifact-metadata | head -50' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca
+build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json
+
+exec
+/usr/bin/bash -lc "rg -n 'spring-ai-autoconfigure|springframework.ai' build/discovered-artifact-metadata metadata tests -g '*.json' -g '*.java' -g '*.gradle'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json:2:  "coordinates" : "org.springframework.ai:spring-ai-autoconfigure-model-image-observation:2.0.0-RC2"
+
+web search: 
+web search: org.springframework.ai spring-ai-autoconfigure-model-image-observation 2.0.0-RC2 Maven POM
+codex
+The target file only has coordinates right now, so I’m checking both Maven artifact contents and the upstream Spring AI repository/tag shape to avoid guessing the module paths.
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"not-for-native-image\"|\"language\"' . -g '*.json' | head -80" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca
+ succeeded in 0ms:
+./metadata/org.openjfx/javafx-base/index.json:5:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+./metadata/org.openjfx/javafx-base/index.json:7:    "test-code-url": "https://github.com/openjdk/jfx/tree/13+1/tests",
+./metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+./metadata/org.openjfx/javafx-base/index.json:21:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+./metadata/org.openjfx/javafx-base/index.json:23:    "test-code-url": "https://github.com/javafxports/openjdk-jfx/tree/$version$+1/tests",
+./metadata/org.openjfx/javafx-base/index.json:24:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+./metadata/com.comcast/ip4s-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-sources.jar",
+./metadata/com.comcast/ip4s-core_3/index.json:7:    "test-code-url" : "https://github.com/Comcast/ip4s/tree/v$version$/test-kit/shared/src/test",
+./metadata/com.comcast/ip4s-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+./metadata/com.comcast/ip4s-core_3/index.json:10:    "language" : {
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-javadoc.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:32:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:34:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:35:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:50:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:52:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:53:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:65:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:67:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-jms-client/src/test",
+./metadata/org.apache.activemq/artemis-jms-client/index.json:68:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-javadoc.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-sources.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-tests.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+./metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/$version$/jakarta.xml.soap-api-$version$-sources.jar",
+./metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/saaj-api/tree/$version$/api/src/test",
+./metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/$version$/jakarta.xml.soap-api-$version$-javadoc.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-sources.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-tests.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-javadoc.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:7:    "test-code-url" : "https://github.com/bcgit/bc-java/tree/r1rv77/pkix/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk18on/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/$version$/bcpkix-jdk18on-$version$-javadoc.jar",
+./metadata/dev.profunktor/redis4cats-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-sources.jar",
+./metadata/dev.profunktor/redis4cats-core_3/index.json:7:    "test-code-url" : "https://github.com/profunktor/redis4cats/tree/v$version$/modules/core/src/test",
+./metadata/dev.profunktor/redis4cats-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+./metadata/dev.profunktor/redis4cats-core_3/index.json:10:    "language" : {
+./metadata/dev.profunktor/redis4cats-core_3/index.json:24:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-sources.jar",
+./metadata/dev.profunktor/redis4cats-core_3/index.json:26:    "test-code-url" : "https://github.com/profunktor/redis4cats/tree/v$version$/modules/core/src/test",
+./metadata/dev.profunktor/redis4cats-core_3/index.json:27:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/profunktor/redis4cats-core_3/$version$/redis4cats-core_3-$version$-javadoc.jar",
+./metadata/dev.profunktor/redis4cats-core_3/index.json:29:    "language" : {
+./metadata/org.junit.jupiter/junit-jupiter-engine/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-sources.jar",
+./metadata/org.junit.jupiter/junit-jupiter-engine/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/junit-jupiter-engine/src/test",
+./metadata/org.junit.jupiter/junit-jupiter-engine/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-javadoc.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/toml/src/test",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-sources.jar",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:7:    "test-code-url" : "N/A",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-spi/$version$/shrinkwrap-spi-$version$-javadoc.jar",
+./metadata/io.getquill/quill-engine_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_3/$version$/quill-engine_3-$version$-sources.jar",
+./metadata/io.getquill/quill-engine_3/index.json:7:    "test-code-url" : "N/A",
+./metadata/io.getquill/quill-engine_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_3/$version$/quill-engine_3-$version$-javadoc.jar",
+./metadata/io.getquill/quill-engine_3/index.json:10:    "language" : {
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-sources.jar",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:10:    "test-code-url": "https://github.com/bcgit/bc-java/tree/r1rv70/pkix/src/test",
+./metadata/org.bouncycastle/bcpkix-jdk15on/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/$version$/bcpkix-jdk15on-$version$-javadoc.jar",
+./metadata/org.junit.jupiter/junit-jupiter/index.json:3:    "not-for-native-image": true,
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:7:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-text/tree/jackson-dataformats-text-$version$/yaml/src/test",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+./metadata/io.getquill/quill-engine_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-sources.jar",
+./metadata/io.getquill/quill-engine_2.13/index.json:7:    "test-code-url" : "N/A",
+./metadata/io.getquill/quill-engine_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-javadoc.jar",
+./metadata/io.getquill/quill-engine_2.13/index.json:10:    "language" : {
+./metadata/org.apache.orc/orc-mapreduce/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-sources.jar",
+./metadata/org.apache.orc/orc-mapreduce/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+./metadata/org.apache.orc/orc-mapreduce/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-javadoc.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:7:    "test-code-url" : "https://github.com/apache/jackrabbit/tree/$version$/jackrabbit-jcr-commons/src/test/java",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:8:    "documentation-url" : "https://github.com/apache/jackrabbit/blob/$version$/jackrabbit-jcr-commons/README.txt",
+./metadata/org.junit.jupiter/junit-jupiter-params/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+./metadata/org.junit.jupiter/junit-jupiter-params/index.json:7:    "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.9.2/junit-jupiter-params/src/test/java",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/2.0.0-RC2/spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.pom' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.springframework.ai</groupId>
+  <artifactId>spring-ai-autoconfigure-model-image-observation</artifactId>
+  <version>2.0.0-RC2</version>
+  <name>Spring AI Image Observation Auto Configuration</name>
+  <description>Spring AI Image Observation Auto Configuration</description>
+  <url>https://github.com/spring-projects/spring-ai</url>
+  <organization>
+    <name>Broadcom Inc.</name>
+    <url>https://spring.io</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>mpollack</id>
+      <name>Mark Pollack</name>
+      <roles>
+        <role>founder</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>tzolov</id>
+      <name>Christian Tzolov</name>
+      <email>christian tzolov at broadcom.com</email>
+      <organization>Broadcom</organization>
+      <organizationUrl>http://www.spring.io</organizationUrl>
+      <roles>
+        <role>lead</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>ilayaperumalg</id>
+      <name>Ilayaperumal Gopinathan</name>
+      <organization>Broadcom</organization>
+      <organizationUrl>http://www.spring.io</organizationUrl>
+    </developer>
+    <developer>
+      <id>sobychacko</id>
+      <name>Soby Chacko</name>
+      <organization>Broadcom</organization>
+      <organizationUrl>http://www.spring.io</organizationUrl>
+    </developer>
+    <developer>
+      <id>ericbottard</id>
+      <name>Eric Bottard</name>
+      <organization>Broadcom</organization>
+      <organizationUrl>http://www.spring.io</organizationUrl>
+    </developer>
+    <developer>
+      <id>sdeleuze</id>
+      <name>Sébastien Deleuze</name>
+      <organization>Broadcom</organization>
+      <organizationUrl>http://www.spring.io</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/spring-projects/spring-ai.git/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation</connection>
+    <developerConnection>scm:git:ssh://git@github.com/spring-projects/spring-ai.git/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation</developerConnection>
+    <url>https://github.com/spring-projects/spring-ai/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation</url>
+  </scm>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.ai</groupId>
+      <artifactId>spring-ai-model</artifactId>
+      <version>2.0.0-RC2</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-tracing</artifactId>
+      <version>1.7.0-RC1</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <version>4.1.0-RC1</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <version>4.1.0-RC1</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure-processor</artifactId>
+      <version>4.1.0-RC1</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/2.0.0-RC2/ | sed -n '1,200p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/springframework/ai/spring-ai-autoconfigure-model-image-observation/2.0.0-RC2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/springframework/ai/spring-ai-autoconfigure-model-image-observation/2.0.0-RC2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-javadoc.jar" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-javadoc.jar">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57     93743      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-javadoc.jar.asc" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-javadoc.jar.asc">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57       833      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-javadoc.jar.md5" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-javadoc.jar.md5">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57        32      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-javadoc.jar.sha1" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-javadoc.jar.sha1">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57        40      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-javadoc.jar.sha256" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-javadoc.jar.sha256">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57        64      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-javadoc.jar.sha512" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-javadoc.jar.sha512">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57       128      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-sources.jar" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-sources.jar">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57      7092      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-sources.jar.asc" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-sources.jar.asc">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57       833      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-sources.jar.md5" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-sources.jar.md5">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57        32      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-sources.jar.sha1" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-sources.jar.sha1">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57        40      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-sources.jar.sha256" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-sources.jar.sha256">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57        64      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-sources.jar.sha512" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-sources.jar.sha512">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57       128      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.jar" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.jar">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57      9170      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.jar.asc" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.jar.asc">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57       833      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.jar.md5" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.jar.md5">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57        32      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.jar.sha1" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.jar.sha1">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57        40      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.jar.sha256" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.jar.sha256">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57        64      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.jar.sha512" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.jar.sha512">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57       128      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.pom" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.pom">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57      3984      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.pom.asc" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.pom.asc">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57       833      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.pom.md5" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.pom.md5">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57        32      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.pom.sha1" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.pom.sha1">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57        40      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.pom.sha256" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.pom.sha256">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57        64      
+<a href="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.pom.sha512" title="spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.pom.sha512">spring-ai-autoconfigure-model-image-observati...</a>  2026-06-09 20:57       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+web search: 
+web search: https://github.com/spring-projects/spring-ai/tree/v2.0.0-RC2/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/spring-projects/spring-ai/contents/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src?ref=v2.0.0-RC2' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/spring-projects/spring-ai/contents/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test?ref=v2.0.0-RC2' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/2.0.0-RC2/spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-sources.jar -o /tmp/spring-ai-imgobs-sources.jar && jar tf /tmp/spring-ai-imgobs-sources.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca
+exec
+/usr/bin/bash -lc 'curl -fsSL -I https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/2.0.0-RC2/spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-tests.jar; curl -fsSL -I https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/2.0.0-RC2/spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-test-sources.jar' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca
+ succeeded in 198ms:
+[
+  {
+    "name": "java",
+    "path": "auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test/java",
+    "sha": "cf11ede44f058b56467d8725e3d2e6632cb661cc",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-ai/contents/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test/java?ref=v2.0.0-RC2",
+    "html_url": "https://github.com/spring-projects/spring-ai/tree/v2.0.0-RC2/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test/java",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-ai/git/trees/cf11ede44f058b56467d8725e3d2e6632cb661cc",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-ai/contents/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test/java?ref=v2.0.0-RC2",
+      "git": "https://api.github.com/repos/spring-projects/spring-ai/git/trees/cf11ede44f058b56467d8725e3d2e6632cb661cc",
+      "html": "https://github.com/spring-projects/spring-ai/tree/v2.0.0-RC2/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test/java"
+    }
+  }
+]
+
+ succeeded in 214ms:
+[
+  {
+    "name": "main",
+    "path": "auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/main",
+    "sha": "ee011ea0e220c120f5fb7c390c8b07cbd71978d3",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-ai/contents/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/main?ref=v2.0.0-RC2",
+    "html_url": "https://github.com/spring-projects/spring-ai/tree/v2.0.0-RC2/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/main",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-ai/git/trees/ee011ea0e220c120f5fb7c390c8b07cbd71978d3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-ai/contents/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/main?ref=v2.0.0-RC2",
+      "git": "https://api.github.com/repos/spring-projects/spring-ai/git/trees/ee011ea0e220c120f5fb7c390c8b07cbd71978d3",
+      "html": "https://github.com/spring-projects/spring-ai/tree/v2.0.0-RC2/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/main"
+    }
+  },
+  {
+    "name": "test",
+    "path": "auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test",
+    "sha": "fd881180a8dad7cb85361a5a2486f5f4caf481f0",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-ai/contents/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test?ref=v2.0.0-RC2",
+    "html_url": "https://github.com/spring-projects/spring-ai/tree/v2.0.0-RC2/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-ai/git/trees/fd881180a8dad7cb85361a5a2486f5f4caf481f0",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-ai/contents/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test?ref=v2.0.0-RC2",
+      "git": "https://api.github.com/repos/spring-projects/spring-ai/git/trees/fd881180a8dad7cb85361a5a2486f5f4caf481f0",
+      "html": "https://github.com/spring-projects/spring-ai/tree/v2.0.0-RC2/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test"
+    }
+  }
+]
+
+ succeeded in 426ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/springframework/
+org/springframework/ai/
+org/springframework/ai/model/
+org/springframework/ai/model/image/
+org/springframework/ai/model/image/observation/
+org/springframework/ai/model/image/observation/autoconfigure/
+META-INF/spring/
+META-INF/maven/
+META-INF/maven/org.springframework.ai/
+META-INF/maven/org.springframework.ai/spring-ai-autoconfigure-model-image-observation/
+org/springframework/ai/model/image/observation/autoconfigure/package-info.java
+org/springframework/ai/model/image/observation/autoconfigure/ImageObservationProperties.java
+org/springframework/ai/model/image/observation/autoconfigure/ImageObservationAutoConfiguration.java
+META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
+META-INF/maven/org.springframework.ai/spring-ai-autoconfigure-model-image-observation/pom.xml
+META-INF/maven/org.springframework.ai/spring-ai-autoconfigure-model-image-observation/pom.properties
+
+ exited 22 in 498ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 27 Jun 2026 03:23:55 GMT
+content-type: text/html
+cf-ray: a12155f92918a43d-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/2.0.0-RC2/spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 27 Jun 2026 03:23:56 GMT
+content-type: text/html
+cf-ray: a12155fabc060221-ZRH
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/2.0.0-RC2/spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'unzip -p /tmp/spring-ai-imgobs-sources.jar org/springframework/ai/model/image/observation/autoconfigure/ImageObservationAutoConfiguration.java' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca
+ succeeded in 0ms:
+/*
+ * Copyright 2023-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.springframework.ai.model.image.observation.autoconfigure;
+
+import io.micrometer.tracing.Tracer;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import org.springframework.ai.image.ImageModel;
+import org.springframework.ai.image.observation.ImageModelObservationContext;
+import org.springframework.ai.image.observation.ImageModelPromptContentObservationHandler;
+import org.springframework.ai.observation.TracingAwareLoggingObservationHandler;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * Auto-configuration for Spring AI image model observations.
+ *
+ * @author Thomas Vitale
+ * @author Jonatan Ivanov
+ * @since 1.0.0
+ */
+@AutoConfiguration
+@ConditionalOnClass(ImageModel.class)
+@EnableConfigurationProperties(ImageObservationProperties.class)
+public class ImageObservationAutoConfiguration {
+
+	private static final Log logger = LogFactory.getLog(ImageObservationAutoConfiguration.class);
+
+	private static void logPromptContentWarning() {
+		logger.warn(
+				"You have enabled logging out the image prompt content with the risk of exposing sensitive or private information. Please, be careful!");
+	}
+
+	@Configuration(proxyBeanMethods = false)
+	@ConditionalOnClass(Tracer.class)
+	@ConditionalOnBean(Tracer.class)
+	static class TracerPresentObservationConfiguration {
+
+		@Bean
+		@ConditionalOnMissingBean(value = ImageModelPromptContentObservationHandler.class,
+				name = "imageModelPromptContentObservationHandler")
+		@ConditionalOnProperty(prefix = ImageObservationProperties.CONFIG_PREFIX, name = "log-prompt",
+				havingValue = "true")
+		TracingAwareLoggingObservationHandler<ImageModelObservationContext> imageModelPromptContentObservationHandler(
+				Tracer tracer) {
+			logPromptContentWarning();
+			return new TracingAwareLoggingObservationHandler<>(new ImageModelPromptContentObservationHandler(), tracer);
+		}
+
+	}
+
+	@Configuration(proxyBeanMethods = false)
+	@ConditionalOnMissingClass("io.micrometer.tracing.Tracer")
+	static class TracerNotPresentObservationConfiguration {
+
+		@Bean
+		@ConditionalOnMissingBean
+		@ConditionalOnProperty(prefix = ImageObservationProperties.CONFIG_PREFIX, name = "log-prompt",
+				havingValue = "true")
+		ImageModelPromptContentObservationHandler imageModelPromptContentObservationHandler() {
+			logPromptContentWarning();
+			return new ImageModelPromptContentObservationHandler();
+		}
+
+	}
+
+}
+
+exec
+/usr/bin/bash -lc 'unzip -p /tmp/spring-ai-imgobs-sources.jar org/springframework/ai/model/image/observation/autoconfigure/ImageObservationProperties.java' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca
+ succeeded in 0ms:
+/*
+ * Copyright 2023-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.springframework.ai.model.image.observation.autoconfigure;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+/**
+ * Configuration properties for image model observations.
+ *
+ * @author Thomas Vitale
+ * @author Christian Tzolov
+ * @since 1.0.0
+ */
+@ConfigurationProperties(ImageObservationProperties.CONFIG_PREFIX)
+public class ImageObservationProperties {
+
+	public static final String CONFIG_PREFIX = "spring.ai.image.observations";
+
+	/**
+	 * Whether to log the prompt content in the observations.
+	 */
+	private boolean logPrompt = false;
+
+	public boolean isLogPrompt() {
+		return this.logPrompt;
+	}
+
+	public void setLogPrompt(boolean logPrompt) {
+		this.logPrompt = logPrompt;
+	}
+
+}
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/2.0.0-RC2/spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.jar -o /tmp/spring-ai-imgobs.jar && jar tf /tmp/spring-ai-imgobs.jar | sed -n '1,120p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/springframework/
+org/springframework/ai/
+org/springframework/ai/model/
+org/springframework/ai/model/image/
+org/springframework/ai/model/image/observation/
+org/springframework/ai/model/image/observation/autoconfigure/
+META-INF/spring/
+META-INF/maven/
+META-INF/maven/org.springframework.ai/
+META-INF/maven/org.springframework.ai/spring-ai-autoconfigure-model-image-observation/
+org/springframework/ai/model/image/observation/autoconfigure/ImageObservationAutoConfiguration.class
+org/springframework/ai/model/image/observation/autoconfigure/ImageObservationAutoConfiguration$TracerNotPresentObservationConfiguration.class
+org/springframework/ai/model/image/observation/autoconfigure/ImageObservationAutoConfiguration$TracerPresentObservationConfiguration.class
+org/springframework/ai/model/image/observation/autoconfigure/ImageObservationProperties.class
+org/springframework/ai/model/image/observation/autoconfigure/package-info.class
+META-INF/spring-autoconfigure-metadata.properties
+META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
+META-INF/spring-configuration-metadata.json
+META-INF/maven/org.springframework.ai/spring-ai-autoconfigure-model-image-observation/pom.xml
+META-INF/maven/org.springframework.ai/spring-ai-autoconfigure-model-image-observation/pom.properties
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/spring-projects/spring-ai/contents/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test/java?ref=v2.0.0-RC2' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca
+ succeeded in 183ms:
+[
+  {
+    "name": "org",
+    "path": "auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test/java/org",
+    "sha": "a16d9d96ba78c1a2ad2ba84e4aba3a019f07c404",
+    "size": 0,
+    "url": "https://api.github.com/repos/spring-projects/spring-ai/contents/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test/java/org?ref=v2.0.0-RC2",
+    "html_url": "https://github.com/spring-projects/spring-ai/tree/v2.0.0-RC2/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test/java/org",
+    "git_url": "https://api.github.com/repos/spring-projects/spring-ai/git/trees/a16d9d96ba78c1a2ad2ba84e4aba3a019f07c404",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/spring-projects/spring-ai/contents/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test/java/org?ref=v2.0.0-RC2",
+      "git": "https://api.github.com/repos/spring-projects/spring-ai/git/trees/a16d9d96ba78c1a2ad2ba84e4aba3a019f07c404",
+      "html": "https://github.com/spring-projects/spring-ai/tree/v2.0.0-RC2/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test/java/org"
+    }
+  }
+]
+
+codex
+Maven Central publishes sources and Javadoc for this version, but no `tests.jar` or `test-sources.jar`; the tag has a module `src/test` directory, so I’ll use Maven for source/docs and the tagged GitHub test path. The artifact JAR contains JVM `.class` files, so it remains applicable to Native Image metadata and does not need `not-for-native-image`.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json
+diff --git a/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json b/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json
+index 85130245679724c223ae7a267d283a5dda41ff5d..dbd8bf0fb09058087f34c9f482b0030d07375d51
+--- a/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json
++++ b/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.ai:spring-ai-autoconfigure-model-image-observation:2.0.0-RC2"
++  "coordinates" : "org.springframework.ai:spring-ai-autoconfigure-model-image-observation:2.0.0-RC2",
++  "repository-url" : "https://github.com/spring-projects/spring-ai",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/$version$/spring-ai-autoconfigure-model-image-observation-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-ai/tree/v$version$/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/$version$/spring-ai-autoconfigure-model-image-observation-$version$-javadoc.jar",
++  "description" : "Spring AI Image Observation Auto Configuration provides Spring Boot auto-configuration for Micrometer observation support around Spring AI image model operations. It contributes observation properties and logging observation handlers so applications can instrument image prompts using Spring AI's observability conventions."
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json b/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json
+index 85130245679724c223ae7a267d283a5dda41ff5d..dbd8bf0fb09058087f34c9f482b0030d07375d51
+--- a/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json
++++ b/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.ai:spring-ai-autoconfigure-model-image-observation:2.0.0-RC2"
++  "coordinates" : "org.springframework.ai:spring-ai-autoconfigure-model-image-observation:2.0.0-RC2",
++  "repository-url" : "https://github.com/spring-projects/spring-ai",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/$version$/spring-ai-autoconfigure-model-image-observation-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-ai/tree/v$version$/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/$version$/spring-ai-autoconfigure-model-image-observation-$version$-javadoc.jar",
++  "description" : "Spring AI Image Observation Auto Configuration provides Spring Boot auto-configuration for Micrometer observation support around Spring AI image model operations. It contributes observation properties and logging observation handlers so applications can instrument image prompts using Spring AI's observability conventions."
+ }
+
+codex
+The JSON has been updated. I’m doing a quick validation pass now: JSON parsing plus HTTP checks for the substituted source, test, and Javadoc URLs.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca
+ succeeded in 0ms:
+{
+  "coordinates": "org.springframework.ai:spring-ai-autoconfigure-model-image-observation:2.0.0-RC2",
+  "repository-url": "https://github.com/spring-projects/spring-ai",
+  "source-code-url": "https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/$version$/spring-ai-autoconfigure-model-image-observation-$version$-sources.jar",
+  "test-code-url": "https://github.com/spring-projects/spring-ai/tree/v$version$/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/$version$/spring-ai-autoconfigure-model-image-observation-$version$-javadoc.jar",
+  "description": "Spring AI Image Observation Auto Configuration provides Spring Boot auto-configuration for Micrometer observation support around Spring AI image model operations. It contributes observation properties and logging observation handlers so applications can instrument image prompts using Spring AI's observability conventions."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/2.0.0-RC2/spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-sources.jar \\
+  https://github.com/spring-projects/spring-ai/tree/v2.0.0-RC2/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test \\
+  https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/2.0.0-RC2/spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-javadoc.jar; do
+  printf '%s -> ' \""'$url"
+  curl -fsSL -o /dev/null -w '"'%{http_code}\\n' \""'$url"
+done' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca
+diff --git a/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json b/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json
+index 85130245679724c223ae7a267d283a5dda41ff5d..dbd8bf0fb09058087f34c9f482b0030d07375d51
+--- a/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json
++++ b/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.ai:spring-ai-autoconfigure-model-image-observation:2.0.0-RC2"
++  "coordinates" : "org.springframework.ai:spring-ai-autoconfigure-model-image-observation:2.0.0-RC2",
++  "repository-url" : "https://github.com/spring-projects/spring-ai",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/$version$/spring-ai-autoconfigure-model-image-observation-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-ai/tree/v$version$/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/$version$/spring-ai-autoconfigure-model-image-observation-$version$-javadoc.jar",
++  "description" : "Spring AI Image Observation Auto Configuration provides Spring Boot auto-configuration for Micrometer observation support around Spring AI image model operations. It contributes observation properties and logging observation handlers so applications can instrument image prompts using Spring AI's observability conventions."
+ }
+
+ succeeded in 984ms:
+200
+https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/2.0.0-RC2/spring-ai-autoconfigure-model-image-observation-2.0.0-RC2-javadoc.jar -> 200
+
+codex
+The substituted URLs all return HTTP 200 and the file parses as JSON. I’m checking the worktree view once more because this file is under `build/`, which may be ignored by Git even though it was updated on disk.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca
+ succeeded in 0ms:
+{
+  "coordinates" : "org.springframework.ai:spring-ai-autoconfigure-model-image-observation:2.0.0-RC2",
+  "repository-url" : "https://github.com/spring-projects/spring-ai",
+  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/$version$/spring-ai-autoconfigure-model-image-observation-$version$-sources.jar",
+  "test-code-url" : "https://github.com/spring-projects/spring-ai/tree/v$version$/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/$version$/spring-ai-autoconfigure-model-image-observation-$version$-javadoc.jar",
+  "description" : "Spring AI Image Observation Auto Configuration provides Spring Boot auto-configuration for Micrometer observation support around Spring AI image model operations. It contributes observation properties and logging observation handlers so applications can instrument image prompts using Spring AI's observability conventions."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca
+diff --git a/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json b/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json
+index 85130245679724c223ae7a267d283a5dda41ff5d..dbd8bf0fb09058087f34c9f482b0030d07375d51
+--- a/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json
++++ b/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.ai:spring-ai-autoconfigure-model-image-observation:2.0.0-RC2"
++  "coordinates" : "org.springframework.ai:spring-ai-autoconfigure-model-image-observation:2.0.0-RC2",
++  "repository-url" : "https://github.com/spring-projects/spring-ai",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/$version$/spring-ai-autoconfigure-model-image-observation-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-ai/tree/v$version$/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/$version$/spring-ai-autoconfigure-model-image-observation-$version$-javadoc.jar",
++  "description" : "Spring AI Image Observation Auto Configuration provides Spring Boot auto-configuration for Micrometer observation support around Spring AI image model operations. It contributes observation properties and logging observation handlers so applications can instrument image prompts using Spring AI's observability conventions."
+ }
+
+ succeeded in 270ms:
+!! build/
+
+codex
+Updated [metadata JSON](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json:1) with repository, source, test, documentation URLs, and a two-sentence description.
+
+Validation done: JSON parses with `jq`, and the `$version$ = 2.0.0-RC2` source, test, and Javadoc URLs all returned HTTP 200. I left `language` and `not-for-native-image` absent because this is a JVM JAR with `.class` files and is not Kotlin/Groovy/Scala-specific.
+diff --git a/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json b/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json
+index 85130245679724c223ae7a267d283a5dda41ff5d..dbd8bf0fb09058087f34c9f482b0030d07375d51
+--- a/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json
++++ b/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "org.springframework.ai:spring-ai-autoconfigure-model-image-observation:2.0.0-RC2"
++  "coordinates" : "org.springframework.ai:spring-ai-autoconfigure-model-image-observation:2.0.0-RC2",
++  "repository-url" : "https://github.com/spring-projects/spring-ai",
++  "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/$version$/spring-ai-autoconfigure-model-image-observation-$version$-sources.jar",
++  "test-code-url" : "https://github.com/spring-projects/spring-ai/tree/v$version$/auto-configurations/models/image/observation/spring-ai-autoconfigure-model-image-observation/src/test",
++  "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/ai/spring-ai-autoconfigure-model-image-observation/$version$/spring-ai-autoconfigure-model-image-observation-$version$-javadoc.jar",
++  "description" : "Spring AI Image Observation Auto Configuration provides Spring Boot auto-configuration for Micrometer observation support around Spring AI image model operations. It contributes observation properties and logging observation handlers so applications can instrument image prompts using Spring AI's observability conventions."
+ }
+
+tokens used
+44,105
+Updated [metadata JSON](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca/build/discovered-artifact-metadata/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.json:1) with repository, source, test, documentation URLs, and a two-sentence description.
+
+Validation done: JSON parses with `jq`, and the `$version$ = 2.0.0-RC2` source, test, and Javadoc URLs all returned HTTP 200. I left `language` and `not-for-native-image` absent because this is a JVM JAR with `.class` files and is not Kotlin/Groovy/Scala-specific.
+Ran agent for org.springframework.ai:spring-ai-autoconfigure-model-image-observation:2.0.0-RC2 (exit 0). Log: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca/build/agent-artifact-discovery-logs/org.springframework.ai-spring-ai-autoconfigure-model-image-observation-2.0.0-RC2.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8418-4efeb6ca/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 23s
+9 actionable tasks: 9 executed
