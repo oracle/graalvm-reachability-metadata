@@ -9,6 +9,7 @@ package com_typesafe_akka.akka_serialization_jackson_2_13
 import java.nio.charset.StandardCharsets
 
 import akka.actor.ActorSystem
+import akka.actor.Address
 import akka.serialization.Serialization
 import akka.serialization.SerializationExtension
 import akka.serialization.Serializer
@@ -31,6 +32,7 @@ import org.junit.jupiter.api.Test
 import scala.beans.BeanProperty
 import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
+import scala.concurrent.duration.FiniteDuration
 
 class Akka_serialization_jackson_2_13Test {
   import Akka_serialization_jackson_2_13Test._
@@ -112,6 +114,23 @@ class Akka_serialization_jackson_2_13Test {
       val decoded: JsonMessage = firstMapper.readValue(json, classOf[JsonMessage])
       assertEquals(message.id, decoded.id)
       assertEquals(message.count, decoded.count)
+    }
+  }
+
+  @Test
+  def akkaJacksonModuleSerializesAddressAndFiniteDurationFields(): Unit = {
+    withActorSystem("AkkaJacksonModuleTest") { system =>
+      val provider: JacksonObjectMapperProvider = JacksonObjectMapperProvider(system)
+      val mapper: ObjectMapper = provider.getOrCreate("jackson-json", None)
+      val address: Address = Address("akka", "orders", "127.0.0.1", 2552)
+      val message: InfrastructureMessage = new InfrastructureMessage(address, 5.seconds)
+
+      val json: String = mapper.writeValueAsString(message)
+      assertTrue(json.contains(address.toString))
+
+      val decoded: InfrastructureMessage = mapper.readValue(json, classOf[InfrastructureMessage])
+      assertEquals(message.address, decoded.address)
+      assertEquals(message.timeout, decoded.timeout)
     }
   }
 
@@ -220,6 +239,21 @@ final class StartCommand() extends Command {
     this()
     this.name = name
     this.priority = priority
+  }
+}
+
+final class InfrastructureMessage() {
+  @BeanProperty var address: Address = _
+  @BeanProperty var timeout: FiniteDuration = _
+
+  @JsonCreator
+  def this(
+    @JsonProperty("address") address: Address,
+    @JsonProperty("timeout") timeout: FiniteDuration
+  ) = {
+    this()
+    this.address = address
+    this.timeout = timeout
   }
 }
 
