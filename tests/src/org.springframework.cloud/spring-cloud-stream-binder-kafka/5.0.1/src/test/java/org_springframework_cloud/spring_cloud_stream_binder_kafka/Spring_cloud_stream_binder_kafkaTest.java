@@ -40,6 +40,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.source.ConfigurationPropertyName;
 import org.springframework.cloud.stream.binder.kafka.KafkaExpressionEvaluatingInterceptor;
+import org.springframework.cloud.stream.binder.kafka.KafkaNullConverter;
 import org.springframework.cloud.stream.binder.kafka.aot.KafkaBinderRuntimeHints;
 import org.springframework.cloud.stream.binder.kafka.config.ExtendedBindingHandlerMappingsProviderConfiguration;
 import org.springframework.cloud.stream.binder.kafka.properties.KafkaBindingProperties;
@@ -52,6 +53,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.kafka.support.KafkaNull;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.EmbeddedKafkaKraftBroker;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
@@ -151,6 +153,21 @@ public class Spring_cloud_stream_binder_kafkaTest {
 
             assertThat(new String(deadLetterRecord.value(), StandardCharsets.UTF_8)).isEqualTo("poison");
         }
+    }
+
+    @Test
+    void kafkaNullConverterRoundTripsTombstonePayload() {
+        KafkaNullConverter converter = new KafkaNullConverter();
+        Message<KafkaNull> message = MessageBuilder.withPayload(KafkaNull.INSTANCE)
+                .setHeader("source", "delete-event")
+                .build();
+
+        Object convertedFromMessage = converter.fromMessage(message, KafkaNull.class);
+        Message<?> convertedToMessage = converter.toMessage(KafkaNull.INSTANCE, message.getHeaders());
+
+        assertThat(convertedFromMessage).isSameAs(KafkaNull.INSTANCE);
+        assertThat(convertedToMessage.getPayload()).isSameAs(KafkaNull.INSTANCE);
+        assertThat(convertedToMessage.getHeaders()).containsEntry("source", "delete-event");
     }
 
     @Test
