@@ -23,19 +23,18 @@ import com.sun.istack.tools.ParallelWorldClassLoader;
 public class ParallelWorldClassLoaderTest {
     private static final String PREFIX = "parallel-world/";
     private static final String SIMPLE_RESOURCE_NAME = "resource.bin";
-    private static final String TOOL_CLASS_RESOURCE = "com/sun/istack/tools/ParallelWorldClassLoader.class";
 
     @Test
     public void getResourceConsultsParentWithPrefixedName() throws IOException {
         final URL mappedResource = mappedResource();
         final ResourceOnlyParentClassLoader parent = new ResourceOnlyParentClassLoader(mappedResource);
 
-        try (ParallelWorldClassLoader loader = new ParallelWorldClassLoader(parent, PREFIX)) {
-            final URL resource = loader.getResource(SIMPLE_RESOURCE_NAME);
+        try (ExposedParallelWorldClassLoader loader = new ExposedParallelWorldClassLoader(parent, PREFIX)) {
+            final URL resource = loader.findResourceForTest(SIMPLE_RESOURCE_NAME);
 
             assertThat(resource).isEqualTo(mappedResource);
             assertThat(parent.resourceRequests())
-                    .contains(SIMPLE_RESOURCE_NAME, PREFIX + SIMPLE_RESOURCE_NAME);
+                    .containsExactly(PREFIX + SIMPLE_RESOURCE_NAME);
         }
     }
 
@@ -44,12 +43,12 @@ public class ParallelWorldClassLoaderTest {
         final URL mappedResource = mappedResource();
         final ResourceOnlyParentClassLoader parent = new ResourceOnlyParentClassLoader(mappedResource);
 
-        try (ParallelWorldClassLoader loader = new ParallelWorldClassLoader(parent, PREFIX)) {
-            final Enumeration<URL> resources = loader.getResources(SIMPLE_RESOURCE_NAME);
+        try (ExposedParallelWorldClassLoader loader = new ExposedParallelWorldClassLoader(parent, PREFIX)) {
+            final Enumeration<URL> resources = loader.findResourcesForTest(SIMPLE_RESOURCE_NAME);
 
             assertThat(resources).isNotNull();
             assertThat(parent.resourceEnumerationRequests())
-                    .contains(SIMPLE_RESOURCE_NAME, PREFIX + SIMPLE_RESOURCE_NAME);
+                    .containsExactly(PREFIX + SIMPLE_RESOURCE_NAME);
         }
     }
 
@@ -58,8 +57,8 @@ public class ParallelWorldClassLoaderTest {
         final URL mappedResource = mappedResource();
         final ResourceOnlyParentClassLoader parent = new ResourceOnlyParentClassLoader(mappedResource);
 
-        try (ParallelWorldClassLoader loader = new ParallelWorldClassLoader(parent, PREFIX)) {
-            assertThatThrownBy(() -> loader.loadClass("example.MissingParallelWorldType"))
+        try (ExposedParallelWorldClassLoader loader = new ExposedParallelWorldClassLoader(parent, PREFIX)) {
+            assertThatThrownBy(() -> loader.findClassForTest("example.MissingParallelWorldType"))
                     .isInstanceOf(ClassNotFoundException.class)
                     .hasMessage("example.MissingParallelWorldType");
             assertThat(parent.resourceRequests())
@@ -67,10 +66,26 @@ public class ParallelWorldClassLoaderTest {
         }
     }
 
-    private static URL mappedResource() {
-        final URL resource = ParallelWorldClassLoaderTest.class.getClassLoader().getResource(TOOL_CLASS_RESOURCE);
-        assertThat(resource).as("tool class resource").isNotNull();
-        return resource;
+    private static URL mappedResource() throws IOException {
+        return new URL("file:/parallel-world/resource.bin");
+    }
+
+    private static final class ExposedParallelWorldClassLoader extends ParallelWorldClassLoader {
+        ExposedParallelWorldClassLoader(ClassLoader parent, String prefix) {
+            super(parent, prefix);
+        }
+
+        URL findResourceForTest(String name) {
+            return findResource(name);
+        }
+
+        Enumeration<URL> findResourcesForTest(String name) throws IOException {
+            return findResources(name);
+        }
+
+        Class<?> findClassForTest(String name) throws ClassNotFoundException {
+            return findClass(name);
+        }
     }
 
     private static final class ResourceOnlyParentClassLoader extends ClassLoader {
