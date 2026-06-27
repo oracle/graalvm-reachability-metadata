@@ -1,0 +1,71 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "ognl:ognl:3.3.5",
+  "issueNumber": 7430,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Configure generated Java tests to run with JVM args `--add-opens=java.base/java.lang=ALL-UNNAMED` and `--add-opens=java.base/java.util=ALL-UNNAMED`. Upstream OGNL 3.3.5 enables these in its JDK 17+ Surefire profile because OGNL exercises reflective property/method access. Do not add `--illegal-access=permit` for JDK 25. If testing OGNL security-manager paths, set `ognl.security.manager` only inside isolated test cases and restore it afterward; do not make it a global test property.",
+    "applied_setup": [],
+    "current_library": "ognl:ognl:3.2.21",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7430 [Automation] java run fails for ognl:ognl:3.3.5; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "17 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 62412,
+    "issue_label": "fails-java-run",
+    "issue_number": 7430,
+    "library": "ognl:ognl:3.3.5",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.3.5",
+    "output_tokens_used": 3599,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The reported Java-run failure appears version-behavior related rather than missing setup: existing coverage failed an assertion under OGNL 3.3.5/JDK 25.",
+      "JDK 25 SecurityManager deprecation/removal behavior can make tests that install or assert SecurityManager behavior brittle.",
+      "Expression compilation uses the transitive `org.javassist:javassist:3.29.0-GA`; no extra dependency is needed, but native-image runtime behavior may still require test-side fallbacks."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/ognl:ognl:3.3.5/library-preparation-preflight/pi-generation-2026-06-27T00-32-45-433213Z.log",
+    "status": "completed",
+    "summary": "OGNL 3.3.5 resolves with its needed Javassist runtime dependency and does not need Docker or extra Maven dependencies, but upstream tests for JDK 17+ require JPMS opens for reflective access."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.3.5",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-7430-fails-java-run-ognl-ognl-3.3.5-7e9b6cb6",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
