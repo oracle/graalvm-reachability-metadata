@@ -6,6 +6,7 @@
  */
 package io_circe.circe_literal_3
 
+import io.circe.Encoder
 import io.circe.Json
 import io.circe.KeyEncoder
 import io.circe.literal.*
@@ -104,6 +105,32 @@ class Circe_literal_3Test {
     assertThat(cursor.downField("config").downField("sampleRate").as[Double]).isEqualTo(Right(0.25))
     assertThat(cursor.downField("statusCounts").downField("success").as[Int]).isEqualTo(Right(10))
     assertThat(cursor.downField("statusCounts").downField("failure").as[Int]).isEqualTo(Right(2))
+  }
+
+  @Test
+  def encodesInterpolatedCustomValuesWithInScopeEncoders(): Unit = {
+    final case class Coordinate(x: Int, y: Int)
+    given Encoder[Coordinate] = Encoder.instance { coordinate =>
+      Json.arr(Json.fromInt(coordinate.x), Json.fromInt(coordinate.y))
+    }
+
+    val origin: Coordinate = Coordinate(0, 0)
+    val destination: Coordinate = Coordinate(5, -3)
+    val route: Json = json"""
+      {
+        "origin": $origin,
+        "destination": $destination,
+        "description": "custom encoder output"
+      }
+    """
+
+    val cursor = route.hcursor
+    val originValues: Vector[Json] = cursor.downField("origin").focus.flatMap(_.asArray).getOrElse(Vector.empty)
+    val destinationValues: Vector[Json] = cursor.downField("destination").focus.flatMap(_.asArray).getOrElse(Vector.empty)
+
+    assertThat(originValues.map(_.asNumber.flatMap(_.toInt)).asJava).containsExactly(Some(0), Some(0))
+    assertThat(destinationValues.map(_.asNumber.flatMap(_.toInt)).asJava).containsExactly(Some(5), Some(-3))
+    assertThat(cursor.downField("description").as[String]).isEqualTo(Right("custom encoder output"))
   }
 
   @Test
