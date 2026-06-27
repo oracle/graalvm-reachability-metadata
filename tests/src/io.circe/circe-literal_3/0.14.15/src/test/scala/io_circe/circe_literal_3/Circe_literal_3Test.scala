@@ -8,6 +8,7 @@ package io_circe.circe_literal_3
 
 import io.circe.Encoder
 import io.circe.Json
+import io.circe.JsonNumber
 import io.circe.KeyEncoder
 import io.circe.literal.*
 import org.assertj.core.api.Assertions.assertThat
@@ -153,5 +154,31 @@ class Circe_literal_3Test {
     )
 
     assertThat(document).isEqualTo(expected)
+  }
+
+  @Test
+  def numericLiteralsSupportFractionalAndExponentForms(): Unit = {
+    val document: Json = json"""
+      {
+        "fractional": 0.0001,
+        "positiveExponent": 6.022e23,
+        "negativeExponent": -1.25E-2
+      }
+      """
+
+    val expected: Json = Json.obj(
+      "fractional" -> jsonNumber("0.0001"),
+      "positiveExponent" -> jsonNumber("6.022e23"),
+      "negativeExponent" -> jsonNumber("-1.25E-2")
+    )
+
+    assertThat(document).isEqualTo(expected)
+  }
+
+  private def jsonNumber(value: String): Json = {
+    val number: JsonNumber = JsonNumber
+      .fromString(value)
+      .getOrElse(throw new AssertionError(s"Invalid JSON number: $value"))
+    Json.fromJsonNumber(number)
   }
 }
