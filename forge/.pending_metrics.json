@@ -1,0 +1,70 @@
+{
+  "timestamp": "2026-06-27T03:42:32.388902Z",
+  "library": "com.github.victools:jsonschema-module-jackson:4.38.0",
+  "starting_commit": "a53b11791ea3cfb092970e6f782f514c07ae21d5",
+  "ending_commit": "17e766a1fe57f86368d6a1af7e5d6139539d814a",
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+  "agent": "pi",
+  "model": "oca/gpt-5.5",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 8425,
+    "issue_label": "library-new-request",
+    "library": "com.github.victools:jsonschema-module-jackson:4.38.0",
+    "summary": "The Jackson module is an add-on whose POM marks jsonschema-generator and Jackson APIs as provided; meaningful tests need the aligned generator dependency available.",
+    "deterministic_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "com.github.victools:jsonschema-generator:4.38.0",
+        "scope": "testImplementation",
+        "reason": "jsonschema-module-jackson implements the jsonschema-generator Module API and normal documented usage passes JacksonModule into SchemaGeneratorConfigBuilder; the module POM declares jsonschema-generator and Jackson APIs with provided scope, so the module artifact alone is not enough for compile/runti\n...[truncated]"
+      }
+    ],
+    "agent_guidance": "No Docker image, environment variable, or system property setup appears necessary. Generated tests should exercise the documented integration path by registering JacksonModule with SchemaGeneratorConfigBuilder/SchemaGenerator and generating schemas for small annotated fixture classes using Jackson annotations such as @JsonProperty, @JsonIgnore, @JsonPropertyDescription, @JsonTypeInfo/@JsonSubTypes, or @JsonUnwrapped.",
+    "risks": [
+      "If the harness already injects provided-scope dependencies differently, the extra dependency may be redundant, but it matches documented usage and version-alignment guidance.",
+      "Coverage can remain superficial if tests only instantiate JacksonModule without generating a schema from annotated model classes."
+    ],
+    "applied_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "com.github.victools:jsonschema-generator:4.38.0",
+        "result": "applied",
+        "target": "tests/src/com.github.victools/jsonschema-module-jackson/4.38.0/build.gradle"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8425 Support for com.github.victools:jsonschema-module-jackson:4.38.0; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "oca/gpt-5.5",
+    "input_tokens_used": 19964,
+    "output_tokens_used": 2146,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/com.github.victools:jsonschema-module-jackson:4.38.0/library-preparation-preflight/pi-generation-2026-06-27T03-23-47-527235Z.log"
+  },
+  "metrics": {
+    "input_tokens_used": 107590,
+    "cached_input_tokens_used": 1524736,
+    "output_tokens_used": 16271,
+    "iterations": 3,
+    "cost_usd": 1.2505,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "test_file": "None",
+    "metadata_file": "None"
+  }
+}
