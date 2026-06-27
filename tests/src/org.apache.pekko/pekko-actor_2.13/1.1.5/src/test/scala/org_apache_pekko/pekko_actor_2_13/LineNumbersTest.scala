@@ -24,17 +24,13 @@ class LineNumbersTest {
 
   @Test
   def readsImplementationClassResourceForSerializableLambda(): Unit = {
-    val target: SerializableThunk = () => "serializable-lambda"
+    val target: SerializableSupplier = () => "serializable-lambda"
 
-    assertThat(target.value()).isEqualTo("serializable-lambda")
+    assertThat(target.get()).isEqualTo("serializable-lambda")
     val result: LineNumbers.Result = LineNumbers(target)
 
     assertThat(result).isNotEqualTo(LineNumbers.NoSourceInfo)
   }
 
   private final class LineNumbersTarget(val name: String)
-
-  private trait SerializableThunk extends Serializable {
-    def value(): String
-  }
 }
