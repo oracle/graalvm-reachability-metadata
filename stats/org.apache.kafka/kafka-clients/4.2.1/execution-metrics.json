@@ -156,5 +156,129 @@
       "test_file": "tests/src/org.apache.kafka/kafka-clients/4.2.1/src/test/java/org_apache_kafka/kafka_clients/OrgApacheKafkaCommonUtilsSecurityUtilsTest.java",
       "metadata_file": "metadata/org.apache.kafka/kafka-clients/4.2.1/reachability-metadata.json"
     }
+  },
+  "improve_library_coverage:2026-06-27": {
+    "timestamp": "2026-06-27T14:15:38.704005Z",
+    "library": "org.apache.kafka:kafka-clients:4.2.1",
+    "starting_commit": "ca74ff46f09bb0bcc60c6692a5e9bcaece039aed",
+    "ending_commit": "d67e7b51d91924c6f1af0bce6759e1ffb094a5dc",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "4.2.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.929204,
+            "coveredCalls": 105,
+            "totalCalls": 113
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 0.931034,
+        "coveredCalls": 108,
+        "totalCalls": 116
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 103440,
+          "missed": 1310006,
+          "ratio": 0.073183,
+          "total": 1413446
+        },
+        "line": {
+          "covered": 14873,
+          "missed": 284793,
+          "ratio": 0.049632,
+          "total": 299666
+        },
+        "method": {
+          "covered": 3275,
+          "missed": 51265,
+          "ratio": 0.060048,
+          "total": 54540
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8605,
+      "issue_label": "library-update-request",
+      "library": "org.apache.kafka:kafka-clients:4.2.1",
+      "summary": "Meaningful Kafka client coverage is reachable without a broker Docker image, but the useful local coverage paths rely on Kafka's published test fixture classifier and helper libraries that are not provided by the normal kafka-clients dependency.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.fasterxml.jackson.core:jackson-databind:2.20.1",
+          "scope": "testImplementation",
+          "reason": "kafka-clients contains JSON converter and OAuth-related classes that reference Jackson, and Kafka's test fixtures exercise message JSON round trips; Jackson is compileOnly/testRuntime in Kafka's own build rather than a normal transitive dependency."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.bouncycastle:bcpkix-jdk18on:1.80",
+          "scope": "testImplementation",
+          "reason": "Kafka's test fixtures include SSL/SASL helpers such as TestSslUtils that import Bouncy Castle classes for certificate generation."
+        }
+      ],
+      "agent_guidance": "No Kafka Docker broker is required for baseline coverage; prefer MockProducer, MockConsumer, serializers/deserializers, config instantiation, and Kafka test fixtures. If exercising Kerberos/SASL internals on JDK 21 or in native-image, pass --add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED to JVM tests and native-image build arguments. If using a JUnit extension to force IBM-vendor branches, set junit.jupiter.extensions.autodetection.enabled=true for JVM and native runs.",
+      "risks": [
+        "The kafka-clients test artifact uses Gradle classifier notation; the driver must preserve the ':test' classifier when applying the dependency.",
+        "A real Kafka broker could exercise producer/consumer/AdminClient integration paths, but it is not required before meaningful coverage and would add startup/flakiness risk.",
+        "Some OAuth/JWT secured paths reference optional jose4j classes; add jose4j only if generated tests deliberately cover those secured JWT classes and local verification fails."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.fasterxml.jackson.core:jackson-databind:2.20.1",
+          "result": "already_present",
+          "target": "tests/src/org.apache.kafka/kafka-clients/4.2.1/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.bouncycastle:bcpkix-jdk18on:1.80",
+          "result": "already_present",
+          "target": "tests/src/org.apache.kafka/kafka-clients/4.2.1/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8605 Update existing library: org.apache.kafka:kafka-clients:4.2.1; label=library-update-request; body_chars=7037"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "36 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 56708,
+      "output_tokens_used": 7792,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.kafka:kafka-clients:4.2.1/library-preparation-preflight/pi-generation-2026-06-27T12-43-02-037946Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 739056,
+      "cached_input_tokens_used": 7585280,
+      "output_tokens_used": 66187,
+      "iterations": 19,
+      "cost_usd": 5.7782,
+      "generated_loc": 2452,
+      "tested_library_loc": 14873,
+      "metadata_entries": 516,
+      "test_only_metadata_entries": 17,
+      "code_coverage_percent": 4.96
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.apache.kafka/kafka-clients/4.2.1/src/test/java/org_apache_kafka/kafka_clients/OrgApacheKafkaCommonUtilsSecurityUtilsTest.java",
+      "metadata_file": "metadata/org.apache.kafka/kafka-clients/4.2.1/reachability-metadata.json"
+    }
   }
 }
