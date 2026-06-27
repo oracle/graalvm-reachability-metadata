@@ -6,6 +6,9 @@
  */
 package com_softwaremill_sttp_client4.json_common_3
 
+import java.nio.charset.StandardCharsets
+
+import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -205,5 +208,22 @@ class Json_common_3Test {
 
     assertEquals("left:missing", unexpected.body)
     assertEquals(StatusCode.NotFound, unexpected.response.code)
+  }
+
+  @Test
+  def showAsJsonAlwaysPreservesCompositeResponseHandlers(): Unit = {
+    val backend: SyncBackendStub = SyncBackendStub.whenAnyRequest.thenRespondAdjust(
+      "composite-json",
+      StatusCode.Ok
+    )
+    val responseAs = asBothOption(asStringAlways, asByteArrayAlways).showAsJsonAlways
+    val response = basicRequest
+      .response(responseAs)
+      .get(uri"http://example.com/composite")
+      .send(backend)
+
+    assertEquals("as json", responseAs.show)
+    assertEquals("composite-json", response.body._1)
+    assertArrayEquals("composite-json".getBytes(StandardCharsets.UTF_8), response.body._2.get)
   }
 }
