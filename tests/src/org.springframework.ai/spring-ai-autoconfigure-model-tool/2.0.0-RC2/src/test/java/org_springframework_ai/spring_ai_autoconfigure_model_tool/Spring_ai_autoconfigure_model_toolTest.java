@@ -59,6 +59,36 @@ public class Spring_ai_autoconfigure_model_toolTest {
     }
 
     @Test
+    void customToolCallbackResolverBacksOffDefaultResolverAndIsUsedByManager() {
+        ContextAwareToolCallback resolverTool = new ContextAwareToolCallback("resolverTool", "resolver-result");
+        ContextAwareToolCallback beanTool = new ContextAwareToolCallback("beanTool", "bean-result");
+        ToolCallbackResolver customResolver = name -> "resolverTool".equals(name) ? resolverTool : null;
+
+        try (AnnotationConfigApplicationContext context = applicationContext(Map.of(), ctx -> {
+            ctx.registerBean("customResolver", ToolCallbackResolver.class, () -> customResolver);
+            ctx.registerBean("beanTool", ToolCallback.class, () -> beanTool);
+        })) {
+            ToolCallbackResolver resolver = context.getBean(ToolCallbackResolver.class);
+            ToolCallingManager manager = context.getBean(ToolCallingManager.class);
+
+            assertThat(resolver).isSameAs(customResolver);
+            assertThat(resolver.resolve("resolverTool")).isSameAs(resolverTool);
+            assertThat(resolver.resolve("beanTool")).isNull();
+
+            ToolExecutionResult result = manager.executeToolCalls(
+                    promptWithToolContext("requestId", "resolver-123"),
+                    responseWithToolCall("tool-call-custom", "resolverTool", "{}"));
+
+            ToolResponseMessage responseMessage = (ToolResponseMessage) result.conversationHistory().get(2);
+            assertThat(responseMessage.getResponses()).singleElement().satisfies(response -> {
+                assertThat(response.id()).isEqualTo("tool-call-custom");
+                assertThat(response.name()).isEqualTo("resolverTool");
+                assertThat(response.responseData()).isEqualTo("resolver-result:resolver-123:{}");
+            });
+        }
+    }
+
+    @Test
     void resolverCombinesToolCallbackBeansAndToolCallbackProvidersForManagerExecution() {
         ContextAwareToolCallback beanTool = new ContextAwareToolCallback("beanTool", "bean-result");
         ContextAwareToolCallback providerTool = new ContextAwareToolCallback("providerTool", "provider-result");
