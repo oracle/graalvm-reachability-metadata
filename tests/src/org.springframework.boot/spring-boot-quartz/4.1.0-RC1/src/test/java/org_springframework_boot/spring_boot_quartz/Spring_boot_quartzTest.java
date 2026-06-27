@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
+import org.quartz.Calendar;
 import org.quartz.Job;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
@@ -24,6 +25,7 @@ import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
+import org.quartz.impl.calendar.HolidayCalendar;
 import org.quartz.simpl.RAMJobStore;
 
 import org.springframework.beans.factory.BeanFactory;
@@ -133,6 +135,20 @@ public class Spring_boot_quartzTest {
     }
 
     @Test
+    void autoConfigurationRegistersCalendarBeansWithScheduler() {
+        this.contextRunner.withPropertyValues("spring.quartz.auto-startup=false")
+                .withBean("marketHolidayCalendar", Calendar.class, Spring_boot_quartzTest::holidayCalendar)
+                .run((context) -> {
+                    Scheduler scheduler = context.getBean(Scheduler.class);
+
+                    Calendar calendar = scheduler.getCalendar("marketHolidayCalendar");
+                    assertThat(calendar).isInstanceOf(HolidayCalendar.class);
+                    assertThat(calendar.isTimeIncluded(Duration.ofDays(1).toMillis())).isFalse();
+                    assertThat(calendar.isTimeIncluded(Duration.ofDays(2).toMillis())).isTrue();
+                });
+    }
+
+    @Test
     void schedulerFactoryBeanCustomizerCanModifyCreatedScheduler() {
         AtomicBoolean customizerInvoked = new AtomicBoolean();
 
@@ -154,6 +170,12 @@ public class Spring_boot_quartzTest {
         JobDataMap data = new JobDataMap();
         data.put("source", "spring-boot-quartz");
         return JobBuilder.newJob(SampleQuartzJob.class).withIdentity(JOB_KEY).usingJobData(data).storeDurably().build();
+    }
+
+    private static Calendar holidayCalendar() {
+        HolidayCalendar calendar = new HolidayCalendar();
+        calendar.addExcludedDate(new Date(Duration.ofDays(1).toMillis()));
+        return calendar;
     }
 
     private static Trigger sampleTrigger() {
