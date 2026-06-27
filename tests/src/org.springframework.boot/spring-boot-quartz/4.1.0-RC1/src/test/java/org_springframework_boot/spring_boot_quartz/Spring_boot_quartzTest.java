@@ -9,7 +9,10 @@ package org_springframework_boot.spring_boot_quartz;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Test;
 import org.quartz.Calendar;
@@ -29,6 +32,7 @@ import org.quartz.impl.calendar.HolidayCalendar;
 import org.quartz.simpl.RAMJobStore;
 
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.quartz.autoconfigure.JobStoreType;
 import org.springframework.boot.quartz.autoconfigure.QuartzAutoConfiguration;
@@ -44,6 +48,10 @@ public class Spring_boot_quartzTest {
     private static final JobKey JOB_KEY = JobKey.jobKey("sampleJob", "sampleGroup");
 
     private static final TriggerKey TRIGGER_KEY = TriggerKey.triggerKey("sampleTrigger", "sampleGroup");
+
+    private static final JobKey EXECUTING_JOB_KEY = JobKey.jobKey("executingJob", "executingGroup");
+
+    private static final TriggerKey EXECUTING_TRIGGER_KEY = TriggerKey.triggerKey("executingTrigger", "executingGroup");
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(QuartzAutoConfiguration.class));
@@ -166,6 +174,24 @@ public class Spring_boot_quartzTest {
                 });
     }
 
+    @Test
+    void autoConfiguredSchedulerExecutesJobsWithSpringBeanPropertyInjection() {
+        AutowiringQuartzJob.reset();
+
+        this.contextRunner
+                .withPropertyValues("spring.quartz.properties[org.quartz.threadPool.threadCount]=1")
+                .withBean(MessageService.class, () -> new MessageService("message-from-spring"))
+                .withBean("executingJobDetail", JobDetail.class, Spring_boot_quartzTest::executingJobDetail)
+                .withBean("executingTrigger", Trigger.class, Spring_boot_quartzTest::executingTrigger)
+                .run((context) -> {
+                    Scheduler scheduler = context.getBean(Scheduler.class);
+
+                    assertThat(scheduler.isStarted()).isTrue();
+                    assertThat(AutowiringQuartzJob.awaitExecution()).isTrue();
+                    assertThat(AutowiringQuartzJob.observedMessage()).isEqualTo("message-from-spring");
+                });
+    }
+
     private static JobDetail sampleJobDetail() {
         JobDataMap data = new JobDataMap();
         data.put("source", "spring-boot-quartz");
@@ -190,11 +216,76 @@ public class Spring_boot_quartzTest {
                 .build();
     }
 
+    private static JobDetail executingJobDetail() {
+        return JobBuilder.newJob(AutowiringQuartzJob.class).withIdentity(EXECUTING_JOB_KEY).storeDurably().build();
+    }
+
+    private static Trigger executingTrigger() {
+        return TriggerBuilder.newTrigger()
+                .withIdentity(EXECUTING_TRIGGER_KEY)
+                .forJob(EXECUTING_JOB_KEY)
+                .startNow()
+                .withSchedule(SimpleScheduleBuilder.simpleSchedule().withRepeatCount(0))
+                .build();
+    }
+
     public static class SampleQuartzJob implements Job {
 
         @Override
         public void execute(JobExecutionContext context) throws JobExecutionException {
             assertThat(context.getJobDetail().getKey()).isEqualTo(JOB_KEY);
+        }
+
+    }
+
+    public static class AutowiringQuartzJob implements Job {
+
+        private static final AtomicReference<CountDownLatch> LATCH = new AtomicReference<>();
+
+        private static final AtomicReference<String> OBSERVED_MESSAGE = new AtomicReference<>();
+
+        private MessageService messageService;
+
+        static void reset() {
+            LATCH.set(new CountDownLatch(1));
+            OBSERVED_MESSAGE.set(null);
+        }
+
+        static boolean awaitExecution() throws InterruptedException {
+            return LATCH.get().await(10, TimeUnit.SECONDS);
+        }
+
+        static String observedMessage() {
+            return OBSERVED_MESSAGE.get();
+        }
+
+        @Autowired
+        public void setMessageService(MessageService messageService) {
+            this.messageService = messageService;
+        }
+
+        @Override
+        public void execute(JobExecutionContext context) throws JobExecutionException {
+            try {
+                OBSERVED_MESSAGE.set(this.messageService.getMessage());
+            }
+            finally {
+                LATCH.get().countDown();
+            }
+        }
+
+    }
+
+    public static class MessageService {
+
+        private final String message;
+
+        MessageService(String message) {
+            this.message = message;
+        }
+
+        String getMessage() {
+            return this.message;
         }
 
     }
