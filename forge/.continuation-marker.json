@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.parquet:parquet-jackson:1.16.0",
+  "issueNumber": 8256,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.apache.parquet:parquet-jackson:1.12.2",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8256 [Automation] java run fails for org.apache.parquet:parquet-jackson:1.16.0; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "31 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 32502,
+    "issue_label": "fails-java-run",
+    "issue_number": 8256,
+    "library": "org.apache.parquet:parquet-jackson:1.16.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "1.16.0",
+    "output_tokens_used": 3342,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Existing failure appears to be a version-sensitive Jackson API/behavior change in a test expectation, not missing setup.",
+      "Tests that target deprecated or low-level Jackson introspection internals may need assertions adjusted for Jackson 2.19.2 behavior bundled in parquet-jackson 1.16.0."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.parquet:parquet-jackson:1.16.0/library-preparation-preflight/pi-generation-2026-06-27T03-49-37-056784Z.log",
+    "status": "completed",
+    "summary": "No extra setup is needed: parquet-jackson is a self-contained shaded Jackson artifact with no runtime Maven dependencies, no service requiring Docker, and normal usage is in-process JSON binding via relocated Jackson classes."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "1.16.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8256-fails-java-run-org.apache.parquet-parquet-jackson-1.16.0-a34070f6",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
