@@ -11,6 +11,7 @@ import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.stream.ActorAttributes
 import akka.stream.ClosedShape
+import akka.stream.IOResult
 import akka.stream.KillSwitches
 import akka.stream.Materializer
 import akka.stream.OverflowStrategy
@@ -21,6 +22,7 @@ import akka.stream.UniqueKillSwitch
 import akka.stream.scaladsl.Broadcast
 import akka.stream.scaladsl.BroadcastHub
 import akka.stream.scaladsl.Compression
+import akka.stream.scaladsl.FileIO
 import akka.stream.scaladsl.Flow
 import akka.stream.scaladsl.Framing
 import akka.stream.scaladsl.GraphDSL
@@ -37,6 +39,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 import java.io.ByteArrayInputStream
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.Path
 import scala.concurrent.Await
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
@@ -130,6 +135,35 @@ class Akka_stream_2_13Test {
           .runFold(ByteString.empty)(_ ++ _))
 
       assertThat(collected.utf8String).isEqualTo("chunked-input-stream")
+  }
+
+  @Test
+  def writeAndReadFilesWithFileIO(): Unit = withStream("file-io") {
+    (_: ActorSystem, materializer: Materializer) =>
+      implicit val mat: Materializer = materializer
+
+      val path: Path = Files.createTempFile("akka-stream-file-io", ".txt")
+      try {
+        val lines: List[String] = List("alpha\n", "beta\n", "gamma\n")
+        val expectedText: String = lines.mkString
+        val expectedByteCount: Long = expectedText.getBytes(StandardCharsets.UTF_8).length.toLong
+
+        val writeResult: IOResult = awaitResult(
+          Source(lines)
+            .map(line => ByteString(line, StandardCharsets.UTF_8.name()))
+            .runWith(FileIO.toPath(path)))
+        val readText: String = awaitResult(
+          FileIO
+            .fromPath(path, chunkSize = 4)
+            .runFold(ByteString.empty)(_ ++ _))
+          .utf8String
+
+        assertThat(writeResult.wasSuccessful).isTrue()
+        assertThat(writeResult.count).isEqualTo(expectedByteCount)
+        assertThat(readText).isEqualTo(expectedText)
+      } finally {
+        Files.deleteIfExists(path)
+      }
   }
 
   @Test
