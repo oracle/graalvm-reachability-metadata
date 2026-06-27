@@ -35,6 +35,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.ResponseErrorHandler;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -116,6 +117,30 @@ public class Spring_ai_autoconfigure_retryTest {
                     .isInstanceOf(TransientAiException.class)
                     .hasMessageContaining("HTTP 404")
                     .hasMessageContaining("missing");
+        }
+    }
+
+    @Test
+    void retryTemplateRetriesResourceAccessExceptions() throws Exception {
+        Map<String, Object> properties = Map.of(
+                "spring.ai.retry.max-attempts", "2",
+                "spring.ai.retry.backoff.initial-interval", "1ms",
+                "spring.ai.retry.backoff.multiplier", "1",
+                "spring.ai.retry.backoff.max-interval", "1ms");
+
+        try (ConfigurableApplicationContext context = applicationContext(properties)) {
+            RetryTemplate retryTemplate = context.getBean(RetryTemplate.class);
+            AtomicInteger attempts = new AtomicInteger();
+
+            String result = retryTemplate.execute(() -> {
+                if (attempts.incrementAndGet() == 1) {
+                    throw new ResourceAccessException("temporary connection failure");
+                }
+                return "connected";
+            });
+
+            assertThat(result).isEqualTo("connected");
+            assertThat(attempts.get()).isEqualTo(2);
         }
     }
 
