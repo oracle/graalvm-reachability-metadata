@@ -1,0 +1,91 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.springframework.ai:spring-ai-autoconfigure-model-chat-memory:2.0.0-RC2",
+  "issueNumber": 8415,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No Docker image, external service, API key, or environment variable is needed. Prefer an in-process Spring Boot auto-configuration test that verifies the default context creates ChatMemoryRepository and ChatMemory beans, backs off when user beans are supplied, and exercises basic in-memory chat-memory operations.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "coordinate": "org.springframework.ai:spring-ai-model:2.0.0-RC2",
+        "kind": "dependency",
+        "reason": "Provides the ChatMemory, ChatMemoryRepository, InMemoryChatMemoryRepository, and MessageWindowChatMemory types referenced by the auto-configuration.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.1.0-RC1",
+        "kind": "dependency",
+        "reason": "Provides AutoConfiguration and conditional auto-configuration annotations/classes used by ChatMemoryAutoConfiguration.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.springframework.boot:spring-boot-test:4.1.0-RC1",
+        "kind": "dependency",
+        "reason": "Spring Boot's normal auto-configuration test pattern for this module uses ApplicationContextRunner to verify bean creation and conditional back-off behavior.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8415 Support for org.springframework.ai:spring-ai-autoconfigure-model-chat-memory:2.0.0-RC2; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 28741,
+    "issue_label": "library-new-request",
+    "issue_number": 8415,
+    "library": "org.springframework.ai:spring-ai-autoconfigure-model-chat-memory:2.0.0-RC2",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 3588,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Because the target POM marks its Spring AI model and Spring Boot dependencies optional, a scaffold that only depends on the target artifact may fail to compile or load the auto-configuration class.",
+      "Local Gradle and Native Image verification remain authoritative for whether Spring Boot 4.1.0-RC1 test dependencies resolve cleanly in the harness."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.springframework.ai:spring-ai-autoconfigure-model-chat-memory:2.0.0-RC2/library-preparation-preflight/pi-generation-2026-06-27T03-57-04-723593Z.log",
+    "status": "completed",
+    "summary": "The artifact is a tiny Spring Boot auto-configuration module whose meaningful behavior depends on optional Spring AI model and Spring Boot classes that are not transitively present from the published POM."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 3,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8415-library-new-request-org.springframework.ai-spring-ai-autoconfigure-model-chat-memory-2.0.0-RC2-58bceea6",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springframework.ai:spring-ai-autoconfigure-model-chat-memory:2.0.0-RC2",
+    "timestamp": "2026-06-27T04:17:43.839076Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
