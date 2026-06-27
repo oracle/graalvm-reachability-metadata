@@ -177,6 +177,27 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def interpolatesMapsWithCustomKeyEncodersAsJsonObjects(): Unit = {
+    val flags: Map[FeatureKey, Boolean] = Map(
+      FeatureKey("payments", "refunds") -> true,
+      FeatureKey("search", "ranking") -> false
+    )
+
+    val document: Json = json"""
+      {
+        "flags": $flags,
+        "environment": "production"
+      }
+      """
+    val cursor: HCursor = expectSome(document.hcursor.downField("flags").focus).hcursor
+
+    assertTrue(expectRight(cursor.get[Boolean]("payments/refunds")))
+    assertFalse(expectRight(cursor.get[Boolean]("search/ranking")))
+    assertEquals(Set("payments/refunds", "search/ranking"), cursor.keys.map(_.toSet).getOrElse(Set.empty))
+    assertEquals("production", expectRight(document.hcursor.get[String]("environment")))
+  }
+
+  @Test
   def supportsInterpolatedTopLevelArraysAndObjects(): Unit = {
     val service: String = "billing"
     val deployment: Deployment = Deployment(service, "1.2.3", 2)
