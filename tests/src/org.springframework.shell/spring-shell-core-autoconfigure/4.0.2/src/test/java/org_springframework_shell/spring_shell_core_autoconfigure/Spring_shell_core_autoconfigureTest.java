@@ -23,11 +23,14 @@ import org.jline.terminal.Terminal;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.DefaultApplicationArguments;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.MapPropertySource;
+import org.springframework.shell.core.ShellRunner;
 import org.springframework.shell.core.command.Command;
 import org.springframework.shell.core.command.CommandContext;
 import org.springframework.shell.core.command.CommandOption;
@@ -39,6 +42,7 @@ import org.springframework.shell.core.command.ParsedInput;
 import org.springframework.shell.core.config.UserConfigPathProvider;
 import org.springframework.shell.core.autoconfigure.CommandRegistryAutoConfiguration;
 import org.springframework.shell.core.autoconfigure.JLineShellAutoConfiguration;
+import org.springframework.shell.core.autoconfigure.ShellRunnerAutoConfiguration;
 import org.springframework.shell.core.autoconfigure.SpringShellProperties;
 import org.springframework.shell.core.autoconfigure.StandardCommandsAutoConfiguration;
 import org.springframework.shell.core.autoconfigure.TerminalCustomizer;
@@ -184,6 +188,20 @@ public class Spring_shell_core_autoconfigureTest {
         }
     }
 
+    @Test
+    void shellRunnerAutoConfigurationDelegatesApplicationArgumentsToShellRunner() throws Exception {
+        try (AnnotationConfigApplicationContext context = newContext(Collections.emptyMap(),
+                CommandRegistryAutoConfiguration.class, ShellRunnerAutoConfiguration.class,
+                RecordingShellRunnerConfiguration.class)) {
+            ApplicationRunner applicationRunner = context.getBean("springShellApplicationRunner", ApplicationRunner.class);
+            RecordingShellRunner shellRunner = context.getBean(RecordingShellRunner.class);
+
+            applicationRunner.run(new DefaultApplicationArguments("sample", "--name=native"));
+
+            assertThat(shellRunner.getArguments()).containsExactly("sample", "--name=native");
+        }
+    }
+
     private static AnnotationConfigApplicationContext newContext(Map<String, Object> properties,
             Class<?>... configurationClasses) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
@@ -229,6 +247,31 @@ public class Spring_shell_core_autoconfigureTest {
             properties.setProperty("name", "Example Shell");
             properties.setProperty("version", "9.9.9");
             return new BuildProperties(properties);
+        }
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    static class RecordingShellRunnerConfiguration {
+
+        @Bean
+        RecordingShellRunner recordingShellRunner() {
+            return new RecordingShellRunner();
+        }
+
+    }
+
+    static class RecordingShellRunner implements ShellRunner {
+
+        private String[] arguments = new String[0];
+
+        @Override
+        public void run(String[] args) {
+            this.arguments = args.clone();
+        }
+
+        String[] getArguments() {
+            return this.arguments.clone();
         }
 
     }
