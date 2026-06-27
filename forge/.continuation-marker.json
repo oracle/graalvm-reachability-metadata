@@ -1,0 +1,70 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "io.vertx:vertx-web-client:5.0.1",
+  "issueNumber": 7998,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Exercise the client against an in-process Vert.x HTTP server; do not require external network services. For native runs on JDK 25 / current-defaults, ensure the generated scaffold sets native test runtime system properties `-Dsun.misc.unsafe.memory.access=allow` and `-Dio.netty.tryReflectionSetAccessible=true` for 5.0.1 as well.",
+    "applied_setup": [],
+    "current_library": "io.vertx:vertx-web-client:5.0.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7998 [Automation] native-image run fails for io.vertx:vertx-web-client:5.0.1; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 44505,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 7998,
+    "library": "io.vertx:vertx-web-client:5.0.1",
+    "model": "oca/gpt-5.5",
+    "new_version": "5.0.1",
+    "output_tokens_used": 2265,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "`OAuth2WebClient` references the optional `io.vertx:vertx-auth-oauth2` API; avoid OAuth2-specific tests unless an explicit test dependency is added, because basic WebClient coverage does not require it.",
+      "Local Gradle and Native Image verification remain authoritative for whether the Netty unsafe-access flags are still required."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/io.vertx:vertx-web-client:5.0.1/library-preparation-preflight/pi-generation-2026-06-27T02-21-55-659248Z.log",
+    "status": "completed",
+    "summary": "No extra Maven dependency or Docker service is needed for meaningful Vert.x Web Client coverage, but 5.0.1 still resolves Netty 4.2.x and needs the same Java 25 native runtime system properties already used for 5.0.0."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "5.0.1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-7998-fails-native-image-run-io.vertx-vertx-web-client-5.0.1-d769bd1b",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
