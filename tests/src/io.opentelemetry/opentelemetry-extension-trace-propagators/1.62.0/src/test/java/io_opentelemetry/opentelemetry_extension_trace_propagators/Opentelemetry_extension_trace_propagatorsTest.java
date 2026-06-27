@@ -185,6 +185,21 @@ public class Opentelemetry_extension_trace_propagatorsTest {
         assertExtractedSpan(afterOtTrace, TRACE_ID, SPAN_ID, true);
     }
 
+    @Test
+    void b3SingleHeaderExtractsDebugContextForDebugReinjection() {
+        Map<String, String> carrier = new LinkedHashMap<>();
+        carrier.put("b3", OTHER_TRACE_ID + "-" + OTHER_SPAN_ID + "-d");
+
+        Context extracted =
+                B3Propagator.injectingSingleHeader().extract(Context.root(), carrier, MAP_GETTER);
+        Map<String, String> reinjected = new LinkedHashMap<>();
+
+        B3Propagator.injectingSingleHeader().inject(extracted, reinjected, MAP_SETTER);
+
+        assertExtractedSpan(extracted, OTHER_TRACE_ID, OTHER_SPAN_ID, true);
+        assertThat(reinjected).containsEntry("b3", OTHER_TRACE_ID + "-" + OTHER_SPAN_ID + "-d");
+    }
+
     private static Context sampledContext() {
         return contextWithSpan(TRACE_ID, SPAN_ID, TraceFlags.getSampled());
     }
