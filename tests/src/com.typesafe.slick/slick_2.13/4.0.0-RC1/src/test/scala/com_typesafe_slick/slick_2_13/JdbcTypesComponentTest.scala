@@ -32,7 +32,8 @@ class JdbcTypesComponentTest {
       isNullable = Some(false),
       scope = None,
       sourceDataType = None,
-      isAutoInc = Some(true))
+      isAutoInc = Some(true),
+      isGenerated = Some(false))
 
     assertThat(column.sqlTypeName).isEqualTo(Some("INTEGER"))
   }
