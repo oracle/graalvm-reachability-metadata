@@ -13,6 +13,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.config.MapApplicationConfig
+import io.ktor.server.http.content.staticFiles
 import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.request.httpMethod
 import io.ktor.server.request.path
@@ -23,12 +24,15 @@ import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 import org.slf4j.MDC
 import org.slf4j.Marker
 import org.slf4j.event.Level
 import org.slf4j.helpers.LegacyAbstractLogger
+import java.nio.file.Path
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.atomic.AtomicInteger
+import kotlin.io.path.writeText
 
 public class KtorServerCallLoggingJvmTest {
     @Test
@@ -149,6 +153,39 @@ public class KtorServerCallLoggingJvmTest {
         assertThat(events).hasSize(1)
         assertThat(events[0].level).isEqualTo(Level.ERROR)
         assertThat(events[0].message).isEqualTo("failure:/boom:500")
+    }
+
+    @Test
+    fun disableForStaticContentSkipsStaticResponsesButKeepsLoggingApplicationRoutes(
+        @TempDir staticDirectory: Path
+    ): Unit = testApplication {
+        staticDirectory.resolve("app.js").writeText("console.log('static asset')")
+        val logger = RecordingLogger()
+        install(CallLogging) {
+            this.logger = logger
+            level = Level.INFO
+            disableForStaticContent()
+            format { call -> "logged:${call.request.path()}" }
+        }
+        routing {
+            staticFiles("/assets", staticDirectory.toFile())
+            get("/dynamic") {
+                call.respondText("dynamic route")
+            }
+        }
+
+        val staticResponse = client.get("/assets/app.js")
+        assertThat(staticResponse.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(staticResponse.bodyAsText()).isEqualTo("console.log('static asset')")
+
+        val dynamicResponse = client.get("/dynamic")
+        assertThat(dynamicResponse.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(dynamicResponse.bodyAsText()).isEqualTo("dynamic route")
+
+        val events: List<LogEvent> = logger.events()
+        assertThat(events).hasSize(1)
+        assertThat(events[0].level).isEqualTo(Level.INFO)
+        assertThat(events[0].message).isEqualTo("logged:/dynamic")
     }
 
     @Test
