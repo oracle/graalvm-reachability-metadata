@@ -25,17 +25,19 @@ import akka.stream.Materializer
 import akka.stream.javadsl.Flow
 import akka.stream.javadsl.Sink
 import akka.stream.javadsl.Source
-import akka.stream.scaladsl.{Source => ScalaSource}
+import akka.stream.scaladsl.{Flow => ScalaFlow, Sink => ScalaSink, Source => ScalaSource}
 import akka.util.ByteString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import play.api.libs.streams.AkkaStreams
 import play.api.libs.streams.GzipFlow
 import play.libs.streams.Accumulator
 
 import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
+import scala.jdk.CollectionConverters._
 
 class Play_streams_2_13Test {
   import Play_streams_2_13Test._
@@ -163,6 +165,31 @@ class Play_streams_2_13Test {
     assertThat(doneResult).isEqualTo("precomputed")
     assertThat(futureDoneResult).isEqualTo("future-value")
     assertThat(flattenedResult).isEqualTo(Integer.valueOf(9))
+  }
+
+  @Test
+  def routesSelectedElementsAroundScalaStreamProcessing(): Unit = {
+    val processingFlow: ScalaFlow[String, String, _] = ScalaFlow[String].map(value => s"processed:$value")
+    val bypassingFlow: ScalaFlow[String, String, _] = AkkaStreams
+      .bypassWith[String, String, String] { value: String =>
+        if (value.startsWith("cached:")) Right(s"bypassed:${value.stripPrefix("cached:")}")
+        else Left(value)
+      }
+      .apply(processingFlow)
+
+    val results: Seq[String] = Await.result(
+      ScalaSource(List("cached:alpha", "beta", "cached:gamma", "delta"))
+        .via(bypassingFlow)
+        .runWith(ScalaSink.seq[String])(materializer),
+      10.seconds
+    )
+
+    assertThat(results.asJava).containsExactlyInAnyOrder(
+      "bypassed:alpha",
+      "processed:beta",
+      "bypassed:gamma",
+      "processed:delta"
+    )
   }
 
   @Test
