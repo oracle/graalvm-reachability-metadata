@@ -1,0 +1,57 @@
+{
+  "timestamp": "2026-06-27T17:38:34.449778Z",
+  "library": "com.typesafe.akka:akka-serialization-jackson_2.13:2.6.21",
+  "starting_commit": "9baeff7b45ab1239dc26f1d1ed9aa53a2f054c4c",
+  "ending_commit": "0a706fe16c5371ca26a58212068c4ec707ed3973",
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+  "agent": "pi",
+  "model": "oca/gpt-5.5",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 5464,
+    "issue_label": "library-new-request",
+    "library": "com.typesafe.akka:akka-serialization-jackson_2.13:2.6.21",
+    "summary": "No extra Maven dependency or Docker image is required, but meaningful coverage requires Akka serialization configuration in the generated test rather than plain class instantiation.",
+    "deterministic_setup": [],
+    "agent_guidance": "Create an Akka ActorSystem with ConfigFactory.parseString test configuration that binds a test marker interface or message class under akka.actor.serialization-bindings to jackson-json and/or jackson-cbor. Exercise SerializationExtension or JacksonObjectMapperProvider with simple test messages, and terminate the ActorSystem after each test. Avoid relying on Java -parameters support by using public fields or explicit @JsonCreator/@JsonProperty annotations for test message constructors. The optional akka-actor-typed and akka-stream modules are conditionally loaded only when those dependencies are already on the classpath; do not add them unless the test intentionally covers typed ActorRef or StreamRef serialization.",
+    "risks": [
+      "Without serialization-bindings, Akka will not route application messages through the Jackson serializers, so tests may only cover incidental object construction.",
+      "Tests that use constructor-only POJOs without @JsonCreator/@JsonProperty may fail depending on compiler parameter metadata.",
+      "Optional typed/stream integration classes are present in the artifact but are skipped when akka-actor-typed or akka-stream are absent; this is expected and does not require deterministic setup for core coverage."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#5464 Support for com.typesafe.akka:akka-serialization-jackson_2.13:2.6.21; label=library-new-request; body_chars=125"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "oca/gpt-5.5",
+    "input_tokens_used": 67597,
+    "output_tokens_used": 3696,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/com.typesafe.akka:akka-serialization-jackson_2.13:2.6.21/library-preparation-preflight/pi-generation-2026-06-27T17-10-51-364864Z.log"
+  },
+  "metrics": {
+    "input_tokens_used": 222501,
+    "cached_input_tokens_used": 1931264,
+    "output_tokens_used": 20957,
+    "iterations": 4,
+    "cost_usd": 1.5943,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "test_file": "None",
+    "metadata_file": "None"
+  }
+}
