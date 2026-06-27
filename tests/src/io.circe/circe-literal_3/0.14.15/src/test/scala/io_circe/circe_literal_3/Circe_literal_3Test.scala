@@ -55,6 +55,27 @@ object ReleaseNote {
 
 final class Circe_literal_3Test {
   @Test
+  def decodesEscapedLiteralObjectKeysBeforeBuildingJsonObjects(): Unit = {
+    val document: Json = json"""
+      {
+        "simple": 1,
+        "line\nkey": "newline",
+        "quote\"key": "quoted",
+        "unicode\u2603key": true
+      }
+      """
+
+    val fields: JsonObject = document.asObject.getOrElse(fail("Expected literal to produce a JSON object"))
+
+    assertThat(fields.keys.toList).isEqualTo(List("simple", "line\nkey", "quote\"key", "unicode☃key"))
+    assertThat(document.hcursor.get[String]("line\nkey")).isEqualTo(Right("newline"))
+    assertThat(document.hcursor.get[String]("quote\"key")).isEqualTo(Right("quoted"))
+    assertThat(document.hcursor.get[Boolean]("unicode☃key")).isEqualTo(Right(true))
+    assertThat(document.noSpaces).contains("\"line\\nkey\"")
+    assertThat(document.noSpaces).contains("\"quote\\\"key\"")
+  }
+
+  @Test
   def buildsNestedLiteralDocumentsWithAllJsonValueKinds(): Unit = {
     val document: Json = json"""
       {
