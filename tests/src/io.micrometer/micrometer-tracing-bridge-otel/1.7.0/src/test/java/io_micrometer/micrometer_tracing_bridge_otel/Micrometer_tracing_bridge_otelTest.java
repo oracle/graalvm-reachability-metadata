@@ -118,8 +118,7 @@ public class Micrometer_tracing_bridge_otelTest {
             assertThat(exportedLink.getAttributes().get(AttributeKey.stringKey("link.kind"))).isEqualTo("parent");
             assertThat(exportedLink.getAttributes().get(AttributeKey.longKey("sample.count"))).isEqualTo(3L);
             assertThat(exportedLink.getAttributes().get(AttributeKey.booleanKey("sample.enabled"))).isTrue();
-        }
-        finally {
+        } finally {
             fixture.close();
         }
     }
@@ -147,8 +146,7 @@ public class Micrometer_tracing_bridge_otelTest {
             }
             scoped.end();
             assertThat(onlySpanNamed(exporter.exported, "scoped").getSpanId()).isEqualTo(scoped.context().spanId());
-        }
-        finally {
+        } finally {
             fixture.close();
         }
     }
@@ -192,8 +190,7 @@ public class Micrometer_tracing_bridge_otelTest {
             assertThat(consumerData.getTraceId()).isEqualTo(producer.context().traceId());
             assertThat(consumerData.getParentSpanId()).isEqualTo(producer.context().spanId());
             assertThat(consumerData.getAttributes().get(AttributeKey.stringKey("tenant-id"))).isEqualTo("tenant-a");
-        }
-        finally {
+        } finally {
             fixture.close();
         }
     }
@@ -220,8 +217,7 @@ public class Micrometer_tracing_bridge_otelTest {
 
                 Span child = fixture.tracer.nextSpan().name("child-from-scoped-parent");
                 child.end();
-            }
-            finally {
+            } finally {
                 scopedSpan.end();
             }
 
@@ -240,8 +236,7 @@ public class Micrometer_tracing_bridge_otelTest {
             SpanData childData = onlySpanNamed(exporter.exported, "child-from-scoped-parent");
             assertThat(childData.getTraceId()).isEqualTo(scopedData.getTraceId());
             assertThat(childData.getParentSpanId()).isEqualTo(scopedSpanId);
-        }
-        finally {
+        } finally {
             fixture.close();
         }
     }
@@ -289,8 +284,7 @@ public class Micrometer_tracing_bridge_otelTest {
             assertThat(childData.getKind()).isEqualTo(SpanKind.SERVER);
             assertThat(childData.getTraceId()).isEqualTo(traceId);
             assertThat(childData.getParentSpanId()).isEqualTo(parentSpanId);
-        }
-        finally {
+        } finally {
             fixture.close();
         }
     }
@@ -309,8 +303,7 @@ public class Micrometer_tracing_bridge_otelTest {
         try {
             fixture.tracer.nextSpan().name("keep").end();
             fixture.tracer.nextSpan().name("drop").end();
-        }
-        finally {
+        } finally {
             fixture.close();
         }
 
