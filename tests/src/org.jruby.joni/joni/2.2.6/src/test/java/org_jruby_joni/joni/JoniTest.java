@@ -71,6 +71,26 @@ public class JoniTest {
     }
 
     @Test
+    void lookaroundAssertionsConstrainMatchesWithoutConsumingText() {
+        Regex regex = regex("(?<=USD )\\d+(?![\\dA-Z])");
+        byte[] input = bytes("EUR 100 USD 123 USD 456X USD 789.");
+        int firstAmount = bytes("EUR 100 USD ").length;
+        int secondAmount = bytes("EUR 100 USD 123 USD 456X USD ").length;
+
+        Matcher matcher = regex.matcher(input);
+        int matchStart = matcher.search(0, input.length, Option.DEFAULT);
+        Region region = matcher.getEagerRegion();
+
+        assertThat(matchStart).isEqualTo(firstAmount);
+        assertThat(matcher.getBegin()).isEqualTo(firstAmount);
+        assertThat(extract(input, region, 0)).isEqualTo("123");
+
+        assertThat(matcher.search(matcher.getEnd(), input.length, Option.DEFAULT))
+                .isEqualTo(secondAmount);
+        assertThat(extract(input, matcher.getEagerRegion(), 0)).isEqualTo("789");
+    }
+
+    @Test
     void rubyNamedGroupsCanBeResolvedIteratedAndUsedAsBackReferences() {
         Regex regex = regex("\\A(?<token>[A-Za-z]+)-\\k<token>\\z");
         byte[] good = bytes("repeat-repeat");
