@@ -60,6 +60,26 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def preservesEmptyObjectAndArrayLiterals(): Unit = {
+    val document: Json = json"""
+      {
+        "emptyObject": {},
+        "emptyArray": [],
+        "nested": [[], {}]
+      }
+    """
+    val cursor = document.hcursor
+
+    assertTrue(cursor.downField("emptyObject").focus.flatMap(_.asObject).exists(_.keys.isEmpty))
+    assertEquals(Vector.empty, cursor.downField("emptyArray").focus.flatMap(_.asArray).getOrElse(Vector(Json.Null)))
+    assertEquals(
+      Vector.empty,
+      cursor.downField("nested").downN(0).focus.flatMap(_.asArray).getOrElse(Vector(Json.Null))
+    )
+    assertTrue(cursor.downField("nested").downN(1).focus.flatMap(_.asObject).exists(_.keys.isEmpty))
+  }
+
+  @Test
   def supportsTopLevelScalarAndArrayLiterals(): Unit = {
     val nullValue: Json = json""" null """
     val booleanValue: Json = json""" false """
