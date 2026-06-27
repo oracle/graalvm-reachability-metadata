@@ -29,7 +29,7 @@ public class MavenCliTest {
             System.setOut(capturedOut);
             System.setErr(capturedErr);
 
-            int exitCode = MavenCli.main(new String[] { "--version" }, new ClassWorld());
+            int exitCode = MavenCli.main(new String[] {"--version"}, new ClassWorld());
 
             assertThat(exitCode).isZero();
         } finally {
