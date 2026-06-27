@@ -16,8 +16,13 @@ import io.micrometer.tracing.BaggageInScope;
 import io.micrometer.tracing.CurrentTraceContext;
 import io.micrometer.tracing.Link;
 import io.micrometer.tracing.Span;
+import io.micrometer.tracing.SpanAndScope;
+import io.micrometer.tracing.ThreadLocalSpan;
 import io.micrometer.tracing.TraceContext;
 import io.micrometer.tracing.Tracer;
+import io.micrometer.tracing.contextpropagation.BaggageToPropagate;
+import io.micrometer.tracing.contextpropagation.ObservationAwareBaggageThreadLocalAccessor;
+import io.micrometer.tracing.contextpropagation.ObservationAwareSpanThreadLocalAccessor;
 import io.micrometer.tracing.exporter.FinishedSpan;
 import io.micrometer.tracing.exporter.SpanIgnoringSpanExportingPredicate;
 import io.micrometer.tracing.exporter.TestSpanReporter;
@@ -210,6 +215,72 @@ public class Micrometer_tracingTest {
         assertThat(receiverSpan.getRemoteIp()).isEqualTo("gateway.example.test");
         assertThat(receiverSpan.getRemotePort()).isEqualTo(9090);
         assertThat(receiverSpan.getTags()).containsEntry("route", "/orders/{id}");
+    }
+
+    @Test
+    void contextPropagationAccessorsCaptureRestoreSpanAndBaggage() {
+        SimpleTracer tracer = new SimpleTracer();
+        ObservationRegistry registry = ObservationRegistry.create();
+        ObservationAwareSpanThreadLocalAccessor spanAccessor =
+                new ObservationAwareSpanThreadLocalAccessor(registry, tracer);
+        ObservationAwareBaggageThreadLocalAccessor baggageAccessor =
+                new ObservationAwareBaggageThreadLocalAccessor(registry, tracer);
+        Span original = tracer.nextSpan().name("original").start();
+        Span propagated = tracer.nextSpan().name("propagated").start();
+
+        assertThat(spanAccessor.key()).isEqualTo(ObservationAwareSpanThreadLocalAccessor.KEY);
+        assertThat(baggageAccessor.key()).isEqualTo(ObservationAwareBaggageThreadLocalAccessor.KEY);
+        assertThat(spanAccessor.getValue()).isNull();
+        assertThat(baggageAccessor.getValue()).isNull();
+
+        try (Tracer.SpanInScope originalScope = tracer.withSpan(original);
+                BaggageInScope tenant = tracer.createBaggageInScope(original.context(), "tenant", "acme")) {
+            assertThat(spanAccessor.getValue()).isSameAs(original);
+            assertThat(baggageAccessor.getValue()).isEqualTo(new BaggageToPropagate("tenant", "acme"));
+
+            spanAccessor.setValue(propagated);
+            assertThat(tracer.currentSpan()).isSameAs(propagated);
+            baggageAccessor.setValue(new BaggageToPropagate(Map.of("request-id", "r-123")));
+
+            assertThat(baggageAccessor.getValue()).isEqualTo(new BaggageToPropagate("request-id", "r-123"));
+            assertThat(tracer.getAllBaggage(propagated.context())).containsEntry("request-id", "r-123");
+
+            baggageAccessor.restore();
+            assertThat(tracer.getAllBaggage(propagated.context())).doesNotContainKey("request-id");
+            spanAccessor.restore(original);
+            assertThat(tracer.currentSpan()).isSameAs(original);
+        }
+        propagated.end();
+        original.end();
+    }
+
+    @Test
+    void threadLocalSpanStacksNestedSpansAndRestoresPreviousScope() {
+        SimpleTracer tracer = new SimpleTracer();
+        ThreadLocalSpan threadLocalSpan = new ThreadLocalSpan(tracer);
+        Span first = tracer.nextSpan().name("first").start();
+        Span second = tracer.nextSpan().name("second").start();
+
+        assertThat(threadLocalSpan.get()).isNull();
+        threadLocalSpan.set(first);
+        assertThat(threadLocalSpan.get().getSpan()).isSameAs(first);
+        assertThat(tracer.currentSpan()).isSameAs(first);
+
+        threadLocalSpan.set(second);
+        assertThat(threadLocalSpan.get().getSpan()).isSameAs(second);
+        assertThat(tracer.currentSpan()).isSameAs(second);
+
+        SpanAndScope removedSecond = threadLocalSpan.remove();
+        assertThat(removedSecond.getSpan()).isSameAs(second);
+        assertThat(tracer.currentSpan()).isSameAs(first);
+
+        SpanAndScope removedFirst = threadLocalSpan.remove();
+        assertThat(removedFirst.getSpan()).isSameAs(first);
+        assertThat(tracer.currentSpan()).isNull();
+        assertThat(threadLocalSpan.remove()).isNull();
+
+        second.end();
+        first.end();
     }
 
     @Test
