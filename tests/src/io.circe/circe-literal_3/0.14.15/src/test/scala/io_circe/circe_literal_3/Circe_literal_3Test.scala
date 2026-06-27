@@ -106,6 +106,22 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def createsTopLevelJsonFromInterpolatedValues(): Unit = {
+    val payload: LiteralPayload = LiteralPayload("top-level", 7, enabled = true)
+    val payloads: List[LiteralPayload] = List(
+      payload,
+      LiteralPayload("second", 11, enabled = false)
+    )
+
+    val payloadJson: Json = json""" $payload """
+    val payloadsJson: Json = json""" $payloads """
+
+    assertThat(payloadJson.as[LiteralPayload]).isEqualTo(Right(payload))
+    assertThat(payloadsJson.as[List[LiteralPayload]]).isEqualTo(Right(payloads))
+    assertThat(payloadsJson.hcursor.downN(1).get[Boolean]("enabled")).isEqualTo(Right(false))
+  }
+
+  @Test
   def interpolatesJsonValuesWithoutQuotingThemAsStrings(): Unit = {
     val nested: Json = Json.obj(
       "numbers" -> Json.arr(Json.fromInt(1), Json.fromInt(2), Json.fromInt(3)),
