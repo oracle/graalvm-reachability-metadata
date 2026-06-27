@@ -166,6 +166,23 @@ public class Spring_ai_autoconfigure_model_openaiTest {
     }
 
     @Test
+    void binderPopulatesNestedChatResponseAndAudioOptions() {
+        Map<String, String> properties = Map.ofEntries(
+                Map.entry("spring.ai.openai.chat.response-format.type", "json_schema"),
+                Map.entry("spring.ai.openai.chat.response-format.json-schema", "{\"name\":\"answer\"}"),
+                Map.entry("spring.ai.openai.chat.output-audio.voice", "onyx"),
+                Map.entry("spring.ai.openai.chat.output-audio.format", "aac"));
+
+        OpenAiChatProperties chatProperties = bind(properties, OpenAiChatProperties.CONFIG_PREFIX,
+                OpenAiChatProperties.class);
+
+        assertThat(chatProperties.getResponseFormat().getType()).isEqualTo(Type.JSON_SCHEMA);
+        assertThat(chatProperties.getResponseFormat().getJsonSchema()).isEqualTo("{\"name\":\"answer\"}");
+        assertThat(chatProperties.getOutputAudio().voice()).isEqualTo(Voice.ONYX);
+        assertThat(chatProperties.getOutputAudio().format()).isEqualTo(AudioParameters.AudioResponseFormat.AAC);
+    }
+
+    @Test
     void resolvesConnectionPropertiesUsingModelOverridesAndCommonFallbacks() {
         OpenAiCommonProperties commonProperties = new OpenAiCommonProperties();
         commonProperties.setBaseUrl("https://common.example.test/v1");
