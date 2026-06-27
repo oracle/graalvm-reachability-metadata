@@ -75,6 +75,14 @@ public class Jsonschema_module_swagger_2Test {
     }
 
     @Test
+    void appliesExplicitFieldNullabilityFromSwaggerSchema() {
+        JsonNode properties = this.generator.generateSchema(NullableFieldModel.class).required("properties");
+
+        assertTypeIncludes(properties.required("nullableName"), "string", "null");
+        assertTypeExcludes(properties.required("nonNullableName"), "null");
+    }
+
+    @Test
     void supportsReferencesCompositionAndDefinitionNames() {
         JsonNode schema = this.generator.generateSchema(Product.class);
         JsonNode properties = schema.required("properties");
@@ -153,6 +161,16 @@ public class Jsonschema_module_swagger_2Test {
         }
     }
 
+    private static void assertTypeExcludes(JsonNode schema, String unexpectedType) {
+        assertThat(schema.has("type")).isTrue();
+        JsonNode type = schema.required("type");
+        if (type.isArray()) {
+            assertThat(arrayTexts(type)).doesNotContain(unexpectedType);
+        } else {
+            assertThat(type.asText()).isNotEqualTo(unexpectedType);
+        }
+    }
+
     private static List<String> arrayTexts(JsonNode arrayNode) {
         assertThat(arrayNode.isArray()).isTrue();
         List<String> values = new ArrayList<>();
@@ -180,6 +198,14 @@ public class Jsonschema_module_swagger_2Test {
             }
         }
         return false;
+    }
+
+    public static class NullableFieldModel {
+        @Schema(nullable = true)
+        public String nullableName;
+
+        @Schema(nullable = false)
+        public String nonNullableName;
     }
 
     @Schema(title = "Product schema", description = "A product exposed through the catalog API",
