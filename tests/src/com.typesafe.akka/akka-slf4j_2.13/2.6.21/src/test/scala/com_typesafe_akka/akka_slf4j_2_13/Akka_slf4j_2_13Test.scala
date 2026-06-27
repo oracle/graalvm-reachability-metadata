@@ -17,7 +17,9 @@ import akka.actor.Props
 import akka.actor.DiagnosticActorLogging
 import akka.event.Logging
 import akka.event.Logging.MDC
+import akka.event.slf4j.SLF4JLogging
 import akka.event.slf4j.Slf4jLogMarker
+import akka.event.slf4j.{Logger => AkkaSlf4jLogger}
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.LoggerContext
@@ -111,6 +113,29 @@ class Akka_slf4j_2_13Test {
     }
   }
 
+  @Test
+  def publicSlf4jLoggerFactoriesCreateUsableNamedLoggers(): Unit = {
+    val namedLoggerName: String = "akka.slf4j.public.factory"
+    val namedLoggerMessage: String = "message written through akka slf4j logger name factory"
+    val classLoggerMessage: String = "message written through akka slf4j logger class factory"
+    val traitLoggerMessage: String = "message written through akka slf4j logging trait"
+    val component: ComponentUsingSlf4jLogging = new ComponentUsingSlf4jLogging
+
+    withCapturingAppender(Set(namedLoggerMessage, classLoggerMessage, traitLoggerMessage)) { appender =>
+      AkkaSlf4jLogger(namedLoggerName).info(namedLoggerMessage)
+      AkkaSlf4jLogger(classOf[ComponentUsingSlf4jLogging], "ignored-source-name").info(classLoggerMessage)
+      component.writeInfo(traitLoggerMessage)
+
+      appender.awaitExpectedMessages()
+      val namedEvent: ILoggingEvent = assertCaptured(appender, Level.INFO, namedLoggerMessage)
+      assertEquals(namedLoggerName, namedEvent.getLoggerName)
+      val classEvent: ILoggingEvent = assertCaptured(appender, Level.INFO, classLoggerMessage)
+      assertEquals(classOf[ComponentUsingSlf4jLogging].getName, classEvent.getLoggerName)
+      val traitEvent: ILoggingEvent = assertCaptured(appender, Level.INFO, traitLoggerMessage)
+      assertEquals(component.getClass.getName, traitEvent.getLoggerName)
+    }
+  }
+
   private def withActorSystem(name: String)(testBody: ActorSystem => Unit): Unit = {
     val system: ActorSystem = ActorSystem(name, slf4jLoggingConfig)
     try {
@@ -167,6 +192,10 @@ object Akka_slf4j_2_13Test {
   )
 
   final case class LogWithMdc(correlationId: String, message: String)
+
+  final class ComponentUsingSlf4jLogging extends SLF4JLogging {
+    def writeInfo(message: String): Unit = log.info(message)
+  }
 
   final class DiagnosticLoggingActor extends Actor with DiagnosticActorLogging {
     override def mdc(currentMessage: Any): MDC = currentMessage match {
