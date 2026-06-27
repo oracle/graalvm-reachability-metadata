@@ -6,10 +6,15 @@
  */
 package org_springframework_ai.spring_ai_autoconfigure_model_tool;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import io.micrometer.common.KeyValues;
+import io.micrometer.observation.Observation;
+import io.micrometer.observation.ObservationHandler;
+import io.micrometer.observation.ObservationRegistry;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.ai.chat.messages.AssistantMessage;
@@ -29,6 +34,8 @@ import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.tool.definition.ToolDefinition;
 import org.springframework.ai.tool.execution.ToolExecutionException;
 import org.springframework.ai.tool.observation.ToolCallingContentObservationFilter;
+import org.springframework.ai.tool.observation.ToolCallingObservationContext;
+import org.springframework.ai.tool.observation.ToolCallingObservationConvention;
 import org.springframework.ai.tool.resolution.ToolCallbackResolver;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.env.MapPropertySource;
@@ -134,6 +141,46 @@ public class Spring_ai_autoconfigure_model_toolTest {
     }
 
     @Test
+    void customObservationRegistryAndConventionAreUsedForToolExecution() {
+        ObservationRegistry observationRegistry = ObservationRegistry.create();
+        CapturingObservationHandler observationHandler = new CapturingObservationHandler();
+        observationRegistry.observationConfig().observationHandler(observationHandler);
+
+        ContextAwareToolCallback observationTool = new ContextAwareToolCallback("observationTool", "observed-result");
+        ToolCallingObservationConvention observationConvention = new CustomToolCallingObservationConvention();
+
+        try (AnnotationConfigApplicationContext context = applicationContext(Map.of(), ctx -> {
+            ctx.registerBean("observationRegistry", ObservationRegistry.class, () -> observationRegistry);
+            ctx.registerBean("observationConvention", ToolCallingObservationConvention.class,
+                    () -> observationConvention);
+            ctx.registerBean("observationTool", ToolCallback.class, () -> observationTool);
+        })) {
+            ToolExecutionResult result = context.getBean(ToolCallingManager.class)
+                .executeToolCalls(promptWithToolContext("requestId", "observed-456"),
+                        responseWithToolCall("tool-call-observed", "observationTool", "{\"value\":42}"));
+
+            ToolResponseMessage responseMessage = (ToolResponseMessage) result.conversationHistory().get(2);
+            assertThat(responseMessage.getResponses()).singleElement().satisfies(response -> {
+                assertThat(response.id()).isEqualTo("tool-call-observed");
+                assertThat(response.name()).isEqualTo("observationTool");
+                assertThat(response.responseData()).isEqualTo("observed-result:observed-456:{\"value\":42}");
+            });
+
+            ToolCallingObservationContext observationContext = observationHandler.singleStoppedContext();
+            assertThat(observationContext.getName()).isEqualTo("custom.tool.observation");
+            assertThat(observationContext.getContextualName()).isEqualTo("custom observationTool tool call");
+            assertThat(observationContext.getToolDefinition().name()).isEqualTo("observationTool");
+            assertThat(observationContext.getToolCallId()).isEqualTo("tool-call-observed");
+            assertThat(observationContext.getToolCallArguments()).isEqualTo("{\"value\":42}");
+            assertThat(observationContext.getToolCallResult()).isEqualTo("observed-result:observed-456:{\"value\":42}");
+            assertThat(observationContext.getLowCardinalityKeyValue("custom.tool.name").getValue())
+                .isEqualTo("observationTool");
+            assertThat(observationContext.getHighCardinalityKeyValue("custom.tool.call.id").getValue())
+                .isEqualTo("tool-call-observed");
+        }
+    }
+
+    @Test
     void throwExceptionOnErrorPropertyControlsToolExecutionExceptionHandling() {
         try (AnnotationConfigApplicationContext context = applicationContext(Map.of(), ctx -> ctx.registerBean(
                 "failingTool", ToolCallback.class, () -> new FailingToolCallback("failingTool")))) {
@@ -233,6 +280,48 @@ public class Spring_ai_autoconfigure_model_toolTest {
         public String call(String toolInput) {
             throw new ToolExecutionException(this.toolDefinition,
                     new IllegalArgumentException("boom from " + this.toolDefinition.name()));
+        }
+    }
+
+    private static final class CustomToolCallingObservationConvention implements ToolCallingObservationConvention {
+        @Override
+        public String getName() {
+            return "custom.tool.observation";
+        }
+
+        @Override
+        public String getContextualName(ToolCallingObservationContext context) {
+            return "custom " + context.getToolDefinition().name() + " tool call";
+        }
+
+        @Override
+        public KeyValues getLowCardinalityKeyValues(ToolCallingObservationContext context) {
+            return KeyValues.of("custom.tool.name", context.getToolDefinition().name());
+        }
+
+        @Override
+        public KeyValues getHighCardinalityKeyValues(ToolCallingObservationContext context) {
+            return KeyValues.of("custom.tool.call.id", context.getToolCallId());
+        }
+    }
+
+    private static final class CapturingObservationHandler
+            implements ObservationHandler<ToolCallingObservationContext> {
+        private final List<ToolCallingObservationContext> stoppedContexts = new ArrayList<>();
+
+        @Override
+        public void onStop(ToolCallingObservationContext context) {
+            this.stoppedContexts.add(context);
+        }
+
+        @Override
+        public boolean supportsContext(Observation.Context context) {
+            return context instanceof ToolCallingObservationContext;
+        }
+
+        private ToolCallingObservationContext singleStoppedContext() {
+            assertThat(this.stoppedContexts).singleElement();
+            return this.stoppedContexts.get(0);
         }
     }
 }
