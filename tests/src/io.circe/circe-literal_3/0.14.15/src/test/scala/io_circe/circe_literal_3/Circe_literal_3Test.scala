@@ -207,6 +207,25 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def interpolatesInlineExpressionsInKeyAndValuePositions(): Unit = {
+    val prefix: String = "metric"
+    val baseCount: Int = 10
+    val tags: List[String] = List("alpha", "beta", "release")
+
+    val document: Json = json"""
+      {
+        ${prefix + "Count"}: ${baseCount + 5},
+        "tagLengths": ${tags.map(_.length)},
+        "summary": ${tags.head + ":" + tags.size}
+      }
+    """
+
+    assertThat(document.hcursor.get[Int]("metricCount")).isEqualTo(Right(15))
+    assertThat(document.hcursor.get[List[Int]]("tagLengths")).isEqualTo(Right(List(5, 4, 7)))
+    assertThat(document.hcursor.get[String]("summary")).isEqualTo(Right("alpha:3"))
+  }
+
+  @Test
   def buildsTopLevelScalarLiteralsAndInterpolatedValues(): Unit = {
     val status: Json = json"""
       "ready"
