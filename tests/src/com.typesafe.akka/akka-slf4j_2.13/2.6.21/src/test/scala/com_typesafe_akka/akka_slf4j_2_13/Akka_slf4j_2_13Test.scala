@@ -17,6 +17,7 @@ import akka.actor.Props
 import akka.actor.DiagnosticActorLogging
 import akka.event.Logging
 import akka.event.Logging.MDC
+import akka.event.slf4j.Slf4jLogMarker
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.LoggerContext
@@ -29,6 +30,8 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
+import org.slf4j.Marker
+import org.slf4j.MarkerFactory
 
 import scala.concurrent.Await
 import scala.concurrent.duration.DurationInt
@@ -83,6 +86,27 @@ class Akka_slf4j_2_13Test {
         appender.awaitExpectedMessages()
         val event: ILoggingEvent = assertCaptured(appender, Level.INFO, message)
         assertEquals(correlationId, event.getMDCPropertyMap.get("correlationId"))
+      }
+    }
+  }
+
+  @Test
+  def markerLoggingPublishesSlf4jMarkerThroughAdapter(): Unit = {
+    val message: String = "marker message routed through akka-slf4j"
+    val markerName: String = "akka-slf4j-functional-marker"
+    val slf4jMarker: Marker = MarkerFactory.getMarker(markerName)
+    val logMarker: Slf4jLogMarker = Slf4jLogMarker(slf4jMarker)
+
+    withCapturingAppender(Set(message)) { appender =>
+      withActorSystem("Slf4jAdapterMarkerLoggingTest") { system =>
+        val log = Logging.withMarker(system, "marker-logging-source")
+
+        log.info(logMarker, message)
+
+        appender.awaitExpectedMessages()
+        val event: ILoggingEvent = assertCaptured(appender, Level.INFO, message)
+        assertNotNull(event.getMarker)
+        assertEquals(markerName, event.getMarker.getName)
       }
     }
   }
