@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.parquet:parquet-jackson:1.16.0",
+  "issueNumber": 8256,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.apache.parquet:parquet-jackson:1.12.2",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8256 [Automation] java run fails for org.apache.parquet:parquet-jackson:1.16.0; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "31 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 41360,
+    "issue_label": "fails-java-run",
+    "issue_number": 8256,
+    "library": "org.apache.parquet:parquet-jackson:1.16.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "1.16.0",
+    "output_tokens_used": 2650,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The reported failure appears to be a stale/version-sensitive test expectation around Jackson enum annotation introspection after the embedded Jackson upgrade, not missing setup.",
+      "Tests that intentionally exercise deep reflection into JDK collection/date internals may still need local JVM/native-image opens already present in the existing scaffold, but this is not an additional dependency, Docker image, or environment prerequisite for reaching meaningful coverage."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.parquet:parquet-jackson:1.16.0/library-preparation-preflight/pi-generation-2026-06-27T07-20-06-258895Z.log",
+    "status": "completed",
+    "summary": "parquet-jackson is a self-contained shaded Jackson bundle used internally by Parquet; the resolved 1.16.0 artifact embeds relocated Jackson classes and its published POM has no runtime dependency setup to add. Meaningful coverage is reachable with ordinary in-memory Jackson-style tests against the shaded APIs."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "1.16.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8256-fails-java-run-org.apache.parquet-parquet-jackson-1.16.0-5027d610",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
