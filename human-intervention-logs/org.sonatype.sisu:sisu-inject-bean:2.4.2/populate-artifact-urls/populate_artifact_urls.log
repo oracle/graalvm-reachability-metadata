@@ -1,0 +1,1521 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f09c5-0430-7742-ba49-0811de6b10f3
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.sonatype.sisu:sisu-inject-bean:2.4.2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.4.2].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+- Entry selector: "metadata-version" = "2.4.2"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.4.2
+- Entry metadata-version: 2.4.2
+- Entry test-version: 2.4.2
+- Entry tested-versions: [2.4.2]
+codex
+I’ll verify this against the published Maven metadata first, since the request prefers Maven-hosted source and test artifacts when available, then I’ll patch only the missing fields in the selected index entry.
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"\\s*:\\s*\"2\\.4\\.2\"|source-code-url|repository-url|test-code-url|documentation-url|description|language' metadata/org.sonatype.sisu/sisu-inject-bean/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+4:    "metadata-version" : "2.4.2",
+19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
+20:    "repository-url" : "https://github.com/sonatype/sisu",
+21:    "test-code-url" : "N/A",
+22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
+23:    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+38:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
+39:    "repository-url" : "https://github.com/sonatype/sisu",
+40:    "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/sisu-inject/guice-bean",
+41:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
+42:    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+71:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
+72:    "repository-url" : "https://github.com/sonatype/sisu",
+73:    "test-code-url" : "N/A",
+74:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
+75:    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.2/sisu-inject-bean-2.4.2.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ ~ Copyright (c) 2010, 2013 Sonatype, Inc.
+ ~ All rights reserved. This program and the accompanying materials
+ ~ are made available under the terms of the Eclipse Public License v1.0
+ ~ which accompanies this distribution, and is available at
+ ~ http://www.eclipse.org/legal/epl-v10.html
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.sisu.inject</groupId>
+    <artifactId>wrappers</artifactId>
+    <version>2.4.2</version>
+  </parent>
+
+  <groupId>org.sonatype.sisu</groupId>
+  <artifactId>sisu-inject-bean</artifactId>
+
+  <name>Sisu-Inject-Bean : legacy wrapper</name>
+
+  <dependencies>
+    <!-- external dependencies -->
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-guice</artifactId>
+      <classifier>no_aop</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.sisu</groupId>
+      <artifactId>org.eclipse.sisu.inject</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.inject</groupId>
+          <artifactId>guice</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- optional dependencies -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.2/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/sonatype/sisu/sisu-inject-bean/2.4.2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/sonatype/sisu/sisu-inject-bean/2.4.2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="sisu-inject-bean-2.4.2-javadoc.jar" title="sisu-inject-bean-2.4.2-javadoc.jar">sisu-inject-bean-2.4.2-javadoc.jar</a>                2013-07-25 23:36    188228      
+<a href="sisu-inject-bean-2.4.2-javadoc.jar.asc" title="sisu-inject-bean-2.4.2-javadoc.jar.asc">sisu-inject-bean-2.4.2-javadoc.jar.asc</a>            2013-07-25 23:36       203      
+<a href="sisu-inject-bean-2.4.2-javadoc.jar.asc.md5" title="sisu-inject-bean-2.4.2-javadoc.jar.asc.md5">sisu-inject-bean-2.4.2-javadoc.jar.asc.md5</a>        2013-07-25 23:36        32      
+<a href="sisu-inject-bean-2.4.2-javadoc.jar.asc.sha1" title="sisu-inject-bean-2.4.2-javadoc.jar.asc.sha1">sisu-inject-bean-2.4.2-javadoc.jar.asc.sha1</a>       2013-07-25 23:36        40      
+<a href="sisu-inject-bean-2.4.2-javadoc.jar.md5" title="sisu-inject-bean-2.4.2-javadoc.jar.md5">sisu-inject-bean-2.4.2-javadoc.jar.md5</a>            2013-07-25 23:36        32      
+<a href="sisu-inject-bean-2.4.2-javadoc.jar.sha1" title="sisu-inject-bean-2.4.2-javadoc.jar.sha1">sisu-inject-bean-2.4.2-javadoc.jar.sha1</a>           2013-07-25 23:36        40      
+<a href="sisu-inject-bean-2.4.2-sources.jar" title="sisu-inject-bean-2.4.2-sources.jar">sisu-inject-bean-2.4.2-sources.jar</a>                2013-07-25 23:36     27406      
+<a href="sisu-inject-bean-2.4.2-sources.jar.asc" title="sisu-inject-bean-2.4.2-sources.jar.asc">sisu-inject-bean-2.4.2-sources.jar.asc</a>            2013-07-25 23:36       203      
+<a href="sisu-inject-bean-2.4.2-sources.jar.asc.md5" title="sisu-inject-bean-2.4.2-sources.jar.asc.md5">sisu-inject-bean-2.4.2-sources.jar.asc.md5</a>        2013-07-25 23:36        32      
+<a href="sisu-inject-bean-2.4.2-sources.jar.asc.sha1" title="sisu-inject-bean-2.4.2-sources.jar.asc.sha1">sisu-inject-bean-2.4.2-sources.jar.asc.sha1</a>       2013-07-25 23:36        40      
+<a href="sisu-inject-bean-2.4.2-sources.jar.md5" title="sisu-inject-bean-2.4.2-sources.jar.md5">sisu-inject-bean-2.4.2-sources.jar.md5</a>            2013-07-25 23:36        32      
+<a href="sisu-inject-bean-2.4.2-sources.jar.sha1" title="sisu-inject-bean-2.4.2-sources.jar.sha1">sisu-inject-bean-2.4.2-sources.jar.sha1</a>           2013-07-25 23:36        40      
+<a href="sisu-inject-bean-2.4.2.jar" title="sisu-inject-bean-2.4.2.jar">sisu-inject-bean-2.4.2.jar</a>                        2013-07-25 23:36     37629      
+<a href="sisu-inject-bean-2.4.2.jar.asc" title="sisu-inject-bean-2.4.2.jar.asc">sisu-inject-bean-2.4.2.jar.asc</a>                    2013-07-25 23:36       203      
+<a href="sisu-inject-bean-2.4.2.jar.asc.md5" title="sisu-inject-bean-2.4.2.jar.asc.md5">sisu-inject-bean-2.4.2.jar.asc.md5</a>                2013-07-25 23:36        32      
+<a href="sisu-inject-bean-2.4.2.jar.asc.sha1" title="sisu-inject-bean-2.4.2.jar.asc.sha1">sisu-inject-bean-2.4.2.jar.asc.sha1</a>               2013-07-25 23:36        40      
+<a href="sisu-inject-bean-2.4.2.jar.md5" title="sisu-inject-bean-2.4.2.jar.md5">sisu-inject-bean-2.4.2.jar.md5</a>                    2013-07-25 23:36        32      
+<a href="sisu-inject-bean-2.4.2.jar.sha1" title="sisu-inject-bean-2.4.2.jar.sha1">sisu-inject-bean-2.4.2.jar.sha1</a>                   2013-07-25 23:36        40      
+<a href="sisu-inject-bean-2.4.2.pom" title="sisu-inject-bean-2.4.2.pom">sisu-inject-bean-2.4.2.pom</a>                        2013-07-25 23:36      2263      
+<a href="sisu-inject-bean-2.4.2.pom.asc" title="sisu-inject-bean-2.4.2.pom.asc">sisu-inject-bean-2.4.2.pom.asc</a>                    2013-07-25 23:36       203      
+<a href="sisu-inject-bean-2.4.2.pom.asc.md5" title="sisu-inject-bean-2.4.2.pom.asc.md5">sisu-inject-bean-2.4.2.pom.asc.md5</a>                2013-07-25 23:36        32      
+<a href="sisu-inject-bean-2.4.2.pom.asc.sha1" title="sisu-inject-bean-2.4.2.pom.asc.sha1">sisu-inject-bean-2.4.2.pom.asc.sha1</a>               2013-07-25 23:36        40      
+<a href="sisu-inject-bean-2.4.2.pom.md5" title="sisu-inject-bean-2.4.2.pom.md5">sisu-inject-bean-2.4.2.pom.md5</a>                    2013-07-25 23:36        32      
+<a href="sisu-inject-bean-2.4.2.pom.sha1" title="sisu-inject-bean-2.4.2.pom.sha1">sisu-inject-bean-2.4.2.pom.sha1</a>                   2013-07-25 23:36        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+codex
+The local file already has non-blank values for the requested 2.4.2 entry, so I’m checking whether they are the right values before deciding if any edit is allowed. I also found Maven Central publishes sources and Javadoc for 2.4.2, but not an obvious test-sources artifact in that artifact directory.
+web search: 
+web search: org.sonatype.sisu sisu-inject-bean 2.4.2 Maven Central sources javadoc
+exec
+/usr/bin/bash -lc "sed -n '1,95p' metadata/org.sonatype.sisu/sisu-inject-bean/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.4.2",
+    "tested-versions" : [
+      "2.4.2"
+    ],
+    "allowed-packages" : [
+      "javax.enterprise.inject",
+      "javax.inject",
+      "org.aopalliance",
+      "org.sonatype",
+      "org.sonatype.guice.bean",
+      "org.sonatype.inject"
+    ]
+  },
+  {
+    "metadata-version" : "2.4.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
+    "repository-url" : "https://github.com/sonatype/sisu",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
+    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+    "tested-versions" : [
+      "2.4.0"
+    ],
+    "allowed-packages" : [
+      "javax.enterprise.inject",
+      "javax.inject",
+      "org.aopalliance",
+      "org.sonatype",
+      "org.sonatype.guice.bean",
+      "org.sonatype.inject"
+    ]
+  },
+  {
+    "metadata-version" : "1.4.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
+    "repository-url" : "https://github.com/sonatype/sisu",
+    "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/sisu-inject/guice-bean",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
+    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+    "tested-versions" : [
+      "1.4.2",
+      "1.4.3.1",
+      "1.4.3.2",
+      "1.4.3-server",
+      "1.4.3",
+      "2.0.0",
+      "2.1.1-NEXUS-4312",
+      "2.1.1",
+      "2.2.0",
+      "2.2.1",
+      "2.2.2",
+      "2.2.3",
+      "2.3.0",
+      "2.3.1",
+      "2.3.2",
+      "2.3.3",
+      "2.3.4"
+    ],
+    "allowed-packages" : [
+      "javax.enterprise.inject",
+      "javax.inject",
+      "org.aopalliance",
+      "org.sonatype"
+    ]
+  },
+  {
+    "metadata-version" : "2.4.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
+    "repository-url" : "https://github.com/sonatype/sisu",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
+    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+    "tested-versions" : [
+      "2.4.1"
+    ],
+    "allowed-packages" : [
+      "javax.enterprise.inject",
+      "javax.inject",
+      "org.aopalliance",
+      "org.eclipse.sisu",
+      "org.sonatype"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.sonatype.sisu/sisu-inject-bean/index.json && git diff -- metadata/org.sonatype.sisu/sisu-inject-bean/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.2/sisu-inject-bean-2.4.2-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.2/sisu-inject-bean-2.4.2-test-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.2/sisu-inject-bean-2.4.2-tests.jar \\
+  https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.2/sisu-inject-bean-2.4.2-javadoc.jar \\
+  https://github.com/sonatype/sisu/tree/sisu-2.4.2/sisu-inject/guice-bean \\
+  https://github.com/sonatype/sisu/tree/sisu-2.4.2/legacy/wrappers/sisu-inject-bean; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$u")
+  printf '"'%s %s\\n' \""'$code" "$u"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+ succeeded in 3094ms:
+404 https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.2/sisu-inject-bean-2.4.2-test-sources.jar
+404 https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.2/sisu-inject-bean-2.4.2-tests.jar
+200 https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.2/sisu-inject-bean-2.4.2-javadoc.jar
+404 https://github.com/sonatype/sisu/tree/sisu-2.4.2/sisu-inject/guice-bean
+200 https://github.com/sonatype/sisu/tree/sisu-2.4.2/legacy/wrappers/sisu-inject-bean
+
+web search: 
+web search: Maven Central org.sonatype.sisu sisu-inject-bean 2.4.2
+codex
+The selected entry itself is genuinely missing the six fields; the matches I saw were later entries. I found the correct tagged GitHub path for this wrapper is under `legacy/wrappers/sisu-inject-bean`, so I’m narrowing the test URL to the versioned `src/test` directory rather than the module root.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); cd "$tmp" && curl -fsSLO https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.2/sisu-inject-bean-2.4.2-sources.jar && jar tf sisu-inject-bean-2.4.2-sources.jar | sed -n '"'1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+exec
+/usr/bin/bash -lc "for u in \\
+  https://github.com/sonatype/sisu/tree/sisu-2.4.2/legacy/wrappers/sisu-inject-bean/src/test \\
+  https://github.com/sonatype/sisu/tree/sisu-2.4.2/legacy/wrappers/sisu-inject-bean/src/test/java \\
+  https://github.com/sonatype/sisu/tree/sisu-2.4.2/legacy/wrappers/sisu-inject-bean/src/test/resources \\
+  https://raw.githubusercontent.com/sonatype/sisu/sisu-2.4.2/legacy/wrappers/sisu-inject-bean/pom.xml; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$u")
+  printf '"'%s %s\\n' \""'$code" "$u"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d); cd "$tmp" && curl -fsSLO https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.2/sisu-inject-bean-2.4.2-javadoc.jar && jar tf sisu-inject-bean-2.4.2-javadoc.jar | sed -n '"'1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+ succeeded in 182ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/sonatype/
+org/sonatype/guice/
+org/sonatype/guice/bean/
+org/sonatype/guice/bean/binders/
+org/sonatype/guice/bean/binders/class-use/
+org/sonatype/guice/bean/containers/
+org/sonatype/guice/bean/containers/class-use/
+org/sonatype/guice/bean/converters/
+org/sonatype/guice/bean/converters/class-use/
+org/sonatype/guice/bean/locators/
+org/sonatype/guice/bean/locators/class-use/
+org/sonatype/guice/bean/reflect/
+org/sonatype/guice/bean/reflect/class-use/
+org/sonatype/guice/bean/scanners/
+org/sonatype/guice/bean/scanners/asm/
+org/sonatype/guice/bean/scanners/asm/class-use/
+org/sonatype/guice/bean/scanners/class-use/
+org/sonatype/inject/
+org/sonatype/inject/class-use/
+resources/
+allclasses-frame.html
+allclasses-noframe.html
+constant-values.html
+deprecated-list.html
+help-doc.html
+index-all.html
+index.html
+org/sonatype/guice/bean/binders/class-use/ParameterKeys.html
+org/sonatype/guice/bean/binders/class-use/SpaceModule.html
+org/sonatype/guice/bean/binders/class-use/WireModule.html
+org/sonatype/guice/bean/binders/package-frame.html
+org/sonatype/guice/bean/binders/package-summary.html
+org/sonatype/guice/bean/binders/package-tree.html
+org/sonatype/guice/bean/binders/package-use.html
+org/sonatype/guice/bean/binders/ParameterKeys.html
+org/sonatype/guice/bean/binders/SpaceModule.html
+org/sonatype/guice/bean/binders/WireModule.html
+org/sonatype/guice/bean/containers/class-use/InjectedTest.html
+org/sonatype/guice/bean/containers/class-use/InjectedTestCase.html
+org/sonatype/guice/bean/containers/class-use/Main.html
+org/sonatype/guice/bean/containers/class-use/SisuGuice.html
+org/sonatype/guice/bean/containers/InjectedTest.html
+org/sonatype/guice/bean/containers/InjectedTestCase.html
+org/sonatype/guice/bean/containers/Main.html
+org/sonatype/guice/bean/containers/package-frame.html
+org/sonatype/guice/bean/containers/package-summary.html
+org/sonatype/guice/bean/containers/package-tree.html
+org/sonatype/guice/bean/containers/package-use.html
+org/sonatype/guice/bean/containers/SisuGuice.html
+org/sonatype/guice/bean/converters/AbstractTypeConverter.html
+org/sonatype/guice/bean/converters/class-use/AbstractTypeConverter.html
+org/sonatype/guice/bean/converters/package-frame.html
+org/sonatype/guice/bean/converters/package-summary.html
+org/sonatype/guice/bean/converters/package-tree.html
+org/sonatype/guice/bean/converters/package-use.html
+org/sonatype/guice/bean/locators/BeanLocator.html
+org/sonatype/guice/bean/locators/class-use/BeanLocator.html
+org/sonatype/guice/bean/locators/class-use/DefaultBeanLocator.html
+org/sonatype/guice/bean/locators/class-use/DefaultRankingFunction.html
+org/sonatype/guice/bean/locators/class-use/MutableBeanLocator.html
+org/sonatype/guice/bean/locators/class-use/RankingFunction.html
+org/sonatype/guice/bean/locators/DefaultBeanLocator.html
+org/sonatype/guice/bean/locators/DefaultRankingFunction.html
+org/sonatype/guice/bean/locators/MutableBeanLocator.html
+org/sonatype/guice/bean/locators/package-frame.html
+org/sonatype/guice/bean/locators/package-summary.html
+org/sonatype/guice/bean/locators/package-tree.html
+org/sonatype/guice/bean/locators/package-use.html
+org/sonatype/guice/bean/locators/RankingFunction.html
+org/sonatype/guice/bean/reflect/class-use/ClassSpace.html
+org/sonatype/guice/bean/reflect/class-use/DeferredClass.html
+org/sonatype/guice/bean/reflect/class-use/IgnoreSetters.html
+org/sonatype/guice/bean/reflect/class-use/Logs.html
+org/sonatype/guice/bean/reflect/class-use/URLClassSpace.html
+org/sonatype/guice/bean/reflect/class-use/Weak.html
+org/sonatype/guice/bean/reflect/ClassSpace.html
+org/sonatype/guice/bean/reflect/DeferredClass.html
+
+ succeeded in 201ms:
+META-INF/
+META-INF/MANIFEST.MF
+pom.xml
+org/
+org/sonatype/
+org/sonatype/guice/
+org/sonatype/guice/bean/
+org/sonatype/guice/bean/binders/
+org/sonatype/guice/bean/binders/ParameterKeys.java
+org/sonatype/guice/bean/binders/SpaceModule.java
+org/sonatype/guice/bean/binders/WireModule.java
+org/sonatype/guice/bean/containers/
+org/sonatype/guice/bean/containers/InjectedTest.java
+org/sonatype/guice/bean/containers/InjectedTestCase.java
+org/sonatype/guice/bean/containers/Main.java
+org/sonatype/guice/bean/containers/SisuGuice.java
+org/sonatype/guice/bean/converters/
+org/sonatype/guice/bean/converters/AbstractTypeConverter.java
+org/sonatype/guice/bean/locators/
+org/sonatype/guice/bean/locators/BeanLocator.java
+org/sonatype/guice/bean/locators/DefaultBeanLocator.java
+org/sonatype/guice/bean/locators/DefaultRankingFunction.java
+org/sonatype/guice/bean/locators/MutableBeanLocator.java
+org/sonatype/guice/bean/locators/RankingFunction.java
+org/sonatype/guice/bean/reflect/
+org/sonatype/guice/bean/reflect/ClassSpace.java
+org/sonatype/guice/bean/reflect/DeferredClass.java
+org/sonatype/guice/bean/reflect/IgnoreSetters.java
+org/sonatype/guice/bean/reflect/Logs.java
+org/sonatype/guice/bean/reflect/URLClassSpace.java
+org/sonatype/guice/bean/reflect/Weak.java
+org/sonatype/guice/bean/scanners/
+org/sonatype/guice/bean/scanners/asm/
+org/sonatype/guice/bean/scanners/asm/AnnotationVisitor.java
+org/sonatype/guice/bean/scanners/asm/ClassVisitor.java
+org/sonatype/guice/bean/scanners/asm/Opcodes.java
+org/sonatype/guice/bean/scanners/asm/Type.java
+org/sonatype/guice/bean/scanners/ClassSpaceScanner.java
+org/sonatype/guice/bean/scanners/ClassSpaceVisitor.java
+org/sonatype/guice/bean/scanners/EmptyAnnotationVisitor.java
+org/sonatype/guice/bean/scanners/EmptyClassVisitor.java
+org/sonatype/inject/
+org/sonatype/inject/Sisu.java
+META-INF/plexus/
+META-INF/LICENSE
+META-INF/plexus/components.xml
+
+ succeeded in 3845ms:
+200 https://github.com/sonatype/sisu/tree/sisu-2.4.2/legacy/wrappers/sisu-inject-bean/src/test
+200 https://github.com/sonatype/sisu/tree/sisu-2.4.2/legacy/wrappers/sisu-inject-bean/src/test/java
+200 https://github.com/sonatype/sisu/tree/sisu-2.4.2/legacy/wrappers/sisu-inject-bean/src/test/resources
+200 https://raw.githubusercontent.com/sonatype/sisu/sisu-2.4.2/legacy/wrappers/sisu-inject-bean/pom.xml
+
+web search: 
+web search: https://github.com/sonatype/sisu/tree/sisu-2.4.2/legacy/wrappers/sisu-inject-bean/src/test
+web search: 
+web search: repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.2/sisu-inject-bean-2.4.2-sources.jar
+web search: 
+web search: https://mvnrepository.com/artifact/org.sonatype.sisu/sisu-inject-bean/2.4.2
+web search: 
+web search: https://mvnrepository.com/artifact/org.sonatype.sisu/sisu-inject-bean/2.4.2
+web search: 
+web search: central.sonatype.com artifact org.sonatype.sisu sisu-inject-bean 2.4.2
+web search: 
+web search: https://central.sonatype.com/artifact/org.sonatype.sisu/sisu-inject-bean/2.4.2
+codex
+I’m going to write the Maven source/Javadoc templates, the canonical GitHub repo root, and the tagged GitHub `src/test` tree for tests. The library is Java/JSR-330 dependency-injection infrastructure, not Kotlin/Groovy/Scala-specific, so I’ll leave `language` absent.
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/sonatype/sisu/sisu-2.4.2/legacy/wrappers/sisu-inject-bean/pom.xml | sed -n '1,180p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ ~ Copyright (c) 2010, 2013 Sonatype, Inc.
+ ~ All rights reserved. This program and the accompanying materials
+ ~ are made available under the terms of the Eclipse Public License v1.0
+ ~ which accompanies this distribution, and is available at
+ ~ http://www.eclipse.org/legal/epl-v10.html
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.sisu.inject</groupId>
+    <artifactId>wrappers</artifactId>
+    <version>2.4.2</version>
+  </parent>
+
+  <groupId>org.sonatype.sisu</groupId>
+  <artifactId>sisu-inject-bean</artifactId>
+
+  <name>Sisu-Inject-Bean : legacy wrapper</name>
+
+  <dependencies>
+    <!-- external dependencies -->
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-guice</artifactId>
+      <classifier>no_aop</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.sisu</groupId>
+      <artifactId>org.eclipse.sisu.inject</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.inject</groupId>
+          <artifactId>guice</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- optional dependencies -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+</project>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/sonatype/sisu/contents/legacy/wrappers/sisu-inject-bean/src/test/java/org/sonatype/guice/bean?ref=sisu-2.4.2 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+ succeeded in 300ms:
+[
+  {
+    "name": "binders",
+    "path": "legacy/wrappers/sisu-inject-bean/src/test/java/org/sonatype/guice/bean/binders",
+    "sha": "645ace7cecb7ec9f2a816a7ea3f085e279d47ef1",
+    "size": 0,
+    "url": "https://api.github.com/repos/sonatype/sisu/contents/legacy/wrappers/sisu-inject-bean/src/test/java/org/sonatype/guice/bean/binders?ref=sisu-2.4.2",
+    "html_url": "https://github.com/sonatype/sisu/tree/sisu-2.4.2/legacy/wrappers/sisu-inject-bean/src/test/java/org/sonatype/guice/bean/binders",
+    "git_url": "https://api.github.com/repos/sonatype/sisu/git/trees/645ace7cecb7ec9f2a816a7ea3f085e279d47ef1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sonatype/sisu/contents/legacy/wrappers/sisu-inject-bean/src/test/java/org/sonatype/guice/bean/binders?ref=sisu-2.4.2",
+      "git": "https://api.github.com/repos/sonatype/sisu/git/trees/645ace7cecb7ec9f2a816a7ea3f085e279d47ef1",
+      "html": "https://github.com/sonatype/sisu/tree/sisu-2.4.2/legacy/wrappers/sisu-inject-bean/src/test/java/org/sonatype/guice/bean/binders"
+    }
+  },
+  {
+    "name": "containers",
+    "path": "legacy/wrappers/sisu-inject-bean/src/test/java/org/sonatype/guice/bean/containers",
+    "sha": "9293e377fa0b6ee7f58e8ac2fb4fca9a3e741409",
+    "size": 0,
+    "url": "https://api.github.com/repos/sonatype/sisu/contents/legacy/wrappers/sisu-inject-bean/src/test/java/org/sonatype/guice/bean/containers?ref=sisu-2.4.2",
+    "html_url": "https://github.com/sonatype/sisu/tree/sisu-2.4.2/legacy/wrappers/sisu-inject-bean/src/test/java/org/sonatype/guice/bean/containers",
+    "git_url": "https://api.github.com/repos/sonatype/sisu/git/trees/9293e377fa0b6ee7f58e8ac2fb4fca9a3e741409",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sonatype/sisu/contents/legacy/wrappers/sisu-inject-bean/src/test/java/org/sonatype/guice/bean/containers?ref=sisu-2.4.2",
+      "git": "https://api.github.com/repos/sonatype/sisu/git/trees/9293e377fa0b6ee7f58e8ac2fb4fca9a3e741409",
+      "html": "https://github.com/sonatype/sisu/tree/sisu-2.4.2/legacy/wrappers/sisu-inject-bean/src/test/java/org/sonatype/guice/bean/containers"
+    }
+  },
+  {
+    "name": "locators",
+    "path": "legacy/wrappers/sisu-inject-bean/src/test/java/org/sonatype/guice/bean/locators",
+    "sha": "6b82aecdf16360366104048f1cedb715bab2559b",
+    "size": 0,
+    "url": "https://api.github.com/repos/sonatype/sisu/contents/legacy/wrappers/sisu-inject-bean/src/test/java/org/sonatype/guice/bean/locators?ref=sisu-2.4.2",
+    "html_url": "https://github.com/sonatype/sisu/tree/sisu-2.4.2/legacy/wrappers/sisu-inject-bean/src/test/java/org/sonatype/guice/bean/locators",
+    "git_url": "https://api.github.com/repos/sonatype/sisu/git/trees/6b82aecdf16360366104048f1cedb715bab2559b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sonatype/sisu/contents/legacy/wrappers/sisu-inject-bean/src/test/java/org/sonatype/guice/bean/locators?ref=sisu-2.4.2",
+      "git": "https://api.github.com/repos/sonatype/sisu/git/trees/6b82aecdf16360366104048f1cedb715bab2559b",
+      "html": "https://github.com/sonatype/sisu/tree/sisu-2.4.2/legacy/wrappers/sisu-inject-bean/src/test/java/org/sonatype/guice/bean/locators"
+    }
+  },
+  {
+    "name": "reflect",
+    "path": "legacy/wrappers/sisu-inject-bean/src/test/java/org/sonatype/guice/bean/reflect",
+    "sha": "1690af6f4b48667c257187f3f42f027e325a16b4",
+    "size": 0,
+    "url": "https://api.github.com/repos/sonatype/sisu/contents/legacy/wrappers/sisu-inject-bean/src/test/java/org/sonatype/guice/bean/reflect?ref=sisu-2.4.2",
+    "html_url": "https://github.com/sonatype/sisu/tree/sisu-2.4.2/legacy/wrappers/sisu-inject-bean/src/test/java/org/sonatype/guice/bean/reflect",
+    "git_url": "https://api.github.com/repos/sonatype/sisu/git/trees/1690af6f4b48667c257187f3f42f027e325a16b4",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sonatype/sisu/contents/legacy/wrappers/sisu-inject-bean/src/test/java/org/sonatype/guice/bean/reflect?ref=sisu-2.4.2",
+      "git": "https://api.github.com/repos/sonatype/sisu/git/trees/1690af6f4b48667c257187f3f42f027e325a16b4",
+      "html": "https://github.com/sonatype/sisu/tree/sisu-2.4.2/legacy/wrappers/sisu-inject-bean/src/test/java/org/sonatype/guice/bean/reflect"
+    }
+  }
+]
+
+codex
+I’m patching only the 2.4.2 object now, inserting the same field order used by neighboring entries and leaving `language` out because it is not a Kotlin/Groovy/Scala library.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+diff --git a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+index eae12e75b30aeb50941ef4e96459c172ec07f205..b3dca25ad462ac1c1f02afc5b959fdbeb80abe85
+--- a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
++++ b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.4.2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu",
++    "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/legacy/wrappers/sisu-inject-bean/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
++    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+     "tested-versions" : [
+       "2.4.2"
+     ],
+
+diff --git a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+index eae12e75b30aeb50941ef4e96459c172ec07f205..b3dca25ad462ac1c1f02afc5b959fdbeb80abe85
+--- a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
++++ b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.4.2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu",
++    "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/legacy/wrappers/sisu-inject-bean/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
++    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+     "tested-versions" : [
+       "2.4.2"
+     ],
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.2/
+web search: 
+web search: "sisu-inject-bean-2.4.2-sources.jar"
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.2 sisu-inject-bean-2.4.2
+web search: 
+web search: github sonatype sisu sisu-2.4.2 legacy wrappers sisu-inject-bean src test
+codex
+The edit is in place. I’m running JSON validation plus the repository’s metadata checker for this coordinate so we catch formatting or schema issues before I hand it back.
+exec
+/usr/bin/bash -lc "jq . metadata/org.sonatype.sisu/sisu-inject-bean/index.json >/dev/null && sed -n '1,32p' metadata/org.sonatype.sisu/sisu-inject-bean/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.4.2",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
+    "repository-url" : "https://github.com/sonatype/sisu",
+    "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/legacy/wrappers/sisu-inject-bean/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
+    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+    "tested-versions" : [
+      "2.4.2"
+    ],
+    "allowed-packages" : [
+      "javax.enterprise.inject",
+      "javax.inject",
+      "org.aopalliance",
+      "org.sonatype",
+      "org.sonatype.guice.bean",
+      "org.sonatype.inject"
+    ]
+  },
+  {
+    "metadata-version" : "2.4.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
+    "repository-url" : "https://github.com/sonatype/sisu",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
+    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+    "tested-versions" : [
+      "2.4.0"
+    ],
+    "allowed-packages" : [
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.sonatype.sisu:sisu-inject-bean:2.4.2 --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+exec
+/usr/bin/bash -lc "for u in \\
+  https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.2/sisu-inject-bean-2.4.2-sources.jar \\
+  https://github.com/sonatype/sisu/tree/sisu-2.4.2/legacy/wrappers/sisu-inject-bean/src/test \\
+  https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.2/sisu-inject-bean-2.4.2-javadoc.jar \\
+  https://github.com/sonatype/sisu; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$u")
+  printf '"'%s %s\\n' \""'$code" "$u"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+ succeeded in 2777ms:
+200 https://github.com/sonatype/sisu/tree/sisu-2.4.2/legacy/wrappers/sisu-inject-bean/src/test
+200 https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/2.4.2/sisu-inject-bean-2.4.2-javadoc.jar
+200 https://github.com/sonatype/sisu
+
+diff --git a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+index eae12e75b30aeb50941ef4e96459c172ec07f205..b3dca25ad462ac1c1f02afc5b959fdbeb80abe85
+--- a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
++++ b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.4.2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu",
++    "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/legacy/wrappers/sisu-inject-bean/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
++    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+     "tested-versions" : [
+       "2.4.2"
+     ],
+
+ exited 1 in 12547ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.sonatype.sisu:sisu-inject-bean:2.4.2: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b/metadata/org.sonatype.sisu/sisu-inject-bean/2.4.2/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.sonatype.sisu:sisu-inject-bean:2.4.2: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b/metadata/org.sonatype.sisu/sisu-inject-bean/2.4.2/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.sonatype.sisu:sisu-inject-bean:2.4.2: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b/metadata/org.sonatype.sisu/sisu-inject-bean/2.4.2/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 12s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The file validates as JSON and all rendered URL candidates return HTTP 200. The coordinate-level metadata check fails because this repository has no `metadata/org.sonatype.sisu/sisu-inject-bean/2.4.2/reachability-metadata.json`; that is unrelated to the URL fields I just added.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.sonatype.sisu/sisu-inject-bean/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+ succeeded in 0ms:
+diff --git i/metadata/org.sonatype.sisu/sisu-inject-bean/index.json w/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+index eae12e75b3..b3dca25ad4 100644
+--- i/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
++++ w/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.4.2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu",
++    "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/legacy/wrappers/sisu-inject-bean/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
++    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+     "tested-versions" : [
+       "2.4.2"
+     ],
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/sonatype/sisu/inject/wrappers/2.4.2/wrappers-2.4.2.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ ~ Copyright (c) 2010, 2013 Sonatype, Inc.
+ ~ All rights reserved. This program and the accompanying materials
+ ~ are made available under the terms of the Eclipse Public License v1.0
+ ~ which accompanies this distribution, and is available at
+ ~ http://www.eclipse.org/legal/epl-v10.html
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.sisu</groupId>
+    <artifactId>sisu-inject</artifactId>
+    <version>2.4.2</version>
+  </parent>
+
+  <groupId>org.sonatype.sisu.inject</groupId>
+  <artifactId>wrappers</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Sisu-Inject : wrappers</name>
+
+  <modules>
+    <module>sisu-inject-bean</module>
+    <module>sisu-inject-plexus</module>
+  </modules>
+
+</project>
+
+diff --git a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+index eae12e75b30aeb50941ef4e96459c172ec07f205..b3dca25ad462ac1c1f02afc5b959fdbeb80abe85
+--- a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
++++ b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.4.2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu",
++    "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/legacy/wrappers/sisu-inject-bean/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
++    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+     "tested-versions" : [
+       "2.4.2"
+     ],
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject/2.4.2/sisu-inject-2.4.2.pom | sed -n '1,260p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ ~ Copyright (c) 2010, 2013 Sonatype, Inc.
+ ~ All rights reserved. This program and the accompanying materials
+ ~ are made available under the terms of the Eclipse Public License v1.0
+ ~ which accompanies this distribution, and is available at
+ ~ http://www.eclipse.org/legal/epl-v10.html
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.sisu</groupId>
+    <artifactId>sisu-parent</artifactId>
+    <version>2.4.2</version>
+  </parent>
+
+  <artifactId>sisu-inject</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Sisu-Inject</name>
+
+  <modules>
+    <module>wrappers</module>
+  </modules>
+
+  <properties>
+    <guava.version>11.0.2</guava.version>
+    <sisu.guice.version>3.1.5</sisu.guice.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+
+      <dependency>
+        <groupId>javax.enterprise</groupId>
+        <artifactId>cdi-api</artifactId>
+        <version>1.0</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.ejb3</groupId>
+            <artifactId>jboss-ejb3-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.interceptor</groupId>
+            <artifactId>jboss-interceptor-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu</groupId>
+        <artifactId>sisu-guice</artifactId>
+        <version>${sisu.guice.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonatype.sisu</groupId>
+        <artifactId>sisu-guice</artifactId>
+        <version>${sisu.guice.version}</version>
+        <classifier>no_aop</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipse.sisu</groupId>
+        <artifactId>org.eclipse.sisu.inject</artifactId>
+        <version>0.0.0.M5</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.sisu</groupId>
+        <artifactId>org.eclipse.sisu.plexus</artifactId>
+        <version>0.0.0.M5</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+</project>
+
+diff --git a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+index eae12e75b30aeb50941ef4e96459c172ec07f205..b3dca25ad462ac1c1f02afc5b959fdbeb80abe85
+--- a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
++++ b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.4.2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu",
++    "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/legacy/wrappers/sisu-inject-bean/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
++    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+     "tested-versions" : [
+       "2.4.2"
+     ],
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-parent/2.4.2/sisu-parent-2.4.2.pom | sed -n '1,260p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+diff --git a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+index eae12e75b30aeb50941ef4e96459c172ec07f205..b3dca25ad462ac1c1f02afc5b959fdbeb80abe85
+--- a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
++++ b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.4.2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu",
++    "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/legacy/wrappers/sisu-inject-bean/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
++    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+     "tested-versions" : [
+       "2.4.2"
+     ],
+
+ succeeded in 238ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ ~ Copyright (c) 2010, 2013 Sonatype, Inc.
+ ~ All rights reserved. This program and the accompanying materials
+ ~ are made available under the terms of the Eclipse Public License v1.0
+ ~ which accompanies this distribution, and is available at
+ ~ http://www.eclipse.org/legal/epl-v10.html
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.forge</groupId>
+    <artifactId>forge-parent</artifactId>
+    <version>38</version>
+  </parent>
+
+  <groupId>org.sonatype.sisu</groupId>
+  <artifactId>sisu-parent</artifactId>
+  <version>2.4.2</version>
+  <packaging>pom</packaging>
+
+  <name>Sisu</name>
+  <url>http://sisu.sonatype.org/</url>
+  <inceptionYear>2010</inceptionYear>
+  <organization>
+    <name>Sonatype, Inc.</name>
+    <url>http://www.sonatype.com/</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Eclipse Public License, Version 1.0</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <mailingLists>
+    <mailingList>
+      <name>Sisu Developers List</name>
+      <subscribe>sisu-dev-subscribe@sonatype.org</subscribe>
+      <unsubscribe>sisu-dev-unsubscribe@sonatype.org</unsubscribe>
+      <post>sisu-dev@sonatype.org</post>
+      <!-- archive>?</archive -->
+    </mailingList>
+    <mailingList>
+      <name>Sisu Users List</name>
+      <subscribe>sisu-user-subscribe@sonatype.org</subscribe>
+      <unsubscribe>sisu-user-unsubscribe@sonatype.org</unsubscribe>
+      <post>sisu-user@sonatype.org</post>
+      <!-- archive>?</archive -->
+    </mailingList>
+    <mailingList>
+      <name>Sisu Commits List</name>
+      <subscribe>sisu-scm-subscribe@sonatype.org</subscribe>
+      <unsubscribe>sisu-scm-unsubscribe@sonatype.org</unsubscribe>
+    </mailingList>
+  </mailingLists>
+
+  <prerequisites>
+    <maven>3.0</maven>
+  </prerequisites>
+
+  <modules>
+    <module>legacy</module>
+  </modules>
+
+  <scm>
+    <connection>scm:git:git@github.com:sonatype/sisu.git</connection>
+    <developerConnection>scm:git:git@github.com:sonatype/sisu.git</developerConnection>
+    <url>git@github.com:sonatype/sisu.git</url>
+    <tag>sisu-2.4.2</tag>
+  </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.sonatype.org/browse/SISU</url>
+  </issueManagement>
+  <ciManagement>
+    <system>Hudson</system>
+    <url>https://builds.sonatype.org/job/sisu/</url>
+  </ciManagement>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>ossrh-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <dependencyManagement>
+    <dependencies>
+
+      <dependency>
+        <groupId>javax.inject</groupId>
+        <artifactId>javax.inject</artifactId>
+        <version>1</version>
+      </dependency>
+      <dependency>
+        <groupId>aopalliance</groupId>
+        <artifactId>aopalliance</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.annotation</groupId>
+        <artifactId>jsr250-api</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.enterprise</groupId>
+        <artifactId>cdi-api</artifactId>
+        <version>1.0</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.ejb3</groupId>
+            <artifactId>jboss-ejb3-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.interceptor</groupId>
+            <artifactId>jboss-interceptor-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.7.5</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>1.0.13</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.core</artifactId>
+        <version>4.2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.compendium</artifactId>
+        <version>4.2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>org.apache.felix.framework</artifactId>
+        <version>4.2.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.11</version>
+      </dependency>
+      <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <version>6.8.5</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.1</version>
+          <configuration>
+            <source>1.5</source>
+            <target>1.5</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.4</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>2.3.7</version>
+          <configuration>
+            <instructions>
+              <Bundle-Name>${project.artifactId}</Bundle-Name>
+              <Bundle-Copyright>Copyright (C) 2010 Sonatype Inc.</Bundle-Copyright>
+              <Bundle-DocURL>https://github.com/sonatype/sisu/</Bundle-DocURL>
+              <Bundle-Vendor>Sonatype, Inc.</Bundle-Vendor>
+              <Bundle-RequiredExecutionEnvironment>
+                J2SE-1.5,JavaSE-1.6
+              </Bundle-RequiredExecutionEnvironment>
+              <_nouses>true</_nouses>
+              <_removeheaders>
+                Embed-Dependency,Embed-Transitive,
+                Built-By,Tool,Created-By,Build-Jdk,
+                Originally-Created-By,Archiver-Version,
+                Include-Resource,Private-Package,
+                Bnd-LastModified
+              </_removeheaders>
+            </instructions>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>2.8</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.9.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.2.1</version>
+          <configuration>
+            <includes><include>**/*.java</include></includes>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.14.1</version>
+          <configuration>
+            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.3</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.4</version>
+
+codex
+I confirmed the parent POM’s SCM points at the Sonatype Sisu GitHub repository with tag `sisu-2.4.2`, which matches the repository root and tagged test URL now in the index.
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.sonatype.sisu/sisu-inject-bean/index.json | sed -n '1,28p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "2.4.2",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/sonatype/sisu",
+     7	    "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/legacy/wrappers/sisu-inject-bean/src/test",
+     8	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
+     9	    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+    10	    "tested-versions" : [
+    11	      "2.4.2"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "javax.enterprise.inject",
+    15	      "javax.inject",
+    16	      "org.aopalliance",
+    17	      "org.sonatype",
+    18	      "org.sonatype.guice.bean",
+    19	      "org.sonatype.inject"
+    20	    ]
+    21	  },
+    22	  {
+    23	    "metadata-version" : "2.4.0",
+    24	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
+    25	    "repository-url" : "https://github.com/sonatype/sisu",
+    26	    "test-code-url" : "N/A",
+    27	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
+    28	    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.sonatype.sisu/sisu-inject-bean/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b
+ succeeded in 0ms:
+ M metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+
+diff --git a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+index eae12e75b30aeb50941ef4e96459c172ec07f205..b3dca25ad462ac1c1f02afc5b959fdbeb80abe85
+--- a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
++++ b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.4.2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu",
++    "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/legacy/wrappers/sisu-inject-bean/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
++    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+     "tested-versions" : [
+       "2.4.2"
+     ],
+
+web search: 
+web search: "Sisu-Inject-Bean : legacy wrapper" "2.4.2"
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json:4) for `metadata-version` `2.4.2` with source, repository, test suite, documentation, and a two-sentence description. I left `language` absent because this is not a Kotlin/Groovy/Scala-specific library; Maven identifies the artifact as “Sisu Inject Bean : Legacy Wrapper” with dependency-injection tags. ([mvnrepository.com](https://mvnrepository.com/artifact/org.sonatype.sisu/sisu-inject-bean/2.4.2?utm_source=openai))
+
+Verification:
+- `jq` JSON validation passed.
+- Rendered source, repository, test, and documentation URLs all returned HTTP 200 for `2.4.2`.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.sonatype.sisu:sisu-inject-bean:2.4.2 --stacktrace` failed because `metadata/org.sonatype.sisu/sisu-inject-bean/2.4.2/reachability-metadata.json` is missing, unrelated to these URL fields.
+diff --git a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+index eae12e75b30aeb50941ef4e96459c172ec07f205..b3dca25ad462ac1c1f02afc5b959fdbeb80abe85
+--- a/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
++++ b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.4.2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu",
++    "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/legacy/wrappers/sisu-inject-bean/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
++    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+     "tested-versions" : [
+       "2.4.2"
+     ],
+
+tokens used
+101,300
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b/metadata/org.sonatype.sisu/sisu-inject-bean/index.json:4) for `metadata-version` `2.4.2` with source, repository, test suite, documentation, and a two-sentence description. I left `language` absent because this is not a Kotlin/Groovy/Scala-specific library; Maven identifies the artifact as “Sisu Inject Bean : Legacy Wrapper” with dependency-injection tags. ([mvnrepository.com](https://mvnrepository.com/artifact/org.sonatype.sisu/sisu-inject-bean/2.4.2?utm_source=openai))
+
+Verification:
+- `jq` JSON validation passed.
+- Rendered source, repository, test, and documentation URLs all returned HTTP 200 for `2.4.2`.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.sonatype.sisu:sisu-inject-bean:2.4.2 --stacktrace` failed because `metadata/org.sonatype.sisu/sisu-inject-bean/2.4.2/reachability-metadata.json` is missing, unrelated to these URL fields.
+Ran agent for org.sonatype.sisu:sisu-inject-bean:2.4.2 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b/build/agent-url-discovery-logs/org.sonatype.sisu-sisu-inject-bean-2.4.2.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8718-b808ac0b/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 27s
+9 actionable tasks: 1 executed, 8 up-to-date
