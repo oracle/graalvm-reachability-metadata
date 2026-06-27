@@ -30,7 +30,7 @@ public class EncodingTest {
         assertThat(encoding.mbcToCode(asciiBytes, 0, asciiBytes.length)).isEqualTo('A');
         assertThat(encoding.isNewLine(asciiBytes, 1, asciiBytes.length)).isTrue();
 
-        byte[] snowmanBytes = "☃".getBytes(StandardCharsets.UTF_8);
+        byte[] snowmanBytes = "\u2603".getBytes(StandardCharsets.UTF_8);
         assertThat(encoding.length(snowmanBytes, 0, snowmanBytes.length)).isEqualTo(3);
         assertThat(encoding.mbcToCode(snowmanBytes, 0, snowmanBytes.length)).isEqualTo(0x2603);
     }
