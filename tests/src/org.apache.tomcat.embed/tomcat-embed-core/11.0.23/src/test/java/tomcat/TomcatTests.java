@@ -22,6 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.catalina.Context;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.tomcat.util.modeler.Registry;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -34,6 +35,7 @@ public class TomcatTests {
     @ParameterizedTest
     @ValueSource(strings = {"HTTP/1.1", "org.apache.coyote.http11.Http11NioProtocol", "org.apache.coyote.http11.Http11Nio2Protocol"})
     void test(String protocol) throws Exception {
+        Registry.disableRegistry();
         Tomcat tomcat = new Tomcat();
         configureConnector(tomcat, protocol);
         Context context = addContext(tomcat);
