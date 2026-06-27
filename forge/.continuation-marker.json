@@ -1,0 +1,77 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "com.typesafe.slick:slick_2.13:4.0.0-RC1",
+  "issueNumber": 7664,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "For executable database coverage, prefer an embedded in-memory configuration using slick.jdbc.H2Profile with a JDBC URL such as jdbc:h2:mem:<test-name>;DB_CLOSE_DELAY=-1 and set connectionPool = disabled in Typesafe Config or use the forURL APIs with driver = \"org.h2.Driver\". Avoid requiring an external database container unless coverage specifically targets a non-H2 profile. If using Slick configuration examples, disable pooling unless adding slick-hikaricp separately is genuinely required.",
+    "applied_setup": [],
+    "current_library": "com.typesafe.slick:slick_2.13:3.6.1",
+    "deterministic_setup": [
+      {
+        "coordinate": "com.h2database:h2:2.4.240",
+        "kind": "dependency",
+        "reason": "Slick 4.0.0-RC1 documentation's getting-started and Database examples use an embedded in-memory H2 database with H2Profile, and Slick's own 4.0.0-RC1 build declares H2 2.4.240 for tests; slick_2.13 transitively brings Slick, Typesafe Config, SLF4J API, cats-effect, and FS2, but no JDBC driver.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7664 [Automation] java run fails for com.typesafe.slick:slick_2.13:4.0.0-RC1; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "18 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 31882,
+    "issue_label": "fails-java-run",
+    "issue_number": 7664,
+    "library": "com.typesafe.slick:slick_2.13:4.0.0-RC1",
+    "model": "oca/gpt-5.5",
+    "new_version": "4.0.0-RC1",
+    "output_tokens_used": 4038,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The reported failure is a source/API incompatibility in the existing test: slick.jdbc.meta.MColumn in 4.0.0-RC1 requires the additional isGenerated argument. The H2 setup enables broader meaningful coverage but does not by itself fix that compile error.",
+      "Slick documentation also shows slick-hikaricp and an SLF4J implementation for typical applications, but neither is required when tests disable pooling and do not assert logging behavior."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/com.typesafe.slick:slick_2.13:4.0.0-RC1/library-preparation-preflight/pi-generation-2026-06-26T23-59-01-444796Z.log",
+    "status": "completed",
+    "summary": "Slick is a JDBC/FRM library and meaningful executable coverage normally needs a JDBC driver; the resolved slick_2.13 artifact does not include one, while Slick's own docs and build use embedded H2 for no-Docker examples."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "4.0.0-RC1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-7664-fails-java-run-com.typesafe.slick-slick_2.13-4.0.0-RC1-e54a3caf",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
