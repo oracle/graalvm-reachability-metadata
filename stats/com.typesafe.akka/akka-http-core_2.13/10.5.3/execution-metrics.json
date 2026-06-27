@@ -1,0 +1,120 @@
+{
+  "add_new_library_support:2026-06-27": {
+    "timestamp": "2026-06-27T17:06:03.551708Z",
+    "library": "com.typesafe.akka:akka-http-core_2.13:10.5.3",
+    "starting_commit": "cfac1701c55886d5969fe523fe3ff83e9de64936",
+    "ending_commit": "f00ede80b43161a0e8606b3c3ae1c18d3120a455",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "10.5.3",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 2,
+        "totalCalls": 2
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 21243,
+          "missed": 260610,
+          "ratio": 0.075369,
+          "total": 281853
+        },
+        "line": {
+          "covered": 1971,
+          "missed": 12871,
+          "ratio": 0.132799,
+          "total": 14842
+        },
+        "method": {
+          "covered": 1253,
+          "missed": 20559,
+          "ratio": 0.057445,
+          "total": 21812
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 5458,
+      "issue_label": "library-new-request",
+      "library": "com.typesafe.akka:akka-http-core_2.13:10.5.3",
+      "summary": "Akka HTTP core is a streaming-first HTTP stack: its POM marks akka-stream as provided, but even basic javadsl model/runtime use reaches Akka actor/stream classes, and the 10.5.3 docs show applications adding akka-actor-typed and akka-stream alongside Akka HTTP.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.typesafe.akka:akka-stream_2.13:2.7.0",
+          "scope": "testImplementation",
+          "reason": "akka-http-core_2.13:10.5.3 declares akka-stream_2.13:2.7.0 with provided scope, while core APIs and runtime classes reference akka.stream and akka.actor types; adding it makes model/entity streaming and low-level HTTP coverage reachable."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.typesafe.akka:akka-actor-typed_2.13:2.7.0",
+          "scope": "testImplementation",
+          "reason": "The official Akka HTTP 10.5.3 Java/Gradle setup and low-level server examples use typed ActorSystem/Behaviors; adding this enables documentation-style Java tests without testing the higher-level akka-http module instead."
+        }
+      ],
+      "agent_guidance": "No Docker image, environment variable, or system property is required. Tests should create an ActorSystem for APIs that need one and always terminate it in cleanup to avoid hanging test JVMs. Prefer core/model and low-level javadsl HTTP APIs; avoid high-level routing Directives because those belong to the separate akka-http module, not akka-http-core.",
+      "risks": [
+        "Native Image may still require reachability metadata for Akka configuration/resources discovered by local Gradle and Native Image verification.",
+        "Server/client tests that bind sockets should use localhost with an ephemeral port and deterministic shutdown to avoid flaky port conflicts.",
+        "Adding the full akka-http module would make routing APIs available but would risk covering the wrong artifact rather than akka-http-core."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.typesafe.akka:akka-stream_2.13:2.7.0",
+          "result": "applied",
+          "target": "tests/src/com.typesafe.akka/akka-http-core_2.13/10.5.3/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.typesafe.akka:akka-actor-typed_2.13:2.7.0",
+          "result": "applied",
+          "target": "tests/src/com.typesafe.akka/akka-http-core_2.13/10.5.3/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#5458 Support for com.typesafe.akka:akka-http-core_2.13:10.5.3; label=library-new-request; body_chars=113"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 38813,
+      "output_tokens_used": 5773,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/com.typesafe.akka:akka-http-core_2.13:10.5.3/library-preparation-preflight/pi-generation-2026-06-27T16-23-33-428318Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 97733,
+      "cached_input_tokens_used": 1250816,
+      "output_tokens_used": 13041,
+      "iterations": 2,
+      "cost_usd": 1.0166,
+      "generated_loc": 97,
+      "tested_library_loc": 1971,
+      "metadata_entries": 7,
+      "code_coverage_percent": 13.28
+    },
+    "artifacts": {
+      "test_file": "tests/src/com.typesafe.akka/akka-http-core_2.13/10.5.3/src/test/scala/com_typesafe_akka/akka_http_core_2_13/Http2AlpnSupportTest.scala",
+      "metadata_file": "metadata/com.typesafe.akka/akka-http-core_2.13/10.5.3/reachability-metadata.json"
+    }
+  }
+}
