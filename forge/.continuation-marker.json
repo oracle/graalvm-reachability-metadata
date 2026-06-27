@@ -1,0 +1,101 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.maven.doxia:doxia-site-renderer:2.0.0",
+  "issueNumber": 8134,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Use the 2.0 API: DocumentRenderingContext replaces the old RenderingContext class, SkinResourceLoader is no longer public, DefaultSiteRenderer no longer has Plexus enableLogging, and SiteRenderingContext no longer has setUsingDefaultTemplate. Prefer obtaining SiteRenderer from a Plexus test container and render a small temporary site with a minimal skin/template and simple APT/XDoc/FML inputs rather than directly new-ing DefaultSiteRenderer for rendering paths.",
+    "applied_setup": [],
+    "current_library": "org.apache.maven.doxia:doxia-site-renderer:1.9.1",
+    "deterministic_setup": [
+      {
+        "coordinate": "org.codehaus.plexus:plexus-testing:1.4.0",
+        "kind": "dependency",
+        "reason": "Upstream 2.0.0 renderer tests use @PlexusTest and PlexusContainer.lookup(SiteRenderer.class); DefaultSiteRenderer has private injected fields for Velocity, Doxia, ParserModuleManager, and PlexusContainer, so direct construction is not enough for rendering coverage.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.apache.maven:maven-artifact:3.6.3",
+        "kind": "dependency",
+        "reason": "The artifact declares maven-artifact as provided, but the public skin API uses Artifact/DefaultArtifact; standalone tests need it to exercise createContextForSkin and skin-related rendering behavior.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.apache.maven.doxia:doxia-module-apt:2.0.0",
+        "kind": "dependency",
+        "reason": "The 2.0.0 POM notes Doxia modules are no longer in doxia-core and must be declared so component descriptors are discovered; upstream rendering tests add the APT module in test scope.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.apache.maven.doxia:doxia-module-xdoc:2.0.0",
+        "kind": "dependency",
+        "reason": "The renderer normally locates and renders Doxia source formats through parser module descriptors; xdoc is an upstream test-scope parser module for site rendering coverage.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.apache.maven.doxia:doxia-module-fml:2.0.0",
+        "kind": "dependency",
+        "reason": "The renderer normally locates and renders Doxia source formats through parser module descriptors; fml is an upstream test-scope parser module for site rendering coverage.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8134 [Automation] javac compile fails for org.apache.maven.doxia:doxia-site-renderer:2.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "8 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 35749,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8134,
+    "library": "org.apache.maven.doxia:doxia-site-renderer:2.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.0",
+    "output_tokens_used": 6098,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The existing 1.9.1 tests fail because they target removed/renamed APIs, not because a Docker image or environment variable is missing.",
+      "If the generated tests avoid full document rendering and only cover context/resource helpers, some added parser-module dependencies may remain unused; local Gradle and Native Image verification should decide final scope."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.apache.maven.doxia:doxia-site-renderer:2.0.0/library-preparation-preflight/pi-generation-2026-06-27T05-03-34-236805Z.log",
+    "status": "completed",
+    "summary": "doxia-site-renderer 2.0.0 is a Maven/Plexus component whose meaningful rendering paths rely on injected components and Doxia parser modules that are not all present in the normal generated scaffold."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8134-fails-javac-compile-org.apache.maven.doxia-doxia-site-renderer-2.0.0-af468382",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
