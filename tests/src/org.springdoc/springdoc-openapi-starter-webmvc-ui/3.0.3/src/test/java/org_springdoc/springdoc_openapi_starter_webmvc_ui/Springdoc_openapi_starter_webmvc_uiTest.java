@@ -15,12 +15,14 @@ import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
 import org.springdoc.core.models.GroupedOpenApi;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.server.context.ServerPortInfoApplicationContextInitializer;
+import org.springframework.boot.web.server.servlet.context.AnnotationConfigServletWebServerApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.env.SimpleCommandLinePropertySource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,7 +36,7 @@ public class Springdoc_openapi_starter_webmvc_uiTest {
 
     @Test
     void generatedOpenApiAndSwaggerUiAreServedByWebMvcApplication() throws Exception {
-        try (ConfigurableApplicationContext context = SpringApplication.run(TestApplication.class,
+        try (ConfigurableApplicationContext context = runApplication(TestApplication.class,
                 "--server.address=127.0.0.1",
                 "--server.port=0",
                 "--spring.main.banner-mode=off")) {
@@ -83,7 +85,7 @@ public class Springdoc_openapi_starter_webmvc_uiTest {
 
     @Test
     void groupedOpenApiDefinitionsAreExposedSeparatelyAndAddedToSwaggerUiConfig() throws Exception {
-        try (ConfigurableApplicationContext context = SpringApplication.run(GroupedOpenApiApplication.class,
+        try (ConfigurableApplicationContext context = runApplication(GroupedOpenApiApplication.class,
                 "--server.address=127.0.0.1",
                 "--server.port=0",
                 "--spring.main.banner-mode=off")) {
@@ -119,7 +121,7 @@ public class Springdoc_openapi_starter_webmvc_uiTest {
 
     @Test
     void customApiDocsAndSwaggerUiPathsAreHonored() throws Exception {
-        try (ConfigurableApplicationContext context = SpringApplication.run(TestApplication.class,
+        try (ConfigurableApplicationContext context = runApplication(TestApplication.class,
                 "--server.address=127.0.0.1",
                 "--server.port=0",
                 "--spring.main.banner-mode=off",
@@ -166,6 +168,16 @@ public class Springdoc_openapi_starter_webmvc_uiTest {
                 .timeout(REQUEST_TIMEOUT)
                 .build();
         return client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    private static ConfigurableApplicationContext runApplication(Class<?> applicationClass, String... args) {
+        AnnotationConfigServletWebServerApplicationContext context =
+                new AnnotationConfigServletWebServerApplicationContext();
+        context.getEnvironment().getPropertySources().addFirst(new SimpleCommandLinePropertySource(args));
+        new ServerPortInfoApplicationContextInitializer().initialize(context);
+        context.register(applicationClass);
+        context.refresh();
+        return context;
     }
 
     @SpringBootApplication(proxyBeanMethods = false,

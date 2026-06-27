@@ -1,0 +1,70 @@
+{
+  "timestamp": "2026-06-27T19:52:40.840661Z",
+  "library": "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3",
+  "starting_commit": "6064b3a0daba2b7cb3b8a20bf4a5ac488ded5961",
+  "ending_commit": "e0035025657990da9f8524ec4659b20e267e80c4",
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+  "agent": "pi",
+  "model": "oca/gpt-5.5",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 7020,
+    "issue_label": "library-new-request",
+    "library": "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3",
+    "summary": "Meaningful coverage needs a real Spring Boot WebMVC servlet application; the requested springdoc UI artifact alone starts as a non-web context, so its /v3/api-docs and Swagger UI paths are not reachable.",
+    "deterministic_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.boot:spring-boot-starter-webmvc:4.0.5",
+        "scope": "testImplementation",
+        "reason": "springdoc-openapi-starter-webmvc-ui:3.0.3 is an add-on for a Spring Boot WebMVC app. Its resolved dependencies include Spring Boot WebMVC support but not the normal WebMVC starter with embedded Tomcat/servlet runtime; adding the matching Boot 4.0.5 starter makes servlet endpoints and UI resource han\n...[truncated]"
+      }
+    ],
+    "agent_guidance": "No Docker image, environment variable, or system property is required. Generated tests should define a minimal @SpringBootApplication with at least one @RestController endpoint, start it with --server.port=0, call the assigned local port, exercise /v3/api-docs and a Swagger UI route such as /swagger-ui.html or swagger initializer/static resource handling, and close the application context.",
+    "risks": [
+      "Without the WebMVC starter, tests may only load a generic Spring context and miss the library's web auto-configuration paths.",
+      "Full embedded Tomcat/Spring Boot native-image tests can be heavier than simple unit tests; keep coverage focused on springdoc endpoints and resource transformation rather than browser-level UI behavior."
+    ],
+    "applied_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.boot:spring-boot-starter-webmvc:4.0.5",
+        "result": "applied",
+        "target": "tests/src/org.springdoc/springdoc-openapi-starter-webmvc-ui/3.0.3/build.gradle"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7020 Support for org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3; label=library-new-request; body_chars=124"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "oca/gpt-5.5",
+    "input_tokens_used": 60932,
+    "output_tokens_used": 5962,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3/library-preparation-preflight/pi-generation-2026-06-27T19-14-37-394660Z.log"
+  },
+  "metrics": {
+    "input_tokens_used": 112368,
+    "cached_input_tokens_used": 845824,
+    "output_tokens_used": 19551,
+    "iterations": 3,
+    "cost_usd": 1.0094,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "test_file": "None",
+    "metadata_file": "None"
+  }
+}
