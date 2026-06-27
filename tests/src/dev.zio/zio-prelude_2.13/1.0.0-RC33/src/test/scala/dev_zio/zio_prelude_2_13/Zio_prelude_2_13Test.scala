@@ -10,11 +10,14 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import zio.prelude.Equal
 import zio.prelude.NonEmptyList
 import zio.prelude.NonEmptyMap
 import zio.prelude.NonEmptySet
 import zio.prelude.NonEmptySortedMap
 import zio.prelude.NonEmptySortedSet
+import zio.prelude.Ord
+import zio.prelude.PartialOrd
 import zio.prelude.These
 import zio.prelude.ZSet
 import zio.prelude.ZValidation
@@ -201,6 +204,38 @@ class Zio_prelude_2_13Test {
     assertEquals(0, inventory("missing"))
     assertTrue(inventory.toNonEmptyZSet.isDefined)
     assertTrue(ZSet.empty.toNonEmptyZSet.isEmpty)
+  }
+
+  @Test
+  def typeClassesCompareTotalPartialAndDerivedDomainValues(): Unit = {
+    final case class Task(name: String, priority: Int)
+
+    val priorityOrd: Ord[Task] = Ord[Int].contramap[Task](_.priority)
+    val low: Task = Task("documentation", 1)
+    val high: Task = Task("release", 5)
+
+    assertTrue(priorityOrd.compare(low, high).isLessThan)
+    assertEquals(high, priorityOrd.max(low, high))
+    assertEquals(low, priorityOrd.min(low, high))
+    assertTrue(priorityOrd.reverse.compare(low, high).isGreaterThan)
+
+    val lengthOrd: Ord[String] = Ord[Int].contramap[String](_.length)
+    assertEquals(List("fig", "pear", "banana"), List("banana", "fig", "pear").sorted(lengthOrd.toScala))
+
+    val sameDomain: Equal[String] = Equal[String].contramap[String](_.dropWhile(_ != '@'))
+    assertTrue(sameDomain.equal("ada@example.test", "grace@example.test"))
+    assertFalse(sameDomain.equal("ada@example.test", "ada@internal.test"))
+
+    val setPartialOrd: PartialOrd[Set[Int]] = PartialOrd[Set[Int]]
+    val subsetComparison = setPartialOrd.compare(Set(1), Set(1, 2))
+    val incomparableComparison = setPartialOrd.compare(Set(1), Set(2))
+
+    assertTrue(subsetComparison.isLessThan)
+    assertTrue(setPartialOrd.lessOrEqual(Set(1), Set(1, 2)))
+    assertTrue(setPartialOrd.greaterOrEqual(Set(1, 2), Set(1)))
+    assertFalse(incomparableComparison.isLessThan)
+    assertFalse(incomparableComparison.isGreaterThan)
+    assertFalse(incomparableComparison.isEqual)
   }
 
   @Test
