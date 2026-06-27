@@ -96,6 +96,27 @@ public class Spring_ai_autoconfigure_model_chat_memoryTest {
     }
 
     @Test
+    void userProvidedChatMemoryBacksOffOnlyAutoConfiguredChatMemory() {
+        contextRunner.withUserConfiguration(UserMemoryConfiguration.class).run(context -> {
+            assertThat(context).hasSingleBean(ChatMemoryRepository.class);
+            assertThat(context).hasSingleBean(ChatMemory.class);
+
+            ChatMemoryRepository repository = context.getBean(ChatMemoryRepository.class);
+            ChatMemory chatMemory = context.getBean(ChatMemory.class);
+            assertThat(repository).isInstanceOf(InMemoryChatMemoryRepository.class);
+            assertThat(chatMemory).isInstanceOf(RecordingChatMemory.class);
+
+            chatMemory.add(CONVERSATION_ID, List.of(new UserMessage("custom question"),
+                    new AssistantMessage("custom answer")));
+
+            assertThat(chatMemory.get(CONVERSATION_ID))
+                    .extracting(Message::getText)
+                    .containsExactly("custom question", "custom answer");
+            assertThat(repository.findConversationIds()).isEmpty();
+        });
+    }
+
+    @Test
     void userProvidedRepositoryAndChatMemoryBackOffBothAutoConfiguredBeans() {
         contextRunner.withUserConfiguration(UserRepositoryAndMemoryConfiguration.class).run(context -> {
             assertThat(context).hasSingleBean(ChatMemoryRepository.class);
@@ -122,6 +143,15 @@ public class Spring_ai_autoconfigure_model_chat_memoryTest {
         @Bean
         public RecordingChatMemoryRepository chatMemoryRepository() {
             return new RecordingChatMemoryRepository();
+        }
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    public static class UserMemoryConfiguration {
+
+        @Bean
+        public RecordingChatMemory chatMemory() {
+            return new RecordingChatMemory();
         }
     }
 
