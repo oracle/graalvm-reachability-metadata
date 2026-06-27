@@ -8,6 +8,7 @@ package org_springframework_ai.spring_ai_autoconfigure_model_image_observation;
 
 import io.micrometer.tracing.Tracer;
 import org.junit.jupiter.api.Test;
+import org.springframework.ai.image.ImageModel;
 import org.springframework.ai.image.observation.ImageModelObservationContext;
 import org.springframework.ai.image.observation.ImageModelPromptContentObservationHandler;
 import org.springframework.ai.model.image.observation.autoconfigure.ImageObservationAutoConfiguration;
@@ -38,6 +39,16 @@ public class Spring_ai_autoconfigure_model_image_observationTest {
         properties.setLogPrompt(true);
 
         assertThat(properties.isLogPrompt()).isTrue();
+    }
+
+    @Test
+    void backsOffWhenImageModelApiIsUnavailable() {
+        this.contextRunner.withClassLoader(new FilteredClassLoader(ImageModel.class))
+                .withUserConfiguration(TracerConfiguration.class)
+                .withPropertyValues(LOG_PROMPT_PROPERTY + "=true")
+                .run(context -> assertThat(context).doesNotHaveBean(ImageObservationProperties.class)
+                        .doesNotHaveBean(ImageModelPromptContentObservationHandler.class)
+                        .doesNotHaveBean(TracingAwareLoggingObservationHandler.class));
     }
 
     @Test
