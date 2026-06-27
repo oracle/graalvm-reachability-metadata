@@ -1,0 +1,106 @@
+{
+  "timestamp": "2026-06-27T04:35:59.371327Z",
+  "library": "org.springframework.ai:spring-ai-autoconfigure-model-chat-observation:2.0.0-RC2",
+  "starting_commit": "0533240f89888307272a17eacdc3fd823f1c67a1",
+  "ending_commit": "c997cf2a927c346763df79651991abc587d72395",
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+  "agent": "pi",
+  "model": "oca/gpt-5.5",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 8416,
+    "issue_label": "library-new-request",
+    "library": "org.springframework.ai:spring-ai-autoconfigure-model-chat-observation:2.0.0-RC2",
+    "summary": "The artifact is a Spring Boot/Spring AI auto-configuration module whose POM marks its class-bearing collaborators as optional; resolving the requested coordinate alone brings in no transitive dependencies, and jdeps shows the auto-configuration classes reference missing Spring AI chat/model observation, Spring Boot autoconfigure, and Micrometer tracing types. Meaningful coverage needs those optional runtime APIs plus Boot test support for an application-context based test.",
+    "deterministic_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.ai:spring-ai-client-chat:2.0.0-RC2",
+        "scope": "testImplementation",
+        "reason": "Provides the ChatModel type and Spring AI chat/client/model observation handlers and contexts referenced by ChatObservationAutoConfiguration."
+      },
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.1.0-RC1",
+        "scope": "testImplementation",
+        "reason": "Provides the Spring Boot auto-configuration annotations, conditions, and configuration properties infrastructure used by the library."
+      },
+      {
+        "kind": "dependency",
+        "coordinate": "io.micrometer:micrometer-tracing:1.7.0-RC1",
+        "scope": "testImplementation",
+        "reason": "Provides the Tracer API needed to load and exercise the tracer-present auto-configuration branch."
+      },
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.boot:spring-boot-test:4.1.0-RC1",
+        "scope": "testImplementation",
+        "reason": "Provides ApplicationContextRunner-style test support appropriate for exercising Spring Boot auto-configuration."
+      }
+    ],
+    "agent_guidance": "Use an application context based test rather than only instantiating POJOs. Register a SimpleMeterRegistry bean to reach the meter observation handler. To exercise the tracer-present branch, provide a minimal or mocked Tracer bean. Set Spring properties such as spring.ai.chat.observations.log-prompt=true, spring.ai.chat.observations.log-completion=true, and spring.ai.chat.observations.include-error-logging=true when asserting the conditional logging/error handler beans.",
+    "risks": [
+      "The requested version is an RC built against Spring Boot 4.1.0-RC1 and Micrometer 1.7.0-RC1, so dependency alignment matters.",
+      "A Tracer bean is only needed for the tracer-present branches; tests that merely verify the non-tracing branch can omit it but will leave less meaningful coverage."
+    ],
+    "applied_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.ai:spring-ai-client-chat:2.0.0-RC2",
+        "result": "applied",
+        "target": "tests/src/org.springframework.ai/spring-ai-autoconfigure-model-chat-observation/2.0.0-RC2/build.gradle"
+      },
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.1.0-RC1",
+        "result": "applied",
+        "target": "tests/src/org.springframework.ai/spring-ai-autoconfigure-model-chat-observation/2.0.0-RC2/build.gradle"
+      },
+      {
+        "kind": "dependency",
+        "coordinate": "io.micrometer:micrometer-tracing:1.7.0-RC1",
+        "result": "applied",
+        "target": "tests/src/org.springframework.ai/spring-ai-autoconfigure-model-chat-observation/2.0.0-RC2/build.gradle"
+      },
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.boot:spring-boot-test:4.1.0-RC1",
+        "result": "applied",
+        "target": "tests/src/org.springframework.ai/spring-ai-autoconfigure-model-chat-observation/2.0.0-RC2/build.gradle"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8416 Support for org.springframework.ai:spring-ai-autoconfigure-model-chat-observation:2.0.0-RC2; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "oca/gpt-5.5",
+    "input_tokens_used": 50322,
+    "output_tokens_used": 6213,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.springframework.ai:spring-ai-autoconfigure-model-chat-observation:2.0.0-RC2/library-preparation-preflight/pi-generation-2026-06-27T04-00-51-754309Z.log"
+  },
+  "metrics": {
+    "input_tokens_used": 134933,
+    "cached_input_tokens_used": 1950720,
+    "output_tokens_used": 19851,
+    "iterations": 3,
+    "cost_usd": 1.5709,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "test_file": "None",
+    "metadata_file": "None"
+  }
+}
