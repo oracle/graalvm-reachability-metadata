@@ -121,6 +121,19 @@ public class Spring_ai_autoconfigure_model_image_observationTest {
     }
 
     @Test
+    void backsOffWhenCustomPlainPromptContentHandlerExistsWithTracerAvailable() {
+        this.contextRunner.withUserConfiguration(TracerConfiguration.class, CustomPlainHandlerConfiguration.class)
+                .withPropertyValues(LOG_PROMPT_PROPERTY + "=true")
+                .run(context -> {
+                    assertThat(context).hasSingleBean(ImageModelPromptContentObservationHandler.class)
+                            .hasBean("customImageModelPromptContentObservationHandler")
+                            .doesNotHaveBean(TracingAwareLoggingObservationHandler.class);
+                    assertThat(context.getBean(ImageModelPromptContentObservationHandler.class))
+                            .isSameAs(CustomPlainHandlerConfiguration.HANDLER);
+                });
+    }
+
+    @Test
     void backsOffWhenCustomTracingAwareHandlerUsesAutoConfiguredBeanName() {
         this.contextRunner
                 .withUserConfiguration(TracerConfiguration.class, CustomTracingAwareHandlerConfiguration.class)
