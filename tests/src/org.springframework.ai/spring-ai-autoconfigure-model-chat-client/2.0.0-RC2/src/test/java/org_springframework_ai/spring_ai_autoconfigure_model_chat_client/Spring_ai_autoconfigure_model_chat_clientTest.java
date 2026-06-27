@@ -21,6 +21,8 @@ import org.springframework.ai.chat.client.ChatClientResponse;
 import org.springframework.ai.chat.client.advisor.ToolCallingAdvisor;
 import org.springframework.ai.chat.client.advisor.api.StreamAdvisor;
 import org.springframework.ai.chat.client.advisor.api.StreamAdvisorChain;
+import org.springframework.ai.chat.client.observation.ChatClientCompletionObservationHandler;
+import org.springframework.ai.chat.client.observation.ChatClientPromptContentObservationHandler;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.ToolResponseMessage;
@@ -67,6 +69,20 @@ public class Spring_ai_autoconfigure_model_chat_clientTest {
 
                     ToolCallingAdvisor advisor = context.getBean(ToolCallingAdvisor.Builder.class).build();
                     assertThat(advisor.getOrder()).isEqualTo(42);
+                });
+    }
+
+    @Test
+    void bindsObservationPropertiesAndRegistersContentObservationHandlers() {
+        this.contextRunner.withPropertyValues("spring.ai.chat.client.observations.log-prompt=true",
+                "spring.ai.chat.client.observations.log-completion=true").run(context -> {
+                    assertThat(context).hasSingleBean(ChatClientBuilderProperties.class);
+                    assertThat(context).hasSingleBean(ChatClientPromptContentObservationHandler.class);
+                    assertThat(context).hasSingleBean(ChatClientCompletionObservationHandler.class);
+
+                    ChatClientBuilderProperties properties = context.getBean(ChatClientBuilderProperties.class);
+                    assertThat(properties.getObservations().isLogPrompt()).isTrue();
+                    assertThat(properties.getObservations().isLogCompletion()).isTrue();
                 });
     }
 
