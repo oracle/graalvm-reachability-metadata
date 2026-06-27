@@ -13,10 +13,13 @@ import akka.serialization.Serialization
 import akka.serialization.SerializationExtension
 import akka.serialization.Serializer
 import akka.serialization.Serializers
+import akka.serialization.jackson.JacksonMigration
 import akka.serialization.jackson.JacksonObjectMapperProvider
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.node.ObjectNode
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -112,6 +115,31 @@ class Akka_serialization_jackson_2_13Test {
     }
   }
 
+  @Test
+  def jacksonMigrationTransformsOlderJsonPayloads(): Unit = {
+    withActorSystem("AkkaJacksonMigrationTest") { system =>
+      val serialization: Serialization = SerializationExtension(system)
+      val current: MigratedMessage = new MigratedMessage("event-1", "current")
+      val serializer: Serializer = serialization.findSerializerFor(current)
+
+      assertEquals(JacksonJsonSerializerClassName, serializer.getClass.getName)
+      assertEquals(
+        s"${classOf[MigratedMessage].getName}#2",
+        Serializers.manifestFor(serializer, current)
+      )
+
+      val previousPayload: Array[Byte] = """{"id":"event-1"}""".getBytes(StandardCharsets.UTF_8)
+      val previousManifest: String = s"${classOf[MigratedMessage].getName}#1"
+      val decoded: MigratedMessage = serialization
+        .deserialize(previousPayload, serializer.identifier, previousManifest)
+        .get
+        .asInstanceOf[MigratedMessage]
+
+      assertEquals("event-1", decoded.id)
+      assertEquals("migrated-from-version-1", decoded.status)
+    }
+  }
+
   private def withActorSystem(name: String)(testBody: ActorSystem => Unit): Unit = {
     val system: ActorSystem = ActorSystem(name, serializationConfig)
     try {
@@ -145,8 +173,12 @@ object Akka_serialization_jackson_2_13Test {
        |      "${classOf[JsonMessage].getName}" = jackson-json
        |      "${classOf[CborMessage].getName}" = jackson-cbor
        |      "${classOf[Command].getName}" = jackson-json
+       |      "${classOf[MigratedMessage].getName}" = jackson-json
        |    }
        |  }
+       |}
+       |akka.serialization.jackson.jackson-json.migrations {
+       |  "${classOf[MigratedMessage].getName}" = "${classOf[MigratedMessageMigration].getName}"
        |}
        |""".stripMargin
   )
@@ -188,5 +220,32 @@ final class StartCommand() extends Command {
     this()
     this.name = name
     this.priority = priority
+  }
+}
+
+final class MigratedMessage() {
+  @BeanProperty var id: String = _
+  @BeanProperty var status: String = _
+
+  @JsonCreator
+  def this(
+    @JsonProperty("id") id: String,
+    @JsonProperty("status") status: String
+  ) = {
+    this()
+    this.id = id
+    this.status = status
+  }
+}
+
+final class MigratedMessageMigration extends JacksonMigration {
+  override def currentVersion: Int = 2
+
+  override def transform(fromVersion: Int, json: JsonNode): JsonNode = {
+    val root: ObjectNode = json.deepCopy[ObjectNode]()
+    if (fromVersion == 1 && !root.has("status")) {
+      root.put("status", "migrated-from-version-1")
+    }
+    root
   }
 }
