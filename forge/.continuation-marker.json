@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.activemq:artemis-commons:2.38.0",
+  "issueNumber": 8665,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No required environment variables or system properties. The compile failure is API drift: in 2.38.0 Base64 no longer exposes DONT_BREAK_LINES or decodeToObject(String), so tests should use the current Base64 API such as encodeObject(Serializable), encodeBytes(...), and decode(...).",
+    "applied_setup": [],
+    "current_library": "org.apache.activemq:artemis-commons:2.34.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8665 [Automation] javac compile fails for org.apache.activemq:artemis-commons:2.38.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "26 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 34294,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8665,
+    "library": "org.apache.activemq:artemis-commons:2.38.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.38.0",
+    "output_tokens_used": 3587,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Some optional coverage paths such as XmlProvider schema resolution depend on test-provided classpath resources and in-test state management, but that is ordinary test scaffolding rather than external setup.",
+      "SLF4J has no explicit test binding in the existing scaffold; the transitive slf4j-api is sufficient for typical utility coverage, though tests should avoid asserting on logging output unless they add their own in-test logging setup."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.activemq:artemis-commons:2.38.0/library-preparation-preflight/pi-generation-2026-06-27T06-26-23-119742Z.log",
+    "status": "completed",
+    "summary": "No extra setup is required: artemis-commons is a utility/common API artifact whose Maven POM already provides needed transitive compile dependencies; Johnzon/Jakarta JSON are shaded, and meaningful tests do not require a broker, Docker service, or mandatory environment/system property."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.38.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8665-fails-javac-compile-org.apache.activemq-artemis-commons-2.38.0-42392bd7",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
