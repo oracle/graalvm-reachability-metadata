@@ -1,0 +1,83 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "com.github.victools:jsonschema-module-swagger-2:5.0.0",
+  "issueNumber": 8739,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No Docker image, environment variable, or system property is indicated. For 5.0.0 tests that inspect generated schemas, use Jackson 3 imports such as `tools.jackson.databind.JsonNode`; the 4.x `com.fasterxml.jackson.databind.JsonNode` import is stale.",
+    "applied_setup": [],
+    "current_library": "com.github.victools:jsonschema-module-swagger-2:4.38.0",
+    "deterministic_setup": [
+      {
+        "coordinate": "com.github.victools:jsonschema-generator:5.0.0",
+        "kind": "dependency",
+        "reason": "Normal usage wires Swagger2Module into SchemaGeneratorConfigBuilder/SchemaGenerator, but the module POM declares jsonschema-generator with provided scope.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "io.swagger.core.v3:swagger-annotations:2.2.41",
+        "kind": "dependency",
+        "reason": "The module reads io.swagger.v3.oas.annotations.media annotations, but swagger-annotations is provided in the module POM; 2.2.41 is the version managed by the 5.0.0 parent.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8739 [Automation] javac compile fails for com.github.victools:jsonschema-module-swagger-2:5.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 35950,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8739,
+    "library": "com.github.victools:jsonschema-module-swagger-2:5.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "5.0.0",
+    "output_tokens_used": 4185,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Keeping the old Jackson 2 JsonNode import will continue to cause javac failures or type mismatches with SchemaGenerator in 5.0.0.",
+      "Using an older Swagger annotations version may miss annotation methods expected by the 5.0.0 module even if simple tests compile."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/com.github.victools:jsonschema-module-swagger-2:5.0.0/library-preparation-preflight/pi-generation-2026-06-27T23-41-41-313731Z.log",
+    "status": "completed",
+    "summary": "The artifact is a jsonschema-generator module whose required generator API and Swagger annotations are declared as provided dependencies; meaningful tests need those on the test classpath, and version 5.0.0 uses Jackson 3 node types."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "5.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8739-fails-javac-compile-com.github.victools-jsonschema-module-swagger-2-5.0.0-3651cc0b",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
