@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.sonatype.sisu:sisu-inject-bean:2.4.2",
+  "issueNumber": 8718,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment variables or system properties are required. Generated tests should adapt to the 2.4.2 API change: org.eclipse.sisu.space.QualifiedTypeBinder.hear takes two arguments, Class and Object, not the older three-argument form.",
+    "applied_setup": [],
+    "current_library": "org.sonatype.sisu:sisu-inject-bean:2.4.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8718 [Automation] javac compile fails for org.sonatype.sisu:sisu-inject-bean:2.4.2; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "14 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 34801,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8718,
+    "library": "org.sonatype.sisu:sisu-inject-bean:2.4.2",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.4.2",
+    "output_tokens_used": 4103,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The current compile failure is caused by an API signature change between the existing 2.4.0 test and 2.4.2, not by a missing dependency.",
+      "The artifact declares optional integrations such as SLF4J, OSGi, JUnit, and TestNG, but meaningful coverage of the main Sisu/Guice wrapper behavior is reachable without adding those optional dependencies or any Docker service."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.sonatype.sisu:sisu-inject-bean:2.4.2/library-preparation-preflight/pi-generation-2026-06-27T16-27-43-706191Z.log",
+    "status": "completed",
+    "summary": "No extra setup is required: sisu-inject-bean is a legacy Sisu/Guice wrapper whose core runtime dependencies resolve transitively, and normal usage is in-process JSR-330/Guice classpath scanning and wiring."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.4.2",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8718-fails-javac-compile-org.sonatype.sisu-sisu-inject-bean-2.4.2-c384161a",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
