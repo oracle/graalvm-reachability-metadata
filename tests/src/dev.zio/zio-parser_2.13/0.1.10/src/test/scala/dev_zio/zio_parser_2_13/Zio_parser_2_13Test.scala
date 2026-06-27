@@ -56,6 +56,16 @@ class Zio_parser_2_13Test {
   }
 
   @Test
+  def parserNegativeLookaheadRejectsMatchingInputWithoutConsumingOnSuccess(): Unit = {
+    val nonDigitCharacter: Parser[String, Char, Char] =
+      (Parser.digit.not("digit") ~> Parser.anyChar) <~ Parser.end
+
+    assertEquals(Right('a'), nonDigitCharacter.parseString("a"))
+    assertEquals(Right('#'), nonDigitCharacter.parseString("#"))
+    assertLeftContains(nonDigitCharacter.parseString("7"), "digit")
+  }
+
+  @Test
   def parsersHandleCharacterChunksAndGenericChunks(): Unit = {
     val word: Parser[String, Char, String] = Parser.letter.repeat.string <~ Parser.end
     assertEquals(Right("abcXYZ"), word.parseChars(Chunk('a', 'b', 'c', 'X', 'Y', 'Z')))
