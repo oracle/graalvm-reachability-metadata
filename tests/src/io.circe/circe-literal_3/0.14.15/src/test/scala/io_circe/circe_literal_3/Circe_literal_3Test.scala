@@ -98,6 +98,27 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def interpolatesTopLevelValuesThroughSingleJsonContext(): Unit = {
+    val account: LiteralAccount = LiteralAccount("acct-top", 7, List("standalone"))
+    val existingArray: Json = Json.arr(
+      Json.fromString("first"),
+      Json.obj("second" -> Json.fromBoolean(true))
+    )
+
+    val encodedAccount: Json = json"""$account"""
+    val passthroughArray: Json = json"""$existingArray"""
+
+    val arrayValues: List[Json] = expectRight(passthroughArray.as[List[Json]])
+
+    assertTrue(encodedAccount.isObject)
+    assertEquals(Right("acct-top"), encodedAccount.hcursor.get[String]("id"))
+    assertEquals(Right(7), encodedAccount.hcursor.get[Int]("quota"))
+    assertEquals(Right(List("standalone")), encodedAccount.hcursor.get[List[String]]("labels"))
+    assertEquals(Some("first"), arrayValues.head.asString)
+    assertEquals(Right(true), arrayValues(1).hcursor.get[Boolean]("second"))
+  }
+
+  @Test
   def interpolatesValuesThroughCirceEncoders(): Unit = {
     val account: LiteralAccount = LiteralAccount("acct-1", 25, List("primary", "paid"))
     val enabled: Boolean = true
