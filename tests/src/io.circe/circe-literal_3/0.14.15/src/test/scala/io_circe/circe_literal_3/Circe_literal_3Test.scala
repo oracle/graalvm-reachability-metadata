@@ -114,6 +114,28 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def escapesInterpolatedStringsAndKeysRatherThanTreatingThemAsJsonSyntax(): Unit = {
+    val payload: String = """{"admin":true,"name":"quoted"}"""
+    val quotedText: String = "line 1\nline \"2\" \\ slash"
+    val dynamicKey: String = "user \"input\"\nkey"
+
+    val document: Json = json"""
+      {
+        "payload": $payload,
+        "quotedText": $quotedText,
+        $dynamicKey: "dynamic value"
+      }
+    """
+
+    val cursor: HCursor = document.hcursor
+    assertThat(cursor.get[String]("payload")).isEqualTo(Right(payload))
+    assertThat(cursor.downField("payload").focus.exists(_.isString)).isTrue
+    assertThat(cursor.get[String]("quotedText")).isEqualTo(Right(quotedText))
+    assertThat(cursor.get[String](dynamicKey)).isEqualTo(Right("dynamic value"))
+    assertThat(document.asObject.map(_.keys.toSet.contains(dynamicKey))).isEqualTo(Some(true))
+  }
+
+  @Test
   def interpolatesJsonFragmentsWithoutStringQuotingThem(): Unit = {
     val payload: Json = json"""{ "kind": "embedded", "count": 2 }"""
     val tags: List[String] = List("compile-time", "json")
