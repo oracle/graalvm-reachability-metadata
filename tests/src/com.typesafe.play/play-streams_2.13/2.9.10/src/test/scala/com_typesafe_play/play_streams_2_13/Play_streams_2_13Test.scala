@@ -6,6 +6,8 @@
  */
 package com_typesafe_play.play_streams_2_13
 
+import java.io.ByteArrayInputStream
+import java.nio.charset.StandardCharsets
 import java.util.Arrays
 import java.util.Optional
 import java.util.concurrent.CompletableFuture
@@ -14,6 +16,7 @@ import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 import java.util.{List => JList}
 import java.util.function.{Function => JFunction}
+import java.util.zip.GZIPInputStream
 
 import akka.actor.ActorSystem
 import akka.japi.function.{Function => AkkaFunction}
@@ -22,10 +25,13 @@ import akka.stream.Materializer
 import akka.stream.javadsl.Flow
 import akka.stream.javadsl.Sink
 import akka.stream.javadsl.Source
+import akka.stream.scaladsl.{Source => ScalaSource}
+import akka.util.ByteString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import play.api.libs.streams.GzipFlow
 import play.libs.streams.Accumulator
 
 import scala.concurrent.Await
@@ -160,6 +166,25 @@ class Play_streams_2_13Test {
   }
 
   @Test
+  def compressesChunkedByteStringsWithScalaGzipFlow(): Unit = {
+    val plainText: String = "Play streams compresses chunked data"
+    val inputChunks: List[ByteString] = List(
+      ByteString("Play streams ", StandardCharsets.UTF_8.name()),
+      ByteString("compresses ", StandardCharsets.UTF_8.name()),
+      ByteString("chunked data", StandardCharsets.UTF_8.name())
+    )
+
+    val compressedBytes: ByteString = Await.result(
+      ScalaSource(inputChunks).via(GzipFlow.gzip()).runFold(ByteString.empty)(_ ++ _)(materializer),
+      10.seconds
+    )
+    val decompressedText: String = gunzip(compressedBytes.toArray)
+
+    assertThat(compressedBytes.length).isGreaterThan(0)
+    assertThat(decompressedText).isEqualTo(plainText)
+  }
+
+  @Test
   def convertsBetweenJavaAndScalaAccumulatorApis(): Unit = {
     val javaAccumulator: Accumulator[Integer, Integer] = Accumulator.fromSink(integerSumSink)
     val scalaAccumulator: play.api.libs.streams.Accumulator[Integer, Integer] = javaAccumulator.asScala()
@@ -187,6 +212,15 @@ object Play_streams_2_13Test {
   }
 
   private def completed[A](value: A): CompletionStage[A] = CompletableFuture.completedFuture(value)
+
+  private def gunzip(bytes: Array[Byte]): String = {
+    val gzipInputStream: GZIPInputStream = new GZIPInputStream(new ByteArrayInputStream(bytes))
+    try {
+      new String(gzipInputStream.readAllBytes(), StandardCharsets.UTF_8)
+    } finally {
+      gzipInputStream.close()
+    }
+  }
 
   private def awaitStage[A](stage: CompletionStage[A]): A = {
     stage.toCompletableFuture.get(10, TimeUnit.SECONDS)
