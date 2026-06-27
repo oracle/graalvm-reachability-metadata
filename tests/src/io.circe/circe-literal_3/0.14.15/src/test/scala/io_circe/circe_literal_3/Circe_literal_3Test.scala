@@ -13,6 +13,7 @@ import io.circe.JsonNumber
 import io.circe.KeyEncoder
 import io.circe.literal.*
 import org.assertj.core.api.Assertions.assertThat
+import scala.compiletime.testing.typeChecks
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
 
@@ -199,6 +200,15 @@ class Circe_literal_3Test {
       .isEqualTo(Right(deployment.labels))
     assertThat(document.hcursor.downField("history").downArray.as[Deployment]).isEqualTo(Right(deployment))
     assertThat(document.hcursor.get[String]("secret")).isEqualTo(Right("emases-nepo"))
+  }
+
+  @Test
+  def rejectsMalformedJsonLiteralsAtCompileTime(): Unit = {
+    val malformedLiteralTypeChecks: Boolean = typeChecks(
+      "import io.circe.literal.*\nval invalidDocument = json\"{ \\\"items\\\": [1, 2, }\""
+    )
+
+    assertThat(malformedLiteralTypeChecks).isFalse
   }
 
   @Test
