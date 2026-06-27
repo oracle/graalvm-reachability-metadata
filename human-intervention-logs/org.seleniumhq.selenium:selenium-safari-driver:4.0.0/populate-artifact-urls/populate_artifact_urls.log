@@ -1,0 +1,1535 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f069a-0970-7d41-840d-98cb2ee1d6e6
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.seleniumhq.selenium:selenium-safari-driver:4.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [4.0.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json
+- Entry selector: "metadata-version" = "4.0.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 4.0.0
+- Entry metadata-version: 4.0.0
+- Entry test-version: 4.0.0
+- Entry tested-versions: [4.0.0]
+codex
+I’ll verify the existing entry and nearby Selenium metadata first, then confirm the versioned source/test/docs URLs against Maven or upstream before editing the JSON.
+exec
+/usr/bin/bash -lc 'pwd && rg -n "selenium-safari-driver|source-code-url|test-code-url|documentation-url|repository-url|description|language" metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/$version$/selenium-safari-driver-$version$-sources.jar",
+6:    "repository-url" : "https://github.com/SeleniumHQ/selenium",
+7:    "test-code-url" : "https://github.com/SeleniumHQ/selenium/tree/selenium-$version$/java/client/test/org/openqa/selenium/safari",
+8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/$version$/selenium-safari-driver-$version$-javadoc.jar",
+9:    "description" : "Selenium Safari Driver is the Java WebDriver implementation for controlling Apple's Safari browser through Selenium. It provides Safari-specific driver, service, options, and command execution classes used by Selenium tests and automation running on the JVM.",
+
+exec
+/usr/bin/bash -lc "rg -n '\"artifact-id\"\\s*:\\s*\"selenium|selenium-safari-driver|selenium-java|documentation-url' metadata/org.seleniumhq.selenium -g 'index.json'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c
+ succeeded in 0ms:
+metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/$version$/selenium-safari-driver-$version$-sources.jar",
+metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/$version$/selenium-safari-driver-$version$-javadoc.jar",
+metadata/org.seleniumhq.selenium/selenium-os/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-os/$version$/selenium-os-$version$-javadoc.jar",
+metadata/org.seleniumhq.selenium/selenium-devtools-v85/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-devtools-v85/$version$/selenium-devtools-v85-$version$-javadoc.jar",
+metadata/org.seleniumhq.selenium/selenium-support/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-support/$version$/selenium-support-$version$-javadoc.jar",
+metadata/org.seleniumhq.selenium/selenium-support/index.json:66:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-support/$version$/selenium-support-$version$-javadoc.jar",
+metadata/org.seleniumhq.selenium/selenium-chromium-driver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-chromium-driver/$version$/selenium-chromium-driver-$version$-javadoc.jar",
+metadata/org.seleniumhq.selenium/selenium-chromium-driver/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-chromium-driver/$version$/selenium-chromium-driver-$version$-javadoc.jar",
+metadata/org.seleniumhq.selenium/selenium-manager/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-manager/$version$/selenium-manager-$version$-javadoc.jar",
+metadata/org.seleniumhq.selenium/selenium-manager/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-manager/$version$/selenium-manager-$version$-javadoc.jar",
+metadata/org.seleniumhq.selenium/selenium-manager/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-manager/$version$/selenium-manager-$version$-javadoc.jar",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-api/$version$/selenium-api-$version$-javadoc.jar",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/$version$/selenium-api-$version$-javadoc.jar",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:55:    "documentation-url" : "https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/$version$/selenium-api-$version$-javadoc.jar",
+metadata/org.seleniumhq.selenium/selenium-api/index.json:71:    "documentation-url" : "https://repo1.maven.org/maven2/org/seleniumhq/selenium/selenium-api/$version$/selenium-api-$version$-javadoc.jar",
+metadata/org.seleniumhq.selenium/selenium-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-json/$version$/selenium-json-$version$-javadoc.jar",
+metadata/org.seleniumhq.selenium/selenium-ie-driver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-ie-driver/$version$/selenium-ie-driver-$version$-javadoc.jar",
+metadata/org.seleniumhq.selenium/selenium-http/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-http/$version$/selenium-http-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c
+ succeeded in 107ms:
+web search: 
+web search: Maven Central org.seleniumhq.selenium selenium-safari-driver 4.0.0 sources javadoc
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/4.0.0/
+web search: 
+web search: repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/4.0.0/
+codex
+The entry is already populated locally, but I found the current GitHub test URL returns 404, so I’m treating it as URL maintenance and looking for the correct versioned test path before deciding whether to edit.
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/4.0.0/selenium-safari-driver-4.0.0-sources.jar' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/4.0.0/selenium-safari-driver-4.0.0-javadoc.jar' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/java/client/test/org/openqa/selenium/safari' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c
+exec
+/usr/bin/bash -lc "curl -sS https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/4.0.0/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c
+ succeeded in 303ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/seleniumhq/selenium/selenium-safari-driver/4.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/seleniumhq/selenium/selenium-safari-driver/4.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="selenium-safari-driver-4.0.0-javadoc.jar" title="selenium-safari-driver-4.0.0-javadoc.jar">selenium-safari-driver-4.0.0-javadoc.jar</a>          2021-10-13 13:26    475833      
+<a href="selenium-safari-driver-4.0.0-javadoc.jar.asc" title="selenium-safari-driver-4.0.0-javadoc.jar.asc">selenium-safari-driver-4.0.0-javadoc.jar.asc</a>      2021-10-13 13:26       228      
+<a href="selenium-safari-driver-4.0.0-javadoc.jar.md5" title="selenium-safari-driver-4.0.0-javadoc.jar.md5">selenium-safari-driver-4.0.0-javadoc.jar.md5</a>      2021-10-13 13:26        32      
+<a href="selenium-safari-driver-4.0.0-javadoc.jar.md5.asc" title="selenium-safari-driver-4.0.0-javadoc.jar.md5.asc">selenium-safari-driver-4.0.0-javadoc.jar.md5....</a>  2021-10-13 13:26       228      
+<a href="selenium-safari-driver-4.0.0-javadoc.jar.sha1" title="selenium-safari-driver-4.0.0-javadoc.jar.sha1">selenium-safari-driver-4.0.0-javadoc.jar.sha1</a>     2021-10-13 13:26        40      
+<a href="selenium-safari-driver-4.0.0-javadoc.jar.sha1.asc" title="selenium-safari-driver-4.0.0-javadoc.jar.sha1.asc">selenium-safari-driver-4.0.0-javadoc.jar.sha1...</a>  2021-10-13 13:26       228      
+<a href="selenium-safari-driver-4.0.0-sources.jar" title="selenium-safari-driver-4.0.0-sources.jar">selenium-safari-driver-4.0.0-sources.jar</a>          2021-10-13 13:26     15518      
+<a href="selenium-safari-driver-4.0.0-sources.jar.asc" title="selenium-safari-driver-4.0.0-sources.jar.asc">selenium-safari-driver-4.0.0-sources.jar.asc</a>      2021-10-13 13:26       228      
+<a href="selenium-safari-driver-4.0.0-sources.jar.md5" title="selenium-safari-driver-4.0.0-sources.jar.md5">selenium-safari-driver-4.0.0-sources.jar.md5</a>      2021-10-13 13:26        32      
+<a href="selenium-safari-driver-4.0.0-sources.jar.md5.asc" title="selenium-safari-driver-4.0.0-sources.jar.md5.asc">selenium-safari-driver-4.0.0-sources.jar.md5....</a>  2021-10-13 13:26       228      
+<a href="selenium-safari-driver-4.0.0-sources.jar.sha1" title="selenium-safari-driver-4.0.0-sources.jar.sha1">selenium-safari-driver-4.0.0-sources.jar.sha1</a>     2021-10-13 13:26        40      
+<a href="selenium-safari-driver-4.0.0-sources.jar.sha1.asc" title="selenium-safari-driver-4.0.0-sources.jar.sha1.asc">selenium-safari-driver-4.0.0-sources.jar.sha1...</a>  2021-10-13 13:26       228      
+<a href="selenium-safari-driver-4.0.0.jar" title="selenium-safari-driver-4.0.0.jar">selenium-safari-driver-4.0.0.jar</a>                  2021-10-13 13:26     24888      
+<a href="selenium-safari-driver-4.0.0.jar.asc" title="selenium-safari-driver-4.0.0.jar.asc">selenium-safari-driver-4.0.0.jar.asc</a>              2021-10-13 13:26       228      
+<a href="selenium-safari-driver-4.0.0.jar.md5" title="selenium-safari-driver-4.0.0.jar.md5">selenium-safari-driver-4.0.0.jar.md5</a>              2021-10-13 13:26        32      
+<a href="selenium-safari-driver-4.0.0.jar.md5.asc" title="selenium-safari-driver-4.0.0.jar.md5.asc">selenium-safari-driver-4.0.0.jar.md5.asc</a>          2021-10-13 13:26       228      
+<a href="selenium-safari-driver-4.0.0.jar.sha1" title="selenium-safari-driver-4.0.0.jar.sha1">selenium-safari-driver-4.0.0.jar.sha1</a>             2021-10-13 13:26        40      
+<a href="selenium-safari-driver-4.0.0.jar.sha1.asc" title="selenium-safari-driver-4.0.0.jar.sha1.asc">selenium-safari-driver-4.0.0.jar.sha1.asc</a>         2021-10-13 13:26       228      
+<a href="selenium-safari-driver-4.0.0.pom" title="selenium-safari-driver-4.0.0.pom">selenium-safari-driver-4.0.0.pom</a>                  2021-10-13 13:26      3031      
+<a href="selenium-safari-driver-4.0.0.pom.asc" title="selenium-safari-driver-4.0.0.pom.asc">selenium-safari-driver-4.0.0.pom.asc</a>              2021-10-13 13:26       228      
+<a href="selenium-safari-driver-4.0.0.pom.md5" title="selenium-safari-driver-4.0.0.pom.md5">selenium-safari-driver-4.0.0.pom.md5</a>              2021-10-13 13:26        32      
+<a href="selenium-safari-driver-4.0.0.pom.md5.asc" title="selenium-safari-driver-4.0.0.pom.md5.asc">selenium-safari-driver-4.0.0.pom.md5.asc</a>          2021-10-13 13:26       228      
+<a href="selenium-safari-driver-4.0.0.pom.sha1" title="selenium-safari-driver-4.0.0.pom.sha1">selenium-safari-driver-4.0.0.pom.sha1</a>             2021-10-13 13:26        40      
+<a href="selenium-safari-driver-4.0.0.pom.sha1.asc" title="selenium-safari-driver-4.0.0.pom.sha1.asc">selenium-safari-driver-4.0.0.pom.sha1.asc</a>         2021-10-13 13:26       228      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 330ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 200 
+date: Sat, 27 Jun 2026 01:03:32 GMT
+content-type: application/java-archive
+content-length: 475833
+cf-ray: a12088522c1d2db1-LYS
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "33513342d7f6ddf3e86fb2d959f611da"
+last-modified: Wed, 13 Oct 2021 13:26:43 GMT
+x-checksum-md5: 33513342d7f6ddf3e86fb2d959f611da
+x-checksum-sha1: 46bae28143fd6b877832dedd95eb2b9a2c3b44f7
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0  464k    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+ succeeded in 339ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0HTTP/2 200 
+date: Sat, 27 Jun 2026 01:03:32 GMT
+content-type: application/java-archive
+content-length: 15518
+cf-ray: a12088522edcbb29-LYS
+cf-cache-status: MISS
+accept-ranges: bytes
+etag: "bb01ea979b25d4a10f0d1e4a75963a53"
+last-modified: Wed, 13 Oct 2021 13:26:42 GMT
+x-checksum-md5: bb01ea979b25d4a10f0d1e4a75963a53
+x-checksum-sha1: 030f72707baad368d5463bf233432d96aa00b415
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+  0 15518    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+
+ exited 22 in 410ms:
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 27 Jun 2026 01:03:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com wss://production-copilot-host.webpubsub.azure.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=NmImBOzqAm5LV7QGCtWNB2NGOqaLuNEmGqtvGRwvngVZT%2BPVJivJ8HJOsWVXmSf01dZsgXHlATOtyr13s1mO9VQdj8cpHa2zRxsNowIUEa%2BgKlRf%2BY0CyIK5bjFNWsFqAVV5a6Bn%2FUU%2FwRyCS%2BOGYAyu4Fw2wtjR5hP2ubeNbdfZYSnyNK1%2Fdc2rDb6ReW7x%2BtlJR1nidc9IWO4sIKcCo88H%2FNpP1%2FFR8Gl1Bs8Nl%2BL8qlmTNsbhJF2y3rmkdsxJT%2FPoCQusgkdcF%2Bc6MjQBYg%3D%3D--siFNbvABjDojAuTA--%2FrPNzhR%2B%2FLSYSo5zlaqEDw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.601165457.1782522212; expires=Sun, 27 Jun 2027 01:03:32 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 27 Jun 2027 01:03:32 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6210:25104A:7F1F737:5EF2A73:6A3F2164
+
+
+codex
+Maven Central confirms the source and javadoc artifacts exist and there is no test-sources artifact in that version directory. I’m checking the Selenium 4.0.0 tag tree now to replace the stale test path with a rendered URL that actually exists.
+exec
+/usr/bin/bash -lc "curl -sS -f https://api.github.com/repos/SeleniumHQ/selenium/git/trees/selenium-4.0.0?recursive=1 | rg 'safari|Safari|selenium-safari-driver|SafariDriver'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c
+exec
+/usr/bin/bash -lc 'curl -sS -f https://api.github.com/repos/SeleniumHQ/selenium/contents?ref=selenium-4.0.0' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c
+exec
+/usr/bin/bash -lc "curl -sS -f https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/4.0.0/selenium-safari-driver-4.0.0.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c
+ succeeded in 411ms:
+[
+  {
+    "name": ".OLD_AUTHORS",
+    "path": ".OLD_AUTHORS",
+    "sha": "d2d5aa1a529c32145ff41860f8bdf10dcc92c7b1",
+    "size": 292,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.OLD_AUTHORS?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/.OLD_AUTHORS",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/d2d5aa1a529c32145ff41860f8bdf10dcc92c7b1",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/.OLD_AUTHORS",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.OLD_AUTHORS?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/d2d5aa1a529c32145ff41860f8bdf10dcc92c7b1",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/.OLD_AUTHORS"
+    }
+  },
+  {
+    "name": ".bazelignore",
+    "path": ".bazelignore",
+    "sha": "7dbb22ecb417b0707824758d5b0b90d4029464e5",
+    "size": 80,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.bazelignore?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/.bazelignore",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/7dbb22ecb417b0707824758d5b0b90d4029464e5",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/.bazelignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.bazelignore?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/7dbb22ecb417b0707824758d5b0b90d4029464e5",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/.bazelignore"
+    }
+  },
+  {
+    "name": ".bazelrc",
+    "path": ".bazelrc",
+    "sha": "1b4e7132ed04e763ef9d4df1fc588b5c99f077ce",
+    "size": 1395,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.bazelrc?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/.bazelrc",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/1b4e7132ed04e763ef9d4df1fc588b5c99f077ce",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/.bazelrc",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.bazelrc?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/1b4e7132ed04e763ef9d4df1fc588b5c99f077ce",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/.bazelrc"
+    }
+  },
+  {
+    "name": ".bazelversion",
+    "path": ".bazelversion",
+    "sha": "6aba2b245a847cc30a9b9dc009fc9d2522fff998",
+    "size": 6,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.bazelversion?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/.bazelversion",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/6aba2b245a847cc30a9b9dc009fc9d2522fff998",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/.bazelversion",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.bazelversion?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/6aba2b245a847cc30a9b9dc009fc9d2522fff998",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/.bazelversion"
+    }
+  },
+  {
+    "name": ".editorconfig",
+    "path": ".editorconfig",
+    "sha": "84311352e7c49940d42c50d3ee8cf82d989278bd",
+    "size": 871,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.editorconfig?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/.editorconfig",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/84311352e7c49940d42c50d3ee8cf82d989278bd",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/.editorconfig",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.editorconfig?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/84311352e7c49940d42c50d3ee8cf82d989278bd",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/.editorconfig"
+    }
+  },
+  {
+    "name": ".git-fixfiles",
+    "path": ".git-fixfiles",
+    "sha": "048906ca68a8dc315f3b14d32d08cf9e850697f3",
+    "size": 84,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.git-fixfiles?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/.git-fixfiles",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/048906ca68a8dc315f3b14d32d08cf9e850697f3",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/.git-fixfiles",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.git-fixfiles?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/048906ca68a8dc315f3b14d32d08cf9e850697f3",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/.git-fixfiles"
+    }
+  },
+  {
+    "name": ".gitattributes",
+    "path": ".gitattributes",
+    "sha": "bcc64d4cd3bab2b4bc33955ac59139b32047e49b",
+    "size": 321,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.gitattributes?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/.gitattributes",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/bcc64d4cd3bab2b4bc33955ac59139b32047e49b",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/.gitattributes",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.gitattributes?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/bcc64d4cd3bab2b4bc33955ac59139b32047e49b",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/.gitattributes"
+    }
+  },
+  {
+    "name": ".github",
+    "path": ".github",
+    "sha": "2b26368eb0d3a0c9c535409ff57cb4ff1c9059b7",
+    "size": 0,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.github?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/.github",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/2b26368eb0d3a0c9c535409ff57cb4ff1c9059b7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.github?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/2b26368eb0d3a0c9c535409ff57cb4ff1c9059b7",
+      "html": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/.github"
+    }
+  },
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "50d9d74a64a4ee9e17dc6a3975b84c0a5e8ebf58",
+    "size": 2393,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.gitignore?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/.gitignore",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/50d9d74a64a4ee9e17dc6a3975b84c0a5e8ebf58",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.gitignore?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/50d9d74a64a4ee9e17dc6a3975b84c0a5e8ebf58",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/.gitignore"
+    }
+  },
+  {
+    "name": ".idea",
+    "path": ".idea",
+    "sha": "9de4ebd325d20dcf5b1598bf75d94a33cc2b3d8d",
+    "size": 0,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.idea?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/.idea",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/9de4ebd325d20dcf5b1598bf75d94a33cc2b3d8d",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.idea?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/9de4ebd325d20dcf5b1598bf75d94a33cc2b3d8d",
+      "html": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/.idea"
+    }
+  },
+  {
+    "name": ".mailmap",
+    "path": ".mailmap",
+    "sha": "27d944a97709fe751b43f33a58ad45cc7ef444b6",
+    "size": 3376,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.mailmap?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/.mailmap",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/27d944a97709fe751b43f33a58ad45cc7ef444b6",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/.mailmap",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.mailmap?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/27d944a97709fe751b43f33a58ad45cc7ef444b6",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/.mailmap"
+    }
+  },
+  {
+    "name": ".travis.yml",
+    "path": ".travis.yml",
+    "sha": "c1ca34472de33e1880b6b8da39dd9aed85147035",
+    "size": 3670,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.travis.yml?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/.travis.yml",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/c1ca34472de33e1880b6b8da39dd9aed85147035",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/.travis.yml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/.travis.yml?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/c1ca34472de33e1880b6b8da39dd9aed85147035",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/.travis.yml"
+    }
+  },
+  {
+    "name": "AUTHORS",
+    "path": "AUTHORS",
+    "sha": "a352f1f77c97025dba413387b60b2be46f0abfb9",
+    "size": 22361,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/AUTHORS?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/AUTHORS",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/a352f1f77c97025dba413387b60b2be46f0abfb9",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/AUTHORS",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/AUTHORS?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/a352f1f77c97025dba413387b60b2be46f0abfb9",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/AUTHORS"
+    }
+  },
+  {
+    "name": "BUILD.bazel",
+    "path": "BUILD.bazel",
+    "sha": "118da4c4286c81ef39060864064bc0161ba17d46",
+    "size": 1327,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/BUILD.bazel?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/BUILD.bazel",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/118da4c4286c81ef39060864064bc0161ba17d46",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/BUILD.bazel",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/BUILD.bazel?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/118da4c4286c81ef39060864064bc0161ba17d46",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/BUILD.bazel"
+    }
+  },
+  {
+    "name": "CONTRIBUTING.md",
+    "path": "CONTRIBUTING.md",
+    "sha": "9c3bfaf1debc925ea6a00bd974da5849337e11ed",
+    "size": 8786,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/CONTRIBUTING.md?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/CONTRIBUTING.md",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/9c3bfaf1debc925ea6a00bd974da5849337e11ed",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/CONTRIBUTING.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/CONTRIBUTING.md?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/9c3bfaf1debc925ea6a00bd974da5849337e11ed",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/CONTRIBUTING.md"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "3806328d0f7bb5ec9bccb5cdf79339f7a7d73c71",
+    "size": 11365,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/LICENSE?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/LICENSE",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/3806328d0f7bb5ec9bccb5cdf79339f7a7d73c71",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/LICENSE?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/3806328d0f7bb5ec9bccb5cdf79339f7a7d73c71",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/LICENSE"
+    }
+  },
+  {
+    "name": "NOTICE",
+    "path": "NOTICE",
+    "sha": "20a6bb6e21521494be97e0471feec47bf98b153a",
+    "size": 89,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/NOTICE?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/NOTICE",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/20a6bb6e21521494be97e0471feec47bf98b153a",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/NOTICE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/NOTICE?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/20a6bb6e21521494be97e0471feec47bf98b153a",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/NOTICE"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "1ee1f17911387a839713bc05f9298e6c4f9831ef",
+    "size": 15706,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/README.md?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/README.md",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/1ee1f17911387a839713bc05f9298e6c4f9831ef",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/README.md?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/1ee1f17911387a839713bc05f9298e6c4f9831ef",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/README.md"
+    }
+  },
+  {
+    "name": "Rakefile",
+    "path": "Rakefile",
+    "sha": "831abdd1a09ec549fa2dd5d647cdf25aef7353f0",
+    "size": 20760,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/Rakefile?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/Rakefile",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/831abdd1a09ec549fa2dd5d647cdf25aef7353f0",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/Rakefile",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/Rakefile?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/831abdd1a09ec549fa2dd5d647cdf25aef7353f0",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/Rakefile"
+    }
+  },
+  {
+    "name": "SECURITY.md",
+    "path": "SECURITY.md",
+    "sha": "66ebd501ab61c55ac765cf28d33d44347ba6abde",
+    "size": 871,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/SECURITY.md?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/SECURITY.md",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/66ebd501ab61c55ac765cf28d33d44347ba6abde",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/SECURITY.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/SECURITY.md?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/66ebd501ab61c55ac765cf28d33d44347ba6abde",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/SECURITY.md"
+    }
+  },
+  {
+    "name": "WORKSPACE",
+    "path": "WORKSPACE",
+    "sha": "ec4446861282e91742081e045bf0c4809660294d",
+    "size": 8480,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/WORKSPACE?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/WORKSPACE",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/ec4446861282e91742081e045bf0c4809660294d",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/WORKSPACE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/WORKSPACE?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/ec4446861282e91742081e045bf0c4809660294d",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/WORKSPACE"
+    }
+  },
+  {
+    "name": "appveyor.yml",
+    "path": "appveyor.yml",
+    "sha": "2209154a59094b81a83400f6cd23b818a3a1423e",
+    "size": 753,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/appveyor.yml?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/appveyor.yml",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/2209154a59094b81a83400f6cd23b818a3a1423e",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/appveyor.yml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/appveyor.yml?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/2209154a59094b81a83400f6cd23b818a3a1423e",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/appveyor.yml"
+    }
+  },
+  {
+    "name": "common",
+    "path": "common",
+    "sha": "1fcc68fb262ce5d95063acbb600bf9451c804f27",
+    "size": 0,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/common?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/common",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/1fcc68fb262ce5d95063acbb600bf9451c804f27",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/common?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/1fcc68fb262ce5d95063acbb600bf9451c804f27",
+      "html": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/common"
+    }
+  },
+  {
+    "name": "copyiedriver.bat",
+    "path": "copyiedriver.bat",
+    "sha": "765f8b7debe826cf7937ac174d1a36fec5e1fa27",
+    "size": 162,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/copyiedriver.bat?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/copyiedriver.bat",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/765f8b7debe826cf7937ac174d1a36fec5e1fa27",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/copyiedriver.bat",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/copyiedriver.bat?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/765f8b7debe826cf7937ac174d1a36fec5e1fa27",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/copyiedriver.bat"
+    }
+  },
+  {
+    "name": "cpp",
+    "path": "cpp",
+    "sha": "b5df0b7e8265b82f3a6c168e492846004f11a1a1",
+    "size": 0,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/cpp?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/cpp",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/b5df0b7e8265b82f3a6c168e492846004f11a1a1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/cpp?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/b5df0b7e8265b82f3a6c168e492846004f11a1a1",
+      "html": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/cpp"
+    }
+  },
+  {
+    "name": "deploys",
+    "path": "deploys",
+    "sha": "92b5659bdb204472e2a0cfc2daa82b7d7cd8d413",
+    "size": 0,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/deploys?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/deploys",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/92b5659bdb204472e2a0cfc2daa82b7d7cd8d413",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/deploys?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/92b5659bdb204472e2a0cfc2daa82b7d7cd8d413",
+      "html": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/deploys"
+    }
+  },
+  {
+    "name": "dotnet",
+    "path": "dotnet",
+    "sha": "80643f8a2fbbbf45be3952980d3e2d486dc00783",
+    "size": 0,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/dotnet?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/dotnet",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/80643f8a2fbbbf45be3952980d3e2d486dc00783",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/dotnet?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/80643f8a2fbbbf45be3952980d3e2d486dc00783",
+      "html": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/dotnet"
+    }
+  },
+  {
+    "name": "generate_api_docs.sh",
+    "path": "generate_api_docs.sh",
+    "sha": "18ca76809406d6cb0a337c7b636d865af2303f90",
+    "size": 861,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/generate_api_docs.sh?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/generate_api_docs.sh",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/18ca76809406d6cb0a337c7b636d865af2303f90",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/generate_api_docs.sh",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/generate_api_docs.sh?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/18ca76809406d6cb0a337c7b636d865af2303f90",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/generate_api_docs.sh"
+    }
+  },
+  {
+    "name": "go",
+    "path": "go",
+    "sha": "27f1879c576add6ff2db2eb9b1a474a8b08afe28",
+    "size": 633,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/go?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/go",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/27f1879c576add6ff2db2eb9b1a474a8b08afe28",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/go",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/go?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/27f1879c576add6ff2db2eb9b1a474a8b08afe28",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/go"
+    }
+  },
+  {
+    "name": "go.bat",
+    "path": "go.bat",
+    "sha": "af86ff555628fb8bf9eababe9c55c9f15f93184d",
+    "size": 526,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/go.bat?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/go.bat",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/af86ff555628fb8bf9eababe9c55c9f15f93184d",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/go.bat",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/go.bat?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/af86ff555628fb8bf9eababe9c55c9f15f93184d",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/go.bat"
+    }
+  },
+  {
+    "name": "java",
+    "path": "java",
+    "sha": "479a243ba759fdf8b756a9d70aa0c4880fc447cf",
+    "size": 0,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/java?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/java",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/479a243ba759fdf8b756a9d70aa0c4880fc447cf",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/java?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/479a243ba759fdf8b756a9d70aa0c4880fc447cf",
+      "html": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/java"
+    }
+  },
+  {
+    "name": "javascript",
+    "path": "javascript",
+    "sha": "d99dc6bb53a16898b231d6c4a08457b29a00f816",
+    "size": 0,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/javascript?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/javascript",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/d99dc6bb53a16898b231d6c4a08457b29a00f816",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/javascript?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/d99dc6bb53a16898b231d6c4a08457b29a00f816",
+      "html": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/javascript"
+    }
+  },
+  {
+    "name": "package-lock.json",
+    "path": "package-lock.json",
+    "sha": "5d1b096f4776beaa992e7661fcfec2eecf63f468",
+    "size": 787175,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/package-lock.json?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/package-lock.json",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/5d1b096f4776beaa992e7661fcfec2eecf63f468",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/package-lock.json",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/package-lock.json?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/5d1b096f4776beaa992e7661fcfec2eecf63f468",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/package-lock.json"
+    }
+  },
+  {
+    "name": "package.json",
+    "path": "package.json",
+    "sha": "d9957abde74c81bf3f984c611e999c5262f41feb",
+    "size": 1743,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/package.json?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/package.json",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/d9957abde74c81bf3f984c611e999c5262f41feb",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/package.json",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/package.json?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/d9957abde74c81bf3f984c611e999c5262f41feb",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/package.json"
+    }
+  },
+  {
+    "name": "py",
+    "path": "py",
+    "sha": "6f16f238af29ac7d90a94901d7c1b187623a40c7",
+    "size": 0,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/py?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/py",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/6f16f238af29ac7d90a94901d7c1b187623a40c7",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/py?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/6f16f238af29ac7d90a94901d7c1b187623a40c7",
+      "html": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/py"
+    }
+  },
+  {
+    "name": "rake_tasks",
+    "path": "rake_tasks",
+    "sha": "ead129baa0de1b14528d351b8d15d8faa46a0745",
+    "size": 0,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/rake_tasks?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/rake_tasks",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/ead129baa0de1b14528d351b8d15d8faa46a0745",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/rake_tasks?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/ead129baa0de1b14528d351b8d15d8faa46a0745",
+      "html": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/rake_tasks"
+    }
+  },
+  {
+    "name": "rb",
+    "path": "rb",
+    "sha": "e24004750fcad0e30c465c2e97db14f9f0658562",
+    "size": 0,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/rb?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/rb",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/e24004750fcad0e30c465c2e97db14f9f0658562",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/rb?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/e24004750fcad0e30c465c2e97db14f9f0658562",
+      "html": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/rb"
+    }
+  },
+  {
+    "name": "scripts",
+    "path": "scripts",
+    "sha": "4dc8cb58dd58c61fefd8e7a773306c52abf4cd37",
+    "size": 0,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/scripts?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/scripts",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/4dc8cb58dd58c61fefd8e7a773306c52abf4cd37",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/scripts?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/4dc8cb58dd58c61fefd8e7a773306c52abf4cd37",
+      "html": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/scripts"
+    }
+  },
+  {
+    "name": "selenium.iml",
+    "path": "selenium.iml",
+    "sha": "020d514e35135cc58ea153a027b19a5f08aab53d",
+    "size": 1324,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/selenium.iml?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/selenium.iml",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/020d514e35135cc58ea153a027b19a5f08aab53d",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/selenium.iml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/selenium.iml?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/020d514e35135cc58ea153a027b19a5f08aab53d",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/selenium.iml"
+    }
+  },
+  {
+    "name": "sonar-project.properties",
+    "path": "sonar-project.properties",
+    "sha": "e622047d7b8358638c455febbda2ca55578292bc",
+    "size": 570,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/sonar-project.properties?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/sonar-project.properties",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/e622047d7b8358638c455febbda2ca55578292bc",
+    "download_url": "https://raw.githubusercontent.com/SeleniumHQ/selenium/selenium-4.0.0/sonar-project.properties",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/sonar-project.properties?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/blobs/e622047d7b8358638c455febbda2ca55578292bc",
+      "html": "https://github.com/SeleniumHQ/selenium/blob/selenium-4.0.0/sonar-project.properties"
+    }
+  },
+  {
+    "name": "third_party",
+    "path": "third_party",
+    "sha": "32fde62a30c21c12e3b872fac748ce0a5e0a35f4",
+    "size": 0,
+    "url": "https://api.github.com/repos/SeleniumHQ/selenium/contents/third_party?ref=selenium-4.0.0",
+    "html_url": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/third_party",
+    "git_url": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/32fde62a30c21c12e3b872fac748ce0a5e0a35f4",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/SeleniumHQ/selenium/contents/third_party?ref=selenium-4.0.0",
+      "git": "https://api.github.com/repos/SeleniumHQ/selenium/git/trees/32fde62a30c21c12e3b872fac748ce0a5e0a35f4",
+      "html": "https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/third_party"
+    }
+  }
+]
+
+ succeeded in 412ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.seleniumhq.selenium</groupId>
+  <artifactId>selenium-safari-driver</artifactId>
+  <version>4.0.0</version>
+
+  <name>org.seleniumhq.selenium:selenium-safari-driver</name>
+  <description>Selenium automates browsers. That's it! What you do with that power is entirely up to you.</description>
+  <url>https://selenium.dev/</url>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <url>https://github.com/SeleniumHQ/selenium/</url>
+    <connection>scm:git:https://github.com/SeleniumHQ/selenium.git</connection>
+    <developerConnection>scm:git:git@github.com:SeleniumHQ/selenium.git</developerConnection>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>simon.m.stewart</id>
+      <name>Simon Stewart</name>
+      <roles>
+        <role>Owner</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>barancev</id>
+      <name>Alexei Barantsev</name>
+      <roles>
+        <role>Committer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>diemol</id>
+      <name>Diego Molina</name>
+      <roles>
+        <role>Committer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>james.h.evans.jr</id>
+      <name>Jim Evans</name>
+      <roles>
+        <role>Committer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>theautomatedtester</id>
+      <name>David Burns</name>
+      <roles>
+        <role>Committer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>titusfortner</id>
+      <name>Titus Fortner</name>
+      <roles>
+        <role>Committer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <dependencies>
+        <dependency>
+            <groupId>com.google.auto.service</groupId>
+            <artifactId>auto-service-annotations</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.auto.service</groupId>
+            <artifactId>auto-service</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>31.0.1-jre</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-api</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-remote-driver</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+  </dependencies>
+</project>
+
+ succeeded in 1390ms:
+      "path": "common/src/web/safari",
+      "path": "common/src/web/safari/frames_benchmark.html",
+      "path": "dotnet/src/webdriver/Safari",
+      "path": "dotnet/src/webdriver/Safari/SafariDriver.cs",
+      "path": "dotnet/src/webdriver/Safari/SafariDriverService.cs",
+      "path": "dotnet/src/webdriver/Safari/SafariOptions.cs",
+      "path": "dotnet/test/common/CustomDriverConfigs/DefaultSafariDriver.cs",
+      "path": "dotnet/test/common/CustomDriverConfigs/SafariTechnologyPreviewDriver.cs",
+      "path": "dotnet/test/safari",
+      "path": "dotnet/test/safari/SafariSpecificTests.cs",
+      "path": "dotnet/test/safari/WebDriver.Safari.Tests.csproj",
+      "path": "dotnet/test/safari/WebDriver.Safari.Tests.nunit",
+      "path": "java/src/org/openqa/selenium/remote/session/SafariFilter.java",
+      "path": "java/src/org/openqa/selenium/safari",
+      "path": "java/src/org/openqa/selenium/safari/AddHasDebugger.java",
+      "path": "java/src/org/openqa/selenium/safari/AddHasPermissions.java",
+      "path": "java/src/org/openqa/selenium/safari/BUILD.bazel",
+      "path": "java/src/org/openqa/selenium/safari/ConnectionClosedException.java",
+      "path": "java/src/org/openqa/selenium/safari/HasDebugger.java",
+      "path": "java/src/org/openqa/selenium/safari/HasPermissions.java",
+      "path": "java/src/org/openqa/selenium/safari/SafariDriver.java",
+      "path": "java/src/org/openqa/selenium/safari/SafariDriverInfo.java",
+      "path": "java/src/org/openqa/selenium/safari/SafariDriverService.java",
+      "path": "java/src/org/openqa/selenium/safari/SafariOptions.java",
+      "path": "java/src/org/openqa/selenium/safari/SafariTechPreviewDriverInfo.java",
+      "path": "java/src/org/openqa/selenium/safari/SafariTechPreviewDriverService.java",
+      "path": "java/test/org/openqa/selenium/safari",
+      "path": "java/test/org/openqa/selenium/safari/BUILD.bazel",
+      "path": "java/test/org/openqa/selenium/safari/CleanSessionTest.java",
+      "path": "java/test/org/openqa/selenium/safari/CrossDomainTest.java",
+      "path": "java/test/org/openqa/selenium/safari/SafariDriverServiceTest.java",
+      "path": "java/test/org/openqa/selenium/safari/SafariDriverTest.java",
+      "path": "java/test/org/openqa/selenium/safari/SafariOptionsTest.java",
+      "path": "java/test/org/openqa/selenium/safari/SafariTechPreviewDriverServiceTest.java",
+      "path": "javascript/grid-ui/src/assets/browsers/safari-technology-preview.png",
+      "path": "javascript/grid-ui/src/assets/browsers/safari.svg",
+      "path": "javascript/node/selenium-webdriver/safari.js",
+      "path": "javascript/node/selenium-webdriver/test/safari_test.js",
+      "path": "py/docs/source/webdriver_safari",
+      "path": "py/docs/source/webdriver_safari/selenium.webdriver.safari.service.rst",
+      "path": "py/docs/source/webdriver_safari/selenium.webdriver.safari.webdriver.rst",
+      "path": "py/selenium/webdriver/safari",
+      "path": "py/selenium/webdriver/safari/__init__.py",
+      "path": "py/selenium/webdriver/safari/options.py",
+      "path": "py/selenium/webdriver/safari/permissions.py",
+      "path": "py/selenium/webdriver/safari/remote_connection.py",
+      "path": "py/selenium/webdriver/safari/service.py",
+      "path": "py/selenium/webdriver/safari/webdriver.py",
+      "path": "py/test/selenium/webdriver/safari",
+      "path": "py/test/selenium/webdriver/safari/conftest.py",
+      "path": "py/test/selenium/webdriver/safari/launcher_tests.py",
+      "path": "py/test/unit/selenium/webdriver/safari",
+      "path": "py/test/unit/selenium/webdriver/safari/safari_options_tests.py",
+      "path": "rb/lib/selenium/webdriver/safari.rb",
+      "path": "rb/lib/selenium/webdriver/safari",
+      "path": "rb/lib/selenium/webdriver/safari/driver.rb",
+      "path": "rb/lib/selenium/webdriver/safari/features.rb",
+      "path": "rb/lib/selenium/webdriver/safari/options.rb",
+      "path": "rb/lib/selenium/webdriver/safari/service.rb",
+      "path": "rb/spec/integration/selenium/webdriver/safari",
+      "path": "rb/spec/integration/selenium/webdriver/safari/driver_spec.rb",
+      "path": "rb/spec/unit/selenium/webdriver/safari",
+      "path": "rb/spec/unit/selenium/webdriver/safari/driver_spec.rb",
+      "path": "rb/spec/unit/selenium/webdriver/safari/options_spec.rb",
+      "path": "rb/spec/unit/selenium/webdriver/safari/service_spec.rb",
+
+codex
+The correct Selenium 4.0.0 Java Safari tests are under `java/test/...`, not `java/client/test/...`. I’m going to make the smallest JSON edit: update only that invalid test URL template and leave the already valid nonblank fields intact.
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.141.59",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/$version$/selenium-safari-driver-$version$-sources.jar",
+    "repository-url" : "https://github.com/SeleniumHQ/selenium",
+    "test-code-url" : "https://github.com/SeleniumHQ/selenium/tree/selenium-$version$/java/client/test/org/openqa/selenium/safari",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/$version$/selenium-safari-driver-$version$-javadoc.jar",
+    "description" : "Selenium Safari Driver is the Java WebDriver implementation for controlling Apple's Safari browser through Selenium. It provides Safari-specific driver, service, options, and command execution classes used by Selenium tests and automation running on the JVM.",
+    "tested-versions" : [
+      "3.141.59"
+    ],
+    "allowed-packages" : [
+      "org.openqa.selenium.safari"
+    ]
+  },
+  {
+    "metadata-version" : "4.0.0",
+    "tested-versions" : [
+      "4.0.0"
+    ],
+    "allowed-packages" : [
+      "org.openqa.selenium.safari"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -I -L --fail https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/java/test/org/openqa/selenium/safari' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c
+ succeeded in 663ms:
+HTTP/2 200 
+date: Sat, 27 Jun 2026 01:03:47 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"406ff50baaef88b1f16f7e861d9c544d"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com wss://production-copilot-host.webpubsub.azure.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/wor
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+ker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=ALTNS%2BYqAQDszvPSxWyzFMERLaLBiuLaXVCveGSJFRhPtnQI37tziawXNDDvmvXoMRg%2BpehrFU4zFkYellkKtQwsEiKxY%2BoR7ywEXDzucZFTI5BoOgbA%2FAxwvedys5jFXJKlJD6QNBWZ6C%2Bd26YMFiRCnFPEgHiaDFZZyNBGN7Ozm1Adc7zzptAbXmm6cWjaZoHpupUkQrRHfR23KnUOM%2F%2BwGw3Z5lnMmD8twzLQe3oKQVMZcMVBToq4pLPg5M5suZB8qzUjPajx4cToLrHU6Q%3D%3D--MLurVDEsR6xvCsWp--%2F%2BU2asxfMC61fPrxIdFHxg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1853856489.1782522226; expires=Sun, 27 Jun 2027 01:03:46 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 27 Jun 2027 01:03:46 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6211:1B465F:7E2556D:5E302A8:6A3F2172
+
+
+web search: 
+web search: https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/java/test/org/openqa/selenium/safari
+web search: 
+web search: repo.maven.apache.org selenium-safari-driver 4.0.0 sources.jar javadoc.jar Maven Central
+codex
+I found the 4.0.0 entry itself is the one missing fields; the populated values I saw first were for the 3.141.59 entry. I’m adding the verified 4.0.0 metadata to that specific object now, without touching the older entry.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json
+diff --git a/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json b/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json
+index b3a0f996738473a34e1b26711b438ebd8eb92bf1..f2415456f465dfcc1d6564b1614ed42c9c2bbb88
+--- a/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json
++++ b/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "4.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/$version$/selenium-safari-driver-$version$-sources.jar",
++    "repository-url" : "https://github.com/SeleniumHQ/selenium",
++    "test-code-url" : "https://github.com/SeleniumHQ/selenium/tree/selenium-$version$/java/test/org/openqa/selenium/safari",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/$version$/selenium-safari-driver-$version$-javadoc.jar",
++    "description" : "Selenium Safari Driver is the Java WebDriver implementation for controlling Apple's Safari browser through Selenium. It provides Safari-specific driver, service, options, and command execution classes used by Selenium tests and automation running on the JVM.",
+     "tested-versions" : [
+       "4.0.0"
+     ],
+
+diff --git a/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json b/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json
+index b3a0f996738473a34e1b26711b438ebd8eb92bf1..f2415456f465dfcc1d6564b1614ed42c9c2bbb88
+--- a/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json
++++ b/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "4.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/$version$/selenium-safari-driver-$version$-sources.jar",
++    "repository-url" : "https://github.com/SeleniumHQ/selenium",
++    "test-code-url" : "https://github.com/SeleniumHQ/selenium/tree/selenium-$version$/java/test/org/openqa/selenium/safari",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/$version$/selenium-safari-driver-$version$-javadoc.jar",
++    "description" : "Selenium Safari Driver is the Java WebDriver implementation for controlling Apple's Safari browser through Selenium. It provides Safari-specific driver, service, options, and command execution classes used by Selenium tests and automation running on the JVM.",
+     "tested-versions" : [
+       "4.0.0"
+     ],
+
+codex
+The metadata edit is in place. I’m doing a quick JSON/diff check and running the targeted metadata validation for this coordinate.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"4.0.0\")' metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c
+ succeeded in 0ms:
+{
+  "metadata-version": "4.0.0",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/$version$/selenium-safari-driver-$version$-sources.jar",
+  "repository-url": "https://github.com/SeleniumHQ/selenium",
+  "test-code-url": "https://github.com/SeleniumHQ/selenium/tree/selenium-$version$/java/test/org/openqa/selenium/safari",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/$version$/selenium-safari-driver-$version$-javadoc.jar",
+  "description": "Selenium Safari Driver is the Java WebDriver implementation for controlling Apple's Safari browser through Selenium. It provides Safari-specific driver, service, options, and command execution classes used by Selenium tests and automation running on the JVM.",
+  "tested-versions": [
+    "4.0.0"
+  ],
+  "allowed-packages": [
+    "org.openqa.selenium.safari"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c
+ succeeded in 0ms:
+diff --git i/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json w/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json
+index b3a0f99673..f2415456f4 100644
+--- i/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json
++++ w/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "4.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/$version$/selenium-safari-driver-$version$-sources.jar",
++    "repository-url" : "https://github.com/SeleniumHQ/selenium",
++    "test-code-url" : "https://github.com/SeleniumHQ/selenium/tree/selenium-$version$/java/test/org/openqa/selenium/safari",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/$version$/selenium-safari-driver-$version$-javadoc.jar",
++    "description" : "Selenium Safari Driver is the Java WebDriver implementation for controlling Apple's Safari browser through Selenium. It provides Safari-specific driver, service, options, and command execution classes used by Selenium tests and automation running on the JVM.",
+     "tested-versions" : [
+       "4.0.0"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.seleniumhq.selenium:selenium-safari-driver:4.0.0 --stacktrace' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c
+diff --git a/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json b/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json
+index b3a0f996738473a34e1b26711b438ebd8eb92bf1..f2415456f465dfcc1d6564b1614ed42c9c2bbb88
+--- a/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json
++++ b/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "4.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/$version$/selenium-safari-driver-$version$-sources.jar",
++    "repository-url" : "https://github.com/SeleniumHQ/selenium",
++    "test-code-url" : "https://github.com/SeleniumHQ/selenium/tree/selenium-$version$/java/test/org/openqa/selenium/safari",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/$version$/selenium-safari-driver-$version$-javadoc.jar",
++    "description" : "Selenium Safari Driver is the Java WebDriver implementation for controlling Apple's Safari browser through Selenium. It provides Safari-specific driver, service, options, and command execution classes used by Selenium tests and automation running on the JVM.",
+     "tested-versions" : [
+       "4.0.0"
+     ],
+
+ exited 1 in 3362ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.seleniumhq.selenium:selenium-safari-driver:4.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c/metadata/org.seleniumhq.selenium/selenium-safari-driver/4.0.0/
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c/build/reports/problems/problems-report.html
+   - org.seleniumhq.selenium:selenium-safari-driver:4.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c/metadata/org.seleniumhq.selenium/selenium-safari-driver/4.0.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.seleniumhq.selenium:selenium-safari-driver:4.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c/metadata/org.seleniumhq.selenium/selenium-safari-driver/4.0.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 3s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The targeted Gradle metadata validation fails because this entry’s `4.0.0/` metadata directory lacks `reachability-metadata.json`, which is outside the requested URL fields. The JSON itself parses, and I’m checking the final working-tree diff/status before closing this out.
+exec
+/usr/bin/bash -lc "curl -sS -I -L --fail https://github.com/SeleniumHQ/selenium | sed -n '1,20p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/4.0.0/selenium-safari-driver-4.0.0-sources.jar \\
+  https://github.com/SeleniumHQ/selenium/tree/selenium-4.0.0/java/test/org/openqa/selenium/safari \\
+  https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/4.0.0/selenium-safari-driver-4.0.0-javadoc.jar; do
+  curl -sS -I -L --fail \""'$url" | sed -n '"'1p'
+done" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c
+ succeeded in 0ms:
+ M metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json
+
+ succeeded in 293ms:
+HTTP/2 200 
+HTTP/2 200 
+HTTP/2 200 
+
+diff --git a/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json b/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json
+index b3a0f996738473a34e1b26711b438ebd8eb92bf1..f2415456f465dfcc1d6564b1614ed42c9c2bbb88
+--- a/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json
++++ b/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "4.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/$version$/selenium-safari-driver-$version$-sources.jar",
++    "repository-url" : "https://github.com/SeleniumHQ/selenium",
++    "test-code-url" : "https://github.com/SeleniumHQ/selenium/tree/selenium-$version$/java/test/org/openqa/selenium/safari",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/$version$/selenium-safari-driver-$version$-javadoc.jar",
++    "description" : "Selenium Safari Driver is the Java WebDriver implementation for controlling Apple's Safari browser through Selenium. It provides Safari-specific driver, service, options, and command execution classes used by Selenium tests and automation running on the JVM.",
+     "tested-versions" : [
+       "4.0.0"
+     ],
+
+ succeeded in 729ms:
+HTTP/2 200 
+date: Sat, 27 Jun 2026 01:04:18 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"1a23644b82ec8a105b6b1a29d9d172d4"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com wss://production-copilot-host.webpubsub.azure.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=UjAoNOxNCNa2IZRD%2FxQfAc1%2Fw1ztsYHgTvi%2FaqhkS2RxhygwHUmMsts7A9Dy51YuLR%2FhOvg3Qvo%2FkjzIuuVvOqgyHPQTtpDiwTjXiMXsdjD1adsAft2tmeDzz3UemaF9aDEAzmyFAPD6SkwmRnB5DNgftcI2oywdDTj3TliKaDGwW%2BxK4Iqzi1UYpwJFTYXsA11dEDrXXOPHktTadnll9Wk0t49d%2FUETD3ewyPCtcnam4vwYmh9jaXm5VEZTZCWVMEPvn368z%2Bohxm3ftVFE1w%3D%3D--91pXmp8ft38zIChF--h0zEPqvFj5w%2B9mUr38JgNQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1739930487.1782522258; expires=Sun, 27 Jun 2027 01:04:18 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 27 Jun 2027 01:04:18 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6206:3688E7:8124A64:612D30F:6A3F2191
+
+
+codex
+Final validation is done: the rendered source, test, and javadoc URLs all return HTTP 200, and the working tree only shows the requested index file change.
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json) for the `metadata-version` `4.0.0` entry.
+
+Filled:
+- `source-code-url`
+- `repository-url`
+- `test-code-url`
+- `documentation-url`
+- `description`
+
+No `language` field was added; this is not one of the Kotlin/Groovy/Scala-specific library cases requested.
+
+Verification:
+- JSON parsed with `jq`.
+- Rendered source, test, and documentation URLs for `4.0.0` all returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.seleniumhq.selenium:selenium-safari-driver:4.0.0 --stacktrace` failed because `metadata/.../selenium-safari-driver/4.0.0/reachability-metadata.json` is missing, which is outside the requested URL/description fields.
+diff --git a/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json b/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json
+index b3a0f996738473a34e1b26711b438ebd8eb92bf1..f2415456f465dfcc1d6564b1614ed42c9c2bbb88
+--- a/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json
++++ b/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "4.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/$version$/selenium-safari-driver-$version$-sources.jar",
++    "repository-url" : "https://github.com/SeleniumHQ/selenium",
++    "test-code-url" : "https://github.com/SeleniumHQ/selenium/tree/selenium-$version$/java/test/org/openqa/selenium/safari",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/selenium-safari-driver/$version$/selenium-safari-driver-$version$-javadoc.jar",
++    "description" : "Selenium Safari Driver is the Java WebDriver implementation for controlling Apple's Safari browser through Selenium. It provides Safari-specific driver, service, options, and command execution classes used by Selenium tests and automation running on the JVM.",
+     "tested-versions" : [
+       "4.0.0"
+     ],
+
+tokens used
+64,998
+Updated [index.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c/metadata/org.seleniumhq.selenium/selenium-safari-driver/index.json) for the `metadata-version` `4.0.0` entry.
+
+Filled:
+- `source-code-url`
+- `repository-url`
+- `test-code-url`
+- `documentation-url`
+- `description`
+
+No `language` field was added; this is not one of the Kotlin/Groovy/Scala-specific library cases requested.
+
+Verification:
+- JSON parsed with `jq`.
+- Rendered source, test, and documentation URLs for `4.0.0` all returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.seleniumhq.selenium:selenium-safari-driver:4.0.0 --stacktrace` failed because `metadata/.../selenium-safari-driver/4.0.0/reachability-metadata.json` is missing, which is outside the requested URL/description fields.
+Ran agent for org.seleniumhq.selenium:selenium-safari-driver:4.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c/build/agent-url-discovery-logs/org.seleniumhq.selenium-selenium-safari-driver-4.0.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7041-e6e0098c/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 22s
+9 actionable tasks: 1 executed, 8 up-to-date
