@@ -1,0 +1,836 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f06df-a29d-7451-906a-6ec2e2950ff6
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.specs2:specs2-core_3:5.5.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [5.5.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8/metadata/org.specs2/specs2-core_3/index.json
+- Entry selector: "metadata-version" = "5.5.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: {"name": "scala", "version": "3"}
+
+Context:
+- Coordinate version: 5.5.0
+- Entry metadata-version: 5.5.0
+- Entry test-version: 5.5.0
+- Entry tested-versions: [5.5.0]
+codex
+I’ll verify the artifact metadata first, then check Maven and upstream tags so the URLs we write are version-specific and actually resolve. After that I’ll patch only the missing fields in the selected `index.json` entry.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.specs2/specs2-core_3/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.5.0",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "5.5.0"
+    ],
+    "allowed-packages" : [
+      "org.specs2",
+      "specs2"
+    ]
+  },
+  {
+    "metadata-version" : "5.0.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/etorreborre/specs2",
+    "test-code-url" : "https://github.com/etorreborre/specs2/tree/SPECS2-$version$/core/jvm/src/test/scala/org/specs2",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-javadoc.jar",
+    "description" : "specs2-core provides the core implementation of the specs2 testing framework for Scala 3, including specification structure, execution, reporting, and runner support. It is used to define and run acceptance and unit specifications with matchers and integrations supplied by the broader specs2 modules.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "5.0.0",
+      "5.0.1",
+      "5.0.2",
+      "5.0.3",
+      "5.0.4",
+      "5.0.6",
+      "5.0.7",
+      "5.1.0",
+      "5.2.0",
+      "5.3.2",
+      "5.4.0",
+      "5.4.1",
+      "5.4.2"
+    ],
+    "allowed-packages" : [
+      "org.specs2",
+      "specs2"
+    ]
+  },
+  {
+    "metadata-version" : "4.20.5",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/etorreborre/specs2",
+    "test-code-url" : "https://github.com/etorreborre/specs2/tree/SPECS-$version$/core/jvm/src/test/scala/org/specs2",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-javadoc.jar",
+    "description" : "specs2-core provides the core implementation of the specs2 testing framework for Scala 3, including specification structure, execution, reporting, and runner support. It is used to define and run acceptance and unit specifications with matchers and integrations supplied by the broader specs2 modules.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "4.20.5",
+      "4.20.6",
+      "4.20.7",
+      "4.20.8",
+      "4.20.9",
+      "4.21.0",
+      "4.22.0",
+      "4.23.0"
+    ],
+    "allowed-packages" : [
+      "org.specs2",
+      "specs2"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/org.specs2/specs2-core_3/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8
+ succeeded in 0ms:
+web search: 
+web search: Maven org.specs2 specs2-core_3 5.5.0 sources javadoc test-sources
+web search: 
+web search: https://github.com/etorreborre/specs2/tree/SPECS2-5.5.0/core/jvm/src/test/scala/org/specs2
+web search: 
+web search: repo1.maven.org/maven2/org/specs2/specs2-core_3/5.5.0/specs2-core_3-5.5.0-javadoc.jar
+codex
+The current entry only has the Scala 3 language marker populated. I found the existing older entries already use Maven source/Javadoc artifacts and GitHub tag paths, but I’m checking whether a Maven test-sources artifact exists for `5.5.0` before choosing the test URL.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/5.5.0/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/5.5.0/specs2-core_3-5.5.0.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/5.5.0/specs2-core_3-5.5.0-tests.jar" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/5.5.0/specs2-core_3-5.5.0-test-sources.jar" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8
+ succeeded in 266ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/specs2/specs2-core_3/5.5.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/specs2/specs2-core_3/5.5.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="specs2-core_3-5.5.0-javadoc.jar" title="specs2-core_3-5.5.0-javadoc.jar">specs2-core_3-5.5.0-javadoc.jar</a>                   2024-01-21 21:23   5906960      
+<a href="specs2-core_3-5.5.0-javadoc.jar.asc" title="specs2-core_3-5.5.0-javadoc.jar.asc">specs2-core_3-5.5.0-javadoc.jar.asc</a>               2024-01-21 21:23       228      
+<a href="specs2-core_3-5.5.0-javadoc.jar.asc.md5" title="specs2-core_3-5.5.0-javadoc.jar.asc.md5">specs2-core_3-5.5.0-javadoc.jar.asc.md5</a>           2024-01-21 21:23        32      
+<a href="specs2-core_3-5.5.0-javadoc.jar.asc.sha1" title="specs2-core_3-5.5.0-javadoc.jar.asc.sha1">specs2-core_3-5.5.0-javadoc.jar.asc.sha1</a>          2024-01-21 21:23        40      
+<a href="specs2-core_3-5.5.0-javadoc.jar.md5" title="specs2-core_3-5.5.0-javadoc.jar.md5">specs2-core_3-5.5.0-javadoc.jar.md5</a>               2024-01-21 21:23        32      
+<a href="specs2-core_3-5.5.0-javadoc.jar.sha1" title="specs2-core_3-5.5.0-javadoc.jar.sha1">specs2-core_3-5.5.0-javadoc.jar.sha1</a>              2024-01-21 21:23        40      
+<a href="specs2-core_3-5.5.0-sources.jar" title="specs2-core_3-5.5.0-sources.jar">specs2-core_3-5.5.0-sources.jar</a>                   2024-01-21 21:23    101198      
+<a href="specs2-core_3-5.5.0-sources.jar.asc" title="specs2-core_3-5.5.0-sources.jar.asc">specs2-core_3-5.5.0-sources.jar.asc</a>               2024-01-21 21:23       228      
+<a href="specs2-core_3-5.5.0-sources.jar.asc.md5" title="specs2-core_3-5.5.0-sources.jar.asc.md5">specs2-core_3-5.5.0-sources.jar.asc.md5</a>           2024-01-21 21:23        32      
+<a href="specs2-core_3-5.5.0-sources.jar.asc.sha1" title="specs2-core_3-5.5.0-sources.jar.asc.sha1">specs2-core_3-5.5.0-sources.jar.asc.sha1</a>          2024-01-21 21:23        40      
+<a href="specs2-core_3-5.5.0-sources.jar.md5" title="specs2-core_3-5.5.0-sources.jar.md5">specs2-core_3-5.5.0-sources.jar.md5</a>               2024-01-21 21:23        32      
+<a href="specs2-core_3-5.5.0-sources.jar.sha1" title="specs2-core_3-5.5.0-sources.jar.sha1">specs2-core_3-5.5.0-sources.jar.sha1</a>              2024-01-21 21:23        40      
+<a href="specs2-core_3-5.5.0.jar" title="specs2-core_3-5.5.0.jar">specs2-core_3-5.5.0.jar</a>                           2024-01-21 21:23   1569621      
+<a href="specs2-core_3-5.5.0.jar.asc" title="specs2-core_3-5.5.0.jar.asc">specs2-core_3-5.5.0.jar.asc</a>                       2024-01-21 21:23       228      
+<a href="specs2-core_3-5.5.0.jar.asc.md5" title="specs2-core_3-5.5.0.jar.asc.md5">specs2-core_3-5.5.0.jar.asc.md5</a>                   2024-01-21 21:23        32      
+<a href="specs2-core_3-5.5.0.jar.asc.sha1" title="specs2-core_3-5.5.0.jar.asc.sha1">specs2-core_3-5.5.0.jar.asc.sha1</a>                  2024-01-21 21:23        40      
+<a href="specs2-core_3-5.5.0.jar.md5" title="specs2-core_3-5.5.0.jar.md5">specs2-core_3-5.5.0.jar.md5</a>                       2024-01-21 21:23        32      
+<a href="specs2-core_3-5.5.0.jar.sha1" title="specs2-core_3-5.5.0.jar.sha1">specs2-core_3-5.5.0.jar.sha1</a>                      2024-01-21 21:23        40      
+<a href="specs2-core_3-5.5.0.pom" title="specs2-core_3-5.5.0.pom">specs2-core_3-5.5.0.pom</a>                           2024-01-21 21:23      2882      
+<a href="specs2-core_3-5.5.0.pom.asc" title="specs2-core_3-5.5.0.pom.asc">specs2-core_3-5.5.0.pom.asc</a>                       2024-01-21 21:23       228      
+<a href="specs2-core_3-5.5.0.pom.asc.md5" title="specs2-core_3-5.5.0.pom.asc.md5">specs2-core_3-5.5.0.pom.asc.md5</a>                   2024-01-21 21:23        32      
+<a href="specs2-core_3-5.5.0.pom.asc.sha1" title="specs2-core_3-5.5.0.pom.asc.sha1">specs2-core_3-5.5.0.pom.asc.sha1</a>                  2024-01-21 21:23        40      
+<a href="specs2-core_3-5.5.0.pom.md5" title="specs2-core_3-5.5.0.pom.md5">specs2-core_3-5.5.0.pom.md5</a>                       2024-01-21 21:23        32      
+<a href="specs2-core_3-5.5.0.pom.sha1" title="specs2-core_3-5.5.0.pom.sha1">specs2-core_3-5.5.0.pom.sha1</a>                      2024-01-21 21:23        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 219ms:
+404 https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/5.5.0/specs2-core_3-5.5.0-tests.jar
+
+ succeeded in 255ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.specs2</groupId>
+    <artifactId>specs2-core_3</artifactId>
+    <packaging>jar</packaging>
+    <description>specs2-core</description>
+    <url>https://github.com/etorreborre/specs2</url>
+    <version>5.5.0</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>specs2-core</name>
+    <organization>
+        <name>org.specs2</name>
+        <url>https://github.com/etorreborre/specs2</url>
+    </organization>
+    <scm>
+        <url>https://github.com/etorreborre/specs2</url>
+        <connection>scm:git:https://github.com/etorreborre/specs2.git</connection>
+        <developerConnection>scm:git:git@github.com:etorreborre/specs2.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>etorreborre</id>
+            <name>Eric Torreborre</name>
+            <url>https://github.com/etorreborre</url>
+            <email>etorreborre@yahoo.com</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.versionScheme>early-semver</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.specs2</groupId>
+            <artifactId>specs2-matcher_3</artifactId>
+            <version>5.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.specs2</groupId>
+            <artifactId>specs2-common_3</artifactId>
+            <version>5.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-reflect</artifactId>
+            <version>2.13.12</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>5.10.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.portable-scala</groupId>
+            <artifactId>portable-scala-reflect_2.13</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-sbt</groupId>
+            <artifactId>test-interface</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
+</project>
+ succeeded in 307ms:
+404 https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/5.5.0/specs2-core_3-5.5.0-test-sources.jar
+
+codex
+Maven Central publishes `sources.jar` and `javadoc.jar` for this artifact, but no `tests.jar` or `test-sources.jar`, so the test suite needs to come from the upstream tagged repository. I’m verifying the exact GitHub tag/path now before editing.
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/etorreborre/specs2" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/5.5.0/specs2-core_3-5.5.0-javadoc.jar" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/5.5.0/specs2-core_3-5.5.0-sources.jar" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/etorreborre/specs2/tree/SPECS2-5.5.0/core/jvm/src/test/scala/org/specs2" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8
+ succeeded in 520ms:
+200 https://github.com/etorreborre/specs2
+
+ succeeded in 520ms:
+200 https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/5.5.0/specs2-core_3-5.5.0-sources.jar
+
+ succeeded in 526ms:
+200 https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/5.5.0/specs2-core_3-5.5.0-javadoc.jar
+
+ succeeded in 739ms:
+200 https://github.com/etorreborre/specs2/tree/SPECS2-5.5.0/core/jvm/src/test/scala/org/specs2
+
+web search: 
+web search: https://github.com/etorreborre/specs2/tree/SPECS2-5.5.0/core/jvm/src/test/scala/org/specs2
+web search: 
+web search: specs2-core_3-5.5.0-sources.jar
+web search: 
+web search: https://central.sonatype.com/artifact/org.specs2/specs2-core_3/5.5.0
+web search: 
+web search: central.sonatype.com artifact org.specs2 specs2-core_3 5.5.0
+web search: 
+web search: "Central Repository: org/specs2/specs2-core_3/5.5.0"
+codex
+I’m going to add the resolved Maven Central source/Javadoc templates, the canonical GitHub repository root, the tagged GitHub test path, and the two-sentence description to the `5.5.0` entry. The existing Scala 3 `language` field is already correct, so I’ll leave it as-is.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8/metadata/org.specs2/specs2-core_3/index.json
+diff --git a/metadata/org.specs2/specs2-core_3/index.json b/metadata/org.specs2/specs2-core_3/index.json
+index 6a921e7fff276df7b9cda53483b521ab7f3a2c44..b7c614edf267ae8f15ab4f4e81e2eb9f9b6c49e9
+--- a/metadata/org.specs2/specs2-core_3/index.json
++++ b/metadata/org.specs2/specs2-core_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "5.5.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/etorreborre/specs2",
++    "test-code-url" : "https://github.com/etorreborre/specs2/tree/SPECS2-$version$/core/jvm/src/test/scala/org/specs2",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-javadoc.jar",
++    "description" : "specs2-core provides the core implementation of the specs2 testing framework for Scala 3, including specification structure, execution, reporting, and runner support. It is used to define and run acceptance and unit specifications with matchers and integrations supplied by the broader specs2 modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+diff --git a/metadata/org.specs2/specs2-core_3/index.json b/metadata/org.specs2/specs2-core_3/index.json
+index 6a921e7fff276df7b9cda53483b521ab7f3a2c44..b7c614edf267ae8f15ab4f4e81e2eb9f9b6c49e9
+--- a/metadata/org.specs2/specs2-core_3/index.json
++++ b/metadata/org.specs2/specs2-core_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "5.5.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/etorreborre/specs2",
++    "test-code-url" : "https://github.com/etorreborre/specs2/tree/SPECS2-$version$/core/jvm/src/test/scala/org/specs2",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-javadoc.jar",
++    "description" : "specs2-core provides the core implementation of the specs2 testing framework for Scala 3, including specification structure, execution, reporting, and runner support. It is used to define and run acceptance and unit specifications with matchers and integrations supplied by the broader specs2 modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+codex
+The file is patched. I’ll do a quick JSON parse and run the repository’s metadata validation for the coordinate so we catch formatting or schema issues before handing it back.
+exec
+/usr/bin/bash -lc 'jq . metadata/org.specs2/specs2-core_3/index.json >/dev/null' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.specs2:specs2-core_3:5.5.0 --stacktrace' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8
+diff --git a/metadata/org.specs2/specs2-core_3/index.json b/metadata/org.specs2/specs2-core_3/index.json
+index 6a921e7fff276df7b9cda53483b521ab7f3a2c44..b7c614edf267ae8f15ab4f4e81e2eb9f9b6c49e9
+--- a/metadata/org.specs2/specs2-core_3/index.json
++++ b/metadata/org.specs2/specs2-core_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "5.5.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/etorreborre/specs2",
++    "test-code-url" : "https://github.com/etorreborre/specs2/tree/SPECS2-$version$/core/jvm/src/test/scala/org/specs2",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-javadoc.jar",
++    "description" : "specs2-core provides the core implementation of the specs2 testing framework for Scala 3, including specification structure, execution, reporting, and runner support. It is used to define and run acceptance and unit specifications with matchers and integrations supplied by the broader specs2 modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+ exited 1 in 7717ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+Metadata files check failed for org.specs2:specs2-core_3:5.5.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8/metadata/org.specs2/specs2-core_3/5.5.0/
+
+> Task :checkMetadataFiles FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.specs2:specs2-core_3:5.5.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8/metadata/org.specs2/specs2-core_3/5.5.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8/build/reports/problems/problems-report.html
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.specs2:specs2-core_3:5.5.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8/metadata/org.specs2/specs2-core_3/5.5.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+9 actionable tasks: 1 executed, 8 up-to-date
+
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+BUILD FAILED in 7s
+
+codex
+The JSON parse passed. The targeted metadata validation task fails before reaching the URL metadata because this coordinate has no `metadata/org.specs2/specs2-core_3/5.5.0/reachability-metadata.json`; I’m checking whether there’s a lighter index-only validation task available.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.specs2/specs2-core_3/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8
+ succeeded in 0ms:
+diff --git i/metadata/org.specs2/specs2-core_3/index.json w/metadata/org.specs2/specs2-core_3/index.json
+index 6a921e7fff..b7c614edf2 100644
+--- i/metadata/org.specs2/specs2-core_3/index.json
++++ w/metadata/org.specs2/specs2-core_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "5.5.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/etorreborre/specs2",
++    "test-code-url" : "https://github.com/etorreborre/specs2/tree/SPECS2-$version$/core/jvm/src/test/scala/org/specs2",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-javadoc.jar",
++    "description" : "specs2-core provides the core implementation of the specs2 testing framework for Scala 3, including specification structure, execution, reporting, and runner support. It is used to define and run acceptance and unit specifications with matchers and integrations supplied by the broader specs2 modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+exec
+/usr/bin/bash -lc "./gradlew tasks --all | rg -i 'index|metadata'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8
+diff --git a/metadata/org.specs2/specs2-core_3/index.json b/metadata/org.specs2/specs2-core_3/index.json
+index 6a921e7fff276df7b9cda53483b521ab7f3a2c44..b7c614edf267ae8f15ab4f4e81e2eb9f9b6c49e9
+--- a/metadata/org.specs2/specs2-core_3/index.json
++++ b/metadata/org.specs2/specs2-core_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "5.5.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/etorreborre/specs2",
++    "test-code-url" : "https://github.com/etorreborre/specs2/tree/SPECS2-$version$/core/jvm/src/test/scala/org/specs2",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-javadoc.jar",
++    "description" : "specs2-core provides the core implementation of the specs2 testing framework for Scala 3, including specification structure, execution, reporting, and runner support. It is used to define and run acceptance and unit specifications with matchers and integrations supplied by the broader specs2 modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+ succeeded in 864ms:
+GraalVM Reachability Metadata TCK
+Tasks runnable from root project 'reachability-metadata'
+artifactTransforms - Displays the Artifact Transforms that can be executed in root project 'reachability-metadata'.
+buildEnvironment - Displays all buildscript dependencies declared in root project 'reachability-metadata'.
+dependencies - Displays all dependencies declared in root project 'reachability-metadata'.
+dependencyInsight - Displays the insight into a specific dependency in root project 'reachability-metadata'.
+outgoingVariants - Displays the outgoing variants of root project 'reachability-metadata'.
+projects - Displays the sub-projects of root project 'reachability-metadata'.
+properties - Displays the properties of root project 'reachability-metadata'.
+resolvableConfigurations - Displays the configurations that can be resolved in root project 'reachability-metadata'.
+tasks - Displays the tasks runnable from root project 'reachability-metadata'.
+Metadata tasks
+addLibraryAsLatestMetadataIndexJson - Marks given coordinates as latest in metadata/group/artifact/index.json
+addLibraryMetadataIndexJson - Adds given coordinates to metadata/group/artifact/index.json without changing the latest entry
+checkMetadataFiles - Checks content of metadata files for matching coordinates
+contribute - Generates metadata and prepares pull request for contibuting on metadata repository based on provided tests.
+discoverArtifactMetadata - Uses a coding agent command to discover artifact metadata for a single coordinate and stores it under build/.
+generateChangedIndexFileCoordinatesList - Returns a list of changed coordinates for validation based on git diff
+generateChangedMetadataTestMatrix - Returns matrix definition populated with changed coordinates and batched tested versions from metadata index files
+generateLibraryStats - Generates local library stats and updates stats/<group>/<artifact>/<metadata-version>/stats.json
+generateMetadata - Generates metadata based on provided tests.
+mergeNativeTraceMetadata - Merges runtime metadata trace output directories with native-image-utils generate
+populateArtifactURLs - Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.
+scaffold - Creates a metadata and test scaffold for the given coordindates
+splitTestOnlyMetadata - Moves test-only entries from library reachability metadata into test resources metadata.
+package - Packages current repository to 'build/graalvm-reachability-metadata-1.0.0-SNAPSHOT.zip'
+diff - Tests GraalVM Reflection Metadata that was changed between 'baseCommit' and 'newCommit'
+testInfra - Runs clean and pullAllowedDockerImages, then runs (validateIndexFiles, checkstyle, spotlessCheck, checkMetadataFiles, fetchExistingLibrariesWithNewerVersions, test, jacocoTestReport, listLibraryJars, generateDynamicAccessReport, generateDynamicAccessCoverageReport, generateLibraryStats, listTopCoordinatesByMetric, generateTopCoordinatesByMetricMatrix, listCoordinates, generateDependencyGraph, splitTestOnlyMetadata) concurrently with isolated logs for a single coordinate.
+validateIndexFiles - Checks content of index.json files for matching coordinates or files
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8/build/reports/problems/problems-report.html
+
+codex
+There is an index-specific validator, so I’ll run that for the same coordinate. That should cover the file I changed without requiring the missing reachability metadata directory to exist.
+exec
+/usr/bin/bash -lc './gradlew validateIndexFiles -Pcoordinates=org.specs2:specs2-core_3:5.5.0 --stacktrace' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8
+diff --git a/metadata/org.specs2/specs2-core_3/index.json b/metadata/org.specs2/specs2-core_3/index.json
+index 6a921e7fff276df7b9cda53483b521ab7f3a2c44..b7c614edf267ae8f15ab4f4e81e2eb9f9b6c49e9
+--- a/metadata/org.specs2/specs2-core_3/index.json
++++ b/metadata/org.specs2/specs2-core_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "5.5.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/etorreborre/specs2",
++    "test-code-url" : "https://github.com/etorreborre/specs2/tree/SPECS2-$version$/core/jvm/src/test/scala/org/specs2",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-javadoc.jar",
++    "description" : "specs2-core provides the core implementation of the specs2 testing framework for Scala 3, including specification structure, execution, reporting, and runner support. It is used to define and run acceptance and unit specifications with matchers and integrations supplied by the broader specs2 modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+ succeeded in 1452ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :validateIndexFiles
+✅ metadata/org.specs2/specs2-core_3/index.json: Valid
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: specs2 GitHub etorreborre specs2 SPECS2-5.5.0
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.specs2/specs2-core_3/index.json | sed -n '1,25p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "5.5.0",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/etorreborre/specs2",
+     7	    "test-code-url" : "https://github.com/etorreborre/specs2/tree/SPECS2-$version$/core/jvm/src/test/scala/org/specs2",
+     8	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-javadoc.jar",
+     9	    "description" : "specs2-core provides the core implementation of the specs2 testing framework for Scala 3, including specification structure, execution, reporting, and runner support. It is used to define and run acceptance and unit specifications with matchers and integrations supplied by the broader specs2 modules.",
+    10	    "language" : {
+    11	      "name" : "scala",
+    12	      "version" : "3"
+    13	    },
+    14	    "tested-versions" : [
+    15	      "5.5.0"
+    16	    ],
+    17	    "allowed-packages" : [
+    18	      "org.specs2",
+    19	      "specs2"
+    20	    ]
+    21	  },
+    22	  {
+    23	    "metadata-version" : "5.0.0",
+    24	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-sources.jar",
+    25	    "repository-url" : "https://github.com/etorreborre/specs2",
+
+diff --git a/metadata/org.specs2/specs2-core_3/index.json b/metadata/org.specs2/specs2-core_3/index.json
+index 6a921e7fff276df7b9cda53483b521ab7f3a2c44..b7c614edf267ae8f15ab4f4e81e2eb9f9b6c49e9
+--- a/metadata/org.specs2/specs2-core_3/index.json
++++ b/metadata/org.specs2/specs2-core_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "5.5.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/etorreborre/specs2",
++    "test-code-url" : "https://github.com/etorreborre/specs2/tree/SPECS2-$version$/core/jvm/src/test/scala/org/specs2",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-javadoc.jar",
++    "description" : "specs2-core provides the core implementation of the specs2 testing framework for Scala 3, including specification structure, execution, reporting, and runner support. It is used to define and run acceptance and unit specifications with matchers and integrations supplied by the broader specs2 modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+codex
+The index validator passed after the patch. I’m doing one final status check so the close-out reflects exactly what changed and which validation did or didn’t run cleanly.
+exec
+/usr/bin/bash -lc 'git status --short metadata/org.specs2/specs2-core_3/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8
+ succeeded in 0ms:
+ M metadata/org.specs2/specs2-core_3/index.json
+
+diff --git a/metadata/org.specs2/specs2-core_3/index.json b/metadata/org.specs2/specs2-core_3/index.json
+index 6a921e7fff276df7b9cda53483b521ab7f3a2c44..b7c614edf267ae8f15ab4f4e81e2eb9f9b6c49e9
+--- a/metadata/org.specs2/specs2-core_3/index.json
++++ b/metadata/org.specs2/specs2-core_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "5.5.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/etorreborre/specs2",
++    "test-code-url" : "https://github.com/etorreborre/specs2/tree/SPECS2-$version$/core/jvm/src/test/scala/org/specs2",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-javadoc.jar",
++    "description" : "specs2-core provides the core implementation of the specs2 testing framework for Scala 3, including specification structure, execution, reporting, and runner support. It is used to define and run acceptance and unit specifications with matchers and integrations supplied by the broader specs2 modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8/metadata/org.specs2/specs2-core_3/index.json:5) for `metadata-version` `5.5.0`.
+
+Filled missing:
+- `source-code-url`: Maven Central sources JAR template
+- `repository-url`: canonical GitHub repo root
+- `test-code-url`: tagged GitHub test suite path
+- `documentation-url`: Maven Central Javadoc JAR template
+- `description`: exactly two sentences
+- Left existing `language` unchanged: Scala 3
+
+Verification:
+- `jq` JSON parse passed.
+- `./gradlew validateIndexFiles -Pcoordinates=org.specs2:specs2-core_3:5.5.0 --stacktrace` passed.
+- `./gradlew checkMetadataFiles ...` failed because `metadata/org.specs2/specs2-core_3/5.5.0/reachability-metadata.json` is missing, which is outside this URL/description update.
+diff --git a/metadata/org.specs2/specs2-core_3/index.json b/metadata/org.specs2/specs2-core_3/index.json
+index 6a921e7fff276df7b9cda53483b521ab7f3a2c44..b7c614edf267ae8f15ab4f4e81e2eb9f9b6c49e9
+--- a/metadata/org.specs2/specs2-core_3/index.json
++++ b/metadata/org.specs2/specs2-core_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "5.5.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/etorreborre/specs2",
++    "test-code-url" : "https://github.com/etorreborre/specs2/tree/SPECS2-$version$/core/jvm/src/test/scala/org/specs2",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/specs2/specs2-core_3/$version$/specs2-core_3-$version$-javadoc.jar",
++    "description" : "specs2-core provides the core implementation of the specs2 testing framework for Scala 3, including specification structure, execution, reporting, and runner support. It is used to define and run acceptance and unit specifications with matchers and integrations supplied by the broader specs2 modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+tokens used
+79,632
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8/metadata/org.specs2/specs2-core_3/index.json:5) for `metadata-version` `5.5.0`.
+
+Filled missing:
+- `source-code-url`: Maven Central sources JAR template
+- `repository-url`: canonical GitHub repo root
+- `test-code-url`: tagged GitHub test suite path
+- `documentation-url`: Maven Central Javadoc JAR template
+- `description`: exactly two sentences
+- Left existing `language` unchanged: Scala 3
+
+Verification:
+- `jq` JSON parse passed.
+- `./gradlew validateIndexFiles -Pcoordinates=org.specs2:specs2-core_3:5.5.0 --stacktrace` passed.
+- `./gradlew checkMetadataFiles ...` failed because `metadata/org.specs2/specs2-core_3/5.5.0/reachability-metadata.json` is missing, which is outside this URL/description update.
+Ran agent for org.specs2:specs2-core_3:5.5.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8/build/agent-url-discovery-logs/org.specs2-specs2-core_3-5.5.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8231-873068c8/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 46s
+9 actionable tasks: 1 executed, 8 up-to-date
