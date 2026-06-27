@@ -149,4 +149,33 @@ class Circe_literal_3Test {
     assertEquals(Right(2), cursor.downArray.right.right.downField("literal").downArray.right.as[Int])
     assertEquals(Some(Json.Null), cursor.downArray.right.right.downField("literal").downArray.right.right.focus)
   }
+
+  @Test
+  def encodesSingleInterpolatedValueAsCompleteJsonDocument(): Unit = {
+    final case class Release(name: String, modules: List[String], stable: Boolean)
+
+    given Encoder[Release] with
+      override def apply(release: Release): Json = Json.obj(
+        "name" -> Json.fromString(release.name),
+        "modules" -> Json.arr(release.modules.map(Json.fromString)*),
+        "stable" -> Json.fromBoolean(release.stable)
+      )
+
+    val release: Release = Release("circe", List("core", "literal"), stable = true)
+    val moduleNames: List[String] = List("parser", "generic")
+    val displayName: String = "single interpolation"
+    val noOwner: Option[String] = None
+
+    val releaseJson: Json = json"""$release"""
+    val moduleNamesJson: Json = json"""$moduleNames"""
+    val displayNameJson: Json = json"""$displayName"""
+    val noOwnerJson: Json = json"""$noOwner"""
+
+    assertEquals(Right("circe"), releaseJson.hcursor.downField("name").as[String])
+    assertEquals(Right(List("core", "literal")), releaseJson.hcursor.downField("modules").as[List[String]])
+    assertEquals(Right(true), releaseJson.hcursor.downField("stable").as[Boolean])
+    assertEquals(Right(List("parser", "generic")), moduleNamesJson.as[List[String]])
+    assertEquals(Some("single interpolation"), displayNameJson.asString)
+    assertEquals(Json.Null, noOwnerJson)
+  }
 }
