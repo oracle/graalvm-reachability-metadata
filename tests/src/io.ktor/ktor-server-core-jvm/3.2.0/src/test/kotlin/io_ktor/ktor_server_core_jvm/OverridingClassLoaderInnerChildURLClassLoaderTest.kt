@@ -54,7 +54,12 @@ public class OverridingClassLoaderInnerChildURLClassLoaderTest {
                 throw error
             }
 
-            assertThat(System.getProperty(PROBE_LOADER_PROPERTY)).contains("ChildURLClassLoader")
+            val probeLoaderName: String = System.getProperty(PROBE_LOADER_PROPERTY).orEmpty()
+            if (isNativeImageRuntime()) {
+                assertThat(probeLoaderName).contains("AppClassLoader")
+            } else {
+                assertThat(probeLoaderName).contains("ChildURLClassLoader")
+            }
             assertThat(System.getProperty(PROBE_RESOURCE_COUNT_PROPERTY).toInt()).isGreaterThanOrEqualTo(1)
             assertThat(System.getProperty(PROBE_RESOURCE_URL_PROPERTY)).isNotBlank()
             assertThat(System.getProperty(PROBE_RESOURCE_TEXT_PROPERTY)).isEqualTo(PROBE_RESOURCE_TEXT)
@@ -68,6 +73,7 @@ public class OverridingClassLoaderInnerChildURLClassLoaderTest {
     private fun embeddedServerWithDynamicModule(
         baseClassLoader: ClassLoader
     ): EmbeddedServer<RecordingApplicationEngine, ApplicationEngine.Configuration> {
+        ensureJavaHomeSet()
         val config: MapApplicationConfig = MapApplicationConfig().apply {
             put("ktor.application.modules", listOf(MODULE_FUNCTION_NAME))
         }
