@@ -160,6 +160,42 @@ class Http4s_ember_client_3Test {
   }
 
   @Test
+  def clientExecutesHeadRequestsWithoutReadingResponseBodies(): Unit = {
+    val headHandler: HttpExchange => Unit = { exchange =>
+      exchange.getRequestURI.getPath match {
+        case "/head" =>
+          exchange.getResponseHeaders.add("X-Head-Test", "present")
+          exchange.getResponseHeaders.add("Content-Type", "text/plain; charset=utf-8")
+          exchange.sendResponseHeaders(200, -1L)
+          exchange.close()
+
+        case _ =>
+          sendText(exchange, 404, "not found")
+      }
+    }
+
+    withHttpServer(headHandler) { port =>
+      val program: IO[(Status, Option[String], String)] = EmberClientBuilder
+        .default[IO]
+        .withTimeout(2.seconds)
+        .withIdleConnectionTime(4.seconds)
+        .build
+        .use { client =>
+          val headRequest: Request[IO] = Request[IO](method = Method.HEAD, uri = uriFor(port, "/head"))
+          client.run(headRequest).use { response =>
+            response.as[String].map(body => (response.status, headerValue(response, "X-Head-Test"), body))
+          }
+        }
+
+      val (status, responseHeader, body) = unsafeRun(program)
+
+      assertEquals(Status.Ok, status)
+      assertEquals(Some("present"), responseHeader)
+      assertEquals("", body)
+    }
+  }
+
+  @Test
   def builderCopyMethodsExposeImmutableConfiguration(): Unit = {
     val userAgent: `User-Agent` = `User-Agent`(ProductId("native-image-test", Some("1.0")))
     val base: EmberClientBuilder[IO] = EmberClientBuilder
