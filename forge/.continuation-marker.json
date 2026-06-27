@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.activemq:artemis-commons:2.38.0",
+  "issueNumber": 8665,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No workflow-level environment variables or system properties are required. For 2.38.0, Base64 exposes encodeObject(Serializable), encodeBytes(byte[], boolean), and decode(String, boolean); do not use removed members such as Base64.DONT_BREAK_LINES or decodeToObject(String). If tests cover FactoryFinder, ClassloadingUtil, or XmlProvider, create ordinary test resources as needed rather than adding workflow setup.",
+    "applied_setup": [],
+    "current_library": "org.apache.activemq:artemis-commons:2.34.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8665 [Automation] javac compile fails for org.apache.activemq:artemis-commons:2.38.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "26 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 33498,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8665,
+    "library": "org.apache.activemq:artemis-commons:2.38.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.38.0",
+    "output_tokens_used": 3431,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Some optional utility paths read properties such as artemis.default.sensitive.string.codec.key or artemis.disableXxe, but meaningful coverage is reachable without setting them globally.",
+      "Avoid exercising full broker/client scenarios; artemis-commons should be tested as standalone utility code, not with an Artemis server container."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.activemq:artemis-commons:2.38.0/library-preparation-preflight/pi-generation-2026-06-27T00-33-20-807856Z.log",
+    "status": "completed",
+    "summary": "No extra dependency, Docker image, or environment/system property is required. org.apache.activemq:artemis-commons is a utility jar whose needed compile dependencies are resolved transitively; the reported javac failure is stale Base64 API usage in the existing test, not missing setup."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.38.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8665-fails-javac-compile-org.apache.activemq-artemis-commons-2.38.0-efb065bf",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
