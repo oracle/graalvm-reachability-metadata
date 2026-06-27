@@ -18,6 +18,9 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
 
+import scala.compiletime.testing.Error
+import scala.compiletime.testing.typeCheckErrors
+
 class Circe_literal_3Test {
   private final case class BuildInfo(name: String, number: Int, labels: List[String])
 
@@ -35,6 +38,22 @@ class Circe_literal_3Test {
     given KeyEncoder[MetricKey] = KeyEncoder.instance { key =>
       s"${key.namespace}.${key.name}"
     }
+  }
+
+  @Test
+  def validatesLiteralJsonSyntaxAtCompileTime(): Unit = {
+    val validLiteralErrors: List[Error] = typeCheckErrors(
+      "import io.circe.literal._\nval valid = json\"\"\"{ \"items\": [1, 2] }\"\"\""
+    )
+    val invalidLiteralErrors: List[Error] = typeCheckErrors(
+      "import io.circe.literal._\nval invalid = json\"\"\"{ \"items\": [1, 2 }\"\"\""
+    )
+
+    assertTrue(
+      validLiteralErrors.isEmpty,
+      s"Expected valid JSON literal to compile, but got: $validLiteralErrors"
+    )
+    assertFalse(invalidLiteralErrors.isEmpty)
   }
 
   @Test
