@@ -26,11 +26,22 @@ import org.springframework.ai.model.embedding.observation.autoconfigure.Embeddin
 import org.springframework.ai.observation.conventions.AiObservationMetricAttributes;
 import org.springframework.ai.observation.conventions.AiObservationMetricNames;
 import org.springframework.ai.observation.conventions.AiTokenType;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.context.annotation.ImportCandidates;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class Spring_ai_autoconfigure_model_embedding_observationTest {
+
+    @Test
+    void autoConfigurationIsRegisteredForSpringBootDiscovery() {
+        ClassLoader classLoader = Spring_ai_autoconfigure_model_embedding_observationTest.class
+                .getClassLoader();
+        List<String> candidates = ImportCandidates.load(AutoConfiguration.class, classLoader).getCandidates();
+
+        assertThat(candidates).contains(EmbeddingObservationAutoConfiguration.class.getName());
+    }
 
     @Test
     void autoConfigurationCreatesMeterObservationHandlerWhenMeterRegistryIsPresent() {
