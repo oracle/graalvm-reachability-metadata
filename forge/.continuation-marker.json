@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.activemq:artemis-commons:2.38.0",
+  "issueNumber": 8665,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.apache.activemq:artemis-commons:2.34.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8665 [Automation] javac compile fails for org.apache.activemq:artemis-commons:2.38.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "26 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 34372,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8665,
+    "library": "org.apache.activemq:artemis-commons:2.38.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.38.0",
+    "output_tokens_used": 2670,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Existing tests that call Base64.DONT_BREAK_LINES or Base64.decodeToObject will not compile on 2.38.0 because the current Base64 API only exposes encodeObject(Serializable), encodeBytes(byte[]), encodeBytes(byte[], boolean), decode(String), and decode(String, boolean).",
+      "Some meaningful coverage areas such as FactoryFinder or SensitiveDataCodec may require ordinary test resources authored by the generated tests, but this is test content rather than pre-generation deterministic setup."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.activemq:artemis-commons:2.38.0/library-preparation-preflight/pi-generation-2026-06-27T01-19-06-410062Z.log",
+    "status": "completed",
+    "summary": "No concrete extra setup is needed; artemis-commons is a utility artifact whose resolved runtime needs are ordinary Maven transitive dependencies, and the observed failure is due to removed Base64 APIs in 2.38.0 rather than missing dependency, Docker, or environment setup."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.38.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8665-fails-javac-compile-org.apache.activemq-artemis-commons-2.38.0-9ee8dbd1",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
