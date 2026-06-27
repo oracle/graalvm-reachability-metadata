@@ -1,0 +1,561 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-750680b3
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f0b79-77a7-7e03-bd84-9d5306a1c186
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.pekko:pekko-actor_2.13:2.0.0-M1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.0.0-M1].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-750680b3/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+- Entry selector: "metadata-version" = "2.0.0-M1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: {"name": "scala", "version": "2"}
+
+Context:
+- Coordinate version: 2.0.0-M1
+- Entry metadata-version: 2.0.0-M1
+- Entry test-version: 2.0.0-M1
+- Entry tested-versions: [2.0.0-M1]
+codex
+I’ll verify the artifact coordinates and versioned project links first, then update only blank fields in the target `index.json`. After that I’ll validate the JSON diff so the entry stays scoped.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.pekko/pekko-actor_2.13/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-750680b3
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.0-M1",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "2.0.0-M1"
+    ],
+    "allowed-packages" : [
+      "org.apache.pekko"
+    ]
+  },
+  {
+    "metadata-version" : "1.1.5",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/pekko",
+    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
+    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "1.1.5",
+      "1.2.0",
+      "1.2.1",
+      "1.3.0",
+      "1.4.0",
+      "1.5.0",
+      "1.6.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.pekko"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-750680b3
+ succeeded in 215ms:
+web search: 
+web search: org.apache.pekko pekko-actor_2.13 2.0.0-M1 maven sources javadoc tests jar
+web search: 
+web search: https://github.com/apache/pekko/tree/v2.0.0-M1/actor/src/main
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1 pekko-actor_2.13-2.0.0-M1-sources.jar
+codex
+The entry already has the Scala 2 language marker, so I’m leaving that intact. I found the canonical Apache Pekko repository and the version tag; now I’m checking whether Maven Central has source, test, and API-doc artifacts for exactly `2.0.0-M1` before falling back to tagged GitHub paths.
+exec
+/usr/bin/bash -lc 'curl -fsSI https://pekko.apache.org/docs/pekko/2.0.0-M1/' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-750680b3
+ succeeded in 0ms:
+HTTP/2 200 
+server: Apache
+x-frame-options: SAMEORIGIN
+last-modified: Wed, 07 Jan 2026 09:22:17 GMT
+etag: "a717-647c8d416dbee"
+content-type: text/html
+via: 1.1 www.apache.org, 1.1 varnish, 1.1 varnish
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+referrer-policy: strict-origin
+accept-ranges: bytes
+age: 2499
+date: Sat, 27 Jun 2026 23:46:02 GMT
+x-served-by: cache-hel1410026-HEL, cache-fra-eddf8230105-FRA
+x-cache: MISS, HIT
+x-cache-hits: 0, 0
+x-timer: S1782603963.677867,VS0,VE1
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 42775
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-750680b3
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/pekko/pekko-actor_2.13/2.0.0-M1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/pekko/pekko-actor_2.13/2.0.0-M1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="pekko-actor_2.13-2.0.0-M1-cyclonedx.json" title="pekko-actor_2.13-2.0.0-M1-cyclonedx.json">pekko-actor_2.13-2.0.0-M1-cyclonedx.json</a>          2025-12-02 22:22      4809      
+<a href="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc" title="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc">pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc</a>      2025-12-02 22:22       833      
+<a href="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc.md5" title="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc.md5">pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc....</a>  2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc.sha1" title="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc.sha1">pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc....</a>  2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.md5" title="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.md5">pekko-actor_2.13-2.0.0-M1-cyclonedx.json.md5</a>      2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.sha1" title="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.sha1">pekko-actor_2.13-2.0.0-M1-cyclonedx.json.sha1</a>     2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1-javadoc.jar" title="pekko-actor_2.13-2.0.0-M1-javadoc.jar">pekko-actor_2.13-2.0.0-M1-javadoc.jar</a>             2025-12-02 22:22   8492433      
+<a href="pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc" title="pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc">pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc</a>         2025-12-02 22:22       833      
+<a href="pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc.md5" title="pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc.md5">pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc.md5</a>     2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc.sha1" title="pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc.sha1">pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc.sha...</a>  2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1-javadoc.jar.md5" title="pekko-actor_2.13-2.0.0-M1-javadoc.jar.md5">pekko-actor_2.13-2.0.0-M1-javadoc.jar.md5</a>         2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1-javadoc.jar.sha1" title="pekko-actor_2.13-2.0.0-M1-javadoc.jar.sha1">pekko-actor_2.13-2.0.0-M1-javadoc.jar.sha1</a>        2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1-sources.jar" title="pekko-actor_2.13-2.0.0-M1-sources.jar">pekko-actor_2.13-2.0.0-M1-sources.jar</a>             2025-12-02 22:22    573675      
+<a href="pekko-actor_2.13-2.0.0-M1-sources.jar.asc" title="pekko-actor_2.13-2.0.0-M1-sources.jar.asc">pekko-actor_2.13-2.0.0-M1-sources.jar.asc</a>         2025-12-02 22:22       833      
+<a href="pekko-actor_2.13-2.0.0-M1-sources.jar.asc.md5" title="pekko-actor_2.13-2.0.0-M1-sources.jar.asc.md5">pekko-actor_2.13-2.0.0-M1-sources.jar.asc.md5</a>     2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1-sources.jar.asc.sha1" title="pekko-actor_2.13-2.0.0-M1-sources.jar.asc.sha1">pekko-actor_2.13-2.0.0-M1-sources.jar.asc.sha...</a>  2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1-sources.jar.md5" title="pekko-actor_2.13-2.0.0-M1-sources.jar.md5">pekko-actor_2.13-2.0.0-M1-sources.jar.md5</a>         2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1-sources.jar.sha1" title="pekko-actor_2.13-2.0.0-M1-sources.jar.sha1">pekko-actor_2.13-2.0.0-M1-sources.jar.sha1</a>        2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1.buildinfo" title="pekko-actor_2.13-2.0.0-M1.buildinfo">pekko-actor_2.13-2.0.0-M1.buildinfo</a>               2025-12-02 22:22       767      
+<a href="pekko-actor_2.13-2.0.0-M1.buildinfo.asc" title="pekko-actor_2.13-2.0.0-M1.buildinfo.asc">pekko-actor_2.13-2.0.0-M1.buildinfo.asc</a>           2025-12-02 22:22       833      
+<a href="pekko-actor_2.13-2.0.0-M1.buildinfo.asc.md5" title="pekko-actor_2.13-2.0.0-M1.buildinfo.asc.md5">pekko-actor_2.13-2.0.0-M1.buildinfo.asc.md5</a>       2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1.buildinfo.asc.sha1" title="pekko-actor_2.13-2.0.0-M1.buildinfo.asc.sha1">pekko-actor_2.13-2.0.0-M1.buildinfo.asc.sha1</a>      2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1.buildinfo.md5" title="pekko-actor_2.13-2.0.0-M1.buildinfo.md5">pekko-actor_2.13-2.0.0-M1.buildinfo.md5</a>           2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1.buildinfo.sha1" title="pekko-actor_2.13-2.0.0-M1.buildinfo.sha1">pekko-actor_2.13-2.0.0-M1.buildinfo.sha1</a>          2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1.jar" title="pekko-actor_2.13-2.0.0-M1.jar">pekko-actor_2.13-2.0.0-M1.jar</a>                     2025-12-02 22:22   3717334      
+<a href="pekko-actor_2.13-2.0.0-M1.jar.asc" title="pekko-actor_2.13-2.0.0-M1.jar.asc">pekko-actor_2.13-2.0.0-M1.jar.asc</a>                 2025-12-02 22:22       833      
+<a href="pekko-actor_2.13-2.0.0-M1.jar.asc.md5" title="pekko-actor_2.13-2.0.0-M1.jar.asc.md5">pekko-actor_2.13-2.0.0-M1.jar.asc.md5</a>             2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1.jar.asc.sha1" title="pekko-actor_2.13-2.0.0-M1.jar.asc.sha1">pekko-actor_2.13-2.0.0-M1.jar.asc.sha1</a>            2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1.jar.md5" title="pekko-actor_2.13-2.0.0-M1.jar.md5">pekko-actor_2.13-2.0.0-M1.jar.md5</a>                 2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1.jar.sha1" title="pekko-actor_2.13-2.0.0-M1.jar.sha1">pekko-actor_2.13-2.0.0-M1.jar.sha1</a>                2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1.pom" title="pekko-actor_2.13-2.0.0-M1.pom">pekko-actor_2.13-2.0.0-M1.pom</a>                     2025-12-02 22:22      2165      
+<a href="pekko-actor_2.13-2.0.0-M1.pom.asc" title="pekko-actor_2.13-2.0.0-M1.pom.asc">pekko-actor_2.13-2.0.0-M1.pom.asc</a>                 2025-12-02 22:22       833      
+<a href="pekko-actor_2.13-2.0.0-M1.pom.asc.md5" title="pekko-actor_2.13-2.0.0-M1.pom.asc.md5">pekko-actor_2.13-2.0.0-M1.pom.asc.md5</a>             2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1.pom.asc.sha1" title="pekko-actor_2.13-2.0.0-M1.pom.asc.sha1">pekko-actor_2.13-2.0.0-M1.pom.asc.sha1</a>            2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1.pom.md5" title="pekko-actor_2.13-2.0.0-M1.pom.md5">pekko-actor_2.13-2.0.0-M1.pom.md5</a>                 2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1.pom.sha1" title="pekko-actor_2.13-2.0.0-M1.pom.sha1">pekko-actor_2.13-2.0.0-M1.pom.sha1</a>                2025-12-02 22:22        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/pekko-actor_2.13-2.0.0-M1-javadoc.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-750680b3
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 27 Jun 2026 23:46:02 GMT
+content-type: application/java-archive
+content-length: 8492433
+cf-ray: a128542eb98827b9-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 12985
+etag: "1a9d30a320501b1474d31b90ca366c42"
+last-modified: Tue, 02 Dec 2025 22:22:05 GMT
+x-checksum-md5: 1a9d30a320501b1474d31b90ca366c42
+x-checksum-sha1: 83893e48d6370b26c349735a652a222267848500
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/pekko-actor_2.13-2.0.0-M1-sources.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-750680b3
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 27 Jun 2026 23:46:02 GMT
+content-type: application/java-archive
+content-length: 573675
+cf-ray: a128542ebfc32793-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 12985
+etag: "8ae5e5ec611c6394b9139eca49bffd5e"
+last-modified: Tue, 02 Dec 2025 22:22:04 GMT
+x-checksum-md5: 8ae5e5ec611c6394b9139eca49bffd5e
+x-checksum-sha1: ae9d923bb15fee06bf7c43a16d3a14485c81a0db
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: https://github.com/apache/pekko/tree/v2.0.0-M1/actor-tests/src/test
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/pekko-actor_2.13-2.0.0-M1-sources.jar
+web search: 
+web search: mvnrepository org.apache.pekko pekko-actor_2.13 2.0.0-M1
+codex
+Maven Central has the `pekko-actor_2.13` sources and javadoc jars for this release, and I did not see a test classifier inside that artifact directory. I’m checking the separate `pekko-actor-tests_2.13` module because Pekko publishes its actor tests as their own artifact.
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-tests_2.13/2.0.0-M1/pekko-actor-tests_2.13-2.0.0-M1-sources.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-750680b3
+ exited 22 in 0ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sat, 27 Jun 2026 23:46:19 GMT
+content-type: text/html
+cf-ray: a12854976ccd2db1-LYS
+cf-cache-status: HIT
+age: 1117
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/pekko/pekko-actor-tests_2.13/2.0.0-M1/pekko-actor-tests_2.13-2.0.0-M1-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-tests_2.13/2.0.0-M1/' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-750680b3
+ exited 22 in 0ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/apache/pekko/tree/v2.0.0-M1/actor/src/main' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-750680b3
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/apache/pekko/tree/v2.0.0-M1/actor-tests/src/test' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-750680b3
+ succeeded in 454ms:
+HTTP/2 200 
+date: Sat, 27 Jun 2026 23:46:19 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"188b3b7fbe11743c9679f44db540fc86"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com wss://production-copilot-host.webpubsub.azure.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=5RBXK6UtKW8ALyh2MohRwCmg9aOBe6fO15HtR8XlexugEoNVcaictQSYnqZvWiMHdRWg5YF9M0PFT6B3H6xYOFPQ8RGfeVonWMZRIqaXOb85GVnBW4wj7PDVMG7jQJVjKMBYp3EFYKZ7C56AZYMUbr3gXLjxnIXfO1i%2FRtptqqv6g2jhqn2D%2FX8D0fOKfkyVX4UJFuH12%2BRKt9b2t9WYkP3DZnGOem%2B1rcnno8CX%2FBiQ%2BEQRapQZteC1jYFjFg5iD9kPBumZ1l4XFgLt%2FopwkQ%3D%3D--QEV1w1xL4IzFjHde--Vcr9DIuPN%2BmbIbXSs54vow%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.933088727.1782603979; expires=Sun, 27 Jun 2027 23:46:19 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 27 Jun 2027 23:46:19 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6206:3688E7:1078512C:C786B6E:6A4060CB
+
+
+ succeeded in 512ms:
+HTTP/2 200 
+date: Sat, 27 Jun 2026 23:46:19 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"0370c2b1f1ede90f3cd950a9d3960690"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com wss://production-copilot-host.webpubsub.azure.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=8O7hqNkw0rr9syeUakB8karx6Ug6hNI2zV52tHJ4SFeUNA7MhipY29f8Qfs1BA7Z9oLYF1rriBCbFJJK0XiFVjwZ0LcTcNp4VMvMrskrB7BLBS7JoTox4mvGmtjU4GuOnaZZNlvXa9%2BGIWtMJddWUMfYaDfoYDUc%2ByH3WRVVmioIeICLUk40Rzc0QFTCvX1%2FIY63sIQ8MQQvSEvsv%2FLktEJenQ8rGaoJMWF%2BHH9%2B9VDyCbikM1m%2FbJZVKko0lyOfP20kSzfhu7%2FLMQzy%2BzfMwA%3D%3D--YtkYMREjc4one9oO--hMUV1%2FC9Vsdp1b%2Bklg9mbw%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.179143103.1782603979; expires=Sun, 27 Jun 2027 23:46:19 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 27 Jun 2027 23:46:19 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6200:3C98A0:FEFBD07:BF0B1E6:6A4060CB
+
+
+codex
+I’m going to fill the missing metadata with Maven Central templates for the source and API docs, the canonical GitHub repository root, and the tagged GitHub test path. The language field is already present and non-blank, so I won’t touch it.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-750680b3/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+diff --git a/metadata/org.apache.pekko/pekko-actor_2.13/index.json b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+index 9732f2ad72b234e3ecb53ac9b0c79f3156224355..67d601710939e15a580afca5d47bc26adfe5550e
+--- a/metadata/org.apache.pekko/pekko-actor_2.13/index.json
++++ b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko",
++    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
++    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "2"
+
+diff --git a/metadata/org.apache.pekko/pekko-actor_2.13/index.json b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+index 9732f2ad72b234e3ecb53ac9b0c79f3156224355..67d601710939e15a580afca5d47bc26adfe5550e
+--- a/metadata/org.apache.pekko/pekko-actor_2.13/index.json
++++ b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko",
++    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
++    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "2"
+
+codex
+The file is patched. I’m doing a final pass now: parse the JSON, render each `$version$` URL for `2.0.0-M1`, and verify the rendered targets answer successfully.
+exec
+/usr/bin/bash -lc 'jq . metadata/org.apache.pekko/pekko-actor_2.13/index.json >/dev/null' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-750680b3
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.apache.pekko/pekko-actor_2.13/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-750680b3
+ succeeded in 0ms:
+diff --git i/metadata/org.apache.pekko/pekko-actor_2.13/index.json w/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+index 9732f2ad72..67d6017109 100644
+--- i/metadata/org.apache.pekko/pekko-actor_2.13/index.json
++++ w/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko",
++    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
++    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "2"
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/pekko-actor_2.13-2.0.0-M1-sources.jar && curl -fsSI https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/pekko-actor_2.13-2.0.0-M1-javadoc.jar && curl -fsSI https://github.com/apache/pekko/tree/v2.0.0-M1/actor-tests/src/test && curl -fsSI https://github.com/apache/pekko' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-750680b3
+diff --git a/metadata/org.apache.pekko/pekko-actor_2.13/index.json b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+index 9732f2ad72b234e3ecb53ac9b0c79f3156224355..67d601710939e15a580afca5d47bc26adfe5550e
+--- a/metadata/org.apache.pekko/pekko-actor_2.13/index.json
++++ b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko",
++    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
++    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "2"
+
+ succeeded in 791ms:
+HTTP/2 200 
+date: Sat, 27 Jun 2026 23:46:19 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"188b3b7fbe11743c9679f44db540fc86"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com wss://production-copilot-host.webpubsub.azure.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=YrVVGW%2FXOiAutWGPzGGB33j%2BjisoB7whPHVMOxkR4dZ9qT39YnPRVMAt3iN0mRP4Rknd1UUvEHmvpAhiDSoVYTdt3XvgJ42XBa8eY2Hmra0a8qscbC1MCDSQr6vAi9iQYPR7sJ1ouGteI3SWwC8ICZQ%2FI%2B4YvmreZnVmkEOuoB2ixNCS8q36U1KUYD%2Fjbdi5q02QWxXX%2FROMkBRFgWYlRwpxFxwhziRcg%2BBwQx%2FpYCCaeu2CzZVknifCXydvPMDG1vlDcUVwf75UlThkV9bHKg%3D%3D--H5YRIiRshD3s8SkQ--oVwzuTisDv0aeehV2zc5qA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.493639847.1782603994; expires=Sun, 27 Jun 2027 23:46:34 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 27 Jun 2027 23:46:34 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6209:68282:FF9E891:BF99F32:6A4060DA
+
+HTTP/2 200 
+date: Sat, 27 Jun 2026 23:46:34 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"ababc12e6c476923e527ce4b730dfbf6"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com wss://production-copilot-host.webpubsub.azure.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=LymawWw20e4jCMmgovrhhFxJ0jsMKSTBwD8SpeHCqmuApFKEJoDoIzdmb4sDD5uNoH4fFH5e4t%2FRLcFGcY4vjq3Mypb8NccDyVQePSnY5%2BXgihh23zduhH%2BsfCqC563z8%2Bf8gvTZRBeOw4Uu2IpeNatq7Gb4C2qJJB3f%2BIq8tQQE0CNrv2d5Fb%2BeLnElW3hjK%2BQC%2BLlISKCBC1R5MHdgi7t3V2Rd0DGIGd%2FgnqkmcvEhtxQ0MSxXsiMMkH2IJIPzwg9aukqEh8IqC%2FNPTuM32w%3D%3D--9UwwHkfOSD0fs392--mrdDcnD%2FhBnNyQenXLkoNQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.239771094.1782603994; expires=Sun, 27 Jun 2027 23:46:34 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 27 Jun 2027 23:46:34 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6212:3C98A0:FF021E2:BF1034F:6A4060DA
+
+
+web search: 
+web search: https://github.com/apache/pekko/tree/v2.0.0-M1/actor-tests/src/test
+web search: 
+web search: repo.maven.apache.org/maven2 org/apache/pekko/pekko-actor_2.13/2.0.0-M1
+web search: 
+web search: org.apache.pekko pekko-actor_2.13 2.0.0-M1 Maven Central
+web search: 
+web search: https://mvnrepository.com/artifact/org.apache.pekko/pekko-actor_2.13/2.0.0-M1
+exec
+/usr/bin/bash -lc "git status --short && jq '.[0]' metadata/org.apache.pekko/pekko-actor_2.13/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-750680b3
+diff --git a/metadata/org.apache.pekko/pekko-actor_2.13/index.json b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+index 9732f2ad72b234e3ecb53ac9b0c79f3156224355..67d601710939e15a580afca5d47bc26adfe5550e
+--- a/metadata/org.apache.pekko/pekko-actor_2.13/index.json
++++ b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko",
++    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
++    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "2"
+
+ succeeded in 201ms:
+ M metadata/org.apache.pekko/pekko-actor_2.13/index.json
+{
+  "latest": true,
+  "metadata-version": "2.0.0-M1",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
+  "repository-url": "https://github.com/apache/pekko",
+  "test-code-url": "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
+  "description": "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+  "language": {
+    "name": "scala",
+    "version": "2"
+  },
+  "tested-versions": [
+    "2.0.0-M1"
+  ],
+  "allowed-packages": [
+    "org.apache.pekko"
+  ]
+}
+
+web search: 
+web search: https://mvnrepository.com/artifact/org.apache.pekko/pekko-actor_2.13/2.0.0-M1
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-750680b3/metadata/org.apache.pekko/pekko-actor_2.13/index.json:3) for `metadata-version` `2.0.0-M1`.
+
+Filled the missing `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and two-sentence `description`. I left `language` unchanged as Scala 2; the artifact is the Scala 2.13 target, and the tagged test path exists under `v2.0.0-M1`. ([mvnrepository.com](https://mvnrepository.com/artifact/org.apache.pekko/pekko-actor_2.13/2.0.0-M1))
+
+Validation done: `jq` JSON parse passed, and rendered Maven source/javadoc URLs plus GitHub repository/test URLs returned HTTP 200.
+diff --git a/metadata/org.apache.pekko/pekko-actor_2.13/index.json b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+index 9732f2ad72b234e3ecb53ac9b0c79f3156224355..67d601710939e15a580afca5d47bc26adfe5550e
+--- a/metadata/org.apache.pekko/pekko-actor_2.13/index.json
++++ b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko",
++    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
++    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "2"
+
+tokens used
+90,505
+Updated [index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-750680b3/metadata/org.apache.pekko/pekko-actor_2.13/index.json:3) for `metadata-version` `2.0.0-M1`.
+
+Filled the missing `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and two-sentence `description`. I left `language` unchanged as Scala 2; the artifact is the Scala 2.13 target, and the tagged test path exists under `v2.0.0-M1`. ([mvnrepository.com](https://mvnrepository.com/artifact/org.apache.pekko/pekko-actor_2.13/2.0.0-M1))
+
+Validation done: `jq` JSON parse passed, and rendered Maven source/javadoc URLs plus GitHub repository/test URLs returned HTTP 200.
+Ran agent for org.apache.pekko:pekko-actor_2.13:2.0.0-M1 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-750680b3/build/agent-url-discovery-logs/org.apache.pekko-pekko-actor_2.13-2.0.0-M1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-750680b3/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 32s
+9 actionable tasks: 1 executed, 8 up-to-date
