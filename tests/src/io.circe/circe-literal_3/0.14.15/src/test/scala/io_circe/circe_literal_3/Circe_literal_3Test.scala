@@ -207,6 +207,29 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def escapesInterpolatedKeysAndStringValuesWithoutParsingThem(): Unit = {
+    val specialKey: String = "quote\"brace}comma,key"
+    val newlineKey: String = "line\nbreak"
+    val jsonShapedValue: String = """{"admin":true,"roles":["root"]}"""
+    val pathValue: String = "folder\\file\nnext"
+
+    val document: Json = json"""
+      {
+        $specialKey: $jsonShapedValue,
+        "array": [$jsonShapedValue],
+        "nested": { $newlineKey: $pathValue }
+      }
+    """
+
+    assertThat(document.hcursor.get[String](specialKey)).isEqualTo(Right(jsonShapedValue))
+    assertThat(document.hcursor.downField(specialKey).downField("admin").succeeded).isFalse
+    assertThat(document.hcursor.downField("array").downN(0).as[String]).isEqualTo(Right(jsonShapedValue))
+    assertThat(document.hcursor.downField("nested").get[String](newlineKey)).isEqualTo(Right(pathValue))
+    assertThat(document.noSpaces).contains("\\\"admin\\\":true")
+    assertThat(document.noSpaces).contains("line\\nbreak")
+  }
+
+  @Test
   def preservesSourceOrderForStaticAndInterpolatedObjectFields(): Unit = {
     val secondKey: String = "second"
     val fourthKey: String = "fourth"
