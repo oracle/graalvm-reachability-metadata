@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.clojure:google-closure-library-third-party:0.0-1376-2",
+  "issueNumber": 8743,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.clojure:google-closure-library-third-party:0.0-1376",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8743 [Automation] java run fails for org.clojure:google-closure-library-third-party:0.0-1376-2; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 25486,
+    "issue_label": "fails-java-run",
+    "issue_number": 8743,
+    "library": "org.clojure:google-closure-library-third-party:0.0-1376-2",
+    "model": "oca/gpt-5.5",
+    "new_version": "0.0-1376-2",
+    "output_tokens_used": 2922,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Adding org.clojure:google-closure-library would make core resources visible but would mask an overbroad test assumption rather than being required for meaningful coverage of google-closure-library-third-party.",
+      "Tests should focus on resources actually packaged by google-closure-library-third-party, such as goog/caja, goog/dojo, goog/mochikit, goog/loremipsum, goog/osapi, and goog/silverlight files."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.clojure:google-closure-library-third-party:0.0-1376-2/library-preparation-preflight/pi-generation-2026-06-27T19-55-37-741270Z.log",
+    "status": "completed",
+    "summary": "No extra setup is needed: the artifact has no declared Maven dependencies and directly packages the third-party Closure resource files. The observed failure is from a test expecting core Closure resources such as goog/base.js/goog/deps.js, which belong to the companion google-closure-library artifact, not this third-party artifact."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "0.0-1376-2",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8743-fails-java-run-org.clojure-google-closure-library-third-party-0.0-1376-2-f7a6eda9",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
