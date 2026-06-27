@@ -146,6 +146,50 @@ class Play_ws_standalone_2_13Test {
   }
 
   @Test
+  def followsRedirectResponsesWhenConfigured(): Unit = {
+    val redirectRequests = new AtomicInteger()
+    val finalRequests = new AtomicInteger()
+
+    Using.resource(TestHttpServer { exchange =>
+      exchange.getRequestURI.getPath match {
+        case "/start" =>
+          redirectRequests.incrementAndGet()
+          assertThat(exchange.getRequestMethod).isEqualTo("GET")
+          respond(
+            exchange,
+            302,
+            "redirecting",
+            Seq("Location" -> "/final?source=redirect", "Content-Type" -> "text/plain")
+          )
+        case "/final" =>
+          finalRequests.incrementAndGet()
+          assertThat(exchange.getRequestMethod).isEqualTo("GET")
+          assertThat(exchange.getRequestURI.getRawQuery).isEqualTo("source=redirect")
+          respond(exchange, 200, "reached final", Seq("Content-Type" -> "text/plain"))
+        case other =>
+          throw new AssertionError(s"unexpected request path: $other")
+      }
+    }) { server =>
+      withWs { fixture =>
+        val response = Await.result(
+          fixture.client
+            .url(server.url("/start"))
+            .withFollowRedirects(true)
+            .withRequestTimeout(10.seconds)
+            .get(),
+          30.seconds
+        )
+
+        server.assertNoFailure()
+        assertThat(response.status).isEqualTo(200)
+        assertThat(response.body[String]).isEqualTo("reached final")
+        assertThat(redirectRequests.get()).isEqualTo(1)
+        assertThat(finalRequests.get()).isEqualTo(1)
+      }
+    }
+  }
+
+  @Test
   def requestFilterAndImmutableBuilderSettingsApplyToExecutedPost(): Unit = {
     Using.resource(TestHttpServer { exchange =>
       assertThat(exchange.getRequestMethod).isEqualTo("POST")
