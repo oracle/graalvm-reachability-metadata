@@ -36,6 +36,16 @@ object LiteralFieldName {
   given KeyEncoder[LiteralFieldName] = KeyEncoder.instance(fieldName => s"field-${fieldName.value}")
 }
 
+final case class DualUseLiteralToken(value: String)
+
+object DualUseLiteralToken {
+  given Encoder[DualUseLiteralToken] = Encoder.instance { token =>
+    Json.obj("encodedValue" -> Json.fromString(token.value))
+  }
+
+  given KeyEncoder[DualUseLiteralToken] = KeyEncoder.instance(token => s"key-${token.value}")
+}
+
 class Circe_literal_3Test {
   @Test
   def buildsNestedLiteralDocumentsWithEveryJsonValueKind(): Unit = {
@@ -155,6 +165,27 @@ class Circe_literal_3Test {
     assertThat(expectDecoded(document.hcursor.downField("field-primary").get[Boolean]("enabled"))).isTrue
     assertThat(expectDecoded(document.hcursor.downField("field-secondary").get[Int]("id"))).isEqualTo(8)
     assertThat(expectDecoded(document.hcursor.downField("all").downN(1).as[LiteralWidget])).isEqualTo(secondaryWidget)
+  }
+
+  @Test
+  def selectsKeyEncoderForInterpolatedFieldNamesAndEncoderForInterpolatedValues(): Unit = {
+    val token: DualUseLiteralToken = DualUseLiteralToken("shared")
+
+    val document: Json = json"""
+      {
+        $token: $token,
+        "asValue": $token,
+        "values": [$token]
+      }
+    """
+
+    assertThat(document.hcursor.downField("encodedValue").succeeded).isFalse
+    assertThat(expectDecoded(document.hcursor.downField("key-shared").get[String]("encodedValue")))
+      .isEqualTo("shared")
+    assertThat(expectDecoded(document.hcursor.downField("asValue").get[String]("encodedValue")))
+      .isEqualTo("shared")
+    assertThat(expectDecoded(document.hcursor.downField("values").downN(0).get[String]("encodedValue")))
+      .isEqualTo("shared")
   }
 
   @Test
