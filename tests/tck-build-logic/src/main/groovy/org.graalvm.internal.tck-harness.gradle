@@ -379,13 +379,22 @@ Provider<Task> diff = tasks.register("diff", DefaultTask) { task ->
     }
 }
 
-List<String> diffCoordinates = new ArrayList<>()
+List<String> resolveDiffCoordinates() {
+    if (!project.hasProperty("baseCommit")) {
+        return []
+    }
+    String baseCommit = project.findProperty("baseCommit").toString()
+    String newCommit = Objects.requireNonNullElse(project.findProperty("newCommit"), "HEAD").toString()
+    return tck.diffCoordinates(baseCommit, newCommit)
+}
+
+Provider<List<String>> diffCoordinatesProvider = providers.provider {
+    resolveDiffCoordinates()
+}
+
 if (project.hasProperty("baseCommit")) {
-    String baseCommit = project.findProperty("baseCommit")
-    String newCommit = Objects.requireNonNullElse(project.findProperty("newCommit"), "HEAD")
-    diffCoordinates.addAll(tck.diffCoordinates(baseCommit, newCommit))
     tasks.register("testDiff", TestInvocationTask.class) { t ->
-        t.setCoordinatesOverride(diffCoordinates)
+        t.getCoordinatesOverride().set(diffCoordinatesProvider)
     }
     diff.configure {
         dependsOn("testDiff")
@@ -561,6 +570,7 @@ Provider<Task> generateChangedCoordinatesMatrix = tasks.register("generateChange
             throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
         }
 
+        List<String> diffCoordinates = diffCoordinatesProvider.get()
         boolean noneFound = diffCoordinates.isEmpty()
         def matrix = [
                 "include": noneFound
@@ -592,6 +602,7 @@ Provider<Task> generateChangedMetadataTestMatrix = tasks.register("generateChang
         int versionsPerJob = versionsPerJobFor("generateChangedMetadataTestMatrix")
         String base = project.property("baseCommit")
         String head = project.findProperty("newCommit") ?: "HEAD"
+        List<String> diffCoordinates = diffCoordinatesProvider.get()
         List<Map<String, Object>> testEntries = changedMetadataTestEntries(base, head, versionsPerJob, diffCoordinates)
         boolean noneFound = testEntries.isEmpty()
         List<Map<String, Object>> include = noneFound
@@ -620,6 +631,7 @@ Provider<Task> generateChangedCoordinatesOnlyMatrix = tasks.register("generateCh
             throw new GradleException("Missing 'baseCommit' property! Rerun Gradle with '-PbaseCommit=<commit-hash>'")
         }
 
+        List<String> diffCoordinates = diffCoordinatesProvider.get()
         boolean noneFound = diffCoordinates.isEmpty()
         if (noneFound) {
             println "No changed coordinates were found!"
@@ -918,6 +930,7 @@ tasks.register("generateAffectedSpringTestMatrix") { task ->
         Integer defaultJava = Integer.parseInt(defaultJavaStr)
 
         // Compute versionless GA targets from diffCoordinates
+        List<String> diffCoordinates = diffCoordinatesProvider.get()
         boolean noneFound = diffCoordinates.isEmpty()
         List<String> versionless = []
         if (!noneFound) {

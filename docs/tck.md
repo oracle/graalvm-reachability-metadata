@@ -106,6 +106,9 @@ Tasks that create or update metadata, tests, and index entries.
 
 These emit the GitHub Actions matrices the workflows consume, all driven by
 `ci.json` (§CI-matrix-source).
+Tasks that only inspect changed `index.json` files must stay scoped to Git diff
+data and not require resolving unrelated changed-coordinate test directories
+during configuration.
 
 | Task | Matrix |
 | --- | --- |
