@@ -185,6 +185,21 @@ class Circe_literal_3Test {
     assertThat(nul.isNull).isTrue
   }
 
+  @Test
+  def supportsRootLevelInterpolatedValuesWithEncoders(): Unit = {
+    val release: Release = Release("2026.08", 19, stable = true)
+    val serviceNames: List[String] = List("api", "worker")
+    val missingOwner: Option[String] = None
+
+    val objectDocument: Json = json"""$release"""
+    val arrayDocument: Json = json"""$serviceNames"""
+    val nullDocument: Json = json"""$missingOwner"""
+
+    assertThat(objectDocument.as[Release]).isEqualTo(Right(release))
+    assertThat(arrayDocument.as[List[String]]).isEqualTo(Right(serviceNames))
+    assertThat(nullDocument.isNull).isTrue
+  }
+
   private def decodeOrFail[A](result: Either[DecodingFailure, A]): A = {
     result.fold(error => fail(s"Expected decoding success but got: $error"), identity)
   }
