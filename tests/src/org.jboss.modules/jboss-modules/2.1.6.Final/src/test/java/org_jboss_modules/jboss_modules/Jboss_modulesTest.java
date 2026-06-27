@@ -87,6 +87,35 @@ public class Jboss_modulesTest {
     }
 
     @Test
+    void appliesResourceRootFiltersFromModuleDescriptor() throws Exception {
+        Path moduleDirectory = createModuleDirectory("example.filtered");
+        Path resources = moduleDirectory.resolve("resources");
+        Files.createDirectories(resources.resolve("public"));
+        Files.createDirectories(resources.resolve("private"));
+        Files.writeString(resources.resolve("public/visible.txt"), "visible resource", UTF_8);
+        Files.writeString(resources.resolve("private/secret.txt"), "hidden resource", UTF_8);
+        writeModuleXml(moduleDirectory, "example.filtered", """
+                <resources>
+                    <resource-root path="resources">
+                        <filter>
+                            <include path="public"/>
+                            <exclude path="**"/>
+                        </filter>
+                    </resource-root>
+                </resources>
+                """);
+
+        try (LocalModuleLoader loader = new LocalModuleLoader(new File[] { repositoryRoot.toFile() })) {
+            Module module = loader.loadModule("example.filtered");
+
+            assertThat(readText(module.getExportedResource("public/visible.txt"))).isEqualTo("visible resource");
+            assertThat(readText(module.getClassLoader().getResource("public/visible.txt"))).isEqualTo("visible resource");
+            assertThat(module.getExportedResource("private/secret.txt")).isNull();
+            assertThat(module.getClassLoader().getResource("private/secret.txt")).isNull();
+        }
+    }
+
+    @Test
     void resolvesResourcesFromModuleDependency() throws Exception {
         Path apiDirectory = createModuleDirectory("example.api");
         Path apiResources = apiDirectory.resolve("api-resources");
