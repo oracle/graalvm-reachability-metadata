@@ -138,10 +138,10 @@ public class JoniTest {
 
     @Test
     void utf8EncodingMatchesUnicodeLiteralsAndReportsByteOffsets() {
-        Regex regex = regex("café\\s+(世界)");
-        byte[] input = bytes("prefix café 世界 suffix");
+        Regex regex = regex("caf\u00e9\\s+(\u4e16\u754c)");
+        byte[] input = bytes("prefix caf\u00e9 \u4e16\u754c suffix");
         int expectedStart = bytes("prefix ").length;
-        int expectedGroupStart = bytes("prefix café ").length;
+        int expectedGroupStart = bytes("prefix caf\u00e9 ").length;
 
         Matcher matcher = regex.matcher(input);
         int matchStart = matcher.search(0, input.length, Option.DEFAULT);
@@ -150,8 +150,8 @@ public class JoniTest {
         assertThat(regex.getEncoding()).isSameAs(UTF8Encoding.INSTANCE);
         assertThat(matchStart).isEqualTo(expectedStart);
         assertThat(region.getBeg(1)).isEqualTo(expectedGroupStart);
-        assertThat(extract(input, region, 0)).isEqualTo("café 世界");
-        assertThat(extract(input, region, 1)).isEqualTo("世界");
+        assertThat(extract(input, region, 0)).isEqualTo("caf\u00e9 \u4e16\u754c");
+        assertThat(extract(input, region, 1)).isEqualTo("\u4e16\u754c");
     }
 
     @Test
