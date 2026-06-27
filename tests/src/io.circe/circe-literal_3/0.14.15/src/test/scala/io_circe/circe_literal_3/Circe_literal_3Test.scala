@@ -10,6 +10,7 @@ import io.circe.Decoder
 import io.circe.Encoder
 import io.circe.Json
 import io.circe.JsonNumber
+import io.circe.JsonObject
 import io.circe.KeyDecoder
 import io.circe.KeyEncoder
 import io.circe.literal._
@@ -203,6 +204,30 @@ final class Circe_literal_3Test {
       .isEqualTo(Right(metric))
     assertThat(document.hcursor.downField("metadataOnly").as[Map[ProjectId, BuildMetric]])
       .isEqualTo(Right(Map(projectId -> metric)))
+  }
+
+  @Test
+  def preservesSourceOrderForMixedLiteralAndInterpolatedArraysAndObjects(): Unit = {
+    val dynamicKey: String = "second"
+    val nested: Json = json"""{ "nested": true }"""
+
+    val document: Json = json"""
+      {
+        "first": 1,
+        $dynamicKey: 2,
+        "third": $nested,
+        "items": ["start", $nested, "end"]
+      }
+      """
+
+    val fields: JsonObject = document.asObject.getOrElse(fail("Expected literal to produce a JSON object"))
+    val items: Option[Vector[Json]] = document.hcursor.downField("items").focus.flatMap(_.asArray)
+
+    assertThat(fields.keys.toList).isEqualTo(List("first", "second", "third", "items"))
+    assertThat(items.map(_.map(_.noSpaces)))
+      .isEqualTo(Some(Vector("\"start\"", """{"nested":true}""", "\"end\"")))
+    assertThat(document.noSpaces)
+      .isEqualTo("""{"first":1,"second":2,"third":{"nested":true},"items":["start",{"nested":true},"end"]}""")
   }
 
   @Test
