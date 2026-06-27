@@ -207,6 +207,34 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def preservesSourceOrderForStaticAndInterpolatedObjectFields(): Unit = {
+    val secondKey: String = "second"
+    val fourthKey: String = "fourth"
+
+    val document: Json = json"""
+      {
+        "first": 1,
+        $secondKey: 2,
+        "third": { "nestedFirst": true, "nestedSecond": false },
+        $fourthKey: 4
+      }
+    """
+
+    val fieldNames: List[String] = document.asObject.map(_.keys.toList).getOrElse(fail("Expected an object literal"))
+    val nestedFieldNames: List[String] = document.hcursor
+      .downField("third")
+      .focus
+      .flatMap(_.asObject.map(_.keys.toList))
+      .getOrElse(fail("Expected a nested object literal"))
+
+    assertThat(fieldNames.asJava).containsExactly("first", "second", "third", "fourth")
+    assertThat(nestedFieldNames.asJava).containsExactly("nestedFirst", "nestedSecond")
+    assertThat(document.noSpaces).isEqualTo(
+      """{"first":1,"second":2,"third":{"nestedFirst":true,"nestedSecond":false},"fourth":4}"""
+    )
+  }
+
+  @Test
   def literalResultsRemainFullyUsableCirceJsonValues(): Unit = {
     val base: Json = json"""
       {
