@@ -6,7 +6,9 @@
  */
 package io_circe.circe_literal_3
 
+import io.circe.Encoder
 import io.circe.Json
+import io.circe.KeyEncoder
 import io.circe.literal._
 import org.junit.jupiter.api.Test
 
@@ -122,3 +124,32 @@ class Circe_literal_3Test:
     assert(document.hcursor.downArray.right.right.focus.contains(Json.fromInt(numericElement)))
     assert(document.hcursor.downArray.right.right.right.focus.contains(objectElement))
     assert(document.hcursor.downArray.right.right.right.right.focus.contains(Json.Null))
+
+  @Test
+  def usesCustomEncodersForInterpolatedValuesAndObjectKeys(): Unit =
+    final case class Feature(name: String, enabled: Boolean)
+    final case class FeatureKey(value: String)
+
+    given Encoder[Feature] = Encoder.instance { feature =>
+      Json.obj(
+        "name" -> Json.fromString(feature.name),
+        "enabled" -> Json.fromBoolean(feature.enabled)
+      )
+    }
+    given KeyEncoder[FeatureKey] = KeyEncoder.instance(key => s"feature:${key.value}")
+
+    val key: FeatureKey = FeatureKey("primary")
+    val feature: Feature = Feature("custom-encoder", enabled = true)
+
+    val document: Json = json"""
+      {
+        $key: $feature
+      }
+    """
+
+    val encodedFieldName: String = "feature:primary"
+    val encodedFeature = document.hcursor.downField(encodedFieldName)
+
+    assert(encodedFeature.get[String]("name").contains(feature.name))
+    assert(encodedFeature.get[Boolean]("enabled").contains(feature.enabled))
+    assert(document.noSpaces == "{\"feature:primary\":{\"name\":\"custom-encoder\",\"enabled\":true}}")
