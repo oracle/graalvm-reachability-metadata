@@ -135,6 +135,39 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def acceptsInterpolatedValuesAsTopLevelDocumentsAndArrayElements(): Unit = {
+    val metrics: List[MetricValue] = List(
+      MetricValue(BigDecimal("1.25"), "seconds"),
+      MetricValue(BigDecimal("5"), "count")
+    )
+    val status: String = "green"
+    val diagnostic: Json = json""" { "severity": "warning", "retryable": true } """
+    val note: Option[String] = Some("checked")
+
+    val topLevelDocument: Json = json""" $metrics """
+    val arrayDocument: Json = json"""
+      [
+        "baseline",
+        $status,
+        $diagnostic,
+        $note,
+        $topLevelDocument
+      ]
+    """
+    val values: List[Json] = expectRight(arrayDocument.as[List[Json]])
+
+    assertTrue(topLevelDocument.isArray)
+    assertEquals(BigDecimal("1.25"), expectRight(topLevelDocument.hcursor.downN(0).get[BigDecimal]("amount")))
+    assertEquals("seconds", expectRight(topLevelDocument.hcursor.downN(0).get[String]("unit")))
+    assertEquals("baseline", expectString(values(0)))
+    assertEquals("green", expectString(values(1)))
+    assertEquals("warning", expectRight(values(2).hcursor.get[String]("severity")))
+    assertTrue(expectRight(values(2).hcursor.get[Boolean]("retryable")))
+    assertEquals("checked", expectString(values(3)))
+    assertEquals(BigDecimal("5"), expectRight(values(4).hcursor.downN(1).get[BigDecimal]("amount")))
+  }
+
+  @Test
   def producesJsonThatCanBeDecodedAndTransformedWithCircePublicApis(): Unit = {
     val serviceName: String = "edge-gateway"
     val primaryPort: Int = 8443
