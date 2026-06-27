@@ -1,0 +1,57 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+File generatedTestResourcesDir = layout.buildDirectory.dir("generated/test-resources").get().asFile
+
+sourceSets {
+    test {
+        resources.srcDir generatedTestResourcesDir
+    }
+}
+
+tasks.register("generateMissingNativeImageResources") {
+    outputs.dir(generatedTestResourcesDir)
+    doLast {
+        [
+                "jline-terminal",
+                "jline-terminal-jna",
+                "jline-terminal-jni",
+                "jline-terminal-jansi"
+        ].each { moduleName ->
+            File baseDir = new File(generatedTestResourcesDir, "META-INF/native-image/org.jline/${moduleName}")
+            baseDir.mkdirs()
+            new File(baseDir, "reflection-config.json").text = "[]\n"
+            new File(baseDir, "resource-config.json").text = '{ "resources": { "includes": [] } }\n'
+        }
+    }
+}
+
+tasks.named("processTestResources") {
+    dependsOn("generateMissingNativeImageResources")
+}
+
+dependencies {
+    testImplementation "org.jetbrains.kotlin:kotlin-daemon-embeddable:$libraryVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-compiler-embeddable:$libraryVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
