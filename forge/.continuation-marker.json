@@ -1,0 +1,101 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.maven.doxia:doxia-site-renderer:2.0.0",
+  "issueNumber": 8134,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Use the 2.0.0 API rather than the removed 1.x types and methods: RenderingContext and SkinResourceLoader are gone, DefaultSiteRenderer no longer has enableLogging, and SiteRenderingContext no longer has setUsingDefaultTemplate. Initialize SiteRenderingContext with a SiteModel, Locale, templateName, and templateClassLoader; for skin/resource coverage, create a temporary skin JAR containing META-INF/maven/site.vm and any non-META-INF resources to copy.",
+    "applied_setup": [],
+    "current_library": "org.apache.maven.doxia:doxia-site-renderer:1.9.1",
+    "deterministic_setup": [
+      {
+        "coordinate": "org.codehaus.plexus:plexus-testing:1.4.0",
+        "kind": "dependency",
+        "reason": "DefaultSiteRenderer is a Plexus/Sisu component with injected Velocity, Doxia, ParserModuleManager, and PlexusContainer fields; upstream 2.0.0 tests use @PlexusTest to obtain a fully initialized SiteRenderer.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.apache.maven:maven-artifact:3.6.3",
+        "kind": "dependency",
+        "reason": "The 2.0.0 public skin APIs expose org.apache.maven.artifact.Artifact, but doxia-site-renderer declares maven-artifact as provided, so the generated test scaffold will not receive it transitively.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.apache.maven.doxia:doxia-module-apt:2.0.0",
+        "kind": "dependency",
+        "reason": "APT parser components are not part of doxia-core in 2.0.0; the upstream POM adds this module so ParserModuleManager can discover the component descriptor for normal site documents.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.apache.maven.doxia:doxia-module-xdoc:2.0.0",
+        "kind": "dependency",
+        "reason": "XDoc parser components are not part of doxia-core in 2.0.0; the upstream POM adds this module so ParserModuleManager can discover the component descriptor for normal site documents.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.apache.maven.doxia:doxia-module-fml:2.0.0",
+        "kind": "dependency",
+        "reason": "FML parser components are not part of doxia-core in 2.0.0; the upstream POM adds this module so ParserModuleManager can discover the component descriptor for FAQ-style site documents.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8134 [Automation] javac compile fails for org.apache.maven.doxia:doxia-site-renderer:2.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "8 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 112691,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8134,
+    "library": "org.apache.maven.doxia:doxia-site-renderer:2.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.0",
+    "output_tokens_used": 9612,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "If the generated tests only exercise the transitive xhtml5 parser and protected velocity-context helpers, the extra parser modules may be more than strictly necessary.",
+      "Plexus/Sisu/Guice-based initialization is closer to normal use but can add native-image surface area; local Gradle and native-image verification remain authoritative."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.apache.maven.doxia:doxia-site-renderer:2.0.0/library-preparation-preflight/pi-generation-2026-06-27T06-24-53-079169Z.log",
+    "status": "completed",
+    "summary": "Doxia Site Renderer 2.0.0 moved to injected Plexus/Sisu components and external parser/skin artifacts; meaningful rendering coverage needs test-only support dependencies beyond the default scaffold."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8134-fails-javac-compile-org.apache.maven.doxia-doxia-site-renderer-2.0.0-1f3518aa",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
