@@ -1,0 +1,85 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.springframework.ai:spring-ai-autoconfigure-model-tool:2.0.0-RC2",
+  "issueNumber": 8419,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No Docker image, external service, API key, environment variable, or global system property appears required. Meaningful tests should use a local Spring application context and local test beans/tool callbacks; optionally set the Spring property `spring.ai.tools.observations.include-content=true` inside the test context to exercise the conditional observation-filter bean.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "coordinate": "org.springframework.ai:spring-ai-model:2.0.0-RC2",
+        "kind": "dependency",
+        "reason": "The auto-configuration is conditional on Spring AI ChatModel and creates ToolCallingManager, ToolCallbackResolver, ToolCallbackProvider, and related tool-calling classes from spring-ai-model; this dependency is optional in the target POM and will not be pulled by the normal scaffold.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.1.0-RC1",
+        "kind": "dependency",
+        "reason": "The target artifact is a Spring Boot auto-configuration module using AutoConfiguration, ConditionalOnClass, ConditionalOnMissingBean, ConditionalOnProperty, and configuration-properties support; this dependency is optional in the target POM and is needed to exercise the library as normally used.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8419 Support for org.springframework.ai:spring-ai-autoconfigure-model-tool:2.0.0-RC2; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 48418,
+    "issue_label": "library-new-request",
+    "issue_number": 8419,
+    "library": "org.springframework.ai:spring-ai-autoconfigure-model-tool:2.0.0-RC2",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 5498,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "If tests use Spring Boot's ApplicationContextRunner convenience API, they may also need a test-only Spring Boot test dependency, but that is a test harness choice rather than a requirement of the library artifact itself.",
+      "Avoid invoking real AI model providers; this module only configures common tool-calling infrastructure and can be covered with local stubs."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.springframework.ai:spring-ai-autoconfigure-model-tool:2.0.0-RC2/library-preparation-preflight/pi-generation-2026-06-27T01-54-38-375341Z.log",
+    "status": "completed",
+    "summary": "The artifact is a Spring Boot auto-configuration module whose key runtime dependencies are declared optional, so the normal scaffold dependency on the target artifact alone is unlikely to provide enough classpath for meaningful Spring AI tool-calling auto-configuration coverage."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 3,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8419-library-new-request-org.springframework.ai-spring-ai-autoconfigure-model-tool-2.0.0-RC2-ded3d2ca",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springframework.ai:spring-ai-autoconfigure-model-tool:2.0.0-RC2",
+    "timestamp": "2026-06-27T02:17:31.599196Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
