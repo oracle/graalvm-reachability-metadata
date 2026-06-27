@@ -23,6 +23,9 @@ import java.util.function.Function;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
+import org.apache.kafka.clients.admin.Config;
+import org.apache.kafka.common.config.ConfigResource;
+import org.apache.kafka.clients.admin.TopicDescription;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -63,6 +66,7 @@ import org.springframework.cloud.stream.binder.kafka.properties.KafkaConsumerPro
 import org.springframework.cloud.stream.binder.kafka.properties.KafkaExtendedBindingProperties;
 import org.springframework.cloud.stream.binder.kafka.properties.KafkaProducerProperties;
 import org.springframework.cloud.stream.binder.kafka.properties.KafkaProducerProperties.CompressionType;
+import org.springframework.cloud.stream.binder.kafka.properties.KafkaTopicProperties;
 import org.springframework.cloud.stream.binder.kafka.provisioning.KafkaTopicProvisioner;
 import org.springframework.cloud.stream.binder.kafka.utils.BindingUtils;
 import org.springframework.cloud.stream.config.BindingHandlerAdvise.MappingsProvider;
@@ -163,6 +167,47 @@ public class Spring_cloud_stream_binder_kafkaTest {
                     producerFactory.destroy();
                 }
                 resultConsumer.close(Duration.ofSeconds(10));
+            }
+        } finally {
+            embeddedKafka.destroy();
+        }
+    }
+
+    @Test
+    @Timeout(60)
+    void topicProvisionerAppliesPerBindingTopicConfiguration() throws Exception {
+        String topic = "scst-configured-" + UUID.randomUUID().toString().replace("-", "");
+        EmbeddedKafkaKraftBroker embeddedKafka = new EmbeddedKafkaKraftBroker(1, 1);
+        embeddedKafka.adminTimeout(15);
+        embeddedKafka.afterPropertiesSet();
+        try {
+            KafkaTopicProvisioner provisioner = kafkaTopicProvisioner(embeddedKafka);
+            KafkaTopicProperties topicProperties = new KafkaTopicProperties();
+            topicProperties.setProperties(Map.of(
+                    "cleanup.policy", "compact",
+                    "retention.ms", "60000"));
+            KafkaProducerProperties producerProperties = new KafkaProducerProperties();
+            producerProperties.setTopic(topicProperties);
+            ExtendedProducerProperties<KafkaProducerProperties> extendedProducerProperties =
+                    new ExtendedProducerProperties<>(producerProperties);
+            extendedProducerProperties.setPartitionCount(2);
+
+            ProducerDestination producerDestination = provisioner.provisionProducerDestination(topic,
+                    extendedProducerProperties);
+
+            ConfigResource topicResource = new ConfigResource(ConfigResource.Type.TOPIC, topic);
+            try (AdminClient adminClient = AdminClient.create(provisioner.getAdminClientProperties())) {
+                Map<String, TopicDescription> topicDescriptions = adminClient.describeTopics(List.of(topic))
+                        .allTopicNames()
+                        .get(15, TimeUnit.SECONDS);
+                Map<ConfigResource, Config> topicConfigs = adminClient.describeConfigs(List.of(topicResource))
+                        .all()
+                        .get(15, TimeUnit.SECONDS);
+
+                assertThat(producerDestination.getName()).isEqualTo(topic);
+                assertThat(topicDescriptions.get(topic).partitions()).hasSize(2);
+                assertThat(topicConfigs.get(topicResource).get("cleanup.policy").value()).isEqualTo("compact");
+                assertThat(topicConfigs.get(topicResource).get("retention.ms").value()).isEqualTo("60000");
             }
         } finally {
             embeddedKafka.destroy();
