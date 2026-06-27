@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.sonatype.sisu:sisu-inject-bean:2.4.2",
+  "issueNumber": 8718,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.sonatype.sisu:sisu-inject-bean:2.4.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8718 [Automation] javac compile fails for org.sonatype.sisu:sisu-inject-bean:2.4.2; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "14 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 53757,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8718,
+    "library": "org.sonatype.sisu:sisu-inject-bean:2.4.2",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.4.2",
+    "output_tokens_used": 3592,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The reported failure is caused by API drift: org.eclipse.sisu.space.QualifiedTypeBinder.hear in the resolved dependency takes two arguments, not the older three-argument form.",
+      "Optional dependencies such as SLF4J, OSGi, JUnit, and TestNG exist in the POM, but there is no concrete evidence they are required for meaningful core coverage."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.sonatype.sisu:sisu-inject-bean:2.4.2/library-preparation-preflight/pi-generation-2026-06-27T15-34-47-044027Z.log",
+    "status": "completed",
+    "summary": "The resolved artifact is an in-process Sisu/Guice legacy wrapper; its transitive dependencies provide Guice and Eclipse Sisu, and normal usage is classpath scanning/auto-binding without external services or required properties."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.4.2",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8718-fails-javac-compile-org.sonatype.sisu-sisu-inject-bean-2.4.2-729271b1",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
