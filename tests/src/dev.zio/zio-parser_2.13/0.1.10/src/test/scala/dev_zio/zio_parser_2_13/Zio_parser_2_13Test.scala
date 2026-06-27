@@ -39,6 +39,20 @@ class Zio_parser_2_13Test {
   }
 
   @Test
+  def parserFlatMapSelectsContinuationFromParsedPrefix(): Unit = {
+    val prefixedToken: Parser[String, Char, String] =
+      (Parser.charIn('a', 'b').flatMap {
+        case 'a' => Parser.string("lpha", "alpha")
+        case 'b' => Parser.string("eta", "beta")
+      } <~ Parser.end).named("prefixed token")
+
+    assertEquals(Right("alpha"), prefixedToken.parseString("alpha"))
+    assertEquals(Right("beta"), prefixedToken.parseString("beta"))
+    assertLeftContains(prefixedToken.parseString("alpine"), "Not 'lpha'")
+    assertLeftContains(prefixedToken.parseString("gamma"), "Not the expected character (a, b)")
+  }
+
+  @Test
   def recursiveParsersAndExplicitBacktrackingConsumeNestedInput(): Unit = {
     lazy val nestedParentheses: Parser[String, Char, Int] =
       ((Parser.char('(') ~> nestedParentheses <~ Parser.char(')')).map(_ + 1) | Parser.succeed(0))
