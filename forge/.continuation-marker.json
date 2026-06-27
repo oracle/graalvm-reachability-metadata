@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "ognl:ognl:3.3.5",
+  "issueNumber": 7430,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "When tests exercise OGNL's Javassist-backed expression compiler or deep accessibility paths, keep/add the test JVM argument `--add-opens=java.base/java.lang=ALL-UNNAMED`. If tests toggle OGNL security behavior, set `ognl.security.manager` only inside the test and restore the previous value afterward; do not require a process-wide environment variable.",
+    "applied_setup": [],
+    "current_library": "ognl:ognl:3.2.21",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7430 [Automation] java run fails for ognl:ognl:3.3.5; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "17 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 57304,
+    "issue_label": "fails-java-run",
+    "issue_number": 7430,
+    "library": "ognl:ognl:3.3.5",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.3.5",
+    "output_tokens_used": 4028,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The observed JDK 25 java-run failure is consistent with a test expectation/behavior change for OGNL 3.3.5 rather than missing dependency or Docker setup.",
+      "SecurityManager-related OGNL paths are fragile on newer JDKs; generated tests should tolerate unsupported `System.setSecurityManager` rather than requiring it."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/ognl:ognl:3.3.5/library-preparation-preflight/pi-generation-2026-06-27T10-21-11-687088Z.log",
+    "status": "completed",
+    "summary": "OGNL itself needs no external service or extra direct dependency; its only runtime dependency, Javassist, is already transitive. Meaningful compiler/accessibility coverage on modern JDKs should preserve the existing module-opening test JVM setup."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.3.5",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-7430-fails-java-run-ognl-ognl-3.3.5-1c5fc84a",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
