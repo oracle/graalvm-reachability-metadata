@@ -22,6 +22,7 @@ import org.springframework.boot.context.annotation.ImportCandidates;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
@@ -209,6 +210,27 @@ public class Spring_boot_cacheTest {
         });
     }
 
+    @Test
+    void cacheAutoConfigurationSupportsDeclarativeCacheableOperations() {
+        this.contextRunner
+            .withUserConfiguration(DeclarativeCachingConfiguration.class)
+            .withPropertyValues("spring.cache.type=simple", "spring.cache.cache-names=isbnLookups")
+            .run((context) -> {
+                assertThat(context).hasSingleBean(IsbnLookupService.class);
+                IsbnLookupService service = context.getBean(IsbnLookupService.class);
+
+                assertThat(service.lookup("978-1")).isEqualTo("Book 978-1");
+                assertThat(service.lookup("978-1")).isEqualTo("Book 978-1");
+                assertThat(service.lookup("978-2")).isEqualTo("Book 978-2");
+                assertThat(service.getInvocationCount()).isEqualTo(2);
+
+                Cache cache = context.getBean(CacheManager.class).getCache("isbnLookups");
+                assertThat(cache).isNotNull();
+                assertThat(cache.get("978-1", String.class)).isEqualTo("Book 978-1");
+                assertThat(cache.get("978-2", String.class)).isEqualTo("Book 978-2");
+            });
+    }
+
     @Configuration(proxyBeanMethods = false)
     @EnableCaching
     static class CachingConfiguration {
@@ -251,6 +273,42 @@ public class Spring_boot_cacheTest {
         @Bean
         CacheManager cacheManager() {
             return new ConcurrentMapCacheManager("manual");
+        }
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    static class DeclarativeCachingConfiguration {
+
+        @Bean
+        IsbnLookupService isbnLookupService() {
+            return new CountingIsbnLookupService();
+        }
+
+    }
+
+    interface IsbnLookupService {
+
+        @Cacheable("isbnLookups")
+        String lookup(String isbn);
+
+        int getInvocationCount();
+
+    }
+
+    static class CountingIsbnLookupService implements IsbnLookupService {
+
+        private int invocationCount;
+
+        @Override
+        public String lookup(String isbn) {
+            this.invocationCount++;
+            return "Book " + isbn;
+        }
+
+        @Override
+        public int getInvocationCount() {
+            return this.invocationCount;
         }
 
     }
