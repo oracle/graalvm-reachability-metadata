@@ -8,6 +8,7 @@ package io_getquill.quill_core_2_13
 
 import io.getquill.util.LoadObject
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assumptions.assumeFalse
 import org.junit.jupiter.api.Test
 
 import scala.reflect.macros.whitebox.Context
@@ -20,6 +21,8 @@ object LoadObjectSingleton {
 class LoadObjectTest {
   @Test
   def loadsSingletonModuleFromScalaType(): Unit = {
+    assumeFalse(isNativeImageRuntime, "Scala runtime reflection is not supported in native-image tests")
+
     val macroContext: Context = null
     val singletonType: macroContext.Type =
       universe.typeOf[LoadObjectSingleton.type].asInstanceOf[macroContext.Type]
@@ -28,5 +31,9 @@ class LoadObjectTest {
 
     assertThat(loaded).isSameAs(LoadObjectSingleton)
     assertThat(loaded.value).isEqualTo("loaded")
+  }
+
+  private def isNativeImageRuntime: Boolean = {
+    "runtime" == System.getProperty("org.graalvm.nativeimage.imagecode")
   }
 }
