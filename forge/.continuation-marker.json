@@ -1,0 +1,71 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.parquet:parquet-jackson:1.16.0",
+  "issueNumber": 8256,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.apache.parquet:parquet-jackson:1.12.2",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8256 [Automation] java run fails for org.apache.parquet:parquet-jackson:1.16.0; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "31 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 58848,
+    "issue_label": "fails-java-run",
+    "issue_number": 8256,
+    "library": "org.apache.parquet:parquet-jackson:1.16.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "1.16.0",
+    "output_tokens_used": 5074,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Do not add unshaded Jackson dependencies for normal coverage; tests should exercise shaded.parquet.com.fasterxml.jackson classes from parquet-jackson itself.",
+      "The reported failure appears to be a version/API behavior mismatch in an existing assertion, not missing setup.",
+      "Existing tests include JVM/native-image --add-opens for java.base/java.util to support deep Jackson utility coverage; avoid removing that existing build setup if those tests remain."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.parquet:parquet-jackson:1.16.0/library-preparation-preflight/pi-generation-2026-06-27T11-30-14-959606Z.log",
+    "status": "completed",
+    "summary": "No extra dependency, Docker image, environment variable, or system property is needed: parquet-jackson 1.16.0 is a shaded Jackson packaging artifact with no external runtime dependency beyond JDK modules, and meaningful coverage is reachable through the relocated Jackson APIs already in the artifact."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "1.16.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8256-fails-java-run-org.apache.parquet-parquet-jackson-1.16.0-2cad2fb0",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
