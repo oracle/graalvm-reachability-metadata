@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.lucene:lucene-core:6.0.0",
+  "issueNumber": 5851,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.apache.lucene:lucene-core:5.5.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#5851 [Automation] javac compile fails for org.apache.lucene:lucene-core:6.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "17 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 47290,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 5851,
+    "library": "org.apache.lucene:lucene-core:6.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "6.0.0",
+    "output_tokens_used": 3725,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Typical Lucene applications often add companion modules such as lucene-analyzers-common or lucene-queryparser, but those are not required to compile or meaningfully exercise lucene-core reachability itself.",
+      "If tests continue to exercise MMapDirectory or RamUsageEstimator on modern JDKs, local Gradle/Native Image verification may reveal JVM module-access flags are still needed, but that is test-scope compatibility rather than a deterministic dependency or Docker setup requirement."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.lucene:lucene-core:6.0.0/library-preparation-preflight/pi-generation-2026-06-27T12-35-44-959033Z.log",
+    "status": "completed",
+    "summary": "lucene-core 6.0.0 is a self-contained Java library artifact with no Maven dependencies, no native components, and no required external service; the observed failure is a source/API compatibility issue in the existing test scaffold because AttributeImpl gained/required reflectWith(AttributeReflector), not missing setup."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "6.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-5851-fails-javac-compile-org.apache.lucene-lucene-core-6.0.0-1fb30b3d",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
