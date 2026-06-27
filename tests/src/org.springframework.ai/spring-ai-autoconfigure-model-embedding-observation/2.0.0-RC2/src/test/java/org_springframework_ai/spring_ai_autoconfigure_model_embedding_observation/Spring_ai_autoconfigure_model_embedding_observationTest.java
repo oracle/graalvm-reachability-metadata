@@ -117,7 +117,7 @@ public class Spring_ai_autoconfigure_model_embedding_observationTest {
     }
 
     private static EmbeddingResponse embeddingResponseWithUsage(int promptTokens, int completionTokens) {
-        Embedding embedding = new Embedding(new float[] { 0.1F, 0.2F, 0.3F }, 0);
+        Embedding embedding = new Embedding(new float[] {0.1F, 0.2F, 0.3F}, 0);
         EmbeddingResponseMetadata metadata = new EmbeddingResponseMetadata("test-embedding-model",
                 new TestUsage(promptTokens, completionTokens));
         return new EmbeddingResponse(List.of(embedding), metadata);
