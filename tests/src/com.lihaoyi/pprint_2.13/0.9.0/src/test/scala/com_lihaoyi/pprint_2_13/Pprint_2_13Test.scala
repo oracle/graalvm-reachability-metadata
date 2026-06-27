@@ -103,6 +103,18 @@ class Pprint_2_13Test {
   }
 
   @Test
+  def accountsForInitialOffsetWhenChoosingLineBreaks(): Unit = {
+    val printer: PPrinter = PPrinter.BlackWhite
+    val value: Vector[String] = Vector("alpha", "beta")
+
+    assertEquals("Vector(\"alpha\", \"beta\")", printer(value, width = 25).plainText)
+    assertEquals(
+      "Vector(\n  \"alpha\",\n  \"beta\"\n)",
+      printer(value, width = 25, initialOffset = 10).plainText
+    )
+  }
+
+  @Test
   def exposesTokenStreamAndColorConfiguration(): Unit = {
     val blackWhiteTokens: Vector[fansi.Str] = PPrinter.BlackWhite.tokenize(List(1, 2), width = 80).toVector
     val blackWhiteText: String = blackWhiteTokens.map(_.plainText).mkString
