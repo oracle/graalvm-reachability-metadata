@@ -145,6 +145,23 @@ public class Spring_ai_autoconfigure_retryTest {
     }
 
     @Test
+    void configuredHttpCodesAreRetryableWhenGeneralClientErrorRetriesAreDisabled() throws Exception {
+        Map<String, Object> properties = Map.of("spring.ai.retry.on-http-codes", "409");
+
+        try (ConfigurableApplicationContext context = applicationContext(properties)) {
+            SpringAiRetryProperties boundProperties = context.getBean(SpringAiRetryProperties.class);
+            ResponseErrorHandler responseErrorHandler = context.getBean(ResponseErrorHandler.class);
+
+            assertThat(boundProperties.isOnClientErrors()).isFalse();
+            assertThat(boundProperties.getOnHttpCodes()).containsExactly(409);
+            assertThatThrownBy(() -> handle(responseErrorHandler, HttpStatus.CONFLICT, ""))
+                    .isInstanceOf(TransientAiException.class)
+                    .hasMessageContaining("HTTP 409")
+                    .hasMessageContaining("No response body available");
+        }
+    }
+
+    @Test
     void defaultResponseErrorHandlerDoesNotRetryClientErrorsUnlessConfigured() throws Exception {
         try (ConfigurableApplicationContext context = applicationContext(Map.of())) {
             ResponseErrorHandler responseErrorHandler = context.getBean(ResponseErrorHandler.class);
