@@ -1,0 +1,99 @@
+{
+  "add_new_library_support:2026-06-27": {
+    "timestamp": "2026-06-27T15:27:38.644056Z",
+    "library": "com.typesafe.akka:akka-actor_2.13:2.6.21",
+    "starting_commit": "5d4109dc55974c11c63ea6a8468607b54d242f16",
+    "ending_commit": "c5fb27a91d5831626a4f5edc3bfc384cafbbe966",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "2.6.21",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.727273,
+            "coveredCalls": 24,
+            "totalCalls": 33
+          },
+          "resources": {
+            "coverageRatio": 0.666667,
+            "coveredCalls": 2,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 0.722222,
+        "coveredCalls": 26,
+        "totalCalls": 36
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 29092,
+          "missed": 166714,
+          "ratio": 0.148576,
+          "total": 195806
+        },
+        "line": {
+          "covered": 4030,
+          "missed": 11192,
+          "ratio": 0.264748,
+          "total": 15222
+        },
+        "method": {
+          "covered": 2489,
+          "missed": 17509,
+          "ratio": 0.124462,
+          "total": 19998
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 5450,
+      "issue_label": "library-new-request",
+      "library": "com.typesafe.akka:akka-actor_2.13:2.6.21",
+      "summary": "akka-actor_2.13 is a core in-process actor library; its resolved POM brings scala-library, typesafe config, and scala-java8-compat transitively, and meaningful coverage is reachable by creating an ActorSystem, spawning actors with Props, sending messages, and terminating the system without Docker, extra Maven dependencies, or required environment/system properties.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Tests that choose to use akka-testkit APIs would need akka-testkit_2.13, but that is optional; equivalent meaningful coverage is reachable with the public akka-actor Java/Scala APIs already in the artifact.",
+        "Actor operations are asynchronous, so generated tests should await replies and terminate ActorSystem instances cleanly to avoid flaky tests or lingering threads; this is ordinary test-code structure, not deterministic setup."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#5450 Support for com.typesafe.akka:akka-actor_2.13:2.6.21; label=library-new-request; body_chars=109"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 33904,
+      "output_tokens_used": 4015,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/com.typesafe.akka:akka-actor_2.13:2.6.21/library-preparation-preflight/pi-generation-2026-06-27T13-52-22-036832Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 706214,
+      "cached_input_tokens_used": 8085504,
+      "output_tokens_used": 99918,
+      "iterations": 22,
+      "cost_usd": 7.0403,
+      "generated_loc": 474,
+      "tested_library_loc": 4030,
+      "metadata_entries": 168,
+      "test_only_metadata_entries": 11,
+      "code_coverage_percent": 26.47
+    },
+    "artifacts": {
+      "test_file": "tests/src/com.typesafe.akka/akka-actor_2.13/2.6.21/src/test/scala/com_typesafe_akka/akka_actor_2_13/TypedActorInnerSerializedMethodCallTest.scala",
+      "metadata_file": "metadata/com.typesafe.akka/akka-actor_2.13/2.6.21/reachability-metadata.json"
+    }
+  }
+}
