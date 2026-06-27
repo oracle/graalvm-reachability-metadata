@@ -12,6 +12,7 @@ import io.micrometer.tracing.Link;
 import io.micrometer.tracing.ScopedSpan;
 import io.micrometer.tracing.Span;
 import io.micrometer.tracing.Tracer;
+import io.micrometer.tracing.TraceContext;
 import io.micrometer.tracing.exporter.FinishedSpan;
 import io.micrometer.tracing.exporter.SpanReporter;
 import io.micrometer.tracing.otel.bridge.BaggageTaggingSpanProcessor;
@@ -20,9 +21,11 @@ import io.micrometer.tracing.otel.bridge.OtelBaggageManager;
 import io.micrometer.tracing.otel.bridge.OtelCurrentTraceContext;
 import io.micrometer.tracing.otel.bridge.OtelPropagator;
 import io.micrometer.tracing.otel.bridge.OtelTracer;
+import io.micrometer.tracing.otel.bridge.OtelTraceContext;
 import io.micrometer.tracing.otel.propagation.BaggageTextMapPropagator;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.trace.SpanContext;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.api.trace.StatusCode;
 import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
@@ -237,6 +240,55 @@ public class Micrometer_tracing_bridge_otelTest {
             SpanData childData = onlySpanNamed(exporter.exported, "child-from-scoped-parent");
             assertThat(childData.getTraceId()).isEqualTo(scopedData.getTraceId());
             assertThat(childData.getParentSpanId()).isEqualTo(scopedSpanId);
+        }
+        finally {
+            fixture.close();
+        }
+    }
+
+    @Test
+    void traceContextBuilderCreatesExternalParentContextsForChildSpans() {
+        RecordingSpanExporter exporter = new RecordingSpanExporter();
+        TracingFixture fixture = TracingFixture.create(exporter, List.of(), List.of());
+        try {
+            String traceId = "463ac35c9f6413ad48485a3953bb6124";
+            String parentSpanId = "a2fb4a1d1a96d312";
+            String grandParentSpanId = "0020000000000001";
+            TraceContext remoteParent = fixture.tracer.traceContextBuilder()
+                    .traceId(traceId)
+                    .parentId(grandParentSpanId)
+                    .spanId(parentSpanId)
+                    .sampled(true)
+                    .build();
+
+            assertThat(remoteParent.traceId()).isEqualTo(traceId);
+            assertThat(remoteParent.spanId()).isEqualTo(parentSpanId);
+            assertThat(remoteParent.parentId()).isEqualTo(grandParentSpanId);
+            assertThat(remoteParent.sampled()).isTrue();
+
+            SpanContext otelSpanContext = OtelTraceContext.toOtelSpanContext(remoteParent);
+            assertThat(otelSpanContext).isNotNull();
+            assertThat(otelSpanContext.getTraceId()).isEqualTo(traceId);
+            assertThat(otelSpanContext.getSpanId()).isEqualTo(parentSpanId);
+            assertThat(otelSpanContext.isRemote()).isTrue();
+            assertThat(io.opentelemetry.api.trace.Span.fromContext(OtelTraceContext.toOtelContext(remoteParent))
+                    .getSpanContext()
+                    .getSpanId()).isEqualTo(parentSpanId);
+
+            TraceContext roundTrippedParent = OtelTraceContext.fromOtel(otelSpanContext);
+            Span child = fixture.tracer.spanBuilder()
+                    .setParent(roundTrippedParent)
+                    .name("continued-from-external-parent")
+                    .kind(Span.Kind.SERVER)
+                    .start();
+            assertThat(child.context().traceId()).isEqualTo(traceId);
+            assertThat(child.context().parentId()).isEqualTo(parentSpanId);
+            child.end();
+
+            SpanData childData = onlySpanNamed(exporter.exported, "continued-from-external-parent");
+            assertThat(childData.getKind()).isEqualTo(SpanKind.SERVER);
+            assertThat(childData.getTraceId()).isEqualTo(traceId);
+            assertThat(childData.getParentSpanId()).isEqualTo(parentSpanId);
         }
         finally {
             fixture.close();
