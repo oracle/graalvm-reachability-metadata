@@ -23,6 +23,14 @@ tasks.withType(Test).configureEach {
 }
 
 graalvmNative {
+    binaries {
+        all {
+            buildArgs.addAll([
+                '--add-opens=java.base/java.nio=ALL-UNNAMED',
+                '--add-opens=java.base/jdk.internal.ref=ALL-UNNAMED'
+            ])
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
