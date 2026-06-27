@@ -6,9 +6,11 @@
  */
 package org_springframework.spring_context;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
@@ -53,9 +55,13 @@ public class ConfigurationClassEnhancerInnerBeanMethodInterceptorTest {
                     (ConcurrentMapCacheFactoryBean) context.getBean("&cglibFactoryBean");
 
             final ConcurrentMapCacheFactoryBean interceptedFactory = configuration.cglibFactoryBean();
+            final Class<?> objectType = interceptedFactory.getObjectType();
+            final boolean singleton = interceptedFactory.isSingleton();
             final ConcurrentMapCache cache = interceptedFactory.getObject();
 
             assertNotSame(targetFactory, interceptedFactory);
+            assertEquals(ConcurrentMapCache.class, objectType);
+            assertTrue(singleton);
             if (isNativeImageRuntime()) {
                 assertSame(CglibProxyConfiguration.class, configuration.getClass());
                 assertNull(cache);
