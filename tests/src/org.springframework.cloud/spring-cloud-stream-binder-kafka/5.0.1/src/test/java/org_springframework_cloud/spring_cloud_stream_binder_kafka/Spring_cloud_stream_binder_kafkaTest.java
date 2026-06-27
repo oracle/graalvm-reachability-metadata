@@ -59,9 +59,12 @@ import org.springframework.cloud.stream.binder.kafka.config.MessageConverterHelp
 import org.springframework.cloud.stream.binder.kafka.properties.KafkaBinderConfigurationProperties;
 import org.springframework.cloud.stream.binder.kafka.properties.KafkaBindingProperties;
 import org.springframework.cloud.stream.binder.kafka.properties.KafkaConsumerProperties;
+import org.springframework.cloud.stream.binder.kafka.properties.KafkaConsumerProperties.StartOffset;
 import org.springframework.cloud.stream.binder.kafka.properties.KafkaExtendedBindingProperties;
 import org.springframework.cloud.stream.binder.kafka.properties.KafkaProducerProperties;
+import org.springframework.cloud.stream.binder.kafka.properties.KafkaProducerProperties.CompressionType;
 import org.springframework.cloud.stream.binder.kafka.provisioning.KafkaTopicProvisioner;
+import org.springframework.cloud.stream.binder.kafka.utils.BindingUtils;
 import org.springframework.cloud.stream.config.BindingHandlerAdvise.MappingsProvider;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
@@ -164,6 +167,57 @@ public class Spring_cloud_stream_binder_kafkaTest {
         } finally {
             embeddedKafka.destroy();
         }
+    }
+
+    @Test
+    @Timeout(60)
+    void bindingUtilsCreatesKafkaClientConfigurationsFromBinderAndBindingProperties() {
+        KafkaBinderConfigurationProperties binderProperties = kafkaBinderProperties();
+        binderProperties.setBrokers("broker-a:19092");
+        binderProperties.setRequiredAcks("all");
+        binderProperties.setConsumerProperties(Map.of(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "19"));
+        binderProperties.setProducerProperties(Map.of(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, "10000"));
+
+        KafkaConsumerProperties consumerProperties = new KafkaConsumerProperties();
+        consumerProperties.setStartOffset(StartOffset.latest);
+        consumerProperties.setConfiguration(Map.of(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, "7"));
+        ExtendedConsumerProperties<KafkaConsumerProperties> extendedConsumerProperties =
+                new ExtendedConsumerProperties<>(consumerProperties);
+
+        Map<String, Object> consumerConfig = BindingUtils.createConsumerConfigs(false, "orders-group",
+                extendedConsumerProperties, binderProperties);
+
+        assertThat(consumerConfig)
+                .containsEntry(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class)
+                .containsEntry(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class)
+                .containsEntry(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "broker-a:19092")
+                .containsEntry(ConsumerConfig.GROUP_ID_CONFIG, "orders-group")
+                .containsEntry(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest")
+                .containsEntry(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, Boolean.FALSE)
+                .containsEntry(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "19")
+                .containsEntry(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, "7");
+
+        KafkaProducerProperties producerProperties = new KafkaProducerProperties();
+        producerProperties.setBufferSize(32768);
+        producerProperties.setBatchTimeout(25);
+        producerProperties.setCompressionType(CompressionType.lz4);
+        producerProperties.setConfiguration(Map.of(ProducerConfig.CLIENT_ID_CONFIG, "orders-producer"));
+        ExtendedProducerProperties<KafkaProducerProperties> extendedProducerProperties =
+                new ExtendedProducerProperties<>(producerProperties);
+
+        Map<String, Object> producerConfig = BindingUtils.createProducerConfigs(extendedProducerProperties,
+                binderProperties);
+
+        assertThat(producerConfig)
+                .containsEntry(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class)
+                .containsEntry(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class)
+                .containsEntry(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "broker-a:19092")
+                .containsEntry(ProducerConfig.ACKS_CONFIG, "all")
+                .containsEntry(ProducerConfig.BATCH_SIZE_CONFIG, "32768")
+                .containsEntry(ProducerConfig.LINGER_MS_CONFIG, "25")
+                .containsEntry(ProducerConfig.COMPRESSION_TYPE_CONFIG, "lz4")
+                .containsEntry(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, "10000")
+                .containsEntry(ProducerConfig.CLIENT_ID_CONFIG, "orders-producer");
     }
 
     @Test
