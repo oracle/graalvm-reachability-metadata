@@ -190,6 +190,25 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def escapesInterpolatedStringsAndObjectKeysAsJsonData(): Unit = {
+    val dynamicKey: String = "line\nquote \" backslash \\"
+    val dynamicValue: String = "text with \"quotes\", backslash \\, newline\n, and JSON-looking text: true, \"extra\": 1"
+
+    val document: Json = json"""
+      {
+        $dynamicKey: $dynamicValue,
+        "constant": "present"
+      }
+      """
+
+    assertThat(document.hcursor.get[String](dynamicKey)).isEqualTo(Right(dynamicValue))
+    assertThat(document.hcursor.get[String]("constant")).isEqualTo(Right("present"))
+    assertThat(document.hcursor.downField("extra").succeeded).isFalse
+    assertThat(document.asObject.map(_.keys.toList).getOrElse(Nil).asJava)
+      .containsExactly(dynamicKey, "constant")
+  }
+
+  @Test
   def producedJsonSupportsStandardCirceCursorAndTransformationApi(): Unit = {
     val source: Json = json"""
       {
