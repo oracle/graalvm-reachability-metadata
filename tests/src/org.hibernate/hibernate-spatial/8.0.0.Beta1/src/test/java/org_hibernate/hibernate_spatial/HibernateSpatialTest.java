@@ -10,7 +10,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.spatial.integration.SpatialInitializer;
 import org.junit.jupiter.api.Test;
 
-class HibernateSpatialTest {
+public class HibernateSpatialTest {
 
     @Test
     void test() throws Exception {
