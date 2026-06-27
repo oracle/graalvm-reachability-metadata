@@ -99,6 +99,23 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def interpolatesMapsWithCustomKeyEncodersAsJsonObjects(): Unit = {
+    val replicasByProject: Map[ProjectKey, Int] = Map(
+      ProjectKey("prod", "api") -> 6,
+      ProjectKey("prod", "worker") -> 2
+    )
+
+    val document: Json = json"""
+      {
+        "replicasByProject": $replicasByProject
+      }
+      """
+
+    assertThat(document.hcursor.get[Map[String, Int]]("replicasByProject"))
+      .isEqualTo(Right(Map("prod/api" -> 6, "prod/worker" -> 2)))
+  }
+
+  @Test
   def interpolatesPrimitiveCollectionAndOptionalValuesThroughEncoders(): Unit = {
     val name: String = "worker-a"
     val replicas: Int = 4
