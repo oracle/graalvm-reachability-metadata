@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.lucene:lucene-core:6.0.0",
+  "issueNumber": 5851,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Do not add lucene-analyzers-common or other Lucene modules just to reach lucene-core coverage. Keep coverage focused on classes present in lucene-core. For custom AttributeImpl subclasses, Lucene 6 makes reflectWith(AttributeReflector) abstract, so tests must implement it explicitly. If tests exercise MMapDirectory/RamUsageEstimator-style internals, keep the test JVM/native execution opens used by the existing Lucene tests: --add-opens=java.base/java.nio=ALL-UNNAMED and --add-opens=java.base/jdk.internal.ref=ALL-UNNAMED.",
+    "applied_setup": [],
+    "current_library": "org.apache.lucene:lucene-core:5.5.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#5851 [Automation] javac compile fails for org.apache.lucene:lucene-core:6.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "17 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 31387,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 5851,
+    "library": "org.apache.lucene:lucene-core:6.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "6.0.0",
+    "output_tokens_used": 2671,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Lucene examples often use StandardAnalyzer from lucene-analyzers-common, but that is outside lucene-core and should not be added unless a specific test intentionally covers cross-module integration.",
+      "Native Image/JDK encapsulation behavior around MMapDirectory unmapping and RamUsageEstimator remains sensitive to JDK version; local Gradle and Native Image verification are authoritative."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.lucene:lucene-core:6.0.0/library-preparation-preflight/pi-generation-2026-06-27T10-01-00-552992Z.log",
+    "status": "completed",
+    "summary": "lucene-core 6.0.0 is a self-contained core artifact with no Maven runtime dependencies and no external service requirement; the needed preparation is test-code/JVM guidance for Lucene 6 API changes and JDK-internal access used by existing meaningful coverage."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "6.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-5851-fails-javac-compile-org.apache.lucene-lucene-core-6.0.0-e4b0d25d",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
