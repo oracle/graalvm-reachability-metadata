@@ -1,0 +1,125 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.codehaus.plexus:plexus-container-default:1.0-alpha-11
+Command: `/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8125-fa7f46e0/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 1 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+
+Note: Some input files use or override a deprecated API.
+> Task :compileTestJava
+
+Note: Recompile with -Xlint:deprecation for details.
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses
+
+> Task :test FAILED
+
+FieldComponentComposerTest > assignsRequirementsToAllSupportedFieldShapes() FAILED
+    org.codehaus.plexus.component.composition.CompositionException: Composition failed for the field setDependencies in object of type org_codehaus_plexus.plexus_container_default.FieldComponentComposerTest$ComponentWithAllFieldKinds
+        at app//org.codehaus.plexus.component.composition.FieldComponentComposer.assignRequirementToField(FieldComponentComposer.java:72)
+        at app//org.codehaus.plexus.component.composition.FieldComponentComposer.assignRequirement(FieldComponentComposer.java:53)
+        at app//org.codehaus.plexus.component.composition.AbstractComponentComposer.assembleComponent(AbstractComponentComposer.java:119)
+        at app//org_codehaus_plexus.plexus_container_default.FieldComponentComposerTest.assignsRequirementsToAllSupportedFieldShapes(FieldComponentComposerTest.java:77)
+
+        Caused by:
+        java.lang.IllegalArgumentException: Can not set java.util.Set field org_codehaus_plexus.plexus_container_default.FieldComponentComposerTest$ComponentWithAllFieldKinds.setDependencies to java.util.HashMap
+            at java.base/jdk.internal.reflect.FieldAccessorImpl.throwSetIllegalArgumentException(FieldAccessorImpl.java:223)
+            at java.base/jdk.internal.reflect.FieldAccessorImpl.throwSetIllegalArgumentException(FieldAccessorImpl.java:227)
+            at java.base/jdk.internal.reflect.MethodHandleObjectFieldAccessorImpl.set(MethodHandleObjectFieldAccessorImpl.java:115)
+            at java.base/java.lang.reflect.Field.set(Field.java:832)
+            at org.codehaus.plexus.component.composition.FieldComponentComposer.assignRequirementToField(FieldComponentComposer.java:66)
+            ... 3 more
+
+SetterComponentComposerTest > assignsArrayAndMapRequirementsThroughBeanSetters() FAILED
+    org.codehaus.plexus.component.composition.CompositionException: Composition failed of field arrayDependencies in object of type org_codehaus_plexus.plexus_container_default.SetterComponentComposerTest$ComponentWithSetterDependencies because the requirement ComponentRequirement{role='arrayRole', roleHint='null', fieldName='arrayDependencies'} was missing
+        at app//org.codehaus.plexus.component.composition.CompositionUtils.findRequirement(CompositionUtils.java:116)
+        at app//org.codehaus.plexus.component.composition.setter.SetterComponentComposer.setProperty(SetterComponentComposer.java:129)
+        at app//org.codehaus.plexus.component.composition.setter.SetterComponentComposer.assignRequirement(SetterComponentComposer.java:82)
+        at app//org.codehaus.plexus.component.composition.AbstractComponentComposer.assembleComponent(AbstractComponentComposer.java:119)
+        at app//org_codehaus_plexus.plexus_container_default.SetterComponentComposerTest.assignsArrayAndMapRequirementsThroughBeanSetters(SetterComponentComposerTest.java:60)
+
+        Caused by:
+        org.codehaus.plexus.component.repository.exception.ComponentLookupException: Missing list: arrayRole
+            at app//org_codehaus_plexus.plexus_container_default.SetterComponentComposerTest$RecordingPlexusContainer.lookupList(SetterComponentComposerTest.java:157)
+            at app//org.codehaus.plexus.component.composition.CompositionUtils.findRequirement(CompositionUtils.java:54)
+            ... 4 more
+
+26 tests completed, 2 failed
+
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8125-fa7f46e0/tests/src/org.codehaus.plexus/plexus-container-default/1.0-alpha-11/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8125-fa7f46e0/tests/src/org.codehaus.plexus/plexus-container-default/1.0-alpha-11/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 5s
+15 actionable tasks: 3 executed, 12 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8125-fa7f46e0/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.codehaus.plexus:plexus-container-default:1.0-alpha-11 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 6s
+9 actionable tasks: 1 executed, 8 up-to-date
