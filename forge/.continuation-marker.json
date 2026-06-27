@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.parquet:parquet-jackson:1.16.0",
+  "issueNumber": 8256,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "If generated tests exercise shaded.parquet.com.fasterxml.jackson.databind.util.ClassUtil.findEnumType on empty EnumSet or EnumMap, configure both JVM tests and native-image build/run with --add-opens=java.base/java.util=ALL-UNNAMED. The existing 1.12.2 test project already uses this JVM/native argument. No environment variables or system properties are otherwise indicated.",
+    "applied_setup": [],
+    "current_library": "org.apache.parquet:parquet-jackson:1.12.2",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8256 [Automation] java run fails for org.apache.parquet:parquet-jackson:1.16.0; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "31 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 34243,
+    "issue_label": "fails-java-run",
+    "issue_number": 8256,
+    "library": "org.apache.parquet:parquet-jackson:1.16.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "1.16.0",
+    "output_tokens_used": 3639,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Do not add unshaded Jackson dependencies: the 1.16.0 artifact embeds relocated jackson-core, jackson-annotations, and jackson-databind 2.19.2, and the shaded published POM removes runtime Jackson dependencies.",
+      "The reported failing enum assertion appears to be a Jackson behavior/API expectation change between the old and new shaded Jackson versions, not missing setup."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.parquet:parquet-jackson:1.16.0/library-preparation-preflight/pi-generation-2026-06-27T17-09-55-668835Z.log",
+    "status": "completed",
+    "summary": "No extra Maven dependency or Docker image is needed; parquet-jackson is a shaded Jackson bundle, but meaningful ClassUtil coverage may require opening java.util for reflective EnumSet/EnumMap access."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "1.16.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8256-fails-java-run-org.apache.parquet-parquet-jackson-1.16.0-294cc237",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
