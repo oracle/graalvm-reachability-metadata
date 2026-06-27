@@ -26,6 +26,12 @@ java {
     }
 }
 
+tasks.withType(Test).configureEach {
+    if (testJvmVersion >= 9) {
+        jvmArgs "--add-exports=java.base/sun.net.dns=ALL-UNNAMED"
+    }
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
@@ -33,6 +39,11 @@ graalvmNative {
             conditional {
                 userCodeFilterPath = "user-code-filter.json"
             }
+        }
+    }
+    binaries {
+        all {
+            buildArgs.add("--add-exports=java.base/sun.net.dns=ALL-UNNAMED")
         }
     }
 }
