@@ -1,0 +1,82 @@
+{
+  "timestamp": "2026-06-27T09:09:33.547544Z",
+  "library": "com.typesafe.akka:akka-http_2.13:10.5.3",
+  "starting_commit": "65939b5f3f7f42fb1afdf2779fa36314ef81a09c",
+  "ending_commit": "65939b5f3f7f42fb1afdf2779fa36314ef81a09c",
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+  "agent": "pi",
+  "model": "oca/gpt-5.5",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 5416,
+    "issue_label": "library-new-request",
+    "library": "com.typesafe.akka:akka-http_2.13:10.5.3",
+    "summary": "Akka HTTP 10.5.3 does not bring the Akka runtime modules transitively for consumers; documented usage requires Akka 2.7.0 stream and actor modules before meaningful server/client coverage can compile and run.",
+    "deterministic_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "com.typesafe.akka:akka-stream_2.13:2.7.0",
+        "scope": "testImplementation",
+        "reason": "The akka-http_2.13 and akka-http-core_2.13 POMs mark akka-stream_2.13 as provided, and the 10.5.3 documentation says users must choose an Akka version and add akka-stream manually."
+      },
+      {
+        "kind": "dependency",
+        "coordinate": "com.typesafe.akka:akka-actor-typed_2.13:2.7.0",
+        "scope": "testImplementation",
+        "reason": "The documented Java and Scala Akka HTTP server examples use typed ActorSystem/Behaviors from akka-actor-typed_2.13 with the matching Akka 2.7.0 version."
+      }
+    ],
+    "agent_guidance": "No required environment variables or system properties were found. Tests should create an in-process ActorSystem, prefer localhost with an ephemeral port for server/client coverage, and always unbind/terminate the ActorSystem so JVM and native runs do not hang.",
+    "risks": [
+      "Akka HTTP and Akka 2.7.0 are BUSL-licensed artifacts; dependency resolution from Maven Central should still work for these versions, but local Gradle verification remains authoritative.",
+      "Native Image may expose additional reachability gaps if tests exercise optional features such as custom serialization, HTTPS, or configured extensions."
+    ],
+    "applied_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "com.typesafe.akka:akka-stream_2.13:2.7.0",
+        "result": "applied",
+        "target": "tests/src/com.typesafe.akka/akka-http_2.13/10.5.3/build.gradle"
+      },
+      {
+        "kind": "dependency",
+        "coordinate": "com.typesafe.akka:akka-actor-typed_2.13:2.7.0",
+        "result": "applied",
+        "target": "tests/src/com.typesafe.akka/akka-http_2.13/10.5.3/build.gradle"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#5416 Support for com.typesafe.akka:akka-http_2.13:10.5.3; label=library-new-request; body_chars=289"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "oca/gpt-5.5",
+    "input_tokens_used": 36640,
+    "output_tokens_used": 4075,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/com.typesafe.akka:akka-http_2.13:10.5.3/library-preparation-preflight/pi-generation-2026-06-27T08-30-15-792706Z.log"
+  },
+  "metrics": {
+    "input_tokens_used": 54035,
+    "cached_input_tokens_used": 702464,
+    "output_tokens_used": 9140,
+    "iterations": 1,
+    "cost_usd": 0.6254,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "test_file": "None",
+    "metadata_file": "None"
+  }
+}
