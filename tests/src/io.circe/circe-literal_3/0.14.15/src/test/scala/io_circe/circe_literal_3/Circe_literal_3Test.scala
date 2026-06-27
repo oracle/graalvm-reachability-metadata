@@ -198,6 +198,28 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def escapesInterpolatedStringsAndKeysWithJsonMetacharacters(): Unit = {
+    val text: String = "line\nbreak quote \" backslash \\ tab\t snowman ☃"
+    val key: String = "dynamic\"key\\with\ncontrols"
+    val region: LiteralRegion = LiteralRegion("region/with \"quotes\" and \\slashes")
+
+    val document: Json = json"""
+      {
+        "text": $text,
+        $key: "string-key",
+        $region: $text
+      }
+      """
+
+    val cursor = document.hcursor
+
+    assertEquals(Right(text), cursor.get[String]("text"))
+    assertEquals(Right("string-key"), cursor.get[String](key))
+    assertEquals(Right(text), cursor.get[String](region.code))
+    assertEquals(Set("text", key, region.code), cursor.keys.map(_.toSet).getOrElse(Set.empty))
+  }
+
+  @Test
   def combinesLiteralAndInterpolatedSubtreesInArraysAndObjects(): Unit = {
     val owner: String = "Grace Hopper"
     val enabledFeatures: List[String] = List("compiler", "debugger")
