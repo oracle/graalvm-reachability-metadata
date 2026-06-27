@@ -32,6 +32,7 @@ import play.api.libs.json.JsonConfiguration
 import play.api.libs.json.JsonNaming
 import play.api.libs.json.JsonValidationError
 import play.api.libs.json.OFormat
+import play.api.libs.json.OptionHandlers
 import play.api.libs.json.Reads
 import play.api.libs.json.Writes
 import play.api.libs.json.__
@@ -60,6 +61,15 @@ final case class ApiToken(tokenId: String, expiresAt: Instant, refreshToken: Opt
 object ApiToken {
   implicit val configuration: JsonConfiguration = JsonConfiguration(JsonNaming.SnakeCase)
   implicit val format: OFormat[ApiToken] = Json.format[ApiToken]
+}
+
+final case class NotificationSettings(emailAddress: String, smsNumber: Option[String], pushChannel: Option[String])
+
+object NotificationSettings {
+  implicit val configuration: JsonConfiguration = JsonConfiguration(
+    optionHandlers = OptionHandlers.WritesNull
+  )
+  implicit val format: OFormat[NotificationSettings] = Json.format[NotificationSettings]
 }
 
 final case class InventoryItem(sku: String, quantity: Int, tags: Seq[String])
@@ -242,6 +252,31 @@ class Play_json_2_13Test {
 
     val withRefresh: JsObject = json + ("refresh_token" -> JsString("refresh-99"))
     assertEquals(Some("refresh-99"), withRefresh.as[ApiToken].refreshToken)
+  }
+
+  @Test
+  def writesConfiguredOptionalFieldsAsExplicitNulls(): Unit = {
+    val settings: NotificationSettings = NotificationSettings(
+      emailAddress = "alerts@example.test",
+      smsNumber = None,
+      pushChannel = Some("mobile")
+    )
+
+    val json: JsObject = Json.toJsObject(settings)
+    assertEquals("alerts@example.test", (json \ "emailAddress").as[String])
+    assertEquals(JsNull, (json \ "smsNumber").get)
+    assertEquals("mobile", (json \ "pushChannel").as[String])
+    assertEquals(settings, json.as[NotificationSettings])
+
+    val explicitNulls: JsObject = Json.obj(
+      "emailAddress" -> "quiet@example.test",
+      "smsNumber" -> JsNull,
+      "pushChannel" -> JsNull
+    )
+    assertEquals(
+      NotificationSettings("quiet@example.test", None, None),
+      explicitNulls.as[NotificationSettings]
+    )
   }
 
   @Test
