@@ -378,6 +378,78 @@ public class Spring_ai_autoconfigure_model_openaiTest {
     }
 
     @Test
+    void binderPopulatesNestedOptionsNamespaceForEveryOpenAiModel() {
+        Map<String, String> properties = Map.ofEntries(
+                Map.entry(OpenAiChatProperties.CONFIG_PREFIX + ".options.model", "gpt-options"),
+                Map.entry(OpenAiChatProperties.CONFIG_PREFIX + ".options.temperature", "0.35"),
+                Map.entry(OpenAiChatProperties.CONFIG_PREFIX + ".options.stop[0]", "HALT"),
+                Map.entry(OpenAiEmbeddingProperties.CONFIG_PREFIX + ".options.model", "embedding-options"),
+                Map.entry(OpenAiEmbeddingProperties.CONFIG_PREFIX + ".options.user", "nested-embedding-user"),
+                Map.entry(OpenAiEmbeddingProperties.CONFIG_PREFIX + ".options.encoding-format", "float"),
+                Map.entry(OpenAiEmbeddingProperties.CONFIG_PREFIX + ".options.dimensions", "384"),
+                Map.entry(OpenAiImageProperties.CONFIG_PREFIX + ".options.model", "image-options"),
+                Map.entry(OpenAiImageProperties.CONFIG_PREFIX + ".options.width", "512"),
+                Map.entry(OpenAiImageProperties.CONFIG_PREFIX + ".options.height", "512"),
+                Map.entry(OpenAiImageProperties.CONFIG_PREFIX + ".options.quality", "standard"),
+                Map.entry(OpenAiAudioSpeechProperties.CONFIG_PREFIX + ".options.model", "speech-options"),
+                Map.entry(OpenAiAudioSpeechProperties.CONFIG_PREFIX + ".options.input", "Nested speech"),
+                Map.entry(OpenAiAudioSpeechProperties.CONFIG_PREFIX + ".options.voice", "verse"),
+                Map.entry(OpenAiAudioSpeechProperties.CONFIG_PREFIX + ".options.response-format", "opus"),
+                Map.entry(OpenAiAudioSpeechProperties.CONFIG_PREFIX + ".options.speed", "0.85"),
+                Map.entry(OpenAiAudioTranscriptionProperties.CONFIG_PREFIX + ".options.model", "transcription-options"),
+                Map.entry(OpenAiAudioTranscriptionProperties.CONFIG_PREFIX + ".options.prompt", "Nested prompt"),
+                Map.entry(OpenAiAudioTranscriptionProperties.CONFIG_PREFIX + ".options.language", "fr"),
+                Map.entry(OpenAiAudioTranscriptionProperties.CONFIG_PREFIX + ".options.temperature", "0.1"),
+                Map.entry(OpenAiModerationProperties.CONFIG_PREFIX + ".options.model", "moderation-options"));
+
+        OpenAiChatProperties chatProperties = bind(properties, OpenAiChatProperties.CONFIG_PREFIX,
+                OpenAiChatProperties.class);
+        OpenAiEmbeddingProperties embeddingProperties = bind(properties, OpenAiEmbeddingProperties.CONFIG_PREFIX,
+                OpenAiEmbeddingProperties.class);
+        OpenAiImageProperties imageProperties = bind(properties, OpenAiImageProperties.CONFIG_PREFIX,
+                OpenAiImageProperties.class);
+        OpenAiAudioSpeechProperties speechProperties = bind(properties, OpenAiAudioSpeechProperties.CONFIG_PREFIX,
+                OpenAiAudioSpeechProperties.class);
+        OpenAiAudioTranscriptionProperties transcriptionProperties = bind(properties,
+                OpenAiAudioTranscriptionProperties.CONFIG_PREFIX, OpenAiAudioTranscriptionProperties.class);
+        OpenAiModerationProperties moderationProperties = bind(properties, OpenAiModerationProperties.CONFIG_PREFIX,
+                OpenAiModerationProperties.class);
+
+        assertThat(chatProperties.getOptions().getModel()).isEqualTo("gpt-options");
+        assertThat(chatProperties.toOptions().getModel()).isEqualTo("gpt-options");
+        assertThat(chatProperties.toOptions().getTemperature()).isEqualTo(0.35d);
+        assertThat(chatProperties.toOptions().getStopSequences()).containsExactly("HALT");
+
+        assertThat(embeddingProperties.getOptions().getModel()).isEqualTo("embedding-options");
+        assertThat(embeddingProperties.toOptions().getModel()).isEqualTo("embedding-options");
+        assertThat(embeddingProperties.toOptions().getUser()).isEqualTo("nested-embedding-user");
+        assertThat(embeddingProperties.toOptions().getEncodingFormat()).isEqualTo(EncodingFormat.FLOAT);
+        assertThat(embeddingProperties.toOptions().getDimensions()).isEqualTo(384);
+
+        assertThat(imageProperties.getOptions().getModel()).isEqualTo("image-options");
+        assertThat(imageProperties.toOptions().getModel()).isEqualTo("image-options");
+        assertThat(imageProperties.toOptions().getWidth()).isEqualTo(512);
+        assertThat(imageProperties.toOptions().getHeight()).isEqualTo(512);
+        assertThat(imageProperties.toOptions().getQuality()).isEqualTo("standard");
+
+        assertThat(speechProperties.getOptions().getModel()).isEqualTo("speech-options");
+        assertThat(speechProperties.toOptions().getModel()).isEqualTo("speech-options");
+        assertThat(speechProperties.toOptions().getInput()).isEqualTo("Nested speech");
+        assertThat(speechProperties.toOptions().getVoice()).isEqualTo("verse");
+        assertThat(speechProperties.toOptions().getResponseFormat()).isEqualTo("opus");
+        assertThat(speechProperties.toOptions().getSpeed()).isEqualTo(0.85d);
+
+        assertThat(transcriptionProperties.getOptions().getModel()).isEqualTo("transcription-options");
+        assertThat(transcriptionProperties.toOptions().getModel()).isEqualTo("transcription-options");
+        assertThat(transcriptionProperties.toOptions().getPrompt()).isEqualTo("Nested prompt");
+        assertThat(transcriptionProperties.toOptions().getLanguage()).isEqualTo("fr");
+        assertThat(transcriptionProperties.toOptions().getTemperature()).isEqualTo(0.1f);
+
+        assertThat(moderationProperties.getOptions().getModel()).isEqualTo("moderation-options");
+        assertThat(moderationProperties.toOptions().getModel()).isEqualTo("moderation-options");
+    }
+
+    @Test
     void defaultCommonPropertiesMatchDocumentedOpenAiClientDefaults() {
         OpenAiCommonProperties properties = new OpenAiCommonProperties();
 
