@@ -102,6 +102,29 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def interpolatesMapsAsJsonObjectsUsingAvailableKeyEncoders(): Unit = {
+    val statusCounts: Map[LiteralField, List[Int]] = Map(
+      LiteralField("http", "success") -> List(200, 201, 204),
+      LiteralField("http", "redirect") -> List(301, 302)
+    )
+
+    val document: Json = json"""
+      {
+        "statusCounts": $statusCounts,
+        "emptyCounts": ${Map.empty[LiteralField, Int]}
+      }
+    """
+
+    val statusObject: Json = decodeOrFail(document.hcursor.get[Json]("statusCounts"))
+    val statusKeys: Set[String] = statusObject.asObject.map(_.keys.toSet).getOrElse(Set.empty)
+
+    assertEquals(Right(List(200, 201, 204)), statusObject.hcursor.get[List[Int]]("http:success"))
+    assertEquals(Right(List(301, 302)), statusObject.hcursor.get[List[Int]]("http:redirect"))
+    assertEquals(Set("http:success", "http:redirect"), statusKeys)
+    assertEquals(Right(Map.empty[String, Int]), document.hcursor.get[Map[String, Int]]("emptyCounts"))
+  }
+
+  @Test
   def interpolatesValuesInsideArraysAndAtTheRoot(): Unit = {
     val nested: Json = Json.arr(Json.fromString("generated"), Json.fromInt(7))
     val present: Option[String] = Some("value")
