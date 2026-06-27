@@ -11,6 +11,10 @@ import org.junit.jupiter.api.Test
 import zio.prelude.Assertion
 import zio.prelude.Assertion.Regex
 import zio.prelude.AssertionError
+import zio.prelude.QuotedAssertion
+import zio.prelude.assertionLambdaQuote
+import zio.prelude.assertionQuote
+import zio.prelude.assertionString
 import zio.prelude.macros.BuildInfo
 
 import scala.jdk.CollectionConverters._
@@ -188,6 +192,39 @@ class Zio_prelude_macros_2_13Test {
   }
 
   @Test
+  def quotedAssertionAnnotationsCarryExecutableAssertionsLambdasAndSourceText(): Unit = {
+    val positiveAssertion: assertionQuote[Int] = assertionQuote(Assertion.greaterThan(0))
+    assertPasses(positiveAssertion.assertion, 1)
+    assertFails(positiveAssertion.assertion, 0, "0 did not satisfy greaterThan(0)")
+
+    val evenLambda: assertionLambdaQuote[Int] = assertionLambdaQuote { value: Int =>
+      if (value % 2 == 0) Right(()) else Left(AssertionError.failure("even"))
+    }
+    assertThat(evenLambda.f(4)).isEqualTo(Right(()))
+    assertThat(assertionError(evenLambda.f(5)).toNel("5").asJava).containsExactly("5 did not satisfy even")
+
+    val source: assertionString = assertionString("Assertion.greaterThan(0)")
+    assertThat(source.string).isEqualTo("Assertion.greaterThan(0)")
+    assertThat(source.copy("custom even check").string).isEqualTo("custom even check")
+
+    val quoted: QuotedAssertion[String] = new QuotedAssertion[String] {
+      private val underlying: Assertion[String] = Assertion.startsWith("svc-") && Assertion.endsWith("-api")
+
+      @assertionQuote(Assertion.startsWith("svc-") && Assertion.endsWith("-api"))
+      @assertionString("Assertion.startsWith(\"svc-\") && Assertion.endsWith(\"-api\")")
+      def metadata: Int = 42
+
+      override def run(value: String): Either[AssertionError, Unit] = underlying(value)
+    }
+
+    assertThat(quoted.run("svc-users-api")).isEqualTo(Right(()))
+    assertThat(assertionError(quoted.run("users-service")).toNel("users-service").asJava).containsExactly(
+      "users-service did not satisfy startsWith(svc-)",
+      "users-service did not satisfy endsWith(-api)"
+    )
+  }
+
+  @Test
   def buildInfoExposesPublishedModuleMetadataWithoutPinningTheArtifactVersion(): Unit = {
     assertThat(BuildInfo.organization).isEqualTo("dev.zio")
     assertThat(BuildInfo.moduleName).isEqualTo("zio-prelude-macros")
@@ -205,6 +242,11 @@ class Zio_prelude_macros_2_13Test {
       "sbtVersion:",
       "isSnapshot: false"
     )
+  }
+
+  private def assertionError(result: Either[AssertionError, Unit]): AssertionError = result match {
+    case Left(error) => error
+    case Right(_)    => throw new java.lang.AssertionError("Expected quoted assertion to fail")
   }
 
   private def assertPasses[A](assertion: Assertion[A], value: A): Unit = {
