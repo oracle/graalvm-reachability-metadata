@@ -136,6 +136,23 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def interpolatesStringObjectKeysThatRequireEscaping(): Unit = {
+    val quotedKey: String = "line\none \"quoted\" key"
+    val unicodeKey: String = "snowman-☃"
+
+    val document: Json = json"""
+      {
+        $quotedKey: ${1},
+        $unicodeKey: "present"
+      }
+    """
+
+    assertEquals(Right(1), document.hcursor.get[Int](quotedKey))
+    assertEquals(Right("present"), document.hcursor.get[String](unicodeKey))
+    assertEquals(Set(quotedKey, unicodeKey), document.asObject.map(_.keys.toSet).getOrElse(Set.empty))
+  }
+
+  @Test
   def keepsRepeatedInterpolationsIndependent(): Unit = {
     val repeatedText: String = "same runtime value"
     val firstKey: LiteralField = LiteralField("key", "one")
