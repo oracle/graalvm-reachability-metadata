@@ -154,6 +154,18 @@ class Circe_literal_3Test:
     assert(stringValue(values(2)) == topLevelText)
     assert(values(3) == Json.True)
 
+  @Test
+  def jsonInterpolatorBuildsTopLevelPrimitiveLiterals(): Unit =
+    val topLevelNull: Json = json"""null"""
+    val topLevelBoolean: Json = json"""false"""
+    val topLevelString: Json = json""""literal text with π""""
+    val topLevelNumber: Json = json"""-9876543210.125e2"""
+
+    assert(topLevelNull == Json.Null)
+    assert(topLevelBoolean == Json.False)
+    assert(stringValue(topLevelString) == "literal text with π")
+    assert(decoded[BigDecimal](topLevelNumber) == BigDecimal("-9876543210.125e2"))
+
   private final case class Details(id: Int, label: String, active: Boolean)
 
   private final case class MetricKey(namespace: String, name: String)
