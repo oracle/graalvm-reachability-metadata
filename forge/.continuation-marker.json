@@ -1,0 +1,70 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "net.thisptr:jackson-jq:2.0.0-alpha1",
+  "issueNumber": 8741,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment variables or system properties are required. For 2.0.0-alpha1, generated or repaired tests should use the Jackson 3 API packages already on the transitive classpath, e.g. tools.jackson.databind.JsonNode and tools.jackson.databind.ObjectMapper, rather than the old com.fasterxml.jackson.databind imports.",
+    "applied_setup": [],
+    "current_library": "net.thisptr:jackson-jq:1.6.2",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8741 [Automation] javac compile fails for net.thisptr:jackson-jq:2.0.0-alpha1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 45301,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8741,
+    "library": "net.thisptr:jackson-jq:2.0.0-alpha1",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.0-alpha1",
+    "output_tokens_used": 3301,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Existing 1.6.2 tests that import com.fasterxml.jackson.databind will not compile against 2.0.0-alpha1; adding Jackson 2 would mask the library's Jackson 3 migration instead of testing normal usage.",
+      "Optional jackson-jq-extra, CLI artifacts, and upstream test-only dependencies such as RocksDB are not needed for meaningful core jackson-jq coverage unless tests deliberately target those separate modules."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/net.thisptr:jackson-jq:2.0.0-alpha1/library-preparation-preflight/pi-generation-2026-06-27T21-09-30-177352Z.log",
+    "status": "completed",
+    "summary": "No extra dependency, Docker image, or environment/system property is required; jackson-jq is an in-process JSON query library and 2.0.0-alpha1 already resolves Jackson 3 databind transitively."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.0-alpha1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8741-fails-javac-compile-net.thisptr-jackson-jq-2.0.0-alpha1-b5edd4bd",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
