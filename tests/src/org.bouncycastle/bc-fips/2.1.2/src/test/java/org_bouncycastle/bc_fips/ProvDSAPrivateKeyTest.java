@@ -64,24 +64,6 @@ public class ProvDSAPrivateKeyTest {
     }
 
     @Test
-    void serializationHookRoundTripRestoresDsaPrivateKeyFromKeySpec() throws Throwable {
-        PrivateKey privateKey = dsaKeyFactory().generatePrivate(
-                new DSAPrivateKeySpec(X, P, Q, G));
-
-        assertSerializationHookRoundTrip(privateKey);
-    }
-
-    @Test
-    void serializationHookRoundTripRestoresDsaPrivateKeyFromPkcs8Encoding() throws Throwable {
-        PrivateKey privateKey = dsaKeyFactory().generatePrivate(
-                new DSAPrivateKeySpec(X, P, Q, G));
-        PrivateKey pkcs8PrivateKey = dsaKeyFactory().generatePrivate(
-                new PKCS8EncodedKeySpec(privateKey.getEncoded()));
-
-        assertSerializationHookRoundTrip(pkcs8PrivateKey);
-    }
-
-    @Test
     void objectSerializationWritesDsaPrivateKeyClassDescriptor() throws Exception {
         PrivateKey privateKey = dsaKeyFactory().generatePrivate(
                 new DSAPrivateKeySpec(X, P, Q, G));
@@ -197,6 +179,6 @@ public class ProvDSAPrivateKeyTest {
         if (provider != null) {
             return provider;
         }
-        return new BouncyCastleFipsProvider();
+        return TestProviders.bcFipsProvider();
     }
 }

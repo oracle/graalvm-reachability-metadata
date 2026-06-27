@@ -230,6 +230,6 @@ public class ProvECGOST3410PublicKeyTest {
         if (provider != null) {
             return provider;
         }
-        return new BouncyCastleFipsProvider();
+        return TestProviders.bcFipsProvider();
     }
 }

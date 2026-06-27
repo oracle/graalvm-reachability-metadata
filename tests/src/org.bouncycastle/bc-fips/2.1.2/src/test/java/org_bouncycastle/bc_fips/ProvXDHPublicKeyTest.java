@@ -332,6 +332,6 @@ public class ProvXDHPublicKeyTest {
         if (provider != null) {
             return provider;
         }
-        return new BouncyCastleFipsProvider();
+        return TestProviders.bcFipsProvider();
     }
 }

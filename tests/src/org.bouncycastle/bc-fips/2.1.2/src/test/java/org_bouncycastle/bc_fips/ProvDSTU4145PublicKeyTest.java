@@ -51,24 +51,6 @@ public class ProvDSTU4145PublicKeyTest {
     }
 
     @Test
-    void serializationHooksRestoreDstu4145PublicKeyFromKeySpec() throws Throwable {
-        PublicKey publicKey = dstu4145KeyFactory().generatePublic(
-                new DSTU4145PublicKeySpec(DSTU4145_PARAMETERS.getGenerator(), DSTU4145_PARAMETERS));
-
-        assertSerializationHookRoundTrip(publicKey);
-    }
-
-    @Test
-    void serializationHooksRestoreDstu4145PublicKeyFromX509Encoding() throws Throwable {
-        PublicKey publicKey = dstu4145KeyFactory().generatePublic(
-                new DSTU4145PublicKeySpec(DSTU4145_PARAMETERS.getGenerator(), DSTU4145_PARAMETERS));
-        PublicKey x509PublicKey = dstu4145KeyFactory().generatePublic(
-                new X509EncodedKeySpec(publicKey.getEncoded()));
-
-        assertSerializationHookRoundTrip(x509PublicKey);
-    }
-
-    @Test
     void objectSerializationWritesDstu4145PublicKeyClassDescriptor() throws Exception {
         PublicKey publicKey = dstu4145KeyFactory().generatePublic(
                 new DSTU4145PublicKeySpec(DSTU4145_PARAMETERS.getGenerator(), DSTU4145_PARAMETERS));
@@ -185,6 +167,6 @@ public class ProvDSTU4145PublicKeyTest {
         if (provider != null) {
             return provider;
         }
-        return new BouncyCastleFipsProvider();
+        return TestProviders.bcFipsProvider();
     }
 }

@@ -162,6 +162,6 @@ public class ProvECGOST3410PrivateKeyTest {
         if (provider != null) {
             return provider;
         }
-        return new BouncyCastleFipsProvider();
+        return TestProviders.bcFipsProvider();
     }
 }

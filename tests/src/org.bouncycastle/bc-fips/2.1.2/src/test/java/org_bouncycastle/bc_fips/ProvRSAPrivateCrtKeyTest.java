@@ -233,6 +233,6 @@ public class ProvRSAPrivateCrtKeyTest {
         if (provider != null) {
             return provider;
         }
-        return new BouncyCastleFipsProvider();
+        return TestProviders.bcFipsProvider();
     }
 }

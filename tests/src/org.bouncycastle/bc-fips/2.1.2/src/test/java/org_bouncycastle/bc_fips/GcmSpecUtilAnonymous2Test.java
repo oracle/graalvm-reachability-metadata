@@ -90,6 +90,6 @@ public class GcmSpecUtilAnonymous2Test {
         if (provider != null) {
             return provider;
         }
-        return new BouncyCastleFipsProvider();
+        return TestProviders.bcFipsProvider();
     }
 }

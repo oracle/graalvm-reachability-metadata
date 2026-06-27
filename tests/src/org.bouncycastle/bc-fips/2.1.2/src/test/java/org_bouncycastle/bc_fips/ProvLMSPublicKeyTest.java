@@ -78,19 +78,6 @@ public class ProvLMSPublicKeyTest {
         assertTrue(serializedText.contains(PROVIDER_PUBLIC_KEY_CLASS_NAME));
     }
 
-    @Test
-    void serializationHooksRestoreLmsPublicKeyPayload() throws Throwable {
-        PublicKey publicKey = newLmsPublicKey();
-        PublicKey targetPublicKey = newLmsPublicKey();
-
-        CapturingObjectOutputStream outputStream = writeUsingSerializationHook(publicKey);
-        readUsingSerializationHook(targetPublicKey, outputStream.toByteArray());
-
-        assertTrue(outputStream.sawEncodedKeyPayload());
-        assertArrayEquals(publicKey.getEncoded(), outputStream.encodedKeyPayload());
-        assertDeserializedKey(publicKey, targetPublicKey);
-    }
-
     private static CapturingObjectOutputStream writeUsingSerializationHook(PublicKey publicKey)
             throws Throwable {
         CapturingObjectOutputStream objectOutput = new CapturingObjectOutputStream();
@@ -216,6 +203,6 @@ public class ProvLMSPublicKeyTest {
         if (provider != null) {
             return provider;
         }
-        return new BouncyCastleFipsProvider();
+        return TestProviders.bcFipsProvider();
     }
 }

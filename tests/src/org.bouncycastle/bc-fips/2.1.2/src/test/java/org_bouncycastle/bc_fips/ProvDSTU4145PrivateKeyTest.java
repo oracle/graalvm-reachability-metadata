@@ -189,6 +189,6 @@ public class ProvDSTU4145PrivateKeyTest {
         if (provider != null) {
             return provider;
         }
-        return new BouncyCastleFipsProvider();
+        return TestProviders.bcFipsProvider();
     }
 }

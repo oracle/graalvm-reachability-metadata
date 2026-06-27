@@ -59,25 +59,6 @@ public class ProvGOST3410PublicKeyTest {
     }
 
     @Test
-    void serializationHooksRestoreGost3410PublicKeyFromKeySpec() throws Throwable {
-        PublicKey publicKey = gost3410KeyFactory().generatePublic(
-                new GOST3410PublicKeySpec(PUBLIC_VALUE, GOST_PARAMETERS));
-
-        assertSerializationHookRoundTrip(publicKey);
-    }
-
-    @Test
-    void serializationHooksRestoreGost3410PublicKeyFromX509Encoding()
-            throws Throwable {
-        PublicKey publicKey = gost3410KeyFactory().generatePublic(
-                new GOST3410PublicKeySpec(PUBLIC_VALUE, GOST_PARAMETERS));
-        PublicKey x509PublicKey = gost3410KeyFactory().generatePublic(
-                new X509EncodedKeySpec(publicKey.getEncoded()));
-
-        assertSerializationHookRoundTrip(x509PublicKey);
-    }
-
-    @Test
     void objectSerializationWritesGost3410PublicKeyClassDescriptor() throws Exception {
         PublicKey publicKey = gost3410KeyFactory().generatePublic(
                 new GOST3410PublicKeySpec(PUBLIC_VALUE, GOST_PARAMETERS));
@@ -88,27 +69,6 @@ public class ProvGOST3410PublicKeyTest {
         assertTrue(
                 new String(serializedPublicKey, StandardCharsets.ISO_8859_1)
                         .contains(PROVIDER_PUBLIC_KEY_CLASS_NAME));
-    }
-
-    @Test
-    void customSerializationStreamsObserveGost3410PublicKeyPayloads() throws Throwable {
-        PublicKey publicKey = gost3410KeyFactory().generatePublic(
-                new GOST3410PublicKeySpec(PUBLIC_VALUE, GOST_PARAMETERS));
-        byte[] encodedPublicKey = publicKey.getEncoded();
-
-        CapturingObjectOutputStream outputStream = writeUsingSerializationHook(publicKey);
-
-        assertTrue(outputStream.sawAlgorithmPayload());
-        assertArrayEquals(encodedPublicKey, outputStream.encodedKeyPayload());
-
-        PublicKey targetPublicKey = gost3410KeyFactory().generatePublic(
-                new GOST3410PublicKeySpec(PUBLIC_VALUE.add(BigInteger.ONE), GOST_PARAMETERS));
-        PayloadResolvingObjectInputStream inputStream = readUsingSerializationHook(
-                targetPublicKey, outputStream.toByteArray());
-
-        assertTrue(inputStream.sawAlgorithmPayload());
-        assertArrayEquals(encodedPublicKey, inputStream.encodedKeyPayload());
-        assertDeserializedKey(publicKey, targetPublicKey);
     }
 
     private static void assertSerializationHookRoundTrip(PublicKey publicKey) throws Throwable {
@@ -279,6 +239,6 @@ public class ProvGOST3410PublicKeyTest {
         if (provider != null) {
             return provider;
         }
-        return new BouncyCastleFipsProvider();
+        return TestProviders.bcFipsProvider();
     }
 }

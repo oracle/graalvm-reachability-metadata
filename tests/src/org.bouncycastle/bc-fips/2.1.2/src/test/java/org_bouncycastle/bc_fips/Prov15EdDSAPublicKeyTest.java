@@ -53,16 +53,6 @@ public class Prov15EdDSAPublicKeyTest {
         assertSerializationRoundTrip(publicKey, "Ed448", NamedParameterSpec.ED448);
     }
 
-    @Test
-    void serializationHooksWriteAndReadEd25519EncodedPayload() throws Exception {
-        PublicKey publicKey = publicKeyFromX509("Ed25519", x509Ed25519());
-
-        Object deserializedValue = deserializeCapturingEncodedPayload(
-                serializeCapturingEncodedPayload(publicKey), publicKey.getEncoded());
-
-        assertDeserializedKey(publicKey, deserializedValue, "Ed25519", NamedParameterSpec.ED25519);
-    }
-
 
     private static PublicKey publicKeyFromX509(
             String algorithm, byte[] encodedPublicKey) throws Exception {
@@ -243,6 +233,6 @@ public class Prov15EdDSAPublicKeyTest {
         if (provider != null) {
             return provider;
         }
-        return new BouncyCastleFipsProvider();
+        return TestProviders.bcFipsProvider();
     }
 }

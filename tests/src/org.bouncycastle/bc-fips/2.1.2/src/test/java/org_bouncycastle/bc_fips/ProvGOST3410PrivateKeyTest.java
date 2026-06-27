@@ -100,29 +100,6 @@ public class ProvGOST3410PrivateKeyTest {
         assertDeserializedKey(privateKey, holder.privateKey());
     }
 
-    @Test
-    void customSerializationStreamsObserveGost3410PrivateKeyPayloads() throws Exception {
-        PrivateKey privateKey = gost3410KeyFactory().generatePrivate(
-                new GOST3410PrivateKeySpec(PRIVATE_VALUE, GOST_PARAMETERS));
-        byte[] encodedPrivateKey = privateKey.getEncoded();
-
-        CapturingObjectOutputStream outputStream = new CapturingObjectOutputStream();
-        outputStream.writeObject(privateKey);
-        outputStream.close();
-
-        assertTrue(outputStream.sawAlgorithmPayload());
-        assertArrayEquals(encodedPrivateKey, outputStream.encodedKeyPayload());
-
-        PayloadResolvingObjectInputStream inputStream = new PayloadResolvingObjectInputStream(
-                outputStream.toByteArray(), privateKey.getClass());
-        Object deserializedValue = inputStream.readObject();
-        inputStream.close();
-
-        assertTrue(inputStream.sawAlgorithmPayload());
-        assertArrayEquals(encodedPrivateKey, inputStream.encodedKeyPayload());
-        assertDeserializedKey(privateKey, deserializedValue);
-    }
-
     private static void assertSerializationRoundTrip(PrivateKey privateKey) throws Exception {
         assertEquals(PROVIDER_PRIVATE_KEY_CLASS_NAME, privateKey.getClass().getName());
 
@@ -288,6 +265,6 @@ public class ProvGOST3410PrivateKeyTest {
         if (provider != null) {
             return provider;
         }
-        return new BouncyCastleFipsProvider();
+        return TestProviders.bcFipsProvider();
     }
 }

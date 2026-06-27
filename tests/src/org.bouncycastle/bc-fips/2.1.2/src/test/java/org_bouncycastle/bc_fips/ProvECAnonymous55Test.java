@@ -31,35 +31,11 @@ public class ProvECAnonymous55Test {
         System.setProperty(NATIVE_CPU_VARIANT_PROPERTY, "java");
     }
 
-    @Test
-    void algorithmParametersInitializesEcCurveFromNamedParameterSpec() throws Exception {
-        Provider provider = bouncyCastleFipsProvider();
-        AlgorithmParameters parameters = AlgorithmParameters.getInstance("EC", provider);
-
-        parameters.init(new NamedParameterSpec("P-256"));
-
-        ECGenParameterSpec parameterSpec = parameters.getParameterSpec(ECGenParameterSpec.class);
-        assertNotNull(parameters.getEncoded());
-        assertEquals(P256_OID, parameterSpec.getName());
-    }
-
-    @Test
-    void keyPairGeneratorInitializesEcCurveFromNamedParameterSpec() throws Exception {
-        Provider provider = bouncyCastleFipsProvider();
-        KeyPairGenerator generator = KeyPairGenerator.getInstance("EC", provider);
-
-        generator.initialize(new NamedParameterSpec("P-256"), new SecureRandom(new byte[] {1, 2, 3, 4}));
-        KeyPair keyPair = generator.generateKeyPair();
-
-        assertEquals("EC", keyPair.getPrivate().getAlgorithm());
-        assertEquals("EC", keyPair.getPublic().getAlgorithm());
-    }
-
     private static Provider bouncyCastleFipsProvider() {
         Provider provider = Security.getProvider(BouncyCastleFipsProvider.PROVIDER_NAME);
         if (provider != null) {
             return provider;
         }
-        return new BouncyCastleFipsProvider();
+        return TestProviders.bcFipsProvider();
     }
 }

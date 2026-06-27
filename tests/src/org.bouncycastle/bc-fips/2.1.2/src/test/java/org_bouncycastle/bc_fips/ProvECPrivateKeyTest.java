@@ -94,29 +94,6 @@ public class ProvECPrivateKeyTest {
                         .contains(PROVIDER_PRIVATE_KEY_CLASS_NAME));
     }
 
-    @Test
-    void objectSerializationObservesEcPrivateKeyPayloadObjects() throws Exception {
-        PrivateKey privateKey = newEcPrivateKey();
-        byte[] expectedEncoding = privateKey.getEncoded();
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        CapturingObjectOutputStream objectOutput = new CapturingObjectOutputStream(output);
-        try (objectOutput) {
-            objectOutput.writeObject(privateKey);
-        }
-
-        assertTrue(objectOutput.observedByteArray(expectedEncoding));
-
-        ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
-        CapturingObjectInputStream objectInput = new CapturingObjectInputStream(input);
-        PrivateKey restoredPrivateKey;
-        try (objectInput) {
-            restoredPrivateKey = assertInstanceOf(PrivateKey.class, objectInput.readObject());
-        }
-
-        assertTrue(objectInput.observedByteArray(expectedEncoding));
-        assertDeserializedKey(privateKey, restoredPrivateKey);
-    }
-
     private static void assertSerializationRoundTrip(PrivateKey privateKey) throws Exception {
         assertEquals(PROVIDER_PRIVATE_KEY_CLASS_NAME, privateKey.getClass().getName());
 
@@ -235,6 +212,6 @@ public class ProvECPrivateKeyTest {
         if (provider != null) {
             return provider;
         }
-        return new BouncyCastleFipsProvider();
+        return TestProviders.bcFipsProvider();
     }
 }

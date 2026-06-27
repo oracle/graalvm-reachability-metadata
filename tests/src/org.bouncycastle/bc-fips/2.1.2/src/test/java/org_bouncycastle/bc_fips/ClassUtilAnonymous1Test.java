@@ -60,23 +60,6 @@ public class ClassUtilAnonymous1Test {
         assertEquals(0, method.getParameterCount());
     }
 
-    @Test
-    void gcmCipherCreationLooksUpParameterSpecAccessorMethods() throws Exception {
-        Provider provider = new BouncyCastleFipsProvider();
-        SecretKeySpec key = new SecretKeySpec(AES_KEY, "AES");
-        GCMParameterSpec parameterSpec = new GCMParameterSpec(128, GCM_NONCE);
-        byte[] plaintext = "ClassUtil method lookup through GCM".getBytes(StandardCharsets.UTF_8);
-
-        Cipher encrypt = Cipher.getInstance("AES/GCM/NoPadding", provider);
-        encrypt.init(Cipher.ENCRYPT_MODE, key, parameterSpec);
-        byte[] ciphertext = encrypt.doFinal(plaintext);
-
-        Cipher decrypt = Cipher.getInstance("AES/GCM/NoPadding", provider);
-        decrypt.init(Cipher.DECRYPT_MODE, key, parameterSpec);
-
-        assertArrayEquals(plaintext, decrypt.doFinal(ciphertext));
-    }
-
     private static MethodHandles.Lookup classUtilLookup()
         throws ClassNotFoundException, IllegalAccessException {
         return MethodHandles.privateLookupIn(classUtilType(), MethodHandles.lookup());

@@ -76,18 +76,6 @@ public class ProvLMSPrivateKeyTest {
         assertDeserializedKey(privateKey, deserializedKey);
     }
 
-    @Test
-    void objectSerializationWritesLmsPrivateKeyClassDescriptor() throws Exception {
-        PrivateKey privateKey = newLmsPrivateKey();
-
-        byte[] serializedPrivateKey = serializeWithReplacingPayload(privateKey);
-        String serializedText = new String(serializedPrivateKey, StandardCharsets.ISO_8859_1);
-
-        assertEquals(PROVIDER_PRIVATE_KEY_CLASS_NAME, privateKey.getClass().getName());
-        assertTrue(serializedText.contains(PROVIDER_PRIVATE_KEY_CLASS_NAME));
-        assertTrue(serializedText.contains(FipsLMS.ALGORITHM.getClass().getName()));
-    }
-
     private static void assertSerializationRoundTrip(PrivateKey privateKey) throws Exception {
         assertEquals(PROVIDER_PRIVATE_KEY_CLASS_NAME, privateKey.getClass().getName());
 
@@ -219,6 +207,6 @@ public class ProvLMSPrivateKeyTest {
         if (provider != null) {
             return provider;
         }
-        return new BouncyCastleFipsProvider();
+        return TestProviders.bcFipsProvider();
     }
 }

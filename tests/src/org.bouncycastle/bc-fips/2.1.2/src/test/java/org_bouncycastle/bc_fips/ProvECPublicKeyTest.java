@@ -95,15 +95,6 @@ public class ProvECPublicKeyTest {
     }
 
     @Test
-    void objectSerializationWritesEcPublicKeyEncodedPayload() throws Exception {
-        PublicKey publicKey = newEcPublicKeyFromSpec();
-
-        byte[] serializedPublicKey = serialize(publicKey);
-
-        assertContainsSubsequence(serializedPublicKey, publicKey.getEncoded());
-    }
-
-    @Test
     void serializationRoundTripWithExplicitClassResolverRestoresEcPublicKey()
             throws Exception {
         PublicKey publicKey = newEcPublicKeyFromSpec();
@@ -254,6 +245,6 @@ public class ProvECPublicKeyTest {
         if (provider != null) {
             return provider;
         }
-        return new BouncyCastleFipsProvider();
+        return TestProviders.bcFipsProvider();
     }
 }

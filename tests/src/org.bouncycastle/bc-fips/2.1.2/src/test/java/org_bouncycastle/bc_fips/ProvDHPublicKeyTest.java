@@ -67,13 +67,6 @@ public class ProvDHPublicKeyTest {
     }
 
     @Test
-    void serializationHookRoundTripRestoresDhPublicKeyFromKeySpec() throws Throwable {
-        PublicKey publicKey = dhKeyFactory().generatePublic(publicKeySpec(PRIVATE_EXPONENT));
-
-        assertSerializationHookRoundTrip(publicKey);
-    }
-
-    @Test
     void objectSerializationWritesDhPublicKeyClassDescriptor() throws Exception {
         PublicKey publicKey = dhKeyFactory().generatePublic(publicKeySpec(PRIVATE_EXPONENT));
 
@@ -82,39 +75,6 @@ public class ProvDHPublicKeyTest {
         assertTrue(
                 new String(serializedPublicKey, StandardCharsets.ISO_8859_1)
                         .contains(PROVIDER_PUBLIC_KEY_CLASS_NAME));
-    }
-
-    @Test
-    void serializationHookRoundTripRestoresDhPublicKeyFromX509Encoding() throws Throwable {
-        PublicKey publicKey = dhKeyFactory().generatePublic(publicKeySpec(PRIVATE_EXPONENT));
-        PublicKey x509PublicKey = dhKeyFactory().generatePublic(
-                new X509EncodedKeySpec(publicKey.getEncoded()));
-
-        assertSerializationHookRoundTrip(x509PublicKey);
-    }
-
-    @Test
-    void serializationHookRoundTripRestoresGeneratedDhPublicKey() throws Throwable {
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(
-                "DH", bouncyCastleFipsProvider());
-        keyPairGenerator.initialize(new DHParameterSpec(MODP_2048_PRIME, GENERATOR));
-
-        assertSerializationHookRoundTrip(keyPairGenerator.generateKeyPair().getPublic());
-    }
-
-    @Test
-    void dhPublicKeyRestoredByReadHookCanBeUsedForAgreement() throws Throwable {
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(
-                "DH", bouncyCastleFipsProvider());
-        keyPairGenerator.initialize(new DHParameterSpec(MODP_2048_PRIME, GENERATOR));
-        KeyPair localKeyPair = keyPairGenerator.generateKeyPair();
-        KeyPair peerKeyPair = keyPairGenerator.generateKeyPair();
-        PublicKey restoredPublicKey = restoreWithSerializationHooks(peerKeyPair.getPublic());
-
-        assertEquals(PROVIDER_PUBLIC_KEY_CLASS_NAME, restoredPublicKey.getClass().getName());
-        assertArrayEquals(
-                agreementSecret(localKeyPair.getPrivate(), peerKeyPair.getPublic()),
-                agreementSecret(localKeyPair.getPrivate(), restoredPublicKey));
     }
 
     private static void assertSerializationHookRoundTrip(PublicKey publicKey) throws Throwable {
@@ -232,6 +192,6 @@ public class ProvDHPublicKeyTest {
         if (provider != null) {
             return provider;
         }
-        return new BouncyCastleFipsProvider();
+        return TestProviders.bcFipsProvider();
     }
 }

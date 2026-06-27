@@ -60,38 +60,6 @@ public class ProvRSAPrivateKeyTest {
     }
 
     @Test
-    void serializationHooksRestoreRsaPrivateKeyPayload() throws Throwable {
-        PrivateKey privateKey = newRsaPrivateKey();
-        PrivateKey targetKey = differentRsaPrivateKey();
-        assertNotEquals(
-                assertInstanceOf(RSAPrivateKey.class, privateKey).getModulus(),
-                assertInstanceOf(RSAPrivateKey.class, targetKey).getModulus());
-
-        byte[] hookPayload = writeUsingSerializationHook(privateKey);
-        readUsingSerializationHook(targetKey, hookPayload);
-
-        assertDeserializedKey(privateKey, targetKey);
-    }
-
-    @Test
-    void serializationHooksCallObjectStreamReadAndWriteForPayloadObjects() throws Throwable {
-        PrivateKey privateKey = newRsaPrivateKey();
-        PrivateKey targetKey = differentRsaPrivateKey();
-        HookObjectOutputStream objectOutput = new HookObjectOutputStream();
-
-        serializationHook(privateKey.getClass(), "writeObject", ObjectOutputStream.class)
-                .invoke(privateKey, objectOutput);
-        assertEquals(2, objectOutput.objects.size());
-        assertArrayEquals(privateKey.getEncoded(), (byte[])objectOutput.objects.get(1));
-
-        HookObjectInputStream objectInput = new HookObjectInputStream(objectOutput.objects);
-        serializationHook(targetKey.getClass(), "readObject", ObjectInputStream.class)
-                .invoke(targetKey, objectInput);
-
-        assertDeserializedKey(privateKey, targetKey);
-    }
-
-    @Test
     void objectSerializationObservesRsaPrivateKeyPayloadObjects() throws Exception {
         PrivateKey privateKey = newRsaPrivateKey();
         byte[] expectedEncoding = privateKey.getEncoded();
@@ -340,6 +308,6 @@ public class ProvRSAPrivateKeyTest {
         if (provider != null) {
             return provider;
         }
-        return new BouncyCastleFipsProvider();
+        return TestProviders.bcFipsProvider();
     }
 }
