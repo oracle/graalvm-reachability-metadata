@@ -10,6 +10,8 @@ import akka.util.LineNumbers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
+import java.security.PrivilegedAction
+
 class LineNumbersTest {
   @Test
   def readsSourceInformationFromAnOrdinaryClassResource(): Unit = {
@@ -24,18 +26,14 @@ class LineNumbersTest {
 
   @Test
   def readsSourceInformationFromASerializableLambdaImplementationClassResource(): Unit = {
-    val target: SerializableLineNumberThunk = () => "serializable-lambda"
+    val target: PrivilegedAction[String] = LineNumberSerializableLambdas.action("serializable-lambda")
 
     val result: LineNumbers.Result = LineNumbers(target)
 
-    assertThat(target.value()).isEqualTo("serializable-lambda")
+    assertThat(target.run()).isEqualTo("serializable-lambda")
     assertThat(result).isNotEqualTo(LineNumbers.NoSourceInfo)
-    assertThat(result.toString).contains("LineNumbersTest.scala")
+    assertThat(result.toString).contains("LineNumberSerializableLambdas.java")
   }
 
   private final class PlainLineNumberTarget(val name: String)
-
-  private trait SerializableLineNumberThunk extends Serializable {
-    def value(): String
-  }
 }
