@@ -32,14 +32,15 @@ class TestInvocationTaskTests {
         TestInvocationTask task = project.getTasks().create("nativeTest", TestInvocationTask.class);
 
         List<String> command = task.commandFor("com.example:demo:1.0.0");
+        String expectedMetadataDirs = metadataDir().toAbsolutePath() + ",/tmp/config-0,/tmp/config-1";
 
         assertThat(command)
                 .contains("nativeTest")
-                .contains("-PmetadataConfigDirs=/tmp/config-0,/tmp/config-1");
+                .contains("-PmetadataConfigDirs=" + expectedMetadataDirs);
     }
 
     @Test
-    void commandForOmitsMetadataConfigDirsWhenPropertyUnset() throws IOException {
+    void commandForIncludesCoordinateMetadataDirWhenPropertyUnset() throws IOException {
         Project project = createProject();
 
         TestInvocationTask task = project.getTasks().create("nativeTest", TestInvocationTask.class);
@@ -47,11 +48,27 @@ class TestInvocationTaskTests {
         List<String> command = task.commandFor("com.example:demo:1.0.0");
 
         assertThat(command).contains("nativeTest");
-        assertThat(command).noneMatch(arg -> arg.startsWith("-PmetadataConfigDirs="));
+        assertThat(command).contains("-PmetadataConfigDirs=" + metadataDir().toAbsolutePath());
     }
 
     private Project createProject() throws IOException {
-        Files.createDirectories(tempDir.resolve("metadata"));
+        Files.createDirectories(metadataDir());
+        Files.writeString(
+                tempDir.resolve("metadata/com.example/demo/index.json"),
+                """
+                [
+                  {
+                    "metadata-version": "1.0.0",
+                    "tested-versions": [
+                      "1.0.0"
+                    ],
+                    "allowed-packages": [
+                      "com.example"
+                    ]
+                  }
+                ]
+                """
+        );
         Files.createDirectories(tempDir.resolve("tests/src"));
         Files.createDirectories(tempDir.resolve("tests/tck-build-logic"));
         Files.writeString(tempDir.resolve("LICENSE"), "test");
@@ -61,5 +78,9 @@ class TestInvocationTaskTests {
                 .build();
         project.getExtensions().create("tck", TckExtension.class, project);
         return project;
+    }
+
+    private Path metadataDir() {
+        return tempDir.resolve("metadata/com.example/demo/1.0.0");
     }
 }

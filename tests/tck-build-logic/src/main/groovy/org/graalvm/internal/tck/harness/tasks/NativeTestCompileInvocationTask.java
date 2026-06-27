@@ -21,7 +21,7 @@ public abstract class NativeTestCompileInvocationTask extends AllCoordinatesExec
                 tckExtension.getRepoRoot().get().getAsFile().toPath().resolve("gradlew").toString(),
                 "nativeTestCompile"
         ));
-        appendProperty(command, "metadataConfigDirs");
+        appendMetadataConfigDirs(command, coordinates);
         return command;
     }
 

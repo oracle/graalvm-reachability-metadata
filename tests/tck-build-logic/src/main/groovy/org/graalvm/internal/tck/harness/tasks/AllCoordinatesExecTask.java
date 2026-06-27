@@ -19,10 +19,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Files;
 import java.security.MessageDigest;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import static org.graalvm.internal.tck.Utils.readIndexFile;
 import static org.graalvm.internal.tck.Utils.splitCoordinates;
@@ -204,6 +207,28 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
         if (propertyValue != null) {
             command.add("-P" + propertyName + "=" + propertyValue);
         }
+    }
+
+    /**
+     * Forward metadata directories to the inner build, always including the active coordinate's own metadata dir.
+     *
+     * The root harness resolves metadata for the coordinate under test before spawning the inner Gradle build.
+     * Native-image must receive that directory explicitly via {@code -PmetadataConfigDirs}, otherwise the
+     * coordinate's reachability metadata is not applied during native-image compilation.
+     */
+    protected void appendMetadataConfigDirs(List<String> command, String coordinates) {
+        Set<String> metadataDirs = new LinkedHashSet<>();
+        metadataDirs.add(tckExtension.getMetadataDir(coordinates).toAbsolutePath().toString());
+
+        Object propertyValue = getProject().findProperty("metadataConfigDirs");
+        if (propertyValue != null) {
+            Arrays.stream(propertyValue.toString().split(","))
+                    .map(String::trim)
+                    .filter(value -> !value.isEmpty())
+                    .forEach(metadataDirs::add);
+        }
+
+        command.add("-PmetadataConfigDirs=" + String.join(",", metadataDirs));
     }
 
     private static String md5(String s) {

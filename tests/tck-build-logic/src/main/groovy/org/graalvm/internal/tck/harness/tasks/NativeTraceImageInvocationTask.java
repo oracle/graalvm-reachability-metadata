@@ -21,7 +21,7 @@ public abstract class NativeTraceImageInvocationTask extends AllCoordinatesExecT
                 tckExtension.getRepoRoot().get().getAsFile().toPath().resolve("gradlew").toString(),
                 "nativeTraceImage"
         ));
-        appendProperty(command, "metadataConfigDirs");
+        appendMetadataConfigDirs(command, coordinates);
         return command;
     }
 
