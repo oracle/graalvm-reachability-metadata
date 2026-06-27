@@ -149,6 +149,27 @@ class Pekko_3Test {
     assertEquals(Right(Seq(ByteString("a"), ByteString("bc"))), secondRun)
   }
 
+  @Test
+  def limitBytesPreservesTheSourceMaterializedValueWhenTheLimitIsExceeded(): Unit = withActorSystem {
+    val expectedMaterializedValue: String = "source-materialized-value"
+    val source: Source[ByteString, String] = Source
+      .single(ByteString("too-large"))
+      .mapMaterializedValue(_ => expectedMaterializedValue)
+    val limited: Source[ByteString, Any] = PekkoStreams.limitBytes(source, 3L)
+
+    val (materializedValue: Any, collectedFuture: Future[Seq[ByteString]]) = limited
+      .toMat(Sink.seq[ByteString])(Keep.both)
+      .run()
+    val result: Either[Throwable, Seq[ByteString]] = try {
+      Right(Await.result(collectedFuture, 10.seconds))
+    } catch {
+      case NonFatal(error) => Left(error)
+    }
+
+    assertEquals(expectedMaterializedValue, materializedValue)
+    assertLimitExceeded(result, expectedMaxBytes = 3L)
+  }
+
   private def withActorSystem[A](body: Materializer ?=> A): A = {
     val system: ActorSystem = ActorSystem("Pekko_3Test")
     val materializer: Materializer = Materializer(system)
