@@ -189,6 +189,27 @@ public class KtorServerCallLoggingJvmTest {
     }
 
     @Test
+    fun disabledSlf4jLevelSuppressesConfiguredCallLogMessage(): Unit = testApplication {
+        val logger = RecordingLogger(enabledLevels = setOf(Level.WARN))
+        install(CallLogging) {
+            this.logger = logger
+            level = Level.INFO
+            format { call -> "suppressed:${call.request.path()}" }
+        }
+        routing {
+            get("/suppressed") {
+                call.respondText("suppressed route")
+            }
+        }
+
+        val response = client.get("/suppressed")
+        assertThat(response.status).isEqualTo(HttpStatusCode.OK)
+        assertThat(response.bodyAsText()).isEqualTo("suppressed route")
+
+        assertThat(logger.events()).isEmpty()
+    }
+
+    @Test
     fun mdcProvidersAreEvaluatedOncePerCallAndLoggingStillUsesConfiguredLogger(): Unit = testApplication {
         val logger = RecordingLogger()
         val pathProviderCalls = AtomicInteger()
@@ -240,7 +261,9 @@ public class KtorServerCallLoggingJvmTest {
         val mdc: Map<String, String>,
     )
 
-    private class RecordingLogger : LegacyAbstractLogger() {
+    private class RecordingLogger(
+        private val enabledLevels: Set<Level> = setOf(Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR),
+    ) : LegacyAbstractLogger() {
         private val recordedEvents: CopyOnWriteArrayList<LogEvent> = CopyOnWriteArrayList()
 
         init {
@@ -249,15 +272,15 @@ public class KtorServerCallLoggingJvmTest {
 
         fun events(): List<LogEvent> = recordedEvents.toList()
 
-        override fun isTraceEnabled(): Boolean = true
+        override fun isTraceEnabled(): Boolean = Level.TRACE in enabledLevels
 
-        override fun isDebugEnabled(): Boolean = true
+        override fun isDebugEnabled(): Boolean = Level.DEBUG in enabledLevels
 
-        override fun isInfoEnabled(): Boolean = true
+        override fun isInfoEnabled(): Boolean = Level.INFO in enabledLevels
 
-        override fun isWarnEnabled(): Boolean = true
+        override fun isWarnEnabled(): Boolean = Level.WARN in enabledLevels
 
-        override fun isErrorEnabled(): Boolean = true
+        override fun isErrorEnabled(): Boolean = Level.ERROR in enabledLevels
 
         override fun getFullyQualifiedCallerName(): String = RecordingLogger::class.java.name
 
