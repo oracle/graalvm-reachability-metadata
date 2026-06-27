@@ -1,0 +1,72 @@
+{
+  "add_new_library_support:2026-06-27": {
+    "timestamp": "2026-06-27T19:36:14.986997Z",
+    "library": "com.typesafe.play:play-ws-standalone_2.13:2.2.14",
+    "starting_commit": "712e6052a2197b12f45e72bc2bcd69909383dea0",
+    "ending_commit": "e1e3b23420f3b1cadd73ad687336aa09fb756f62",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 5507,
+      "issue_label": "library-new-request",
+      "library": "com.typesafe.play:play-ws-standalone_2.13:2.2.14",
+      "summary": "The requested artifact is the Play WS standalone API jar; normal documented use instantiates a concrete AHC-backed standalone client from the companion play-ahc-ws-standalone artifact before meaningful HTTP-client coverage is reachable.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.typesafe.play:play-ahc-ws-standalone_2.13:2.2.14",
+          "scope": "testImplementation",
+          "reason": "Play WS documentation says standalone usage starts by adding play-ahc-ws-standalone, which provides StandaloneAhcWSClient/AhcWSClient and the shaded AsyncHttpClient implementation; the requested play-ws-standalone artifact mainly supplies the Java/Scala WS API, body read/write abstractions, request/\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Tests that exercise real requests should create an Akka ActorSystem and Materializer, instantiate a StandaloneAhcWSClient, and always close the client and terminate the ActorSystem. Prefer a local in-process JDK HttpServer or equivalent loopback server instead of external network calls. Avoid registering termination callbacks that call System.exit in tests.",
+      "risks": [
+        "The companion AHC dependency broadens the runtime graph with shaded AsyncHttpClient/Netty classes, so generated tests should keep assertions focused on the requested play-ws-standalone APIs and use local verification as authoritative.",
+        "Optional JSON/XML body support is documented as separate add-ons, but it is not required for baseline meaningful coverage of the requested artifact."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.typesafe.play:play-ahc-ws-standalone_2.13:2.2.14",
+          "result": "applied",
+          "target": "tests/src/com.typesafe.play/play-ws-standalone_2.13/2.2.14/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#5507 Support for com.typesafe.play:play-ws-standalone_2.13:2.2.14; label=library-new-request; body_chars=117"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 29470,
+      "output_tokens_used": 3153,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/com.typesafe.play:play-ws-standalone_2.13:2.2.14/library-preparation-preflight/pi-generation-2026-06-27T19-00-42-305052Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 163992,
+      "cached_input_tokens_used": 1254912,
+      "output_tokens_used": 20097,
+      "iterations": 5,
+      "cost_usd": 1.2304,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
+  }
+}
