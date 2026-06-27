@@ -23,6 +23,7 @@ import play.api.libs.ws.DefaultWSProxyServer
 import play.api.libs.ws.EmptyBody
 import play.api.libs.ws.InMemoryBody
 import play.api.libs.ws.StandaloneWSClient
+import play.api.libs.ws.WSAuthScheme
 import play.api.libs.ws.WSClientConfig
 import play.api.libs.ws.WSRequestExecutor
 import play.api.libs.ws.WSRequestFilter
@@ -33,6 +34,7 @@ import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets.UTF_8
+import java.util.Base64
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
@@ -95,6 +97,50 @@ class Play_ws_standalone_2_13Test {
           30.seconds
         )
         assertThat(streamedBody.utf8String).contains("method=GET")
+      }
+    }
+  }
+
+  @Test
+  def basicAuthenticationRespondsToServerChallenge(): Unit = {
+    val expectedAuthorization = "Basic " + Base64.getEncoder.encodeToString(
+      "play:secret".getBytes(UTF_8)
+    )
+    val authorizedRequests = new AtomicInteger()
+
+    Using.resource(TestHttpServer { exchange =>
+      assertThat(exchange.getRequestMethod).isEqualTo("GET")
+      assertThat(exchange.getRequestURI.getPath).isEqualTo("/secure")
+
+      if (expectedAuthorization == exchange.getRequestHeaders.getFirst("Authorization")) {
+        authorizedRequests.incrementAndGet()
+        respond(exchange, 200, "authorized", Seq("Content-Type" -> "text/plain"))
+      } else {
+        respond(
+          exchange,
+          401,
+          "authentication required",
+          Seq(
+            "WWW-Authenticate" -> "Basic realm=\"play-ws-test\"",
+            "Content-Type" -> "text/plain"
+          )
+        )
+      }
+    }) { server =>
+      withWs { fixture =>
+        val response = Await.result(
+          fixture.client
+            .url(server.url("/secure"))
+            .withAuth("play", "secret", WSAuthScheme.BASIC)
+            .withRequestTimeout(10.seconds)
+            .get(),
+          30.seconds
+        )
+
+        server.assertNoFailure()
+        assertThat(response.status).isEqualTo(200)
+        assertThat(response.body[String]).isEqualTo("authorized")
+        assertThat(authorizedRequests.get()).isEqualTo(1)
       }
     }
   }
