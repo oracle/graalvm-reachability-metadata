@@ -57,6 +57,18 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def topLevelInterpolationCanEncodeACompleteJsonDocument(): Unit = {
+    val payload: Json = Json.obj(
+      "status" -> Json.fromString("accepted"),
+      "attempts" -> Json.arr(Json.fromInt(1), Json.fromInt(2))
+    )
+
+    val document: Json = json"""$payload"""
+
+    assertThat(document).isEqualTo(payload)
+  }
+
+  @Test
   def valueInterpolationUsesCirceEncodersForPrimitiveAndCollectionValues(): Unit = {
     val userName: String = "Grace Hopper"
     val loginCount: Int = 7
