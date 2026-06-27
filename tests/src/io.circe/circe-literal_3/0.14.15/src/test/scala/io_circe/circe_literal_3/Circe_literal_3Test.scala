@@ -193,6 +193,24 @@ class Circe_literal_3Test {
       )
   }
 
+  @Test
+  def acceptsInlineExpressionsInValueAndKeyInterpolationPositions(): Unit = {
+    val baseKey: Int = 20
+    val label: String = "inline"
+
+    val document: Json = json"""
+      {
+        ${baseKey + 2}: ${List(1, 2, 3).map(_ * 10)},
+        ${"computed-" + label}: ${LiteralWidget(s"${label}-widget", 5 + 2, List(label, "expression"))}
+      }
+    """
+
+    assertThat(document.hcursor.get[List[Int]]("22")).isEqualTo(Right(List(10, 20, 30)))
+    assertThat(document.hcursor.get[LiteralWidget]("computed-inline"))
+      .isEqualTo(Right(LiteralWidget("inline-widget", 7, List("inline", "expression"))))
+    assertThat(document.asObject.map(_.keys.toSet)).isEqualTo(Some(Set("22", "computed-inline")))
+  }
+
   private def decodeOrFail[A](result: Either[Error, A]): A = {
     result.fold(error => fail(s"Expected decoding success but got: $error"), identity)
   }
