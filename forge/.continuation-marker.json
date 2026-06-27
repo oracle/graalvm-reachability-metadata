@@ -1,0 +1,96 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.springframework.ai:spring-ai-autoconfigure-model-chat-client:2.0.0",
+  "issueNumber": 8744,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No Docker image, environment variable, API key, or system property is required. Use local Spring Boot ApplicationContextRunner-style tests with stub ChatModel/local beans rather than a real model provider. For Spring AI 2.0.0, do not use the removed spring.ai.chat.client.tool-calling.stream-tool-call-responses property or ChatClientBuilderProperties.ToolCalling.isStreamToolCallResponses(); the 2.0.0 ToolCalling properties expose enabled and advisorOrder.",
+    "applied_setup": [],
+    "current_library": "org.springframework.ai:spring-ai-autoconfigure-model-chat-client:2.0.0-RC2",
+    "deterministic_setup": [
+      {
+        "coordinate": "org.springframework.ai:spring-ai-client-chat:2.0.0",
+        "kind": "dependency",
+        "reason": "Provides the ChatClient, ChatModel, prompt, advisor, and chat response APIs that the auto-configuration configures; it is declared optional by the target artifact and is not reliably pulled into the generated test classpath.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.springframework.ai:spring-ai-autoconfigure-model-tool:2.0.0",
+        "kind": "dependency",
+        "reason": "Provides tool-calling auto-configuration and related beans needed to exercise the target auto-configuration's tool-calling branch; it is also an optional companion module.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.1.0",
+        "kind": "dependency",
+        "reason": "The target artifact is a Spring Boot auto-configuration module and its configuration classes depend on Spring Boot auto-configuration APIs.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.springframework.boot:spring-boot-test:4.1.0",
+        "kind": "dependency",
+        "reason": "ApplicationContextRunner is the normal lightweight way to exercise Spring Boot auto-configuration without starting an application or external services.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8744 [Automation] javac compile fails for org.springframework.ai:spring-ai-autoconfigure-model-chat-client:2.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 25178,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8744,
+    "library": "org.springframework.ai:spring-ai-autoconfigure-model-chat-client:2.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.0",
+    "output_tokens_used": 3842,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The existing RC2 test fails to compile against 2.0.0 because it asserts an API/property removed before the final release.",
+      "Because the target artifact declares important collaborators as optional, a plain generated scaffold may compile poorly or only cover metadata/resource loading rather than the actual auto-configuration behavior.",
+      "Keep Spring AI companion dependencies aligned to 2.0.0 and Spring Boot dependencies aligned to 4.1.0 to avoid mixed RC/final API drift."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.springframework.ai:spring-ai-autoconfigure-model-chat-client:2.0.0/library-preparation-preflight/pi-generation-2026-06-27T21-16-07-341580Z.log",
+    "status": "completed",
+    "summary": "The artifact is a Spring Boot/Spring AI auto-configuration module whose main usable API depends on optional Spring AI and Spring Boot classes; meaningful tests need those optional/test support dependencies on the test classpath."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8744-fails-javac-compile-org.springframework.ai-spring-ai-autoconfigure-model-chat-client-2.0.0-c0174d62",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
