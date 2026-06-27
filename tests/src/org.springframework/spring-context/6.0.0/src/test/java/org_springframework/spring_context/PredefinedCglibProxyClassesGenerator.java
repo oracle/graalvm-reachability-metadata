@@ -47,8 +47,7 @@ public final class PredefinedCglibProxyClassesGenerator {
             System.setProperty("spring.objenesis.ignore", "true");
             generateProxyClasses();
             verifyExpectedClassFiles(outputDirectory);
-        }
-        finally {
+        } finally {
             restoreSystemProperty(DEBUG_LOCATION_PROPERTY, previousDebugLocation);
             restoreSystemProperty("spring.objenesis.ignore", previousObjenesisMode);
         }

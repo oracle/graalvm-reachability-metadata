@@ -43,16 +43,14 @@ public class ConfigurationClassPostProcessorInnerConfigurationClassProxyBeanRegi
 
                 new ApplicationContextAotGenerator().processAheadOfTime(applicationContext, generationContext);
                 generationContext.writeGeneratedContent();
-            }
-            finally {
+            } finally {
                 applicationContext.close();
             }
 
             String source = generatedSource(generatedFiles);
             assertTrue(source.contains("initializeConfigurationClass"));
             assertTrue(source.contains("forConstructor"));
-        }
-        catch (Error error) {
+        } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
             }

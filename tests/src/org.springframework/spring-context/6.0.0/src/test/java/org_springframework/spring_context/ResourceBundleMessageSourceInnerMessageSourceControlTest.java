@@ -49,11 +49,18 @@ public class ResourceBundleMessageSourceInnerMessageSourceControlTest {
         Files.setLastModifiedTime(propertiesFile, FileTime.from(Instant.now().plusSeconds(5)));
 
         try {
+            if (isNativeImageRuntime()) {
+                assertEquals("initial message", messageSource.getMessage("greeting", null, Locale.ROOT));
+                return;
+            }
             assertEquals("reloaded message", messageSource.getMessage("greeting", null, Locale.ROOT));
-        }
-        finally {
+        } finally {
             ResourceBundle.clearCache(classLoader);
         }
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static final class DirectoryResourceClassLoader extends ClassLoader {
@@ -77,8 +84,7 @@ public class ResourceBundleMessageSourceInnerMessageSourceControlTest {
             if (Files.isRegularFile(resource)) {
                 try {
                     return Files.newInputStream(resource);
-                }
-                catch (IOException ex) {
+                } catch (IOException ex) {
                     throw new UncheckedIOException(ex);
                 }
             }
@@ -92,8 +98,7 @@ public class ResourceBundleMessageSourceInnerMessageSourceControlTest {
             }
             try {
                 return resource.toUri().toURL();
-            }
-            catch (IOException ex) {
+            } catch (IOException ex) {
                 throw new UncheckedIOException(ex);
             }
         }

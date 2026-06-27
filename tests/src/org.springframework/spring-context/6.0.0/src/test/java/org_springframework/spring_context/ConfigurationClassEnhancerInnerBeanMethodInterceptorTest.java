@@ -8,7 +8,6 @@ package org_springframework.spring_context;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -39,9 +38,7 @@ public class ConfigurationClassEnhancerInnerBeanMethodInterceptorTest {
 
             assertNotSame(targetFactory, interceptedFactory);
             if (isNativeImageRuntime()) {
-                assertSame(InterfaceProxyConfiguration.class, configuration.getClass());
-                assertNotSame(context.getBean("interfaceFactoryBean"), product);
-                return;
+                assertConfigurationClassCompatible(InterfaceProxyConfiguration.class, configuration.getClass());
             }
             assertSame(context.getBean("interfaceFactoryBean"), product);
         });
@@ -63,9 +60,7 @@ public class ConfigurationClassEnhancerInnerBeanMethodInterceptorTest {
             assertEquals(ConcurrentMapCache.class, objectType);
             assertTrue(singleton);
             if (isNativeImageRuntime()) {
-                assertSame(CglibProxyConfiguration.class, configuration.getClass());
-                assertNull(cache);
-                return;
+                assertConfigurationClassCompatible(CglibProxyConfiguration.class, configuration.getClass());
             }
             assertSame(context.getBean("cglibFactoryBean"), cache);
         });
@@ -88,6 +83,10 @@ public class ConfigurationClassEnhancerInnerBeanMethodInterceptorTest {
 
     private static boolean isNativeImageRuntime() {
         return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
+    }
+
+    private static void assertConfigurationClassCompatible(Class<?> expectedClass, Class<?> actualClass) {
+        assertTrue(actualClass == expectedClass || actualClass.getSuperclass() == expectedClass);
     }
 
     @Configuration
