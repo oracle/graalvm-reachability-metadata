@@ -125,6 +125,35 @@ public class Spring_cloud_stream_binder_kafkaTest {
     }
 
     @Test
+    void failingFunctionConsumerRoutesRecordsToKafkaDeadLetterTopic() throws Exception {
+        String topic = topicName("function-dlq-in");
+        String group = topicName("dlq-group");
+        String dlqTopic = topicName("function-dlq-out");
+        embeddedKafka.addTopics(topic, dlqTopic);
+        try (ConfigurableApplicationContext context = springApplication(FailingConsumerApplication.class,
+                "spring.cloud.function.definition=failingConsumer",
+                "spring.cloud.stream.bindings.failingConsumer-in-0.destination=" + topic,
+                "spring.cloud.stream.bindings.failingConsumer-in-0.group=" + group,
+                "spring.cloud.stream.bindings.failingConsumer-in-0.consumer.maxAttempts=1",
+                "spring.cloud.stream.bindings.failingConsumer-in-0.consumer.useNativeDecoding=true",
+                "spring.cloud.stream.kafka.bindings.failingConsumer-in-0.consumer.enableDlq=true",
+                "spring.cloud.stream.kafka.bindings.failingConsumer-in-0.consumer.dlqName=" + dlqTopic,
+                "spring.cloud.stream.kafka.bindings.failingConsumer-in-0.consumer.dlqProducerProperties.configuration"
+                        + "[key.serializer]=org.apache.kafka.common.serialization.IntegerSerializer",
+                "spring.cloud.stream.kafka.bindings.failingConsumer-in-0.consumer.dlqProducerProperties.configuration"
+                        + "[value.serializer]=org.apache.kafka.common.serialization.ByteArraySerializer");
+                KafkaProducer<Integer, byte[]> producer = byteArrayProducer();
+                KafkaConsumer<Integer, byte[]> dlqConsumer = byteArrayConsumer(dlqTopic)) {
+
+            producer.send(new ProducerRecord<>(topic, bytes("poison"))).get(10, TimeUnit.SECONDS);
+            ConsumerRecord<Integer, byte[]> deadLetterRecord = KafkaTestUtils.getSingleRecord(
+                    dlqConsumer, dlqTopic, KAFKA_POLL_TIMEOUT);
+
+            assertThat(new String(deadLetterRecord.value(), StandardCharsets.UTF_8)).isEqualTo("poison");
+        }
+    }
+
+    @Test
     void expressionInterceptorAddsEvaluatedKafkaMessageKeyHeader() {
         KafkaExpressionEvaluatingInterceptor interceptor = new KafkaExpressionEvaluatingInterceptor(
                 new SpelExpressionParser().parseExpression("payload['tenant'] + ':' + headers['eventType']"),
@@ -222,6 +251,18 @@ public class Spring_cloud_stream_binder_kafkaTest {
         @Bean
         public Consumer<Message<byte[]>> inputConsumer() {
             return message -> RECEIVED_MESSAGES.add(message.getPayload());
+        }
+    }
+
+    @SpringBootConfiguration(proxyBeanMethods = false)
+    @EnableAutoConfiguration
+    public static class FailingConsumerApplication {
+
+        @Bean
+        public Consumer<Message<byte[]>> failingConsumer() {
+            return message -> {
+                throw new IllegalStateException("cannot process test record");
+            };
         }
     }
 }
