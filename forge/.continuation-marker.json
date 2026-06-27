@@ -1,0 +1,71 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "org.apache.maven.doxia:doxia-site-renderer:2.0.0",
+  "issueNumber": 8134,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment variables or system properties are required. Generated tests should target the 2.0.0 API: RenderingContext and SkinResourceLoader are gone, SiteRenderingContext now uses the doxia-site-model types, and full rendering methods on DefaultSiteRenderer rely on injected Doxia, ParserModuleManager, VelocityComponent, and PlexusContainer collaborators. If tests choose to parse APT/XDoc/FML sources, those parser modules are not transitive; prefer APIs or XHTML5 paths available from the resolved artifact unless deliberately adding such test dependencies later.",
+    "applied_setup": [],
+    "current_library": "org.apache.maven.doxia:doxia-site-renderer:1.9.1",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8134 [Automation] javac compile fails for org.apache.maven.doxia:doxia-site-renderer:2.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "8 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 43796,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8134,
+    "library": "org.apache.maven.doxia:doxia-site-renderer:2.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.0",
+    "output_tokens_used": 6984,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Existing 1.9.1 tests use removed methods/classes such as RenderingContext, SkinResourceLoader, enableLogging, and setUsingDefaultTemplate.",
+      "Directly constructing DefaultSiteRenderer is only safe for methods that do not touch injected collaborators; full render/locate flows need proper collaborator initialization.",
+      "APT/XDoc/FML parser modules appear as upstream test-scope dependencies, not runtime transitives, so tests that require those parsers would need explicit dependencies."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.maven.doxia:doxia-site-renderer:2.0.0/library-preparation-preflight/pi-generation-2026-06-27T03-37-58-916927Z.log",
+    "status": "completed",
+    "summary": "No required Docker image, environment/system property, or extra dependency is needed before generation. The javac failure is caused by Doxia Site Renderer 2.0.0 API changes versus the existing 1.9.1 tests, not by missing setup."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8134-fails-javac-compile-org.apache.maven.doxia-doxia-site-renderer-2.0.0-c91d2b76",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
