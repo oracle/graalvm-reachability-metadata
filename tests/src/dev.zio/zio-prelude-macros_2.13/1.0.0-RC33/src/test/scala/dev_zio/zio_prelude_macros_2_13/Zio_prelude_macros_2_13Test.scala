@@ -225,6 +225,30 @@ class Zio_prelude_macros_2_13Test {
   }
 
   @Test
+  def regexAstNodesCanBeConstructedCopiedAndDeconstructed(): Unit = {
+    val repeatedDigits: Regex.Repeat = Regex.Repeat(Regex.Digit(reversed = false), Some(2), Some(4))
+    val anchoredDigits: Regex = Regex.start ~ repeatedDigits ~ Regex.end
+
+    assertThat(repeatedDigits.compile).isEqualTo("(\\d){2,4}")
+    assertPasses(Assertion.matches(anchoredDigits), "123")
+    assertFails(Assertion.matches(anchoredDigits), "1", "1 did not satisfy matches(^(\\d){2,4}$)")
+
+    val widenedDigits: Regex.Repeat = repeatedDigits.copy(min = Some(1), max = Some(5))
+    assertPasses(Assertion.matches(Regex.start ~ widenedDigits ~ Regex.end), "1")
+
+    widenedDigits match {
+      case Regex.Repeat(Regex.Digit(false), Some(min), Some(max)) =>
+        assertThat(s"$min:$max").isEqualTo("1:5")
+      case other =>
+        throw new java.lang.AssertionError(s"Unexpected regex node: $other")
+    }
+
+    val nonLowerHexLetter: Regex.Range = Regex.Range('a', 'f', reversed = false).copy(reversed = true)
+    assertPasses(Assertion.matches(Regex.start ~ nonLowerHexLetter ~ Regex.end), "z")
+    assertFails(Assertion.matches(Regex.start ~ nonLowerHexLetter ~ Regex.end), "c", "c did not satisfy matches(^[^a-f]$)")
+  }
+
+  @Test
   def buildInfoExposesPublishedModuleMetadataWithoutPinningTheArtifactVersion(): Unit = {
     assertThat(BuildInfo.organization).isEqualTo("dev.zio")
     assertThat(BuildInfo.moduleName).isEqualTo("zio-prelude-macros")
