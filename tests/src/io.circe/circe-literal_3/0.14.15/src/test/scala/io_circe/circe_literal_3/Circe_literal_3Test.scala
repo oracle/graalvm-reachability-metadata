@@ -49,6 +49,19 @@ class Circe_literal_3Test:
     assert(cursor.downField("nested").get[Boolean]("flag").contains(false))
 
   @Test
+  def buildsTopLevelJsonValuesFromLiteralAndInterpolatedInputs(): Unit =
+    val message: String = "top-level string"
+    val count: Int = 17
+    val enabled: Boolean = false
+
+    assert(json"null" == Json.Null)
+    assert(json"true" == Json.True)
+    assert(json"-12.5" == Json.fromDoubleOrNull(-12.5))
+    assert(json"$message" == Json.fromString(message))
+    assert(json"$count" == Json.fromInt(count))
+    assert(json"$enabled" == Json.fromBoolean(enabled))
+
+  @Test
   def encodesInterpolatedScalarCollectionAndJsonValues(): Unit =
     val name: String = "generated"
     val count: Int = 42
