@@ -213,6 +213,18 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def interpolatesSingleTopLevelValuesWithEncoders(): Unit = {
+    val deployment: Deployment = Deployment("reporting", "4.5.6", 2)
+    val disabledRegion: Option[String] = None
+
+    val deploymentJson: Json = json""" $deployment """
+    val absentJson: Json = json""" $disabledRegion """
+
+    assertEquals(Right(deployment), deploymentJson.as[Deployment])
+    assertTrue(absentJson.isNull)
+  }
+
+  @Test
   def composesLiteralOutputWithCirceCursorEditingAndPrinting(): Unit = {
     val document: Json = json"""
       {
