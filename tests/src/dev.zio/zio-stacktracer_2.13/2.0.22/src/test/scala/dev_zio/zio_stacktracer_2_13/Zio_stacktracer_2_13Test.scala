@@ -36,6 +36,18 @@ class Zio_stacktracer_2_13Test {
   }
 
   @Test
+  def explicitSourceLocationMacroReportsDistinctCallSiteLines(): Unit = {
+    val first: SourceLocation = SourceLocation.sourceLocation
+    val second: SourceLocation = SourceLocation.sourceLocation
+
+    assertEquals(first.path, second.path)
+    assertTrue(
+      first.path.endsWith("Zio_stacktracer_2_13Test.scala"),
+      s"Unexpected path: ${first.path}")
+    assertEquals(first.line + 1, second.line)
+  }
+
+  @Test
   def sourceLocationCompanionSupportsCaseClassOperations(): Unit = {
     val location: SourceLocation = SourceLocation("src/main/scala/Example.scala", 17)
     val SourceLocation(path, line) = location
