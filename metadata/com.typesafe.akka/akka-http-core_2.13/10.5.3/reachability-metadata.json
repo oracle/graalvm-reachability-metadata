@@ -2,7 +2,21 @@
   "reflection" : [
     {
       "condition" : {
-        "typeReached" : "akka.actor.ActorSystem$"
+        "typeReached" : "akka.http.impl.engine.http2.Http2AlpnSupport$"
+      },
+      "type" : "javax.net.ssl.SSLEngine",
+      "methods" : [
+        {
+          "name" : "setHandshakeApplicationProtocolSelector",
+          "parameterTypes" : [
+            "java.util.function.BiFunction"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "akka.http.impl.engine.client.PoolMasterActor$"
       },
       "type" : "akka.http.impl.engine.client.PoolMasterActor",
       "allDeclaredConstructors" : true
@@ -10,21 +24,12 @@
   ],
   "resources" : [
     {
-      "condition" : {
-        "typeReached" : "akka.actor.ActorSystem$"
-      },
       "glob" : "akka-http-version.conf"
     },
     {
-      "condition" : {
-        "typeReached" : "akka.actor.ActorSystem$"
-      },
       "glob" : "akka-http-version.json"
     },
     {
-      "condition" : {
-        "typeReached" : "akka.actor.ActorSystem$"
-      },
       "glob" : "akka-http-version.properties"
     }
   ]
