@@ -1,0 +1,763 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f0658-d496-7ec0-8f48-a9bbcdbceec4
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.neo4j.bolt:neo4j-bolt-connection-netty:4.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [4.0.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json
+- Entry selector: "metadata-version" = "4.0.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 4.0.0
+- Entry metadata-version: 4.0.0
+- Entry test-version: 4.0.0
+- Entry tested-versions: [4.0.0]
+codex
+I’ll verify the artifact’s Maven metadata and upstream tag layout before editing the JSON, then I’ll only fill fields that are currently missing.
+exec
+/usr/bin/bash -lc 'rg -n "neo4j-bolt-connection-netty|neo4j-bolt" metadata tests -S' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e
+ succeeded in 0ms:
+metadata/org.neo4j.bolt/neo4j-bolt-connection-routed/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-routed/$version$/neo4j-bolt-connection-routed-$version$-sources.jar",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-routed/index.json:7:    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection-routed/src/test",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-routed/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-routed/$version$/neo4j-bolt-connection-routed-$version$-javadoc.jar",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-pooled/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-pooled/$version$/neo4j-bolt-connection-pooled-$version$-sources.jar",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-pooled/index.json:7:    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection-pooled/src/test",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-pooled/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-pooled/$version$/neo4j-bolt-connection-pooled-$version$-javadoc.jar",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-sources.jar",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json:7:    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection-netty/src/test",
+metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-javadoc.jar",
+metadata/org.neo4j.bolt/neo4j-bolt-connection/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection/$version$/neo4j-bolt-connection-$version$-sources.jar",
+metadata/org.neo4j.bolt/neo4j-bolt-connection/index.json:7:    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection/src/test",
+metadata/org.neo4j.bolt/neo4j-bolt-connection/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection/$version$/neo4j-bolt-connection-$version$-javadoc.jar",
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-routed/2.0.0/build.gradle:14:    testImplementation "org.neo4j.bolt:neo4j-bolt-connection-routed:$libraryVersion"
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-routed/2.0.0/settings.gradle:20:rootProject.name = 'org.neo4j.bolt.neo4j-bolt-connection-routed_tests'
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-routed/2.0.0/gradle.properties:4:library.coordinates = org.neo4j.bolt:neo4j-bolt-connection-routed:2.0.0
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-routed/2.0.0/gradle.properties:6:metadata.dir = org.neo4j.bolt/neo4j-bolt-connection-routed/2.0.0/
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-pooled/2.0.0/build.gradle:14:    testImplementation "org.neo4j.bolt:neo4j-bolt-connection-pooled:$libraryVersion"
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-pooled/2.0.0/settings.gradle:20:rootProject.name = 'org.neo4j.bolt.neo4j-bolt-connection-pooled_tests'
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-pooled/2.0.0/src/test/java/org_neo4j_bolt/neo4j_bolt_connection_pooled/Neo4j_bolt_connection_pooledTest.java:74:    private static final BoltAgent AGENT = new BoltAgent("neo4j-bolt-pooled-test", "JVM", "Java", "JUnit");
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-pooled/2.0.0/gradle.properties:4:library.coordinates = org.neo4j.bolt:neo4j-bolt-connection-pooled:2.0.0
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-pooled/2.0.0/gradle.properties:6:metadata.dir = org.neo4j.bolt/neo4j-bolt-connection-pooled/2.0.0/
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-netty/2.0.0/build.gradle:14:    testImplementation "org.neo4j.bolt:neo4j-bolt-connection-netty:$libraryVersion"
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-netty/2.0.0/settings.gradle:20:rootProject.name = 'org.neo4j.bolt.neo4j-bolt-connection-netty_tests'
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-netty/2.0.0/src/test/java/org_neo4j_bolt/neo4j_bolt_connection_netty/Neo4j_bolt_connection_nettyTest.java:94:    private static final BoltAgent AGENT = new BoltAgent("neo4j-bolt-netty-test", "JVM", "Java", "JUnit");
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-netty/2.0.0/gradle.properties:4:library.coordinates = org.neo4j.bolt:neo4j-bolt-connection-netty:2.0.0
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-netty/2.0.0/gradle.properties:6:metadata.dir = org.neo4j.bolt/neo4j-bolt-connection-netty/2.0.0/
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-netty/4.0.0/build.gradle:14:    testImplementation "org.neo4j.bolt:neo4j-bolt-connection-netty:$libraryVersion"
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-netty/4.0.0/settings.gradle:20:rootProject.name = 'org.neo4j.bolt.neo4j-bolt-connection-netty_tests'
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-netty/4.0.0/src/test/java/org_neo4j_bolt/neo4j_bolt_connection_netty/Neo4j_bolt_connection_nettyTest.java:94:    private static final BoltAgent AGENT = new BoltAgent("neo4j-bolt-netty-test", "JVM", "Java", "JUnit");
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-netty/4.0.0/gradle.properties:4:library.coordinates = org.neo4j.bolt:neo4j-bolt-connection-netty:4.0.0
+tests/src/org.neo4j.bolt/neo4j-bolt-connection-netty/4.0.0/gradle.properties:6:metadata.dir = org.neo4j.bolt/neo4j-bolt-connection-netty/4.0.0/
+tests/src/org.neo4j.bolt/neo4j-bolt-connection/2.0.0/build.gradle:14:    testImplementation "org.neo4j.bolt:neo4j-bolt-connection:$libraryVersion"
+tests/src/org.neo4j.bolt/neo4j-bolt-connection/2.0.0/settings.gradle:20:rootProject.name = 'org.neo4j.bolt.neo4j-bolt-connection_tests'
+tests/src/org.neo4j.bolt/neo4j-bolt-connection/2.0.0/src/test/java/org_neo4j_bolt/neo4j_bolt_connection/Neo4j_bolt_connectionTest.java:320:        java.nio.file.Path certificateFile = Files.createTempFile("neo4j-bolt-connection-ca", ".pem");
+tests/src/org.neo4j.bolt/neo4j-bolt-connection/2.0.0/src/test/java/org_neo4j_bolt/neo4j_bolt_connection/Neo4j_bolt_connectionTest.java:335:                    .anyMatch(subject -> subject.contains("CN=neo4j-bolt-connection-test"));
+tests/src/org.neo4j.bolt/neo4j-bolt-connection/2.0.0/src/test/java/org_neo4j_bolt/neo4j_bolt_connection/Neo4j_bolt_connectionTest.java:436:        assertThat(new BoltAgent("neo4j-bolt-connection-test", "JVM", "Java", "JUnit").product())
+tests/src/org.neo4j.bolt/neo4j-bolt-connection/2.0.0/src/test/java/org_neo4j_bolt/neo4j_bolt_connection/Neo4j_bolt_connectionTest.java:437:                .isEqualTo("neo4j-bolt-connection-test");
+tests/src/org.neo4j.bolt/neo4j-bolt-connection/2.0.0/gradle.properties:4:library.coordinates = org.neo4j.bolt:neo4j-bolt-connection:2.0.0
+tests/src/org.neo4j.bolt/neo4j-bolt-connection/2.0.0/gradle.properties:6:metadata.dir = org.neo4j.bolt/neo4j-bolt-connection/2.0.0/
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-sources.jar",
+    "repository-url" : "https://github.com/neo4j/bolt-connection-java",
+    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection-netty/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-javadoc.jar",
+    "description" : "Neo4j Bolt Connection Netty is the Netty-based reference implementation for creating Neo4j Bolt protocol connections from Java code. It provides asynchronous networking, message encoding, and protocol plumbing used by Neo4j drivers and related Neo4j solutions rather than a standalone end-user driver.",
+    "tested-versions" : [
+      "2.0.0"
+    ],
+    "allowed-packages" : [
+      "org.neo4j.bolt.connection.netty"
+    ]
+  },
+  {
+    "metadata-version" : "4.0.0",
+    "tested-versions" : [
+      "4.0.0"
+    ],
+    "allowed-packages" : [
+      "org.neo4j.bolt.connection.netty"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e
+ succeeded in 0ms:
+web search: 
+web search: org.neo4j.bolt neo4j-bolt-connection-netty 4.0.0 Maven Central sources javadoc tests
+codex
+The existing 2.0.0 entry already matches the likely Maven Central + GitHub pattern. I’m checking that the same templates render successfully for `4.0.0`, including whether a Maven test artifact exists before falling back to GitHub tests.
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/4.0.0/neo4j-bolt-connection-netty-4.0.0-sources.jar' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 26 Jun 2026 23:52:09 GMT
+content-type: application/java-archive
+content-length: 193149
+cf-ray: a1201fc0ff72bb29-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 12919
+etag: "c9b81287b54a6065523a8f3fa966b253"
+last-modified: Thu, 12 Jun 2025 18:36:32 GMT
+x-checksum-md5: c9b81287b54a6065523a8f3fa966b253
+x-checksum-sha1: 99a47a986920fe0e2793cd89cc8b733cdb195844
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/4.0.0/neo4j-bolt-connection-netty-4.0.0.pom' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/4.0.0/neo4j-bolt-connection-netty-4.0.0-tests.jar' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e
+ exited 22 in 0ms:
+curl: (22) The requeHTTP/2 404 
+date: Fri, 26 Jun 2026 23:52:09 GMT
+content-type: text/html
+cf-ray: a1201fc0fbfc27b9-LYS
+cf-cache-status: HIT
+age: 985
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/4.0.0/neo4j-bolt-connection-netty-4.0.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+sted URL returned error: 404
+
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.neo4j.bolt</groupId>
+        <artifactId>neo4j-bolt-connection-parent</artifactId>
+        <version>4.0.0</version>
+    </parent>
+
+    <artifactId>neo4j-bolt-connection-netty</artifactId>
+
+    <packaging>jar</packaging>
+    <name>Neo4j Bolt Connection (Bolt Provider reference impl)</name>
+    <description>Implements a provider that supports `bolt`, `bolt+s` and `bolt+ssc` schemes.</description>
+
+    <properties>
+        <maven.compiler.xlint.extras>,-try</maven.compiler.xlint.extras>
+        <maven.deploy.skip>false</maven.deploy.skip>
+        <rootDir>${project.basedir}/..</rootDir>
+        <surefire.jpms.args>--add-opens org.neo4j.bolt.connection.netty/org.neo4j.bolt.connection.netty.impl.util.messaging=ALL-UNNAMED</surefire.jpms.args>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.neo4j.bolt</groupId>
+                <artifactId>neo4j-bolt-connection-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-handler</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-tcnative-classes</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j.bolt</groupId>
+            <artifactId>neo4j-bolt-connection</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.neo4j.bolt</groupId>
+            <artifactId>neo4j-bolt-connection-test-values</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit-platform</artifactId>
+                        <version>${surefire.and.failsafe.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/4.0.0/neo4j-bolt-connection-netty-4.0.0-javadoc.jar' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e
+ succeeded in 0ms:
+HTTP/2 200 
+date: Fri, 26 Jun 2026 23:52:09 GMT
+content-type: application/java-archive
+content-length: 1177053
+cf-ray: a1201fc0fb672789-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 12919
+etag: "7297f7bb593728841cb6efaf647934da"
+last-modified: Thu, 12 Jun 2025 18:36:32 GMT
+x-checksum-md5: 7297f7bb593728841cb6efaf647934da
+x-checksum-sha1: 9c9398f09d1baef3f29e7d4c22b2a34dfc484726
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/neo4j/bolt-connection-java/tree/4.0.0/neo4j-bolt-connection-netty/src/test' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e
+ succeeded in 704ms:
+HTTP/2 200 
+date: Fri, 26 Jun 2026 23:52:09 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"bcd08d1a61e027ad6558b54470c7327b"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com wss://production-copilot-host.webpubsub.azure.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=F3lUVeDaKYJxNqjXlC%2BvoXYZT63JxRgfHkyAa6kZQOMc5O7U2BXCerFTnbuiXZsoGt5sVUyhSnZWL%2FukCE6%2Bw%2Bf8nfh2kMaVBOz2Oxc6Fx6WwwFM5Wlt5LmMI1eU1dehruw9kp1EX2QzWIkBlG1MOAtzH4E8tWc2b3tmFhzFno1Q7maRVjEHx630wGN54X91oOrtab92KPkrv4Gkmm9%2Bvaj0JN3q7AZHQ7liPPWFSiTAp2W%2B6ihAjjnFLnPWZ0DjJ4mDJ12DZOqyeTCnchjmsw%3D%3D--vJXrV548FdvV6iYk--lGFISkv2uE8PmH9XHRTsuQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.215020469.1782517929; expires=Sat, 26 Jun 2027 23:52:09 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sat, 26 Jun 2027 23:52:09 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6207:212836:7354578:55C83F8:6A3F10A9
+
+
+web search: 
+web search: https://github.com/neo4j/bolt-connection-java/tree/4.0.0/neo4j-bolt-connection-netty/src/test
+web search: 
+web search: repo1.maven.org maven2 org neo4j bolt neo4j-bolt-connection-netty 4.0.0 sources jar
+web search: 
+web search: central.sonatype.com artifact org.neo4j.bolt neo4j-bolt-connection-netty 4.0.0
+web search: 
+web search: https://mvnrepository.com/artifact/org.neo4j.bolt/neo4j-bolt-connection-netty/versions
+web search: 
+web search: https://mvnrepository.com/artifact/org.neo4j.bolt/neo4j-bolt-connection-netty/versions
+web search: 
+web search: https://mvnrepository.com/artifact/org.neo4j.bolt/neo4j-bolt-connection-netty/4.0.0
+codex
+The rendered Maven source and javadoc jars for `4.0.0` return 200, while a Maven `-tests.jar` returns 404, so I’m using Maven for source/docs and the version tag’s GitHub `src/test` directory for tests. The upstream repo identifies this as Java-only, so I’ll leave `language` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json
+diff --git a/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json b/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json
+index 1960d914cd368a000c4b3caa33ce7cdb2799636d..844a1be9c8f33a7353b8aac4ac5b8c3c73e8b6ff
+--- a/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json
++++ b/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "4.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-sources.jar",
++    "repository-url" : "https://github.com/neo4j/bolt-connection-java",
++    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection-netty/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-javadoc.jar",
++    "description" : "Neo4j Bolt Connection Netty is the Netty-based reference implementation for creating Neo4j Bolt protocol connections from Java code. It provides asynchronous networking, message encoding, and protocol plumbing used by Neo4j drivers and related Neo4j solutions rather than a standalone end-user driver.",
+     "tested-versions" : [
+       "4.0.0"
+     ],
+
+diff --git a/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json b/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json
+index 1960d914cd368a000c4b3caa33ce7cdb2799636d..844a1be9c8f33a7353b8aac4ac5b8c3c73e8b6ff
+--- a/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json
++++ b/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "4.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-sources.jar",
++    "repository-url" : "https://github.com/neo4j/bolt-connection-java",
++    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection-netty/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-javadoc.jar",
++    "description" : "Neo4j Bolt Connection Netty is the Netty-based reference implementation for creating Neo4j Bolt protocol connections from Java code. It provides asynchronous networking, message encoding, and protocol plumbing used by Neo4j drivers and related Neo4j solutions rather than a standalone end-user driver.",
+     "tested-versions" : [
+       "4.0.0"
+     ],
+
+web search: 
+web search: GitHub neo4j bolt-connection-java neo4j-bolt-connection-netty
+codex
+The JSON has been patched. I’m running a lightweight parse plus the repository metadata checker for the selected coordinate so any formatting or schema issue shows up before I hand it back.
+exec
+/usr/bin/bash -lc 'jq . metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json >/dev/null' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e
+ succeeded in 0ms:
+diff --git i/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json w/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json
+index 1960d914cd..844a1be9c8 100644
+--- i/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json
++++ w/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "4.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-sources.jar",
++    "repository-url" : "https://github.com/neo4j/bolt-connection-java",
++    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection-netty/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-javadoc.jar",
++    "description" : "Neo4j Bolt Connection Netty is the Netty-based reference implementation for creating Neo4j Bolt protocol connections from Java code. It provides asynchronous networking, message encoding, and protocol plumbing used by Neo4j drivers and related Neo4j solutions rather than a standalone end-user driver.",
+     "tested-versions" : [
+       "4.0.0"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.neo4j.bolt:neo4j-bolt-connection-netty:4.0.0 --stacktrace' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e
+diff --git a/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json b/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json
+index 1960d914cd368a000c4b3caa33ce7cdb2799636d..844a1be9c8f33a7353b8aac4ac5b8c3c73e8b6ff
+--- a/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json
++++ b/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "4.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-sources.jar",
++    "repository-url" : "https://github.com/neo4j/bolt-connection-java",
++    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection-netty/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-javadoc.jar",
++    "description" : "Neo4j Bolt Connection Netty is the Netty-based reference implementation for creating Neo4j Bolt protocol connections from Java code. It provides asynchronous networking, message encoding, and protocol plumbing used by Neo4j drivers and related Neo4j solutions rather than a standalone end-user driver.",
+     "tested-versions" : [
+       "4.0.0"
+     ],
+
+ exited 1 in 3430ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.neo4j.bolt:neo4j-bolt-connection-netty:4.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/4.0.0/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.neo4j.bolt:neo4j-bolt-connection-netty:4.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/4.0.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.neo4j.bolt:neo4j-bolt-connection-netty:4.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/4.0.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+9 actionable tasks: 1 executed, 8 up-to-date
+BUILD FAILED in 3s
+
+web search: 
+web search: https://central.sonatype.com/artifact/org.neo4j.bolt/neo4j-bolt-connection-netty/4.0.0
+web search: 
+web search: central.sonatype.com/artifact/org.neo4j.bolt/neo4j-bolt-connection-netty/4.0.0
+web search: 
+web search: github.com/neo4j/bolt-connection-java 4.0.0 neo4j-bolt-connection-netty src/test
+codex
+`jq` accepted the file. The repository metadata checker fails for this coordinate because the existing `metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/4.0.0/` directory lacks `reachability-metadata.json`, which is outside the URL field update requested here.
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json | sed -n '14,34p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e
+ succeeded in 0ms:
+    14	      "org.neo4j.bolt.connection.netty"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "4.0.0",
+    19	    "source-code-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-sources.jar",
+    20	    "repository-url" : "https://github.com/neo4j/bolt-connection-java",
+    21	    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection-netty/src/test",
+    22	    "documentation-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-javadoc.jar",
+    23	    "description" : "Neo4j Bolt Connection Netty is the Netty-based reference implementation for creating Neo4j Bolt protocol connections from Java code. It provides asynchronous networking, message encoding, and protocol plumbing used by Neo4j drivers and related Neo4j solutions rather than a standalone end-user driver.",
+    24	    "tested-versions" : [
+    25	      "4.0.0"
+    26	    ],
+    27	    "allowed-packages" : [
+    28	      "org.neo4j.bolt.connection.netty"
+    29	    ]
+    30	  }
+    31	]
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e
+ succeeded in 0ms:
+ M metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json
+
+diff --git a/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json b/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json
+index 1960d914cd368a000c4b3caa33ce7cdb2799636d..844a1be9c8f33a7353b8aac4ac5b8c3c73e8b6ff
+--- a/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json
++++ b/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "4.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-sources.jar",
++    "repository-url" : "https://github.com/neo4j/bolt-connection-java",
++    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection-netty/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-javadoc.jar",
++    "description" : "Neo4j Bolt Connection Netty is the Netty-based reference implementation for creating Neo4j Bolt protocol connections from Java code. It provides asynchronous networking, message encoding, and protocol plumbing used by Neo4j drivers and related Neo4j solutions rather than a standalone end-user driver.",
+     "tested-versions" : [
+       "4.0.0"
+     ],
+
+web search: 
+web search: Neo4j Bolt Connection Java GitHub
+web search: 
+web search: https://central.sonatype.com/artifact/org.neo4j.bolt/neo4j-bolt-connection-netty/4.0.0
+web search: 
+web search: "pkg:maven/org.neo4j.bolt/neo4j-bolt-connection-netty@4.0.0"
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json:18) for metadata version `4.0.0`.
+
+Filled:
+```json
+{
+  "source-code-url": "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-sources.jar",
+  "repository-url": "https://github.com/neo4j/bolt-connection-java",
+  "test-code-url": "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection-netty/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-javadoc.jar",
+  "description": "Neo4j Bolt Connection Netty is the Netty-based reference implementation for creating Neo4j Bolt protocol connections from Java code. It provides asynchronous networking, message encoding, and protocol plumbing used by Neo4j drivers and related Neo4j solutions rather than a standalone end-user driver."
+}
+```
+
+I left `language` absent because this is a Java library, not Kotlin/Groovy/Scala-specific. The repository and artifact description match Neo4j’s Bolt Connection Java project and the Maven artifact listing. ([github.com](https://github.com/neo4j/bolt-connection-java/blob/main/pom.xml?utm_source=openai))
+
+Verification:
+- `jq` parse: passed.
+- Maven source jar and javadoc jar for `4.0.0`: verified with HTTP 200.
+- Maven `-tests.jar`: HTTP 404, so GitHub tagged `src/test` was used.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.neo4j.bolt:neo4j-bolt-connection-netty:4.0.0 --stacktrace`: failed because `metadata/.../4.0.0/reachability-metadata.json` is missing, which is outside the requested URL/description update.
+diff --git a/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json b/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json
+index 1960d914cd368a000c4b3caa33ce7cdb2799636d..844a1be9c8f33a7353b8aac4ac5b8c3c73e8b6ff
+--- a/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json
++++ b/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "4.0.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-sources.jar",
++    "repository-url" : "https://github.com/neo4j/bolt-connection-java",
++    "test-code-url" : "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection-netty/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-javadoc.jar",
++    "description" : "Neo4j Bolt Connection Netty is the Netty-based reference implementation for creating Neo4j Bolt protocol connections from Java code. It provides asynchronous networking, message encoding, and protocol plumbing used by Neo4j drivers and related Neo4j solutions rather than a standalone end-user driver.",
+     "tested-versions" : [
+       "4.0.0"
+     ],
+
+tokens used
+97,790
+Updated [index.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e/metadata/org.neo4j.bolt/neo4j-bolt-connection-netty/index.json:18) for metadata version `4.0.0`.
+
+Filled:
+```json
+{
+  "source-code-url": "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-sources.jar",
+  "repository-url": "https://github.com/neo4j/bolt-connection-java",
+  "test-code-url": "https://github.com/neo4j/bolt-connection-java/tree/$version$/neo4j-bolt-connection-netty/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/neo4j/bolt/neo4j-bolt-connection-netty/$version$/neo4j-bolt-connection-netty-$version$-javadoc.jar",
+  "description": "Neo4j Bolt Connection Netty is the Netty-based reference implementation for creating Neo4j Bolt protocol connections from Java code. It provides asynchronous networking, message encoding, and protocol plumbing used by Neo4j drivers and related Neo4j solutions rather than a standalone end-user driver."
+}
+```
+
+I left `language` absent because this is a Java library, not Kotlin/Groovy/Scala-specific. The repository and artifact description match Neo4j’s Bolt Connection Java project and the Maven artifact listing. ([github.com](https://github.com/neo4j/bolt-connection-java/blob/main/pom.xml?utm_source=openai))
+
+Verification:
+- `jq` parse: passed.
+- Maven source jar and javadoc jar for `4.0.0`: verified with HTTP 200.
+- Maven `-tests.jar`: HTTP 404, so GitHub tagged `src/test` was used.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.neo4j.bolt:neo4j-bolt-connection-netty:4.0.0 --stacktrace`: failed because `metadata/.../4.0.0/reachability-metadata.json` is missing, which is outside the requested URL/description update.
+Ran agent for org.neo4j.bolt:neo4j-bolt-connection-netty:4.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e/build/agent-url-discovery-logs/org.neo4j.bolt-neo4j-bolt-connection-netty-4.0.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8667-a652b62e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 36s
+9 actionable tasks: 1 executed, 8 up-to-date
