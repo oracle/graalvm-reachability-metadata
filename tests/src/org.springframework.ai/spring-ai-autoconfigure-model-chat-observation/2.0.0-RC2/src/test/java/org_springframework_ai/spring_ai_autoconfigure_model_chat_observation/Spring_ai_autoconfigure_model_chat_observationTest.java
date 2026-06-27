@@ -49,6 +49,27 @@ public class Spring_ai_autoconfigure_model_chat_observationTest {
     }
 
     @Test
+    void loggingPropertiesWithoutTracerDoNotEnableTracingAwareHandlers() {
+        this.contextRunner
+                .withUserConfiguration(MeterRegistryConfiguration.class)
+                .withPropertyValues(
+                        "spring.ai.chat.observations.log-prompt=true",
+                        "spring.ai.chat.observations.log-completion=true",
+                        "spring.ai.chat.observations.include-error-logging=true")
+                .run(context -> {
+                    ChatObservationProperties properties = context.getBean(ChatObservationProperties.class);
+                    assertThat(properties.isLogPrompt()).isTrue();
+                    assertThat(properties.isLogCompletion()).isTrue();
+                    assertThat(properties.isIncludeErrorLogging()).isTrue();
+
+                    assertThat(context).hasSingleBean(ChatModelMeterObservationHandler.class);
+                    assertThat(context).doesNotHaveBean("chatModelPromptContentObservationHandler");
+                    assertThat(context).doesNotHaveBean("chatModelCompletionObservationHandler");
+                    assertThat(context).doesNotHaveBean(ErrorLoggingObservationHandler.class);
+                });
+    }
+
+    @Test
     void loggingPropertiesAndTracerEnableTracingAwareHandlers() {
         this.contextRunner
                 .withUserConfiguration(MeterRegistryConfiguration.class, TracerConfiguration.class)
