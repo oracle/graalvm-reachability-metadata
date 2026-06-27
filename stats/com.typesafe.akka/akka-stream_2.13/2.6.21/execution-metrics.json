@@ -1,0 +1,58 @@
+{
+  "add_new_library_support:2026-06-27": {
+    "timestamp": "2026-06-27T08:00:18.454570Z",
+    "library": "com.typesafe.akka:akka-stream_2.13:2.6.21",
+    "starting_commit": "117f59800c1e9a60d012ac2cd02bcd70927be59b",
+    "ending_commit": "4ffe4b06705c6f0ac351d2b1fe08ce64a3cd1884",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 5415,
+      "issue_label": "library-new-request",
+      "library": "com.typesafe.akka:akka-stream_2.13:2.6.21",
+      "summary": "Akka Streams is usable in-process with the target artifact alone; its required runtime dependencies are transitive and no Docker image, extra Maven dependency, environment variable, or system property is needed before meaningful coverage.",
+      "deterministic_setup": [],
+      "agent_guidance": "No environment or system properties are required. Meaningful tests can use the normal Java DSL by creating an in-process ActorSystem, running Source/Flow/Sink operations, awaiting CompletionStage results, and terminating the ActorSystem after assertions.",
+      "risks": [
+        "Akka Streams tests are asynchronous; failing to await stream completion or terminate the ActorSystem can cause flaky or hanging tests.",
+        "Native Image verification remains authoritative because Akka loads reference.conf resources and uses actor/stream internals that may require generated reachability metadata."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#5415 Support for com.typesafe.akka:akka-stream_2.13:2.6.21; label=library-new-request; body_chars=291"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 52033,
+      "output_tokens_used": 4505,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/com.typesafe.akka:akka-stream_2.13:2.6.21/library-preparation-preflight/pi-generation-2026-06-27T07-29-13-626679Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 94710,
+      "cached_input_tokens_used": 555520,
+      "output_tokens_used": 11845,
+      "iterations": 3,
+      "cost_usd": 0.6331,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
+  }
+}

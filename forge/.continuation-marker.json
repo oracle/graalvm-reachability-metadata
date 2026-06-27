@@ -1,0 +1,72 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "com.typesafe.akka:akka-stream_2.13:2.6.21",
+  "issueNumber": 5415,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment or system properties are required. Meaningful tests can use the normal Java DSL by creating an in-process ActorSystem, running Source/Flow/Sink operations, awaiting CompletionStage results, and terminating the ActorSystem after assertions.",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#5415 Support for com.typesafe.akka:akka-stream_2.13:2.6.21; label=library-new-request; body_chars=291"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 52033,
+    "issue_label": "library-new-request",
+    "issue_number": 5415,
+    "library": "com.typesafe.akka:akka-stream_2.13:2.6.21",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 4505,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Akka Streams tests are asynchronous; failing to await stream completion or terminate the ActorSystem can cause flaky or hanging tests.",
+      "Native Image verification remains authoritative because Akka loads reference.conf resources and uses actor/stream internals that may require generated reachability metadata."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/com.typesafe.akka:akka-stream_2.13:2.6.21/library-preparation-preflight/pi-generation-2026-06-27T07-29-13-626679Z.log",
+    "status": "completed",
+    "summary": "Akka Streams is usable in-process with the target artifact alone; its required runtime dependencies are transitive and no Docker image, extra Maven dependency, environment variable, or system property is needed before meaningful coverage."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 3,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-5415-library-new-request-com.typesafe.akka-akka-stream_2.13-2.6.21-6705bafc",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "com.typesafe.akka:akka-stream_2.13:2.6.21",
+    "timestamp": "2026-06-27T08:00:18.454570Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
