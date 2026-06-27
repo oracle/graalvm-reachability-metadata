@@ -1,0 +1,747 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f0ab1-73c8-7f80-84b2-0d15f0f77814
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.clojure:google-closure-library-third-party:0.0-1376-2
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [0.0-1376-2].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0/metadata/org.clojure/google-closure-library-third-party/index.json
+- Entry selector: "metadata-version" = "0.0-1376-2"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 0.0-1376-2
+- Entry metadata-version: 0.0-1376-2
+- Entry test-version: 0.0-1376-2
+- Entry tested-versions: [0.0-1376-2]
+codex
+I’ll verify the artifact metadata and versioned links first, then update only the blank fields in the target `index.json`. I’m also checking whether Maven provides source or test artifacts for this exact version, since that takes precedence here.
+web search: 
+web search: org.clojure google-closure-library-third-party 0.0-1376-2 Maven sources
+codex
+The initial lookup points to the ClojureScript-maintained Maven artifact, not a normal language runtime library. I’m checking the Maven directory and POM next so the final URLs use the artifact’s own published coordinates where available.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.clojure/google-closure-library-third-party/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "0.0-1376",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
+    "repository-url" : "https://github.com/google/closure-library",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
+    "documentation-url" : "https://github.com/google/closure-library/blob/14be8b286a11c5c85482fa88134cba765af78f5c/README",
+    "description" : "Google Closure Library Third-Party Extensions packages optional third-party JavaScript modules used with the Google Closure Library, including Dojo DOM query helpers, MochiKit async utilities, lorem ipsum data, Caja HTML handling, and Silverlight support files. This Maven artifact is a non-official ClojureScript-maintained distribution of those files for consumers that resolve Closure Library dependencies through Maven.",
+    "tested-versions" : [
+      "0.0-1376"
+    ],
+    "allowed-packages" : [
+      "org.clojure"
+    ]
+  },
+  {
+    "metadata-version" : "0.0-1376-2",
+    "tested-versions" : [
+      "0.0-1376-2"
+    ],
+    "allowed-packages" : [
+      "org.clojure"
+    ]
+  },
+  {
+    "metadata-version" : "0.0-20250515-f04e4c0e",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$-sources.jar",
+    "repository-url" : "https://github.com/google/closure-library",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$-sources.jar",
+    "documentation-url" : "https://github.com/google/closure-library/blob/f04e4c0e/README.md",
+    "description" : "Google Closure Library Third-Party Extensions packages optional third-party JavaScript modules used with the Google Closure Library, including Dojo DOM query helpers and MochiKit async utilities. This Maven artifact is a non-official ClojureScript-maintained distribution of those files for consumers that resolve Closure Library dependencies through Maven.",
+    "tested-versions" : [
+      "0.0-20250515-f04e4c0e"
+    ],
+    "allowed-packages" : [
+      "org.clojure"
+    ]
+  },
+  {
+    "metadata-version" : "0.0-790",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
+    "repository-url" : "https://github.com/google/closure-library",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
+    "documentation-url" : "https://github.com/google/closure-library/blob/62181c26d02f0ea97cd831a8f8863d20e5622072/README",
+    "description" : "Google Closure Library Third-Party Extensions packages optional third-party JavaScript modules used with the Google Closure Library, including Dojo DOM query helpers, MochiKit async utilities, lorem ipsum data, Caja HTML handling, and Silverlight clipboard support. This Maven artifact is a non-official ClojureScript-maintained distribution of those files for consumers that resolve Closure Library dependencies through Maven.",
+    "tested-versions" : [
+      "0.0-790"
+    ],
+    "allowed-packages" : [
+      "org.clojure"
+    ]
+  },
+  {
+    "metadata-version" : "0.0-20170519-fa0499ef",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$-sources.jar",
+    "repository-url" : "https://github.com/google/closure-library",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$-sources.jar",
+    "documentation-url" : "https://github.com/google/closure-library/blob/fa0499ef097f49dc2788f3524e71921694624b50/README.md",
+    "description" : "Google Closure Library Third-Party Extensions packages optional third-party JavaScript modules used with the Google Closure Library, including browser-side utilities such as Caja HTML handling, MochiKit async helpers, lorem ipsum data, SVG pan support, and Dojo DOM query code. This Maven artifact is a non-official ClojureScript-maintained distribution of those files for consumers that resolve Closure Library dependencies through Maven.",
+    "tested-versions" : [
+      "0.0-20170519-fa0499ef"
+    ],
+    "allowed-packages" : [
+      "org.clojure"
+    ]
+  },
+  {
+    "metadata-version" : "0.0-20160609-f42b4a24",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$-sources.jar",
+    "repository-url" : "https://github.com/google/closure-library",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$-sources.jar",
+    "documentation-url" : "https://github.com/google/closure-library/blob/f42b4a24f312b9e8db04b558167b0e03e386338e/README.md",
+    "description" : "Google Closure Library Third-Party Extensions packages optional third-party JavaScript modules used with the Google Closure Library, including browser-side utilities such as Caja HTML handling, MochiKit async helpers, lorem ipsum data, SVG pan support, and Dojo DOM query code. This Maven artifact is a non-official ClojureScript-maintained distribution of those files for consumers that resolve Closure Library dependencies through Maven.",
+    "tested-versions" : [
+      "0.0-20160609-f42b4a24"
+    ],
+    "allowed-packages" : [
+      "org.clojure"
+    ]
+  },
+  {
+    "metadata-version" : "0.0-20150505-021ed5b3",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$-sources.jar",
+    "repository-url" : "https://github.com/google/closure-library",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$-sources.jar",
+    "documentation-url" : "https://github.com/google/closure-library/blob/021ed5b313da392a7139d0d3cf7011999ac8b672/README.md",
+    "description" : "Google Closure Library Third-Party Extensions packages optional third-party modules used with the Google Closure Library, including browser-side utilities such as Caja HTML handling, MochiKit async helpers, lorem ipsum data, SVG pan support, and Dojo DOM query code. This artifact is a ClojureScript-maintained Maven distribution of those JavaScript files for consumers that resolve dependencies through Maven.",
+    "tested-versions" : [
+      "0.0-20150505-021ed5b3"
+    ],
+    "allowed-packages" : [
+      "org.clojure"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/clojure/google-closure-library-third-party/0.0-1376-2/google-closure-library-third-party-0.0-1376-2.pom' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.clojure</groupId>
+  <artifactId>google-closure-library-third-party</artifactId>
+  <version>0.0-1376-2</version>
+  <packaging>jar</packaging>
+  <name>Google Closure Library Third-Party Extensions</name>
+
+  <url>http://code.google.com/p/closure-library/</url>
+
+  <description>
+    The Google Closure Library is a collection of JavaScript code
+    designed for use with the Google Closure JavaScript Compiler.
+
+    This non-official distribution was prepared by the ClojureScript
+    team at http://clojure.org/
+
+    This package contains extensions to the Google Closure Library
+    using third-party components, which may be distributed under
+    licenses other than the Apache license. Licenses for individual
+    library components may be found in source-code comments.
+
+    This release fixes bugs in the 0.0-1376 release surrounding use of
+    the Google Closure Library third-party extensions. 
+  </description>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>Google</name>
+    <url>http://www.google.com</url>
+  </organization>
+
+  <developers>
+    <developer><name>Google, Inc.</name></developer>
+    <developer><name>Mohamed Mansour</name><email>hello@mohamedmansour.com</email></developer>
+    <developer><name>Bjorn Tipling</name><email>bjorn.tipling@gmail.com</email></developer>
+    <developer><name>SameGoal LLC</name><email>help@samegoal.com</email></developer>
+    <developer><name>Guido Tapia</name><email>guido.tapia@gmail.com</email></developer>
+    <developer><name>Andrew Mattie</name><email>amattie@gmail.com</email></developer>
+    <developer><name>Ilia Mirkin</name><email>ibmirkin@gmail.com</email></developer>
+    <developer><name>Ivan Kozik</name><email>ivan.kozik@gmail.com</email></developer>
+    <developer><name>Rich Dougherty</name><email>rich@rd.gen.nz</email></developer>
+  </developers>
+
+  <scm>
+    <connection>scm:svn:http://closure-library.googlecode.com/svn/trunk</connection>
+    <developerConnection>scm:svn:http://closure-library.googlecode.com/svn/trunk</developerConnection>
+    <url>http://code.google.com/p/closure-library/source/browse/#svn/trunk</url>
+  </scm>
+
+  <issueManagement>
+    <system>code.google.com</system>
+    <url>http://code.google.com/p/closure-library/issues</url>
+  </issueManagement>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/clojure/google-closure-library-third-party/0.0-1376-2/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/clojure/google-closure-library-third-party/0.0-1376-2</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/clojure/google-closure-library-third-party/0.0-1376-2</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="google-closure-library-third-party-0.0-1376-2.jar" title="google-closure-library-third-party-0.0-1376-2.jar">google-closure-library-third-party-0.0-1376-2...</a>  2012-08-06 01:24     86428      
+<a href="google-closure-library-third-party-0.0-1376-2.jar.asc" title="google-closure-library-third-party-0.0-1376-2.jar.asc">google-closure-library-third-party-0.0-1376-2...</a>  2012-08-06 01:24       487      
+<a href="google-closure-library-third-party-0.0-1376-2.jar.asc.md5" title="google-closure-library-third-party-0.0-1376-2.jar.asc.md5">google-closure-library-third-party-0.0-1376-2...</a>  2012-08-06 01:24        32      
+<a href="google-closure-library-third-party-0.0-1376-2.jar.asc.sha1" title="google-closure-library-third-party-0.0-1376-2.jar.asc.sha1">google-closure-library-third-party-0.0-1376-2...</a>  2012-08-06 01:24        40      
+<a href="google-closure-library-third-party-0.0-1376-2.jar.md5" title="google-closure-library-third-party-0.0-1376-2.jar.md5">google-closure-library-third-party-0.0-1376-2...</a>  2012-08-06 01:24        32      
+<a href="google-closure-library-third-party-0.0-1376-2.jar.sha1" title="google-closure-library-third-party-0.0-1376-2.jar.sha1">google-closure-library-third-party-0.0-1376-2...</a>  2012-08-06 01:24        40      
+<a href="google-closure-library-third-party-0.0-1376-2.pom" title="google-closure-library-third-party-0.0-1376-2.pom">google-closure-library-third-party-0.0-1376-2...</a>  2012-08-06 01:24      2717      
+<a href="google-closure-library-third-party-0.0-1376-2.pom.asc" title="google-closure-library-third-party-0.0-1376-2.pom.asc">google-closure-library-third-party-0.0-1376-2...</a>  2012-08-06 01:24       487      
+<a href="google-closure-library-third-party-0.0-1376-2.pom.asc.md5" title="google-closure-library-third-party-0.0-1376-2.pom.asc.md5">google-closure-library-third-party-0.0-1376-2...</a>  2012-08-06 01:24        32      
+<a href="google-closure-library-third-party-0.0-1376-2.pom.asc.sha1" title="google-closure-library-third-party-0.0-1376-2.pom.asc.sha1">google-closure-library-third-party-0.0-1376-2...</a>  2012-08-06 01:24        40      
+<a href="google-closure-library-third-party-0.0-1376-2.pom.md5" title="google-closure-library-third-party-0.0-1376-2.pom.md5">google-closure-library-third-party-0.0-1376-2...</a>  2012-08-06 01:24        32      
+<a href="google-closure-library-third-party-0.0-1376-2.pom.sha1" title="google-closure-library-third-party-0.0-1376-2.pom.sha1">google-closure-library-third-party-0.0-1376-2...</a>  2012-08-06 01:24        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+codex
+Maven Central has only the POM and main JAR for `0.0-1376-2`; there is no `-sources.jar`, `-test-sources.jar`, or test JAR in that directory. I’m checking the artifact contents and the upstream revision mapping now, because this older release predates the newer commit-style versions in the same index.
+exec
+/usr/bin/bash -lc "curl -fsSLO https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-1376-2/google-closure-library-third-party-0.0-1376-2.jar && jar tf google-closure-library-third-party-0.0-1376-2.jar | sed -n '1,140p'" in /tmp
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/google/closure-library.git | rg '1376|v0.0|closure'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-1376-2/google-closure-library-third-party-0.0-1376-2-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-1376-2/google-closure-library-third-party-0.0-1376-2-test-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-1376-2/google-closure-library-third-party-0.0-1376-2-tests.jar \\
+  https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-1376-2/google-closure-library-third-party-0.0-1376-2.jar; do
+  code="'$(curl -o /dev/null -s -w '"'%{http_code}' -I \""'$url"); printf '"'%s %s\\n' \""'$code" "$url";
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0
+ succeeded in 239ms:
+META-INF/
+META-INF/MANIFEST.MF
+AUTHORS
+LICENSE
+README
+goog/
+goog/caja/
+goog/caja/string/
+goog/caja/string/html/
+goog/caja/string/html/htmlparser.js
+goog/caja/string/html/htmlsanitizer.js
+goog/dojo/
+goog/dojo/dom/
+goog/dojo/dom/query.js
+goog/dojo/dom/query_test.html
+goog/dojo/dom/query_test.js
+goog/jpeg_encoder/
+goog/jpeg_encoder/jpeg_encoder_basic.js
+goog/loremipsum/
+goog/loremipsum/text/
+goog/loremipsum/text/loremipsum.js
+goog/loremipsum/text/loremipsum_test.html
+goog/mochikit/
+goog/mochikit/async/
+goog/mochikit/async/deferred.js
+goog/mochikit/async/deferred_test.html
+goog/mochikit/async/deferredlist.js
+goog/mochikit/async/deferredlist_test.html
+goog/osapi/
+goog/osapi/osapi.js
+goog/silverlight/
+goog/silverlight/AppManifest.xml
+goog/silverlight/AssemblyInfo.cs
+goog/silverlight/clipboardbutton.js
+goog/silverlight/ClipboardButton.xaml
+goog/silverlight/ClipboardButton.xaml.cs
+goog/silverlight/ClipboardButtonApp.xaml
+goog/silverlight/ClipboardButtonApp.xaml.cs
+goog/silverlight/ClosureClipboardButton.csproj
+goog/silverlight/ClosureClipboardButton.csproj.user
+goog/silverlight/silverlight.js
+goog/silverlight/supporteduseragent.js
+goog/silverlight/xap_files
+
+ succeeded in 412ms:
+404 https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-1376-2/google-closure-library-third-party-0.0-1376-2-test-sources.jar
+404 https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-1376-2/google-closure-library-third-party-0.0-1376-2-tests.jar
+200 https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-1376-2/google-closure-library-third-party-0.0-1376-2.jar
+
+ exited 1 in 529ms:
+web search: 
+web search: https://github.com/google/closure-library/blob/14be8b286a11c5c85482fa88134cba765af78f5c/README
+web search: 
+web search: repo.maven.apache.org org.clojure google-closure-library-third-party 0.0-1376-2 pom
+web search: 
+web search: https://mvnrepository.com/artifact/org.clojure/google-closure-library-third-party/0.0-1376-2
+web search: 
+web search: https://mvnrepository.com/artifact/org.clojure/google-closure-library-third-party/0.0-1376-2
+codex
+The main JAR itself contains both the JavaScript sources and third-party test files such as `goog/dojo/dom/query_test.js`, so the Maven JAR is the best source and test URL for this old version. The upstream docs can use the same Closure Library revision already used by the adjacent `0.0-1376` entry.
+exec
+/usr/bin/bash -lc "jar tf /tmp/google-closure-library-third-party-0.0-1376-2.jar | rg '(_test\\.(js|html)|README|LICENSE|AUTHORS)'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0
+ succeeded in 0ms:
+AUTHORS
+LICENSE
+README
+goog/dojo/dom/query_test.html
+goog/dojo/dom/query_test.js
+goog/loremipsum/text/loremipsum_test.html
+goog/mochikit/async/deferred_test.html
+goog/mochikit/async/deferredlist_test.html
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/0.0-1376-2/google-closure-library-third-party-0.0-1376-2.jar \\
+  https://github.com/google/closure-library \\
+  https://github.com/google/closure-library/blob/14be8b286a11c5c85482fa88134cba765af78f5c/README; do
+  code="'$(curl -L -o /dev/null -s -w '"'%{http_code}' -I \""'$url"); printf '"'%s %s\\n' \""'$code" "$url";
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0
+exec
+/usr/bin/bash -lc 'curl -fsSL https://raw.githubusercontent.com/google/closure-library/14be8b286a11c5c85482fa88134cba765af78f5c/README' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0
+ succeeded in 112ms:
+Closure Library is a powerful, low level JavaScript library designed
+for building complex and scalable web applications. It is used by many
+major Google web applications, such as Gmail and Google Docs.
+
+For more information about Closure Library, visit:
+http://code.google.com/closure/library
+
+ succeeded in 1444ms:
+200 https://github.com/google/closure-library
+200 https://github.com/google/closure-library/blob/14be8b286a11c5c85482fa88134cba765af78f5c/README
+
+web search: 
+web search: "Google Closure Library Third-Party Extensions" "0.0-1376-2"
+codex
+I’m going to fill the missing metadata for the `0.0-1376-2` entry only. I’ll leave `language` absent because this artifact is a JavaScript asset distribution, not a Kotlin, Groovy, Scala 2, or Scala 3 library.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0/metadata/org.clojure/google-closure-library-third-party/index.json
+diff --git a/metadata/org.clojure/google-closure-library-third-party/index.json b/metadata/org.clojure/google-closure-library-third-party/index.json
+index dc7d9ff5246e4904567dd793b384368811fe00a3..5ea254b7a6af444fb425486e64a939569278e2c2
+--- a/metadata/org.clojure/google-closure-library-third-party/index.json
++++ b/metadata/org.clojure/google-closure-library-third-party/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "0.0-1376-2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
++    "repository-url" : "https://github.com/google/closure-library",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
++    "documentation-url" : "https://github.com/google/closure-library/blob/14be8b286a11c5c85482fa88134cba765af78f5c/README",
++    "description" : "Google Closure Library Third-Party Extensions packages optional third-party JavaScript modules used with the Google Closure Library, including Dojo DOM query helpers, MochiKit async utilities, lorem ipsum data, Caja HTML handling, and Silverlight support files. This non-official ClojureScript-maintained Maven release fixes issues in the 0.0-1376 distribution for consumers resolving Closure Library third-party extensions through Maven.",
+     "tested-versions" : [
+       "0.0-1376-2"
+     ],
+
+diff --git a/metadata/org.clojure/google-closure-library-third-party/index.json b/metadata/org.clojure/google-closure-library-third-party/index.json
+index dc7d9ff5246e4904567dd793b384368811fe00a3..5ea254b7a6af444fb425486e64a939569278e2c2
+--- a/metadata/org.clojure/google-closure-library-third-party/index.json
++++ b/metadata/org.clojure/google-closure-library-third-party/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "0.0-1376-2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
++    "repository-url" : "https://github.com/google/closure-library",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
++    "documentation-url" : "https://github.com/google/closure-library/blob/14be8b286a11c5c85482fa88134cba765af78f5c/README",
++    "description" : "Google Closure Library Third-Party Extensions packages optional third-party JavaScript modules used with the Google Closure Library, including Dojo DOM query helpers, MochiKit async utilities, lorem ipsum data, Caja HTML handling, and Silverlight support files. This non-official ClojureScript-maintained Maven release fixes issues in the 0.0-1376 distribution for consumers resolving Closure Library third-party extensions through Maven.",
+     "tested-versions" : [
+       "0.0-1376-2"
+     ],
+
+codex
+The file is updated. I’m running a JSON parse and the metadata validator for this coordinate so we catch any formatting or schema issue before I hand it back.
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.clojure/google-closure-library-third-party/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.clojure/google-closure-library-third-party/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0
+ succeeded in 0ms:
+diff --git i/metadata/org.clojure/google-closure-library-third-party/index.json w/metadata/org.clojure/google-closure-library-third-party/index.json
+index dc7d9ff524..5ea254b7a6 100644
+--- i/metadata/org.clojure/google-closure-library-third-party/index.json
++++ w/metadata/org.clojure/google-closure-library-third-party/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "0.0-1376-2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
++    "repository-url" : "https://github.com/google/closure-library",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
++    "documentation-url" : "https://github.com/google/closure-library/blob/14be8b286a11c5c85482fa88134cba765af78f5c/README",
++    "description" : "Google Closure Library Third-Party Extensions packages optional third-party JavaScript modules used with the Google Closure Library, including Dojo DOM query helpers, MochiKit async utilities, lorem ipsum data, Caja HTML handling, and Silverlight support files. This non-official ClojureScript-maintained Maven release fixes issues in the 0.0-1376 distribution for consumers resolving Closure Library third-party extensions through Maven.",
+     "tested-versions" : [
+       "0.0-1376-2"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.clojure:google-closure-library-third-party:0.0-1376-2' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0
+diff --git a/metadata/org.clojure/google-closure-library-third-party/index.json b/metadata/org.clojure/google-closure-library-third-party/index.json
+index dc7d9ff5246e4904567dd793b384368811fe00a3..5ea254b7a6af444fb425486e64a939569278e2c2
+--- a/metadata/org.clojure/google-closure-library-third-party/index.json
++++ b/metadata/org.clojure/google-closure-library-third-party/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "0.0-1376-2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
++    "repository-url" : "https://github.com/google/closure-library",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
++    "documentation-url" : "https://github.com/google/closure-library/blob/14be8b286a11c5c85482fa88134cba765af78f5c/README",
++    "description" : "Google Closure Library Third-Party Extensions packages optional third-party JavaScript modules used with the Google Closure Library, including Dojo DOM query helpers, MochiKit async utilities, lorem ipsum data, Caja HTML handling, and Silverlight support files. This non-official ClojureScript-maintained Maven release fixes issues in the 0.0-1376 distribution for consumers resolving Closure Library third-party extensions through Maven.",
+     "tested-versions" : [
+       "0.0-1376-2"
+     ],
+
+ exited 1 in 3313ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+Metadata files check failed for org.clojure:google-closure-library-third-party:0.0-1376-2: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0/metadata/org.clojure/google-closure-library-third-party/0.0-1376-2/
+> Task :checkMetadataFiles FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.clojure:google-closure-library-third-party:0.0-1376-2: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0/metadata/org.clojure/google-closure-library-third-party/0.0-1376-2/
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+9 actionable tasks: 1 executed, 8 up-to-date
+
+BUILD FAILED in 2s
+
+codex
+The JSON parses cleanly. `checkMetadataFiles` fails for this coordinate because the repository has no `metadata/.../0.0-1376-2/reachability-metadata.json`; I’m checking whether there is an index-only validator so the URL metadata can still be validated in isolation.
+exec
+/usr/bin/bash -lc 'rg "validateIndexFiles|IndexFiles|index files|index.json" -n build.gradle settings.gradle gradle tck-build-logic metadata | head -n 80' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0
+ succeeded in 0ms:
+rg: tck-build-logic: No such file or directory (os error 2)
+build.gradle:142:            "validateIndexFiles",
+build.gradle:616:    def moduleIndexFile = new File(tck.metadataRoot.get().asFile, "${gaPath}/index.json")
+build.gradle:621:    def backupModuleIndexFile = new File(fixBackupRoot, "module-index.json.bak")
+metadata/schemas/metadata-library-index-schema-v2.1.0.json:4:  "description": "Schema for metadata/<groupId>/<artifactId>/index.json. Each file either describes Native Image metadata bundles for a range of library versions, or marks the artifact as not applicable to Native Image.",
+
+exec
+/usr/bin/bash -lc "./gradlew tasks --all | rg -i 'index|metadata'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0
+diff --git a/metadata/org.clojure/google-closure-library-third-party/index.json b/metadata/org.clojure/google-closure-library-third-party/index.json
+index dc7d9ff5246e4904567dd793b384368811fe00a3..5ea254b7a6af444fb425486e64a939569278e2c2
+--- a/metadata/org.clojure/google-closure-library-third-party/index.json
++++ b/metadata/org.clojure/google-closure-library-third-party/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "0.0-1376-2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
++    "repository-url" : "https://github.com/google/closure-library",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
++    "documentation-url" : "https://github.com/google/closure-library/blob/14be8b286a11c5c85482fa88134cba765af78f5c/README",
++    "description" : "Google Closure Library Third-Party Extensions packages optional third-party JavaScript modules used with the Google Closure Library, including Dojo DOM query helpers, MochiKit async utilities, lorem ipsum data, Caja HTML handling, and Silverlight support files. This non-official ClojureScript-maintained Maven release fixes issues in the 0.0-1376 distribution for consumers resolving Closure Library third-party extensions through Maven.",
+     "tested-versions" : [
+       "0.0-1376-2"
+     ],
+
+ succeeded in 775ms:
+GraalVM Reachability Metadata TCK
+Tasks runnable from root project 'reachability-metadata'
+artifactTransforms - Displays the Artifact Transforms that can be executed in root project 'reachability-metadata'.
+buildEnvironment - Displays all buildscript dependencies declared in root project 'reachability-metadata'.
+dependencies - Displays all dependencies declared in root project 'reachability-metadata'.
+dependencyInsight - Displays the insight into a specific dependency in root project 'reachability-metadata'.
+outgoingVariants - Displays the outgoing variants of root project 'reachability-metadata'.
+projects - Displays the sub-projects of root project 'reachability-metadata'.
+properties - Displays the properties of root project 'reachability-metadata'.
+resolvableConfigurations - Displays the configurations that can be resolved in root project 'reachability-metadata'.
+tasks - Displays the tasks runnable from root project 'reachability-metadata'.
+Metadata tasks
+addLibraryAsLatestMetadataIndexJson - Marks given coordinates as latest in metadata/group/artifact/index.json
+addLibraryMetadataIndexJson - Adds given coordinates to metadata/group/artifact/index.json without changing the latest entry
+checkMetadataFiles - Checks content of metadata files for matching coordinates
+contribute - Generates metadata and prepares pull request for contibuting on metadata repository based on provided tests.
+discoverArtifactMetadata - Uses a coding agent command to discover artifact metadata for a single coordinate and stores it under build/.
+generateChangedIndexFileCoordinatesList - Returns a list of changed coordinates for validation based on git diff
+generateChangedMetadataTestMatrix - Returns matrix definition populated with changed coordinates and batched tested versions from metadata index files
+generateLibraryStats - Generates local library stats and updates stats/<group>/<artifact>/<metadata-version>/stats.json
+generateMetadata - Generates metadata based on provided tests.
+mergeNativeTraceMetadata - Merges runtime metadata trace output directories with native-image-utils generate
+populateArtifactURLs - Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.
+scaffold - Creates a metadata and test scaffold for the given coordindates
+splitTestOnlyMetadata - Moves test-only entries from library reachability metadata into test resources metadata.
+package - Packages current repository to 'build/graalvm-reachability-metadata-1.0.0-SNAPSHOT.zip'
+diff - Tests GraalVM Reflection Metadata that was changed between 'baseCommit' and 'newCommit'
+testInfra - Runs clean and pullAllowedDockerImages, then runs (validateIndexFiles, checkstyle, spotlessCheck, checkMetadataFiles, fetchExistingLibrariesWithNewerVersions, test, jacocoTestReport, listLibraryJars, generateDynamicAccessReport, generateDynamicAccessCoverageReport, generateLibraryStats, listTopCoordinatesByMetric, generateTopCoordinatesByMetricMatrix, listCoordinates, generateDependencyGraph, splitTestOnlyMetadata) concurrently with isolated logs for a single coordinate.
+validateIndexFiles - Checks content of index.json files for matching coordinates or files
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0/build/reports/problems/problems-report.html
+
+codex
+There is an index-only task, `validateIndexFiles`, which is the right validator for this kind of change. I’m running it for the coordinate now.
+exec
+/usr/bin/bash -lc './gradlew validateIndexFiles -Pcoordinates=org.clojure:google-closure-library-third-party:0.0-1376-2' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0
+diff --git a/metadata/org.clojure/google-closure-library-third-party/index.json b/metadata/org.clojure/google-closure-library-third-party/index.json
+index dc7d9ff5246e4904567dd793b384368811fe00a3..5ea254b7a6af444fb425486e64a939569278e2c2
+--- a/metadata/org.clojure/google-closure-library-third-party/index.json
++++ b/metadata/org.clojure/google-closure-library-third-party/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "0.0-1376-2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
++    "repository-url" : "https://github.com/google/closure-library",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
++    "documentation-url" : "https://github.com/google/closure-library/blob/14be8b286a11c5c85482fa88134cba765af78f5c/README",
++    "description" : "Google Closure Library Third-Party Extensions packages optional third-party JavaScript modules used with the Google Closure Library, including Dojo DOM query helpers, MochiKit async utilities, lorem ipsum data, Caja HTML handling, and Silverlight support files. This non-official ClojureScript-maintained Maven release fixes issues in the 0.0-1376 distribution for consumers resolving Closure Library third-party extensions through Maven.",
+     "tested-versions" : [
+       "0.0-1376-2"
+     ],
+
+ succeeded in 471ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :validateIndexFiles
+✅ metadata/org.clojure/google-closure-library-third-party/index.json: Valid
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 466ms
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: "Google Closure Library Third-Party Extensions" "ClojureScript"
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.clojure/google-closure-library-third-party/index.json | sed -n '12,32p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0
+ succeeded in 0ms:
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "org.clojure"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "0.0-1376-2",
+    19	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
+    20	    "repository-url" : "https://github.com/google/closure-library",
+    21	    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
+    22	    "documentation-url" : "https://github.com/google/closure-library/blob/14be8b286a11c5c85482fa88134cba765af78f5c/README",
+    23	    "description" : "Google Closure Library Third-Party Extensions packages optional third-party JavaScript modules used with the Google Closure Library, including Dojo DOM query helpers, MochiKit async utilities, lorem ipsum data, Caja HTML handling, and Silverlight support files. This non-official ClojureScript-maintained Maven release fixes issues in the 0.0-1376 distribution for consumers resolving Closure Library third-party extensions through Maven.",
+    24	    "tested-versions" : [
+    25	      "0.0-1376-2"
+    26	    ],
+    27	    "allowed-packages" : [
+    28	      "org.clojure"
+    29	    ]
+    30	  },
+    31	  {
+    32	    "metadata-version" : "0.0-20250515-f04e4c0e",
+
+diff --git a/metadata/org.clojure/google-closure-library-third-party/index.json b/metadata/org.clojure/google-closure-library-third-party/index.json
+index dc7d9ff5246e4904567dd793b384368811fe00a3..5ea254b7a6af444fb425486e64a939569278e2c2
+--- a/metadata/org.clojure/google-closure-library-third-party/index.json
++++ b/metadata/org.clojure/google-closure-library-third-party/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "0.0-1376-2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
++    "repository-url" : "https://github.com/google/closure-library",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
++    "documentation-url" : "https://github.com/google/closure-library/blob/14be8b286a11c5c85482fa88134cba765af78f5c/README",
++    "description" : "Google Closure Library Third-Party Extensions packages optional third-party JavaScript modules used with the Google Closure Library, including Dojo DOM query helpers, MochiKit async utilities, lorem ipsum data, Caja HTML handling, and Silverlight support files. This non-official ClojureScript-maintained Maven release fixes issues in the 0.0-1376 distribution for consumers resolving Closure Library third-party extensions through Maven.",
+     "tested-versions" : [
+       "0.0-1376-2"
+     ],
+
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0/metadata/org.clojure/google-closure-library-third-party/index.json:18) for `metadata-version` `0.0-1376-2`.
+
+Filled:
+- `source-code-url`
+- `repository-url`
+- `test-code-url`
+- `documentation-url`
+- `description`
+
+I left `language` absent because this is not a Kotlin, Groovy, Scala 2, or Scala 3 library.
+
+Verification:
+- `jq empty metadata/org.clojure/google-closure-library-third-party/index.json` passed.
+- `./gradlew validateIndexFiles -Pcoordinates=org.clojure:google-closure-library-third-party:0.0-1376-2` passed.
+- `./gradlew checkMetadataFiles ...` failed because this coordinate has no `reachability-metadata.json`, unrelated to the index URL/description update.
+diff --git a/metadata/org.clojure/google-closure-library-third-party/index.json b/metadata/org.clojure/google-closure-library-third-party/index.json
+index dc7d9ff5246e4904567dd793b384368811fe00a3..5ea254b7a6af444fb425486e64a939569278e2c2
+--- a/metadata/org.clojure/google-closure-library-third-party/index.json
++++ b/metadata/org.clojure/google-closure-library-third-party/index.json
+@@ -16,6 +16,11 @@
+   },
+   {
+     "metadata-version" : "0.0-1376-2",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
++    "repository-url" : "https://github.com/google/closure-library",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/clojure/google-closure-library-third-party/$version$/google-closure-library-third-party-$version$.jar",
++    "documentation-url" : "https://github.com/google/closure-library/blob/14be8b286a11c5c85482fa88134cba765af78f5c/README",
++    "description" : "Google Closure Library Third-Party Extensions packages optional third-party JavaScript modules used with the Google Closure Library, including Dojo DOM query helpers, MochiKit async utilities, lorem ipsum data, Caja HTML handling, and Silverlight support files. This non-official ClojureScript-maintained Maven release fixes issues in the 0.0-1376 distribution for consumers resolving Closure Library third-party extensions through Maven.",
+     "tested-versions" : [
+       "0.0-1376-2"
+     ],
+
+tokens used
+61,455
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0/metadata/org.clojure/google-closure-library-third-party/index.json:18) for `metadata-version` `0.0-1376-2`.
+
+Filled:
+- `source-code-url`
+- `repository-url`
+- `test-code-url`
+- `documentation-url`
+- `description`
+
+I left `language` absent because this is not a Kotlin, Groovy, Scala 2, or Scala 3 library.
+
+Verification:
+- `jq empty metadata/org.clojure/google-closure-library-third-party/index.json` passed.
+- `./gradlew validateIndexFiles -Pcoordinates=org.clojure:google-closure-library-third-party:0.0-1376-2` passed.
+- `./gradlew checkMetadataFiles ...` failed because this coordinate has no `reachability-metadata.json`, unrelated to the index URL/description update.
+Ran agent for org.clojure:google-closure-library-third-party:0.0-1376-2 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0/build/agent-url-discovery-logs/org.clojure-google-closure-library-third-party-0.0-1376-2.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8743-427020e0/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 35s
+9 actionable tasks: 1 executed, 8 up-to-date
