@@ -9,6 +9,7 @@ package com_lihaoyi.pprint_2_13
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
 
 import java.io.ByteArrayOutputStream
@@ -142,6 +143,31 @@ class Pprint_2_13Test {
   }
 
   @Test
+  def exposesStructuredTreesForValues(): Unit = {
+    val person: Person = Person("Ada", 37, Address("London", 12345))
+    val tree: Tree = PPrinter.BlackWhite.treeify(person, escapeUnicode = false, showFieldNames = true)
+
+    tree match {
+      case Tree.Apply("Person", fields) =>
+        val fieldVector: Vector[Tree] = fields.toVector
+        assertEquals(3, fieldVector.length)
+        assertLiteralField(fieldVector(0), "name", "\"Ada\"")
+        assertLiteralField(fieldVector(1), "age", "37")
+        fieldVector(2) match {
+          case Tree.KeyValue("address", Tree.Apply("Address", addressFields)) =>
+            val addressFieldVector: Vector[Tree] = addressFields.toVector
+            assertEquals(2, addressFieldVector.length)
+            assertLiteralField(addressFieldVector(0), "city", "\"London\"")
+            assertLiteralField(addressFieldVector(1), "zip", "12345")
+          case other =>
+            fail(s"Expected nested Address tree, got $other")
+        }
+      case other =>
+        fail(s"Expected Person application tree, got $other")
+    }
+  }
+
+  @Test
   def printsCompileTimeTypeRepresentations(): Unit = {
     val (listType, tupleType, functionType): (String, String, String) = {
       implicit val typeColors: TPrintColors = TPrintColors.BlackWhite
@@ -200,6 +226,16 @@ class Pprint_2_13Test {
     }
 
     assertEquals("", stdout)
+  }
+
+  private def assertLiteralField(field: Tree, expectedKey: String, expectedBody: String): Unit = {
+    field match {
+      case Tree.KeyValue(key, Tree.Literal(body)) =>
+        assertEquals(expectedKey, key)
+        assertEquals(expectedBody, body)
+      case other =>
+        fail(s"Expected literal key-value tree for $expectedKey, got $other")
+    }
   }
 
   private def captureStandardOut(body: => Unit): String = {
