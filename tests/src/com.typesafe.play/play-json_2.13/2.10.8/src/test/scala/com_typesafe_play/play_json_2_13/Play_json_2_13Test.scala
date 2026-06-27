@@ -110,6 +110,17 @@ object TicketStatus extends Enumeration {
 
 final case class Booking(reference: String, seats: Int)
 
+final case class SearchPreferences(
+    query: String,
+    pageSize: Int = 25,
+    includeArchived: Boolean = false,
+    labels: Seq[String] = Seq.empty[String]
+)
+
+object SearchPreferences {
+  implicit val format: OFormat[SearchPreferences] = Json.using[Json.WithDefaultValues].format[SearchPreferences]
+}
+
 object Booking {
   val reads: Reads[Booking] = Reads[Booking] { (json: JsValue) =>
     for {
@@ -234,6 +245,29 @@ class Play_json_2_13Test {
     assertEquals(Seq("Amazing Grace", "Compiler Pioneer"), (json \ "aliases").as[Seq[String]])
     assertFalse((json \ "marketingOptIn").as[Boolean])
     assertEquals(profile, json.as[CustomerProfile])
+  }
+
+  @Test
+  def honorsMacroFormatsWithConstructorDefaultValues(): Unit = {
+    val minimal: JsObject = Json.obj("query" -> "native image")
+    assertEquals(SearchPreferences("native image"), minimal.as[SearchPreferences])
+
+    val complete: JsObject = Json.obj(
+      "query" -> "metadata",
+      "pageSize" -> 50,
+      "includeArchived" -> true,
+      "labels" -> Json.arr("play-json", "scala")
+    )
+    assertEquals(
+      SearchPreferences("metadata", 50, includeArchived = true, Seq("play-json", "scala")),
+      complete.as[SearchPreferences]
+    )
+
+    val written: JsObject = Json.toJsObject(SearchPreferences("graal", pageSize = 10, labels = Seq("native")))
+    assertEquals("graal", (written \ "query").as[String])
+    assertEquals(10, (written \ "pageSize").as[Int])
+    assertFalse((written \ "includeArchived").as[Boolean])
+    assertEquals(Seq("native"), (written \ "labels").as[Seq[String]])
   }
 
   @Test
