@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "com.mchange:mchange-commons-java:0.6.0",
+  "issueNumber": 8716,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "For tests that create or resolve JNDI References for JavaBeans, set system property `com.mchange.v2.naming.referenceableJavaBeanClassWhitelist` to the exact fully qualified test bean class name before calling `JavaBeanReferenceMaker.createReference(...)` or `JavaBeanObjectFactory.getObjectInstance(...)`, and restore/clear it afterward. If using `ReferenceableUtils.referenceToObject(...)` overloads without an explicit allowed factory set, also set `com.mchange.v2.naming.objectFactoryWhitelist` to the exact test ObjectFactory class name; prefer explicit allow sets when possible. Do not use `*` unless the test is deliberately covering the unsafe opt-out behavior.",
+    "applied_setup": [],
+    "current_library": "com.mchange:mchange-commons-java:0.4.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8716 [Automation] java run fails for com.mchange:mchange-commons-java:0.6.0; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "35 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 27704,
+    "issue_label": "fails-java-run",
+    "issue_number": 8716,
+    "library": "com.mchange:mchange-commons-java:0.6.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "0.6.0",
+    "output_tokens_used": 2613,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The whitelist properties are global system properties; leaking them across tests can hide failures or produce intersection behavior if another config source also sets a whitelist.",
+      "Generated inner test classes used as whitelisted JavaBeans or ObjectFactories still need normal reachability coverage in native-image tests."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/com.mchange:mchange-commons-java:0.6.0/library-preparation-preflight/pi-generation-2026-06-27T14-15-44-250244Z.log",
+    "status": "completed",
+    "summary": "mchange-commons-java 0.6.0 enforces JNDI JavaBean/reference security whitelists; tests that exercise JavaBeanReferenceMaker or JavaBeanObjectFactory will fail until the test bean class is explicitly whitelisted."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "0.6.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8716-fails-java-run-com.mchange-mchange-commons-java-0.6.0-c2ef4f91",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
