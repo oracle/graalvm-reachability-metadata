@@ -20,6 +20,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.ChatClientRequest;
 import org.springframework.ai.chat.client.ChatClientResponse;
 import org.springframework.ai.chat.client.ResponseEntity;
+import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
 import org.springframework.ai.chat.client.advisor.api.CallAdvisor;
 import org.springframework.ai.chat.client.advisor.api.CallAdvisorChain;
 import org.springframework.ai.chat.messages.AssistantMessage;
@@ -146,6 +147,31 @@ public class Spring_ai_client_chatTest {
 
         assertThat(chunks).containsExactly("streamed chunk 1", "streamed chunk 2");
         assertThat(chatModel.lastPrompt().getUserMessage().getText()).isEqualTo("stream request");
+    }
+
+    @Test
+    void safeGuardAdvisorShortCircuitsSensitiveCallAndStreamRequests() {
+        RecordingChatModel chatModel = new RecordingChatModel("unguarded");
+        SafeGuardAdvisor advisor = SafeGuardAdvisor.builder()
+                .sensitiveWords(List.of("restricted topic"))
+                .failureResponse("Please choose a different topic.")
+                .build();
+        ChatClient chatClient = ChatClient.builder(chatModel)
+                .defaultAdvisors(advisor)
+                .build();
+
+        String callContent = chatClient.prompt("Tell me about a restricted topic")
+                .call()
+                .content();
+        List<String> streamContent = chatClient.prompt("Stream a restricted topic summary")
+                .stream()
+                .content()
+                .collectList()
+                .block(Duration.ofSeconds(10));
+
+        assertThat(callContent).isEqualTo("Please choose a different topic.");
+        assertThat(streamContent).containsExactly("Please choose a different topic.");
+        assertThat(chatModel.prompts()).isEmpty();
     }
 
     @Test
