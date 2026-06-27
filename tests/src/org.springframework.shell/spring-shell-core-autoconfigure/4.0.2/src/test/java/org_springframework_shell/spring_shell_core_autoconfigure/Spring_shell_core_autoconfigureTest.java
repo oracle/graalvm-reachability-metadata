@@ -11,12 +11,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.jline.reader.Candidate;
 import org.jline.reader.History;
 import org.jline.reader.LineReader;
+import org.jline.reader.ParsedLine;
 import org.jline.reader.Parser;
 import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
@@ -47,6 +51,7 @@ import org.springframework.shell.core.autoconfigure.SpringShellProperties;
 import org.springframework.shell.core.autoconfigure.StandardCommandsAutoConfiguration;
 import org.springframework.shell.core.autoconfigure.TerminalCustomizer;
 import org.springframework.shell.core.autoconfigure.UserConfigAutoConfiguration;
+import org.springframework.shell.jline.CommandCompleter;
 import org.springframework.shell.jline.PromptProvider;
 import org.springframework.shell.jline.tui.component.ViewComponentExecutor;
 import org.springframework.shell.jline.tui.component.flow.ComponentFlow;
@@ -202,6 +207,51 @@ public class Spring_shell_core_autoconfigureTest {
         }
     }
 
+    @Test
+    void jlineCommandCompleterSuggestsNestedCommandsAndOptions(@TempDir Path tempDirectory) {
+        Map<String, Object> properties = Map.of(
+                "spring.shell.config.location", tempDirectory.toString(),
+                "spring.shell.history.enabled", "false",
+                "spring.shell.interactive.enabled", "true");
+
+        try (AnnotationConfigApplicationContext context = newContext(properties,
+                CommandRegistryAutoConfiguration.class, UserConfigAutoConfiguration.class,
+                JLineShellAutoConfiguration.class, JLineSupportConfiguration.class,
+                CompletionCommandConfiguration.class)) {
+            CommandCompleter completer = context.getBean(CommandCompleter.class);
+
+            assertThat(candidateValues(complete(completer, "admin ", "admin", ""))).contains("user");
+            assertThat(candidateValues(complete(completer, "admin user ", "admin", "user", "")))
+                .contains("--role", "-r");
+            assertThat(candidateValues(complete(completer, "admin user --role=operator ",
+                    "admin", "user", "--role=operator", "")))
+                .doesNotContain("--role", "-r");
+        }
+    }
+
+    private static List<Candidate> complete(CommandCompleter completer, String line, String... words) {
+        List<Candidate> candidates = new ArrayList<>();
+        List<String> parsedWords = List.of(words);
+        String word = parsedWords.get(parsedWords.size() - 1);
+        completer.complete(null, new CompletionLine(line, parsedWords, parsedWords.size() - 1, word, word.length()),
+                candidates);
+        return candidates;
+    }
+
+    private static List<String> candidateValues(List<Candidate> candidates) {
+        return candidates.stream().map(Candidate::value).toList();
+    }
+
+    private record CompletionLine(String line, List<String> words, int wordIndex, String word,
+            int wordCursor) implements ParsedLine {
+
+        @Override
+        public int cursor() {
+            return line().length();
+        }
+
+    }
+
     private static AnnotationConfigApplicationContext newContext(Map<String, Object> properties,
             Class<?>... configurationClasses) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
@@ -232,6 +282,25 @@ public class Spring_shell_core_autoconfigureTest {
         String greet(@org.springframework.shell.core.command.annotation.Option(longName = "name",
                 defaultValue = "world") String name) {
             return "Hello " + name;
+        }
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    static class CompletionCommandConfiguration {
+
+        @Bean
+        Command adminUserCommand() {
+            return Command.builder()
+                .name("admin user")
+                .description("Manage shell users")
+                .options(CommandOption.with()
+                    .longName("role")
+                    .shortName('r')
+                    .description("Assigned role")
+                    .type(String.class)
+                    .build())
+                .execute(commandContext -> "updated");
         }
 
     }
