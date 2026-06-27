@@ -18,6 +18,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.net.URI;
 import java.time.Clock;
 import java.time.DateTimeException;
 import java.time.Duration;
@@ -54,24 +55,22 @@ import org.neo4j.bolt.connection.AuthTokens;
 import org.neo4j.bolt.connection.BasicResponseHandler;
 import org.neo4j.bolt.connection.BoltAgent;
 import org.neo4j.bolt.connection.BoltConnection;
+import org.neo4j.bolt.connection.BoltConnectionProvider;
 import org.neo4j.bolt.connection.BoltConnectionState;
 import org.neo4j.bolt.connection.BoltProtocolVersion;
 import org.neo4j.bolt.connection.BoltServerAddress;
 import org.neo4j.bolt.connection.ClusterComposition;
-import org.neo4j.bolt.connection.DatabaseName;
-import org.neo4j.bolt.connection.DatabaseNameUtil;
 import org.neo4j.bolt.connection.DefaultDomainNameResolver;
 import org.neo4j.bolt.connection.ListenerEvent;
 import org.neo4j.bolt.connection.LoggingProvider;
 import org.neo4j.bolt.connection.MetricsListener;
 import org.neo4j.bolt.connection.NotificationConfig;
-import org.neo4j.bolt.connection.RoutingContext;
-import org.neo4j.bolt.connection.SecurityPlans;
 import org.neo4j.bolt.connection.TelemetryApi;
 import org.neo4j.bolt.connection.TransactionType;
 import org.neo4j.bolt.connection.exception.BoltClientException;
-import org.neo4j.bolt.connection.netty.BootstrapFactory;
-import org.neo4j.bolt.connection.netty.NettyBoltConnectionProvider;
+import org.neo4j.bolt.connection.message.Messages;
+import org.neo4j.bolt.connection.netty.NettyBoltConnectionProviderFactory;
+import org.neo4j.bolt.connection.netty.impl.BootstrapFactory;
 import org.neo4j.bolt.connection.summary.CommitSummary;
 import org.neo4j.bolt.connection.summary.RouteSummary;
 import org.neo4j.bolt.connection.summary.RunSummary;
@@ -96,8 +95,8 @@ public class Neo4j_bolt_connection_nettyTest {
     private static final MetricsListener METRICS = new TestMetricsListener();
 
     @Test
-    void bootstrapFactoryCreatesReusableNettyBootstraps() {
-        Bootstrap ownedBootstrap = BootstrapFactory.newBootstrap(1);
+    void bootstrapFactoryCreatesReusableNettyBootstraps() throws Exception {
+        Bootstrap ownedBootstrap = BootstrapFactory.newBootstrap(1, "bolt-test");
         EventLoopGroup ownedGroup = ownedBootstrap.config().group();
         try {
             assertThat(ownedGroup).isNotNull();
@@ -108,10 +107,12 @@ public class Neo4j_bolt_connection_nettyTest {
 
         EventLoopGroup suppliedGroup = new NioEventLoopGroup(1);
         try {
-            Bootstrap suppliedBootstrap = BootstrapFactory.newBootstrap(suppliedGroup);
+            BoltConnectionProvider provider = new NettyBoltConnectionProviderFactory()
+                    .create(LOGGING, VALUE_FACTORY, METRICS, Map.of("eventLoopGroup", suppliedGroup));
 
-            assertThat(suppliedBootstrap.config().group()).isSameAs(suppliedGroup);
-            assertThat(suppliedBootstrap.config().channelFactory()).isNotNull();
+            assertThat(provider).isNotNull();
+            await(provider.close());
+            assertThat(suppliedGroup.isShutdown()).isFalse();
         } finally {
             suppliedGroup.shutdownGracefully(0, 1, TimeUnit.SECONDS).syncUninterruptibly();
         }
@@ -136,9 +137,9 @@ public class Neo4j_bolt_connection_nettyTest {
             assertThat(authInfo.authAckMillis()).isGreaterThan(0L);
 
             BasicResponseHandler queryHandler = new BasicResponseHandler();
-            await(connection.run("RETURN $name", Map.of("name", VALUE_FACTORY.value("Alice")))
-                    .thenCompose(c -> c.pull(1, -1))
-                    .thenCompose(c -> c.flush(queryHandler)));
+            await(connection.writeAndFlush(queryHandler, List.of(
+                    Messages.run("RETURN $name", Map.of("name", VALUE_FACTORY.value("Alice"))),
+                    Messages.pull(-1, 1))));
             BasicResponseHandler.Summaries querySummaries = await(queryHandler.summaries());
             RunSummary runSummary = querySummaries.runSummary();
             assertThat(runSummary.queryId()).isEqualTo(42L);
@@ -151,30 +152,30 @@ public class Neo4j_bolt_connection_nettyTest {
             assertThat(querySummaries.pullSummary().metadata().get("type").asString()).isEqualTo("r");
 
             BasicResponseHandler transactionHandler = new BasicResponseHandler();
-            await(connection.beginTransaction(
-                            DatabaseNameUtil.database("neo4j"),
+            await(connection.writeAndFlush(transactionHandler, List.of(
+                    Messages.beginTransaction(
+                            "neo4j",
                             AccessMode.WRITE,
                             "bm-1",
                             Set.of("neo4j"),
                             TransactionType.DEFAULT,
                             Duration.ofSeconds(1),
                             Map.of("purpose", VALUE_FACTORY.value("integration-test")),
-                            null,
-                            NotificationConfig.defaultConfig())
-                    .thenCompose(c -> c.commit())
-                    .thenCompose(c -> c.flush(transactionHandler)));
+                            NotificationConfig.defaultConfig()),
+                    Messages.commit())));
             BasicResponseHandler.Summaries transactionSummaries = await(transactionHandler.summaries());
             assertThat(transactionSummaries.beginSummary().databaseName()).contains("neo4j");
             CommitSummary commitSummary = transactionSummaries.commitSummary();
             assertThat(commitSummary.bookmark()).contains("bm-after-commit");
 
             BasicResponseHandler authAndTelemetryHandler = new BasicResponseHandler();
-            await(connection.telemetry(TelemetryApi.AUTO_COMMIT_TRANSACTION)
-                    .thenCompose(BoltConnection::logoff)
-                    .thenCompose(c -> c.logon(AuthTokens.none(VALUE_FACTORY)))
-                    .thenCompose(c -> c.flush(authAndTelemetryHandler)));
+            await(connection.writeAndFlush(authAndTelemetryHandler, List.of(
+                    Messages.telemetry(TelemetryApi.AUTO_COMMIT_TRANSACTION),
+                    Messages.logoff(),
+                    Messages.logon(AuthTokens.none(VALUE_FACTORY)))));
             BasicResponseHandler.Summaries authAndTelemetrySummaries = await(authAndTelemetryHandler.summaries());
             assertThat(authAndTelemetrySummaries.telemetrySummary()).isNotNull();
+            assertThat(authAndTelemetrySummaries.ignored()).isZero();
             AuthInfo refreshedAuthInfo = await(connection.authInfo());
             assertThat(refreshedAuthInfo.authToken().asMap().get("scheme").asString()).isEqualTo("none");
 
@@ -192,8 +193,9 @@ public class Neo4j_bolt_connection_nettyTest {
             BoltConnection connection = await(provider.connect(server.address()));
             BasicResponseHandler handler = new BasicResponseHandler();
 
-            await(connection.runInAutoCommitTransaction(
-                            DatabaseNameUtil.database("neo4j"),
+            await(connection.writeAndFlush(handler, List.of(
+                    Messages.run(
+                            "neo4j",
                             AccessMode.READ,
                             null,
                             Set.of("bm-before-auto-commit"),
@@ -201,9 +203,8 @@ public class Neo4j_bolt_connection_nettyTest {
                             Map.of("name", VALUE_FACTORY.value("Bob")),
                             Duration.ofSeconds(2),
                             Map.of("purpose", VALUE_FACTORY.value("auto-commit-test")),
-                            NotificationConfig.defaultConfig())
-                    .thenCompose(c -> c.discard(1, -1))
-                    .thenCompose(c -> c.flush(handler)));
+                            NotificationConfig.defaultConfig()),
+                    Messages.discard(-1, 1))));
             BasicResponseHandler.Summaries summaries = await(handler.summaries());
 
             assertThat(summaries.runSummary().queryId()).isEqualTo(42L);
@@ -224,8 +225,7 @@ public class Neo4j_bolt_connection_nettyTest {
             BoltConnection connection = await(provider.connect(server.address()));
             BasicResponseHandler handler = new BasicResponseHandler();
 
-            await(connection.route(DatabaseNameUtil.database("neo4j"), null, Set.of("bm-before-route"))
-                    .thenCompose(c -> c.flush(handler)));
+            await(connection.writeAndFlush(handler, Messages.route("neo4j", null, Set.of("bm-before-route"))));
             BasicResponseHandler.Summaries summaries = await(handler.summaries());
             RouteSummary routeSummary = summaries.routeSummary();
             ClusterComposition clusterComposition = routeSummary.clusterComposition();
@@ -250,49 +250,15 @@ public class Neo4j_bolt_connection_nettyTest {
     }
 
     @Test
-    void providerConnectivityFeatureChecksUseHandshakeAndAuthentication() throws Exception {
+    void providerConnectionChecksUseHandshakeAuthenticationAndMinimumVersion() throws Exception {
         try (BoltTestServer server = new BoltTestServer(BOLT_5_8);
                 TestProvider provider = new TestProvider()) {
-            await(provider.provider().verifyConnectivity(
-                    server.address(),
-                    RoutingContext.EMPTY,
-                    AGENT,
-                    "bolt",
-                    CONNECT_TIMEOUT_MILLIS,
-                    SecurityPlans.unencrypted(),
-                    AuthTokens.none(VALUE_FACTORY)));
+            BoltConnection connection = await(provider.connect(server.address(), new BoltProtocolVersion(5, 8)));
+
+            assertThat(connection.protocolVersion()).isEqualTo(new BoltProtocolVersion(5, 8));
+            await(connection.close());
             server.awaitHandled();
             assertThat(server.signatures()).contains(0x01, 0x6A);
-        }
-
-        try (BoltTestServer server = new BoltTestServer(BOLT_5_8);
-                TestProvider provider = new TestProvider()) {
-            Boolean supportsMultiDb = await(provider.provider().supportsMultiDb(
-                    server.address(),
-                    RoutingContext.EMPTY,
-                    AGENT,
-                    "bolt",
-                    CONNECT_TIMEOUT_MILLIS,
-                    SecurityPlans.unencrypted(),
-                    AuthTokens.none(VALUE_FACTORY)));
-
-            assertThat(supportsMultiDb).isTrue();
-            server.awaitHandled();
-        }
-
-        try (BoltTestServer server = new BoltTestServer(BOLT_5_8);
-                TestProvider provider = new TestProvider()) {
-            Boolean supportsSessionAuth = await(provider.provider().supportsSessionAuth(
-                    server.address(),
-                    RoutingContext.EMPTY,
-                    AGENT,
-                    "bolt",
-                    CONNECT_TIMEOUT_MILLIS,
-                    SecurityPlans.unencrypted(),
-                    AuthTokens.none(VALUE_FACTORY)));
-
-            assertThat(supportsSessionAuth).isTrue();
-            server.awaitHandled();
         }
     }
 
@@ -300,16 +266,9 @@ public class Neo4j_bolt_connection_nettyTest {
     void providerReportsUnsupportedBoltProtocolNegotiation() throws Exception {
         try (BoltTestServer server = new BoltTestServer(0);
                 TestProvider provider = new TestProvider()) {
-            CompletionStage<Void> verification = provider.provider().verifyConnectivity(
-                    server.address(),
-                    RoutingContext.EMPTY,
-                    AGENT,
-                    "bolt",
-                    CONNECT_TIMEOUT_MILLIS,
-                    SecurityPlans.unencrypted(),
-                    AuthTokens.none(VALUE_FACTORY));
+            CompletionStage<BoltConnection> connection = provider.connect(server.address());
 
-            assertThatThrownBy(() -> await(verification))
+            assertThatThrownBy(() -> await(connection))
                     .isInstanceOf(ExecutionException.class)
                     .hasRootCauseInstanceOf(BoltClientException.class);
             server.awaitHandled();
@@ -324,42 +283,35 @@ public class Neo4j_bolt_connection_nettyTest {
 
     private static final class TestProvider implements AutoCloseable {
         private final EventLoopGroup eventLoopGroup;
-        private final NettyBoltConnectionProvider provider;
+        private final BoltConnectionProvider provider;
 
         private TestProvider() {
             this.eventLoopGroup = new NioEventLoopGroup(1);
-            this.provider = new NettyBoltConnectionProvider(
-                    eventLoopGroup,
-                    Clock.systemUTC(),
-                    DefaultDomainNameResolver.getInstance(),
-                    null,
+            this.provider = new NettyBoltConnectionProviderFactory().create(
                     LOGGING,
                     VALUE_FACTORY,
-                    METRICS);
+                    METRICS,
+                    Map.of(
+                            "eventLoopGroup", eventLoopGroup,
+                            "clock", Clock.systemUTC(),
+                            "domainNameResolver", DefaultDomainNameResolver.getInstance()));
         }
 
         private CompletionStage<BoltConnection> connect(BoltServerAddress address) {
-            DatabaseName databaseName = DatabaseNameUtil.defaultDatabase();
+            return connect(address, null);
+        }
+
+        private CompletionStage<BoltConnection> connect(BoltServerAddress address, BoltProtocolVersion minVersion) {
             return provider.connect(
-                    address,
-                    RoutingContext.EMPTY,
+                    URI.create("neo4j://" + address.host() + ":" + address.port()),
+                    null,
                     AGENT,
                     "bolt",
                     CONNECT_TIMEOUT_MILLIS,
-                    SecurityPlans.unencrypted(),
-                    databaseName,
-                    () -> CompletableFuture.completedFuture(AuthTokens.none(VALUE_FACTORY)),
-                    AccessMode.WRITE,
-                    Set.of("neo4j"),
                     null,
-                    null,
-                    NotificationConfig.defaultConfig(),
-                    selectedDatabase -> { },
-                    Map.of("source", "test"));
-        }
-
-        private NettyBoltConnectionProvider provider() {
-            return provider;
+                    AuthTokens.none(VALUE_FACTORY),
+                    minVersion,
+                    NotificationConfig.defaultConfig());
         }
 
         @Override
