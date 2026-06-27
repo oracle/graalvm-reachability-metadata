@@ -1,0 +1,73 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "com.typesafe:ssl-config-core_2.13:0.6.1",
+  "issueNumber": 5444,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#5444 Support for com.typesafe:ssl-config-core_2.13:0.6.1; label=library-new-request; body_chars=108"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "10 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 39324,
+    "issue_label": "library-new-request",
+    "issue_number": 5444,
+    "library": "com.typesafe:ssl-config-core_2.13:0.6.1",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 3853,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "If generated tests intentionally exercise HTTPS revocation-list URL handling in a native image, the native test binary may need https URL protocol support; this is avoidable by keeping revocation-list coverage local or parse-only.",
+      "The library is Scala-first, so Scala test sources are the most natural way to cover APIs, but this is part of the normal Scala test scaffold rather than an extra library-specific dependency."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/com.typesafe:ssl-config-core_2.13:0.6.1/library-preparation-preflight/pi-generation-2026-06-27T10-54-45-430888Z.log",
+    "status": "completed",
+    "summary": "No concrete extra setup is required: ssl-config-core_2.13:0.6.1 is a local Scala/Typesafe Config SSL/TLS configuration library, and its resolved runtime dependencies include scala-library 2.13.8 and com.typesafe:config 1.4.2. Meaningful coverage can be reached with local ConfigFactory parsing and classpath/file keystore resources, without Docker, extra runtime Maven dependencies, or environment/system properties."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 0,
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-5444-library-new-request-com.typesafe-ssl-config-core_2.13-0.6.1-85d805c0",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "com.typesafe:ssl-config-core_2.13:0.6.1",
+    "timestamp": "2026-06-27T10:59:09.816916Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
