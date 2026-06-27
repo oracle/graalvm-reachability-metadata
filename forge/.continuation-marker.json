@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.lucene:lucene-core:6.0.0",
+  "issueNumber": 5851,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.apache.lucene:lucene-core:5.5.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#5851 [Automation] javac compile fails for org.apache.lucene:lucene-core:6.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "17 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 20695,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 5851,
+    "library": "org.apache.lucene:lucene-core:6.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "6.0.0",
+    "output_tokens_used": 3128,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The observed failure is an API change: AttributeImpl.reflectWith(AttributeReflector) became abstract in Lucene 6.0.0, so existing test implementations must override it; this is a test-source update, not setup.",
+      "Tests that deliberately exercise low-level memory or mmap internals may still need the existing JVM add-opens already present in the 5.5.0 scaffold, but that is not required to reach general Lucene core coverage."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.apache.lucene:lucene-core:6.0.0/library-preparation-preflight/pi-generation-2026-06-27T10-17-37-694088Z.log",
+    "status": "completed",
+    "summary": "lucene-core 6.0.0 is a standalone JAR with no Maven dependencies, no native libraries, and normal usage is in-process indexing/searching over local Directory implementations, so meaningful tests do not require extra dependencies, Docker services, or environment setup."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "6.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-5851-fails-javac-compile-org.apache.lucene-lucene-core-6.0.0-5f0a87c7",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
