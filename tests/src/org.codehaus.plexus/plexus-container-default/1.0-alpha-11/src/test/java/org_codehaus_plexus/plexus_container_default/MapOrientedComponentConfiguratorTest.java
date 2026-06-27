@@ -15,8 +15,6 @@ import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.junit.jupiter.api.Test;
 
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.VarHandle;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,17 +24,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class MapOrientedComponentConfiguratorTest {
     @Test
     public void rejectsComponentsThatDoNotAcceptMapConfiguration() throws Exception {
-        clearCompilerGeneratedClassCache();
         MapOrientedComponentConfigurator configurator = new MapOrientedComponentConfigurator();
-        Object component = nonMapOrientedComponentSelectedAtRuntime();
 
-        ComponentConfigurationException exception = assertThrows(
-            ComponentConfigurationException.class,
-            () -> configurator.configureComponent(component, new XmlPlexusConfiguration("configuration"), null, null)
-        );
+        ComponentConfigurationException firstException = rejectNonMapOrientedComponent(configurator);
+        ComponentConfigurationException cachedTypeException = rejectNonMapOrientedComponent(configurator);
 
-        assertTrue(exception.getMessage().contains("can only process implementations"));
-        assertTrue(exception.getMessage().contains(MapOrientedComponent.class.getName()));
+        assertTrue(firstException.getMessage().contains("can only process implementations"));
+        assertTrue(firstException.getMessage().contains(MapOrientedComponent.class.getName()));
+        assertEquals(firstException.getMessage(), cachedTypeException.getMessage());
     }
 
     @Test
@@ -53,17 +48,14 @@ public class MapOrientedComponentConfiguratorTest {
         assertEquals("8080", component.configuration.get("port"));
     }
 
-    private static void clearCompilerGeneratedClassCache() throws Exception {
-        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
-            MapOrientedComponentConfigurator.class,
-            MethodHandles.lookup()
+    private static ComponentConfigurationException rejectNonMapOrientedComponent(
+        MapOrientedComponentConfigurator configurator
+    ) {
+        Object component = nonMapOrientedComponentSelectedAtRuntime();
+        return assertThrows(
+            ComponentConfigurationException.class,
+            () -> configurator.configureComponent(component, new XmlPlexusConfiguration("configuration"), null, null)
         );
-        VarHandle classCache = lookup.findStaticVarHandle(
-            MapOrientedComponentConfigurator.class,
-            "class$org$codehaus$plexus$component$MapOrientedComponent",
-            Class.class
-        );
-        classCache.set(null);
     }
 
     private static Object nonMapOrientedComponentSelectedAtRuntime() {

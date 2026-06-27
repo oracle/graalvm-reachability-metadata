@@ -30,6 +30,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.Reader;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -43,6 +46,37 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MapOrientedComponentComposerTest {
+    @Test
+    public void compilerGeneratedClassLookupResolvesMapOrientedComponent() throws Throwable {
+        MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
+            MapOrientedComponentComposer.class,
+            MethodHandles.lookup()
+        );
+        MethodHandle classLookup = lookup.findStatic(
+            MapOrientedComponentComposer.class,
+            "class$",
+            MethodType.methodType(Class.class, String.class)
+        );
+
+        Class<?> componentType = (Class<?>) classLookup.invoke(MapOrientedComponent.class.getName());
+
+        assertSame(MapOrientedComponent.class, componentType);
+    }
+
+    @Test
+    public void verifiesMapOrientedSuitabilityBeforeComposition() {
+        MapOrientedComponentComposer composer = new MapOrientedComponentComposer();
+        Object component = nonMapOrientedComponentSelectedAtRuntime();
+
+        CompositionException exception = assertThrows(
+            CompositionException.class,
+            () -> composer.verifyComponentSuitability(component)
+        );
+
+        assertTrue(exception.getMessage().contains(component.getClass().getName()));
+        assertTrue(exception.getMessage().contains(MapOrientedComponent.class.getName()));
+    }
+
     @Test
     public void rejectsComponentsThatAreNotMapOriented() {
         MapOrientedComponentComposer composer = new MapOrientedComponentComposer();

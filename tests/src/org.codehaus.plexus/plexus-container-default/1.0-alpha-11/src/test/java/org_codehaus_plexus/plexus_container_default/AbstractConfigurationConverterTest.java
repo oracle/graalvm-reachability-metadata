@@ -43,6 +43,26 @@ public class AbstractConfigurationConverterTest {
         assertTrue(instance instanceof InstantiableComponent);
     }
 
+    @Test
+    public void fallsBackToStringForTextOnlyCollectionElements() throws Exception {
+        ExposingConfigurationConverter converter = new ExposingConfigurationConverter();
+        ClassRealm classRealm = new ClassWorld().newRealm(
+            "abstract-configuration-converter-fallback-test",
+            AbstractConfigurationConverterTest.class.getClassLoader()
+        );
+        XmlPlexusConfiguration configuration = new XmlPlexusConfiguration("item");
+        configuration.setValue("literal-value");
+
+        Class implementation = converter.resolveImplementationClass(
+            null,
+            InstantiableComponent.class,
+            configuration,
+            classRealm
+        );
+
+        assertSame(String.class, implementation);
+    }
+
     public static final class InstantiableComponent {
     }
 
@@ -50,6 +70,12 @@ public class AbstractConfigurationConverterTest {
         private Class getImplementationClass(Class type, PlexusConfiguration configuration, ClassRealm classRealm)
             throws ComponentConfigurationException {
             return getClassForImplementationHint(type, configuration, classRealm);
+        }
+
+        private Class resolveImplementationClass(Class type, Class baseType, PlexusConfiguration configuration,
+                                                 ClassRealm classRealm)
+            throws ComponentConfigurationException {
+            return getImplementationClass(type, baseType, configuration, classRealm);
         }
 
         private Object instantiate(String className, ClassLoader classLoader) throws ComponentConfigurationException {
