@@ -9,6 +9,7 @@ package io_micrometer.micrometer_tracing_bridge_otel;
 import io.micrometer.tracing.BaggageInScope;
 import io.micrometer.tracing.CurrentTraceContext;
 import io.micrometer.tracing.Link;
+import io.micrometer.tracing.ScopedSpan;
 import io.micrometer.tracing.Span;
 import io.micrometer.tracing.Tracer;
 import io.micrometer.tracing.exporter.FinishedSpan;
@@ -188,6 +189,54 @@ public class Micrometer_tracing_bridge_otelTest {
             assertThat(consumerData.getTraceId()).isEqualTo(producer.context().traceId());
             assertThat(consumerData.getParentSpanId()).isEqualTo(producer.context().spanId());
             assertThat(consumerData.getAttributes().get(AttributeKey.stringKey("tenant-id"))).isEqualTo("tenant-a");
+        }
+        finally {
+            fixture.close();
+        }
+    }
+
+    @Test
+    void scopedSpanMakesSpanCurrentAndSupportsCurrentSpanCustomization() {
+        RecordingSpanExporter exporter = new RecordingSpanExporter();
+        TracingFixture fixture = TracingFixture.create(exporter, List.of(), List.of());
+        try {
+            ScopedSpan scopedSpan = fixture.tracer.startScopedSpan("initial-scoped-name");
+            String scopedSpanId = scopedSpan.context().spanId();
+            try {
+                assertThat(scopedSpan.isNoop()).isFalse();
+                assertThat(fixture.tracer.currentSpan().context().spanId()).isEqualTo(scopedSpanId);
+
+                fixture.tracer.currentSpanCustomizer()
+                        .name("customized-scoped")
+                        .tag("customized", "true")
+                        .tag("attempt", 7L)
+                        .tag("ratio", 0.5D)
+                        .tag("success", true)
+                        .event("customized-event");
+                scopedSpan.tag("scoped.tag", "from-scoped-api").event("scoped-event");
+
+                Span child = fixture.tracer.nextSpan().name("child-from-scoped-parent");
+                child.end();
+            }
+            finally {
+                scopedSpan.end();
+            }
+
+            assertThat(fixture.tracer.currentSpan()).isNull();
+            SpanData scopedData = onlySpanNamed(exporter.exported, "customized-scoped");
+            assertThat(scopedData.getSpanId()).isEqualTo(scopedSpanId);
+            assertThat(scopedData.getStatus().getStatusCode()).isEqualTo(StatusCode.OK);
+            assertThat(scopedData.getAttributes().get(AttributeKey.stringKey("customized"))).isEqualTo("true");
+            assertThat(scopedData.getAttributes().get(AttributeKey.longKey("attempt"))).isEqualTo(7L);
+            assertThat(scopedData.getAttributes().get(AttributeKey.doubleKey("ratio"))).isEqualTo(0.5D);
+            assertThat(scopedData.getAttributes().get(AttributeKey.booleanKey("success"))).isTrue();
+            assertThat(scopedData.getAttributes().get(AttributeKey.stringKey("scoped.tag")))
+                    .isEqualTo("from-scoped-api");
+            assertThat(eventNames(scopedData)).contains("customized-event", "scoped-event");
+
+            SpanData childData = onlySpanNamed(exporter.exported, "child-from-scoped-parent");
+            assertThat(childData.getTraceId()).isEqualTo(scopedData.getTraceId());
+            assertThat(childData.getParentSpanId()).isEqualTo(scopedSpanId);
         }
         finally {
             fixture.close();
