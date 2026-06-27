@@ -1,0 +1,101 @@
+{
+  "add_new_library_support:2026-06-27": {
+    "timestamp": "2026-06-27T18:17:54.420445Z",
+    "library": "dev.zio:zio-prelude-macros_2.13:1.0.0-RC33",
+    "starting_commit": "3b5e5c0975f7cbfd71b4898bd76103bfd277a58d",
+    "ending_commit": "674b05b7cf3c96b48715c471c9f19984c4778dea",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "1.0.0-RC33",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2616,
+          "missed": 59664,
+          "ratio": 0.042004,
+          "total": 62280
+        },
+        "line": {
+          "covered": 219,
+          "missed": 377,
+          "ratio": 0.36745,
+          "total": 596
+        },
+        "method": {
+          "covered": 255,
+          "missed": 1230,
+          "ratio": 0.171717,
+          "total": 1485
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 5474,
+      "issue_label": "library-new-request",
+      "library": "dev.zio:zio-prelude-macros_2.13:1.0.0-RC33",
+      "summary": "The artifact is a Scala 2.13 macro implementation module. Its POM marks the Scala compiler and reflection stack as provided, so normal resolution supplies scala-library but not the classes needed to inspect or exercise zio.prelude.Macros meaningfully.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.scala-lang:scala-compiler:2.13.15",
+          "scope": "testImplementation",
+          "reason": "zio-prelude-macros_2.13 declares scala-compiler and scala-reflect as provided; zio.prelude.Macros references scala.reflect and scala.tools.nsc APIs, and scala-compiler brings the matching scala-reflect dependency transitively."
+        }
+      ],
+      "agent_guidance": "No Docker image or environment property is indicated. Prefer runtime tests around zio.prelude.Assertion helpers, and only attempt macro-specific coverage by compiling a small Scala 2.13 snippet rather than calling macro internals directly.",
+      "risks": [
+        "The module is normally consumed transitively through dev.zio:zio-prelude_2.13 rather than as a direct user-facing dependency.",
+        "Scala compiler or macro-expansion tests may be unsuitable for native-image runtime execution; if native-image verification fails because of compiler dynamic behavior, keep coverage focused on non-compiler runtime APIs."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.scala-lang:scala-compiler:2.13.15",
+          "result": "already_present",
+          "target": "tests/src/dev.zio/zio-prelude-macros_2.13/1.0.0-RC33/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#5474 Support for dev.zio:zio-prelude-macros_2.13:1.0.0-RC33; label=library-new-request; body_chars=111"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 56496,
+      "output_tokens_used": 6287,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/dev.zio:zio-prelude-macros_2.13:1.0.0-RC33/library-preparation-preflight/pi-generation-2026-06-27T18-03-21-203982Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 296990,
+      "cached_input_tokens_used": 3213312,
+      "output_tokens_used": 23620,
+      "iterations": 5,
+      "cost_usd": 2.3153,
+      "generated_loc": 249,
+      "tested_library_loc": 219,
+      "metadata_entries": 0,
+      "code_coverage_percent": 36.74
+    },
+    "artifacts": {
+      "test_file": "tests/src/dev.zio/zio-prelude-macros_2.13/1.0.0-RC33/src/test/scala/dev_zio/zio_prelude_macros_2_13/Zio_prelude_macros_2_13Test.scala",
+      "metadata_file": "metadata/dev.zio/zio-prelude-macros_2.13/1.0.0-RC33/reachability-metadata.json"
+    }
+  }
+}
