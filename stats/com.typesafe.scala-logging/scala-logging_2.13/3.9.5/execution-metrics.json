@@ -1,0 +1,108 @@
+{
+  "add_new_library_support:2026-06-27": {
+    "timestamp": "2026-06-27T16:59:28.703803Z",
+    "library": "com.typesafe.scala-logging:scala-logging_2.13:3.9.5",
+    "starting_commit": "8a3e119980a1442d10466699e9e67b0fc716c2ad",
+    "ending_commit": "34e3954520a054406c0228b94f1af754bd4e52a1",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "3.9.5",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 0.0,
+        "coveredCalls": 0,
+        "totalCalls": 2
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 22,
+          "missed": 16125,
+          "ratio": 0.001362,
+          "total": 16147
+        },
+        "line": {
+          "covered": 4,
+          "missed": 424,
+          "ratio": 0.009346,
+          "total": 428
+        },
+        "method": {
+          "covered": 5,
+          "missed": 203,
+          "ratio": 0.024038,
+          "total": 208
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 5463,
+      "issue_label": "library-new-request",
+      "library": "com.typesafe.scala-logging:scala-logging_2.13:3.9.5",
+      "summary": "scala-logging is a thin Scala/SLF4J wrapper; the resolved artifact brings scala-library, scala-reflect, and slf4j-api, but no SLF4J backend. Its documentation lists a compatible SLF4J backend as a prerequisite, and the project’s own 3.9.5 POM uses logback-classic in tests, so meaningful logging behavior needs a test backend.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "ch.qos.logback:logback-classic:1.2.11",
+          "scope": "testImplementation",
+          "reason": "Provides the SLF4J backend required by scala-logging documentation and matches the library’s own test dependency for version 3.9.5."
+        }
+      ],
+      "agent_guidance": "Prefer Scala test sources that exercise Logger, LazyLogging/StrictLogging, when*Enabled blocks, and LoggerTakingImplicit/CanLog; Java-only tests can mostly see factories and underlying SLF4J access, not the macro-based logging API. If assertions depend on enabled levels or captured events, configure Logback in test code/resources with a minimal deterministic logger/appender setup.",
+      "risks": [
+        "Without a backend, SLF4J 1.7 falls back to a no-op logger, making many logging paths unobservable.",
+        "Tests that only construct Logger and inspect underlying() will be scaffold-level coverage rather than meaningful scala-logging coverage.",
+        "Logback adds extra classes to native-image analysis; local Gradle and Native Image verification remain authoritative."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "ch.qos.logback:logback-classic:1.2.11",
+          "result": "applied",
+          "target": "tests/src/com.typesafe.scala-logging/scala-logging_2.13/3.9.5/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#5463 Support for com.typesafe.scala-logging:scala-logging_2.13:3.9.5; label=library-new-request; body_chars=120"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 51985,
+      "output_tokens_used": 4296,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/com.typesafe.scala-logging:scala-logging_2.13:3.9.5/library-preparation-preflight/pi-generation-2026-06-27T16-41-39-213347Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 100725,
+      "cached_input_tokens_used": 1154048,
+      "output_tokens_used": 13445,
+      "iterations": 2,
+      "cost_usd": 0.9803,
+      "generated_loc": 46,
+      "tested_library_loc": 4,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.93
+    },
+    "artifacts": {
+      "test_file": "tests/src/com.typesafe.scala-logging/scala-logging_2.13/3.9.5/src/test/scala/com_typesafe_scala_logging/scala_logging_2_13/LoggerMacroAnonymous1Test.scala",
+      "metadata_file": "metadata/com.typesafe.scala-logging/scala-logging_2.13/3.9.5/reachability-metadata.json"
+    }
+  }
+}
