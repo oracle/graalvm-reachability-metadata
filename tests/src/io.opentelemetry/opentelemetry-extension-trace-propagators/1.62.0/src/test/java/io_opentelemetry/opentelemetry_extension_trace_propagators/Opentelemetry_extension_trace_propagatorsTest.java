@@ -92,6 +92,19 @@ public class Opentelemetry_extension_trace_propagatorsTest {
     }
 
     @Test
+    void b3SingleHeaderExtractsSixtyFourBitTraceIdAsPaddedRemoteContext() {
+        Map<String, String> carrier = new LinkedHashMap<>();
+        carrier.put("b3", "463ac35c9f6413ad-a2fb4a1d1a96d312-1");
+
+        Context extracted =
+                B3Propagator.injectingSingleHeader().extract(Context.root(), carrier, MAP_GETTER);
+
+        assertExtractedSpan(
+                extracted, "0000000000000000463ac35c9f6413ad", "a2fb4a1d1a96d312", true);
+        assertThat(Span.fromContext(extracted).getSpanContext().isRemote()).isTrue();
+    }
+
+    @Test
     @SuppressWarnings("deprecation")
     void jaegerInjectsTraceHeaderAndBaggageThenExtractsThem() {
         TextMapPropagator propagator = JaegerPropagator.getInstance();
