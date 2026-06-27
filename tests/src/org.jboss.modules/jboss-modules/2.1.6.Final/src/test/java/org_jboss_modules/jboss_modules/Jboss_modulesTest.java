@@ -123,6 +123,31 @@ public class Jboss_modulesTest {
     }
 
     @Test
+    void resolvesModuleAliasToTargetModule() throws Exception {
+        Path targetDirectory = createModuleDirectory("example.alias.target");
+        Path resources = targetDirectory.resolve("resources");
+        Files.createDirectories(resources.resolve("alias"));
+        Files.writeString(resources.resolve("alias/value.txt"), "from target module", UTF_8);
+        writeModuleXml(targetDirectory, "example.alias.target", """
+                <resources>
+                    <resource-root path="resources"/>
+                </resources>
+                """);
+
+        Path aliasDirectory = createModuleDirectory("example.alias.name");
+        writeModuleAliasXml(aliasDirectory, "example.alias.name", "example.alias.target");
+
+        try (LocalModuleLoader loader = new LocalModuleLoader(new File[] { repositoryRoot.toFile() })) {
+            Module target = loader.loadModule("example.alias.target");
+            Module alias = loader.loadModule("example.alias.name");
+
+            assertThat(alias).isSameAs(target);
+            assertThat(alias.getName()).isEqualTo("example.alias.target");
+            assertThat(readText(alias.getExportedResource("alias/value.txt"))).isEqualTo("from target module");
+        }
+    }
+
+    @Test
     void defaultLocalModuleLoaderUsesModulePathSystemProperty() throws Exception {
         Path moduleDirectory = createModuleDirectory("example.defaultloader");
         Path resources = moduleDirectory.resolve("resources");
@@ -160,6 +185,13 @@ public class Jboss_modulesTest {
                 <module xmlns="urn:jboss:module:1.9" name="%s">
                 %s</module>
                 """.formatted(moduleName, body);
+        Files.writeString(moduleDirectory.resolve("module.xml"), moduleXml, UTF_8);
+    }
+
+    private static void writeModuleAliasXml(Path moduleDirectory, String aliasName, String targetName) throws IOException {
+        String moduleXml = """
+                <module-alias xmlns="urn:jboss:module:1.9" name="%s" target-name="%s"/>
+                """.formatted(aliasName, targetName);
         Files.writeString(moduleDirectory.resolve("module.xml"), moduleXml, UTF_8);
     }
 
