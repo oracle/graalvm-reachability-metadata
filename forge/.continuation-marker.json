@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.activemq:artemis-commons:2.38.0",
+  "issueNumber": 8665,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment variables or system properties are required. Generated or repaired tests should target the 2.38.0 public API: org.apache.activemq.artemis.utils.Base64 no longer exposes DONT_BREAK_LINES or decodeToObject(String); use encodeObject(Serializable), encodeBytes/decode, or deserialize from Base64.decode(...) if object round-trip coverage is needed.",
+    "applied_setup": [],
+    "current_library": "org.apache.activemq:artemis-commons:2.34.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8665 [Automation] javac compile fails for org.apache.activemq:artemis-commons:2.38.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "26 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 30527,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8665,
+    "library": "org.apache.activemq:artemis-commons:2.38.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.38.0",
+    "output_tokens_used": 2577,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Existing tests copied from older versions may fail javac because of removed Base64 API members.",
+      "Some upstream Artemis tests use artemis-unit-test-support, but it is not required for meaningful TCK coverage of artemis-commons utilities."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.activemq:artemis-commons:2.38.0/library-preparation-preflight/pi-generation-2026-06-27T06-50-59-154996Z.log",
+    "status": "completed",
+    "summary": "org.apache.activemq:artemis-commons:2.38.0 is a utility/common library whose required runtime dependencies are already resolved transitively from the artifact POM; meaningful tests can exercise its public utilities without extra Maven dependencies, Docker services, or environment setup."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.38.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8665-fails-javac-compile-org.apache.activemq-artemis-commons-2.38.0-fc772b7a",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
