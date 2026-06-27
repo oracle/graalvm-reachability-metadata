@@ -117,6 +117,47 @@ public class Springdoc_openapi_starter_webmvc_uiTest {
         }
     }
 
+    @Test
+    void customApiDocsAndSwaggerUiPathsAreHonored() throws Exception {
+        try (ConfigurableApplicationContext context = SpringApplication.run(TestApplication.class,
+                "--server.address=127.0.0.1",
+                "--server.port=0",
+                "--spring.main.banner-mode=off",
+                "--springdoc.api-docs.path=/openapi",
+                "--springdoc.swagger-ui.path=/docs")) {
+            int port = context.getEnvironment().getRequiredProperty("local.server.port", Integer.class);
+            try (HttpClient client = HttpClient.newBuilder()
+                    .connectTimeout(REQUEST_TIMEOUT)
+                    .followRedirects(HttpClient.Redirect.NORMAL)
+                    .build()) {
+                HttpResponse<String> apiDocsResponse = get(client, port, "/openapi", "application/json");
+                assertThat(apiDocsResponse.statusCode()).isEqualTo(200);
+                assertThat(apiDocsResponse.body())
+                        .contains("\"openapi\"")
+                        .contains("\"/greetings/{name}\"");
+
+                HttpResponse<String> swaggerConfigResponse = get(client, port,
+                        "/openapi/swagger-config", "application/json");
+                assertThat(swaggerConfigResponse.statusCode()).isEqualTo(200);
+                assertThat(swaggerConfigResponse.body())
+                        .contains("\"url\":\"/openapi\"")
+                        .contains("\"configUrl\":\"/openapi/swagger-config\"");
+
+                HttpResponse<String> customSwaggerUiResponse = get(client, port, "/docs", "text/html");
+                assertThat(customSwaggerUiResponse.statusCode()).isEqualTo(200);
+                assertThat(customSwaggerUiResponse.body())
+                        .contains("Swagger UI")
+                        .contains("swagger-initializer.js");
+
+                HttpResponse<String> initializerResponse = get(client, port, "/swagger-ui/swagger-initializer.js",
+                        "application/javascript");
+                assertThat(initializerResponse.statusCode()).isEqualTo(200);
+                assertThat(initializerResponse.body())
+                        .contains("/openapi/swagger-config");
+            }
+        }
+    }
+
     private static HttpResponse<String> get(HttpClient client, int port, String path, String accept)
             throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + port + path))
