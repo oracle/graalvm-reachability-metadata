@@ -244,7 +244,7 @@ public class Kotest_assertions_shared_jvmTest {
             "lazy message"
         }
 
-        assertEquals(1, invocations)
+        assertEquals(0, invocations)
         assertEquals("lazy message", error.message)
         assertEquals("lazy message", error.message)
         assertEquals(1, invocations)
