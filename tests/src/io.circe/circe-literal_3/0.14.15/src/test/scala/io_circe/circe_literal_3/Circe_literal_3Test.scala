@@ -144,6 +144,24 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def parsesEscapedObjectMemberNames(): Unit = {
+    val document: Json = json"""
+      {
+        "line\nkey": "newline",
+        "quote\"key": true,
+        "slash\/key": 7
+      }
+    """
+
+    val fields: Seq[String] = document.asObject.map(_.keys.toSeq).getOrElse(Seq.empty)
+
+    assertThat(fields.asJava).containsExactly("line\nkey", "quote\"key", "slash/key")
+    assertThat(document.hcursor.downField("line\nkey").as[String]).isEqualTo(Right("newline"))
+    assertThat(document.hcursor.downField("quote\"key").as[Boolean]).isEqualTo(Right(true))
+    assertThat(document.hcursor.downField("slash/key").as[Int]).isEqualTo(Right(7))
+  }
+
+  @Test
   def combinesLiteralStructureAndRepeatedInterpolations(): Unit = {
     val user: LiteralUser = LiteralUser("Grace", 41, List("compiler", "navy"))
     val key: LiteralKey = LiteralKey("user", 100)
