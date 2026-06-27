@@ -83,6 +83,20 @@ public class Jsonschema_module_swagger_2Test {
     }
 
     @Test
+    void appliesSwaggerSchemaAnnotationsDeclaredOnGetterMethods() {
+        JsonNode schema = this.generator.generateSchema(GetterAnnotatedModel.class);
+        JsonNode properties = schema.required("properties");
+
+        assertThat(properties.has("calculatedStatus")).isFalse();
+        JsonNode statusCode = properties.required("statusCode");
+        assertThat(statusCode.required("title").asText()).isEqualTo("Status code");
+        assertThat(statusCode.required("description").asText()).isEqualTo("Externally visible processing status");
+        assertThat(statusCode.required("default").asText()).isEqualTo("OPEN");
+        assertThat(arrayTexts(statusCode.required("enum"))).containsExactly("OPEN", "CLOSED");
+        assertThat(arrayTexts(schema.required("required"))).contains("statusCode");
+    }
+
+    @Test
     void supportsReferencesCompositionAndDefinitionNames() {
         JsonNode schema = this.generator.generateSchema(Product.class);
         JsonNode properties = schema.required("properties");
@@ -206,6 +220,16 @@ public class Jsonschema_module_swagger_2Test {
 
         @Schema(nullable = false)
         public String nonNullableName;
+    }
+
+    public static class GetterAnnotatedModel {
+        private String calculatedStatus;
+
+        @Schema(name = "statusCode", title = "Status code", description = "Externally visible processing status",
+                requiredMode = Schema.RequiredMode.REQUIRED, allowableValues = {"OPEN", "CLOSED"}, defaultValue = "OPEN")
+        public String getCalculatedStatus() {
+            return this.calculatedStatus;
+        }
     }
 
     @Schema(title = "Product schema", description = "A product exposed through the catalog API",
