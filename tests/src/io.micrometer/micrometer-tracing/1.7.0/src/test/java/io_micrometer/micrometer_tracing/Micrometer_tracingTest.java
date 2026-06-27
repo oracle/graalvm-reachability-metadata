@@ -15,8 +15,10 @@ import io.micrometer.observation.transport.SenderContext;
 import io.micrometer.tracing.BaggageInScope;
 import io.micrometer.tracing.CurrentTraceContext;
 import io.micrometer.tracing.Link;
+import io.micrometer.tracing.ScopedSpan;
 import io.micrometer.tracing.Span;
 import io.micrometer.tracing.SpanAndScope;
+import io.micrometer.tracing.SpanCustomizer;
 import io.micrometer.tracing.ThreadLocalSpan;
 import io.micrometer.tracing.TraceContext;
 import io.micrometer.tracing.Tracer;
@@ -252,6 +254,54 @@ public class Micrometer_tracingTest {
         }
         propagated.end();
         original.end();
+    }
+
+    @Test
+    void scopedSpanFacadeStartsFinishesAndRecordsSpanData() {
+        SimpleTracer tracer = new SimpleTracer();
+        IllegalArgumentException failure = new IllegalArgumentException("invalid batch");
+
+        ScopedSpan scopedSpan = tracer.startScopedSpan("batch processing");
+        assertThat(scopedSpan.isNoop()).isFalse();
+        scopedSpan.name("process orders")
+            .tag("batch.id", "b-123")
+            .event("batch claimed")
+            .error(failure)
+            .end();
+
+        SimpleSpan span = tracer.onlySpan();
+        assertThat(span.getName()).isEqualTo("process orders");
+        assertThat(span.getTags()).containsEntry("batch.id", "b-123");
+        assertThat(eventNames(span)).contains("batch claimed");
+        assertThat(span.getError()).isSameAs(failure);
+        assertThat(span.getEndTimestamp().toEpochMilli()).isPositive();
+    }
+
+    @Test
+    void currentSpanCustomizerMutatesTheSpanBoundToTheCurrentScope() {
+        SimpleTracer tracer = new SimpleTracer();
+        Span span = tracer.nextSpan().name("original").start();
+
+        try (Tracer.SpanInScope scope = tracer.withSpan(span)) {
+            SpanCustomizer customizer = tracer.currentSpanCustomizer();
+            assertThat(customizer.name("server request")).isSameAs(customizer);
+            customizer.tag("http.method", "GET")
+                .tag("http.status_code", 200L)
+                .tag("cache.hit", true)
+                .tag("sample.ratio", 0.75D)
+                .event("response committed");
+        }
+        span.end();
+
+        SimpleSpan simpleSpan = tracer.onlySpan();
+        assertThat(simpleSpan).isSameAs(span);
+        assertThat(simpleSpan.getName()).isEqualTo("server request");
+        assertThat(simpleSpan.getTags()).containsEntry("http.method", "GET")
+            .containsEntry("http.status_code", "200")
+            .containsEntry("cache.hit", "true")
+            .containsEntry("sample.ratio", "0.75");
+        assertThat(eventNames(simpleSpan)).contains("response committed");
+        assertThat(tracer.currentSpan()).isNull();
     }
 
     @Test
