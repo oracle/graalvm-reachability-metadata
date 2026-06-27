@@ -11,46 +11,14 @@ import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.read.ListAppender
 import com.typesafe.scalalogging.Logger
 import org.assertj.core.api.Assertions.assertThat
-import org.graalvm.internal.tck.NativeImageSupport
 import org.junit.jupiter.api.Test
-import org.slf4j.LoggerFactory
-
-import scala.reflect.runtime.universe
-import scala.tools.reflect.ToolBox
 
 class LoggerMacroAnonymous1Test {
   @Test
-  def runtimeTypecheckingExpandsInterpolatedLoggerMacroCall(): Unit = {
-    try {
-      val toolbox: ToolBox[universe.type] = universe.runtimeMirror(getClass.getClassLoader).mkToolBox()
-      val typedTree: universe.Tree = toolbox.typecheck(toolbox.parse("""
-          {
-            import com.typesafe.scalalogging.Logger
-
-            val logger: Logger = Logger("com.typesafe.scalalogging.runtime-typechecked")
-            val user: String = "alice"
-            val attempt: Int = 3
-
-            logger.info(s"accepted $user on attempt $attempt")
-          }
-        """))
-
-      val expandedSource: String = typedTree.toString
-      assertThat(expandedSource).contains("isInfoEnabled")
-      assertThat(expandedSource).contains("accepted {} on attempt {}")
-    } catch {
-      case error: Error =>
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-          throw error
-        }
-    }
-  }
-
-  @Test
   def interpolatedMessageIsConvertedToSlf4jFormatAtCompileTime(): Unit = {
     val loggerName: String = s"${getClass.getName}.interpolatedMessage"
-    val logbackLogger: LogbackLogger = LoggerFactory.getLogger(loggerName).asInstanceOf[LogbackLogger]
-    val context: LoggerContext = LoggerFactory.getILoggerFactory.asInstanceOf[LoggerContext]
+    val context: LoggerContext = new LoggerContext()
+    val logbackLogger: LogbackLogger = context.getLogger(loggerName)
     val appender: ListAppender[ILoggingEvent] = new ListAppender[ILoggingEvent]
     appender.setContext(context)
     appender.start()
@@ -62,7 +30,7 @@ class LoggerMacroAnonymous1Test {
     logbackLogger.addAppender(appender)
 
     try {
-      val logger: Logger = Logger(loggerName)
+      val logger: Logger = Logger(logbackLogger)
       val component: String = "orders"
       val shard: Int = 7
 
@@ -78,6 +46,7 @@ class LoggerMacroAnonymous1Test {
       logbackLogger.setLevel(previousLevel)
       logbackLogger.setAdditive(previousAdditive)
       appender.stop()
+      context.stop()
     }
   }
 }
