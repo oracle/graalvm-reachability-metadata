@@ -93,6 +93,23 @@ class Zio_stacktracer_2_13Test {
   }
 
   @Test
+  def namedAutoTraceCanBeCalledExplicitly(): Unit = {
+    val trace: Tracer.instance.Type = Tracer.autoTrace
+    val decoded: Option[(String, String, Int)] = decode(trace)
+
+    assertTrue(decoded.isDefined, s"Trace could not be decoded: $trace")
+    val (location, file, line): (String, String, Int) = decoded.get
+    assertTrue(
+      location.contains("Zio_stacktracer_2_13Test"),
+      s"Unexpected trace location: $location")
+    assertTrue(
+      location.contains("namedAutoTraceCanBeCalledExplicitly"),
+      s"Unexpected trace location: $location")
+    assertEquals("Zio_stacktracer_2_13Test.scala", file)
+    assertTrue(line > 0, s"Unexpected trace line: $line")
+  }
+
+  @Test
   def tracerInstanceRoundTripsLocationFileAndLine(): Unit = {
     val trace: Tracer.instance.Type =
       Tracer.instance("example.service.operation", "ExampleService.scala", 12345)
