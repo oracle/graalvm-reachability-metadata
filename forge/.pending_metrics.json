@@ -1,0 +1,105 @@
+{
+  "timestamp": "2026-06-27T03:21:59.942981Z",
+  "library": "com.github.victools:jsonschema-module-jackson:4.38.0",
+  "starting_commit": "3d669d576c4c6baf7fc02d3cb5af8fc729f67ffb",
+  "ending_commit": "9140e4f03feaf330ec86ce6b2839a25c2c997c21",
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+  "agent": "pi",
+  "model": "oca/gpt-5.5",
+  "status": "success",
+  "stats": {
+    "version": "4.38.0",
+    "dynamicAccess": {
+      "breakdown": {
+        "reflection": {
+          "coverageRatio": 1.0,
+          "coveredCalls": 4,
+          "totalCalls": 4
+        }
+      },
+      "coverageRatio": 1.0,
+      "coveredCalls": 4,
+      "totalCalls": 4
+    },
+    "libraryCoverage": {
+      "instruction": {
+        "covered": 897,
+        "missed": 1239,
+        "ratio": 0.419944,
+        "total": 2136
+      },
+      "line": {
+        "covered": 180,
+        "missed": 274,
+        "ratio": 0.396476,
+        "total": 454
+      },
+      "method": {
+        "covered": 38,
+        "missed": 51,
+        "ratio": 0.426966,
+        "total": 89
+      }
+    }
+  },
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 8425,
+    "issue_label": "library-new-request",
+    "library": "com.github.victools:jsonschema-module-jackson:4.38.0",
+    "summary": "The module is not standalone: its POM marks the core jsonschema-generator and Jackson APIs as provided, while normal usage requires wiring the Jackson module into SchemaGeneratorConfigBuilder before generating schemas.",
+    "deterministic_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "com.github.victools:jsonschema-generator:4.38.0",
+        "scope": "testImplementation",
+        "reason": "jsonschema-module-jackson declares jsonschema-generator as a provided dependency and its public API implements/uses generator types; meaningful tests need the core generator on the test classpath. This also brings the matching Jackson databind/core/annotations dependencies transitively."
+      }
+    ],
+    "agent_guidance": "No Docker image, environment variable, or system property appears necessary. For 4.38.0 use the 4.x API class `com.github.victools.jsonschema.module.jackson.JacksonModule` with `SchemaGeneratorConfigBuilder`, then generate schemas for annotated fixture classes to exercise Jackson annotations such as `@JsonProperty`, `@JsonIgnore`, `@JsonPropertyDescription`, `@JsonSubTypes`, `@JsonTypeInfo`, `@JsonUnwrapped`, and optional `JacksonOption` flags.",
+    "risks": [
+      "Current upstream README examples may mention newer 5.x names such as `JacksonSchemaModule`; the resolved 4.38.0 artifact exposes `JacksonModule` instead.",
+      "If the core generator dependency is not added, tests that instantiate or apply the module are likely to fail compilation or class loading because the module's generator dependency is provided rather than transitive."
+    ],
+    "applied_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "com.github.victools:jsonschema-generator:4.38.0",
+        "result": "applied",
+        "target": "tests/src/com.github.victools/jsonschema-module-jackson/4.38.0/build.gradle"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8425 Support for com.github.victools:jsonschema-module-jackson:4.38.0; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "oca/gpt-5.5",
+    "input_tokens_used": 23580,
+    "output_tokens_used": 2437,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/com.github.victools:jsonschema-module-jackson:4.38.0/library-preparation-preflight/pi-generation-2026-06-27T02-58-59-471353Z.log"
+  },
+  "metrics": {
+    "input_tokens_used": 97496,
+    "cached_input_tokens_used": 1015296,
+    "output_tokens_used": 9942,
+    "iterations": 2,
+    "cost_usd": 0.8059,
+    "generated_loc": 123,
+    "tested_library_loc": 180,
+    "metadata_entries": 12,
+    "code_coverage_percent": 39.65
+  },
+  "artifacts": {
+    "test_file": "tests/src/com.github.victools/jsonschema-module-jackson/4.38.0/src/test/java/com_github_victools/jsonschema_module_jackson/JacksonModuleTest.java",
+    "metadata_file": "metadata/com.github.victools/jsonschema-module-jackson/4.38.0/reachability-metadata.json"
+  }
+}
