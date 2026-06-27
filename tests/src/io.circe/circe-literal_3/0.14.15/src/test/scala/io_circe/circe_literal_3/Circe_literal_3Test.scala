@@ -85,6 +85,28 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def constructsEmptyArrayAndObjectLiteralsAtTopLevelAndNestedPositions(): Unit = {
+    val emptyArray: Json = json""" [] """
+    val emptyObject: Json = json""" {} """
+    val document: Json = json"""
+      {
+        "emptyArray": [],
+        "emptyObject": {},
+        "nested": [[], {}]
+      }
+    """
+
+    assertThat(expectOption(emptyArray.asArray).asJava).isEmpty()
+    assertThat(expectOption(emptyObject.asObject).isEmpty).isTrue
+    assertThat(expectOption(document.hcursor.downField("emptyArray").focus).isArray).isTrue
+    assertThat(expectDecoded(document.hcursor.get[List[Json]]("emptyArray")).asJava).isEmpty()
+    assertThat(expectOption(document.hcursor.downField("emptyObject").focus).isObject).isTrue
+    assertThat(expectOption(document.hcursor.downField("emptyObject").focus).asObject.exists(_.isEmpty)).isTrue
+    assertThat(expectDecoded(document.hcursor.downField("nested").downN(0).as[List[Json]]).asJava).isEmpty()
+    assertThat(expectOption(document.hcursor.downField("nested").downN(1).focus).asObject.exists(_.isEmpty)).isTrue
+  }
+
+  @Test
   def interpolatesPrimitiveCollectionOptionalAndTopLevelValuesThroughEncoders(): Unit = {
     val serviceName: String = "search"
     val port: Int = 9443
