@@ -151,6 +151,22 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def acceptsInlineExpressionsInInterpolatedValueAndKeyPositions(): Unit = {
+    val document: Json = json"""
+      {
+        ${"answer"}: ${40 + 2},
+        ${100 + 1}: ${List("literal", "macro").map(_.toUpperCase)},
+        "description": ${List("inline", "expression").mkString("-")}
+      }
+    """
+
+    val cursor = document.hcursor
+    assertEquals(Right(42), cursor.downField("answer").as[Int])
+    assertEquals(Right(List("LITERAL", "MACRO")), cursor.downField("101").as[List[String]])
+    assertEquals(Right("inline-expression"), cursor.downField("description").as[String])
+  }
+
+  @Test
   def encodesSingleInterpolatedValueAsCompleteJsonDocument(): Unit = {
     final case class Release(name: String, modules: List[String], stable: Boolean)
 
