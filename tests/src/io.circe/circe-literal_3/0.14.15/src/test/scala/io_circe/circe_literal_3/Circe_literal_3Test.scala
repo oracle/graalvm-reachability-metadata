@@ -112,6 +112,20 @@ class Circe_literal_3Test:
     assert(field[Int](focus(document, "nested"), "test.count") == count)
 
   @Test
+  def jsonInterpolatorDecodesEscapedObjectKeys(): Unit =
+    val document: Json = json"""
+      {
+        "quote\"key": "quoted",
+        "line\nkey": 7,
+        "π-key": true
+      }
+      """
+
+    assert(field[String](document, "quote\"key") == "quoted")
+    assert(field[Int](document, "line\nkey") == 7)
+    assert(field[Boolean](document, "π-key"))
+
+  @Test
   def jsonInterpolatorSupportsTopLevelAndArrayInterpolations(): Unit =
     val payload: Json = Json.obj(
       "source" -> Json.fromString("prebuilt-json"),
