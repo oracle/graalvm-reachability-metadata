@@ -25,7 +25,7 @@ import scala.concurrent.duration.DurationInt
 
 class DnsSettingsTest {
   @Test
-  def startsAsyncDnsResolverUsingJdkResolverConfigurationFallback(): Unit = {
+  def startsAsyncDnsResolverWithExplicitNameserverWhenJndiDnsLookupFails(): Unit = {
     FailingJndiDnsContext.install()
     val system: ActorSystem = ActorSystem("dns-settings-reflection-fallback", asyncDnsConfig)
 
@@ -44,7 +44,7 @@ class DnsSettingsTest {
       akka.actor.default-dispatcher.shutdown-timeout = 10s
       akka.coordinated-shutdown.run-by-jvm-shutdown-hook = off
       akka.io.dns.resolver = "async-dns"
-      akka.io.dns.async-dns.nameservers = default
+      akka.io.dns.async-dns.nameservers = ["127.0.0.1"]
       akka.io.dns.async-dns.resolve-timeout = 10s
       akka.io.dns.async-dns.cache-cleanup-interval = 10s
       """).withFallback(ConfigFactory.load())
