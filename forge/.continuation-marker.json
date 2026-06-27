@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "net.thisptr:jackson-jq:2.0.0-alpha1",
+  "issueNumber": 8741,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Write generated tests against Jackson 3 imports such as `tools.jackson.databind.JsonNode` and `tools.jackson.databind.ObjectMapper`, matching the `JsonQuery.apply` and `Scope` signatures in 2.0.0-alpha1. Do not keep the old `com.fasterxml.jackson.databind.*` imports from the 1.6.2 test, and do not add `com.fasterxml.jackson.core:jackson-databind` just to satisfy those old imports.",
+    "applied_setup": [],
+    "current_library": "net.thisptr:jackson-jq:1.6.2",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8741 [Automation] javac compile fails for net.thisptr:jackson-jq:2.0.0-alpha1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 38578,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8741,
+    "library": "net.thisptr:jackson-jq:2.0.0-alpha1",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.0-alpha1",
+    "output_tokens_used": 3655,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The existing 1.6.2 test fails under 2.0.0-alpha1 because it imports Jackson 2 `com.fasterxml` classes while the new artifact depends on Jackson 3 `tools.jackson.core:jackson-databind:3.0.3`.",
+      "Adding Jackson 2 databind would not be the right setup because the library methods now accept and return `tools.jackson.databind` types, so Jackson 2 `JsonNode` values would be type-incompatible."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/net.thisptr:jackson-jq:2.0.0-alpha1/library-preparation-preflight/pi-generation-2026-06-27T20-54-02-492366Z.log",
+    "status": "completed",
+    "summary": "No extra Maven dependency, Docker image, environment variable, or system property is needed; jackson-jq 2.0.0-alpha1 migrated its public API to Jackson 3 `tools.jackson.*` types, which are already supplied transitively."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.0-alpha1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8741-fails-javac-compile-net.thisptr-jackson-jq-2.0.0-alpha1-06153528",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
