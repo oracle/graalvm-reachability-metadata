@@ -10,7 +10,7 @@ import io.getquill.Literal
 import io.getquill.MirrorSqlDialect
 import io.getquill.Query
 import io.getquill.Quoted
-import io.getquill.SqlMirrorContext
+import io.getquill.context.sql.SqlContext
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -19,12 +19,10 @@ final case class LockableRow(id: Int, name: String)
 class SqlDslInnerForUpdateAnonymous2Test {
   @Test
   def forUpdateCreatesQuotedQueryWithLockingClause(): Unit = {
-    val context: SqlMirrorContext[MirrorSqlDialect.type, Literal.type] =
-      new SqlMirrorContext(MirrorSqlDialect, Literal)
-    import context._
-
+    val sqlContext: SqlContext[MirrorSqlDialect.type, Literal.type] = null
     val sourceQuery: Query[LockableRow] = null.asInstanceOf[Query[LockableRow]]
-    val lockedRows: Quoted[Query[LockableRow]] = sourceQuery.forUpdate()
+    val lockedRows: Quoted[Query[LockableRow]] =
+      new sqlContext.ForUpdate[LockableRow](sourceQuery).forUpdate()
 
     assertThat(lockedRows.ast.toString)
       .contains("FOR UPDATE")

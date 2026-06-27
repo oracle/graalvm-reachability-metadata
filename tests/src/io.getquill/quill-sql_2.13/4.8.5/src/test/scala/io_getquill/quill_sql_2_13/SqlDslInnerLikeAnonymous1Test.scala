@@ -9,18 +9,16 @@ package io_getquill.quill_sql_2_13
 import io.getquill.Literal
 import io.getquill.MirrorSqlDialect
 import io.getquill.Quoted
-import io.getquill.SqlMirrorContext
+import io.getquill.context.sql.SqlContext
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class SqlDslInnerLikeAnonymous1Test {
   @Test
   def likeCreatesQuotedConditionWithSqlOperator(): Unit = {
-    val context: SqlMirrorContext[MirrorSqlDialect.type, Literal.type] =
-      new SqlMirrorContext(MirrorSqlDialect, Literal)
-    import context._
-
-    val condition: Quoted[Boolean] = "person.name".like("A%")
+    val sqlContext: SqlContext[MirrorSqlDialect.type, Literal.type] = null
+    val condition: Quoted[Any] =
+      new sqlContext.Like("person.name").like("A%")
 
     assertThat(condition.ast.toString)
       .contains("like")
