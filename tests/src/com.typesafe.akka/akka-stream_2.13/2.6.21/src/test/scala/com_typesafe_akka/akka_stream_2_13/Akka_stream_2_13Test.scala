@@ -11,11 +11,13 @@ import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.stream.ActorAttributes
 import akka.stream.ClosedShape
+import akka.stream.KillSwitches
 import akka.stream.Materializer
 import akka.stream.OverflowStrategy
 import akka.stream.QueueOfferResult
 import akka.stream.Supervision
 import akka.stream.SystemMaterializer
+import akka.stream.UniqueKillSwitch
 import akka.stream.scaladsl.Broadcast
 import akka.stream.scaladsl.BroadcastHub
 import akka.stream.scaladsl.Compression
@@ -181,6 +183,22 @@ class Akka_stream_2_13Test {
           .runWith(Sink.seq))
 
       assertThat(result.asJava).containsExactly(10, 20)
+  }
+
+  @Test
+  def stopOpenStreamWithUniqueKillSwitch(): Unit = withStream("kill-switch") {
+    (_: ActorSystem, materializer: Materializer) =>
+      implicit val mat: Materializer = materializer
+
+      val (killSwitch, completion): (UniqueKillSwitch, Future[Done]) = Source
+        .maybe[Int]
+        .viaMat(KillSwitches.single)(Keep.right)
+        .toMat(Sink.ignore)(Keep.both)
+        .run()
+
+      killSwitch.shutdown()
+
+      assertThat(awaitResult(completion)).isEqualTo(Done)
   }
 
   @Test
