@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.springframework:spring-context:6.0.1",
+  "issueNumber": 8719,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Generate tests against the Spring 6.0.x API surface and avoid removed Spring 5 remoting/EJB/WebLogic/WebSphere classes such as org.springframework.remoting.*, AbstractSlsbInvokerInterceptor, LocalSlsbInvokerInterceptor, JndiRmiServiceExporter, RemoteInvocation, RmiClientInterceptorUtils, WebLogicLoadTimeWeaver, WebSphereLoadTimeWeaver, and WebSphereMBeanServerFactoryBean. If tests exercise default @Configuration class enhancement/proxyBeanMethods=true in native image, set spring.objenesis.ignore=true for JVM/native test execution and either pre-generate the Spring CGLIB proxy classes before native-image compilation or prefer @Configuration(proxyBeanMethods=false)/GenericApplicationContext tests that avoid runtime CGLIB generation.",
+    "applied_setup": [],
+    "current_library": "org.springframework:spring-context:5.3.15",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8719 [Automation] javac compile fails for org.springframework:spring-context:6.0.1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "40 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 41322,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8719,
+    "library": "org.springframework:spring-context:6.0.1",
+    "model": "oca/gpt-5.5",
+    "new_version": "6.0.1",
+    "output_tokens_used": 5168,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Spring Context has many optional integrations; adding tests for Jakarta annotations, EJB, validation, Kotlin, Groovy, AspectJ, or reactive APIs may require targeted optional test dependencies, but they are not required for meaningful core ApplicationContext coverage.",
+      "Runtime CGLIB generation from default @Configuration classes can fail under native image unless handled explicitly."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.springframework:spring-context:6.0.1/library-preparation-preflight/pi-generation-2026-06-27T13-38-57-273374Z.log",
+    "status": "completed",
+    "summary": "No extra Maven dependency or Docker image is indicated; the javac failure is from stale Spring 5.x tests referencing APIs removed from spring-context 6.x, while normal Spring Context usage is in-process."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "6.0.1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8719-fails-javac-compile-org.springframework-spring-context-6.0.1-e89bf64e",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
