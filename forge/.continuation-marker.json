@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.specs2:specs2-core_3:5.5.0",
+  "issueNumber": 8231,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.specs2:specs2-core_3:5.0.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8231 [Automation] java run fails for org.specs2:specs2-core_3:5.5.0; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 46402,
+    "issue_label": "fails-java-run",
+    "issue_number": 8231,
+    "library": "org.specs2:specs2-core_3:5.5.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "5.5.0",
+    "output_tokens_used": 3602,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The observed failure is an API compatibility issue in the existing test code, not missing setup: specs2 5.5.0 changed Env shutdown APIs, so code like Await.result(env.shutdown, ...) no longer typechecks.",
+      "Optional integrations such as specs2-junit, specs2-scalacheck, specs2-html, and specs2-matcher-extra require their own modules, but they are not needed to cover specs2-core itself."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.specs2:specs2-core_3:5.5.0/library-preparation-preflight/pi-generation-2026-06-27T18-26-08-886182Z.log",
+    "status": "completed",
+    "summary": "specs2-core_3 is a pure Scala JVM testing framework module; its published runtime dependencies cover normal core/specification/matcher usage, and meaningful coverage does not require Docker, extra Maven dependencies, or environment/system properties."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "5.5.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8231-fails-java-run-org.specs2-specs2-core_3-5.5.0-cef383ce",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
