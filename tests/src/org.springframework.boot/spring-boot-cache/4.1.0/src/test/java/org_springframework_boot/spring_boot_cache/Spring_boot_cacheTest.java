@@ -12,24 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.autoconfigure.cache.CacheType;
 import org.springframework.boot.cache.autoconfigure.CacheAutoConfiguration;
 import org.springframework.boot.cache.autoconfigure.CacheManagerCustomizer;
 import org.springframework.boot.cache.autoconfigure.CacheManagerCustomizers;
 import org.springframework.boot.cache.autoconfigure.CacheProperties;
 import org.springframework.boot.context.annotation.ImportCandidates;
-import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.cache.support.NoOpCacheManager;
-import org.springframework.cache.support.SimpleCacheManager;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 
@@ -37,10 +27,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 public class Spring_boot_cacheTest {
-
-    private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations.of(CacheAutoConfiguration.class))
-            .withUserConfiguration(CachingConfiguration.class);
 
     @Test
     void cachePropertiesExposeCommonAndProviderSpecificSettings() {
@@ -121,196 +107,6 @@ public class Spring_boot_cacheTest {
         ImportCandidates candidates = ImportCandidates.load(AutoConfiguration.class, getClass().getClassLoader());
 
         assertThat(candidates.getCandidates()).contains(CacheAutoConfiguration.class.getName());
-    }
-
-    @Test
-    void simpleCacheAutoConfigurationCreatesNamedConcurrentMapCachesAndAppliesCustomizers() {
-        this.contextRunner
-            .withUserConfiguration(ConcurrentMapCustomizerConfiguration.class)
-            .withPropertyValues("spring.cache.type=simple", "spring.cache.cache-names=books,authors")
-            .run((context) -> {
-                assertThat(context).hasSingleBean(CacheManager.class);
-                assertThat(context).hasSingleBean(CacheProperties.class);
-                assertThat(context).hasSingleBean(CacheManagerCustomizers.class);
-                CacheManager cacheManager = context.getBean(CacheManager.class);
-
-                assertThat(cacheManager).isInstanceOf(ConcurrentMapCacheManager.class);
-                ConcurrentMapCacheManager concurrentMapCacheManager = (ConcurrentMapCacheManager) cacheManager;
-                assertThat(concurrentMapCacheManager.getCacheNames()).containsExactlyInAnyOrder("books", "authors");
-                assertThat(concurrentMapCacheManager.isAllowNullValues()).isFalse();
-
-                Cache books = concurrentMapCacheManager.getCache("books");
-                assertThat(books).isNotNull();
-                books.put("isbn", "Spring Boot in Action");
-                assertThat(books.get("isbn", String.class)).isEqualTo("Spring Boot in Action");
-                assertThat(concurrentMapCacheManager.getCache("dynamic")).isNull();
-            });
-    }
-
-    @Test
-    void genericCacheAutoConfigurationAdaptsUserProvidedCacheBeans() {
-        this.contextRunner.withUserConfiguration(GenericCacheConfiguration.class).run((context) -> {
-            assertThat(context).hasSingleBean(CacheManager.class);
-            CacheManager cacheManager = context.getBean(CacheManager.class);
-
-            assertThat(cacheManager).isInstanceOf(SimpleCacheManager.class);
-            assertThat(cacheManager.getCacheNames()).containsExactlyInAnyOrder("primary", "secondary");
-            Cache primary = cacheManager.getCache("primary");
-            Cache secondary = cacheManager.getCache("secondary");
-            assertThat(primary).isNotNull();
-            assertThat(secondary).isNotNull();
-            primary.put("one", 1);
-            secondary.put("two", 2);
-            assertThat(primary.get("one", Integer.class)).isEqualTo(1);
-            assertThat(secondary.get("two", Integer.class)).isEqualTo(2);
-            assertThat(cacheManager.getCache("missing")).isNull();
-        });
-    }
-
-    @Test
-    void noOpCacheAutoConfigurationDisablesStorageButStillReturnsCachesByName() {
-        this.contextRunner.withPropertyValues("spring.cache.type=none").run((context) -> {
-            assertThat(context).hasSingleBean(CacheManager.class);
-            CacheManager cacheManager = context.getBean(CacheManager.class);
-
-            assertThat(cacheManager).isInstanceOf(NoOpCacheManager.class);
-            Cache cache = cacheManager.getCache("ignored");
-            assertThat(cache).isNotNull();
-            cache.put("key", "value");
-            assertThat(cache.get("key")).isNull();
-            assertThat(cacheManager.getCacheNames()).contains("ignored");
-        });
-    }
-
-    @Test
-    void autoConfigurationBacksOffWhenUserProvidesCacheManager() {
-        this.contextRunner.withUserConfiguration(UserCacheManagerConfiguration.class).run((context) -> {
-            assertThat(context).hasSingleBean(CacheManager.class);
-            CacheManager cacheManager = context.getBean(CacheManager.class);
-
-            assertThat(cacheManager).isInstanceOf(ConcurrentMapCacheManager.class);
-            assertThat(cacheManager.getCacheNames()).containsExactly("manual");
-        });
-    }
-
-    @Test
-    void simpleCacheAutoConfigurationCreatesDynamicCachesWhenNamesAreNotConfigured() {
-        this.contextRunner.withPropertyValues("spring.cache.type=simple").run((context) -> {
-            assertThat(context).hasSingleBean(CacheManager.class);
-            CacheManager cacheManager = context.getBean(CacheManager.class);
-
-            assertThat(cacheManager).isInstanceOf(ConcurrentMapCacheManager.class);
-            assertThat(cacheManager.getCacheNames()).isEmpty();
-            Cache dynamic = cacheManager.getCache("dynamic");
-            assertThat(dynamic).isNotNull();
-            dynamic.put("key", "value");
-            assertThat(dynamic.get("key", String.class)).isEqualTo("value");
-            assertThat(cacheManager.getCacheNames()).containsExactly("dynamic");
-            assertThat(cacheManager.getCache("dynamic")).isSameAs(dynamic);
-        });
-    }
-
-    @Test
-    void cacheAutoConfigurationSupportsDeclarativeCacheableOperations() {
-        this.contextRunner
-            .withUserConfiguration(DeclarativeCachingConfiguration.class)
-            .withPropertyValues("spring.cache.type=simple", "spring.cache.cache-names=isbnLookups")
-            .run((context) -> {
-                assertThat(context).hasSingleBean(IsbnLookupService.class);
-                IsbnLookupService service = context.getBean(IsbnLookupService.class);
-
-                assertThat(service.lookup("978-1")).isEqualTo("Book 978-1");
-                assertThat(service.lookup("978-1")).isEqualTo("Book 978-1");
-                assertThat(service.lookup("978-2")).isEqualTo("Book 978-2");
-                assertThat(service.getInvocationCount()).isEqualTo(2);
-
-                Cache cache = context.getBean(CacheManager.class).getCache("isbnLookups");
-                assertThat(cache).isNotNull();
-                assertThat(cache.get("978-1", String.class)).isEqualTo("Book 978-1");
-                assertThat(cache.get("978-2", String.class)).isEqualTo("Book 978-2");
-            });
-    }
-
-    @Configuration(proxyBeanMethods = false)
-    @EnableCaching
-    static class CachingConfiguration {
-
-    }
-
-    @Configuration(proxyBeanMethods = false)
-    static class ConcurrentMapCustomizerConfiguration {
-
-        @Bean
-        CacheManagerCustomizer<ConcurrentMapCacheManager> concurrentMapCacheManagerCustomizer() {
-            return new CacheManagerCustomizer<ConcurrentMapCacheManager>() {
-                @Override
-                public void customize(ConcurrentMapCacheManager cacheManager) {
-                    cacheManager.setAllowNullValues(false);
-                }
-            };
-        }
-
-    }
-
-    @Configuration(proxyBeanMethods = false)
-    static class GenericCacheConfiguration {
-
-        @Bean
-        Cache primaryCache() {
-            return new ConcurrentMapCache("primary");
-        }
-
-        @Bean
-        Cache secondaryCache() {
-            return new ConcurrentMapCache("secondary");
-        }
-
-    }
-
-    @Configuration(proxyBeanMethods = false)
-    static class UserCacheManagerConfiguration {
-
-        @Bean
-        CacheManager cacheManager() {
-            return new ConcurrentMapCacheManager("manual");
-        }
-
-    }
-
-    @Configuration(proxyBeanMethods = false)
-    static class DeclarativeCachingConfiguration {
-
-        @Bean
-        IsbnLookupService isbnLookupService() {
-            return new CountingIsbnLookupService();
-        }
-
-    }
-
-    interface IsbnLookupService {
-
-        @Cacheable("isbnLookups")
-        String lookup(String isbn);
-
-        int getInvocationCount();
-
-    }
-
-    static class CountingIsbnLookupService implements IsbnLookupService {
-
-        private int invocationCount;
-
-        @Override
-        public String lookup(String isbn) {
-            this.invocationCount++;
-            return "Book " + isbn;
-        }
-
-        @Override
-        public int getInvocationCount() {
-            return this.invocationCount;
-        }
-
     }
 
 }

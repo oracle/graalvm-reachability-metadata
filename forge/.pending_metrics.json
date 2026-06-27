@@ -1,0 +1,82 @@
+{
+  "timestamp": "2026-06-27T05:52:45.226824Z",
+  "library": "org.springframework.boot:spring-boot-cache:4.1.0",
+  "starting_commit": "1d106b217b18b1efaf4af59d9abaf57254ceb26f",
+  "ending_commit": "59c0aed0a8e79f19d55b41b7380ed6681fa1ba56",
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+  "agent": "pi",
+  "model": "oca/gpt-5.5",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 8412,
+    "issue_label": "library-new-request",
+    "library": "org.springframework.boot:spring-boot-cache:4.1.0",
+    "summary": "The artifact is a class-bearing Spring Boot cache auto-configuration module. Its published runtime dependencies are only spring-boot and spring-context-support, but meaningful coverage of its central auto-configuration path requires Spring Boot's auto-configuration and test context runner support.",
+    "deterministic_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.1.0",
+        "scope": "testImplementation",
+        "reason": "spring-boot-cache contains @AutoConfiguration classes and imports condition annotations/classes from spring-boot-autoconfigure, but that dependency is optional in the module source and not present in the published runtime dependency set."
+      },
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.boot:spring-boot-test:4.1.0",
+        "scope": "testImplementation",
+        "reason": "Spring Boot's own tests for cache auto-configuration use ApplicationContextRunner; this is the practical in-process way to exercise CacheAutoConfiguration without starting a full application or external cache service."
+      }
+    ],
+    "agent_guidance": "No environment variables or system properties are required. Prefer in-process tests around CacheProperties, CacheManagerCustomizers, CacheMetricsRegistrar where applicable, and CacheAutoConfiguration with an @EnableCaching user configuration. The simple/concurrent-map/no-op/generic cache paths can be covered without Redis, Couchbase, Hazelcast, Infinispan, JCache, Caffeine, or Cache2k services.",
+    "risks": [
+      "Provider-specific paths are guarded by optional classpath conditions; tests that directly target Redis, Couchbase, Hazelcast, Infinispan, JCache, Caffeine, Cache2k, or actuator endpoint integrations may need additional provider dependencies and should not be attempted unless deliberately added.",
+      "No Docker image is needed for meaningful baseline cache auto-configuration coverage; external cache services would only be needed for integration-style provider tests."
+    ],
+    "applied_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.1.0",
+        "result": "applied",
+        "target": "tests/src/org.springframework.boot/spring-boot-cache/4.1.0/build.gradle"
+      },
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.boot:spring-boot-test:4.1.0",
+        "result": "applied",
+        "target": "tests/src/org.springframework.boot/spring-boot-cache/4.1.0/build.gradle"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8412 Support for org.springframework.boot:spring-boot-cache:4.1.0; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "oca/gpt-5.5",
+    "input_tokens_used": 42545,
+    "output_tokens_used": 4276,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.springframework.boot:spring-boot-cache:4.1.0/library-preparation-preflight/pi-generation-2026-06-27T04-57-29-974079Z.log"
+  },
+  "metrics": {
+    "input_tokens_used": 195545,
+    "cached_input_tokens_used": 2197504,
+    "output_tokens_used": 24348,
+    "iterations": 5,
+    "cost_usd": 1.8292,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "test_file": "None",
+    "metadata_file": "None"
+  }
+}
