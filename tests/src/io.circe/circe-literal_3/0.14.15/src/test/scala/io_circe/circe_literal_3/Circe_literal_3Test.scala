@@ -205,4 +205,21 @@ class Circe_literal_3Test {
 
     assertThat(decoded).isEqualTo(Right(LiteralUser("Hedy Lamarr", List(7, 8, 9), active = true)))
   }
+
+  @Test
+  def buildsTopLevelScalarLiteralsAndInterpolatedValues(): Unit = {
+    val status: Json = json"""
+      "ready"
+    """
+    val sequenceNumber: Json = json"""12345"""
+    val emptyValue: Json = json"""null"""
+    val stages: List[String] = List("queued", "running", "done")
+
+    val encodedStages: Json = json"""$stages"""
+
+    assertThat(status.asString).isEqualTo(Some("ready"))
+    assertThat(sequenceNumber.asNumber.flatMap(_.toInt)).isEqualTo(Some(12345))
+    assertThat(emptyValue.isNull).isTrue
+    assertThat(encodedStages.as[List[String]]).isEqualTo(Right(stages))
+  }
 }
