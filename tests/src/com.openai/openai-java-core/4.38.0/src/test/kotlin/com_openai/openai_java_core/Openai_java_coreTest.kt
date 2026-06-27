@@ -198,6 +198,86 @@ public class Openai_java_coreTest {
     }
 
     @Test
+    fun blockingResponsesServiceBuildsRequestAndParsesOutputMessage() {
+        val httpClient = RecordingHttpClient(
+            mapOf(
+                "/responses" to """
+                    {
+                      "id": "resp-test",
+                      "object": "response",
+                      "created_at": 1710000000,
+                      "model": "gpt-4o-mini",
+                      "output": [
+                        {
+                          "id": "msg-test",
+                          "type": "message",
+                          "role": "assistant",
+                          "status": "completed",
+                          "content": [
+                            {"type": "output_text", "text": "A concise response.", "annotations": []}
+                          ]
+                        }
+                      ],
+                      "parallel_tool_calls": false,
+                      "tool_choice": "auto",
+                      "tools": [],
+                      "status": "completed",
+                      "usage": {
+                        "input_tokens": 5,
+                        "input_tokens_details": {"cached_tokens": 1},
+                        "output_tokens": 4,
+                        "output_tokens_details": {"reasoning_tokens": 0},
+                        "total_tokens": 9
+                      }
+                    }
+                """.trimIndent(),
+            ),
+        )
+        val client = OpenAIClientImpl(testClientOptions(httpClient))
+
+        try {
+            val params: ResponseCreateParams = ResponseCreateParams.builder()
+                .model(ChatModel.GPT_4O_MINI)
+                .input("Explain native image metadata in one sentence")
+                .instructions("Keep the reply short")
+                .maxOutputTokens(16)
+                .parallelToolCalls(false)
+                .putAdditionalHeader("X-Request-Feature", "responses-test")
+                .putAdditionalBodyProperty("trace", JsonValue.from("responses-test"))
+                .build()
+
+            val response = client.responses().create(params, requestOptions())
+            val outputItem = response.output().single()
+            val message = outputItem.asMessage()
+            val content = message.content().single().asOutputText()
+
+            assertThat(response.id()).isEqualTo("resp-test")
+            assertThat(response.model().isChat()).isTrue()
+            assertThat(response.model().asChat()).isEqualTo(ChatModel.GPT_4O_MINI)
+            assertThat(response.status()).contains(ResponseStatus.COMPLETED)
+            assertThat(response.parallelToolCalls()).isFalse()
+            assertThat(response.usage().get().totalTokens()).isEqualTo(9)
+            assertThat(outputItem.isMessage()).isTrue()
+            assertThat(message.id()).isEqualTo("msg-test")
+            assertThat(content.text()).isEqualTo("A concise response.")
+            assertThat(content.annotations()).isEmpty()
+        } finally {
+            client.close()
+        }
+
+        val call = httpClient.singleCall()
+        assertThat(call.request.method.name).isEqualTo("POST")
+        assertThat(call.request.pathSegments).containsExactly("responses")
+        assertThat(call.request.headers.values("X-Request-Feature")).containsExactly("responses-test")
+        assertThat(call.body).contains("\"model\":\"gpt-4o-mini\"")
+        assertThat(call.body).contains("\"input\":\"Explain native image metadata in one sentence\"")
+        assertThat(call.body).contains("\"instructions\":\"Keep the reply short\"")
+        assertThat(call.body).contains("\"max_output_tokens\":16")
+        assertThat(call.body).contains("\"parallel_tool_calls\":false")
+        assertThat(call.body).contains("\"trace\":\"responses-test\"")
+    }
+
+    @Test
     fun asyncEmbeddingServiceBuildsRequestAndParsesTypedResponse() {
         val httpClient = RecordingHttpClient(
             mapOf(
