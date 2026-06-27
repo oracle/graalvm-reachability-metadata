@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.parquet:parquet-jackson:1.16.0",
+  "issueNumber": 8256,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.apache.parquet:parquet-jackson:1.12.2",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8256 [Automation] java run fails for org.apache.parquet:parquet-jackson:1.16.0; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "31 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 39767,
+    "issue_label": "fails-java-run",
+    "issue_number": 8256,
+    "library": "org.apache.parquet:parquet-jackson:1.16.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "1.16.0",
+    "output_tokens_used": 3440,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Existing tests use --add-opens=java.base/java.util=ALL-UNNAMED for specific Jackson/ClassUtil introspection paths; dropping that while preserving those exact tests may expose reflective-access failures, but it is not required before ordinary meaningful coverage is reachable.",
+      "The reported failure is an assertion mismatch in JacksonAnnotationIntrospector enum-name behavior after the shaded Jackson upgrade, not evidence of missing setup."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.apache.parquet:parquet-jackson:1.16.0/library-preparation-preflight/pi-generation-2026-06-27T07-57-19-141160Z.log",
+    "status": "completed",
+    "summary": "org.apache.parquet:parquet-jackson:1.16.0 is a self-contained shaded Jackson bundle used in-process by Parquet; the resolved artifact has no runtime Maven dependencies beyond JDK modules and does not require a service container, external system, environment variable, or system property for meaningful ObjectMapper/shaded-Jackson coverage."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "1.16.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8256-fails-java-run-org.apache.parquet-parquet-jackson-1.16.0-89cea4db",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
