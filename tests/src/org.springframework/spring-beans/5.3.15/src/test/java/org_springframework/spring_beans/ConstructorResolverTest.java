@@ -69,7 +69,8 @@ public class ConstructorResolverTest {
         boolean securityManagerInstalled = installSecurityManagerIfSupported(securityManager);
 
         try {
-            FactoryProduct product = createFactoryProduct("factoryProductWithSecurityManager");
+            FactoryProduct product = createFactoryProduct(securityManagerInstalled ?
+                    "factoryProductWithSecurityManager" : "factoryProductWithoutSecurityManagerSupport");
 
             assertThat(product.value()).isEqualTo("factory");
             if (securityManagerInstalled) {
