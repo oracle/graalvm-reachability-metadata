@@ -9,26 +9,37 @@ package org_jboss_modules.jboss_modules;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
 import org.jboss.modules.LocalModuleLoader;
 import org.jboss.modules.Module;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import sun.misc.Unsafe;
+
 public class Jboss_modulesTest {
     @TempDir
     Path repositoryRoot;
+
+    @BeforeEach
+    void seedParallelLoaders() throws ReflectiveOperationException {
+        // Native image substitutes ClassLoader$ParallelLoaders without seeding ClassLoader.class.
+        addParallelLoaderType(ClassLoader.class);
+    }
 
     @Test
     void loadsModuleWithDirectoryResourceRootAndProperties() throws Exception {
@@ -46,7 +57,7 @@ public class Jboss_modulesTest {
                 </properties>
                 """);
 
-        try (LocalModuleLoader loader = new LocalModuleLoader(new File[] { repositoryRoot.toFile() })) {
+        try (LocalModuleLoader loader = new LocalModuleLoader(new File[] {repositoryRoot.toFile() })) {
             Module module = loader.loadModule("example.resources");
 
             assertThat(module.getName()).isEqualTo("example.resources");
@@ -71,7 +82,7 @@ public class Jboss_modulesTest {
                 </resources>
                 """);
 
-        try (LocalModuleLoader loader = new LocalModuleLoader(new File[] { repositoryRoot.toFile() })) {
+        try (LocalModuleLoader loader = new LocalModuleLoader(new File[] {repositoryRoot.toFile() })) {
             Module module = loader.loadModule("example.jarroot");
 
             URL exportedResource = module.getExportedResource("config/settings.properties");
@@ -105,7 +116,7 @@ public class Jboss_modulesTest {
                 </resources>
                 """);
 
-        try (LocalModuleLoader loader = new LocalModuleLoader(new File[] { repositoryRoot.toFile() })) {
+        try (LocalModuleLoader loader = new LocalModuleLoader(new File[] {repositoryRoot.toFile() })) {
             Module module = loader.loadModule("example.filtered");
 
             assertThat(readText(module.getExportedResource("public/visible.txt"))).isEqualTo("visible resource");
@@ -140,7 +151,7 @@ public class Jboss_modulesTest {
                 </dependencies>
                 """);
 
-        try (LocalModuleLoader loader = new LocalModuleLoader(new File[] { repositoryRoot.toFile() })) {
+        try (LocalModuleLoader loader = new LocalModuleLoader(new File[] {repositoryRoot.toFile() })) {
             Module application = loader.loadModule("example.application");
 
             assertThat(readText(application.getClassLoader().getResource("application/name.txt")))
@@ -166,7 +177,7 @@ public class Jboss_modulesTest {
         Path aliasDirectory = createModuleDirectory("example.alias.name");
         writeModuleAliasXml(aliasDirectory, "example.alias.name", "example.alias.target");
 
-        try (LocalModuleLoader loader = new LocalModuleLoader(new File[] { repositoryRoot.toFile() })) {
+        try (LocalModuleLoader loader = new LocalModuleLoader(new File[] {repositoryRoot.toFile() })) {
             Module target = loader.loadModule("example.alias.target");
             Module alias = loader.loadModule("example.alias.name");
 
@@ -238,5 +249,28 @@ public class Jboss_modulesTest {
         try (InputStream input = resource.openStream()) {
             return new String(input.readAllBytes(), UTF_8);
         }
+    }
+
+    private static void addParallelLoaderType(Class<? extends ClassLoader> classLoaderType)
+            throws ReflectiveOperationException {
+        Class<?> parallelLoadersClass = Class.forName("java.lang.ClassLoader$ParallelLoaders");
+        Field loaderTypesField = parallelLoadersClass.getDeclaredField("loaderTypes");
+        Set<Class<? extends ClassLoader>> loaderTypes = getStaticFieldValue(loaderTypesField);
+        loaderTypes.add(classLoaderType);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Set<Class<? extends ClassLoader>> getStaticFieldValue(Field field)
+            throws ReflectiveOperationException {
+        Unsafe unsafe = getUnsafe();
+        Object base = unsafe.staticFieldBase(field);
+        long offset = unsafe.staticFieldOffset(field);
+        return (Set<Class<? extends ClassLoader>>) unsafe.getObject(base, offset);
+    }
+
+    private static Unsafe getUnsafe() throws ReflectiveOperationException {
+        Field unsafeField = Unsafe.class.getDeclaredField("theUnsafe");
+        unsafeField.setAccessible(true);
+        return (Unsafe) unsafeField.get(null);
     }
 }
