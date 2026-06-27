@@ -19,13 +19,16 @@ import com.openai.core.http.HttpResponse
 import com.openai.core.http.QueryParams
 import com.openai.credential.BearerTokenCredential
 import com.openai.models.ChatModel
+import com.openai.models.chat.completions.ChatCompletionCreateParams
 import com.openai.models.embeddings.EmbeddingCreateParams
 import com.openai.models.embeddings.EmbeddingModel
+import com.openai.models.files.FileCreateParams
+import com.openai.models.files.FileObject
+import com.openai.models.files.FilePurpose
 import com.openai.models.moderations.ModerationCreateParams
 import com.openai.models.moderations.ModerationModel
 import com.openai.models.responses.ResponseCreateParams
 import com.openai.models.responses.ResponseStatus
-import com.openai.models.chat.completions.ChatCompletionCreateParams
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
@@ -275,6 +278,62 @@ public class Openai_java_coreTest {
         assertThat(call.body).contains("\"max_output_tokens\":16")
         assertThat(call.body).contains("\"parallel_tool_calls\":false")
         assertThat(call.body).contains("\"trace\":\"responses-test\"")
+    }
+
+    @Test
+    fun fileUploadServiceBuildsMultipartRequestAndParsesFileObject() {
+        val httpClient = RecordingHttpClient(
+            mapOf(
+                "/files" to """
+                    {
+                      "id": "file-test",
+                      "object": "file",
+                      "bytes": 18,
+                      "created_at": 1710000000,
+                      "filename": "training.jsonl",
+                      "purpose": "assistants",
+                      "status": "processed",
+                      "expires_at": 1710086400
+                    }
+                """.trimIndent(),
+            ),
+        )
+        val client = OpenAIClientImpl(testClientOptions(httpClient))
+
+        try {
+            val params: FileCreateParams = FileCreateParams.builder()
+                .file("{\"prompt\":\"ping\"}\n".toByteArray(StandardCharsets.UTF_8))
+                .purpose(FilePurpose.ASSISTANTS)
+                .expiresAfter(
+                    FileCreateParams.ExpiresAfter.builder()
+                        .seconds(86_400)
+                        .build(),
+                )
+                .build()
+
+            val file: FileObject = client.files().create(params, requestOptions())
+
+            assertThat(file.id()).isEqualTo("file-test")
+            assertThat(file.bytes()).isEqualTo(18)
+            assertThat(file.filename()).isEqualTo("training.jsonl")
+            assertThat(file.purpose()).isEqualTo(FileObject.Purpose.ASSISTANTS)
+            assertThat(file.expiresAt()).contains(1710086400L)
+            assertThat(file.isValid()).isTrue()
+        } finally {
+            client.close()
+        }
+
+        val call = httpClient.singleCall()
+        assertThat(call.request.method.name).isEqualTo("POST")
+        assertThat(call.request.pathSegments).containsExactly("files")
+        assertThat(call.body).contains("Content-Disposition: form-data; name=\"file\"")
+        assertThat(call.body).contains("{\"prompt\":\"ping\"}")
+        assertThat(call.body).contains("Content-Disposition: form-data; name=\"purpose\"")
+        assertThat(call.body).contains("assistants")
+        assertThat(call.body).contains("Content-Disposition: form-data; name=\"expires_after[anchor]\"")
+        assertThat(call.body).contains("created_at")
+        assertThat(call.body).contains("Content-Disposition: form-data; name=\"expires_after[seconds]\"")
+        assertThat(call.body).contains("86400")
     }
 
     @Test
