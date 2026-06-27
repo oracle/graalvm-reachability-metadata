@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.lucene:lucene-core:6.0.0",
+  "issueNumber": 5851,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No extra environment variables or system properties are required. If tests continue to exercise MMapDirectory unmap internals or RamUsageEstimator behavior on strongly encapsulated JDKs, preserve the existing test JVM module-open arguments already present in the current scaffold rather than adding new dependencies or services.",
+    "applied_setup": [],
+    "current_library": "org.apache.lucene:lucene-core:5.5.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#5851 [Automation] javac compile fails for org.apache.lucene:lucene-core:6.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "17 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 42534,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 5851,
+    "library": "org.apache.lucene:lucene-core:6.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "6.0.0",
+    "output_tokens_used": 4688,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Lucene 6.0.0 makes AttributeImpl.reflectWith(AttributeReflector) abstract, so test subclasses copied from 5.x must implement it to compile.",
+      "MMapDirectory's unmap hack uses JDK-internal access and may be unsupported or encapsulated on Java 9+; tests should either tolerate unsupported unmap behavior or rely on the existing module-open JVM arguments."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.lucene:lucene-core:6.0.0/library-preparation-preflight/pi-generation-2026-06-27T10-13-07-996582Z.log",
+    "status": "completed",
+    "summary": "org.apache.lucene:lucene-core:6.0.0 is a self-contained pure-Java artifact with no Maven runtime/test dependency, Docker service, or required environment setup before meaningful core API coverage is reachable. The reported javac failure is caused by a Lucene 6 API change, not missing setup."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "6.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-5851-fails-javac-compile-org.apache.lucene-lucene-core-6.0.0-024d36ee",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
