@@ -134,6 +134,16 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def supportsTopLevelInterpolatedValues(): Unit = {
+    val user: LiteralUser = LiteralUser("Katherine", 32, List("math", "flight"))
+    val document: Json = json"$user"
+
+    assertThat(document.as[LiteralUser]).isEqualTo(Right(user))
+    assertThat(document.hcursor.downField("name").as[String]).isEqualTo(Right("Katherine"))
+    assertThat(document.hcursor.downField("tags").downN(1).as[String]).isEqualTo(Right("flight"))
+  }
+
+  @Test
   def combinesLiteralStructureAndRepeatedInterpolations(): Unit = {
     val user: LiteralUser = LiteralUser("Grace", 41, List("compiler", "navy"))
     val key: LiteralKey = LiteralKey("user", 100)
