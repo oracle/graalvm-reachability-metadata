@@ -31,6 +31,19 @@ class Json_common_3Test {
   }
 
   @Test
+  def isOptionCompanionProvidesExplicitOptionalityInstances(): Unit = {
+    val optional: IsOption[Option[String]] = IsOption.optionIsOption[String]
+    val leftOptional: IsOption[Either[Option[String], ?]] = IsOption.leftOptionIsOption[String]
+    val rightOptional: IsOption[Either[?, Option[Int]]] = IsOption.rightOptionIsOption[Int]
+    val required: IsOption[String] = IsOption.otherIsNotOption[String]
+
+    assertTrue(optional.isOption)
+    assertTrue(leftOptional.isOption)
+    assertTrue(rightOptional.isOption)
+    assertFalse(required.isOption)
+  }
+
+  @Test
   def jsonResponseExtensionsUseStableDisplayNames(): Unit = {
     assertEquals("either(as string, as json)", asString.showAsJson.show)
     assertEquals("as json", asStringAlways.showAsJsonAlways.show)
