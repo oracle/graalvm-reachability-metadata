@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "ognl:ognl:3.3.5",
+  "issueNumber": 7430,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "If tests intentionally exercise deep reflection against JDK classes or OGNL's JDK9+ access-handler paths, they may need JVM test args such as --add-opens=java.base/java.lang=ALL-UNNAMED, matching the existing OGNL 3.2.21 test project. Do not enable OGNL security-manager properties unless a test specifically targets that feature, because SecurityManager behavior is JDK-version-sensitive.",
+    "applied_setup": [],
+    "current_library": "ognl:ognl:3.2.21",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7430 [Automation] java run fails for ognl:ognl:3.3.5; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "17 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 34736,
+    "issue_label": "fails-java-run",
+    "issue_number": 7430,
+    "library": "ognl:ognl:3.3.5",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.3.5",
+    "output_tokens_used": 2965,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The reported failure is on JDK 25, where SecurityManager-related tests may be fragile or obsolete; that is test design/version compatibility rather than missing deterministic setup.",
+      "Javassist is required by OGNL's expression compiler, but it is a normal transitive dependency of ognl:ognl:3.3.5, so adding it explicitly should not be necessary unless Gradle/metadata resolution proves otherwise."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/ognl:ognl:3.3.5/library-preparation-preflight/pi-generation-2026-06-27T01-42-30-837760Z.log",
+    "status": "completed",
+    "summary": "OGNL is an in-process expression/navigation library; its published 3.3.5 POM brings its required Javassist runtime dependency transitively, and normal meaningful tests can exercise parsing, property access, method calls, constructors, collections, and maps using local POJOs without external services, Docker, or extra test dependencies."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.3.5",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-7430-fails-java-run-ognl-ognl-3.3.5-2962ee43",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
