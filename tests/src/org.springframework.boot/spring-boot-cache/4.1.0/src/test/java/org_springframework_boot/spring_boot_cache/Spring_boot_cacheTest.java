@@ -192,6 +192,23 @@ public class Spring_boot_cacheTest {
         });
     }
 
+    @Test
+    void simpleCacheAutoConfigurationCreatesDynamicCachesWhenNamesAreNotConfigured() {
+        this.contextRunner.withPropertyValues("spring.cache.type=simple").run((context) -> {
+            assertThat(context).hasSingleBean(CacheManager.class);
+            CacheManager cacheManager = context.getBean(CacheManager.class);
+
+            assertThat(cacheManager).isInstanceOf(ConcurrentMapCacheManager.class);
+            assertThat(cacheManager.getCacheNames()).isEmpty();
+            Cache dynamic = cacheManager.getCache("dynamic");
+            assertThat(dynamic).isNotNull();
+            dynamic.put("key", "value");
+            assertThat(dynamic.get("key", String.class)).isEqualTo("value");
+            assertThat(cacheManager.getCacheNames()).containsExactly("dynamic");
+            assertThat(cacheManager.getCache("dynamic")).isSameAs(dynamic);
+        });
+    }
+
     @Configuration(proxyBeanMethods = false)
     @EnableCaching
     static class CachingConfiguration {
