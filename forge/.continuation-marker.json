@@ -1,0 +1,77 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.clojure:google-closure-library-third-party:0.0-1376-2",
+  "issueNumber": 8743,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.clojure:google-closure-library-third-party:0.0-1376",
+    "deterministic_setup": [
+      {
+        "coordinate": "org.clojure:google-closure-library:0.0-1376-2",
+        "kind": "dependency",
+        "reason": "The google-closure-library-third-party POM describes this artifact as third-party extensions to Google Closure Library, while the companion google-closure-library 0.0-1376-2 artifact contains core resources such as goog/base.js and goog/deps.js that are absent from the third-party 0.0-1376-2 JAR.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8743 [Automation] java run fails for org.clojure:google-closure-library-third-party:0.0-1376-2; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 24366,
+    "issue_label": "fails-java-run",
+    "issue_number": 8743,
+    "library": "org.clojure:google-closure-library-third-party:0.0-1376-2",
+    "model": "oca/gpt-5.5",
+    "new_version": "0.0-1376-2",
+    "output_tokens_used": 2572,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Keep assertions scoped to the third-party extension artifact where possible; the companion dependency is for normal Closure Library context and should not become the primary subject of coverage.",
+      "Use the same version, 0.0-1376-2, for the companion google-closure-library dependency to avoid mixing Closure resource revisions."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.clojure:google-closure-library-third-party:0.0-1376-2/library-preparation-preflight/pi-generation-2026-06-27T21-20-48-783692Z.log",
+    "status": "completed",
+    "summary": "The target artifact is only the Closure Library third-party extension bundle; version 0.0-1376-2 no longer packages core Closure resources like goog/base.js and goog/deps.js, which are in the companion org.clojure:google-closure-library artifact. Meaningful integration-style coverage should include that normal companion dependency."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "0.0-1376-2",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8743-fails-java-run-org.clojure-google-closure-library-third-party-0.0-1376-2-58e70f5a",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
