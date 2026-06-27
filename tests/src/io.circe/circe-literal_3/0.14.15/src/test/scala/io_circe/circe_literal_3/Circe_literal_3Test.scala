@@ -187,6 +187,21 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def encodesInterpolatedValuesAsTheEntireTopLevelJsonDocument(): Unit = {
+    val build: BuildInfo = BuildInfo("top-level", 11, List("single", "document"))
+    val numbers: Vector[Int] = Vector(2, 4, 8)
+    val missingValue: Option[String] = None
+
+    val buildJson: Json = json"""$build"""
+    val numbersJson: Json = json"""$numbers"""
+    val missingJson: Json = json"""$missingValue"""
+
+    assertEquals(build, expectRight(buildJson.as[BuildInfo]))
+    assertEquals(numbers, expectRight(numbersJson.as[Vector[Int]]))
+    assertTrue(missingJson.isNull)
+  }
+
+  @Test
   def producesRegularCirceJsonThatCanBeTransformedDecodedAndPrinted(): Unit = {
     val input: Json = json"""
       {
