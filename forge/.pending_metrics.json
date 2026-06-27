@@ -1,0 +1,56 @@
+{
+  "timestamp": "2026-06-27T07:38:06.448352Z",
+  "library": "com.typesafe.akka:akka-actor-typed_2.13:2.6.21",
+  "starting_commit": "8c895c84e14ad095f37b6bc698ecda0f56abab04",
+  "ending_commit": "8c895c84e14ad095f37b6bc698ecda0f56abab04",
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+  "agent": "pi",
+  "model": "oca/gpt-5.5",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "no_action",
+    "issue_number": 5414,
+    "issue_label": "library-new-request",
+    "library": "com.typesafe.akka:akka-actor-typed_2.13:2.6.21",
+    "summary": "Akka Typed Actor can be exercised directly with the resolved artifact and its transitive dependencies; meaningful local actor-system coverage does not require Docker, extra Maven dependencies, or environment/system properties.",
+    "deterministic_setup": [],
+    "agent_guidance": "No special environment or system properties are required. Generated tests can use the Java typed API, such as akka.actor.typed.ActorSystem and akka.actor.typed.javadsl.Behaviors, and should terminate any ActorSystem they create to avoid test hangs.",
+    "risks": [
+      "Akka documentation recommends akka-actor-testkit-typed for dedicated actor testing, but basic meaningful coverage is reachable without it using ActorSystem, actors, messages, and standard Java concurrency primitives.",
+      "Tests that create ActorSystem instances must shut them down reliably; otherwise lingering dispatcher threads can make Gradle tests hang."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#5414 Support for com.typesafe.akka:akka-actor-typed_2.13:2.6.21; label=library-new-request; body_chars=296"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "oca/gpt-5.5",
+    "input_tokens_used": 20600,
+    "output_tokens_used": 2626,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/com.typesafe.akka:akka-actor-typed_2.13:2.6.21/library-preparation-preflight/pi-generation-2026-06-27T07-00-15-675500Z.log"
+  },
+  "metrics": {
+    "input_tokens_used": 42799,
+    "cached_input_tokens_used": 595968,
+    "output_tokens_used": 9490,
+    "iterations": 1,
+    "cost_usd": 0.5827,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "test_file": "None",
+    "metadata_file": "None"
+  }
+}

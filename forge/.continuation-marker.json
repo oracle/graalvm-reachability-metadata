@@ -1,0 +1,75 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "com.typesafe.akka:akka-actor-typed_2.13:2.6.21",
+  "issueNumber": 5414,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No special environment or system properties are required. Generated tests can use the Java typed API, such as akka.actor.typed.ActorSystem and akka.actor.typed.javadsl.Behaviors, and should terminate any ActorSystem they create to avoid test hangs.",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#5414 Support for com.typesafe.akka:akka-actor-typed_2.13:2.6.21; label=library-new-request; body_chars=296"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 20600,
+    "issue_label": "library-new-request",
+    "issue_number": 5414,
+    "library": "com.typesafe.akka:akka-actor-typed_2.13:2.6.21",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 2626,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Akka documentation recommends akka-actor-testkit-typed for dedicated actor testing, but basic meaningful coverage is reachable without it using ActorSystem, actors, messages, and standard Java concurrency primitives.",
+      "Tests that create ActorSystem instances must shut them down reliably; otherwise lingering dispatcher threads can make Gradle tests hang."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/com.typesafe.akka:akka-actor-typed_2.13:2.6.21/library-preparation-preflight/pi-generation-2026-06-27T07-00-15-675500Z.log",
+    "status": "completed",
+    "summary": "Akka Typed Actor can be exercised directly with the resolved artifact and its transitive dependencies; meaningful local actor-system coverage does not require Docker, extra Maven dependencies, or environment/system properties."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 1,
+      "exhaustedClasses": [
+        "akka.actor.typed.internal.ExtensionsImpl"
+      ],
+      "iteration": 1,
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-5414-library-new-request-com.typesafe.akka-akka-actor-typed_2.13-2.6.21-eb9e4f9e",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "com.typesafe.akka:akka-actor-typed_2.13:2.6.21",
+    "timestamp": "2026-06-27T07:38:06.448352Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
