@@ -1,0 +1,85 @@
+{
+  "continueFrom": "publication",
+  "coordinate": "org.springframework.cloud:spring-cloud-stream-binder-kafka:5.0.1",
+  "issueNumber": 7031,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Use Spring Kafka's embedded broker for binder-level tests, and wire its bootstrap address into the Spring context before creating bindings. Prefer @EmbeddedKafka or EmbeddedKafkaBroker; expose the broker address via spring.kafka.bootstrap-servers or explicitly set spring.cloud.stream.kafka.binder.brokers/defaultBrokerPort. Do not rely on the default localhost:9092. Avoid spring-cloud-stream-test-binder for Kafka-specific coverage because it bypasses the Kafka binder implementation.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "coordinate": "org.springframework.kafka:spring-kafka-test:4.0.2",
+        "kind": "dependency",
+        "reason": "Provides EmbeddedKafkaBroker/@EmbeddedKafka and KafkaTestUtils for exercising Kafka binder producer/consumer bindings without requiring an external Kafka service.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7031 Support for org.springframework.cloud:spring-cloud-stream-binder-kafka:5.0.1; label=library-new-request; body_chars=133"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 67500,
+    "issue_label": "library-new-request",
+    "issue_number": 7031,
+    "library": "org.springframework.cloud:spring-cloud-stream-binder-kafka:5.0.1",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 8102,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "If broker properties are not wired correctly, binder provisioning, health checks, and bindProducer/bindConsumer paths will try localhost:9092 and may fail or hang.",
+      "Embedded Kafka exercises many Kafka server classes; JVM and Native Image verification remain authoritative and may require narrowing tests if native execution is too heavy."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.springframework.cloud:spring-cloud-stream-binder-kafka:5.0.1/library-preparation-preflight/pi-generation-2026-06-27T20-16-48-881746Z.log",
+    "status": "completed",
+    "summary": "Spring Cloud Stream Kafka binder coverage normally needs a real Kafka broker; the resolved artifact depends on Spring Kafka/Kafka clients and upstream tests use Spring Kafka's embedded broker support."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "completed"
+    },
+    "fix": {
+      "iteration": 10,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": "ai/vjovanov/add-lib-support-org.springframework.cloud-spring-cloud-stream-binder-kafka-5.0.1",
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-7031-library-new-request-org.springframework.cloud-spring-cloud-stream-binder-kafka-5.0.1-aa37cf25",
+  "publicationMetrics": {
+    "extras": {
+      "post_generation_intervention": {
+        "analysis_markdown": "# Post-generation intervention report\n\nLibrary: org.springframework.cloud:spring-cloud-stream-binder-kafka:5.0.1\nStage: metadata_fix_failed\n\n## Summary\n\nThe final native test run failed before executing any test methods because the generated\n`@BeforeAll` setup started an embedded Kafka KRaft broker. Kafka broker startup attempted to load\n`org.apache.kafka.server.share.persister.DefaultStatePersister` dynamically through Kafka's runtime\nclass-loading path and the native executable reported `ClassNotFoundException`, causing\n`EmbeddedKafkaKraftBroker.start()` to fail.\n\n## Root cause and intervention\n\nThis failure is not a Spring Cloud Stream binder metadata gap to preserve with more generated\nmetadata. The failing generated coverage depended on an embedded Kafka server path that performs\nruntime class loading during broker startup. Per the post-generation rules, runtime class loading is\nunsupported native-image behavior for generated tests, so the Kafka-cluster-dependent tests were\nremoved instead of adding metadata.\n\nRemoved generated coverage:\n\n- `streamBridgeProducesRecordsThroughKafkaBinder`\n- `functionConsumerReceivesRecordsThroughKafkaBinder`\n- `failingFunctionConsumerRoutesRecordsToKafkaDeadLetterTopic`\n- the embedded Kafka setup/helper code and the `spring-kafka-test` test dependency that were only\n  needed by those tests\n\nThe Codex metadata-fix log shows earlier real metadata gaps were found and partially addressed,\nincluding Spring Boot `spring.factories` classes such as\n`org.springframework.boot.context.event.EventPublishingRunListener` and Spring Messaging\n`GenericMessage#getPayload()`/`getHeaders()` access for the Kafka expression interceptor path. The\nremaining Gradle failure, however, was the embedded Kafka broker's dynamic class-loading path, not\nanother missing binder metadata entry.\n\n## Why the remaining support should be preserved\n\nThe remaining generated tests still exercise useful Spring Cloud Stream Kafka binder support without\nstarting a Kafka broker or relying on unsupported runtime class loading:\n\n- `KafkaNullConverter` tombstone conversion\n- `KafkaExpressionEvaluatingInterceptor` message-key evaluation\n- `KafkaBinderRuntimeHints` and Kafka extended binding mapping exposure\n\nThese tests keep lightweight binder API, expression, and AOT/runtime-hint coverage that is relevant\nto native-image reachability while avoiding the unsupported embedded-broker path that caused the\npost-generation failure.",
+        "intervention_file": "post-gen-interventions/org.springframework.cloud_spring-cloud-stream-binder-kafka_5.0.1.md",
+        "stage": "metadata_fix_failed"
+      }
+    },
+    "library": "org.springframework.cloud:spring-cloud-stream-binder-kafka:5.0.1",
+    "timestamp": "2026-06-27T21:14:33.922057Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}

@@ -1,0 +1,15 @@
+Completed the post-generation intervention.
+
+Changes made:
+- Removed embedded Kafka/KRaft-dependent generated tests from:
+  - `tests/src/org.springframework.cloud/spring-cloud-stream-binder-kafka/5.0.1/src/test/java/org_springframework_cloud/spring_cloud_stream_binder_kafka/Spring_cloud_stream_binder_kafkaTest.java`
+- Removed the now-unused generated test dependency:
+  - `org.springframework.kafka:spring-kafka-test:4.0.2`
+- Wrote the required report:
+  - `post-gen-interventions/org.springframework.cloud_spring-cloud-stream-binder-kafka_5.0.1.md`
+
+Validation:
+- Ran `./gradlew compileTestJava -Pcoordinates=org.springframework.cloud:spring-cloud-stream-binder-kafka:5.0.1 --stacktrace`
+- Result: `BUILD SUCCESSFUL`
+
+Root cause classified as non-metadata-related: the failing generated tests started an embedded Kafka KRaft broker, which hit Kafka runtime class loading for `org.apache.kafka.server.share.persister.DefaultStatePersister`, an unsupported native-image behavior under the task rules.
