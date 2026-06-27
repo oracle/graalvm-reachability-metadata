@@ -1,0 +1,70 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "com.sksamuel.hoplite:hoplite-core:3.0.0.RC1",
+  "issueNumber": 8367,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "com.sksamuel.hoplite:hoplite-core:2.9.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8367 [Automation] native-image run fails for com.sksamuel.hoplite:hoplite-core:3.0.0.RC1; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "11 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 36970,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 8367,
+    "library": "com.sksamuel.hoplite:hoplite-core:3.0.0.RC1",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.0.0.RC1",
+    "output_tokens_used": 1971,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Documentation notes that YAML/JSON/TOML/HOCON file loading requires optional Hoplite format modules, but those are not needed to exercise hoplite-core itself; tests can use MapPropertySource or built-in .props support.",
+      "The native-image failure may still require metadata/test updates for Kotlin reflection, Hoplite decoders, or generated test data classes, but not pre-generation setup such as Docker, extra Maven dependencies, or environment/system properties."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/com.sksamuel.hoplite:hoplite-core:3.0.0.RC1/library-preparation-preflight/pi-generation-2026-06-27T01-09-01-322876Z.log",
+    "status": "completed",
+    "summary": "No extra deterministic setup is required. hoplite-core 3.0.0.RC1 is a pure JVM/Kotlin configuration library; its resolved dependencies are compile/runtime Kotlin and kotlinx-coroutines artifacts, and the core artifact itself includes the main loaders, decoders, MapPropertySource, system/environment property sources, and a .props parser. Existing 2.9.0 tests already reach meaningful native-image-relevant coverage with only hoplite-core plus assertion libraries."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.0.0.RC1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8367-fails-native-image-run-com.sksamuel.hoplite-hoplite-core-3.0.0.RC1-f8ae815f",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
