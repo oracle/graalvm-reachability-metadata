@@ -1,0 +1,1456 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f0a2c-420c-7700-b195-037dafeccbf0
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: dev.zio:izumi-reflect_2.13:2.3.8
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "2.3.8" when "$version$" is replaced with "2.3.8".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json
+- Set "coordinates" to "dev.zio:izumi-reflect_2.13:2.3.8".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "2.3.8".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream project/tag, then patch the JSON in place. Since the requested URLs depend on current repository layout and published artifacts, I’m checking sources rather than guessing.
+web search: 
+web search: dev.zio izumi-reflect_2.13 2.3.8 Maven repository source jar
+exec
+/usr/bin/bash -lc "pwd && ls -l build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json && sed -n '1,200p' build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+-rw-rw-r-- 1 vjovanov vjovanov 57 Jun 27 19:41 build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json
+{
+  "coordinates" : "dev.zio:izumi-reflect_2.13:2.3.8"
+}
+
+exec
+/usr/bin/bash -lc "find metadata -path '*izumi*' -o -path '*zio*' | head -50" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+ succeeded in 0ms:
+metadata/com.softwaremill.sttp.shared/zio_3
+metadata/com.softwaremill.sttp.shared/zio_3/1.5.1
+metadata/com.softwaremill.sttp.shared/zio_3/1.5.1/reachability-metadata.json
+metadata/com.softwaremill.sttp.shared/zio_3/index.json
+metadata/com.softwaremill.sttp.tapir/tapir-zio_3
+metadata/com.softwaremill.sttp.tapir/tapir-zio_3/index.json
+metadata/com.softwaremill.sttp.tapir/tapir-zio_3/1.13.18
+metadata/com.softwaremill.sttp.tapir/tapir-zio_3/1.13.18/reachability-metadata.json
+metadata/dev.zio
+metadata/dev.zio/zio-interop-tracer_3
+metadata/dev.zio/zio-interop-tracer_3/23.1.0.13
+metadata/dev.zio/zio-interop-tracer_3/23.1.0.13/reachability-metadata.json
+metadata/dev.zio/zio-interop-tracer_3/index.json
+metadata/dev.zio/zio-config-typesafe_3
+metadata/dev.zio/zio-config-typesafe_3/index.json
+metadata/dev.zio/zio-config-typesafe_3/4.0.7
+metadata/dev.zio/zio-config-typesafe_3/4.0.7/reachability-metadata.json
+metadata/dev.zio/zio-prelude-macros_3
+metadata/dev.zio/zio-prelude-macros_3/index.json
+metadata/dev.zio/zio-prelude-macros_3/1.0.0-RC39
+metadata/dev.zio/zio-prelude-macros_3/1.0.0-RC39/reachability-metadata.json
+metadata/dev.zio/zio-json_3
+metadata/dev.zio/zio-json_3/index.json
+metadata/dev.zio/zio-json_3/0.7.42
+metadata/dev.zio/zio-json_3/0.7.42/reachability-metadata.json
+metadata/dev.zio/zio-managed_3
+metadata/dev.zio/zio-managed_3/index.json
+metadata/dev.zio/zio-managed_3/2.1.23
+metadata/dev.zio/zio-managed_3/2.1.23/reachability-metadata.json
+metadata/dev.zio/zio-schema-macros_3
+metadata/dev.zio/zio-schema-macros_3/index.json
+metadata/dev.zio/zio-schema-macros_3/1.7.0
+metadata/dev.zio/zio-schema-macros_3/1.7.0/reachability-metadata.json
+metadata/dev.zio/zio-interop-cats_3
+metadata/dev.zio/zio-interop-cats_3/23.1.0.13
+metadata/dev.zio/zio-interop-cats_3/23.1.0.13/reachability-metadata.json
+metadata/dev.zio/zio-interop-cats_3/index.json
+metadata/dev.zio/zio-prelude_3
+metadata/dev.zio/zio-prelude_3/index.json
+metadata/dev.zio/zio-prelude_3/1.0.0-RC39
+metadata/dev.zio/zio-prelude_3/1.0.0-RC39/reachability-metadata.json
+metadata/dev.zio/zio-schema-derivation_3
+metadata/dev.zio/zio-schema-derivation_3/index.json
+metadata/dev.zio/zio-schema-derivation_3/1.7.0
+metadata/dev.zio/zio-schema-derivation_3/1.7.0/reachability-metadata.json
+metadata/dev.zio/izumi-reflect_3
+metadata/dev.zio/izumi-reflect_3/index.json
+metadata/dev.zio/izumi-reflect_3/3.0.1
+metadata/dev.zio/izumi-reflect_3/3.0.1/reachability-metadata.json
+metadata/dev.zio/zio-schema_3
+
+exec
+/usr/bin/bash -lc "rg -n 'izumi-reflect|dev.zio' . --glob '*.json' --glob '"'!build/**'"'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+ succeeded in 0ms:
+./metadata/dev.zio/zio_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio_3/$version$/zio_3-$version$-sources.jar",
+./metadata/dev.zio/zio_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio_3/$version$/zio_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-test_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-test_3/$version$/zio-test_3-$version$-sources.jar",
+./metadata/dev.zio/zio-test_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-test_3/$version$/zio-test_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-config_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-sources.jar",
+./metadata/dev.zio/zio-config_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config_3/$version$/zio-config_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-sources.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:24:    "source-code-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-sources.jar",
+./metadata/dev.zio/zio-stacktracer_3/index.json:27:    "documentation-url" : "https://repo1.maven.org/maven2/dev/zio/zio-stacktracer_3/$version$/zio-stacktracer_3-$version$-javadoc.jar",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect-thirdparty-boopickle-shaded_3/$version$/izumi-reflect-thirdparty-boopickle-shaded_3-$version$-sources.jar",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:6:    "repository-url" : "https://github.com/zio/izumi-reflect",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:7:    "test-code-url" : "https://github.com/zio/izumi-reflect/tree/v$version$/izumi-reflect/izumi-reflect/src/test",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect-thirdparty-boopickle-shaded_3/$version$/izumi-reflect-thirdparty-boopickle-shaded_3-$version$-javadoc.jar",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:9:    "description" : "izumi-reflect-thirdparty-boopickle-shaded_3 packages a shaded copy of BooPickle serialization internals used by izumi-reflect for Scala 3 on the JVM. It provides picklers, byte-buffer codecs, and serialization helpers under an internal namespace so izumi-reflect can encode and compare runtime type-tag data without exposing BooPickle as a public dependency.",
+./metadata/dev.zio/zio-internal-macros_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_2.13/$version$/zio-internal-macros_2.13-$version$-sources.jar",
+./metadata/dev.zio/zio-internal-macros_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_2.13/$version$/zio-internal-macros_2.13-$version$-javadoc.jar",
+./metadata/dev.zio/zio-http_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-http_3/$version$/zio-http_3-$version$-sources.jar",
+./metadata/dev.zio/zio-http_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-http_3/$version$/zio-http_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-logging_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-logging_2.13/$version$/zio-logging_2.13-$version$-sources.jar",
+./metadata/dev.zio/zio-logging_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-logging_2.13/$version$/zio-logging_2.13-$version$-javadoc.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-sources.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-sources.jar",
+./metadata/dev.zio/zio-internal-macros_3/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-internal-macros_3/$version$/zio-internal-macros_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-query_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-query_3/$version$/zio-query_3-$version$-sources.jar",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/2.3.8/izumi-reflect-thirdparty-boopickle-shaded_2.13-2.3.8-sources.jar",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/index.json:6:    "repository-url" : "https://github.com/zio/izumi-reflect",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/2.3.8/izumi-reflect-thirdparty-boopickle-shaded_2.13-2.3.8-javadoc.jar",
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/index.json:9:    "description" : "izumi-reflect-thirdparty-boopickle-shaded_2.13 is the Scala 2.13 JVM artifact that packages Izumi Reflect's shaded internal fork of BooPickle. It provides binary pickling and serialization support used by Izumi Reflect while relocating BooPickle classes under izumi.reflect.thirdparty.internal to avoid dependency conflicts.",
+./metadata/dev.zio/zio-schema_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema_3/$version$/zio-schema_3-$version$-sources.jar",
+./metadata/dev.zio/zio-schema_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema_3/$version$/zio-schema_3-$version$-javadoc.jar",
+./metadata/dev.zio/izumi-reflect_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_3/$version$/izumi-reflect_3-$version$-sources.jar",
+./metadata/dev.zio/izumi-reflect_3/index.json:6:    "repository-url" : "https://github.com/zio/izumi-reflect",
+./metadata/dev.zio/izumi-reflect_3/index.json:7:    "test-code-url" : "https://github.com/zio/izumi-reflect/tree/v$version$/izumi-reflect/izumi-reflect/src/test",
+./metadata/dev.zio/izumi-reflect_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_3/$version$/izumi-reflect_3-$version$-javadoc.jar",
+./metadata/dev.zio/izumi-reflect_3/index.json:9:    "description" : "izumi-reflect provides a fast, lightweight, portable alternative to scala-reflect TypeTag for capturing Scala type information at runtime. It models important parts of the Scala type system, supports subtype and equality checks, and can create tags for higher-kinded and unapplied type constructors.",
+./metadata/dev.zio/zio-schema-derivation_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-derivation_3/$version$/zio-schema-derivation_3-$version$-sources.jar",
+./metadata/dev.zio/zio-schema-derivation_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-derivation_3/$version$/zio-schema-derivation_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-prelude_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-prelude_3/$version$/zio-prelude_3-$version$-sources.jar",
+./metadata/dev.zio/zio-prelude_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-prelude_3/$version$/zio-prelude_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-interop-cats_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/$version$/zio-interop-cats_3-$version$-sources.jar",
+./metadata/dev.zio/zio-interop-cats_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-cats_3/$version$/zio-interop-cats_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-schema-macros_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-macros_3/$version$/zio-schema-macros_3-$version$-sources.jar",
+./metadata/dev.zio/zio-schema-macros_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-schema-macros_3/$version$/zio-schema-macros_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-managed_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-managed_3/$version$/zio-managed_3-$version$-sources.jar",
+./metadata/dev.zio/zio-managed_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-managed_3/$version$/zio-managed_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-json_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-json_3/$version$/zio-json_3-$version$-sources.jar",
+./metadata/dev.zio/zio-json_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-json_3/$version$/zio-json_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-prelude-macros_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-prelude-macros_3/$version$/zio-prelude-macros_3-$version$-sources.jar",
+./metadata/dev.zio/zio-prelude-macros_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-prelude-macros_3/$version$/zio-prelude-macros_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-config-typesafe_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config-typesafe_3/$version$/zio-config-typesafe_3-$version$-sources.jar",
+./metadata/dev.zio/zio-config-typesafe_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-config-typesafe_3/$version$/zio-config-typesafe_3-$version$-javadoc.jar",
+./metadata/dev.zio/zio-interop-tracer_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-tracer_3/$version$/zio-interop-tracer_3-$version$-sources.jar",
+./metadata/dev.zio/zio-interop-tracer_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/zio-interop-tracer_3/$version$/zio-interop-tracer_3-$version$-javadoc.jar",
+./stats/dev.zio/zio_3/2.1.6/execution-metrics.json:4:    "library": "dev.zio:zio_3:2.1.6",
+./stats/dev.zio/zio_3/2.1.6/execution-metrics.json:58:      "test_file": "tests/src/dev.zio/zio_3/2.1.6/src/test/scala/dev_zio/zio_3/StandardInnerMXReflectionTest.scala",
+./stats/dev.zio/zio_3/2.1.6/execution-metrics.json:59:      "metadata_file": "metadata/dev.zio/zio_3/2.1.6/reachability-metadata.json"
+./stats/dev.zio/zio-test_3/2.1.25/execution-metrics.json:4:    "library": "dev.zio:zio-test_3:2.1.25",
+./stats/dev.zio/zio-test_3/2.1.25/execution-metrics.json:52:      "test_file": "tests/src/dev.zio/zio-test_3/2.1.25/src/test/scala/dev_zio/zio_test_3/Zio_test_3Test.scala",
+./stats/dev.zio/zio-test_3/2.1.25/execution-metrics.json:53:      "metadata_file": "metadata/dev.zio/zio-test_3/2.1.25/reachability-metadata.json"
+./stats/dev.zio/zio-config_3/4.0.4/execution-metrics.json:4:    "library": "dev.zio:zio-config_3:4.0.4",
+./stats/dev.zio/zio-config_3/4.0.4/execution-metrics.json:52:      "test_file": "tests/src/dev.zio/zio-config_3/4.0.4/src/test/scala/dev_zio/zio_config_3/Zio_config_3Test.scala",
+./stats/dev.zio/zio-config_3/4.0.4/execution-metrics.json:53:      "metadata_file": "metadata/dev.zio/zio-config_3/4.0.4/reachability-metadata.json"
+./stats/dev.zio/zio-stacktracer_3/2.1.15/execution-metrics.json:4:    "library": "dev.zio:zio-stacktracer_3:2.1.15",
+./stats/dev.zio/zio-stacktracer_3/2.1.15/execution-metrics.json:52:      "test_file": "tests/src/dev.zio/zio-stacktracer_3/2.1.15/src/test/scala/dev_zio/zio_stacktracer_3/Zio_stacktracer_3Test.scala",
+./stats/dev.zio/zio-stacktracer_3/2.1.15/execution-metrics.json:53:      "metadata_file": "metadata/dev.zio/zio-stacktracer_3/2.1.15/reachability-metadata.json"
+./stats/dev.zio/zio-stacktracer_3/2.1.19/execution-metrics.json:4:    "library": "dev.zio:zio-stacktracer_3:2.1.19",
+./stats/dev.zio/zio-stacktracer_3/2.1.19/execution-metrics.json:52:      "test_file": "tests/src/dev.zio/zio-stacktracer_3/2.1.19/src/test/scala/dev_zio/zio_stacktracer_3/Zio_stacktracer_3Test.scala",
+./stats/dev.zio/zio-stacktracer_3/2.1.19/execution-metrics.json:53:      "metadata_file": "metadata/dev.zio/zio-stacktracer_3/2.1.19/reachability-metadata.json"
+./stats/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/3.0.1/execution-metrics.json:4:    "library": "dev.zio:izumi-reflect-thirdparty-boopickle-shaded_3:3.0.1",
+./stats/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/3.0.1/execution-metrics.json:52:      "test_file": "tests/src/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/3.0.1/src/test/scala/dev_zio/izumi_reflect_thirdparty_boopickle_shaded_3/Izumi_reflect_thirdparty_boopickle_shaded_3Test.scala",
+./stats/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/3.0.1/execution-metrics.json:53:      "metadata_file": "metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/3.0.1/reachability-metadata.json"
+./stats/dev.zio/zio-internal-macros_2.13/2.0.22/execution-metrics.json:4:    "library": "dev.zio:zio-internal-macros_2.13:2.0.22",
+./stats/dev.zio/zio-internal-macros_2.13/2.0.22/execution-metrics.json:52:      "test_file": "tests/src/dev.zio/zio-internal-macros_2.13/2.0.22/src/test/scala/dev_zio/zio_internal_macros_2_13/Zio_internal_macros_2_13Test.scala",
+./stats/dev.zio/zio-internal-macros_2.13/2.0.22/execution-metrics.json:53:      "metadata_file": "metadata/dev.zio/zio-internal-macros_2.13/2.0.22/reachability-metadata.json"
+./stats/dev.zio/zio-http_3/3.3.3/execution-metrics.json:4:    "library": "dev.zio:zio-http_3:3.3.3",
+./stats/dev.zio/zio-http_3/3.3.3/execution-metrics.json:46:      "test_file": "tests/src/dev.zio/zio-http_3/3.3.3/src/test/scala/dev_zio/zio_http_3/Zio_http_3Test.scala",
+./stats/dev.zio/zio-http_3/3.3.3/execution-metrics.json:47:      "metadata_file": "metadata/dev.zio/zio-http_3/3.3.3/reachability-metadata.json"
+./stats/dev.zio/zio-logging_2.13/2.4.0/execution-metrics.json:4:    "library": "dev.zio:zio-logging_2.13:2.4.0",
+./stats/dev.zio/zio-logging_2.13/2.4.0/execution-metrics.json:52:      "test_file": "tests/src/dev.zio/zio-logging_2.13/2.4.0/src/test/scala/dev_zio/zio_logging_2_13/Zio_logging_2_13Test.scala",
+./stats/dev.zio/zio-logging_2.13/2.4.0/execution-metrics.json:53:      "metadata_file": "metadata/dev.zio/zio-logging_2.13/2.4.0/reachability-metadata.json"
+./stats/dev.zio/zio-internal-macros_3/2.1.15/execution-metrics.json:4:    "library": "dev.zio:zio-internal-macros_3:2.1.15",
+./stats/dev.zio/zio-internal-macros_3/2.1.15/execution-metrics.json:52:      "test_file": "tests/src/dev.zio/zio-internal-macros_3/2.1.15/src/test/scala/dev_zio/zio_internal_macros_3/Zio_internal_macros_3Test.scala",
+./stats/dev.zio/zio-internal-macros_3/2.1.15/execution-metrics.json:53:      "metadata_file": "metadata/dev.zio/zio-internal-macros_3/2.1.15/reachability-metadata.json"
+./tests/src/dev.zio/zio_3/2.1.6/user-code-filter.json:10:      "includeClasses" : "dev_zio.zio_3.**"
+./stats/dev.zio/zio-internal-macros_3/2.1.19/execution-metrics.json:4:    "library": "dev.zio:zio-internal-macros_3:2.1.19",
+./stats/dev.zio/zio-internal-macros_3/2.1.19/execution-metrics.json:52:      "test_file": "tests/src/dev.zio/zio-internal-macros_3/2.1.19/src/test/scala/dev_zio/zio_internal_macros_3/Zio_internal_macros_3Test.scala",
+./stats/dev.zio/zio-internal-macros_3/2.1.19/execution-metrics.json:53:      "metadata_file": "metadata/dev.zio/zio-internal-macros_3/2.1.19/reachability-metadata.json"
+./stats/dev.zio/zio-query_3/0.7.7/execution-metrics.json:4:    "library": "dev.zio:zio-query_3:0.7.7",
+./stats/dev.zio/zio-query_3/0.7.7/execution-metrics.json:52:      "test_file": "tests/src/dev.zio/zio-query_3/0.7.7/src/test/scala/dev_zio/zio_query_3/Zio_query_3Test.scala",
+./stats/dev.zio/zio-query_3/0.7.7/execution-metrics.json:53:      "metadata_file": "metadata/dev.zio/zio-query_3/0.7.7/reachability-metadata.json"
+./stats/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/2.3.8/execution-metrics.json:4:    "library": "dev.zio:izumi-reflect-thirdparty-boopickle-shaded_2.13:2.3.8",
+./stats/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/2.3.8/execution-metrics.json:52:      "test_file": "tests/src/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/2.3.8/src/test/scala/dev_zio/izumi_reflect_thirdparty_boopickle_shaded_2_13/Izumi_reflect_thirdparty_boopickle_shaded_2_13Test.scala",
+./stats/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/2.3.8/execution-metrics.json:53:      "metadata_file": "metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/2.3.8/reachability-metadata.json"
+./tests/src/dev.zio/zio-test_3/2.1.25/user-code-filter.json:10:      "includeClasses" : "dev_zio.zio_test_3.**"
+./stats/dev.zio/zio-schema_3/1.7.0/execution-metrics.json:4:    "library": "dev.zio:zio-schema_3:1.7.0",
+./stats/dev.zio/zio-schema_3/1.7.0/execution-metrics.json:52:      "test_file": "tests/src/dev.zio/zio-schema_3/1.7.0/src/test/scala/dev_zio/zio_schema_3/Zio_schema_3Test.scala",
+./stats/dev.zio/zio-schema_3/1.7.0/execution-metrics.json:53:      "metadata_file": "metadata/dev.zio/zio-schema_3/1.7.0/reachability-metadata.json"
+./stats/dev.zio/izumi-reflect_3/3.0.1/execution-metrics.json:4:    "library": "dev.zio:izumi-reflect_3:3.0.1",
+./stats/dev.zio/izumi-reflect_3/3.0.1/execution-metrics.json:59:      "test_file": "tests/src/dev.zio/izumi-reflect_3/3.0.1/src/test/scala/dev_zio/izumi_reflect_3/ReflectionUtilInnerUncheckedNonOverloadedSelectableTest.scala",
+./stats/dev.zio/izumi-reflect_3/3.0.1/execution-metrics.json:60:      "metadata_file": "metadata/dev.zio/izumi-reflect_3/3.0.1/reachability-metadata.json"
+./stats/dev.zio/zio-schema-derivation_3/1.7.0/execution-metrics.json:4:    "library": "dev.zio:zio-schema-derivation_3:1.7.0",
+./stats/dev.zio/zio-schema-derivation_3/1.7.0/execution-metrics.json:52:      "test_file": "tests/src/dev.zio/zio-schema-derivation_3/1.7.0/src/test/scala/dev_zio/zio_schema_derivation_3/Zio_schema_derivation_3Test.scala",
+./stats/dev.zio/zio-schema-derivation_3/1.7.0/execution-metrics.json:53:      "metadata_file": "metadata/dev.zio/zio-schema-derivation_3/1.7.0/reachability-metadata.json"
+./stats/dev.zio/zio-prelude_3/1.0.0-RC39/execution-metrics.json:4:    "library": "dev.zio:zio-prelude_3:1.0.0-RC39",
+./stats/dev.zio/zio-prelude_3/1.0.0-RC39/execution-metrics.json:52:      "test_file": "tests/src/dev.zio/zio-prelude_3/1.0.0-RC39/src/test/scala/dev_zio/zio_prelude_3/Zio_prelude_3Test.scala",
+./stats/dev.zio/zio-prelude_3/1.0.0-RC39/execution-metrics.json:53:      "metadata_file": "metadata/dev.zio/zio-prelude_3/1.0.0-RC39/reachability-metadata.json"
+./stats/dev.zio/zio-interop-cats_3/23.1.0.13/execution-metrics.json:4:    "library": "dev.zio:zio-interop-cats_3:23.1.0.13",
+./stats/dev.zio/zio-interop-cats_3/23.1.0.13/execution-metrics.json:52:      "test_file": "tests/src/dev.zio/zio-interop-cats_3/23.1.0.13/src/test/scala/dev_zio/zio_interop_cats_3/Zio_interop_cats_3Test.scala",
+./stats/dev.zio/zio-interop-cats_3/23.1.0.13/execution-metrics.json:53:      "metadata_file": "metadata/dev.zio/zio-interop-cats_3/23.1.0.13/reachability-metadata.json"
+./stats/dev.zio/zio-schema-macros_3/1.7.0/execution-metrics.json:4:    "library": "dev.zio:zio-schema-macros_3:1.7.0",
+./stats/dev.zio/zio-schema-macros_3/1.7.0/execution-metrics.json:52:      "test_file": "tests/src/dev.zio/zio-schema-macros_3/1.7.0/src/test/scala/dev_zio/zio_schema_macros_3/Zio_schema_macros_3Test.scala",
+./stats/dev.zio/zio-schema-macros_3/1.7.0/execution-metrics.json:53:      "metadata_file": "metadata/dev.zio/zio-schema-macros_3/1.7.0/reachability-metadata.json"
+./stats/dev.zio/zio-managed_3/2.1.23/execution-metrics.json:4:    "library": "dev.zio:zio-managed_3:2.1.23",
+./stats/dev.zio/zio-managed_3/2.1.23/execution-metrics.json:52:      "test_file": "tests/src/dev.zio/zio-managed_3/2.1.23/src/test/scala/dev_zio/zio_managed_3/Zio_managed_3Test.scala",
+./stats/dev.zio/zio-managed_3/2.1.23/execution-metrics.json:53:      "metadata_file": "metadata/dev.zio/zio-managed_3/2.1.23/reachability-metadata.json"
+./stats/dev.zio/zio-json_3/0.7.42/execution-metrics.json:4:    "library": "dev.zio:zio-json_3:0.7.42",
+./stats/dev.zio/zio-json_3/0.7.42/execution-metrics.json:52:      "test_file": "tests/src/dev.zio/zio-json_3/0.7.42/src/test/scala/dev_zio/zio_json_3/Zio_json_3Test.scala",
+./stats/dev.zio/zio-json_3/0.7.42/execution-metrics.json:53:      "metadata_file": "metadata/dev.zio/zio-json_3/0.7.42/reachability-metadata.json"
+./stats/dev.zio/zio-prelude-macros_3/1.0.0-RC39/execution-metrics.json:4:    "library": "dev.zio:zio-prelude-macros_3:1.0.0-RC39",
+./stats/dev.zio/zio-prelude-macros_3/1.0.0-RC39/execution-metrics.json:52:      "test_file": "tests/src/dev.zio/zio-prelude-macros_3/1.0.0-RC39/src/test/scala/dev_zio/zio_prelude_macros_3/Zio_prelude_macros_3Test.scala",
+./stats/dev.zio/zio-prelude-macros_3/1.0.0-RC39/execution-metrics.json:53:      "metadata_file": "metadata/dev.zio/zio-prelude-macros_3/1.0.0-RC39/reachability-metadata.json"
+./stats/dev.zio/zio-config-typesafe_3/4.0.7/execution-metrics.json:4:    "library": "dev.zio:zio-config-typesafe_3:4.0.7",
+./stats/dev.zio/zio-config-typesafe_3/4.0.7/execution-metrics.json:52:      "test_file": "tests/src/dev.zio/zio-config-typesafe_3/4.0.7/src/test/scala/dev_zio/zio_config_typesafe_3/Zio_config_typesafe_3Test.scala",
+./stats/dev.zio/zio-config-typesafe_3/4.0.7/execution-metrics.json:53:      "metadata_file": "metadata/dev.zio/zio-config-typesafe_3/4.0.7/reachability-metadata.json"
+./stats/dev.zio/zio-interop-tracer_3/23.1.0.13/execution-metrics.json:4:    "library": "dev.zio:zio-interop-tracer_3:23.1.0.13",
+./stats/dev.zio/zio-interop-tracer_3/23.1.0.13/execution-metrics.json:63:      "test_file": "tests/src/dev.zio/zio-interop-tracer_3/23.1.0.13/src/test/scala/dev_zio/zio_interop_tracer_3/AkkaLineNumbersTest.scala",
+./stats/dev.zio/zio-interop-tracer_3/23.1.0.13/execution-metrics.json:64:      "metadata_file": "metadata/dev.zio/zio-interop-tracer_3/23.1.0.13/reachability-metadata.json"
+./tests/src/dev.zio/zio-internal-macros_2.13/2.0.22/user-code-filter.json:10:      "includeClasses" : "dev_zio.zio_internal_macros_2_13.**"
+./tests/src/dev.zio/zio-logging_2.13/2.4.0/user-code-filter.json:10:      "includeClasses" : "dev_zio.zio_logging_2_13.**"
+./tests/src/dev.zio/zio-internal-macros_3/2.1.15/user-code-filter.json:10:      "includeClasses" : "dev_zio.zio_internal_macros_3.**"
+./tests/src/dev.zio/zio-query_3/0.7.7/user-code-filter.json:10:      "includeClasses" : "dev_zio.zio_query_3.**"
+./tests/src/dev.zio/izumi-reflect_3/3.0.1/src/test/resources/META-INF/native-image/reachability-metadata.json:4:      "type" : "dev_zio.izumi_reflect_3.UncheckedSelectableInvocationTarget",
+./tests/src/dev.zio/zio-prelude_3/1.0.0-RC39/user-code-filter.json:10:      "includeClasses" : "dev_zio.zio_prelude_3.**"
+./tests/src/dev.zio/zio-interop-cats_3/23.1.0.13/user-code-filter.json:10:      "includeClasses" : "dev_zio.zio_interop_cats_3.**"
+./tests/src/dev.zio/zio-managed_3/2.1.23/user-code-filter.json:10:      "includeClasses" : "dev_zio.zio_managed_3.**"
+./tests/src/dev.zio/zio-json_3/0.7.42/user-code-filter.json:10:      "includeClasses" : "dev_zio.zio_json_3.**"
+./tests/src/dev.zio/zio-config-typesafe_3/4.0.7/user-code-filter.json:10:      "includeClasses" : "dev_zio.zio_config_typesafe_3.**"
+./tests/src/dev.zio/zio-interop-tracer_3/23.1.0.13/user-code-filter.json:10:      "includeClasses" : "dev_zio.zio_interop_tracer_3.**"
+
+codex
+The repo already has adjacent metadata for the Scala 3 variant and the shaded 2.13 helper, which gives a strong local precedent. I’m checking Maven and GitHub directly now to confirm the 2.3.8 source/javadoc artifacts and whether a published test artifact exists.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/2.3.8/izumi-reflect_2.13-2.3.8.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>dev.zio</groupId>
+    <artifactId>izumi-reflect_2.13</artifactId>
+    <packaging>jar</packaging>
+    <description>izumi-reflect</description>
+    <url>https://zio.dev</url>
+    <version>2.3.8</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>izumi-reflect</name>
+    <organization>
+        <name>dev.zio</name>
+        <url>https://zio.dev</url>
+    </organization>
+    <scm>
+        <url>https://github.com/zio/izumi-reflect</url>
+        <connection>scm:git:https://github.com/zio/izumi-reflect.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>jdegoes</id>
+            <name>John De Goes</name>
+            <url>http://degoes.net</url>
+            <email>john@degoes.net</email>
+        </developer>
+        <developer>
+            <id>7mind</id>
+            <name>Septimal Mind</name>
+            <url>https://github.com/7mind</url>
+            <email>team@7mind.io</email>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.13.10</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.zio</groupId>
+            <artifactId>izumi-reflect-thirdparty-boopickle-shaded_2.13</artifactId>
+            <version>2.3.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_2.13</artifactId>
+            <version>3.2.14</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-reflect</artifactId>
+            <version>2.13.10</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/2.3.8/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+exec
+/usr/bin/bash -lc 'curl -fsSL -o /tmp/izumi-reflect-2.3.8.jar https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/2.3.8/izumi-reflect_2.13-2.3.8.jar && jar tf /tmp/izumi-reflect-2.3.8.jar | head -80' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+exec
+/usr/bin/bash -lc "curl -I -sS https://github.com/zio/izumi-reflect/tree/v2.3.8/izumi-reflect/izumi-reflect/src/test | sed -n '1,30p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+ succeeded in 273ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: dev/zio/izumi-reflect_2.13/2.3.8</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>dev/zio/izumi-reflect_2.13/2.3.8</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="izumi-reflect_2.13-2.3.8-javadoc.jar" title="izumi-reflect_2.13-2.3.8-javadoc.jar">izumi-reflect_2.13-2.3.8-javadoc.jar</a>              2023-05-30 00:45   1520759      
+<a href="izumi-reflect_2.13-2.3.8-javadoc.jar.asc" title="izumi-reflect_2.13-2.3.8-javadoc.jar.asc">izumi-reflect_2.13-2.3.8-javadoc.jar.asc</a>          2023-05-30 00:45       301      
+<a href="izumi-reflect_2.13-2.3.8-javadoc.jar.asc.md5" title="izumi-reflect_2.13-2.3.8-javadoc.jar.asc.md5">izumi-reflect_2.13-2.3.8-javadoc.jar.asc.md5</a>      2023-05-30 00:45        32      
+<a href="izumi-reflect_2.13-2.3.8-javadoc.jar.asc.sha1" title="izumi-reflect_2.13-2.3.8-javadoc.jar.asc.sha1">izumi-reflect_2.13-2.3.8-javadoc.jar.asc.sha1</a>     2023-05-30 00:45        40      
+<a href="izumi-reflect_2.13-2.3.8-javadoc.jar.md5" title="izumi-reflect_2.13-2.3.8-javadoc.jar.md5">izumi-reflect_2.13-2.3.8-javadoc.jar.md5</a>          2023-05-30 00:45        32      
+<a href="izumi-reflect_2.13-2.3.8-javadoc.jar.sha1" title="izumi-reflect_2.13-2.3.8-javadoc.jar.sha1">izumi-reflect_2.13-2.3.8-javadoc.jar.sha1</a>         2023-05-30 00:45        40      
+<a href="izumi-reflect_2.13-2.3.8-sources.jar" title="izumi-reflect_2.13-2.3.8-sources.jar">izumi-reflect_2.13-2.3.8-sources.jar</a>              2023-05-30 00:45     65606      
+<a href="izumi-reflect_2.13-2.3.8-sources.jar.asc" title="izumi-reflect_2.13-2.3.8-sources.jar.asc">izumi-reflect_2.13-2.3.8-sources.jar.asc</a>          2023-05-30 00:45       301      
+<a href="izumi-reflect_2.13-2.3.8-sources.jar.asc.md5" title="izumi-reflect_2.13-2.3.8-sources.jar.asc.md5">izumi-reflect_2.13-2.3.8-sources.jar.asc.md5</a>      2023-05-30 00:45        32      
+<a href="izumi-reflect_2.13-2.3.8-sources.jar.asc.sha1" title="izumi-reflect_2.13-2.3.8-sources.jar.asc.sha1">izumi-reflect_2.13-2.3.8-sources.jar.asc.sha1</a>     2023-05-30 00:45        40      
+<a href="izumi-reflect_2.13-2.3.8-sources.jar.md5" title="izumi-reflect_2.13-2.3.8-sources.jar.md5">izumi-reflect_2.13-2.3.8-sources.jar.md5</a>          2023-05-30 00:45        32      
+<a href="izumi-reflect_2.13-2.3.8-sources.jar.sha1" title="izumi-reflect_2.13-2.3.8-sources.jar.sha1">izumi-reflect_2.13-2.3.8-sources.jar.sha1</a>         2023-05-30 00:45        40      
+<a href="izumi-reflect_2.13-2.3.8.jar" title="izumi-reflect_2.13-2.3.8.jar">izumi-reflect_2.13-2.3.8.jar</a>                      2023-05-30 00:45    592354      
+<a href="izumi-reflect_2.13-2.3.8.jar.asc" title="izumi-reflect_2.13-2.3.8.jar.asc">izumi-reflect_2.13-2.3.8.jar.asc</a>                  2023-05-30 00:45       301      
+<a href="izumi-reflect_2.13-2.3.8.jar.asc.md5" title="izumi-reflect_2.13-2.3.8.jar.asc.md5">izumi-reflect_2.13-2.3.8.jar.asc.md5</a>              2023-05-30 00:45        32      
+<a href="izumi-reflect_2.13-2.3.8.jar.asc.sha1" title="izumi-reflect_2.13-2.3.8.jar.asc.sha1">izumi-reflect_2.13-2.3.8.jar.asc.sha1</a>             2023-05-30 00:45        40      
+<a href="izumi-reflect_2.13-2.3.8.jar.md5" title="izumi-reflect_2.13-2.3.8.jar.md5">izumi-reflect_2.13-2.3.8.jar.md5</a>                  2023-05-30 00:45        32      
+<a href="izumi-reflect_2.13-2.3.8.jar.sha1" title="izumi-reflect_2.13-2.3.8.jar.sha1">izumi-reflect_2.13-2.3.8.jar.sha1</a>                 2023-05-30 00:45        40      
+<a href="izumi-reflect_2.13-2.3.8.pom" title="izumi-reflect_2.13-2.3.8.pom">izumi-reflect_2.13-2.3.8.pom</a>                      2023-05-30 00:45      2286      
+<a href="izumi-reflect_2.13-2.3.8.pom.asc" title="izumi-reflect_2.13-2.3.8.pom.asc">izumi-reflect_2.13-2.3.8.pom.asc</a>                  2023-05-30 00:45       301      
+<a href="izumi-reflect_2.13-2.3.8.pom.asc.md5" title="izumi-reflect_2.13-2.3.8.pom.asc.md5">izumi-reflect_2.13-2.3.8.pom.asc.md5</a>              2023-05-30 00:45        32      
+<a href="izumi-reflect_2.13-2.3.8.pom.asc.sha1" title="izumi-reflect_2.13-2.3.8.pom.asc.sha1">izumi-reflect_2.13-2.3.8.pom.asc.sha1</a>             2023-05-30 00:45        40      
+<a href="izumi-reflect_2.13-2.3.8.pom.md5" title="izumi-reflect_2.13-2.3.8.pom.md5">izumi-reflect_2.13-2.3.8.pom.md5</a>                  2023-05-30 00:45        32      
+<a href="izumi-reflect_2.13-2.3.8.pom.sha1" title="izumi-reflect_2.13-2.3.8.pom.sha1">izumi-reflect_2.13-2.3.8.pom.sha1</a>                 2023-05-30 00:45        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 294ms:
+META-INF/MANIFEST.MF
+izumi/
+izumi/reflect/
+izumi/reflect/internal/
+izumi/reflect/internal/fundamentals/
+izumi/reflect/internal/fundamentals/collections/
+izumi/reflect/internal/fundamentals/functional/
+izumi/reflect/internal/fundamentals/platform/
+izumi/reflect/internal/fundamentals/platform/assertions/
+izumi/reflect/internal/fundamentals/platform/basics/
+izumi/reflect/internal/fundamentals/platform/console/
+izumi/reflect/internal/fundamentals/platform/language/
+izumi/reflect/internal/fundamentals/platform/strings/
+izumi/reflect/macrortti/
+izumi/reflect/AnnotationTools$.class
+izumi/reflect/AnnotationTools.class
+izumi/reflect/AnyTag.class
+izumi/reflect/DebugProperties$.class
+izumi/reflect/DebugProperties.class
+izumi/reflect/HKTag$$anon$2.class
+izumi/reflect/HKTag$.class
+izumi/reflect/HKTag.class
+izumi/reflect/HKTagMaterializer$.class
+izumi/reflect/HKTagMaterializer.class
+izumi/reflect/ReflectionUtil$.class
+izumi/reflect/ReflectionUtil$Kind$.class
+izumi/reflect/ReflectionUtil$Kind.class
+izumi/reflect/ReflectionUtil.class
+izumi/reflect/ScalacSink.class
+izumi/reflect/Tag$$anon$1.class
+izumi/reflect/Tag$.class
+izumi/reflect/Tag.class
+izumi/reflect/TagLambdaMacro$$anonfun$1.class
+izumi/reflect/TagLambdaMacro.class
+izumi/reflect/TagMacro$$anonfun$$nestedInanonfun$getImplicitError$1$1.class
+izumi/reflect/TagMacro$$treecreator1$1.class
+izumi/reflect/TagMacro$$treecreator1$2.class
+izumi/reflect/TagMacro$$treecreator1$3.class
+izumi/reflect/TagMacro$$treecreator2$1.class
+izumi/reflect/TagMacro$$typecreator1$1.class
+izumi/reflect/TagMacro$$typecreator1$10.class
+izumi/reflect/TagMacro$$typecreator1$11.class
+izumi/reflect/TagMacro$$typecreator1$12.class
+izumi/reflect/TagMacro$$typecreator1$13.class
+izumi/reflect/TagMacro$$typecreator1$2.class
+izumi/reflect/TagMacro$$typecreator1$3.class
+izumi/reflect/TagMacro$$typecreator1$4.class
+izumi/reflect/TagMacro$$typecreator1$5.class
+izumi/reflect/TagMacro$$typecreator1$6.class
+izumi/reflect/TagMacro$$typecreator1$7.class
+izumi/reflect/TagMacro$$typecreator1$8.class
+izumi/reflect/TagMacro$$typecreator1$9.class
+izumi/reflect/TagMacro$$typecreator2$1.class
+izumi/reflect/TagMacro$$typecreator2$2.class
+izumi/reflect/TagMacro$$typecreator2$3.class
+izumi/reflect/TagMacro$$typecreator2$4.class
+izumi/reflect/TagMacro$$typecreator3$1.class
+izumi/reflect/TagMacro$$typecreator3$2.class
+izumi/reflect/TagMacro$$typecreator3$3.class
+izumi/reflect/TagMacro$$typecreator4$1.class
+izumi/reflect/TagMacro$$typecreator6$1.class
+izumi/reflect/TagMacro$.class
+izumi/reflect/TagMacro.class
+izumi/reflect/TrivialMacroLogger$.class
+izumi/reflect/TrivialMacroLogger.class
+izumi/reflect/WeakTag$$anon$3.class
+izumi/reflect/WeakTag$.class
+izumi/reflect/WeakTag.class
+izumi/reflect/WeakTagInstances1.class
+izumi/reflect/internal/CollectionCompat$.class
+izumi/reflect/internal/CollectionCompat.class
+izumi/reflect/internal/NowarnCompat$.class
+izumi/reflect/internal/NowarnCompat.class
+izumi/reflect/internal/OrderingCompat$.class
+izumi/reflect/internal/OrderingCompat.class
+izumi/reflect/internal/fundamentals/collections/IzCollections$.class
+izumi/reflect/internal/fundamentals/collections/IzCollections.class
+izumi/reflect/internal/fundamentals/collections/IzMappings$$anon$1.class
+izumi/reflect/internal/fundamentals/collections/IzMappings$.class
+izumi/reflect/internal/fundamentals/collections/IzMappings.class
+
+ succeeded in 756ms:
+HTTP/2 200 
+date: Sat, 27 Jun 2026 17:42:01 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"5650ed39568df2aadbaf37d943cf0824"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com wss://production-copilot-host.webpubsub.azure.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=epKIb2Dm%2FpIlBXFG5NlLEoS9hbmn0k2z0kWwuEEYqAUiB0DrJ91l%2F4eTaWMfsjDK5OPfgM0cn71qN1uykMw%2BbHO%2F6EKUTb6KO58IQdDiW6DiMdyGgUFbu4y%2B4IJb4WRHpjg0lt7luC7RYi2xeXBcGhkf%2BsUUzdHa36xOKPTjnbau6w%2FHuvqHHd3e%2FQPt9ppHYF6QS6ZzqRM4LqjRD9LPXTQoZ0D2OfyiEBKAjwiwa1j0BlRz7GZ1msOf3GrgoXqKeLWKDLn9BwhB7F553g2dlw%3D%3D--VVyHn0d74EWXMo%2Fc--VdHEzn0YEQmff1P8gQrkWA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.530948126.1782582120; expires=Sun, 27 Jun 2027 17:42:00 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Sun, 27 Jun 2027 17:42:00 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6209:AA8C3:1293B0:13A848:6A400B68
+
+
+web search: 
+web search: https://github.com/zio/izumi-reflect/tree/v2.3.8/izumi-reflect/izumi-reflect/src/test
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/dev.zio/izumi-reflect_3/index.json && sed -n '1,80p' metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/index.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.0.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_3/$version$/izumi-reflect_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/zio/izumi-reflect",
+    "test-code-url" : "https://github.com/zio/izumi-reflect/tree/v$version$/izumi-reflect/izumi-reflect/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_3/$version$/izumi-reflect_3-$version$-javadoc.jar",
+    "description" : "izumi-reflect provides a fast, lightweight, portable alternative to scala-reflect TypeTag for capturing Scala type information at runtime. It models important parts of the Scala type system, supports subtype and equality checks, and can create tags for higher-kinded and unapplied type constructors.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "3.0.1",
+      "3.0.2",
+      "3.0.3",
+      "3.0.4",
+      "3.0.5",
+      "3.0.6",
+      "3.0.7",
+      "3.0.8",
+      "3.0.9"
+    ],
+    "allowed-packages" : [
+      "izumi.reflect"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.3.8",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/2.3.8/izumi-reflect-thirdparty-boopickle-shaded_2.13-2.3.8-sources.jar",
+    "repository-url" : "https://github.com/zio/izumi-reflect",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/2.3.8/izumi-reflect-thirdparty-boopickle-shaded_2.13-2.3.8-javadoc.jar",
+    "description" : "izumi-reflect-thirdparty-boopickle-shaded_2.13 is the Scala 2.13 JVM artifact that packages Izumi Reflect's shaded internal fork of BooPickle. It provides binary pickling and serialization support used by Izumi Reflect while relocating BooPickle classes under izumi.reflect.thirdparty.internal to avoid dependency conflicts.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "2.3.8",
+      "2.3.9",
+      "2.3.10",
+      "3.0.0",
+      "3.0.1",
+      "3.0.2",
+      "3.0.3",
+      "3.0.4",
+      "3.0.5",
+      "3.0.6",
+      "3.0.7",
+      "3.0.8",
+      "3.0.9"
+    ],
+    "allowed-packages" : [
+      "izumi.reflect.thirdparty.internal.boopickle"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"language\"' build/discovered-artifact-metadata metadata | head -80" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+ succeeded in 0ms:
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-autoclose-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-atomic-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-exception-utils-jvm/index.json:10:    "language" : {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-resilience-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-annotations-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:10:    "language" : {
+metadata/com.squareup.okhttp3/mockwebserver/index.json:10:    "language" : {
+metadata/com.squareup.okio/okio-jvm/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-core-jvm/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.client4/core_3/index.json:10:    "language" : {
+metadata/io.arrow-kt/arrow-fx-coroutines-jvm/index.json:10:    "language" : {
+metadata/io.getquill/quill-engine_3/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.client4/circe_3/index.json:10:    "language" : {
+metadata/io.scalaland/chimney_3/index.json:10:    "language" : {
+metadata/io.getquill/quill-engine_2.13/index.json:10:    "language" : {
+metadata/io.getquill/quill-util_3/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_2.13/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/org.specs2/specs2-fp_3/index.json:10:    "language" : {
+metadata/org.specs2/specs2-fp_3/index.json:57:    "language" : {
+metadata/org.playframework.twirl/twirl-api_3/index.json:10:    "language" : {
+metadata/org.tpolecat/doobie-free_3/index.json:10:    "language" : {
+metadata/org.tpolecat/doobie-free_3/index.json:38:    "language" : {
+metadata/org.tpolecat/doobie-free_3/index.json:61:    "language" : {
+metadata/com.github.plokhotnyuk.jsoniter-scala/jsoniter-scala-core_3/index.json:10:    "language" : {
+metadata/dev.profunktor/redis4cats-core_3/index.json:10:    "language" : {
+metadata/dev.profunktor/redis4cats-core_3/index.json:29:    "language" : {
+metadata/org.tpolecat/typename_3/index.json:10:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:10:    "language" : {
+metadata/org.tpolecat/skunk-core_3/index.json:10:    "language" : {
+metadata/com.github.takayahilton/sql-formatter_2.13/index.json:10:    "language" : {
+metadata/org.parboiled/parboiled_2.13/index.json:10:    "language" : {
+metadata/com.beachape/enumeratum-circe_3/index.json:10:    "language" : {
+metadata/org.parboiled/parboiled_3/index.json:10:    "language" : {
+metadata/com.beachape/enumeratum_3/index.json:10:    "language" : {
+metadata/com.squareup.moshi/moshi-adapters/index.json:10:    "language" : {
+metadata/com.squareup.moshi/moshi-kotlin/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-parsing_3/index.json:10:    "language" : {
+metadata/org.scala-lang/scalap/index.json:10:    "language" : {
+metadata/com.comcast/ip4s-core_3/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:28:    "language" : {
+metadata/org.scalacheck/scalacheck_2.13/index.json:10:    "language" : {
+metadata/org.scalacheck/scalacheck_2.13/index.json:28:    "language" : {
+metadata/com.github.pureconfig/pureconfig-generic-base_3/index.json:10:    "language" : {
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-core_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native-core_3/index.json:10:    "language" : {
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-jackson_2.13/index.json:10:    "language" : {
+metadata/dev.zio/zio_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-ast_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-test_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play_2.13/index.json:10:    "language" : {
+metadata/org.json4s/json4s-ast_2.13/index.json:10:    "language" : {
+metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-core_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-ws_2.13/index.json:10:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:9:    "language" : {
+metadata/dev.zio/zio-stacktracer_3/index.json:29:    "language" : {
+metadata/com.typesafe.play/twirl-api_2.13/index.json:10:    "language" : {
+metadata/com.github.ghostdogpr/caliban_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-scalap_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-scalap_2.13/index.json:10:    "language" : {
+metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-jackson_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-internal-macros_2.13/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.model/core_3/index.json:10:    "language" : {
+metadata/org.json4s/json4s-native_3/index.json:10:    "language" : {
+metadata/dev.zio/zio-http_3/index.json:10:    "language" : {
+metadata/com.typesafe.play/play-configuration_2.13/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -type f | head -20 | xargs -r sed -n '1,120p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+ succeeded in 0ms:
+{
+  "coordinates" : "dev.zio:izumi-reflect_2.13:2.3.8"
+}
+
+codex
+Maven Central publishes the JVM jar, sources jar, and javadoc jar for `2.3.8`, and the jar contains JVM `.class` files, so this should stay a Native Image metadata candidate. I’m going to keep the URLs version-templated where possible and add the Scala 2 language marker.
+exec
+/usr/bin/bash -lc "rg -n 'discovered-artifact-metadata|source-code-url|documentation-url' build.gradle* gradle src --glob '"'!build/**'"' | head -120" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+ succeeded in 0ms:
+rg: src: No such file or directory (os error 2)
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/zio/izumi-reflect/v2.3.8/README.md | sed -n '1,220p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+exec
+/usr/bin/bash -lc "curl -I -sS https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/2.3.8/izumi-reflect_2.13-2.3.8-tests.jar | sed -n '1,20p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/zio/izumi-reflect/contents/izumi-reflect/izumi-reflect/src/test?ref=v2.3.8 | sed -n '1,160p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+ succeeded in 169ms:
+[![Project stage][Stage]][Stage-Page]
+[![Build](https://github.com/zio/izumi-reflect/workflows/Build/badge.svg)](https://github.com/zio/izumi-reflect/actions/workflows/build.yml)
+[![javadoc](https://javadoc.io/badge2/dev.zio/izumi-reflect_2.13/javadoc.svg)](https://javadoc.io/doc/dev.zio/izumi-reflect_2.13)
+[![Latest Release](https://img.shields.io/github/tag/zio/izumi-reflect.svg)](https://github.com/zio/izumi-reflect/releases)
+[![Maven Central](https://img.shields.io/maven-central/v/dev.zio/izumi-reflect_2.13.svg)](https://search.maven.org/search?q=g%3Adev.zio+a%3Aizumi-reflect)
+[![Latest version](https://index.scala-lang.org/zio/izumi-reflect/latest.svg?color=orange)](https://index.scala-lang.org/zio/izumi-reflect)
+
+---
+
+<p align="center">
+  <a href="https://www.buymeacoffee.com/7mind"><img src="https://bmc-cdn.nyc3.digitaloceanspaces.com/BMC-button-images/custom_images/orange_img.png" alt="Izumi"/></a>
+</p>
+
+---
+
+# izumi-reflect
+
+> @quote: Looks a bit similar to TypeTag
+
+`izumi-reflect` is a fast, lightweight, portable and efficient alternative for `TypeTag` from `scala-reflect`.
+
+`izumi-reflect` is a lightweight model of Scala type system and provides a simulator of the important parts of the Scala typechecker.
+
+## Why `izumi-reflect`
+
+1. `izumi-reflect` compiles faster, runs a lot faster than `scala-reflect` and is fully immutable and [thread-safe](https://github.com/scala/bug/issues/10766),
+2. `izumi-reflect` supports Scala 2.11, 2.12, 2.13 and **Scala 3**,
+3. `izumi-reflect` supports Scala.js and Scala Native,
+4. `izumi-reflect` works well with [GraalVM Native Image](https://www.graalvm.org/reference-manual/native-image/),
+5. `izumi-reflect` allows you to obtain tags for unapplied type constructors (`F[_]`) and combine them at runtime.
+
+## Credits
+
+`izumi-reflect` has been created by [Septimal Mind](https://7mind.io) to power [Izumi Project](https://github.com/7mind/izumi),
+as a replacement for `TypeTag` in reaction to a lack of confirmed information about the future of `scala-reflect`/`TypeTag` in Scala 3 ([Motivation](https://blog.7mind.io/lightweight-reflection.html)), and donated to ZIO.
+
+<p align="center">
+  <a href="https://izumi.7mind.io/">
+  <img width="40%" src="https://github.com/7mind/izumi/blob/develop/doc/microsite/src/main/tut/media/izumi-logo-full-purple.png?raw=true" alt="Izumi"/>
+  </a>
+</p>
+
+
+## Limitations
+
+`izumi-reflect` model of the Scala type system is not 100% precise, but "good enough" for the vast majority of the usecases.
+
+Known limitations are:
+
+1. Recursive type bounds (F-bounded types) are not preserved and may produce false positives,
+2. Existential types, both written with wildcards and `forSome` may produce unexpected results, the support is limited,
+3. Path-Dependent Types are based on variable names and may cause unexpected results when variables with different names have the same type or vice-versa (vs. Scala compiler)
+4. This-Types such as `X.this.type` are ignored and identical to `X`
+5. `izumi-reflect` is less powerful than `scala-reflect`: it does not preserve fields and methods when it's not necessary for equality and subtype checks, it does not preserve code trees, internal compiler data structures, etc.
+6. There are some optimizations in place which reduce correctness, namely: subtype check for `scala.Matchable` will always return true, no distinction is made between `scala.Any` and `scala.AnyRef`.
+7. Lower bounds are not preserved in abstract higher-kinded type members which may produce false comparisons.
+
+## Debugging
+
+Set [`-Dizumi.reflect.debug.macro.rtti=true`](https://javadoc.io/doc/dev.zio/izumi-reflect_2.13/latest/izumi/reflect/DebugProperties$.html#izumi.reflect.debug.macro.rtti:String(%22izumi.reflect.debug.macro.rtti%22)) to enable debug output during compilation when tags are constructed and at runtime when they are compared.
+
+```shell
+sbt -Dizumi.reflect.debug.macro.rtti=true
+```
+
+To see debug output when compiling in Intellij, add the above flag to `VM options` in [Preferences -> Build, Execution, Deployment -> Compiler -> Scala Compiler -> Scala Compile Server](jetbrains://idea/settings?name=Build%2C+Execution%2C+Deployment--Compiler--Scala+Compiler--Scala+Compile+Server)
+
+You may also set it in `.jvmopts` file during development. (`.jvmopts` properties will not apply to Intellij compile server, only to sbt)
+
+Set `-Dizumi.reflect.debug.macro.rtti.assertions=true` to enable additional assertions.
+
+Other useful system properties are:
+
+- [`izumi.reflect.rtti.optimized.equals`](https://javadoc.io/doc/dev.zio/izumi-reflect_2.13/latest/izumi/reflect/DebugProperties$.html#izumi.reflect.rtti.optimized.equals:String(%22izumi.reflect.rtti.optimized.equals%22))
+- [`izumi.reflect.rtti.cache.compile`](https://javadoc.io/doc/dev.zio/izumi-reflect_2.13/latest/izumi/reflect/DebugProperties$.html#izumi.reflect.rtti.cache.compile:String(%22izumi.reflect.rtti.cache.compile%22))
+
+## Build
+
+`build.sbt` is generated by [sbtgen](https://github.com/7mind/sbtgen). During development you may not want to mess with ScalaJS and ScalaNative, you may generate a pure-JVM Scala project:
+
+```bash
+./sbtgen.sc
+```
+
+Once you finished tinkering with the code you may want to generate full project and test it for all the platforms:
+
+```bash
+./sbtgen.sc --js --native
+sbt +test
+```
+
+To develop using Scala 2 invoke sbtgen with a scala version argument:
+
+```bash
+./sbtgen.sc 2 // 2.13
+./sbtgen.sc 2.12 // 2.12
+```
+
+Likewise with Scala 3:
+
+```bash
+./sbtgen.sc 3
+```
+
+In Intellij, you may also set Scala version by changing the option `sbt -> sbt settings -> Open cross-compiled projects Scala 3 / Scala 2 projects as:`
+
+# Talks
+
+* [Kit Langton — Scala 3 Macro Fun (Open Source Hackery)](https://www.youtube.com/watch?v=wsLhjqCKZuU)
+* [Pavel Shirshov — Izumi Reflect: Scala Type System Model](https://www.youtube.com/watch?v=ShRfzVz58OY)
+
+# See also
+
+## [`gzoller/scala-reflection`](https://github.com/gzoller/scala-reflection)
+
+* Scala 3 only
+* No support for subtype checks
+* Requires compiler plugin
+* Type lambdas are not supported
+* Preserves field information
+
+## [`airframe-surface`](https://wvlet.org/airframe/docs/airframe-surface)
+
+* Scala 2 and Scala 3
+* No support for subtype checks
+* Preserves field information
+
+## And even more
+
+1. https://github.com/gaeljw/typetrees - a very basic type tag substitute for Scala 3
+2. https://stackoverflow.com/questions/75752812/is-there-a-simple-scala-3-example-of-how-to-use-quoted-type-as-replacement-for - discussion on StackOverflow
+3. https://contributors.scala-lang.org/t/scala-3-and-reflection/3627 - original discussion on Scala Contributors forum
+
+[Stage]: https://img.shields.io/badge/Project%20Stage-Production%20Ready-brightgreen.svg
+[Stage-Page]: https://github.com/zio/zio/wiki/Project-Stages
+
+ succeeded in 221ms:
+HTTP/2 404 
+date: Sat, 27 Jun 2026 17:42:22 GMT
+content-type: text/html
+cf-ray: a1263f723dec2793-LYS
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/dev/zio/izumi-reflect_2.13/2.3.8/izumi-reflect_2.13-2.3.8-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 303ms:
+[
+  {
+    "name": "scala-2.13+",
+    "path": "izumi-reflect/izumi-reflect/src/test/scala-2.13+",
+    "sha": "6453023880cdb43eee5c92f004496d718a3d3199",
+    "size": 0,
+    "url": "https://api.github.com/repos/zio/izumi-reflect/contents/izumi-reflect/izumi-reflect/src/test/scala-2.13%2B?ref=v2.3.8",
+    "html_url": "https://github.com/zio/izumi-reflect/tree/v2.3.8/izumi-reflect/izumi-reflect/src/test/scala-2.13%2B",
+    "git_url": "https://api.github.com/repos/zio/izumi-reflect/git/trees/6453023880cdb43eee5c92f004496d718a3d3199",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/zio/izumi-reflect/contents/izumi-reflect/izumi-reflect/src/test/scala-2.13%2B?ref=v2.3.8",
+      "git": "https://api.github.com/repos/zio/izumi-reflect/git/trees/6453023880cdb43eee5c92f004496d718a3d3199",
+      "html": "https://github.com/zio/izumi-reflect/tree/v2.3.8/izumi-reflect/izumi-reflect/src/test/scala-2.13%2B"
+    }
+  },
+  {
+    "name": "scala-2",
+    "path": "izumi-reflect/izumi-reflect/src/test/scala-2",
+    "sha": "23ed97ed86cf4a71e637fee654d5668435626790",
+    "size": 0,
+    "url": "https://api.github.com/repos/zio/izumi-reflect/contents/izumi-reflect/izumi-reflect/src/test/scala-2?ref=v2.3.8",
+    "html_url": "https://github.com/zio/izumi-reflect/tree/v2.3.8/izumi-reflect/izumi-reflect/src/test/scala-2",
+    "git_url": "https://api.github.com/repos/zio/izumi-reflect/git/trees/23ed97ed86cf4a71e637fee654d5668435626790",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/zio/izumi-reflect/contents/izumi-reflect/izumi-reflect/src/test/scala-2?ref=v2.3.8",
+      "git": "https://api.github.com/repos/zio/izumi-reflect/git/trees/23ed97ed86cf4a71e637fee654d5668435626790",
+      "html": "https://github.com/zio/izumi-reflect/tree/v2.3.8/izumi-reflect/izumi-reflect/src/test/scala-2"
+    }
+  },
+  {
+    "name": "scala-3",
+    "path": "izumi-reflect/izumi-reflect/src/test/scala-3",
+    "sha": "ac3df6d6357bd955617619dbc9b70f6028a3b8ca",
+    "size": 0,
+    "url": "https://api.github.com/repos/zio/izumi-reflect/contents/izumi-reflect/izumi-reflect/src/test/scala-3?ref=v2.3.8",
+    "html_url": "https://github.com/zio/izumi-reflect/tree/v2.3.8/izumi-reflect/izumi-reflect/src/test/scala-3",
+    "git_url": "https://api.github.com/repos/zio/izumi-reflect/git/trees/ac3df6d6357bd955617619dbc9b70f6028a3b8ca",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/zio/izumi-reflect/contents/izumi-reflect/izumi-reflect/src/test/scala-3?ref=v2.3.8",
+      "git": "https://api.github.com/repos/zio/izumi-reflect/git/trees/ac3df6d6357bd955617619dbc9b70f6028a3b8ca",
+      "html": "https://github.com/zio/izumi-reflect/tree/v2.3.8/izumi-reflect/izumi-reflect/src/test/scala-3"
+    }
+  },
+  {
+    "name": "scala",
+    "path": "izumi-reflect/izumi-reflect/src/test/scala",
+    "sha": "cc6d8baf30d63c3a24bd91838f5d99c28097d7e1",
+    "size": 0,
+    "url": "https://api.github.com/repos/zio/izumi-reflect/contents/izumi-reflect/izumi-reflect/src/test/scala?ref=v2.3.8",
+    "html_url": "https://github.com/zio/izumi-reflect/tree/v2.3.8/izumi-reflect/izumi-reflect/src/test/scala",
+    "git_url": "https://api.github.com/repos/zio/izumi-reflect/git/trees/cc6d8baf30d63c3a24bd91838f5d99c28097d7e1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/zio/izumi-reflect/contents/izumi-reflect/izumi-reflect/src/test/scala?ref=v2.3.8",
+      "git": "https://api.github.com/repos/zio/izumi-reflect/git/trees/cc6d8baf30d63c3a24bd91838f5d99c28097d7e1",
+      "html": "https://github.com/zio/izumi-reflect/tree/v2.3.8/izumi-reflect/izumi-reflect/src/test/scala"
+    }
+  }
+]
+
+codex
+I’ve got enough evidence now: no `tests.jar` is published on Maven, but the tagged GitHub test tree exists. I’ll patch only the requested discovered metadata file, using the same style this repository uses for nearby Scala/ZIO metadata.
+exec
+/usr/bin/bash -lc "rg -n 'discovered-artifact-metadata' . --glob '"'!build/**'"' --glob '"'!**/.gradle/**'"'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+ succeeded in 0ms:
+./tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java:24:    private static final String DISCOVERY_DIR = "discovered-artifact-metadata";
+./forge/utility_scripts/native_image_artifact.py:53:    return os.path.join(repo_path, "build", "discovered-artifact-metadata", f"{sanitized}.json")
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:58:                .contains("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+./tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java:71:        Path discoveryFile = tempDir.resolve("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/utils/ArtifactMetadataDiscoveryUtils.java" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+ succeeded in 0ms:
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org.graalvm.internal.tck.utils;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import org.graalvm.internal.tck.model.DiscoveredArtifactMetadata;
+import org.gradle.api.file.ProjectLayout;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+/**
+ * Utilities for build-local artifact metadata discovery files.
+ */
+public final class ArtifactMetadataDiscoveryUtils {
+    private static final String DISCOVERY_DIR = "discovered-artifact-metadata";
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+            .enable(SerializationFeature.INDENT_OUTPUT)
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+    private ArtifactMetadataDiscoveryUtils() {
+    }
+
+    public static Path discoveryFile(ProjectLayout layout, String coordinates) {
+        return layout.getBuildDirectory().dir(DISCOVERY_DIR).get().getAsFile().toPath().resolve(sanitizeCoordinate(coordinates) + ".json");
+    }
+
+    public static void initializeDiscoveryFile(Path discoveryFile, String coordinates) throws IOException {
+        if (Files.exists(discoveryFile)) {
+            return;
+        }
+        Files.createDirectories(discoveryFile.getParent());
+        writeDiscoveryFile(discoveryFile, new DiscoveredArtifactMetadata(
+                coordinates,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        ));
+    }
+
+    public static void writeDiscoveryFile(Path discoveryFile, DiscoveredArtifactMetadata metadata) throws IOException {
+        Files.createDirectories(discoveryFile.getParent());
+        String json = OBJECT_MAPPER.writeValueAsString(metadata);
+        if (!json.endsWith(System.lineSeparator())) {
+            json = json + System.lineSeparator();
+        }
+        Files.writeString(discoveryFile, json, StandardCharsets.UTF_8);
+    }
+
+    public static DiscoveredArtifactMetadata readDiscoveryFile(Path discoveryFile) throws IOException {
+        return OBJECT_MAPPER.readValue(discoveryFile.toFile(), DiscoveredArtifactMetadata.class);
+    }
+
+    public static String sanitizeCoordinate(String coordinate) {
+        return coordinate.replace(":", "-").replace("/", "-");
+    }
+}
+
+exec
+/usr/bin/bash -lc "sed -n '1,140p' forge/utility_scripts/native_image_artifact.py" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+exec
+/usr/bin/bash -lc "sed -n '1,180p' tests/tck-build-logic/src/test/java/org/graalvm/internal/tck/harness/tasks/DiscoverArtifactMetadataTests.java" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+ succeeded in 0ms:
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org.graalvm.internal.tck.harness.tasks;
+
+import org.gradle.api.Project;
+import org.gradle.testfixtures.ProjectBuilder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+class DiscoverArtifactMetadataTests {
+
+    @TempDir
+    Path tempDir;
+
+    @Test
+    void runPrintsPromptForOpencodeRun() throws IOException, InterruptedException {
+        Project project = ProjectBuilder.builder()
+                .withProjectDir(tempDir.toFile())
+                .build();
+        DiscoverArtifactMetadata task = project.getTasks().create("discoverArtifactMetadata", DiscoverArtifactMetadata.class);
+        task.setCoordinatesOption("io.ktor:ktor-server-core-jvm:3.1.0");
+        task.setAgentCommandOption("opencode run");
+
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream outputBuffer = new ByteArrayOutputStream();
+        try (PrintStream capturedOut = new PrintStream(outputBuffer, true, StandardCharsets.UTF_8)) {
+            System.setOut(capturedOut);
+            task.run();
+        } finally {
+            System.setOut(originalOut);
+        }
+
+        String output = outputBuffer.toString(StandardCharsets.UTF_8);
+        assertThat(output)
+                .contains("Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.ktor:ktor-server-core-jvm:3.1.0")
+                .contains("Also determine whether this is a language-specific library.")
+                .contains("{ \"name\": \"groovy\", \"version\": \"<groovy major.minor, e.g. 4.0>\" }")
+                .contains("{ \"name\": \"scala\", \"version\": \"3\" }")
+                .contains("If the library is not language-specific, leave the \"language\" field absent.")
+                .contains("The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version \"3.1.0\" when \"$version$\" is replaced with \"3.1.0\".")
+                .contains("Update this file directly:")
+                .contains("Set \"coordinates\" to \"io.ktor:ktor-server-core-jvm:3.1.0\".")
+                .contains("Set \"source-code-url\", \"test-code-url\", and \"documentation-url\" to the discovered values with \"$version$\" replacing version \"3.1.0\".")
+                .contains("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+        assertThat(tempDir.resolve("build/agent-artifact-discovery-logs")).doesNotExist();
+    }
+
+    @Test
+    void runDeletesInitializedDiscoveryFileWhenAgentCommandNotFound() {
+        Project project = ProjectBuilder.builder()
+                .withProjectDir(tempDir.toFile())
+                .build();
+        DiscoverArtifactMetadata task = project.getTasks().create("discoverArtifactMetadata", DiscoverArtifactMetadata.class);
+        task.setCoordinatesOption("io.ktor:ktor-server-core-jvm:3.1.0");
+        task.setAgentCommandOption("definitely-not-a-real-agent-command-xyz");
+
+        Path discoveryFile = tempDir.resolve("build/discovered-artifact-metadata/io.ktor-ktor-server-core-jvm-3.1.0.json");
+
+        assertThatThrownBy(task::run).isInstanceOf(IOException.class);
+
+        // A stale, initialized discovery file would silently block the next run, so it must be cleaned up.
+        assertThat(Files.exists(discoveryFile)).isFalse();
+    }
+}
+
+ succeeded in 0ms:
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+"""Conservative checks for artifacts that are not Native Image metadata targets."""
+
+from dataclasses import dataclass
+import json
+import os
+import re
+import sys
+import urllib.error
+import urllib.request
+import xml.etree.ElementTree as ET
+import zipfile
+
+
+MAVEN_CENTRAL = "https://repo1.maven.org/maven2"
+
+
+@dataclass(frozen=True)
+class NativeImageEligibility:
+    """Eligibility result for a Maven artifact."""
+
+    not_for_native_image: bool
+    reason: str | None = None
+    replacement: str | None = None
+
+
+@dataclass(frozen=True)
+class MavenDependency:
+    """Dependency coordinates declared by a Maven POM."""
+
+    group: str
+    artifact: str
+    version: str
+    scope: str | None = None
+    classifier: str | None = None
+
+
+@dataclass(frozen=True)
+class MavenPomMetadata:
+    """Small subset of Maven POM metadata used for artifact classification."""
+
+    packaging: str | None
+    dependencies: tuple[MavenDependency, ...]
+
+
+def discovery_file_path(repo_path: str, coordinate: str) -> str:
+    """Return the Gradle build-local discovery file path for a coordinate."""
+    sanitized = coordinate.replace(":", "-").replace("/", "-")
+    return os.path.join(repo_path, "build", "discovered-artifact-metadata", f"{sanitized}.json")
+
+
+def load_discovered_eligibility(repo_path: str, coordinate: str) -> NativeImageEligibility:
+    """Read not-for-native-image eligibility from the discovery file when present."""
+    path = discovery_file_path(repo_path, coordinate)
+    if not os.path.isfile(path):
+        return NativeImageEligibility(False)
+    try:
+        with open(path, "r", encoding="utf-8") as discovery_file:
+            metadata = json.load(discovery_file)
+    except (OSError, json.JSONDecodeError):
+        return NativeImageEligibility(False)
+    if metadata.get("not-for-native-image") is not True:
+        return NativeImageEligibility(False)
+    reason = str(metadata.get("reason") or "").strip()
+    if not reason:
+        reason = "Artifact discovery identified this as not applicable to GraalVM Native Image metadata."
+    replacement = str(metadata.get("replacement") or "").strip() or None
+    return NativeImageEligibility(True, reason, replacement)
+
+
+def evaluate_native_image_eligibility(repo_path: str, coordinate: str) -> NativeImageEligibility:
+    """Return a marker result only for certain non-Native-Image artifacts."""
+    discovered = load_discovered_eligibility(repo_path, coordinate)
+    if discovered.not_for_native_image:
+        return discovered
+
+    coordinate_result = classify_coordinate_name(coordinate)
+    if coordinate_result.not_for_native_image:
+        return coordinate_result
+
+    return inspect_maven_artifact(coordinate)
+
+
+def classify_coordinate_name(coordinate: str) -> NativeImageEligibility:
+    """Classify certain platform artifacts by coordinate naming conventions."""
+    try:
+        group, artifact, _version = coordinate.split(":", 2)
+    except ValueError:
+        print(f"ERROR: Invalid coordinates format: {coordinate}", file=sys.stderr)
+        raise SystemExit(1)
+
+    if group == "org.scala-js" or "_sjs" in artifact or "scalajs" in artifact.lower():
+        return NativeImageEligibility(
+            True,
+            "Scala.js artifact; it is not a JVM library consumed by native-image.",
+            jvm_artifact_replacement(artifact),
+        )
+
+    android_groups = ("com.android", "androidx.")
+    if group.startswith(android_groups):
+        return NativeImageEligibility(
+            True,
+            "Android artifact; it targets the Android runtime or Android toolchain rather than JVM Native Image.",
+        )
+
+    kotlin_native_suffixes = (
+        "-iosarm64",
+        "-iosx64",
+        "-iossimulatorarm64",
+        "-linuxx64",
+        "-linuxarm64",
+        "-macosx64",
+        "-macosarm64",
+        "-mingwx64",
+        "-tvosarm64",
+        "-tvosx64",
+        "-tvossimulatorarm64",
+        "-watchosarm32",
+        "-watchosarm64",
+        "-watchosdevicearm64",
+        "-watchossimulatorarm64",
+        "-wasm-js",
+        "-wasm-wasi",
+    )
+    if artifact.endswith(kotlin_native_suffixes):
+        return NativeImageEligibility(
+            True,
+            "Kotlin Native/Wasm artifact; it is not a JVM library consumed by native-image.",
+            jvm_artifact_replacement(artifact),
+        )
+
+    if artifact.endswith("-js") and group.startswith(("org.jetbrains.kotlin", "org.jetbrains.kotlinx")):
+        return NativeImageEligibility(
+            True,
+            "Kotlin/JavaScript artifact; it is not a JVM library consumed by native-image.",
+            jvm_artifact_replacement(artifact),
+
+codex
+One small implementation detail: this discovery file schema is a single JSON object, not the final `metadata/.../index.json` array, so I’m not adding final-index fields like `metadata-version` or `tested-versions`. The templated URLs still resolve correctly for `2.3.8`.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json
+diff --git a/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json b/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json
+index 05f7e9c1396451b20d6a7a9eb2945ba099b6039e..65810a9c1205a73af50e360ea7183a58df09a8cd
+--- a/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json
++++ b/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "dev.zio:izumi-reflect_2.13:2.3.8"
++  "coordinates" : "dev.zio:izumi-reflect_2.13:2.3.8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/$version$/izumi-reflect_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/zio/izumi-reflect",
++  "test-code-url" : "https://github.com/zio/izumi-reflect/tree/v$version$/izumi-reflect/izumi-reflect/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/$version$/izumi-reflect_2.13-$version$-javadoc.jar",
++  "description" : "izumi-reflect provides a fast, lightweight, portable alternative to scala-reflect TypeTag for capturing Scala type information at runtime. It models important parts of the Scala type system, supports subtype and equality checks, and can create tags for higher-kinded and unapplied type constructors.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json b/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json
+index 05f7e9c1396451b20d6a7a9eb2945ba099b6039e..65810a9c1205a73af50e360ea7183a58df09a8cd
+--- a/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json
++++ b/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "dev.zio:izumi-reflect_2.13:2.3.8"
++  "coordinates" : "dev.zio:izumi-reflect_2.13:2.3.8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/$version$/izumi-reflect_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/zio/izumi-reflect",
++  "test-code-url" : "https://github.com/zio/izumi-reflect/tree/v$version$/izumi-reflect/izumi-reflect/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/$version$/izumi-reflect_2.13-$version$-javadoc.jar",
++  "description" : "izumi-reflect provides a fast, lightweight, portable alternative to scala-reflect TypeTag for capturing Scala type information at runtime. It models important parts of the Scala type system, supports subtype and equality checks, and can create tags for higher-kinded and unapplied type constructors.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+ succeeded in 0ms:
+{
+  "coordinates": "dev.zio:izumi-reflect_2.13:2.3.8",
+  "source-code-url": "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/$version$/izumi-reflect_2.13-$version$-sources.jar",
+  "repository-url": "https://github.com/zio/izumi-reflect",
+  "test-code-url": "https://github.com/zio/izumi-reflect/tree/v$version$/izumi-reflect/izumi-reflect/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/$version$/izumi-reflect_2.13-$version$-javadoc.jar",
+  "description": "izumi-reflect provides a fast, lightweight, portable alternative to scala-reflect TypeTag for capturing Scala type information at runtime. It models important parts of the Scala type system, supports subtype and equality checks, and can create tags for higher-kinded and unapplied type constructors.",
+  "language": {
+    "name": "scala",
+    "version": "2"
+  }
+}
+
+exec
+/usr/bin/bash -lc "rg -n 'record DiscoveredArtifactMetadata|class DiscoveredArtifactMetadata' tests/tck-build-logic/src/main/java -S" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+ succeeded in 0ms:
+tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java:14:public record DiscoveredArtifactMetadata(
+
+exec
+/usr/bin/bash -lc "curl -I -sS https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/2.3.8/izumi-reflect_2.13-2.3.8-sources.jar https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/2.3.8/izumi-reflect_2.13-2.3.8-javadoc.jar | rg 'HTTP/|content-length|last-modified|x-amz-error'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+diff --git a/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json b/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json
+index 05f7e9c1396451b20d6a7a9eb2945ba099b6039e..65810a9c1205a73af50e360ea7183a58df09a8cd
+--- a/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json
++++ b/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "dev.zio:izumi-reflect_2.13:2.3.8"
++  "coordinates" : "dev.zio:izumi-reflect_2.13:2.3.8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/$version$/izumi-reflect_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/zio/izumi-reflect",
++  "test-code-url" : "https://github.com/zio/izumi-reflect/tree/v$version$/izumi-reflect/izumi-reflect/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/$version$/izumi-reflect_2.13-$version$-javadoc.jar",
++  "description" : "izumi-reflect provides a fast, lightweight, portable alternative to scala-reflect TypeTag for capturing Scala type information at runtime. It models important parts of the Scala type system, supports subtype and equality checks, and can create tags for higher-kinded and unapplied type constructors.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+ succeeded in 567ms:
+HTTP/2 200 
+content-length: 65606
+last-modified: Tue, 30 May 2023 00:45:22 GMT
+HTTP/2 200 
+content-length: 1520759
+last-modified: Tue, 30 May 2023 00:45:22 GMT
+
+codex
+The JSON parses cleanly, and the two Maven artifact URLs return `200`. I’m doing one final schema check against the local model so the field names match what the build tooling reads.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/model/DiscoveredArtifactMetadata.java" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+ succeeded in 0ms:
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org.graalvm.internal.tck.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Build-local discovered metadata for a single library coordinate.
+ */
+public record DiscoveredArtifactMetadata(
+        String coordinates,
+        @JsonProperty("source-code-url")
+        String sourceCodeUrl,
+        @JsonProperty("repository-url")
+        String repositoryUrl,
+        @JsonProperty("test-code-url")
+        String testCodeUrl,
+        @JsonProperty("documentation-url")
+        String documentationUrl,
+        @JsonProperty("description")
+        String description,
+        @JsonProperty("language")
+        LibraryLanguage language,
+        @JsonProperty("not-for-native-image")
+        Boolean notForNativeImage,
+        @JsonProperty("reason")
+        String reason,
+        @JsonProperty("replacement")
+        String replacement
+) {}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+ succeeded in 0ms:
+diff --git a/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json b/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json
+index 05f7e9c1396451b20d6a7a9eb2945ba099b6039e..65810a9c1205a73af50e360ea7183a58df09a8cd
+--- a/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json
++++ b/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "dev.zio:izumi-reflect_2.13:2.3.8"
++  "coordinates" : "dev.zio:izumi-reflect_2.13:2.3.8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/$version$/izumi-reflect_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/zio/izumi-reflect",
++  "test-code-url" : "https://github.com/zio/izumi-reflect/tree/v$version$/izumi-reflect/izumi-reflect/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/$version$/izumi-reflect_2.13-$version$-javadoc.jar",
++  "description" : "izumi-reflect provides a fast, lightweight, portable alternative to scala-reflect TypeTag for capturing Scala type information at runtime. It models important parts of the Scala type system, supports subtype and equality checks, and can create tags for higher-kinded and unapplied type constructors.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+codex
+The local model confirms the fields I wrote are exactly the expected discovery fields. One note: because this lives under `build/`, Git may ignore it, so `git diff` does not show it even though the file is updated on disk.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+ succeeded in 0ms:
+{
+  "coordinates" : "dev.zio:izumi-reflect_2.13:2.3.8",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/$version$/izumi-reflect_2.13-$version$-sources.jar",
+  "repository-url" : "https://github.com/zio/izumi-reflect",
+  "test-code-url" : "https://github.com/zio/izumi-reflect/tree/v$version$/izumi-reflect/izumi-reflect/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/$version$/izumi-reflect_2.13-$version$-javadoc.jar",
+  "description" : "izumi-reflect provides a fast, lightweight, portable alternative to scala-reflect TypeTag for capturing Scala type information at runtime. It models important parts of the Scala type system, supports subtype and equality checks, and can create tags for higher-kinded and unapplied type constructors.",
+  "language" : {
+    "name" : "scala",
+    "version" : "2"
+  }
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f
+diff --git a/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json b/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json
+index 05f7e9c1396451b20d6a7a9eb2945ba099b6039e..65810a9c1205a73af50e360ea7183a58df09a8cd
+--- a/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json
++++ b/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "dev.zio:izumi-reflect_2.13:2.3.8"
++  "coordinates" : "dev.zio:izumi-reflect_2.13:2.3.8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/$version$/izumi-reflect_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/zio/izumi-reflect",
++  "test-code-url" : "https://github.com/zio/izumi-reflect/tree/v$version$/izumi-reflect/izumi-reflect/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/$version$/izumi-reflect_2.13-$version$-javadoc.jar",
++  "description" : "izumi-reflect provides a fast, lightweight, portable alternative to scala-reflect TypeTag for capturing Scala type information at runtime. It models important parts of the Scala type system, supports subtype and equality checks, and can create tags for higher-kinded and unapplied type constructors.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+ succeeded in 156ms:
+!! build/
+
+web search: 
+web search: site:github.com/zio/izumi-reflect izumi-reflect TypeTag GraalVM Native Image
+codex
+Updated [dev.zio-izumi-reflect_2.13-2.3.8.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json:1) with repository, Maven source/javadoc URLs, tagged GitHub test URL, two-sentence description, and Scala 2 language metadata.
+
+I left `not-for-native-image` absent: this is a JVM jar with `.class` files, and upstream explicitly notes JVM/GraalVM Native Image suitability. ([github.com](https://github.com/zio/izumi-reflect?utm_source=openai)) Validation done: `jq` parses the JSON, Maven source/javadoc URLs return `200`, and the tagged GitHub test tree exists.
+diff --git a/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json b/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json
+index 05f7e9c1396451b20d6a7a9eb2945ba099b6039e..65810a9c1205a73af50e360ea7183a58df09a8cd
+--- a/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json
++++ b/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "dev.zio:izumi-reflect_2.13:2.3.8"
++  "coordinates" : "dev.zio:izumi-reflect_2.13:2.3.8",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/$version$/izumi-reflect_2.13-$version$-sources.jar",
++  "repository-url" : "https://github.com/zio/izumi-reflect",
++  "test-code-url" : "https://github.com/zio/izumi-reflect/tree/v$version$/izumi-reflect/izumi-reflect/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/dev/zio/izumi-reflect_2.13/$version$/izumi-reflect_2.13-$version$-javadoc.jar",
++  "description" : "izumi-reflect provides a fast, lightweight, portable alternative to scala-reflect TypeTag for capturing Scala type information at runtime. It models important parts of the Scala type system, supports subtype and equality checks, and can create tags for higher-kinded and unapplied type constructors.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+tokens used
+58,947
+Updated [dev.zio-izumi-reflect_2.13-2.3.8.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f/build/discovered-artifact-metadata/dev.zio-izumi-reflect_2.13-2.3.8.json:1) with repository, Maven source/javadoc URLs, tagged GitHub test URL, two-sentence description, and Scala 2 language metadata.
+
+I left `not-for-native-image` absent: this is a JVM jar with `.class` files, and upstream explicitly notes JVM/GraalVM Native Image suitability. ([github.com](https://github.com/zio/izumi-reflect?utm_source=openai)) Validation done: `jq` parses the JSON, Maven source/javadoc URLs return `200`, and the tagged GitHub test tree exists.
+Ran agent for dev.zio:izumi-reflect_2.13:2.3.8 (exit 0). Log: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f/build/agent-artifact-discovery-logs/dev.zio-izumi-reflect_2.13-2.3.8.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5476-9e45987f/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 52s
+9 actionable tasks: 9 executed
