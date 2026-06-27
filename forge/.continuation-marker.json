@@ -1,0 +1,83 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.maven.doxia:doxia-site-renderer:2.0.0",
+  "issueNumber": 8134,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "For meaningful renderer coverage, instantiate DefaultSiteRenderer through the Plexus/Sisu component container or otherwise inject its Doxia, ParserModuleManager, VelocityComponent, and PlexusContainer collaborators; direct construction leaves those fields null. No Docker image, environment variable, or system property appears required.",
+    "applied_setup": [],
+    "current_library": "org.apache.maven.doxia:doxia-site-renderer:1.9.1",
+    "deterministic_setup": [
+      {
+        "coordinate": "org.apache.maven:maven-artifact:3.6.3",
+        "kind": "dependency",
+        "reason": "The 2.0.0 public API uses org.apache.maven.artifact.Artifact in SiteRenderingContext/createContextForSkin/copyResources, but doxia-site-renderer declares maven-artifact as provided, so tests that cover skin/resource handling cannot compile without adding it.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.apache.maven.doxia:doxia-module-apt:2.0.0",
+        "kind": "dependency",
+        "reason": "The existing tests use APT rendering context, while Doxia 2.0.0 parser modules are discovered from classpath component descriptors and doxia-module-apt is test-scope in the upstream renderer POM, not transitively available from doxia-site-renderer.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8134 [Automation] javac compile fails for org.apache.maven.doxia:doxia-site-renderer:2.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "8 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 63343,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8134,
+    "library": "org.apache.maven.doxia:doxia-site-renderer:2.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.0",
+    "output_tokens_used": 6614,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The compile failure excerpt is primarily an API migration from 1.9.1 to 2.0.0; tests still need to replace removed classes/methods such as RenderingContext, SkinResourceLoader, enableLogging, and setUsingDefaultTemplate.",
+      "If generated tests avoid APT inputs and skin/resource APIs entirely, these dependencies may not be strictly necessary, but that would provide weaker coverage of normal Maven site-renderer usage."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.maven.doxia:doxia-site-renderer:2.0.0/library-preparation-preflight/pi-generation-2026-06-27T08-39-20-431686Z.log",
+    "status": "completed",
+    "summary": "doxia-site-renderer 2.0.0 exposes Maven skin APIs through a provided Maven Artifact type and no longer brings APT parser support transitively; the existing scaffold exercises APT/site rendering paths."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8134-fails-javac-compile-org.apache.maven.doxia-doxia-site-renderer-2.0.0-2ff66791",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
