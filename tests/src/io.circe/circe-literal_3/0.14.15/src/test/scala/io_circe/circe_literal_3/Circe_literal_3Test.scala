@@ -152,6 +152,25 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def escapesInterpolatedObjectKeysProducedByKeyEncoders(): Unit = {
+    val quoted: ServiceName = ServiceName("service \"alpha\"")
+    val multiline: ServiceName = ServiceName("service\nbeta")
+    val unicode: ServiceName = ServiceName("service-☃")
+
+    val document: Json = json"""
+      {
+        $quoted: "quoted",
+        $multiline: "multiline",
+        $unicode: "unicode"
+      }
+      """
+
+    assertThat(document.hcursor.get[String](quoted.value)).isEqualTo(Right("quoted"))
+    assertThat(document.hcursor.get[String](multiline.value)).isEqualTo(Right("multiline"))
+    assertThat(document.hcursor.get[String](unicode.value)).isEqualTo(Right("unicode"))
+  }
+
+  @Test
   def supportsRootLevelArrayObjectAndPrimitiveLiterals(): Unit = {
     val array: Json = json"""[1, {"two": 2}, false, null]"""
     val string: Json = json""""literal string""""
