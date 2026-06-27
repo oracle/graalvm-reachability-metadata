@@ -9,6 +9,7 @@ package com_softwaremill_sttp_shared.pekko_3
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.stream.Materializer
 import org.apache.pekko.stream.scaladsl.Flow
+import org.apache.pekko.stream.scaladsl.Keep
 import org.apache.pekko.stream.scaladsl.Sink
 import org.apache.pekko.stream.scaladsl.Source
 import org.apache.pekko.util.ByteString
@@ -78,6 +79,22 @@ class Pekko_3Test {
     val collected: Either[Throwable, Seq[String]] = collect(limited.map(_.utf8String))
 
     assertEquals(Right(Seq("a", "bb", "ccc")), collected)
+  }
+
+  @Test
+  def limitBytesPreservesTheSourceMaterializedValue(): Unit = withActorSystem {
+    val expectedMaterializedValue: String = "source-materialized-value"
+    val source: Source[ByteString, String] = Source
+      .single(ByteString("ok"))
+      .mapMaterializedValue(_ => expectedMaterializedValue)
+    val limited: Source[ByteString, Any] = PekkoStreams.limitBytes(source, 2L)
+
+    val (materializedValue: Any, collectedFuture: Future[Seq[ByteString]]) = limited
+      .toMat(Sink.seq[ByteString])(Keep.both)
+      .run()
+
+    assertEquals(expectedMaterializedValue, materializedValue)
+    assertEquals(Seq(ByteString("ok")), Await.result(collectedFuture, 10.seconds))
   }
 
   @Test
