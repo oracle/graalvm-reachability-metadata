@@ -22,9 +22,8 @@ import org.springframework.ai.retry.NonTransientAiException;
 import org.springframework.ai.retry.TransientAiException;
 import org.springframework.ai.retry.autoconfigure.SpringAiRetryAutoConfiguration;
 import org.springframework.ai.retry.autoconfigure.SpringAiRetryProperties;
-import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.retry.RetryException;
@@ -43,9 +42,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class Spring_ai_autoconfigure_retryTest {
 
+    private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+            .withConfiguration(AutoConfigurations.of(SpringAiRetryAutoConfiguration.class));
+
     @Test
-    void autoConfigurationCreatesRetryInfrastructureWithDefaultProperties() throws Exception {
-        try (ConfigurableApplicationContext context = applicationContext(Map.of())) {
+    void autoConfigurationCreatesRetryInfrastructureWithDefaultProperties() {
+        applicationContextRunner(Map.of()).run((context) -> {
             SpringAiRetryProperties properties = context.getBean(SpringAiRetryProperties.class);
             RetryTemplate retryTemplate = context.getBean(RetryTemplate.class);
             ResponseErrorHandler responseErrorHandler = context.getBean(ResponseErrorHandler.class);
@@ -61,11 +63,11 @@ public class Spring_ai_autoconfigure_retryTest {
             assertThat(retryTemplate.getRetryListener()).isNotNull();
             assertThat(responseErrorHandler.hasError(response(HttpStatus.OK, "ok"))).isFalse();
             assertThat(responseErrorHandler.hasError(response(HttpStatus.INTERNAL_SERVER_ERROR, "error"))).isTrue();
-        }
+        });
     }
 
     @Test
-    void propertyBindingConfiguresRetryTemplateAndResponseErrorHandler() throws Exception {
+    void propertyBindingConfiguresRetryTemplateAndResponseErrorHandler() {
         Map<String, Object> properties = Map.of(
                 "spring.ai.retry.max-attempts", "2",
                 "spring.ai.retry.backoff.initial-interval", "1ms",
@@ -75,7 +77,7 @@ public class Spring_ai_autoconfigure_retryTest {
                 "spring.ai.retry.on-http-codes", "429,418",
                 "spring.ai.retry.exclude-on-http-codes", "503");
 
-        try (ConfigurableApplicationContext context = applicationContext(properties)) {
+        applicationContextRunner(properties).run((context) -> {
             SpringAiRetryProperties boundProperties = context.getBean(SpringAiRetryProperties.class);
             RetryTemplate retryTemplate = context.getBean(RetryTemplate.class);
             ResponseErrorHandler responseErrorHandler = context.getBean(ResponseErrorHandler.class);
@@ -117,18 +119,18 @@ public class Spring_ai_autoconfigure_retryTest {
                     .isInstanceOf(TransientAiException.class)
                     .hasMessageContaining("HTTP 404")
                     .hasMessageContaining("missing");
-        }
+        });
     }
 
     @Test
-    void retryTemplateRetriesResourceAccessExceptions() throws Exception {
+    void retryTemplateRetriesResourceAccessExceptions() {
         Map<String, Object> properties = Map.of(
                 "spring.ai.retry.max-attempts", "2",
                 "spring.ai.retry.backoff.initial-interval", "1ms",
                 "spring.ai.retry.backoff.multiplier", "1",
                 "spring.ai.retry.backoff.max-interval", "1ms");
 
-        try (ConfigurableApplicationContext context = applicationContext(properties)) {
+        applicationContextRunner(properties).run((context) -> {
             RetryTemplate retryTemplate = context.getBean(RetryTemplate.class);
             AtomicInteger attempts = new AtomicInteger();
 
@@ -141,14 +143,14 @@ public class Spring_ai_autoconfigure_retryTest {
 
             assertThat(result).isEqualTo("connected");
             assertThat(attempts.get()).isEqualTo(2);
-        }
+        });
     }
 
     @Test
-    void configuredHttpCodesAreRetryableWhenGeneralClientErrorRetriesAreDisabled() throws Exception {
+    void configuredHttpCodesAreRetryableWhenGeneralClientErrorRetriesAreDisabled() {
         Map<String, Object> properties = Map.of("spring.ai.retry.on-http-codes", "409");
 
-        try (ConfigurableApplicationContext context = applicationContext(properties)) {
+        applicationContextRunner(properties).run((context) -> {
             SpringAiRetryProperties boundProperties = context.getBean(SpringAiRetryProperties.class);
             ResponseErrorHandler responseErrorHandler = context.getBean(ResponseErrorHandler.class);
 
@@ -158,12 +160,12 @@ public class Spring_ai_autoconfigure_retryTest {
                     .isInstanceOf(TransientAiException.class)
                     .hasMessageContaining("HTTP 409")
                     .hasMessageContaining("No response body available");
-        }
+        });
     }
 
     @Test
-    void defaultResponseErrorHandlerDoesNotRetryClientErrorsUnlessConfigured() throws Exception {
-        try (ConfigurableApplicationContext context = applicationContext(Map.of())) {
+    void defaultResponseErrorHandlerDoesNotRetryClientErrorsUnlessConfigured() {
+        applicationContextRunner(Map.of()).run((context) -> {
             ResponseErrorHandler responseErrorHandler = context.getBean(ResponseErrorHandler.class);
 
             assertThatThrownBy(() -> handle(responseErrorHandler, HttpStatus.BAD_REQUEST, "invalid request"))
@@ -174,32 +176,35 @@ public class Spring_ai_autoconfigure_retryTest {
                     .isInstanceOf(TransientAiException.class)
                     .hasMessageContaining("HTTP 502")
                     .hasMessageContaining("upstream failed");
-        }
+        });
     }
 
     @Test
-    void autoConfigurationBacksOffWhenApplicationProvidesRetryBeans() throws Exception {
-        try (ConfigurableApplicationContext context = applicationContext(Map.of(), CustomRetryConfiguration.class)) {
+    void autoConfigurationBacksOffWhenApplicationProvidesRetryBeans() {
+        applicationContextRunner(Map.of(), CustomRetryConfiguration.class).run((context) -> {
             RetryTemplate retryTemplate = context.getBean(RetryTemplate.class);
             ResponseErrorHandler responseErrorHandler = context.getBean(ResponseErrorHandler.class);
 
             assertThat(retryTemplate).isSameAs(context.getBean("customRetryTemplate"));
             assertThat(responseErrorHandler).isSameAs(context.getBean("customResponseErrorHandler"));
             assertThat(responseErrorHandler.hasError(response(HttpStatus.INTERNAL_SERVER_ERROR, "ignored"))).isFalse();
-        }
+        });
     }
 
-    private static ConfigurableApplicationContext applicationContext(Map<String, Object> properties,
+    private ApplicationContextRunner applicationContextRunner(Map<String, Object> properties,
             Class<?>... extraSources) {
-        Class<?>[] sources = new Class<?>[extraSources.length + 1];
-        System.arraycopy(extraSources, 0, sources, 0, extraSources.length);
-        sources[extraSources.length] = SpringAiRetryAutoConfiguration.class;
-        return new SpringApplicationBuilder(sources)
-                .web(WebApplicationType.NONE)
-                .properties(properties)
-                .logStartupInfo(false)
-                .registerShutdownHook(false)
-                .run();
+        ApplicationContextRunner runner = this.contextRunner.withPropertyValues(toPropertyValues(properties));
+        if (extraSources.length == 0) {
+            return runner;
+        }
+        return runner.withUserConfiguration(extraSources);
+    }
+
+    private static String[] toPropertyValues(Map<String, Object> properties) {
+        return properties.entrySet().stream()
+                .map((entry) -> entry.getKey() + "=" + entry.getValue())
+                .sorted()
+                .toArray(String[]::new);
     }
 
     private static void handle(ResponseErrorHandler responseErrorHandler, HttpStatus status, String body)

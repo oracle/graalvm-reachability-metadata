@@ -1,0 +1,85 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.springframework.ai:spring-ai-autoconfigure-retry:2.0.0-RC2",
+  "issueNumber": 8420,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No Docker image or external service is needed. Tests should exercise the auto-configuration by loading a Spring context and verifying the RetryTemplate and ResponseErrorHandler beans plus spring.ai.retry.* property binding. If executing retry behavior rather than only checking bean creation/error handling, configure very small retry/backoff values in the test context, for example max attempts of 2 and an initial interval around 1ms, to avoid slow tests.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "coordinate": "org.springframework.ai:spring-ai-retry:2.0.0-RC2",
+        "kind": "dependency",
+        "reason": "SpringAiRetryAutoConfiguration is conditional on org.springframework.ai.retry.RetryUtils and creates RetryTemplate/ResponseErrorHandler behavior using Spring AI retry exceptions and utilities; this dependency is optional in the target POM and is not pulled transitively.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.1.0-RC1",
+        "kind": "dependency",
+        "reason": "The target classes use Spring Boot auto-configuration and configuration-properties annotations; this dependency is optional in the target POM and is required to load the auto-configuration meaningfully in a Spring context.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8420 Support for org.springframework.ai:spring-ai-autoconfigure-retry:2.0.0-RC2; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 50476,
+    "issue_label": "library-new-request",
+    "issue_number": 8420,
+    "library": "org.springframework.ai:spring-ai-autoconfigure-retry:2.0.0-RC2",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 5661,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The artifact is tied to Spring Boot 4.1.0-RC1 and Spring Framework 7.0.x; dependency version drift could cause classpath conflicts.",
+      "Using only direct class instantiation would miss the auto-configuration and configuration-properties behavior that this artifact primarily provides."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.springframework.ai:spring-ai-autoconfigure-retry:2.0.0-RC2/library-preparation-preflight/pi-generation-2026-06-27T02-36-41-377663Z.log",
+    "status": "completed",
+    "summary": "The artifact is a Spring Boot auto-configuration module whose runtime dependencies are declared optional, so the normal scaffold would only get the target JAR and not the Spring AI retry or Spring Boot auto-configuration APIs needed for meaningful context/bean coverage."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 4,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8420-library-new-request-org.springframework.ai-spring-ai-autoconfigure-retry-2.0.0-RC2-e5954ff5",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springframework.ai:spring-ai-autoconfigure-retry:2.0.0-RC2",
+    "timestamp": "2026-06-27T03:10:50.762721Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
