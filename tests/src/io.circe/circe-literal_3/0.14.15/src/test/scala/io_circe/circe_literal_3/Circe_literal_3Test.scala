@@ -146,6 +146,27 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def interpolatesEncodedValuesAsTheEntireJsonDocument(): Unit = {
+    val config: ServiceConfig = ServiceConfig("scheduler", 5)
+    val environmentWeights: Map[EnvironmentKey, Int] = Map(
+      EnvironmentKey("production") -> 10,
+      EnvironmentKey("staging") -> 2
+    )
+
+    val configDocument: Json = json"""$config"""
+    val environmentDocument: Json = json"""$environmentWeights"""
+
+    assertThat(configDocument.isObject).isTrue
+    assertThat(configDocument.hcursor.get[String]("name")).isEqualTo(Right("scheduler"))
+    assertThat(configDocument.hcursor.get[Int]("retries")).isEqualTo(Right(5))
+
+    val fields = environmentDocument.asObject.getOrElse(fail("Expected a JSON object")).toMap
+    assertThat(fields.keySet.asJava).containsExactlyInAnyOrder("env:production", "env:staging")
+    assertThat(environmentDocument.hcursor.get[Int]("env:production")).isEqualTo(Right(10))
+    assertThat(environmentDocument.hcursor.get[Int]("env:staging")).isEqualTo(Right(2))
+  }
+
+  @Test
   def preservesPreciseNumbersCreatedByTheLiteralFacade(): Unit = {
     val document: Json = json"""
       {
