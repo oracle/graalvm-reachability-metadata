@@ -29,6 +29,9 @@ import org.springframework.ai.observation.conventions.AiTokenType;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.annotation.ImportCandidates;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -84,6 +87,26 @@ public class Spring_ai_autoconfigure_model_embedding_observationTest {
         }
     }
 
+    @Test
+    void autoConfigurationUsesPrimaryMeterRegistryWhenMultipleRegistriesAreAvailable() {
+        try (AnnotationConfigApplicationContext context = contextWithMultipleMeterRegistries()) {
+            EmbeddingModelMeterObservationHandler handler = context.getBean(
+                    EmbeddingModelMeterObservationHandler.class);
+            SimpleMeterRegistry primaryMeterRegistry = context.getBean("primaryMeterRegistry",
+                    SimpleMeterRegistry.class);
+            SimpleMeterRegistry secondaryMeterRegistry = context.getBean("secondaryMeterRegistry",
+                    SimpleMeterRegistry.class);
+
+            EmbeddingModelObservationContext observationContext = embeddingObservationContext();
+            observationContext.setResponse(embeddingResponseWithUsage(2, 3));
+
+            handler.onStop(observationContext);
+
+            assertTokenCounter(primaryMeterRegistry, AiTokenType.TOTAL, 5.0);
+            assertNoTokenCounter(secondaryMeterRegistry, AiTokenType.TOTAL);
+        }
+    }
+
     private static EmbeddingModelObservationContext embeddingObservationContext() {
         EmbeddingRequest request = new EmbeddingRequest(List.of("Spring AI observations"),
                 DefaultEmbeddingOptions.builder().model("test-embedding-model").dimensions(3).build());
@@ -109,6 +132,13 @@ public class Spring_ai_autoconfigure_model_embedding_observationTest {
         assertThat(counter.count()).isEqualTo(expectedCount);
     }
 
+    private static void assertNoTokenCounter(SimpleMeterRegistry meterRegistry, AiTokenType tokenType) {
+        Counter counter = meterRegistry.find(AiObservationMetricNames.TOKEN_USAGE.value())
+                .tag(AiObservationMetricAttributes.TOKEN_TYPE.value(), tokenType.value())
+                .counter();
+        assertThat(counter).isNull();
+    }
+
     private static AnnotationConfigApplicationContext contextWithMeterRegistry() {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         context.getBeanFactory().registerSingleton("simpleMeterRegistry", new SimpleMeterRegistry());
@@ -126,6 +156,30 @@ public class Spring_ai_autoconfigure_model_embedding_observationTest {
         context.register(EmbeddingObservationAutoConfiguration.class);
         context.refresh();
         return context;
+    }
+
+    private static AnnotationConfigApplicationContext contextWithMultipleMeterRegistries() {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        context.register(MultipleMeterRegistryConfiguration.class);
+        context.register(EmbeddingObservationAutoConfiguration.class);
+        context.refresh();
+        return context;
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    static class MultipleMeterRegistryConfiguration {
+
+        @Bean
+        @Primary
+        SimpleMeterRegistry primaryMeterRegistry() {
+            return new SimpleMeterRegistry();
+        }
+
+        @Bean
+        SimpleMeterRegistry secondaryMeterRegistry() {
+            return new SimpleMeterRegistry();
+        }
+
     }
 
     static class TestUsage implements Usage {
