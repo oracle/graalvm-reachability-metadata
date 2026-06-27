@@ -1,0 +1,732 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f09c9-42b1-7c52-b198-238b93098485
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.sangria-graphql:sangria-marshalling-api_3:1.1.0-RC3
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [1.1.0-RC3].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
+- Entry selector: "metadata-version" = "1.1.0-RC3"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: {"name": "scala", "version": "3"}
+
+Context:
+- Coordinate version: 1.1.0-RC3
+- Entry metadata-version: 1.1.0-RC3
+- Entry test-version: 1.1.0-RC3
+- Entry tested-versions: [1.1.0-RC3]
+codex
+I’ll verify the artifact coordinates and tag/source availability first, then patch only the missing fields in the target `index.json`. Since the requested URLs depend on current Maven/GitHub contents, I’m going to ground those before editing.
+exec
+/usr/bin/bash -lc "ls -la metadata/org.sangria-graphql/sangria-marshalling-api_3 && sed -n '1,220p' metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277
+ succeeded in 0ms:
+total 24
+drwxrwxr-x  5 vjovanov vjovanov 4096 Jun 27 17:53 .
+drwxrwxr-x 10 vjovanov vjovanov 4096 Jun 27 17:51 ..
+drwxrwxr-x  2 vjovanov vjovanov 4096 Jun 27 17:51 1.0.8
+drwxrwxr-x  2 vjovanov vjovanov 4096 Jun 27 17:51 1.1.0-RC1
+drwxrwxr-x  2 vjovanov vjovanov 4096 Jun 27 17:53 1.1.0-RC3
+-rw-rw-r--  1 vjovanov vjovanov 2383 Jun 27 17:53 index.json
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.1.0-RC3",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "1.1.0-RC3"
+    ],
+    "allowed-packages" : [
+      "sangria.marshalling",
+      "sangria.util"
+    ]
+  },
+  {
+    "metadata-version" : "1.1.0-RC1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/sangria-graphql/sangria-marshalling-api",
+    "test-code-url" : "https://github.com/sangria-graphql/sangria-marshalling-api/tree/v$version$/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-javadoc.jar",
+    "description" : "Sangria Marshalling API defines the shared marshalling and unmarshalling abstractions used by Sangria GraphQL integrations. It lets JSON and other data-format modules plug into Sangria by converting GraphQL inputs and results to and from Scala values.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "1.1.0-RC1",
+      "1.1.0-RC2"
+    ],
+    "allowed-packages" : [
+      "sangria.marshalling",
+      "sangria.util"
+    ]
+  },
+  {
+    "metadata-version" : "1.0.8",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-sources.jar",
+    "repository-url" : "https://github.com/sangria-graphql/sangria-marshalling-api",
+    "test-code-url" : "https://github.com/sangria-graphql/sangria-marshalling-api/tree/v$version$/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-javadoc.jar",
+    "description" : "Sangria Marshalling API defines the common marshalling and unmarshalling abstractions used by Sangria GraphQL integrations. It lets JSON or other data-format modules plug into Sangria by converting GraphQL inputs and results to and from Scala values.",
+    "language" : {
+      "name" : "scala",
+      "version" : "3"
+    },
+    "tested-versions" : [
+      "1.0.8"
+    ],
+    "allowed-packages" : [
+      "sangria.marshalling",
+      "sangria.util"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language|tested-versions' metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277
+4:    "metadata-version" : "1.1.0-RC3",
+5:    "language" : {
+9:    "tested-versions" : [
+18:    "metadata-version" : "1.1.0-RC1",
+19:    "source-code-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-sources.jar",
+20:    "repository-url" : "https://github.com/sangria-graphql/sangria-marshalling-api",
+21:    "test-code-url" : "https://github.com/sangria-graphql/sangria-marshalling-api/tree/v$version$/src/test",
+22:    "documentation-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-javadoc.jar",
+23:    "description" : "Sangria Marshalling API defines the shared marshalling and unmarshalling abstractions used by Sangria GraphQL integrations. It lets JSON and other data-format modules plug into Sangria by converting GraphQL inputs and results to and from Scala values.",
+24:    "language" : {
+28:    "tested-versions" : [
+38:    "metadata-version" : "1.0.8",
+39:    "source-code-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-sources.jar",
+40:    "repository-url" : "https://github.com/sangria-graphql/sangria-marshalling-api",
+41:    "test-code-url" : "https://github.com/sangria-graphql/sangria-marshalling-api/tree/v$version$/src/test",
+42:    "documentation-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-javadoc.jar",
+43:    "description" : "Sangria Marshalling API defines the common marshalling and unmarshalling abstractions used by Sangria GraphQL integrations. It lets JSON or other data-format modules plug into Sangria by converting GraphQL inputs and results to and from Scala values.",
+44:    "language" : {
+48:    "tested-versions" : [
+
+web search: 
+web search: Maven org.sangria-graphql sangria-marshalling-api_3 1.1.0-RC3 sources jar javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/1.1.0-RC3/
+codex
+The existing older entries already use Maven-hosted sources and javadoc plus a tagged GitHub `src/test` URL. I’m checking that the same templates resolve for `1.1.0-RC3`, and whether Maven publishes any test artifact that should supersede the GitHub test URL.
+exec
+/usr/bin/bash -lc "curl -sSfI https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/1.1.0-RC3/sangria-marshalling-api_3-1.1.0-RC3-javadoc.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 27 Jun 2026 15:53:54 GMT
+content-type: application/java-archive
+content-length: 2872549
+cf-ray: a125a09528d02db1-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 7837
+etag: "2a8c467e138814e5b98e1f084e287d6c"
+last-modified: Tue, 10 Sep 2024 16:08:32 GMT
+x-checksum-md5: 2a8c467e138814e5b98e1f084e287d6c
+x-checksum-sha1: 37db87e3e360b9457dbdfd8ea0dee5fade9a23f5
+
+exec
+/usr/bin/bash -lc "curl -sSfI https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/1.1.0-RC3/sangria-marshalling-api_3-1.1.0-RC3-sources.jar | sed -n '1,12p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sat, 27 Jun 2026 15:53:54 GMT
+content-type: application/java-archive
+content-length: 10204
+cf-ray: a125a095299913a1-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 7941
+etag: "5fdc951acc27c9a13f4fc1db6783dc8f"
+last-modified: Tue, 10 Sep 2024 16:08:32 GMT
+x-checksum-md5: 5fdc951acc27c9a13f4fc1db6783dc8f
+x-checksum-sha1: 6ca8fd6e1954066efa2d9dc012200414bbf16e84
+
+exec
+/usr/bin/bash -lc "for url in 'https://github.com/sangria-graphql/sangria-marshalling-api/tree/v1.1.0-RC3/src/test' 'https://github.com/sangria-graphql/sangria-marshalling-api/tree/v1.1.0-RC3' 'https://github.com/sangria-graphql/sangria-marshalling-api'; do code="'$(curl -sS -o /dev/null -w '"'%{http_code}' -L \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277
+exec
+/usr/bin/bash -lc 'for suffix in tests test-sources; do url="https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/1.1.0-RC3/sangria-marshalling-api_3-1.1.0-RC3-${suffix}.jar"; code=$(curl -sS -o /dev/null -w '"'%{http_code}' -I \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277
+ succeeded in 553ms:
+404 https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/1.1.0-RC3/sangria-marshalling-api_3-1.1.0-RC3-tests.jar
+404 https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/1.1.0-RC3/sangria-marshalling-api_3-1.1.0-RC3-test-sources.jar
+
+ succeeded in 4190ms:
+200 https://github.com/sangria-graphql/sangria-marshalling-api/tree/v1.1.0-RC3/src/test
+200 https://github.com/sangria-graphql/sangria-marshalling-api/tree/v1.1.0-RC3
+200 https://github.com/sangria-graphql/sangria-marshalling-api
+
+web search: 
+web search: site:mvnrepository.com/artifact/org.sangria-graphql/sangria-marshalling-api_3/1.1.0-RC3
+web search: 
+web search: https://central.sonatype.com/artifact/org.sangria-graphql/sangria-marshalling-api_3/1.1.0-RC3
+web search: 
+web search: central sonatype org.sangria-graphql sangria-marshalling-api_3 1.1.0-RC3
+web search: 
+web search: search.maven.org solrsearch org.sangria-graphql sangria-marshalling-api_3 1.1.0-RC3
+web search: 
+web search: org.sangria-graphql sangria-marshalling-api_3
+web search: 
+web search: https://mvnrepository.com/artifact/org.sangria-graphql/sangria-marshalling-api_3/1.1.0-RC3
+web search: 
+web search: "sangria-marshalling-api_3" "1.1.0-RC3"
+web search: 
+web search: https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/1.1.0-RC3/
+web search: 
+web search: "github.com/sangria-graphql/sangria-marshalling-api/tree/v1.1.0-RC3/src/test"
+codex
+The checks show Maven has the `sources.jar` and `javadoc.jar` for `1.1.0-RC3`, but no `tests.jar` or `test-sources.jar`; the tagged GitHub test directory resolves cleanly. I’m going to reuse the established templates from the older entries for the missing `1.1.0-RC3` fields and preserve the existing Scala 3 language field.
+exec
+/usr/bin/bash -lc "curl -sSfL https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/1.1.0-RC3/sangria-marshalling-api_3-1.1.0-RC3.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.sangria-graphql</groupId>
+    <artifactId>sangria-marshalling-api_3</artifactId>
+    <packaging>jar</packaging>
+    <description>Sangria Marshalling API</description>
+    <url>https://sangria-graphql.github.io/</url>
+    <version>1.1.0-RC3</version>
+    <licenses>
+        <license>
+            <name>Apache License, ASL Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>sangria-marshalling-api</name>
+    <inceptionYear>2016</inceptionYear>
+    <organization>
+        <name>org.sangria-graphql</name>
+        <url>https://github.com/sangria-graphql</url>
+    </organization>
+    <scm>
+        <url>https://github.com/sangria-graphql/sangria-marshalling-api</url>
+        <connection>scm:git:git@github.com:sangria-graphql/sangria-marshalling-api.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>OlegIlyenko</id>
+            <name>Oleg Ilyenko</name>
+            <url>https://github.com/OlegIlyenko</url>
+        </developer>
+    </developers>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+            <version>3.4.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_3</artifactId>
+            <version>3.2.19</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc "curl -sSfL https://raw.githubusercontent.com/sangria-graphql/sangria-marshalling-api/v1.1.0-RC3/README.md | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277
+exec
+/usr/bin/bash -lc "curl -sSfL https://api.github.com/repos/sangria-graphql/sangria-marshalling-api/contents/src/test?ref=v1.1.0-RC3 | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277
+ succeeded in 133ms:
+[Sangria](http://sangria-graphql.org/) marshalling API.
+
+![Continuous Integration](https://github.com/sangria-graphql/sangria-marshalling-api/workflows/Continuous%20Integration/badge.svg)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.sangria-graphql/sangria-marshalling-api_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.sangria-graphql/sangria-marshalling-api_2.13)
+[![License](http://img.shields.io/:license-Apache%202-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.txt)
+[![Join the chat at https://gitter.im/sangria-graphql/sangria](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sangria-graphql/sangria?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+A common API implemented by different marshalling libraries (like sangria-spray-json or sangria-json4s).
+
+SBT Configuration:
+
+```scala
+libraryDependencies += "org.sangria-graphql" %% "sangria-marshalling-api" % "<last version>"
+```
+
+## License
+
+**sangria-marshalling-api** is licensed under [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+
+ succeeded in 315ms:
+[
+  {
+    "name": "scala",
+    "path": "src/test/scala",
+    "sha": "745ca827384bed99e45fce64b36ab0f1a637ca6f",
+    "size": 0,
+    "url": "https://api.github.com/repos/sangria-graphql/sangria-marshalling-api/contents/src/test/scala?ref=v1.1.0-RC3",
+    "html_url": "https://github.com/sangria-graphql/sangria-marshalling-api/tree/v1.1.0-RC3/src/test/scala",
+    "git_url": "https://api.github.com/repos/sangria-graphql/sangria-marshalling-api/git/trees/745ca827384bed99e45fce64b36ab0f1a637ca6f",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sangria-graphql/sangria-marshalling-api/contents/src/test/scala?ref=v1.1.0-RC3",
+      "git": "https://api.github.com/repos/sangria-graphql/sangria-marshalling-api/git/trees/745ca827384bed99e45fce64b36ab0f1a637ca6f",
+      "html": "https://github.com/sangria-graphql/sangria-marshalling-api/tree/v1.1.0-RC3/src/test/scala"
+    }
+  }
+]
+
+codex
+I’m editing only the first entry selected by `metadata-version : "1.1.0-RC3"`. The existing non-blank `language` field is already correct for the `_3` Scala artifact, so I’ll leave it untouched and add the missing URL and description fields around it.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
+diff --git a/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json b/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
+index 41d31fc797a1051d4c035cec536135e5c398fa52..3d021a1dab87bda0f345e2dcababdba72cba4cd5
+--- a/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
++++ b/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.1.0-RC3",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/sangria-graphql/sangria-marshalling-api",
++    "test-code-url" : "https://github.com/sangria-graphql/sangria-marshalling-api/tree/v$version$/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-javadoc.jar",
++    "description" : "Sangria Marshalling API defines the shared marshalling and unmarshalling abstractions used by Sangria GraphQL integrations. It lets JSON and other data-format modules plug into Sangria by converting GraphQL inputs and results to and from Scala values.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+diff --git a/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json b/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
+index 41d31fc797a1051d4c035cec536135e5c398fa52..3d021a1dab87bda0f345e2dcababdba72cba4cd5
+--- a/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
++++ b/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.1.0-RC3",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/sangria-graphql/sangria-marshalling-api",
++    "test-code-url" : "https://github.com/sangria-graphql/sangria-marshalling-api/tree/v$version$/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-javadoc.jar",
++    "description" : "Sangria Marshalling API defines the shared marshalling and unmarshalling abstractions used by Sangria GraphQL integrations. It lets JSON and other data-format modules plug into Sangria by converting GraphQL inputs and results to and from Scala values.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+codex
+The patch is in. I’m doing a lightweight JSON/field check now, then I’ll run the repository metadata validator for this coordinate if the wrapper task starts cleanly.
+exec
+/usr/bin/bash -lc "jq '.[0]' metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "1.1.0-RC3",
+  "source-code-url": "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-sources.jar",
+  "repository-url": "https://github.com/sangria-graphql/sangria-marshalling-api",
+  "test-code-url": "https://github.com/sangria-graphql/sangria-marshalling-api/tree/v$version$/src/test",
+  "documentation-url": "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-javadoc.jar",
+  "description": "Sangria Marshalling API defines the shared marshalling and unmarshalling abstractions used by Sangria GraphQL integrations. It lets JSON and other data-format modules plug into Sangria by converting GraphQL inputs and results to and from Scala values.",
+  "language": {
+    "name": "scala",
+    "version": "3"
+  },
+  "tested-versions": [
+    "1.1.0-RC3"
+  ],
+  "allowed-packages": [
+    "sangria.marshalling",
+    "sangria.util"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277
+ succeeded in 0ms:
+diff --git i/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json w/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
+index 41d31fc797..3d021a1dab 100644
+--- i/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
++++ w/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.1.0-RC3",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/sangria-graphql/sangria-marshalling-api",
++    "test-code-url" : "https://github.com/sangria-graphql/sangria-marshalling-api/tree/v$version$/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-javadoc.jar",
++    "description" : "Sangria Marshalling API defines the shared marshalling and unmarshalling abstractions used by Sangria GraphQL integrations. It lets JSON and other data-format modules plug into Sangria by converting GraphQL inputs and results to and from Scala values.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+diff --git a/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json b/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
+index 41d31fc797a1051d4c035cec536135e5c398fa52..3d021a1dab87bda0f345e2dcababdba72cba4cd5
+--- a/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
++++ b/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.1.0-RC3",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/sangria-graphql/sangria-marshalling-api",
++    "test-code-url" : "https://github.com/sangria-graphql/sangria-marshalling-api/tree/v$version$/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-javadoc.jar",
++    "description" : "Sangria Marshalling API defines the shared marshalling and unmarshalling abstractions used by Sangria GraphQL integrations. It lets JSON and other data-format modules plug into Sangria by converting GraphQL inputs and results to and from Scala values.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.sangria-graphql:sangria-marshalling-api_3:1.1.0-RC3 --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277
+diff --git a/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json b/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
+index 41d31fc797a1051d4c035cec536135e5c398fa52..3d021a1dab87bda0f345e2dcababdba72cba4cd5
+--- a/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
++++ b/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.1.0-RC3",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/sangria-graphql/sangria-marshalling-api",
++    "test-code-url" : "https://github.com/sangria-graphql/sangria-marshalling-api/tree/v$version$/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-javadoc.jar",
++    "description" : "Sangria Marshalling API defines the shared marshalling and unmarshalling abstractions used by Sangria GraphQL integrations. It lets JSON and other data-format modules plug into Sangria by converting GraphQL inputs and results to and from Scala values.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+ exited 1 in 3426ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.sangria-graphql:sangria-marshalling-api_3:1.1.0-RC3: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277/metadata/org.sangria-graphql/sangria-marshalling-api_3/1.1.0-RC3/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.sangria-graphql:sangria-marshalling-api_3:1.1.0-RC3: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277/metadata/org.sangria-graphql/sangria-marshalling-api_3/1.1.0-RC3/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.sangria-graphql:sangria-marshalling-api_3:1.1.0-RC3: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277/metadata/org.sangria-graphql/sangria-marshalling-api_3/1.1.0-RC3/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 3s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The repository validator ran but failed on a pre-existing structural issue for this coordinate: `metadata/.../1.1.0-RC3/` lacks `reachability-metadata.json`. That failure is outside the requested index-field update, and the JSON itself parsed correctly.
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json | sed -n '1,28p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "1.1.0-RC3",
+     5	    "source-code-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/sangria-graphql/sangria-marshalling-api",
+     7	    "test-code-url" : "https://github.com/sangria-graphql/sangria-marshalling-api/tree/v$version$/src/test",
+     8	    "documentation-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-javadoc.jar",
+     9	    "description" : "Sangria Marshalling API defines the shared marshalling and unmarshalling abstractions used by Sangria GraphQL integrations. It lets JSON and other data-format modules plug into Sangria by converting GraphQL inputs and results to and from Scala values.",
+    10	    "language" : {
+    11	      "name" : "scala",
+    12	      "version" : "3"
+    13	    },
+    14	    "tested-versions" : [
+    15	      "1.1.0-RC3"
+    16	    ],
+    17	    "allowed-packages" : [
+    18	      "sangria.marshalling",
+    19	      "sangria.util"
+    20	    ]
+    21	  },
+    22	  {
+    23	    "metadata-version" : "1.1.0-RC1",
+    24	    "source-code-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-sources.jar",
+    25	    "repository-url" : "https://github.com/sangria-graphql/sangria-marshalling-api",
+    26	    "test-code-url" : "https://github.com/sangria-graphql/sangria-marshalling-api/tree/v$version$/src/test",
+    27	    "documentation-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-javadoc.jar",
+    28	    "description" : "Sangria Marshalling API defines the shared marshalling and unmarshalling abstractions used by Sangria GraphQL integrations. It lets JSON and other data-format modules plug into Sangria by converting GraphQL inputs and results to and from Scala values.",
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json metadata/org.sangria-graphql/sangria-marshalling-api_3/1.1.0-RC3' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277
+ succeeded in 0ms:
+ M metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
+
+diff --git a/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json b/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
+index 41d31fc797a1051d4c035cec536135e5c398fa52..3d021a1dab87bda0f345e2dcababdba72cba4cd5
+--- a/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
++++ b/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.1.0-RC3",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/sangria-graphql/sangria-marshalling-api",
++    "test-code-url" : "https://github.com/sangria-graphql/sangria-marshalling-api/tree/v$version$/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-javadoc.jar",
++    "description" : "Sangria Marshalling API defines the shared marshalling and unmarshalling abstractions used by Sangria GraphQL integrations. It lets JSON and other data-format modules plug into Sangria by converting GraphQL inputs and results to and from Scala values.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+web search: 
+web search: https://raw.githubusercontent.com/sangria-graphql/sangria-marshalling-api/v1.1.0-RC3/README.md
+web search: 
+web search: search.maven.org org.sangria-graphql sangria-marshalling-api_3 1.1.0-RC3
+web search: 
+web search: https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/1.1.0-RC3/
+web search: 
+web search: "sangria-graphql/sangria-marshalling-api" "v1.1.0-RC3"
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json:5) for `metadata-version` `1.1.0-RC3` with Maven `sources.jar`, Maven `javadoc.jar`, canonical GitHub repository, tagged GitHub `src/test`, and a two-sentence description. Maven/GitHub checks confirmed the selected artifact/tag basis; Maven had source and javadoc artifacts, but no test artifact, so the tagged GitHub test directory was used. ([repo1.maven.org](https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/1.1.0-RC3/?utm_source=openai))
+
+Validation: `jq` parsed the updated entry successfully. `./gradlew checkMetadataFiles -Pcoordinates=org.sangria-graphql:sangria-marshalling-api_3:1.1.0-RC3 --stacktrace` failed because `metadata/.../1.1.0-RC3/` is missing `reachability-metadata.json`, which is outside this URL/description update.
+diff --git a/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json b/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
+index 41d31fc797a1051d4c035cec536135e5c398fa52..3d021a1dab87bda0f345e2dcababdba72cba4cd5
+--- a/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
++++ b/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "1.1.0-RC3",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-sources.jar",
++    "repository-url" : "https://github.com/sangria-graphql/sangria-marshalling-api",
++    "test-code-url" : "https://github.com/sangria-graphql/sangria-marshalling-api/tree/v$version$/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-javadoc.jar",
++    "description" : "Sangria Marshalling API defines the shared marshalling and unmarshalling abstractions used by Sangria GraphQL integrations. It lets JSON and other data-format modules plug into Sangria by converting GraphQL inputs and results to and from Scala values.",
+     "language" : {
+       "name" : "scala",
+       "version" : "3"
+
+tokens used
+61,981
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277/metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json:5) for `metadata-version` `1.1.0-RC3` with Maven `sources.jar`, Maven `javadoc.jar`, canonical GitHub repository, tagged GitHub `src/test`, and a two-sentence description. Maven/GitHub checks confirmed the selected artifact/tag basis; Maven had source and javadoc artifacts, but no test artifact, so the tagged GitHub test directory was used. ([repo1.maven.org](https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/1.1.0-RC3/?utm_source=openai))
+
+Validation: `jq` parsed the updated entry successfully. `./gradlew checkMetadataFiles -Pcoordinates=org.sangria-graphql:sangria-marshalling-api_3:1.1.0-RC3 --stacktrace` failed because `metadata/.../1.1.0-RC3/` is missing `reachability-metadata.json`, which is outside this URL/description update.
+Ran agent for org.sangria-graphql:sangria-marshalling-api_3:1.1.0-RC3 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277/build/agent-url-discovery-logs/org.sangria-graphql-sangria-marshalling-api_3-1.1.0-RC3.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8717-f6161277/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 44s
+9 actionable tasks: 1 executed, 8 up-to-date
