@@ -1,0 +1,84 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.maven.doxia:doxia-site-renderer:2.0.0",
+  "issueNumber": 8134,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No Docker image or environment/system property appears necessary. Tests should target the 2.0.0 API, not the removed 1.9.1 classes/methods: use DocumentRenderingContext instead of RenderingContext, do not use SkinResourceLoader, enableLogging, setUsingDefaultTemplate, or decoration setters that no longer exist. For full DefaultSiteRenderer rendering paths, obtain or wire the renderer with its injected collaborators; direct construction is only safe for methods that do not touch injected fields.",
+    "applied_setup": [],
+    "current_library": "org.apache.maven.doxia:doxia-site-renderer:1.9.1",
+    "deterministic_setup": [
+      {
+        "coordinate": "org.apache.maven.doxia:doxia-module-apt:2.0.0",
+        "kind": "dependency",
+        "reason": "The 2.0.0 POM notes that Doxia parser modules are no longer in doxia-core and must be declared so their component descriptors are discovered; normal site-renderer tests render Doxia site sources such as APT documents.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.apache.maven:maven-artifact:3.6.3",
+        "kind": "dependency",
+        "reason": "doxia-site-renderer declares maven-artifact as provided, but public APIs such as createContextForSkin and SiteRenderingContext skin accessors use org.apache.maven.artifact.Artifact, so standalone TCK tests need it when covering skin/resource behavior.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8134 [Automation] javac compile fails for org.apache.maven.doxia:doxia-site-renderer:2.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "8 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 64539,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8134,
+    "library": "org.apache.maven.doxia:doxia-site-renderer:2.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.0",
+    "output_tokens_used": 7929,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "If generated tests choose XDoc or FML sources instead of APT, the corresponding parser module dependency may also be needed.",
+      "The current failure is primarily an API break from 1.9.1 to 2.0.0, so deterministic setup alone will not fix stale tests.",
+      "Local Gradle and Native Image verification remain authoritative because component injection and parser discovery can fail differently under native-image."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.maven.doxia:doxia-site-renderer:2.0.0/library-preparation-preflight/pi-generation-2026-06-27T11-58-03-284994Z.log",
+    "status": "completed",
+    "summary": "doxia-site-renderer 2.0.0 has real setup needs for meaningful rendering coverage: parser modules are no longer bundled in doxia-core, and part of the public skin API depends on Maven Artifact classes declared as provided."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8134-fails-javac-compile-org.apache.maven.doxia-doxia-site-renderer-2.0.0-f516f995",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
