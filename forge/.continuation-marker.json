@@ -1,0 +1,82 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.apache.pekko:pekko-http-core_2.13:1.3.0",
+  "issueNumber": 5448,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No Docker image or environment/system property is indicated. For tests that exercise stream-backed entities or low-level HTTP client/server APIs, create a local Pekko ActorSystem/Materializer in test code and terminate it after the test; avoid relying on external network services.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "coordinate": "org.apache.pekko:pekko-stream_2.13:1.1.5",
+        "kind": "dependency",
+        "reason": "pekko-http-core_2.13 exposes stream-backed entity, server/client, websocket, and connection APIs, while pekko-stream is marked provided in the POM and is not pulled transitively for generated tests.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#5448 Support for org.apache.pekko:pekko-http-core_2.13:1.3.0; label=library-new-request; body_chars=112"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 27536,
+    "issue_label": "library-new-request",
+    "issue_number": 5448,
+    "library": "org.apache.pekko:pekko-http-core_2.13:1.3.0",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 3104,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Without the extra pekko-stream test dependency, meaningful coverage that touches HttpEntity, Multipart, Http, or connection APIs can fail at javac due to missing org.apache.pekko.stream and org.apache.pekko.actor types.",
+      "Tests that start ActorSystems or bind local HTTP endpoints must clean them up to avoid hanging JVM/native test runs."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.pekko:pekko-http-core_2.13:1.3.0/library-preparation-preflight/pi-generation-2026-06-27T11-49-37-851051Z.log",
+    "status": "completed",
+    "summary": "The resolved artifact declares org.apache.pekko:pekko-stream_2.13:1.1.5 as a Maven provided dependency, but public Pekko HTTP Core Java APIs reference Pekko Stream and ActorSystem/Materializer types; a minimal Java test using HttpEntities fails to compile without pekko-stream on the test classpath."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 1,
+      "exhaustedClasses": [
+        "org.apache.pekko.http.impl.engine.http2.Http2AlpnSupport$"
+      ],
+      "iteration": 1,
+      "status": "completed"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-5448-library-new-request-org.apache.pekko-pekko-http-core_2.13-1.3.0-6d099a80",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.apache.pekko:pekko-http-core_2.13:1.3.0",
+    "timestamp": "2026-06-27T12:27:48.193234Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
