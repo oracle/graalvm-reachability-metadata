@@ -15,18 +15,21 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.ChatClientBuilderCustomizer;
 import org.springframework.ai.chat.client.ChatClientRequest;
 import org.springframework.ai.chat.client.ChatClientResponse;
 import org.springframework.ai.chat.client.advisor.ToolCallingAdvisor;
 import org.springframework.ai.chat.client.advisor.api.StreamAdvisor;
 import org.springframework.ai.chat.client.advisor.api.StreamAdvisorChain;
 import org.springframework.ai.chat.messages.AssistantMessage;
+import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.ToolResponseMessage;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.model.chat.client.autoconfigure.ChatClientAutoConfiguration;
+import org.springframework.ai.model.chat.client.autoconfigure.ChatClientBuilderConfigurer;
 import org.springframework.ai.model.chat.client.autoconfigure.ChatClientBuilderProperties;
 import org.springframework.ai.model.tool.ToolCallingChatOptions;
 import org.springframework.ai.model.tool.ToolCallingManager;
@@ -123,6 +126,35 @@ public class Spring_ai_autoconfigure_model_chat_clientTest {
         });
     }
 
+    @Test
+    void appliesChatClientBuilderCustomizersToEachPrototypeBuilder() {
+        AtomicInteger customizations = new AtomicInteger();
+        ApplicationContextRunner runner = new ApplicationContextRunner()
+                .withConfiguration(AutoConfigurations.of(ChatClientAutoConfiguration.class))
+                .withBean(RecordingChatModel.class)
+                .withBean(ChatClientBuilderCustomizer.class, () -> builder -> {
+                    customizations.incrementAndGet();
+                    builder.defaultSystem("configured system").defaultUser("configured user");
+                });
+
+        runner.run(context -> {
+            assertThat(context).hasSingleBean(ChatClientBuilderConfigurer.class);
+
+            ChatClient.Builder firstBuilder = context.getBean(ChatClient.Builder.class);
+            ChatClient.Builder secondBuilder = context.getBean(ChatClient.Builder.class);
+
+            assertThat(secondBuilder).isNotSameAs(firstBuilder);
+            assertThat(customizations).hasValue(2);
+
+            String content = firstBuilder.build().prompt().call().content();
+
+            assertThat(content).isEqualTo("customized response");
+            assertThat(context.getBean(RecordingChatModel.class).lastPrompt().getInstructions())
+                    .extracting(Message::getText)
+                    .containsExactly("configured system", "configured user");
+        });
+    }
+
     private static ChatClientRequest toolRequest() {
         return ChatClientRequest.builder()
                 .prompt(new Prompt("run the local tool", ToolCallingChatOptions.builder().build()))
@@ -148,6 +180,20 @@ public class Spring_ai_autoconfigure_model_chat_clientTest {
         @Bean
         public ChatModel chatModel() {
             return prompt -> new ChatResponse(List.of(new Generation(new AssistantMessage("ok"))));
+        }
+    }
+
+    public static class RecordingChatModel implements ChatModel {
+        private Prompt lastPrompt;
+
+        @Override
+        public ChatResponse call(Prompt prompt) {
+            this.lastPrompt = prompt;
+            return new ChatResponse(List.of(new Generation(new AssistantMessage("customized response"))));
+        }
+
+        public Prompt lastPrompt() {
+            return this.lastPrompt;
         }
     }
 
