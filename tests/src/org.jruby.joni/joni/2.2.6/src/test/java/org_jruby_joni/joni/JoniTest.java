@@ -174,6 +174,18 @@ public class JoniTest {
     }
 
     @Test
+    void posixBracketClassesMatchCharacterCategories() {
+        Regex regex = regex("\\A[[:alpha:]]+[[:space:]]+[[:digit:]]+\\z");
+        byte[] matching = bytes("Order 12345");
+        byte[] nonMatching = bytes("Order ABCDE");
+
+        assertThat(regex.matcher(matching).match(0, matching.length, Option.DEFAULT))
+                .isEqualTo(matching.length);
+        assertThat(regex.matcher(nonMatching).match(0, nonMatching.length, Option.DEFAULT))
+                .isEqualTo(Matcher.FAILED);
+    }
+
+    @Test
     void regexStoresApplicationOptionsAndUserObject() {
         Regex regex = regex("color");
         Object marker = new Object();
