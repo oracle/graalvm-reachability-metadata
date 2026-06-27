@@ -1,0 +1,71 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.sonatype.sisu:sisu-inject-bean:2.4.2",
+  "issueNumber": 8718,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.sonatype.sisu:sisu-inject-bean:2.4.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8718 [Automation] javac compile fails for org.sonatype.sisu:sisu-inject-bean:2.4.2; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "14 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 33289,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8718,
+    "library": "org.sonatype.sisu:sisu-inject-bean:2.4.2",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.4.2",
+    "output_tokens_used": 5310,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "org.sonatype.sisu:sisu-inject-bean:2.4.2 resolves normal transitive dependencies including cdi-api, sisu-guice:no_aop, and org.eclipse.sisu.inject:0.0.0.M5; optional JUnit/TestNG dependencies are only relevant if tests intentionally exercise those framework annotations.",
+      "Existing failing test calls org.eclipse.sisu.space.QualifiedTypeBinder.hear with the old three-argument signature; in the resolved 2.4.2 dependency set the available signature is the newer two-argument form.",
+      "The artifact is a deprecated legacy wrapper around Eclipse Sisu, so tests should prefer public wrapper behavior and avoid pinning to removed or changed transitive internals unless explicitly needed."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.sonatype.sisu:sisu-inject-bean:2.4.2/library-preparation-preflight/pi-generation-2026-06-27T17-46-40-425284Z.log",
+    "status": "completed",
+    "summary": "No extra dependency, Docker image, environment variable, or system property is required for meaningful coverage; the failure is caused by an API drift in the transitive Eclipse Sisu class, not missing setup."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.4.2",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8718-fails-javac-compile-org.sonatype.sisu-sisu-inject-bean-2.4.2-c445a9e8",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
