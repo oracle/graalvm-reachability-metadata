@@ -15,9 +15,11 @@ import zio.prelude.NonEmptyList
 import zio.prelude.NonEmptyMap
 import zio.prelude.NonEmptySet
 import zio.prelude.NonEmptySortedMap
+import zio.prelude.Newtype
 import zio.prelude.NonEmptySortedSet
 import zio.prelude.Ord
 import zio.prelude.PartialOrd
+import zio.prelude.Subtype
 import zio.prelude.These
 import zio.prelude.ZSet
 import zio.prelude.ZValidation
@@ -236,6 +238,32 @@ class Zio_prelude_2_13Test {
     assertFalse(incomparableComparison.isLessThan)
     assertFalse(incomparableComparison.isGreaterThan)
     assertFalse(incomparableComparison.isEqual)
+  }
+
+  @Test
+  def newtypeAndSubtypeWrapDomainValuesWithoutRuntimeContainers(): Unit = {
+    object UserId extends Newtype[Int]
+    type UserId = UserId.Type
+
+    object EmailAddress extends Subtype[String]
+    type EmailAddress = EmailAddress.Type
+
+    val first: UserId = UserId(101)
+    val second: UserId = UserId(UserId.unwrap(first) + 1)
+    val address: EmailAddress = EmailAddress("ada@example.test")
+
+    assertEquals(101, UserId.unwrap(first))
+    assertEquals(102, UserId.unwrap(second))
+    assertEquals(Some(101), UserId.unapply(first))
+    assertEquals("user-102", second match {
+      case UserId(value) => s"user-$value"
+    })
+
+    val addressText: String = address
+
+    assertEquals("ada@example.test", EmailAddress.unwrap(address))
+    assertEquals("ada@example.test", addressText)
+    assertTrue(addressText.endsWith(".test"))
   }
 
   @Test
