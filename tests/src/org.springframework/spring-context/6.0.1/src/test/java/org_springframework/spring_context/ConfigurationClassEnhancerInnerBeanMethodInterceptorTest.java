@@ -8,7 +8,7 @@ package org_springframework.spring_context;
 
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
@@ -36,11 +36,6 @@ public class ConfigurationClassEnhancerInnerBeanMethodInterceptorTest {
             final Product product = interceptedFactory.getObject();
 
             assertNotSame(targetFactory, interceptedFactory);
-            if (isNativeImageRuntime()) {
-                assertSame(InterfaceProxyConfiguration.class, configuration.getClass());
-                assertNotSame(context.getBean("interfaceFactoryBean"), product);
-                return;
-            }
             assertSame(context.getBean("interfaceFactoryBean"), product);
         });
     }
@@ -54,14 +49,11 @@ public class ConfigurationClassEnhancerInnerBeanMethodInterceptorTest {
 
             final ConcurrentMapCacheFactoryBean interceptedFactory = configuration.cglibFactoryBean();
             final ConcurrentMapCache cache = interceptedFactory.getObject();
+            final boolean singleton = interceptedFactory.isSingleton();
 
             assertNotSame(targetFactory, interceptedFactory);
-            if (isNativeImageRuntime()) {
-                assertSame(CglibProxyConfiguration.class, configuration.getClass());
-                assertNull(cache);
-                return;
-            }
             assertSame(context.getBean("cglibFactoryBean"), cache);
+            assertTrue(singleton);
         });
     }
 
@@ -78,10 +70,6 @@ public class ConfigurationClassEnhancerInnerBeanMethodInterceptorTest {
     @FunctionalInterface
     private interface ContextAction {
         void accept(AnnotationConfigApplicationContext context) throws Exception;
-    }
-
-    private static boolean isNativeImageRuntime() {
-        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     @Configuration
