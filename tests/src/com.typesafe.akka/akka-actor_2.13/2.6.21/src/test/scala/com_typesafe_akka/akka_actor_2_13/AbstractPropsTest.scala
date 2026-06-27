@@ -10,6 +10,7 @@ import akka.actor.Actor
 import akka.actor.Props
 import akka.japi.Creator
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
 class AbstractPropsTest {
@@ -22,20 +23,17 @@ class AbstractPropsTest {
   }
 
   @Test
-  def acceptsEnclosedCreatorSingletonWithPrivateConstructor(): Unit = {
-    val creator: Creator[AbstractPropsConstructorProbeActor] = AbstractPropsCreatorHolder.PrivateConstructorCreator
-    val props: Props = Props.create(classOf[AbstractPropsConstructorProbeActor], creator)
+  def rejectsJavaLocalCreatorWithoutPublicConstructor(): Unit = {
+    val creator: Creator[AbstractPropsConstructorProbeActor] = new AbstractPropsJavaCreatorFactory()
+      .newNonStaticLocalCreator()
+      .asInstanceOf[Creator[AbstractPropsConstructorProbeActor]]
 
-    assertThat(props.actorClass()).isEqualTo(classOf[AbstractPropsConstructorProbeActor])
+    assertThatThrownBy(() => Props.create(classOf[AbstractPropsConstructorProbeActor], creator))
+      .isInstanceOf(classOf[IllegalArgumentException])
+      .hasMessageContaining("cannot use non-static local Creator")
   }
 
   final class PublicConstructorCreator extends Creator[AbstractPropsConstructorProbeActor] {
-    override def create(): AbstractPropsConstructorProbeActor = new AbstractPropsConstructorProbeActor
-  }
-}
-
-object AbstractPropsCreatorHolder {
-  object PrivateConstructorCreator extends Creator[AbstractPropsConstructorProbeActor] {
     override def create(): AbstractPropsConstructorProbeActor = new AbstractPropsConstructorProbeActor
   }
 }
