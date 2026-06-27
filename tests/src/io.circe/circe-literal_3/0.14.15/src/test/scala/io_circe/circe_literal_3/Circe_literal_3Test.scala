@@ -102,6 +102,26 @@ class Circe_literal_3Test {
   }
 
   @Test
+  def encodesInterpolatedStringsWithJsonEscapingInsteadOfParsingThemAsFragments(): Unit = {
+    val objectLookingText: String = """{"admin": true, "roles": ["owner"]}"""
+    val textWithEscapes: String = "line one\nline \"two\" \\ slash ☃"
+
+    val document: Json = json"""
+      {
+        "raw": $objectLookingText,
+        "escaped": $textWithEscapes,
+        "items": [$objectLookingText, $textWithEscapes]
+      }
+    """
+
+    assertThat(document.hcursor.get[String]("raw")).isEqualTo(Right(objectLookingText))
+    assertThat(document.hcursor.downField("raw").downField("admin").succeeded).isFalse
+    assertThat(document.hcursor.get[String]("escaped")).isEqualTo(Right(textWithEscapes))
+    assertThat(document.hcursor.downField("items").downN(0).focus.exists(_.isString)).isTrue
+    assertThat(document.hcursor.downField("items").downN(1).as[String]).isEqualTo(Right(textWithEscapes))
+  }
+
+  @Test
   def interpolatesJsonValuesWithoutStringifyingThem(): Unit = {
     val firstItem: Json = Json.obj(
       "id" -> Json.fromInt(1),
