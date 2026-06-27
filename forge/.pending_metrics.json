@@ -1,0 +1,82 @@
+{
+  "timestamp": "2026-06-27T15:39:13.780212Z",
+  "library": "org.springframework.boot:spring-boot-quartz:4.1.0-RC1",
+  "starting_commit": "ad0d091c1d48aae0c264b681b4adc3036a2f8e96",
+  "ending_commit": "b87abb3ce6de59e2aef9261a94176b6fedb4bee9",
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+  "agent": "pi",
+  "model": "oca/gpt-5.5",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 8723,
+    "issue_label": "library-new-request",
+    "library": "org.springframework.boot:spring-boot-quartz:4.1.0-RC1",
+    "summary": "Spring Boot's Quartz support is normally exercised as Boot auto-configuration; the resolved artifact brings Quartz and Spring context support but not Boot auto-configuration/test support used for meaningful context-based coverage.",
+    "deterministic_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.1.0-RC1",
+        "scope": "testImplementation",
+        "reason": "The artifact contains QuartzAutoConfiguration and related auto-configuration classes, but its resolved dependencies do not include the core Boot auto-configuration APIs needed to exercise them in the normal Spring Boot style."
+      },
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.boot:spring-boot-test:4.1.0-RC1",
+        "scope": "testImplementation",
+        "reason": "Spring Boot auto-configuration modules are typically tested with ApplicationContextRunner, which is provided by spring-boot-test and gives meaningful lightweight coverage without launching a full application."
+      }
+    ],
+    "agent_guidance": "Use the default in-memory Quartz JobStore; no Docker service is needed. Prefer a small ApplicationContextRunner test that registers a simple JobDetail/Trigger or verifies SchedulerFactoryBean/Scheduler creation, and ensure the Spring context or scheduler is closed after each run. Avoid switching to spring.quartz.job-store-type=jdbc unless the test also supplies an embedded DataSource and schema initialization.",
+    "risks": [
+      "The artifact also contains optional actuator endpoint classes; endpoint-specific coverage may require spring-boot-actuator, but core Quartz scheduler auto-configuration coverage does not.",
+      "Quartz starts scheduler threads when auto-startup is enabled, so tests must close the context or scheduler to avoid hangs."
+    ],
+    "applied_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.1.0-RC1",
+        "result": "applied",
+        "target": "tests/src/org.springframework.boot/spring-boot-quartz/4.1.0-RC1/build.gradle"
+      },
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.boot:spring-boot-test:4.1.0-RC1",
+        "result": "applied",
+        "target": "tests/src/org.springframework.boot/spring-boot-quartz/4.1.0-RC1/build.gradle"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8723 Support for org.springframework.boot:spring-boot-quartz:4.1.0-RC1; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "oca/gpt-5.5",
+    "input_tokens_used": 42274,
+    "output_tokens_used": 7034,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.springframework.boot:spring-boot-quartz:4.1.0-RC1/library-preparation-preflight/pi-generation-2026-06-27T14-56-47-405702Z.log"
+  },
+  "metrics": {
+    "input_tokens_used": 324129,
+    "cached_input_tokens_used": 3261440,
+    "output_tokens_used": 29449,
+    "iterations": 5,
+    "cost_usd": 2.5142,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "test_file": "None",
+    "metadata_file": "None"
+  }
+}

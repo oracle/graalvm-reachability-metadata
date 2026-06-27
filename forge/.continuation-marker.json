@@ -1,0 +1,85 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.springframework.boot:spring-boot-quartz:4.1.0-RC1",
+  "issueNumber": 8723,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Use the default in-memory Quartz JobStore; no Docker service is needed. Prefer a small ApplicationContextRunner test that registers a simple JobDetail/Trigger or verifies SchedulerFactoryBean/Scheduler creation, and ensure the Spring context or scheduler is closed after each run. Avoid switching to spring.quartz.job-store-type=jdbc unless the test also supplies an embedded DataSource and schema initialization.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.1.0-RC1",
+        "kind": "dependency",
+        "reason": "The artifact contains QuartzAutoConfiguration and related auto-configuration classes, but its resolved dependencies do not include the core Boot auto-configuration APIs needed to exercise them in the normal Spring Boot style.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.springframework.boot:spring-boot-test:4.1.0-RC1",
+        "kind": "dependency",
+        "reason": "Spring Boot auto-configuration modules are typically tested with ApplicationContextRunner, which is provided by spring-boot-test and gives meaningful lightweight coverage without launching a full application.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8723 Support for org.springframework.boot:spring-boot-quartz:4.1.0-RC1; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 42274,
+    "issue_label": "library-new-request",
+    "issue_number": 8723,
+    "library": "org.springframework.boot:spring-boot-quartz:4.1.0-RC1",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 7034,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The artifact also contains optional actuator endpoint classes; endpoint-specific coverage may require spring-boot-actuator, but core Quartz scheduler auto-configuration coverage does not.",
+      "Quartz starts scheduler threads when auto-startup is enabled, so tests must close the context or scheduler to avoid hangs."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.springframework.boot:spring-boot-quartz:4.1.0-RC1/library-preparation-preflight/pi-generation-2026-06-27T14-56-47-405702Z.log",
+    "status": "completed",
+    "summary": "Spring Boot's Quartz support is normally exercised as Boot auto-configuration; the resolved artifact brings Quartz and Spring context support but not Boot auto-configuration/test support used for meaningful context-based coverage."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 5,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8723-library-new-request-org.springframework.boot-spring-boot-quartz-4.1.0-RC1-a5f67360",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springframework.boot:spring-boot-quartz:4.1.0-RC1",
+    "timestamp": "2026-06-27T15:39:13.780212Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
