@@ -7,6 +7,7 @@
 package io_circe.circe_literal_3
 
 import io.circe.Json
+import io.circe.KeyEncoder
 import io.circe.literal.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -103,6 +104,30 @@ class Circe_literal_3Test {
     assertThat(cursor.downField("config").downField("sampleRate").as[Double]).isEqualTo(Right(0.25))
     assertThat(cursor.downField("statusCounts").downField("success").as[Int]).isEqualTo(Right(10))
     assertThat(cursor.downField("statusCounts").downField("failure").as[Int]).isEqualTo(Right(2))
+  }
+
+  @Test
+  def encodesInterpolatedObjectKeysWithKeyEncoders(): Unit = {
+    final case class MetricKey(namespace: String, name: String)
+    given KeyEncoder[MetricKey] = key => s"${key.namespace}.${key.name}"
+
+    val latencyKey: MetricKey = MetricKey("http", "latencyMs")
+    val successKey: MetricKey = MetricKey("http", "successCount")
+    val payload: Json = json"""
+      {
+        $latencyKey: 37,
+        $successKey: 12,
+        "staticField": "kept"
+      }
+    """
+
+    val cursor = payload.hcursor
+
+    assertThat(cursor.downField("http.latencyMs").as[Int]).isEqualTo(Right(37))
+    assertThat(cursor.downField("http.successCount").as[Int]).isEqualTo(Right(12))
+    assertThat(cursor.downField("staticField").as[String]).isEqualTo(Right("kept"))
+    assertThat(cursor.downField("latencyKey").focus).isEqualTo(None)
+    assertThat(cursor.downField("successKey").focus).isEqualTo(None)
   }
 
   @Test
