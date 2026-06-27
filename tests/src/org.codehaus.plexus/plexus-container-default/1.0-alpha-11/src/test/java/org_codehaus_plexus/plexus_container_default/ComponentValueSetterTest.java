@@ -6,6 +6,8 @@
  */
 package org_codehaus_plexus.plexus_container_default;
 
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.component.configurator.converters.ComponentValueSetter;
 import org.codehaus.plexus.component.configurator.converters.lookup.DefaultConverterLookup;
 import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
@@ -43,8 +45,15 @@ public class ComponentValueSetterTest {
         ComponentValueSetter setter = new ComponentValueSetter(fieldName, component, new DefaultConverterLookup());
         setter.configure(
             configuration,
-            ComponentValueSetterTest.class.getClassLoader(),
+            testRealm(),
             new LiteralExpressionEvaluator()
+        );
+    }
+
+    private static ClassRealm testRealm() throws Exception {
+        return new ClassWorld().newRealm(
+            "component-value-setter-test",
+            ComponentValueSetterTest.class.getClassLoader()
         );
     }
 

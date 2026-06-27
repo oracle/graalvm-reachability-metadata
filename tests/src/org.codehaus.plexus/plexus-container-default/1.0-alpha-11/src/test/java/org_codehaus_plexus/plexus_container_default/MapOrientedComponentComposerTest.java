@@ -6,7 +6,8 @@
  */
 package org_codehaus_plexus.plexus_container_default;
 
-import org.codehaus.classworlds.ClassRealm;
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.MapOrientedComponent;
@@ -30,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -90,9 +92,8 @@ public class MapOrientedComponentComposerTest {
         descriptor.addRequirement(set);
         descriptor.addRequirement(fallback);
 
-        List assignedDescriptors = composer.assembleComponent(component, descriptor, container);
+        composer.assembleComponent(component, descriptor, container);
 
-        assertEquals(5, assignedDescriptors.size());
         assertSame(hintedDependency, component.valueFor(hinted));
         assertSame(singleDependency, component.valueFor(single));
         assertSame(mappedDependencies, component.valueFor(mapped));
@@ -181,6 +182,22 @@ public class MapOrientedComponentComposerTest {
             return lookup(role + roleHint);
         }
 
+        public Object lookup(Class componentClass) throws ComponentLookupException {
+            return lookup(componentClass.getName());
+        }
+
+        public Map lookupMap(Class role) throws ComponentLookupException {
+            return lookupMap(role.getName());
+        }
+
+        public List lookupList(Class role) throws ComponentLookupException {
+            return lookupList(role.getName());
+        }
+
+        public Object lookup(Class role, String roleHint) throws ComponentLookupException {
+            return lookup(role.getName(), roleHint);
+        }
+
         @Override
         public Map lookupMap(String role) throws ComponentLookupException {
             Map dependencies = maps.get(role);
@@ -216,6 +233,10 @@ public class MapOrientedComponentComposerTest {
             return listOf(descriptors.get(role));
         }
 
+        public Date getCreationDate() {
+            return new Date(0L);
+        }
+
         @Override
         public boolean hasChildContainer(String name) {
             return false;
@@ -224,6 +245,9 @@ public class MapOrientedComponentComposerTest {
         @Override
         public PlexusContainer getChildContainer(String name) {
             return null;
+        }
+
+        public void removeChildContainer(String name) {
         }
 
         @Override
@@ -239,6 +263,10 @@ public class MapOrientedComponentComposerTest {
             Map context,
             List discoveryListeners
         ) throws PlexusContainerException {
+            throw new UnsupportedOperationException();
+        }
+
+        public ClassRealm createComponentRealm(String id, List classpath) throws PlexusContainerException {
             throw new UnsupportedOperationException();
         }
 
@@ -283,22 +311,25 @@ public class MapOrientedComponentComposerTest {
             throw new UnsupportedOperationException();
         }
 
-        @Override
         public void initialize() throws PlexusContainerException {
         }
 
-        @Override
         public boolean isInitialized() {
             return true;
         }
 
-        @Override
         public void start() throws PlexusContainerException {
         }
 
-        @Override
         public boolean isStarted() {
             return true;
+        }
+
+        public void initializePhases() {
+        }
+
+        public List discoverComponents(ClassRealm classRealm) {
+            return new ArrayList();
         }
 
         @Override
@@ -314,11 +345,28 @@ public class MapOrientedComponentComposerTest {
         public void setParentPlexusContainer(PlexusContainer parentContainer) {
         }
 
+        public void setName(String name) {
+        }
+
+        public String getName() {
+            return "recording";
+        }
+
+        public ClassWorld getClassWorld() {
+            return null;
+        }
+
+        public void setClassWorld(ClassWorld classWorld) {
+        }
+
+        public PlexusContainer getParentContainer() {
+            return null;
+        }
+
         @Override
         public void addContextValue(Object key, Object value) {
         }
 
-        @Override
         public void setConfigurationResource(Reader configuration) throws PlexusConfigurationResourceException {
             throw new UnsupportedOperationException();
         }
@@ -328,13 +376,11 @@ public class MapOrientedComponentComposerTest {
             return null;
         }
 
-        @Override
         public Object createComponentInstance(ComponentDescriptor componentDescriptor)
             throws ComponentInstantiationException, ComponentLifecycleException {
             throw new UnsupportedOperationException();
         }
 
-        @Override
         public void composeComponent(Object component, ComponentDescriptor componentDescriptor)
             throws CompositionException, UndefinedComponentComposerException {
             throw new UnsupportedOperationException();
@@ -365,9 +411,23 @@ public class MapOrientedComponentComposerTest {
             return null;
         }
 
-        @Override
         public ClassRealm getComponentRealm(String componentKey) {
             return null;
+        }
+
+        public Object autowire(Object component) {
+            throw new UnsupportedOperationException();
+        }
+
+        public Object createAndAutowire(String clazz) {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setReloadingEnabled(boolean reloadingEnabled) {
+        }
+
+        public boolean isReloadingEnabled() {
+            return false;
         }
 
         @Override

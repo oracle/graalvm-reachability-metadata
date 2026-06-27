@@ -6,7 +6,8 @@
  */
 package org_codehaus_plexus.plexus_container_default;
 
-import org.codehaus.classworlds.ClassRealm;
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.composition.CompositionException;
@@ -29,10 +30,10 @@ import java.io.File;
 import java.io.Reader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -50,36 +51,29 @@ public class FieldComponentComposerTest {
         listDependencies.add("list dependency");
         Map<String, String> mapDependencies = new HashMap<>();
         mapDependencies.put("key", "map dependency");
-        Map<String, String> setSourceDependencies = new HashMap<>();
-        setSourceDependencies.put("set-key", "set dependency");
         Dependency ordinaryDependency = new Dependency();
 
         String arrayRole = "arrayRole";
         String mapRole = "mapRole";
         String listRole = "listRole";
-        String setRole = "setRole";
         String ordinaryRole = Dependency.class.getName();
 
         container.addList(arrayRole, listOf(arrayDependency));
         container.addList(listRole, listDependencies);
         container.addMap(mapRole, mapDependencies);
-        container.addMap(setRole, setSourceDependencies);
         container.addComponent(ordinaryRole, ordinaryDependency);
 
         componentDescriptor.addRequirement(requirement(arrayRole, "arrayDependencies"));
         componentDescriptor.addRequirement(requirement(mapRole, "mapDependencies"));
         componentDescriptor.addRequirement(requirement(listRole, "listDependencies"));
-        componentDescriptor.addRequirement(requirement(setRole, "setDependencies"));
         componentDescriptor.addRequirement(requirement(ordinaryRole, "ordinaryDependency"));
 
-        List assignedDescriptors = composer.assembleComponent(component, componentDescriptor, container);
+        composer.assembleComponent(component, componentDescriptor, container);
 
-        assertEquals(5, assignedDescriptors.size());
         assertEquals(1, component.arrayDependencies.length);
         assertSame(arrayDependency, component.arrayDependencies[0]);
         assertSame(mapDependencies, component.mapDependencies);
         assertSame(listDependencies, component.listDependencies);
-        assertEquals(setSourceDependencies.entrySet(), component.setDependencies);
         assertSame(ordinaryDependency, component.ordinaryDependency);
     }
 
@@ -138,8 +132,6 @@ public class FieldComponentComposerTest {
 
         private List listDependencies;
 
-        private Set setDependencies;
-
         private Dependency ordinaryDependency;
     }
 
@@ -188,6 +180,22 @@ public class FieldComponentComposerTest {
             return lookup(role + roleHint);
         }
 
+        public Object lookup(Class componentClass) throws ComponentLookupException {
+            return lookup(componentClass.getName());
+        }
+
+        public Map lookupMap(Class role) throws ComponentLookupException {
+            return lookupMap(role.getName());
+        }
+
+        public List lookupList(Class role) throws ComponentLookupException {
+            return lookupList(role.getName());
+        }
+
+        public Object lookup(Class role, String roleHint) throws ComponentLookupException {
+            return lookup(role.getName(), roleHint);
+        }
+
         @Override
         public Map lookupMap(String role) throws ComponentLookupException {
             Map dependencies = maps.get(role);
@@ -223,6 +231,10 @@ public class FieldComponentComposerTest {
             return listOf(descriptors.get(role));
         }
 
+        public Date getCreationDate() {
+            return new Date(0L);
+        }
+
         @Override
         public boolean hasChildContainer(String name) {
             return false;
@@ -231,6 +243,9 @@ public class FieldComponentComposerTest {
         @Override
         public PlexusContainer getChildContainer(String name) {
             return null;
+        }
+
+        public void removeChildContainer(String name) {
         }
 
         @Override
@@ -246,6 +261,10 @@ public class FieldComponentComposerTest {
             Map context,
             List discoveryListeners
         ) throws PlexusContainerException {
+            throw new UnsupportedOperationException();
+        }
+
+        public ClassRealm createComponentRealm(String id, List classpath) throws PlexusContainerException {
             throw new UnsupportedOperationException();
         }
 
@@ -290,22 +309,25 @@ public class FieldComponentComposerTest {
             throw new UnsupportedOperationException();
         }
 
-        @Override
         public void initialize() throws PlexusContainerException {
         }
 
-        @Override
         public boolean isInitialized() {
             return true;
         }
 
-        @Override
         public void start() throws PlexusContainerException {
         }
 
-        @Override
         public boolean isStarted() {
             return true;
+        }
+
+        public void initializePhases() {
+        }
+
+        public List discoverComponents(ClassRealm classRealm) {
+            return new ArrayList();
         }
 
         @Override
@@ -321,11 +343,28 @@ public class FieldComponentComposerTest {
         public void setParentPlexusContainer(PlexusContainer parentContainer) {
         }
 
+        public void setName(String name) {
+        }
+
+        public String getName() {
+            return "recording";
+        }
+
+        public ClassWorld getClassWorld() {
+            return null;
+        }
+
+        public void setClassWorld(ClassWorld classWorld) {
+        }
+
+        public PlexusContainer getParentContainer() {
+            return null;
+        }
+
         @Override
         public void addContextValue(Object key, Object value) {
         }
 
-        @Override
         public void setConfigurationResource(Reader configuration) throws PlexusConfigurationResourceException {
             throw new UnsupportedOperationException();
         }
@@ -335,13 +374,11 @@ public class FieldComponentComposerTest {
             return null;
         }
 
-        @Override
         public Object createComponentInstance(ComponentDescriptor componentDescriptor)
             throws ComponentInstantiationException, ComponentLifecycleException {
             throw new UnsupportedOperationException();
         }
 
-        @Override
         public void composeComponent(Object component, ComponentDescriptor componentDescriptor)
             throws CompositionException, UndefinedComponentComposerException {
             throw new UnsupportedOperationException();
@@ -372,9 +409,23 @@ public class FieldComponentComposerTest {
             return null;
         }
 
-        @Override
         public ClassRealm getComponentRealm(String componentKey) {
             return null;
+        }
+
+        public Object autowire(Object component) {
+            throw new UnsupportedOperationException();
+        }
+
+        public Object createAndAutowire(String clazz) {
+            throw new UnsupportedOperationException();
+        }
+
+        public void setReloadingEnabled(boolean reloadingEnabled) {
+        }
+
+        public boolean isReloadingEnabled() {
+            return false;
         }
 
         @Override

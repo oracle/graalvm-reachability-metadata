@@ -6,14 +6,14 @@
  */
 package org_codehaus_plexus.plexus_container_default;
 
-import org.codehaus.plexus.PlexusContainerManager;
+import org.codehaus.plexus.ComponentLookupManager;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class PlexusContainerManagerAnonymous1Test {
     @Test
-    void roleUsesThePlexusContainerManagerTypeName() {
-        assertThat(PlexusContainerManager.ROLE).isEqualTo(PlexusContainerManager.class.getName());
+    void roleUsesTheComponentLookupManagerTypeName() {
+        assertThat(ComponentLookupManager.ROLE).isEqualTo(ComponentLookupManager.class.getName());
     }
 }
