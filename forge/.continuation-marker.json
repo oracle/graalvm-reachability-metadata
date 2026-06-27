@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.sonatype.sisu:sisu-inject-bean:2.4.2",
+  "issueNumber": 8718,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment or system-property setup is required. If tests exercise org.eclipse.sisu.space.QualifiedTypeBinder on 2.4.2, use hear(Class, Object), not the older three-argument hear(null, Class, Object) form.",
+    "applied_setup": [],
+    "current_library": "org.sonatype.sisu:sisu-inject-bean:2.4.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8718 [Automation] javac compile fails for org.sonatype.sisu:sisu-inject-bean:2.4.2; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "14 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 80581,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8718,
+    "library": "org.sonatype.sisu:sisu-inject-bean:2.4.2",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.4.2",
+    "output_tokens_used": 5354,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The artifact declares optional integrations for JUnit 4/TestNG, OSGi, and SLF4J; do not add those unless the generated tests intentionally target those optional integration classes.",
+      "The library is an old deprecated legacy wrapper around Eclipse Sisu/Guice APIs, so API drift between existing 2.4.0 tests and 2.4.2 is the main compile risk."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.sonatype.sisu:sisu-inject-bean:2.4.2/library-preparation-preflight/pi-generation-2026-06-27T13-40-53-262986Z.log",
+    "status": "completed",
+    "summary": "No extra dependency, Docker image, environment variable, or system property is needed for meaningful in-process Sisu/Guice coverage; the observed javac failure is a stale test API call against the 2.4.1+/2.4.2 QualifiedTypeBinder signature."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.4.2",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8718-fails-javac-compile-org.sonatype.sisu-sisu-inject-bean-2.4.2-4f254f6b",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
