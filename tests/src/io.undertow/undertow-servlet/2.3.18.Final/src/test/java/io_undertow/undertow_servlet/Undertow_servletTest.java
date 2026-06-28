@@ -9,11 +9,14 @@ package io_undertow.undertow_servlet;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.undertow.Undertow;
+import io.undertow.server.handlers.resource.PathResourceManager;
 import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
+import io.undertow.servlet.api.MimeMapping;
 import io.undertow.servlet.api.ServletContainer;
 import io.undertow.servlet.api.ServletContainerInitializerInfo;
+import io.undertow.servlet.handlers.DefaultServlet;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
@@ -40,6 +43,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Collection;
@@ -164,6 +168,34 @@ public class Undertow_servletTest {
                     "asyncSupported=true",
                     "message=complete",
                     "complete=true");
+        }
+    }
+
+    @Test
+    void defaultServletServesWelcomeFilesAndConfiguredMimeMappings(@TempDir Path webRoot) throws Exception {
+        Files.writeString(webRoot.resolve("index.txt"), "welcome from resource manager", StandardCharsets.UTF_8);
+        Path assets = Files.createDirectories(webRoot.resolve("assets"));
+        Files.writeString(assets.resolve("info.example"), "custom mime resource", StandardCharsets.UTF_8);
+
+        DeploymentInfo deploymentInfo = baseDeployment("static")
+                .setResourceManager(new PathResourceManager(webRoot, 1024))
+                .addWelcomePage("index.txt")
+                .addMimeMapping(new MimeMapping("example", "application/x-undertow-test"))
+                .addServlet(Servlets.servlet("default", DefaultServlet.class)
+                        .addInitParam(DefaultServlet.DEFAULT_ALLOWED, "true")
+                        .addMapping("/"));
+
+        try (RunningServer server = startServer(deploymentInfo);
+                HttpClient client = newHttpClient()) {
+            HttpResponse<String> welcomeResponse = get(client, server.resolve("/"));
+            assertThat(welcomeResponse.statusCode()).isEqualTo(200);
+            assertThat(welcomeResponse.body()).contains("welcome from resource manager");
+
+            HttpResponse<String> resourceResponse = get(client, server.resolve("/assets/info.example"));
+            assertThat(resourceResponse.statusCode()).isEqualTo(200);
+            assertThat(resourceResponse.headers().firstValue("Content-Type"))
+                    .contains("application/x-undertow-test");
+            assertThat(resourceResponse.body()).contains("custom mime resource");
         }
     }
 
