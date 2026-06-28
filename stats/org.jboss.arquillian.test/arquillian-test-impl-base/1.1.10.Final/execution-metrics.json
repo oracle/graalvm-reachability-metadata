@@ -1,0 +1,72 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T12:09:20.008602Z",
+    "library": "org.jboss.arquillian.test:arquillian-test-impl-base:1.1.10.Final",
+    "starting_commit": "d7fee1a2c08cb6d5fe51d4316df5c4962921a8b5",
+    "ending_commit": "2022c0df5c8b3b3c1cef8b17d9effa3000f4694a",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 3786,
+      "issue_label": "library-new-request",
+      "library": "org.jboss.arquillian.test:arquillian-test-impl-base:1.1.10.Final",
+      "summary": "Meaningful coverage of arquillian-test-impl-base normally needs the Arquillian core implementation at test runtime; the target artifact only brings core API/SPI transitively, while ManagerBuilder.create() reflectively instantiates org.jboss.arquillian.core.impl.ManagerImpl from arquillian-core-impl-base.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.jboss.arquillian.core:arquillian-core-impl-base:1.1.10.Final",
+          "scope": "testImplementation",
+          "reason": "The library's main lifecycle adapter and extension/context behavior are exercised through Arquillian Manager/ManagerBuilder; ManagerImpl is not in the target artifact's transitive compile dependencies but is required for normal in-memory Arquillian lifecycle tests."
+        }
+      ],
+      "agent_guidance": "No Docker image or environment/system property appears necessary. Generated tests should prefer in-memory Arquillian lifecycle coverage: build a Manager with ManagerBuilder, register the test extension/context handlers, and exercise EventTestRunnerAdaptor, TestContextHandler, TestInstanceEnricher, and ArquillianResourceTestEnricher with small local test classes and stub ServiceLoader/ResourceProvider implementations.",
+      "risks": [
+        "Without arquillian-core-impl-base, tests may compile against ManagerBuilder but fail at runtime when ManagerImpl is reflectively loaded, or fall back to superficial direct-constructor coverage.",
+        "Upstream tests also used Mockito and test-helper classes, but equivalent stubs can be written in generated tests, so those are not deterministic setup requirements."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.jboss.arquillian.core:arquillian-core-impl-base:1.1.10.Final",
+          "result": "applied",
+          "target": "tests/src/org.jboss.arquillian.test/arquillian-test-impl-base/1.1.10.Final/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#3786 Support for org.jboss.arquillian.test:arquillian-test-impl-base:1.1.10.Final; label=library-new-request; body_chars=133"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 29303,
+      "output_tokens_used": 3533,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.jboss.arquillian.test:arquillian-test-impl-base:1.1.10.Final/library-preparation-preflight/pi-generation-2026-06-28T11-23-35-201179Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 315860,
+      "cached_input_tokens_used": 4565504,
+      "output_tokens_used": 30030,
+      "iterations": 5,
+      "cost_usd": 3.1837,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
+  }
+}
