@@ -6,8 +6,9 @@
  */
 package org_eclipse_jetty.jetty_webapp;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,6 +23,8 @@ import org.junit.jupiter.api.io.TempDir;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class StandardDescriptorProcessorTest {
+    private static final Charset HTTP_CHARSET = StandardCharsets.ISO_8859_1;
+
     @TempDir
     Path temporaryDirectory;
 
@@ -47,14 +50,9 @@ public class StandardDescriptorProcessorTest {
             assertThat(context.getInitParameter("descriptor.processed")).isEqualTo("true");
             assertThat(context.getMimeTypes().getMimeByExtension("example.txt")).isEqualTo("text/example");
 
-            HttpURLConnection connection = openConnection(connector.getLocalPort(), "/index.txt");
-            try {
-                assertThat(connection.getResponseCode()).isEqualTo(HttpURLConnection.HTTP_OK);
-                assertThat(new String(connection.getInputStream().readAllBytes(), StandardCharsets.UTF_8))
-                        .isEqualTo("served by WebAppContext");
-            } finally {
-                connection.disconnect();
-            }
+            HttpResponse response = request(connector.getLocalPort(), "/index.txt");
+            assertThat(response.statusCode()).isEqualTo(200);
+            assertThat(response.body()).isEqualTo("served by WebAppContext");
         } finally {
             server.stop();
             server.destroy();
@@ -93,10 +91,29 @@ public class StandardDescriptorProcessorTest {
         return temporaryDirectory;
     }
 
-    private static HttpURLConnection openConnection(int port, String path) throws Exception {
-        HttpURLConnection connection = (HttpURLConnection)new URL("http://127.0.0.1:" + port + path).openConnection();
-        connection.setConnectTimeout(10_000);
-        connection.setReadTimeout(10_000);
-        return connection;
+    private static HttpResponse request(int port, String path) throws Exception {
+        try (Socket socket = new Socket()) {
+            socket.connect(new InetSocketAddress("127.0.0.1", port), 10_000);
+            socket.setSoTimeout(10_000);
+            socket.getOutputStream().write(("""
+                    GET %s HTTP/1.1\r
+                    Host: 127.0.0.1\r
+                    Connection: close\r
+                    \r
+                    """.formatted(path)).getBytes(HTTP_CHARSET));
+            socket.getOutputStream().flush();
+
+            String response = new String(socket.getInputStream().readAllBytes(), HTTP_CHARSET);
+            int headerEnd = response.indexOf("\r\n\r\n");
+            assertThat(headerEnd).isGreaterThanOrEqualTo(0);
+
+            String statusLine = response.substring(0, response.indexOf("\r\n"));
+            int statusCode = Integer.parseInt(statusLine.split(" ")[1]);
+            String body = response.substring(headerEnd + 4);
+            return new HttpResponse(statusCode, body);
+        }
+    }
+
+    private record HttpResponse(int statusCode, String body) {
     }
 }
