@@ -54,15 +54,28 @@ public class ResourceBundleMessageSourceInnerMessageSourceControlTest {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasename(basename);
         messageSource.setBundleClassLoader(classLoader);
-        messageSource.setCacheMillis(1);
+        messageSource.setCacheMillis(0);
 
         String firstMessage = messageSource.getMessage("greeting", null, Locale.ENGLISH);
         classLoader.useReloadContent();
-        Thread.sleep(10L);
-        String reloadedMessage = messageSource.getMessage("greeting", null, Locale.ENGLISH);
+        ResourceBundle.clearCache(classLoader);
+        String reloadedMessage = awaitReloadedMessage(messageSource, firstMessage);
 
         assertEquals("Hello before reload", firstMessage);
         assertEquals("Hello after reload", reloadedMessage);
+    }
+
+    private static String awaitReloadedMessage(ResourceBundleMessageSource messageSource, String previousMessage)
+            throws InterruptedException {
+        String currentMessage = previousMessage;
+        for (int attempt = 0; attempt < 20; attempt++) {
+            currentMessage = messageSource.getMessage("greeting", null, Locale.ENGLISH);
+            if (!previousMessage.equals(currentMessage)) {
+                return currentMessage;
+            }
+            Thread.sleep(25L);
+        }
+        return currentMessage;
     }
 
     static class ControlFailingMessageSource extends ResourceBundleMessageSource {
@@ -92,6 +105,8 @@ public class ResourceBundleMessageSourceInnerMessageSourceControlTest {
 
         private boolean useReloadContent;
 
+        private long lastModified = System.currentTimeMillis();
+
         ReloadableBundleClassLoader(String resourceName, String initialContent, String reloadContent) {
             super(ResourceBundleMessageSourceInnerMessageSourceControlTest.class.getClassLoader());
             this.resourceName = resourceName;
@@ -101,6 +116,7 @@ public class ResourceBundleMessageSourceInnerMessageSourceControlTest {
 
         void useReloadContent() {
             this.useReloadContent = true;
+            this.lastModified = Math.max(System.currentTimeMillis(), this.lastModified + 1L);
         }
 
         @Override
@@ -118,8 +134,7 @@ public class ResourceBundleMessageSourceInnerMessageSourceControlTest {
             }
             try {
                 return new URL(null, "memory:/" + name, new ReloadableResourceHandler(this));
-            }
-            catch (IOException ex) {
+            } catch (IOException ex) {
                 throw new IllegalStateException("Failed to create in-memory bundle URL", ex);
             }
         }
@@ -159,7 +174,7 @@ public class ResourceBundleMessageSourceInnerMessageSourceControlTest {
 
         @Override
         public long getLastModified() {
-            return Long.MAX_VALUE;
+            return this.classLoader.lastModified;
         }
 
         @Override
