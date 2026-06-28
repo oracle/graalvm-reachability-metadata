@@ -79,11 +79,26 @@ class Anorm_tokenizer_3Test {
       .isEqualTo("select * from users")
   }
 
+  @Test
+  def makerCanComposeInputTransformationBeforeRendering(): Unit = {
+    val maker: Show.Maker[SqlKeyword] = new Show.Maker[SqlKeyword] {
+      override def apply(subject: SqlKeyword): Show = new StringShow(subject.value.toUpperCase(Locale.ROOT))
+    }
+
+    val renderClauseKeyword: QueryClause => Show = maker.compose((clause: QueryClause) => clause.keyword)
+
+    assertThat(renderClauseKeyword(QueryClause(SqlKeyword("where"), "id = {_0}")).show).isEqualTo("WHERE")
+  }
+
   private final case class SqlLiteral(value: String)
 
   private final case class ColumnReference(table: String, column: String)
 
   private final case class DelimitedTokens(values: List[String])
+
+  private final case class SqlKeyword(value: String)
+
+  private final case class QueryClause(keyword: SqlKeyword, predicate: String)
 
   private final class DelimitedTokensShow(tokens: DelimitedTokens) extends Show {
     override def show: String = tokens.values.mkString(" ")
