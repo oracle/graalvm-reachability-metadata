@@ -175,6 +175,28 @@ class Play_ws_standalone_xml_2_13Test {
   }
 
   @Test
+  def scalaXmlTraitsProvideImplicitBodyReadersAndWriters(): Unit = {
+    object XmlSupport extends ScalaXMLBodyReadables with ScalaXMLBodyWritables
+    import XmlSupport._
+
+    val response: StandaloneWSResponse = ScalaResponse(
+      ByteString.fromString("""<inventory><item sku="a-1"><name>Widget</name></item></inventory>""")
+    )
+
+    val parsed: Elem = response.body[Elem]
+    assertEquals("inventory", parsed.label)
+    assertEquals("a-1", (parsed \ "item" \ "@sku").text)
+    assertEquals("Widget", (parsed \\ "name").text)
+
+    val writable: BodyWritable[Elem] = implicitly[BodyWritable[Elem]]
+    val xmlElement: Elem = <order id="o-1"><quantity>3</quantity></order>
+    val body: InMemoryBody = writable.transform(xmlElement).asInstanceOf[InMemoryBody]
+
+    assertEquals("text/xml", writable.contentType)
+    assertEquals(xmlElement.toString(), body.bytes.utf8String)
+  }
+
+  @Test
   def secureScalaAndJavaParsersRejectDoctypeDeclarations(): Unit = {
     val documentWithDoctype: String =
       """
