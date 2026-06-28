@@ -116,6 +116,18 @@ public class Doxia_logging_apiTest {
     }
 
     @Test
+    void systemStreamLogWritesErrorMessagesWithCausesOnlyToErrorStream() {
+        SystemStreamLog log = new SystemStreamLog();
+        IllegalStateException cause = new IllegalStateException("system-error-cause");
+
+        CapturedStreams capturedStreams = captureStreams(() -> log.error("system-error-message", cause));
+
+        assertThat(capturedStreams.out()).isEmpty();
+        assertThat(capturedStreams.err()).contains("system-error-message")
+                .contains("java.lang.IllegalStateException: system-error-cause");
+    }
+
+    @Test
     void plexusLoggerWrapperDelegatesThresholdsAndEnabledChecks() {
         RecordingPlexusLogger logger = new RecordingPlexusLogger();
         PlexusLoggerWrapper wrapper = new PlexusLoggerWrapper(logger);
