@@ -10,9 +10,24 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+configurations {
+    augmentorRuntime
+}
+
 dependencies {
     testImplementation "io.quarkus:quarkus-bootstrap-core:$libraryVersion"
+    augmentorRuntime "io.quarkus:quarkus-core-deployment:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+String augmentorRuntimeClasspath = configurations.augmentorRuntime.asPath
+
+tasks.withType(Test).configureEach {
+    systemProperty "quarkus.core.deployment.classpath", augmentorRuntimeClasspath
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Dquarkus.core.deployment.classpath=${augmentorRuntimeClasspath}")
 }
 
 graalvmNative {
