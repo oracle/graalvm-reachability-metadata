@@ -14,13 +14,13 @@ final class ScalaRuntimeArraysAccess {
         return scala.runtime.Arrays$.MODULE$.newArray(
                 String.class,
                 String[][].class,
-                new int[] { rows, columns });
+                new int[] {rows, columns});
     }
 
     static int[][] newIntMatrix(int rows, int columns) {
         return scala.runtime.Arrays$.MODULE$.newArray(
                 int.class,
                 int[][].class,
-                new int[] { rows, columns });
+                new int[] {rows, columns});
     }
 }
