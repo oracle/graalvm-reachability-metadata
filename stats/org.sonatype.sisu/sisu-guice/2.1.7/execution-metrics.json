@@ -1,0 +1,99 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T23:40:52.402770Z",
+    "library": "org.sonatype.sisu:sisu-guice:2.1.7",
+    "starting_commit": "dfceb12239b85398f32ee6b6a71fbddab4c89f36",
+    "ending_commit": "82a77dab3a603118d23b2c29cd5c254f59c08574",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "2.1.7",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.512195,
+            "coveredCalls": 42,
+            "totalCalls": 82
+          },
+          "resources": {
+            "coverageRatio": 0.333333,
+            "coveredCalls": 1,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 0.505882,
+        "coveredCalls": 43,
+        "totalCalls": 85
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4800,
+          "missed": 53443,
+          "ratio": 0.082413,
+          "total": 58243
+        },
+        "line": {
+          "covered": 1069,
+          "missed": 7989,
+          "ratio": 0.118017,
+          "total": 9058
+        },
+        "method": {
+          "covered": 293,
+          "missed": 2659,
+          "ratio": 0.099255,
+          "total": 2952
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 2294,
+      "issue_label": "library-new-request",
+      "library": "org.sonatype.sisu:sisu-guice:2.1.7",
+      "summary": "Core Sisu Guice usage is ordinary in-process dependency injection; the resolved artifact brings its required javax.inject and aopalliance transitive dependencies, shades its ASM/CGLIB internals, and does not require a Docker service, extra Maven dependency, environment variable, or system property for meaningful core coverage.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The main artifact includes old CGLIB/AOP support. Tests that exercise bindInterceptor/method interception on modern JDKs may fail unless the JVM is started with --add-opens java.base/java.lang=ALL-UNNAMED; core constructor/provider/member injection coverage does not need this.",
+        "SLF4J logger injection is an optional Sisu patch and would require slf4j-api if intentionally tested, but it is not required for meaningful baseline Guice coverage."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#2294 Support for org.sonatype.sisu:sisu-guice:2.1.7; label=library-new-request; body_chars=103"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 75546,
+      "output_tokens_used": 7599,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.sonatype.sisu:sisu-guice:2.1.7/library-preparation-preflight/pi-generation-2026-06-28T22-49-45-959719Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 432069,
+      "cached_input_tokens_used": 4634112,
+      "output_tokens_used": 44071,
+      "iterations": 9,
+      "cost_usd": 3.6392,
+      "generated_loc": 308,
+      "tested_library_loc": 1069,
+      "metadata_entries": 49,
+      "test_only_metadata_entries": 3,
+      "code_coverage_percent": 11.8
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.sonatype.sisu/sisu-guice/2.1.7/src/test/java/org_sonatype_sisu/sisu_guice/InjectionPointTest.java",
+      "metadata_file": "metadata/org.sonatype.sisu/sisu-guice/2.1.7/reachability-metadata.json"
+    }
+  }
+}
