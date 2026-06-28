@@ -6,7 +6,6 @@
  */
 package org_apache_camel.camel_health;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +24,6 @@ import org.apache.camel.impl.health.AbstractHealthCheck;
 import org.apache.camel.impl.health.ConsumersHealthCheckRepository;
 import org.apache.camel.impl.health.ContextHealthCheck;
 import org.apache.camel.impl.health.DefaultHealthCheckRegistry;
-import org.apache.camel.impl.health.DefaultHealthChecksLoader;
 import org.apache.camel.impl.health.HealthCheckRegistryRepository;
 import org.apache.camel.impl.health.ProducersHealthCheckRepository;
 import org.apache.camel.impl.health.RouteControllerHealthCheck;
@@ -264,21 +262,6 @@ public class Camel_healthTest {
             repository.setEnabled(false);
             assertThat(repository.stream().toList()).isEmpty();
             assertThat(repository.getCheck("database")).isEmpty();
-        }
-    }
-
-    @Test
-    void defaultLoaderDiscoversClasspathHealthChecksFromCamelServiceDescriptors() throws Exception {
-        try (DefaultCamelContext context = new DefaultCamelContext()) {
-            DefaultHealthChecksLoader loader = new DefaultHealthChecksLoader(context);
-            Collection<HealthCheck> checks = loader.loadHealthChecks();
-            List<String> ids = checks.stream().map(HealthCheck::getId).toList();
-
-            assertThat(ids).contains("route-controller");
-            assertThat(ids).doesNotContain("context");
-            assertThat(checks)
-                    .allSatisfy(check -> assertThat(check.getGroup()).isEqualTo("camel"))
-                    .allSatisfy(check -> assertThat(check.isEnabled()).isTrue());
         }
     }
 

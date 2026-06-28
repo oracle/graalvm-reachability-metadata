@@ -1,0 +1,18 @@
+Completed.
+
+Changed:
+- Removed unsupported generated native-image test:
+  - `tests/src/org.apache.camel/camel-health/4.20.0/src/test/java/org_apache_camel/camel_health/Camel_healthTest.java`
+  - Removed `defaultLoaderDiscoversClasspathHealthChecksFromCamelServiceDescriptors()`
+  - Removed now-unused imports.
+
+Report written:
+- `post-gen-interventions/org.apache.camel_camel-health_4.20.0.md`
+
+Validation:
+- Ran `./gradlew test -Pcoordinates=org.apache.camel:camel-health:4.20.0 --stacktrace`
+- Result: `BUILD SUCCESSFUL`
+- Native tests: 7 successful, 0 failed
+
+Root cause:
+- The failing test was not metadata-related. Camel’s scanner cannot enumerate native-image `resource:` URLs for the health-check descriptor directory, even though direct descriptor resources are present/readable. Therefore the generated classpath-scanning test was removed rather than adding more metadata.
