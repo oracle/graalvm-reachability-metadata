@@ -1,0 +1,121 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.springframework:spring-context:6.0.2
+Command: `/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8772-9a5f5555/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 3 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :compileTestJava
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses
+
+26 tests completed, 1 failed
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8772-9a5f5555/tests/src/org.springframework/spring-context/6.0.2/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 10s
+
+> Task :test FAILED
+
+ConfigurationClassEnhancerInnerBeanMethodInterceptorTest > nonFinalFactoryBeanUsesCglibProxyInstantiatedThroughDefaultConstructorFallback() FAILED
+    java.lang.IllegalArgumentException: Unsupported class file major version 65
+        at org.springframework.asm.ClassReader.<init>(ClassReader.java:199)
+        at org.springframework.asm.ClassReader.<init>(ClassReader.java:180)
+        at org.springframework.asm.ClassReader.<init>(ClassReader.java:166)
+        at org.springframework.asm.ClassReader.<init>(ClassReader.java:287)
+        at org.springframework.cglib.proxy.BridgeMethodResolver.resolveAll(BridgeMethodResolver.java:69)
+        at org.springframework.cglib.proxy.Enhancer.emitMethods(Enhancer.java:1236)
+        at org.springframework.cglib.proxy.Enhancer.generateClass(Enhancer.java:721)
+        at org.springframework.cglib.core.DefaultGeneratorStrategy.generate(DefaultGeneratorStrategy.java:25)
+        at org.springframework.cglib.core.AbstractClassGenerator.generate(AbstractClassGenerator.java:371)
+        at org.springframework.cglib.proxy.Enhancer.generate(Enhancer.java:580)
+        at org.springframework.cglib.core.AbstractClassGenerator$ClassLoaderData$3.apply(AbstractClassGenerator.java:113)
+        at org.springframework.cglib.core.AbstractClassGenerator$ClassLoaderData$3.apply(AbstractClassGenerator.java:111)
+        at org.springframework.cglib.core.internal.LoadingCache$2.call(LoadingCache.java:55)
+        at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+        at org.springframework.cglib.core.internal.LoadingCache.createEntry(LoadingCache.java:62)
+        at org.springframework.cglib.core.internal.LoadingCache.get(LoadingCache.java:35)
+        at org.springframework.cglib.core.AbstractClassGenerator$ClassLoaderData.get(AbstractClassGenerator.java:137)
+        at org.springframework.cglib.core.AbstractClassGenerator.create(AbstractClassGenerator.java:322)
+        at org.springframework.cglib.proxy.Enhancer.createHelper(Enhancer.java:567)
+        at org.springframework.cglib.proxy.Enhancer.createClass(Enhancer.java:412)
+        at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.createCglibProxyForFactoryBean(ConfigurationClassEnhancer.java:516)
+        at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.enhanceFactoryBean(ConfigurationClassEnhancer.java:489)
+        at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:313)
+        at org_springframework.spring_context.ConfigurationClassEnhancerInnerBeanMethodInterceptorTest$CglibProxyConfiguration$$SpringCGLIB$$0.cglibFactoryBean(<generated>)
+        at org_springframework.spring_context.ConfigurationClassEnhancerInnerBeanMethodInterceptorTest.lambda$nonFinalFactoryBeanUsesCglibProxyInstantiatedThroughDefaultConstructorFallback$0(ConfigurationClassEnhancerInnerBeanMethodInterceptorTest.java:55)
+        at org_springframework.spring_context.ConfigurationClassEnhancerInnerBeanMethodInterceptorTest.withContext(ConfigurationClassEnhancerInnerBeanMethodInterceptorTest.java:69)
+        at org_springframework.spring_context.ConfigurationClassEnhancerInnerBeanMethodInterceptorTest.nonFinalFactoryBeanUsesCglibProxyInstantiatedThroughDefaultConstructorFallback(ConfigurationClassEnhancerInnerBeanMethodInterceptorTest.java:50)
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8772-9a5f5555/tests/src/org.springframework/spring-context/6.0.2/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+15 actionable tasks: 3 executed, 12 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8772-9a5f5555/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.springframework:spring-context:6.0.2 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 13s
+9 actionable tasks: 1 executed, 8 up-to-date

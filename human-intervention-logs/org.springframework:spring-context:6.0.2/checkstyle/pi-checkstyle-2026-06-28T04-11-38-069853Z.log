@@ -1,0 +1,27 @@
+=== Pi checkstyle attempt 1 ===
+Fixed the checkstyle violations by moving `catch`/`finally` onto the same line as the preceding closing brace in:
+
+- `tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/ResourceBundleMessageSourceInnerMessageSourceControlTest.java`
+- `tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/PredefinedCglibProxyClassesGenerator.java`
+
+Validation passed:
+
+```bash
+./gradlew checkstyle -Pcoordinates=org.springframework:spring-context:6.0.2
+```
+
+Build result: `BUILD SUCCESSFUL`.
+=== Pi test-after-checkstyle attempt 1 ===
+Implemented the minimal metadata fixes for `org.springframework:spring-context:6.0.2`.
+
+Changed:
+- `metadata/org.springframework/spring-context/6.0.2/reachability-metadata.json`
+  - Added reflection metadata for `ConcurrentMapCacheFactoryBean` methods used by Spring’s `BeanMethodInterceptor`.
+- `tests/src/org.springframework/spring-context/6.0.2/src/test/resources/META-INF/native-image/reachability-metadata.json`
+  - Registered the pre-generated `ConcurrentMapCacheFactoryBean$$SpringCGLIB$$0` proxy class.
+  - Added native resource bundle registrations for the two test message bundles.
+
+Verified:
+- `./gradlew test -Pcoordinates=org.springframework:spring-context:6.0.2 --stacktrace` ✅
+- `./gradlew checkMetadataFiles -Pcoordinates=org.springframework:spring-context:6.0.2` ✅
+- `./gradlew checkstyle -Pcoordinates=org.springframework:spring-context:6.0.2` ✅
