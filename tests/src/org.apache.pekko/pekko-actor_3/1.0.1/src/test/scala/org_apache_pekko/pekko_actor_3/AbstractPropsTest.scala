@@ -21,23 +21,11 @@ class AbstractPropsTest {
   }
 
   @Test
-  def createWithPrivateLocalCreatorValidatesDeclaredConstructors(): Unit = {
-    class LocalPrivateCreator private () extends Creator[AbstractPropsActor] {
-      override def create(): AbstractPropsActor = new AbstractPropsActor
-    }
-    object LocalPrivateCreator {
-      def apply(): Creator[AbstractPropsActor] = new LocalPrivateCreator()
-    }
+  def createWithStaticAnonymousCreatorValidatesDeclaredConstructors(): Unit = {
+    val actorClass: Class[AbstractPropsJavaHelper.JavaActor] = classOf[AbstractPropsJavaHelper.JavaActor]
+    val props: Props = Props.create(actorClass, AbstractPropsJavaHelper.staticAnonymousCreator())
 
-    val creator: Creator[AbstractPropsActor] = LocalPrivateCreator()
-
-    try {
-      val props: Props = Props.create(classOf[AbstractPropsActor], creator)
-      assertThat(props.actorClass()).isEqualTo(classOf[AbstractPropsActor])
-    } catch {
-      case e: IllegalArgumentException =>
-        assertThat(e).hasMessageContaining("cannot use non-static local Creator")
-    }
+    assertThat(props.actorClass()).isEqualTo(actorClass)
   }
 
   class PublicMemberCreator extends Creator[AbstractPropsActor] {
