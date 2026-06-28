@@ -8,9 +8,9 @@ package dev_profunktor.redis4cats_effects_3
 
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
-import dev.profunktor.redis4cats.Redis
+import dev.profunktor.redis4cats.{Redis, RedisCommands}
 import dev.profunktor.redis4cats.connection.RedisClient
-import dev.profunktor.redis4cats.data.RedisCodec
+import dev.profunktor.redis4cats.data.{KeyScanCursor, RedisCodec}
 import dev.profunktor.redis4cats.effect.Log.NoOp._
 import dev.profunktor.redis4cats.effects._
 import io.lettuce.core.GeoArgs
@@ -155,6 +155,71 @@ class Redis4cats_effects_3Test {
   }
 
   @Test
+  def expirationArgumentsAndTypedScanCommands(): Unit = {
+    Redis4cats_effects_3Test.ensureRedisServer()
+    val prefix: String = Redis4cats_effects_3Test.nextPrefix("arguments")
+    val expiringKey: String = s"$prefix:expiring"
+    val scanStringOne: String = s"$prefix:scan:string:one"
+    val scanStringTwo: String = s"$prefix:scan:string:two"
+    val scanHash: String = s"$prefix:scan:hash"
+
+    runIO {
+      Redis[IO].utf8(Redis4cats_effects_3Test.RedisUri).use { redis =>
+        for {
+          setWithNx <- redis.set(
+            expiringKey,
+            "first",
+            SetArgs(SetArg.Existence.Nx, SetArg.Ttl.Ex(20.seconds))
+          )
+          duplicateNx <- redis.set(expiringKey, "second", SetArgs(SetArg.Existence.Nx))
+          valueAfterDuplicate <- redis.get(expiringKey)
+          ttlAfterInitialSet <- redis.pttl(expiringKey)
+          persistedValue <- redis.getEx(expiringKey, GetExArg.Persist)
+          ttlAfterPersist <- redis.pttl(expiringKey)
+          expireNxWithoutTtl <- redis.expire(expiringKey, 20.seconds, ExpireExistenceArg.Nx)
+          expireNxWithTtl <- redis.expire(expiringKey, 30.seconds, ExpireExistenceArg.Nx)
+          expireXxWithTtl <- redis.expire(expiringKey, 40.seconds, ExpireExistenceArg.Xx)
+          updatedExisting <- redis.set(
+            expiringKey,
+            "updated",
+            SetArgs(SetArg.Existence.Xx, SetArg.Ttl.Ex(20.seconds))
+          )
+          valueWithRefreshedTtl <- redis.getEx(expiringKey, GetExArg.Ex(25.seconds))
+          ttlAfterGetEx <- redis.ttl(expiringKey)
+          _ <- redis.set(scanStringOne, "one")
+          _ <- redis.set(scanStringTwo, "two")
+          _ <- redis.hSet(scanHash, "field", "value")
+          scannedStringKeys <- scanAll(
+            redis,
+            KeyScanArgs(RedisType.String, s"$prefix:scan:*", 100L)
+          )
+          scannedHashKeys <- scanAll(
+            redis,
+            KeyScanArgs(RedisType.Hash, s"$prefix:scan:*", 100L)
+          )
+          unlinked <- redis.unlink(expiringKey, scanStringOne, scanStringTwo, scanHash)
+        } yield {
+          assertTrue(setWithNx)
+          assertFalse(duplicateNx)
+          assertEquals(Some("first"), valueAfterDuplicate)
+          assertTrue(ttlAfterInitialSet.exists(_ <= 20.seconds))
+          assertEquals(Some("first"), persistedValue)
+          assertTrue(ttlAfterPersist.isEmpty)
+          assertTrue(expireNxWithoutTtl)
+          assertFalse(expireNxWithTtl)
+          assertTrue(expireXxWithTtl)
+          assertTrue(updatedExisting)
+          assertEquals(Some("updated"), valueWithRefreshedTtl)
+          assertTrue(ttlAfterGetEx.exists(_ <= 25.seconds))
+          assertEquals(Set(scanStringOne, scanStringTwo), scannedStringKeys.toSet)
+          assertEquals(Set(scanHash), scannedHashKeys.toSet)
+          assertEquals(4L, unlinked)
+        }
+      }
+    }
+  }
+
+  @Test
   def simpleResourceCoversGeoHyperLogLogAndBitmapCommands(): Unit = {
     Redis4cats_effects_3Test.ensureRedisServer()
     val prefix: String = Redis4cats_effects_3Test.nextPrefix("specialized")
@@ -200,6 +265,29 @@ class Redis4cats_effects_3Test {
         }
       }
     }
+  }
+
+  private def scanAll(
+      redis: RedisCommands[IO, String, String],
+      keyScanArgs: KeyScanArgs
+  ): IO[List[String]] = {
+    def loop(cursor: Option[KeyScanCursor[String]], accumulated: List[String]): IO[List[String]] = {
+      val nextCursor: IO[KeyScanCursor[String]] = cursor match {
+        case Some(previous) => redis.scan(previous, keyScanArgs)
+        case None           => redis.scan(keyScanArgs)
+      }
+
+      nextCursor.flatMap { next =>
+        val keys: List[String] = accumulated ++ next.keys
+        if (next.isFinished) {
+          IO.pure(keys)
+        } else {
+          loop(Some(next), keys)
+        }
+      }
+    }
+
+    loop(None, List.empty)
   }
 
   private def runIO[A](ioa: IO[A]): A =
