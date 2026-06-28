@@ -7,6 +7,7 @@
 package javax_ws_rs.javax_ws_rs_api;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -63,6 +64,23 @@ public class JavaxWsRsClientFactoryFinderTest {
         } finally {
             Thread.currentThread().setContextClassLoader(originalContextClassLoader);
         }
+    }
+
+    @Test
+    void newBuilderReportsProviderWithWrongType() {
+        ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(
+                new ServiceOnlyClassLoader(NonClientBuilderProvider.class.getName()));
+        try {
+            assertThatThrownBy(ClientBuilder::newBuilder)
+                    .isInstanceOf(LinkageError.class)
+                    .hasMessageContaining("attempting to cast");
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalContextClassLoader);
+        }
+    }
+
+    public static class NonClientBuilderProvider {
     }
 
     public static class ProvidedClientBuilder extends ClientBuilder {
