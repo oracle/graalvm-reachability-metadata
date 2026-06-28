@@ -50,13 +50,16 @@ public class Tools_readerTest {
     private static final Keyword FEATURES = Keyword.intern(null, "features");
     private static final Keyword READ_COND = Keyword.intern(null, "read-cond");
     private static final Keyword READERS = Keyword.intern(null, "readers");
+    private static final Keyword SOURCE = Keyword.intern(null, "source");
     private static final Keyword X = Keyword.intern(null, "x");
 
     private static Var ednRead;
     private static Var ednReadString;
+    private static Var readerRead;
     private static Var readerReadString;
     private static Var inputStreamPushBackReader;
     private static Var indexingPushBackReader;
+    private static Var sourceLoggingPushBackReader;
     private static Var indexingReader;
     private static Var readChar;
     private static Var peekChar;
@@ -74,9 +77,11 @@ public class Tools_readerTest {
 
         ednRead = RT.var("clojure.tools.reader.edn", "read");
         ednReadString = RT.var("clojure.tools.reader.edn", "read-string");
+        readerRead = RT.var("clojure.tools.reader", "read");
         readerReadString = RT.var("clojure.tools.reader", "read-string");
         inputStreamPushBackReader = RT.var("clojure.tools.reader.reader-types", "input-stream-push-back-reader");
         indexingPushBackReader = RT.var("clojure.tools.reader.reader-types", "indexing-push-back-reader");
+        sourceLoggingPushBackReader = RT.var("clojure.tools.reader.reader-types", "source-logging-push-back-reader");
         indexingReader = RT.var("clojure.tools.reader.reader-types", "indexing-reader?");
         readChar = RT.var("clojure.tools.reader.reader-types", "read-char");
         peekChar = RT.var("clojure.tools.reader.reader-types", "peek-char");
@@ -205,6 +210,25 @@ public class Tools_readerTest {
                 () -> assertEquals(Symbol.intern("quote"), RT.first(quoted)),
                 () -> assertEquals(Symbol.intern("alpha"), RT.second(quoted)),
                 () -> assertEquals(Symbol.intern("fn*"), RT.first(anonymousFunction)));
+    }
+
+    @Test
+    public void clojureReaderAttachesSourceMetadataFromSourceLoggingReader() {
+        Object reader = sourceLoggingPushBackReader.invoke("(alpha\n beta) {:k 1}", 2, "forms.clj");
+
+        Object list = readerRead.invoke(reader);
+        Object map = readerRead.invoke(reader);
+
+        IPersistentMap listMetadata = assertInstanceOf(IPersistentMap.class, ((IMeta) list).meta());
+        IPersistentMap mapMetadata = assertInstanceOf(IPersistentMap.class, ((IMeta) map).meta());
+        IPersistentMap parsedMap = assertInstanceOf(IPersistentMap.class, map);
+
+        assertAll(
+                () -> assertEquals("(alpha\n beta)", listMetadata.valAt(SOURCE)),
+                () -> assertEquals("{:k 1}", mapMetadata.valAt(SOURCE)),
+                () -> assertEquals(Symbol.intern("alpha"), RT.first(list)),
+                () -> assertEquals(2, ((Counted) list).count()),
+                () -> assertEquals(1L, parsedMap.valAt(keyword("k"))));
     }
 
     @Test
