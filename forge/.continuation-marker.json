@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.pekko:pekko-actor_2.13:2.0.0-M1",
+  "issueNumber": 8742,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.apache.pekko:pekko-actor_2.13:1.1.5",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8742 [Automation] java run fails for org.apache.pekko:pekko-actor_2.13:2.0.0-M1; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "15 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 31697,
+    "issue_label": "fails-java-run",
+    "issue_number": 8742,
+    "library": "org.apache.pekko:pekko-actor_2.13:2.0.0-M1",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.0-M1",
+    "output_tokens_used": 4462,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Do not try to fix the removed org.apache.pekko.actor.TypedActor API by adding pekko-actor-typed; that module exposes the newer org.apache.pekko.actor.typed API and does not restore the removed classes.",
+      "If tests intentionally cover DNS internals that access sun.net.dns, local verification may require add-exports flags, but this is not required for baseline meaningful pekko-actor coverage."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.pekko:pekko-actor_2.13:2.0.0-M1/library-preparation-preflight/pi-generation-2026-06-28T01-45-46-868169Z.log",
+    "status": "completed",
+    "summary": "No concrete extra dependency, Docker image, or environment/system property is required before meaningful coverage is reachable for org.apache.pekko:pekko-actor_2.13:2.0.0-M1. The artifact resolves with only scala-library and typesafe config, and normal use is in-process actor-system construction/configuration. The reported failure is from tests using the removed old TypedActor/TypedProps API, not from missing setup."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.0-M1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8742-fails-java-run-org.apache.pekko-pekko-actor_2.13-2.0.0-M1-85d70618",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
