@@ -15,7 +15,17 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Dcom.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize=true")
+}
+
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("-Dcom.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize=true")
+            buildArgs.add("--initialize-at-run-time=com.sun.xml.bind.v2.runtime.unmarshaller.UnmarshallingContext")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
