@@ -31,7 +31,7 @@ public class ReflectionsTest {
                 COMPRESSION_CODEC_NONE, CompressionCodec.class, PULSAR_CLASS_LOADER);
         final Object utility = Reflections.createInstance(REFLECTIONS, PULSAR_CLASS_LOADER);
         final Object schemaVersion = Reflections.createInstance(
-                LONG_SCHEMA_VERSION, PULSAR_CLASS_LOADER, new Object[] { 42L }, new Class<?>[] { long.class });
+                LONG_SCHEMA_VERSION, PULSAR_CLASS_LOADER, new Object[] {42L }, new Class<?>[] {long.class });
 
         assertThat(codec).isInstanceOf(CompressionCodecNone.class);
         assertThat(utility).isInstanceOf(Reflections.class);
