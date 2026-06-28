@@ -4,26 +4,20 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package org_jboss_arquillian_container.arquillian_container_test_spi;
+package org.jboss.arquillian.container.test.spi.util;
 
-import java.lang.reflect.Method;
-
-import org.jboss.arquillian.container.test.spi.util.TestRunners;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SecurityActionsTest {
-    private static final String SECURITY_ACTIONS_CLASS_NAME =
-            "org.jboss.arquillian.container.test.spi.util.SecurityActions";
-
     @Test
     void loadClassUsesThreadContextClassLoaderWhenClassIsAvailable() throws Exception {
         ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader(TestRunners.class.getClassLoader());
 
-            Class<?> loadedClass = invokeLoadClass(TestRunners.class.getName());
+            Class<?> loadedClass = SecurityActions.loadClass(TestRunners.class.getName());
 
             assertThat(loadedClass).isSameAs(TestRunners.class);
         } finally {
@@ -37,7 +31,7 @@ public class SecurityActionsTest {
         try {
             Thread.currentThread().setContextClassLoader(new BlockingClassLoader(TestRunners.class.getName()));
 
-            Class<?> loadedClass = invokeLoadClass(TestRunners.class.getName());
+            Class<?> loadedClass = SecurityActions.loadClass(TestRunners.class.getName());
 
             assertThat(loadedClass).isSameAs(TestRunners.class);
         } finally {
@@ -47,7 +41,7 @@ public class SecurityActionsTest {
 
     @Test
     void newInstanceLoadsClassWithProvidedClassLoaderAndInvokesConstructor() throws Exception {
-        TestRunners instance = invokeNewInstance(
+        TestRunners instance = SecurityActions.newInstance(
                 TestRunners.class.getName(),
                 new Class<?>[0],
                 new Object[0],
@@ -56,41 +50,6 @@ public class SecurityActionsTest {
 
         assertThat(instance).isInstanceOf(TestRunners.class);
     }
-
-    private static Class<?> invokeLoadClass(String className) throws Exception {
-        Method loadClassMethod = securityActionsClass().getDeclaredMethod("loadClass", String.class);
-        loadClassMethod.setAccessible(true);
-        return (Class<?>) loadClassMethod.invoke(null, className);
-    }
-
-    private static <T> T invokeNewInstance(
-            String className,
-            Class<?>[] argumentTypes,
-            Object[] arguments,
-            Class<T> expectedType,
-            ClassLoader classLoader) throws Exception {
-        Method newInstanceMethod = securityActionsClass().getDeclaredMethod(
-                "newInstance",
-                String.class,
-                Class[].class,
-                Object[].class,
-                Class.class,
-                ClassLoader.class);
-        newInstanceMethod.setAccessible(true);
-        Object instance = newInstanceMethod.invoke(
-                null,
-                className,
-                argumentTypes,
-                arguments,
-                expectedType,
-                classLoader);
-        return expectedType.cast(instance);
-    }
-
-    private static Class<?> securityActionsClass() throws ClassNotFoundException {
-        return TestRunners.class.getClassLoader().loadClass(SECURITY_ACTIONS_CLASS_NAME);
-    }
-
     private static final class BlockingClassLoader extends ClassLoader {
         private final String blockedClassName;
 

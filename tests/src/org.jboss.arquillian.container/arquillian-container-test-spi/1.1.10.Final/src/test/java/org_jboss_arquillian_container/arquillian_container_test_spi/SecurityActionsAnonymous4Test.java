@@ -4,26 +4,21 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package org_jboss_arquillian_container.arquillian_container_test_spi;
+package org.jboss.arquillian.container.test.spi.util;
 
-import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import org.jboss.arquillian.container.test.spi.util.TestRunners;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SecurityActionsAnonymous4Test {
-    private static final String SECURITY_ACTIONS_CLASS_NAME =
-            "org.jboss.arquillian.container.test.spi.util.SecurityActions";
-
     @Test
     void getMethodsWithAnnotationFindsAnnotatedMethodsAcrossClassHierarchy() throws Exception {
-        List<Method> methods = invokeGetMethodsWithAnnotation(ChildTarget.class, Marker.class);
+        List<Method> methods = SecurityActions.getMethodsWithAnnotation(ChildTarget.class, Marker.class);
         ChildTarget target = new ChildTarget();
 
         assertThat(methods)
@@ -31,22 +26,6 @@ public class SecurityActionsAnonymous4Test {
                 .containsExactlyInAnyOrder("baseValue", "childValue");
         assertThat(methodValue(methods, target, "baseValue")).isEqualTo("base");
         assertThat(methodValue(methods, target, "childValue")).isEqualTo("child");
-    }
-
-    @SuppressWarnings("unchecked")
-    private static List<Method> invokeGetMethodsWithAnnotation(
-            Class<?> source,
-            Class<? extends Annotation> annotationClass) throws Exception {
-        Method method = securityActionsClass().getDeclaredMethod(
-                "getMethodsWithAnnotation",
-                Class.class,
-                Class.class);
-        method.setAccessible(true);
-        return (List<Method>) method.invoke(null, source, annotationClass);
-    }
-
-    private static Class<?> securityActionsClass() throws ClassNotFoundException {
-        return TestRunners.class.getClassLoader().loadClass(SECURITY_ACTIONS_CLASS_NAME);
     }
 
     private static Object methodValue(
