@@ -37,6 +37,22 @@
       "type": "java.lang.String[]"
     },
     {
+      "type": "java.util.ArrayList",
+      "serializable": true
+    },
+    {
+      "type": "java.lang.String",
+      "serializable": true,
+      "fields": [
+        {
+          "name": "serialPersistentFields"
+        },
+        {
+          "name": "serialVersionUID"
+        }
+      ]
+    },
+    {
       "condition": {
         "typeReached": "org.apache.pekko.actor.AbstractProps"
       },
@@ -47,6 +63,17 @@
         "typeReached": "org.apache.pekko.util.Unsafe"
       },
       "type": "java.lang.reflect.Field[]"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.pekko.util.Unsafe"
+      },
+      "type": "sun.misc.Unsafe",
+      "fields": [
+        {
+          "name": "theUnsafe"
+        }
+      ]
     },
     {
       "condition": {
@@ -372,6 +399,20 @@
     },
     {
       "condition": {
+        "typeReached": "org.apache.pekko.util.Reflect$"
+      },
+      "type": "org.apache.pekko.io.TcpManager",
+      "allDeclaredConstructors": true
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.pekko.util.Reflect$"
+      },
+      "type": "org.apache.pekko.io.SelectionHandler",
+      "allDeclaredConstructors": true
+    },
+    {
+      "condition": {
         "typeReached": "org.apache.pekko.actor.ReflectiveDynamicAccess"
       },
       "type": "org.apache.pekko.io.dns.internal.AsyncDnsProvider",
@@ -409,6 +450,13 @@
           ]
         }
       ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.pekko.util.Reflect$"
+      },
+      "type": "org.apache.pekko.routing.RoutedActorCell$RouterActorCreator",
+      "allDeclaredConstructors": true
     },
     {
       "condition": {
@@ -457,6 +505,20 @@
         "typeReached": "org.apache.pekko.actor.ReflectiveDynamicAccess"
       },
       "type": "org.apache.pekko.serialization.DisabledJavaSerializer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.pekko.actor.ExtendedActorSystem"
+          ]
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.pekko.actor.ReflectiveDynamicAccess"
+      },
+      "type": "org.apache.pekko.serialization.JavaSerializer",
       "methods": [
         {
           "name": "<init>",
@@ -655,6 +717,42 @@
       "methods": [
         {
           "name": "writeReplace",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.pekko.actor.TypedActorExtension"
+      },
+      "type": {
+        "proxy": [
+          "org_apache_pekko.pekko_actor_3.TypedActorExtensionGreeting"
+        ]
+      }
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.pekko.serialization.JavaSerializer"
+      },
+      "type": "org.apache.pekko.actor.TypedActor$MethodCall",
+      "serializable": true
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.pekko.serialization.JavaSerializer"
+      },
+      "type": "org.apache.pekko.actor.TypedActor$SerializedMethodCall",
+      "serializable": true
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.pekko.serialization.JavaSerializer"
+      },
+      "type": "org_apache_pekko.pekko_actor_3.TypedActorInnerSerializedMethodCallTarget",
+      "methods": [
+        {
+          "name": "value",
           "parameterTypes": []
         }
       ]
