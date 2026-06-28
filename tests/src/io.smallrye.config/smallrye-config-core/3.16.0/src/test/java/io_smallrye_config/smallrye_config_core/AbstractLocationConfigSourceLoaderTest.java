@@ -72,7 +72,7 @@ public class AbstractLocationConfigSourceLoaderTest {
 
         @Override
         protected String[] getFileExtensions() {
-            return new String[] { "properties" };
+            return new String[] {"properties" };
         }
 
         @Override

@@ -71,7 +71,7 @@ public class ConfigMappingLoaderTest {
         int port();
     }
 
-    public static final class PreGeneratedMapping$$CMImpl implements PreGeneratedMapping {
+    @SuppressWarnings("checkstyle:TypeName") public static final class PreGeneratedMapping$$CMImpl implements PreGeneratedMapping {
         private static final Map<String, String> PROPERTIES;
 
         static {

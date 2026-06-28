@@ -64,7 +64,7 @@ public class ConfigMappingLoaderInnerConfigMappingImplementationTest {
         Secret<String> password();
     }
 
-    public static final class ServiceMapping$$CMImpl implements ServiceMapping {
+    @SuppressWarnings("checkstyle:TypeName") public static final class ServiceMapping$$CMImpl implements ServiceMapping {
         private static final Map<String, String> PROPERTIES;
         private static final Set<String> SECRETS = Set.of("credentials.password");
 
