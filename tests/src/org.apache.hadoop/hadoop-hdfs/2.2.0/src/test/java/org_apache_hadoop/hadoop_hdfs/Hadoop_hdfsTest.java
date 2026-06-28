@@ -8,7 +8,7 @@ package org_apache_hadoop.hadoop_hdfs;
 
 import org.junit.jupiter.api.Test;
 
-class Hadoop_hdfsTest {
+public class Hadoop_hdfsTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
