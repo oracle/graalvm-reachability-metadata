@@ -1,0 +1,95 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.springframework.ai:spring-ai-autoconfigure-model-chat-client:2.0.0",
+  "issueNumber": 8744,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No Docker image, API key, or external AI service is needed. Exercise the auto-configuration with ApplicationContextRunner and a local stub ChatModel bean. For 2.0.0, ChatClientBuilderProperties.ToolCalling exposes enabled and advisorOrder only; do not use the removed stream-tool-call-responses property or isStreamToolCallResponses() accessor.",
+    "applied_setup": [],
+    "current_library": "org.springframework.ai:spring-ai-autoconfigure-model-chat-client:2.0.0-RC2",
+    "deterministic_setup": [
+      {
+        "coordinate": "org.springframework.ai:spring-ai-client-chat:2.0.0",
+        "kind": "dependency",
+        "reason": "Provides ChatClient, ChatModel, advisors, prompt/message types, and observation handler classes used by ChatClientAutoConfiguration.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.springframework.ai:spring-ai-autoconfigure-model-tool:2.0.0",
+        "kind": "dependency",
+        "reason": "Provides ToolCallingAutoConfiguration and tool-calling auto-configuration types referenced by the chat client auto-configuration.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.1.0",
+        "kind": "dependency",
+        "reason": "Provides Spring Boot auto-configuration annotations and AutoConfigurations support needed to load and exercise the module.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.springframework.boot:spring-boot-test:4.1.0",
+        "kind": "dependency",
+        "reason": "Provides ApplicationContextRunner, the normal lightweight way to test this auto-configuration without a full application.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8744 [Automation] javac compile fails for org.springframework.ai:spring-ai-autoconfigure-model-chat-client:2.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 48228,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8744,
+    "library": "org.springframework.ai:spring-ai-autoconfigure-model-chat-client:2.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.0",
+    "output_tokens_used": 5624,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The existing RC2 test pins Spring AI and Spring Boot support dependencies to RC versions; mixing those with the 2.0.0 artifact caused the observed javac failure.",
+      "Adding micrometer-tracing is optional and changes which observation nested configuration activates; do not add it unless the generated tests intentionally cover the tracer-present branch."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.springframework.ai:spring-ai-autoconfigure-model-chat-client:2.0.0/library-preparation-preflight/pi-generation-2026-06-28T00-39-19-123810Z.log",
+    "status": "completed",
+    "summary": "The artifact is a Spring Boot auto-configuration module whose main collaborators are optional Maven dependencies, so the normal scaffold cannot reach meaningful ChatClient auto-configuration coverage without adding them explicitly."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8744-fails-javac-compile-org.springframework.ai-spring-ai-autoconfigure-model-chat-client-2.0.0-2145149e",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
