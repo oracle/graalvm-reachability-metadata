@@ -14,6 +14,7 @@ import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ServletContainer;
 import io.undertow.servlet.api.ServletContainerInitializerInfo;
+import jakarta.servlet.AsyncContext;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -145,6 +146,24 @@ public class Undertow_servletTest {
                     "description=native-image friendly upload",
                     "filename=hello.txt",
                     "content=hello from multipart");
+        }
+    }
+
+    @Test
+    void asyncServletCompletesResponseOnContainerWorkerThread() throws Exception {
+        DeploymentInfo deploymentInfo = baseDeployment("async")
+                .addServlet(Servlets.servlet("async", AsyncServlet.class)
+                        .addMapping("/async")
+                        .setAsyncSupported(true));
+
+        try (RunningServer server = startServer(deploymentInfo);
+                HttpClient client = newHttpClient()) {
+            HttpResponse<String> response = get(client, server.resolve("/async?message=complete"));
+            assertThat(response.statusCode()).isEqualTo(200);
+            assertThat(response.body()).contains(
+                    "asyncSupported=true",
+                    "message=complete",
+                    "complete=true");
         }
     }
 
@@ -334,6 +353,42 @@ public class Undertow_servletTest {
             response.getWriter().println("description=" + request.getParameter("description"));
             response.getWriter().println("filename=" + file.getSubmittedFileName());
             response.getWriter().println("content=" + content);
+        }
+    }
+
+    public static final class AsyncServlet extends HttpServlet {
+        @Override
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+            response.setContentType("text/plain;charset=UTF-8");
+            AsyncContext asyncContext = request.startAsync();
+            asyncContext.setTimeout(HTTP_TIMEOUT.toMillis());
+            asyncContext.start(new AsyncResponseTask(
+                    asyncContext, request.isAsyncSupported(), request.getParameter("message")));
+        }
+    }
+
+    public static final class AsyncResponseTask implements Runnable {
+        private final AsyncContext asyncContext;
+        private final boolean asyncSupported;
+        private final String message;
+
+        private AsyncResponseTask(AsyncContext asyncContext, boolean asyncSupported, String message) {
+            this.asyncContext = asyncContext;
+            this.asyncSupported = asyncSupported;
+            this.message = message;
+        }
+
+        @Override
+        public void run() {
+            try {
+                HttpServletResponse response = (HttpServletResponse) asyncContext.getResponse();
+                response.getWriter().println("asyncSupported=" + asyncSupported);
+                response.getWriter().println("message=" + message);
+                response.getWriter().println("complete=true");
+                asyncContext.complete();
+            } catch (IOException e) {
+                throw new IllegalStateException("Unable to write asynchronous response", e);
+            }
         }
     }
 }
