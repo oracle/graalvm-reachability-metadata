@@ -22,7 +22,7 @@ public class BaseDataStreamMarshallerTest {
         OpenWireFormat wireFormat = openWireFormat(true);
         ExceptionResponse original = new ExceptionResponse(frameSizeException());
 
-        ExceptionResponse unmarshalled = (ExceptionResponse)wireFormat.unmarshal(wireFormat.marshal(original));
+        ExceptionResponse unmarshalled = (ExceptionResponse) wireFormat.unmarshal(wireFormat.marshal(original));
 
         assertRestoredException(unmarshalled.getException());
     }
@@ -33,7 +33,7 @@ public class BaseDataStreamMarshallerTest {
         ExceptionResponse original = new ExceptionResponse(frameSizeException());
 
         ByteSequence marshalled = wireFormat.marshal(original);
-        ExceptionResponse unmarshalled = (ExceptionResponse)wireFormat.unmarshal(marshalled);
+        ExceptionResponse unmarshalled = (ExceptionResponse) wireFormat.unmarshal(marshalled);
 
         assertRestoredException(unmarshalled.getException());
     }
