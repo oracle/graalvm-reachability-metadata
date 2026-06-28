@@ -113,7 +113,7 @@ public class Spring_cloud_stream_binder_kafka_coreTest {
         consumer.setConfiguration(Map.of(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "25"));
         consumer.setDlqName("orders.dlq");
         consumer.setDlqPartitions(2);
-        consumer.setTrustedPackages(new String[] { "com.example.events", "java.time" });
+        consumer.setTrustedPackages(new String[] {"com.example.events", "java.time"});
         consumer.setDlqProducerProperties(dlqProducer);
         consumer.setStandardHeaders(StandardHeaders.both);
         consumer.setConverterBeanName("kafkaConverter");
@@ -160,7 +160,7 @@ public class Spring_cloud_stream_binder_kafka_coreTest {
         producer.setSendTimeoutExpression(sendTimeout);
         producer.setBatchTimeout(250);
         producer.setMessageKeyExpression(messageKey);
-        producer.setHeaderPatterns(new String[] { "trace*", "type" });
+        producer.setHeaderPatterns(new String[] {"trace*", "type"});
         producer.setConfiguration(Map.of(ProducerConfig.CLIENT_ID_CONFIG, "orders-producer"));
         producer.setTopic(topic);
         producer.setUseTopicHeader(true);
@@ -572,8 +572,8 @@ public class Spring_cloud_stream_binder_kafka_coreTest {
         assertThat(information.toString()).contains("workers", "orders");
         assertThat(new TopicInformation("workers", partitions, false)).isEqualTo(information);
 
-        ConsumerRecord<byte[], byte[]> record = new ConsumerRecord<>("orders", 3, 12L, new byte[] { 1 },
-                new byte[] { 2 });
+        ConsumerRecord<byte[], byte[]> record = new ConsumerRecord<>("orders", 3, 12L, new byte[] {1},
+                new byte[] {2});
         assertThat(DlqPartitionFunction.ORIGINAL_PARTITION.apply("orders.dlq", record, new RuntimeException("failed")))
                 .isEqualTo(3);
         assertThat(DlqPartitionFunction.PARTITION_ZERO.apply("orders.dlq", record, new RuntimeException("failed")))
