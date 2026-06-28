@@ -1,0 +1,16 @@
+Done.
+
+Changes made:
+- Removed failing generated test:
+  - `tests/src/org.apache.groovy/groovy-macro/4.0.24/src/test/groovy/org_apache_groovy/groovy_macro/Groovy_macroTest.groovy`
+- Wrote intervention report:
+  - `post-gen-interventions/org.apache.groovy_groovy-macro_4.0.24.md`
+- Did not modify metadata files.
+
+Root cause:
+- The failures are not metadata-related. The Codex log shows the test reaches unsupported native-image behavior in Groovy’s dynamic runtime:
+  - invokedynamic / mutable call-site bootstrap via `IndyInterface`
+  - runtime class definition/loading via Groovy call-site generation
+
+Verification:
+- `./gradlew test -Pcoordinates=org.apache.groovy:groovy-macro:4.0.24 --stacktrace` passes after removing the generated test.

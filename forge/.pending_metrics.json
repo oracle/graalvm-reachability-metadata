@@ -1,0 +1,56 @@
+{
+  "timestamp": "2026-06-28T18:00:15.319183Z",
+  "library": "org.apache.groovy:groovy-macro:4.0.24",
+  "starting_commit": "c19f11b03c474c2d06213794172680c8f28fbf6b",
+  "ending_commit": "0334fc062c980ed669c2d5c81bc17259cdfa4c0f",
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+  "agent": "pi",
+  "model": "oca/gpt-5.5",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "no_action",
+    "issue_number": 2461,
+    "issue_label": "library-new-request",
+    "library": "org.apache.groovy:groovy-macro:4.0.24",
+    "summary": "org.apache.groovy:groovy-macro:4.0.24 only depends on org.apache.groovy:groovy:4.0.24 and is normally exercised in-process through Groovy compilation/macros; no Docker image, extra Maven dependency, environment variable, or system property is required before meaningful coverage is reachable.",
+    "deterministic_setup": [],
+    "agent_guidance": "No environment or system properties are needed. Meaningful tests should exercise macro expansion through Groovy runtime APIs already available transitively, such as GroovyShell or GroovyClassLoader evaluating code that calls macro { ... }, rather than only instantiating classes.",
+    "risks": [
+      "A scaffold-only Java test that merely loads macro classes would provide weak coverage; useful coverage requires compiling or evaluating Groovy code so the macro AST transformation and extension module are used.",
+      "If the generated project does not apply the Groovy Gradle plugin, keep test sources in Java and invoke GroovyShell/GroovyClassLoader from Java rather than adding Groovy test source files."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#2461 Support for org.apache.groovy:groovy-macro:4.0.24; label=library-new-request; body_chars=106"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "oca/gpt-5.5",
+    "input_tokens_used": 60331,
+    "output_tokens_used": 3562,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.apache.groovy:groovy-macro:4.0.24/library-preparation-preflight/pi-generation-2026-06-28T17-24-53-489406Z.log"
+  },
+  "metrics": {
+    "input_tokens_used": 200343,
+    "cached_input_tokens_used": 1243136,
+    "output_tokens_used": 16813,
+    "iterations": 4,
+    "cost_usd": 1.126,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "test_file": "None",
+    "metadata_file": "None"
+  }
+}
