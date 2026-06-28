@@ -1,0 +1,71 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "ognl:ognl:3.3.5",
+  "issueNumber": 7430,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "ognl:ognl:3.2.21",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7430 [Automation] java run fails for ognl:ognl:3.3.5; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "17 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 37852,
+    "issue_label": "fails-java-run",
+    "issue_number": 7430,
+    "library": "ognl:ognl:3.3.5",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.3.5",
+    "output_tokens_used": 4364,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "OGNL has optional system properties such as ognl.security.manager, ognl.UseJDK9PlusAccessHandler, ognl.UseStricterInvocation, and ognl.UseFirstMatchGetSetLookup, but these are feature toggles, not prerequisites for ordinary coverage.",
+      "SecurityManager-focused tests are fragile on modern JDKs and should be guarded or avoided unless specifically validating OGNL sandbox behavior.",
+      "Javassist-backed expression compilation may have native-image limitations, but the dependency is resolved transitively and does not require an extra deterministic setup entry."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/ognl:ognl:3.3.5/library-preparation-preflight/pi-generation-2026-06-28T13-38-42-432938Z.log",
+    "status": "completed",
+    "summary": "OGNL 3.3.5 is a local expression/reflection library; its only runtime dependency, Javassist 3.29.0-GA, is already a transitive dependency of ognl:ognl:3.3.5. Normal meaningful tests can exercise parsing, get/set, method calls, constructors, static members, maps, arrays, and expression compilation without Docker, extra Maven dependencies, or mandatory environment/system properties. The reported java-run failure is a test expectation/behavior change in ObjectPropertyAccessor, not missing setup."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.3.5",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-7430-fails-java-run-ognl-ognl-3.3.5-3c745417",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
