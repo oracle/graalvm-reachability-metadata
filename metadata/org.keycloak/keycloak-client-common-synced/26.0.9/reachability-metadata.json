@@ -2,6 +2,21 @@
   "reflection" : [
     {
       "condition" : {
+        "typeReached" : "org.keycloak.common.util.Base64"
+      },
+      "type" : "java.lang.String",
+      "fields" : [
+        {
+          "name" : "serialPersistentFields"
+        },
+        {
+          "name" : "serialVersionUID"
+        }
+      ],
+      "serializable" : true
+    },
+    {
+      "condition" : {
         "typeReached" : "org.keycloak.common.util.DelegatingSerializationFilter"
       },
       "type" : "java.io.ObjectInputFilter$Config",
@@ -31,9 +46,67 @@
           ]
         }
       ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.keycloak.util.JsonSerialization"
+      },
+      "type" : "org.keycloak.representations.workflows.AbstractWorkflowComponentRepresentation",
+      "allDeclaredFields" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.keycloak.util.JsonSerialization"
+      },
+      "type" : "org.keycloak.representations.workflows.WorkflowStepRepresentation",
+      "allDeclaredFields" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.keycloak.util.JsonSerialization"
+      },
+      "type" : "org.keycloak.representations.workflows.MultivaluedHashMapValueSerializer",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.keycloak.util.JsonSerialization"
+      },
+      "type" : "org.keycloak.representations.workflows.MultivaluedHashMapValueDeserializer",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.keycloak.util.JsonSerialization"
+      },
+      "type" : "org.keycloak.representations.workflows.StepExecutionStatus",
+      "allDeclaredFields" : true,
+      "allDeclaredMethods" : true,
+      "allPublicMethods" : true
     }
   ],
   "resources" : [
+    {
+      "condition" : {
+        "typeReached" : "org.keycloak.common.util.KerberosJdkProvider$SunJDKProvider"
+      },
+      "module" : "java.base",
+      "bundle" : "sun.security.util.resources.security"
+    },
     {
       "condition" : {
         "typeReached" : "org.keycloak.common.util.DelegatingSerializationFilter"
