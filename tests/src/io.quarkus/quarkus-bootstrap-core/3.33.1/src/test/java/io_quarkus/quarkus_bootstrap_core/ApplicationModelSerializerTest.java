@@ -25,7 +25,7 @@ import io.quarkus.maven.dependency.ResolvedDependencyBuilder;
 
 public class ApplicationModelSerializerTest {
 
-    private static final byte[] JAVA_OBJECT_STREAM_MAGIC = { (byte) 0xAC, (byte) 0xED };
+    private static final byte[] JAVA_OBJECT_STREAM_MAGIC = {(byte) 0xAC, (byte) 0xED };
 
     @TempDir
     Path temporaryDirectory;
