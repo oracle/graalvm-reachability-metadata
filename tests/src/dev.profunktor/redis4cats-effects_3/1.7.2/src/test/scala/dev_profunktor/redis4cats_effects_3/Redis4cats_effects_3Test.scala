@@ -220,6 +220,55 @@ class Redis4cats_effects_3Test {
   }
 
   @Test
+  def redisFunctionsCanBeLoadedListedCalledAndReplaced(): Unit = {
+    Redis4cats_effects_3Test.ensureRedisServer()
+    val prefix: String = Redis4cats_effects_3Test.nextPrefix("functions")
+    val uniqueSuffix: String = java.lang.Long.toHexString(System.nanoTime())
+    val libraryName: String = s"lib$uniqueSuffix"
+    val functionName: String = s"append$uniqueSuffix"
+    val readOnlyFunctionName: String = s"read$uniqueSuffix"
+    val key: String = s"$prefix:key"
+
+    def functionCode(separator: String): String =
+      s"""#!lua name=$libraryName
+         |redis.register_function('$functionName', function(keys, args)
+         |  local value = redis.call('GET', keys[1])
+         |  return value .. '$separator' .. args[1]
+         |end)
+         |redis.register_function{
+         |  function_name='$readOnlyFunctionName',
+         |  callback=function(keys, args)
+         |    return redis.call('GET', keys[1])
+         |  end,
+         |  flags={'no-writes'}
+         |}
+         |""".stripMargin
+
+    runIO {
+      Redis[IO].utf8(Redis4cats_effects_3Test.RedisUri).use { redis =>
+        for {
+          _ <- redis.set(key, "stored")
+          loadedLibrary <- redis.functionLoad(functionCode(":"))
+          combinedValue <- redis.fcall(functionName, ScriptOutputType.Value, List(key), List("argument"))
+          readOnlyValue <- redis.fcallReadOnly(readOnlyFunctionName, ScriptOutputType.Value, List(key))
+          libraries <- redis.functionList(libraryName)
+          dumpedLibraries <- redis.functionDump()
+          replacedLibrary <- redis.functionLoad(functionCode("/"), replace = true)
+          replacedValue <- redis.fcall(functionName, ScriptOutputType.Value, List(key), List("argument"))
+        } yield {
+          assertEquals(libraryName, loadedLibrary)
+          assertEquals("stored:argument", combinedValue)
+          assertEquals("stored", readOnlyValue)
+          assertTrue(libraries.exists(_.get("library_name").contains(libraryName)))
+          assertTrue(dumpedLibraries.nonEmpty)
+          assertEquals(libraryName, replacedLibrary)
+          assertEquals("stored/argument", replacedValue)
+        }
+      }
+    }
+  }
+
+  @Test
   def simpleResourceCoversGeoHyperLogLogAndBitmapCommands(): Unit = {
     Redis4cats_effects_3Test.ensureRedisServer()
     val prefix: String = Redis4cats_effects_3Test.nextPrefix("specialized")
