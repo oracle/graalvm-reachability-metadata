@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "com.github.victools:jsonschema-module-swagger-2:5.0.0",
+  "issueNumber": 8739,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "For version 5.0.0, write generated tests against Jackson 3 types from the `tools.jackson` namespace. `SchemaGenerator.generateSchema(...)` returns `tools.jackson.databind.node.ObjectNode`, assignable to `tools.jackson.databind.JsonNode`; do not import `com.fasterxml.jackson.databind.JsonNode`. When walking object fields, Jackson 3 uses APIs such as `properties()` or `forEachEntry(...)` rather than the old `fields()` iterator.",
+    "applied_setup": [],
+    "current_library": "com.github.victools:jsonschema-module-swagger-2:4.38.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8739 [Automation] javac compile fails for com.github.victools:jsonschema-module-swagger-2:5.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 44141,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8739,
+    "library": "com.github.victools:jsonschema-module-swagger-2:5.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "5.0.0",
+    "output_tokens_used": 4830,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Adding `com.fasterxml.jackson.core:jackson-databind` would not fix the issue because the generator now returns Jackson 3 `tools.jackson` nodes, not Jackson 2 `com.fasterxml` nodes.",
+      "Local Gradle verification remains necessary to catch any remaining Jackson 2 API usages in copied 4.38.0 tests."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/com.github.victools:jsonschema-module-swagger-2:5.0.0/library-preparation-preflight/pi-generation-2026-06-28T00-01-26-708338Z.log",
+    "status": "completed",
+    "summary": "No extra dependency, Docker image, or environment setup is needed; the compile failure is caused by the 5.0.0 Jackson 3 API/package migration."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "5.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8739-fails-javac-compile-com.github.victools-jsonschema-module-swagger-2-5.0.0-00736c0a",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
