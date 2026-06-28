@@ -1,0 +1,50 @@
+{
+  "reflection" : [
+    {
+      "condition" : {
+        "typeReached" : "org.keycloak.common.util.DelegatingSerializationFilter"
+      },
+      "type" : "java.io.ObjectInputFilter$Config",
+      "methods" : [
+        {
+          "name" : "createFilter",
+          "parameterTypes" : [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.keycloak.common.util.DelegatingSerializationFilter"
+      },
+      "type" : "java.io.ObjectInputStream",
+      "methods" : [
+        {
+          "name" : "getObjectInputFilter",
+          "parameterTypes" : [ ]
+        },
+        {
+          "name" : "setObjectInputFilter",
+          "parameterTypes" : [
+            "java.io.ObjectInputFilter"
+          ]
+        }
+      ]
+    }
+  ],
+  "resources" : [
+    {
+      "condition" : {
+        "typeReached" : "org.keycloak.common.util.DelegatingSerializationFilter"
+      },
+      "glob" : "META-INF/services/org.jboss.logging.LoggerProvider"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.keycloak.common.util.FindFile"
+      },
+      "glob" : "META-INF/services/org.keycloak.protocol.oidc.client.authentication.ClientCredentialsProvider"
+    }
+  ]
+}
