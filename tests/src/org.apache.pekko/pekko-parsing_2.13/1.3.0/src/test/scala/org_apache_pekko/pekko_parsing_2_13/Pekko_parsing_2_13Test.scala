@@ -63,6 +63,19 @@ class Pekko_parsing_2_13Test {
   }
 
   @Test
+  def annotationInstancesCanBeUsedToDispatchCrossVersionBehaviorAtRuntime(): Unit = {
+    val annotations: List[(StaticAnnotation, String)] = List(
+      newStaticAnnotation("org.apache.pekko.http.ccompat.pre213") -> "legacy",
+      newStaticAnnotation("org.apache.pekko.http.ccompat.since213") -> "current")
+
+    val renderedTokens: List[String] = annotations.map { case (annotation, token) =>
+      renderTokenFor(annotation, token)
+    }
+
+    assertThat(renderedTokens.asJava).containsExactly("pre213:legacy", "since213:current")
+  }
+
+  @Test
   def annotationTypesCanBeUsedToSelectCrossVersionImplementationsAtRuntime(): Unit = {
     val pre213Class: Class[_ <: StaticAnnotation] = loadStaticAnnotation("org.apache.pekko.http.ccompat.pre213")
     val since213Class: Class[_ <: StaticAnnotation] = loadStaticAnnotation("org.apache.pekko.http.ccompat.since213")
@@ -97,6 +110,15 @@ class Pekko_parsing_2_13Test {
     assertThat(groupedNames("org.apache.pekko.macros").asJava)
       .containsExactly("LogHelper", "LogHelperMacro")
   }
+
+  private def renderTokenFor(annotation: StaticAnnotation, token: String): String =
+    annotation.getClass.getName match {
+      case "org.apache.pekko.http.ccompat.pre213" => s"pre213:$token"
+      case "org.apache.pekko.http.ccompat.since213" => s"since213:$token"
+    }
+
+  private def newStaticAnnotation(name: String): StaticAnnotation =
+    loadStaticAnnotation(name).getDeclaredConstructor().newInstance()
 
   private def loadClass(name: String): Class[_] =
     Class.forName(name, true, Thread.currentThread().getContextClassLoader)
