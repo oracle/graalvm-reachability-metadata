@@ -28,7 +28,7 @@ public class RepositoryMethodInvokerInnerRepositoryFragmentMethodInvokerTest {
         Method method = GreetingFragment.class.getMethod("greeting", String.class);
         RepositoryFragments fragments = RepositoryFragments.just(fragment);
 
-        Object result = fragments.invoke(method, method, new Object[] { "Ada" });
+        Object result = fragments.invoke(method, method, new Object[] {"Ada" });
 
         assertThat(result).isEqualTo("Hello, Ada");
     }
@@ -46,7 +46,7 @@ public class RepositoryMethodInvokerInnerRepositoryFragmentMethodInvokerTest {
                     @Override
                     public Object invoke(CoroutineScope scope, Continuation<? super Long> continuation) {
                         try {
-                            return fragments.invoke(declaredMethod, baseMethod, new Object[] { continuation });
+                            return fragments.invoke(declaredMethod, baseMethod, new Object[] {continuation });
                         } catch (Throwable throwable) {
                             throw new IllegalStateException(throwable);
                         }

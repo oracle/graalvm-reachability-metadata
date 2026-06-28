@@ -20,7 +20,7 @@ public class FunctionTest {
         Method method = SampleFunctions.class.getMethod("greeting", String.class);
         Function function = new Function(method);
 
-        Object result = function.invoke(new Object[] { "World" });
+        Object result = function.invoke(new Object[] {"World" });
 
         assertThat(result).isEqualTo("Hello, World");
     }
@@ -31,7 +31,7 @@ public class FunctionTest {
         Method method = SampleFunctions.class.getMethod("join", String[].class);
         Function function = new Function(method, target);
 
-        Object result = function.invoke(new Object[] { "alpha", "bravo", "charlie" });
+        Object result = function.invoke(new Object[] {"alpha", "bravo", "charlie" });
 
         assertThat(result).isEqualTo("alpha-bravo-charlie");
     }
