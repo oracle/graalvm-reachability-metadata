@@ -1,0 +1,82 @@
+{
+  "timestamp": "2026-06-28T19:46:01.053048Z",
+  "library": "org.codehaus.plexus:plexus-compiler-manager:2.8.4",
+  "starting_commit": "6ca2cbc551c2904b85e3b5298915df7e30bc0ccd",
+  "ending_commit": "f174d84b28d816c70be15a6e19def22a6b8b013d",
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+  "agent": "pi",
+  "model": "oca/gpt-5.5",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 2357,
+    "issue_label": "library-new-request",
+    "library": "org.codehaus.plexus:plexus-compiler-manager:2.8.4",
+    "summary": "org.codehaus.plexus:plexus-compiler-manager:2.8.4 is a Plexus component whose main implementation extends a class from the artifact's provided Plexus container dependency; without that extra dependency, loading DefaultCompilerManager fails at runtime. Meaningful happy-path coverage also needs at least one Compiler component implementation registered with the Plexus container.",
+    "deterministic_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "org.codehaus.plexus:plexus-container-default:1.0-alpha-9-stable-1",
+        "scope": "testImplementation",
+        "reason": "The manager implementation extends org.codehaus.plexus.logging.AbstractLogEnabled from the provided Plexus container dependency; the resolved compile/runtime dependency set does not include it, causing NoClassDefFoundError when DefaultCompilerManager is loaded."
+      },
+      {
+        "kind": "dependency",
+        "coordinate": "org.codehaus.plexus:plexus-compiler-javac:2.8.4",
+        "scope": "testImplementation",
+        "reason": "The manager's normal role is to retrieve Compiler components by role hint; a concrete compiler component such as the javac implementation is needed for a successful getCompiler(\"javac\") path instead of only the missing-compiler exception path."
+      }
+    ],
+    "agent_guidance": "Use a Plexus container for normal usage coverage: create DefaultPlexusContainer, call initialize() and start() before lookup, then dispose() afterward. Cover both successful lookup of a registered compiler role hint such as \"javac\" and NoSuchCompilerException for an unknown role hint. Avoid tests that only instantiate DefaultCompilerManager directly unless they explicitly initialize its compiler map.",
+    "risks": [
+      "The Plexus container version is old and requires explicit lifecycle calls; omitting initialize()/start() can produce container-internal NullPointerException rather than exercising the library.",
+      "Running an actual javac compile is not necessary for manager coverage and may introduce avoidable environment sensitivity; retrieving the component is sufficient for the manager happy path."
+    ],
+    "applied_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "org.codehaus.plexus:plexus-container-default:1.0-alpha-9-stable-1",
+        "result": "applied",
+        "target": "tests/src/org.codehaus.plexus/plexus-compiler-manager/2.8.4/build.gradle"
+      },
+      {
+        "kind": "dependency",
+        "coordinate": "org.codehaus.plexus:plexus-compiler-javac:2.8.4",
+        "result": "applied",
+        "target": "tests/src/org.codehaus.plexus/plexus-compiler-manager/2.8.4/build.gradle"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#2357 Support for org.codehaus.plexus:plexus-compiler-manager:2.8.4; label=library-new-request; body_chars=118"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "oca/gpt-5.5",
+    "input_tokens_used": 30745,
+    "output_tokens_used": 5888,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.codehaus.plexus:plexus-compiler-manager:2.8.4/library-preparation-preflight/pi-generation-2026-06-28T19-22-25-707306Z.log"
+  },
+  "metrics": {
+    "input_tokens_used": 186861,
+    "cached_input_tokens_used": 1445888,
+    "output_tokens_used": 12232,
+    "iterations": 4,
+    "cost_usd": 1.0899,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "test_file": "None",
+    "metadata_file": "None"
+  }
+}
