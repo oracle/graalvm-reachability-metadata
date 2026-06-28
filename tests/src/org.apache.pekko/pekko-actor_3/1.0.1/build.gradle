@@ -26,6 +26,7 @@ java {
 
 tasks.withType(Test).configureEach {
     jvmArgs '--add-opens=java.base/sun.net.dns=ALL-UNNAMED'
+    jvmArgs '--add-opens=java.base/java.nio=ALL-UNNAMED'
 }
 
 graalvmNative {
@@ -40,6 +41,7 @@ graalvmNative {
     binaries {
         all {
             buildArgs.add('--add-opens=java.base/sun.net.dns=ALL-UNNAMED')
+            buildArgs.add('--add-opens=java.base/java.nio=ALL-UNNAMED')
         }
     }
 }
