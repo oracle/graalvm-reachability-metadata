@@ -60,12 +60,16 @@ import org.springframework.cloud.stream.binder.kafka.utils.DlqPartitionFunction;
 import org.springframework.cloud.stream.binder.kafka.utils.KafkaTopicUtils;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.security.jaas.KafkaJaasLoginModuleInitializer.ControlFlag;
+import org.springframework.kafka.support.KafkaHeaderMapper;
+import org.springframework.kafka.support.converter.MessageConverter;
+import org.springframework.kafka.support.converter.MessagingMessageConverter;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.util.MimeTypeUtils;
 
@@ -390,6 +394,34 @@ public class Spring_cloud_stream_binder_kafka_coreTest {
                 .isThrownBy(() -> BindingUtils.createProducerConfigs(
                         new ExtendedProducerProperties<>(invalidProducer), binderProperties))
                 .withMessageContaining("bootstrap.servers cannot be overridden");
+    }
+
+    @Test
+    void bindingUtilsResolvesConfiguredHeaderMapperAndConsumerMessageConverterBeans() {
+        BinderHeaderMapper fallbackHeaderMapper = new BinderHeaderMapper("fallback*");
+        BinderHeaderMapper namedHeaderMapper = new BinderHeaderMapper("named*");
+        MessagingMessageConverter namedMessageConverter = new MessagingMessageConverter();
+
+        try (GenericApplicationContext context = new GenericApplicationContext()) {
+            context.registerBean("kafkaBinderHeaderMapper", KafkaHeaderMapper.class, () -> fallbackHeaderMapper);
+            context.registerBean("ordersKafkaHeaderMapper", KafkaHeaderMapper.class, () -> namedHeaderMapper);
+            context.registerBean("ordersKafkaConverter", MessageConverter.class, () -> namedMessageConverter);
+            context.refresh();
+
+            KafkaBinderConfigurationProperties binderProperties = newBinderProperties(new KafkaProperties());
+            assertThat(BindingUtils.getHeaderMapper(context, binderProperties)).isSameAs(fallbackHeaderMapper);
+
+            binderProperties.setHeaderMapperBeanName("ordersKafkaHeaderMapper");
+            assertThat(BindingUtils.getHeaderMapper(context, binderProperties)).isSameAs(namedHeaderMapper);
+
+            KafkaConsumerProperties kafkaConsumer = new KafkaConsumerProperties();
+            kafkaConsumer.setConverterBeanName("ordersKafkaConverter");
+            ExtendedConsumerProperties<KafkaConsumerProperties> consumer =
+                    new ExtendedConsumerProperties<>(kafkaConsumer);
+
+            assertThat(BindingUtils.getConsumerMessageConverter(context, consumer, binderProperties))
+                    .isSameAs(namedMessageConverter);
+        }
     }
 
     @Test
