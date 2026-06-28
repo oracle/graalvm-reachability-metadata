@@ -1,0 +1,88 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.springframework:spring-beans:5.3.15",
+  "issueNumber": 2194,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#2194 Support for org.springframework:spring-beans:5.3.15; label=library-new-request; body_chars=184"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 35074,
+    "issue_label": "library-new-request",
+    "issue_number": 2194,
+    "library": "org.springframework:spring-beans:5.3.15",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 1919,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "spring-beans declares optional integrations such as SnakeYAML, Groovy, Kotlin, and javax.inject in its source build; generated tests should avoid those optional feature paths unless a later failure proves an optional dependency is needed."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.springframework:spring-beans:5.3.15/library-preparation-preflight/pi-generation-2026-06-27T22-45-59-866614Z.log",
+    "status": "completed",
+    "summary": "The resolved artifact only has a required compile/runtime dependency on spring-core, and normal spring-beans usage such as BeanWrapper, property access, BeanDefinition, and DefaultListableBeanFactory can be exercised in-process without Docker, extra Maven dependencies, or environment/system properties."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": 15,
+      "chunkProcessedClassCount": 15,
+      "exhaustedClasses": [
+        "org.springframework.beans.AbstractNestablePropertyAccessor",
+        "org.springframework.beans.BeanUtils",
+        "org.springframework.beans.BeanWrapperImpl$BeanPropertyHandler",
+        "org.springframework.beans.DirectFieldAccessor$FieldPropertyHandler",
+        "org.springframework.beans.ExtendedBeanInfoFactory",
+        "org.springframework.beans.TypeConverterDelegate",
+        "org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor",
+        "org.springframework.beans.factory.annotation.InjectionMetadata$InjectedElement",
+        "org.springframework.beans.factory.config.DependencyDescriptor",
+        "org.springframework.beans.factory.config.FieldRetrievingFactoryBean",
+        "org.springframework.beans.factory.config.ServiceLocatorFactoryBean",
+        "org.springframework.beans.factory.config.ServiceLocatorFactoryBean$ServiceLocatorInvocationHandler",
+        "org.springframework.beans.factory.support.ConstructorResolver",
+        "org.springframework.beans.factory.support.DisposableBeanAdapter",
+        "org.springframework.beans.propertyeditors.ResourceBundleEditor"
+      ],
+      "iteration": 21,
+      "status": "completed"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-2194-library-new-request-org.springframework-spring-beans-5.3.15-fe6a6e68",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springframework:spring-beans:5.3.15",
+    "timestamp": "2026-06-28T00:14:34.713017Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}

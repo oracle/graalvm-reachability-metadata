@@ -1,0 +1,57 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T00:14:34.713017Z",
+    "library": "org.springframework:spring-beans:5.3.15",
+    "starting_commit": "dfa90b2d78828f366cd9863cf66bd11596eefac6",
+    "ending_commit": "a423755839e84108a4a81d2d32093615141eaa28",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 2194,
+      "issue_label": "library-new-request",
+      "library": "org.springframework:spring-beans:5.3.15",
+      "summary": "The resolved artifact only has a required compile/runtime dependency on spring-core, and normal spring-beans usage such as BeanWrapper, property access, BeanDefinition, and DefaultListableBeanFactory can be exercised in-process without Docker, extra Maven dependencies, or environment/system properties.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "spring-beans declares optional integrations such as SnakeYAML, Groovy, Kotlin, and javax.inject in its source build; generated tests should avoid those optional feature paths unless a later failure proves an optional dependency is needed."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#2194 Support for org.springframework:spring-beans:5.3.15; label=library-new-request; body_chars=184"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 35074,
+      "output_tokens_used": 1919,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.springframework:spring-beans:5.3.15/library-preparation-preflight/pi-generation-2026-06-27T22-45-59-866614Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 739653,
+      "cached_input_tokens_used": 6116352,
+      "output_tokens_used": 83096,
+      "iterations": 21,
+      "cost_usd": 5.5511,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
+  }
+}
