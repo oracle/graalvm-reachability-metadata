@@ -15,7 +15,19 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(Test).configureEach {
+    jvmArgs "--add-exports=java.management/sun.management=ALL-UNNAMED"
+    jvmArgs "--add-opens=java.management/sun.management=ALL-UNNAMED"
+}
+
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("--add-exports=java.management/sun.management=ALL-UNNAMED")
+            buildArgs.add("--add-opens=java.management/sun.management=ALL-UNNAMED")
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {
