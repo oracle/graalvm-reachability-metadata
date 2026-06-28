@@ -8,7 +8,7 @@ package co_elastic_clients.elasticsearch_java;
 
 import org.junit.jupiter.api.Test;
 
-class Elasticsearch_javaTest {
+public class Elasticsearch_javaTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
