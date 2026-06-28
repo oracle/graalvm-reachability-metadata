@@ -1,0 +1,77 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "jakarta.activation:jakarta.activation-api:2.0.0",
+  "issueNumber": 8769,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Use the Jakarta Activation 2.x package namespace (`jakarta.activation.*`), not the pre-2.0 `javax.activation.*` imports. Be aware that adding the implementation jar introduces duplicate `jakarta.activation` classes; keep tests focused on the target API behavior and use local Gradle/Native Image verification as authoritative.",
+    "applied_setup": [],
+    "current_library": "jakarta.activation:jakarta.activation-api:1.2.1",
+    "deterministic_setup": [
+      {
+        "coordinate": "com.sun.activation:jakarta.activation:2.0.0",
+        "kind": "dependency",
+        "reason": "The API jar POM states it is intended only for compiling and excludes implementation-specific classes. Local inspection shows MailcapCommandMap and MimetypesFileTypeMap fail with NoClassDefFoundError for com.sun.activation.registries.LogSupport unless the matching implementation artifact is on the t\n...[truncated]",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8769 [Automation] javac compile fails for jakarta.activation:jakarta.activation-api:2.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "11 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 32592,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8769,
+    "library": "jakarta.activation:jakarta.activation-api:2.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.0",
+    "output_tokens_used": 4092,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The matching implementation artifact contains both the missing `com.sun.activation.registries` classes and duplicate `jakarta.activation` classes, so classpath ordering could affect which duplicate classes are loaded.",
+      "If the workflow intentionally wants to test the API artifact in strict compile-only isolation, tests must avoid runtime paths that instantiate MIME/mailcap registries."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/jakarta.activation:jakarta.activation-api:2.0.0/library-preparation-preflight/pi-generation-2026-06-28T18-42-18-202255Z.log",
+    "status": "completed",
+    "summary": "jakarta.activation-api:2.0.0 is an API-only artifact; common Activation runtime paths such as MailcapCommandMap and MimetypesFileTypeMap reference implementation classes under com.sun.activation.registries that are not present in the API jar, so meaningful coverage of MIME/command mapping needs the matching implementation jar."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8769-fails-javac-compile-jakarta.activation-jakarta.activation-api-2.0.0-4c4c0c71",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
