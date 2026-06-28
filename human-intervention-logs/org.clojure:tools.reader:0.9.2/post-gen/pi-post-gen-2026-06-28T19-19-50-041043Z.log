@@ -1,0 +1,15 @@
+Implemented the intervention.
+
+Changes made:
+- Removed failing generated test:
+  - `tests/src/org.clojure/tools.reader/0.9.2/src/test/java/org_clojure/tools_reader/Tools_readerTest.java`
+- Reverted Codex’s failed test-only build/resource workarounds.
+- Did not modify metadata files.
+- Wrote report:
+  - `post-gen-interventions/org.clojure_tools.reader_0.9.2.md`
+
+Verification:
+- Ran clean targeted verification:
+  - `./gradlew clean -Pcoordinates=org.clojure:tools.reader:0.9.2`
+  - `./gradlew test -Pcoordinates=org.clojure:tools.reader:0.9.2 --stacktrace`
+- Result: build succeeded; native test tasks were skipped because the unsupported generated test was removed.
