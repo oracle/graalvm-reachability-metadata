@@ -1,0 +1,125 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T10:43:26.541092Z",
+    "library": "com.diffplug.durian:durian-io:1.2.0",
+    "starting_commit": "6daa667005326616f6100a3f2b26dd4b6a4e2573",
+    "ending_commit": "c1d71ce517b3621ce8804b9f7c75b4d9ef4baace",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "1.2.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 3,
+        "totalCalls": 3
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 280,
+          "missed": 13728,
+          "ratio": 0.019989,
+          "total": 14008
+        },
+        "line": {
+          "covered": 72,
+          "missed": 2630,
+          "ratio": 0.026647,
+          "total": 2702
+        },
+        "method": {
+          "covered": 26,
+          "missed": 812,
+          "ratio": 0.031026,
+          "total": 838
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 3840,
+      "issue_label": "library-new-request",
+      "library": "com.diffplug.durian:durian-io:1.2.0",
+      "summary": "durian-io is a split Guava/Durian IO+hash artifact whose POM declares durian-core and durian-collect as runtime dependencies; Gradle's normal generated scaffold will not put those runtime-scoped dependencies on the test compile classpath, but meaningful IO APIs expose/use collect/core types such as ImmutableList, TreeTraverser, Splitter, and primitive/base helpers.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.diffplug.durian:durian-core:1.2.0",
+          "scope": "testImplementation",
+          "reason": "durian-io classes directly depend on com.diffplug.common.base, primitives, math, and annotations from durian-core; adding it explicitly makes those normal Durian helper types available to generated tests at compile time."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.diffplug.durian:durian-collect:1.2.0",
+          "scope": "testImplementation",
+          "reason": "common durian-io APIs expose durian-collect types, for example CharSource.readLines returns ImmutableList and Files.fileTreeTraverser returns TreeTraverser; without durian-collect on the test compile classpath, meaningful API calls can fail to compile."
+        }
+      ],
+      "agent_guidance": "No Docker image or environment/system property setup was found. Generated tests should use local temporary files/directories and in-memory streams/readers/writers for IO coverage rather than external services.",
+      "risks": [
+        "The artifact's POM uses runtime scope for durian-core and durian-collect, so runtime execution may work with only durian-io, but Java compilation of tests that call APIs exposing those types can still fail unless the dependencies are added explicitly.",
+        "Upstream tests include broader Durian/Guava-style test helpers, but those are not required for generated reachability coverage and should not be added unless local Gradle verification proves they are needed."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.diffplug.durian:durian-core:1.2.0",
+          "result": "applied",
+          "target": "tests/src/com.diffplug.durian/durian-io/1.2.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.diffplug.durian:durian-collect:1.2.0",
+          "result": "applied",
+          "target": "tests/src/com.diffplug.durian/durian-io/1.2.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#3840 Support for com.diffplug.durian:durian-io:1.2.0; label=library-new-request; body_chars=104"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 40107,
+      "output_tokens_used": 6166,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/com.diffplug.durian:durian-io:1.2.0/library-preparation-preflight/pi-generation-2026-06-28T10-26-49-602049Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 57215,
+      "cached_input_tokens_used": 511488,
+      "output_tokens_used": 6254,
+      "iterations": 2,
+      "cost_usd": 0.4433,
+      "generated_loc": 64,
+      "tested_library_loc": 72,
+      "metadata_entries": 1,
+      "test_only_metadata_entries": 2,
+      "code_coverage_percent": 2.66
+    },
+    "artifacts": {
+      "test_file": "tests/src/com.diffplug.durian/durian-io/1.2.0/src/test/java/com_diffplug_durian/durian_io/ResourcesTest.java",
+      "metadata_file": "metadata/com.diffplug.durian/durian-io/1.2.0/reachability-metadata.json"
+    }
+  }
+}
