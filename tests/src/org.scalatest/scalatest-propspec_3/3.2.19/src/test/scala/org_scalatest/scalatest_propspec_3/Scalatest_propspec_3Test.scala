@@ -23,6 +23,7 @@ import org.scalatest.Outcome
 import org.scalatest.Reporter
 import org.scalatest.Suite
 import org.scalatest.Tag
+import org.scalatest.TestData
 import org.scalatest.events.AlertProvided
 import org.scalatest.events.Event
 import org.scalatest.events.InfoProvided
@@ -148,6 +149,18 @@ class Scalatest_propspec_3Test:
     assert(suite.testNames.toVector == Vector("registered property", "ignored registered property"))
     assert(succeededEvents(result.events).map(_.testName) == Vector("registered property"))
     assert(ignoredEvents(result.events).map(_.testName) == Vector("ignored registered property"))
+
+  @Test
+  def anyPropSpecExposesPropertyMetadataThroughTestDataFor(): Unit =
+    val suite: TestDataPropSpec = new TestDataPropSpec
+    val configMap: ConfigMap = ConfigMap("sample" -> 7)
+    val testData: TestData = suite.testDataFor("tagged data property", configMap)
+
+    assert(testData.name == "tagged data property")
+    assert(testData.configMap == configMap)
+    assert(testData.scopes.isEmpty)
+    assert(testData.text == "tagged data property")
+    assert(testData.tags == Set(FastTag.name, DatabaseTag.name))
 
   @Test
   def fixtureAnyPropSpecProvidesFixturesNoArgPropertiesAndConfigMaps(): Unit =
@@ -301,6 +314,9 @@ class Scalatest_propspec_3Test:
     registerIgnoredTest("ignored registered property") {
       executionLog = executionLog :+ "ignored"
     }
+
+  private final class TestDataPropSpec extends AnyPropSpec:
+    property("tagged data property", FastTag, DatabaseTag) {}
 
   private final class FixtureBackedPropSpec extends FixtureAnyPropSpec:
     type FixtureParam = String
