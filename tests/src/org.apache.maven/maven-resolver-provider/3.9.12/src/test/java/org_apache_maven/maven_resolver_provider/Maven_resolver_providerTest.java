@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.maven.model.Model;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.apache.maven.repository.internal.MavenWorkspaceReader;
+import org.apache.maven.repository.internal.RelocatedArtifact;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.artifact.Artifact;
@@ -122,6 +123,70 @@ public class Maven_resolver_providerTest {
                 .containsExactly("com.acme:managed-lib:jar:2.0.0");
         assertThat(result.getRepositories()).extracting(RemoteRepository::getId).contains("fixture-child");
         assertThat(localRepositoryDirectory.resolve("com/acme/demo/1.0.0/demo-1.0.0.pom")).exists();
+    }
+
+    @Test
+    void artifactDescriptorFollowsMavenRelocationToTargetCoordinates() throws Exception {
+        Path remoteRepositoryDirectory = tempDirectory.resolve("remote-relocation-repository");
+        Path localRepositoryDirectory = tempDirectory.resolve("local-relocation-repository");
+        writePom(remoteRepositoryDirectory, "com.acme", "old-demo", "1.0.0", """
+                <project xmlns="http://maven.apache.org/POM/4.0.0">
+                  <modelVersion>4.0.0</modelVersion>
+                  <groupId>com.acme</groupId>
+                  <artifactId>old-demo</artifactId>
+                  <version>1.0.0</version>
+                  <distributionManagement>
+                    <relocation>
+                      <groupId>com.acme.relocated</groupId>
+                      <artifactId>new-demo</artifactId>
+                      <version>2.0.0</version>
+                      <message>Use the relocated artifact</message>
+                    </relocation>
+                  </distributionManagement>
+                </project>
+                """);
+        writePom(remoteRepositoryDirectory, "com.acme.relocated", "new-demo", "2.0.0", """
+                <project xmlns="http://maven.apache.org/POM/4.0.0">
+                  <modelVersion>4.0.0</modelVersion>
+                  <groupId>com.acme.relocated</groupId>
+                  <artifactId>new-demo</artifactId>
+                  <version>2.0.0</version>
+                  <dependencies>
+                    <dependency>
+                      <groupId>com.acme.relocated</groupId>
+                      <artifactId>relocated-dependency</artifactId>
+                      <version>2.1.0</version>
+                      <scope>compile</scope>
+                    </dependency>
+                  </dependencies>
+                </project>
+                """);
+
+        RepositorySystem repositorySystem = newRepositorySystem();
+        DefaultRepositorySystemSession session = newSession(repositorySystem, localRepositoryDirectory);
+        RemoteRepository remoteRepository = repository("fixture", remoteRepositoryDirectory.toUri().toString());
+        Artifact artifact = new DefaultArtifact("com.acme:old-demo:jar:1.0.0");
+        ArtifactDescriptorRequest request = new ArtifactDescriptorRequest(
+                artifact, List.of(remoteRepository), "relocation-test");
+
+        ArtifactDescriptorResult result = repositorySystem.readArtifactDescriptor(session, request);
+
+        assertThat(result.getRelocations())
+                .extracting(Artifact::toString)
+                .containsExactly("com.acme:old-demo:jar:1.0.0");
+        assertThat(result.getArtifact()).isInstanceOf(RelocatedArtifact.class);
+        RelocatedArtifact relocatedArtifact = (RelocatedArtifact) result.getArtifact();
+        assertThat(relocatedArtifact.getGroupId()).isEqualTo("com.acme.relocated");
+        assertThat(relocatedArtifact.getArtifactId()).isEqualTo("new-demo");
+        assertThat(relocatedArtifact.getVersion()).isEqualTo("2.0.0");
+        assertThat(relocatedArtifact.getMessage()).isEqualTo("Use the relocated artifact");
+        assertThat(result.getDependencies())
+                .extracting(Dependency::getArtifact)
+                .extracting(Artifact::toString)
+                .containsExactly("com.acme.relocated:relocated-dependency:jar:2.1.0");
+        assertThat(localRepositoryDirectory.resolve("com/acme/old-demo/1.0.0/old-demo-1.0.0.pom")).exists();
+        assertThat(localRepositoryDirectory.resolve("com/acme/relocated/new-demo/2.0.0/new-demo-2.0.0.pom"))
+                .exists();
     }
 
     @Test
