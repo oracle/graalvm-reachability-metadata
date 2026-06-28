@@ -22,6 +22,19 @@ public class ClassLoaderUtilTest {
     }
 
     @Test
+    void loadsEhcacheClassWithFallbackClassLoader() throws ClassNotFoundException {
+        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(null);
+        try {
+            Class<?> loadedClass = ClassLoaderUtil.loadClass("net.sf.ehcache.config.CacheConfiguration");
+
+            assertThat(loadedClass).isSameAs(CacheConfiguration.class);
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        }
+    }
+
+    @Test
     void createsEhcacheInstanceWithNoArgumentConstructor() {
         Object instance = ClassLoaderUtil.createNewInstance(CacheConfiguration.class.getName());
 
