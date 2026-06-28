@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "ognl:ognl:3.3.5",
+  "issueNumber": 7430,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Configure OGNL tests to run with JVM args `--add-opens=java.base/java.lang=ALL-UNNAMED` and `--add-opens=java.base/java.util=ALL-UNNAMED`; upstream 3.3.5 POM applies these in its JDK 17+ profile. Keep tests focused on normal OGNL parsing/get/set/member-access APIs, and guard SecurityManager-specific assertions because JDK 25 permanently disables SecurityManager behavior.",
+    "applied_setup": [],
+    "current_library": "ognl:ognl:3.2.21",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7430 [Automation] java run fails for ognl:ognl:3.3.5; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "17 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 62639,
+    "issue_label": "fails-java-run",
+    "issue_number": 7430,
+    "library": "ognl:ognl:3.3.5",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.3.5",
+    "output_tokens_used": 3312,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "JDK 25 changes around SecurityManager can make older tests assert obsolete behavior rather than library functionality.",
+      "Expression compilation uses Javassist; native-image runtime may not support all dynamic bytecode generation paths, so tests may need to treat those paths as JVM-only or explicitly handle native-image unsupported-feature failures."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/ognl:ognl:3.3.5/library-preparation-preflight/pi-generation-2026-06-28T18-12-59-149368Z.log",
+    "status": "completed",
+    "summary": "OGNL has no external service or extra test dependency need; its only runtime dependency is transitive Javassist, but upstream 3.3.5 documents JDK 17+ test JVM opens needed for reflective access."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.3.5",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-7430-fails-java-run-ognl-ognl-3.3.5-167792a5",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
