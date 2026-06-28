@@ -21,6 +21,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.Comparator
+import java.util.Properties
 import scala.annotation.Annotation
 import scala.jdk.CollectionConverters._
 import scala.tools.nsc.Global
@@ -29,6 +30,8 @@ import scala.tools.nsc.plugins.Plugin
 import scala.tools.nsc.reporters.StoreReporter
 
 class Silencer_lib_2_13_12Test {
+  restoreMissingRuntimeProperties()
+
   @Test
   def constructorsCreateIndependentScalaAnnotationInstances(): Unit = {
     val withoutPattern: silent = new silent()
@@ -262,6 +265,44 @@ class Silencer_lib_2_13_12Test {
       throw new IllegalArgumentException(s"Could not configure scalac options: ${unprocessed.mkString(" ")}")
     }
     settings
+  }
+
+  private def restoreMissingRuntimeProperties(): Unit = {
+    val embeddedRuntimeProperties: Properties = loadEmbeddedRuntimeProperties()
+
+    if (System.getProperty("java.home", "").isBlank) {
+      val javaHome: String = firstNonBlank(
+        embeddedRuntimeProperties.getProperty("java.home", ""),
+        System.getenv("JAVA_HOME"),
+        System.getenv("GRAALVM_HOME")
+      )
+      if (javaHome.nonEmpty) {
+        System.setProperty("java.home", javaHome)
+      }
+    }
+
+    if (System.getProperty("java.class.path", "").isBlank) {
+      val classPath: String = embeddedRuntimeProperties.getProperty("java.class.path", "")
+      if (classPath.nonEmpty) {
+        System.setProperty("java.class.path", classPath)
+      }
+    }
+  }
+
+  private def loadEmbeddedRuntimeProperties(): Properties = {
+    val properties = new Properties()
+    Option(getClass.getResourceAsStream("/native-runtime.properties")).foreach { inputStream =>
+      try {
+        properties.load(inputStream)
+      } finally {
+        inputStream.close()
+      }
+    }
+    properties
+  }
+
+  private def firstNonBlank(candidates: String*): String = {
+    candidates.find(candidate => candidate != null && !candidate.isBlank).getOrElse("")
   }
 
   private def runtimeClasspath: String = {
