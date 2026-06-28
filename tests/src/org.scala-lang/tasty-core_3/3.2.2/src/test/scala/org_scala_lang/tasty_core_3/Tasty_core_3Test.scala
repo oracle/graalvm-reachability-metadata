@@ -14,6 +14,7 @@ import dotty.tools.tasty.TastyHash
 import dotty.tools.tasty.TastyHeaderUnpickler
 import dotty.tools.tasty.TastyReader
 import dotty.tools.tasty.UnpickleException
+import dotty.tools.tasty.util.Util
 import java.nio.charset.StandardCharsets
 import java.util.Arrays
 import java.util.UUID
@@ -275,6 +276,26 @@ class Tasty_core_3Test {
     assertEquals(0L, TastyHash.pjwHash64(Array.emptyByteArray))
     assertEquals(361873233017L, TastyHash.pjwHash64("TASTy".getBytes(StandardCharsets.UTF_8)))
     assertEquals(4336877823L, TastyHash.pjwHash64(Array[Byte](0, 1, 2, 127, -128, -1)))
+  }
+
+  @Test
+  def utilDoublesArraysPreservingComponentTypeAndElements(): Unit = {
+    val strings = Array("first", "second")
+    val doubledStrings = Util.dble(strings)
+
+    assertEquals(4, doubledStrings.length)
+    assertEquals(classOf[String], doubledStrings.getClass.getComponentType)
+    assertEquals(List("first", "second"), doubledStrings.take(strings.length).toList)
+    assertTrue(doubledStrings.drop(strings.length).forall(_ == null))
+    doubledStrings(0) = "changed-copy"
+    assertEquals("first", strings(0))
+
+    val ints = Array(1, 2, 3)
+    val doubledInts = Util.dble(ints)
+
+    assertEquals(6, doubledInts.length)
+    assertEquals(classOf[Int], doubledInts.getClass.getComponentType)
+    assertEquals(List(1, 2, 3, 0, 0, 0), doubledInts.toList)
   }
 
   private def tastyHeaderBytes(
