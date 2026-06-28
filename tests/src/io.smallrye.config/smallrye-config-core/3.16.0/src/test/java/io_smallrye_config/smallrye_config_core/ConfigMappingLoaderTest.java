@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.microprofile.config.inject.ConfigProperties;
 import org.junit.jupiter.api.Test;
 
 import io.smallrye.config.ConfigMapping;
@@ -42,25 +41,27 @@ public class ConfigMappingLoaderTest {
     }
 
     @Test
-    void configPropertiesClassCanReuseAlreadyDefinedGeneratedMappingInterface() {
-        ConfigClass firstRegistration = ConfigClass.configClass(ServerProperties.class);
-        ConfigClass secondRegistration = ConfigClass.configClass(ServerProperties.class);
+    void configClassCanReuseAlreadyLoadableGeneratedMappingInterface() {
+        ConfigClass firstRegistration = ConfigClass.configClass(PreGeneratedMapping.class);
+        ConfigClass secondRegistration = ConfigClass.configClass(PreGeneratedMapping.class);
 
-        assertThat(firstRegistration.getProperties()).containsKeys("server.host", "server.port");
-        assertThat(secondRegistration.getProperties()).containsKeys("server.host", "server.port");
+        assertThat(firstRegistration.getProperties()).containsKeys("generated.host", "generated.port");
+        assertThat(secondRegistration.getProperties()).containsKeys("generated.host", "generated.port");
+        assertThat(secondRegistration.getSecrets()).isEmpty();
 
         SmallRyeConfig config = new SmallRyeConfigBuilder()
                 .withSources(new PropertiesConfigSource(Map.of(
-                        "server.host", "127.0.0.1",
-                        "server.port", "8181"), "config-properties-class-properties"))
+                        "generated.host", "127.0.0.1",
+                        "generated.port", "8181"), "config-mapping-class-properties"))
                 .withMapping(secondRegistration)
                 .withValidateUnknown(false)
                 .build();
 
-        ServerProperties properties = config.getConfigMapping(ServerProperties.class);
+        PreGeneratedMapping properties = config.getConfigMapping(PreGeneratedMapping.class);
 
-        assertThat(properties.host).isEqualTo("127.0.0.1");
-        assertThat(properties.port).isEqualTo(8181);
+        assertThat(properties.host()).isEqualTo("127.0.0.1");
+        assertThat(properties.port()).isEqualTo(8181);
+        assertThat(properties.getClass().getName()).endsWith("PreGeneratedMapping$$CMImpl");
     }
 
     @ConfigMapping(prefix = "generated")
@@ -105,11 +106,5 @@ public class ConfigMappingLoaderTest {
         public int port() {
             return port;
         }
-    }
-
-    @ConfigProperties(prefix = "server")
-    public static final class ServerProperties {
-        public String host;
-        public int port;
     }
 }
