@@ -57,6 +57,8 @@ public class Tools_readerTest {
     private static Var ednReadString;
     private static Var readerRead;
     private static Var readerReadString;
+    private static Var dataReaders;
+    private static Var defaultDataReaderFn;
     private static Var inputStreamPushBackReader;
     private static Var indexingPushBackReader;
     private static Var sourceLoggingPushBackReader;
@@ -79,6 +81,8 @@ public class Tools_readerTest {
         ednReadString = RT.var("clojure.tools.reader.edn", "read-string");
         readerRead = RT.var("clojure.tools.reader", "read");
         readerReadString = RT.var("clojure.tools.reader", "read-string");
+        dataReaders = RT.var("clojure.tools.reader", "*data-readers*");
+        defaultDataReaderFn = RT.var("clojure.tools.reader", "*default-data-reader-fn*");
         inputStreamPushBackReader = RT.var("clojure.tools.reader.reader-types", "input-stream-push-back-reader");
         indexingPushBackReader = RT.var("clojure.tools.reader.reader-types", "indexing-push-back-reader");
         sourceLoggingPushBackReader = RT.var("clojure.tools.reader.reader-types", "source-logging-push-back-reader");
@@ -210,6 +214,43 @@ public class Tools_readerTest {
                 () -> assertEquals(Symbol.intern("quote"), RT.first(quoted)),
                 () -> assertEquals(Symbol.intern("alpha"), RT.second(quoted)),
                 () -> assertEquals(Symbol.intern("fn*"), RT.first(anonymousFunction)));
+    }
+
+    @Test
+    public void clojureReaderUsesThreadBoundDataReadersAndDefaultReader() {
+        AFn coordinateReader = new AFn() {
+            @Override
+            public Object invoke(Object form) {
+                IPersistentVector coordinates = assertInstanceOf(IPersistentVector.class, form);
+                return RT.map(keyword("x"), coordinates.nth(0), keyword("y"), coordinates.nth(1));
+            }
+        };
+        AFn fallbackReader = new AFn() {
+            @Override
+            public Object invoke(Object tag, Object form) {
+                return RT.vector(tag, form);
+            }
+        };
+
+        Var.pushThreadBindings(RT.map(
+                dataReaders, RT.map(Symbol.intern("app", "coordinates"), coordinateReader),
+                defaultDataReaderFn, fallbackReader));
+        try {
+            Object coordinates = readerReadString.invoke("#app/coordinates [8 13]");
+            Object fallback = readerReadString.invoke("#app/unknown {:payload true}");
+
+            IPersistentMap coordinateMap = assertInstanceOf(IPersistentMap.class, coordinates);
+            IPersistentVector fallbackVector = assertInstanceOf(IPersistentVector.class, fallback);
+            IPersistentMap fallbackPayload = assertInstanceOf(IPersistentMap.class, fallbackVector.nth(1));
+
+            assertAll(
+                    () -> assertEquals(8L, coordinateMap.valAt(keyword("x"))),
+                    () -> assertEquals(13L, coordinateMap.valAt(keyword("y"))),
+                    () -> assertEquals(Symbol.intern("app", "unknown"), fallbackVector.nth(0)),
+                    () -> assertEquals(Boolean.TRUE, fallbackPayload.valAt(keyword("payload"))));
+        } finally {
+            Var.popThreadBindings();
+        }
     }
 
     @Test
