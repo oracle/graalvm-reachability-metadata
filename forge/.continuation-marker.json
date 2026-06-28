@@ -1,0 +1,77 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "jakarta.activation:jakarta.activation-api:2.0.0",
+  "issueNumber": 8769,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "For 2.0.0 tests, use the jakarta.activation package, not javax.activation. If testing mailcap or MIME-type file lookup, create deterministic temporary test resources and set/restore relevant system properties such as user.home inside the test instead of relying on host files.",
+    "applied_setup": [],
+    "current_library": "jakarta.activation:jakarta.activation-api:1.2.1",
+    "deterministic_setup": [
+      {
+        "coordinate": "com.sun.activation:jakarta.activation:2.0.0",
+        "kind": "dependency",
+        "reason": "The resolved jakarta.activation-api:2.0.0 POM states it is only for compiling against the API and excludes implementation-specific classes. Key API classes such as MailcapCommandMap and MimetypesFileTypeMap reference com.sun.activation.registries classes and default META-INF resources supplied by th\n...[truncated]",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8769 [Automation] javac compile fails for jakarta.activation:jakarta.activation-api:2.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "11 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 59434,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8769,
+    "library": "jakarta.activation:jakarta.activation-api:2.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.0",
+    "output_tokens_used": 4489,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The implementation jar contains duplicate jakarta.activation API classes as well as the missing com.sun.activation.registries classes; local Gradle and Native Image verification should confirm classpath ordering is acceptable.",
+      "The current compile failure excerpt is primarily caused by stale javax.activation imports from the 1.2.1 tests, so dependency setup alone will not fix the generated source."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/jakarta.activation:jakarta.activation-api:2.0.0/library-preparation-preflight/pi-generation-2026-06-28T14-41-52-311795Z.log",
+    "status": "completed",
+    "summary": "Jakarta Activation 2.0.0 is an API artifact; meaningful runtime coverage of common entry points needs the matching standalone implementation classes in addition to migrating tests from javax.activation to jakarta.activation."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8769-fails-javac-compile-jakarta.activation-jakarta.activation-api-2.0.0-4e662c3b",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
