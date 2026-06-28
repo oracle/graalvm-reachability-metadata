@@ -25,6 +25,7 @@ import co.elastic.clients.transport.rest5_client.low_level.Request;
 import co.elastic.clients.transport.rest5_client.low_level.Response;
 import co.elastic.clients.transport.rest5_client.low_level.ResponseListener;
 import co.elastic.clients.transport.rest5_client.low_level.Rest5Client;
+import co.elastic.clients.util.LanguageRuntimeVersions;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -35,6 +36,15 @@ import scala.util.Properties;
 
 public class LanguageRuntimeVersionsTest {
     private static final long REQUEST_TIMEOUT_SECONDS = 10;
+
+    @Test
+    void runtimeMetadataIncludesDetectedJvmLanguageRuntimeVersions() {
+        String runtimeMetadata = LanguageRuntimeVersions.getRuntimeMetadata();
+
+        assertThat(runtimeMetadata)
+            .contains(",kt=" + keepMajorMinor(KotlinVersion.CURRENT.toString()))
+            .contains(",sc=" + keepMajorMinor(Properties.versionNumberString()));
+    }
 
     @Test
     void rest5ClientMetaHeaderIncludesDetectedJvmLanguageRuntimeVersions() throws Exception {
