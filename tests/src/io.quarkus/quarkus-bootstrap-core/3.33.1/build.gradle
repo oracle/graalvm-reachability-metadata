@@ -21,16 +21,26 @@ dependencies {
 }
 
 String augmentorRuntimeClasspath = configurations.augmentorRuntime.asPath
+String applicationModelSerializationFormatProperty = "quarkus.bootstrap.application-model.serialization.format"
+String applicationModelSerializationFormat = "jos"
 
 tasks.withType(Test).configureEach {
     systemProperty "quarkus.core.deployment.classpath", augmentorRuntimeClasspath
+    systemProperty applicationModelSerializationFormatProperty, applicationModelSerializationFormat
 }
 
 tasks.named("nativeTest") {
     runtimeArgs.add("-Dquarkus.core.deployment.classpath=${augmentorRuntimeClasspath}")
+    runtimeArgs.add("-D${applicationModelSerializationFormatProperty}=${applicationModelSerializationFormat}")
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("-D${applicationModelSerializationFormatProperty}=${applicationModelSerializationFormat}")
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {
