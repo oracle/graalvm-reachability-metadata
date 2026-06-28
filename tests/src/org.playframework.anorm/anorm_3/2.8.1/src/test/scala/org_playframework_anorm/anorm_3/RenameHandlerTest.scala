@@ -7,6 +7,7 @@
 package org_playframework_anorm.anorm_3
 
 import org.joda.convert.RenameHandler
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Test
 
@@ -16,5 +17,6 @@ class RenameHandlerTest {
     val handler: RenameHandler = RenameHandler.create(true)
 
     assertSame(classOf[RenameHandlerTest], handler.lookupType("example.LegacyAnormName"))
+    assertEquals(Thread.State.RUNNABLE, handler.lookupEnum(classOf[Thread.State], "OLD_RUNNABLE"))
   }
 }
