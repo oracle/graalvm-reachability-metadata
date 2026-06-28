@@ -20,9 +20,9 @@ public class VersionInfoTest {
 
         assertThat(versionInfo).isNotNull();
         assertThat(versionInfo.getPackage()).isEqualTo("com.github.dockerjava.zerodep.shaded.org.apache.hc.core5");
-        assertThat(versionInfo.getModule()).isEqualTo("docker-java-transport-zerodep-test-module");
-        assertThat(versionInfo.getRelease()).isEqualTo("test-release");
-        assertThat(versionInfo.getTimestamp()).isEqualTo("test-timestamp");
-        assertThat(versionInfo.toString()).contains("docker-java-transport-zerodep-test-module", "test-release");
+        assertThat(versionInfo.getModule()).isEqualTo("httpcore5");
+        assertThat(versionInfo.getRelease()).isEqualTo("5.0.2");
+        assertThat(versionInfo.getTimestamp()).isEqualTo("UNAVAILABLE");
+        assertThat(versionInfo.toString()).contains("httpcore5", "5.0.2");
     }
 }
