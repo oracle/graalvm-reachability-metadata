@@ -116,6 +116,25 @@ public class Doxia_logging_apiTest {
     }
 
     @Test
+    void systemStreamLogWritesDebugAndWarnThrowableOnlyFormsToOutputStream() {
+        SystemStreamLog log = new SystemStreamLog();
+        log.setLogLevel(Log.LEVEL_DEBUG);
+        IllegalArgumentException debugCause = new IllegalArgumentException("debug-only-enabled-cause");
+        UnsupportedOperationException warnCause = new UnsupportedOperationException("warn-only-enabled-cause");
+
+        CapturedStreams capturedStreams = captureStreams(() -> {
+            log.debug(debugCause);
+            log.warn(warnCause);
+        });
+
+        assertThat(capturedStreams.out()).contains("[debug]")
+                .contains("java.lang.IllegalArgumentException: debug-only-enabled-cause")
+                .contains("[warn]")
+                .contains("java.lang.UnsupportedOperationException: warn-only-enabled-cause");
+        assertThat(capturedStreams.err()).isEmpty();
+    }
+
+    @Test
     void systemStreamLogWritesErrorMessagesWithCausesOnlyToErrorStream() {
         SystemStreamLog log = new SystemStreamLog();
         IllegalStateException cause = new IllegalStateException("system-error-cause");
