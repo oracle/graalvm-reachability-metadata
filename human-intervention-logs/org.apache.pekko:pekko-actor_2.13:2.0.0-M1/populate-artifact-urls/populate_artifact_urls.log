@@ -1,0 +1,863 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f0d2b-1e3c-7c82-9951-4f5cea50b1e6
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.pekko:pekko-actor_2.13:2.0.0-M1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.0.0-M1].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+- Entry selector: "metadata-version" = "2.0.0-M1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: {"name": "scala", "version": "2"}
+
+Context:
+- Coordinate version: 2.0.0-M1
+- Entry metadata-version: 2.0.0-M1
+- Entry test-version: 2.0.0-M1
+- Entry tested-versions: [2.0.0-M1]
+codex
+I’ll inspect the existing metadata shape first, then verify the Pekko artifact URLs against Maven/GitHub/docs before editing only the missing fields.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.pekko/pekko-actor_2.13/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.0-M1",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "2.0.0-M1"
+    ],
+    "allowed-packages" : [
+      "org.apache.pekko"
+    ]
+  },
+  {
+    "metadata-version" : "1.1.5",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/pekko",
+    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
+    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "1.1.5",
+      "1.2.0",
+      "1.2.1",
+      "1.3.0",
+      "1.4.0",
+      "1.5.0",
+      "1.6.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.pekko"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'pekko-actor_2.13|source-code-url|documentation-url|language' metadata/org.apache.pekko -g 'index.json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227
+ succeeded in 0ms:
+metadata/org.apache.pekko/pekko-parsing_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-sources.jar",
+metadata/org.apache.pekko/pekko-parsing_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-parsing_3/index.json:10:    "language" : {
+metadata/org.apache.pekko/pekko-actor_2.13/index.json:5:    "language" : {
+metadata/org.apache.pekko/pekko-actor_2.13/index.json:18:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
+metadata/org.apache.pekko/pekko-actor_2.13/index.json:21:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-actor_2.13/index.json:23:    "language" : {
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-sources.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:9:    "language" : {
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:24:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-sources.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:27:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:29:    "language" : {
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:43:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-sources.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:46:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:48:    "language" : {
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:61:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-sources.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:64:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:66:    "language" : {
+metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_3/$version$/pekko-protobuf-v3_3-$version$-sources.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_3/$version$/pekko-protobuf-v3_3-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:10:    "language" : {
+metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:24:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_3/$version$/pekko-protobuf-v3_3-$version$-sources.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:27:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_3/$version$/pekko-protobuf-v3_3-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:29:    "language" : {
+metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:48:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_3/$version$/pekko-protobuf-v3_3-$version$-sources.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:51:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_3/$version$/pekko-protobuf-v3_3-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:53:    "language" : {
+
+codex
+The entry already has the Scala 2 language marker, so I’ll preserve it. The neighboring Pekko entry uses Maven source/javadoc jars and the GitHub `actor-tests/src/test` tree; I’m verifying whether the milestone artifact also has Maven-hosted test sources before choosing the test URL.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/pekko/pekko-actor_2.13/2.0.0-M1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/pekko/pekko-actor_2.13/2.0.0-M1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="pekko-actor_2.13-2.0.0-M1-cyclonedx.json" title="pekko-actor_2.13-2.0.0-M1-cyclonedx.json">pekko-actor_2.13-2.0.0-M1-cyclonedx.json</a>          2025-12-02 22:22      4809      
+<a href="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc" title="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc">pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc</a>      2025-12-02 22:22       833      
+<a href="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc.md5" title="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc.md5">pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc....</a>  2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc.sha1" title="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc.sha1">pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc....</a>  2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.md5" title="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.md5">pekko-actor_2.13-2.0.0-M1-cyclonedx.json.md5</a>      2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.sha1" title="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.sha1">pekko-actor_2.13-2.0.0-M1-cyclonedx.json.sha1</a>     2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1-javadoc.jar" title="pekko-actor_2.13-2.0.0-M1-javadoc.jar">pekko-actor_2.13-2.0.0-M1-javadoc.jar</a>             2025-12-02 22:22   8492433      
+<a href="pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc" title="pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc">pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc</a>         2025-12-02 22:22       833      
+<a href="pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc.md5" title="pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc.md5">pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc.md5</a>     2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc.sha1" title="pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc.sha1">pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc.sha...</a>  2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1-javadoc.jar.md5" title="pekko-actor_2.13-2.0.0-M1-javadoc.jar.md5">pekko-actor_2.13-2.0.0-M1-javadoc.jar.md5</a>         2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1-javadoc.jar.sha1" title="pekko-actor_2.13-2.0.0-M1-javadoc.jar.sha1">pekko-actor_2.13-2.0.0-M1-javadoc.jar.sha1</a>        2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1-sources.jar" title="pekko-actor_2.13-2.0.0-M1-sources.jar">pekko-actor_2.13-2.0.0-M1-sources.jar</a>             2025-12-02 22:22    573675      
+<a href="pekko-actor_2.13-2.0.0-M1-sources.jar.asc" title="pekko-actor_2.13-2.0.0-M1-sources.jar.asc">pekko-actor_2.13-2.0.0-M1-sources.jar.asc</a>         2025-12-02 22:22       833      
+<a href="pekko-actor_2.13-2.0.0-M1-sources.jar.asc.md5" title="pekko-actor_2.13-2.0.0-M1-sources.jar.asc.md5">pekko-actor_2.13-2.0.0-M1-sources.jar.asc.md5</a>     2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1-sources.jar.asc.sha1" title="pekko-actor_2.13-2.0.0-M1-sources.jar.asc.sha1">pekko-actor_2.13-2.0.0-M1-sources.jar.asc.sha...</a>  2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1-sources.jar.md5" title="pekko-actor_2.13-2.0.0-M1-sources.jar.md5">pekko-actor_2.13-2.0.0-M1-sources.jar.md5</a>         2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1-sources.jar.sha1" title="pekko-actor_2.13-2.0.0-M1-sources.jar.sha1">pekko-actor_2.13-2.0.0-M1-sources.jar.sha1</a>        2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1.buildinfo" title="pekko-actor_2.13-2.0.0-M1.buildinfo">pekko-actor_2.13-2.0.0-M1.buildinfo</a>               2025-12-02 22:22       767      
+<a href="pekko-actor_2.13-2.0.0-M1.buildinfo.asc" title="pekko-actor_2.13-2.0.0-M1.buildinfo.asc">pekko-actor_2.13-2.0.0-M1.buildinfo.asc</a>           2025-12-02 22:22       833      
+<a href="pekko-actor_2.13-2.0.0-M1.buildinfo.asc.md5" title="pekko-actor_2.13-2.0.0-M1.buildinfo.asc.md5">pekko-actor_2.13-2.0.0-M1.buildinfo.asc.md5</a>       2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1.buildinfo.asc.sha1" title="pekko-actor_2.13-2.0.0-M1.buildinfo.asc.sha1">pekko-actor_2.13-2.0.0-M1.buildinfo.asc.sha1</a>      2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1.buildinfo.md5" title="pekko-actor_2.13-2.0.0-M1.buildinfo.md5">pekko-actor_2.13-2.0.0-M1.buildinfo.md5</a>           2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1.buildinfo.sha1" title="pekko-actor_2.13-2.0.0-M1.buildinfo.sha1">pekko-actor_2.13-2.0.0-M1.buildinfo.sha1</a>          2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1.jar" title="pekko-actor_2.13-2.0.0-M1.jar">pekko-actor_2.13-2.0.0-M1.jar</a>                     2025-12-02 22:22   3717334      
+<a href="pekko-actor_2.13-2.0.0-M1.jar.asc" title="pekko-actor_2.13-2.0.0-M1.jar.asc">pekko-actor_2.13-2.0.0-M1.jar.asc</a>                 2025-12-02 22:22       833      
+<a href="pekko-actor_2.13-2.0.0-M1.jar.asc.md5" title="pekko-actor_2.13-2.0.0-M1.jar.asc.md5">pekko-actor_2.13-2.0.0-M1.jar.asc.md5</a>             2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1.jar.asc.sha1" title="pekko-actor_2.13-2.0.0-M1.jar.asc.sha1">pekko-actor_2.13-2.0.0-M1.jar.asc.sha1</a>            2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1.jar.md5" title="pekko-actor_2.13-2.0.0-M1.jar.md5">pekko-actor_2.13-2.0.0-M1.jar.md5</a>                 2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1.jar.sha1" title="pekko-actor_2.13-2.0.0-M1.jar.sha1">pekko-actor_2.13-2.0.0-M1.jar.sha1</a>                2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1.pom" title="pekko-actor_2.13-2.0.0-M1.pom">pekko-actor_2.13-2.0.0-M1.pom</a>                     2025-12-02 22:22      2165      
+<a href="pekko-actor_2.13-2.0.0-M1.pom.asc" title="pekko-actor_2.13-2.0.0-M1.pom.asc">pekko-actor_2.13-2.0.0-M1.pom.asc</a>                 2025-12-02 22:22       833      
+<a href="pekko-actor_2.13-2.0.0-M1.pom.asc.md5" title="pekko-actor_2.13-2.0.0-M1.pom.asc.md5">pekko-actor_2.13-2.0.0-M1.pom.asc.md5</a>             2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1.pom.asc.sha1" title="pekko-actor_2.13-2.0.0-M1.pom.asc.sha1">pekko-actor_2.13-2.0.0-M1.pom.asc.sha1</a>            2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1.pom.md5" title="pekko-actor_2.13-2.0.0-M1.pom.md5">pekko-actor_2.13-2.0.0-M1.pom.md5</a>                 2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1.pom.sha1" title="pekko-actor_2.13-2.0.0-M1.pom.sha1">pekko-actor_2.13-2.0.0-M1.pom.sha1</a>                2025-12-02 22:22        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/pekko | sed -n '1,30p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227
+exec
+/usr/bin/bash -lc "curl -I -L -s https://github.com/apache/pekko/tree/v2.0.0-M1/actor-tests/src/test | sed -n '1,40p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227
+ succeeded in 563ms:
+HTTP/2 200 
+date: Sun, 28 Jun 2026 07:39:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"9a98770ec5508e955406dbd4acf4337c"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com wss://production-copilot-host.webpubsub.azure.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=uzehQTluQxXJNwVzDHem3EAz%2F5lpuNe4kKncn9Cp6N9GMHgIEi4CjG9PrJinltSD1oqAqxP%2Bqj8Lce8ABZH92YFp9wA01OBaXsUIdozTq1h8dJOflekncvjVO3JoGKQOqwZv0s9AuJxxEiak3kLnIizMOBv4CAnFznvSFDP8HJ2tHPIOS6fKeBvBvDM%2B8aSOQ6A1CGPd72OrYX1j5JBj14Fjh%2FpENQ%2FqTDM5nMomK7dIc9QQ9AFx9aE%2BIyvygIEQr31F4DtYfFO5Czlx7ltFyg%3D%3D--lvzSFT3V9pPBXU%2Bs--bwNbPSbWNXWI5vtjWhw0jA%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.891423123.1782632371; expires=Mon, 28 Jun 2027 07:39:31 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 28 Jun 2027 07:39:31 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6221:35FA28:12F6D6C9:E56C4E3:6A40CFB3
+
+
+ succeeded in 580ms:
+HTTP/2 200 
+date: Sun, 28 Jun 2026 07:39:32 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"886de367d569452d06d745267df57196"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com wss://production-copilot-host.webpubsub.azure.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=RWECXVncnLuPj%2Fkztzg5IXQdYZjzx89%2FAL%2Bdbfzo3SXRIrAqqzzLh9oIgDaN935ephlOazQ%2F7oo3Xn2qu%2BPKywry8xI5JE3Nt%2BCdFth8AY4am29m4pzgDR7XQYxplju0I2FqL%2Blr29sDWImCNxNNu2ja3Bs8pWEiejd%2BVS%2F6yk9VX0O6tiqRdmQvJd%2BznpO5G6fSwdbt4yLLVeVoHEvun3%2FGumcubnUjqpPW8v1x8fzHqOWkooSf%2F5SQFbbXWI9%2BdLl%2FSQK%2BsvTKXIbEu9ifqw%3D%3D--icOmbC0EO7l8MhbV--9Xaz%2FQaOTb%2FRJ59jUoGgSQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1517339693.1782632371; expires=Mon, 28 Jun 2027 07:39:31 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Mon, 28 Jun 2027 07:39:31 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6216:25104A:13411351:E906ADE:6A40CFB3
+
+
+web search: 
+web search: org.apache.pekko pekko-actor_2.13 2.0.0-M1 Maven Central sources javadoc
+web search: 
+web search: https://github.com/apache/pekko/tree/v2.0.0-M1/actor-tests/src/test
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/ pekko-actor_2.13-2.0.0-M1-sources.jar
+web search: 
+web search: search.maven.org org.apache.pekko pekko-actor_2.13 2.0.0-M1 sources javadoc
+codex
+Maven Central has source and javadoc jars for `pekko-actor_2.13:2.0.0-M1`, but that directory does not list a test-sources classifier. I’m checking the separately published `pekko-actor-tests_2.13` artifact now, because that is a better Maven-hosted test-suite target if it has sources for the same version.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/pekko-actor_2.13-2.0.0-M1.pom | sed -n '1,180p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.pekko</groupId>
+    <artifactId>pekko-actor_2.13</artifactId>
+    <packaging>jar</packaging>
+    <description>Apache Pekko is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.</description>
+    <url>https://pekko.apache.org/</url>
+    <version>2.0.0-M1</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>Apache Pekko Actor</name>
+    <inceptionYear>2022</inceptionYear>
+    <organization>
+        <name>Apache Software Foundation</name>
+        <url>https://www.apache.org</url>
+    </organization>
+    <scm>
+        <url>https://github.com/apache/pekko</url>
+        <connection>scm:git:https://github.com/apache/pekko.git</connection>
+        <developerConnection>scm:git:git@github.com:apache/pekko.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>pekko-contributors</id>
+            <name>Apache Pekko Contributors</name>
+            <url>https://github.com/apache/pekko/graphs/contributors</url>
+            <email>dev@pekko.apache.org</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://pekko.apache.org/api/pekko/2.0.0-M1</info.apiURL>
+        <info.versionScheme>semver-spec</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.13.18</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+            <version>1.4.5</version>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor-tests_2.13/2.0.0-M1/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/apache/pekko/v2.0.0-M1/README.md | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227
+ succeeded in 415ms:
+# Apache Pekko
+
+[![Nightly Builds](https://github.com/apache/pekko/actions/workflows/nightly-builds.yml/badge.svg)](https://github.com/apache/pekko/actions/workflows/nightly-builds.yml)
+[![Nightly Aeron Tests](https://github.com/apache/pekko/actions/workflows/nightly-builds-aeron.yml/badge.svg?branch=main)](https://github.com/apache/pekko/actions/workflows/nightly-builds-aeron.yml)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9032/badge)](https://www.bestpractices.dev/projects/9032)
+
+Apache Pekko is an open-source framework for building applications that are concurrent, distributed, resilient and elastic.
+Pekko uses the Actor Model to provide more intuitive high-level abstractions for concurrency.
+Using these abstractions, Pekko also provides libraries for persistence, streams, HTTP, and more.
+
+Pekko is a fork of [Akka](https://github.com/akka/akka) 2.6.x, prior to the Akka project's adoption of the Business Source License.
+
+## Reference Documentation
+
+See https://pekko.apache.org for the documentation including the API docs. The docs for all the Apache Pekko modules can be found there.
+
+## Building from Source
+
+The CI build is Linux based (Ubuntu) and most Pekko developers use Macs or Linux machines. There have been reports of issues when building with Windows ([#829](https://github.com/apache/pekko/issues/829)).
+
+## Using IntelliJ IDEA
+
+To use IntelliJ IDEA, you need to configure your project to use JDK 17. For a visual guide, refer to this [Q&A](https://github.com/apache/pekko/discussions/1847#discussioncomment-13166066).
+
+- File > Project Structure > Project Settings > Project > Set your JDK to version 17
+- Settings > ... > Scala Compiler Server > Set your JDK to version 17 
+- Settings > ... > sbt > Set your JRE to version 17
+
+### Prerequisites
+- Make sure you have installed a Java Development Kit (JDK) version 17 or later.
+- Make sure you have [sbt](https://www.scala-sbt.org/) installed and using this JDK.
+- [Graphviz](https://graphviz.gitlab.io/download/) is needed for the scaladoc generation build task, which is part of the release.
+
+### Running the Build
+- Open a command window and change directory to your preferred base directory
+- Use git to clone the [repo](https://github.com/apache/pekko) or download a source release from https://pekko.apache.org (and unzip or untar it, as appropriate)
+- Change directory to the directory where you installed the source (you should have a file called `build.sbt` in this directory)
+- `sbt compile` compiles the main source for project default version of Scala (2.13)
+    - `sbt +compile` will compile for all supported versions of Scala
+- `sbt test` will compile the code and run the unit tests
+- `sbt testQuick` similar to test but when repeated in shell mode will only run failing tests
+- `sbt testQuickUntilPassed` similar to testQuick but will loop until tests pass.
+- `sbt package` will build the jars
+    - the jars will be built into target dirs of the various modules
+    - for the 'actor' module, the jar will be built to `actor/target/scala-2.13/`
+- `sbt publishLocal` will push the jars to your local Apache Ivy repository
+- `sbt publishM2` will push the jars to your local Apache Maven repository
+- `sbt docs/paradox` will build the docs (the ones describing the module features)
+     - `sbt docs/paradoxBrowse` does the same but will open the docs in your browser when complete
+     - the `index.html` file will appear in `target/paradox/site/main/`
+- `sbt unidoc` will build the Javadocs for all the modules and load them to one place (may require Graphviz, see Prerequisites above)
+     - the `index.html` file will appear in `target/scala-2.13/unidoc/`
+- `sbt sourceDistGenerate` will generate source release to `target/dist/`
+- The version number that appears in filenames and docs is derived, by default. The derived version contains the most git commit id or the date/time (if the directory is not under git control). 
+    - You can set the version number explicitly when running sbt commands
+        - eg `sbt "set ThisBuild / version := \"1.0.0\"; sourceDistGenerate"`  
+    - Or you can add a file called `version.sbt` to the same directory that has the `build.sbt` containing something like
+        - `ThisBuild / version := "1.0.0"` 
+
+## Community
+
+There are several ways to interact with the Pekko community:
+
+- [GitHub discussions](https://github.com/apache/pekko/discussions): for questions and general discussion.
+- [Pekko dev mailing list](https://lists.apache.org/list.html?dev@pekko.apache.org): for Pekko development discussions.
+- [Pekko users mailing list](https://lists.apache.org/list.html?users@pekko.apache.org): for Pekko user discussions.
+- [GitHub issues](https://github.com/apache/pekko/issues): for bug reports and feature requests. Please search the existing issues before creating new ones. If you are unsure whether you have found a bug, consider asking in GitHub discussions or the mailing list first.
+
+## Contributing
+
+Contributions are very welcome. If you have an idea on how to improve Pekko, don't hesitate to create an issue or submit a pull request.
+
+See [CONTRIBUTING.md](https://github.com/apache/pekko/blob/main/CONTRIBUTING.md) for details on the development workflow and how to create your pull request.
+
+## Code of Conduct
+
+Apache Pekko is governed by the [Apache code of conduct](https://www.apache.org/foundation/policies/conduct.html). By participating in this project you agree to abide by its terms.
+
+## License
+
+Apache Pekko is available under the Apache License, version 2.0. See [LICENSE](https://github.com/apache/pekko/blob/main/LICENSE) file for details.
+
+ succeeded in 418ms:
+curl: (22) The requested URL returned error: 404
+
+codex
+There is no `pekko-actor-tests_2.13:2.0.0-M1` Maven directory, so the published GitHub test tree remains the correct versioned test-suite URL. The POM confirms the canonical SCM root and a versioned API-doc location, while the Maven directory confirms source and javadoc jars exist for this exact artifact version.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/ | rg 'actor.*2\\.13'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227
+ succeeded in 0ms:
+<a href="pekko-actor-testkit-typed_2.13/" title="pekko-actor-testkit-typed_2.13/">pekko-actor-testkit-typed_2.13/</a>                                  -         -      
+<a href="pekko-actor-typed_2.13/" title="pekko-actor-typed_2.13/">pekko-actor-typed_2.13/</a>                                          -         -      
+<a href="pekko-actor_2.13/" title="pekko-actor_2.13/">pekko-actor_2.13/</a>                                                -         -      
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/pekko-actor_2.13-2.0.0-M1-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/pekko-actor_2.13-2.0.0-M1-javadoc.jar \\
+  https://github.com/apache/pekko/tree/v2.0.0-M1/actor-tests/src/test \\
+  https://pekko.apache.org/api/pekko/2.0.0-M1; do
+  printf '%s ' \""'$url"
+  curl -o /dev/null -s -L -w '"'%{http_code}\\n' \""'$url"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227
+ succeeded in 775ms:
+200
+https://github.com/apache/pekko/tree/v2.0.0-M1/actor-tests/src/test 200
+https://pekko.apache.org/api/pekko/2.0.0-M1 404
+
+web search: 
+web search: https://github.com/apache/pekko/tree/v2.0.0-M1/actor-tests/src/test
+web search: 
+web search: g:"org.apache.pekko" a:"pekko-actor_2.13" v:"2.0.0-M1" Maven Central
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.pekko/pekko-actor_2.13/2.0.0-M1
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.pekko/pekko-actor_2.13/2.0.0-M1
+web search: 
+web search: central.sonatype.com/artifact/org.apache.pekko/pekko-actor_2.13/2.0.0-M1
+codex
+I’m going to fill the first `2.0.0-M1` entry with Maven Central source/javadoc jar templates, the canonical GitHub repository root, and the versioned GitHub actor test tree. The existing Scala 2 language field is already correct and non-blank, so I’ll leave it untouched.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+diff --git a/metadata/org.apache.pekko/pekko-actor_2.13/index.json b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+index 9732f2ad72b234e3ecb53ac9b0c79f3156224355..67d601710939e15a580afca5d47bc26adfe5550e
+--- a/metadata/org.apache.pekko/pekko-actor_2.13/index.json
++++ b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko",
++    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
++    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "2"
+
+diff --git a/metadata/org.apache.pekko/pekko-actor_2.13/index.json b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+index 9732f2ad72b234e3ecb53ac9b0c79f3156224355..67d601710939e15a580afca5d47bc26adfe5550e
+--- a/metadata/org.apache.pekko/pekko-actor_2.13/index.json
++++ b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko",
++    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
++    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "2"
+
+codex
+The metadata entry is updated. I’ll do a quick JSON/diff check and run the targeted metadata validation for this coordinate.
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.apache.pekko/pekko-actor_2.13/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.apache.pekko/pekko-actor_2.13/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227
+ succeeded in 0ms:
+diff --git i/metadata/org.apache.pekko/pekko-actor_2.13/index.json w/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+index 9732f2ad72..67d6017109 100644
+--- i/metadata/org.apache.pekko/pekko-actor_2.13/index.json
++++ w/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko",
++    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
++    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "2"
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.apache.pekko:pekko-actor_2.13:2.0.0-M1 --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227
+diff --git a/metadata/org.apache.pekko/pekko-actor_2.13/index.json b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+index 9732f2ad72b234e3ecb53ac9b0c79f3156224355..67d601710939e15a580afca5d47bc26adfe5550e
+--- a/metadata/org.apache.pekko/pekko-actor_2.13/index.json
++++ b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko",
++    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
++    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "2"
+
+codex
+The JSON syntax check passed and the diff is limited to the missing fields in the selected entry. Gradle validation is still running.
+diff --git a/metadata/org.apache.pekko/pekko-actor_2.13/index.json b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+index 9732f2ad72b234e3ecb53ac9b0c79f3156224355..67d601710939e15a580afca5d47bc26adfe5550e
+--- a/metadata/org.apache.pekko/pekko-actor_2.13/index.json
++++ b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko",
++    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
++    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "2"
+
+ exited 1 in 4016ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+Metadata files check failed for org.apache.pekko:pekko-actor_2.13:2.0.0-M1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227/metadata/org.apache.pekko/pekko-actor_2.13/2.0.0-M1/
+
+> Task :checkMetadataFiles FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.apache.pekko:pekko-actor_2.13:2.0.0-M1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227/metadata/org.apache.pekko/pekko-actor_2.13/2.0.0-M1/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.apache.pekko:pekko-actor_2.13:2.0.0-M1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227/metadata/org.apache.pekko/pekko-actor_2.13/2.0.0-M1/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+9 actionable tasks: 1 executed, 8 up-to-date
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+BUILD FAILED in 3s
+
+web search: 
+web search: Apache Pekko GitHub apache/pekko
+web search: 
+web search: https://github.com/apache/pekko
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/
+web search: 
+web search: repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/pekko-actor_2.13-2.0.0-M1-sources.jar
+web search: 
+web search: "pekko-actor_2.13-2.0.0-M1-sources.jar"
+web search: 
+web search: pekko-actor_2.13 2.0.0-M1
+web search: 
+web search: search.maven.org/solrsearch/select org.apache.pekko pekko-actor_2.13 2.0.0-M1
+codex
+The targeted Gradle metadata validation failed before it could validate the URL edit because this coordinate has no `metadata/org.apache.pekko/pekko-actor_2.13/2.0.0-M1/reachability-metadata.json` directory content. I’ll capture the final status so the closeout is precise.
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.apache.pekko/pekko-actor_2.13/index.json metadata/org.apache.pekko/pekko-actor_2.13/2.0.0-M1' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227
+ succeeded in 0ms:
+ M metadata/org.apache.pekko/pekko-actor_2.13/index.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,40p' metadata/org.apache.pekko/pekko-actor_2.13/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.0-M1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/pekko",
+    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
+    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "2.0.0-M1"
+    ],
+    "allowed-packages" : [
+      "org.apache.pekko"
+    ]
+  },
+  {
+    "metadata-version" : "1.1.5",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/pekko",
+    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
+    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "1.1.5",
+      "1.2.0",
+      "1.2.1",
+      "1.3.0",
+      "1.4.0",
+      "1.5.0",
+      "1.6.0"
+    ],
+
+diff --git a/metadata/org.apache.pekko/pekko-actor_2.13/index.json b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+index 9732f2ad72b234e3ecb53ac9b0c79f3156224355..67d601710939e15a580afca5d47bc26adfe5550e
+--- a/metadata/org.apache.pekko/pekko-actor_2.13/index.json
++++ b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko",
++    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
++    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "2"
+
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227/metadata/org.apache.pekko/pekko-actor_2.13/index.json:1) for `metadata-version` `2.0.0-M1`.
+
+Filled the missing source, repository, test, documentation, and two-sentence description fields. I left `language` unchanged as Scala 2, which matches the `_2.13` artifact naming and existing entry. The canonical repo and versioned test tree are under `apache/pekko`, and Pekko is described as an actor-model toolkit for concurrent, distributed, resilient JVM applications. citeturn1view0turn0search2
+
+Verification:
+- Rendered `$version$` as `2.0.0-M1`; source jar, javadoc jar, and GitHub test tree all returned HTTP `200`.
+- `jq empty metadata/org.apache.pekko/pekko-actor_2.13/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.pekko:pekko-actor_2.13:2.0.0-M1 --stacktrace` failed because `metadata/org.apache.pekko/pekko-actor_2.13/2.0.0-M1/reachability-metadata.json` is missing.
+diff --git a/metadata/org.apache.pekko/pekko-actor_2.13/index.json b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+index 9732f2ad72b234e3ecb53ac9b0c79f3156224355..67d601710939e15a580afca5d47bc26adfe5550e
+--- a/metadata/org.apache.pekko/pekko-actor_2.13/index.json
++++ b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0-M1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko",
++    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
++    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+     "language" : {
+       "name" : "scala",
+       "version" : "2"
+
+tokens used
+101,016
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227/metadata/org.apache.pekko/pekko-actor_2.13/index.json:1) for `metadata-version` `2.0.0-M1`.
+
+Filled the missing source, repository, test, documentation, and two-sentence description fields. I left `language` unchanged as Scala 2, which matches the `_2.13` artifact naming and existing entry. The canonical repo and versioned test tree are under `apache/pekko`, and Pekko is described as an actor-model toolkit for concurrent, distributed, resilient JVM applications. citeturn1view0turn0search2
+
+Verification:
+- Rendered `$version$` as `2.0.0-M1`; source jar, javadoc jar, and GitHub test tree all returned HTTP `200`.
+- `jq empty metadata/org.apache.pekko/pekko-actor_2.13/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.pekko:pekko-actor_2.13:2.0.0-M1 --stacktrace` failed because `metadata/org.apache.pekko/pekko-actor_2.13/2.0.0-M1/reachability-metadata.json` is missing.
+Ran agent for org.apache.pekko:pekko-actor_2.13:2.0.0-M1 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227/build/agent-url-discovery-logs/org.apache.pekko-pekko-actor_2.13-2.0.0-M1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-0d0e7227/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 57s
+9 actionable tasks: 1 executed, 8 up-to-date
