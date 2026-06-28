@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.net.InetAddress;
 import java.net.URI;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,8 @@ import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.client.discovery.composite.CompositeDiscoveryClient;
 import org.springframework.cloud.client.discovery.simple.InstanceProperties;
 import org.springframework.cloud.client.discovery.simple.SimpleDiscoveryClient;
 import org.springframework.cloud.client.discovery.simple.SimpleDiscoveryProperties;
@@ -128,6 +131,36 @@ public class Spring_cloud_commonsTest {
         assertThat(billingInstance.isSecure()).isTrue();
         assertThat(billingInstance.getUri()).isEqualTo(URI.create("https://billing.example:9443"));
         assertThat(properties.toString()).contains("inventory", "billing", "order");
+    }
+
+    @Test
+    void compositeDiscoveryClientOrdersDelegatesAndUsesFirstAvailableInstances() {
+        DefaultServiceInstance priorityInventory = new DefaultServiceInstance("inventory-priority", "inventory",
+                "inventory-priority.example", 8080, false);
+        DefaultServiceInstance fallbackPayment = new DefaultServiceInstance("payments-fallback", "payments",
+                "payments-fallback.example", 9090, false);
+        RecordingDiscoveryClient fallback = new RecordingDiscoveryClient("fallback", 10,
+                List.of("inventory", "payments"), Map.of("payments", List.of(fallbackPayment)));
+        RecordingDiscoveryClient priority = new RecordingDiscoveryClient("priority", -10,
+                List.of("inventory", "shared"), Map.of("inventory", List.of(priorityInventory)));
+        RecordingDiscoveryClient middle = new RecordingDiscoveryClient("middle", 0, List.of("shared", "billing"),
+                Map.of());
+        List<DiscoveryClient> delegates = new ArrayList<>(List.of(fallback, priority, middle));
+
+        CompositeDiscoveryClient composite = new CompositeDiscoveryClient(delegates);
+
+        assertThat(composite.description()).isEqualTo("Composite Discovery Client");
+        assertThat(composite.getDiscoveryClients()).containsExactly(priority, middle, fallback);
+        assertThat(composite.getInstances("inventory")).containsExactly(priorityInventory);
+        assertThat(composite.getInstances("payments")).containsExactly(fallbackPayment);
+        assertThat(composite.getInstances("missing")).isEmpty();
+        assertThat(composite.getServices()).containsExactly("inventory", "shared", "billing", "payments");
+
+        composite.probe();
+
+        assertThat(priority.getProbeCount()).isOne();
+        assertThat(middle.getProbeCount()).isOne();
+        assertThat(fallback.getProbeCount()).isOne();
     }
 
     @Test
@@ -368,6 +401,56 @@ public class Spring_cloud_commonsTest {
         assertThat(tls.keyPassword()).containsExactly('k', 'e', 'y', '-', 's', 'e', 'c', 'r', 'e', 't');
         assertThat(tls.trustStorePassword())
                 .containsExactly('t', 'r', 'u', 's', 't', '-', 's', 'e', 'c', 'r', 'e', 't');
+    }
+
+    private static final class RecordingDiscoveryClient implements DiscoveryClient {
+
+        private final String description;
+
+        private final int order;
+
+        private final List<String> services;
+
+        private final Map<String, List<ServiceInstance>> instances;
+
+        private int probeCount;
+
+        private RecordingDiscoveryClient(String description, int order, List<String> services,
+                Map<String, List<ServiceInstance>> instances) {
+            this.description = description;
+            this.order = order;
+            this.services = services;
+            this.instances = instances;
+        }
+
+        @Override
+        public String description() {
+            return this.description;
+        }
+
+        @Override
+        public List<ServiceInstance> getInstances(String serviceId) {
+            return this.instances.getOrDefault(serviceId, List.of());
+        }
+
+        @Override
+        public List<String> getServices() {
+            return this.services;
+        }
+
+        @Override
+        public void probe() {
+            this.probeCount++;
+        }
+
+        @Override
+        public int getOrder() {
+            return this.order;
+        }
+
+        private int getProbeCount() {
+            return this.probeCount;
+        }
     }
 
     private static final class SchemeServiceInstance implements ServiceInstance {
