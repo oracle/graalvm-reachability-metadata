@@ -4,6 +4,8 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import org.gradle.api.tasks.scala.ScalaCompile
+
 plugins {
     id "org.graalvm.internal.tck"
     id "scala"
@@ -12,6 +14,11 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 int testJvmVersion = tck.testJvmVersion.get()
 String scala2Version = tck.scala2Version.get()
+
+tasks.withType(ScalaCompile).configureEach {
+    scalaCompileOptions.additionalParameters =
+            (scalaCompileOptions.additionalParameters ?: []) + ['-Ymacro-annotations']
+}
 
 dependencies {
     testImplementation "org.apache.pekko:pekko-parsing_2.13:$libraryVersion"

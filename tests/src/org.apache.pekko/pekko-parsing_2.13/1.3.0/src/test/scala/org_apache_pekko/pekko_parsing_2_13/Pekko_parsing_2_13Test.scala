@@ -6,6 +6,7 @@
  */
 package org_apache_pekko.pekko_parsing_2_13
 
+import org.apache.pekko.http.ccompat.{pre213, since213}
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -111,6 +112,13 @@ class Pekko_parsing_2_13Test {
       .containsExactly("LogHelper", "LogHelperMacro")
   }
 
+  @Test
+  def crossVersionMacroAnnotationsSelectScala213ImplementationAtCompileTime(): Unit = {
+    assertThat(CrossVersionParsingRules.separatorName).isEqualTo("pipe")
+    assertThat(CrossVersionParsingRules.normalizedSegments("alpha | beta || gamma").asJava)
+      .containsExactly("alpha", "beta", "gamma")
+  }
+
   private def renderTokenFor(annotation: StaticAnnotation, token: String): String =
     annotation.getClass.getName match {
       case "org.apache.pekko.http.ccompat.pre213" => s"pre213:$token"
@@ -136,11 +144,29 @@ class Pekko_parsing_2_13Test {
     tokens(value, "\\|")
 
   private def tokens(value: String, separator: String): java.util.List[String] =
+    splitAndTrim(value, separator).asJava
+
+  private def splitAndTrim(value: String, separator: String): List[String] =
     value
       .split(separator)
       .iterator
       .map(_.trim)
       .filter(_.nonEmpty)
       .toList
-      .asJava
+
+  private object CrossVersionParsingRules {
+    @pre213
+    def separatorName: String = "comma"
+
+    @since213
+    def separatorName: String = "pipe"
+
+    @pre213
+    def normalizedSegments(value: String): List[String] =
+      splitAndTrim(value, ",")
+
+    @since213
+    def normalizedSegments(value: String): List[String] =
+      splitAndTrim(value, "\\|")
+  }
 }
