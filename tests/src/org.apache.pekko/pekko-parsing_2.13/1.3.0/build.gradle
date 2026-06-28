@@ -1,0 +1,40 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+    id "scala"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+int testJvmVersion = tck.testJvmVersion.get()
+String scala2Version = tck.scala2Version.get()
+
+dependencies {
+    testImplementation "org.apache.pekko:pekko-parsing_2.13:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation "org.scala-lang:scala-library:$scala2Version"
+    testImplementation "org.scala-lang:scala-compiler:$scala2Version"
+    testImplementation "org.apache.pekko:pekko-actor_2.13:1.1.5"
+    testImplementation "org.scala-lang:scala-reflect:2.13.17"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(testJvmVersion)
+    }
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
