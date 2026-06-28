@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.pekko:pekko-actor_2.13:2.0.0-M1",
+  "issueNumber": 8742,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "Do not attempt to restore or test org.apache.pekko.actor.TypedActor / TypedProps APIs: they are present in 1.1.5 but absent from the resolved 2.0.0-M1 actor jar. Meaningful tests should use supported classic actor APIs such as ActorSystem, Props, ActorRef, ConfigFactory-based configuration, serialization, dispatchers, and lifecycle/termination handling. If a test directly touches JDK-internal DNS APIs through Pekko DNS settings, keep the existing --add-exports=java.base/sun.net.dns=ALL-UNNAMED style setup; otherwise no special JVM setup is needed.",
+    "applied_setup": [],
+    "current_library": "org.apache.pekko:pekko-actor_2.13:1.1.5",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8742 [Automation] java run fails for org.apache.pekko:pekko-actor_2.13:2.0.0-M1; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "15 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 41803,
+    "issue_label": "fails-java-run",
+    "issue_number": 8742,
+    "library": "org.apache.pekko:pekko-actor_2.13:2.0.0-M1",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.0-M1",
+    "output_tokens_used": 3337,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Existing 1.1.5 tests that reference TypedActor APIs will fail to compile against 2.0.0-M1 because those classes are no longer in the actor artifact.",
+      "Pekko documentation commonly uses pekko-testkit for unit testing actors, but it is not required to exercise pekko-actor itself; adding it preemptively could shift coverage toward a separate test artifact."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.pekko:pekko-actor_2.13:2.0.0-M1/library-preparation-preflight/pi-generation-2026-06-28T07-59-13-646089Z.log",
+    "status": "completed",
+    "summary": "No extra dependency, Docker image, environment variable, or system property is concretely required before meaningful coverage of org.apache.pekko:pekko-actor_2.13:2.0.0-M1 is reachable. The artifact resolves with only scala-library and com.typesafe:config as runtime dependencies, and normal actor usage is in-process via ActorSystem, Props, actors, dispatchers, and configuration."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.0-M1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8742-fails-java-run-org.apache.pekko-pekko-actor_2.13-2.0.0-M1-67516a7f",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
