@@ -10,11 +10,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.camel.Consumer;
+import org.apache.camel.Processor;
+import org.apache.camel.Producer;
+import org.apache.camel.ServiceStatus;
 import org.apache.camel.health.HealthCheck;
 import org.apache.camel.health.HealthCheckResultBuilder;
 import org.apache.camel.health.HealthCheckResultStrategy;
 import org.apache.camel.health.HealthCheckRepository;
 import org.apache.camel.impl.DefaultCamelContext;
+import org.apache.camel.impl.engine.DefaultRoute;
+import org.apache.camel.impl.engine.DefaultRouteController;
 import org.apache.camel.impl.health.AbstractHealthCheck;
 import org.apache.camel.impl.health.ConsumersHealthCheckRepository;
 import org.apache.camel.impl.health.ContextHealthCheck;
@@ -24,6 +30,8 @@ import org.apache.camel.impl.health.HealthCheckRegistryRepository;
 import org.apache.camel.impl.health.ProducersHealthCheckRepository;
 import org.apache.camel.impl.health.RouteControllerHealthCheck;
 import org.apache.camel.impl.health.RoutesHealthCheckRepository;
+import org.apache.camel.support.DefaultConsumer;
+import org.apache.camel.support.DefaultEndpoint;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -194,6 +202,49 @@ public class Camel_healthTest {
     }
 
     @Test
+    void consumersRepositoryCreatesChecksThatDelegateToConsumerHealthChecks() throws Exception {
+        try (DefaultCamelContext context = new DefaultCamelContext()) {
+            HealthCheck consumerHealth = new FixedHealthCheck("consumer", "orders-consumer", HealthCheck.State.DOWN);
+            TestEndpoint endpoint = new TestEndpoint("test://orders?password=secret", consumerHealth);
+            endpoint.setCamelContext(context);
+            context.setRouteController(new StartedRouteController(context));
+            DefaultRoute route = new DefaultRoute(context, null, "orders", null, null, endpoint, null);
+            route.setProcessor(exchange -> exchange.getMessage().setBody("processed"));
+            route.initializeServices();
+            context.addRoute(route);
+
+            ConsumersHealthCheckRepository repository = new ConsumersHealthCheckRepository();
+            repository.setCamelContext(context);
+
+            List<HealthCheck> checks = repository.stream().toList();
+
+            assertThat(repository.getId()).isEqualTo("consumers");
+            assertThat(repository.isEnabled()).isTrue();
+            assertThat(checks).hasSize(1);
+
+            HealthCheck check = checks.get(0);
+            HealthCheck.Result result = check.callReadiness();
+            assertThat(check.getId()).isEqualTo("consumer:orders");
+            assertThat(check.getGroup()).isEqualTo("camel");
+            assertThat(repository.stream().toList()).containsExactly(check);
+            assertThat(result.getState()).isEqualTo(HealthCheck.State.DOWN);
+            assertThat(result.getMessage()).contains("custom DOWN");
+            assertThat(result.getDetails())
+                    .containsEntry("route.id", "orders")
+                    .containsKey("route.status")
+                    .containsEntry("custom.state", HealthCheck.State.DOWN.name())
+                    .containsEntry(HealthCheck.CHECK_KIND, HealthCheck.Kind.READINESS)
+                    .containsEntry(HealthCheck.INVOCATION_COUNT, 1);
+            assertThat((String) result.getDetails().get("endpoint.uri"))
+                    .contains("test://orders")
+                    .doesNotContain("secret");
+
+            repository.setEnabled(false);
+            assertThat(repository.stream().toList()).isEmpty();
+        }
+    }
+
+    @Test
     void registryRepositoryStreamsHealthCheckBeansFromCamelRegistryAndHonorsEnabledFlag() throws Exception {
         try (DefaultCamelContext context = new DefaultCamelContext()) {
             FixedHealthCheck database = new FixedHealthCheck("external", "database", HealthCheck.State.UP);
@@ -228,6 +279,38 @@ public class Camel_healthTest {
             assertThat(checks)
                     .allSatisfy(check -> assertThat(check.getGroup()).isEqualTo("camel"))
                     .allSatisfy(check -> assertThat(check.isEnabled()).isTrue());
+        }
+    }
+
+    private static final class StartedRouteController extends DefaultRouteController {
+        private StartedRouteController(DefaultCamelContext context) {
+            super(context);
+        }
+
+        @Override
+        public ServiceStatus getRouteStatus(String routeId) {
+            return ServiceStatus.Started;
+        }
+    }
+
+    private static final class TestEndpoint extends DefaultEndpoint {
+        private final HealthCheck healthCheck;
+
+        private TestEndpoint(String endpointUri, HealthCheck healthCheck) {
+            this.healthCheck = healthCheck;
+            setEndpointUriIfNotSpecified(endpointUri);
+        }
+
+        @Override
+        public Producer createProducer() {
+            throw new UnsupportedOperationException("Producer creation is not used by this test");
+        }
+
+        @Override
+        public Consumer createConsumer(Processor processor) {
+            DefaultConsumer consumer = new DefaultConsumer(this, processor);
+            consumer.setHealthCheck(healthCheck);
+            return consumer;
         }
     }
 
