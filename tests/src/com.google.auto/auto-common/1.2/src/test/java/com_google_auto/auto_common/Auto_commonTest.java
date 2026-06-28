@@ -18,6 +18,7 @@ import com.google.auto.common.SimpleAnnotationMirror;
 import com.google.auto.common.SimpleTypeAnnotationValue;
 import com.google.auto.common.SuperficialValidation;
 import com.google.auto.common.Visibility;
+import com.google.common.base.Equivalence;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -179,6 +180,18 @@ public class Auto_commonTest {
         assertThat(result.records().getProperty("basic.postRounds")).isEqualTo("2");
     }
 
+    @Test
+    void annotationMirrorAndValueEquivalencesCompareAnnotationContents() {
+        CompilationResult result = compileScenario("equivalence", equivalenceSources());
+
+        assertThat(result.successful()).as(result.diagnostics()).isTrue();
+        assertThat(result.records().getProperty("equivalence.mirrors")).isEqualTo("true:false:true");
+        assertThat(result.records().getProperty("equivalence.values")).isEqualTo("true:false:true:true");
+        assertThat(result.records().getProperty("equivalence.nested"))
+                .contains("@equivalent.Nested")
+                .contains("deep");
+    }
+
     public static void main(String[] args) throws Exception {
         if (args.length > 0 && "compile-helper".equals(args[0])) {
             runCompileHelper(args);
@@ -316,6 +329,42 @@ public class Auto_commonTest {
                         @Marker
                         public class Target {
                             @Other String value;
+                        }
+                        """)
+        };
+    }
+
+    private static Source[] equivalenceSources() {
+        return new Source[] {
+                new Source("equivalent.First", """
+                        package equivalent;
+
+                        @interface Nested {
+                            String value();
+                        }
+
+                        @interface Label {
+                            String name();
+                            int[] numbers();
+                            Nested nested();
+                        }
+
+                        @Label(name = "same", numbers = {3, 5}, nested = @Nested("deep"))
+                        public class First {
+                        }
+                        """),
+                new Source("equivalent.Second", """
+                        package equivalent;
+
+                        @Label(name = "same", numbers = {3, 5}, nested = @Nested("deep"))
+                        public class Second {
+                        }
+                        """),
+                new Source("equivalent.Different", """
+                        package equivalent;
+
+                        @Label(name = "different", numbers = {3, 8}, nested = @Nested("other"))
+                        public class Different {
                         }
                         """)
         };
@@ -464,6 +513,9 @@ public class Auto_commonTest {
         }
         if ("basic-processor".equals(scenario)) {
             return new BasicProcessorHarness();
+        }
+        if ("equivalence".equals(scenario)) {
+            return new EquivalenceProcessor();
         }
         throw new IllegalArgumentException("Unknown compiler scenario: " + scenario);
     }
@@ -763,6 +815,50 @@ public class Auto_commonTest {
                     elements, SourceVersion.latestSupported(), Auto_commonTest.class, "auto-common")
                     .orElseThrow();
             record("generated.spec", annotationSpec);
+        }
+    }
+
+    private static final class EquivalenceProcessor extends RecordingProcessor {
+        @Override
+        public Set<String> getSupportedAnnotationTypes() {
+            return Set.of("equivalent.Label");
+        }
+
+        @Override
+        public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+            if (roundEnv.processingOver() || annotations.isEmpty()) {
+                return false;
+            }
+            Elements elements = processingEnv.getElementUtils();
+            AnnotationMirror first = labelAnnotation(elements, "equivalent.First");
+            AnnotationMirror second = labelAnnotation(elements, "equivalent.Second");
+            AnnotationMirror different = labelAnnotation(elements, "equivalent.Different");
+
+            Equivalence<AnnotationMirror> mirrorEquivalence = AnnotationMirrors.equivalence();
+            Equivalence<AnnotationValue> valueEquivalence = AnnotationValues.equivalence();
+            AnnotationValue firstName = value(first, "name");
+            AnnotationValue secondName = value(second, "name");
+            AnnotationValue differentName = value(different, "name");
+            AnnotationValue firstNumbers = value(first, "numbers");
+            AnnotationValue secondNumbers = value(second, "numbers");
+            AnnotationValue firstNested = value(first, "nested");
+            AnnotationValue secondNested = value(second, "nested");
+
+            record("equivalence.mirrors", mirrorEquivalence.equivalent(first, second)
+                    + ":" + mirrorEquivalence.equivalent(first, different)
+                    + ":" + (mirrorEquivalence.hash(first) == mirrorEquivalence.hash(second)));
+            record("equivalence.values", valueEquivalence.equivalent(firstName, secondName)
+                    + ":" + valueEquivalence.equivalent(firstName, differentName)
+                    + ":" + valueEquivalence.equivalent(firstNumbers, secondNumbers)
+                    + ":" + valueEquivalence.equivalent(firstNested, secondNested));
+            record("equivalence.nested", AnnotationMirrors.toString(AnnotationValues.getAnnotationMirror(firstNested)));
+            return false;
+        }
+
+        private AnnotationMirror labelAnnotation(Elements elements, String className) {
+            TypeElement type = elements.getTypeElement(className);
+            TypeElement label = elements.getTypeElement("equivalent.Label");
+            return MoreElements.getAnnotationMirror(type, label).get();
         }
     }
 
