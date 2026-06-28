@@ -20,6 +20,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.actuate.audit.AuditEvent;
 import org.springframework.boot.actuate.audit.AuditEventsEndpoint;
 import org.springframework.boot.actuate.audit.InMemoryAuditEventRepository;
+import org.springframework.boot.actuate.beans.BeansEndpoint;
+import org.springframework.boot.actuate.beans.BeansEndpoint.ApplicationBeans;
+import org.springframework.boot.actuate.beans.BeansEndpoint.BeanDescriptor;
+import org.springframework.boot.actuate.beans.BeansEndpoint.ContextBeans;
 import org.springframework.boot.actuate.endpoint.EndpointId;
 import org.springframework.boot.actuate.endpoint.InvocationContext;
 import org.springframework.boot.actuate.endpoint.OperationType;
@@ -57,6 +61,7 @@ import org.springframework.boot.actuate.health.StatusAggregator;
 import org.springframework.boot.actuate.info.Info;
 import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.boot.actuate.info.InfoEndpoint;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.util.MimeTypeUtils;
@@ -201,6 +206,49 @@ public class Spring_boot_actuatorTest {
     }
 
     @Test
+    void beansEndpointDescribesContextBeansAliasesScopesAndDependencies() {
+        GenericApplicationContext parent = new GenericApplicationContext();
+        parent.setId("parent-context");
+        parent.registerBean("parentRepository", SampleRepository.class, SampleRepository::new);
+        parent.refresh();
+
+        try {
+            GenericApplicationContext context = new GenericApplicationContext();
+            try {
+                context.setId("child-context");
+                context.setParent(parent);
+                context.registerBean("repository", SampleRepository.class, SampleRepository::new);
+                context.registerAlias("repository", "repoAlias");
+                context.registerBean("sampleService", SampleService.class, SampleService::new,
+                        beanDefinition -> beanDefinition.setDependsOn("repository"));
+                context.refresh();
+
+                ApplicationBeans applicationBeans = new BeansEndpoint(context).beans();
+
+                assertThat(applicationBeans.getContexts()).containsKeys("child-context", "parent-context");
+
+                ContextBeans childContext = applicationBeans.getContexts().get("child-context");
+                BeanDescriptor repository = childContext.getBeans().get("repository");
+                BeanDescriptor service = childContext.getBeans().get("sampleService");
+                ContextBeans parentContext = applicationBeans.getContexts().get("parent-context");
+
+                assertThat(childContext.getParentId()).isEqualTo("parent-context");
+                assertThat(repository.getAliases()).containsExactly("repoAlias");
+                assertThat(repository.getScope()).isEqualTo("singleton");
+                assertThat(repository.getType()).isEqualTo(SampleRepository.class);
+                assertThat(service.getDependencies()).containsExactly("repository");
+                assertThat(parentContext.getBeans()).containsKey("parentRepository");
+            }
+            finally {
+                context.close();
+            }
+        }
+        finally {
+            parent.close();
+        }
+    }
+
+    @Test
     void sanitizerEndpointMappingLinksAndWebResponsesUsePublicEndpointContracts() {
         Sanitizer sanitizer = new Sanitizer("token", "credential");
         EndpointMapping mapping = new EndpointMapping("/actuator");
@@ -220,6 +268,14 @@ public class Spring_boot_actuatorTest {
         assertThat(response.getBody()).containsEntry("status", "UP");
         assertThat(response.getStatus()).isEqualTo(WebEndpointResponse.STATUS_OK);
         assertThat(response.getContentType()).isEqualTo(MimeTypeUtils.APPLICATION_JSON);
+    }
+
+    private static final class SampleRepository {
+
+    }
+
+    private static final class SampleService {
+
     }
 
     private static final class FixedHealthIndicator implements HealthIndicator {
