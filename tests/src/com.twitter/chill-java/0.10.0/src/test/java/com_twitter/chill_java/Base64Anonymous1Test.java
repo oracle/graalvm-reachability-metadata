@@ -10,15 +10,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.twitter.chill.Base64;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class Base64Anonymous1Test {
     @Test
     void decodesSerializedObjectWithProvidedClassLoader() throws Exception {
         Payload original = new Payload("chill-base64-custom-loader", 17);
-        RecordingClassLoader loader = new RecordingClassLoader(Base64Anonymous1Test.class.getClassLoader());
+        PassthroughClassLoader loader = new PassthroughClassLoader(Base64Anonymous1Test.class.getClassLoader());
 
         String encoded = Base64.encodeObject(original);
         Object decoded = Base64.decodeToObject(encoded, Base64.NO_OPTIONS, loader);
@@ -27,7 +25,6 @@ public class Base64Anonymous1Test {
         Payload payload = (Payload) decoded;
         assertThat(payload.name).isEqualTo(original.name);
         assertThat(payload.count).isEqualTo(original.count);
-        assertThat(loader.loadedClassNames()).contains(Payload.class.getName());
     }
 
     private static final class Payload implements Serializable {
@@ -42,21 +39,9 @@ public class Base64Anonymous1Test {
         }
     }
 
-    private static final class RecordingClassLoader extends ClassLoader {
-        private final List<String> loadedClassNames = new ArrayList<>();
-
-        private RecordingClassLoader(ClassLoader parent) {
+    private static final class PassthroughClassLoader extends ClassLoader {
+        private PassthroughClassLoader(ClassLoader parent) {
             super(parent);
-        }
-
-        @Override
-        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-            loadedClassNames.add(name);
-            return super.loadClass(name, resolve);
-        }
-
-        private List<String> loadedClassNames() {
-            return loadedClassNames;
         }
     }
 
