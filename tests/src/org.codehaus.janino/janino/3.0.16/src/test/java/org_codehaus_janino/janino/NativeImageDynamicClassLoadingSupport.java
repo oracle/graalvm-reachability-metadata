@@ -6,14 +6,23 @@
  */
 package org_codehaus_janino.janino;
 
+import java.util.NoSuchElementException;
+
 import org.graalvm.internal.tck.NativeImageSupport;
 
 final class NativeImageDynamicClassLoadingSupport {
+    private static final String NATIVE_IMAGE_CODE_PROPERTY = "org.graalvm.nativeimage.imagecode";
+    private static final String NATIVE_IMAGE_RUNTIME = "runtime";
+    private static final String ABSTRACT_COMPILER_RESOURCE_FINDER = "org.codehaus.janino.AbstractCompiler$1";
+    private static final String FIND_RESOURCE_METHOD = "findResource";
+
     private NativeImageDynamicClassLoadingSupport() {
     }
 
     static void rethrowIfNotNativeImageDynamicClassLoadingFailure(Throwable throwable) throws Exception {
-        if (hasUnsupportedFeatureError(throwable) || hasUnsupportedGeneratedClassLoadingFailure(throwable)) {
+        if (hasUnsupportedFeatureError(throwable)
+                || hasUnsupportedGeneratedClassLoadingFailure(throwable)
+                || hasUnsupportedRuntimeClassPathFailure(throwable)) {
             return;
         }
 
@@ -38,7 +47,7 @@ final class NativeImageDynamicClassLoadingSupport {
     }
 
     private static boolean hasUnsupportedGeneratedClassLoadingFailure(Throwable throwable) {
-        if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))) {
+        if (!isNativeImageRuntime()) {
             return false;
         }
 
@@ -53,5 +62,34 @@ final class NativeImageDynamicClassLoadingSupport {
             current = current.getCause();
         }
         return false;
+    }
+
+    private static boolean hasUnsupportedRuntimeClassPathFailure(Throwable throwable) {
+        if (!isNativeImageRuntime()) {
+            return false;
+        }
+
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof NoSuchElementException && hasAbstractCompilerFindResourceStackTrace(current)) {
+                return true;
+            }
+            current = current.getCause();
+        }
+        return false;
+    }
+
+    private static boolean hasAbstractCompilerFindResourceStackTrace(Throwable throwable) {
+        for (StackTraceElement stackTraceElement : throwable.getStackTrace()) {
+            if (ABSTRACT_COMPILER_RESOURCE_FINDER.equals(stackTraceElement.getClassName())
+                    && FIND_RESOURCE_METHOD.equals(stackTraceElement.getMethodName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return NATIVE_IMAGE_RUNTIME.equals(System.getProperty(NATIVE_IMAGE_CODE_PROPERTY));
     }
 }
