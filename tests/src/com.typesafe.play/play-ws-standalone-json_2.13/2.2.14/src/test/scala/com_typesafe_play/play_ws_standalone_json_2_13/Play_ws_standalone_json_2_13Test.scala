@@ -152,6 +152,23 @@ class Play_ws_standalone_json_2_13Test {
   }
 
   @Test
+  def defaultObjectMapperSerializesPlayJsonValues(): Unit = {
+    val mapper: ObjectMapper = DefaultObjectMapper.instance
+    val json: JsValue = Json.obj(
+      "name" -> "play",
+      "enabled" -> true,
+      "payload" -> Json.obj("count" -> 3),
+      "items" -> Json.arr("alpha", 7, Json.obj("nested" -> true))
+    )
+
+    val serialized: String = mapper.writeValueAsString(json)
+    val parsed: JsValue = Json.parse(serialized)
+
+    assertFalse(serialized.isEmpty)
+    assertEquals(json, parsed)
+  }
+
+  @Test
   def defaultObjectMapperSupportsPlayJsonJdk8AndJavaTimeTypes(): Unit = {
     val mapper: ObjectMapper = DefaultObjectMapper.instance
 
