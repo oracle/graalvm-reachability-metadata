@@ -20,6 +20,7 @@ import org.apache.camel.impl.health.ConsumersHealthCheckRepository;
 import org.apache.camel.impl.health.ContextHealthCheck;
 import org.apache.camel.impl.health.DefaultHealthCheckRegistry;
 import org.apache.camel.impl.health.DefaultHealthChecksLoader;
+import org.apache.camel.impl.health.HealthCheckRegistryRepository;
 import org.apache.camel.impl.health.ProducersHealthCheckRepository;
 import org.apache.camel.impl.health.RouteControllerHealthCheck;
 import org.apache.camel.impl.health.RoutesHealthCheckRepository;
@@ -189,6 +190,29 @@ public class Camel_healthTest {
 
             repository.removeHealthCheck(producer);
             assertThat(repository.stream().toList()).isEmpty();
+        }
+    }
+
+    @Test
+    void registryRepositoryStreamsHealthCheckBeansFromCamelRegistryAndHonorsEnabledFlag() throws Exception {
+        try (DefaultCamelContext context = new DefaultCamelContext()) {
+            FixedHealthCheck database = new FixedHealthCheck("external", "database", HealthCheck.State.UP);
+            FixedHealthCheck cache = new FixedHealthCheck("external", "cache", HealthCheck.State.DOWN);
+            context.getRegistry().bind("databaseHealth", HealthCheck.class, database);
+            context.getRegistry().bind("cacheHealth", HealthCheck.class, cache);
+
+            HealthCheckRegistryRepository repository = new HealthCheckRegistryRepository();
+            repository.setCamelContext(context);
+
+            assertThat(repository.getId()).isEqualTo("registry-health-check-repository");
+            assertThat(repository.isEnabled()).isTrue();
+            assertThat(repository.stream().toList()).containsExactlyInAnyOrder(database, cache);
+            assertThat(repository.getCheck("database")).contains(database);
+            assertThat(repository.getCheck("cache")).contains(cache);
+
+            repository.setEnabled(false);
+            assertThat(repository.stream().toList()).isEmpty();
+            assertThat(repository.getCheck("database")).isEmpty();
         }
     }
 
