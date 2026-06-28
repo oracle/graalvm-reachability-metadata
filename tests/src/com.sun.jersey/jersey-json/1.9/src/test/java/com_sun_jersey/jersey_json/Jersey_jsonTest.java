@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
@@ -176,6 +177,24 @@ public class Jersey_jsonTest {
         assertThatThrownBy(() -> new JSONWithPadding(null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("JSON source");
+    }
+
+    @Test
+    void standardJaxbComponentsCanBeAdaptedToJsonMarshallerAndUnmarshaller() throws Exception {
+        JAXBContext jaxbContext = JAXBContext.newInstance(BeanOne.class);
+        JSONMarshaller jsonMarshaller = JSONJAXBContext.getJSONMarshaller(jaxbContext.createMarshaller());
+        JSONUnmarshaller jsonUnmarshaller = JSONJAXBContext.getJSONUnmarshaller(jaxbContext.createUnmarshaller());
+
+        StringWriter writer = new StringWriter();
+        jsonMarshaller.marshallToJSON(new BeanOne("Grace", 11), writer);
+
+        String json = writer.toString();
+        assertThat(json).contains("\"name\":\"Grace\"");
+        assertThat(json).doesNotContain("beanOne");
+
+        BeanOne unmarshalled = jsonUnmarshaller.unmarshalFromJSON(new StringReader(json), BeanOne.class);
+        assertThat(unmarshalled.name).isEqualTo("Grace");
+        assertThat(unmarshalled.number).isEqualTo(11);
     }
 
     @Test
