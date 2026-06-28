@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 import org.apache.maven.api.DependencyScope;
@@ -142,6 +143,44 @@ public class Maven_api_spiTest {
 
         assertThat(parsedModel).isEmpty();
         assertThat(parser.parseCount).isZero();
+    }
+
+    @Test
+    void modelParserLocateAndParsePropagatesParserFailuresWithLocationDetails() {
+        Path directory = Path.of("invalid-project");
+        Map<String, Object> options = Map.of(ModelParser.STRICT, Boolean.TRUE);
+        InMemorySource source = new InMemorySource(directory.resolve("pom.xml"), "<project>");
+        IOException cause = new IOException("unclosed input");
+        ModelParserException failure = new ModelParserException("invalid model", 3, 15, cause);
+        AtomicReference<Source> parsedSource = new AtomicReference<>();
+        AtomicReference<Map<String, ?>> parsedOptions = new AtomicReference<>();
+        ModelParser parser = new ModelParser() {
+            @Override
+            public Optional<Source> locate(Path dir) {
+                assertThat(dir).isEqualTo(directory);
+                return Optional.of(source);
+            }
+
+            @Override
+            public Model parse(Source source, Map<String, ?> options) throws ModelParserException {
+                parsedSource.set(source);
+                parsedOptions.set(options);
+                throw failure;
+            }
+        };
+
+        assertThatThrownBy(() -> parser.locateAndParse(directory, options))
+                .isSameAs(failure)
+                .isInstanceOf(ModelParserException.class)
+                .hasMessage("invalid model")
+                .hasCause(cause)
+                .satisfies(throwable -> {
+                    ModelParserException exception = (ModelParserException) throwable;
+                    assertThat(exception.getLineNumber()).isEqualTo(3);
+                    assertThat(exception.getColumnNumber()).isEqualTo(15);
+                });
+        assertThat(parsedSource.get()).isSameAs(source);
+        assertThat(parsedOptions.get()).isSameAs(options);
     }
 
     @Test
