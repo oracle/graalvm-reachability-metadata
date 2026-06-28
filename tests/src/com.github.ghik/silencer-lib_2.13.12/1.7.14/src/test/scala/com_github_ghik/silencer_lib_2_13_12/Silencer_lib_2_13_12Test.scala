@@ -89,6 +89,35 @@ class Silencer_lib_2_13_12Test {
   }
 
   @Test
+  def noArgumentSilentAnnotationSuppressesEveryWarningInAnnotatedScope(): Unit = {
+    val result: CompilationResult = compileWithSilencer(
+      "BroadlySilencedWarnings.scala",
+      """
+        |package example
+        |
+        |import com.github.ghik.silencer.silent
+        |
+        |object BroadlyDeprecatedApi {
+        |  @deprecated("use replacement", "1.0")
+        |  def oldValue: Int = 7
+        |}
+        |
+        |object BroadlySilencedWarnings {
+        |  @silent
+        |  def value(): Int = {
+        |    val unusedBroadlySilencedLocal: String = "covered by the no-argument silencer"
+        |    BroadlyDeprecatedApi.oldValue
+        |  }
+        |}
+        |""".stripMargin
+    )
+
+    assertTrue(result.success, result.renderedMessages)
+    assertFalse(result.hasMessageContaining("unusedBroadlySilencedLocal"), result.renderedMessages)
+    assertFalse(result.hasMessageContaining("oldValue"), result.renderedMessages)
+  }
+
+  @Test
   def silentAnnotationSuppressesDeprecationWarningMatchedByMessagePattern(): Unit = {
     val result: CompilationResult = compileWithSilencer(
       "SilencedDeprecationWarning.scala",
