@@ -6,11 +6,15 @@
  */
 package org_scalameta.common_2_13
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.scalameta.logger
 
 class Common_2_13Test {
   @Test
-  def test(): Unit = {
-    println("This is just a placeholder, implement your test")
+  def revealsWhitespaceCharacters(): Unit = {
+    val rendered: String = logger.revealWhitespace("a b\t\n")
+
+    assertEquals("a\u2219b\u2020\u00b6", rendered)
   }
 }
