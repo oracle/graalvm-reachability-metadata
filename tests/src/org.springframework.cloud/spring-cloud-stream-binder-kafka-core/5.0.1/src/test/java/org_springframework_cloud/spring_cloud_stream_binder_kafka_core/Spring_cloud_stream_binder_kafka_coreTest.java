@@ -24,11 +24,14 @@ import org.apache.kafka.common.PartitionInfo;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.header.internals.RecordHeader;
 import org.apache.kafka.common.header.internals.RecordHeaders;
+import org.apache.kafka.common.serialization.ByteArrayDeserializer;
+import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
@@ -38,6 +41,7 @@ import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.binder.HeaderMode;
 import org.springframework.cloud.stream.binder.kafka.common.BinderHeaderMapper;
+import org.springframework.cloud.stream.binder.kafka.common.KafkaBinderEnvironmentPostProcessor;
 import org.springframework.cloud.stream.binder.kafka.common.TopicInformation;
 import org.springframework.cloud.stream.binder.kafka.properties.JaasLoginModuleConfiguration;
 import org.springframework.cloud.stream.binder.kafka.properties.KafkaBinderConfigurationProperties;
@@ -56,6 +60,8 @@ import org.springframework.cloud.stream.binder.kafka.utils.DlqPartitionFunction;
 import org.springframework.cloud.stream.binder.kafka.utils.KafkaTopicUtils;
 import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.StandardEnvironment;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.kafka.listener.ContainerProperties;
@@ -384,6 +390,32 @@ public class Spring_cloud_stream_binder_kafka_coreTest {
                 .isThrownBy(() -> BindingUtils.createProducerConfigs(
                         new ExtendedProducerProperties<>(invalidProducer), binderProperties))
                 .withMessageContaining("bootstrap.servers cannot be overridden");
+    }
+
+    @Test
+    void environmentPostProcessorContributesKafkaBinderDefaultsWithoutOverridingUserProperties() {
+        StandardEnvironment environment = new StandardEnvironment();
+        environment.getPropertySources().addFirst(new MapPropertySource("userProperties", Map.of(
+                "spring.kafka.producer.keySerializer", StringSerializer.class.getName(),
+                "logging.level.kafka.server.KafkaConfig", "INFO")));
+
+        KafkaBinderEnvironmentPostProcessor postProcessor = new KafkaBinderEnvironmentPostProcessor();
+        postProcessor.postProcessEnvironment(environment, new SpringApplication(Object.class));
+        postProcessor.postProcessEnvironment(environment, new SpringApplication(Object.class));
+
+        assertThat(environment.getProperty("spring.kafka.producer.keySerializer"))
+                .isEqualTo(StringSerializer.class.getName());
+        assertThat(environment.getProperty("spring.kafka.producer.valueSerializer"))
+                .isEqualTo(ByteArraySerializer.class.getName());
+        assertThat(environment.getProperty("spring.kafka.consumer.keyDeserializer"))
+                .isEqualTo(ByteArrayDeserializer.class.getName());
+        assertThat(environment.getProperty("spring.kafka.consumer.valueDeserializer"))
+                .isEqualTo(ByteArrayDeserializer.class.getName());
+        assertThat(environment.getProperty("logging.level.kafka.server.KafkaConfig")).isEqualTo("INFO");
+        assertThat(environment.getProperty("logging.level.org.I0Itec.zkclient")).isEqualTo("ERROR");
+        assertThat(environment.getPropertySources().stream()
+                .filter(propertySource -> propertySource.getName().equals("kafkaBinderDefaultProperties")))
+                .hasSize(1);
     }
 
     @Test
