@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.maven:maven-core:2.0.7",
+  "issueNumber": 8771,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.apache.maven:maven-core:2.0.6",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8771 [Automation] javac compile fails for org.apache.maven:maven-core:2.0.7; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "20 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 55898,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8771,
+    "library": "org.apache.maven:maven-core:2.0.7",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.7",
+    "output_tokens_used": 3482,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The reported failure is an API/constructor mismatch between existing 2.0.6 tests and Maven 2.0.7 transitive classes, not missing setup.",
+      "Tests that attempt a real Maven build may touch the local Maven repository or network; generated tests should prefer isolated in-process APIs or temporary projects rather than relying on external repositories."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.apache.maven:maven-core:2.0.7/library-preparation-preflight/pi-generation-2026-06-28T05-02-10-605116Z.log",
+    "status": "completed",
+    "summary": "Resolved org.apache.maven:maven-core:2.0.7 brings its Maven/Plexus/ClassWorlds/Wagon dependencies transitively, and meaningful coverage is reachable through in-process Maven core APIs and CLI/version/diagnoser/lifecycle paths without an external service, Docker image, or extra Maven dependency."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.7",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8771-fails-javac-compile-org.apache.maven-maven-core-2.0.7-74578d4d",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
