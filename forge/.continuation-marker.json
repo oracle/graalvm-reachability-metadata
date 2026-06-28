@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.maven:maven-core:2.0.7",
+  "issueNumber": 8771,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment variables or system properties are required for baseline meaningful tests. Existing javac failures are due to Maven 2.0.7 API signature drift in maven-artifact exception constructors, so tests should use constructors available in 2.0.7 rather than copied 2.0.6-era assumptions. If tests exercise full Maven execution rather than non-network APIs or MavenCli --help/--version, keep any project, settings, and local-repository paths temporary and self-contained.",
+    "applied_setup": [],
+    "current_library": "org.apache.maven:maven-core:2.0.6",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8771 [Automation] javac compile fails for org.apache.maven:maven-core:2.0.7; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "20 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 73016,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8771,
+    "library": "org.apache.maven:maven-core:2.0.7",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.7",
+    "output_tokens_used": 5832,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Full MavenCli execution can read settings, inspect user.dir, and attempt plugin/artifact resolution; generated tests should avoid external network-dependent builds unless they fully isolate inputs.",
+      "This is a very old Maven 2 artifact, so constructor signatures and behavior differ from later Maven versions and from generated assumptions based on nearby versions."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.maven:maven-core:2.0.7/library-preparation-preflight/pi-generation-2026-06-28T14-42-12-382738Z.log",
+    "status": "completed",
+    "summary": "org.apache.maven:maven-core:2.0.7 resolves its required Maven/Plexus/ClassWorlds/Wagon dependencies transitively, and meaningful coverage is reachable through Maven core APIs, bundled resources, diagnosers, lifecycle constants, runtime information, and MavenCli --help/--version without Docker, extra Maven dependencies, or required environment/system properties."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.7",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8771-fails-javac-compile-org.apache.maven-maven-core-2.0.7-6e2186df",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
