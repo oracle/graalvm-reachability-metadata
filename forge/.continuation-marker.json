@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "jakarta.activation:jakarta.activation-api:2.0.0",
+  "issueNumber": 8769,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment or system property setup is needed. Generated tests for 2.0.0 should import and exercise jakarta.activation.* classes, not javax.activation.*. Useful coverage can target DataHandler/DataSource, FileTypeMap/MimetypesFileTypeMap, MailcapCommandMap/CommandInfo, and in-test command/content-handler classes without external services.",
+    "applied_setup": [],
+    "current_library": "jakarta.activation:jakarta.activation-api:1.2.1",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8769 [Automation] javac compile fails for jakarta.activation:jakarta.activation-api:2.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "11 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 32470,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8769,
+    "library": "jakarta.activation:jakarta.activation-api:2.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.0",
+    "output_tokens_used": 1880,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Current project documentation notes the API implementation later moved to Eclipse Angus; however, the 2.0.0 artifact itself contains the activation classes and has no declared dependencies, so adding Angus is not justified unless local verification exposes a concrete missing implementation path.",
+      "Existing metadata for 1.2.1 allows javax.activation; version 2.0.0 coverage and metadata likely need the jakarta.activation namespace instead."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/jakarta.activation:jakarta.activation-api:2.0.0/library-preparation-preflight/pi-generation-2026-06-28T07-34-18-633342Z.log",
+    "status": "completed",
+    "summary": "No extra dependency, Docker image, environment variable, or system property is required. The resolved jakarta.activation-api:2.0.0 artifact has no Maven dependencies and contains the jakarta.activation classes needed for meaningful unit coverage; the observed javac failure is from legacy javax.activation imports in existing 1.2.1 tests after the Jakarta package rename."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8769-fails-javac-compile-jakarta.activation-jakarta.activation-api-2.0.0-c9782b54",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
