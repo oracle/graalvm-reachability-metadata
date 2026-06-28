@@ -20,6 +20,7 @@ import org.codehaus.groovy.macro.matcher.ASTMatcher
 import org.codehaus.groovy.macro.matcher.TreeContext
 import org.codehaus.groovy.macro.runtime.MacroBuilder
 import org.codehaus.groovy.macro.runtime.MacroContext
+import org.codehaus.groovy.macro.transform.MacroClass
 import org.junit.jupiter.api.Test
 
 import static org.assertj.core.api.Assertions.assertThat
@@ -133,6 +134,24 @@ public class Groovy_macroTest {
         assertThat(child.parent).isSameAs(context)
         assertThat(context.siblings).contains(child)
         assertThat(child.getUserdata('role')).containsExactly('accumulator')
+    }
+
+    @Test
+    void macroClassAnonymousBodyProducesClassNode() {
+        ClassNode classNode = new MacroClass() {
+            class MacroClassGeneratedModel {
+                String name
+
+                String describe() {
+                    "model:$name"
+                }
+            }
+        }
+
+        assertThat(classNode.nameWithoutPackage).isEqualTo('MacroClassGeneratedModel')
+        assertThat(classNode.getField('name').type.nameWithoutPackage).isEqualTo('String')
+        assertThat(classNode.getDeclaredMethods('describe')).hasSize(1)
+        assertThat(classNode.getDeclaredMethods('describe')[0].returnType.nameWithoutPackage).isEqualTo('String')
     }
 
     @Test
