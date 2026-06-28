@@ -24,7 +24,9 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
+import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.ServerCalls;
+import io.grpc.stub.StreamObserver;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.trace.Span;
@@ -75,6 +77,7 @@ public class Opentelemetry_grpc_1_6Test {
     private static final AttributeKey<String> RPC_SERVICE = AttributeKey.stringKey("rpc.service");
     private static final AttributeKey<String> RPC_METHOD = AttributeKey.stringKey("rpc.method");
     private static final AttributeKey<Long> RPC_GRPC_STATUS_CODE = AttributeKey.longKey("rpc.grpc.status_code");
+    private static final AttributeKey<Boolean> GRPC_CANCELED = AttributeKey.booleanKey("grpc.canceled");
     private static final AttributeKey<String> PEER_SERVICE = AttributeKey.stringKey("peer.service");
     private static final AttributeKey<List<String>> CAPTURED_REQUEST_ID =
             AttributeKey.stringArrayKey("rpc.grpc.request.metadata.x-request-id");
@@ -206,6 +209,72 @@ public class Opentelemetry_grpc_1_6Test {
         }
     }
 
+    @Test
+    void serverCancellationAttributeIsRecordedWhenExperimentalSpanAttributesAreEnabled() throws Exception {
+        RecordingSpanExporter exporter = new RecordingSpanExporter();
+        SdkTracerProvider tracerProvider = SdkTracerProvider.builder()
+                .addSpanProcessor(SimpleSpanProcessor.create(exporter))
+                .build();
+        OpenTelemetrySdk openTelemetry = OpenTelemetrySdk.builder()
+                .setTracerProvider(tracerProvider)
+                .setPropagators(ContextPropagators.create(W3CTraceContextPropagator.getInstance()))
+                .build();
+        GrpcTelemetry telemetry = GrpcTelemetry.builder(openTelemetry)
+                .setCaptureExperimentalSpanAttributes(true)
+                .build();
+        CountDownLatch serviceStarted = new CountDownLatch(1);
+        CountDownLatch serviceCancelled = new CountDownLatch(1);
+        Server server = null;
+        ManagedChannel channel = null;
+        try {
+            String serverName = InProcessServerBuilder.generateName();
+            server = InProcessServerBuilder.forName(serverName)
+                    .directExecutor()
+                    .addService(new CancellableUnaryService(serviceStarted, serviceCancelled))
+                    .intercept(telemetry.newServerInterceptor())
+                    .build()
+                    .start();
+            channel = InProcessChannelBuilder.forName(serverName)
+                    .directExecutor()
+                    .intercept(telemetry.newClientInterceptor())
+                    .build();
+            CountDownLatch clientClosed = new CountDownLatch(1);
+            AtomicReference<Status> clientStatus = new AtomicReference<>();
+            ClientCall<String, String> call = channel.newCall(
+                    ECHO_METHOD, CallOptions.DEFAULT.withDeadlineAfter(5, TimeUnit.SECONDS));
+            call.start(new ClientCall.Listener<>() {
+                @Override
+                public void onClose(Status status, Metadata trailers) {
+                    clientStatus.set(status);
+                    clientClosed.countDown();
+                }
+            }, new Metadata());
+            call.request(1);
+            call.sendMessage("cancel-me");
+            call.halfClose();
+
+            assertThat(serviceStarted.await(5, TimeUnit.SECONDS)).isTrue();
+            call.cancel("client cancelled", null);
+            assertThat(clientClosed.await(5, TimeUnit.SECONDS)).isTrue();
+            assertThat(serviceCancelled.await(5, TimeUnit.SECONDS)).isTrue();
+
+            assertThat(clientStatus.get().getCode()).isEqualTo(Status.Code.CANCELLED);
+            List<SpanData> spans = waitForFinishedSpans(exporter, 2);
+            assertThat(spans).hasSize(2);
+            SpanData clientSpan = singleSpanWithKind(spans, SpanKind.CLIENT);
+            SpanData serverSpan = singleSpanWithKind(spans, SpanKind.SERVER);
+            assertThat(clientSpan.getStatus().getStatusCode()).isEqualTo(StatusCode.ERROR);
+            assertThat(serverSpan.getStatus().getStatusCode()).isEqualTo(StatusCode.UNSET);
+            assertThat(clientSpan.getAttributes().get(RPC_GRPC_STATUS_CODE))
+                    .isEqualTo((long) Status.Code.CANCELLED.value());
+            assertThat(serverSpan.getAttributes().get(RPC_GRPC_STATUS_CODE))
+                    .isEqualTo((long) Status.Code.CANCELLED.value());
+            assertThat(serverSpan.getAttributes().get(GRPC_CANCELED)).isTrue();
+        } finally {
+            shutdown(channel, server, tracerProvider);
+        }
+    }
+
     private static <T> T unaryCall(
             ManagedChannel channel, MethodDescriptor<T, T> method, T request, Metadata headers) throws Exception {
         CountDownLatch done = new CountDownLatch(1);
@@ -245,6 +314,17 @@ public class Opentelemetry_grpc_1_6Test {
                 .toList();
         assertThat(matchingSpans).hasSize(1);
         return matchingSpans.get(0);
+    }
+
+    private static List<SpanData> waitForFinishedSpans(
+            RecordingSpanExporter exporter, int expectedSpanCount) throws InterruptedException {
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
+        List<SpanData> spans = exporter.getFinishedSpanItems();
+        while (spans.size() < expectedSpanCount && System.nanoTime() < deadline) {
+            Thread.sleep(10);
+            spans = exporter.getFinishedSpanItems();
+        }
+        return spans;
     }
 
     private static void assertCommonGrpcAttributes(SpanData span, Status status) {
@@ -335,6 +415,31 @@ public class Opentelemetry_grpc_1_6Test {
                     .addMethod(ECHO_METHOD, ServerCalls.asyncUnaryCall((request, responseObserver) ->
                             responseObserver.onError(status.asRuntimeException())))
                     .build();
+        }
+    }
+
+    private static final class CancellableUnaryService implements BindableService {
+        private final CountDownLatch started;
+        private final CountDownLatch cancelled;
+
+        private CancellableUnaryService(CountDownLatch started, CountDownLatch cancelled) {
+            this.started = started;
+            this.cancelled = cancelled;
+        }
+
+        @Override
+        public ServerServiceDefinition bindService() {
+            return ServerServiceDefinition.builder(SERVICE_NAME)
+                    .addMethod(ECHO_METHOD, ServerCalls.asyncUnaryCall(this::waitForCancellation))
+                    .build();
+        }
+
+        @SuppressWarnings("unchecked")
+        private void waitForCancellation(String request, StreamObserver<String> responseObserver) {
+            ServerCallStreamObserver<String> serverObserver =
+                    (ServerCallStreamObserver<String>) responseObserver;
+            serverObserver.setOnCancelHandler(cancelled::countDown);
+            started.countDown();
         }
     }
 
