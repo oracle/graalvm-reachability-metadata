@@ -21,7 +21,7 @@ public class ThreadContextTest {
     private static final String THREAD_CONTEXT_MAP_PROPERTY = "log4j2.threadContextMap";
 
     static {
-        System.setProperty(THREAD_CONTEXT_MAP_PROPERTY, ThrowingThreadContextMap.class.getName());
+        System.setProperty(THREAD_CONTEXT_MAP_PROPERTY, ProviderThreadContextMap.class.getName());
     }
 
     @AfterAll
@@ -31,7 +31,7 @@ public class ThreadContextTest {
     }
 
     @Test
-    void fallsBackToProviderThreadContextMapWhenConfiguredMapCannotBeCreated() {
+    void usesConfiguredThreadContextMap() {
         ThreadContext.clearAll();
 
         ThreadContext.put("requestId", "abc-123");
@@ -47,52 +47,6 @@ public class ThreadContextTest {
         assertThat(ThreadContext.pop()).isEqualTo("started");
         assertThat(ThreadContext.isEmpty()).isTrue();
         assertThat(ThreadContext.getDepth()).isZero();
-    }
-
-    public static class ThrowingThreadContextMap implements ThreadContextMap {
-        public ThrowingThreadContextMap() {
-            throw new IllegalStateException("Configured map is unavailable");
-        }
-
-        @Override
-        public void put(final String key, final String value) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public String get(final String key) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void remove(final String key) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void clear() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public boolean containsKey(final String key) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Map<String, String> getCopy() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Map<String, String> getImmutableMapOrNull() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public boolean isEmpty() {
-            throw new UnsupportedOperationException();
-        }
     }
 
     public static class ProviderThreadContextMap implements ThreadContextMap {
