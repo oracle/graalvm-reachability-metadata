@@ -1,0 +1,70 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "com.sksamuel.hoplite:hoplite-core:3.0.0.RC1",
+  "issueNumber": 8367,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "Use core-only scenarios such as ConfigLoaderBuilder with MapPropertySource, built-in Java .properties/.props resources, default decoders, data-class binding, prefix binding, environment/system-property property sources, and Hoplite 3 environment-variable list syntax if desired. If tests set system properties, clear them in test cleanup. Do not add optional format modules like hoplite-yaml/json/toml/hocon unless intentionally testing those separate artifacts.",
+    "applied_setup": [],
+    "current_library": "com.sksamuel.hoplite:hoplite-core:2.9.0",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8367 [Automation] native-image run fails for com.sksamuel.hoplite:hoplite-core:3.0.0.RC1; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "11 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 41235,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 8367,
+    "library": "com.sksamuel.hoplite:hoplite-core:3.0.0.RC1",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.0.0.RC1",
+    "output_tokens_used": 3355,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Hoplite documentation examples often use YAML/JSON/TOML/HOCON, but those formats require separate optional modules and are not necessary to cover hoplite-core.",
+      "Environment variable behavior changed in Hoplite 3; tests that rely on process environment may be brittle unless values are controlled in test code."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/com.sksamuel.hoplite:hoplite-core:3.0.0.RC1/library-preparation-preflight/pi-generation-2026-06-28T04-12-55-623769Z.log",
+    "status": "completed",
+    "summary": "No extra dependency, Docker image, or global environment/system property is required for meaningful hoplite-core coverage. The resolved artifact is a pure JVM/Kotlin library with required Kotlin and coroutine dependencies declared transitively, and core usage can be covered with MapPropertySource or built-in .props/.properties parsing."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.0.0.RC1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8367-fails-native-image-run-com.sksamuel.hoplite-hoplite-core-3.0.0.RC1-52a1ae05",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
