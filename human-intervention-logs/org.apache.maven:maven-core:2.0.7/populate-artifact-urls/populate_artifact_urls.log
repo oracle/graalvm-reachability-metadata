@@ -1,0 +1,1452 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f0fe3-328c-7ba3-92b2-9d51d46c86d4
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.maven:maven-core:2.0.7
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.0.7].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae/metadata/org.apache.maven/maven-core/index.json
+- Entry selector: "metadata-version" = "2.0.7"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.0.7
+- Entry metadata-version: 2.0.7
+- Entry test-version: 2.0.7
+- Entry tested-versions: [2.0.7]
+codex
+I’ll verify the Maven and project-hosted URLs first, then update only the blank fields in the requested `index.json`. After that I’ll validate the JSON formatting and check the diff.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.maven/maven-core/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.7",
+    "tested-versions" : [
+      "2.0.7"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven"
+    ]
+  },
+  {
+    "metadata-version" : "2.0.6",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
+    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+    "tested-versions" : [
+      "2.0.6"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n \"maven-core|org.apache.maven\" metadata/org.apache.maven -g 'index.json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ succeeded in 0ms:
+metadata/org.apache.maven/maven-api-di/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-di/$version$/maven-api-di-$version$-sources.jar",
+metadata/org.apache.maven/maven-api-di/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-di/$version$/maven-api-di-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-api-di/index.json:14:      "org.apache.maven.api.di",
+metadata/org.apache.maven/maven-api-di/index.json:15:      "org.apache.maven.di.tool"
+metadata/org.apache.maven/maven-plugin-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-api/$version$/maven-plugin-api-$version$-sources.jar",
+metadata/org.apache.maven/maven-plugin-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-api/$version$/maven-plugin-api-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-plugin-api/index.json:94:      "org.apache.maven.plugin"
+metadata/org.apache.maven/maven-api-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-spi/$version$/maven-api-spi-$version$-sources.jar",
+metadata/org.apache.maven/maven-api-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-spi/$version$/maven-api-spi-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-api-spi/index.json:14:      "org.apache.maven.api.spi"
+metadata/org.apache.maven/maven-core/index.json:9:      "org.apache.maven"
+metadata/org.apache.maven/maven-core/index.json:14:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
+metadata/org.apache.maven/maven-core/index.json:16:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test",
+metadata/org.apache.maven/maven-core/index.json:17:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-core/index.json:23:      "org.apache.maven"
+metadata/org.apache.maven/maven-builder-support/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-builder-support/$version$/maven-builder-support-$version$-sources.jar",
+metadata/org.apache.maven/maven-builder-support/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$version$/apache-maven-$version$-src.zip",
+metadata/org.apache.maven/maven-builder-support/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-builder-support/$version$/maven-builder-support-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-builder-support/index.json:18:      "org.apache.maven.building"
+metadata/org.apache.maven/maven-builder-support/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-builder-support/$version$/maven-builder-support-$version$-sources.jar",
+metadata/org.apache.maven/maven-builder-support/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-builder-support/$version$/maven-builder-support-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-builder-support/index.json:66:      "org.apache.maven.building"
+metadata/org.apache.maven/maven-api-meta/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-meta/$version$/maven-api-meta-$version$-sources.jar",
+metadata/org.apache.maven/maven-api-meta/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-meta/$version$/maven-api-meta-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-api-meta/index.json:24:      "org.apache.maven.api.annotations"
+metadata/org.apache.maven/maven-support/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-support/$version$/maven-support-$version$-sources.jar",
+metadata/org.apache.maven/maven-support/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$version$/apache-maven-$version$-src.zip",
+metadata/org.apache.maven/maven-support/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-support/$version$/maven-support-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-support/index.json:14:      "org.apache.maven.metadata.v4",
+metadata/org.apache.maven/maven-support/index.json:15:      "org.apache.maven.model.v4",
+metadata/org.apache.maven/maven-support/index.json:16:      "org.apache.maven.plugin.descriptor.io",
+metadata/org.apache.maven/maven-support/index.json:17:      "org.apache.maven.plugin.lifecycle.io",
+metadata/org.apache.maven/maven-support/index.json:18:      "org.apache.maven.settings.v4",
+metadata/org.apache.maven/maven-support/index.json:19:      "org.apache.maven.toolchain.v4"
+metadata/org.apache.maven/maven-monitor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-monitor/$version$/maven-monitor-$version$-sources.jar",
+metadata/org.apache.maven/maven-monitor/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-monitor/$version$/maven-monitor-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-monitor/index.json:22:      "org.apache.maven.monitor.event"
+metadata/org.apache.maven/maven-plugin-parameter-documenter/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-parameter-documenter/$version$/maven-plugin-parameter-documenter-$version$-sources.jar",
+metadata/org.apache.maven/maven-plugin-parameter-documenter/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-parameter-documenter/$version$/maven-plugin-parameter-documenter-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-plugin-parameter-documenter/index.json:19:      "org.apache.maven.usability.plugin"
+metadata/org.apache.maven/maven-error-diagnostics/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-error-diagnostics/$version$/maven-error-diagnostics-$version$-sources.jar",
+metadata/org.apache.maven/maven-error-diagnostics/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-error-diagnostics/$version$/maven-error-diagnostics-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-error-diagnostics/index.json:22:      "org.apache.maven.usability.diagnostics"
+metadata/org.apache.maven/maven-plugin-descriptor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-descriptor/$version$/maven-plugin-descriptor-$version$-sources.jar",
+metadata/org.apache.maven/maven-plugin-descriptor/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-descriptor/$version$/maven-plugin-descriptor-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-plugin-descriptor/index.json:16:      "org.apache.maven.plugin"
+metadata/org.apache.maven/maven-plugin-descriptor/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-descriptor/$version$/maven-plugin-descriptor-$version$-sources.jar",
+metadata/org.apache.maven/maven-plugin-descriptor/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-descriptor/$version$/maven-plugin-descriptor-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-plugin-descriptor/index.json:35:      "org.apache.maven.plugin"
+metadata/org.apache.maven/maven-archiver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/$version$/maven-archiver-$version$-sources.jar",
+metadata/org.apache.maven/maven-archiver/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/$version$/maven-archiver-$version$-source-release.zip",
+metadata/org.apache.maven/maven-archiver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/$version$/maven-archiver-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-archiver/index.json:14:      "org.apache.maven.archiver"
+metadata/org.apache.maven/maven-archiver/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/$version$/maven-archiver-$version$-sources.jar",
+metadata/org.apache.maven/maven-archiver/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/$version$/maven-archiver-$version$-source-release.zip",
+metadata/org.apache.maven/maven-archiver/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/$version$/maven-archiver-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-archiver/index.json:29:      "org.apache.maven.archiver"
+metadata/org.apache.maven/maven-project/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-project/$version$/maven-project-$version$-sources.jar",
+metadata/org.apache.maven/maven-project/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-project/$version$/maven-project-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-project/index.json:22:      "org.apache.maven"
+metadata/org.apache.maven/maven-model/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-sources.jar",
+metadata/org.apache.maven/maven-model/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$version$/apache-maven-$version$-src.zip",
+metadata/org.apache.maven/maven-model/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-model/index.json:16:      "org.apache.maven.model"
+metadata/org.apache.maven/maven-model/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-sources.jar",
+metadata/org.apache.maven/maven-model/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-model/index.json:31:      "org.apache.maven.model"
+metadata/org.apache.maven/maven-model/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-sources.jar",
+metadata/org.apache.maven/maven-model/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-model/index.json:48:      "org.apache.maven.model"
+metadata/org.apache.maven/maven-profile/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-profile/$version$/maven-profile-$version$-sources.jar",
+metadata/org.apache.maven/maven-profile/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-profile/$version$/maven-profile-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-profile/index.json:22:      "org.apache.maven.profiles"
+metadata/org.apache.maven/maven-artifact-manager/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact-manager/$version$/maven-artifact-manager-$version$-sources.jar",
+metadata/org.apache.maven/maven-artifact-manager/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact-manager/$version$/maven-artifact-manager-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-artifact-manager/index.json:22:      "org.apache.maven.artifact"
+metadata/org.apache.maven/maven-artifact/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/$version$/maven-artifact-$version$-sources.jar",
+metadata/org.apache.maven/maven-artifact/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/$version$/maven-artifact-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-artifact/index.json:80:      "org.apache.maven.artifact",
+metadata/org.apache.maven/maven-artifact/index.json:81:      "org.apache.maven"
+metadata/org.apache.maven/maven-artifact/index.json:86:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/$version$/maven-artifact-$version$-sources.jar",
+metadata/org.apache.maven/maven-artifact/index.json:89:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/$version$/maven-artifact-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-artifact/index.json:103:      "org.apache.maven.artifact"
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ succeeded in 122ms:
+web search: 
+web search: org.apache.maven maven-core 2.0.7 maven central sources javadoc tests
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/maven/maven-core/2.0.7/
+web search: 
+web search: repo.maven.apache.org maven-core 2.0.7 javadoc jar sources jar
+codex
+The local file already has the same fields filled for `2.0.6`, but the `2.0.7` entry is blank. I’m checking the actual `2.0.7` artifacts and tag paths now instead of copying the adjacent entry blindly.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use t
+his file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>maven</artifactId>
+    <groupId>org.apache.maven</groupId>
+    <version>2.0.7</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>maven-core</artifactId>
+  <name>Maven Core</name>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptor>src/assemble/bin.xml</descriptor>
+          <finalName>maven-${version}</finalName>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>install</phase>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>shade-maven-plugin</artifactId>
+        <groupId>org.codehaus.mojo</groupId>
+        <version>1.0-alpha-4</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <excludes>
+                  <exclude>classworlds:classworlds</exclude>
+                  <exclude>junit:junit</exclude>
+                  <exclude>jmock:jmock</exclude>
+                  <exclude>xml-apis:xml-apis</exclude>
+                </excludes>
+              </artifactSet>
+              <relocations>
+                <relocation>
+                  <pattern>org.codehaus.plexus.util</pattern>
+                  <excludes>
+                    <exclude>org.codehaus.plexus.util.xml.Xpp3Dom</exclude>
+                    <exclude>org.codehaus.plexus.util.xml.pull.*</exclude>
+                  </excludes>
+                </relocation>
+              </relocations>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-settings</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-file</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-parameter-documenter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-http-lightweight</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.reporting</groupId>
+      <artifactId>maven-reporting-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-profile</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-provider-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-repository-metadata</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-error-diagnostics</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-project</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-cli</groupId>
+      <artifactId>commons-cli</artifactId>
+      <version>1.0</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-lang</artifactId>
+          <groupId>commons-lang</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-ssh-external</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-descriptor</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-interactivity-api</artifactId>
+      <version>1.0-alpha-4</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>plexus-utils</artifactId>
+          <groupId>plexus</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>plexus-container-default</artifactId>
+          <groupId>org.codehaus.plexus</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact-manager</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-monitor</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-ssh</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>classworlds</groupId>
+      <artifactId>classworlds</artifactId>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 28 Jun 2026 20:19:58 GMT
+content-type: application/java-archive
+content-length: 131873
+cf-ray: a12f63b48ff702f5-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 61589
+etag: "0efb1e2478ae7b24e3dc88fb54f5cd45"
+last-modified: Thu, 21 Jun 2007 05:30:30 GMT
+x-checksum-md5: 0efb1e2478ae7b24e3dc88fb54f5cd45
+x-checksum-sha1: 71fdf0146ee67f1309e906b7217696bb6e0513ec
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-javadoc.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ succeeded in 0ms:
+HTTP/2 200 
+date: Sun, 28 Jun 2026 20:19:58 GMT
+content-type: application/java-archive
+content-length: 367940
+cf-ray: a12f63b48d456a35-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 102333
+etag: "c85d0aff224d05f8d90680760f499b74"
+last-modified: Thu, 21 Jun 2007 05:30:30 GMT
+x-checksum-md5: c85d0aff224d05f8d90680760f499b74
+x-checksum-sha1: 3de92858dc5bcb94962947dcc0ad2558603ef122
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-tests.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ exited 22 in 207ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 28 Jun 2026 20:19:59 GMT
+content-type: text/html
+cf-ray: a12f63b48fc5bb29-LYS
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/2.0.7/apache-maven-2.0.7-src.zip' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+exec
+/usr/bin/bash -lc 'curl -fsSI https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7/maven-core/src/test' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+exec
+/usr/bin/bash -lc 'curl -fsSI https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7/maven-core/src/main/java/org/apache/maven' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+exec
+/usr/bin/bash -lc 'curl -fsSI https://svn.apache.org/repos/asf/maven/components' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ succeeded in 129ms:
+HTTP/1.1 301 Moved Permanently
+Date: Sun, 28 Jun 2026 20:20:03 GMT
+Server: Apache
+Location: https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7/maven-core/src/test/
+Content-Type: text/html; charset=iso-8859-1
+
+
+ succeeded in 118ms:
+HTTP/1.1 301 Moved Permanently
+Date: Sun, 28 Jun 2026 20:20:03 GMT
+Server: Apache
+Location: https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7/maven-core/src/main/java/org/apache/maven/
+Content-Type: text/html; charset=iso-8859-1
+
+
+ exited 22 in 253ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 28 Jun 2026 20:20:03 GMT
+content-type: text/html
+cf-ray: a12f63d0bcc02793-LYS
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/maven/apache-maven/2.0.7/apache-maven-2.0.7-src.zip
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ succeeded in 119ms:
+HTTP/1.1 301 Moved Permanently
+Date: Sun, 28 Jun 2026 20:20:03 GMT
+Server: Apache
+Location: https://svn.apache.org/repos/asf/maven/components/
+Content-Type: text/html; charset=iso-8859-1
+
+
+codex
+Maven Central has the `2.0.7` sources and javadoc jars, but no `maven-core-2.0.7-tests.jar`; I’m checking whether a full source-release artifact exists before falling back to the versioned SVN test path.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/maven/maven-core/2.0.7</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/maven/maven-core/2.0.7</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-core-2.0.7-javadoc.jar" title="maven-core-2.0.7-javadoc.jar">maven-core-2.0.7-javadoc.jar</a>                      2007-06-21 05:30    367940      
+<a href="maven-core-2.0.7-javadoc.jar.asc" title="maven-core-2.0.7-javadoc.jar.asc">maven-core-2.0.7-javadoc.jar.asc</a>                  2007-06-21 05:30       186      
+<a href="maven-core-2.0.7-javadoc.jar.asc.md5" title="maven-core-2.0.7-javadoc.jar.asc.md5">maven-core-2.0.7-javadoc.jar.asc.md5</a>              2007-06-21 05:30        32      
+<a href="maven-core-2.0.7-javadoc.jar.asc.sha1" title="maven-core-2.0.7-javadoc.jar.asc.sha1">maven-core-2.0.7-javadoc.jar.asc.sha1</a>             2007-06-21 05:30        40      
+<a href="maven-core-2.0.7-javadoc.jar.md5" title="maven-core-2.0.7-javadoc.jar.md5">maven-core-2.0.7-javadoc.jar.md5</a>                  2007-06-21 05:30        32      
+<a href="maven-core-2.0.7-javadoc.jar.sha1" title="maven-core-2.0.7-javadoc.jar.sha1">maven-core-2.0.7-javadoc.jar.sha1</a>                 2007-06-21 05:30        40      
+<a href="maven-core-2.0.7-sources.jar" title="maven-core-2.0.7-sources.jar">maven-core-2.0.7-sources.jar</a>                      2007-06-21 05:30    131873      
+<a href="maven-core-2.0.7-sources.jar.asc" title="maven-core-2.0.7-sources.jar.asc">maven-core-2.0.7-sources.jar.asc</a>                  2007-06-21 05:30       186      
+<a href="maven-core-2.0.7-sources.jar.asc.md5" title="maven-core-2.0.7-sources.jar.asc.md5">maven-core-2.0.7-sources.jar.asc.md5</a>              2007-06-21 05:30        32      
+<a href="maven-core-2.0.7-sources.jar.asc.sha1" title="maven-core-2.0.7-sources.jar.asc.sha1">maven-core-2.0.7-sources.jar.asc.sha1</a>             2007-06-21 05:30        40      
+<a href="maven-core-2.0.7-sources.jar.md5" title="maven-core-2.0.7-sources.jar.md5">maven-core-2.0.7-sources.jar.md5</a>                  2007-06-21 05:30        32      
+<a href="maven-core-2.0.7-sources.jar.sha1" title="maven-core-2.0.7-sources.jar.sha1">maven-core-2.0.7-sources.jar.sha1</a>                 2007-06-21 05:30        40      
+<a href="maven-core-2.0.7.jar" title="maven-core-2.0.7.jar">maven-core-2.0.7.jar</a>                              2007-06-21 05:30    152879      
+<a href="maven-core-2.0.7.jar.asc" title="maven-core-2.0.7.jar.asc">maven-core-2.0.7.jar.asc</a>                          2007-06-21 05:30       186      
+<a href="maven-core-2.0.7.jar.asc.md5" title="maven-core-2.0.7.jar.asc.md5">maven-core-2.0.7.jar.asc.md5</a>                      2007-06-21 05:30        32      
+<a href="maven-core-2.0.7.jar.asc.sha1" title="maven-core-2.0.7.jar.asc.sha1">maven-core-2.0.7.jar.asc.sha1</a>                     2007-06-21 05:30        40      
+<a href="maven-core-2.0.7.jar.md5" title="maven-core-2.0.7.jar.md5">maven-core-2.0.7.jar.md5</a>                          2007-06-21 05:30        32      
+<a href="maven-core-2.0.7.jar.sha1" title="maven-core-2.0.7.jar.sha1">maven-core-2.0.7.jar.sha1</a>                         2007-06-21 05:30        40      
+<a href="maven-core-2.0.7.pom" title="maven-core-2.0.7.pom">maven-core-2.0.7.pom</a>                              2007-06-21 05:30      6657      
+<a href="maven-core-2.0.7.pom.asc" title="maven-core-2.0.7.pom.asc">maven-core-2.0.7.pom.asc</a>                          2007-06-21 05:30       186      
+<a href="maven-core-2.0.7.pom.asc.md5" title="maven-core-2.0.7.pom.asc.md5">maven-core-2.0.7.pom.asc.md5</a>                      2007-06-21 05:30        32      
+<a href="maven-core-2.0.7.pom.asc.sha1" title="maven-core-2.0.7.pom.asc.sha1">maven-core-2.0.7.pom.asc.sha1</a>                     2007-06-21 05:30        40      
+<a href="maven-core-2.0.7.pom.md5" title="maven-core-2.0.7.pom.md5">maven-core-2.0.7.pom.md5</a>                          2007-06-21 05:30        32      
+<a href="maven-core-2.0.7.pom.sha1" title="maven-core-2.0.7.pom.sha1">maven-core-2.0.7.pom.sha1</a>                         2007-06-21 05:30        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven/2.0.7/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/maven/maven/2.0.7</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/maven/maven/2.0.7</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-2.0.7.pom" title="maven-2.0.7.pom">maven-2.0.7.pom</a>                                   2007-06-21 05:30     10563      
+<a href="maven-2.0.7.pom.asc" title="maven-2.0.7.pom.asc">maven-2.0.7.pom.asc</a>                               2007-06-21 05:30       190      
+<a href="maven-2.0.7.pom.asc.md5" title="maven-2.0.7.pom.asc.md5">maven-2.0.7.pom.asc.md5</a>                           2007-06-21 05:30        32      
+<a href="maven-2.0.7.pom.asc.sha1" title="maven-2.0.7.pom.asc.sha1">maven-2.0.7.pom.asc.sha1</a>                          2007-06-21 05:30        40      
+<a href="maven-2.0.7.pom.md5" title="maven-2.0.7.pom.md5">maven-2.0.7.pom.md5</a>                               2007-06-21 05:30        33      
+<a href="maven-2.0.7.pom.sha1" title="maven-2.0.7.pom.sha1">maven-2.0.7.pom.sha1</a>                              2007-06-21 05:30        41      
+<a href="maven-2.0.7.tar.bz2.asc" title="maven-2.0.7.tar.bz2.asc">maven-2.0.7.tar.bz2.asc</a>                           2007-06-21 05:30       186      
+<a href="maven-2.0.7.tar.bz2.asc.md5" title="maven-2.0.7.tar.bz2.asc.md5">maven-2.0.7.tar.bz2.asc.md5</a>                       2007-06-21 05:30        32      
+<a href="maven-2.0.7.tar.bz2.asc.sha1" title="maven-2.0.7.tar.bz2.asc.sha1">maven-2.0.7.tar.bz2.asc.sha1</a>                      2007-06-21 05:30        40      
+<a href="maven-2.0.7.tar.gz.asc" title="maven-2.0.7.tar.gz.asc">maven-2.0.7.tar.gz.asc</a>                            2007-06-21 05:30       186      
+<a href="maven-2.0.7.tar.gz.asc.md5" title="maven-2.0.7.tar.gz.asc.md5">maven-2.0.7.tar.gz.asc.md5</a>                        2007-06-21 05:30        32      
+<a href="maven-2.0.7.tar.gz.asc.sha1" title="maven-2.0.7.tar.gz.asc.sha1">maven-2.0.7.tar.gz.asc.sha1</a>                       2007-06-21 05:30        40      
+<a href="maven-2.0.7.zip.asc" title="maven-2.0.7.zip.asc">maven-2.0.7.zip.asc</a>                               2007-06-21 05:30       186      
+<a href="maven-2.0.7.zip.asc.md5" title="maven-2.0.7.zip.asc.md5">maven-2.0.7.zip.asc.md5</a>                           2007-06-21 05:30        32      
+<a href="maven-2.0.7.zip.asc.sha1" title="maven-2.0.7.zip.asc.sha1">maven-2.0.7.zip.asc.sha1</a>                          2007-06-21 05:30        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/2.0.7/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ exited 22 in 209ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven/2.0.7/maven-2.0.7.pom | sed -n '1,260p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ succeeded in 0ms:
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven-parent</artifactId>
+    <version>5</version>
+    <relativePath>../pom/maven/pom.xml</relativePath>
+  </parent>
+  <artifactId>maven</artifactId>
+  <packaging>pom</packaging>
+  <name>Maven</name>
+  <version>2.0.7</version>
+  <description>Maven is a project development management and comprehension tool. Based on the concept of a project object model: builds, dependency management, documentation creation, site publication, and distribution publication are all controlled from the declarative file. Maven can be extended by plugins to utilise a number of other development tools for reporting or the build process.</description>
+  <url>http://maven.apache.org</url>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/MNG</url>
+  </issueManagement>
+  <inceptionYear>2001</inceptionYear>
+  <mailingLists>
+    <mailingList>
+      <name>Maven User List</name>
+      <subscribe>users-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>users-unsubscribe@maven.apache.org</unsubscribe>
+      <post>users@maven.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-users</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/users@maven.apache.org/</otherArchive>
+        <otherArchive>http://www.nabble.com/Maven---Users-f178.html</otherArchive>
+      </otherArchives>
+    </mailingList>
+  </mailingLists>
+  <scm>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7</developerConnection>
+    <url>https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7</url>
+  </scm>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.2-beta-1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.3</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.0-beta-5</version>
+          <configuration>
+            <tagBase>https://svn.apache.org/repos/asf/maven/components/tags</tagBase>
+          </configuration>
+        </plugin>
+       <plugin>
+          <groupId>org.codehaus.modello</groupId>
+          <artifactId>modello-maven-plugin</artifactId>
+          <version>1.0-alpha-13</version>
+          <executions>
+            <execution>
+              <id>site-docs</id>
+              <phase>pre-site</phase>
+              <goals>
+                <goal>xdoc</goal>
+                <goal>xsd</goal>
+              </goals>
+            </execution>
+            <execution>
+
+              <id>standard</id>
+              <goals>
+                <goal>java</goal>
+                <goal>xpp3-reader</goal>
+                <goal>xpp3-writer</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>        
+      </plugins>
+    </pluginManagement>
+  </build>
+  <modules>
+    <module>maven-artifact</module>
+    <module>maven-artifact-manager</module>
+    <module>maven-artifact-test</module>
+    <module>maven-core</module>
+    <module>maven-error-diagnostics</module>
+    <module>maven-model</module>
+    <module>maven-monitor</module>
+    <module>maven-plugin-api</module>
+    <module>maven-plugin-descriptor</module>
+    <module>maven-plugin-parameter-documenter</module>
+    <module>maven-plugin-registry</module>
+    <module>maven-profile</module>
+    <module>maven-project</module>
+    <module>maven-reporting</module>
+    <module>maven-repository-metadata</module>
+    <module>maven-script</module>
+    <module>maven-settings</module>
+  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <properties>
+    <mavenVersion>2.0.7</mavenVersion>
+  </properties>
+  <dependencyManagement>
+    <dependencies>
+      <!-- Maven -->
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-descriptor</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-error-diagnostics</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-model</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-project</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.reporting</groupId>
+        <artifactId>maven-reporting-api</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-repository-metadata</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact-manager</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact-test</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-settings</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-parameter-documenter</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-profile</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-registry</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-monitor</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>      
+      <!-- Plexus -->
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-container-default</artifactId>
+        <version>1.0-alpha-9-stable-1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>1.4.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-provider-api</artifactId>
+        <version>1.0-beta-2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh</artifactId>
+        <version>1.0-beta-2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-external</artifactId>
+        <version>1.0-beta-2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-file</artifactId>
+        <version>1.0-beta-2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-http-lightweight</artifactId>
+        <version>1.0-beta-2</version>
+      </dependency>
+      <dependency>
+        <groupId>easymock</groupId>
+        <artifactId>easymock</artifactId>
+        <version>1.2_Java1.3</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>classworlds</groupId>
+        <artifactId>classworlds</artifactId>
+        <version>1.1</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <distributionManagement>
+    <site>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/maven/components/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7/maven-core/src/main/java/org/apache/maven/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+exec
+/usr/bin/bash -lc "curl -fsSL https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7/maven-core/src/test/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ succeeded in 115ms:
+<html><head><title>asf - Revision 1935697: /maven/components</title></head>
+<body>
+ <h2>asf - Revision 1935697: /maven/components</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="archive/">archive/</a></li>
+  <li><a href="branches/">branches/</a></li>
+  <li><a href="tags/">tags/</a></li>
+ </ul>
+</body></html>
+ succeeded in 115ms:
+<html><head><title>asf - Revision 1935697: /maven/components/tags/maven-2.0.7/maven-core/src/main/java/org/apache/maven</title></head>
+<body>
+ <h2>asf - Revision 1935697: /maven/components/tags/maven-2.0.7/maven-core/src/main/java/org/apache/maven</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="BuildFailureException.java">BuildFailureException.java</a></li>
+  <li><a href="DefaultMaven.java">DefaultMaven.java</a></li>
+  <li><a href="Maven.java">Maven.java</a></li>
+  <li><a href="MavenArtifactFilterManager.java">MavenArtifactFilterManager.java</a></li>
+  <li><a href="SettingsConfigurationException.java">SettingsConfigurationException.java</a></li>
+  <li><a href="cli/">cli/</a></li>
+  <li><a href="execution/">execution/</a></li>
+  <li><a href="extension/">extension/</a></li>
+  <li><a href="lifecycle/">lifecycle/</a></li>
+  <li><a href="monitor/">monitor/</a></li>
+  <li><a href="plugin/">plugin/</a></li>
+  <li><a href="profiles/">profiles/</a></li>
+  <li><a href="reactor/">reactor/</a></li>
+  <li><a href="usability/">usability/</a></li>
+ </ul>
+</body></html>
+ succeeded in 113ms:
+<html><head><title>asf - Revision 1935697: /maven/components/tags/maven-2.0.7/maven-core/src/test</title></head>
+<body>
+ <h2>asf - Revision 1935697: /maven/components/tags/maven-2.0.7/maven-core/src/test</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="java/">java/</a></li>
+  <li><a href="resources/">resources/</a></li>
+ </ul>
+</body></html>
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/maven/maven/2.0.7/maven-2.0.7.pom | sed -n '260,420p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ succeeded in 0ms:
+    <site>
+      <id>apache.website</id>
+      <url>scp://people.apache.org/www/maven.apache.org/ref/${project.version}/</url>
+    </site>
+  </distributionManagement>
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <inherited>false</inherited>
+            <configuration>
+              <descriptors>
+                <descriptor>src/main/assembly/src.xml</descriptor>
+              </descriptors>
+              <tarLongFileMode>gnu</tarLongFileMode>
+              <finalName>maven-${project.version}-src</finalName>
+            </configuration>
+            <executions>
+              <execution>
+                <id>make-assembly</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-src.zip' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-test-sources.jar' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-source-release.zip' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ exited 22 in 219ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 28 Jun 2026 20:20:20 GMT
+content-type: text/html
+cf-ray: a12f643c29072db1-LYS
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-source-release.zip
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 22 in 246ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Sun, 28 Jun 2026 20:20:20 GMT
+content-type: text/html
+cf-ray: a12f643c290a2db1-LYS
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+ exited 22 in 254ms:
+HTTP/2 404 
+date: Sun, 28 Jun 2026 20:20:20 GMT
+content-type: text/html
+cf-ray: a12f643c2a2ebb29-LYS
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-src.zip
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://maven.apache.org/ref/2.0.7/maven-core/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://maven.apache.org/ref/2.0.7/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ exited 22 in 0ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+server: Apache
+last-modified: Fri, 26 Jun 2026 07:09:58 GMT
+etag: "21d3-65522cbecde09;65206392612f3
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+content-type: text/html
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+age: 0
+date: Sun, 28 Jun 2026 20:20:26 GMT
+x-served-by: cache-hel1410026-HEL, cache-fra-eddf8230159-FRA
+x-cache: MISS, MISS
+x-cache-hits: 0, 0
+x-timer: S1782678026.410029,VS0,VE29
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 8659
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://maven.apache.org/ref/2.0.7/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ succeeded in 0ms:
+curl: (22) The requested URL returned error: 404
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://maven.apache.org/ref/2.0.7/maven-core/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ exited 22 in 0ms:
+HTTP/2 404 
+server: Apache
+last-modified: Fri, 26 Jun 2026 07:09:58 GMT
+etag: "21d3-65522cbecde09;65206392612f3
+access-control-allow-origin: *
+content-security-policy: default-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; script-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; style-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; frame-ancestors 'self'; frame-src 'self' data: blob: 'unsafe-inline' 'unsafe-eval' https://www.apachecon.com/ https://www.communityovercode.org/ https://*.apache.org/ https://apache.org/ https://*.scarf.sh/  ; worker-src 'self' data: blob:;
+content-type: text/html
+via: 1.1 varnish, 1.1 varnish
+accept-ranges: bytes
+date: Sun, 28 Jun 2026 20:20:26 GMT
+age: 0
+x-served-by: cache-hel1410022-HEL, cache-fra-eddf8230233-FRA
+x-cache: MISS, HIT
+x-cache-hits: 0, 1
+x-timer: S1782678026.423793,VS0,VE19
+vary: Accept-Encoding
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 8659
+
+curl: (22) The requested URL returned error: 404
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/maven/2.0.7/maven-2.0.7.pom
+codex
+For documentation, the versioned Maven website path for `2.0.7` returns 404, while the versioned Maven Central javadoc jar exists. I’m going to use Maven Central for sources and javadoc, and SVN only for the test tree because no Maven-hosted test artifact is present.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae/metadata/org.apache.maven/maven-core/index.json
+diff --git a/metadata/org.apache.maven/maven-core/index.json b/metadata/org.apache.maven/maven-core/index.json
+index 21ce1b643a8c7d04eb9be90ed41a4fa4961eb23f..d43e68e2abfe348a953757b3d6baa67cd102c8fc
+--- a/metadata/org.apache.maven/maven-core/index.json
++++ b/metadata/org.apache.maven/maven-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.7",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
++    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+     "tested-versions" : [
+       "2.0.7"
+     ],
+
+diff --git a/metadata/org.apache.maven/maven-core/index.json b/metadata/org.apache.maven/maven-core/index.json
+index 21ce1b643a8c7d04eb9be90ed41a4fa4961eb23f..d43e68e2abfe348a953757b3d6baa67cd102c8fc
+--- a/metadata/org.apache.maven/maven-core/index.json
++++ b/metadata/org.apache.maven/maven-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.7",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
++    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+     "tested-versions" : [
+       "2.0.7"
+     ],
+
+codex
+The file is patched now. I’m doing a quick JSON parse, re-rendering the `$version$` templates for `2.0.7`, and checking the final diff so only the requested entry changed.
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.apache.maven/maven-core/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.apache.maven/maven-core/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ succeeded in 0ms:
+diff --git i/metadata/org.apache.maven/maven-core/index.json w/metadata/org.apache.maven/maven-core/index.json
+index 21ce1b643a..d43e68e2ab 100644
+--- i/metadata/org.apache.maven/maven-core/index.json
++++ w/metadata/org.apache.maven/maven-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.7",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
++    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+     "tested-versions" : [
+       "2.0.7"
+     ],
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-sources.jar && curl -fsSI https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-javadoc.jar && curl -fsSI https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7/maven-core/src/test/ && curl -fsSI https://svn.apache.org/repos/asf/maven/components' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+diff --git a/metadata/org.apache.maven/maven-core/index.json b/metadata/org.apache.maven/maven-core/index.json
+index 21ce1b643a8c7d04eb9be90ed41a4fa4961eb23f..d43e68e2abfe348a953757b3d6baa67cd102c8fc
+--- a/metadata/org.apache.maven/maven-core/index.json
++++ b/metadata/org.apache.maven/maven-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.7",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
++    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+     "tested-versions" : [
+       "2.0.7"
+     ],
+
+ succeeded in 390ms:
+HTTP/1.1 200 OK
+Date: Sun, 28 Jun 2026 20:20:47 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Wed, 06 Jun 2007 16:30:23 GMT
+ETag: W/"544878//maven/components/tags/maven-2.0.7/maven-core/src/test"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'  https://www.apache.org
+Content-Type: text/html; charset=UTF-8
+
+HTTP/1.1 301 Moved Permanently
+Date: Sun, 28 Jun 2026 20:20:47 GMT
+Server: Apache
+Location: https://svn.apache.org/repos/asf/maven/components/
+Content-Type: text/html; charset=iso-8859-1
+
+
+codex
+One small adjustment: the SVN repository root without a trailing slash redirects, so I’m storing the canonical directory URL with the trailing slash. That keeps it at the repository root while avoiding a redirect.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae/metadata/org.apache.maven/maven-core/index.json
+diff --git a/metadata/org.apache.maven/maven-core/index.json b/metadata/org.apache.maven/maven-core/index.json
+index 21ce1b643a8c7d04eb9be90ed41a4fa4961eb23f..497ef63efb3dfb61dff34b4e1f479791826e67e9
+--- a/metadata/org.apache.maven/maven-core/index.json
++++ b/metadata/org.apache.maven/maven-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.7",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/components/",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
++    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+     "tested-versions" : [
+       "2.0.7"
+     ],
+
+diff --git a/metadata/org.apache.maven/maven-core/index.json b/metadata/org.apache.maven/maven-core/index.json
+index 21ce1b643a8c7d04eb9be90ed41a4fa4961eb23f..497ef63efb3dfb61dff34b4e1f479791826e67e9
+--- a/metadata/org.apache.maven/maven-core/index.json
++++ b/metadata/org.apache.maven/maven-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.7",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/components/",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
++    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+     "tested-versions" : [
+       "2.0.7"
+     ],
+
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.apache.maven/maven-core/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.apache.maven/maven-core/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ succeeded in 0ms:
+diff --git i/metadata/org.apache.maven/maven-core/index.json w/metadata/org.apache.maven/maven-core/index.json
+index 21ce1b643a..497ef63efb 100644
+--- i/metadata/org.apache.maven/maven-core/index.json
++++ w/metadata/org.apache.maven/maven-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.7",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/components/",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
++    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+     "tested-versions" : [
+       "2.0.7"
+     ],
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://svn.apache.org/repos/asf/maven/components/' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+diff --git a/metadata/org.apache.maven/maven-core/index.json b/metadata/org.apache.maven/maven-core/index.json
+index 21ce1b643a8c7d04eb9be90ed41a4fa4961eb23f..497ef63efb3dfb61dff34b4e1f479791826e67e9
+--- a/metadata/org.apache.maven/maven-core/index.json
++++ b/metadata/org.apache.maven/maven-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.7",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/components/",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
++    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+     "tested-versions" : [
+       "2.0.7"
+     ],
+
+ succeeded in 133ms:
+HTTP/1.1 200 OK
+Date: Sun, 28 Jun 2026 20:20:57 GMT
+Server: Apache
+Cache-Control: max-age=0
+Last-Modified: Mon, 07 Nov 2011 09:58:44 GMT
+ETag: W/"1198687//maven/components"
+Accept-Ranges: bytes
+Content-Security-Policy: default-src 'none'; style-src 'self'; img-src 'self'  https://www.apache.org
+Content-Type: text/html; charset=UTF-8
+
+
+codex
+The JSON parses cleanly and the rendered URLs return 200 for the source jar, javadoc jar, SVN test directory, and SVN repository root. I’m running the repository’s metadata-file check for this coordinate as the final validation.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.apache.maven:maven-core:2.0.7' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+diff --git a/metadata/org.apache.maven/maven-core/index.json b/metadata/org.apache.maven/maven-core/index.json
+index 21ce1b643a8c7d04eb9be90ed41a4fa4961eb23f..497ef63efb3dfb61dff34b4e1f479791826e67e9
+--- a/metadata/org.apache.maven/maven-core/index.json
++++ b/metadata/org.apache.maven/maven-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.7",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/components/",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
++    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+     "tested-versions" : [
+       "2.0.7"
+     ],
+
+ exited 1 in 7814ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+Metadata files check failed for org.apache.maven:maven-core:2.0.7: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae/metadata/org.apache.maven/maven-core/2.0.7/
+> Task :checkMetadataFiles FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.apache.maven:maven-core:2.0.7: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae/metadata/org.apache.maven/maven-core/2.0.7/
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 7s
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: Maven Core 2.0.7 Maven Repository sources javadoc
+web search: 
+web search: https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7/maven-core/src/test/
+codex
+The repository metadata check itself failed for a pre-existing reason outside this URL update: the coordinate lacks `metadata/org.apache.maven/maven-core/2.0.7/reachability-metadata.json`. I’m grabbing the final line reference now so the close-out is precise.
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.apache.maven/maven-core/index.json | sed -n '1,28p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "2.0.7",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
+     6	    "repository-url" : "https://svn.apache.org/repos/asf/maven/components/",
+     7	    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test/",
+     8	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
+     9	    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+    10	    "tested-versions" : [
+    11	      "2.0.7"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "org.apache.maven"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "2.0.6",
+    19	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
+    20	    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+    21	    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test",
+    22	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
+    23	    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+    24	    "tested-versions" : [
+    25	      "2.0.6"
+    26	    ],
+    27	    "allowed-packages" : [
+    28	      "org.apache.maven"
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae
+diff --git a/metadata/org.apache.maven/maven-core/index.json b/metadata/org.apache.maven/maven-core/index.json
+index 21ce1b643a8c7d04eb9be90ed41a4fa4961eb23f..497ef63efb3dfb61dff34b4e1f479791826e67e9
+--- a/metadata/org.apache.maven/maven-core/index.json
++++ b/metadata/org.apache.maven/maven-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.7",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/components/",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
++    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+     "tested-versions" : [
+       "2.0.7"
+     ],
+
+ succeeded in 196ms:
+ M metadata/org.apache.maven/maven-core/index.json
+
+codex
+Updated [metadata/org.apache.maven/maven-core/index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae/metadata/org.apache.maven/maven-core/index.json:4) for the `metadata-version` `2.0.7` entry with the source, repository, test, documentation, and two-sentence description fields. I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+Verification:
+- `jq empty metadata/org.apache.maven/maven-core/index.json` passed.
+- Rendered URLs for `2.0.7` returned 200 for sources, javadocs, test directory, and repository root.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.maven:maven-core:2.0.7` failed because `metadata/org.apache.maven/maven-core/2.0.7/reachability-metadata.json` is missing, which is outside the requested URL/description update.
+diff --git a/metadata/org.apache.maven/maven-core/index.json b/metadata/org.apache.maven/maven-core/index.json
+index 21ce1b643a8c7d04eb9be90ed41a4fa4961eb23f..497ef63efb3dfb61dff34b4e1f479791826e67e9
+--- a/metadata/org.apache.maven/maven-core/index.json
++++ b/metadata/org.apache.maven/maven-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.7",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/components/",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test/",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
++    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+     "tested-versions" : [
+       "2.0.7"
+     ],
+
+tokens used
+69,822
+Updated [metadata/org.apache.maven/maven-core/index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae/metadata/org.apache.maven/maven-core/index.json:4) for the `metadata-version` `2.0.7` entry with the source, repository, test, documentation, and two-sentence description fields. I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+Verification:
+- `jq empty metadata/org.apache.maven/maven-core/index.json` passed.
+- Rendered URLs for `2.0.7` returned 200 for sources, javadocs, test directory, and repository root.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.maven:maven-core:2.0.7` failed because `metadata/org.apache.maven/maven-core/2.0.7/reachability-metadata.json` is missing, which is outside the requested URL/description update.
+Ran agent for org.apache.maven:maven-core:2.0.7 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae/build/agent-url-discovery-logs/org.apache.maven-maven-core-2.0.7.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-6d9131ae/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 58s
+9 actionable tasks: 1 executed, 8 up-to-date
