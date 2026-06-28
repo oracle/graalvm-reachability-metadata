@@ -11,6 +11,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.debug.DebugProbes
 import kotlinx.coroutines.debug.State
+import kotlinx.coroutines.debug.junit4.CoroutinesTimeout
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -94,6 +95,16 @@ public class Kotlinx_coroutines_debugTest {
         assertThat(State.valueOf("CREATED")).isSameAs(State.CREATED)
         assertThat(State.valueOf("RUNNING")).isSameAs(State.RUNNING)
         assertThat(State.valueOf("SUSPENDED")).isSameAs(State.SUSPENDED)
+    }
+
+    @Test
+    fun junit4CoroutinesTimeoutRejectsNonPositiveTimeouts(): Unit {
+        assertThatThrownBy { CoroutinesTimeout(0) }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("Expected positive test timeout, but had 0")
+        assertThatThrownBy { CoroutinesTimeout(-1) }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage("Expected positive test timeout, but had -1")
     }
 
     @Test
