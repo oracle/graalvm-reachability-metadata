@@ -1,0 +1,947 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f0eb2-49ce-78f2-add9-6956750d943f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: ognl:ognl:3.3.5
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [3.3.5].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae/metadata/ognl/ognl/index.json
+- Entry selector: "metadata-version" = "3.3.5"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 3.3.5
+- Entry metadata-version: 3.3.5
+- Entry test-version: 3.3.5
+- Entry tested-versions: [3.3.5]
+codex
+I’ll verify the artifact metadata against Maven/repository sources, then patch only the missing fields in the target `index.json`. After that I’ll do a JSON sanity check and show the exact fields changed.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/ognl/ognl/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.3.5",
+    "tested-versions" : [
+      "3.3.5"
+    ],
+    "allowed-packages" : [
+      "ognl"
+    ]
+  },
+  {
+    "metadata-version" : "3.2.21",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/ognl/ognl/$version$/ognl-$version$-sources.jar",
+    "repository-url" : "https://github.com/orphan-oss/ognl",
+    "test-code-url" : "https://github.com/orphan-oss/ognl/tree/OGNL_3_2_21/src/test?version=$version$",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/ognl/ognl/$version$/ognl-$version$-javadoc.jar",
+    "description" : "OGNL (Object-Graph Navigation Language) is a Java expression and binding language for reading and writing properties on object graphs. It parses string expressions that can access properties, call methods, work with collections, and be reused to get or set values in Java applications.",
+    "tested-versions" : [
+      "3.2.21",
+      "3.3.0",
+      "3.3.1",
+      "3.3.2",
+      "3.3.3",
+      "3.3.4"
+    ],
+    "allowed-packages" : [
+      "ognl"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language|tested-versions' metadata/ognl/ognl/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae
+4:    "metadata-version" : "3.3.5",
+5:    "tested-versions" : [
+13:    "metadata-version" : "3.2.21",
+14:    "source-code-url" : "https://repo.maven.apache.org/maven2/ognl/ognl/$version$/ognl-$version$-sources.jar",
+15:    "repository-url" : "https://github.com/orphan-oss/ognl",
+16:    "test-code-url" : "https://github.com/orphan-oss/ognl/tree/OGNL_3_2_21/src/test?version=$version$",
+17:    "documentation-url" : "https://repo.maven.apache.org/maven2/ognl/ognl/$version$/ognl-$version$-javadoc.jar",
+18:    "description" : "OGNL (Object-Graph Navigation Language) is a Java expression and binding language for reading and writing properties on object graphs. It parses string expressions that can access properties, call methods, work with collections, and be reused to get or set values in Java applications.",
+19:    "tested-versions" : [
+
+web search: 
+web search: Maven Central ognl ognl 3.3.5 sources javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/ognl/ognl/3.3.5/
+codex
+The existing older entry already points at the current OGNL GitHub repository and Maven javadoc/source artifacts. I’m checking the 3.3.5 POM and rendered URLs now, because Maven source/javadoc artifacts should win when present and GitHub should only be needed for tests.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/ognl/ognl/3.3.5/ognl-3.3.5.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>9</version>
+    </parent>
+
+    <groupId>ognl</groupId>
+    <artifactId>ognl</artifactId>
+    <packaging>jar</packaging>
+    <version>3.3.5</version>
+    <name>OGNL - Object Graph Navigation Library</name>
+    <description>OGNL - Object Graph Navigation Library</description>
+
+    <inceptionYear>1997</inceptionYear>
+
+    <url>https://github.com/jkuhnert/ognl/</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git@github.com:jkuhnert/ognl.git</connection>
+        <url>git@github.com:jkuhnert/ognl.git</url>
+        <developerConnection>scm:git:git@github.com:jkuhnert/ognl.git</developerConnection>
+    </scm>
+
+    <organization>
+        <name>OpenSymphony</name>
+        <url>http://www.opensymphony.com</url>
+    </organization>
+
+    <issueManagement>
+        <system>jira</system>
+        <url>http://jira.opensymphony.com/browse/OGNL</url>
+    </issueManagement>
+
+    <developers>
+        <developer>
+            <id>lukaszlenart</id>
+            <email>lukaszlenart@apache.org</email>
+            <roles>
+                <role>ASF Committer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>4.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.29.0-GA</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>compile-tests</id>
+                        <phase>process-test-sources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                        <configuration>
+                            <source>1.8</source>
+                            <target>1.8</target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>  <!-- Most recent 2.x available -->
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/TestOgnlRuntime.java</include>
+                        <include>**/TestOgnlException.java</include>
+                        <include>**/TestExpressionCompiler.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.2</version>
+                <configuration>
+                    <archive>
+                        <compress>true</compress>
+                        <index>true</index>
+                        <manifestEntries>
+                            <Automatic-Module-Name>ognl</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <configuration>
+                    <archive>
+                        <compress>true</compress>
+                        <index>true</index>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.4.0</version>
+                <configuration>
+                    <archive>
+                        <compress>true</compress>
+                        <index>true</index>
+                    </archive>
+                    <source>1.8</source>
+                    <links>
+                        <link>https://docs.oracle.com/javase/8/docs/api/</link>
+                    </links>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.2.0</version>  <!-- Most recent 2.x available -->
+            </plugin>
+        </plugins>
+
+        <defaultGoal>install</defaultGoal>
+
+    </build>
+
+    <profiles>
+        <profile>
+            <id>javacc-generate</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>generate</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target>
+                                        <java classname="org.javacc.jjtree.Main" fork="true">
+                                            <arg value="-OUTPUT_DIRECTORY=${project.build.sourceDirectory}/ognl" />
+                                            <arg value="${project.basedir}/src/etc/ognl.jjt" />
+                                        </java>
+
+                                        <java classname="org.javacc.parser.Main" fork="true">
+                                            <arg value="-OUTPUT_DIRECTORY=${project.build.sourceDirectory}/ognl" />
+                                            <arg value="${project.basedir}/src/etc/ognl.jj" />
+                                        </java>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>jdk17</id>
+            <activation>
+                <jdk>[17,)</jdk>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/ognl/ognl/3.3.5/ognl-3.3.5-sources.jar \\
+  https://repo.maven.apache.org/maven2/ognl/ognl/3.3.5/ognl-3.3.5-javadoc.jar \\
+  https://repo.maven.apache.org/maven2/ognl/ognl/3.3.5/ognl-3.3.5-tests.jar \\
+  https://repo.maven.apache.org/maven2/ognl/ognl/3.3.5/ognl-3.3.5-test-sources.jar \\
+  https://github.com/orphan-oss/ognl \\
+  https://github.com/orphan-oss/ognl/tree/OGNL_3_3_5/src/test; do
+  printf '%s -> ' \""'$url"
+  curl -I -L -s -o /dev/null -w '"'%{http_code} %{url_effective}\\n' \""'$url"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae
+ succeeded in 1460ms:
+404 https://repo.maven.apache.org/maven2/ognl/ognl/3.3.5/ognl-3.3.5-tests.jar
+https://repo.maven.apache.org/maven2/ognl/ognl/3.3.5/ognl-3.3.5-test-sources.jar -> 404 https://repo.maven.apache.org/maven2/ognl/ognl/3.3.5/ognl-3.3.5-test-sources.jar
+https://github.com/orphan-oss/ognl -> 200 https://github.com/orphan-oss/ognl
+https://github.com/orphan-oss/ognl/tree/OGNL_3_3_5/src/test -> 200 https://github.com/orphan-oss/ognl/tree/OGNL_3_3_5/src/test
+
+web search: 
+web search: https://github.com/orphan-oss/ognl/tree/OGNL_3_3_5/src/test
+web search: 
+web search: repo.maven.apache.org/maven2/ognl/ognl/3.3.5/ognl-3.3.5-sources.jar
+codex
+For 3.3.5, Maven has source and javadoc artifacts but no `tests` or `test-sources` classifier. The repository tag exposes `src/test`, so I’m going to use Maven for source/docs and the version tag for the test suite.
+exec
+/usr/bin/bash -lc "rg -n 'tree/OGNL_3_3_5|tree/OGNL_|test-code-url.*\\?version=\\"'$version'"\\"'$|javadoc.jar'"' metadata -g index.json | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae
+ succeeded in 0ms:
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/com.comcast/ip4s-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+metadata/io.lettuce/lettuce-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/org.mortbay.jetty/servlet-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/mortbay/jetty/servlet-api/$version$/servlet-api-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-javadoc.jar",
+metadata/io.swagger/swagger-annotations/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/swagger/swagger-annotations/$version$/swagger-annotations-$version$-javadoc.jar",
+metadata/org.mortbay.jetty/jetty-sslengine/index.json:8:    "documentation-url": "https://repo.maven.apache.org/maven2/org/mortbay/jetty/jetty-sslengine/$version$/jetty-sslengine-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-javadoc.jar",
+metadata/org.jruby.jcodings/jcodings/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jruby/jcodings/jcodings/$version$/jcodings-$version$-javadoc.jar",
+metadata/com.squareup.moshi/moshi-adapters/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-adapters/$version$/moshi-adapters-$version$-javadoc.jar",
+metadata/com.rabbitmq/amqp-client/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-javadoc.jar",
+metadata/com.squareup.moshi/moshi-kotlin/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/squareup/moshi/moshi-kotlin/$version$/moshi-kotlin-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:31:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:45:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:59:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:76:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:90:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:104:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:132:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-databind/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$version$/jackson-databind-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-javadoc.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:25:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-javadoc.jar",
+metadata/org.eclipse.jgit/org.eclipse.jgit/index.json:39:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/$version$/org.eclipse.jgit-$version$-javadoc.jar",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-json-provider/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/tools/jackson/jaxrs/jackson-jaxrs-json-provider/$version$/jackson-jaxrs-json-provider-$version$-javadoc.jar",
+metadata/org.apache.zookeeper/zookeeper/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/zookeeper/zookeeper/$version$/zookeeper-$version$-javadoc.jar",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-javadoc.jar",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:25:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-javadoc.jar",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:42:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+metadata/org.yaml/snakeyaml/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/org/yaml/snakeyaml/$version$/snakeyaml-$version$-javadoc.jar",
+metadata/org.jboss.threads/jboss-threads/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/threads/jboss-threads/$version$/jboss-threads-$version$-javadoc.jar",
+metadata/org.jboss.threads/jboss-threads/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/threads/jboss-threads/$version$/jboss-threads-$version$-javadoc.jar",
+metadata/org.jboss.threads/jboss-threads/index.json:48:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/threads/jboss-threads/$version$/jboss-threads-$version$-javadoc.jar",
+metadata/org.jboss.threads/jboss-threads/index.json:62:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/threads/jboss-threads/$version$/jboss-threads-$version$-javadoc.jar",
+metadata/org.jboss.threads/jboss-threads/index.json:76:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jboss/threads/jboss-threads/$version$/jboss-threads-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-expression/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-expression/$version$/smallrye-common-expression-$version$-javadoc.jar",
+metadata/org.ccil.cowan.tagsoup/tagsoup/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/ccil/cowan/tagsoup/tagsoup/$version$/tagsoup-$version$-javadoc.jar",
+metadata/com.github.pureconfig/pureconfig-generic-base_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/pureconfig/pureconfig-generic-base_3/$version$/pureconfig-generic-base_3-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:7:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:57:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:71:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:85:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:99:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/io.vertx/vertx-core/index.json:113:    "documentation-url" : "https://repo1.maven.org/maven2/io/vertx/vertx-core/$version$/vertx-core-$version$-javadoc.jar",
+metadata/tools.jackson.jaxrs/jackson-jaxrs-base/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/tools/jackson/jaxrs/jackson-jaxrs-base/$version$/jackson-jaxrs-base-$version$-javadoc.jar",
+metadata/com.github.pureconfig/pureconfig-core_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/pureconfig/pureconfig-core_3/$version$/pureconfig-core_3-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-cpu/index.json:45:    "documentation-url" : "https://repo1.maven.org/maven2/io/smallrye/common/smallrye-common-cpu/$version$/smallrye-common-cpu-$version$-javadoc.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-javadoc.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:41:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-javadoc.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:69:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-javadoc.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:83:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-javadoc.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:97:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-javadoc.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:111:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-javadoc.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:125:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-javadoc.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:139:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-javadoc.jar",
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-core-jvm/$version$/clikt-core-jvm-$version$-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:8:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-javadoc.jar",
+metadata/org.openjfx/javafx-base/index.json:24:    "documentation-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-javadoc.jar",
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.core/jackson-annotations/index.json:40:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$version$/jackson-annotations-$version$-javadoc.jar",
+metadata/com.github.pureconfig/pureconfig-generic-scala3_3/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/pureconfig/pureconfig-generic-scala3_3/$version$/pureconfig-generic-scala3_3-$version$-javadoc.jar",
+metadata/io.vertx/vertx-web-common/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-web-common/$version$/vertx-web-common-$version$-javadoc.jar",
+metadata/io.smallrye.common/smallrye-common-io/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/smallrye/common/smallrye-common-io/$version$/smallrye-common-io-$version$-javadoc.jar",
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/github/ajalt/clikt/clikt-jvm/$version$/clikt-jvm-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/ognl/ognl/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in \\
+  https://javadoc.io/doc/ognl/ognl/3.3.5/overview-summary.html \\
+  https://javadoc.io/doc/ognl/ognl/3.3.5/; do
+  printf '%s -> ' \""'$url"
+  curl -I -L -s -o /dev/null -w '"'%{http_code} %{url_effective}\\n' \""'$url"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae
+ succeeded in 997ms:
+200 https://javadoc.io/doc/ognl/ognl/3.3.5/overview-summary.html
+https://javadoc.io/doc/ognl/ognl/3.3.5/ -> 200 https://javadoc.io/doc/ognl/ognl/3.3.5/index.html
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/ognl/ognl/3.3.5/ | sed -n '1,180p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: ognl/ognl/3.3.5</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>ognl/ognl/3.3.5</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="ognl-3.3.5-javadoc.jar" title="ognl-3.3.5-javadoc.jar">ognl-3.3.5-javadoc.jar</a>                            2024-04-18 06:00    815397      
+<a href="ognl-3.3.5-javadoc.jar.asc" title="ognl-3.3.5-javadoc.jar.asc">ognl-3.3.5-javadoc.jar.asc</a>                        2024-04-18 06:00       866      
+<a href="ognl-3.3.5-javadoc.jar.md5" title="ognl-3.3.5-javadoc.jar.md5">ognl-3.3.5-javadoc.jar.md5</a>                        2024-04-18 06:00        32      
+<a href="ognl-3.3.5-javadoc.jar.sha1" title="ognl-3.3.5-javadoc.jar.sha1">ognl-3.3.5-javadoc.jar.sha1</a>                       2024-04-18 06:00        40      
+<a href="ognl-3.3.5-sources.jar" title="ognl-3.3.5-sources.jar">ognl-3.3.5-sources.jar</a>                            2024-04-18 06:00    266668      
+<a href="ognl-3.3.5-sources.jar.asc" title="ognl-3.3.5-sources.jar.asc">ognl-3.3.5-sources.jar.asc</a>                        2024-04-18 06:00       866      
+<a href="ognl-3.3.5-sources.jar.md5" title="ognl-3.3.5-sources.jar.md5">ognl-3.3.5-sources.jar.md5</a>                        2024-04-18 06:00        32      
+<a href="ognl-3.3.5-sources.jar.sha1" title="ognl-3.3.5-sources.jar.sha1">ognl-3.3.5-sources.jar.sha1</a>                       2024-04-18 06:00        40      
+<a href="ognl-3.3.5.jar" title="ognl-3.3.5.jar">ognl-3.3.5.jar</a>                                    2024-04-18 06:00    264967      
+<a href="ognl-3.3.5.jar.asc" title="ognl-3.3.5.jar.asc">ognl-3.3.5.jar.asc</a>                                2024-04-18 06:00       866      
+<a href="ognl-3.3.5.jar.md5" title="ognl-3.3.5.jar.md5">ognl-3.3.5.jar.md5</a>                                2024-04-18 06:00        32      
+<a href="ognl-3.3.5.jar.sha1" title="ognl-3.3.5.jar.sha1">ognl-3.3.5.jar.sha1</a>                               2024-04-18 06:00        40      
+<a href="ognl-3.3.5.pom" title="ognl-3.3.5.pom">ognl-3.3.5.pom</a>                                    2024-04-18 06:00      8980      
+<a href="ognl-3.3.5.pom.asc" title="ognl-3.3.5.pom.asc">ognl-3.3.5.pom.asc</a>                                2024-04-18 06:00       866      
+<a href="ognl-3.3.5.pom.md5" title="ognl-3.3.5.pom.md5">ognl-3.3.5.pom.md5</a>                                2024-04-18 06:00        32      
+<a href="ognl-3.3.5.pom.sha1" title="ognl-3.3.5.pom.sha1">ognl-3.3.5.pom.sha1</a>                               2024-04-18 06:00        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "for url in \\
+  https://github.com/jkuhnert/ognl \\
+  https://github.com/jkuhnert/ognl/tree/OGNL_3_3_5/src/test; do
+  printf '%s -> ' \""'$url"
+  curl -I -L -s -o /dev/null -w '"'%{http_code} %{url_effective}\\n' \""'$url"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae
+ succeeded in 463ms:
+200 https://github.com/orphan-oss/ognl
+https://github.com/jkuhnert/ognl/tree/OGNL_3_3_5/src/test -> 200 https://github.com/orphan-oss/ognl/tree/OGNL_3_3_5/src/test
+
+codex
+I’m updating only the first `metadata-version: 3.3.5` object. I’ll leave `language` absent because OGNL is a Java library/expression language, not one of the Kotlin/Groovy/Scala language-specific artifacts the metadata field is for.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae/metadata/ognl/ognl/index.json
+diff --git a/metadata/ognl/ognl/index.json b/metadata/ognl/ognl/index.json
+index 1fd071fb353d57c0d511da4e32609bcae98317fe..4d6606bcd266c86971e34f6b730fc03044993c46
+--- a/metadata/ognl/ognl/index.json
++++ b/metadata/ognl/ognl/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.3.5",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/ognl/ognl/$version$/ognl-$version$-sources.jar",
++    "repository-url" : "https://github.com/orphan-oss/ognl",
++    "test-code-url" : "https://github.com/orphan-oss/ognl/tree/OGNL_3_3_5/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/ognl/ognl/$version$/ognl-$version$-javadoc.jar",
++    "description" : "OGNL (Object-Graph Navigation Language) is a Java expression and binding language for reading and writing properties on object graphs. It parses string expressions that can access properties, call methods, work with collections, and be reused to get or set values in Java applications.",
+     "tested-versions" : [
+       "3.3.5"
+     ],
+
+diff --git a/metadata/ognl/ognl/index.json b/metadata/ognl/ognl/index.json
+index 1fd071fb353d57c0d511da4e32609bcae98317fe..4d6606bcd266c86971e34f6b730fc03044993c46
+--- a/metadata/ognl/ognl/index.json
++++ b/metadata/ognl/ognl/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.3.5",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/ognl/ognl/$version$/ognl-$version$-sources.jar",
++    "repository-url" : "https://github.com/orphan-oss/ognl",
++    "test-code-url" : "https://github.com/orphan-oss/ognl/tree/OGNL_3_3_5/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/ognl/ognl/$version$/ognl-$version$-javadoc.jar",
++    "description" : "OGNL (Object-Graph Navigation Language) is a Java expression and binding language for reading and writing properties on object graphs. It parses string expressions that can access properties, call methods, work with collections, and be reused to get or set values in Java applications.",
+     "tested-versions" : [
+       "3.3.5"
+     ],
+
+codex
+The file is patched. I’m doing two checks now: JSON parsing plus the repository metadata validator for `ognl:ognl:3.3.5`, so we catch both syntax and project-specific metadata rules.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"3.3.5\")' metadata/ognl/ognl/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "3.3.5",
+  "source-code-url": "https://repo.maven.apache.org/maven2/ognl/ognl/$version$/ognl-$version$-sources.jar",
+  "repository-url": "https://github.com/orphan-oss/ognl",
+  "test-code-url": "https://github.com/orphan-oss/ognl/tree/OGNL_3_3_5/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/ognl/ognl/$version$/ognl-$version$-javadoc.jar",
+  "description": "OGNL (Object-Graph Navigation Language) is a Java expression and binding language for reading and writing properties on object graphs. It parses string expressions that can access properties, call methods, work with collections, and be reused to get or set values in Java applications.",
+  "tested-versions": [
+    "3.3.5"
+  ],
+  "allowed-packages": [
+    "ognl"
+  ]
+}
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=ognl:ognl:3.3.5 --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae
+ exited 1 in 3263ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for ognl:ognl:3.3.5: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae/metadata/ognl/ognl/3.3.5/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - ognl:ognl:3.3.5: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae/metadata/ognl/ognl/3.3.5/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - ognl:ognl:3.3.5: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae/metadata/ognl/ognl/3.3.5/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/ognl/ognl/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae
+ succeeded in 0ms:
+diff --git i/metadata/ognl/ognl/index.json w/metadata/ognl/ognl/index.json
+index 1fd071fb35..4d6606bcd2 100644
+--- i/metadata/ognl/ognl/index.json
++++ w/metadata/ognl/ognl/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.3.5",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/ognl/ognl/$version$/ognl-$version$-sources.jar",
++    "repository-url" : "https://github.com/orphan-oss/ognl",
++    "test-code-url" : "https://github.com/orphan-oss/ognl/tree/OGNL_3_3_5/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/ognl/ognl/$version$/ognl-$version$-javadoc.jar",
++    "description" : "OGNL (Object-Graph Navigation Language) is a Java expression and binding language for reading and writing properties on object graphs. It parses string expressions that can access properties, call methods, work with collections, and be reused to get or set values in Java applications.",
+     "tested-versions" : [
+       "3.3.5"
+     ],
+
+diff --git a/metadata/ognl/ognl/index.json b/metadata/ognl/ognl/index.json
+index 1fd071fb353d57c0d511da4e32609bcae98317fe..4d6606bcd266c86971e34f6b730fc03044993c46
+--- a/metadata/ognl/ognl/index.json
++++ b/metadata/ognl/ognl/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.3.5",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/ognl/ognl/$version$/ognl-$version$-sources.jar",
++    "repository-url" : "https://github.com/orphan-oss/ognl",
++    "test-code-url" : "https://github.com/orphan-oss/ognl/tree/OGNL_3_3_5/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/ognl/ognl/$version$/ognl-$version$-javadoc.jar",
++    "description" : "OGNL (Object-Graph Navigation Language) is a Java expression and binding language for reading and writing properties on object graphs. It parses string expressions that can access properties, call methods, work with collections, and be reused to get or set values in Java applications.",
+     "tested-versions" : [
+       "3.3.5"
+     ],
+
+web search: 
+web search: ognl ognl 3.3.5 Maven Central sources javadoc
+codex
+The metadata validator ran, but it fails before URL/description validation because this checkout has no `metadata/ognl/ognl/3.3.5/reachability-metadata.json` directory content. The JSON parse and URL checks passed; I’m grabbing final line references now.
+exec
+/usr/bin/bash -lc "nl -ba metadata/ognl/ognl/index.json | sed -n '1,18p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "3.3.5",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/ognl/ognl/$version$/ognl-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/orphan-oss/ognl",
+     7	    "test-code-url" : "https://github.com/orphan-oss/ognl/tree/OGNL_3_3_5/src/test",
+     8	    "documentation-url" : "https://repo.maven.apache.org/maven2/ognl/ognl/$version$/ognl-$version$-javadoc.jar",
+     9	    "description" : "OGNL (Object-Graph Navigation Language) is a Java expression and binding language for reading and writing properties on object graphs. It parses string expressions that can access properties, call methods, work with collections, and be reused to get or set values in Java applications.",
+    10	    "tested-versions" : [
+    11	      "3.3.5"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "ognl"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "3.2.21",
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/ognl/ognl/index.json metadata/ognl/ognl/3.3.5' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae
+ succeeded in 0ms:
+ M metadata/ognl/ognl/index.json
+
+diff --git a/metadata/ognl/ognl/index.json b/metadata/ognl/ognl/index.json
+index 1fd071fb353d57c0d511da4e32609bcae98317fe..4d6606bcd266c86971e34f6b730fc03044993c46
+--- a/metadata/ognl/ognl/index.json
++++ b/metadata/ognl/ognl/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.3.5",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/ognl/ognl/$version$/ognl-$version$-sources.jar",
++    "repository-url" : "https://github.com/orphan-oss/ognl",
++    "test-code-url" : "https://github.com/orphan-oss/ognl/tree/OGNL_3_3_5/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/ognl/ognl/$version$/ognl-$version$-javadoc.jar",
++    "description" : "OGNL (Object-Graph Navigation Language) is a Java expression and binding language for reading and writing properties on object graphs. It parses string expressions that can access properties, call methods, work with collections, and be reused to get or set values in Java applications.",
+     "tested-versions" : [
+       "3.3.5"
+     ],
+
+codex
+Updated [metadata/ognl/ognl/index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae/metadata/ognl/ognl/index.json:5) for `metadata-version` `3.3.5`.
+
+Filled:
+- `source-code-url`
+- `repository-url`
+- `test-code-url`
+- `documentation-url`
+- `description`
+
+Left `language` absent because this is not a Kotlin/Groovy/Scala-specific library.
+
+Verification:
+- `jq` parse/check of the edited entry passed.
+- Rendered URLs for `3.3.5` were checked with `curl -I -L`.
+- `./gradlew checkMetadataFiles -Pcoordinates=ognl:ognl:3.3.5 --stacktrace` failed because `metadata/ognl/ognl/3.3.5/reachability-metadata.json` is missing in this checkout, unrelated to the index URL fields.
+diff --git a/metadata/ognl/ognl/index.json b/metadata/ognl/ognl/index.json
+index 1fd071fb353d57c0d511da4e32609bcae98317fe..4d6606bcd266c86971e34f6b730fc03044993c46
+--- a/metadata/ognl/ognl/index.json
++++ b/metadata/ognl/ognl/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.3.5",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/ognl/ognl/$version$/ognl-$version$-sources.jar",
++    "repository-url" : "https://github.com/orphan-oss/ognl",
++    "test-code-url" : "https://github.com/orphan-oss/ognl/tree/OGNL_3_3_5/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/ognl/ognl/$version$/ognl-$version$-javadoc.jar",
++    "description" : "OGNL (Object-Graph Navigation Language) is a Java expression and binding language for reading and writing properties on object graphs. It parses string expressions that can access properties, call methods, work with collections, and be reused to get or set values in Java applications.",
+     "tested-versions" : [
+       "3.3.5"
+     ],
+
+tokens used
+63,527
+Updated [metadata/ognl/ognl/index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae/metadata/ognl/ognl/index.json:5) for `metadata-version` `3.3.5`.
+
+Filled:
+- `source-code-url`
+- `repository-url`
+- `test-code-url`
+- `documentation-url`
+- `description`
+
+Left `language` absent because this is not a Kotlin/Groovy/Scala-specific library.
+
+Verification:
+- `jq` parse/check of the edited entry passed.
+- Rendered URLs for `3.3.5` were checked with `curl -I -L`.
+- `./gradlew checkMetadataFiles -Pcoordinates=ognl:ognl:3.3.5 --stacktrace` failed because `metadata/ognl/ognl/3.3.5/reachability-metadata.json` is missing in this checkout, unrelated to the index URL fields.
+Ran agent for ognl:ognl:3.3.5 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae/build/agent-url-discovery-logs/ognl-ognl-3.3.5.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7430-66bbf7ae/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 54s
+9 actionable tasks: 1 executed, 8 up-to-date
