@@ -29,6 +29,7 @@ import javax.xml.namespace.QName;
 
 import org.jboss.util.Base64;
 import org.jboss.util.Classes;
+import org.jboss.util.LRUCachePolicy;
 import org.jboss.util.Primitives;
 import org.jboss.util.StringPropertyReplacer;
 import org.jboss.util.Strings;
@@ -447,6 +448,39 @@ public class Jboss_common_coreTest {
         assertThat(service.entrySet()).hasSize(2);
         assertThat(service.entrySet()).extracting(entry -> ((Map.Entry<?, ?>) entry).getKey())
                 .containsExactlyInAnyOrder("service.0.name", "service.0.enabled");
+    }
+
+    @Test
+    void lruCachePolicyRefreshesRequestedEntriesWithoutRefreshingPeekedEntries() throws Exception {
+        LRUCachePolicy cache = new LRUCachePolicy(2, 3);
+        cache.create();
+        cache.start();
+
+        cache.insert("one", "first");
+        cache.insert("two", "second");
+        cache.insert("three", "third");
+        assertThat(cache.size()).isEqualTo(3);
+
+        assertThat(cache.get("one")).isEqualTo("first");
+        cache.insert("four", "fourth");
+        assertThat(cache.peek("two")).isNull();
+        assertThat(cache.peek("one")).isEqualTo("first");
+        assertThat(cache.peek("three")).isEqualTo("third");
+        assertThat(cache.peek("four")).isEqualTo("fourth");
+
+        assertThat(cache.peek("three")).isEqualTo("third");
+        cache.insert("five", "fifth");
+        assertThat(cache.peek("three")).isNull();
+        assertThat(cache.peek("one")).isEqualTo("first");
+        assertThat(cache.peek("five")).isEqualTo("fifth");
+
+        cache.remove("one");
+        assertThat(cache.peek("one")).isNull();
+        assertThat(cache.size()).isEqualTo(2);
+        cache.flush();
+        assertThat(cache.size()).isZero();
+        cache.stop();
+        cache.destroy();
     }
 
     private static void writeText(File file, String text) throws Exception {
