@@ -137,6 +137,21 @@ class Play_ws_standalone_json_2_13Test {
   }
 
   @Test
+  def javaWritableUsesDefaultObjectMapperOverload(): Unit = {
+    val node = DefaultObjectMapper.instance.createObjectNode()
+    node.put("name", "default mapper")
+    node.putArray("values").add(4).add(5).add(6)
+
+    val writable: JavaBodyWritable[ByteString] = JavaJsonBodyWritables.instance.body(node)
+    val byteString: ByteString = writable.body().get()
+    val parsed: JsonNode = DefaultObjectMapper.instance.readTree(byteString.toArray)
+
+    assertEquals("application/json", writable.contentType())
+    assertEquals("default mapper", parsed.get("name").asText())
+    assertEquals(Seq(4, 5, 6), parsed.get("values").elements().asScala.map(_.asInt()).toSeq)
+  }
+
+  @Test
   def defaultObjectMapperSupportsPlayJsonJdk8AndJavaTimeTypes(): Unit = {
     val mapper: ObjectMapper = DefaultObjectMapper.instance
 
