@@ -192,6 +192,15 @@ public class Auto_commonTest {
                 .contains("deep");
     }
 
+    @Test
+    void annotationValuesExtractPrimitiveArraysWithTypedAccessors() {
+        CompilationResult result = compileScenario("primitive-arrays", primitiveArraySources());
+
+        assertThat(result.successful()).as(result.diagnostics()).isTrue();
+        assertThat(result.records().getProperty("primitive.arrays"))
+                .isEqualTo("[5, 8]:[1, 2]:[3, 4]:[1.25, 2.5]:[3.5, 4.5]:[true, false]:[x, y]");
+    }
+
     public static void main(String[] args) throws Exception {
         if (args.length > 0 && "compile-helper".equals(args[0])) {
             runCompileHelper(args);
@@ -370,6 +379,35 @@ public class Auto_commonTest {
         };
     }
 
+    private static Source[] primitiveArraySources() {
+        return new Source[] {
+                new Source("arrays.Subject", """
+                        package arrays;
+
+                        @interface Primitives {
+                            long[] longs();
+                            byte[] bytes();
+                            short[] shorts();
+                            float[] floats();
+                            double[] doubles();
+                            boolean[] booleans();
+                            char[] chars();
+                        }
+
+                        @Primitives(
+                                longs = {5L, 8L},
+                                bytes = {1, 2},
+                                shorts = {3, 4},
+                                floats = {1.25f, 2.5f},
+                                doubles = {3.5, 4.5},
+                                booleans = {true, false},
+                                chars = {'x', 'y'})
+                        public class Subject {
+                        }
+                        """)
+        };
+    }
+
     private static CompilationResult compileScenario(String scenario, Source... sources) {
         if (System.getProperty("java.home") == null) {
             return compileInExternalJvm(scenario, sources);
@@ -516,6 +554,9 @@ public class Auto_commonTest {
         }
         if ("equivalence".equals(scenario)) {
             return new EquivalenceProcessor();
+        }
+        if ("primitive-arrays".equals(scenario)) {
+            return new PrimitiveArrayAnnotationValuesProcessor();
         }
         throw new IllegalArgumentException("Unknown compiler scenario: " + scenario);
     }
@@ -859,6 +900,33 @@ public class Auto_commonTest {
             TypeElement type = elements.getTypeElement(className);
             TypeElement label = elements.getTypeElement("equivalent.Label");
             return MoreElements.getAnnotationMirror(type, label).get();
+        }
+    }
+
+    private static final class PrimitiveArrayAnnotationValuesProcessor extends RecordingProcessor {
+        @Override
+        public Set<String> getSupportedAnnotationTypes() {
+            return Set.of("arrays.Primitives");
+        }
+
+        @Override
+        public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+            if (roundEnv.processingOver() || annotations.isEmpty()) {
+                return false;
+            }
+            Elements elements = processingEnv.getElementUtils();
+            TypeElement subject = elements.getTypeElement("arrays.Subject");
+            TypeElement primitives = elements.getTypeElement("arrays.Primitives");
+            AnnotationMirror annotation = MoreElements.getAnnotationMirror(subject, primitives).get();
+
+            record("primitive.arrays", AnnotationValues.getLongs(value(annotation, "longs"))
+                    + ":" + AnnotationValues.getBytes(value(annotation, "bytes"))
+                    + ":" + AnnotationValues.getShorts(value(annotation, "shorts"))
+                    + ":" + AnnotationValues.getFloats(value(annotation, "floats"))
+                    + ":" + AnnotationValues.getDoubles(value(annotation, "doubles"))
+                    + ":" + AnnotationValues.getBooleans(value(annotation, "booleans"))
+                    + ":" + AnnotationValues.getChars(value(annotation, "chars")));
+            return false;
         }
     }
 
