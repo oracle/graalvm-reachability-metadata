@@ -1,0 +1,96 @@
+{
+  "timestamp": "2026-06-28T08:54:23.575848Z",
+  "library": "co.elastic.clients:elasticsearch-java:9.0.3",
+  "starting_commit": "e4176fe76ad606fb20affb31ad1ed44e764f7b76",
+  "ending_commit": "77b6646567d8bb9b376832fafc499d1d257c979a",
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+  "agent": "pi",
+  "model": "oca/gpt-5.5",
+  "status": "success",
+  "stats": {
+    "version": "9.0.3",
+    "dynamicAccess": {
+      "breakdown": {
+        "reflection": {
+          "coverageRatio": 1.0,
+          "coveredCalls": 16,
+          "totalCalls": 16
+        },
+        "resources": {
+          "coverageRatio": 1.0,
+          "coveredCalls": 1,
+          "totalCalls": 1
+        }
+      },
+      "coverageRatio": 1.0,
+      "coveredCalls": 17,
+      "totalCalls": 17
+    },
+    "libraryCoverage": {
+      "instruction": {
+        "covered": 2228,
+        "missed": 723120,
+        "ratio": 0.003072,
+        "total": 725348
+      },
+      "line": {
+        "covered": 613,
+        "missed": 175204,
+        "ratio": 0.003487,
+        "total": 175817
+      },
+      "method": {
+        "covered": 176,
+        "missed": 67714,
+        "ratio": 0.002592,
+        "total": 67890
+      }
+    }
+  },
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "no_action",
+    "issue_number": 4506,
+    "issue_label": "library-new-request",
+    "library": "co.elastic.clients:elasticsearch-java:9.0.3",
+    "summary": "The resolved artifact already brings its JSON-P provider, Jackson runtime dependencies, OpenTelemetry API, and Apache HttpClient 5 transport support; meaningful coverage is reachable through client builders, request/response models, JSON serialization/deserialization, and transport construction without adding Maven dependencies or provisioning Elasticsearch.",
+    "deterministic_setup": [],
+    "agent_guidance": "",
+    "risks": [
+      "End-to-end indexing/search calls require a running Elasticsearch cluster and authentication/TLS handling, but that is not necessary for meaningful library coverage and would make tests heavier and environment-dependent.",
+      "The legacy org.elasticsearch.client.RestClient API is not on the normal classpath; generated tests should prefer the 9.x default Rest5-based ElasticsearchClient.of(...) path or pure model/mapper coverage rather than importing org.elasticsearch.client.RestClient."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#4506 Support for co.elastic.clients:elasticsearch-java:9.0.3; label=library-new-request; body_chars=112"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "oca/gpt-5.5",
+    "input_tokens_used": 82569,
+    "output_tokens_used": 7917,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/co.elastic.clients:elasticsearch-java:9.0.3/library-preparation-preflight/pi-generation-2026-06-28T07-50-24-582756Z.log"
+  },
+  "metrics": {
+    "input_tokens_used": 192956,
+    "cached_input_tokens_used": 2487808,
+    "output_tokens_used": 18669,
+    "iterations": 5,
+    "cost_usd": 1.804,
+    "generated_loc": 208,
+    "tested_library_loc": 613,
+    "metadata_entries": 15,
+    "code_coverage_percent": 0.35
+  },
+  "artifacts": {
+    "test_file": "tests/src/co.elastic.clients/elasticsearch-java/9.0.3/src/test/java/co_elastic_clients/elasticsearch_java/Rest5ClientLowLevelLanguageRuntimeVersionsTest.java",
+    "metadata_file": "metadata/co.elastic.clients/elasticsearch-java/9.0.3/reachability-metadata.json"
+  }
+}
