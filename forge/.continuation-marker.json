@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.maven:maven-core:2.0.7",
+  "issueNumber": 8771,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.apache.maven:maven-core:2.0.6",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8771 [Automation] javac compile fails for org.apache.maven:maven-core:2.0.7; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "20 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 32522,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8771,
+    "library": "org.apache.maven:maven-core:2.0.7",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.7",
+    "output_tokens_used": 3835,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The reported failure is caused by version-specific Maven 2.0.7 API constructor signatures, not missing setup; generated tests should inspect the 2.0.7 APIs instead of reusing 2.0.6 constructor calls blindly.",
+      "Tests that execute a full Maven build through MavenCli may touch user.dir, settings, the local Maven repository, or plugin resolution; prefer component-level tests or explicitly isolated temp directories if invoking the CLI."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.maven:maven-core:2.0.7/library-preparation-preflight/pi-generation-2026-06-28T04-52-24-753209Z.log",
+    "status": "completed",
+    "summary": "No concrete extra setup is required: maven-core 2.0.7 declares its Maven, Plexus, Wagon, ClassWorlds, and commons-cli dependencies transitively, has no Docker-backed service requirement, and its sources do not require special environment variables or system properties beyond normal JVM properties."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.7",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8771-fails-javac-compile-org.apache.maven-maven-core-2.0.7-9955dba5",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
