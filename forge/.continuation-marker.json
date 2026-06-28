@@ -1,0 +1,75 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.fusesource.leveldbjni:leveldbjni-all:1.8",
+  "issueNumber": 2940,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#2940 Support for org.fusesource.leveldbjni:leveldbjni-all:1.8; label=library-new-request; body_chars=113"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 24519,
+    "issue_label": "library-new-request",
+    "issue_number": 2940,
+    "library": "org.fusesource.leveldbjni:leveldbjni-all:1.8",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 2309,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Tests should use a writable temporary directory, create the database with Options.createIfMissing(true), and close DB/iterator/batch/snapshot resources, but this is normal test code rather than external setup.",
+      "Native-image success depends on generated reachability metadata including the bundled native library resources and JNI access; local Gradle/Native Image verification remains authoritative."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.fusesource.leveldbjni:leveldbjni-all:1.8/library-preparation-preflight/pi-generation-2026-06-28T14-55-18-341393Z.log",
+    "status": "completed",
+    "summary": "leveldbjni-all is an uber JAR that embeds the Java API, hawtjni runtime classes, and platform native LevelDB libraries; normal meaningful tests can use a temporary local database directory without extra Maven dependencies, Docker services, or environment/system properties."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 1,
+      "exhaustedClasses": [
+        "org.fusesource.hawtjni.runtime.Library"
+      ],
+      "iteration": 1,
+      "status": "completed"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-2940-library-new-request-org.fusesource.leveldbjni-leveldbjni-all-1.8-1358573a",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.fusesource.leveldbjni:leveldbjni-all:1.8",
+    "timestamp": "2026-06-28T15:36:41.374807Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}

@@ -1,0 +1,18 @@
+Completed post-generation intervention.
+
+Changes made:
+- Deleted failing generated test:
+  - `tests/src/org.fusesource.leveldbjni/leveldbjni-all/1.8/src/test/java/org_fusesource_leveldbjni/leveldbjni_all/LibraryTest.java`
+- Removed now-unused AssertJ test dependency:
+  - `tests/src/org.fusesource.leveldbjni/leveldbjni-all/1.8/build.gradle`
+- Wrote report:
+  - `post-gen-interventions/org.fusesource.leveldbjni_leveldbjni-all_1.8.md`
+
+Root cause:
+- The failure was not metadata-related. `NativeOptions.init()` was registered in the native image JNI registry, but runtime JNI symbol resolution for the dynamically loaded HawtJNI/LevelDB shared library still failed with `UnsatisfiedLinkError`.
+
+Verification:
+- Ran `./gradlew test -Pcoordinates=org.fusesource.leveldbjni:leveldbjni-all:1.8 --stacktrace`
+- Result: `BUILD SUCCESSFUL`
+
+No metadata files were modified by this intervention.

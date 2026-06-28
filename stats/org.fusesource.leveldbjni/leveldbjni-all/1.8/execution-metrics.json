@@ -1,0 +1,58 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T15:36:41.374807Z",
+    "library": "org.fusesource.leveldbjni:leveldbjni-all:1.8",
+    "starting_commit": "2259c8909672ce2e410def956db6a929daf9bf6b",
+    "ending_commit": "23662c7a2868321c27bc8bac6e69df5aebbc3430",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 2940,
+      "issue_label": "library-new-request",
+      "library": "org.fusesource.leveldbjni:leveldbjni-all:1.8",
+      "summary": "leveldbjni-all is an uber JAR that embeds the Java API, hawtjni runtime classes, and platform native LevelDB libraries; normal meaningful tests can use a temporary local database directory without extra Maven dependencies, Docker services, or environment/system properties.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Tests should use a writable temporary directory, create the database with Options.createIfMissing(true), and close DB/iterator/batch/snapshot resources, but this is normal test code rather than external setup.",
+        "Native-image success depends on generated reachability metadata including the bundled native library resources and JNI access; local Gradle/Native Image verification remains authoritative."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#2940 Support for org.fusesource.leveldbjni:leveldbjni-all:1.8; label=library-new-request; body_chars=113"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 24519,
+      "output_tokens_used": 2309,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.fusesource.leveldbjni:leveldbjni-all:1.8/library-preparation-preflight/pi-generation-2026-06-28T14-55-18-341393Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 68896,
+      "cached_input_tokens_used": 468480,
+      "output_tokens_used": 5061,
+      "iterations": 1,
+      "cost_usd": 0.386,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "None",
+      "metadata_file": "None"
+    }
+  }
+}
