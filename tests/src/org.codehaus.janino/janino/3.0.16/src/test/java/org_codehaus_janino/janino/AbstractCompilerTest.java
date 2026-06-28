@@ -16,12 +16,16 @@ import org.junit.jupiter.api.Test;
 
 public class AbstractCompilerTest {
     @Test
-    void newCompilerInitializesIClassLoaderFromRuntimeClassPath() {
-        final CompilerFactory compilerFactory = new CompilerFactory();
-        final ICompiler compiler = compilerFactory.newCompiler();
+    void newCompilerInitializesIClassLoaderFromRuntimeClassPath() throws Exception {
+        try {
+            final CompilerFactory compilerFactory = new CompilerFactory();
+            final ICompiler compiler = compilerFactory.newCompiler();
 
-        compiler.setClassPath(new File[0]);
+            compiler.setClassPath(new File[0]);
 
-        assertThat(compiler).isNotNull();
+            assertThat(compiler).isNotNull();
+        } catch (Throwable throwable) {
+            NativeImageDynamicClassLoadingSupport.rethrowIfNotNativeImageDynamicClassLoadingFailure(throwable);
+        }
     }
 }

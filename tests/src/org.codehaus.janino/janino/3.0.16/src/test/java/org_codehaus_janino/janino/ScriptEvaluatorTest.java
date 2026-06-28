@@ -9,7 +9,6 @@ package org_codehaus_janino.janino;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.codehaus.janino.ScriptEvaluator;
-import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
 public class ScriptEvaluatorTest {
@@ -26,8 +25,8 @@ public class ScriptEvaluatorTest {
             final Object result = evaluator.evaluate(new Object[] { 19, 23 });
 
             assertThat(result).isEqualTo(42);
-        } catch (Error error) {
-            rethrowIfNotNativeImageDynamicClassLoadingError(error);
+        } catch (Throwable throwable) {
+            NativeImageDynamicClassLoadingSupport.rethrowIfNotNativeImageDynamicClassLoadingFailure(throwable);
         }
     }
 
@@ -43,14 +42,8 @@ public class ScriptEvaluatorTest {
             final FastScript script = (FastScript) fastEvaluator;
 
             assertThat(script.format("value=", 7)).isEqualTo("value=7");
-        } catch (Error error) {
-            rethrowIfNotNativeImageDynamicClassLoadingError(error);
-        }
-    }
-
-    private static void rethrowIfNotNativeImageDynamicClassLoadingError(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-            throw error;
+        } catch (Throwable throwable) {
+            NativeImageDynamicClassLoadingSupport.rethrowIfNotNativeImageDynamicClassLoadingFailure(throwable);
         }
     }
 

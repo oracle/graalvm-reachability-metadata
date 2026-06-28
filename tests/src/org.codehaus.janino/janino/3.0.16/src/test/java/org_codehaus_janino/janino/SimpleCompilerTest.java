@@ -15,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.codehaus.janino.SimpleCompiler;
-import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -42,14 +41,8 @@ public class SimpleCompilerTest {
             }
 
             assertThat(output.toString(StandardCharsets.UTF_8)).contains("janino:left:right");
-        } catch (Error error) {
-            rethrowIfNotNativeImageDynamicClassLoadingError(error);
-        }
-    }
-
-    private static void rethrowIfNotNativeImageDynamicClassLoadingError(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-            throw error;
+        } catch (Throwable throwable) {
+            NativeImageDynamicClassLoadingSupport.rethrowIfNotNativeImageDynamicClassLoadingFailure(throwable);
         }
     }
 }

@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 public class CompilerTest {
     @SuppressWarnings("deprecation")
     @Test
-    void deprecatedConstructorTreatsNullOptionalPathsAsEmptyArrays() {
+    void deprecatedConstructorTreatsNullOptionalPathsAsEmptyArrays() throws Exception {
         try {
             final Compiler compiler = new Compiler(
                     new File[0],
@@ -35,6 +35,8 @@ public class CompilerTest {
             assertThat(compiler).isNotNull();
         } catch (IllegalArgumentException exception) {
             assertThat(exception).hasMessageContaining("BOOTCLASSPATH");
+        } catch (Throwable throwable) {
+            NativeImageDynamicClassLoadingSupport.rethrowIfNotNativeImageDynamicClassLoadingFailure(throwable);
         }
     }
 }
