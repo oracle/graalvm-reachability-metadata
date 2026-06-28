@@ -136,6 +136,21 @@ public class Maven_api_spiTest {
     }
 
     @Test
+    void modelParserLocateAndParseAcceptsNullOptions() {
+        Path directory = Path.of("project-with-default-options");
+        Model expectedModel = newModel("default-options");
+        InMemorySource source = new InMemorySource(directory.resolve("pom.xml"), "<project />");
+        RecordingModelParser parser = new RecordingModelParser(Optional.of(source), expectedModel);
+
+        Optional<Model> parsedModel = parser.locateAndParse(directory, null);
+
+        assertThat(parsedModel).containsSame(expectedModel);
+        assertThat(parser.parsedSource).isSameAs(source);
+        assertThat(parser.parsedOptions).isNull();
+        assertThat(parser.parseCount).isEqualTo(1);
+    }
+
+    @Test
     void modelParserLocateAndParseReturnsEmptyWithoutParsingWhenNoSourceIsFound() {
         RecordingModelParser parser = new RecordingModelParser(Optional.empty(), newModel("unused"));
 
