@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Link;
@@ -28,13 +29,13 @@ public class ExtFactoryFinderTest extends RuntimeDelegate {
             + RuntimeDelegate.JAXRS_RUNTIME_DELEGATE_PROPERTY;
     private static final String TEST_RUNTIME_DELEGATE_CLASS = ExtFactoryFinderTest.class.getName();
 
-    private final Thread currentThread = Thread.currentThread();
-    private final ClassLoader originalContextClassLoader = currentThread.getContextClassLoader();
-    private final String originalRuntimeDelegateProperty = System.getProperty(
-            RuntimeDelegate.JAXRS_RUNTIME_DELEGATE_PROPERTY);
+    private ClassLoader originalContextClassLoader;
+    private String originalRuntimeDelegateProperty;
 
     @BeforeEach
     void resetRuntimeDelegate() {
+        originalContextClassLoader = Thread.currentThread().getContextClassLoader();
+        originalRuntimeDelegateProperty = System.getProperty(RuntimeDelegate.JAXRS_RUNTIME_DELEGATE_PROPERTY);
         RuntimeDelegate.setInstance(null);
         System.clearProperty(RuntimeDelegate.JAXRS_RUNTIME_DELEGATE_PROPERTY);
     }
@@ -42,7 +43,7 @@ public class ExtFactoryFinderTest extends RuntimeDelegate {
     @AfterEach
     void restoreRuntimeDelegateState() {
         RuntimeDelegate.setInstance(null);
-        currentThread.setContextClassLoader(originalContextClassLoader);
+        Thread.currentThread().setContextClassLoader(originalContextClassLoader);
         if (originalRuntimeDelegateProperty == null) {
             System.clearProperty(RuntimeDelegate.JAXRS_RUNTIME_DELEGATE_PROPERTY);
         } else {
@@ -51,17 +52,20 @@ public class ExtFactoryFinderTest extends RuntimeDelegate {
     }
 
     @Test
-    void loadsProviderFromSystemServiceResourceWhenContextClassLoaderIsNull() {
-        currentThread.setContextClassLoader(null);
+    void loadsProviderWithSystemLookupWhenContextClassLoaderIsNull() throws Exception {
+        runWithContextClassLoader(null, () -> {
+            RuntimeDelegate.setInstance(null);
+            System.setProperty(RuntimeDelegate.JAXRS_RUNTIME_DELEGATE_PROPERTY, TEST_RUNTIME_DELEGATE_CLASS);
 
-        RuntimeDelegate runtimeDelegate = RuntimeDelegate.getInstance();
+            RuntimeDelegate runtimeDelegate = RuntimeDelegate.getInstance();
 
-        assertThat(runtimeDelegate).isInstanceOf(ExtFactoryFinderTest.class);
+            assertThat(runtimeDelegate).isInstanceOf(ExtFactoryFinderTest.class);
+        });
     }
 
     @Test
     void loadsProviderFromContextClassLoaderServiceResource() {
-        currentThread.setContextClassLoader(ExtFactoryFinderTest.class.getClassLoader());
+        Thread.currentThread().setContextClassLoader(ExtFactoryFinderTest.class.getClassLoader());
 
         RuntimeDelegate runtimeDelegate = RuntimeDelegate.getInstance();
 
@@ -69,12 +73,56 @@ public class ExtFactoryFinderTest extends RuntimeDelegate {
     }
 
     @Test
-    void retriesWithCurrentClassLoaderWhenContextClassLoaderCannotLoadProviderClass() {
-        currentThread.setContextClassLoader(new ServiceOnlyClassLoader(TEST_RUNTIME_DELEGATE_CLASS));
+    void retriesWithCurrentClassLoaderWhenContextClassLoaderCannotLoadProviderClass() throws Exception {
+        runWithContextClassLoader(new RejectingProviderClassLoader(TEST_RUNTIME_DELEGATE_CLASS), () -> {
+            RuntimeDelegate.setInstance(null);
 
-        RuntimeDelegate runtimeDelegate = RuntimeDelegate.getInstance();
+            RuntimeDelegate runtimeDelegate = RuntimeDelegate.getInstance();
 
-        assertThat(runtimeDelegate).isInstanceOf(ExtFactoryFinderTest.class);
+            assertThat(runtimeDelegate).isInstanceOf(ExtFactoryFinderTest.class);
+        });
+    }
+
+    private static void runWithContextClassLoader(ClassLoader contextClassLoader, ThrowingRunnable action)
+            throws Exception {
+        AtomicReference<Throwable> failure = new AtomicReference<>();
+        Thread worker = new Thread("ext-factory-finder-context-loader") {
+            @Override
+            public ClassLoader getContextClassLoader() {
+                return contextClassLoader;
+            }
+
+            @Override
+            public void run() {
+                try {
+                    action.run();
+                } catch (Throwable throwable) {
+                    failure.set(throwable);
+                }
+            }
+        };
+
+        worker.start();
+        worker.join(10_000L);
+        if (worker.isAlive()) {
+            worker.interrupt();
+        }
+        assertThat(worker.isAlive()).isFalse();
+
+        Throwable throwable = failure.get();
+        if (throwable instanceof Error error) {
+            throw error;
+        }
+        if (throwable instanceof Exception exception) {
+            throw exception;
+        }
+        if (throwable != null) {
+            throw new AssertionError(throwable);
+        }
+    }
+
+    private interface ThrowingRunnable {
+        void run() throws Exception;
     }
 
     @Override
@@ -107,12 +155,20 @@ public class ExtFactoryFinderTest extends RuntimeDelegate {
         return null;
     }
 
-    private static final class ServiceOnlyClassLoader extends ClassLoader {
+    private static final class RejectingProviderClassLoader extends ClassLoader {
         private final String providerClassName;
 
-        private ServiceOnlyClassLoader(String providerClassName) {
-            super(null);
+        private RejectingProviderClassLoader(String providerClassName) {
+            super(ExtFactoryFinderTest.class.getClassLoader());
             this.providerClassName = providerClassName;
+        }
+
+        @Override
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            if (providerClassName.equals(name)) {
+                throw new ClassNotFoundException(name);
+            }
+            return super.loadClass(name, resolve);
         }
 
         @Override
