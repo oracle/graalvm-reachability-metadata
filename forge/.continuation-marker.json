@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.maven:maven-core:2.0.7",
+  "issueNumber": 8771,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.apache.maven:maven-core:2.0.6",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8771 [Automation] javac compile fails for org.apache.maven:maven-core:2.0.7; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "20 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 33155,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8771,
+    "library": "org.apache.maven:maven-core:2.0.7",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.7",
+    "output_tokens_used": 1880,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Existing 2.0.6 tests fail to compile against 2.0.7 because Maven artifact exception constructor signatures changed; the generated fix should adapt test code to the 2.0.7 API rather than add setup.",
+      "Full MavenCli execution paths can touch user settings/local repository and remote artifact resolution, so tests should prefer self-contained paths such as diagnostics, version output, descriptor/resource loading, or explicit temporary repositories if exercising execution."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.maven:maven-core:2.0.7/library-preparation-preflight/pi-generation-2026-06-28T06-12-27-073304Z.log",
+    "status": "completed",
+    "summary": "org.apache.maven:maven-core:2.0.7 resolves its Maven 2.x runtime stack transitively and includes its Plexus descriptors/resources in the artifact; meaningful coverage is reachable without extra dependencies, Docker services, or required environment/system properties."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.7",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8771-fails-javac-compile-org.apache.maven-maven-core-2.0.7-e6a0a5c6",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
