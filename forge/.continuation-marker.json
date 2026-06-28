@@ -1,0 +1,78 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.pekko:pekko-actor_2.13:2.0.0-M1",
+  "issueNumber": 8742,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Target current Pekko 2.0 classic actor APIs such as ActorSystem, Props, AbstractActor, serialization/configuration, and TestKit/TestProbe. Do not use the removed deprecated org.apache.pekko.actor.TypedActor, TypedActorExtension, or TypedProps APIs that existed in 1.1.5. If tests exercise Java serialization, configure pekko.actor.allow-java-serialization = on and disable serializer warnings in the ActorSystem config. If tests exercise DnsSettings/sun.net.dns integration, add --add-exports=java.base/sun.net.dns=ALL-UNNAMED to both JVM test args and native-image build args.",
+    "applied_setup": [],
+    "current_library": "org.apache.pekko:pekko-actor_2.13:1.1.5",
+    "deterministic_setup": [
+      {
+        "coordinate": "org.apache.pekko:pekko-testkit_2.13:2.0.0-M1",
+        "kind": "dependency",
+        "reason": "Official Pekko Classic Actors module setup includes pekko-testkit in test scope; it provides TestKit/TestProbe utilities needed for reliable actor message and lifecycle assertions.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8742 [Automation] java run fails for org.apache.pekko:pekko-actor_2.13:2.0.0-M1; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "15 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 31378,
+    "issue_label": "fails-java-run",
+    "issue_number": 8742,
+    "library": "org.apache.pekko:pekko-actor_2.13:2.0.0-M1",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.0-M1",
+    "output_tokens_used": 4891,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Adding pekko-testkit broadens the test classpath; tests should use it only as a harness and keep assertions focused on pekko-actor behavior.",
+      "The current failure appears to be stale coverage of APIs removed in Pekko 2.0-M1, not a missing dependency.",
+      "Pekko 2.0.0-M1 is an experimental milestone and removed a large amount of deprecated code, so API drift from 1.1.5 is likely."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.apache.pekko:pekko-actor_2.13:2.0.0-M1/library-preparation-preflight/pi-generation-2026-06-28T01-38-57-454904Z.log",
+    "status": "completed",
+    "summary": "Pekko Actor itself has only scala-library and Typesafe Config as runtime dependencies and needs no Docker service, but the official Classic Actors documentation lists pekko-testkit as the normal test-scoped companion dependency for actor tests."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.0-M1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8742-fails-java-run-org.apache.pekko-pekko-actor_2.13-2.0.0-M1-be685661",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
