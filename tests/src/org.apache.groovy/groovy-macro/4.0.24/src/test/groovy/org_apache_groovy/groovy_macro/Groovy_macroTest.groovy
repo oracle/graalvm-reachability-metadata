@@ -10,6 +10,7 @@ import org.codehaus.groovy.ast.ASTNode
 import org.codehaus.groovy.ast.ClassNode
 import org.codehaus.groovy.ast.expr.BinaryExpression
 import org.codehaus.groovy.ast.expr.ConstantExpression
+import org.codehaus.groovy.ast.expr.DeclarationExpression
 import org.codehaus.groovy.ast.expr.Expression
 import org.codehaus.groovy.ast.expr.MethodCallExpression
 import org.codehaus.groovy.ast.expr.VariableExpression
@@ -71,6 +72,26 @@ public class Groovy_macroTest {
         MethodCallExpression call = expression as MethodCallExpression
         assertThat(call.methodAsString).isEqualTo('toUpperCase')
         assertThat((call.objectExpression as ConstantExpression).value).isEqualTo('groovy')
+    }
+
+    @Test
+    void compileTimeMacroExtensionCanReturnClosureBodyAsBlock() {
+        BlockStatement block = macro(true) {
+            def names = ['Ada', 'Grace']
+            names.collect { it.toUpperCase() }
+        }
+
+        assertThat(block.statements).hasSize(2)
+        ExpressionStatement declarationStatement = block.statements[0] as ExpressionStatement
+        assertThat(declarationStatement.expression).isInstanceOf(DeclarationExpression)
+        DeclarationExpression declaration = declarationStatement.expression as DeclarationExpression
+        assertThat(declaration.variableExpression.name).isEqualTo('names')
+
+        ExpressionStatement collectStatement = block.statements[1] as ExpressionStatement
+        assertThat(collectStatement.expression).isInstanceOf(MethodCallExpression)
+        MethodCallExpression collectCall = collectStatement.expression as MethodCallExpression
+        assertThat((collectCall.objectExpression as VariableExpression).name).isEqualTo('names')
+        assertThat(collectCall.methodAsString).isEqualTo('collect')
     }
 
     @Test
