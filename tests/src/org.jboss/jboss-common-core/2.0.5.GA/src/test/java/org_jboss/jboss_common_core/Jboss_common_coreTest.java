@@ -43,6 +43,11 @@ import org.jboss.util.graph.Graph;
 import org.jboss.util.graph.Vertex;
 import org.jboss.util.graph.Visitor;
 import org.jboss.util.id.UID;
+import org.jboss.util.property.BoundPropertyAdapter;
+import org.jboss.util.property.PropertyAdapter;
+import org.jboss.util.property.PropertyEvent;
+import org.jboss.util.property.PropertyGroup;
+import org.jboss.util.property.PropertyMap;
 import org.jboss.util.propertyeditor.DocumentEditor;
 import org.jboss.util.propertyeditor.ElementEditor;
 import org.jboss.util.propertyeditor.PropertiesEditor;
@@ -353,6 +358,95 @@ public class Jboss_common_coreTest {
         assertThat(map.entrySet()).hasSize(1);
         map.clear();
         assertThat(map).isEmpty();
+    }
+
+    @Test
+    void propertyMapPublishesEventsAndProvidesIndexedPropertyViews() {
+        PropertyMap map = new PropertyMap();
+        List<String> allEvents = new ArrayList<String>();
+        PropertyAdapter allListener = new PropertyAdapter() {
+            @Override
+            public void propertyAdded(PropertyEvent event) {
+                allEvents.add("added:" + event.getPropertyName() + "=" + event.getPropertyValue());
+            }
+
+            @Override
+            public void propertyChanged(PropertyEvent event) {
+                allEvents.add("changed:" + event.getPropertyName() + "=" + event.getPropertyValue());
+            }
+
+            @Override
+            public void propertyRemoved(PropertyEvent event) {
+                allEvents.add("removed:" + event.getPropertyName() + "=" + event.getPropertyValue());
+            }
+        };
+        List<String> boundEvents = new ArrayList<String>();
+        BoundPropertyAdapter boundListener = new BoundPropertyAdapter() {
+            @Override
+            public String getPropertyName() {
+                return "server.port";
+            }
+
+            @Override
+            public void propertyBound(PropertyMap propertyMap) {
+                boundEvents.add("bound");
+            }
+
+            @Override
+            public void propertyAdded(PropertyEvent event) {
+                boundEvents.add("added:" + event.getPropertyValue());
+            }
+
+            @Override
+            public void propertyChanged(PropertyEvent event) {
+                boundEvents.add("changed:" + event.getPropertyValue());
+            }
+
+            @Override
+            public void propertyRemoved(PropertyEvent event) {
+                boundEvents.add("removed:" + event.getPropertyValue());
+            }
+
+            @Override
+            public void propertyUnbound(PropertyMap propertyMap) {
+                boundEvents.add("unbound");
+            }
+        };
+
+        map.addPropertyListener(allListener);
+        map.addPropertyListener(boundListener);
+        map.setProperty("server.host", "localhost");
+        map.setProperty("server.port", "8080");
+        map.setProperty("server.port", "8181");
+        map.removeProperty("server.host");
+        map.removeProperty("server.port");
+        assertThat(map.removePropertyListener(boundListener)).isTrue();
+        map.setProperty("server.port", "8282");
+        assertThat(map.removePropertyListener(allListener)).isTrue();
+        map.setProperty("server.host", "127.0.0.1");
+
+        assertThat(allEvents).containsExactly(
+                "added:server.host=localhost",
+                "added:server.port=8080",
+                "changed:server.port=8181",
+                "removed:server.host=localhost",
+                "removed:server.port=8181",
+                "added:server.port=8282");
+        assertThat(boundEvents).containsExactly("bound", "added:8080", "changed:8181", "removed:8181", "unbound");
+
+        map.setProperty("endpoint.0", "public");
+        map.setProperty("endpoint.1", "admin");
+        map.setProperty("endpoint.3", "ignored after first gap");
+        assertThat(map.getArrayProperty("endpoint")).containsExactly("public", "admin");
+        assertThat(map.getArrayProperty("missing", new String[] {"fallback"})).containsExactly("fallback");
+
+        map.setProperty("service.0.name", "http");
+        map.setProperty("service.0.enabled", "true");
+        PropertyGroup service = map.getPropertyGroup("service", 0);
+        assertThat(service.getBaseName()).isEqualTo("service.0");
+        assertThat(service.entrySet()).hasSize(2);
+        assertThat(service.entrySet()).extracting(entry -> ((Map.Entry<?, ?>) entry).getKey())
+                .containsExactlyInAnyOrder("service.0.name", "service.0.enabled");
     }
 
     private static void writeText(File file, String text) throws Exception {
