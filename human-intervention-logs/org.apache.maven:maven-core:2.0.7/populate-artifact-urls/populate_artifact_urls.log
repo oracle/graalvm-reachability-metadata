@@ -1,0 +1,1520 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f0ffb-bb16-7e80-a734-ab4e6d3b9495
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.maven:maven-core:2.0.7
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.0.7].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036/metadata/org.apache.maven/maven-core/index.json
+- Entry selector: "metadata-version" = "2.0.7"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.0.7
+- Entry metadata-version: 2.0.7
+- Entry test-version: 2.0.7
+- Entry tested-versions: [2.0.7]
+codex
+I’ll verify the Maven Central artifacts and the versioned Apache Maven docs before editing the index entry. Then I’ll update only the missing fields in the JSON.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.maven/maven-core/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.7",
+    "tested-versions" : [
+      "2.0.7"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven"
+    ]
+  },
+  {
+    "metadata-version" : "2.0.6",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
+    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+    "tested-versions" : [
+      "2.0.6"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n \"maven-core|org.apache.maven\" metadata/org.apache.maven -g 'index.json'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+ succeeded in 0ms:
+metadata/org.apache.maven/maven-api-di/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-di/$version$/maven-api-di-$version$-sources.jar",
+metadata/org.apache.maven/maven-api-di/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-di/$version$/maven-api-di-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-api-di/index.json:14:      "org.apache.maven.api.di",
+metadata/org.apache.maven/maven-api-di/index.json:15:      "org.apache.maven.di.tool"
+metadata/org.apache.maven/maven-plugin-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-api/$version$/maven-plugin-api-$version$-sources.jar",
+metadata/org.apache.maven/maven-plugin-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-api/$version$/maven-plugin-api-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-plugin-api/index.json:94:      "org.apache.maven.plugin"
+metadata/org.apache.maven/maven-api-spi/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-spi/$version$/maven-api-spi-$version$-sources.jar",
+metadata/org.apache.maven/maven-api-spi/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-spi/$version$/maven-api-spi-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-api-spi/index.json:14:      "org.apache.maven.api.spi"
+metadata/org.apache.maven/maven-core/index.json:9:      "org.apache.maven"
+metadata/org.apache.maven/maven-core/index.json:14:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
+metadata/org.apache.maven/maven-core/index.json:16:    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test",
+metadata/org.apache.maven/maven-core/index.json:17:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-core/index.json:23:      "org.apache.maven"
+metadata/org.apache.maven/maven-builder-support/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-builder-support/$version$/maven-builder-support-$version$-sources.jar",
+metadata/org.apache.maven/maven-builder-support/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$version$/apache-maven-$version$-src.zip",
+metadata/org.apache.maven/maven-builder-support/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-builder-support/$version$/maven-builder-support-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-builder-support/index.json:18:      "org.apache.maven.building"
+metadata/org.apache.maven/maven-builder-support/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-builder-support/$version$/maven-builder-support-$version$-sources.jar",
+metadata/org.apache.maven/maven-builder-support/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-builder-support/$version$/maven-builder-support-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-builder-support/index.json:66:      "org.apache.maven.building"
+metadata/org.apache.maven/maven-api-meta/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-meta/$version$/maven-api-meta-$version$-sources.jar",
+metadata/org.apache.maven/maven-api-meta/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-api-meta/$version$/maven-api-meta-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-api-meta/index.json:24:      "org.apache.maven.api.annotations"
+metadata/org.apache.maven/maven-support/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-support/$version$/maven-support-$version$-sources.jar",
+metadata/org.apache.maven/maven-support/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$version$/apache-maven-$version$-src.zip",
+metadata/org.apache.maven/maven-support/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-support/$version$/maven-support-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-support/index.json:14:      "org.apache.maven.metadata.v4",
+metadata/org.apache.maven/maven-support/index.json:15:      "org.apache.maven.model.v4",
+metadata/org.apache.maven/maven-support/index.json:16:      "org.apache.maven.plugin.descriptor.io",
+metadata/org.apache.maven/maven-support/index.json:17:      "org.apache.maven.plugin.lifecycle.io",
+metadata/org.apache.maven/maven-support/index.json:18:      "org.apache.maven.settings.v4",
+metadata/org.apache.maven/maven-support/index.json:19:      "org.apache.maven.toolchain.v4"
+metadata/org.apache.maven/maven-monitor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-monitor/$version$/maven-monitor-$version$-sources.jar",
+metadata/org.apache.maven/maven-monitor/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-monitor/$version$/maven-monitor-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-monitor/index.json:22:      "org.apache.maven.monitor.event"
+metadata/org.apache.maven/maven-model/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-sources.jar",
+metadata/org.apache.maven/maven-model/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/$version$/apache-maven-$version$-src.zip",
+metadata/org.apache.maven/maven-model/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-model/index.json:16:      "org.apache.maven.model"
+metadata/org.apache.maven/maven-model/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-sources.jar",
+metadata/org.apache.maven/maven-model/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-model/index.json:31:      "org.apache.maven.model"
+metadata/org.apache.maven/maven-model/index.json:36:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-sources.jar",
+metadata/org.apache.maven/maven-model/index.json:39:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/$version$/maven-model-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-model/index.json:48:      "org.apache.maven.model"
+metadata/org.apache.maven/maven-project/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-project/$version$/maven-project-$version$-sources.jar",
+metadata/org.apache.maven/maven-project/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-project/$version$/maven-project-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-project/index.json:22:      "org.apache.maven"
+metadata/org.apache.maven/maven-plugin-descriptor/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-descriptor/$version$/maven-plugin-descriptor-$version$-sources.jar",
+metadata/org.apache.maven/maven-plugin-descriptor/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-descriptor/$version$/maven-plugin-descriptor-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-plugin-descriptor/index.json:16:      "org.apache.maven.plugin"
+metadata/org.apache.maven/maven-plugin-descriptor/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-descriptor/$version$/maven-plugin-descriptor-$version$-sources.jar",
+metadata/org.apache.maven/maven-plugin-descriptor/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-descriptor/$version$/maven-plugin-descriptor-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-plugin-descriptor/index.json:35:      "org.apache.maven.plugin"
+metadata/org.apache.maven/maven-profile/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-profile/$version$/maven-profile-$version$-sources.jar",
+metadata/org.apache.maven/maven-profile/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-profile/$version$/maven-profile-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-profile/index.json:22:      "org.apache.maven.profiles"
+metadata/org.apache.maven/maven-plugin-parameter-documenter/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-parameter-documenter/$version$/maven-plugin-parameter-documenter-$version$-sources.jar",
+metadata/org.apache.maven/maven-plugin-parameter-documenter/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-parameter-documenter/$version$/maven-plugin-parameter-documenter-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-plugin-parameter-documenter/index.json:19:      "org.apache.maven.usability.plugin"
+metadata/org.apache.maven/maven-archiver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/$version$/maven-archiver-$version$-sources.jar",
+metadata/org.apache.maven/maven-archiver/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/$version$/maven-archiver-$version$-source-release.zip",
+metadata/org.apache.maven/maven-archiver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/$version$/maven-archiver-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-archiver/index.json:14:      "org.apache.maven.archiver"
+metadata/org.apache.maven/maven-archiver/index.json:19:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/$version$/maven-archiver-$version$-sources.jar",
+metadata/org.apache.maven/maven-archiver/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/$version$/maven-archiver-$version$-source-release.zip",
+metadata/org.apache.maven/maven-archiver/index.json:22:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-archiver/$version$/maven-archiver-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-archiver/index.json:29:      "org.apache.maven.archiver"
+metadata/org.apache.maven/maven-artifact-manager/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact-manager/$version$/maven-artifact-manager-$version$-sources.jar",
+metadata/org.apache.maven/maven-artifact-manager/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact-manager/$version$/maven-artifact-manager-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-artifact-manager/index.json:22:      "org.apache.maven.artifact"
+metadata/org.apache.maven/maven-error-diagnostics/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-error-diagnostics/$version$/maven-error-diagnostics-$version$-sources.jar",
+metadata/org.apache.maven/maven-error-diagnostics/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-error-diagnostics/$version$/maven-error-diagnostics-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-error-diagnostics/index.json:22:      "org.apache.maven.usability.diagnostics"
+metadata/org.apache.maven/maven-artifact/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/$version$/maven-artifact-$version$-sources.jar",
+metadata/org.apache.maven/maven-artifact/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/$version$/maven-artifact-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-artifact/index.json:80:      "org.apache.maven.artifact",
+metadata/org.apache.maven/maven-artifact/index.json:81:      "org.apache.maven"
+metadata/org.apache.maven/maven-artifact/index.json:86:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/$version$/maven-artifact-$version$-sources.jar",
+metadata/org.apache.maven/maven-artifact/index.json:89:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/$version$/maven-artifact-$version$-javadoc.jar",
+metadata/org.apache.maven/maven-artifact/index.json:103:      "org.apache.maven.artifact"
+
+web search: 
+web search: org.apache.maven maven-core 2.0.7 maven-core-2.0.7-sources.jar maven-core-2.0.7-test-sources.jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/maven/maven-core/2.0.7/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/2.0.7/
+web search: 
+web search: repo.maven.apache.org maven2 org apache maven apache-maven 2.0.7 src zip
+codex
+The local file has a 2.0.6 entry with the same Maven Central source and Javadoc patterns, but the 2.0.7 entry is blank. I’m checking whether Maven Central also carries a test/source-release artifact for the test suite before falling back to the tagged source tree.
+exec
+/usr/bin/bash -lc "curl -L -s https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use t
+his file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>maven</artifactId>
+    <groupId>org.apache.maven</groupId>
+    <version>2.0.7</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>maven-core</artifactId>
+  <name>Maven Core</name>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptor>src/assemble/bin.xml</descriptor>
+          <finalName>maven-${version}</finalName>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>install</phase>
+            <goals>
+              <goal>attached</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>shade-maven-plugin</artifactId>
+        <groupId>org.codehaus.mojo</groupId>
+        <version>1.0-alpha-4</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <excludes>
+                  <exclude>classworlds:classworlds</exclude>
+                  <exclude>junit:junit</exclude>
+                  <exclude>jmock:jmock</exclude>
+                  <exclude>xml-apis:xml-apis</exclude>
+                </excludes>
+              </artifactSet>
+              <relocations>
+                <relocation>
+                  <pattern>org.codehaus.plexus.util</pattern>
+                  <excludes>
+                    <exclude>org.codehaus.plexus.util.xml.Xpp3Dom</exclude>
+                    <exclude>org.codehaus.plexus.util.xml.pull.*</exclude>
+                  </excludes>
+                </relocation>
+              </relocations>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-settings</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-file</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-parameter-documenter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-http-lightweight</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.reporting</groupId>
+      <artifactId>maven-reporting-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-profile</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-provider-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-container-default</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-repository-metadata</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-error-diagnostics</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-project</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-cli</groupId>
+      <artifactId>commons-cli</artifactId>
+      <version>1.0</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-lang</artifactId>
+          <groupId>commons-lang</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-ssh-external</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-descriptor</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-interactivity-api</artifactId>
+      <version>1.0-alpha-4</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>plexus-utils</artifactId>
+          <groupId>plexus</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>plexus-container-default</artifactId>
+          <groupId>org.codehaus.plexus</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact-manager</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-monitor</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-ssh</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>classworlds</groupId>
+      <artifactId>classworlds</artifactId>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-test-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-tests.jar \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-javadoc.jar \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/2.0.7/apache-maven-2.0.7-src.zip \\
+  https://archive.apache.org/dist/maven/source/apache-maven-2.0.7-src.zip \\
+  https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7/maven-core/src/test \\
+  https://maven.apache.org/docs/2.0.7/release-notes.html; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url")
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+ succeeded in 750ms:
+404 https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-tests.jar
+200 https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-javadoc.jar
+404 https://repo.maven.apache.org/maven2/org/apache/maven/apache-maven/2.0.7/apache-maven-2.0.7-src.zip
+404 https://archive.apache.org/dist/maven/source/apache-maven-2.0.7-src.zip
+200 https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7/maven-core/src/test
+200 https://maven.apache.org/docs/2.0.7/release-notes.html
+
+exec
+/usr/bin/bash -lc "curl -L -s https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/ | sed -n '1,160p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/maven/maven-core/2.0.7</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/maven/maven-core/2.0.7</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="maven-core-2.0.7-javadoc.jar" title="maven-core-2.0.7-javadoc.jar">maven-core-2.0.7-javadoc.jar</a>                      2007-06-21 05:30    367940      
+<a href="maven-core-2.0.7-javadoc.jar.asc" title="maven-core-2.0.7-javadoc.jar.asc">maven-core-2.0.7-javadoc.jar.asc</a>                  2007-06-21 05:30       186      
+<a href="maven-core-2.0.7-javadoc.jar.asc.md5" title="maven-core-2.0.7-javadoc.jar.asc.md5">maven-core-2.0.7-javadoc.jar.asc.md5</a>              2007-06-21 05:30        32      
+<a href="maven-core-2.0.7-javadoc.jar.asc.sha1" title="maven-core-2.0.7-javadoc.jar.asc.sha1">maven-core-2.0.7-javadoc.jar.asc.sha1</a>             2007-06-21 05:30        40      
+<a href="maven-core-2.0.7-javadoc.jar.md5" title="maven-core-2.0.7-javadoc.jar.md5">maven-core-2.0.7-javadoc.jar.md5</a>                  2007-06-21 05:30        32      
+<a href="maven-core-2.0.7-javadoc.jar.sha1" title="maven-core-2.0.7-javadoc.jar.sha1">maven-core-2.0.7-javadoc.jar.sha1</a>                 2007-06-21 05:30        40      
+<a href="maven-core-2.0.7-sources.jar" title="maven-core-2.0.7-sources.jar">maven-core-2.0.7-sources.jar</a>                      2007-06-21 05:30    131873      
+<a href="maven-core-2.0.7-sources.jar.asc" title="maven-core-2.0.7-sources.jar.asc">maven-core-2.0.7-sources.jar.asc</a>                  2007-06-21 05:30       186      
+<a href="maven-core-2.0.7-sources.jar.asc.md5" title="maven-core-2.0.7-sources.jar.asc.md5">maven-core-2.0.7-sources.jar.asc.md5</a>              2007-06-21 05:30        32      
+<a href="maven-core-2.0.7-sources.jar.asc.sha1" title="maven-core-2.0.7-sources.jar.asc.sha1">maven-core-2.0.7-sources.jar.asc.sha1</a>             2007-06-21 05:30        40      
+<a href="maven-core-2.0.7-sources.jar.md5" title="maven-core-2.0.7-sources.jar.md5">maven-core-2.0.7-sources.jar.md5</a>                  2007-06-21 05:30        32      
+<a href="maven-core-2.0.7-sources.jar.sha1" title="maven-core-2.0.7-sources.jar.sha1">maven-core-2.0.7-sources.jar.sha1</a>                 2007-06-21 05:30        40      
+<a href="maven-core-2.0.7.jar" title="maven-core-2.0.7.jar">maven-core-2.0.7.jar</a>                              2007-06-21 05:30    152879      
+<a href="maven-core-2.0.7.jar.asc" title="maven-core-2.0.7.jar.asc">maven-core-2.0.7.jar.asc</a>                          2007-06-21 05:30       186      
+<a href="maven-core-2.0.7.jar.asc.md5" title="maven-core-2.0.7.jar.asc.md5">maven-core-2.0.7.jar.asc.md5</a>                      2007-06-21 05:30        32      
+<a href="maven-core-2.0.7.jar.asc.sha1" title="maven-core-2.0.7.jar.asc.sha1">maven-core-2.0.7.jar.asc.sha1</a>                     2007-06-21 05:30        40      
+<a href="maven-core-2.0.7.jar.md5" title="maven-core-2.0.7.jar.md5">maven-core-2.0.7.jar.md5</a>                          2007-06-21 05:30        32      
+<a href="maven-core-2.0.7.jar.sha1" title="maven-core-2.0.7.jar.sha1">maven-core-2.0.7.jar.sha1</a>                         2007-06-21 05:30        40      
+<a href="maven-core-2.0.7.pom" title="maven-core-2.0.7.pom">maven-core-2.0.7.pom</a>                              2007-06-21 05:30      6657      
+<a href="maven-core-2.0.7.pom.asc" title="maven-core-2.0.7.pom.asc">maven-core-2.0.7.pom.asc</a>                          2007-06-21 05:30       186      
+<a href="maven-core-2.0.7.pom.asc.md5" title="maven-core-2.0.7.pom.asc.md5">maven-core-2.0.7.pom.asc.md5</a>                      2007-06-21 05:30        32      
+<a href="maven-core-2.0.7.pom.asc.sha1" title="maven-core-2.0.7.pom.asc.sha1">maven-core-2.0.7.pom.asc.sha1</a>                     2007-06-21 05:30        40      
+<a href="maven-core-2.0.7.pom.md5" title="maven-core-2.0.7.pom.md5">maven-core-2.0.7.pom.md5</a>                          2007-06-21 05:30        32      
+<a href="maven-core-2.0.7.pom.sha1" title="maven-core-2.0.7.pom.sha1">maven-core-2.0.7.pom.sha1</a>                         2007-06-21 05:30        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -L -s https://repo.maven.apache.org/maven2/org/apache/maven/maven/2.0.7/maven-2.0.7.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+ succeeded in 0ms:
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.apache.maven</groupId>
+    <artifactId>maven-parent</artifactId>
+    <version>5</version>
+    <relativePath>../pom/maven/pom.xml</relativePath>
+  </parent>
+  <artifactId>maven</artifactId>
+  <packaging>pom</packaging>
+  <name>Maven</name>
+  <version>2.0.7</version>
+  <description>Maven is a project development management and comprehension tool. Based on the concept of a project object model: builds, dependency management, documentation creation, site publication, and distribution publication are all controlled from the declarative file. Maven can be extended by plugins to utilise a number of other development tools for reporting or the build process.</description>
+  <url>http://maven.apache.org</url>
+  <issueManagement>
+    <system>jira</system>
+    <url>http://jira.codehaus.org/browse/MNG</url>
+  </issueManagement>
+  <inceptionYear>2001</inceptionYear>
+  <mailingLists>
+    <mailingList>
+      <name>Maven User List</name>
+      <subscribe>users-subscribe@maven.apache.org</subscribe>
+      <unsubscribe>users-unsubscribe@maven.apache.org</unsubscribe>
+      <post>users@maven.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/maven-users</archive>
+      <otherArchives>
+        <otherArchive>http://www.mail-archive.com/users@maven.apache.org/</otherArchive>
+        <otherArchive>http://www.nabble.com/Maven---Users-f178.html</otherArchive>
+      </otherArchives>
+    </mailingList>
+  </mailingLists>
+  <scm>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7</developerConnection>
+    <url>https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7</url>
+  </scm>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.2-beta-1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.3</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.0-beta-5</version>
+          <configuration>
+            <tagBase>https://svn.apache.org/repos/asf/maven/components/tags</tagBase>
+          </configuration>
+        </plugin>
+       <plugin>
+          <groupId>org.codehaus.modello</groupId>
+          <artifactId>modello-maven-plugin</artifactId>
+          <version>1.0-alpha-13</version>
+          <executions>
+            <execution>
+              <id>site-docs</id>
+              <phase>pre-site</phase>
+              <goals>
+                <goal>xdoc</goal>
+                <goal>xsd</goal>
+              </goals>
+            </execution>
+            <execution>
+
+              <id>standard</id>
+              <goals>
+                <goal>java</goal>
+                <goal>xpp3-reader</goal>
+                <goal>xpp3-writer</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>        
+      </plugins>
+    </pluginManagement>
+  </build>
+  <modules>
+    <module>maven-artifact</module>
+    <module>maven-artifact-manager</module>
+    <module>maven-artifact-test</module>
+    <module>maven-core</module>
+    <module>maven-error-diagnostics</module>
+    <module>maven-model</module>
+    <module>maven-monitor</module>
+    <module>maven-plugin-api</module>
+    <module>maven-plugin-descriptor</module>
+    <module>maven-plugin-parameter-documenter</module>
+    <module>maven-plugin-registry</module>
+    <module>maven-profile</module>
+    <module>maven-project</module>
+    <module>maven-reporting</module>
+    <module>maven-repository-metadata</module>
+    <module>maven-script</module>
+    <module>maven-settings</module>
+  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <properties>
+    <mavenVersion>2.0.7</mavenVersion>
+  </properties>
+  <dependencyManagement>
+    <dependencies>
+      <!-- Maven -->
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-descriptor</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-error-diagnostics</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-model</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-project</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven.reporting</groupId>
+        <artifactId>maven-reporting-api</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-repository-metadata</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact-manager</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact-test</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-settings</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-parameter-documenter</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-profile</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-registry</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-monitor</artifactId>
+        <version>${mavenVersion}</version>
+      </dependency>      
+      <!-- Plexus -->
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-container-default</artifactId>
+        <version>1.0-alpha-9-stable-1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>1.4.1</version>
+      </dependency>
+
+exec
+/usr/bin/bash -lc "curl -L -s https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7/maven-core/src/test/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+ succeeded in 126ms:
+<html><head><title>asf - Revision 1935697: /maven/components/tags/maven-2.0.7/maven-core/src/test</title></head>
+<body>
+ <h2>asf - Revision 1935697: /maven/components/tags/maven-2.0.7/maven-core/src/test</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="java/">java/</a></li>
+  <li><a href="resources/">resources/</a></li>
+ </ul>
+</body></html>
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7.pom
+web search: 
+web search: "maven-core-2.0.7.pom" "repo.maven.apache.org"
+web search: 
+web search: org.apache.maven maven-core 2.0.7 maven central
+web search: 
+web search: https://central.sonatype.com/artifact/org.apache.maven/maven-core/2.0.7
+web search: 
+web search: central.sonatype.com/artifact/org.apache.maven/maven-core/2.0.7
+web search: 
+web search: "asf - Revision" "maven-2.0.7/maven-core/src/test"
+exec
+/usr/bin/bash -lc "curl -L -s https://maven.apache.org/ref/2.0.7/maven-core/project-summary.html | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+ succeeded in 0ms:
+<!DOCTYPE html>
+
+
+<!--
+ | Generated by Apache Maven Doxia Site Renderer 2.0.0 from content/xdoc/errors/404.xml.vm at 2026-06-26
+ | Rendered using Apache Maven Fluido Skin 2.1.0
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content="Apache Maven Doxia Site Renderer 2.0.0" />
+    <meta name="author" content="Brett Porter" />
+    <title>Page Not Found – Maven</title>
+    <link rel="stylesheet" href="../css/apache-maven-fluido-2.1.0.min.css" />
+    <link rel="stylesheet" href="../css/site.css" />
+    <link rel="stylesheet" href="../css/print.css" media="print" />
+    <script src="../js/apache-maven-fluido-2.1.0.min.js"></script>
+<base href="https://maven.apache.org/errors" /><link rel="stylesheet" href="https://maven.apache.org/css/apache-maven-fluido-2.1.0.min.css" /><link rel="stylesheet" href="https://maven.apache.org/css/site.css" /><link rel="stylesheet" href="https://maven.apache.org/css/print.css" media="print" /><script type="text/javascript" src="https://maven.apache.org/js/apache-maven-fluido-2.1.0.min.js"></script>    <!-- Matomo -->
+    <script>
+        var _paq = window._paq = window._paq || [];
+        _paq.push(['disableCookies']);
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+
+        (function() {
+            var u="https://analytics.apache.org/";
+            _paq.push(['setTrackerUrl', u+'/matomo.php']);
+            _paq.push(['setSiteId', '3']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.async=true; g.src=u+'/matomo.js'; s.parentNode.insertBefore(g,s);
+        })();
+    </script>
+    <!-- End Matomo Code -->
+  </head>
+  <body>
+    <div class="container-fluid container-fluid-top">
+      <header>
+        <div id="banner">
+          <div class="pull-left"><div id="bannerLeft"><h1><a href=".././"><img src="../images/apache-maven-project-light-theme.svg" style="width: 489px;height: 83px;" /></a></h1></div></div>
+          <div class="pull-right"><div id="bannerRight"><h1><img src="../images/logos/MavenLogoLeafSmall.png" /></h1></div></div>
+          <div class="clear"><hr/></div>
+        </div>
+
+        <div id="breadcrumbs">
+          <ul class="breadcrumb">
+      <li><a href="https://www.apache.org/">Apache</a><span class="divider">/</span></li>
+      <li><a href="../index.html">Maven</a><span class="divider">/</span></li>
+    <li class="active">Page Not Found <a href="https://github.com/apache/maven-site/tree/master/content/xdoc/errors/404.xml.vm"><img src="../images/accessories-text-editor.png" alt="Edit" /></a></li>
+        <li id="publishDate" class="pull-right"><span class="divider">|</span> Last Published: 2026-06-26</li>
+        <li class="pull-right"><span class="divider">|</span>
+<a href="../scm.html">Get Sources</a></li>
+        <li class="pull-right"><a href="../download.cgi">Downloads</a></li>
+          </ul>
+        </div>
+      </header>
+      <div class="row-fluid">
+        <header id="leftColumn" class="span2">
+          <nav class="well sidebar-nav">
+  <ul class="nav nav-list">
+    <li><a href="../index.html">Welcome</a></li>
+    <li><a href="https://www.apache.org/licenses/">License</a></li>
+   <li class="nav-header">About Maven</li>
+    <li><a href="../what-is-maven.html">What is Maven?</a></li>
+    <li><a href="../install.html">Installation</a></li>
+    <li><a href="../download.html">Downloads</a></li>
+    <li><a href="../run.html">Use</a></li>
+    <li><a href="../configure.html">Configure</a></li>
+    <li><a href="../docs/history.html">Release Notes</a></li>
+    <li><a href="../security.html">Security Reports</a></li>
+   <li class="nav-header">Documentation</li>
+    <li><a href="../plugins/index.html">Maven Plugins</a></li>
+    <li><a href="../extensions/index.html">Maven Extensions</a></li>
+    <li><a href="../tools/index.html"><span class="icon-chevron-down"></span>Maven Tools</a>
+     <ul class="nav nav-list">
+      <li><a href="../tools/mvnd.html">Maven Daemon</a></li>
+      <li><a href="../tools/mvnup.html">Maven Upgrade Tool</a></li>
+      <li><a href="../tools/mavenwrapper.html">Maven Wrapper</a></li>
+     </ul></li>
+    <li><a href="../guides/index.html">Index (category)</a></li>
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://maven.apache.org/ref/2.0.7/maven-core/ \\
+  https://maven.apache.org/ref/2.0.7/maven-core/apidocs/ \\
+  https://maven.apache.org/ref/2.0.7/maven-core/dependencies.html \\
+  https://maven.apache.org/ref/2.0.7/maven-core/project-summary.html \\
+  https://maven.apache.org/ref/2.0.7/maven-core/index.html; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url")
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+ succeeded in 423ms:
+404 https://maven.apache.org/ref/2.0.7/maven-core/apidocs/
+404 https://maven.apache.org/ref/2.0.7/maven-core/dependencies.html
+404 https://maven.apache.org/ref/2.0.7/maven-core/project-summary.html
+404 https://maven.apache.org/ref/2.0.7/maven-core/index.html
+
+exec
+/usr/bin/bash -lc "curl -L -s https://maven.apache.org/ref/2.0.7/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+ succeeded in 0ms:
+<!DOCTYPE html>
+
+
+<!--
+ | Generated by Apache Maven Doxia Site Renderer 2.0.0 from content/xdoc/errors/404.xml.vm at 2026-06-26
+ | Rendered using Apache Maven Fluido Skin 2.1.0
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content="Apache Maven Doxia Site Renderer 2.0.0" />
+    <meta name="author" content="Brett Porter" />
+    <title>Page Not Found – Maven</title>
+    <link rel="stylesheet" href="../css/apache-maven-fluido-2.1.0.min.css" />
+    <link rel="stylesheet" href="../css/site.css" />
+    <link rel="stylesheet" href="../css/print.css" media="print" />
+    <script src="../js/apache-maven-fluido-2.1.0.min.js"></script>
+<base href="https://maven.apache.org/errors" /><link rel="stylesheet" href="https://maven.apache.org/css/apache-maven-fluido-2.1.0.min.css" /><link rel="stylesheet" href="https://maven.apache.org/css/site.css" /><link rel="stylesheet" href="https://maven.apache.org/css/print.css" media="print" /><script type="text/javascript" src="https://maven.apache.org/js/apache-maven-fluido-2.1.0.min.js"></script>    <!-- Matomo -->
+    <script>
+        var _paq = window._paq = window._paq || [];
+        _paq.push(['disableCookies']);
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+
+        (function() {
+            var u="https://analytics.apache.org/";
+            _paq.push(['setTrackerUrl', u+'/matomo.php']);
+            _paq.push(['setSiteId', '3']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.async=true; g.src=u+'/matomo.js'; s.parentNode.insertBefore(g,s);
+        })();
+    </script>
+    <!-- End Matomo Code -->
+  </head>
+  <body>
+    <div class="container-fluid container-fluid-top">
+      <header>
+        <div id="banner">
+          <div class="pull-left"><div id="bannerLeft"><h1><a href=".././"><img src="../images/apache-maven-project-light-theme.svg" style="width: 489px;height: 83px;" /></a></h1></div></div>
+          <div class="pull-right"><div id="bannerRight"><h1><img src="../images/logos/MavenLogoLeafSmall.png" /></h1></div></div>
+          <div class="clear"><hr/></div>
+        </div>
+
+        <div id="breadcrumbs">
+          <ul class="breadcrumb">
+      <li><a href="https://www.apache.org/">Apache</a><span class="divider">/</span></li>
+      <li><a href="../index.html">Maven</a><span class="divider">/</span></li>
+    <li class="active">Page Not Found <a href="https://github.com/apache/maven-site/tree/master/content/xdoc/errors/404.xml.vm"><img src="../images/accessories-text-editor.png" alt="Edit" /></a></li>
+        <li id="publishDate" class="pull-right"><span class="divider">|</span> Last Published: 2026-06-26</li>
+        <li class="pull-right"><span class="divider">|</span>
+<a href="../scm.html">Get Sources</a></li>
+        <li class="pull-right"><a href="../download.cgi">Downloads</a></li>
+          </ul>
+        </div>
+      </header>
+      <div class="row-fluid">
+        <header id="leftColumn" class="span2">
+          <nav class="well sidebar-nav">
+  <ul class="nav nav-list">
+    <li><a href="../index.html">Welcome</a></li>
+    <li><a href="https://www.apache.org/licenses/">License</a></li>
+   <li class="nav-header">About Maven</li>
+    <li><a href="../what-is-maven.html">What is Maven?</a></li>
+    <li><a href="../install.html">Installation</a></li>
+    <li><a href="../download.html">Downloads</a></li>
+    <li><a href="../run.html">Use</a></li>
+    <li><a href="../configure.html">Configure</a></li>
+    <li><a href="../docs/history.html">Release Notes</a></li>
+    <li><a href="../security.html">Security Reports</a></li>
+   <li class="nav-header">Documentation</li>
+    <li><a href="../plugins/index.html">Maven Plugins</a></li>
+    <li><a href="../extensions/index.html">Maven Extensions</a></li>
+    <li><a href="../tools/index.html"><span class="icon-chevron-down"></span>Maven Tools</a>
+     <ul class="nav nav-list">
+      <li><a href="../tools/mvnd.html">Maven Daemon</a></li>
+      <li><a href="../tools/mvnup.html">Maven Upgrade Tool</a></li>
+      <li><a href="../tools/mavenwrapper.html">Maven Wrapper</a></li>
+     </ul></li>
+    <li><a href="../guides/index.html">Index (category)</a></li>
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://maven.apache.org/ref/2.0.7/ \\
+  https://maven.apache.org/ref/2.0.7/apidocs/ \\
+  https://maven.apache.org/ref/2.0.7/maven-core/ \\
+  https://maven.apache.org/maven-2.0.7/maven-core/; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url")
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+ succeeded in 296ms:
+404 https://maven.apache.org/ref/2.0.7/apidocs/
+404 https://maven.apache.org/ref/2.0.7/maven-core/
+404 https://maven.apache.org/maven-2.0.7/maven-core/
+
+codex
+Maven Central has the 2.0.7 sources and Javadoc jars, but not `test-sources`, `tests`, or the aggregate source ZIP for this version. The tagged SVN test directory renders and contains the expected `java/` and `resources/` test roots, so that is the viable test-suite URL.
+exec
+/usr/bin/bash -lc 'tmp=$(mktemp -d)
+cd "$tmp"
+curl -L -s -o maven-core-2.0.7-sources.jar https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-sources.jar
+jar tf maven-core-2.0.7-sources.jar | sed -n '"'1,80p'
+rm -rf \""'$tmp"' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+exec
+/usr/bin/bash -lc "curl -L -s https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7/maven-core/src/test/java/ | sed -n '1,120p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+exec
+/usr/bin/bash -lc "for url in \\
+  https://svn.apache.org/repos/asf/maven/components \\
+  https://svn.apache.org/repos/asf/maven/components/ \\
+  https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url")
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+ succeeded in 144ms:
+<html><head><title>asf - Revision 1935697: /maven/components/tags/maven-2.0.7/maven-core/src/test/java</title></head>
+<body>
+ <h2>asf - Revision 1935697: /maven/components/tags/maven-2.0.7/maven-core/src/test/java</h2>
+ <ul>
+  <li><a href="../">..</a></li>
+  <li><a href="org/">org/</a></li>
+ </ul>
+</body></html>
+ succeeded in 155ms:
+META-INF/
+META-INF/MANIFEST.MF
+org/
+org/apache/
+org/apache/maven/
+org/apache/maven/cli/
+org/apache/maven/execution/
+org/apache/maven/extension/
+org/apache/maven/lifecycle/
+org/apache/maven/lifecycle/mapping/
+org/apache/maven/monitor/
+org/apache/maven/monitor/event/
+org/apache/maven/monitor/logging/
+org/apache/maven/plugin/
+org/apache/maven/plugin/version/
+org/apache/maven/profiles/
+org/apache/maven/reactor/
+org/apache/maven/usability/
+org/apache/maven/usability/plugin/
+META-INF/maven/
+META-INF/maven/plugin-expressions/
+META-INF/plexus/
+org/apache/maven/messages/
+META-INF/LICENSE.txt
+META-INF/NOTICE.txt
+org/apache/maven/BuildFailureException.java
+org/apache/maven/cli/AbstractConsoleDownloadMonitor.java
+org/apache/maven/cli/BatchModeDownloadMonitor.java
+org/apache/maven/cli/ConsoleDownloadMonitor.java
+org/apache/maven/cli/MavenCli.java
+org/apache/maven/DefaultMaven.java
+org/apache/maven/execution/BuildFailure.java
+org/apache/maven/execution/BuildSuccess.java
+org/apache/maven/execution/DefaultMavenExecutionRequest.java
+org/apache/maven/execution/DefaultRuntimeInformation.java
+org/apache/maven/execution/MavenExecutionRequest.java
+org/apache/maven/execution/MavenSession.java
+org/apache/maven/execution/ReactorManager.java
+org/apache/maven/execution/RuntimeInformation.java
+org/apache/maven/extension/DefaultExtensionManager.java
+org/apache/maven/extension/ExtensionManager.java
+org/apache/maven/lifecycle/DefaultLifecycleExecutor.java
+org/apache/maven/lifecycle/Lifecycle.java
+org/apache/maven/lifecycle/LifecycleExecutionException.java
+org/apache/maven/lifecycle/LifecycleExecutor.java
+org/apache/maven/lifecycle/mapping/DefaultLifecycleMapping.java
+org/apache/maven/lifecycle/mapping/Lifecycle.java
+org/apache/maven/lifecycle/mapping/LifecycleMapping.java
+org/apache/maven/Maven.java
+org/apache/maven/MavenArtifactFilterManager.java
+org/apache/maven/monitor/event/DefaultEventMonitor.java
+org/apache/maven/monitor/logging/DefaultLog.java
+org/apache/maven/plugin/DebugConfigurationListener.java
+org/apache/maven/plugin/DefaultPluginManager.java
+org/apache/maven/plugin/DefaultPluginMappingManager.java
+org/apache/maven/plugin/InvalidPluginException.java
+org/apache/maven/plugin/MavenPluginCollector.java
+org/apache/maven/plugin/MavenPluginDiscoverer.java
+org/apache/maven/plugin/MojoExecution.java
+org/apache/maven/plugin/PluginConfigurationException.java
+org/apache/maven/plugin/PluginManager.java
+org/apache/maven/plugin/PluginManagerException.java
+org/apache/maven/plugin/PluginMappingManager.java
+org/apache/maven/plugin/PluginNotFoundException.java
+org/apache/maven/plugin/PluginParameterException.java
+org/apache/maven/plugin/PluginParameterExpressionEvaluator.java
+org/apache/maven/plugin/version/DefaultPluginVersionManager.java
+org/apache/maven/plugin/version/IntervalUtils.java
+org/apache/maven/plugin/version/PluginVersionManager.java
+org/apache/maven/plugin/version/PluginVersionNotFoundException.java
+org/apache/maven/plugin/version/PluginVersionResolutionException.java
+org/apache/maven/reactor/MavenExecutionException.java
+org/apache/maven/SettingsConfigurationException.java
+org/apache/maven/usability/ArtifactNotFoundDiagnoser.java
+org/apache/maven/usability/ArtifactResolverDiagnoser.java
+org/apache/maven/usability/InvalidArtifactDiagnoser.java
+org/apache/maven/usability/MojoExecutionExceptionDiagnoser.java
+org/apache/maven/usability/MojoFailureExceptionDiagnoser.java
+org/apache/maven/usability/plugin/ExpressionDocumentationException.java
+org/apache/maven/usability/plugin/ExpressionDocumenter.java
+
+ succeeded in 554ms:
+200 https://svn.apache.org/repos/asf/maven/components
+200 https://svn.apache.org/repos/asf/maven/components/
+200 https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7
+
+codex
+I’ve got the fields now: Maven Central for source and Javadoc, SVN component root for the repository root, and the 2.0.7 SVN tag’s `src/test` for tests. I’ll patch only the first entry’s missing fields and leave `language` absent because this is not a Kotlin, Groovy, or Scala-specific library.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036/metadata/org.apache.maven/maven-core/index.json
+diff --git a/metadata/org.apache.maven/maven-core/index.json b/metadata/org.apache.maven/maven-core/index.json
+index 21ce1b643a8c7d04eb9be90ed41a4fa4961eb23f..207af93271bd08d538427a6684be8e95ebf2b076
+--- a/metadata/org.apache.maven/maven-core/index.json
++++ b/metadata/org.apache.maven/maven-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.7",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
++    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+     "tested-versions" : [
+       "2.0.7"
+     ],
+
+diff --git a/metadata/org.apache.maven/maven-core/index.json b/metadata/org.apache.maven/maven-core/index.json
+index 21ce1b643a8c7d04eb9be90ed41a4fa4961eb23f..207af93271bd08d538427a6684be8e95ebf2b076
+--- a/metadata/org.apache.maven/maven-core/index.json
++++ b/metadata/org.apache.maven/maven-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.7",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
++    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+     "tested-versions" : [
+       "2.0.7"
+     ],
+
+codex
+The JSON entry is patched. I’m doing a quick syntax check and re-rendering the `$version$` templates for `2.0.7` so the written values match the verified URLs.
+exec
+/usr/bin/bash -lc "jq . metadata/org.apache.maven/maven-core/index.json >/dev/null && sed -n '1,40p' metadata/org.apache.maven/maven-core/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.7",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
+    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+    "tested-versions" : [
+      "2.0.7"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven"
+    ]
+  },
+  {
+    "metadata-version" : "2.0.6",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
+    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
+    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
+    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+    "tested-versions" : [
+      "2.0.6"
+    ],
+    "allowed-packages" : [
+      "org.apache.maven"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.apache.maven/maven-core/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+ succeeded in 0ms:
+diff --git i/metadata/org.apache.maven/maven-core/index.json w/metadata/org.apache.maven/maven-core/index.json
+index 21ce1b643a..207af93271 100644
+--- i/metadata/org.apache.maven/maven-core/index.json
++++ w/metadata/org.apache.maven/maven-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.7",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
++    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+     "tested-versions" : [
+       "2.0.7"
+     ],
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-sources.jar \\
+  https://svn.apache.org/repos/asf/maven/components \\
+  https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7/maven-core/src/test \\
+  https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-javadoc.jar; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url")
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+diff --git a/metadata/org.apache.maven/maven-core/index.json b/metadata/org.apache.maven/maven-core/index.json
+index 21ce1b643a8c7d04eb9be90ed41a4fa4961eb23f..207af93271bd08d538427a6684be8e95ebf2b076
+--- a/metadata/org.apache.maven/maven-core/index.json
++++ b/metadata/org.apache.maven/maven-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.7",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
++    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+     "tested-versions" : [
+       "2.0.7"
+     ],
+
+ succeeded in 1020ms:
+200 https://svn.apache.org/repos/asf/maven/components
+200 https://svn.apache.org/repos/asf/maven/components/tags/maven-2.0.7/maven-core/src/test
+200 https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/2.0.7/maven-core-2.0.7-javadoc.jar
+
+codex
+The rendered URLs all returned HTTP 200 and the JSON parses cleanly. I’ll run the targeted metadata validation next, since this is an index-only metadata change.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.apache.maven:maven-core:2.0.7 --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+diff --git a/metadata/org.apache.maven/maven-core/index.json b/metadata/org.apache.maven/maven-core/index.json
+index 21ce1b643a8c7d04eb9be90ed41a4fa4961eb23f..207af93271bd08d538427a6684be8e95ebf2b076
+--- a/metadata/org.apache.maven/maven-core/index.json
++++ b/metadata/org.apache.maven/maven-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.7",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
++    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+     "tested-versions" : [
+       "2.0.7"
+     ],
+
+ exited 1 in 5404ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.apache.maven:maven-core:2.0.7: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036/metadata/org.apache.maven/maven-core/2.0.7/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.apache.maven:maven-core:2.0.7: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036/metadata/org.apache.maven/maven-core/2.0.7/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.apache.maven:maven-core:2.0.7: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036/metadata/org.apache.maven/maven-core/2.0.7/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 5s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The targeted Gradle metadata check did not pass because this entry’s `metadata/org.apache.maven/maven-core/2.0.7/` directory lacks `reachability-metadata.json`. That is outside the requested URL/description index-field update, so I’m leaving the metadata payload untouched.
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.apache.maven/maven-core/index.json metadata/org.apache.maven/maven-core/2.0.7' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+ succeeded in 0ms:
+ M metadata/org.apache.maven/maven-core/index.json
+
+exec
+/usr/bin/bash -lc 'ls -la metadata/org.apache.maven/maven-core' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+ succeeded in 0ms:
+total 20
+drwxrwxr-x  4 vjovanov vjovanov 4096 Jun 28 22:46 .
+drwxrwxr-x 19 vjovanov vjovanov 4096 Jun 28 22:44 ..
+drwxrwxr-x  2 vjovanov vjovanov 4096 Jun 28 22:44 2.0.6
+drwxrwxr-x  2 vjovanov vjovanov 4096 Jun 28 22:46 2.0.7
+-rw-rw-r--  1 vjovanov vjovanov 1930 Jun 28 22:47 index.json
+
+diff --git a/metadata/org.apache.maven/maven-core/index.json b/metadata/org.apache.maven/maven-core/index.json
+index 21ce1b643a8c7d04eb9be90ed41a4fa4961eb23f..207af93271bd08d538427a6684be8e95ebf2b076
+--- a/metadata/org.apache.maven/maven-core/index.json
++++ b/metadata/org.apache.maven/maven-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.7",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
++    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+     "tested-versions" : [
+       "2.0.7"
+     ],
+
+exec
+/usr/bin/bash -lc 'find metadata/org.apache.maven/maven-core/2.0.7 -maxdepth 1 -type f -print' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036
+ succeeded in 0ms:
+diff --git a/metadata/org.apache.maven/maven-core/index.json b/metadata/org.apache.maven/maven-core/index.json
+index 21ce1b643a8c7d04eb9be90ed41a4fa4961eb23f..207af93271bd08d538427a6684be8e95ebf2b076
+--- a/metadata/org.apache.maven/maven-core/index.json
++++ b/metadata/org.apache.maven/maven-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.7",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
++    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+     "tested-versions" : [
+       "2.0.7"
+     ],
+
+codex
+Updated [metadata/org.apache.maven/maven-core/index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036/metadata/org.apache.maven/maven-core/index.json:4) for metadata version `2.0.7`.
+
+```json
+{
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
+  "repository-url": "https://svn.apache.org/repos/asf/maven/components",
+  "test-code-url": "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar"
+}
+```
+
+No `language` field was added; this is not a Kotlin, Groovy, or Scala-specific library.
+
+Verification:
+- JSON parses with `jq`.
+- Rendered URLs for `2.0.7` all returned HTTP `200`.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.maven:maven-core:2.0.7 --stacktrace` failed because `metadata/org.apache.maven/maven-core/2.0.7/` has no `reachability-metadata.json`, which is outside the requested index-field update.
+diff --git a/metadata/org.apache.maven/maven-core/index.json b/metadata/org.apache.maven/maven-core/index.json
+index 21ce1b643a8c7d04eb9be90ed41a4fa4961eb23f..207af93271bd08d538427a6684be8e95ebf2b076
+--- a/metadata/org.apache.maven/maven-core/index.json
++++ b/metadata/org.apache.maven/maven-core/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.7",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
++    "repository-url" : "https://svn.apache.org/repos/asf/maven/components",
++    "test-code-url" : "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar",
++    "description" : "Apache Maven Core is the central Maven 2.x runtime module that coordinates project building, lifecycle execution, plugin management, and command-line request handling. It connects Maven models, artifacts, repositories, profiles, settings, and reporting components so Maven can resolve dependencies and execute builds.",
+     "tested-versions" : [
+       "2.0.7"
+     ],
+
+tokens used
+82,968
+Updated [metadata/org.apache.maven/maven-core/index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036/metadata/org.apache.maven/maven-core/index.json:4) for metadata version `2.0.7`.
+
+```json
+{
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-sources.jar",
+  "repository-url": "https://svn.apache.org/repos/asf/maven/components",
+  "test-code-url": "https://svn.apache.org/repos/asf/maven/components/tags/maven-$version$/maven-core/src/test",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/maven/maven-core/$version$/maven-core-$version$-javadoc.jar"
+}
+```
+
+No `language` field was added; this is not a Kotlin, Groovy, or Scala-specific library.
+
+Verification:
+- JSON parses with `jq`.
+- Rendered URLs for `2.0.7` all returned HTTP `200`.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.maven:maven-core:2.0.7 --stacktrace` failed because `metadata/org.apache.maven/maven-core/2.0.7/` has no `reachability-metadata.json`, which is outside the requested index-field update.
+Ran agent for org.apache.maven:maven-core:2.0.7 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036/build/agent-url-discovery-logs/org.apache.maven-maven-core-2.0.7.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8771-a70f5036/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 56s
+9 actionable tasks: 1 executed, 8 up-to-date
