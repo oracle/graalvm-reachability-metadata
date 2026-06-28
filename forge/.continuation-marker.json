@@ -1,0 +1,72 @@
+{
+  "continueFrom": "publication",
+  "coordinate": "org.springframework.cloud:spring-cloud-stream-binder-kafka-core:5.0.1",
+  "issueNumber": 7094,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No required environment variables or system properties. Meaningful tests should focus on the core artifact surface that does not require a live Kafka broker, such as Kafka binder configuration properties, Spring Boot property binding, BinderHeaderMapper, KafkaTopicUtils/BindingUtils behavior, and provisioner error-path behavior with unreachable or stubbed admin settings.",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7094 Support for org.springframework.cloud:spring-cloud-stream-binder-kafka-core:5.0.1; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 62409,
+    "issue_label": "library-new-request",
+    "issue_number": 7094,
+    "library": "org.springframework.cloud:spring-cloud-stream-binder-kafka-core:5.0.1",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 3613,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Full end-to-end Spring Cloud Stream Kafka binding with real produce/consume traffic normally requires a Kafka broker, but that is not necessary before meaningful coverage of the requested core artifact is reachable.",
+      "The documented application dependency for normal users is spring-cloud-stream-binder-kafka or spring-cloud-starter-stream-kafka, while this issue targets the lower-level spring-cloud-stream-binder-kafka-core artifact; adding the non-core binder would shift coverage away from the requested artifact."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.springframework.cloud:spring-cloud-stream-binder-kafka-core:5.0.1/library-preparation-preflight/pi-generation-2026-06-28T22-45-35-614232Z.log",
+    "status": "completed",
+    "summary": "The resolved core artifact brings its compile-time Spring Cloud Stream, Spring Boot Kafka, Spring Integration Kafka, and Kafka client dependencies transitively, and its own public surface includes configuration/property, header-mapping, topic utility, and provisioning classes that can be exercised without adding a broker, optional starter, or test dependency."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "completed"
+    },
+    "fix": {
+      "iteration": 4,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": "ai/vjovanov/add-lib-support-org.springframework.cloud-spring-cloud-stream-binder-kafka-core-5.0.1",
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-7094-library-new-request-org.springframework.cloud-spring-cloud-stream-binder-kafka-core-5.0.1-79072b42",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springframework.cloud:spring-cloud-stream-binder-kafka-core:5.0.1",
+    "timestamp": "2026-06-28T23:28:46.193608Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
