@@ -105,7 +105,9 @@ Tasks that create or update metadata, tests, and index entries.
 ## 7. CI matrix generation
 
 These emit the GitHub Actions matrices the workflows consume, all driven by
-`ci.json` (§CI-matrix-source).
+`ci.json` (§CI-matrix-source). The PR-scoped matrix tasks use the tracked
+base/head diff as their source of truth and ignore unrelated local-only
+metadata trees that are outside that diff.
 
 | Task | Matrix |
 | --- | --- |

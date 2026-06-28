@@ -55,6 +55,36 @@ class ChangedMetadataTestMatrixTests {
     }
 
     @Test
+    void ignoresUntrackedMetadataWithoutTestsWhenResolvingChangedCoordinates() throws IOException, InterruptedException {
+        writeFixtureProject("""
+                [
+                  {
+                    "metadata-version": "1.0.0",
+                    "tested-versions": ["1.0.0", "1.0.1", "1.0.2"]
+                  }
+                ]
+                """);
+        String baseCommit = commitAll("base");
+
+        writeMetadataFile("1.0.0", """
+                {
+                  "resources": [
+                    {
+                      "glob": "changed.properties"
+                    }
+                  ]
+                }
+                """);
+        commitAll("change metadata");
+        writeUntrackedMetadataWithoutTests();
+
+        assertThat(matrixEntries(baseCommit)).containsExactly(
+                matrixEntry("com.example:demo:1.0.0", List.of("1.0.0", "1.0.1"), "1/2"),
+                matrixEntry("com.example:demo:1.0.0", List.of("1.0.2"), "2/2")
+        );
+    }
+
+    @Test
     void runsOnlyAddedBatchWhenOnlyTestedVersionsChange() throws IOException, InterruptedException {
         writeFixtureProject("""
                 [
@@ -212,6 +242,23 @@ class ChangedMetadataTestMatrixTests {
 
     private void writeMetadataFile(String version, String json) throws IOException {
         Files.writeString(projectDir.resolve("metadata/com.example/demo/" + version + "/reachability-metadata.json"), json);
+    }
+
+    private void writeUntrackedMetadataWithoutTests() throws IOException {
+        Files.createDirectories(projectDir.resolve("metadata/com.example.extra/unused/9.9.9"));
+        Files.writeString(projectDir.resolve("metadata/com.example.extra/unused/index.json"), """
+                [
+                  {
+                    "metadata-version": "9.9.9",
+                    "tested-versions": ["9.9.9"]
+                  }
+                ]
+                """);
+        Files.writeString(projectDir.resolve("metadata/com.example.extra/unused/9.9.9/reachability-metadata.json"), """
+                {
+                  "resources": []
+                }
+                """);
     }
 
     private String commitAll(String message) throws IOException, InterruptedException {
