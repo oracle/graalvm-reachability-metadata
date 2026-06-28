@@ -1,0 +1,86 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.apache.maven:maven-resolver-provider:3.9.12",
+  "issueNumber": 3814,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Use a temporary local repository/session and a temporary file:// remote repository with minimal POM/metadata fixtures. Configure the RepositorySystem from MavenRepositorySystemUtils.newServiceLocator(), register the available connector/transport services, and set a LocalRepositoryManager rooted in a temp directory. Avoid live Maven Central/network resolution. Avoid covering MavenResolverModule unless explicit Guice/Guava optional dependencies are intentionally added.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "coordinate": "org.apache.maven.resolver:maven-resolver-connector-basic:1.9.25",
+        "kind": "dependency",
+        "reason": "Maven 3.9.12 manages Resolver 1.9.25, and MavenRepositorySystemUtils only registers provider services; artifact/metadata resolution needs a RepositoryConnectorFactory.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.apache.maven.resolver:maven-resolver-transport-file:1.9.25",
+        "kind": "dependency",
+        "reason": "Hermetic tests can exercise descriptor/version resolution against a temporary file:// Maven repository without live network access, but Resolver needs a file transporter implementation for that.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#3814 Support for org.apache.maven:maven-resolver-provider:3.9.12; label=library-new-request; body_chars=116"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 24837,
+    "issue_label": "library-new-request",
+    "issue_number": 3814,
+    "library": "org.apache.maven:maven-resolver-provider:3.9.12",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 5075,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Without connector and transport implementations, tests that call RepositorySystem resolution APIs will fail with missing connector/transporter services rather than exercising this provider.",
+      "The public MavenResolverModule class references optional Guice classes that are not part of the normal transitive runtime classpath; generated tests should avoid it unless additional optional dependencies are added.",
+      "HTTP transport is not included because hermetic tests should use file:// repositories; tests that choose live HTTP resolution would need org.apache.maven.resolver:maven-resolver-transport-http:1.9.25 and would be less reliable."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.maven:maven-resolver-provider:3.9.12/library-preparation-preflight/pi-generation-2026-06-28T11-06-32-928910Z.log",
+    "status": "completed",
+    "summary": "The artifact is a Maven Resolver provider: its main artifact supplies Maven-specific descriptor/version readers and session utilities, but documentation and source state that clients must add repository connectors/transports before real repository resolution works. Meaningful hermetic coverage should use a temporary file-based Maven repository, which requires extra Resolver connector and file transport test dependencies."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 6,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-3814-library-new-request-org.apache.maven-maven-resolver-provider-3.9.12-2fe82576",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.apache.maven:maven-resolver-provider:3.9.12",
+    "timestamp": "2026-06-28T11:40:41.226511Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
