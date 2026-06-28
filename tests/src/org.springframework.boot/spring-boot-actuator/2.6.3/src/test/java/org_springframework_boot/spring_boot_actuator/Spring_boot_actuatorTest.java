@@ -6,6 +6,7 @@
  */
 package org_springframework_boot.spring_boot_actuator;
 
+import java.net.URI;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -61,6 +62,9 @@ import org.springframework.boot.actuate.health.StatusAggregator;
 import org.springframework.boot.actuate.info.Info;
 import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.boot.actuate.info.InfoEndpoint;
+import org.springframework.boot.actuate.trace.http.HttpTrace;
+import org.springframework.boot.actuate.trace.http.HttpTraceEndpoint;
+import org.springframework.boot.actuate.trace.http.InMemoryHttpTraceRepository;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.StandardEnvironment;
@@ -206,6 +210,34 @@ public class Spring_boot_actuatorTest {
     }
 
     @Test
+    void httpTraceRepositoryAndEndpointExposeRecentRequestResponseDetails() {
+        InMemoryHttpTraceRepository repository = new InMemoryHttpTraceRepository();
+        repository.setCapacity(2);
+        HttpTrace firstTrace = httpTrace("GET", "/actuator/health", 200, "alice", "session-1", 8L);
+        HttpTrace secondTrace = httpTrace("POST", "/actuator/loggers", 204, "bob", "session-2", 12L);
+        HttpTrace thirdTrace = httpTrace("GET", "/actuator/info", 200, "carol", "session-3", 5L);
+        repository.add(firstTrace);
+        repository.add(secondTrace);
+        repository.add(thirdTrace);
+        HttpTraceEndpoint endpoint = new HttpTraceEndpoint(repository);
+
+        List<HttpTrace> traces = endpoint.traces().getTraces();
+        HttpTrace latestTrace = traces.get(0);
+
+        assertThat(traces).containsExactly(thirdTrace, secondTrace);
+        assertThat(latestTrace.getTimestamp()).isEqualTo(Instant.parse("2026-06-28T10:00:00Z"));
+        assertThat(latestTrace.getRequest().getMethod()).isEqualTo("GET");
+        assertThat(latestTrace.getRequest().getUri()).isEqualTo(URI.create("https://example.test/actuator/info"));
+        assertThat(latestTrace.getRequest().getHeaders()).containsEntry("Accept", List.of("application/json"));
+        assertThat(latestTrace.getRequest().getRemoteAddress()).isEqualTo("192.0.2.10");
+        assertThat(latestTrace.getResponse().getStatus()).isEqualTo(200);
+        assertThat(latestTrace.getResponse().getHeaders()).containsEntry("Content-Type", List.of("application/json"));
+        assertThat(latestTrace.getPrincipal().getName()).isEqualTo("carol");
+        assertThat(latestTrace.getSession().getId()).isEqualTo("session-3");
+        assertThat(latestTrace.getTimeTaken()).isEqualTo(5L);
+    }
+
+    @Test
     void beansEndpointDescribesContextBeansAliasesScopesAndDependencies() {
         GenericApplicationContext parent = new GenericApplicationContext();
         parent.setId("parent-context");
@@ -268,6 +300,16 @@ public class Spring_boot_actuatorTest {
         assertThat(response.getBody()).containsEntry("status", "UP");
         assertThat(response.getStatus()).isEqualTo(WebEndpointResponse.STATUS_OK);
         assertThat(response.getContentType()).isEqualTo(MimeTypeUtils.APPLICATION_JSON);
+    }
+
+    private static HttpTrace httpTrace(String method, String path, int status, String principal, String sessionId,
+            long timeTaken) {
+        HttpTrace.Request request = new HttpTrace.Request(method, URI.create("https://example.test" + path),
+                Map.of("Accept", List.of("application/json")), "192.0.2.10");
+        HttpTrace.Response response = new HttpTrace.Response(status,
+                Map.of("Content-Type", List.of("application/json")));
+        return new HttpTrace(request, response, Instant.parse("2026-06-28T10:00:00Z"),
+                new HttpTrace.Principal(principal), new HttpTrace.Session(sessionId), timeTaken);
     }
 
     private static final class SampleRepository {
