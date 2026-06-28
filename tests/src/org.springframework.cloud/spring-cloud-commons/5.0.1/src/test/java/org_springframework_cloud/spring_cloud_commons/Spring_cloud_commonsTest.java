@@ -28,6 +28,7 @@ import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.composite.CompositeDiscoveryClient;
+import org.springframework.cloud.client.discovery.event.HeartbeatMonitor;
 import org.springframework.cloud.client.discovery.simple.InstanceProperties;
 import org.springframework.cloud.client.discovery.simple.SimpleDiscoveryClient;
 import org.springframework.cloud.client.discovery.simple.SimpleDiscoveryProperties;
@@ -244,6 +245,20 @@ public class Spring_cloud_commonsTest {
         assertThat(completion.getClientResponse()).isEqualTo("client-response");
         assertThat(adapter.getContext()).isEqualTo("adapter-context");
         assertThat(adapter.apply(instance)).isEqualTo("payments@payments.internal");
+    }
+
+    @Test
+    void discoveryHeartbeatMonitorDetectsOnlyNonNullStateChanges() {
+        HeartbeatMonitor monitor = new HeartbeatMonitor();
+        Map<String, String> clusterState = Map.of("cluster", "blue");
+
+        assertThat(monitor.update(null)).isFalse();
+        assertThat(monitor.update("catalog-1")).isTrue();
+        assertThat(monitor.update("catalog-1")).isFalse();
+        assertThat(monitor.update(clusterState)).isTrue();
+        assertThat(monitor.update(Map.of("cluster", "blue"))).isFalse();
+        assertThat(monitor.update(null)).isFalse();
+        assertThat(monitor.update("catalog-2")).isTrue();
     }
 
     @Test
