@@ -18,11 +18,11 @@ public class ScriptEvaluatorTest {
             final ScriptEvaluator evaluator = new ScriptEvaluator();
             evaluator.setReturnType(int.class);
             evaluator.setParameters(
-                    new String[] { "left", "right" },
-                    new Class<?>[] { int.class, int.class });
+                    new String[] {"left", "right" },
+                    new Class<?>[] {int.class, int.class });
             evaluator.cook("return left + right;");
 
-            final Object result = evaluator.evaluate(new Object[] { 19, 23 });
+            final Object result = evaluator.evaluate(new Object[] {19, 23 });
 
             assertThat(result).isEqualTo(42);
         } catch (Throwable throwable) {
@@ -37,7 +37,7 @@ public class ScriptEvaluatorTest {
             final Object fastEvaluator = evaluator.createFastEvaluator(
                     "return prefix + value;",
                     FastScript.class,
-                    new String[] { "prefix", "value" });
+                    new String[] {"prefix", "value" });
 
             final FastScript script = (FastScript) fastEvaluator;
 

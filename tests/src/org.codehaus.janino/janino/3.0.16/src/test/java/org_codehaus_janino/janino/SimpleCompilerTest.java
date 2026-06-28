@@ -35,7 +35,7 @@ public class SimpleCompilerTest {
             final ByteArrayOutputStream output = new ByteArrayOutputStream();
             try (PrintStream replacementOut = new PrintStream(output, true, StandardCharsets.UTF_8)) {
                 System.setOut(replacementOut);
-                SimpleCompiler.main(new String[] { sourceFile.toString(), "GeneratedMain", "left", "right" });
+                SimpleCompiler.main(new String[] {sourceFile.toString(), "GeneratedMain", "left", "right" });
             } finally {
                 System.setOut(originalOut);
             }
