@@ -6,7 +6,6 @@
  */
 package org_keycloak.keycloak_client_common_synced;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
