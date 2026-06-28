@@ -1,0 +1,94 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T17:01:31.112040Z",
+    "library": "org.apache.maven.surefire:surefire-booter:2.22.2",
+    "starting_commit": "3010d0434af1fe58159a1c9a7fb9fccbb6fb5e51",
+    "ending_commit": "012645565564985b785c55e5a886ea3e6678f7b8",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "2.22.2",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 29,
+            "totalCalls": 29
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 29,
+        "totalCalls": 29
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4063,
+          "missed": 35075,
+          "ratio": 0.103812,
+          "total": 39138
+        },
+        "line": {
+          "covered": 1106,
+          "missed": 8288,
+          "ratio": 0.117735,
+          "total": 9394
+        },
+        "method": {
+          "covered": 219,
+          "missed": 1677,
+          "ratio": 0.115506,
+          "total": 1896
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 2427,
+      "issue_label": "library-new-request",
+      "library": "org.apache.maven.surefire:surefire-booter:2.22.2",
+      "summary": "No concrete extra setup is required: surefire-booter 2.22.2 has surefire-api as a compile dependency, shades its commons-io/commons-lang3 usage, and its public APIs can be meaningfully exercised with normal test code and temporary files without Docker, external services, or fixed environment/system properties.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The central ForkedBooter path is normally launched by Maven Surefire with serialized properties and a provider class; tests should avoid calling ForkedBooter.main unguarded because it may call System.exit or wait for shutdown/ping protocol.",
+        "A real Surefire provider such as surefire-junit4 is only needed if the generated tests choose to exercise a full provider integration path; it is not required for meaningful booter coverage because a test-local SurefireProvider can cover reflective provider creation."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#2427 Support for org.apache.maven.surefire:surefire-booter:2.22.2; label=library-new-request; body_chars=117"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 82055,
+      "output_tokens_used": 4489,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.apache.maven.surefire:surefire-booter:2.22.2/library-preparation-preflight/pi-generation-2026-06-28T16-23-45-106450Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 389417,
+      "cached_input_tokens_used": 3473920,
+      "output_tokens_used": 34228,
+      "iterations": 10,
+      "cost_usd": 2.7638,
+      "generated_loc": 294,
+      "tested_library_loc": 1106,
+      "metadata_entries": 11,
+      "test_only_metadata_entries": 3,
+      "code_coverage_percent": 11.77
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.apache.maven.surefire/surefire-booter/2.22.2/src/test/java/org_apache_maven_surefire/surefire_booter/ArrayUtilsTest.java",
+      "metadata_file": "metadata/org.apache.maven.surefire/surefire-booter/2.22.2/reachability-metadata.json"
+    }
+  }
+}
