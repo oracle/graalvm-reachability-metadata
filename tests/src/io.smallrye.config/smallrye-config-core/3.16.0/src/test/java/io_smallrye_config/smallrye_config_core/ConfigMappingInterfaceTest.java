@@ -34,7 +34,8 @@ public class ConfigMappingInterfaceTest {
 
         Map<String, ConfigMappingInterface.Property> properties = Arrays.stream(mapping.getProperties())
                 .collect(Collectors.toMap(ConfigMappingInterface.Property::getMemberName, Function.identity()));
-        assertThat(properties).containsOnlyKeys("endpoint", "fallback", "inherited", "matrix");
+        assertThat(properties.keySet().stream().sorted().toList())
+                .containsExactly("endpoint", "fallback", "inherited", "matrix");
 
         ConfigMappingInterface.Property fallback = properties.get("fallback");
         assertThat(fallback.isDefaultMethod()).isTrue();
