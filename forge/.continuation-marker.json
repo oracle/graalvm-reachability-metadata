@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.pekko:pekko-actor_2.13:2.0.0-M1",
+  "issueNumber": 8742,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.apache.pekko:pekko-actor_2.13:1.1.5",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8742 [Automation] java run fails for org.apache.pekko:pekko-actor_2.13:2.0.0-M1; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "15 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 51666,
+    "issue_label": "fails-java-run",
+    "issue_number": 8742,
+    "library": "org.apache.pekko:pekko-actor_2.13:2.0.0-M1",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.0-M1",
+    "output_tokens_used": 4439,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The observed failure is from stale tests using deprecated org.apache.pekko.actor.TypedActor/TypedProps APIs that are present in 1.1.5 but absent from 2.0.0-M1; this needs test/API adaptation rather than setup.",
+      "Pekko docs mention pekko-testkit as a test-scope helper for classic actor testing, but meaningful coverage can still be written directly against pekko-actor with ActorSystem, Props, ask/latches, and config, so it is not a required deterministic setup dependency."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.pekko:pekko-actor_2.13:2.0.0-M1/library-preparation-preflight/pi-generation-2026-06-28T01-11-17-045449Z.log",
+    "status": "completed",
+    "summary": "Resolved pekko-actor_2.13:2.0.0-M1 has only scala-library and typesafe-config dependencies and normal use is in-process ActorSystem/Props/config usage; no Docker image, extra Maven dependency, or global environment/system property is required before meaningful coverage is reachable."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.0-M1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8742-fails-java-run-org.apache.pekko-pekko-actor_2.13-2.0.0-M1-406a3d19",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
