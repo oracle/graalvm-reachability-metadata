@@ -1,0 +1,837 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f0c77-6cd9-72a0-b887-b290d7c83033
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.pekko:pekko-actor_2.13:1.6.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "1.6.0" when "$version$" is replaced with "1.6.0".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json
+- Set "coordinates" to "org.apache.pekko:pekko-actor_2.13:1.6.0".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "1.6.0".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the Pekko artifact against Maven and upstream tags first, then update the metadata JSON directly. After that I’ll do a quick file readback to make sure the fields and formatting are correct.
+exec
+/usr/bin/bash -lc "sed -n '1,200p' build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.pekko:pekko-actor_2.13:1.6.0"
+}
+
+exec
+/usr/bin/bash -lc "pwd && rg --files build/discovered-artifact-metadata | rg 'org\\.apache\\.pekko-pekko-actor_2\\.13-1\\.6\\.0\\.json"'$'"'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json
+
+web search: 
+web search: Maven Central org.apache.pekko pekko-actor_2.13 1.6.0 pom scm tag source jar javadoc
+web search: 
+web search: https://repo1.maven.org/maven2/org/apache/pekko/pekko-actor_2.13/1.6.0/
+web search: 
+web search: repo1.maven.org/maven2/org/apache/pekko/pekko-actor_2.13/1.6.0/ pekko-actor_2.13-1.6.0-sources.jar tests.jar
+codex
+The existing JSON only has `coordinates`, so this is a straightforward enrichment. Maven Central confirms the artifact publishes sources and javadocs; I’m checking whether there is a tests jar before choosing between Maven and the upstream test tree.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/pekko/pekko-actor_2.13/1.6.0/pekko-actor_2.13-1.6.0.pom' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.pekko</groupId>
+    <artifactId>pekko-actor_2.13</artifactId>
+    <packaging>jar</packaging>
+    <description>Apache Pekko is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.</description>
+    <url>https://pekko.apache.org/</url>
+    <version>1.6.0</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>Apache Pekko Actor</name>
+    <inceptionYear>2022</inceptionYear>
+    <organization>
+        <name>Apache Software Foundation</name>
+        <url>https://www.apache.org</url>
+    </organization>
+    <scm>
+        <url>https://github.com/apache/pekko</url>
+        <connection>scm:git:https://github.com/apache/pekko.git</connection>
+        <developerConnection>scm:git:git@github.com:apache/pekko.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>pekko-contributors</id>
+            <name>Apache Pekko Contributors</name>
+            <url>https://github.com/apache/pekko/graphs/contributors</url>
+            <email>dev@pekko.apache.org</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://pekko.apache.org/api/pekko/1.6.0</info.apiURL>
+        <info.versionScheme>semver-spec</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.13.18</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+            <version>1.4.6</version>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/apache/pekko/pekko-actor_2.13/1.6.0/' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/pekko/pekko-actor_2.13/1.6.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/pekko/pekko-actor_2.13/1.6.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="pekko-actor_2.13-1.6.0-cyclonedx.json" title="pekko-actor_2.13-1.6.0-cyclonedx.json">pekko-actor_2.13-1.6.0-cyclonedx.json</a>             2026-04-24 09:35      4797      
+<a href="pekko-actor_2.13-1.6.0-cyclonedx.json.asc" title="pekko-actor_2.13-1.6.0-cyclonedx.json.asc">pekko-actor_2.13-1.6.0-cyclonedx.json.asc</a>         2026-04-24 09:35       833      
+<a href="pekko-actor_2.13-1.6.0-cyclonedx.json.asc.md5" title="pekko-actor_2.13-1.6.0-cyclonedx.json.asc.md5">pekko-actor_2.13-1.6.0-cyclonedx.json.asc.md5</a>     2026-04-24 09:35        32      
+<a href="pekko-actor_2.13-1.6.0-cyclonedx.json.asc.sha1" title="pekko-actor_2.13-1.6.0-cyclonedx.json.asc.sha1">pekko-actor_2.13-1.6.0-cyclonedx.json.asc.sha...</a>  2026-04-24 09:35        40      
+<a href="pekko-actor_2.13-1.6.0-cyclonedx.json.md5" title="pekko-actor_2.13-1.6.0-cyclonedx.json.md5">pekko-actor_2.13-1.6.0-cyclonedx.json.md5</a>         2026-04-24 09:35        32      
+<a href="pekko-actor_2.13-1.6.0-cyclonedx.json.sha1" title="pekko-actor_2.13-1.6.0-cyclonedx.json.sha1">pekko-actor_2.13-1.6.0-cyclonedx.json.sha1</a>        2026-04-24 09:35        40      
+<a href="pekko-actor_2.13-1.6.0-javadoc.jar" title="pekko-actor_2.13-1.6.0-javadoc.jar">pekko-actor_2.13-1.6.0-javadoc.jar</a>                2026-04-24 09:35   8967926      
+<a href="pekko-actor_2.13-1.6.0-javadoc.jar.asc" title="pekko-actor_2.13-1.6.0-javadoc.jar.asc">pekko-actor_2.13-1.6.0-javadoc.jar.asc</a>            2026-04-24 09:35       833      
+<a href="pekko-actor_2.13-1.6.0-javadoc.jar.asc.md5" title="pekko-actor_2.13-1.6.0-javadoc.jar.asc.md5">pekko-actor_2.13-1.6.0-javadoc.jar.asc.md5</a>        2026-04-24 09:35        32      
+<a href="pekko-actor_2.13-1.6.0-javadoc.jar.asc.sha1" title="pekko-actor_2.13-1.6.0-javadoc.jar.asc.sha1">pekko-actor_2.13-1.6.0-javadoc.jar.asc.sha1</a>       2026-04-24 09:35        40      
+<a href="pekko-actor_2.13-1.6.0-javadoc.jar.md5" title="pekko-actor_2.13-1.6.0-javadoc.jar.md5">pekko-actor_2.13-1.6.0-javadoc.jar.md5</a>            2026-04-24 09:35        32      
+<a href="pekko-actor_2.13-1.6.0-javadoc.jar.sha1" title="pekko-actor_2.13-1.6.0-javadoc.jar.sha1">pekko-actor_2.13-1.6.0-javadoc.jar.sha1</a>           2026-04-24 09:35        40      
+<a href="pekko-actor_2.13-1.6.0-sources.jar" title="pekko-actor_2.13-1.6.0-sources.jar">pekko-actor_2.13-1.6.0-sources.jar</a>                2026-04-24 09:35    607286      
+<a href="pekko-actor_2.13-1.6.0-sources.jar.asc" title="pekko-actor_2.13-1.6.0-sources.jar.asc">pekko-actor_2.13-1.6.0-sources.jar.asc</a>            2026-04-24 09:35       833      
+<a href="pekko-actor_2.13-1.6.0-sources.jar.asc.md5" title="pekko-actor_2.13-1.6.0-sources.jar.asc.md5">pekko-actor_2.13-1.6.0-sources.jar.asc.md5</a>        2026-04-24 09:35        32      
+<a href="pekko-actor_2.13-1.6.0-sources.jar.asc.sha1" title="pekko-actor_2.13-1.6.0-sources.jar.asc.sha1">pekko-actor_2.13-1.6.0-sources.jar.asc.sha1</a>       2026-04-24 09:35        40      
+<a href="pekko-actor_2.13-1.6.0-sources.jar.md5" title="pekko-actor_2.13-1.6.0-sources.jar.md5">pekko-actor_2.13-1.6.0-sources.jar.md5</a>            2026-04-24 09:35        32      
+<a href="pekko-actor_2.13-1.6.0-sources.jar.sha1" title="pekko-actor_2.13-1.6.0-sources.jar.sha1">pekko-actor_2.13-1.6.0-sources.jar.sha1</a>           2026-04-24 09:35        40      
+<a href="pekko-actor_2.13-1.6.0.buildinfo" title="pekko-actor_2.13-1.6.0.buildinfo">pekko-actor_2.13-1.6.0.buildinfo</a>                  2026-04-24 09:35       758      
+<a href="pekko-actor_2.13-1.6.0.buildinfo.asc" title="pekko-actor_2.13-1.6.0.buildinfo.asc">pekko-actor_2.13-1.6.0.buildinfo.asc</a>              2026-04-24 09:35       833      
+<a href="pekko-actor_2.13-1.6.0.buildinfo.asc.md5" title="pekko-actor_2.13-1.6.0.buildinfo.asc.md5">pekko-actor_2.13-1.6.0.buildinfo.asc.md5</a>          2026-04-24 09:35        32      
+<a href="pekko-actor_2.13-1.6.0.buildinfo.asc.sha1" title="pekko-actor_2.13-1.6.0.buildinfo.asc.sha1">pekko-actor_2.13-1.6.0.buildinfo.asc.sha1</a>         2026-04-24 09:35        40      
+<a href="pekko-actor_2.13-1.6.0.buildinfo.md5" title="pekko-actor_2.13-1.6.0.buildinfo.md5">pekko-actor_2.13-1.6.0.buildinfo.md5</a>              2026-04-24 09:35        32      
+<a href="pekko-actor_2.13-1.6.0.buildinfo.sha1" title="pekko-actor_2.13-1.6.0.buildinfo.sha1">pekko-actor_2.13-1.6.0.buildinfo.sha1</a>             2026-04-24 09:35        40      
+<a href="pekko-actor_2.13-1.6.0.jar" title="pekko-actor_2.13-1.6.0.jar">pekko-actor_2.13-1.6.0.jar</a>                        2026-04-24 09:35   3964138      
+<a href="pekko-actor_2.13-1.6.0.jar.asc" title="pekko-actor_2.13-1.6.0.jar.asc">pekko-actor_2.13-1.6.0.jar.asc</a>                    2026-04-24 09:35       833      
+<a href="pekko-actor_2.13-1.6.0.jar.asc.md5" title="pekko-actor_2.13-1.6.0.jar.asc.md5">pekko-actor_2.13-1.6.0.jar.asc.md5</a>                2026-04-24 09:35        32      
+<a href="pekko-actor_2.13-1.6.0.jar.asc.sha1" title="pekko-actor_2.13-1.6.0.jar.asc.sha1">pekko-actor_2.13-1.6.0.jar.asc.sha1</a>               2026-04-24 09:35        40      
+<a href="pekko-actor_2.13-1.6.0.jar.md5" title="pekko-actor_2.13-1.6.0.jar.md5">pekko-actor_2.13-1.6.0.jar.md5</a>                    2026-04-24 09:35        32      
+<a href="pekko-actor_2.13-1.6.0.jar.sha1" title="pekko-actor_2.13-1.6.0.jar.sha1">pekko-actor_2.13-1.6.0.jar.sha1</a>                   2026-04-24 09:35        40      
+<a href="pekko-actor_2.13-1.6.0.pom" title="pekko-actor_2.13-1.6.0.pom">pekko-actor_2.13-1.6.0.pom</a>                        2026-04-24 09:35      2159      
+<a href="pekko-actor_2.13-1.6.0.pom.asc" title="pekko-actor_2.13-1.6.0.pom.asc">pekko-actor_2.13-1.6.0.pom.asc</a>                    2026-04-24 09:35       833      
+<a href="pekko-actor_2.13-1.6.0.pom.asc.md5" title="pekko-actor_2.13-1.6.0.pom.asc.md5">pekko-actor_2.13-1.6.0.pom.asc.md5</a>                2026-04-24 09:35        32      
+<a href="pekko-actor_2.13-1.6.0.pom.asc.sha1" title="pekko-actor_2.13-1.6.0.pom.asc.sha1">pekko-actor_2.13-1.6.0.pom.asc.sha1</a>               2026-04-24 09:35        40      
+<a href="pekko-actor_2.13-1.6.0.pom.md5" title="pekko-actor_2.13-1.6.0.pom.md5">pekko-actor_2.13-1.6.0.pom.md5</a>                    2026-04-24 09:35        32      
+<a href="pekko-actor_2.13-1.6.0.pom.sha1" title="pekko-actor_2.13-1.6.0.pom.sha1">pekko-actor_2.13-1.6.0.pom.sha1</a>                   2026-04-24 09:35        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/apache/pekko.git 'v1.6.0' '1.6.0'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+ succeeded in 360ms:
+00cc100327f0a0d950ce6557be1e02920ae727d7	refs/tags/v1.6.0
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/1.6.0/pekko-actor_2.13-1.6.0.pom
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/1.6.0 pekko-actor_2.13-1.6.0.pom
+codex
+There is no `*-tests.jar` in the Maven directory for this coordinate, so the test URL should point to the version tag in the upstream repository. For source and API documentation, Maven has exact `sources.jar` and `javadoc.jar` artifacts for `1.6.0`, which satisfies the version-rendering requirement.
+exec
+/usr/bin/bash -lc "rg 'pekko|akka' build/discovered-artifact-metadata -n | head -80" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+ succeeded in 0ms:
+build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json:2:  "coordinates" : "org.apache.pekko:pekko-actor_2.13:1.6.0"
+
+exec
+/usr/bin/bash -lc "rg '\"language\"' build/discovered-artifact-metadata -n | head -40" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\".*sources.jar|\"documentation-url\".*javadoc.jar|\"test-code-url\".*github.com.*/tree/.*src/test' build/discovered-artifact-metadata -n | head -80" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+ succeeded in 0ms:
+codex
+I’m checking the repository’s local metadata style before editing, mainly to match field order and JSON spacing. If there aren’t comparable discovered files, I’ll keep the same `field" : value` style already present in this generated file.
+exec
+/usr/bin/bash -lc "rg '\"repository-url\"' -n --glob '*.json' . | head -60" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+ succeeded in 0ms:
+./metadata/log4j/log4j/index.json:8:    "repository-url": "https://github.com/apache/logging-log4j1",
+./metadata/com.thoughtworks.paranamer/paranamer/index.json:17:    "repository-url" : "https://github.com/paul-hammant/paranamer",
+./metadata/com.google.truth/truth/index.json:6:    "repository-url" : "https://github.com/google/truth",
+./metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+./metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:6:    "repository-url" : "https://github.com/ajalt/mordant",
+./metadata/org.glassfish.hk2/hk2-utils/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+./metadata/org.glassfish.hk2/hk2-utils/index.json:34:    "repository-url" : "https://github.com/javaee/hk2",
+./metadata/org.glassfish.hk2/hk2-api/index.json:6:    "repository-url" : "https://github.com/javaee/hk2",
+./metadata/org.apache.directory.api/api-asn1-ber/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+./metadata/org.apache.directory.api/api-ldap-model/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+./metadata/org.apache.directory.api/api-ldap-model/index.json:20:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+./metadata/org.apache.directory.api/api-i18n/index.json:6:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+./metadata/org.apache.directory.api/api-i18n/index.json:34:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+./metadata/com.aayushatharva.brotli4j/brotli4j/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+./metadata/org.apache.directory.api/api-util/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+./metadata/com.aayushatharva.brotli4j/service/index.json:6:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/org.openjfx/javafx-base/index.json:6:    "repository-url": "https://github.com/openjdk/jfx",
+./metadata/org.openjfx/javafx-base/index.json:22:    "repository-url": "https://github.com/javafxports/openjdk-jfx",
+./metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:6:    "repository-url" : "https://github.com/bndtools/bnd",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:6:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:6:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:6:    "repository-url" : "https://github.com/oshai/kotlin-logging",
+./metadata/org.jboss.shrinkwrap/shrinkwrap-spi/index.json:6:    "repository-url" : "https://github.com/shrinkwrap/shrinkwrap",
+./metadata/net.sourceforge.htmlunit/htmlunit-cssparser/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-cssparser",
+./metadata/io.getquill/quill-engine_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-quill",
+./metadata/io.getquill/quill-engine_2.13/index.json:6:    "repository-url" : "https://github.com/zio/zio-quill",
+./metadata/io.getquill/quill-util_3/index.json:6:    "repository-url" : "https://github.com/zio/zio-quill",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:6:    "repository-url" : "https://github.com/ben-manes/caffeine/tree/v3.1.2",
+./metadata/com.github.ben-manes.caffeine/caffeine/index.json:31:    "repository-url" : "https://github.com/ben-manes/caffeine/tree/v2.9.3",
+./metadata/jakarta.json/jakarta.json-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/jsonp-api",
+./metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-neko",
+./metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:6:    "repository-url" : "https://github.com/HtmlUnit/htmlunit-xpath",
+./metadata/org.playframework.twirl/twirl-api_3/index.json:6:    "repository-url" : "https://github.com/playframework/twirl",
+./metadata/org.apache.yetus/audience-annotations/index.json:6:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/org.apache.yetus/audience-annotations/index.json:23:    "repository-url" : "https://github.com/apache/yetus",
+./metadata/dev.profunktor/redis4cats-core_3/index.json:6:    "repository-url" : "https://github.com/profunktor/redis4cats",
+./metadata/dev.profunktor/redis4cats-core_3/index.json:25:    "repository-url" : "https://github.com/profunktor/redis4cats",
+./metadata/org.eclipse.jetty.websocket/websocket-client/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:6:    "repository-url" : "https://github.com/apache/jackrabbit",
+./metadata/org.eclipse.jetty.websocket/websocket-api/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/com.google.re2j/re2j/index.json:6:    "repository-url" : "https://github.com/google/re2j",
+./metadata/org.eclipse.jetty.websocket/websocket-common/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+./metadata/io.suzaku/boopickle_2.13/index.json:6:    "repository-url" : "https://github.com/suzaku-io/boopickle",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:6:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:29:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+./metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:44:    "repository-url" : "https://github.com/wildfly-security/wildfly-openssl",
+./metadata/io.suzaku/boopickle_3/index.json:6:    "repository-url" : "https://github.com/suzaku-io/boopickle",
+./metadata/io.prometheus/simpleclient_caffeine/index.json:6:    "repository-url": "https://github.com/prometheus/client_java",
+./metadata/com.google.javascript/closure-compiler-externs/index.json:6:    "repository-url" : "https://github.com/google/closure-compiler",
+./metadata/io.prometheus/simpleclient/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+./metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+./metadata/io.prometheus/simpleclient_tracer_common/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+./metadata/net.bytebuddy/byte-buddy-agent/index.json:6:    "repository-url" : "https://github.com/raphw/byte-buddy",
+./metadata/io.prometheus/simpleclient_tracer_otel/index.json:6:    "repository-url" : "https://github.com/prometheus/client_java",
+./metadata/net.postgis/postgis-geometry/index.json:6:    "repository-url" : "https://github.com/postgis/postgis-java",
+./metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jsonb-api",
+./metadata/net.postgis/postgis-jdbc/index.json:6:    "repository-url" : "https://github.com/postgis/postgis-java",
+./metadata/com.comcast/ip4s-core_3/index.json:6:    "repository-url" : "https://github.com/Comcast/ip4s",
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:6:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-binary",
+
+exec
+/usr/bin/bash -lc "rg '\"not-for-native-image\"|\"replacement\"|\"language\"' -n --glob '*.json' . | head -80" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+ succeeded in 0ms:
+./metadata/io.getquill/quill-engine_3/index.json:10:    "language" : {
+./metadata/io.getquill/quill-engine_2.13/index.json:10:    "language" : {
+./metadata/io.getquill/quill-util_3/index.json:10:    "language" : {
+./metadata/org.playframework.twirl/twirl-api_3/index.json:10:    "language" : {
+./metadata/dev.profunktor/redis4cats-core_3/index.json:10:    "language" : {
+./metadata/dev.profunktor/redis4cats-core_3/index.json:29:    "language" : {
+./metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+./metadata/io.suzaku/boopickle_2.13/index.json:10:    "language" : {
+./metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+./metadata/com.comcast/ip4s-core_3/index.json:10:    "language" : {
+./metadata/org.junit.jupiter/junit-jupiter/index.json:3:    "not-for-native-image": true,
+./metadata/com.typesafe.slick/slick_2.13/index.json:10:    "language" : {
+./metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-mustmatchers_3/index.json:10:    "language": {
+./metadata/org.scalatest/scalatest_2.13/index.json:3:    "not-for-native-image": true,
+./metadata/org.scalatest/scalatest_2.13/index.json:5:    "replacement": "Use the class-bearing ScalaTest module artifacts such as org.scalatest:scalatest-core_2.13:3.2.19, org.scalatest:scalatest-funsuite_2.13:3.2.19, and org.scalatest:scalatest-matchers-core_2.13:3.2.19 as needed."
+./metadata/org.scalatest/scalatest-wordspec_2.13/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-diagrams_3/index.json:10:    "language": {
+./metadata/org.scalatest/scalatest-shouldmatchers_3/index.json:10:    "language": {
+./metadata/dev.zio/zio_3/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-refspec_2.13/index.json:10:    "language" : {
+./metadata/dev.zio/zio-test_3/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-mustmatchers_2.13/index.json:10:    "language" : {
+./metadata/dev.zio/zio-config_3/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-shouldmatchers_2.13/index.json:10:    "language": {
+./metadata/dev.zio/zio-stacktracer_3/index.json:9:    "language" : {
+./metadata/dev.zio/zio-stacktracer_3/index.json:29:    "language" : {
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_3/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-featurespec_3/index.json:10:    "language": {
+./metadata/org.scalatest/scalatest-funsuite_3/index.json:10:    "language": {
+./metadata/org.scalatest/scalatest-matchers-core_2.13/index.json:10:    "language" : {
+./metadata/dev.zio/zio-internal-macros_2.13/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-freespec_2.13/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-funspec_3/index.json:10:    "language": {
+./metadata/dev.zio/zio-http_3/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-funsuite_2.13/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-featurespec_2.13/index.json:10:    "language" : {
+./metadata/dev.zio/zio-logging_2.13/index.json:10:    "language" : {
+./metadata/org.scalatest/scalatest-wordspec_3/index.json:10:    "language": {
+./metadata/org.scalatest/scalatest-funspec_2.13/index.json:10:    "language" : {
+./metadata/dev.zio/zio-internal-macros_3/index.json:9:    "language" : {
+./metadata/dev.zio/zio-internal-macros_3/index.json:28:    "language" : {
+./metadata/org.scalatest/scalatest-flatspec_3/index.json:10:    "language": {
+./metadata/com.squareup.wire/wire-runtime/index.json:3:    "not-for-native-image": true,
+./metadata/com.squareup.wire/wire-runtime/index.json:5:    "replacement": "com.squareup.wire:wire-runtime-jvm:5.3.3"
+./metadata/dev.zio/zio-query_3/index.json:10:    "language" : {
+./metadata/dev.zio/izumi-reflect-thirdparty-boopickle-shaded_2.13/index.json:10:    "language" : {
+./metadata/dev.zio/zio-schema_3/index.json:10:    "language" : {
+./metadata/dev.zio/izumi-reflect_3/index.json:10:    "language" : {
+./metadata/com.squareup.moshi/moshi-adapters/index.json:10:    "language" : {
+./metadata/dev.zio/zio-schema-derivation_3/index.json:10:    "language" : {
+./metadata/com.squareup.moshi/moshi-kotlin/index.json:10:    "language" : {
+./metadata/dev.zio/zio-prelude_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-interop-cats_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-schema-macros_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-managed_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-json_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-prelude-macros_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-config-typesafe_3/index.json:10:    "language" : {
+./metadata/dev.zio/zio-interop-tracer_3/index.json:10:    "language" : {
+./metadata/org.scalatra/scalatra-common_3/index.json:10:    "language" : {
+./metadata/org.scalatra/scalatra_3/index.json:10:    "language" : {
+./metadata/com.monovore/decline_3/index.json:10:    "language" : {
+./metadata/com.monovore/decline-effect_3/index.json:10:    "language" : {
+./metadata/com.chuusai/shapeless_2.13/index.json:10:    "language" : {
+./metadata/com.github.ghostdogpr/caliban_3/index.json:10:    "language" : {
+./metadata/io.kotest/kotest-extensions-jvm/index.json:10:    "language" : {
+./metadata/com.github.ghostdogpr/caliban-macros_3/index.json:3:    "not-for-native-image": true,
+./metadata/com.github.ghostdogpr/caliban-macros_3/index.json:5:    "replacement": "com.github.ghostdogpr:caliban_3:2.10.0"
+./metadata/io.kotest/kotest-common-jvm/index.json:10:    "language" : {
+./metadata/io.kotest/kotest-runner-junit-platform-jvm/index.json:10:    "language" : {
+./metadata/io.kotest/kotest-assertions-shared-jvm/index.json:10:    "language" : {
+./metadata/io.kotest/kotest-property-jvm/index.json:10:    "language" : {
+./metadata/app.cash.turbine/turbine-jvm/index.json:10:    "language" : {
+./metadata/com.cognitect/transit-clj/index.json:3:    "not-for-native-image": true,
+./metadata/com.cognitect/transit-clj/index.json:5:    "replacement": "com.cognitect:transit-java:0.8.311"
+./metadata/org.playframework/play-configuration_3/index.json:10:    "language" : {
+./metadata/org.playframework/play-server_3/index.json:10:    "language": {
+./metadata/org.playframework/play-json_3/index.json:10:    "language" : {
+./metadata/org.playframework/play-functional_3/index.json:10:    "language" : {
+
+exec
+/usr/bin/bash -lc "find . -path './.git' -prune -o -name '*metadata*.json' -print | head -80" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+ succeeded in 0ms:
+./metadata/org.eclipse.jetty/jetty-alpn-server/11.0.24/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-ee/12.0.10/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-server/12.0.1/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-server/11.0.12/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-server/12.1.3/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-client/12.1.5/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-client/11.0.12/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-client/12.0.0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-util/12.0.9/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-http/9.4.1.v20170120/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-http/9.4.0.M0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-http/9.3.19.v20170502/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-security/9.3.19.v20170502/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-alpn-client/12.0.31/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-alpn-client/11.0.12/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-io/9.4.0.RC0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-io/9.4.0.M0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-io/9.3.19.v20170502/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-servlet/9.4.0.M0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-servlet/9.3.19.v20170502/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-session/12.0.10/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-util-ajax/9.4.38.v20210224/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-util-ajax/10.0.0/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/11.0.24/reachability-metadata.json
+./metadata/org.eclipse.jetty/jetty-alpn-java-server/12.0.0/reachability-metadata.json
+./metadata/org.scalatest/scalatest-wordspec_3/3.2.19/reachability-metadata.json
+./metadata/org.scalatest/scalatest-freespec_2.13/3.2.19/reachability-metadata.json
+./metadata/org.scalatest/scalatest-flatspec_3/3.2.19/reachability-metadata.json
+./metadata/org.scalatest/scalatest-funspec_2.13/3.2.19/reachability-metadata.json
+./metadata/org.scalatest/scalatest-funsuite_2.13/3.2.19/reachability-metadata.json
+./metadata/org.scalatest/scalatest-funsuite_3/3.2.19/reachability-metadata.json
+./metadata/org.scalatest/scalatest-compatible/3.2.19/reachability-metadata.json
+./metadata/org.scalatest/scalatest-featurespec_2.13/3.2.19/reachability-metadata.json
+./metadata/org.scalatest/scalatest-matchers-core_2.13/3.2.19/reachability-metadata.json
+./metadata/org.scalatest/scalatest-funspec_3/3.2.19/reachability-metadata.json
+./metadata/org.scalatest/scalatest-featurespec_3/3.2.19/reachability-metadata.json
+./metadata/org.scalatest/scalatest-shouldmatchers_2.13/3.2.19/reachability-metadata.json
+./metadata/org.scalatest/scalatest-mustmatchers_2.13/3.2.19/reachability-metadata.json
+./metadata/org.scalatest/scalatest-refspec_2.13/3.2.19/reachability-metadata.json
+./metadata/org.scalatest/scalatest-shouldmatchers_3/3.2.19/reachability-metadata.json
+./metadata/org.scalatest/scalatest-diagrams_3/3.2.19/reachability-metadata.json
+./metadata/org.scalatest/scalatest-wordspec_2.13/3.2.19/reachability-metadata.json
+./metadata/org.scalatest/scalatest-mustmatchers_3/3.2.19/reachability-metadata.json
+./metadata/org.awaitility/awaitility/4.2.0/reachability-metadata.json
+./metadata/org.awaitility/awaitility/4.2.1/reachability-metadata.json
+./metadata/com.typesafe.slick/slick-hikaricp_2.13/3.6.1/reachability-metadata.json
+./metadata/com.typesafe.slick/slick_2.13/3.6.1/reachability-metadata.json
+./metadata/org.junit.jupiter/junit-jupiter-params/5.9.2/reachability-metadata.json
+./metadata/org.junit.jupiter/junit-jupiter-engine/5.8.2/reachability-metadata.json
+./metadata/jakarta.xml.soap/jakarta.xml.soap-api/3.0.2/reachability-metadata.json
+./metadata/org.apache.thrift/libthrift/0.17.0/reachability-metadata.json
+./metadata/org.apache.thrift/libthrift/0.13.0/reachability-metadata.json
+./metadata/jakarta.authentication/jakarta.authentication-api/3.0.0/reachability-metadata.json
+./metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-base/2.18.5/reachability-metadata.json
+./metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-json-provider/2.18.5/reachability-metadata.json
+./metadata/com.fasterxml.jackson.jakarta.rs/jackson-jakarta-rs-yaml-provider/2.21.2/reachability-metadata.json
+./metadata/org.springframework/spring-context/5.3.15/reachability-metadata.json
+./metadata/org.springframework/spring-jcl/5.3.15/reachability-metadata.json
+./metadata/org.springframework/spring-aop/6.0.0/reachability-metadata.json
+./metadata/org.springframework/spring-aop/5.3.35/reachability-metadata.json
+./metadata/org.springframework/spring-aop/5.3.15/reachability-metadata.json
+./metadata/org.springframework/spring-webflux/5.3.31/reachability-metadata.json
+./metadata/org.springframework/spring-aspects/5.3.31/reachability-metadata.json
+./metadata/org.springframework/spring-expression/5.3.15/reachability-metadata.json
+./metadata/org.springframework/spring-tx/5.3.18/reachability-metadata.json
+./metadata/org.springframework/spring-context-support/5.3.18/reachability-metadata.json
+./metadata/org.springframework/spring-instrument/5.3.31/reachability-metadata.json
+./metadata/com.rabbitmq/amqp-client/5.12.0/reachability-metadata.json
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/2.18.1/reachability-metadata.json
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/2.15.2/reachability-metadata.json
+./metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/2.14.3/reachability-metadata.json
+./metadata/com.comcast/ip4s-core_3/3.5.0/reachability-metadata.json
+./metadata/net.postgis/postgis-jdbc/2.5.0/reachability-metadata.json
+./metadata/net.postgis/postgis-geometry/2.5.0/reachability-metadata.json
+./metadata/io.prometheus/simpleclient_tracer_otel/0.16.0/reachability-metadata.json
+./metadata/io.prometheus/simpleclient_tracer_common/0.16.0/reachability-metadata.json
+./metadata/io.prometheus/simpleclient_tracer_otel_agent/0.16.0/reachability-metadata.json
+./metadata/io.prometheus/simpleclient/0.16.0/reachability-metadata.json
+./metadata/io.prometheus/simpleclient_caffeine/0.16.0/reachability-metadata.json
+./metadata/org.wildfly.openssl/wildfly-openssl-java/2.0.0.Alpha1/reachability-metadata.json
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/io.getquill/quill-engine_2.13/index.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "4.8.5",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/zio/zio-quill",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/getquill/quill-engine_2.13/$version$/quill-engine_2.13-$version$-javadoc.jar",
+    "description" : "ZIO Quill is a Scala library that provides a quoted DSL for expressing database queries and translating them to target languages such as SQL and CQL. The quill-engine module contains the shared query AST, normalization, idiom, dialect, and rendering infrastructure used by Quill contexts.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "4.8.5"
+    ],
+    "allowed-packages" : [
+      "io.getquill"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,70p' metadata/io.suzaku/boopickle_2.13/index.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "1.5.0",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/suzaku-io/boopickle",
+    "test-code-url" : "https://github.com/suzaku-io/boopickle/tree/v$version$/boopickle/shared/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/suzaku/boopickle_2.13/$version$/boopickle_2.13-$version$-javadoc.jar",
+    "description" : "BooPickle is a Scala binary serialization library for pickling and unpickling values into compact ByteBuffer data. It supports primitives, collections, options, tuples, case classes, custom serializers, references, and deduplication without reflection across JVM, Scala.js, and Scala Native.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "1.5.0"
+    ],
+    "allowed-packages" : [
+      "boopickle"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "sed -n '1,70p' metadata/com.typesafe.slick/slick_2.13/index.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.6.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/slick/slick",
+    "test-code-url" : "https://github.com/slick/slick/tree/v$version$/slick-testkit/src/test/scala",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/com/typesafe/slick/slick_2.13/$version$/slick_2.13-$version$-javadoc.jar",
+    "description" : "Slick is a Scala database access library that provides strongly typed, composable APIs for working with relational databases. It lets applications express queries in Scala, generate SQL for multiple database engines, and use asynchronous or reactive-streaming database actions.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "3.6.1"
+    ],
+    "allowed-packages" : [
+      "scala.reflect",
+      "slick"
+    ]
+  }
+]
+
+codex
+I found matching Scala metadata entries in the repo, and they use Maven `sources.jar`/`javadoc.jar` when available plus `"language" : { "name" : "scala", "version" : "2" }` for `_2.13` artifacts. I’m now verifying the Pekko test directory path at tag `v1.6.0` before writing.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/pekko/contents/?ref=v1.6.0 | rg '\"name\": \"actor\"|\"name\": \"actor-'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/pekko/contents/actor/src/test?ref=v1.6.0 | head -80' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/pekko/contents/actor?ref=v1.6.0 | rg '\"name\": \"src\"|\"name\": \"build.sbt\"|\"name\": \"pom.xml\"'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+ succeeded in 176ms:
+curl: (22) The requested URL returned error: 404
+
+ succeeded in 176ms:
+    "name": "src",
+
+ succeeded in 230ms:
+    "name": "actor-testkit-typed",
+    "name": "actor-tests",
+    "name": "actor-typed-tests",
+    "name": "actor-typed",
+    "name": "actor",
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/apache/pekko/contents/actor-tests/src/test?ref=v1.6.0 | head -80' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/pekko/contents/actor/src?ref=v1.6.0 | rg '\"name\"'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/apache/pekko/contents/actor-tests?ref=v1.6.0 | rg '\"name\"'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+ succeeded in 179ms:
+[
+  {
+    "name": "bind",
+    "path": "actor-tests/src/test/bind",
+    "sha": "9d69fe894ba4e68fa9b7bf6c4de82d10d800abd3",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/actor-tests/src/test/bind?ref=v1.6.0",
+    "html_url": "https://github.com/apache/pekko/tree/v1.6.0/actor-tests/src/test/bind",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/9d69fe894ba4e68fa9b7bf6c4de82d10d800abd3",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/actor-tests/src/test/bind?ref=v1.6.0",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/9d69fe894ba4e68fa9b7bf6c4de82d10d800abd3",
+      "html": "https://github.com/apache/pekko/tree/v1.6.0/actor-tests/src/test/bind"
+    }
+  },
+  {
+    "name": "java",
+    "path": "actor-tests/src/test/java",
+    "sha": "302cd9253b5cdb8f1123abe90a755040bd9eef7c",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/actor-tests/src/test/java?ref=v1.6.0",
+    "html_url": "https://github.com/apache/pekko/tree/v1.6.0/actor-tests/src/test/java",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/302cd9253b5cdb8f1123abe90a755040bd9eef7c",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/actor-tests/src/test/java?ref=v1.6.0",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/302cd9253b5cdb8f1123abe90a755040bd9eef7c",
+      "html": "https://github.com/apache/pekko/tree/v1.6.0/actor-tests/src/test/java"
+    }
+  },
+  {
+    "name": "resources",
+    "path": "actor-tests/src/test/resources",
+    "sha": "67d88042124471f56030e10c8cb0831e6889d08b",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/actor-tests/src/test/resources?ref=v1.6.0",
+    "html_url": "https://github.com/apache/pekko/tree/v1.6.0/actor-tests/src/test/resources",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/67d88042124471f56030e10c8cb0831e6889d08b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/actor-tests/src/test/resources?ref=v1.6.0",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/67d88042124471f56030e10c8cb0831e6889d08b",
+      "html": "https://github.com/apache/pekko/tree/v1.6.0/actor-tests/src/test/resources"
+    }
+  },
+  {
+    "name": "scala-2.13+",
+    "path": "actor-tests/src/test/scala-2.13+",
+    "sha": "2f8bd07a9b5070f7aad73ee5de09d6d7bb3a5820",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/actor-tests/src/test/scala-2.13%2B?ref=v1.6.0",
+    "html_url": "https://github.com/apache/pekko/tree/v1.6.0/actor-tests/src/test/scala-2.13%2B",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/2f8bd07a9b5070f7aad73ee5de09d6d7bb3a5820",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/actor-tests/src/test/scala-2.13%2B?ref=v1.6.0",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/2f8bd07a9b5070f7aad73ee5de09d6d7bb3a5820",
+      "html": "https://github.com/apache/pekko/tree/v1.6.0/actor-tests/src/test/scala-2.13%2B"
+    }
+  },
+  {
+    "name": "scala-2",
+    "path": "actor-tests/src/test/scala-2",
+    "sha": "2f1de9ba6b38f8ba45d2bb79f42f3fadbaaa3f81",
+    "size": 0,
+    "url": "https://api.github.com/repos/apache/pekko/contents/actor-tests/src/test/scala-2?ref=v1.6.0",
+    "html_url": "https://github.com/apache/pekko/tree/v1.6.0/actor-tests/src/test/scala-2",
+    "git_url": "https://api.github.com/repos/apache/pekko/git/trees/2f1de9ba6b38f8ba45d2bb79f42f3fadbaaa3f81",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/apache/pekko/contents/actor-tests/src/test/scala-2?ref=v1.6.0",
+      "git": "https://api.github.com/repos/apache/pekko/git/trees/2f1de9ba6b38f8ba45d2bb79f42f3fadbaaa3f81",
+      "html": "https://github.com/apache/pekko/tree/v1.6.0/actor-tests/src/test/scala-2"
+    }
+
+ succeeded in 181ms:
+    "name": "main",
+
+ succeeded in 183ms:
+    "name": "src",
+
+codex
+The Pekko module itself has only `src/main`; the test suite is in `actor-tests/src/test` at the same `v1.6.0` tag. That is the correct upstream test-suite URL for the actor artifact because Maven does not publish a tests jar for this coordinate.
+codex
+I’m going to update the generated JSON now with Maven URLs for sources and javadocs, the upstream tagged test tree, and the Scala 2 language marker. I’m leaving `not-for-native-image` absent because this is a JVM `jar` artifact with class files, not a JS/Native/AAR/tooling-only artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json
+index 8ed5c1d4c78915aaa4830acf60f9d9bb86c7a21f..5fa7d317f32376a59c89e4cbbcd0eb25556484a6
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-actor_2.13:1.6.0"
++  "coordinates" : "org.apache.pekko:pekko-actor_2.13:1.6.0",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
++  "description" : "Apache Pekko Actor provides the classic actor runtime and APIs for building concurrent, distributed, message-driven JVM applications in Java and Scala. It includes actor systems, actor references, supervision, dispatchers, routing, scheduling, serialization support, and related infrastructure used by other Pekko modules.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json
+index 8ed5c1d4c78915aaa4830acf60f9d9bb86c7a21f..5fa7d317f32376a59c89e4cbbcd0eb25556484a6
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-actor_2.13:1.6.0"
++  "coordinates" : "org.apache.pekko:pekko-actor_2.13:1.6.0",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
++  "description" : "Apache Pekko Actor provides the classic actor runtime and APIs for building concurrent, distributed, message-driven JVM applications in Java and Scala. It includes actor systems, actor references, supervision, dispatchers, routing, scheduling, serialization support, and related infrastructure used by other Pekko modules.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+codex
+The file is updated. I’m doing a short validation pass now: parse the JSON, render the `$version$` URLs with `1.6.0`, and check that those URLs resolve.
+exec
+/usr/bin/bash -lc "python -m json.tool build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json >/dev/null && sed -n '1,120p' build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+ succeeded in 0ms:
+{
+  "coordinates" : "org.apache.pekko:pekko-actor_2.13:1.6.0",
+  "repository-url" : "https://github.com/apache/pekko",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
+  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
+  "description" : "Apache Pekko Actor provides the classic actor runtime and APIs for building concurrent, distributed, message-driven JVM applications in Java and Scala. It includes actor systems, actor references, supervision, dispatchers, routing, scheduling, serialization support, and related infrastructure used by other Pekko modules.",
+  "language" : {
+    "name" : "scala",
+    "version" : "2"
+  }
+}
+
+exec
+/usr/bin/bash -lc "for url in \\
+  'https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/1.6.0/pekko-actor_2.13-1.6.0-sources.jar' \\
+  'https://github.com/apache/pekko/tree/v1.6.0/actor-tests/src/test' \\
+  'https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/1.6.0/pekko-actor_2.13-1.6.0-javadoc.jar'; do
+  curl -fsSI \""'$url" | sed -n '"'1p'
+done" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/1.6.0/pekko-actor_2.13-1.6.0.jar -o /tmp/pekko-actor_2.13-1.6.0.jar && jar tf /tmp/pekko-actor_2.13-1.6.0.jar | rg '\\.class"'$'"' | head -5" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+ succeeded in 348ms:
+org/apache/pekko/ConfigurationException.class
+org/apache/pekko/Done$.class
+org/apache/pekko/Done.class
+org/apache/pekko/Main$.class
+org/apache/pekko/Main$Terminator$$anonfun$receive$1.class
+
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json
+index 8ed5c1d4c78915aaa4830acf60f9d9bb86c7a21f..5fa7d317f32376a59c89e4cbbcd0eb25556484a6
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-actor_2.13:1.6.0"
++  "coordinates" : "org.apache.pekko:pekko-actor_2.13:1.6.0",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
++  "description" : "Apache Pekko Actor provides the classic actor runtime and APIs for building concurrent, distributed, message-driven JVM applications in Java and Scala. It includes actor systems, actor references, supervision, dispatchers, routing, scheduling, serialization support, and related infrastructure used by other Pekko modules.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+ succeeded in 1249ms:
+HTTP/2 200 
+HTTP/2 200 
+HTTP/2 200 
+
+web search: 
+web search: Maven Central org.apache.pekko pekko-actor_2.13 1.6.0 javadoc sources Apache Pekko Actor
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git status --short build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json
+index 8ed5c1d4c78915aaa4830acf60f9d9bb86c7a21f..5fa7d317f32376a59c89e4cbbcd0eb25556484a6
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-actor_2.13:1.6.0"
++  "coordinates" : "org.apache.pekko:pekko-actor_2.13:1.6.0",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
++  "description" : "Apache Pekko Actor provides the classic actor runtime and APIs for building concurrent, distributed, message-driven JVM applications in Java and Scala. It includes actor systems, actor references, supervision, dispatchers, routing, scheduling, serialization support, and related infrastructure used by other Pekko modules.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+ succeeded in 121ms:
+codex
+Validation passed: the JSON parses, all three rendered URLs return HTTP 200 for `1.6.0`, and the artifact jar contains JVM `.class` files. The file lives under `build/`, so Git does not show a tracked diff for it even though the on-disk file is updated.
+codex
+Updated [org.apache.pekko-pekko-actor_2.13-1.6.0.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json) with the repository, Maven sources/javadocs, upstream tagged test suite, two-sentence description, and Scala 2 language metadata.
+
+Validation done: JSON parses, rendered `1.6.0` URLs return HTTP 200, and the artifact jar contains JVM `.class` files, so I left `not-for-native-image` absent.
+diff --git a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json
+index 8ed5c1d4c78915aaa4830acf60f9d9bb86c7a21f..5fa7d317f32376a59c89e4cbbcd0eb25556484a6
+--- a/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json
++++ b/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json
+@@ -1,3 +1,12 @@
+ {
+-  "coordinates" : "org.apache.pekko:pekko-actor_2.13:1.6.0"
++  "coordinates" : "org.apache.pekko:pekko-actor_2.13:1.6.0",
++  "repository-url" : "https://github.com/apache/pekko",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++  "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
++  "description" : "Apache Pekko Actor provides the classic actor runtime and APIs for building concurrent, distributed, message-driven JVM applications in Java and Scala. It includes actor systems, actor references, supervision, dispatchers, routing, scheduling, serialization support, and related infrastructure used by other Pekko modules.",
++  "language" : {
++    "name" : "scala",
++    "version" : "2"
++  }
+ }
+
+tokens used
+51,668
+Updated [org.apache.pekko-pekko-actor_2.13-1.6.0.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015/build/discovered-artifact-metadata/org.apache.pekko-pekko-actor_2.13-1.6.0.json) with the repository, Maven sources/javadocs, upstream tagged test suite, two-sentence description, and Scala 2 language metadata.
+
+Validation done: JSON parses, rendered `1.6.0` URLs return HTTP 200, and the artifact jar contains JVM `.class` files, so I left `not-for-native-image` absent.
+Ran agent for org.apache.pekko:pekko-actor_2.13:1.6.0 (exit 0). Log: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015/build/agent-artifact-discovery-logs/org.apache.pekko-pekko-actor_2.13-1.6.0.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5439-31223015/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 51s
+9 actionable tasks: 9 executed
