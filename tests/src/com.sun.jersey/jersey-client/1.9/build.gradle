@@ -12,7 +12,13 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "com.sun.jersey:jersey-client:$libraryVersion"
+    testImplementation 'javax.activation:activation:1.1'
+    testImplementation 'javax.mail:mail:1.4'
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgs "--add-opens=java.base/java.net=ALL-UNNAMED"
 }
 
 graalvmNative {
@@ -22,6 +28,12 @@ graalvmNative {
             conditional {
                 userCodeFilterPath = "user-code-filter.json"
             }
+        }
+    }
+    binaries {
+        all {
+            buildArgs.add("--add-opens=java.base/java.net=ALL-UNNAMED")
+            buildArgs.add("--enable-url-protocols=http")
         }
     }
 }
