@@ -184,7 +184,7 @@ public class InputContextImplTest {
 
         @Override
         public StringBuffer getRequestURL() {
-            return new StringBuffer("http://localhost/content/example.txt");
+            return new java.lang.StringBuffer("http://localhost/content/example.txt");
         }
 
         @Override
