@@ -29,6 +29,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -177,6 +178,27 @@ public class Jersey_jsonTest {
                 .hasMessageContaining("JSON source");
     }
 
+    @Test
+    void badgerFishNotationPreservesAttributesAndTextValues() throws Exception {
+        JSONConfiguration configuration = JSONConfiguration.badgerFish().build();
+        JSONJAXBContext context = new JSONJAXBContext(configuration, BeanThree.class);
+
+        BeanThree bean = new BeanThree("BK-101", "Graph Theory");
+        StringWriter writer = new StringWriter();
+        context.createJSONMarshaller().marshallToJSON(bean, writer);
+
+        String json = writer.toString();
+        assertThat(json).contains("\"beanThree\"");
+        assertThat(json).contains("\"@code\":\"BK-101\"");
+        assertThat(json).contains("\"title\"");
+        assertThat(json).contains("\"$\":\"Graph Theory\"");
+
+        BeanThree unmarshalled = context.createJSONUnmarshaller()
+                .unmarshalFromJSON(new StringReader(json), BeanThree.class);
+        assertThat(unmarshalled.code).isEqualTo("BK-101");
+        assertThat(unmarshalled.title).isEqualTo("Graph Theory");
+    }
+
     @XmlRootElement(name = "beanOne")
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(propOrder = {"name", "number"})
@@ -206,6 +228,24 @@ public class Jersey_jsonTest {
 
         public BeanTwo(List<String> titles) {
             this.titles = new ArrayList<>(titles);
+        }
+    }
+
+    @XmlRootElement(name = "beanThree")
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class BeanThree {
+        @XmlAttribute
+        public String code;
+
+        @XmlElement
+        public String title;
+
+        public BeanThree() {
+        }
+
+        public BeanThree(String code, String title) {
+            this.code = code;
+            this.title = title;
         }
     }
 }
