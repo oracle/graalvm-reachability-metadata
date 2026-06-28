@@ -1,0 +1,71 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "ognl:ognl:3.3.5",
+  "issueNumber": 7430,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Keep OGNL tests in-process against local POJOs/OgnlContext/OgnlRuntime. Preserve JVM test args for strong encapsulation, at least `--add-opens=java.base/java.lang=ALL-UNNAMED`; upstream 3.3.5's JDK17 profile also opens `java.base/java.util`. Only set OGNL system properties inside tests that intentionally cover those switches, especially `ognl.UseJDK9PlusAccessHandler`, `ognl.security.manager`, and `ognl.UseFirstMatchGetSetLookup`; restore them after each test because OgnlRuntime reads several at class initialization. On JDK 25, do not assume `System.setSecurityManager` succeeds; guard SecurityManager-specific coverage for `SecurityException`/`UnsupportedOperationException` or assert the non-installed path.",
+    "applied_setup": [],
+    "current_library": "ognl:ognl:3.2.21",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7430 [Automation] java run fails for ognl:ognl:3.3.5; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "17 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 78032,
+    "issue_label": "fails-java-run",
+    "issue_number": 7430,
+    "library": "ognl:ognl:3.3.5",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.3.5",
+    "output_tokens_used": 4776,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The Java-run failure for 3.3.5 reproduces as a behavioral assertion failure in existing ObjectPropertyAccessor coverage, not as a missing dependency or external service.",
+      "Javassist is a compile/runtime transitive dependency of `ognl:ognl:3.3.5`; adding it explicitly is unnecessary unless local Gradle resolution proves otherwise.",
+      "SecurityManager and `sun.misc.Unsafe` paths are fragile on JDK 25 and later, so tests should avoid depending on successful SecurityManager installation."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/ognl:ognl:3.3.5/library-preparation-preflight/pi-generation-2026-06-28T09-08-27-143747Z.log",
+    "status": "completed",
+    "summary": "OGNL is an in-process expression language; the resolved 3.3.5 artifact only needs its normal transitive Javassist dependency and no Docker service, but meaningful reflective-access coverage relies on JVM/test setup already present in the existing scaffold."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.3.5",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-7430-fails-java-run-ognl-ognl-3.3.5-ee10fc1b",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
