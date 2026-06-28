@@ -15,6 +15,7 @@ import org.codehaus.plexus.compiler.Compiler;
 import org.codehaus.plexus.compiler.javac.JavacCompiler;
 import org.codehaus.plexus.compiler.manager.CompilerManager;
 import org.codehaus.plexus.compiler.manager.NoSuchCompilerException;
+import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.junit.jupiter.api.Test;
 
 public class Plexus_compiler_managerTest {
@@ -29,6 +30,29 @@ public class Plexus_compiler_managerTest {
             Compiler compiler = manager.getCompiler("javac");
 
             assertThat(manager).isNotNull();
+            assertThat(compiler).isInstanceOf(JavacCompiler.class);
+        } finally {
+            container.dispose();
+        }
+    }
+
+    @Test
+    void compilerManagerReturnsCompilerRegisteredWithAdditionalRoleHint() throws Exception {
+        PlexusContainer container = new DefaultPlexusContainer();
+        try {
+            container.initialize();
+            container.start();
+
+            ComponentDescriptor descriptor = new ComponentDescriptor();
+            descriptor.setRole(Compiler.ROLE);
+            descriptor.setRoleHint("custom-javac");
+            descriptor.setImplementation(JavacCompiler.class.getName());
+            container.addComponentDescriptor(descriptor);
+
+            CompilerManager manager = (CompilerManager) container.lookup(CompilerManager.ROLE);
+            Compiler compiler = manager.getCompiler("custom-javac");
+
+            assertThat(compiler).isSameAs(container.lookup(Compiler.ROLE, "custom-javac"));
             assertThat(compiler).isInstanceOf(JavacCompiler.class);
         } finally {
             container.dispose();
