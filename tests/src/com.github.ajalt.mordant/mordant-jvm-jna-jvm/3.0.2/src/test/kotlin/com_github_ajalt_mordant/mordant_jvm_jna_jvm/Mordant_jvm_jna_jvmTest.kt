@@ -52,6 +52,27 @@ public class Mordant_jvm_jna_jvmTest {
     }
 
     @Test
+    fun `provider declines native image execution markers`() {
+        val propertyName: String = "org.graalvm.nativeimage.imagecode"
+        val originalImageCode: String? = System.getProperty(propertyName)
+        try {
+            listOf("buildtime", "runtime").forEach { imageCode: String ->
+                System.setProperty(propertyName, imageCode)
+
+                val terminalInterface: TerminalInterface? = TerminalInterfaceProviderJna().load()
+
+                assertThat(terminalInterface).isNull()
+            }
+        } finally {
+            if (originalImageCode == null) {
+                System.clearProperty(propertyName)
+            } else {
+                System.setProperty(propertyName, originalImageCode)
+            }
+        }
+    }
+
+    @Test
     fun `provider loads current platform terminal or declines without error`() {
         val terminalInterface: TerminalInterface? = TerminalInterfaceProviderJna().load()
 
