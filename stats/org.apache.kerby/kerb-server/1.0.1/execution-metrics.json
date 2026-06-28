@@ -1,0 +1,100 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T14:30:20.413725Z",
+    "library": "org.apache.kerby:kerb-server:1.0.1",
+    "starting_commit": "49f3623bceb2b9e4ec7906481b8952d22788d695",
+    "ending_commit": "99a3ac30825f37a1bc7d1424741e4e66e8c26160",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "1.0.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 3,
+        "totalCalls": 3
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1565,
+          "missed": 4653,
+          "ratio": 0.251689,
+          "total": 6218
+        },
+        "line": {
+          "covered": 340,
+          "missed": 1138,
+          "ratio": 0.230041,
+          "total": 1478
+        },
+        "method": {
+          "covered": 99,
+          "missed": 195,
+          "ratio": 0.336735,
+          "total": 294
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 3143,
+      "issue_label": "library-new-request",
+      "library": "org.apache.kerby:kerb-server:1.0.1",
+      "summary": "No extra Maven dependency or Docker service is needed; kerb-server is an embedded KDC server, but meaningful lifecycle coverage requires explicit in-test KDC configuration because the default server has no usable port configured.",
+      "deterministic_setup": [],
+      "agent_guidance": "Use the embedded org.apache.kerby.kerberos.kerb.server.KdcServer directly. Configure it in test code with loopback host, allowTcp(true), allowUdp(false), and an available ephemeral TCP port via setKdcTcpPort before calling init() and start(); stop it in cleanup/finally. Use the default in-memory identity backend unless a specific backend behavior is being tested. No environment variable, system property, external KDC, or Docker container is required.",
+      "risks": [
+        "Avoid relying on the default KDC port configuration: start() can fail if TCP/UDP is enabled without a concrete port.",
+        "Ephemeral port allocation has a small race if the test closes a probe ServerSocket before KdcServer binds; local Gradle and Native Image verification remain authoritative.",
+        "Using JDK Kerberos/JGSS client APIs would introduce java.security.krb5.conf/system-property concerns, but that is not necessary for kerb-server coverage."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#3143 Support for org.apache.kerby:kerb-server:1.0.1; label=library-new-request; body_chars=103"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 75836,
+      "output_tokens_used": 6143,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.kerby:kerb-server:1.0.1/library-preparation-preflight/pi-generation-2026-06-28T13-58-33-090674Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 278012,
+      "cached_input_tokens_used": 6493696,
+      "output_tokens_used": 30090,
+      "iterations": 3,
+      "cost_usd": 4.1495,
+      "generated_loc": 200,
+      "tested_library_loc": 340,
+      "metadata_entries": 14,
+      "test_only_metadata_entries": 1,
+      "code_coverage_percent": 23.0
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.apache.kerby/kerb-server/1.0.1/src/test/java/org_apache_kerby/kerb_server/TokenPreauthTest.java",
+      "metadata_file": "metadata/org.apache.kerby/kerb-server/1.0.1/reachability-metadata.json"
+    }
+  }
+}
