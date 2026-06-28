@@ -167,6 +167,21 @@ class Scalatest_propspec_3Test:
     ))
 
   @Test
+  def fixtureAnyPropSpecIgnoresFixtureBackedPropertiesWithoutCreatingFixtures(): Unit =
+    val suite: IgnoredFixturePropSpec = new IgnoredFixturePropSpec
+    val result: RunResult = runSuite(suite)
+
+    assert(result.succeeded)
+    assert(suite.events == Vector(
+      "create:active fixture property",
+      "property:active fixture",
+      "cleanup:active fixture"
+    ))
+    assert(suite.testNames.toVector == Vector("ignored fixture property", "active fixture property"))
+    assert(ignoredEvents(result.events).map(_.testName) == Vector("ignored fixture property"))
+    assert(succeededEvents(result.events).map(_.testName) == Vector("active fixture property"))
+
+  @Test
   def anyPropSpecAppliesNoArgFixturesAroundEachProperty(): Unit =
     val suite: NoArgFixturePropSpec = new NoArgFixturePropSpec
     val result: RunResult = runSuite(suite, configMap = ConfigMap("mode" -> "fixture value"))
@@ -305,6 +320,26 @@ class Scalatest_propspec_3Test:
 
     property("uses no-arg fixture wrapper") { () =>
       events = events :+ "property:no-arg"
+    }
+
+  private final class IgnoredFixturePropSpec extends FixtureAnyPropSpec:
+    type FixtureParam = String
+
+    var events: Vector[String] = Vector.empty
+
+    override protected def withFixture(test: OneArgTest): Outcome =
+      events = events :+ s"create:${test.name}"
+      val fixture: String = test.name.stripSuffix(" property")
+      try test(fixture)
+      finally events = events :+ s"cleanup:$fixture"
+
+    ignore("ignored fixture property") { (fixture: String) =>
+      events = events :+ s"ignored:$fixture"
+    }
+
+    property("active fixture property") { (fixture: String) =>
+      events = events :+ s"property:$fixture"
+      assert(fixture == "active fixture")
     }
 
   private final class NoArgFixturePropSpec extends AnyPropSpec:
