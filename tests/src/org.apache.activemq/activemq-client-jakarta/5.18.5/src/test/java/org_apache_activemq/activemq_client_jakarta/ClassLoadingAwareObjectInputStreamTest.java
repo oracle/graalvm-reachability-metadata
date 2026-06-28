@@ -51,6 +51,19 @@ public class ClassLoadingAwareObjectInputStreamTest {
     }
 
     @Test
+    void readObjectResolvesProxyClassWithInputStreamClassLoader() throws Exception {
+        Echo echo = newEchoProxy("input");
+        byte[] bytes = serialize(echo);
+
+        Echo restored = (Echo) deserializeWithContextLoader(
+                bytes,
+                ClassLoader.getPlatformClassLoader(),
+                true);
+
+        assertThat(restored.echo("message")).isEqualTo("input:message");
+    }
+
+    @Test
     void readObjectResolvesProxyClassWithFallbackClassLoader() throws Exception {
         Echo echo = newEchoProxy("fallback");
         byte[] bytes = serialize(echo);
@@ -69,8 +82,15 @@ public class ClassLoadingAwareObjectInputStreamTest {
     }
 
     private static Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
-        try (ClassLoadingAwareObjectInputStream input = new ClassLoadingAwareObjectInputStream(
-                new ByteArrayInputStream(bytes))) {
+        return deserialize(bytes, false);
+    }
+
+    private static Object deserialize(byte[] bytes, boolean useTestInputStream)
+            throws IOException, ClassNotFoundException {
+        ByteArrayInputStream byteInput = useTestInputStream
+                ? new TestByteArrayInputStream(bytes)
+                : new ByteArrayInputStream(bytes);
+        try (ClassLoadingAwareObjectInputStream input = new ClassLoadingAwareObjectInputStream(byteInput)) {
             input.setTrustAllPackages(true);
             return input.readObject();
         }
@@ -78,11 +98,18 @@ public class ClassLoadingAwareObjectInputStreamTest {
 
     private static Object deserializeWithContextLoader(byte[] bytes, ClassLoader contextLoader)
             throws IOException, ClassNotFoundException {
+        return deserializeWithContextLoader(bytes, contextLoader, false);
+    }
+
+    private static Object deserializeWithContextLoader(
+            byte[] bytes,
+            ClassLoader contextLoader,
+            boolean useTestInputStream) throws IOException, ClassNotFoundException {
         Thread thread = Thread.currentThread();
         ClassLoader previousLoader = thread.getContextClassLoader();
         thread.setContextClassLoader(contextLoader);
         try {
-            return deserialize(bytes);
+            return deserialize(bytes, useTestInputStream);
         } finally {
             thread.setContextClassLoader(previousLoader);
         }
@@ -127,6 +154,13 @@ public class ClassLoadingAwareObjectInputStreamTest {
             int result = name.hashCode();
             result = 31 * result + count;
             return result;
+        }
+    }
+
+    public static final class TestByteArrayInputStream extends ByteArrayInputStream {
+
+        TestByteArrayInputStream(byte[] bytes) {
+            super(bytes);
         }
     }
 
