@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.springframework:spring-context:6.0.2",
+  "issueNumber": 8772,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment variables or system properties are required. Tests should target APIs present in Spring Framework 6; do not try to preserve Spring 5-era remoting/EJB/WebLogic/WebSphere tests whose referenced classes were removed from spring-context 6.0.2.",
+    "applied_setup": [],
+    "current_library": "org.springframework:spring-context:5.3.15",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8772 [Automation] javac compile fails for org.springframework:spring-context:6.0.2; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "40 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 69633,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8772,
+    "library": "org.springframework:spring-context:6.0.2",
+    "model": "oca/gpt-5.5",
+    "new_version": "6.0.2",
+    "output_tokens_used": 5087,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "spring-context contains optional integrations for Jakarta annotations/EJB, JPA, Groovy, Kotlin, and application-server classloaders; tests that intentionally exercise those optional paths may need matching test APIs or local stubs, but they are not required for baseline meaningful coverage.",
+      "The reported javac failures are consistent with removed Spring 5 classes rather than missing setup, so adding dependencies is unlikely to fix those tests."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.springframework:spring-context:6.0.2/library-preparation-preflight/pi-generation-2026-06-28T02-09-20-294217Z.log",
+    "status": "completed",
+    "summary": "Resolved spring-context 6.0.2 has only Spring compile dependencies and meaningful core ApplicationContext coverage is reachable without extra Maven dependencies, Docker images, or environment/system properties."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "6.0.2",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8772-fails-javac-compile-org.springframework-spring-context-6.0.2-08ccfa30",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
