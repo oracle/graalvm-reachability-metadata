@@ -1,0 +1,99 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T05:58:06.409392Z",
+    "library": "org.projectlombok:lombok:1.18.20",
+    "starting_commit": "9c694693f6d0376670f995cdb948df699907b001",
+    "ending_commit": "21675acdbc2709c38f7f2b8cd19f80989a3e1573",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "1.18.20",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.722222,
+            "coveredCalls": 13,
+            "totalCalls": 18
+          },
+          "resources": {
+            "coverageRatio": 0.5,
+            "coveredCalls": 3,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 0.666667,
+        "coveredCalls": 16,
+        "totalCalls": 24
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 954,
+          "missed": 4592,
+          "ratio": 0.172016,
+          "total": 5546
+        },
+        "line": {
+          "covered": 186,
+          "missed": 770,
+          "ratio": 0.194561,
+          "total": 956
+        },
+        "method": {
+          "covered": 33,
+          "missed": 212,
+          "ratio": 0.134694,
+          "total": 245
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 1559,
+      "issue_label": "library-new-request",
+      "library": "org.projectlombok:lombok:1.18.20",
+      "summary": "Lombok 1.18.20 has no transitive dependencies or service backend, but its meaningful use is as a javac annotation processor; a plain generated runtime test scaffold is unlikely to exercise it.",
+      "deterministic_setup": [],
+      "agent_guidance": "Configure the generated tests to exercise Lombok through annotation processing, not only by importing annotation types. In Gradle terms this means adding the target Lombok artifact to the test annotation-processor path, e.g. `testAnnotationProcessor \"org.projectlombok:lombok:$libraryVersion\"`, or compiling small annotated source snippets from the test with `JavaCompiler` using an explicit `-processorpath` to the resolved Lombok jar. Official Lombok Gradle setup uses `compileOnly`/`annotationProcessor` and `testCompileOnly`/`testAnnotationProcessor`, not just a runtime dependency. Be aware that Lombok 1.18.20 only advertises JDK16 support; JDK21 support was added later in Lombok 1.18.30, so local Gradle verification may reject javac annotation-processing coverage for this exact version.",
+      "risks": [
+        "Lombok 1.18.20 may fail as an annotation processor on the repository JDK21 toolchain because it predates Lombok's JDK21 support.",
+        "If tests only instantiate or inspect Lombok annotation classes, coverage will be scaffold-level and will not reflect normal library use.",
+        "Adding a newer Lombok version as a helper dependency would change the behavior under test and should be avoided."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#1559 Support for org.projectlombok:lombok:1.18.20; label=library-new-request; body_chars=177"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 46120,
+      "output_tokens_used": 4639,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.projectlombok:lombok:1.18.20/library-preparation-preflight/pi-generation-2026-06-28T05-01-27-545066Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 497821,
+      "cached_input_tokens_used": 6460928,
+      "output_tokens_used": 58911,
+      "iterations": 9,
+      "cost_usd": 4.9978,
+      "generated_loc": 255,
+      "tested_library_loc": 186,
+      "metadata_entries": 9,
+      "code_coverage_percent": 19.46
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.projectlombok/lombok/1.18.20/src/test/java/org_projectlombok/lombok/PatchFixesHiderInnerUtilTest.java",
+      "metadata_file": "metadata/org.projectlombok/lombok/1.18.20/reachability-metadata.json"
+    }
+  }
+}
