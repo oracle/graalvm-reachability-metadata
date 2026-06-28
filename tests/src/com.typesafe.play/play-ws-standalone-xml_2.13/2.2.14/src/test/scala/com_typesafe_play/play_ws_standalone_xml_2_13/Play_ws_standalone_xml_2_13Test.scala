@@ -9,6 +9,7 @@ package com_typesafe_play.play_ws_standalone_xml_2_13
 import java.io.ByteArrayInputStream
 import java.io.StringReader
 import java.net.URI
+import java.nio.charset.StandardCharsets
 import java.util.Collections
 import java.util.{List => JList}
 import java.util.{Map => JMap}
@@ -66,6 +67,29 @@ class Play_ws_standalone_xml_2_13Test {
     val readableParsed: Elem = response.body[Elem](ScalaXMLBodyReadables.readableAsXml)
     assertEquals("feed", readableParsed.label)
     assertEquals(Seq("a-1", "a-2"), (readableParsed \\ "entry").map(node => (node \ "@id").text))
+  }
+
+  @Test
+  def xmlByteBasedReadablesHonorDeclaredCharacterEncoding(): Unit = {
+    val xmlText: String = """<?xml version="1.0" encoding="ISO-8859-1"?><city>München</city>"""
+    val encodedXml: ByteString = ByteString.fromArray(xmlText.getBytes(StandardCharsets.ISO_8859_1))
+
+    val scalaResponse: StandaloneWSResponse = ScalaResponse(encodedXml)
+    val scalaParsed: Elem = scalaResponse.body[Elem](ScalaXMLBodyReadables.readableAsXml)
+    assertEquals("city", scalaParsed.label)
+    assertEquals("München", scalaParsed.text)
+
+    val javaReadables: JavaXMLBodyReadables = new JavaXMLBodyReadables {}
+    val javaResponse: JavaStandaloneWSResponse = JavaResponse(encodedXml)
+    val javaParsed: Document = javaResponse.getBody(javaReadables.xml())
+    assertEquals("city", javaParsed.getDocumentElement.getTagName)
+    assertEquals("München", javaParsed.getDocumentElement.getTextContent)
+
+    val javaParsedWithoutExplicitEncoding: Document = JavaXML.fromInputStream(
+      new ByteArrayInputStream(encodedXml.toArray),
+      null
+    )
+    assertEquals("München", javaParsedWithoutExplicitEncoding.getDocumentElement.getTextContent)
   }
 
   @Test
