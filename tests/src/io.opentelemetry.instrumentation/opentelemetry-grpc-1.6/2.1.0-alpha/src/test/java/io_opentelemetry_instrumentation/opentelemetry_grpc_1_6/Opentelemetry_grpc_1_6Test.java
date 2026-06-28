@@ -159,6 +159,73 @@ public class Opentelemetry_grpc_1_6Test {
     }
 
     @Test
+    void clientListenerCallbacksRunWithClientSpanContextAndRestoreParentOnClose() throws Exception {
+        RecordingSpanExporter exporter = new RecordingSpanExporter();
+        SdkTracerProvider tracerProvider = SdkTracerProvider.builder()
+                .addSpanProcessor(SimpleSpanProcessor.create(exporter))
+                .build();
+        OpenTelemetrySdk openTelemetry = OpenTelemetrySdk.builder()
+                .setTracerProvider(tracerProvider)
+                .build();
+        GrpcTelemetry telemetry = GrpcTelemetry.create(openTelemetry);
+        Server server = null;
+        ManagedChannel channel = null;
+        try {
+            String serverName = InProcessServerBuilder.generateName();
+            server = InProcessServerBuilder.forName(serverName)
+                    .directExecutor()
+                    .addService(new UnaryService(request -> "callback:" + request, (request, headers) -> { }))
+                    .build()
+                    .start();
+            channel = InProcessChannelBuilder.forName(serverName)
+                    .directExecutor()
+                    .intercept(telemetry.newClientInterceptor())
+                    .build();
+            CountDownLatch done = new CountDownLatch(1);
+            AtomicReference<String> response = new AtomicReference<>();
+            AtomicReference<Status> status = new AtomicReference<>();
+            AtomicReference<Boolean> onMessageSpanWasCurrent = new AtomicReference<>(false);
+            AtomicReference<String> onMessageTraceId = new AtomicReference<>();
+            AtomicReference<Boolean> onCloseSpanWasCurrent = new AtomicReference<>(true);
+            ClientCall<String, String> call = channel.newCall(
+                    ECHO_METHOD, CallOptions.DEFAULT.withDeadlineAfter(5, TimeUnit.SECONDS));
+            call.start(new ClientCall.Listener<>() {
+                @Override
+                public void onMessage(String message) {
+                    response.set(message);
+                    onMessageSpanWasCurrent.set(Span.current().getSpanContext().isValid());
+                    onMessageTraceId.set(Span.current().getSpanContext().getTraceId());
+                }
+
+                @Override
+                public void onClose(Status closedStatus, Metadata trailers) {
+                    status.set(closedStatus);
+                    onCloseSpanWasCurrent.set(Span.current().getSpanContext().isValid());
+                    done.countDown();
+                }
+            }, new Metadata());
+            call.request(1);
+            call.sendMessage("hello");
+            call.halfClose();
+
+            assertThat(done.await(5, TimeUnit.SECONDS)).isTrue();
+            assertThat(status.get()).isNotNull();
+            assertThat(status.get().isOk()).isTrue();
+            assertThat(response.get()).isEqualTo("callback:hello");
+            List<SpanData> spans = waitForFinishedSpans(exporter, 1);
+            assertThat(spans).hasSize(1);
+            SpanData clientSpan = singleSpanWithKind(spans, SpanKind.CLIENT);
+            assertThat(clientSpan.getName()).isEqualTo(FULL_METHOD_NAME);
+            assertThat(onMessageSpanWasCurrent.get()).isTrue();
+            assertThat(onMessageTraceId.get()).isEqualTo(clientSpan.getSpanContext().getTraceId());
+            assertThat(onCloseSpanWasCurrent.get()).isFalse();
+            assertThat(clientSpan.getEvents()).hasSize(2);
+        } finally {
+            shutdown(channel, server, tracerProvider);
+        }
+    }
+
+    @Test
     void clientReceivesGrpcErrorAndSpansRecordDifferentClientAndServerStatusSemantics() throws Exception {
         RecordingSpanExporter exporter = new RecordingSpanExporter();
         SdkTracerProvider tracerProvider = SdkTracerProvider.builder()
