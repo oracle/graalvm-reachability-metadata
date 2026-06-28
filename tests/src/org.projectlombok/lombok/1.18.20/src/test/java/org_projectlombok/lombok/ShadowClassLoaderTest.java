@@ -34,9 +34,6 @@ import org.junit.jupiter.api.io.TempDir;
 
 public class ShadowClassLoaderTest {
 
-    private static final String LOMBOK_ANNOTATION_PROCESSOR =
-            "lombok.launch.AnnotationProcessorHider$AnnotationProcessor";
-
     @TempDir
     private Path temporaryDirectory;
 
@@ -66,6 +63,7 @@ public class ShadowClassLoaderTest {
         final String previousDisableValue = System.getProperty("lombok.disable");
         System.setProperty("lombok.disable", "true");
         try {
+            configureJavaHomeForDynamicCompilation();
             final Path sourceDirectory = Files.createDirectories(
                     this.temporaryDirectory.resolve("src"));
             final Path classesDirectory = Files.createDirectories(
@@ -83,16 +81,19 @@ public class ShadowClassLoaderTest {
                 final List<String> options = List.of(
                         "-d", classesDirectory.toString(),
                         "-classpath", System.getProperty("java.class.path"),
-                        "-processorpath", System.getProperty("java.class.path"),
-                        "-processor", LOMBOK_ANNOTATION_PROCESSOR,
                         "-proc:only");
                 final StringWriter compilerOutput = new StringWriter();
                 final JavaCompiler.CompilationTask task = compiler.getTask(
                         compilerOutput, fileManager, diagnostics, options, null, compilationUnits);
+                task.setProcessors(List.of(findLombokAnnotationProcessor()));
 
                 assertThat(task.call())
                         .withFailMessage(() -> formatCompilerFailure(compilerOutput, diagnostics))
                         .isTrue();
+            }
+        } catch (ServiceConfigurationError error) {
+            if (!isUnsupportedNativeClassLoading(error)) {
+                throw error;
             }
         } catch (Error error) {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
@@ -106,7 +107,8 @@ public class ShadowClassLoaderTest {
     private static Processor findLombokAnnotationProcessor() {
         final ServiceLoader<Processor> processors = ServiceLoader.load(Processor.class);
         for (Processor processor : processors) {
-            if (LOMBOK_ANNOTATION_PROCESSOR.equals(processor.getClass().getName())) {
+            if ("lombok.launch.AnnotationProcessorHider$AnnotationProcessor"
+                    .equals(processor.getClass().getName())) {
                 return processor;
             }
         }
@@ -124,6 +126,13 @@ public class ShadowClassLoaderTest {
             System.clearProperty("lombok.disable");
         } else {
             System.setProperty("lombok.disable", previousDisableValue);
+        }
+    }
+
+    private static void configureJavaHomeForDynamicCompilation() {
+        final String environmentJavaHome = System.getenv("JAVA_HOME");
+        if (System.getProperty("java.home") == null && environmentJavaHome != null) {
+            System.setProperty("java.home", environmentJavaHome);
         }
     }
 

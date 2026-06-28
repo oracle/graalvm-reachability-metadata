@@ -31,9 +31,12 @@ public class PatchFixesHiderInnerUtilTest {
                     "findMethod", Class.class, String.class, String[].class);
             final Method findMethodAnyArgs = utilType.getMethod(
                     "findMethodAnyArgs", Class.class, String.class);
+            final Method getShadowLoader = utilType.getMethod("getShadowLoader");
             final Method invokeMethod = utilType.getMethod(
                     "invokeMethod", Method.class, Object[].class);
 
+            final ClassLoader shadowLoader = (ClassLoader) getShadowLoader.invoke(null);
+            shadowLoader.loadClass(PATCH_FIXES_SHADOW_LOADED);
             final Class<?> shadowLoadedType = (Class<?>) shadowLoadClass.invoke(
                     null, PATCH_FIXES_SHADOW_LOADED);
             final Method addLombokNotes = (Method) findMethod.invoke(
