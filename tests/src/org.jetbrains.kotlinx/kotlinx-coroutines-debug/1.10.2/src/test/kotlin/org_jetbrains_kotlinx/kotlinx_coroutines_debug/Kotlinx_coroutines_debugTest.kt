@@ -98,6 +98,15 @@ public class Kotlinx_coroutines_debugTest {
     }
 
     @Test
+    fun debugProbesUninstallRequiresInstalledAgent(): Unit {
+        assertThat(DebugProbes.isInstalled).isFalse()
+        assertThatThrownBy { DebugProbes.uninstall() }
+            .isInstanceOf(IllegalStateException::class.java)
+            .hasMessageContaining("Agent was not installed")
+        assertThat(DebugProbes.isInstalled).isFalse()
+    }
+
+    @Test
     fun junit4CoroutinesTimeoutRejectsNonPositiveTimeouts(): Unit {
         assertThatThrownBy { CoroutinesTimeout(0) }
             .isInstanceOf(IllegalArgumentException::class.java)
