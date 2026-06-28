@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BaseDataStreamMarshallerTest {
+    private static final int ACTIVE_OPENWIRE_VERSION = 10;
 
     @Test
     void tightUnmarshalRestoresThrowableWithStackTrace() throws Exception {
@@ -38,7 +39,7 @@ public class BaseDataStreamMarshallerTest {
     }
 
     private static OpenWireFormat openWireFormat(boolean tightEncodingEnabled) {
-        OpenWireFormat wireFormat = new OpenWireFormat(1);
+        OpenWireFormat wireFormat = new OpenWireFormat(ACTIVE_OPENWIRE_VERSION);
         wireFormat.setStackTraceEnabled(true);
         wireFormat.setTightEncodingEnabled(tightEncodingEnabled);
         return wireFormat;
