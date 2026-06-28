@@ -8,6 +8,7 @@ package org_scala_lang.tasty_core_3
 
 import dotty.tools.tasty.TastyBuffer
 import dotty.tools.tasty.TastyBuffer.Addr
+import dotty.tools.tasty.TastyBuffer.NameRef
 import dotty.tools.tasty.TastyFormat
 import dotty.tools.tasty.TastyHash
 import dotty.tools.tasty.TastyHeaderUnpickler
@@ -95,6 +96,28 @@ class Tasty_core_3Test {
     assertTrue(addr != base)
     assertEquals(Addr(-1), TastyBuffer.NoAddr)
     assertEquals(4, TastyBuffer.AddrWidth)
+  }
+
+  @Test
+  def bufferWritesFixedWidthNaturalsAndReaderDecodesNameRefs(): Unit = {
+    val buffer = new TastyBuffer(2)
+    val fixedWidthNat = buffer.currentAddr
+    buffer.writeByte(0)
+    buffer.writeByte(0)
+    buffer.writeByte(0)
+    buffer.putNat(fixedWidthNat, 0x1234, 3)
+    buffer.writeNat(NameRef(1).index)
+    buffer.writeNat(NameRef(255).index)
+
+    assertEquals(0x1234, buffer.getNat(fixedWidthNat))
+    assertEquals(0x1234L, buffer.getLongNat(fixedWidthNat))
+    assertEquals(fixedWidthNat + 3, buffer.skipNat(fixedWidthNat))
+
+    val reader = new TastyReader(writtenBytes(buffer))
+    assertEquals(0x1234, reader.readNat())
+    assertEquals(NameRef(1), reader.readNameRef())
+    assertEquals(NameRef(255), reader.readNameRef())
+    assertTrue(reader.isAtEnd)
   }
 
   @Test
