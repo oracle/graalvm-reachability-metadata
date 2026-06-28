@@ -69,7 +69,23 @@ class Anorm_tokenizer_3Test {
     assertThat(upperCaseRendering(42)).isEqualTo("N = 42")
   }
 
+  @Test
+  def makerCanReturnCustomShowImplementation(): Unit = {
+    val maker: Show.Maker[DelimitedTokens] = new Show.Maker[DelimitedTokens] {
+      override def apply(subject: DelimitedTokens): Show = new DelimitedTokensShow(subject)
+    }
+
+    assertThat(Show.mkString(DelimitedTokens(List("select", "*", "from", "users")))(maker))
+      .isEqualTo("select * from users")
+  }
+
   private final case class SqlLiteral(value: String)
 
   private final case class ColumnReference(table: String, column: String)
+
+  private final case class DelimitedTokens(values: List[String])
+
+  private final class DelimitedTokensShow(tokens: DelimitedTokens) extends Show {
+    override def show: String = tokens.values.mkString(" ")
+  }
 }
