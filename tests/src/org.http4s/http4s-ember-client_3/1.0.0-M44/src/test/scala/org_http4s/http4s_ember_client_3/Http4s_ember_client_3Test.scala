@@ -160,6 +160,39 @@ class Http4s_ember_client_3Test {
   }
 
   @Test
+  def clientEnforcesConfiguredMaxResponseHeaderSize(): Unit = {
+    val largeHeaderHandler: HttpExchange => Unit = { exchange =>
+      exchange.getRequestURI.getPath match {
+        case "/large-header" =>
+          sendText(exchange, 200, "too large", "X-Large-Header" -> "a" * 512)
+
+        case _ =>
+          sendText(exchange, 404, "not found")
+      }
+    }
+
+    withHttpServer(largeHeaderHandler) { port =>
+      val program: IO[Either[Throwable, String]] = EmberClientBuilder
+        .default[IO]
+        .withMaxResponseHeaderSize(128)
+        .withTimeout(2.seconds)
+        .withIdleConnectionTime(4.seconds)
+        .build
+        .use { client =>
+          val request: Request[IO] = Request[IO](method = Method.GET, uri = uriFor(port, "/large-header"))
+          client.expect[String](request).attempt
+        }
+
+      unsafeRun(program) match {
+        case Left(error) =>
+          assertTrue(error.getMessage.contains("HTTP Header Section Exceeds Max Size"))
+        case Right(body) =>
+          fail(s"expected response header parsing to fail, got successful body: $body")
+      }
+    }
+  }
+
+  @Test
   def clientExecutesHeadRequestsWithoutReadingResponseBodies(): Unit = {
     val headHandler: HttpExchange => Unit = { exchange =>
       exchange.getRequestURI.getPath match {
