@@ -6,11 +6,51 @@
  */
 package org_codehaus_plexus.plexus_compiler_manager;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.compiler.Compiler;
+import org.codehaus.plexus.compiler.javac.JavacCompiler;
+import org.codehaus.plexus.compiler.manager.CompilerManager;
+import org.codehaus.plexus.compiler.manager.NoSuchCompilerException;
 import org.junit.jupiter.api.Test;
 
-class Plexus_compiler_managerTest {
+public class Plexus_compiler_managerTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void plexusContainerLooksUpManagerAndReturnsRegisteredJavacCompiler() throws Exception {
+        PlexusContainer container = new DefaultPlexusContainer();
+        try {
+            container.initialize();
+            container.start();
+
+            CompilerManager manager = (CompilerManager) container.lookup(CompilerManager.ROLE);
+            Compiler compiler = manager.getCompiler("javac");
+
+            assertThat(manager).isNotNull();
+            assertThat(compiler).isInstanceOf(JavacCompiler.class);
+        } finally {
+            container.dispose();
+        }
+    }
+
+    @Test
+    void plexusContainerManagedManagerReportsUnknownCompilerHint() throws Exception {
+        PlexusContainer container = new DefaultPlexusContainer();
+        try {
+            container.initialize();
+            container.start();
+
+            CompilerManager manager = (CompilerManager) container.lookup(CompilerManager.ROLE);
+
+            assertThatExceptionOfType(NoSuchCompilerException.class)
+                    .isThrownBy(() -> manager.getCompiler("missing-compiler"))
+                    .withMessage("No such compiler 'missing-compiler'.")
+                    .satisfies(exception -> assertThat(exception.getCompilerId())
+                            .isEqualTo("missing-compiler"));
+        } finally {
+            container.dispose();
+        }
     }
 }
