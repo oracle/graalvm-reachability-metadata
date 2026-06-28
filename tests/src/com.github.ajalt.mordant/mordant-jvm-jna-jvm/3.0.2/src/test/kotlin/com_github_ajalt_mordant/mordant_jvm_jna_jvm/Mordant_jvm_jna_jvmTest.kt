@@ -127,6 +127,26 @@ public class Mordant_jvm_jna_jvmTest {
             .isEqualTo("mordant-jna-output\n")
     }
 
+    @Test
+    fun `loaded terminal writes print requests to standard error without trailing linebreak`() {
+        val terminalInterface: TerminalInterface? = TerminalInterfaceProviderJna().load()
+
+        if (terminalInterface == null) {
+            assertThat(terminalInterface == null).isTrue()
+            return
+        }
+
+        val captured: CapturedStreams = captureStandardStreams {
+            terminalInterface.completePrintRequest(
+                PrintRequest(text = "mordant-jna-error", trailingLinebreak = false, stderr = true),
+            )
+        }
+
+        assertThat(captured.stdout).isEmpty()
+        assertThat(captured.stderr.replace(System.lineSeparator(), "\n"))
+            .isEqualTo("mordant-jna-error")
+    }
+
     private fun captureStandardOut(block: () -> Unit): String {
         val originalOut: PrintStream = System.out
         val bytes = ByteArrayOutputStream()
@@ -141,4 +161,34 @@ public class Mordant_jvm_jna_jvmTest {
         }
         return bytes.toString(StandardCharsets.UTF_8.name())
     }
+
+    private fun captureStandardStreams(block: () -> Unit): CapturedStreams {
+        val originalOut: PrintStream = System.out
+        val originalErr: PrintStream = System.err
+        val outBytes = ByteArrayOutputStream()
+        val errBytes = ByteArrayOutputStream()
+        val capturingOut = PrintStream(outBytes, true, StandardCharsets.UTF_8.name())
+        val capturingErr = PrintStream(errBytes, true, StandardCharsets.UTF_8.name())
+        try {
+            System.setOut(capturingOut)
+            System.setErr(capturingErr)
+            block()
+        } finally {
+            capturingOut.flush()
+            capturingErr.flush()
+            System.setOut(originalOut)
+            System.setErr(originalErr)
+            capturingOut.close()
+            capturingErr.close()
+        }
+        return CapturedStreams(
+            stdout = outBytes.toString(StandardCharsets.UTF_8.name()),
+            stderr = errBytes.toString(StandardCharsets.UTF_8.name()),
+        )
+    }
+
+    private data class CapturedStreams(
+        val stdout: String,
+        val stderr: String,
+    )
 }
