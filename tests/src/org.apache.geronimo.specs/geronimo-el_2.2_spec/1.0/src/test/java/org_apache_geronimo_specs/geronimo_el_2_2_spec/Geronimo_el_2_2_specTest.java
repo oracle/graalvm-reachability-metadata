@@ -8,7 +8,7 @@ package org_apache_geronimo_specs.geronimo_el_2_2_spec;
 
 import org.junit.jupiter.api.Test;
 
-class Geronimo_el_2_2_specTest {
+public class Geronimo_el_2_2_specTest {
     @Test
     void test() throws Exception {
         System.out.println("This is just a placeholder, implement your test");
