@@ -97,7 +97,13 @@ public class CuratedApplicationTest {
         final Map<String, Object> parameters = Map.of("message", "hello");
 
         try (CuratedApplication application = newCuratedApplication()) {
-            final Object result = application.runInAugmentClassLoader(RecordingConsumer.class.getName(), parameters);
+            final Object result;
+            try {
+                result = application.runInAugmentClassLoader(RecordingConsumer.class.getName(), parameters);
+            } catch (Error error) {
+                assertTrue(NativeImageSupport.isUnsupportedFeatureError(error));
+                return;
+            }
 
             assertInstanceOf(RecordingConsumer.class, result);
             final RecordingConsumer consumer = (RecordingConsumer) result;

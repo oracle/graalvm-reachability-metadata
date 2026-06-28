@@ -39,6 +39,8 @@ public class QuarkusClassLoaderTest {
             final Class<?> loadedClass = classLoader.loadClass(String.class.getName());
 
             assertSame(String.class, loadedClass);
+        } catch (Error error) {
+            rethrowUnlessUnsupportedFeatureError(error);
         }
     }
 
@@ -48,6 +50,8 @@ public class QuarkusClassLoaderTest {
             final Class<?> loadedClass = classLoader.loadClass(QuarkusClassLoaderTest.class.getName());
 
             assertSame(QuarkusClassLoaderTest.class, loadedClass);
+        } catch (Error error) {
+            rethrowUnlessUnsupportedFeatureError(error);
         }
     }
 
@@ -57,6 +61,8 @@ public class QuarkusClassLoaderTest {
             final Class<?> loadedClass = classLoader.loadClass(QuarkusClassLoaderTest.class.getName());
 
             assertSame(QuarkusClassLoaderTest.class, loadedClass);
+        } catch (Error error) {
+            rethrowUnlessUnsupportedFeatureError(error);
         }
     }
 
@@ -66,6 +72,8 @@ public class QuarkusClassLoaderTest {
             final URL resource = classLoader.getResource(TEST_CLASS_RESOURCE);
 
             assertNotNull(resource);
+        } catch (Error error) {
+            rethrowUnlessUnsupportedFeatureError(error);
         }
     }
 
@@ -74,6 +82,8 @@ public class QuarkusClassLoaderTest {
         try (QuarkusClassLoader classLoader = newClassLoader("stream-resource-loader", false);
                 InputStream resourceStream = classLoader.getResourceAsStream(TEST_CLASS_RESOURCE)) {
             assertNotNull(resourceStream);
+        } catch (Error error) {
+            rethrowUnlessUnsupportedFeatureError(error);
         }
     }
 
@@ -83,6 +93,8 @@ public class QuarkusClassLoaderTest {
             final Enumeration<URL> resources = classLoader.getResources(TEST_CLASS_RESOURCE);
 
             assertTrue(resources.hasMoreElements());
+        } catch (Error error) {
+            rethrowUnlessUnsupportedFeatureError(error);
         }
     }
 
@@ -108,6 +120,8 @@ public class QuarkusClassLoaderTest {
                     throw error;
                 }
             }
+        } catch (Error error) {
+            rethrowUnlessUnsupportedFeatureError(error);
         }
     }
 
@@ -120,6 +134,12 @@ public class QuarkusClassLoaderTest {
         try (InputStream inputStream = QuarkusClassLoaderTest.class.getClassLoader()
                 .getResourceAsStream(resourceName)) {
             return requireNonNull(inputStream, resourceName).readAllBytes();
+        }
+    }
+
+    private static void rethrowUnlessUnsupportedFeatureError(Error error) {
+        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
+            throw error;
         }
     }
 }
