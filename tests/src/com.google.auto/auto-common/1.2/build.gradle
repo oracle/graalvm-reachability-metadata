@@ -9,11 +9,36 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+def generatedTestResourcesDir = layout.buildDirectory.dir(
+        "generated/test-resources/external-compiler-classpath"
+)
+
+def generateExternalCompilerClasspath = tasks.register("generateExternalCompilerClasspath") {
+    inputs.files(configurations.testRuntimeClasspath)
+    outputs.file(generatedTestResourcesDir.map { it.file("external-compiler-classpath.txt") })
+    doLast {
+        File outputFile = generatedTestResourcesDir.get().file("external-compiler-classpath.txt").asFile
+        outputFile.parentFile.mkdirs()
+        outputFile.text = configurations.testRuntimeClasspath.asPath
+                .split(File.pathSeparator)
+                .join(System.lineSeparator())
+    }
+}
 
 dependencies {
     testImplementation "com.google.auto:auto-common:$libraryVersion"
     testImplementation 'com.squareup:javapoet:1.13.0'
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+sourceSets {
+    test {
+        resources.srcDir(generatedTestResourcesDir)
+    }
+}
+
+tasks.named("processTestResources") {
+    dependsOn(generateExternalCompilerClasspath)
 }
 
 graalvmNative {

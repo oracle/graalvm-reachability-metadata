@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSetMultimap;
 import com.squareup.javapoet.AnnotationSpec;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -35,6 +36,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -76,6 +78,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class Auto_commonTest {
+    private static final String EXTERNAL_COMPILER_CLASSPATH_RESOURCE = "/external-compiler-classpath.txt";
     private static final Duration EXTERNAL_COMPILER_TIMEOUT = Duration.ofSeconds(55);
 
     @Test
@@ -562,9 +565,9 @@ public class Auto_commonTest {
     }
 
     private static String externalClasspath() throws IOException {
-        List<String> entries = new ArrayList<>();
-        entries.add(Path.of("build", "classes", "java", "test").toAbsolutePath().toString());
-        entries.add(Path.of("build", "resources", "test").toAbsolutePath().toString());
+        LinkedHashSet<String> entries = new LinkedHashSet<>();
+        addClasspathEntry(entries, Path.of("build", "classes", "java", "test"));
+        addClasspathEntry(entries, Path.of("build", "resources", "test"));
         Path libs = Path.of("build", "libs");
         if (Files.isDirectory(libs)) {
             try (Stream<Path> paths = Files.list(libs)) {
@@ -573,24 +576,52 @@ public class Auto_commonTest {
                         .forEach(entries::add);
             }
         }
-        addCachedArtifacts(entries, "com.google.auto", "auto-common");
-        addCachedArtifacts(entries, "com.google.guava", "guava");
-        addCachedArtifacts(entries, "com.google.guava", "failureaccess");
-        addCachedArtifacts(entries, "com.google.guava", "listenablefuture");
-        addCachedArtifacts(entries, "com.google.code.findbugs", "jsr305");
-        addCachedArtifacts(entries, "org.checkerframework", "checker-qual");
-        addCachedArtifacts(entries, "com.google.errorprone", "error_prone_annotations");
-        addCachedArtifacts(entries, "com.google.j2objc", "j2objc-annotations");
-        addCachedArtifacts(entries, "com.squareup", "javapoet");
-        addCachedArtifacts(entries, "org.assertj", "assertj-core");
+        List<String> runtimeClasspathEntries = runtimeClasspathEntries();
+        if (runtimeClasspathEntries.isEmpty()) {
+            addCachedArtifacts(entries, "com.google.auto", "auto-common");
+            addCachedArtifacts(entries, "com.google.guava", "guava");
+            addCachedArtifacts(entries, "com.google.guava", "failureaccess");
+            addCachedArtifacts(entries, "com.google.guava", "listenablefuture");
+            addCachedArtifacts(entries, "com.google.code.findbugs", "jsr305");
+            addCachedArtifacts(entries, "org.checkerframework", "checker-qual");
+            addCachedArtifacts(entries, "com.google.errorprone", "error_prone_annotations");
+            addCachedArtifacts(entries, "com.google.j2objc", "j2objc-annotations");
+            addCachedArtifacts(entries, "com.squareup", "javapoet");
+            addCachedArtifacts(entries, "org.assertj", "assertj-core");
+        } else {
+            runtimeClasspathEntries.forEach(entries::add);
+        }
         String currentClasspath = System.getProperty("java.class.path", "");
         if (!currentClasspath.isBlank()) {
-            entries.add(currentClasspath);
+            for (String entry : currentClasspath.split(System.getProperty("path.separator"))) {
+                if (!entry.isBlank()) {
+                    entries.add(entry);
+                }
+            }
         }
         return String.join(System.getProperty("path.separator"), entries);
     }
 
-    private static void addCachedArtifacts(List<String> entries, String group, String artifact) throws IOException {
+    private static List<String> runtimeClasspathEntries() throws IOException {
+        try (InputStream inputStream = Auto_commonTest.class.getResourceAsStream(EXTERNAL_COMPILER_CLASSPATH_RESOURCE)) {
+            if (inputStream == null) {
+                return List.of();
+            }
+            return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8)
+                    .lines()
+                    .map(String::trim)
+                    .filter(entry -> !entry.isBlank())
+                    .toList();
+        }
+    }
+
+    private static void addClasspathEntry(Set<String> entries, Path path) {
+        if (Files.exists(path)) {
+            entries.add(path.toAbsolutePath().toString());
+        }
+    }
+
+    private static void addCachedArtifacts(Set<String> entries, String group, String artifact) throws IOException {
         String userHome = System.getProperty("user.home");
         if (userHome == null || userHome.isBlank()) {
             return;
@@ -706,6 +737,7 @@ public class Auto_commonTest {
             return false;
         }
 
+        @SuppressWarnings("checkstyle:annotationAccess")
         private void recordAnnotationUtilities(
                 Elements elements,
                 TypeElement subject,
