@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ObjectUtilsTest {
     @Test
     void clonesPrimitiveArraysUsingObjectUtilsClone() {
-        int[] original = new int[] { 1, 2, 3 };
+        int[] original = new int[] {1, 2, 3};
 
         int[] cloned = ObjectUtils.clone(original);
 

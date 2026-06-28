@@ -15,8 +15,8 @@ public class ArrayUtilsTest {
     @Test
     void createsTypedArraysForGenericNullAndSubarrayOperations() {
         String[] emptyStrings = ArrayUtils.nullToEmpty((String[]) null, String[].class);
-        String[] emptySubarray = ArrayUtils.subarray(new String[] { "alpha", "beta" }, 2, 1);
-        String[] populatedSubarray = ArrayUtils.subarray(new String[] { "alpha", "beta", "gamma" }, 1, 3);
+        String[] emptySubarray = ArrayUtils.subarray(new String[] {"alpha", "beta"}, 2, 1);
+        String[] populatedSubarray = ArrayUtils.subarray(new String[] {"alpha", "beta", "gamma"}, 1, 3);
 
         assertThat(emptyStrings).isEmpty();
         assertThat(emptySubarray).isEmpty();
@@ -25,11 +25,11 @@ public class ArrayUtilsTest {
 
     @Test
     void createsTypedArraysWhenAddingAndCombiningGenericArrays() {
-        String[] combined = ArrayUtils.addAll(new String[] { "left" }, new String[] { "right", "tail" });
-        String[] appendedToExisting = ArrayUtils.add(new String[] { "left" }, "right");
+        String[] combined = ArrayUtils.addAll(new String[] {"left"}, new String[] {"right", "tail"});
+        String[] appendedToExisting = ArrayUtils.add(new String[] {"left"}, "right");
         String[] appendedToNull = ArrayUtils.add((String[]) null, "first");
         String[] insertedIntoNull = ArrayUtils.add((String[]) null, 0, "first");
-        String[] insertedIntoExisting = ArrayUtils.add(new String[] { "left", "tail" }, 1, "middle");
+        String[] insertedIntoExisting = ArrayUtils.add(new String[] {"left", "tail"}, 1, "middle");
 
         assertThat(combined).containsExactly("left", "right", "tail");
         assertThat(appendedToExisting).containsExactly("left", "right");
@@ -40,10 +40,10 @@ public class ArrayUtilsTest {
 
     @Test
     void createsTypedArraysWhenRemovingGenericArrayElements() {
-        String[] removedSingle = ArrayUtils.remove(new String[] { "zero", "one", "two" }, 1);
-        String[] removedByIndices = ArrayUtils.removeAll(new String[] { "zero", "one", "two", "three" }, 1, 3);
+        String[] removedSingle = ArrayUtils.remove(new String[] {"zero", "one", "two"}, 1);
+        String[] removedByIndices = ArrayUtils.removeAll(new String[] {"zero", "one", "two", "three"}, 1, 3);
         String[] removedByValues = ArrayUtils.removeElements(
-                new String[] { "keep", "drop", "drop", "stay" }, "drop", "drop");
+                new String[] {"keep", "drop", "drop", "stay"}, "drop", "drop");
 
         assertThat(removedSingle).containsExactly("zero", "two");
         assertThat(removedByIndices).containsExactly("zero", "two");
