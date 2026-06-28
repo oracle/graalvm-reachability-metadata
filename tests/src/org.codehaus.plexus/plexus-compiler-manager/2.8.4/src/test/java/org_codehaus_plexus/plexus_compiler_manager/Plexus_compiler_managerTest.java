@@ -20,6 +20,32 @@ import org.junit.jupiter.api.Test;
 
 public class Plexus_compiler_managerTest {
     @Test
+    void compilerManagerRoleUsesPublicInterfaceNameForPlexusLookup() throws Exception {
+        PlexusContainer container = new DefaultPlexusContainer();
+        try {
+            container.initialize();
+            container.start();
+
+            Object manager = container.lookup(CompilerManager.class.getName());
+
+            assertThat(CompilerManager.ROLE).isEqualTo(CompilerManager.class.getName());
+            assertThat(manager).isInstanceOf(CompilerManager.class);
+        } finally {
+            container.dispose();
+        }
+    }
+
+    @Test
+    void noSuchCompilerExceptionExposesRequestedCompilerIdentifier() {
+        NoSuchCompilerException exception = new NoSuchCompilerException("ecj");
+
+        assertThat(exception)
+                .hasMessage("No such compiler 'ecj'.")
+                .hasNoCause();
+        assertThat(exception.getCompilerId()).isEqualTo("ecj");
+    }
+
+    @Test
     void plexusContainerLooksUpManagerAndReturnsRegisteredJavacCompiler() throws Exception {
         PlexusContainer container = new DefaultPlexusContainer();
         try {
