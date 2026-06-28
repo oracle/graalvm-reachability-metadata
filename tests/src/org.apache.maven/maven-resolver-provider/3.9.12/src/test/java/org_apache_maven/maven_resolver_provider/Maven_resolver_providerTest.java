@@ -22,8 +22,11 @@ import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.collection.CollectRequest;
+import org.eclipse.aether.collection.CollectResult;
 import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
 import org.eclipse.aether.graph.Dependency;
+import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.impl.DefaultServiceLocator;
 import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.RemoteRepository;
@@ -154,6 +157,99 @@ public class Maven_resolver_providerTest {
         assertThat(result.getVersions()).extracting(Object::toString).containsExactly("1.0.0", "1.1.0");
         assertThat(result.getRepository(result.getVersions().get(0))).isEqualTo(remoteRepository);
         assertThat(localRepositoryDirectory.resolve("com/acme/demo/maven-metadata-fixture.xml")).exists();
+    }
+
+    @Test
+    void dependencyCollectionBuildsTransitiveGraphAndHonorsMavenExclusions() throws Exception {
+        Path remoteRepositoryDirectory = tempDirectory.resolve("remote-collection-repository");
+        Path localRepositoryDirectory = tempDirectory.resolve("local-collection-repository");
+        writePom(remoteRepositoryDirectory, "com.acme", "app", "1.0.0", """
+                <project xmlns="http://maven.apache.org/POM/4.0.0">
+                  <modelVersion>4.0.0</modelVersion>
+                  <groupId>com.acme</groupId>
+                  <artifactId>app</artifactId>
+                  <version>1.0.0</version>
+                  <dependencies>
+                    <dependency>
+                      <groupId>com.acme</groupId>
+                      <artifactId>direct-lib</artifactId>
+                      <version>1.0.0</version>
+                      <scope>compile</scope>
+                      <exclusions>
+                        <exclusion>
+                          <groupId>com.acme</groupId>
+                          <artifactId>excluded-lib</artifactId>
+                        </exclusion>
+                      </exclusions>
+                    </dependency>
+                  </dependencies>
+                </project>
+                """);
+        writePom(remoteRepositoryDirectory, "com.acme", "direct-lib", "1.0.0", """
+                <project xmlns="http://maven.apache.org/POM/4.0.0">
+                  <modelVersion>4.0.0</modelVersion>
+                  <groupId>com.acme</groupId>
+                  <artifactId>direct-lib</artifactId>
+                  <version>1.0.0</version>
+                  <dependencies>
+                    <dependency>
+                      <groupId>com.acme</groupId>
+                      <artifactId>transitive-lib</artifactId>
+                      <version>1.0.0</version>
+                      <scope>runtime</scope>
+                    </dependency>
+                    <dependency>
+                      <groupId>com.acme</groupId>
+                      <artifactId>excluded-lib</artifactId>
+                      <version>1.0.0</version>
+                      <scope>compile</scope>
+                    </dependency>
+                  </dependencies>
+                </project>
+                """);
+        writePom(remoteRepositoryDirectory, "com.acme", "transitive-lib", "1.0.0", """
+                <project xmlns="http://maven.apache.org/POM/4.0.0">
+                  <modelVersion>4.0.0</modelVersion>
+                  <groupId>com.acme</groupId>
+                  <artifactId>transitive-lib</artifactId>
+                  <version>1.0.0</version>
+                </project>
+                """);
+        writePom(remoteRepositoryDirectory, "com.acme", "excluded-lib", "1.0.0", """
+                <project xmlns="http://maven.apache.org/POM/4.0.0">
+                  <modelVersion>4.0.0</modelVersion>
+                  <groupId>com.acme</groupId>
+                  <artifactId>excluded-lib</artifactId>
+                  <version>1.0.0</version>
+                </project>
+                """);
+
+        RepositorySystem repositorySystem = newRepositorySystem();
+        DefaultRepositorySystemSession session = newSession(repositorySystem, localRepositoryDirectory);
+        RemoteRepository remoteRepository = repository("fixture", remoteRepositoryDirectory.toUri().toString());
+        Dependency rootDependency = new Dependency(new DefaultArtifact("com.acme:app:jar:1.0.0"), "compile");
+        CollectRequest request = new CollectRequest();
+        request.setRoot(rootDependency);
+        request.setRepositories(List.of(remoteRepository));
+
+        CollectResult result = repositorySystem.collectDependencies(session, request);
+
+        DependencyNode root = result.getRoot();
+        assertThat(root.getDependency().getArtifact().toString()).isEqualTo("com.acme:app:jar:1.0.0");
+        assertThat(root.getChildren())
+                .extracting(node -> node.getDependency().getArtifact().toString())
+                .containsExactly("com.acme:direct-lib:jar:1.0.0");
+        DependencyNode directDependency = root.getChildren().get(0);
+        assertThat(directDependency.getDependency().getScope()).isEqualTo("compile");
+        assertThat(directDependency.getChildren())
+                .extracting(node -> node.getDependency().getArtifact().toString())
+                .containsExactly("com.acme:transitive-lib:jar:1.0.0");
+        assertThat(directDependency.getChildren()).singleElement().satisfies(node -> {
+            assertThat(node.getDependency().getScope()).isEqualTo("runtime");
+            assertThat(node.getChildren()).isEmpty();
+        });
+        assertThat(localRepositoryDirectory.resolve("com/acme/excluded-lib/1.0.0/excluded-lib-1.0.0.pom"))
+                .doesNotExist();
     }
 
     @Test
