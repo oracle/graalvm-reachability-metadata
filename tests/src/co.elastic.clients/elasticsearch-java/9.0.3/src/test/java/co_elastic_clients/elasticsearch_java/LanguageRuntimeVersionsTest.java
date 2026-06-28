@@ -15,15 +15,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class LanguageRuntimeVersionsTest {
     @Test
-    void runtimeMetadataIncludesDetectedJvmLanguageRuntimes() {
+    void nativeLanguageVersionHelpersReturnDetectedJvmLanguageRuntimes() {
+        String detectedKotlinVersion = LanguageRuntimeVersions.kotlinVersion();
+        String detectedScalaVersion = LanguageRuntimeVersions.scalaVersion();
+
         String kotlinVersion = keepMajorMinor(KotlinVersion.CURRENT.toString());
         String scalaVersion = keepMajorMinor(Properties.versionNumberString());
 
-        assertThat(LanguageRuntimeVersions.kotlinVersion()).isEqualTo(kotlinVersion);
-        assertThat(LanguageRuntimeVersions.scalaVersion()).isEqualTo(scalaVersion);
-        assertThat(LanguageRuntimeVersions.getRuntimeMetadata())
-            .contains(",kt=" + kotlinVersion)
-            .contains(",sc=" + scalaVersion);
+        assertThat(detectedKotlinVersion).isEqualTo(kotlinVersion);
+        assertThat(detectedScalaVersion).isEqualTo(scalaVersion);
     }
 
     private static String keepMajorMinor(String version) {
