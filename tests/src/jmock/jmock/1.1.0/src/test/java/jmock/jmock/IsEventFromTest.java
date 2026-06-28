@@ -29,7 +29,7 @@ public class IsEventFromTest {
         String source = "publisher";
         IsEventFrom constraint = new IsEventFrom(source);
 
-        String description = constraint.describeTo(new StringBuffer()).toString();
+        String description = constraint.describeTo(new java.lang.StringBuffer()).toString();
 
         assertThat(description)
                 .contains(EventObject.class.getName())
