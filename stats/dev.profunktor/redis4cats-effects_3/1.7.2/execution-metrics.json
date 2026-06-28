@@ -1,0 +1,109 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T07:28:03.288037Z",
+    "library": "dev.profunktor:redis4cats-effects_3:1.7.2",
+    "starting_commit": "c954d1501db016c962bb0b2acd8a5eba3c585d6e",
+    "ending_commit": "9b992ed8ac9a9712197d6aa8da9b1585f95c729d",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "1.7.2",
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2230,
+          "missed": 13290,
+          "ratio": 0.143686,
+          "total": 15520
+        },
+        "line": {
+          "covered": 219,
+          "missed": 525,
+          "ratio": 0.294355,
+          "total": 744
+        },
+        "method": {
+          "covered": 261,
+          "missed": 1637,
+          "ratio": 0.137513,
+          "total": 1898
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 4885,
+      "issue_label": "library-new-request",
+      "library": "dev.profunktor:redis4cats-effects_3:1.7.2",
+      "summary": "Meaningful redis4cats-effects coverage normally exercises RedisCommands through Cats Effect against a Redis-compatible server; the artifact only brings cats-effect-kernel transitively, so tests need a concrete Cats Effect runtime and a Redis/Valkey service.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.typelevel:cats-effect_3:3.5.7",
+          "scope": "testImplementation",
+          "reason": "redis4cats-effects_3:1.7.2 exposes APIs parameterized by Cats Effect typeclasses, but the resolved artifact only brings cats-effect-kernel transitively; tests using the documented Redis[IO] pattern need cats.effect.IO and the Cats Effect runtime."
+        },
+        {
+          "kind": "docker_image",
+          "image": "valkey/valkey:7.2.6",
+          "slug": "valkey",
+          "reason": "The upstream redis4cats v1.7.2 test setup starts a Redis-compatible Valkey single node; effectful RedisCommands coverage requires a live Redis protocol server."
+        }
+      ],
+      "agent_guidance": "Use a concrete Cats Effect runtime such as cats.effect.IO and put a redis4cats Log instance in scope, for example dev.profunktor.redis4cats.effect.Log.Stdout.given or NoOp.given. For single-node command coverage, target redis://localhost:6379. If covering keyspace notification behavior, start the server with notify-keyspace-events enabled, e.g. --notify-keyspace-events KEA.",
+      "risks": [
+        "Upstream also tests replica and cluster modes with additional services; avoid requiring those unless simple single-node coverage is insufficient.",
+        "Redis.Pool APIs reference optional org.typelevel:keypool_3; add it only if pooled APIs are intentionally tested.",
+        "Netty/Lettuce native-image behavior may still require verification by the normal Gradle and Native Image tasks."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.typelevel:cats-effect_3:3.5.7",
+          "result": "applied",
+          "target": "tests/src/dev.profunktor/redis4cats-effects_3/1.7.2/build.gradle"
+        },
+        {
+          "kind": "docker_image",
+          "image": "valkey/valkey:7.2.6",
+          "slug": "valkey",
+          "result": "applied",
+          "target": "tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-valkey"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#4885 Support for dev.profunktor:redis4cats-effects_3:1.7.2; label=library-new-request; body_chars=110"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 59300,
+      "output_tokens_used": 6258,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/dev.profunktor:redis4cats-effects_3:1.7.2/library-preparation-preflight/pi-generation-2026-06-28T07-05-43-774942Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 352098,
+      "cached_input_tokens_used": 3338240,
+      "output_tokens_used": 29474,
+      "iterations": 6,
+      "cost_usd": 2.5533,
+      "generated_loc": 393,
+      "tested_library_loc": 219,
+      "metadata_entries": 0,
+      "code_coverage_percent": 29.44
+    },
+    "artifacts": {
+      "test_file": "tests/src/dev.profunktor/redis4cats-effects_3/1.7.2/src/test/scala/dev_profunktor/redis4cats_effects_3/Redis4cats_effects_3Test.scala",
+      "metadata_file": "metadata/dev.profunktor/redis4cats-effects_3/1.7.2/reachability-metadata.json"
+    }
+  }
+}
