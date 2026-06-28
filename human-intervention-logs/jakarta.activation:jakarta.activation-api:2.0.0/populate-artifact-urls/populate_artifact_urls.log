@@ -1,0 +1,2077 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f0fcc-75fe-7de3-9088-a71cd2d8ace2
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: jakarta.activation:jakarta.activation-api:2.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.0.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e/metadata/jakarta.activation/jakarta.activation-api/index.json
+- Entry selector: "metadata-version" = "2.0.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.0.0
+- Entry metadata-version: 2.0.0
+- Entry test-version: 2.0.0
+- Entry tested-versions: [2.0.0]
+codex
+I’ll verify the artifact’s versioned source, test, and docs locations before editing the index entry, then only fill fields that are actually missing.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/jakarta.activation/jakarta.activation-api/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.0",
+    "tested-versions" : [
+      "2.0.0"
+    ],
+    "allowed-packages" : [
+      "javax.activation"
+    ]
+  },
+  {
+    "metadata-version" : "1.2.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/jakartaee/jaf-api",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
+    "description" : "Jakarta Activation API defines Java interfaces and classes for determining data types, encapsulating access to data, and mapping MIME content to command handlers. This API-only artifact is used to compile applications against the JavaBeans Activation Framework contracts without including the full implementation classes.",
+    "tested-versions" : [
+      "1.2.1",
+      "1.2.2"
+    ],
+    "allowed-packages" : [
+      "javax.activation"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n \"source-code-url|test-code-url|documentation-url|repository-url|description|language\" metadata/jakarta.activation metadata/jakarta.* metadata/org.eclipse.angus metadata/com.sun.activation -g 'index.json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e
+ succeeded in 0ms:
+metadata/jakarta.activation/jakarta.activation-api/index.json:14:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
+metadata/jakarta.activation/jakarta.activation-api/index.json:15:    "repository-url" : "https://github.com/jakartaee/jaf-api",
+metadata/jakarta.activation/jakarta.activation-api/index.json:16:    "test-code-url" : "N/A",
+metadata/jakarta.activation/jakarta.activation-api/index.json:17:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
+metadata/jakarta.activation/jakarta.activation-api/index.json:18:    "description" : "Jakarta Activation API defines Java interfaces and classes for determining data types, encapsulating access to data, and mapping MIME content to command handlers. This API-only artifact is used to compile applications against the JavaBeans Activation Framework contracts without including the full implementation classes.",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/authentication",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/authentication/3.0/jakarta-authentication-tck-$version$.zip",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:9:    "description" : "Jakarta Authentication defines a low-level SPI for authentication mechanisms that interact with callers and container environments to obtain credentials, validate them, and pass authenticated identities to the container. It also defines integration profiles that describe how containers such as Jakarta Servlet adapt to and use that SPI.",
+metadata/jakarta.el/jakarta.el-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/el/jakarta.el-api/$version$/jakarta.el-api-$version$-sources.jar",
+metadata/jakarta.el/jakarta.el-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/expression-language",
+metadata/jakarta.el/jakarta.el-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/expression-language/tree/$version$-RI-COMB-RELEASE/src/test",
+metadata/jakarta.el/jakarta.el-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/el/jakarta.el-api/$version$/jakarta.el-api-$version$-javadoc.jar",
+metadata/jakarta.el/jakarta.el-api/index.json:9:    "description" : "Jakarta Expression Language API defines the standard Expression Language interfaces and classes for parsing, evaluating, and resolving expressions. It is used by Jakarta EE technologies and compatible runtimes to expose property access, method invocation, type conversion, and variable and function resolution through a common API.",
+metadata/jakarta.activation/jakarta.activation-api/index.json:14:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
+metadata/jakarta.activation/jakarta.activation-api/index.json:15:    "repository-url" : "https://github.com/jakartaee/jaf-api",
+metadata/jakarta.activation/jakarta.activation-api/index.json:16:    "test-code-url" : "N/A",
+metadata/jakarta.activation/jakarta.activation-api/index.json:17:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
+metadata/jakarta.activation/jakarta.activation-api/index.json:18:    "description" : "Jakarta Activation API defines Java interfaces and classes for determining data types, encapsulating access to data, and mapping MIME content to command handlers. This API-only artifact is used to compile applications against the JavaBeans Activation Framework contracts without including the full implementation classes.",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-sources.jar",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/enterprise-beans",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-javadoc.jar",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:9:    "description" : "Jakarta Enterprise Beans API defines the jakarta.ejb contracts, annotations, and exceptions used to write and access Enterprise JavaBeans components. It covers session and message-driven beans, timers, transactions, interceptors, security, and embeddable-container integration for Jakarta EE runtimes and clients.",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:22:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-sources.jar",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:23:    "repository-url" : "https://github.com/jakartaee/enterprise-beans",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:24:    "test-code-url" : "N/A",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:25:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-javadoc.jar",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:26:    "description" : "Jakarta Enterprise Beans API defines the javax.ejb contracts, annotations, and exceptions used to write and access Enterprise JavaBeans components. It covers session and message-driven beans, timers, transactions, interceptors, security, and embeddable-container integration for Jakarta EE runtimes and clients.",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:39:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-sources.jar",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:40:    "repository-url" : "https://github.com/jakartaee/enterprise-beans",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:41:    "test-code-url" : "N/A",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:42:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-javadoc.jar",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:43:    "description" : "Jakarta Enterprise Beans API 3.2.3 provides the javax.ejb contracts, annotations, and exceptions used to define and access Enterprise JavaBeans components. It covers session and message-driven beans, timers, transactions, interceptors, security, and embeddable-container integration for Jakarta EE runtimes and clients.",
+metadata/jakarta.batch/jakarta.batch-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/batch/jakarta.batch-api/$version$/jakarta.batch-api-$version$-sources.jar",
+metadata/jakarta.batch/jakarta.batch-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/batch",
+metadata/jakarta.batch/jakarta.batch-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.batch/jakarta.batch-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/batch/jakarta.batch-api/$version$/jakarta.batch-api-$version$-javadoc.jar",
+metadata/jakarta.batch/jakarta.batch-api/index.json:9:    "description" : "Jakarta Batch API defines the standard Java interfaces, annotations, runtime contracts, and XML job model for batch processing in Jakarta EE. Applications use it to describe and control long-running, non-interactive batch workloads such as chunk processing, batchlets, partitioning, checkpointing, and job restart.",
+metadata/jakarta.security.enterprise/jakarta.security.enterprise-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/security/enterprise/jakarta.security.enterprise-api/$version$/jakarta.security.enterprise-api-$version$-sources.jar",
+metadata/jakarta.security.enterprise/jakarta.security.enterprise-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/security",
+metadata/jakarta.security.enterprise/jakarta.security.enterprise-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/security/3.0/jakarta-security-tck-$version$.zip",
+metadata/jakarta.security.enterprise/jakarta.security.enterprise-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/security/enterprise/jakarta.security.enterprise-api/$version$/jakarta.security.enterprise-api-$version$-javadoc.jar",
+metadata/jakarta.security.enterprise/jakarta.security.enterprise-api/index.json:9:    "description" : "Jakarta Security defines the standard Jakarta EE API for application security, including authentication mechanisms, credential handling, identity stores, and a SecurityContext for checking caller and role information. It is intended for Jakarta EE applications and compatible runtimes to integrate authentication and authorization concerns through portable Java interfaces and annotations.",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/$version$/jakarta.enterprise.lang-model-$version$-sources.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:6:    "repository-url" : "https://github.com/jakartaee/cdi",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/cdi-tck-lang-model/$version$/cdi-tck-lang-model-$version$-sources.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/$version$/jakarta.enterprise.lang-model-$version$-javadoc.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:9:    "description" : "Jakarta Enterprise Language Model provides the reflection-free Java language model used by CDI build compatible extensions. It exposes APIs for representing classes, methods, fields, constructors, annotations, and types so CDI tooling can analyze application code at build time.",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:23:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/$version$/jakarta.enterprise.lang-model-$version$-sources.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:24:    "repository-url" : "https://github.com/jakartaee/cdi",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:25:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/cdi-tck-lang-model/$version$/cdi-tck-lang-model-$version$-sources.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:26:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/$version$/jakarta.enterprise.lang-model-$version$-javadoc.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.lang-model/index.json:27:    "description" : "Jakarta Enterprise Language Model provides the reflection-free Java language model used by CDI build compatible extensions. It exposes APIs for representing classes, methods, fields, constructors, annotations, and types so CDI tooling can analyze application code at build time.",
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-sources.jar",
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/transactions",
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-javadoc.jar",
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:9:    "description" : "Jakarta Transaction API provides the standard Java interfaces and exceptions for demarcating and coordinating distributed transactions. It defines contracts such as UserTransaction, TransactionManager, and Synchronization that application servers and transaction managers implement or expose to JVM applications.",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-sources.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/persistence",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/persistence-tck-dist/$version$/persistence-tck-dist-$version$.zip",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-javadoc.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:9:    "description" : "Jakarta Persistence API defines the standard Java API for persistence and object/relational mapping in Jakarta EE and Java SE environments. It provides annotations and interfaces for mapping domain objects to relational data, managing entity lifecycle, querying, transactions, caching, and schema-related metadata.",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-sources.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:21:    "repository-url" : "https://github.com/jakartaee/persistence",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:22:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/persistence-tck-dist/$version$/persistence-tck-dist-$version$.zip",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-javadoc.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:24:    "description" : "Jakarta Persistence API defines the standard Java API for persistence and object/relational mapping in Jakarta EE and Java SE environments. It provides annotations and interfaces for mapping domain objects to relational data, managing entity lifecycle, querying, transactions, caching, and schema-related metadata.",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-sources.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:35:    "repository-url" : "https://github.com/jakartaee/persistence",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:36:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/persistence-tck-dist/$version$/persistence-tck-dist-$version$.zip",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-javadoc.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:38:    "description" : "Jakarta Persistence API defines the standard Java API for persistence and object/relational mapping in Jakarta EE and Java SE environments. It provides annotations and interfaces for mapping domain objects to relational data, managing entity lifecycle, querying, transactions, caching, and schema-related metadata.",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:48:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-sources.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:49:    "repository-url" : "https://github.com/jakartaee/persistence",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:50:    "test-code-url" : "https://download.eclipse.org/jakartaee/persistence/3.2/jakarta-persistence-tck-$version$.zip",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:51:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-javadoc.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:52:    "description" : "Jakarta Persistence API defines the standard Java API for persistence and object/relational mapping in Jakarta EE and Java SE environments. It provides annotations and interfaces for mapping domain objects to relational data, managing entity lifecycle, querying, transactions, caching, and schema-related metadata.",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:62:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-sources.jar",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:63:    "repository-url" : "https://github.com/jakartaee/persistence",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:64:    "test-code-url" : "N/A",
+metadata/jakarta.persistence/jakarta.persistence-api/index.json:65:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/$version$/jakarta.persistence-api-$version$-javadoc.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-sources.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/servlet",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/servlet/tree/$version$-RELEASE-tck/tck",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-javadoc.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:9:    "description" : "Jakarta Servlet defines the standard server-side API that Java web applications use to process HTTP requests and produce HTTP responses in Jakarta EE servlet containers. It provides the servlet, filter, listener, session, and HTTP support contracts implemented by containers and used by web frameworks.",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:20:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-sources.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:21:    "repository-url" : "https://github.com/jakartaee/servlet",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:22:    "test-code-url" : "N/A",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:23:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-javadoc.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:24:    "description" : "Jakarta Servlet defines the standard server-side API for Java web applications to process HTTP requests and generate responses. It provides interfaces and classes for servlets, filters, listeners, sessions, and deployment descriptors for Servlet 4.0 applications.",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-sources.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:35:    "repository-url" : "https://github.com/jakartaee/servlet",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:36:    "test-code-url" : "N/A",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/$version$/jakarta.servlet-api-$version$-javadoc.jar",
+metadata/jakarta.servlet/jakarta.servlet-api/index.json:38:    "description" : "Jakarta Servlet defines the standard server-side API for Java web applications to process HTTP requests and generate responses. It provides interfaces and classes for servlets, filters, listeners, sessions, and deployment descriptors in Jakarta EE 9.",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-sources.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/common-annotations-api",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-javadoc.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:9:    "description" : "Jakarta Annotations defines standard Java annotations for common semantic concepts used across Jakarta EE and related Java technologies. This artifact provides the version 3.0.0 API types in the jakarta.annotation package, including lifecycle, security, resource, nullability, priority, and generated-code annotations.",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-sources.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:20:    "repository-url" : "https://github.com/jakartaee/common-annotations-api",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:21:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-javadoc.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:23:    "description" : "Jakarta Annotations defines standard Java annotations for common semantic concepts used across Jakarta EE and related Java technologies. This artifact provides the version 2.1.0 API types in the jakarta.annotation package, including lifecycle, security, resource, and generated-code annotations.",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:34:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-sources.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:35:    "repository-url" : "https://github.com/jakartaee/common-annotations-api",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:36:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:37:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-javadoc.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:38:    "description" : "Jakarta Annotations defines standard Java annotations for common semantic concepts used across Jakarta EE and other Java technologies. This artifact provides the version 2.0.0 API types in the `jakarta.annotation` package, including lifecycle, security, resource, and generated-code annotations.",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:48:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-sources.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:49:    "repository-url" : "https://github.com/jakartaee/common-annotations-api",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:50:    "test-code-url" : "N/A",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:51:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/$version$/jakarta.annotation-api-$version$-javadoc.jar",
+metadata/jakarta.annotation/jakarta.annotation-api/index.json:52:    "description" : "Jakarta Annotations defines a standard set of common Java annotations that support declarative programming across Java technologies. This artifact provides the 1.3.3 API types in the `javax.annotation` package, including lifecycle, resource, and generated-code annotations.",
+metadata/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api/index.json:4:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api/$version$/jakarta.servlet.jsp.jstl-api-$version$-sources.jar",
+metadata/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api/index.json:5:    "repository-url" : "https://github.com/jakartaee/tags",
+metadata/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api/index.json:6:    "test-code-url" : "https://download.eclipse.org/jakartaee/tags/3.0/jakarta-tags-tck-$version$.zip",
+metadata/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api/$version$/jakarta.servlet.jsp.jstl-api-$version$-javadoc.jar",
+metadata/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api/index.json:8:    "description" : "Jakarta Standard Tag Library API defines the standard tag interfaces, support classes, validators, and utility APIs used by JSP tag libraries. It provides the API surface for core, formatting, SQL, XML, and tag-library validation features that application servers and JSTL implementations expose to Jakarta Servlet and JSP applications.",
+metadata/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api/index.json:21:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api/$version$/jakarta.servlet.jsp.jstl-api-$version$-sources.jar",
+metadata/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api/index.json:22:    "repository-url" : "https://github.com/jakartaee/tags",
+metadata/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api/index.json:23:    "test-code-url" : "https://github.com/jakartaee/tags/tree/$version$-RELEASE/tck",
+metadata/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api/index.json:24:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api/$version$/jakarta.servlet.jsp.jstl-api-$version$-javadoc.jar",
+metadata/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api/index.json:25:    "description" : "Jakarta Standard Tag Library API defines the standard tag interfaces, support classes, validators, and utility APIs used by JSP tag libraries. It provides the API surface for core, formatting, SQL, XML, and tag-library validation features that application servers and JSTL implementations expose to Jakarta Servlet and JSP applications.",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/interceptor/jakarta.interceptor-api/$version$/jakarta.interceptor-api-$version$-sources.jar",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/interceptors",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/interceptor/jakarta.interceptor-api/$version$/jakarta.interceptor-api-$version$-javadoc.jar",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:9:    "description" : "Jakarta Interceptors API defines annotations and interfaces for interposing behavior around business method invocations, constructors, lifecycle callbacks, and timeout events in Jakarta EE components and managed classes. It lets containers and compatible frameworks apply cross-cutting concerns through interceptor bindings, declarations, and the InvocationContext contract.",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:22:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/interceptor/jakarta.interceptor-api/$version$/jakarta.interceptor-api-$version$-sources.jar",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:23:    "repository-url" : "https://github.com/jakartaee/interceptors",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:24:    "test-code-url" : "N/A",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:25:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/interceptor/jakarta.interceptor-api/$version$/jakarta.interceptor-api-$version$-javadoc.jar",
+metadata/jakarta.interceptor/jakarta.interceptor-api/index.json:26:    "description" : "This artifact provides the Jakarta Interceptors 1.2 API in the javax.interceptor package, defining annotations and interfaces for interceptor bindings, declarations, and InvocationContext. It lets Java EE and Jakarta EE containers and compatible frameworks apply cross-cutting behavior around method invocations, lifecycle callbacks, constructors, and timeouts.",
+metadata/com.sun.activation/jakarta.activation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/activation/jakarta.activation/$version$/jakarta.activation-$version$-sources.jar",
+metadata/com.sun.activation/jakarta.activation/index.json:6:    "repository-url" : "https://github.com/jakartaee/jaf-api",
+metadata/com.sun.activation/jakarta.activation/index.json:7:    "test-code-url" : "N/A",
+metadata/com.sun.activation/jakarta.activation/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/activation/jakarta.activation/$version$/jakarta.activation-$version$-javadoc.jar",
+metadata/com.sun.activation/jakarta.activation/index.json:9:    "description" : "Jakarta Activation provides classes for determining data types, encapsulating data access, and mapping MIME content to handlers. It implements the Activation API used to discover and invoke operations for arbitrary data sources.",
+metadata/jakarta.jms/jakarta.jms-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-sources.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/messaging",
+metadata/jakarta.jms/jakarta.jms-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/messaging/3.0/jakarta-messaging-tck-$version$.zip",
+metadata/jakarta.jms/jakarta.jms-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-javadoc.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:9:    "description" : "Jakarta Messaging API defines interfaces and annotations for Java applications to create, send, receive, and read messages through messaging providers. It standardizes loosely coupled, reliable asynchronous communication while leaving the concrete broker or provider implementation to separate runtimes.",
+metadata/jakarta.jms/jakarta.jms-api/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-sources.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:21:    "repository-url" : "https://github.com/jakartaee/messaging",
+metadata/jakarta.jms/jakarta.jms-api/index.json:22:    "test-code-url" : "N/A",
+metadata/jakarta.jms/jakarta.jms-api/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/jms/jakarta.jms-api/$version$/jakarta.jms-api-$version$-javadoc.jar",
+metadata/jakarta.jms/jakarta.jms-api/index.json:24:    "description" : "Jakarta Messaging API defines interfaces for creating, sending, receiving, and reading messages between Java applications and messaging providers. It standardizes loosely coupled asynchronous communication semantics without providing a concrete messaging implementation.",
+metadata/jakarta.inject/jakarta.inject-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/inject/jakarta.inject-api/$version$/jakarta.inject-api-$version$-sources.jar",
+metadata/jakarta.inject/jakarta.inject-api/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/injection-api",
+metadata/jakarta.inject/jakarta.inject-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.inject/jakarta.inject-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/inject/jakarta.inject-api/$version$/jakarta.inject-api-$version$-javadoc.jar",
+metadata/jakarta.inject/jakarta.inject-api/index.json:9:    "description" : "Jakarta Inject API defines standard dependency injection annotations and the Provider contract for Java and Jakarta applications. It offers a small, container-agnostic API for declaring injectable constructors, fields, methods, qualifiers, and scopes.",
+metadata/org.eclipse.angus/angus-mail/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/angus-mail/$version$/angus-mail-$version$-sources.jar",
+metadata/org.eclipse.angus/angus-mail/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
+metadata/org.eclipse.angus/angus-mail/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test",
+metadata/org.eclipse.angus/angus-mail/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/angus-mail/$version$/angus-mail-$version$-javadoc.jar",
+metadata/org.eclipse.angus/angus-mail/index.json:9:    "description" : "Angus Mail is the Eclipse implementation of the Jakarta Mail provider stack. The angus-mail artifact packages core utilities, SMTP, IMAP, POP3, MIME handlers, and logging mail handler classes used by Jakarta Mail clients.",
+metadata/org.eclipse.angus/angus-mail/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/angus-mail/$version$/angus-mail-$version$-sources.jar",
+metadata/org.eclipse.angus/angus-mail/index.json:26:    "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
+metadata/org.eclipse.angus/angus-mail/index.json:27:    "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test",
+metadata/org.eclipse.angus/angus-mail/index.json:28:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/angus-mail/$version$/angus-mail-$version$-javadoc.jar",
+metadata/org.eclipse.angus/angus-mail/index.json:29:    "description" : "Angus Mail is the Eclipse implementation of the Jakarta Mail provider stack. The angus-mail artifact packages core utilities, SMTP, IMAP, POP3, MIME handlers, and logging mail handler classes used by Jakarta Mail clients.",
+metadata/org.eclipse.angus/angus-mail/index.json:39:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/angus-mail/$version$/angus-mail-$version$-sources.jar",
+metadata/org.eclipse.angus/angus-mail/index.json:40:    "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
+metadata/org.eclipse.angus/angus-mail/index.json:41:    "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test",
+metadata/org.eclipse.angus/angus-mail/index.json:42:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/angus-mail/$version$/angus-mail-$version$-javadoc.jar",
+metadata/org.eclipse.angus/angus-mail/index.json:43:    "description" : "Angus Mail is the Eclipse implementation of the Jakarta Mail provider stack. The angus-mail artifact packages core utilities, SMTP, IMAP, POP3, MIME handlers, and logging mail handler classes used by Jakarta Mail clients.",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/$version$/jakarta.xml.soap-api-$version$-sources.jar",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/saaj-api",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/saaj-api/tree/$version$/api/src/test",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/$version$/jakarta.xml.soap-api-$version$-javadoc.jar",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:9:    "description" : "Jakarta SOAP with Attachments API defines the standard Java API for creating, building, sending, and receiving SOAP messages with optional attachments. This artifact provides only the API contracts in the jakarta.xml.soap package, so applications need a compatible SAAJ implementation at runtime.",
+metadata/jakarta.json/jakarta.json-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/jsonp-api",
+metadata/jakarta.json/jakarta.json-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/$version$/jakarta.json-api-$version$-javadoc.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:9:    "description" : "Jakarta JSON Processing API defines the standard Java API for parsing, generating, transforming, and querying JSON documents. It provides object-model and streaming APIs that applications and Jakarta EE implementations use while relying on a separate provider for the runtime implementation.",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-sources.jar",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/jaxb-api",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/jaxb-api/tree/$version$/jaxb-api-test",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-javadoc.jar",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:9:    "description" : "Jakarta XML Binding API defines the standard Jakarta API for binding Java classes to XML representations. It provides annotations and runtime interfaces for marshalling, unmarshalling, and validating XML content in Java applications.",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-sources.jar",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:34:    "repository-url" : "https://github.com/eclipse-ee4j/jaxb-api",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:35:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api-test/$version$/jakarta.xml.bind-api-test-$version$-sources.jar",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/$version$/jakarta.xml.bind-api-$version$-javadoc.jar",
+metadata/jakarta.xml.bind/jakarta.xml.bind-api/index.json:37:    "description" : "Jakarta XML Binding API defines the standard Jakarta API for binding Java classes to XML representations. It provides annotations and runtime interfaces for marshalling, unmarshalling, and validating XML content in Java applications.",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/jsonb-api",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-javadoc.jar",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:9:    "description" : "Jakarta JSON Binding (JSON-B) is a standard API for converting Java objects to and from JSON documents. It defines default object mapping behavior and annotations and SPIs that allow applications and implementations to customize serialization and deserialization.",
+metadata/jakarta.resource/jakarta.resource-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/resource/jakarta.resource-api/$version$/jakarta.resource-api-$version$-sources.jar",
+metadata/jakarta.resource/jakarta.resource-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/connectors",
+metadata/jakarta.resource/jakarta.resource-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/connectors/2.1/jakarta-connectors-tck-$version$.zip",
+metadata/jakarta.resource/jakarta.resource-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/resource/jakarta.resource-api/$version$/jakarta.resource-api-$version$-javadoc.jar",
+metadata/jakarta.resource/jakarta.resource-api/index.json:9:    "description" : "Jakarta Resource API provides the Jakarta Connectors interfaces and annotations for connecting Jakarta EE applications and application servers to enterprise information systems through resource adapters. It defines the CCI and SPI contracts for connection management, transactions, security, work management, and message endpoint integration while requiring an implementation at runtime.",
+metadata/org.eclipse.angus/angus-activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/angus-activation/$version$/angus-activation-$version$-sources.jar",
+metadata/org.eclipse.angus/angus-activation/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/angus-activation",
+metadata/org.eclipse.angus/angus-activation/index.json:7:    "test-code-url" : "N/A",
+metadata/org.eclipse.angus/angus-activation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/angus-activation/$version$/angus-activation-$version$-javadoc.jar",
+metadata/org.eclipse.angus/angus-activation/index.json:9:    "description" : "Angus Activation is the Eclipse implementation support for the Jakarta Activation specification, providing registry implementations used by Jakarta Activation to resolve MIME types and mailcap entries. The angus-activation artifact supplies JVM classes and service providers that help applications determine data types, discover operations for data, and instantiate the appropriate handlers.",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/$version$/jakarta.websocket-client-api-$version$-sources.jar",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/websocket",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-client-api/$version$/jakarta.websocket-client-api-$version$-javadoc.jar",
+metadata/jakarta.websocket/jakarta.websocket-client-api/index.json:9:    "description" : "Jakarta WebSocket Client API provides the standard client-side API for opening and interacting with WebSocket connections from Jakarta and Java applications. It defines annotations and interfaces for endpoints, sessions, message handling, encoders, decoders, and container access while leaving the runtime implementation to a compatible WebSocket provider.",
+metadata/jakarta.enterprise/jakarta.enterprise.cdi-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.cdi-api/$version$/jakarta.enterprise.cdi-api-$version$-sources.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.cdi-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/cdi",
+metadata/jakarta.enterprise/jakarta.enterprise.cdi-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/cdi/tree/$version$/api/src/test",
+metadata/jakarta.enterprise/jakarta.enterprise.cdi-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/enterprise/jakarta.enterprise.cdi-api/$version$/jakarta.enterprise.cdi-api-$version$-javadoc.jar",
+metadata/jakarta.enterprise/jakarta.enterprise.cdi-api/index.json:9:    "description" : "Jakarta CDI API defines the annotations and interfaces for Contexts and Dependency Injection, the Java/Jakarta EE programming model for type-safe dependency injection, contextual lifecycles, interceptors, decorators, and events. This artifact provides the API classes used by CDI applications and implementations; it does not include a CDI runtime implementation.",
+metadata/org.eclipse.angus/jakarta.mail/index.json:8:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/angus/jakarta.mail/$version$/jakarta.mail-$version$-sources.jar",
+metadata/org.eclipse.angus/jakarta.mail/index.json:9:    "repository-url": "https://github.com/eclipse-ee4j/angus-mail",
+metadata/org.eclipse.angus/jakarta.mail/index.json:10:    "test-code-url": "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test",
+metadata/org.eclipse.angus/jakarta.mail/index.json:11:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/angus/jakarta.mail/$version$/jakarta.mail-$version$-javadoc.jar",
+metadata/org.eclipse.angus/jakarta.mail/index.json:12:    "description": "Angus Mail is the Eclipse implementation of the Jakarta Mail 2.1 specification. It provides the Jakarta Mail API together with SMTP, IMAP, and POP3 providers for building Java mail and messaging applications.",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/ws/rs/jakarta.ws.rs-api/$version$/jakarta.ws.rs-api-$version$-sources.jar",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/rest",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:7:    "test-code-url" : "https://download.eclipse.org/jakartaee/restful-ws/3.1/jakarta-restful-ws-tck-$version$.zip",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/ws/rs/jakarta.ws.rs-api/$version$/jakarta.ws.rs-api-$version$-javadoc.jar",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:9:    "description" : "Jakarta RESTful Web Services API defines the standard annotations, interfaces, and runtime contracts for building RESTful services and clients in Jakarta EE. This artifact provides only the API types for resources, request and response handling, media negotiation, filters, interceptors, and extension points while implementations are supplied by Jakarta REST runtimes.",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/ws/rs/jakarta.ws.rs-api/$version$/jakarta.ws.rs-api-$version$-sources.jar",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:21:    "repository-url" : "https://github.com/jakartaee/rest",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:22:    "test-code-url" : "https://github.com/jakartaee/rest/tree/$version$/jaxrs-api/src/test",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/ws/rs/jakarta.ws.rs-api/$version$/jakarta.ws.rs-api-$version$-javadoc.jar",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:24:    "description" : "Jakarta RESTful Web Services API defines the annotations, interfaces, and core types used to build RESTful web services on the JVM. This artifact provides the API contracts for resources, requests, responses, media types, filters, and client/server extension points rather than a concrete implementation.",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:34:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/ws/rs/jakarta.ws.rs-api/$version$/jakarta.ws.rs-api-$version$-sources.jar",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:35:    "repository-url" : "https://github.com/jakartaee/rest",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:36:    "test-code-url" : "https://github.com/jakartaee/rest/tree/$version$/jaxrs-api/src/test",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:37:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/ws/rs/jakarta.ws.rs-api/$version$/jakarta.ws.rs-api-$version$-javadoc.jar",
+metadata/jakarta.ws.rs/jakarta.ws.rs-api/index.json:38:    "description" : "Jakarta RESTful Web Services API defines the standard annotations, interfaces, and runtime contracts for building RESTful services and clients in Jakarta EE. This artifact provides only the API types for resources, request and response handling, media negotiation, filters, interceptors, and extension points while implementations are supplied by Jakarta REST runtimes.",
+metadata/org.eclipse.angus/smtp/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/smtp/$version$/smtp-$version$-sources.jar",
+metadata/org.eclipse.angus/smtp/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/angus-mail",
+metadata/org.eclipse.angus/smtp/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/angus-mail/tree/$version$/providers/angus-mail/src/test/java/com/sun/mail/smtp",
+metadata/org.eclipse.angus/smtp/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/smtp/$version$/smtp-$version$-javadoc.jar",
+metadata/org.eclipse.angus/smtp/index.json:9:    "description" : "Angus Mail SMTP provider is the Eclipse Angus implementation of the Jakarta Mail SMTP transport. It supplies the com.sun.mail.smtp classes and service provider metadata used by JVM applications to send mail over SMTP and SMTPS through Jakarta Mail.",
+metadata/jakarta.validation/jakarta.validation-api/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/$version$/jakarta.validation-api-$version$-sources.jar",
+metadata/jakarta.validation/jakarta.validation-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/validation",
+metadata/jakarta.validation/jakarta.validation-api/index.json:7:    "test-code-url" : "https://github.com/jakartaee/validation/tree/$version$/src/test",
+metadata/jakarta.validation/jakarta.validation-api/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/jakarta/validation/jakarta.validation-api/$version$/jakarta.validation-api-$version$-javadoc.jar",
+metadata/jakarta.validation/jakarta.validation-api/index.json:20:    "description" : "Jakarta Validation defines a metadata model and API for JavaBean and method validation. It lets applications declare constraints on objects, method parameters, and return values and validate them through a standard Validator API."
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/$version$/jakarta.websocket-api-$version$-sources.jar",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:6:    "repository-url" : "https://github.com/jakartaee/websocket",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:7:    "test-code-url" : "N/A",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/websocket/jakarta.websocket-api/$version$/jakarta.websocket-api-$version$-javadoc.jar",
+metadata/jakarta.websocket/jakarta.websocket-api/index.json:9:    "description" : "Jakarta WebSocket API provides the standard server-side WebSocket contract for declaring endpoints and configuring WebSocket handshakes in Java and Jakarta applications. It defines server annotations and interfaces such as ServerEndpoint, ServerContainer, ServerEndpointConfig, HandshakeRequest, and PathParam while leaving runtime behavior to a compatible implementation.",
+
+web search: 
+web search: jakarta.activation jakarta.activation-api 2.0.0 maven sources javadoc tests jar
+web search: 
+web search: https://central.sonatype.com/artifact/jakarta.activation/jakarta.activation-api/2.0.0
+codex
+The existing older entry already uses Maven Central source and javadoc jars, which matches the preference in the request. I’m checking whether 2.0.0 also has a versioned TCK/test artifact or only the official Jakarta Activation 2.0 TCK download.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/2.0.0/jakarta.activation-api-2.0.0.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e
+ succeeded in 0ms:
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+
+    Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Distribution License v. 1.0, which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: BSD-3-Clause
+
+-->
+<!--
+    This project builds the Activation API jar file, which contains only
+    the jakarta.activation.* API definitions and is *only* intended to be used
+    for programs to compile against.  Note that it includes none of the
+    implementation-specific classes that the jakarta.activation.* classes rely on.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.sun.activation</groupId>
+        <artifactId>all</artifactId>
+        <version>2.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>jakarta.activation</groupId>
+    <artifactId>jakarta.activation-api</artifactId>
+    <packaging>jar</packaging>
+    <name>Jakarta Activation API jar</name>
+    <properties>
+        <activation.extensionName>
+            jakarta.activation
+        </activation.extensionName>
+        <activation.moduleName>
+            jakarta.activation
+        </activation.moduleName>
+        <activation.packages.export>
+            jakarta.activation.*; version=${activation.spec.version},
+	    !com.sun.*
+        </activation.packages.export>
+        <activation.packages.import>
+	    !com.sun.*
+        </activation.packages.import>
+        <activation.bundle.symbolicName>
+            jakarta.activation-api
+        </activation.bundle.symbolicName>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <!-- download the binaries -->
+                        <id>get-binaries</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <!-- download the sources -->
+                        <id>get-sources</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.sun.activation</groupId>
+                                    <artifactId>jakarta.activation</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>sources</classifier>
+                                    <outputDirectory>
+                                        ${project.build.directory}/sources
+                                    </outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <artifactItems>
+                        <artifactItem>
+                            <groupId>com.sun.activation</groupId>
+                            <artifactId>jakarta.activation</artifactId>
+                            <version>${project.version}</version>
+                        </artifactItem>
+                    </artifactItems>
+                    <outputDirectory>
+                        ${project.build.outputDirectory}
+                    </outputDirectory>
+		    <!--
+			Include all the implementation source files so that
+			javadoc run as part of "deploy" will find all the
+			required classes.
+
+			Don't include the metadata files from the original
+			jar file.
+		    -->
+		    <excludes>
+			META-INF/**
+		    </excludes>
+                </configuration>
+            </plugin>
+
+	    <!--
+		 Skip compiling since the dependency plugin pulled in
+		 the sources and class files.
+	    -->
+	    <plugin>
+		<artifactId>maven-compiler-plugin</artifactId>
+		<executions>
+		    <execution>
+			<id>default-compile</id>
+			<configuration>
+			    <skipMain>true</skipMain>
+			</configuration>
+		    </execution>
+		</executions>
+	    </plugin>
+
+	    <!--
+		Don't include the implementation classes in the jar files.
+	    -->
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <finalName>${project.artifactId}</finalName>
+		    <excludes>
+			<exclude>com/**</exclude>
+		    </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+		    <excludes>
+			<exclude>com/**</exclude>
+		    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/2.0.0/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jakarta/activation/jakarta.activation-api/2.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jakarta/activation/jakarta.activation-api/2.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jakarta.activation-api-2.0.0-javadoc.jar" title="jakarta.activation-api-2.0.0-javadoc.jar">jakarta.activation-api-2.0.0-javadoc.jar</a>          2020-08-04 09:42    544522      
+<a href="jakarta.activation-api-2.0.0-javadoc.jar.asc" title="jakarta.activation-api-2.0.0-javadoc.jar.asc">jakarta.activation-api-2.0.0-javadoc.jar.asc</a>      2020-08-04 09:42       833      
+<a href="jakarta.activation-api-2.0.0-javadoc.jar.asc.md5" title="jakarta.activation-api-2.0.0-javadoc.jar.asc.md5">jakarta.activation-api-2.0.0-javadoc.jar.asc....</a>  2020-08-04 09:42        32      
+<a href="jakarta.activation-api-2.0.0-javadoc.jar.asc.sha1" title="jakarta.activation-api-2.0.0-javadoc.jar.asc.sha1">jakarta.activation-api-2.0.0-javadoc.jar.asc....</a>  2020-08-04 09:42        40      
+<a href="jakarta.activation-api-2.0.0-javadoc.jar.asc.sha256" title="jakarta.activation-api-2.0.0-javadoc.jar.asc.sha256">jakarta.activation-api-2.0.0-javadoc.jar.asc....</a>  2020-08-04 09:42        64      
+<a href="jakarta.activation-api-2.0.0-javadoc.jar.asc.sha512" title="jakarta.activation-api-2.0.0-javadoc.jar.asc.sha512">jakarta.activation-api-2.0.0-javadoc.jar.asc....</a>  2020-08-04 09:42       128      
+<a href="jakarta.activation-api-2.0.0-javadoc.jar.md5" title="jakarta.activation-api-2.0.0-javadoc.jar.md5">jakarta.activation-api-2.0.0-javadoc.jar.md5</a>      2020-08-04 09:42        32      
+<a href="jakarta.activation-api-2.0.0-javadoc.jar.sha1" title="jakarta.activation-api-2.0.0-javadoc.jar.sha1">jakarta.activation-api-2.0.0-javadoc.jar.sha1</a>     2020-08-04 09:42        40      
+<a href="jakarta.activation-api-2.0.0-sources.jar" title="jakarta.activation-api-2.0.0-sources.jar">jakarta.activation-api-2.0.0-sources.jar</a>          2020-08-04 09:42     44151      
+<a href="jakarta.activation-api-2.0.0-sources.jar.asc" title="jakarta.activation-api-2.0.0-sources.jar.asc">jakarta.activation-api-2.0.0-sources.jar.asc</a>      2020-08-04 09:42       833      
+<a href="jakarta.activation-api-2.0.0-sources.jar.asc.md5" title="jakarta.activation-api-2.0.0-sources.jar.asc.md5">jakarta.activation-api-2.0.0-sources.jar.asc....</a>  2020-08-04 09:42        32      
+<a href="jakarta.activation-api-2.0.0-sources.jar.asc.sha1" title="jakarta.activation-api-2.0.0-sources.jar.asc.sha1">jakarta.activation-api-2.0.0-sources.jar.asc....</a>  2020-08-04 09:42        40      
+<a href="jakarta.activation-api-2.0.0-sources.jar.asc.sha256" title="jakarta.activation-api-2.0.0-sources.jar.asc.sha256">jakarta.activation-api-2.0.0-sources.jar.asc....</a>  2020-08-04 09:42        64      
+<a href="jakarta.activation-api-2.0.0-sources.jar.asc.sha512" title="jakarta.activation-api-2.0.0-sources.jar.asc.sha512">jakarta.activation-api-2.0.0-sources.jar.asc....</a>  2020-08-04 09:42       128      
+<a href="jakarta.activation-api-2.0.0-sources.jar.md5" title="jakarta.activation-api-2.0.0-sources.jar.md5">jakarta.activation-api-2.0.0-sources.jar.md5</a>      2020-08-04 09:42        32      
+<a href="jakarta.activation-api-2.0.0-sources.jar.sha1" title="jakarta.activation-api-2.0.0-sources.jar.sha1">jakarta.activation-api-2.0.0-sources.jar.sha1</a>     2020-08-04 09:42        40      
+<a href="jakarta.activation-api-2.0.0.jar" title="jakarta.activation-api-2.0.0.jar">jakarta.activation-api-2.0.0.jar</a>                  2020-08-04 09:42     47669      
+<a href="jakarta.activation-api-2.0.0.jar.asc" title="jakarta.activation-api-2.0.0.jar.asc">jakarta.activation-api-2.0.0.jar.asc</a>              2020-08-04 09:42       833      
+<a href="jakarta.activation-api-2.0.0.jar.asc.md5" title="jakarta.activation-api-2.0.0.jar.asc.md5">jakarta.activation-api-2.0.0.jar.asc.md5</a>          2020-08-04 09:42        32      
+<a href="jakarta.activation-api-2.0.0.jar.asc.sha1" title="jakarta.activation-api-2.0.0.jar.asc.sha1">jakarta.activation-api-2.0.0.jar.asc.sha1</a>         2020-08-04 09:42        40      
+<a href="jakarta.activation-api-2.0.0.jar.asc.sha256" title="jakarta.activation-api-2.0.0.jar.asc.sha256">jakarta.activation-api-2.0.0.jar.asc.sha256</a>       2020-08-04 09:42        64      
+<a href="jakarta.activation-api-2.0.0.jar.asc.sha512" title="jakarta.activation-api-2.0.0.jar.asc.sha512">jakarta.activation-api-2.0.0.jar.asc.sha512</a>       2020-08-04 09:42       128      
+<a href="jakarta.activation-api-2.0.0.jar.md5" title="jakarta.activation-api-2.0.0.jar.md5">jakarta.activation-api-2.0.0.jar.md5</a>              2020-08-04 09:42        32      
+<a href="jakarta.activation-api-2.0.0.jar.sha1" title="jakarta.activation-api-2.0.0.jar.sha1">jakarta.activation-api-2.0.0.jar.sha1</a>             2020-08-04 09:42        40      
+<a href="jakarta.activation-api-2.0.0.pom" title="jakarta.activation-api-2.0.0.pom">jakarta.activation-api-2.0.0.pom</a>                  2020-08-04 09:42      5318      
+<a href="jakarta.activation-api-2.0.0.pom.asc" title="jakarta.activation-api-2.0.0.pom.asc">jakarta.activation-api-2.0.0.pom.asc</a>              2020-08-04 09:42       833      
+<a href="jakarta.activation-api-2.0.0.pom.asc.md5" title="jakarta.activation-api-2.0.0.pom.asc.md5">jakarta.activation-api-2.0.0.pom.asc.md5</a>          2020-08-04 09:42        32      
+<a href="jakarta.activation-api-2.0.0.pom.asc.sha1" title="jakarta.activation-api-2.0.0.pom.asc.sha1">jakarta.activation-api-2.0.0.pom.asc.sha1</a>         2020-08-04 09:42        40      
+<a href="jakarta.activation-api-2.0.0.pom.asc.sha256" title="jakarta.activation-api-2.0.0.pom.asc.sha256">jakarta.activation-api-2.0.0.pom.asc.sha256</a>       2020-08-04 09:42        64      
+<a href="jakarta.activation-api-2.0.0.pom.asc.sha512" title="jakarta.activation-api-2.0.0.pom.asc.sha512">jakarta.activation-api-2.0.0.pom.asc.sha512</a>       2020-08-04 09:42       128      
+<a href="jakarta.activation-api-2.0.0.pom.md5" title="jakarta.activation-api-2.0.0.pom.md5">jakarta.activation-api-2.0.0.pom.md5</a>              2020-08-04 09:42        32      
+<a href="jakarta.activation-api-2.0.0.pom.sha1" title="jakarta.activation-api-2.0.0.pom.sha1">jakarta.activation-api-2.0.0.pom.sha1</a>             2020-08-04 09:42        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'git ls-remote --tags https://github.com/jakartaee/jaf-api.git' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e
+exec
+/usr/bin/bash -lc 'curl -fsSL https://download.eclipse.org/jakartaee/activation/2.0/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e
+ succeeded in 393ms:
+74a1e74bf03213a0bb16e8e2392933aa47c233f3	refs/tags/1.2.1
+41bad0bd6ba821abd8652c80e8e3c50b55851da2	refs/tags/1.2.1^{}
+b8f7b16b550344282d8b299363036ca57f525821	refs/tags/1.2.2
+e199f61f414fa3455734a407a6e56469b3ad97b4	refs/tags/1.2.2^{}
+da9e0f1cffa05cc0e351325c6a54cf6d5f80af31	refs/tags/2.0.0
+e4c307ad8703b483aa1d53330d596ac7bc6f903c	refs/tags/2.0.0^{}
+8d094ecc5883ef5600759885c5f58b45044f4ed3	refs/tags/2.0.1
+58f91fb5e1e128f13b5e44053839cbf07ebaa5a6	refs/tags/2.0.1^{}
+25fac0344706b07e35188a34f1080e40721f6690	refs/tags/2.1.0
+07665604a4dd0c8f9d388e892371e84206454b4e	refs/tags/2.1.0^{}
+854c4543a56c83c76f98acc7511943e88d3a7d64	refs/tags/2.1.0-RC1
+6dda4b323fc67233b1c4e26f636f07c0fad49e52	refs/tags/2.1.0-RC1^{}
+52b6fdfeb94151421a5d2de32adff3669be535b6	refs/tags/2.1.0-RC2
+f19f4fc0cb5ef9aba5f27a3e22919dde719fc012	refs/tags/2.1.0-RC2^{}
+13efd5e6e9b361a4cab6dfc61b27223d1db98891	refs/tags/2.1.1
+6c7dd2d757f6a705048c8b4e074c6f741dee110d	refs/tags/2.1.1^{}
+08de763831d3a38d36f0a9f667338b4766910cd0	refs/tags/2.1.2
+0750e49665855b4b85487aa3780bf0daf09e8e4c	refs/tags/2.1.2^{}
+544e0719b5579c476bbe4e8418d72a78f6a78b50	refs/tags/2.1.3
+7f7d358987265e68c724503a9a6f5268eb2d083d	refs/tags/2.1.3^{}
+ff682f132ed0d3bf17bdfa4ec53de584d1f23d43	refs/tags/2.1.4
+3dad341ad2639a223e31b41f28fb5cdc7c3e1e95	refs/tags/2.1.4^{}
+a07e749f540b7b01df92585b6cc7b9a9c3909750	refs/tags/2.2.0
+740f8db6ed92ea4e5b350232df5470c0af74c200	refs/tags/2.2.0^{}
+59d95cc7c97c7781282a9b14920ea1ac0c7e0322	refs/tags/2.2.0-M1
+735b17ddfa1a1a54b1944d1d1ddb2c2ad133d52f	refs/tags/2.2.0-M1^{}
+3aad6cf430f5325712c9ec487fdee395fc06aaae	refs/tags/2.2.0-M2
+1794a396ab6249efb0bdcfa491435f0b1a20bff5	refs/tags/2.2.0-M2^{}
+a08bf530f67a36b3b746a940140e47ddc9ded512	refs/tags/initial-contribution
+
+ succeeded in 921ms:
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <!-- Google Tag Manager -->
+      <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+         j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+         'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+         })(window,document,'script','dataLayer','GTM-5WLCZXC');
+      </script>
+      <!-- End Google Tag Manager -->
+      <meta name="author" content="Christopher Guindon"/>
+      <meta name="keywords" content="eclipse.org, Eclipse Foundation"/>
+      <link rel="shortcut icon" href="//www.eclipse.org/eclipse.org-common/themes/solstice/public/images/favicon.ico"/>
+      <title>Project download area | The Eclipse Foundation</title>
+      <link rel="stylesheet" href="//www.eclipse.org/eclipse.org-common/themes/solstice/public/stylesheets/quicksilver.min.css?v1.3"/>
+      <meta name="description" content="The Eclipse Foundation - home to a global community, the Eclipse IDE, Jakarta EE and over 360 open source projects, including runtimes, tools and frameworks."/>
+      <meta property="og:description" content="The Eclipse Foundation - home to a global community, the Eclipse IDE, Jakarta EE and over 360 open source projects, including runtimes, tools and frameworks."/>
+      <meta property="og:image" content="https://www.eclipse.org/eclipse.org-common/themes/solstice/public/images/logo/eclipse-foundation-200x200.png"/>
+      <meta property="og:title" content="Project download area | The Eclipse Foundation"/>
+      <meta property="og:image:width" content="200"/>
+      <meta property="og:image:height" content="200"/>
+      <meta itemprop="name" content="Project download area | The Eclipse Foundation"/>
+      <meta itemprop="description" content="The Eclipse Foundation - home to a global community, the Eclipse IDE, Jakarta EE and over 360 open source projects, including runtimes, tools and frameworks."/>
+      <meta itemprop="image" content="https://www.eclipse.org/eclipse.org-common/themes/solstice/public/images/logo/eclipse-foundation-400x400.png"/>
+      <meta name="twitter:site" content="@EclipseFdn"/>
+      <meta name="twitter:card" content="summary"/>
+      <meta name="twitter:title" content="Project download area | The Eclipse Foundation"/>
+      <meta name="twitter:url" content="https://www.eclipse.org"/>
+      <meta name="twitter:description" content="The Eclipse Foundation - home to a global community, the Eclipse IDE, Jakarta EE and over 360 open source projects, including runtimes, tools and frameworks."/>
+      <meta name="twitter:image" content="https://www.eclipse.org/eclipse.org-common/themes/solstice/public/images/logo/eclipse-foundation-400x400.png"/>
+      <link href="//fonts.googleapis.com/css?family=Libre+Franklin:400,700,300,600,100" rel="stylesheet" type="text/css"/>
+      <script> var eclipse_org_common = {"settings":{"cookies_class":{"name":"eclipse_settings","enabled":1}}}</script>  
+   </head>
+   <body id="body_solstice">
+      <!-- Google Tag Manager (noscript) -->
+      <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5WLCZXC"
+         height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+      <!-- End Google Tag Manager (noscript) -->    <a class="sr-only" href="#content">Skip to main content</a>
+      <header class="header-wrapper" id="header-wrapper">
+         <div class="clearfix toolbar-container-wrapper">
+            <div class="container">
+               <div class="text-right toolbar-row row hidden-print">
+                  <div class="col-md-24 row-toolbar-col">
+                     <ul class="list-inline">
+                        <a class="toolbar-link" href="//accounts.eclipse.org/user/login"><i class="fa fa-sign-in"></i> Log in</a></li>
+                        <li><a class="toolbar-link toolbar-manage-cookies dropdown-toggle"><i class="fa fa-wrench"></i> Manage Cookies</a></li>
+                     </ul>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="container">
+            <div class="row" id="header-row">
+               <div class="col-sm-5 col-md-4" id="header-left">
+                  <div class="wrapper-logo-default"><a href="//www.eclipse.org/"><img class="logo-eclipse-default hidden-xs" alt="logo" width="160" src="//www.eclipse.org/eclipse.org-common/themes/solstice/public/images/logo/eclipse-foundation-white-orange.svg"/></a></div>
+               </div>
+               <div class="col-sm-19 col-md-20 margin-top-10" id="main-menu-wrapper">
+                  <div class="float-right hidden-xs" id="btn-call-for-action"><a href="/downloads/" class="btn btn-huge btn-warning"><i class="fa fa-download"></i> Download</a></div>
+                  <div class="navbar yamm float-sm-right" id="main-menu">
+                     <div class="navbar-collapse collapse" id="navbar-main-menu">
+                        <ul class="nav navbar-nav">
+                           <li><a href="//www.eclipse.org/membership/" target="_self">Members</a></li>
+                           <li><a href="//www.eclipse.org/org/workinggroups/" target="_self">Working Groups</a></li>
+                           <li><a href="//www.eclipse.org/projects/" target="_self">Projects</a></li>
+                           <li class="dropdown visible-xs">
+                              <a href="#" data-toggle="dropdown" class="dropdown-toggle">Community <b class="caret"></b></a>
+                              <ul class="dropdown-menu">
+                                 <li><a href="//marketplace.eclipse.org">Marketplace</a></li>
+                                 <li><a href="//events.eclipse.org">Events</a></li>
+                                 <li><a href="//www.planeteclipse.org/">Planet Eclipse</a></li>
+                                 <li><a href="//www.eclipse.org/community/eclipse_newsletter/">Newsletter</a></li>
+                                 <li><a href="//www.youtube.com/user/EclipseFdn">Videos</a></li>
+                                 <li><a href="//blogs.eclipse.org">Blogs</a></li>
+                              </ul>
+                           </li>
+                           <li class="dropdown visible-xs">
+                              <a href="#" data-toggle="dropdown" class="dropdown-toggle">Participate <b class="caret"></b></a>
+                              <ul class="dropdown-menu">
+                                 <li><a href="//bugs.eclipse.org/bugs/">Report a Bug</a></li>
+                                 <li><a href="//www.eclipse.org/forums/">Forums</a></li>
+                                 <li><a href="//www.eclipse.org/mail/">Mailing Lists</a></li>
+                                 <li><a href="//wiki.eclipse.org/">Wiki</a></li>
+                                 <li><a href="//wiki.eclipse.org/IRC">IRC</a></li>
+                                 <li><a href="//www.eclipse.org/org/research/">Research</a></li>
+                              </ul>
+                           </li>
+                           <li class="dropdown visible-xs">
+                              <a href="#" data-toggle="dropdown" class="dropdown-toggle">Eclipse IDE <b class="caret"></b></a>
+                              <ul class="dropdown-menu">
+                                 <li><a href="//www.eclipse.org/downloads">Download</a></li>
+                                 <li><a href="//www.eclipse.org/eclipseide">Learn More</a></li>
+                                 <li><a href="//help.eclipse.org">Documentation</a></li>
+                                 <li><a href="//www.eclipse.org/getting_started">Getting Started / Support</a></li>
+                                 <li><a href="//www.eclipse.org/contribute/">How to Contribute</a></li>
+                                 <li><a href="//www.eclipse.org/ide/">IDE and Tools</a></li>
+                                 <li><a href="//www.eclipse.org/forums/index.php/f/89/">Newcomer Forum</a></li>
+                              </ul>
+                           </li>
+                           <!-- More -->
+                           <li class="dropdown eclipse-more hidden-xs">
+                              <a data-toggle="dropdown" class="dropdown-toggle" role="button">More<b class="caret"></b></a>
+                              <ul class="dropdown-menu">
+                                 <li>
+                                    <!-- Content container to add padding -->
+                                    <div class="yamm-content">
+                                       <div class="row">
+                                          <ul class="col-sm-8 list-unstyled">
+                                             <li>
+                                                <p><strong>Community</strong></p>
+                                             </li>
+                                             <li><a href="//marketplace.eclipse.org">Marketplace</a></li>
+                                             <li><a href="//events.eclipse.org">Events</a></li>
+                                             <li><a href="//www.planeteclipse.org/">Planet Eclipse</a></li>
+                                             <li><a href="//www.eclipse.org/community/eclipse_newsletter/">Newsletter</a></li>
+                                             <li><a href="//www.youtube.com/user/EclipseFdn">Videos</a></li>
+                                             <li><a href="//blogs.eclipse.org">Blogs</a></li>
+                                          </ul>
+                                          <ul class="col-sm-8 list-unstyled">
+                                             <li>
+                                                <p><strong>Participate</strong></p>
+                                             </li>
+                                             <li><a href="//bugs.eclipse.org/bugs/">Report a Bug</a></li>
+                                             <li><a href="//www.eclipse.org/forums/">Forums</a></li>
+                                             <li><a href="//www.eclipse.org/mail/">Mailing Lists</a></li>
+                                             <li><a href="//wiki.eclipse.org/">Wiki</a></li>
+                                             <li><a href="//wiki.eclipse.org/IRC">IRC</a></li>
+                                             <li><a href="//www.eclipse.org/org/research/">Research</a></li>
+                                          </ul>
+                                          <ul class="col-sm-8 list-unstyled">
+                                             <li>
+                                                <p><strong>Eclipse IDE</strong></p>
+                                             </li>
+                                             <li><a href="//www.eclipse.org/downloads">Download</a></li>
+                                             <li><a href="//www.eclipse.org/eclipseide">Learn More</a></li>
+                                             <li><a href="//help.eclipse.org">Documentation</a></li>
+                                             <li><a href="//www.eclipse.org/getting_started">Getting Started / Support</a></li>
+                                             <li><a href="//www.eclipse.org/contribute/">How to Contribute</a></li>
+                                             <li><a href="//www.eclipse.org/ide/">IDE and Tools</a></li>
+                                             <li><a href="//www.eclipse.org/forums/index.php/f/89/">Newcomer Forum</a></li>
+                                          </ul>
+                                       </div>
+                                    </div>
+                                 </li>
+                              </ul>
+                           </li>
+                        </ul>
+                     </div>
+                     <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-main-menu">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        </button>
+                        <div class="wrapper-logo-mobile"><a class="navbar-brand visible-xs" href="//www.eclipse.org/"><img class="logo-eclipse-default-mobile img-responsive" alt="logo" width="160" src="//www.eclipse.org/eclipse.org-common/themes/solstice/public/images/logo/eclipse-foundation-white-orange.svg"/></a></div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </header>
+      <section class="default-breadcrumbs hidden-print" id="breadcrumb">
+         <div class="container">
+            <h3 class="sr-only">Breadcrumbs</h3>
+            <div class="row">
+               <div class="col-sm-24">
+                  <ol class="breadcrumb">
+                     <li><a href="/">Home</a></li>
+                     <li><a href="//eclipse.org/downloads/">Downloads</a></li>
+                     <li>Project Download Area</li>
+                  </ol>
+               </div>
+            </div>
+         </div>
+      </section>
+      <!-- /#breadcrumb -->
+      <main class="margin-bottom-50">
+         <div class="novaContent container" id="novaContent">
+          <div class="row">
+            <div class="col-md-18">
+              <h1>Eclipse Downloads</h1>
+              <p>This page is not designed to be web-accessible, as the project has not created a web page here.  You can try the following:</p>
+              <ul>
+                <li>Contact the project members on their user <a href="//eclipse.org/forums">forum</a>.</li>
+                <li>Browse the directory contents to find the file you're looking for.</li>
+                <li>Go to the <a href="//eclipse.org/downloads/">main Downloads page</a>.</li>
+                <li><b>Project committers:</b> <a href="https://accounts.eclipse.org/">Log In</a> to Archive/Delete files and folders.</li>
+              </ul>
+              <h2>Directory Contents</h2><div id='dirlist'><table class='.table' style='width:100%; font-family: monospace; font-size: medium;'><tr><td></td><td><i class='fa fa-folder' aria-hidden='true'></i> <a href='/jakartaee/activation/2.0/..'> ..</a> </td><td style="text-align: right; padding-right:15px;">  </td><td></td><td></td></tr><tr><td></td><td><i class='fa fa-file-text-o' aria-hidden='true'></i> <a href='https://www.eclipse.org/downloads/download.php?file=/jakartaee/activation/2.0/jakarta-activation-tck-2.0.0.zip'>jakarta-activation-tck-2.0.0.zip</a></td><td style="text-align: right; padding-right:15px;"> 6.0M </td><td>2020-09-14 13:33</td><td></td></tr><tr><td></td><td><i class='fa fa-file-text-o' aria-hidden='true'></i> <a href='/jakartaee/activation/2.0/jakarta-activation-tck-2.0.0.zip.sha256'> jakarta-activation-tck-2.0.0.zip.sha256</a></td><td style="text-align: right; padding-right:15px;"> 65  </td><td>2020-09-14 13:33</td><td></td></tr><tr><td></td><td><i class='fa fa-file-text-o' aria-hidden='true'></i> <a href='/jakartaee/activation/2.0/jakarta-activation-tck-2.0.0.zip.sig'> jakarta-activation-tck-2.0.0.zip.sig</a></td><td style="text-align: right; padding-right:15px;"> 836  </td><td>2020-09-14 13:33</td><td></td></tr><tr><td></td><td><i class='fa fa-file-text-o' aria-hidden='true'></i> <a href='https://www.eclipse.org/downloads/download.php?file=/jakartaee/activation/2.0/jakarta-activation-tck-2.0.1.zip'>jakarta-activation-tck-2.0.1.zip</a></td><td style="text-align: right; padding-right:15px;"> 5.6M </td><td>2021-07-15 19:57</td><td></td></tr><tr><td></td><td><i class='fa fa-file-text-o' aria-hidden='true'></i> <a href='/jakartaee/activation/2.0/jakarta-activation-tck-2.0.1.zip.sha256'> jakarta-activation-tck-2.0.1.zip.sha256</a></td><td style="text-align: right; padding-right:15px;"> 65  </td><td>2021-07-15 19:57</td><td></td></tr><tr><td></td><td><i class='fa fa-file-text-o' aria-hidden='true'></i> <a href='/jakartaee/activation/2.0/jakarta-activation-tck-2.0.1.zip.sig'> jakarta-activation-tck-2.0.1.zip.sig</a></td><td style="text-align: right; padding-right:15px;"> 836  </td><td>2021-07-15 19:57</td><td></td></tr></table></div>
+            </div>
+            <div class="col-md-6">
+              <aside class="hidden-sm hidden-xs" id="main-sidebar">
+                <ul id="leftnav" class="ul-left-nav fa-ul hidden-print">
+                  <li class="separator">Useful links</li>
+                  <li><i class="fa fa-caret-right fa-fw"></i> <a href="//archive.eclipse.org">Eclipse project archives</a></li>
+                  <li><i class="fa fa-caret-right fa-fw"></i> <a href="//download.eclipse.org/eclipse/downloads">Eclipse project downloads</a></li>
+                  <li><i class="fa fa-caret-right fa-fw"></i> <a href="//eclipse.org">Eclipse home</a></li>
+                  <li><i class="fa fa-caret-right fa-fw"></i> <a href="//eclipse.org/downloads">Downloads home</a></li>
+                  <li><i class="fa fa-caret-right fa-fw"></i> <a href="mailto:webmaster@eclipse.org">Email the webmaster</a></li>
+                </ul>
+              </aside>
+            </div>
+          </div>
+         </div>
+      </main>
+      <footer id="solstice-footer">
+         <div class="container">
+            <div class="row">
+               <section class="col-sm-6 hidden-print" id="footer-eclipse-foundation">
+                  <h2 class="section-title">Eclipse Foundation</h2>
+                  <ul class="nav">
+                     <li><a href="//www.eclipse.org/org/">About Us</a></li>
+                     <li><a href="//www.eclipse.org/org/foundation/contact.php">Contact Us</a></li>
+                     <li><a href="//www.eclipse.org/donate">Donate</a></li>
+                     <li><a href="//www.eclipse.org/org/documents/">Governance</a></li>
+                     <li><a href="//www.eclipse.org/artwork/">Logo and Artwork</a></li>
+                     <li><a href="//www.eclipse.org/org/foundation/directors.php">Board of Directors</a></li>
+                  </ul>
+               </section>
+               <section class="col-sm-6 hidden-print" id="footer-legal">
+                  <h2 class="section-title">Legal</h2>
+                  <ul class="nav">
+                     <li><a href="//www.eclipse.org/legal/privacy.php">Privacy Policy</a></li>
+                     <li><a href="//www.eclipse.org/legal/termsofuse.php">Terms of Use</a></li>
+                     <li><a href="//www.eclipse.org/legal/copyright.php">Copyright Agent</a></li>
+                     <li><a href="//www.eclipse.org/legal/epl-2.0/">Eclipse Public License</a></li>
+                     <li><a href="//www.eclipse.org/legal/">Legal Resources </a></li>
+                  </ul>
+               </section>
+               <section class="col-sm-6 hidden-print" id="footer-useful-links">
+                  <h2 class="section-title">Useful Links</h2>
+                  <ul class="nav">
+                     <li><a href="//bugs.eclipse.org/bugs/">Report a Bug</a></li>
+                     <li><a href="//help.eclipse.org/">Documentation</a></li>
+                     <li><a href="//www.eclipse.org/contribute/">How to Contribute</a></li>
+                     <li><a href="//www.eclipse.org/mail/">Mailing Lists</a></li>
+                     <li><a href="//www.eclipse.org/forums/">Forums</a></li>
+                     <li><a href="//marketplace.eclipse.org">Marketplace</a></li>
+                  </ul>
+               </section>
+               <section class="col-sm-6 hidden-print" id="footer-other">
+                  <h2 class="section-title">Other</h2>
+                  <ul class="nav">
+                     <li><a href="//www.eclipse.org/ide/">IDE and Tools</a></li>
+                     <li><a href="//www.eclipse.org/projects">Community of Projects</a></li>
+                     <li><a href="//www.eclipse.org/org/workinggroups/">Working Groups</a></li>
+                     <li><a href="//www.eclipse.org/org/research/">Research@Eclipse</a></li>
+                     <li><a href="//status.eclipse.org">Service Status</a></li>
+                  </ul>
+               </section>
+               <div class="col-sm-24 margin-top-20">
+                  <div class="row">
+                     <div id="copyright" class="col-md-16">
+                        <p id="copyright-text">Copyright &copy; Eclipse Foundation, Inc. All Rights Reserved.</p>
+                     </div>
+                     <div class="col-md-8 social-media">
+                        <ul class="list-inline">
+                           <li>
+                              <a class="social-media-link fa-stack fa-lg" href="//twitter.com/EclipseFdn">
+                              <i class="fa fa-circle-thin fa-stack-2x"></i>
+                              <i class="fa fa-twitter fa-stack-1x"></i>
+                              </a>
+                           </li>
+                           <li>
+                              <a class="social-media-link fa-stack fa-lg" href="//www.facebook.com/eclipse.org">
+                              <i class="fa fa-circle-thin fa-stack-2x"></i>
+                              <i class="fa fa-facebook fa-stack-1x"></i>
+                              </a>
+                           </li>
+                           <li>
+                              <a class="social-media-link fa-stack fa-lg" href="//www.youtube.com/user/EclipseFdn">
+                              <i class="fa fa-circle-thin fa-stack-2x"></i>
+                              <i class="fa fa-youtube fa-stack-1x"></i>
+                              </a>
+                           </li>
+                           <li>
+                              <a class="social-media-link fa-stack fa-lg" href="//www.linkedin.com/company/eclipse-foundation">
+                              <i class="fa fa-circle-thin fa-stack-2x"></i>
+                              <i class="fa fa-linkedin fa-stack-1x"></i>
+                              </a>
+                           </li>
+                        </ul>
+                     </div>
+                  </div>
+               </div>
+               <a href="#" class="scrollup">Back to the top</a>
+            </div>
+         </div>
+      </footer>
+      <!-- Placed at the end of the document so the pages load faster -->
+      <script src="//www.eclipse.org/eclipse.org-common/themes/solstice/public/javascript/main.min.js?var=1.2"></script>
+      <script src="//www.eclipse.org/errors/download.eclipse.org/downloads_directory.js"></script>
+   </body>
+</html>
+codex
+Maven Central has both the `2.0.0` sources jar and javadoc jar for the API artifact. The TCK is not in that artifact directory, but Eclipse’s Jakarta EE download area has a versioned `jakarta-activation-tck-2.0.0.zip`, so I’m using that as the versioned test suite URL.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/jakarta/activation/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jakarta/activation</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jakarta/activation</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jakarta.activation-api/" title="jakarta.activation-api/">jakarta.activation-api/</a>                                          -         -      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/com/sun/activation/all/2.0.0/all-2.0.0.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e
+ succeeded in 0ms:
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+
+    Copyright (c) 1997, 2020 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Distribution License v. 1.0, which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: BSD-3-Clause
+
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+			    http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>org.eclipse.ee4j</groupId>
+        <artifactId>project</artifactId>
+        <version>1.0.6</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.sun.activation</groupId>
+    <artifactId>all</artifactId>
+    <packaging>pom</packaging>
+    <version>2.0.0</version>
+    <name>Jakarta Activation distribution</name>
+    <description>${project.name}</description>
+    <url>https://github.com/eclipse-ee4j/jaf</url>
+
+    <scm>
+        <connection>scm:git:ssh://git@github.com/eclipse/jaf.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/eclipse/jaf.git</developerConnection>
+        <url>https://github.com/eclipse-ee4j/jaf</url>
+      <tag>HEAD</tag>
+  </scm>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/eclipse-ee4j/jaf/issues/</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>EDL 1.0</name>
+            <url>http://www.eclipse.org/org/documents/edl-v10.php</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <properties>
+	<activation.spec.version>2.0</activation.spec.version>
+	<!-- defaults that are overridden in activation module -->
+	<activation.extensionName>
+	    ${project.groupId}.${project.artifactId}
+	</activation.extensionName>
+	<activation.specificationTitle>
+	    ${project.groupId}.${project.artifactId}
+	</activation.specificationTitle>
+	<activation.implementationTitle>
+	    ${project.groupId}.${project.artifactId}
+	</activation.implementationTitle>
+	<activation.bundle.symbolicName>
+	    ${project.groupId}.${project.artifactId}
+	</activation.bundle.symbolicName>
+	<activation.bundle.symbolicName>
+	    ${project.groupId}.${project.artifactId}
+	</activation.bundle.symbolicName>
+	<activation.packages.export>
+	    jakarta.activation.*; version=${activation.spec.version}
+	</activation.packages.export>
+	<activation.packages.import>
+	    *
+	</activation.packages.import>
+	<activation.packages.private>
+	    com.sun.activation.*
+	</activation.packages.private>
+	<!-- for the osgiversion-maven-plugin -->
+	<hk2.plugin.version>2.0.0</hk2.plugin.version>
+	<project.build.sourceEncoding>iso-8859-1</project.build.sourceEncoding>
+	<findbugs.threshold>
+	    High
+	</findbugs.threshold>
+	<findbugs.version>
+	    3.0.1
+	</findbugs.version>
+	<findbugs.skip>
+	    true
+	</findbugs.skip>
+	<findbugs.exclude/>
+        <copyright-plugin.version>2.3</copyright-plugin.version>
+    </properties>
+
+    <developers>
+	<developer>
+	    <id>shannon</id>
+	    <name>Bill Shannon</name>
+	    <email>bill.shannon@oracle.com</email>
+	    <organization>Oracle</organization>
+	    <roles>
+		<role>lead</role>
+	    </roles>
+	</developer>
+    </developers>
+
+    <!-- following to enable use of "mvn site:stage" -->
+    <distributionManagement>
+	<site>
+	    <id>oracle.com</id>
+	    <url>file:/tmp</url> <!-- not used -->
+	</site>
+    </distributionManagement>
+
+    <modules>
+	<module>activation</module>
+	<module>activationapi</module>
+    </modules>
+
+    <profiles>
+	<!--
+	    This profile contains modules that should only be built
+	    but not installed or deployed.
+	-->
+	<profile>
+	    <id>build-only</id>
+	    <modules>
+		<module>demo</module>
+	    </modules>
+	    <activation>
+		<activeByDefault>true</activeByDefault>
+	    </activation>
+	</profile>
+
+	<!--
+	    This profile is used for deploying a Jakarta Activation
+	    final release.
+
+	    Activating this profile manually for deployment causes
+	    the above profile to be deactivated, which works around
+	    an apparent bug in maven that prevents me from manually
+	    deactivating a profile.  This profile purposely has none
+	    of the modules I don't want to be deployed.
+	-->
+	<profile>
+	    <id>oss-release</id>
+	</profile>
+    </profiles>
+
+    <build>
+	<defaultGoal>install</defaultGoal>
+	<plugins>
+	    <!--
+		Make sure we're using the correct version of maven.
+	    -->
+	    <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-enforcer-plugin</artifactId>
+		<executions>
+		    <execution>
+			<id>enforce-version</id>
+			<goals>
+			    <goal>enforce</goal>
+			</goals>
+			<configuration>
+			    <rules>
+				<requireMavenVersion>
+				    <version>[3.0.3,)</version>
+				</requireMavenVersion>
+				<requireJavaVersion>
+				    <version>[9,)</version>
+				</requireJavaVersion>
+			    </rules>
+			</configuration>
+		    </execution>
+		</executions>
+	    </plugin>
+
+	    <!--
+		This plugin is reponsible for packaging artifacts
+		as OSGi bundles.  Please refer to
+		http://felix.apache.org/site/apache-felix-maven-bundle-plugin-bnd.html
+		for more information about how to use this plugin.
+	    -->
+	    <plugin>
+		<groupId>org.apache.felix</groupId>
+		<artifactId>maven-bundle-plugin</artifactId>
+		<configuration>
+		    <instructions>
+			<Bundle-SymbolicName>
+			    ${activation.bundle.symbolicName}
+			</Bundle-SymbolicName>
+			<Export-Package>
+			    ${activation.packages.export}
+			</Export-Package>
+			<Import-Package>
+			    ${activation.packages.import}
+			</Import-Package>
+			<Private-Package>
+			    ${activation.packages.private}
+			</Private-Package>
+			<DynamicImport-Package>
+			    *
+			</DynamicImport-Package>
+		    </instructions>
+		</configuration>
+		<!--
+		    Since we don't change the packaging type to bundle, we
+		    need to configure the plugin to execute the manifest goal
+		    during the process-classes phase of the build life cycle.
+		-->
+		<executions>
+		    <execution>
+			<id>osgi-manifest</id>
+			<phase>process-classes</phase>
+			<goals>
+			    <goal>manifest</goal>
+			</goals>
+		    </execution>
+		</executions>
+	    </plugin>
+
+	    <!--
+		Since we don't want a qualifier like b05 or SNAPSHOT to
+		appear in the OSGi package version attribute, we use
+		the following plugin to populate a project property
+		with an OSGi version that is equivalent to the maven
+		version without the qualifier.
+	    -->
+	    <plugin>
+		<groupId>org.glassfish.hk2</groupId>
+		<artifactId>osgiversion-maven-plugin</artifactId>
+		<version>${hk2.plugin.version}</version>
+		<configuration>
+		    <dropVersionComponent>qualifier</dropVersionComponent>
+		    <versionPropertyName>activation.osgiversion</versionPropertyName>
+		</configuration>
+		<executions>
+		    <execution>
+			<id>compute-osgi-version</id>
+			<goals>
+			    <goal>compute-osgi-version</goal>
+			</goals>
+		    </execution>
+		</executions>
+	    </plugin>
+
+	    <!--
+		Use the JDK 9+ compiler but with -source 1.8 for all
+		but the module-info.java file.
+	    -->
+	    <plugin>
+		<artifactId>maven-compiler-plugin</artifactId>
+		<executions>
+		    <execution>
+			<id>default-compile</id>
+			<configuration>
+			    <source>1.8</source>
+			    <target>1.8</target>
+			    <excludes>
+				<exclude>module-info.java</exclude>
+			    </excludes>
+			</configuration>
+		    </execution>
+		    <execution>
+			<id>module-info-compile</id>
+			<goals>
+			    <goal>compile</goal>
+			</goals>
+			<configuration>
+			    <release>9</release>
+			    <includes>
+				<include>module-info.java</include>
+			    </includes>
+			</configuration>
+		    </execution>
+		    <execution>
+			<id>default-testCompile</id>
+			<configuration>
+			    <release>9</release>
+			</configuration>
+		    </execution>
+		</executions>
+	    </plugin>
+
+	    <plugin>
+		<artifactId>maven-jar-plugin</artifactId>
+		<!-- need at least this version to make excludes work -->
+		<configuration>
+		    <finalName>${project.artifactId}</finalName>
+		    <archive>
+			<!--
+			    Configure the maven-jar-plugin to pick up
+			    META-INF/MANIFEST.MF that's generated by
+			    the maven-bundle-plugin.
+			-->
+			<manifestFile>
+			  ${project.build.outputDirectory}/META-INF/MANIFEST.MF
+			</manifestFile>
+			<manifestEntries>
+			    <Extension-Name>
+				${activation.extensionName}
+			    </Extension-Name>
+			    <Specification-Title>
+				${activation.specificationTitle}
+			    </Specification-Title>
+			    <Specification-Version>
+				${activation.spec.version}
+			    </Specification-Version>
+			    <Specification-Vendor>
+				${project.organization.name}
+			    </Specification-Vendor>
+			    <Implementation-Title>
+				${activation.implementationTitle}
+			    </Implementation-Title>
+			    <Implementation-Version>
+				${project.version}
+			    </Implementation-Version>
+			    <Implementation-Vendor>
+				${project.organization.name}
+			    </Implementation-Vendor>
+			    <Implementation-Vendor-Id>
+				com.sun
+			    </Implementation-Vendor-Id>
+			</manifestEntries>
+		    </archive>
+		    <excludes>
+			<exclude>**/*.java</exclude>
+		    </excludes>
+		</configuration>
+	    </plugin>
+
+	    <!--
+		Tell the source plugin about the sources that may have
+		been downloaded by the maven-dependency-plugin.
+	    -->
+
+	    <plugin>
+		<groupId>org.codehaus.mojo</groupId>
+		<artifactId>build-helper-maven-plugin</artifactId>
+		<executions>
+		    <execution>
+			<id>add-source</id>
+			<phase>generate-sources</phase>
+			<goals>
+			    <goal>add-source</goal>
+			</goals>
+			<configuration>
+			    <sources>
+				<source> <!-- for dependencies -->
+				    ${project.build.directory}/sources
+				</source>
+			    </sources>
+			</configuration>
+		    </execution>
+		    <execution>
+			<id>add-resource</id>
+			<phase>generate-resources</phase>
+			<goals>
+			    <goal>add-resource</goal>
+			</goals>
+			<configuration>
+			    <resources>
+				<resource>
+				    <directory>${main.basedir}</directory>
+				    <targetPath>META-INF</targetPath>
+				    <includes>
+					<include>LICENSE.md</include>
+					<include>NOTICE.md</include>
+				    </includes>
+				</resource>
+			    </resources>
+			</configuration>
+		    </execution>
+		</executions>
+	    </plugin>
+
+	    <!--
+		Directory plugin to find parent root directory absolute path.
+		Sets ${main.basedir}, used above with build-helper-maven-plugin
+		to include LICENSE.md and NOTICE.md in jar files.
+	    -->
+	    <plugin>
+		<groupId>org.commonjava.maven.plugins</groupId>
+		<artifactId>directory-maven-plugin</artifactId>
+		<executions>
+		    <execution>
+			<id>directories</id>
+			<goals>
+			    <goal>highest-basedir</goal>
+			</goals>
+			<phase>initialize</phase>
+			<configuration>
+			    <property>main.basedir</property>
+			</configuration>
+		    </execution>
+		</executions>
+	    </plugin>
+
+	    <!--
+		Configure the source plugin here so that it will know
+		about the sources that may have been downloaded by the
+		maven-dependency-plugin and configured by the
+		build-helper-maven-plugin.
+	    -->
+	    <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-source-plugin</artifactId>
+		<executions>
+		    <execution>
+			<id>attach-sources</id>
+			<goals>
+			    <goal>jar-no-fork</goal> 
+			</goals>
+		    </execution>
+		</executions>
+		<configuration>
+		    <includePom>true</includePom>
+		    <!--
+			Since we added the classes directory using the
+			build-helper-maven-plugin above, we need to exclude
+			the class files from the source jar file.
+		    -->
+		    <excludes>
+			<exclude>**/*.class</exclude>
+		    </excludes>
+		</configuration>
+	    </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <author>false</author>
+                    <description>
+                        Jakarta Activation API documentation
+                    </description>
+                    <doctitle>
+                        Jakarta Activation API documentation
+                    </doctitle>
+                    <windowtitle>
+                        Jakarta Activation API documentation
+                    </windowtitle>
+                    <splitindex>true</splitindex>
+                    <use>true</use>
+                    <notimestamp>true</notimestamp>
+                    <serialwarn>true</serialwarn>
+                    <quiet>true</quiet>
+                    <bottom>
+<![CDATA[Copyright &#169; 2019, 2020 Eclipse Foundation.
+    Use is subject to
+    <a href="{@docRoot}/doc-files/speclicense.html" target="_top">license terms</a>.
+]]>
+                    </bottom>
+                    <groups>
+                        <group>
+                            <title>Jakarta Activation API Packages</title>
+                            <packages>jakarta.*</packages>
+                        </group>
+                    </groups>
+                    <!--
+                    <subpackages>jakarta.activation</subpackages>
+                    -->
+                    <!--
+                        Force javadoc to produce non-module docs
+                        since the module definition isn't part of
+                        the API specification.
+                    -->
+                    <!-- force the doc-files directory to be copied -->
+                    <docfilessubdirs>true</docfilessubdirs>
+                    <javadocDirectory>${main.basedir}/activation/src/main/javadoc</javadocDirectory>
+                    <detectJavaApiLink>false</detectJavaApiLink>
+                </configuration>
+            </plugin>
+        </plugins>
+
+        <pluginManagement>
+	    <plugins>
+		<plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-compiler-plugin</artifactId>
+		    <version>3.8.1</version>
+		</plugin>
+		<plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-surefire-plugin</artifactId>
+		    <version>2.4.3</version>
+		</plugin>
+		<plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-jar-plugin</artifactId>
+		    <version>3.2.0</version>
+		</plugin>
+		<plugin>
+		    <groupId>org.codehaus.mojo</groupId>
+		    <artifactId>build-helper-maven-plugin</artifactId>
+		    <version>1.7</version>
+		</plugin>
+		<plugin>
+		    <groupId>org.commonjava.maven.plugins</groupId>
+		    <artifactId>directory-maven-plugin</artifactId>
+		    <version>0.3</version>
+		</plugin>
+		<plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-assembly-plugin</artifactId>
+		    <version>2.4</version>
+		</plugin>
+		<plugin>
+		    <!--
+			By default, disable the FindBugs plugin for all modules.
+			It's enabled in the modules where we actually want to
+			run it.
+		    -->
+		    <groupId>org.codehaus.mojo</groupId>
+		    <artifactId>findbugs-maven-plugin</artifactId>
+		    <version>${findbugs.version}</version>
+		    <configuration>
+			<skip>${findbugs.skip}</skip>
+			<threshold>${findbugs.threshold}</threshold>
+			<findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+			<excludeFilterFile>
+			    ${findbugs.exclude}
+			</excludeFilterFile>
+		    </configuration>
+		</plugin>
+		<plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-enforcer-plugin</artifactId>
+		    <version>1.0</version>
+		</plugin>
+		<plugin>
+		    <groupId>org.apache.felix</groupId>
+		    <artifactId>maven-bundle-plugin</artifactId>
+		    <version>4.2.1</version>
+		</plugin>
+		<plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-source-plugin</artifactId>
+		    <version>2.1.2</version>
+		 </plugin>
+		<plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-javadoc-plugin</artifactId>
+		    <version>3.1.1</version>
+		</plugin>
+		<plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-project-info-reports-plugin</artifactId>
+		    <version>2.7</version>
+		</plugin>
+		<plugin>
+		    <groupId>org.glassfish.copyright</groupId>
+		    <artifactId>glassfish-copyright-maven-plugin</artifactId>
+		    <version>${copyright-plugin.version}</version>
+		    <configuration>
+			<scm>git</scm>
+			<scmOnly>true</scmOnly> 
+			<excludeFile>
+			    copyright-exclude
+			</excludeFile>
+		    </configuration>
+		</plugin>
+	    </plugins>
+	</pluginManagement>
+    </build>
+
+    <dependencyManagement>
+	<dependencies>
+	    <dependency>
+		<groupId>com.sun.activation</groupId>
+		<artifactId>jakarta.activation</artifactId>
+		<version>${project.version}</version>
+	    </dependency>
+	</dependencies>
+    </dependencyManagement>
+
+    <reporting>
+	<plugins>
+	    <!--
+		Configure FindBugs to run with "mvn site" and
+		generate html output that can be viewed directly.
+	    -->
+	    <plugin>
+		<groupId>org.codehaus.mojo</groupId>
+		<artifactId>findbugs-maven-plugin</artifactId>
+		<version>${findbugs.version}</version>
+		<configuration>
+		    <skip>${findbugs.skip}</skip>
+		    <threshold>${findbugs.threshold}</threshold>
+		    <excludeFilterFile>
+			${findbugs.exclude}
+		    </excludeFilterFile>
+		</configuration>
+	    </plugin>
+	</plugins>
+    </reporting>
+</project>
+
+exec
+/usr/bin/bash -lc "for url in https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/2.0.0/jakarta.activation-api-2.0.0-sources.jar https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/2.0.0/jakarta.activation-api-2.0.0-javadoc.jar https://download.eclipse.org/jakartaee/activation/2.0/jakarta-activation-tck-2.0.0.zip https://github.com/jakartaee/jaf-api/tree/2.0.0; do printf '%s -> ' \""'$url"; curl -fsSIL -o /dev/null -w '"'%{http_code} %{url_effective}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/jakartaee/jaf-api | rg '\"html_url\"|\"description\"|\"homepage\"|\"archived\"|\"default_branch\"'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e
+ succeeded in 267ms:
+    "html_url": "https://github.com/jakartaee",
+  "html_url": "https://github.com/jakartaee/jaf-api",
+  "description": "Jakarta Activation Specification project",
+  "homepage": "https://jakartaee.github.io/jaf-api/",
+  "archived": false,
+  "default_branch": "main",
+    "html_url": "https://github.com/jakartaee",
+
+ succeeded in 1464ms:
+200 https://download.eclipse.org/jakartaee/activation/2.0/jakarta-activation-tck-2.0.0.zip
+https://github.com/jakartaee/jaf-api/tree/2.0.0 -> 200 https://github.com/jakartaee/jaf-api/tree/2.0.0
+
+codex
+The Maven POM for 2.0.0 still has an older project URL, but GitHub redirects that project to the active `jakartaee/jaf-api` repository, and the repo has a `2.0.0` tag. I’ll keep the repository root canonical and unversioned.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/2.0.0/jakarta.activation-api-2.0.0.pom | rg -n "<url>|<scm>|<description>|<name>|jakarta.activation|compile against|implementation"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e
+ succeeded in 0ms:
+15:    the jakarta.activation.* API definitions and is *only* intended to be used
+16:    for programs to compile against.  Note that it includes none of the
+17:    implementation-specific classes that the jakarta.activation.* classes rely on.
+28:    <groupId>jakarta.activation</groupId>
+29:    <artifactId>jakarta.activation-api</artifactId>
+31:    <name>Jakarta Activation API jar</name>
+34:            jakarta.activation
+37:            jakarta.activation
+40:            jakarta.activation.*; version=${activation.spec.version},
+47:            jakarta.activation-api
+74:                                    <artifactId>jakarta.activation</artifactId>
+89:                            <artifactId>jakarta.activation</artifactId>
+97:			Include all the implementation source files so that
+127:		Don't include the implementation classes in the jar files.
+
+exec
+/usr/bin/bash -lc "for url in https://github.com/eclipse-ee4j/jaf https://github.com/jakartaee/jaf-api; do printf '%s -> ' \""'$url"; curl -fsSIL -o /dev/null -w '"'%{http_code} %{url_effective}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/jakartaee/jaf-api/2.0.0/README.md | sed -n '1,160p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e
+ succeeded in 128ms:
+# Jakarta Activation
+
+Jakarta Activation lets you take advantage of standard services to:
+determine the type of an arbitrary piece of data; encapsulate access to
+it; discover the operations available on it; and instantiate the
+appropriate bean to perform the operation(s).
+
+See the
+[Jakarta Activation web site](https://eclipse-ee4j.github.io/jaf/).
+
+ succeeded in 843ms:
+200 https://github.com/jakartaee/jaf-api
+https://github.com/jakartaee/jaf-api -> 200 https://github.com/jakartaee/jaf-api
+
+codex
+I’m going to add only the missing fields on the `metadata-version: 2.0.0` entry: Maven source/javadoc templates, canonical repository root, versioned Activation TCK zip, and a two-sentence API description. No `language` field is needed because this is not Kotlin, Groovy, or Scala-specific.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e/metadata/jakarta.activation/jakarta.activation-api/index.json
+diff --git a/metadata/jakarta.activation/jakarta.activation-api/index.json b/metadata/jakarta.activation/jakarta.activation-api/index.json
+index a8ddcdf993f443874e2524f5cd8bcc9853944e1d..6c5b6029b35bcde4d1bbce118d5827ea76678f8e
+--- a/metadata/jakarta.activation/jakarta.activation-api/index.json
++++ b/metadata/jakarta.activation/jakarta.activation-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaf-api",
++    "test-code-url" : "https://download.eclipse.org/jakartaee/activation/2.0/jakarta-activation-tck-$version$.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
++    "description" : "Jakarta Activation API defines Java interfaces and classes for determining data types, encapsulating access to data, and mapping MIME content to command handlers. This API-only artifact is used to compile applications against the Jakarta Activation contracts without including the implementation-specific classes they rely on.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+diff --git a/metadata/jakarta.activation/jakarta.activation-api/index.json b/metadata/jakarta.activation/jakarta.activation-api/index.json
+index a8ddcdf993f443874e2524f5cd8bcc9853944e1d..6c5b6029b35bcde4d1bbce118d5827ea76678f8e
+--- a/metadata/jakarta.activation/jakarta.activation-api/index.json
++++ b/metadata/jakarta.activation/jakarta.activation-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaf-api",
++    "test-code-url" : "https://download.eclipse.org/jakartaee/activation/2.0/jakarta-activation-tck-$version$.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
++    "description" : "Jakarta Activation API defines Java interfaces and classes for determining data types, encapsulating access to data, and mapping MIME content to command handlers. This API-only artifact is used to compile applications against the Jakarta Activation contracts without including the implementation-specific classes they rely on.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+web search: 
+web search: https://github.com/jakartaee/jaf-api
+web search: 
+web search: repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/2.0.0/jakarta.activation-api-2.0.0-sources.jar
+web search: 
+web search: https://mvnrepository.com/artifact/jakarta.activation/jakarta.activation-api
+codex
+The JSON has been edited. I’m running a targeted metadata validation now, plus a quick diff check so the final result is grounded in the actual file change.
+exec
+/usr/bin/bash -lc 'jq . metadata/jakarta.activation/jakarta.activation-api/index.json >/dev/null && git diff -- metadata/jakarta.activation/jakarta.activation-api/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e
+ succeeded in 0ms:
+diff --git i/metadata/jakarta.activation/jakarta.activation-api/index.json w/metadata/jakarta.activation/jakarta.activation-api/index.json
+index a8ddcdf993..6c5b6029b3 100644
+--- i/metadata/jakarta.activation/jakarta.activation-api/index.json
++++ w/metadata/jakarta.activation/jakarta.activation-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaf-api",
++    "test-code-url" : "https://download.eclipse.org/jakartaee/activation/2.0/jakarta-activation-tck-$version$.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
++    "description" : "Jakarta Activation API defines Java interfaces and classes for determining data types, encapsulating access to data, and mapping MIME content to command handlers. This API-only artifact is used to compile applications against the Jakarta Activation contracts without including the implementation-specific classes they rely on.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=jakarta.activation:jakarta.activation-api:2.0.0 --stacktrace' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e
+diff --git a/metadata/jakarta.activation/jakarta.activation-api/index.json b/metadata/jakarta.activation/jakarta.activation-api/index.json
+index a8ddcdf993f443874e2524f5cd8bcc9853944e1d..6c5b6029b35bcde4d1bbce118d5827ea76678f8e
+--- a/metadata/jakarta.activation/jakarta.activation-api/index.json
++++ b/metadata/jakarta.activation/jakarta.activation-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaf-api",
++    "test-code-url" : "https://download.eclipse.org/jakartaee/activation/2.0/jakarta-activation-tck-$version$.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
++    "description" : "Jakarta Activation API defines Java interfaces and classes for determining data types, encapsulating access to data, and mapping MIME content to command handlers. This API-only artifact is used to compile applications against the Jakarta Activation contracts without including the implementation-specific classes they rely on.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+ exited 1 in 11644ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for jakarta.activation:jakarta.activation-api:2.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e/metadata/jakarta.activation/jakarta.activation-api/2.0.0/
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e/build/reports/problems/problems-report.html
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - jakarta.activation:jakarta.activation-api:2.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e/metadata/jakarta.activation/jakarta.activation-api/2.0.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - jakarta.activation:jakarta.activation-api:2.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e/metadata/jakarta.activation/jakarta.activation-api/2.0.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+9 actionable tasks: 1 executed, 8 up-to-date
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+BUILD FAILED in 11s
+
+codex
+The targeted `checkMetadataFiles` task failed before it reached URL/index concerns because this metadata version has no `reachability-metadata.json` directory content. I’m checking for a narrower index-validation task and will still keep the JSON syntax and rendered URL checks separate.
+exec
+/usr/bin/bash -lc 'git diff --check -- metadata/jakarta.activation/jakarta.activation-api/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "for url in https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/2.0.0/jakarta.activation-api-2.0.0-sources.jar https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/2.0.0/jakarta.activation-api-2.0.0-javadoc.jar https://download.eclipse.org/jakartaee/activation/2.0/jakarta-activation-tck-2.0.0.zip; do printf '%s -> ' \""'$url"; curl -fsSIL -o /dev/null -w '"'%{http_code}\\n' \""'$url"; done' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e
+exec
+/usr/bin/bash -lc './gradlew tasks --all | rg -i "index|metadata"' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e
+ succeeded in 730ms:
+200
+https://download.eclipse.org/jakartaee/activation/2.0/jakarta-activation-tck-2.0.0.zip -> 200
+
+diff --git a/metadata/jakarta.activation/jakarta.activation-api/index.json b/metadata/jakarta.activation/jakarta.activation-api/index.json
+index a8ddcdf993f443874e2524f5cd8bcc9853944e1d..6c5b6029b35bcde4d1bbce118d5827ea76678f8e
+--- a/metadata/jakarta.activation/jakarta.activation-api/index.json
++++ b/metadata/jakarta.activation/jakarta.activation-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaf-api",
++    "test-code-url" : "https://download.eclipse.org/jakartaee/activation/2.0/jakarta-activation-tck-$version$.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
++    "description" : "Jakarta Activation API defines Java interfaces and classes for determining data types, encapsulating access to data, and mapping MIME content to command handlers. This API-only artifact is used to compile applications against the Jakarta Activation contracts without including the implementation-specific classes they rely on.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+ succeeded in 3903ms:
+GraalVM Reachability Metadata TCK
+Tasks runnable from root project 'reachability-metadata'
+artifactTransforms - Displays the Artifact Transforms that can be executed in root project 'reachability-metadata'.
+buildEnvironment - Displays all buildscript dependencies declared in root project 'reachability-metadata'.
+dependencies - Displays all dependencies declared in root project 'reachability-metadata'.
+dependencyInsight - Displays the insight into a specific dependency in root project 'reachability-metadata'.
+outgoingVariants - Displays the outgoing variants of root project 'reachability-metadata'.
+projects - Displays the sub-projects of root project 'reachability-metadata'.
+properties - Displays the properties of root project 'reachability-metadata'.
+resolvableConfigurations - Displays the configurations that can be resolved in root project 'reachability-metadata'.
+tasks - Displays the tasks runnable from root project 'reachability-metadata'.
+Metadata tasks
+addLibraryAsLatestMetadataIndexJson - Marks given coordinates as latest in metadata/group/artifact/index.json
+addLibraryMetadataIndexJson - Adds given coordinates to metadata/group/artifact/index.json without changing the latest entry
+checkMetadataFiles - Checks content of metadata files for matching coordinates
+contribute - Generates metadata and prepares pull request for contibuting on metadata repository based on provided tests.
+discoverArtifactMetadata - Uses a coding agent command to discover artifact metadata for a single coordinate and stores it under build/.
+generateChangedIndexFileCoordinatesList - Returns a list of changed coordinates for validation based on git diff
+generateChangedMetadataTestMatrix - Returns matrix definition populated with changed coordinates and batched tested versions from metadata index files
+generateLibraryStats - Generates local library stats and updates stats/<group>/<artifact>/<metadata-version>/stats.json
+generateMetadata - Generates metadata based on provided tests.
+mergeNativeTraceMetadata - Merges runtime metadata trace output directories with native-image-utils generate
+populateArtifactURLs - Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.
+scaffold - Creates a metadata and test scaffold for the given coordindates
+splitTestOnlyMetadata - Moves test-only entries from library reachability metadata into test resources metadata.
+package - Packages current repository to 'build/graalvm-reachability-metadata-1.0.0-SNAPSHOT.zip'
+diff - Tests GraalVM Reflection Metadata that was changed between 'baseCommit' and 'newCommit'
+testInfra - Runs clean and pullAllowedDockerImages, then runs (validateIndexFiles, checkstyle, spotlessCheck, checkMetadataFiles, fetchExistingLibrariesWithNewerVersions, test, jacocoTestReport, listLibraryJars, generateDynamicAccessReport, generateDynamicAccessCoverageReport, generateLibraryStats, listTopCoordinatesByMetric, generateTopCoordinatesByMetricMatrix, listCoordinates, generateDependencyGraph, splitTestOnlyMetadata) concurrently with isolated logs for a single coordinate.
+validateIndexFiles - Checks content of index.json files for matching coordinates or files
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e/build/reports/problems/problems-report.html
+
+codex
+There is a dedicated `validateIndexFiles` task for this exact surface, so I’m running that instead of the broader metadata-file check that requires a reachability metadata payload.
+exec
+/usr/bin/bash -lc './gradlew validateIndexFiles -Pcoordinates=jakarta.activation:jakarta.activation-api:2.0.0 --stacktrace' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e
+diff --git a/metadata/jakarta.activation/jakarta.activation-api/index.json b/metadata/jakarta.activation/jakarta.activation-api/index.json
+index a8ddcdf993f443874e2524f5cd8bcc9853944e1d..6c5b6029b35bcde4d1bbce118d5827ea76678f8e
+--- a/metadata/jakarta.activation/jakarta.activation-api/index.json
++++ b/metadata/jakarta.activation/jakarta.activation-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaf-api",
++    "test-code-url" : "https://download.eclipse.org/jakartaee/activation/2.0/jakarta-activation-tck-$version$.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
++    "description" : "Jakarta Activation API defines Java interfaces and classes for determining data types, encapsulating access to data, and mapping MIME content to command handlers. This API-only artifact is used to compile applications against the Jakarta Activation contracts without including the implementation-specific classes they rely on.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+ succeeded in 750ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :validateIndexFiles
+✅ metadata/jakarta.activation/jakarta.activation-api/index.json: Valid
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 749ms
+9 actionable tasks: 1 executed, 8 up-to-date
+
+web search: 
+web search: Jakarta Activation Specification project GitHub jaf-api 2.0.0 tag
+codex
+Updated [metadata/jakarta.activation/jakarta.activation-api/index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e/metadata/jakarta.activation/jakarta.activation-api/index.json) for `metadata-version: 2.0.0`.
+
+Filled:
+- `source-code-url`: Maven Central sources jar template
+- `repository-url`: `https://github.com/jakartaee/jaf-api`
+- `test-code-url`: Eclipse Jakarta Activation 2.0 TCK zip template
+- `documentation-url`: Maven Central javadoc jar template
+- `description`: exactly two sentences
+- `language`: left absent, since this is not Kotlin/Groovy/Scala-specific
+
+Verification:
+- Rendered URLs for `2.0.0` returned HTTP 200.
+- `./gradlew validateIndexFiles -Pcoordinates=jakarta.activation:jakarta.activation-api:2.0.0 --stacktrace` passed.
+- `./gradlew checkMetadataFiles ...` failed because the existing `metadata/.../2.0.0/` directory lacks `reachability-metadata.json`, unrelated to the index JSON update.
+diff --git a/metadata/jakarta.activation/jakarta.activation-api/index.json b/metadata/jakarta.activation/jakarta.activation-api/index.json
+index a8ddcdf993f443874e2524f5cd8bcc9853944e1d..6c5b6029b35bcde4d1bbce118d5827ea76678f8e
+--- a/metadata/jakarta.activation/jakarta.activation-api/index.json
++++ b/metadata/jakarta.activation/jakarta.activation-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaf-api",
++    "test-code-url" : "https://download.eclipse.org/jakartaee/activation/2.0/jakarta-activation-tck-$version$.zip",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
++    "description" : "Jakarta Activation API defines Java interfaces and classes for determining data types, encapsulating access to data, and mapping MIME content to command handlers. This API-only artifact is used to compile applications against the Jakarta Activation contracts without including the implementation-specific classes they rely on.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+tokens used
+86,727
+Updated [metadata/jakarta.activation/jakarta.activation-api/index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e/metadata/jakarta.activation/jakarta.activation-api/index.json) for `metadata-version: 2.0.0`.
+
+Filled:
+- `source-code-url`: Maven Central sources jar template
+- `repository-url`: `https://github.com/jakartaee/jaf-api`
+- `test-code-url`: Eclipse Jakarta Activation 2.0 TCK zip template
+- `documentation-url`: Maven Central javadoc jar template
+- `description`: exactly two sentences
+- `language`: left absent, since this is not Kotlin/Groovy/Scala-specific
+
+Verification:
+- Rendered URLs for `2.0.0` returned HTTP 200.
+- `./gradlew validateIndexFiles -Pcoordinates=jakarta.activation:jakarta.activation-api:2.0.0 --stacktrace` passed.
+- `./gradlew checkMetadataFiles ...` failed because the existing `metadata/.../2.0.0/` directory lacks `reachability-metadata.json`, unrelated to the index JSON update.
+Ran agent for jakarta.activation:jakarta.activation-api:2.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e/build/agent-url-discovery-logs/jakarta.activation-jakarta.activation-api-2.0.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-fd9a182e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 46s
+9 actionable tasks: 1 executed, 8 up-to-date
