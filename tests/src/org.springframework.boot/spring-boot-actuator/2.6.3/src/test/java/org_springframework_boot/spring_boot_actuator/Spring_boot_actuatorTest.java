@@ -270,12 +270,10 @@ public class Spring_boot_actuatorTest {
                 assertThat(repository.getType()).isEqualTo(SampleRepository.class);
                 assertThat(service.getDependencies()).containsExactly("repository");
                 assertThat(parentContext.getBeans()).containsKey("parentRepository");
-            }
-            finally {
+            } finally {
                 context.close();
             }
-        }
-        finally {
+        } finally {
             parent.close();
         }
     }
