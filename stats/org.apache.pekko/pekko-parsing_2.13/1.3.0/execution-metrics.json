@@ -1,0 +1,113 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T04:08:02.383699Z",
+    "library": "org.apache.pekko:pekko-parsing_2.13:1.3.0",
+    "starting_commit": "e93b8bd9c333d3806706ddc0a781b265e94ef961",
+    "ending_commit": "ed4789892fb927de9e21df19a4ae44a9cc451f98",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "1.3.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 21,
+          "missed": 652,
+          "ratio": 0.031204,
+          "total": 673
+        },
+        "line": {
+          "covered": 5,
+          "missed": 28,
+          "ratio": 0.151515,
+          "total": 33
+        },
+        "method": {
+          "covered": 5,
+          "missed": 28,
+          "ratio": 0.151515,
+          "total": 33
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 5447,
+      "issue_label": "library-new-request",
+      "library": "org.apache.pekko:pekko-parsing_2.13:1.3.0",
+      "summary": "The artifact is a small Scala 2.13 internal macro/annotation support jar. Its POM marks `pekko-actor_2.13` and `scala-reflect` as `provided`, but the shipped public bytecode references `org.apache.pekko.event.LoggingAdapter` and `scala.reflect.macros.blackbox.Context`, so meaningful class loading/reflection coverage needs those libraries on the test classpath.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.apache.pekko:pekko-actor_2.13:1.1.5",
+          "scope": "testImplementation",
+          "reason": "`LogHelper` exposes `org.apache.pekko.event.LoggingAdapter`; this dependency is declared as provided by `pekko-parsing_2.13` and is not pulled transitively for tests."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.scala-lang:scala-reflect:2.13.17",
+          "scope": "testImplementation",
+          "reason": "The macro classes expose `scala.reflect.macros.blackbox.Context` and related reflection APIs; this dependency is declared as provided and is required to reflect or load those macro members."
+        }
+      ],
+      "agent_guidance": "No Docker image, environment variable, or system property appears necessary. Tests should treat this as an internal Scala macro-support artifact: exercise annotation construction, safe class loading/reflection of the macro module classes, and `LogHelper` default methods with a minimal `LoggingAdapter` test double rather than requiring an external service.",
+      "risks": [
+        "Actual Scala macro expansion is compile-time behavior and may be hard to exercise from the normal Java generated test scaffold.",
+        "Most classes are internal APIs, so meaningful coverage may be limited to reflective/runtime smoke coverage unless the generator creates Scala-aware tests."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.apache.pekko:pekko-actor_2.13:1.1.5",
+          "result": "applied",
+          "target": "tests/src/org.apache.pekko/pekko-parsing_2.13/1.3.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.scala-lang:scala-reflect:2.13.17",
+          "result": "applied",
+          "target": "tests/src/org.apache.pekko/pekko-parsing_2.13/1.3.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#5447 Support for org.apache.pekko:pekko-parsing_2.13:1.3.0; label=library-new-request; body_chars=110"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 21252,
+      "output_tokens_used": 3375,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.pekko:pekko-parsing_2.13:1.3.0/library-preparation-preflight/pi-generation-2026-06-28T03-29-09-430004Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 372306,
+      "cached_input_tokens_used": 4214272,
+      "output_tokens_used": 54165,
+      "iterations": 11,
+      "cost_usd": 3.732,
+      "generated_loc": 143,
+      "tested_library_loc": 5,
+      "metadata_entries": 11,
+      "code_coverage_percent": 15.15
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.apache.pekko/pekko-parsing_2.13/1.3.0/src/test/scala/org_apache_pekko/pekko_parsing_2_13/Pekko_parsing_2_13Test.scala",
+      "metadata_file": "metadata/org.apache.pekko/pekko-parsing_2.13/1.3.0/reachability-metadata.json"
+    }
+  }
+}
