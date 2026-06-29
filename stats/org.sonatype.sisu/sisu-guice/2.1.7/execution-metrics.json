@@ -97,50 +97,50 @@
     }
   },
   "add_new_library_support:2026-06-29": {
-    "timestamp": "2026-06-29T01:25:32.023741Z",
+    "timestamp": "2026-06-29T10:47:50.230009Z",
     "library": "org.sonatype.sisu:sisu-guice:2.1.7",
-    "starting_commit": "932dbe991ce1bcedf631f5492c0cae2cef845792",
-    "ending_commit": "338aacf91e4227d6b2a01cb19b9249bbc2313a38",
+    "starting_commit": "17250d97954c8c32d1048ddecdf6242358ed2d03",
+    "ending_commit": "be4cf979d969fa326304baecf1c6c0977111bf9e",
     "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
     "agent": "pi",
     "model": "oca/gpt-5.5",
-    "status": "chunk_ready",
+    "status": "success",
     "stats": {
       "version": "2.1.7",
       "dynamicAccess": {
         "breakdown": {
           "reflection": {
-            "coverageRatio": 0.646341,
-            "coveredCalls": 53,
+            "coverageRatio": 0.682927,
+            "coveredCalls": 56,
             "totalCalls": 82
           },
           "resources": {
-            "coverageRatio": 0.333333,
-            "coveredCalls": 1,
+            "coverageRatio": 0.666667,
+            "coveredCalls": 2,
             "totalCalls": 3
           }
         },
-        "coverageRatio": 0.635294,
-        "coveredCalls": 54,
+        "coverageRatio": 0.682353,
+        "coveredCalls": 58,
         "totalCalls": 85
       },
       "libraryCoverage": {
         "instruction": {
-          "covered": 11214,
-          "missed": 47029,
-          "ratio": 0.192538,
+          "covered": 18917,
+          "missed": 39326,
+          "ratio": 0.324794,
           "total": 58243
         },
         "line": {
-          "covered": 2508,
-          "missed": 6550,
-          "ratio": 0.276882,
+          "covered": 3054,
+          "missed": 6004,
+          "ratio": 0.337161,
           "total": 9058
         },
         "method": {
-          "covered": 767,
-          "missed": 2185,
-          "ratio": 0.259824,
+          "covered": 1045,
+          "missed": 1907,
+          "ratio": 0.353997,
           "total": 2952
         }
       }
@@ -151,12 +151,12 @@
       "issue_number": 2294,
       "issue_label": "library-new-request",
       "library": "org.sonatype.sisu:sisu-guice:2.1.7",
-      "summary": "sisu-guice is a patched Guice 2.x artifact with bundled CGLIB/ASM bytecode-generation support; ordinary DI works with its transitive dependencies, but meaningful AOP/CGLIB coverage on JDK 21 needs java.lang to be opened.",
+      "summary": "Meaningful Sisu Guice coverage should include its patched Guice AOP/CGLIB path; on JDK 21 that path needs java.lang opened, while normal Maven transitive dependencies are sufficient and no Docker service is needed.",
       "deterministic_setup": [],
-      "agent_guidance": "For tests that exercise Guice AOP, method interception, or bundled CGLIB/proxy internals, configure both JVM tests and native-image build arguments with `--add-opens=java.base/java.lang=ALL-UNNAMED`. Without this, CGLIB initialization fails with `InaccessibleObjectException` when it reflectively accesses `ClassLoader.defineClass`.",
+      "agent_guidance": "When exercising Guice AOP, bindInterceptor, method interception, or bundled CGLIB/proxy internals, configure JVM tests and native-image build arguments with `--add-opens=java.base/java.lang=ALL-UNNAMED`. Without this, CGLIB initialization can fail with `InaccessibleObjectException` while reflectively accessing `ClassLoader.defineClass`.",
       "risks": [
-        "Basic injector/module/@Inject tests do not need extra setup, but they may miss important bytecode-generation/AOP behavior.",
-        "The POM has optional `asm` and `slf4j-api` dependencies, but the resolved runtime already includes the required normal transitive dependencies (`javax.inject` and `aopalliance`) and the artifact bundles its CGLIB/ASM implementation; no concrete extra dependency is required for normal coverage."
+        "Basic injector/module/@Inject tests can run without extra setup, but may miss important bytecode-generation and AOP behavior.",
+        "The POM declares optional `asm` and `slf4j-api`, but the artifact bundles its ASM/CGLIB implementation and guards SLF4J logger binding; no concrete extra Maven dependency is required for meaningful baseline coverage."
       ],
       "applied_setup": [],
       "input_evidence": [
@@ -166,27 +166,27 @@
         },
         {
           "name": "existing_tests",
-          "summary": "12 existing test file path(s) included"
+          "summary": "17 existing test file path(s) included"
         }
       ],
       "model": "oca/gpt-5.5",
-      "input_tokens_used": 39560,
-      "output_tokens_used": 4085,
+      "input_tokens_used": 81911,
+      "output_tokens_used": 2522,
       "prompt_path": "library-preflight-prompt.txt",
       "raw_response_path": "library-preflight-response.txt",
-      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.sonatype.sisu:sisu-guice:2.1.7/library-preparation-preflight/pi-generation-2026-06-29T00-36-05-970898Z.log"
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.sonatype.sisu:sisu-guice:2.1.7/library-preparation-preflight/pi-generation-2026-06-29T09-24-26-012190Z.log"
     },
     "metrics": {
-      "input_tokens_used": 394103,
-      "cached_input_tokens_used": 2406400,
-      "output_tokens_used": 27265,
-      "iterations": 7,
-      "cost_usd": 2.0212,
-      "generated_loc": 500,
-      "tested_library_loc": 2508,
-      "metadata_entries": 72,
-      "test_only_metadata_entries": 10,
-      "code_coverage_percent": 27.69
+      "input_tokens_used": 803736,
+      "cached_input_tokens_used": 9233920,
+      "output_tokens_used": 86734,
+      "iterations": 17,
+      "cost_usd": 7.219,
+      "generated_loc": 794,
+      "tested_library_loc": 3054,
+      "metadata_entries": 73,
+      "test_only_metadata_entries": 12,
+      "code_coverage_percent": 33.72
     },
     "artifacts": {
       "test_file": "tests/src/org.sonatype.sisu/sisu-guice/2.1.7/src/test/java/org_sonatype_sisu/sisu_guice/MoreTypesTest.java",
