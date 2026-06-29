@@ -1,0 +1,97 @@
+{
+  "continueFrom": "publication",
+  "coordinate": "org.mongodb.morphia:morphia:1.3.2",
+  "issueNumber": 2797,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "For MongoDB-backed tests, start an unauthenticated local MongoDB before creating Morphia's Datastore. Upstream tests read the system property MONGO_URI and default to mongodb://localhost:27017, so set MONGO_URI if the container is exposed on a different port. Use a unique test database and drop it during cleanup. Mapper/converter-only tests can still exercise Morphia without MongoDB, but CRUD/query/index Datastore tests need the server.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "image": "mongo:3.4.24-xenial",
+        "kind": "docker_image",
+        "reason": "Morphia 1.3.2 depends on mongo-java-driver 3.4.0 and upstream Morphia 1.3.x CI tested against MongoDB 2.6 through 3.4; Datastore save/query/index/update examples require MongoDB.",
+        "slug": "mongo-3-4"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#2797 Support for org.mongodb.morphia:morphia:1.3.2; label=library-new-request; body_chars=102"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 80761,
+    "issue_label": "library-new-request",
+    "issue_number": 2797,
+    "library": "org.mongodb.morphia:morphia:1.3.2",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 6304,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The pinned MongoDB 3.4 image is old and may introduce Docker vulnerability-scan or platform-compatibility issues.",
+      "A newer MongoDB server image may not be compatible with the legacy mongo-java-driver 3.4.0 wire-protocol behavior.",
+      "Morphia's lazy-reference proxy paths use old cglib; avoid depending on lazy proxy behavior unless local JVM and native-image verification pass."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.mongodb.morphia:morphia:1.3.2/library-preparation-preflight/pi-generation-2026-06-29T03-03-35-930882Z.log",
+    "status": "completed",
+    "summary": "Morphia 1.3.2 is a MongoDB ODM; its normal documented usage and most Datastore coverage require a running MongoDB server beyond the generated Java scaffold."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": 15,
+      "chunkProcessedClassCount": 15,
+      "exhaustedClasses": [
+        "org.mongodb.morphia.AnnotationBuilder",
+        "org.mongodb.morphia.converters.ByteConverter",
+        "org.mongodb.morphia.converters.CharArrayConverter",
+        "org.mongodb.morphia.converters.ClassConverter",
+        "org.mongodb.morphia.converters.FloatConverter",
+        "org.mongodb.morphia.converters.ShortConverter",
+        "org.mongodb.morphia.logging.MorphiaLoggerFactory",
+        "org.mongodb.morphia.mapping.DefaultCreator",
+        "org.mongodb.morphia.mapping.MappedClass",
+        "org.mongodb.morphia.mapping.MappedField",
+        "org.mongodb.morphia.mapping.Mapper",
+        "org.mongodb.morphia.mapping.ReferenceMapper",
+        "org.mongodb.morphia.mapping.Serializer",
+        "org.mongodb.morphia.utils.ReflectionUtils",
+        "relocated.morphia.org.apache.commons.collections.ReferenceMap"
+      ],
+      "iteration": 23,
+      "status": "completed"
+    },
+    "finalization": {
+      "status": "completed"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": "ai/vjovanov/add-lib-support-org.mongodb.morphia-morphia-1.3.2-chunked",
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-2797-library-new-request-org.mongodb.morphia-morphia-1.3.2-406cfecd",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.mongodb.morphia:morphia:1.3.2",
+    "timestamp": "2026-06-29T04:32:10.932453Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}

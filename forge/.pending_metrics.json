@@ -1,0 +1,113 @@
+{
+  "timestamp": "2026-06-29T04:32:10.932453Z",
+  "library": "org.mongodb.morphia:morphia:1.3.2",
+  "starting_commit": "5aa4cd1546192f374b4f6abed2978c08ce400b8d",
+  "ending_commit": "843197f466c76ce89ae442c7684724ffebab8cae",
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+  "agent": "pi",
+  "model": "oca/gpt-5.5",
+  "status": "chunk_ready",
+  "stats": {
+    "version": "1.3.2",
+    "dynamicAccess": {
+      "breakdown": {
+        "reflection": {
+          "coverageRatio": 0.846154,
+          "coveredCalls": 44,
+          "totalCalls": 52
+        },
+        "resources": {
+          "coverageRatio": 1.0,
+          "coveredCalls": 1,
+          "totalCalls": 1
+        }
+      },
+      "coverageRatio": 0.849057,
+      "coveredCalls": 45,
+      "totalCalls": 53
+    },
+    "libraryCoverage": {
+      "instruction": {
+        "covered": 7010,
+        "missed": 26494,
+        "ratio": 0.209229,
+        "total": 33504
+      },
+      "line": {
+        "covered": 1516,
+        "missed": 5308,
+        "ratio": 0.222157,
+        "total": 6824
+      },
+      "method": {
+        "covered": 392,
+        "missed": 1476,
+        "ratio": 0.20985,
+        "total": 1868
+      }
+    }
+  },
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 2797,
+    "issue_label": "library-new-request",
+    "library": "org.mongodb.morphia:morphia:1.3.2",
+    "summary": "Morphia 1.3.2 is a MongoDB ODM; its normal documented usage and most Datastore coverage require a running MongoDB server beyond the generated Java scaffold.",
+    "deterministic_setup": [
+      {
+        "kind": "docker_image",
+        "image": "mongo:3.4.24-xenial",
+        "slug": "mongo-3-4",
+        "reason": "Morphia 1.3.2 depends on mongo-java-driver 3.4.0 and upstream Morphia 1.3.x CI tested against MongoDB 2.6 through 3.4; Datastore save/query/index/update examples require MongoDB."
+      }
+    ],
+    "agent_guidance": "For MongoDB-backed tests, start an unauthenticated local MongoDB before creating Morphia's Datastore. Upstream tests read the system property MONGO_URI and default to mongodb://localhost:27017, so set MONGO_URI if the container is exposed on a different port. Use a unique test database and drop it during cleanup. Mapper/converter-only tests can still exercise Morphia without MongoDB, but CRUD/query/index Datastore tests need the server.",
+    "risks": [
+      "The pinned MongoDB 3.4 image is old and may introduce Docker vulnerability-scan or platform-compatibility issues.",
+      "A newer MongoDB server image may not be compatible with the legacy mongo-java-driver 3.4.0 wire-protocol behavior.",
+      "Morphia's lazy-reference proxy paths use old cglib; avoid depending on lazy proxy behavior unless local JVM and native-image verification pass."
+    ],
+    "applied_setup": [
+      {
+        "kind": "docker_image",
+        "image": "mongo:3.4.24-xenial",
+        "slug": "mongo-3-4",
+        "result": "applied",
+        "target": "tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-mongo-3-4"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#2797 Support for org.mongodb.morphia:morphia:1.3.2; label=library-new-request; body_chars=102"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "oca/gpt-5.5",
+    "input_tokens_used": 80761,
+    "output_tokens_used": 6304,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.mongodb.morphia:morphia:1.3.2/library-preparation-preflight/pi-generation-2026-06-29T03-03-35-930882Z.log"
+  },
+  "metrics": {
+    "input_tokens_used": 973975,
+    "cached_input_tokens_used": 9510400,
+    "output_tokens_used": 81939,
+    "iterations": 23,
+    "cost_usd": 7.2134,
+    "generated_loc": 803,
+    "tested_library_loc": 1516,
+    "metadata_entries": 94,
+    "test_only_metadata_entries": 6,
+    "code_coverage_percent": 22.22
+  },
+  "artifacts": {
+    "test_file": "tests/src/org.mongodb.morphia/morphia/1.3.2/src/test/java/org_mongodb_morphia/morphia/MapperTest.java",
+    "metadata_file": "metadata/org.mongodb.morphia/morphia/1.3.2/reachability-metadata.json"
+  }
+}
