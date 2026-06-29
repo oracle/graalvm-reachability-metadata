@@ -22,6 +22,7 @@ import org.wildfly.common.os.Process;
 
 public class WildflyCommonJdk9SupplementTest {
     private static final String PRINT_PROCESS_NAME_ARGUMENT = "print-process-name";
+    private static final String PRINT_PROCESSOR_COUNT_ARGUMENT = "print-processor-count";
     private static final String PROCESS_NAME_PROPERTY = "jboss.process.name";
 
     @Test
@@ -38,6 +39,23 @@ public class WildflyCommonJdk9SupplementTest {
 
         assertThat(processId).isEqualTo(ProcessHandle.current().pid());
         assertThat(processId).isPositive();
+    }
+
+    @Test
+    void configuredActiveProcessorCountIsReported() throws Exception {
+        java.lang.Process process = new ProcessBuilder(processorCountPrinterCommand(1)).start();
+
+        boolean finished = process.waitFor(10, TimeUnit.SECONDS);
+        if (!finished) {
+            process.destroyForcibly();
+            process.waitFor(5, TimeUnit.SECONDS);
+        }
+        String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8).trim();
+        String errorOutput = new String(process.getErrorStream().readAllBytes(), StandardCharsets.UTF_8).trim();
+
+        assertThat(finished).as("child JVM completed").isTrue();
+        assertThat(process.exitValue()).as(errorOutput).isEqualTo(0);
+        assertThat(output).isEqualTo("1");
     }
 
     @Test
@@ -80,7 +98,25 @@ public class WildflyCommonJdk9SupplementTest {
             System.out.print(Process.getProcessName());
             return;
         }
+        if (args.length == 1 && PRINT_PROCESSOR_COUNT_ARGUMENT.equals(args[0])) {
+            System.out.print(ProcessorInfo.availableProcessors());
+            return;
+        }
         throw new IllegalArgumentException("Unsupported arguments");
+    }
+
+    private static List<String> processorCountPrinterCommand(int activeProcessorCount) {
+        String classPath = firstNonBlank(System.getProperty("java.class.path"), System.getenv("CLASSPATH"));
+        assertThat(classPath).isNotBlank();
+
+        List<String> command = new ArrayList<>();
+        command.add(javaExecutable().toString());
+        command.add("-XX:ActiveProcessorCount=" + activeProcessorCount);
+        command.add("-cp");
+        command.add(classPath);
+        command.add(WildflyCommonJdk9SupplementTest.class.getName());
+        command.add(PRINT_PROCESSOR_COUNT_ARGUMENT);
+        return command;
     }
 
     private static List<String> processNamePrinterCommand(String processName) {
