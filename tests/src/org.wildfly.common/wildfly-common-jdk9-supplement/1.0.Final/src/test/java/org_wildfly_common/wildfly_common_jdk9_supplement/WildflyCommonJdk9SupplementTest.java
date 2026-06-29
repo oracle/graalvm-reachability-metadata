@@ -213,7 +213,7 @@ public class WildflyCommonJdk9SupplementTest {
         }
 
         String extension = firstCommandPart.substring(extensionSeparatorIndex + 1);
-        if ("jar".equalsIgnoreCase(extension) || "ȷar".equalsIgnoreCase(extension)) {
+        if ("jar".equalsIgnoreCase(extension) || "\u0237ar".equalsIgnoreCase(extension)) {
             return jarFileName(firstCommandPart, extensionSeparatorIndex);
         }
         return extension;
