@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.eclipse.jetty:jetty-webapp:9.4.0.RC1",
+  "issueNumber": 8856,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No special environment or system properties are needed. Meaningful tests can create a temporary webapp directory/WAR, configure WebAppContext or WebAppClassLoader directly, bind Jetty Server to an ephemeral localhost port, and exercise descriptor processing/static content/classloading in-process.",
+    "applied_setup": [],
+    "current_library": "org.eclipse.jetty:jetty-webapp:9.3.19.v20170502",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8856 [Automation] javac compile fails for org.eclipse.jetty:jetty-webapp:9.4.0.RC1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "7 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 37150,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8856,
+    "library": "org.eclipse.jetty:jetty-webapp:9.4.0.RC1",
+    "model": "oca/gpt-5.5",
+    "new_version": "9.4.0.RC1",
+    "output_tokens_used": 2030,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The observed javac failure is due to WebAppClassLoader.Context API changes in 9.4.0.RC1, not missing setup; generated or repaired tests must use the 9.4 signatures such as Class<?>-based isSystemClass/isServerClass and resource-filter methods.",
+      "JSP, annotation scanning, or JMX-specific scenarios may require optional Jetty modules, but those are not necessary for baseline jetty-webapp coverage and should not be added unless the test intentionally covers those features."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.eclipse.jetty:jetty-webapp:9.4.0.RC1/library-preparation-preflight/pi-generation-2026-06-29T09-59-14-251299Z.log",
+    "status": "completed",
+    "summary": "org.eclipse.jetty:jetty-webapp:9.4.0.RC1 is an embeddable Jetty web application module whose core meaningful coverage is reachable with the normal test scaffold plus its transitive dependencies; no extra Maven dependency, Docker service, environment variable, or system property is concretely required."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "9.4.0.RC1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8856-fails-javac-compile-org.eclipse.jetty-jetty-webapp-9.4.0.RC1-8983422b",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
