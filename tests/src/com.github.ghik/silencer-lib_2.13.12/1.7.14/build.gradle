@@ -1,0 +1,80 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+import org.graalvm.buildtools.gradle.tasks.NativeRunTask
+import java.io.OutputStream
+
+plugins {
+    id "org.graalvm.internal.tck"
+    id "scala"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+int testJvmVersion = tck.testJvmVersion.get()
+String scala2Version = tck.scala2Version.get()
+String javaHome = System.getenv('JAVA_HOME') ?: System.getenv('GRAALVM_HOME')
+Provider<Directory> generatedTestRuntimePropertiesDir = layout.buildDirectory.dir("generated/test-runtime-properties")
+List<String> nativeRuntimeArgs = [
+        "-Djava.home=${javaHome}",
+        "-Djava.class.path=${-> sourceSets.test.runtimeClasspath.asPath}"
+]
+
+dependencies {
+    testImplementation "com.github.ghik:silencer-lib_2.13.12:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation "org.scala-lang:scala-library:$scala2Version"
+    testImplementation "org.scala-lang:scala-compiler:$scala2Version"
+    testImplementation "com.github.ghik:silencer-plugin_2.13.12:1.7.14"
+}
+
+tasks.register("generateNativeRuntimeProperties") {
+    outputs.dir(generatedTestRuntimePropertiesDir)
+    doLast {
+        File outputDir = generatedTestRuntimePropertiesDir.get().asFile
+        outputDir.mkdirs()
+
+        Properties properties = new Properties()
+        properties.setProperty("java.home", javaHome ?: "")
+        properties.setProperty("java.class.path", sourceSets.test.runtimeClasspath.asPath)
+
+        File outputFile = new File(outputDir, "native-runtime.properties")
+        outputFile.withOutputStream { OutputStream outputStream ->
+            properties.store(outputStream, "Generated runtime properties for silencer native tests")
+        }
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(testJvmVersion)
+    }
+}
+
+processTestResources {
+    dependsOn(tasks.named("generateNativeRuntimeProperties"))
+    from(generatedTestRuntimePropertiesDir)
+}
+
+graalvmNative {
+    binaries {
+        test {
+            buildArgs("-H:+AllowJRTFileSystem")
+            runtimeArgs.addAll(nativeRuntimeArgs)
+        }
+    }
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
+
+tasks.named("nativeTest", NativeRunTask) {
+    runtimeArgs.addAll(nativeRuntimeArgs)
+}
