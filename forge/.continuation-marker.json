@@ -1,0 +1,70 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "org.codehaus.janino:janino:3.1.0",
+  "issueNumber": 8855,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment variables or system properties are required. The reported javac failure is due to an API/package move, not missing setup: org.codehaus.janino.util.iterator.Iterables existed in janino 3.0.16 but is no longer in janino 3.1.0; the corresponding class is available via the transitive commons-compiler dependency as org.codehaus.commons.compiler.util.iterator.Iterables. Prefer testing stable Janino public compiler/evaluator APIs rather than adding dependencies to preserve the old package.",
+    "applied_setup": [],
+    "current_library": "org.codehaus.janino:janino:3.0.16",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8855 [Automation] javac compile fails for org.codehaus.janino:janino:3.1.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "14 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 61148,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8855,
+    "library": "org.codehaus.janino:janino:3.1.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.1.0",
+    "output_tokens_used": 2712,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "If generated tests choose to exercise the optional Ant integration class AntCompilerAdapter, they may need org.apache.ant:ant because the POM marks it optional/provided, but Ant integration is not required for meaningful Janino coverage.",
+      "Native Image execution remains authoritative because Janino performs runtime compilation and class loading; existing tests include native-image-specific handling, but that is not a pre-generation deterministic setup requirement."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.codehaus.janino:janino:3.1.0/library-preparation-preflight/pi-generation-2026-06-29T21-56-59-647415Z.log",
+    "status": "completed",
+    "summary": "No extra setup is needed: org.codehaus.janino:janino:3.1.0 has only the normal transitive org.codehaus.janino:commons-compiler dependency for core use, and meaningful coverage of SimpleCompiler, ScriptEvaluator, ClassBodyEvaluator, Compiler, and related APIs does not require Docker, environment variables, system properties, or additional Maven dependencies."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.1.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8855-fails-javac-compile-org.codehaus.janino-janino-3.1.0-5ab27217",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
