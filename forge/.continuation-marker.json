@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "ognl:ognl:3.3.5",
+  "issueNumber": 7430,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "When generating tests that exercise OGNL reflective access against JDK classes, configure the test JVM with `--add-opens=java.base/java.lang=ALL-UNNAMED` and `--add-opens=java.base/java.util=ALL-UNNAMED`. Do not enable or depend on installing a Java SecurityManager on JDK 25; avoid tests that call `System.setSecurityManager`, and keep `ognl.security.manager` unset unless explicitly testing OGNL's disabled/force-disabled initialization behavior.",
+    "applied_setup": [],
+    "current_library": "ognl:ognl:3.2.21",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7430 [Automation] java run fails for ognl:ognl:3.3.5; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "17 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 32091,
+    "issue_label": "fails-java-run",
+    "issue_number": 7430,
+    "library": "ognl:ognl:3.3.5",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.3.5",
+    "output_tokens_used": 3815,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "JDK 25 permanently disables SecurityManager support, so older OGNL security-manager tests can fail independently of reachability metadata.",
+      "OGNL's expression compiler uses Javassist at runtime; it is present transitively, but native-image validation remains authoritative for whether compiled-expression paths are usable."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/ognl:ognl:3.3.5/library-preparation-preflight/pi-generation-2026-06-29T13-22-56-466949Z.log",
+    "status": "completed",
+    "summary": "OGNL is a pure Java expression/reflection library and its only runtime dependency, Javassist, is already transitive from ognl:ognl:3.3.5, so no extra Maven dependency or Docker image is needed. However upstream OGNL 3.3.5 configures Java 9+ test runs with module opens, so meaningful reflective coverage may need JVM args beyond the normal scaffold."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.3.5",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-7430-fails-java-run-ognl-ognl-3.3.5-fc8b9e6e",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
