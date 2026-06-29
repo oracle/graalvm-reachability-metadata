@@ -9,10 +9,16 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+boolean dynamicAccessReportRequested = gradle.startParameter.taskNames.any { String taskName ->
+    taskName == "generateDynamicAccessReport" || taskName.endsWith(":generateDynamicAccessReport")
+}
 
 dependencies {
     testImplementation("org.mongodb.morphia:morphia:$libraryVersion") {
         exclude group: 'cglib'
+    }
+    if (dynamicAccessReportRequested) {
+        testRuntimeOnly 'cglib:cglib-nodep:3.3.0'
     }
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
