@@ -1,0 +1,77 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "com.sun.jersey:jersey-core:1.14",
+  "issueNumber": 8875,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No Docker image or environment/system property is indicated. For OSGi-related tests, do not port the 1.9 Activator behavior unchanged: in 1.14 Activator.start delegates to OsgiRegistry.getInstance(), which only initializes when Jersey is loaded by a ClassLoader implementing BundleReference; outside OSGi, a no-op assertion may be the meaningful behavior unless the test deliberately simulates that classloader.",
+    "applied_setup": [],
+    "current_library": "com.sun.jersey:jersey-core:1.9",
+    "deterministic_setup": [
+      {
+        "coordinate": "org.osgi:org.osgi.core:4.2.0",
+        "kind": "dependency",
+        "reason": "com.sun.jersey:jersey-core:1.14 declares org.osgi.core 4.2.0 as a provided dependency, and com.sun.jersey.core.osgi.OsgiRegistry imports BundleReference and FrameworkUtil from that API. The existing org.osgi:osgi_R4_core:1.0 artifact does not contain BundleReference.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8875 [Automation] java run fails for com.sun.jersey:jersey-core:1.14; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "22 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 63784,
+    "issue_label": "fails-java-run",
+    "issue_number": 8875,
+    "library": "com.sun.jersey:jersey-core:1.14",
+    "model": "oca/gpt-5.5",
+    "new_version": "1.14",
+    "output_tokens_used": 5232,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "If the old org.osgi:osgi_R4_core:1.0 dependency remains alongside org.osgi.core, duplicate org.osgi.framework classes may make classpath behavior order-sensitive; local Gradle verification is authoritative.",
+      "Adding the OSGi API fixes the missing BundleReference class but does not by itself make a non-OSGi test environment behave like a real OSGi runtime."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/com.sun.jersey:jersey-core:1.14/library-preparation-preflight/pi-generation-2026-06-29T21-04-12-239766Z.log",
+    "status": "completed",
+    "summary": "Jersey core 1.14 has an OSGi code path that imports org.osgi.framework.BundleReference from its provided org.osgi.core 4.2.0 dependency; the older osgi_R4_core:1.0 test dependency lacks that class and caused the observed java-run failure."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "1.14",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8875-fails-java-run-com.sun.jersey-jersey-core-1.14-5f327606",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
