@@ -1,0 +1,89 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "net.sf.ehcache:ehcache-core:2.5.0",
+  "issueNumber": 8877,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Set `net.sf.ehcache.skipUpdateCheck=true` in tests, or use `Configuration.updateCheck(false)`, to avoid Ehcache's background update checker. If exercising Bitronix, create an isolated temporary `bitronix.properties`, set `bitronix.tm.configuration` for the test, disable JMX, use a null journal, clear the property afterward, and shut down the transaction manager and all CacheManager instances.",
+    "applied_setup": [],
+    "current_library": "net.sf.ehcache:ehcache-core:2.4.4",
+    "deterministic_setup": [
+      {
+        "coordinate": "javax.transaction:jta:1.1",
+        "kind": "dependency",
+        "reason": "ehcache-core declares JTA as a provided dependency and transaction/XA classes such as CacheTransactionHelper and DefaultTransactionManagerLookup expose javax.transaction APIs.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.codehaus.btm:btm:2.1.4",
+        "kind": "dependency",
+        "reason": "Bitronix is a documented standalone JTA transaction manager for Ehcache global transaction tests, and the existing coverage uses it to exercise DefaultTransactionManagerLookup.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1",
+        "kind": "dependency",
+        "reason": "Bitronix marks the JMS API as optional but its resource classes reference it; adding the spec avoids optional-classpath gaps during test and native-image analysis.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8877 [Automation] native-image run fails for net.sf.ehcache:ehcache-core:2.5.0; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "15 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 64734,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 8877,
+    "library": "net.sf.ehcache:ehcache-core:2.5.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.5.0",
+    "output_tokens_used": 7081,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Ehcache 2.5.0 adds the SizeOf engine and embedded sizeof-agent code; native-image failures there are likely metadata/runtime-initialization issues rather than a missing external dependency.",
+      "Old Bitronix and Ehcache APIs can start background services; tests should keep configuration isolated and always shut resources down."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/net.sf.ehcache:ehcache-core:2.5.0/library-preparation-preflight/pi-generation-2026-06-29T15-33-48-259568Z.log",
+    "status": "completed",
+    "summary": "Ehcache-core 2.5.0 can be used in-memory without services, but meaningful coverage of its transaction/XA path needs JTA and a transaction manager; the existing 2.4.4 tests already require these, and Ehcache documentation describes global transactions as JTA-controlled with Bitronix as a common standalone manager."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.5.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8877-fails-native-image-run-net.sf.ehcache-ehcache-core-2.5.0-b8e9071c",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
