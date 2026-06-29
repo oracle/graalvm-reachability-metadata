@@ -9,6 +9,19 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String customLoggerClass = 'org_jgroups.jgroups.LogFactoryTest$ConfiguredLog'
+
+tasks.withType(Test).configureEach {
+    systemProperty 'jgroups.bind_addr', '127.0.0.1'
+    systemProperty 'java.net.preferIPv4Stack', 'true'
+    systemProperty 'jgroups.log_class', customLoggerClass
+}
+
+tasks.named('nativeTest') {
+    runtimeArgs.add('-Djgroups.bind_addr=127.0.0.1')
+    runtimeArgs.add('-Djava.net.preferIPv4Stack=true')
+    runtimeArgs.add("-Djgroups.log_class=${customLoggerClass}")
+}
 
 dependencies {
     testImplementation "org.jgroups:jgroups:$libraryVersion"
