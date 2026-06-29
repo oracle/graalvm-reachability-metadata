@@ -48,13 +48,14 @@ public class ReflectionHelperTest {
     @Test
     void helperFindsStringBasedFactoryMethodsAndConstructor() {
         Method valueOf = ReflectionHelper.getValueOfStringMethod(MediaType.class);
-        Method fromString = ReflectionHelper.getFromStringStringMethod(MediaType.class);
+        Method fromString = ReflectionHelper.getFromStringStringMethod(HeaderDelegate.class);
         Constructor<?> constructor = ReflectionHelper.getStringConstructor(EntityTag.class);
 
         assertThat(valueOf).isNotNull();
         assertThat(valueOf.getName()).isEqualTo("valueOf");
         assertThat(valueOf.getReturnType()).isEqualTo(MediaType.class);
-        assertThat(fromString).isNull();
+        assertThat(fromString).isNotNull();
+        assertThat(fromString.getName()).isEqualTo("fromString");
         assertThat(constructor).isNotNull();
         assertThat(constructor.getDeclaringClass()).isEqualTo(EntityTag.class);
     }
