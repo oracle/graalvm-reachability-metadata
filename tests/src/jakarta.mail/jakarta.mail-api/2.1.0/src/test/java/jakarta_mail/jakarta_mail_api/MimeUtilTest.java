@@ -23,18 +23,13 @@ public class MimeUtilTest {
             MimeBodyPart bodyPart = new MimeBodyPart();
             bodyPart.setHeader("Content-Type", "application/x-unknown; x-raw=true");
 
-            String contentType = withContextClassLoader(classLoaderWithoutHandlerVisibility(),
+            String contentType = withContextClassLoader(MimeUtilTest.class.getClassLoader(),
                     bodyPart::getContentType);
 
             assertThat(contentType).isEqualTo("text/plain; charset=UTF-8");
             assertThat(ContentTypeHandler.lastMimePart).isSameAs(bodyPart);
             assertThat(ContentTypeHandler.lastContentType).isEqualTo("application/x-unknown; x-raw=true");
         });
-    }
-
-    private static ClassLoader classLoaderWithoutHandlerVisibility() {
-        return new ClassLoader(null) {
-        };
     }
 
     private static void withSystemProperty(String property, String value, ThrowingRunnable runnable) throws Exception {
