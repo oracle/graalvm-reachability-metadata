@@ -1,0 +1,1048 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f11d0-b72a-7b72-b8c1-b3ae65d83e5d
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.neo4j.driver:neo4j-java-driver:5.28.8
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [5.28.8].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+- Entry selector: "metadata-version" = "5.28.8"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 5.28.8
+- Entry metadata-version: 5.28.8
+- Entry test-version: 5.28.8
+- Entry tested-versions: [5.28.8]
+codex
+I’ll verify the artifact metadata and versioned URLs before editing, then patch only the missing fields in the selected `index.json` entry.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"5.28.8\")' metadata/org.neo4j.driver/neo4j-java-driver/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "5.28.8",
+  "tested-versions": [
+    "5.28.8"
+  ],
+  "allowed-packages": [
+    "org.neo4j.driver"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d
+ succeeded in 115ms:
+web search: 
+web search: org.neo4j.driver neo4j-java-driver 5.28.8 maven sources jar
+codex
+Maven Central exposes both `-sources.jar` and `-tests.jar` for this exact version, so I’m checking the repo’s existing URL conventions before choosing the final field values.
+exec
+/usr/bin/bash -lc "rg '\"source-code-url\"|\"test-code-url\"|\"documentation-url\"|\"repository-url\"' metadata/org.neo4j.driver metadata | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d
+ succeeded in 0ms:
+metadata/org.glassfish.hk2/osgi-resource-locator/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/osgi-resource-locator/$version$/osgi-resource-locator-$version$-sources.jar",
+metadata/org.glassfish.hk2/osgi-resource-locator/index.json:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2-extra",
+metadata/org.glassfish.hk2/osgi-resource-locator/index.json:    "test-code-url" : "N/A",
+metadata/org.glassfish.hk2/osgi-resource-locator/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/osgi-resource-locator/$version$/osgi-resource-locator-$version$-javadoc.jar",
+metadata/org.jruby.jcodings/jcodings/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jruby/jcodings/jcodings/$version$/jcodings-$version$-sources.jar",
+metadata/org.jruby.jcodings/jcodings/index.json:    "repository-url" : "https://github.com/jruby/jcodings",
+metadata/org.jruby.jcodings/jcodings/index.json:    "test-code-url" : "https://github.com/jruby/jcodings/tree/jcodings-$version$/test",
+metadata/org.jruby.jcodings/jcodings/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/jruby/jcodings/jcodings/$version$/jcodings-$version$-javadoc.jar",
+metadata/org.neo4j.driver/neo4j-java-driver/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
+metadata/org.neo4j.driver/neo4j-java-driver/index.json:    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
+metadata/org.neo4j.driver/neo4j-java-driver/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
+metadata/org.neo4j.driver/neo4j-java-driver/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
+metadata/com.comcast/ip4s-core_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-sources.jar",
+metadata/com.comcast/ip4s-core_3/index.json:    "repository-url" : "https://github.com/Comcast/ip4s",
+metadata/com.comcast/ip4s-core_3/index.json:    "test-code-url" : "https://github.com/Comcast/ip4s/tree/v$version$/test-kit/shared/src/test",
+metadata/com.comcast/ip4s-core_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/comcast/ip4s-core_3/$version$/ip4s-core_3-$version$-javadoc.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-sources.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:    "repository-url" : "https://github.com/apache/httpcomponents-client",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-tests.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/brotli4j/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/brotli4j/$version$/brotli4j-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:    "repository-url" : "https://github.com/apache/thrift",
+metadata/org.apache.thrift/libthrift/index.json:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/src/test",
+metadata/org.apache.thrift/libthrift/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.apache.thrift/libthrift/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-sources.jar",
+metadata/org.apache.thrift/libthrift/index.json:    "repository-url" : "https://github.com/apache/thrift",
+metadata/org.apache.thrift/libthrift/index.json:    "test-code-url" : "https://github.com/apache/thrift/tree/v$version$/lib/java/test",
+metadata/org.apache.thrift/libthrift/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/thrift/libthrift/$version$/libthrift-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.awaitility/awaitility/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-sources.jar",
+metadata/org.awaitility/awaitility/index.json:    "repository-url" : "https://github.com/awaitility/awaitility",
+metadata/org.awaitility/awaitility/index.json:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:    "repository-url" : "https://github.com/junit-team/junit-framework",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:    "test-code-url" : "https://github.com/junit-team/junit-framework/tree/r$version$/junit-jupiter-engine/src/test",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-javadoc.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-sources.jar",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "repository-url" : "https://github.com/hyperxpro/Brotli4j",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "test-code-url" : "https://github.com/hyperxpro/Brotli4j/tree/v$version$/brotli4j/src/test",
+metadata/com.aayushatharva.brotli4j/service/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/aayushatharva/brotli4j/service/$version$/service-$version$-javadoc.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-sources.jar",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:    "repository-url" : "https://github.com/scalatest/scalatest",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:    "test-code-url" : "https://github.com/scalatest/scalatest/tree/release-$version$/dotty/scalatest-test/src/test/scala/org/scalatest/matchers/must",
+metadata/org.scalatest/scalatest-mustmatchers_3/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/scalatest/scalatest-mustmatchers_3/$version$/scalatest-mustmatchers_3-$version$-javadoc.jar",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/$version$/jakarta.xml.soap-api-$version$-sources.jar",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:    "repository-url" : "https://github.com/jakartaee/saaj-api",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:    "test-code-url" : "https://github.com/jakartaee/saaj-api/tree/$version$/api/src/test",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/$version$/jakarta.xml.soap-api-$version$-javadoc.jar",
+metadata/org.springframework/spring-instrument/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-sources.jar",
+metadata/org.springframework/spring-instrument/index.json:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-instrument/index.json:    "test-code-url" : "N/A",
+metadata/org.springframework/spring-instrument/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-instrument/$version$/spring-instrument-$version$-javadoc.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "repository-url" : "https://github.com/bndtools/bnd",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bnd.util/test",
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-javadoc.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:    "repository-url" : "https://github.com/junit-team/junit5",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:    "test-code-url" : "https://github.com/junit-team/junit5/tree/r5.9.2/junit-jupiter-params/src/test/java",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-javadoc.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:    "repository-url" : "https://github.com/FasterXML/jackson-dataformats-binary",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:    "test-code-url" : "https://github.com/FasterXML/jackson-dataformats-binary/tree/jackson-dataformats-binary-$version$/cbor/src/test",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-javadoc.jar",
+metadata/org.springframework/spring-aspects/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+metadata/org.springframework/spring-aspects/index.json:    "repository-url" : "https://github.com/spring-projects/spring-framework",
+metadata/org.springframework/spring-aspects/index.json:    "test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test",
+metadata/org.springframework/spring-aspects/index.json:    "documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-sources.jar",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:    "repository-url" : "https://github.com/jakartaee/authentication",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:    "test-code-url" : "https://download.eclipse.org/jakartaee/authentication/3.0/jakarta-authentication-tck-$version$.zip",
+metadata/jakarta.authentication/jakarta.authentication-api/index.json:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/$version$/jakarta.authentication-api-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg 'repo1.maven.org/maven2/.+-sources.jar|repo1.maven.org/maven2/.+-tests.jar' metadata | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d
+ succeeded in 0ms:
+metadata/biz.aQute.bnd/biz.aQute.bnd.util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.util/$version$/biz.aQute.bnd.util-$version$-sources.jar",
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bnd.annotation/$version$/biz.aQute.bnd.annotation-$version$-sources.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/io.opencensus/opencensus-contrib-http-util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-http-util/$version$/opencensus-contrib-http-util-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/org.apache.directory.api/api-i18n/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-i18n/$version$/api-i18n-$version$-sources.jar",
+metadata/io.opencensus/opencensus-api/index.json:    "source-code-url": "https://repo1.maven.org/maven2/io/opencensus/opencensus-api/$version$/opencensus-api-$version$-sources.jar",
+metadata/io.opencensus/opencensus-contrib-grpc-util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/opencensus/opencensus-contrib-grpc-util/$version$/opencensus-contrib-grpc-util-$version$-sources.jar",
+metadata/org.apache.jackrabbit/jackrabbit-jcr-commons/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-jcr-commons/$version$/jackrabbit-jcr-commons-$version$-sources.jar",
+metadata/org.apache.jackrabbit/jackrabbit-webdav/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/jackrabbit/jackrabbit-webdav/$version$/jackrabbit-webdav-$version$-sources.jar",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-sources.jar",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-sources.jar",
+metadata/jakarta.ejb/jakarta.ejb-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/ejb/jakarta.ejb-api/$version$/jakarta.ejb-api-$version$-sources.jar",
+metadata/org.codehaus.janino/janino/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/janino/$version$/janino-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-engine/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-engine/$version$/junit-jupiter-engine-$version$-sources.jar",
+metadata/org.apache.directory.api/api-util/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-util/$version$/api-util-$version$-sources.jar",
+metadata/org.codehaus.janino/commons-compiler/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/commons-compiler/$version$/commons-compiler-$version$-sources.jar",
+metadata/com.google.re2j/re2j/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/re2j/re2j/$version$/re2j-$version$-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$+1/javafx-base-$version$+1-sources.jar",
+metadata/org.openjfx/javafx-base/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/openjfx/javafx-base/$version$/javafx-base-$version$-sources.jar",
+metadata/org.junit.jupiter/junit-jupiter-params/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/jupiter/junit-jupiter-params/$version$/junit-jupiter-params-$version$-sources.jar",
+metadata/jakarta.transaction/jakarta.transaction-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/$version$/jakarta.transaction-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-cbor/$version$/jackson-dataformat-cbor-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.wildfly.openssl/wildfly-openssl-java/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/wildfly/openssl/wildfly-openssl-java/$version$/wildfly-openssl-java-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-api/$version$/websocket-api-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-sources.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/io.prometheus/simpleclient/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient/$version$/simpleclient-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_otel_agent/$version$/simpleclient_tracer_otel_agent-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/javax.validation/validation-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/javax/validation/validation-api/$version$/validation-api-$version$-sources.jar",
+metadata/com.typesafe.slick/slick-hikaricp_2.13/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/typesafe/slick/slick-hikaricp_2.13/$version$/slick-hikaricp_2.13-$version$-sources.jar",
+metadata/com.google.javascript/closure-compiler-externs/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20150505/closure-compiler-externs-v20150505-sources.jar",
+metadata/org.codehaus.jettison/jettison/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/jettison/jettison/$version$/jettison-$version$-sources.jar",
+metadata/io.prometheus/simpleclient_tracer_common/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/io/prometheus/simpleclient_tracer_common/$version$/simpleclient_tracer_common-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-spi/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-spi/$version$/arquillian-container-spi-$version$-sources.jar",
+metadata/org.jboss.arquillian.container/arquillian-container-spi/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/org/jboss/arquillian/container/arquillian-container-spi/$version$/arquillian-container-spi-$version$-tests.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-toml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-toml/$version$/jackson-dataformat-toml-$version$-sources.jar",
+metadata/org.jboss.spec.javax.servlet/jboss-servlet-api_4.0_spec/index.json:    "source-code-url": "https://repo1.maven.org/maven2/org/jboss/spec/javax/servlet/jboss-servlet-api_4.0_spec/$version$/jboss-servlet-api_4.0_spec-$version$-sources.jar",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/$version$/jakarta.json.bind-api-$version$-sources.jar",
+metadata/jakarta.json.bind/jakarta.json.bind-api/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-tck/$version$/jakarta.json.bind-tck-$version$-sources.jar",
+metadata/log4j/log4j/index.json:    "source-code-url": "https://repo1.maven.org/maven2/log4j/log4j/$version$/log4j-$version$-sources.jar",
+metadata/com.thoughtworks.paranamer/paranamer/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/$version$/paranamer-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.apache.activemq/artemis-jms-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/artemis-jms-client/$version$/artemis-jms-client-$version$-sources.jar",
+metadata/org.bouncycastle/bcpkix-jdk15to18/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk15to18/$version$/bcpkix-jdk15to18-$version$-sources.jar",
+metadata/com.github.mwiede/jsch/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/mwiede/jsch/$version$/jsch-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-tests.jar",
+metadata/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/$version$/jackson-dataformat-yaml-$version$-sources.jar",
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-sources.jar",
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-tests.jar",
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-sources.jar",
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-tests.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-tests.jar",
+metadata/com.rabbitmq/amqp-client/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/rabbitmq/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta1/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-secretmanager-v1beta1/$version$/proto-google-cloud-secretmanager-v1beta1-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta1/index.json:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-secretmanager-v1beta1/$version$/proto-google-cloud-secretmanager-v1beta1-$version$-tests.jar",
+metadata/org.playframework/play-exceptions/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/org/playframework/play-exceptions/$version$/play-exceptions-$version$-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-executor-v1/$version$/proto-google-cloud-spanner-executor-v1-$version$-sources.jar",
+
+exec
+/usr/bin/bash -lc "rg 'neo4j-java-driver' -n metadata tests | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d
+ succeeded in 0ms:
+metadata/org.neo4j.driver/neo4j-java-driver/index.json:14:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
+metadata/org.neo4j.driver/neo4j-java-driver/index.json:15:    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
+metadata/org.neo4j.driver/neo4j-java-driver/index.json:16:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
+metadata/org.neo4j.driver/neo4j-java-driver/index.json:17:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
+metadata/library-and-framework-list.json:1851:    "artifact": "org.neo4j.driver:neo4j-java-driver",
+metadata/library-and-framework-list.json:1857:          "https://github.com/neo4j/neo4j-java-driver/tree/5.0/driver/src/main/resources/META-INF/native-image/org.neo4j.driver/neo4j-java-driver"
+metadata/library-and-framework-list.json:1860:          "https://github.com/neo4j-drivers/neo4j-java-driver-native-smoke-tests"
+tests/src/org.neo4j.driver/neo4j-java-driver/5.28.5/build.gradle:14:    testImplementation "org.neo4j.driver:neo4j-java-driver:$libraryVersion"
+tests/src/org.neo4j.driver/neo4j-java-driver/5.28.5/settings.gradle:20:rootProject.name = 'org.neo4j.driver.neo4j-java-driver_tests'
+tests/src/org.neo4j.driver/neo4j-java-driver/5.28.5/gradle.properties:4:library.coordinates = org.neo4j.driver:neo4j-java-driver:5.28.5
+tests/src/org.neo4j.driver/neo4j-java-driver/5.28.5/gradle.properties:6:metadata.dir = org.neo4j.driver/neo4j-java-driver/5.28.5/
+tests/src/org.neo4j.driver/neo4j-java-driver/5.28.8/build.gradle:14:    testImplementation "org.neo4j.driver:neo4j-java-driver:$libraryVersion"
+tests/src/org.neo4j.driver/neo4j-java-driver/5.28.8/settings.gradle:20:rootProject.name = 'org.neo4j.driver.neo4j-java-driver_tests'
+tests/src/org.neo4j.driver/neo4j-java-driver/5.28.8/gradle.properties:4:library.coordinates = org.neo4j.driver:neo4j-java-driver:5.28.8
+tests/src/org.neo4j.driver/neo4j-java-driver/5.28.8/gradle.properties:6:metadata.dir = org.neo4j.driver/neo4j-java-driver/5.28.8/
+
+codex
+There is already an older populated Neo4j driver entry in the same file, and the Maven template shape matches this artifact. I’m now verifying the rendered 5.28.8 URLs rather than copying blindly.
+exec
+/usr/bin/bash -lc 'cat metadata/org.neo4j.driver/neo4j-java-driver/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.28.8",
+    "tested-versions" : [
+      "5.28.8"
+    ],
+    "allowed-packages" : [
+      "org.neo4j.driver"
+    ]
+  },
+  {
+    "metadata-version" : "5.28.5",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
+    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
+    "description" : "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+    "tested-versions" : [
+      "5.28.5",
+      "5.28.6",
+      "5.28.7"
+    ],
+    "allowed-packages" : [
+      "org.neo4j.driver"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "for url in \\
+  https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/5.28.8/neo4j-java-driver-5.28.8-sources.jar \\
+  https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/5.28.8/neo4j-java-driver-5.28.8-tests.jar \\
+  https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/5.28.8/neo4j-java-driver-5.28.8-javadoc.jar \\
+  https://github.com/neo4j/neo4j-java-driver; do
+  code="'$(curl -L -s -o /dev/null -w '"'%{http_code}' \""'$url")
+  printf '"'%s %s\\n' \""'$code" "$url"
+done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d
+ succeeded in 1273ms:
+200 https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/5.28.8/neo4j-java-driver-5.28.8-tests.jar
+200 https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/5.28.8/neo4j-java-driver-5.28.8-javadoc.jar
+200 https://github.com/neo4j/neo4j-java-driver
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/5.28.8/neo4j-java-driver-5.28.8.pom
+web search: 
+web search: repo.maven.apache.org maven2 org neo4j driver neo4j-java-driver 5.28.8 pom
+web search: 
+web search: https://repo1.maven.org/maven2/org/neo4j/driver/neo4j-java-driver/5.28.8/neo4j-java-driver-5.28.8.pom
+exec
+/usr/bin/bash -lc "curl -L -s https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/5.28.8/neo4j-java-driver-5.28.8.pom | sed -n '/<name>/,/<\\/scm>/p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d
+ succeeded in 0ms:
+  <name>Neo4j Java Driver</name>
+  <description>Access to the Neo4j graph database through Java</description>
+  <url>https://github.com/neo4j/neo4j-java-driver</url>
+
+  <properties>
+    <rootDir>${project.basedir}/..</rootDir>
+    <api.classes.directory>${basedir}/target/classes-without-jpms</api.classes.directory>
+    <maven.compiler.xlint.extras>,-try</maven.compiler.xlint.extras>
+    <surefire.jpms.args>--add-reads org.neo4j.driver=io.netty.common --add-reads org.neo4j.driver=org.bouncycastle.provider --add-reads org.neo4j.driver=org.bouncycastle.pkix</surefire.jpms.args>
+    <failsafe.parallelizable.jpms.args>--add-opens org.neo4j.driver/org.neo4j.driver.internal.util=ALL-UNNAMED --add-opens org.neo4j.driver/org.neo4j.driver.internal.async=ALL-UNNAMED --add-reads org.neo4j.driver=io.netty.common  --add-reads org.neo4j.driver=org.bouncycastle.provider --add-reads org.neo4j.driver=org.bouncycastle.pkix</failsafe.parallelizable.jpms.args>
+    <failsafe.sequential.jpms.args>--add-reads org.neo4j.driver=org.bouncycastle.provider --add-reads org.neo4j.driver=org.bouncycastle.pkix</failsafe.sequential.jpms.args>
+    <blockhound.tag>blockHoundTest</blockhound.tag>
+    <maven.deploy.skip>false</maven.deploy.skip>
+  </properties>
+
+  <dependencies>
+    <!-- Compile dependencies -->
+    <dependency>
+      <groupId>org.neo4j.bolt</groupId>
+      <artifactId>neo4j-bolt-connection</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.neo4j.bolt</groupId>
+      <artifactId>neo4j-bolt-connection-netty</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.neo4j.bolt</groupId>
+      <artifactId>neo4j-bolt-connection-pooled</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.neo4j.bolt</groupId>
+      <artifactId>neo4j-bolt-connection-routed</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.reactivestreams</groupId>
+      <artifactId>reactive-streams</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-core</artifactId>
+    </dependency>
+
+    <!-- Optional and / or provided dependencies -->
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-core</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.graalvm.nativeimage</groupId>
+      <artifactId>svm</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.projectreactor.tools</groupId>
+      <artifactId>blockhound</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.rauschig</groupId>
+      <artifactId>jarchivelib</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk18on</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk18on</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>neo4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.reactivestreams</groupId>
+      <artifactId>reactive-streams-tck</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <excludedGroups>${blockhound.tag}</excludedGroups>
+          </configuration>
+          <executions>
+            <execution>
+              <id>blockhound-tests</id>
+              <goals>
+                <goal>test</goal>
+              </goals>
+              <configuration combine.self="override">
+                <useModulePath>false</useModulePath>
+                <argLine>-XX:+AllowRedefinitionToAddDeleteMethods</argLine>
+                <groups>${blockhound.tag}</groups>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.3.0</version>
+          <executions>
+            <execution>
+              <id>copy-classes-excluding-jpms</id>
+              <phase>compile</phase>
+              <goals>
+                <goal>copy-resources</goal>
+              </goals>
+              <configuration>
+                <outputDirectory>${api.classes.directory}</outputDirectory>
+                <resources>
+                  <resource>
+                    <directory>${project.build.outputDirectory}</directory>
+                    <excludes>
+                      <exclude>module-info.class</exclude>
+                    </excludes>
+                  </resource>
+                </resources>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>clirr-maven-plugin</artifactId>
+          <configuration>
+            <classesDirectory>${api.classes.directory}</classesDirectory>
+            <excludes>org/neo4j/driver/internal/**</excludes>
+            <ignoredDifferencesFile>clirr-ignored-differences.xml</ignoredDifferencesFile>
+          </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.bcel</groupId>
+              <artifactId>bcel</artifactId>
+              <version>6.7.0</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>clirr-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <archive>
+            <index>true</index>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+            <manifest>
+              <packageName>org/neo4j/driver</packageName>
+            </manifest>
+            <manifestEntries>
+              <!-- This is used to programmatically determine the driver version -->
+              <Implementation-Version>${project.version}-${build.revision}</Implementation-Version>
+            </manifestEntries>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+            <execution>
+                <id>set-osgi-version</id>
+                <phase>validate</phase>
+                <goals>
+                    <goal>parse-version</goal>
+                </goals>
+            </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.surefire</groupId>
+            <artifactId>surefire-junit-platform</artifactId>
+            <version>${surefire.and.failsafe.version}</version>
+            <exclusions>
+              <exclusion>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-engine</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-launcher</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-params</artifactId>
+              </exclusion>
+            </exclusions>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.maven.surefire</groupId>
+            <artifactId>surefire-testng</artifactId>
+            <version>${surefire.and.failsafe.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+
+  <scm>
+    <connection>scm:git:git://github.com/neo4j/neo4j-java-driver.git</connection>
+    <developerConnection>scm:git:git@github.com:neo4j/neo4j-java-driver.git</developerConnection>
+    <url>https://github.com/neo4j/neo4j-java-driver</url>
+  </scm>
+
+exec
+/usr/bin/bash -lc "curl -L -s https://api.github.com/repos/neo4j/neo4j-java-driver/tags?per_page=100 | jq -r '.[].name' | rg '"'^(5'"\\.28\\.8|v5\\.28\\.8|neo4j-java-driver-5\\.28\\.8)"'$'"'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d
+ succeeded in 450ms:
+5.28.8
+
+exec
+/usr/bin/bash -lc "curl -L -s https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/5.28.8/neo4j-java-driver-5.28.8.pom | rg '<description>|<url>|<scm>|<connection>|<developerConnection>' -n" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d
+ succeeded in 0ms:
+16:  <description>Access to the Neo4j graph database through Java</description>
+17:  <url>https://github.com/neo4j/neo4j-java-driver</url>
+302:  <scm>
+303:    <connection>scm:git:git://github.com/neo4j/neo4j-java-driver.git</connection>
+304:    <developerConnection>scm:git:git@github.com:neo4j/neo4j-java-driver.git</developerConnection>
+305:    <url>https://github.com/neo4j/neo4j-java-driver</url>
+
+codex
+The target entry has all six requested fields missing. I’m adding Maven Central source/test/javadoc templates for 5.28.8, the canonical GitHub repository root, and a two-sentence description; no `language` field is warranted for this Java artifact under the allowed Kotlin/Groovy/Scala schema.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+diff --git a/metadata/org.neo4j.driver/neo4j-java-driver/index.json b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+index 6c61e48cac028e4e736d51ccf1c15dff0eb99010..50ea20f0d66200333c8a8b9c71fec04c92d406bd
+--- a/metadata/org.neo4j.driver/neo4j-java-driver/index.json
++++ b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+@@ -5,6 +5,11 @@
+     "tested-versions" : [
+       "5.28.8"
+     ],
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
++    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
++    "description" : "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+     "allowed-packages" : [
+       "org.neo4j.driver"
+     ]
+
+diff --git a/metadata/org.neo4j.driver/neo4j-java-driver/index.json b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+index 6c61e48cac028e4e736d51ccf1c15dff0eb99010..50ea20f0d66200333c8a8b9c71fec04c92d406bd
+--- a/metadata/org.neo4j.driver/neo4j-java-driver/index.json
++++ b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+@@ -5,6 +5,11 @@
+     "tested-versions" : [
+       "5.28.8"
+     ],
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
++    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
++    "description" : "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+     "allowed-packages" : [
+       "org.neo4j.driver"
+     ]
+
+codex
+The JSON has been patched. I’m doing a quick structural check and the targeted metadata validation task now.
+exec
+/usr/bin/bash -lc "jq '.[] | select(.\"metadata-version\" == \"5.28.8\")' metadata/org.neo4j.driver/neo4j-java-driver/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "5.28.8",
+  "tested-versions": [
+    "5.28.8"
+  ],
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
+  "repository-url": "https://github.com/neo4j/neo4j-java-driver",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
+  "description": "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+  "allowed-packages": [
+    "org.neo4j.driver"
+  ]
+}
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.neo4j.driver:neo4j-java-driver:5.28.8 --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d
+diff --git a/metadata/org.neo4j.driver/neo4j-java-driver/index.json b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+index 6c61e48cac028e4e736d51ccf1c15dff0eb99010..50ea20f0d66200333c8a8b9c71fec04c92d406bd
+--- a/metadata/org.neo4j.driver/neo4j-java-driver/index.json
++++ b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+@@ -5,6 +5,11 @@
+     "tested-versions" : [
+       "5.28.8"
+     ],
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
++    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
++    "description" : "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+     "allowed-packages" : [
+       "org.neo4j.driver"
+     ]
+
+ exited 1 in 7596ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+Metadata files check failed for org.neo4j.driver:neo4j-java-driver:5.28.8: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d/metadata/org.neo4j.driver/neo4j-java-driver/5.28.8/
+> Task :checkMetadataFiles FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.neo4j.driver:neo4j-java-driver:5.28.8: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d/metadata/org.neo4j.driver/neo4j-java-driver/5.28.8/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.neo4j.driver:neo4j-java-driver:5.28.8: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d/metadata/org.neo4j.driver/neo4j-java-driver/5.28.8/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+BUILD FAILED in 7s
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The targeted Gradle metadata check fails on a pre-existing content issue for this version: `metadata/org.neo4j.driver/neo4j-java-driver/5.28.8/reachability-metadata.json` is missing. The `index.json` itself parses cleanly, and I’m checking the final diff now.
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.neo4j.driver/neo4j-java-driver/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d
+ succeeded in 0ms:
+diff --git i/metadata/org.neo4j.driver/neo4j-java-driver/index.json w/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+index 6c61e48cac..50ea20f0d6 100644
+--- i/metadata/org.neo4j.driver/neo4j-java-driver/index.json
++++ w/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+@@ -5,6 +5,11 @@
+     "tested-versions" : [
+       "5.28.8"
+     ],
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
++    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
++    "description" : "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+     "allowed-packages" : [
+       "org.neo4j.driver"
+     ]
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d
+diff --git a/metadata/org.neo4j.driver/neo4j-java-driver/index.json b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+index 6c61e48cac028e4e736d51ccf1c15dff0eb99010..50ea20f0d66200333c8a8b9c71fec04c92d406bd
+--- a/metadata/org.neo4j.driver/neo4j-java-driver/index.json
++++ b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+@@ -5,6 +5,11 @@
+     "tested-versions" : [
+       "5.28.8"
+     ],
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
++    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
++    "description" : "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+     "allowed-packages" : [
+       "org.neo4j.driver"
+     ]
+
+ succeeded in 192ms:
+ M metadata/org.neo4j.driver/neo4j-java-driver/index.json
+
+web search: 
+web search: neo4j-java-driver GitHub repository Neo4j Java Driver 5.28.8
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.neo4j.driver/neo4j-java-driver/index.json | sed -n '1,22p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "5.28.8",
+     5	    "tested-versions" : [
+     6	      "5.28.8"
+     7	    ],
+     8	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
+     9	    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
+    10	    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
+    11	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
+    12	    "description" : "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+    13	    "allowed-packages" : [
+    14	      "org.neo4j.driver"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "5.28.5",
+    19	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
+    20	    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
+    21	    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
+    22	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
+
+diff --git a/metadata/org.neo4j.driver/neo4j-java-driver/index.json b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+index 6c61e48cac028e4e736d51ccf1c15dff0eb99010..50ea20f0d66200333c8a8b9c71fec04c92d406bd
+--- a/metadata/org.neo4j.driver/neo4j-java-driver/index.json
++++ b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+@@ -5,6 +5,11 @@
+     "tested-versions" : [
+       "5.28.8"
+     ],
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
++    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
++    "description" : "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+     "allowed-packages" : [
+       "org.neo4j.driver"
+     ]
+
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d/metadata/org.neo4j.driver/neo4j-java-driver/index.json:8) for metadata version `5.28.8`.
+
+Added:
+- `source-code-url`: Maven Central `$version$` sources jar
+- `repository-url`: canonical GitHub repo root
+- `test-code-url`: Maven Central `$version$` tests jar
+- `documentation-url`: Maven Central `$version$` javadoc jar
+- `description`: exactly two sentences
+- no `language` field, since this is not Kotlin/Groovy/Scala-specific
+
+Verified rendered `5.28.8` Maven source/test/javadoc URLs and repository URL returned HTTP `200`. `jq` parsing passed. `./gradlew checkMetadataFiles -Pcoordinates=org.neo4j.driver:neo4j-java-driver:5.28.8 --stacktrace` failed because `metadata/org.neo4j.driver/neo4j-java-driver/5.28.8/reachability-metadata.json` is missing, which is outside the requested index-field update.
+diff --git a/metadata/org.neo4j.driver/neo4j-java-driver/index.json b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+index 6c61e48cac028e4e736d51ccf1c15dff0eb99010..50ea20f0d66200333c8a8b9c71fec04c92d406bd
+--- a/metadata/org.neo4j.driver/neo4j-java-driver/index.json
++++ b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+@@ -5,6 +5,11 @@
+     "tested-versions" : [
+       "5.28.8"
+     ],
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
++    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
++    "description" : "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+     "allowed-packages" : [
+       "org.neo4j.driver"
+     ]
+
+tokens used
+53,116
+Updated [index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d/metadata/org.neo4j.driver/neo4j-java-driver/index.json:8) for metadata version `5.28.8`.
+
+Added:
+- `source-code-url`: Maven Central `$version$` sources jar
+- `repository-url`: canonical GitHub repo root
+- `test-code-url`: Maven Central `$version$` tests jar
+- `documentation-url`: Maven Central `$version$` javadoc jar
+- `description`: exactly two sentences
+- no `language` field, since this is not Kotlin/Groovy/Scala-specific
+
+Verified rendered `5.28.8` Maven source/test/javadoc URLs and repository URL returned HTTP `200`. `jq` parsing passed. `./gradlew checkMetadataFiles -Pcoordinates=org.neo4j.driver:neo4j-java-driver:5.28.8 --stacktrace` failed because `metadata/org.neo4j.driver/neo4j-java-driver/5.28.8/reachability-metadata.json` is missing, which is outside the requested index-field update.
+Ran agent for org.neo4j.driver:neo4j-java-driver:5.28.8 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d/build/agent-url-discovery-logs/org.neo4j.driver-neo4j-java-driver-5.28.8.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-5c94908d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 29s
+9 actionable tasks: 1 executed, 8 up-to-date
