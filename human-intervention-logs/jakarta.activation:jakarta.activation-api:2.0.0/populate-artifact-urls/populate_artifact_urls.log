@@ -1,0 +1,1022 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f10b9-518b-7871-ace7-f37d438a3a7e
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: jakarta.activation:jakarta.activation-api:2.0.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.0.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390/metadata/jakarta.activation/jakarta.activation-api/index.json
+- Entry selector: "metadata-version" = "2.0.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.0.0
+- Entry metadata-version: 2.0.0
+- Entry test-version: 2.0.0
+- Entry tested-versions: [2.0.0]
+codex
+I’ll verify the artifact metadata and existing repository conventions first, then I’ll check that each rendered URL works before touching `index.json`.
+exec
+/usr/bin/bash -lc "rg -n '\"repository-url\"|\"source-code-url\"|\"documentation-url\"|\"test-code-url\"|\"description\"' metadata/jakarta.activation metadata | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+ succeeded in 0ms:
+metadata/jakarta.activation/jakarta.activation-api/index.json:14:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
+metadata/jakarta.activation/jakarta.activation-api/index.json:15:    "repository-url" : "https://github.com/jakartaee/jaf-api",
+metadata/jakarta.activation/jakarta.activation-api/index.json:16:    "test-code-url" : "N/A",
+metadata/jakarta.activation/jakarta.activation-api/index.json:17:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
+metadata/jakarta.activation/jakarta.activation-api/index.json:18:    "description" : "Jakarta Activation API defines Java interfaces and classes for determining data types, encapsulating access to data, and mapping MIME content to command handlers. This API-only artifact is used to compile applications against the JavaBeans Activation Framework contracts without including the full implementation classes.",
+metadata/org.glassfish.hk2/osgi-resource-locator/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/osgi-resource-locator/$version$/osgi-resource-locator-$version$-sources.jar",
+metadata/org.glassfish.hk2/osgi-resource-locator/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2-extra",
+metadata/org.glassfish.hk2/osgi-resource-locator/index.json:7:    "test-code-url" : "N/A",
+metadata/org.glassfish.hk2/osgi-resource-locator/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/osgi-resource-locator/$version$/osgi-resource-locator-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/osgi-resource-locator/index.json:9:    "description" : "HK2 OSGi Resource Locator lets Java SPI consumers discover META-INF/services providers that are packaged inside OSGi bundles. It also provides helper APIs for locating bundle resources that are not exported as ordinary OSGi packages.",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:9:    "description" : "HK2 Utils provides utility classes used by the HK2 dependency injection framework, including reflection helpers, cache abstractions, weak-reference collections, and general-purpose support code. It supports HK2 internals and applications built on HK2 by centralizing reusable Java utilities for type inspection, cache management, and lightweight data structures.",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:34:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:37:    "description" : "HK2 Utils provides utility classes used by the HK2 dependency injection framework, including reflection helpers, cache abstractions, weak-reference collections, and general-purpose support code. It supports HK2 internals and applications built on HK2 by centralizing reusable Java utilities for type inspection, cache management, and lightweight data structures.",
+metadata/org.glassfish.hk2/hk2-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-api/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:9:    "description" : "HK2 API provides the core contracts, annotations, descriptors, and service locator interfaces for the HK2 dependency injection framework. It lets applications and HK2 extensions describe services, manage dynamic configurations, resolve injections, define scopes, and observe service lifecycle events.",
+metadata/org.glassfish.hk2/hk2-api/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:21:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-api/index.json:22:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:24:    "description" : "HK2 API provides the core contracts, annotations, descriptors, and service locator interfaces for the HK2 dependency injection framework. It lets applications and HK2 extensions describe services, manage dynamic configurations, resolve injections, define scopes, and observe service lifecycle events.",
+metadata/org.glassfish.hk2/hk2-api/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:36:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/org.glassfish.hk2/hk2-api/index.json:37:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:39:    "description" : "HK2 API provides the core contracts, annotations, descriptors, and service locator interfaces for the HK2 dependency injection framework. It lets applications and HK2 extensions describe services, manage dynamic configurations, resolve injections, define scopes, and observe service lifecycle events.",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-sources.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/asn1/ber/src/test/java/org/apache/directory/api/asn1/ber/",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:9:    "description" : "Apache Directory API ASN.1 BER provides the Basic Encoding Rules codec implementation used by Apache Directory LDAP API components. It supplies decoder, grammar, action, and TLV classes for parsing ASN.1 BER-encoded data in JVM applications.",
+metadata/org.apache.directory.api/api-ldap-model/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:6:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-ldap-model/index.json:7:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:9:    "description" : "Apache Directory LDAP API Model provides the common LDAP object model used by Apache Directory clients and servers, including entries, attributes, distinguished names, filters, controls, messages, schema objects, cursors, and LDAP exceptions. It supplies Java data structures and helpers for representing and manipulating LDAP protocol and directory data rather than implementing a standalone LDAP server or client.",
+metadata/org.apache.directory.api/api-ldap-model/index.json:28:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:29:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:30:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:31:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:32:    "description" : "Apache Directory LDAP API Model provides the shared LDAP object model used by Apache Directory clients and servers, including entries, attributes, DNs, filters, schema objects, controls, cursors, exceptions, and LDAP result/message types. It is a Java JVM module for representing and manipulating LDAP protocol and directory data structures rather than a standalone LDAP server or client implementation.",
+metadata/org.apache.directory.api/api-ldap-model/index.json:42:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:43:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-ldap-model/index.json:44:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:45:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:46:    "description" : "Apache Directory LDAP API Model provides the common LDAP object model used by Apache Directory clients and servers, including entries, attributes, distinguished names, filters, controls, messages, schema objects, cursors, and LDAP exceptions. It supplies Java data structures and helpers for representing and manipulating LDAP protocol and directory data rather than implementing a standalone LDAP server or client.",
+metadata/org.apache.directory.api/api-ldap-model/index.json:56:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:57:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-ldap-model/index.json:58:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:59:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:60:    "description" : "Apache Directory LDAP API Model provides the common LDAP object model used by Apache Directory clients and servers, including entries, attributes, distinguished names, filters, controls, messages, schema objects, cursors, and LDAP exceptions. It supplies Java data structures and helpers for representing and manipulating LDAP protocol and directory data rather than implementing a standalone LDAP server or client.",
+metadata/org.apache.directory.api/api-ldap-model/index.json:73:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:74:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-ldap-model/index.json:75:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:76:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:77:    "description" : "Apache Directory LDAP API Model provides the common LDAP object model used by Apache Directory clients and servers, including entries, attributes, distinguished names, filters, controls, messages, schema objects, cursors, and LDAP exceptions. It supplies Java data structures and helpers for representing and manipulating LDAP protocol and directory data rather than implementing a standalone LDAP server or client.",
+metadata/org.apache.directory.api/api-ldap-model/index.json:87:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:88:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-ldap-model/index.json:89:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:90:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:91:    "description" : "Apache Directory LDAP API Model provides the common LDAP object model used by Apache Directory clients and servers, including entries, attributes, distinguished names, filters, controls, messages, schema objects, cursors, and LDAP exceptions. It supplies Java data structures and helpers for representing and manipulating LDAP protocol and directory data rather than implementing a standalone LDAP server or client.",
+metadata/org.apache.directory.api/api-ldap-model/index.json:101:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:102:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-ldap-model/index.json:103:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:104:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:105:    "description" : "Apache Directory LDAP API Model provides the common LDAP object model used by Apache Directory clients and servers, including entries, attributes, distinguished names, filters, controls, messages, schema objects, cursors, and LDAP exceptions. It supplies Java data structures and helpers for representing and manipulating LDAP protocol and directory data rather than implementing a standalone LDAP server or client.",
+metadata/org.apache.directory.api/api-ldap-model/index.json:115:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-ldap-model/$version$/api-ldap-model-$version$-sources.jar",
+metadata/org.apache.directory.api/api-ldap-model/index.json:116:    "repository-url" : "https://github.com/apache/directory-ldap-api",
+metadata/org.apache.directory.api/api-ldap-model/index.json:117:    "test-code-url" : "https://github.com/apache/directory-ldap-api/tree/refs/tags/$version$/ldap/model/src/test/java/org/apache/directory/api/ldap/model",
+metadata/org.apache.directory.api/api-ldap-model/index.json:118:    "documentation-url" : "https://javadoc.io/doc/org.apache.directory.api/api-ldap-model/$version$/",
+metadata/org.apache.directory.api/api-ldap-model/index.json:119:    "description" : "Apache Directory LDAP API Model provides the common LDAP object model used by Apache Directory clients and servers, including entries, attributes, distinguished names, filters, controls, messages, schema objects, cursors, and LDAP exceptions. It supplies Java data structures and helpers for representing and manipulating LDAP protocol and directory data rather than implementing a standalone LDAP server or client.",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/jakarta.activation/jakarta.activation-api/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.0",
+    "tested-versions" : [
+      "2.0.0"
+    ],
+    "allowed-packages" : [
+      "javax.activation"
+    ]
+  },
+  {
+    "metadata-version" : "1.2.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
+    "repository-url" : "https://github.com/jakartaee/jaf-api",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
+    "description" : "Jakarta Activation API defines Java interfaces and classes for determining data types, encapsulating access to data, and mapping MIME content to command handlers. This API-only artifact is used to compile applications against the JavaBeans Activation Framework contracts without including the full implementation classes.",
+    "tested-versions" : [
+      "1.2.1",
+      "1.2.2"
+    ],
+    "allowed-packages" : [
+      "javax.activation"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n 'jakarta.activation-api|activation' . -g 'index.json' -g 'pom.xml' | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+ succeeded in 0ms:
+./metadata/io.helidon.service/helidon-service-registry/index.json:9:    "description" : "Helidon Service Registry provides Helidon's service declaration and registry API, replacing standard service loader patterns with dependency-aware service discovery and lookup. It supports generated service descriptors, scopes, lifecycle activation, qualifiers, interception, and event handling for Helidon applications.",
+./metadata/org.apache.openejb/javaee-api/index.json:4:    "allowed-packages": [ "javax.activation", "javax.annotation", "javax.ejb", "javax.enterprise.deploy", "javax.interceptor", "javax.jms", "javax.jws", "javax.mail", "javax.management.j2ee", "javax.persistence", "javax.resource", "javax.security.jacc", "javax.servlet", "javax.transaction", "javax.xml", "org.apache.geronimo.mail" ],
+./metadata/javax.activation/javax.activation-api/index.json:4:    "allowed-packages": [ "javax.activation" ],
+./metadata/javax.activation/javax.activation-api/index.json:6:    "source-code-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-sources.jar",
+./metadata/javax.activation/javax.activation-api/index.json:7:    "repository-url": "https://github.com/javaee/activation",
+./metadata/javax.activation/javax.activation-api/index.json:9:    "documentation-url": "https://repo1.maven.org/maven2/javax/activation/javax.activation-api/$version$/javax.activation-api-$version$-javadoc.jar",
+./metadata/javax.activation/javax.activation-api/index.json:10:    "description": "JavaBeans Activation Framework API defines the javax.activation types for describing data sources, determining MIME types, and dispatching data to content handlers. It provides the standard activation API that other libraries use to work with arbitrary data without bundling the implementation classes.",
+./metadata/javax.activation/activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/javax/activation/activation/$version$/activation-$version$-sources.jar",
+./metadata/javax.activation/activation/index.json:6:    "repository-url" : "https://github.com/javaee/activation",
+./metadata/javax.activation/activation/index.json:15:      "com.sun.activation",
+./metadata/javax.activation/activation/index.json:16:      "javax.activation"
+./metadata/jakarta.activation/jakarta.activation-api/index.json:9:      "javax.activation"
+./metadata/jakarta.activation/jakarta.activation-api/index.json:14:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
+./metadata/jakarta.activation/jakarta.activation-api/index.json:17:    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
+./metadata/jakarta.activation/jakarta.activation-api/index.json:24:      "javax.activation"
+./metadata/org.eclipse.angus/angus-activation/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/angus-activation/$version$/angus-activation-$version$-sources.jar",
+./metadata/org.eclipse.angus/angus-activation/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/angus-activation",
+./metadata/org.eclipse.angus/angus-activation/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/angus/angus-activation/$version$/angus-activation-$version$-javadoc.jar",
+./metadata/org.eclipse.angus/angus-activation/index.json:9:    "description" : "Angus Activation is the Eclipse implementation support for the Jakarta Activation specification, providing registry implementations used by Jakarta Activation to resolve MIME types and mailcap entries. The angus-activation artifact supplies JVM classes and service providers that help applications determine data types, discover operations for data, and instantiate the appropriate handlers.",
+./metadata/org.eclipse.angus/angus-activation/index.json:15:      "com.sun.activation.registries"
+./metadata/com.sun.activation/jakarta.activation/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/sun/activation/jakarta.activation/$version$/jakarta.activation-$version$-sources.jar",
+./metadata/com.sun.activation/jakarta.activation/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/com/sun/activation/jakarta.activation/$version$/jakarta.activation-$version$-javadoc.jar",
+./metadata/com.sun.activation/jakarta.activation/index.json:15:      "com.sun.activation.registries",
+./metadata/com.sun.activation/jakarta.activation/index.json:16:      "jakarta.activation"
+./metadata/org.apache.maven/maven-model-builder/index.json:9:    "description" : "Maven Model Builder constructs the effective Maven project model from POM files, applying inheritance, profile activation, interpolation, normalization, and validation. It is the Maven core component that turns raw model data into the resolved model used by Maven builds and tools.",
+./metadata/org.apache.maven/maven-profile/index.json:9:    "description" : "Maven Profile Model contains the Java model and builder APIs for Maven profile definitions, including activation rules, repositories, and profile roots. It provides generated XPP3 readers and writers plus conversion helpers used by Maven 2.x to parse and serialize profile XML.",
+
+codex
+The older `1.2.1` entry already uses Maven-hosted source and javadoc jars and marks tests as unavailable. I’m checking whether `2.0.0` has Maven test artifacts or a tag-specific source test directory before applying the same pattern.
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/2.0.0/jakarta.activation-api-2.0.0-javadoc.jar" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+ succeeded in 0ms:
+200 https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/2.0.0/jakarta.activation-api-2.0.0-javadoc.jar
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/2.0.0/jakarta.activation-api-2.0.0-sources.jar" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+ succeeded in 0ms:
+200 https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/2.0.0/jakarta.activation-api-2.0.0-sources.jar
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/2.0.0/' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: jakarta/activation/jakarta.activation-api/2.0.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>jakarta/activation/jakarta.activation-api/2.0.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jakarta.activation-api-2.0.0-javadoc.jar" title="jakarta.activation-api-2.0.0-javadoc.jar">jakarta.activation-api-2.0.0-javadoc.jar</a>          2020-08-04 09:42    544522      
+<a href="jakarta.activation-api-2.0.0-javadoc.jar.asc" title="jakarta.activation-api-2.0.0-javadoc.jar.asc">jakarta.activation-api-2.0.0-javadoc.jar.asc</a>      2020-08-04 09:42       833      
+<a href="jakarta.activation-api-2.0.0-javadoc.jar.asc.md5" title="jakarta.activation-api-2.0.0-javadoc.jar.asc.md5">jakarta.activation-api-2.0.0-javadoc.jar.asc....</a>  2020-08-04 09:42        32      
+<a href="jakarta.activation-api-2.0.0-javadoc.jar.asc.sha1" title="jakarta.activation-api-2.0.0-javadoc.jar.asc.sha1">jakarta.activation-api-2.0.0-javadoc.jar.asc....</a>  2020-08-04 09:42        40      
+<a href="jakarta.activation-api-2.0.0-javadoc.jar.asc.sha256" title="jakarta.activation-api-2.0.0-javadoc.jar.asc.sha256">jakarta.activation-api-2.0.0-javadoc.jar.asc....</a>  2020-08-04 09:42        64      
+<a href="jakarta.activation-api-2.0.0-javadoc.jar.asc.sha512" title="jakarta.activation-api-2.0.0-javadoc.jar.asc.sha512">jakarta.activation-api-2.0.0-javadoc.jar.asc....</a>  2020-08-04 09:42       128      
+<a href="jakarta.activation-api-2.0.0-javadoc.jar.md5" title="jakarta.activation-api-2.0.0-javadoc.jar.md5">jakarta.activation-api-2.0.0-javadoc.jar.md5</a>      2020-08-04 09:42        32      
+<a href="jakarta.activation-api-2.0.0-javadoc.jar.sha1" title="jakarta.activation-api-2.0.0-javadoc.jar.sha1">jakarta.activation-api-2.0.0-javadoc.jar.sha1</a>     2020-08-04 09:42        40      
+<a href="jakarta.activation-api-2.0.0-sources.jar" title="jakarta.activation-api-2.0.0-sources.jar">jakarta.activation-api-2.0.0-sources.jar</a>          2020-08-04 09:42     44151      
+<a href="jakarta.activation-api-2.0.0-sources.jar.asc" title="jakarta.activation-api-2.0.0-sources.jar.asc">jakarta.activation-api-2.0.0-sources.jar.asc</a>      2020-08-04 09:42       833      
+<a href="jakarta.activation-api-2.0.0-sources.jar.asc.md5" title="jakarta.activation-api-2.0.0-sources.jar.asc.md5">jakarta.activation-api-2.0.0-sources.jar.asc....</a>  2020-08-04 09:42        32      
+<a href="jakarta.activation-api-2.0.0-sources.jar.asc.sha1" title="jakarta.activation-api-2.0.0-sources.jar.asc.sha1">jakarta.activation-api-2.0.0-sources.jar.asc....</a>  2020-08-04 09:42        40      
+<a href="jakarta.activation-api-2.0.0-sources.jar.asc.sha256" title="jakarta.activation-api-2.0.0-sources.jar.asc.sha256">jakarta.activation-api-2.0.0-sources.jar.asc....</a>  2020-08-04 09:42        64      
+<a href="jakarta.activation-api-2.0.0-sources.jar.asc.sha512" title="jakarta.activation-api-2.0.0-sources.jar.asc.sha512">jakarta.activation-api-2.0.0-sources.jar.asc....</a>  2020-08-04 09:42       128      
+<a href="jakarta.activation-api-2.0.0-sources.jar.md5" title="jakarta.activation-api-2.0.0-sources.jar.md5">jakarta.activation-api-2.0.0-sources.jar.md5</a>      2020-08-04 09:42        32      
+<a href="jakarta.activation-api-2.0.0-sources.jar.sha1" title="jakarta.activation-api-2.0.0-sources.jar.sha1">jakarta.activation-api-2.0.0-sources.jar.sha1</a>     2020-08-04 09:42        40      
+<a href="jakarta.activation-api-2.0.0.jar" title="jakarta.activation-api-2.0.0.jar">jakarta.activation-api-2.0.0.jar</a>                  2020-08-04 09:42     47669      
+<a href="jakarta.activation-api-2.0.0.jar.asc" title="jakarta.activation-api-2.0.0.jar.asc">jakarta.activation-api-2.0.0.jar.asc</a>              2020-08-04 09:42       833      
+<a href="jakarta.activation-api-2.0.0.jar.asc.md5" title="jakarta.activation-api-2.0.0.jar.asc.md5">jakarta.activation-api-2.0.0.jar.asc.md5</a>          2020-08-04 09:42        32      
+<a href="jakarta.activation-api-2.0.0.jar.asc.sha1" title="jakarta.activation-api-2.0.0.jar.asc.sha1">jakarta.activation-api-2.0.0.jar.asc.sha1</a>         2020-08-04 09:42        40      
+<a href="jakarta.activation-api-2.0.0.jar.asc.sha256" title="jakarta.activation-api-2.0.0.jar.asc.sha256">jakarta.activation-api-2.0.0.jar.asc.sha256</a>       2020-08-04 09:42        64      
+<a href="jakarta.activation-api-2.0.0.jar.asc.sha512" title="jakarta.activation-api-2.0.0.jar.asc.sha512">jakarta.activation-api-2.0.0.jar.asc.sha512</a>       2020-08-04 09:42       128      
+<a href="jakarta.activation-api-2.0.0.jar.md5" title="jakarta.activation-api-2.0.0.jar.md5">jakarta.activation-api-2.0.0.jar.md5</a>              2020-08-04 09:42        32      
+<a href="jakarta.activation-api-2.0.0.jar.sha1" title="jakarta.activation-api-2.0.0.jar.sha1">jakarta.activation-api-2.0.0.jar.sha1</a>             2020-08-04 09:42        40      
+<a href="jakarta.activation-api-2.0.0.pom" title="jakarta.activation-api-2.0.0.pom">jakarta.activation-api-2.0.0.pom</a>                  2020-08-04 09:42      5318      
+<a href="jakarta.activation-api-2.0.0.pom.asc" title="jakarta.activation-api-2.0.0.pom.asc">jakarta.activation-api-2.0.0.pom.asc</a>              2020-08-04 09:42       833      
+<a href="jakarta.activation-api-2.0.0.pom.asc.md5" title="jakarta.activation-api-2.0.0.pom.asc.md5">jakarta.activation-api-2.0.0.pom.asc.md5</a>          2020-08-04 09:42        32      
+<a href="jakarta.activation-api-2.0.0.pom.asc.sha1" title="jakarta.activation-api-2.0.0.pom.asc.sha1">jakarta.activation-api-2.0.0.pom.asc.sha1</a>         2020-08-04 09:42        40      
+<a href="jakarta.activation-api-2.0.0.pom.asc.sha256" title="jakarta.activation-api-2.0.0.pom.asc.sha256">jakarta.activation-api-2.0.0.pom.asc.sha256</a>       2020-08-04 09:42        64      
+<a href="jakarta.activation-api-2.0.0.pom.asc.sha512" title="jakarta.activation-api-2.0.0.pom.asc.sha512">jakarta.activation-api-2.0.0.pom.asc.sha512</a>       2020-08-04 09:42       128      
+<a href="jakarta.activation-api-2.0.0.pom.md5" title="jakarta.activation-api-2.0.0.pom.md5">jakarta.activation-api-2.0.0.pom.md5</a>              2020-08-04 09:42        32      
+<a href="jakarta.activation-api-2.0.0.pom.sha1" title="jakarta.activation-api-2.0.0.pom.sha1">jakarta.activation-api-2.0.0.pom.sha1</a>             2020-08-04 09:42        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/2.0.0/jakarta.activation-api-2.0.0-test-sources.jar" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+ succeeded in 237ms:
+404 https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/2.0.0/jakarta.activation-api-2.0.0-test-sources.jar
+
+codex
+Maven Central has the `2.0.0` source and javadoc jars, but no `test-sources` classifier. I’m pulling the published POM and checking the upstream tags so the repository root and fallback test URL are version-specific rather than guessed.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/2.0.0/jakarta.activation-api-2.0.0.pom' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+ succeeded in 0ms:
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+
+    Copyright (c) 1997, 2019 Oracle and/or its affiliates. All rights reserved.
+
+    This program and the accompanying materials are made available under the
+    terms of the Eclipse Distribution License v. 1.0, which is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+
+    SPDX-License-Identifier: BSD-3-Clause
+
+-->
+<!--
+    This project builds the Activation API jar file, which contains only
+    the jakarta.activation.* API definitions and is *only* intended to be used
+    for programs to compile against.  Note that it includes none of the
+    implementation-specific classes that the jakarta.activation.* classes rely on.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.sun.activation</groupId>
+        <artifactId>all</artifactId>
+        <version>2.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>jakarta.activation</groupId>
+    <artifactId>jakarta.activation-api</artifactId>
+    <packaging>jar</packaging>
+    <name>Jakarta Activation API jar</name>
+    <properties>
+        <activation.extensionName>
+            jakarta.activation
+        </activation.extensionName>
+        <activation.moduleName>
+            jakarta.activation
+        </activation.moduleName>
+        <activation.packages.export>
+            jakarta.activation.*; version=${activation.spec.version},
+	    !com.sun.*
+        </activation.packages.export>
+        <activation.packages.import>
+	    !com.sun.*
+        </activation.packages.import>
+        <activation.bundle.symbolicName>
+            jakarta.activation-api
+        </activation.bundle.symbolicName>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <!-- download the binaries -->
+                        <id>get-binaries</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <!-- download the sources -->
+                        <id>get-sources</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.sun.activation</groupId>
+                                    <artifactId>jakarta.activation</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>sources</classifier>
+                                    <outputDirectory>
+                                        ${project.build.directory}/sources
+                                    </outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <artifactItems>
+                        <artifactItem>
+                            <groupId>com.sun.activation</groupId>
+                            <artifactId>jakarta.activation</artifactId>
+                            <version>${project.version}</version>
+                        </artifactItem>
+                    </artifactItems>
+                    <outputDirectory>
+                        ${project.build.outputDirectory}
+                    </outputDirectory>
+		    <!--
+			Include all the implementation source files so that
+			javadoc run as part of "deploy" will find all the
+			required classes.
+
+			Don't include the metadata files from the original
+			jar file.
+		    -->
+		    <excludes>
+			META-INF/**
+		    </excludes>
+                </configuration>
+            </plugin>
+
+	    <!--
+		 Skip compiling since the dependency plugin pulled in
+		 the sources and class files.
+	    -->
+	    <plugin>
+		<artifactId>maven-compiler-plugin</artifactId>
+		<executions>
+		    <execution>
+			<id>default-compile</id>
+			<configuration>
+			    <skipMain>true</skipMain>
+			</configuration>
+		    </execution>
+		</executions>
+	    </plugin>
+
+	    <!--
+		Don't include the implementation classes in the jar files.
+	    -->
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <finalName>${project.artifactId}</finalName>
+		    <excludes>
+			<exclude>com/**</exclude>
+		    </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+		    <excludes>
+			<exclude>com/**</exclude>
+		    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/eclipse-ee4j/angus-activation.git | rg '2\\.0\\.0|jakarta.activation'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+exec
+/usr/bin/bash -lc "git ls-remote --tags https://github.com/jakartaee/jaf-api.git | rg '2\\.0\\.0|jakarta.activation'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+exec
+/usr/bin/bash -lc 'git ls-remote --heads https://github.com/jakartaee/jaf-api.git | head -40' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+ succeeded in 382ms:
+da9e0f1cffa05cc0e351325c6a54cf6d5f80af31	refs/tags/2.0.0
+e4c307ad8703b483aa1d53330d596ac7bc6f903c	refs/tags/2.0.0^{}
+
+ succeeded in 407ms:
+4e4d10b2a7b38c417128f71b86387e34b58b2329	refs/tags/2.0.0
+b7ee3d9e6bcacab2ec293662c6a853e6e8e60014	refs/tags/2.0.0^{}
+
+ succeeded in 410ms:
+018e48771a2a241b308e9066bc01361c6f7a8d48	refs/heads/2.1.0-RC2-RELEASE
+c5509568ae47894e77df556317008122c8aff914	refs/heads/2.1.1-RELEASE
+e709bef6fafc3213a723b545a6dad2da780aaa11	refs/heads/2.1.3-RELEASE
+660f6cdbc39eb0a170ce7eca09a12250617e3717	refs/heads/2.1.4-RELEASE
+605382a05a15066f244e4a49f5ae18116da532ba	refs/heads/2.2.0-M1-RELEASE
+c4d36065619c5c38fca61fd2190fa5aba82f61e2	refs/heads/2.2.0-RELEASE
+5f213b83e6c0c2c236bb53e6686657d76584de2c	refs/heads/EE10
+b09a4ecde1587aede28965f20965e10f27be6081	refs/heads/dependabot/bundler/www/concurrent-ruby-1.3.7
+2fe7ee58ceb17691eba0fb7e5ae08cabce961f79	refs/heads/dependabot/bundler/www/faraday-2.14.3
+6b3c27b06911d1506c8e94d5f954b66ffe6f2c2c	refs/heads/dependabot/bundler/www/nokogiri-1.19.4
+2899f8e12c6243f55f2ef1c16239dc39a00e3a58	refs/heads/dependabot/github_actions/actions-dependencies-9b280db651
+7cd674cbef99b9df7bd3a6da7fe70dc9cb52724d	refs/heads/dependabot/maven/api/maven-plugins-9787716d1c
+b5ba22404a6434356b2a589d61e3a9b7ac60fcd0	refs/heads/gh-pages
+9ab88c81768b16f6f760b55374faeba50950a1cd	refs/heads/main
+
+codex
+The published POM confirms this is an API jar for `jakarta.activation.*` intended for compile-time use and pulls implementation sources from `com.sun.activation:jakarta.activation`. I’m checking the `2.0.0` repository tree now to see whether there is an actual test suite path for this module.
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/jakartaee/jaf-api/git/trees/2.0.0?recursive=1 | rg '\"path\": .*test|\"path\": .*api|\"path\": .*activation' | head -120" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/eclipse-ee4j/angus-activation/git/trees/2.0.0?recursive=1 | rg '\"path\": .*test|\"path\": .*api|\"path\": .*activation' | head -120" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/jakartaee/jaf-api/tree/2.0.0/src/test" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/jakartaee/jaf-api/tree/2.0.0/api/src/test" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+ succeeded in 271ms:
+      "path": "activation",
+      "path": "activation/pom.xml",
+      "path": "activation/src",
+      "path": "activation/src/main",
+      "path": "activation/src/main/java",
+      "path": "activation/src/main/java/com",
+      "path": "activation/src/main/java/com/sun",
+      "path": "activation/src/main/java/com/sun/activation",
+      "path": "activation/src/main/java/com/sun/activation/registries",
+      "path": "activation/src/main/java/com/sun/activation/registries/LogSupport.java",
+      "path": "activation/src/main/java/com/sun/activation/registries/MailcapFile.java",
+      "path": "activation/src/main/java/com/sun/activation/registries/MailcapParseException.java",
+      "path": "activation/src/main/java/com/sun/activation/registries/MailcapTokenizer.java",
+      "path": "activation/src/main/java/com/sun/activation/registries/MimeTypeEntry.java",
+      "path": "activation/src/main/java/com/sun/activation/registries/MimeTypeFile.java",
+      "path": "activation/src/main/java/jakarta",
+      "path": "activation/src/main/java/jakarta/activation",
+      "path": "activation/src/main/java/jakarta/activation/ActivationDataFlavor.java",
+      "path": "activation/src/main/java/jakarta/activation/CommandInfo.java",
+      "path": "activation/src/main/java/jakarta/activation/CommandMap.java",
+      "path": "activation/src/main/java/jakarta/activation/CommandObject.java",
+      "path": "activation/src/main/java/jakarta/activation/DataContentHandler.java",
+      "path": "activation/src/main/java/jakarta/activation/DataContentHandlerFactory.java",
+      "path": "activation/src/main/java/jakarta/activation/DataHandler.java",
+      "path": "activation/src/main/java/jakarta/activation/DataSource.java",
+      "path": "activation/src/main/java/jakarta/activation/FileDataSource.java",
+      "path": "activation/src/main/java/jakarta/activation/FileTypeMap.java",
+      "path": "activation/src/main/java/jakarta/activation/MailcapCommandMap.java",
+      "path": "activation/src/main/java/jakarta/activation/MimeType.java",
+      "path": "activation/src/main/java/jakarta/activation/MimeTypeParameterList.java",
+      "path": "activation/src/main/java/jakarta/activation/MimeTypeParseException.java",
+      "path": "activation/src/main/java/jakarta/activation/MimetypesFileTypeMap.java",
+      "path": "activation/src/main/java/jakarta/activation/SecuritySupport.java",
+      "path": "activation/src/main/java/jakarta/activation/URLDataSource.java",
+      "path": "activation/src/main/java/jakarta/activation/UnsupportedDataTypeException.java",
+      "path": "activation/src/main/java/jakarta/activation/package.html",
+      "path": "activation/src/main/java/module-info.java",
+      "path": "activation/src/main/javadoc",
+      "path": "activation/src/main/javadoc/doc-files",
+      "path": "activation/src/main/javadoc/doc-files/speclicense.html",
+      "path": "activation/src/main/resources",
+      "path": "activation/src/main/resources/META-INF",
+      "path": "activation/src/main/resources/META-INF/LICENSE.md",
+      "path": "activation/src/main/resources/META-INF/mailcap.default",
+      "path": "activation/src/main/resources/META-INF/mimetypes.default",
+      "path": "activationapi",
+      "path": "activationapi/pom.xml",
+      "path": "spec/src/main/asciidoc/activation-spec.adoc",
+      "path": "spec/src/main/asciidoc/activation.adoc",
+      "path": "spec/src/main/asciidoc/images/activation.png",
+
+ succeeded in 269ms:
+      "path": "activation-registry",
+      "path": "activation-registry/pom.xml",
+      "path": "activation-registry/src",
+      "path": "activation-registry/src/main",
+      "path": "activation-registry/src/main/java",
+      "path": "activation-registry/src/main/java/module-info.java",
+      "path": "activation-registry/src/main/java/org",
+      "path": "activation-registry/src/main/java/org/eclipse",
+      "path": "activation-registry/src/main/java/org/eclipse/angus",
+      "path": "activation-registry/src/main/java/org/eclipse/angus/activation",
+      "path": "activation-registry/src/main/java/org/eclipse/angus/activation/LogSupport.java",
+      "path": "activation-registry/src/main/java/org/eclipse/angus/activation/MailcapFile.java",
+      "path": "activation-registry/src/main/java/org/eclipse/angus/activation/MailcapParseException.java",
+      "path": "activation-registry/src/main/java/org/eclipse/angus/activation/MailcapRegistryProviderImpl.java",
+      "path": "activation-registry/src/main/java/org/eclipse/angus/activation/MailcapTokenizer.java",
+      "path": "activation-registry/src/main/java/org/eclipse/angus/activation/MimeTypeFile.java",
+      "path": "activation-registry/src/main/java/org/eclipse/angus/activation/MimeTypeRegistryProviderImpl.java",
+      "path": "activation-registry/src/main/java/org/eclipse/angus/activation/nativeimage",
+      "path": "activation-registry/src/main/java/org/eclipse/angus/activation/nativeimage/AngusActivationFeature.java",
+      "path": "activation-registry/src/main/resources",
+      "path": "activation-registry/src/main/resources/META-INF",
+      "path": "activation-registry/src/main/resources/META-INF/native-image",
+      "path": "activation-registry/src/main/resources/META-INF/native-image/org.eclipse.angus",
+      "path": "activation-registry/src/main/resources/META-INF/native-image/org.eclipse.angus/angus-activation",
+      "path": "activation-registry/src/main/resources/META-INF/native-image/org.eclipse.angus/angus-activation/native-image.properties",
+      "path": "activation-registry/src/main/resources/META-INF/native-image/org.eclipse.angus/angus-activation/resource-config.json",
+      "path": "activation-registry/src/main/resources/META-INF/services",
+      "path": "activation-registry/src/main/resources/META-INF/services/jakarta.activation.spi.MailcapRegistryProvider",
+      "path": "activation-registry/src/main/resources/META-INF/services/jakarta.activation.spi.MimeTypeRegistryProvider",
+
+ succeeded in 452ms:
+404 https://github.com/jakartaee/jaf-api/tree/2.0.0/api/src/test
+
+ succeeded in 517ms:
+404 https://github.com/jakartaee/jaf-api/tree/2.0.0/src/test
+
+codex
+The `2.0.0` tag exists in the canonical `jakartaee/jaf-api` repository, and its tree does not expose a module test directory; Maven Central also has no test-sources jar. I’m going to fill the first entry with Maven source/javadoc templates, the canonical repository root, `N/A` for tests, and a two-sentence API description.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390/metadata/jakarta.activation/jakarta.activation-api/index.json
+diff --git a/metadata/jakarta.activation/jakarta.activation-api/index.json b/metadata/jakarta.activation/jakarta.activation-api/index.json
+index a8ddcdf993f443874e2524f5cd8bcc9853944e1d..4789a92e10213212f6b8b2aee98670f9ef33849a
+--- a/metadata/jakarta.activation/jakarta.activation-api/index.json
++++ b/metadata/jakarta.activation/jakarta.activation-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaf-api",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
++    "description" : "Jakarta Activation API defines the standard jakarta.activation contracts for discovering MIME types, representing data sources, and mapping data to command handlers. This API-only artifact lets Java applications compile against the Jakarta Activation specification without bundling implementation-specific activation classes.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+diff --git a/metadata/jakarta.activation/jakarta.activation-api/index.json b/metadata/jakarta.activation/jakarta.activation-api/index.json
+index a8ddcdf993f443874e2524f5cd8bcc9853944e1d..4789a92e10213212f6b8b2aee98670f9ef33849a
+--- a/metadata/jakarta.activation/jakarta.activation-api/index.json
++++ b/metadata/jakarta.activation/jakarta.activation-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaf-api",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
++    "description" : "Jakarta Activation API defines the standard jakarta.activation contracts for discovering MIME types, representing data sources, and mapping data to command handlers. This API-only artifact lets Java applications compile against the Jakarta Activation specification without bundling implementation-specific activation classes.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+codex
+The metadata entry is updated. I’m validating the JSON and running the targeted metadata check for the coordinate now.
+exec
+/usr/bin/bash -lc 'python -m json.tool metadata/jakarta.activation/jakarta.activation-api/index.json >/dev/null' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=jakarta.activation:jakarta.activation-api:2.0.0 --stacktrace' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+diff --git a/metadata/jakarta.activation/jakarta.activation-api/index.json b/metadata/jakarta.activation/jakarta.activation-api/index.json
+index a8ddcdf993f443874e2524f5cd8bcc9853944e1d..4789a92e10213212f6b8b2aee98670f9ef33849a
+--- a/metadata/jakarta.activation/jakarta.activation-api/index.json
++++ b/metadata/jakarta.activation/jakarta.activation-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaf-api",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
++    "description" : "Jakarta Activation API defines the standard jakarta.activation contracts for discovering MIME types, representing data sources, and mapping data to command handlers. This API-only artifact lets Java applications compile against the Jakarta Activation specification without bundling implementation-specific activation classes.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+ exited 1 in 5301ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for jakarta.activation:jakarta.activation-api:2.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390/metadata/jakarta.activation/jakarta.activation-api/2.0.0/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - jakarta.activation:jakarta.activation-api:2.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390/metadata/jakarta.activation/jakarta.activation-api/2.0.0/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - jakarta.activation:jakarta.activation-api:2.0.0: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390/metadata/jakarta.activation/jakarta.activation-api/2.0.0/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 4s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+JSON parsing passed. The targeted `checkMetadataFiles` task fails because this entry has no `metadata/jakarta.activation/jakarta.activation-api/2.0.0/reachability-metadata.json` directory content, which is outside the requested URL/description fields; I’m running the index-level validation instead.
+exec
+/usr/bin/bash -lc "rg -n 'validateIndexFiles|checkIndex|IndexFiles' build.gradle settings.gradle **/*.gradle **/*.groovy buildSrc tck-build-logic 2>/dev/null | head -80" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+ succeeded in 0ms:
+build.gradle:142:            "validateIndexFiles",
+
+exec
+/usr/bin/bash -lc 'find metadata/jakarta.activation/jakarta.activation-api -maxdepth 2 -type f -print' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+ succeeded in 0ms:
+metadata/jakarta.activation/jakarta.activation-api/index.json
+metadata/jakarta.activation/jakarta.activation-api/1.2.1/reachability-metadata.json
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/jakarta.activation/jakarta.activation-api/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+ succeeded in 0ms:
+diff --git i/metadata/jakarta.activation/jakarta.activation-api/index.json w/metadata/jakarta.activation/jakarta.activation-api/index.json
+index a8ddcdf993..4789a92e10 100644
+--- i/metadata/jakarta.activation/jakarta.activation-api/index.json
++++ w/metadata/jakarta.activation/jakarta.activation-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaf-api",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
++    "description" : "Jakarta Activation API defines the standard jakarta.activation contracts for discovering MIME types, representing data sources, and mapping data to command handlers. This API-only artifact lets Java applications compile against the Jakarta Activation specification without bundling implementation-specific activation classes.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+diff --git a/metadata/jakarta.activation/jakarta.activation-api/index.json b/metadata/jakarta.activation/jakarta.activation-api/index.json
+index a8ddcdf993f443874e2524f5cd8bcc9853944e1d..4789a92e10213212f6b8b2aee98670f9ef33849a
+--- a/metadata/jakarta.activation/jakarta.activation-api/index.json
++++ b/metadata/jakarta.activation/jakarta.activation-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaf-api",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
++    "description" : "Jakarta Activation API defines the standard jakarta.activation contracts for discovering MIME types, representing data sources, and mapping data to command handlers. This API-only artifact lets Java applications compile against the Jakarta Activation specification without bundling implementation-specific activation classes.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+codex
+The diff is limited to the requested first entry. I found the repository’s index validator task and am using that because it checks exactly the kind of file this change touched.
+exec
+/usr/bin/bash -lc './gradlew validateIndexFiles --stacktrace' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+diff --git a/metadata/jakarta.activation/jakarta.activation-api/index.json b/metadata/jakarta.activation/jakarta.activation-api/index.json
+index a8ddcdf993f443874e2524f5cd8bcc9853944e1d..4789a92e10213212f6b8b2aee98670f9ef33849a
+--- a/metadata/jakarta.activation/jakarta.activation-api/index.json
++++ b/metadata/jakarta.activation/jakarta.activation-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaf-api",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
++    "description" : "Jakarta Activation API defines the standard jakarta.activation contracts for discovering MIME types, representing data sources, and mapping data to command handlers. This API-only artifact lets Java applications compile against the Jakarta Activation specification without bundling implementation-specific activation classes.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+ succeeded in 1344ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :validateIndexFiles
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+exec
+/usr/bin/bash -lc "nl -ba metadata/jakarta.activation/jakarta.activation-api/index.json | sed -n '1,18p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "2.0.0",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/jakartaee/jaf-api",
+     7	    "test-code-url" : "N/A",
+     8	    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
+     9	    "description" : "Jakarta Activation API defines the standard jakarta.activation contracts for discovering MIME types, representing data sources, and mapping data to command handlers. This API-only artifact lets Java applications compile against the Jakarta Activation specification without bundling implementation-specific activation classes.",
+    10	    "tested-versions" : [
+    11	      "2.0.0"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "javax.activation"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "1.2.1",
+
+diff --git a/metadata/jakarta.activation/jakarta.activation-api/index.json b/metadata/jakarta.activation/jakarta.activation-api/index.json
+index a8ddcdf993f443874e2524f5cd8bcc9853944e1d..4789a92e10213212f6b8b2aee98670f9ef33849a
+--- a/metadata/jakarta.activation/jakarta.activation-api/index.json
++++ b/metadata/jakarta.activation/jakarta.activation-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaf-api",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
++    "description" : "Jakarta Activation API defines the standard jakarta.activation contracts for discovering MIME types, representing data sources, and mapping data to command handlers. This API-only artifact lets Java applications compile against the Jakarta Activation specification without bundling implementation-specific activation classes.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390/metadata/jakarta.activation/jakarta.activation-api/index.json:5) for metadata version `2.0.0`.
+
+Filled:
+- `source-code-url`: Maven Central sources jar template
+- `repository-url`: `https://github.com/jakartaee/jaf-api`
+- `test-code-url`: `N/A` because no Maven test sources or tagged test suite path was available
+- `documentation-url`: Maven Central javadoc jar template
+- `description`: exactly two sentences
+- `language`: left absent; this is not Kotlin/Groovy/Scala-specific
+
+Verification:
+- `python -m json.tool ...` passed
+- `./gradlew validateIndexFiles --stacktrace` passed
+- `./gradlew checkMetadataFiles -Pcoordinates=jakarta.activation:jakarta.activation-api:2.0.0 --stacktrace` failed because `metadata/jakarta.activation/jakarta.activation-api/2.0.0/reachability-metadata.json` is missing, which is outside the requested field update.
+diff --git a/metadata/jakarta.activation/jakarta.activation-api/index.json b/metadata/jakarta.activation/jakarta.activation-api/index.json
+index a8ddcdf993f443874e2524f5cd8bcc9853944e1d..4789a92e10213212f6b8b2aee98670f9ef33849a
+--- a/metadata/jakarta.activation/jakarta.activation-api/index.json
++++ b/metadata/jakarta.activation/jakarta.activation-api/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.0.0",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-sources.jar",
++    "repository-url" : "https://github.com/jakartaee/jaf-api",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/jakarta/activation/jakarta.activation-api/$version$/jakarta.activation-api-$version$-javadoc.jar",
++    "description" : "Jakarta Activation API defines the standard jakarta.activation contracts for discovering MIME types, representing data sources, and mapping data to command handlers. This API-only artifact lets Java applications compile against the Jakarta Activation specification without bundling implementation-specific activation classes.",
+     "tested-versions" : [
+       "2.0.0"
+     ],
+
+tokens used
+69,730
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390/metadata/jakarta.activation/jakarta.activation-api/index.json:5) for metadata version `2.0.0`.
+
+Filled:
+- `source-code-url`: Maven Central sources jar template
+- `repository-url`: `https://github.com/jakartaee/jaf-api`
+- `test-code-url`: `N/A` because no Maven test sources or tagged test suite path was available
+- `documentation-url`: Maven Central javadoc jar template
+- `description`: exactly two sentences
+- `language`: left absent; this is not Kotlin/Groovy/Scala-specific
+
+Verification:
+- `python -m json.tool ...` passed
+- `./gradlew validateIndexFiles --stacktrace` passed
+- `./gradlew checkMetadataFiles -Pcoordinates=jakarta.activation:jakarta.activation-api:2.0.0 --stacktrace` failed because `metadata/jakarta.activation/jakarta.activation-api/2.0.0/reachability-metadata.json` is missing, which is outside the requested field update.
+Ran agent for jakarta.activation:jakarta.activation-api:2.0.0 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390/build/agent-url-discovery-logs/jakarta.activation-jakarta.activation-api-2.0.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8769-92f4d390/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 12s
+9 actionable tasks: 1 executed, 8 up-to-date
