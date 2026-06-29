@@ -1,0 +1,70 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "org.springframework.boot:spring-boot-actuator:3.0.0",
+  "issueNumber": 8867,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.springframework.boot:spring-boot-actuator:2.6.3",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8867 [Automation] javac compile fails for org.springframework.boot:spring-boot-actuator:3.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 38274,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8867,
+    "library": "org.springframework.boot:spring-boot-actuator:3.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.0.0",
+    "output_tokens_used": 2551,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Spring Boot 3.0 removed or renamed several 2.6-era Actuator APIs, including HttpTrace in favor of HttpExchange-style APIs, and changed constructors such as HealthEndpoint, EnvironmentEndpoint, and Sanitizer.",
+      "Some Actuator integration health indicators depend on optional third-party clients; tests should avoid those optional integration packages unless they intentionally add the corresponding dependency."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.springframework.boot:spring-boot-actuator:3.0.0/library-preparation-preflight/pi-generation-2026-06-29T15-13-15-659774Z.log",
+    "status": "completed",
+    "summary": "No extra dependency, Docker image, environment variable, or system property is required for meaningful tests of spring-boot-actuator 3.0.0 core APIs; the javac failure is due to Spring Boot 3 API changes from 2.6.x."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8867-fails-javac-compile-org.springframework.boot-spring-boot-actuator-3.0.0-e78c3ed2",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
