@@ -1,0 +1,1122 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f11ad-7646-74f0-8f8c-fedf00cdd1a8
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.sonatype.sisu:sisu-guice:2.9.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.9.1].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2/metadata/org.sonatype.sisu/sisu-guice/index.json
+- Entry selector: "metadata-version" = "2.9.1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 2.9.1
+- Entry metadata-version: 2.9.1
+- Entry test-version: 2.9.1
+- Entry tested-versions: [2.9.1]
+codex
+I’ll verify the artifact metadata and existing index format first, then render and check candidate versioned URLs before editing only the missing fields.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.sonatype.sisu/sisu-guice/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.9.1",
+    "tested-versions" : [
+      "2.9.1"
+    ],
+    "allowed-packages" : [
+      "com.google.inject"
+    ]
+  },
+  {
+    "metadata-version" : "2.1.7",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-sources.jar",
+    "repository-url" : "https://github.com/sonatype/sisu-guice",
+    "test-code-url" : "https://github.com/sonatype/sisu-guice/tree/sisu-guice-$version$/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-javadoc.jar",
+    "description" : "Sisu Guice is Sonatype's patched build of Google Guice, a lightweight Java dependency injection framework. It provides the com.google.inject API and runtime for binding, scoping, provider lookup, and object graph creation in Sisu-based applications.",
+    "tested-versions" : [
+      "2.1.7",
+      "2.9.0"
+    ],
+    "allowed-packages" : [
+      "com.google.inject"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"source-code-url\"|\"repository-url\"|\"test-code-url\"|\"documentation-url\"|\"description\"|\"language\"' metadata/org.sonatype.sisu metadata | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+ succeeded in 0ms:
+metadata/org.sonatype.sisu/sisu-guice/index.json:14:    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-sources.jar",
+metadata/org.sonatype.sisu/sisu-guice/index.json:15:    "repository-url" : "https://github.com/sonatype/sisu-guice",
+metadata/org.sonatype.sisu/sisu-guice/index.json:16:    "test-code-url" : "https://github.com/sonatype/sisu-guice/tree/sisu-guice-$version$/test",
+metadata/org.sonatype.sisu/sisu-guice/index.json:17:    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-javadoc.jar",
+metadata/org.sonatype.sisu/sisu-guice/index.json:18:    "description" : "Sisu Guice is Sonatype's patched build of Google Guice, a lightweight Java dependency injection framework. It provides the com.google.inject API and runtime for binding, scoping, provider lookup, and object graph creation in Sisu-based applications.",
+metadata/org.sonatype.sisu/sisu-inject-bean/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
+metadata/org.sonatype.sisu/sisu-inject-bean/index.json:6:    "repository-url" : "https://github.com/sonatype/sisu",
+metadata/org.sonatype.sisu/sisu-inject-bean/index.json:7:    "test-code-url" : "N/A",
+metadata/org.sonatype.sisu/sisu-inject-bean/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
+metadata/org.sonatype.sisu/sisu-inject-bean/index.json:9:    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+metadata/org.sonatype.sisu/sisu-inject-bean/index.json:24:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
+metadata/org.sonatype.sisu/sisu-inject-bean/index.json:25:    "repository-url" : "https://github.com/sonatype/sisu",
+metadata/org.sonatype.sisu/sisu-inject-bean/index.json:26:    "test-code-url" : "https://github.com/sonatype/sisu/tree/sisu-$version$/sisu-inject/guice-bean",
+metadata/org.sonatype.sisu/sisu-inject-bean/index.json:27:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
+metadata/org.sonatype.sisu/sisu-inject-bean/index.json:28:    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+metadata/org.sonatype.sisu/sisu-inject-bean/index.json:57:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-sources.jar",
+metadata/org.sonatype.sisu/sisu-inject-bean/index.json:58:    "repository-url" : "https://github.com/sonatype/sisu",
+metadata/org.sonatype.sisu/sisu-inject-bean/index.json:59:    "test-code-url" : "N/A",
+metadata/org.sonatype.sisu/sisu-inject-bean/index.json:60:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-inject-bean/$version$/sisu-inject-bean-$version$-javadoc.jar",
+metadata/org.sonatype.sisu/sisu-inject-bean/index.json:61:    "description" : "Sisu Inject Bean is a legacy wrapper around Sonatype Sisu's JSR-330 bean support, packaging Guice-based bean discovery, binding, locating, conversion, and container integration classes for Java applications. It helps applications scan class spaces for annotated components and wire them into Guice injectors while exposing Sonatype-specific injection annotations and utilities.",
+metadata/org.glassfish.hk2/osgi-resource-locator/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/osgi-resource-locator/$version$/osgi-resource-locator-$version$-sources.jar",
+metadata/org.glassfish.hk2/osgi-resource-locator/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2-extra",
+metadata/org.glassfish.hk2/osgi-resource-locator/index.json:7:    "test-code-url" : "N/A",
+metadata/org.glassfish.hk2/osgi-resource-locator/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/osgi-resource-locator/$version$/osgi-resource-locator-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/osgi-resource-locator/index.json:9:    "description" : "HK2 OSGi Resource Locator lets Java SPI consumers discover META-INF/services providers that are packaged inside OSGi bundles. It also provides helper APIs for locating bundle resources that are not exported as ordinary OSGi packages.",
+metadata/org.glassfish.hk2/hk2-utils/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-utils/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:9:    "description" : "HK2 Utils provides utility classes used by the HK2 dependency injection framework, including reflection helpers, cache abstractions, weak-reference collections, and general-purpose support code. It supports HK2 internals and applications built on HK2 by centralizing reusable Java utilities for type inspection, cache management, and lightweight data structures.",
+metadata/org.glassfish.hk2/hk2-utils/index.json:33:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:34:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/org.glassfish.hk2/hk2-utils/index.json:35:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-utils/src/test",
+metadata/org.glassfish.hk2/hk2-utils/index.json:36:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-utils/$version$/hk2-utils-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-utils/index.json:37:    "description" : "HK2 Utils provides utility classes used by the HK2 dependency injection framework, including reflection helpers, cache abstractions, weak-reference collections, and general-purpose support code. It supports HK2 internals and applications built on HK2 by centralizing reusable Java utilities for type inspection, cache management, and lightweight data structures.",
+metadata/org.glassfish.hk2/hk2-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:6:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-api/index.json:7:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:9:    "description" : "HK2 API provides the core contracts, annotations, descriptors, and service locator interfaces for the HK2 dependency injection framework. It lets applications and HK2 extensions describe services, manage dynamic configurations, resolve injections, define scopes, and observe service lifecycle events.",
+metadata/org.glassfish.hk2/hk2-api/index.json:20:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:21:    "repository-url" : "https://github.com/eclipse-ee4j/glassfish-hk2",
+metadata/org.glassfish.hk2/hk2-api/index.json:22:    "test-code-url" : "https://github.com/eclipse-ee4j/glassfish-hk2/tree/$version$-RELEASE/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:23:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:24:    "description" : "HK2 API provides the core contracts, annotations, descriptors, and service locator interfaces for the HK2 dependency injection framework. It lets applications and HK2 extensions describe services, manage dynamic configurations, resolve injections, define scopes, and observe service lifecycle events.",
+metadata/org.glassfish.hk2/hk2-api/index.json:35:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-sources.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:36:    "repository-url" : "https://github.com/javaee/hk2",
+metadata/org.glassfish.hk2/hk2-api/index.json:37:    "test-code-url" : "https://github.com/javaee/hk2/tree/$version$/hk2-api/src/test",
+metadata/org.glassfish.hk2/hk2-api/index.json:38:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/glassfish/hk2/hk2-api/$version$/hk2-api-$version$-javadoc.jar",
+metadata/org.glassfish.hk2/hk2-api/index.json:39:    "description" : "HK2 API provides the core contracts, annotations, descriptors, and service locator interfaces for the HK2 dependency injection framework. It lets applications and HK2 extensions describe services, manage dynamic configurations, resolve injections, define scopes, and observe service lifecycle events.",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-sources.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:6:    "repository-url" : "https://svn.apache.org/repos/asf/directory/shared/",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:7:    "test-code-url" : "https://svn.apache.org/repos/asf/directory/shared/tags/$version$/asn1/ber/src/test/java/org/apache/directory/api/asn1/ber/",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/apache/directory/api/api-asn1-ber/$version$/api-asn1-ber-$version$-javadoc.jar",
+metadata/org.apache.directory.api/api-asn1-ber/index.json:9:    "description" : "Apache Directory API ASN.1 BER provides the Basic Encoding Rules codec implementation used by Apache Directory LDAP API components. It supplies decoder, grammar, action, and TLV classes for parsing ASN.1 BER-encoded data in JVM applications.",
+metadata/com.github.package-url/packageurl-java/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-sources.jar",
+metadata/com.github.package-url/packageurl-java/index.json:6:    "repository-url" : "https://github.com/package-url/packageurl-java",
+metadata/com.github.package-url/packageurl-java/index.json:7:    "test-code-url" : "https://github.com/package-url/packageurl-java/tree/packageurl-java-$version$/src/test",
+metadata/com.github.package-url/packageurl-java/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/com/github/package-url/packageurl-java/$version$/packageurl-java-$version$-javadoc.jar",
+metadata/com.github.package-url/packageurl-java/index.json:9:    "description" : "PackageURL Java is the official Java implementation of the Package URL specification. It parses, builds, canonicalizes, and validates purl identifiers used to describe software packages across ecosystems.",
+metadata/io.lettuce/lettuce-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-sources.jar",
+metadata/io.lettuce/lettuce-core/index.json:6:    "repository-url" : "https://github.com/redis/lettuce",
+metadata/io.lettuce/lettuce-core/index.json:7:    "test-code-url" : "https://github.com/redis/lettuce/tree/$version$/src/test",
+metadata/io.lettuce/lettuce-core/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/lettuce/lettuce-core/$version$/lettuce-core-$version$-javadoc.jar",
+metadata/io.lettuce/lettuce-core/index.json:9:    "description" : "Lettuce Core is an advanced, thread-safe Redis client for Java that supports synchronous, asynchronous, and reactive APIs. It also supports Redis Cluster, Sentinel, pipelining, auto-reconnect, codecs, and optional integrations such as Kotlin coroutines and metrics.",
+metadata/io.r2dbc/r2dbc-spi/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-sources.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:6:    "repository-url" : "https://github.com/r2dbc/r2dbc-spi",
+metadata/io.r2dbc/r2dbc-spi/index.json:7:    "test-code-url" : "https://github.com/r2dbc/r2dbc-spi/tree/v$version$/r2dbc-spi/src/test",
+metadata/io.r2dbc/r2dbc-spi/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-javadoc.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:9:    "description" : "R2DBC SPI defines the service provider interfaces and core contracts for reactive relational database connectivity on the JVM. It lets database driver vendors expose non-blocking, Reactive Streams-based access to SQL databases while giving clients a common API to discover connections, execute statements, and consume results.",
+metadata/io.r2dbc/r2dbc-spi/index.json:19:    "source-code-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-sources.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:20:    "repository-url" : "https://github.com/r2dbc/r2dbc-spi",
+metadata/io.r2dbc/r2dbc-spi/index.json:21:    "test-code-url" : "https://github.com/r2dbc/r2dbc-spi/tree/v$version$/r2dbc-spi/src/test",
+metadata/io.r2dbc/r2dbc-spi/index.json:22:    "documentation-url" : "https://repo1.maven.org/maven2/io/r2dbc/r2dbc-spi/$version$/r2dbc-spi-$version$-javadoc.jar",
+metadata/io.r2dbc/r2dbc-spi/index.json:23:    "description" : "R2DBC SPI defines the service provider interfaces and core contracts for reactive relational database connectivity on the JVM. It lets database driver vendors expose non-blocking, Reactive Streams-based access to SQL databases while giving clients a common API to discover connections, execute statements, and consume results.",
+metadata/com.google.guava/listenablefuture/index.json:6:    "source-code-url": "https://github.com/google/guava/tree/v27.0/futures/listenablefuture9999",
+metadata/com.google.guava/listenablefuture/index.json:7:    "repository-url": "https://github.com/google/guava",
+metadata/com.google.guava/listenablefuture/index.json:8:    "test-code-url": "N/A",
+metadata/com.google.guava/listenablefuture/index.json:9:    "documentation-url": "N/A",
+metadata/com.google.guava/listenablefuture/index.json:10:    "description": "This artifact is an empty compatibility placeholder that Guava depends on so build tools prefer it over the standalone ListenableFuture artifact. It avoids duplicate ListenableFuture classes when applications depend on Guava and the older standalone coordinate at the same time.",
+
+exec
+/usr/bin/bash -lc 'pwd && git status --short' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+ succeeded in 137ms:
+web search: 
+web search: Maven Central org.sonatype.sisu sisu-guice 2.9.1 sources javadoc tests
+web search: 
+web search: https://github.com/sonatype/sisu-guice/tree/sisu-guice-2.9.1
+web search: 
+web search: "sisu-guice-2.9.1-sources.jar"
+codex
+The existing older entry already points at Maven source and javadoc jars plus a GitHub test path, but 2.9.1 appears to publish a Maven tests jar. I’m checking whether that test artifact is available on the canonical Maven repository so the selected URL follows the user’s preference.
+exec
+/usr/bin/bash -lc "rg -n 'tests\\.jar|test-sources|test-jar|classifier.*tests|\\"'$version'"\\"'$.*tests'"' metadata | head -80" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+ succeeded in 0ms:
+metadata/biz.aQute.bnd/biz.aQute.bnd.annotation/index.json:7:    "test-code-url" : "https://github.com/bndtools/bnd/tree/$version$/biz.aQute.bndlib.tests/test/test",
+metadata/org.apache.orc/orc-mapreduce/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:40:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:68:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:82:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:96:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:110:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:124:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.orc/orc-mapreduce/index.json:138:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-mapreduce/$version$/orc-mapreduce-$version$-test-sources.jar",
+metadata/org.apache.httpcomponents.client5/httpclient5/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/client5/httpclient5/$version$/httpclient5-$version$-tests.jar",
+metadata/org.immutables/value/index.json:8:    "test-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/$version$/value-$version$-tests.jar",
+metadata/org.immutables/value/index.json:23:    "test-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/$version$/value-$version$-tests.jar",
+metadata/org.immutables/value/index.json:40:    "test-code-url" : "https://repo1.maven.org/maven2/org/immutables/value/$version$/value-$version$-tests.jar",
+metadata/org.openjfx/javafx-base/index.json:23:    "test-code-url": "https://github.com/javafxports/openjdk-jfx/tree/$version$+1/tests",
+metadata/org.apache.orc/orc-core/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/orc/orc-core/$version$/orc-core-$version$-tests.jar",
+metadata/net.sourceforge.htmlunit/neko-htmlunit/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/neko-htmlunit/$version$/neko-htmlunit-$version$-tests.jar",
+metadata/org.codehaus.janino/commons-compiler/index.json:7:    "test-code-url" : "https://github.com/janino-compiler/janino/tree/v$version$/commons-compiler-tests",
+metadata/net.sourceforge.htmlunit/htmlunit-xpath/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/net/sourceforge/htmlunit/htmlunit-xpath/$version$/htmlunit-xpath-$version$-tests.jar",
+metadata/org.jboss.shrinkwrap/shrinkwrap-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-api/$version$/shrinkwrap-api-$version$-tests.jar",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/compiler/daemon/daemon-tests/test",
+metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json:25:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/compiler/daemon/daemon-tests/test",
+metadata/com.google.re2j/re2j/index.json:7:    "test-code-url" : "https://github.com/google/re2j/tree/re2j-$version$/javatests",
+metadata/org.jboss.shrinkwrap/shrinkwrap-impl-base/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/shrinkwrap/shrinkwrap-impl-base/$version$/shrinkwrap-impl-base-$version$-tests.jar",
+metadata/org.web3j/core/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/web3j/core/$version$/core-$version$-tests.jar",
+metadata/org.web3j/core/index.json:28:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/web3j/core/$version$/core-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-client/$version$/websocket-client-$version$-tests.jar",
+metadata/org.eclipse.jetty.websocket/websocket-common/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/websocket/websocket-common/$version$/websocket-common-$version$-tests.jar",
+metadata/io.prometheus/simpleclient_tracer_otel_agent/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_agent",
+metadata/org.jetbrains.kotlin/kotlin-script-runtime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+metadata/io.prometheus/simpleclient_tracer_otel/index.json:7:    "test-code-url" : "https://github.com/prometheus/client_java/tree/parent-$version$/integration_tests/it_exemplars_otel_sdk/src/test",
+metadata/org.apache.activemq/activemq-client/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-client/$version$/activemq-client-$version$-tests.jar",
+metadata/org.jetbrains.kotlin/kotlin-scripting-compiler-embeddable/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/scripting/scripting-compiler/tests/org/jetbrains/kotlin/scripting/compiler/test",
+metadata/com.querydsl/querydsl-codegen/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/querydsl/querydsl-codegen/$version$/querydsl-codegen-$version$-test-sources.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+metadata/org.apache.activemq/activemq-broker/index.json:29:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/$version$/activemq-broker-$version$-tests.jar",
+metadata/org.apache.logging.log4j/log4j-1.2-api/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/$version$/log4j-1.2-api-$version$-test-sources.jar",
+metadata/jakarta.json/jakarta.json-api/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-tck-tests/$version$/jakarta.json-tck-tests-$version$-sources.jar",
+metadata/com.querydsl/querydsl-core/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/querydsl/querydsl-core/$version$/querydsl-core-$version$-test-sources.jar",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:7:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-log-annotation-processor/tests",
+metadata/org.apache.activemq/artemis-log-annotation-processor/index.json:30:    "test-code-url" : "https://github.com/apache/artemis/tree/$version$/artemis-log-annotation-processor/tests",
+metadata/org.awaitility/awaitility/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.awaitility/awaitility/index.json:23:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/awaitility/awaitility/$version$/awaitility-$version$-tests.jar",
+metadata/org.apache.logging.log4j/log4j-slf4j-impl/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/logging/log4j/log4j-slf4j-impl/$version$/log4j-slf4j-impl-$version$-test-sources.jar",
+metadata/com.querydsl/querydsl-jpa/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/querydsl/querydsl-jpa/$version$/querydsl-jpa-$version$-test-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-firestore-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-firestore-v1/$version$/proto-google-cloud-firestore-v1-$version$-tests.jar",
+metadata/com.github.jknack/handlebars/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/4.4.0/handlebars-4.4.0-tests.jar",
+metadata/com.github.jknack/handlebars/index.json:24:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/jknack/handlebars/$version$/handlebars-$version$-tests.jar",
+metadata/com.android.databinding/baseLibrary/index.json:7:    "test-code-url" : "https://android.googlesource.com/platform/frameworks/data-binding/+/refs/tags/gradle_$version$/integration-tests/",
+metadata/org.apache.commons/commons-compress/index.json:6:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-compress/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-compress/$version$/commons-compress-$version$-test-sources.jar",
+metadata/com.sun.jersey/jersey-servlet/index.json:7:    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/$version$/tests/functional/jersey-servlet3_0-integration",
+metadata/com.sun.jersey/jersey-servlet/index.json:31:    "test-code-url" : "https://github.com/javaee/jersey-1.x/tree/$version$/tests/functional/jersey-servlet3_0-integration",
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-tests.jar",
+metadata/com.google.api.grpc/grpc-google-common-protos/index.json:24:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/grpc-google-common-protos/$version$/grpc-google-common-protos-$version$-tests.jar",
+metadata/org.apache.httpcomponents.core5/httpcore5/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/httpcomponents/core5/httpcore5/$version$/httpcore5-$version$-tests.jar",
+metadata/org.jetbrains.kotlin/kotlin-parcelize-runtime/index.json:7:    "test-code-url" : "https://github.com/JetBrains/kotlin/tree/v$version$/plugins/parcelize/parcelize-compiler/tests",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:35:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-core/index.json:49:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-core/$version$/commons-fileupload2-core-$version$-test-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-bigquerystorage-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-bigquerystorage-v1/$version$/proto-google-cloud-bigquerystorage-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-tests.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-v1/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-v1/$version$/grpc-google-cloud-spanner-v1-$version$-tests.jar",
+metadata/org.apache.commons/commons-exec/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-exec/index.json:23:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/commons/commons-exec/$version$/commons-exec-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-dbcp2/index.json:10:    "test-code-url": "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/$version$/commons-dbcp2-$version$-test-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-secretmanager-v1beta1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-secretmanager-v1beta1/$version$/proto-google-cloud-secretmanager-v1beta1-$version$-tests.jar",
+metadata/log4j/log4j/index.json:9:    "test-code-url": "https://github.com/apache/logging-log4j1/tree/log4j-$version$/tests",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-executor-v1/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-executor-v1/$version$/proto-google-cloud-spanner-executor-v1-$version$-tests.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/2.0.0-M5/commons-fileupload2-javax-2.0.0-M5-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:21:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/$version$/commons-fileupload2-javax-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-fileupload2-javax/index.json:35:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-fileupload2-javax/$version$/commons-fileupload2-javax-$version$-test-sources.jar",
+metadata/com.google.api.grpc/grpc-google-cloud-spanner-admin-database-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/grpc-google-cloud-spanner-admin-database-v1/$version$/grpc-google-cloud-spanner-admin-database-v1-$version$-tests.jar",
+metadata/org.apache.commons/commons-configuration2/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-configuration2/$version$/commons-configuration2-$version$-test-sources.jar",
+metadata/com.twitter/chill-java/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/twitter/chill-java/$version$/chill-java-$version$-tests-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-spanner-v1/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/com/google/api/grpc/proto-google-cloud-spanner-v1/$version$/proto-google-cloud-spanner-v1-$version$-tests.jar",
+metadata/org.jboss.arquillian.junit/arquillian-junit-container/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/arquillian/junit/arquillian-junit-container/$version$/arquillian-junit-container-$version$-test-sources.jar",
+metadata/org.apache.commons/commons-text/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/apache/commons/commons-text/$version$/commons-text-$version$-test-sources.jar",
+metadata/com.google.api.grpc/proto-google-cloud-monitoring-v3/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/com/google/api/grpc/proto-google-cloud-monitoring-v3/$version$/proto-google-cloud-monitoring-v3-$version$-tests.jar",
+metadata/org.eclipse.collections/eclipse-collections-api/index.json:7:    "test-code-url" : "https://github.com/eclipse/eclipse-collections/tree/$version$/unit-tests/src/test/java",
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/2.9.1/sisu-guice-2.9.1-sources.jar" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/2.9.1/sisu-guice-2.9.1-javadoc.jar" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+ succeeded in 0ms:
+200 https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/2.9.1/sisu-guice-2.9.1-sources.jar
+
+ succeeded in 0ms:
+200 https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/2.9.1/sisu-guice-2.9.1-javadoc.jar
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/2.9.1/sisu-guice-2.9.1-tests.jar" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+ succeeded in 0ms:
+200 https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/2.9.1/sisu-guice-2.9.1-tests.jar
+
+exec
+/usr/bin/bash -lc "curl -L -s https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/2.9.1/sisu-guice-2.9.1.pom | sed -n '1,180p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonatype.sisu.inject</groupId>
+    <artifactId>guice-parent</artifactId>
+    <version>2.9.1</version>
+  </parent>
+
+  <groupId>org.sonatype.sisu</groupId>
+  <artifactId>sisu-guice</artifactId>
+
+  <name>Google Guice - Core Library</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <version>1</version>
+    </dependency>
+    <dependency>
+      <groupId>aopalliance</groupId>
+      <artifactId>aopalliance</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.6.1</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject-tck</artifactId>
+      <version>1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>3.0.5.RELEASE</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.aQute</groupId>
+      <artifactId>bnd</artifactId>
+      <version>0.0.384</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.framework</artifactId>
+      <version>3.0.5</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!--
+       | Enable Java5 conformance checks
+      -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.6</version>
+        <configuration>
+          <!--
+           | Run core tests without SLF4J on the classpath
+          -->
+          <classpathDependencyExcludes>
+            <exclude>org.slf4j:slf4j-api</exclude>
+          </classpathDependencyExcludes>
+          <!--
+           | This test needs updating for use with Maven
+          -->
+          <excludes>
+            <exclude>**/OSGiContainerTest*</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <!--
+       | Add OSGi manifest
+      -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <DynamicImport-Package>org.slf4j</DynamicImport-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <!--
+       | No-AOP profile: repeat the build lifecycle with munged no-AOP source
+      -->
+      <id>guice.with.noaop</id>
+      <activation>
+        <property>
+          <name>guice.with.noaop</name>
+          <value>!false</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>munge-maven-plugin</artifactId>
+            <version>1.0</version>
+            <executions>
+              <execution>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>munge-fork</goal>
+                </goals>
+                <configuration>
+                  <symbols>NO_AOP</symbols>
+                  <excludes>
+                    **/InterceptorBinding.java,
+                    **/InterceptorBindingProcessor.java,
+                    **/InterceptorStackCallback.java,
+                    **/LineNumbers.java,
+                    **/MethodAspect.java,
+                    **/ProxyFactory.java,
+                    **/BytecodeGenTest.java,
+                    **/IntegrationTest.java,
+                    **/MethodInterceptionTest.java,
+                    **/ProxyFactoryTest.java
+                  </excludes>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <!--
+           | Package the no-AOP build with its own OSGi manifest and attach using "noaop" classifier
+          -->
+          <plugin>
+            <artifactId>maven-jar-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>noaop</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <configuration>
+                  <classesDirectory>${project.build.directory}/munged/classes</classesDirectory>
+                  <classifier>noaop</classifier>
+                  <archive>
+                    <manifestFile>${project.build.directory}/munged/classes/META-INF/MANIFEST.MF</manifestFile>
+                  </archive>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <!--
+       | JarJar build profile: re-package ASM and CGLIB classes under the Guice namespace
+      -->
+      <id>guice.with.jarjar</id>
+      <activation>
+        <property>
+          <name>guice.with.jarjar</name>
+          <value>!false</value>
+        </property>
+      </activation>
+      <build>
+
+exec
+/usr/bin/bash -lc "curl -L -s https://repo.maven.apache.org/maven2/org/sonatype/sisu/inject/guice-parent/2.9.1/guice-parent-2.9.1.pom | rg -n '<url>|<scm>|connection|developerConnection|tag|<description>|<name>' -C 2" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+ succeeded in 0ms:
+30-  <version>2.9.1</version>
+31-
+32:  <name>Google Guice</name>
+33-
+34:  <description>
+35-    Guice is a lightweight dependency injection framework for Java 5 and above
+36-  </description>
+37-
+38:  <url>http://code.google.com/p/google-guice/</url>
+39-  <inceptionYear>2006</inceptionYear>
+40-
+41-  <organization>
+42:    <name>Google, Inc.</name>
+43:    <url>http://www.google.com</url>
+44-  </organization>
+45-
+46-  <mailingLists>
+47-    <mailingList>
+48:      <name>Guice Users List</name>
+49-      <archive>http://groups.google.com/group/google-guice/topics</archive>
+50-      <subscribe>http://groups.google.com/group/google-guice/subscribe</subscribe>
+--
+53-    </mailingList>
+54-    <mailingList>
+55:      <name>Guice Developers List</name>
+56-      <archive>http://groups.google.com/group/google-guice-dev/topics</archive>
+57-      <subscribe>http://groups.google.com/group/google-guice-dev/subscribe</subscribe>
+--
+61-  </mailingLists>
+62-
+63:  <scm>
+64:    <connection>scm:git:git@github.com:sonatype/sisu-guice.git</connection>
+65:    <developerConnection>scm:git:git@github.com:sonatype/sisu-guice.git</developerConnection>
+66:    <url>http://github.com/sonatype/sisu-guice</url>
+67-  </scm>
+68-
+69-  <issueManagement>
+70-    <system>Google Code</system>
+71:    <url>http://code.google.com/p/google-guice/issues/</url>
+72-  </issueManagement>
+73-
+74-  <ciManagement>
+75-    <system>Hudson</system>
+76:    <url>https://grid.sonatype.org/ci/job/sisu-guice/</url>
+77-  </ciManagement>
+78-
+79-  <licenses>
+80-    <license>
+81:      <name>The Apache Software License, Version 2.0</name>
+82:      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+83-      <distribution>repo</distribution>
+84-    </license>
+--
+96-    <guice.api.version>1.3</guice.api.version>
+97-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+98:    <forgeReleaseUrl>https://repository.sonatype.org/service/local/staging/deploy/maven2</forgeReleaseUrl>
+99-    <!--
+100-     | Use "-Dguice.with.jarjar=false" to build without jarjar
+--
+346-      <properties>
+347-        <forgeReleaseId>forge-releases</forgeReleaseId>
+348:        <forgeReleaseUrl>http://repository.sonatype.org:8081/service/local/staging/deploy/maven2</forgeReleaseUrl>
+349-        <forgeSnapshotId>forge-snapshots</forgeSnapshotId>
+350-        <forgeSnapshotUrl>http://repository.sonatype.org/content/repositories/snapshots</forgeSnapshotUrl>
+--
+353-        <repository>
+354-          <id>${forgeReleaseId}</id>
+355:          <url>${forgeReleaseUrl}</url>
+356-        </repository>
+357-        <snapshotRepository>
+358-          <id>${forgeSnapshotId}</id>
+359:          <url>${forgeSnapshotUrl}</url>
+360-        </snapshotRepository>
+361-      </distributionManagement>
+
+exec
+/usr/bin/bash -lc "curl -L -s https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/2.9.1/sisu-guice-2.9.1.pom | rg -n '<url>|<scm>|connection|developerConnection|tag|<description>|<name>' -C 2" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+ succeeded in 0ms:
+13-  <artifactId>sisu-guice</artifactId>
+14-
+15:  <name>Google Guice - Core Library</name>
+16-
+17-  <dependencies>
+--
+108-      <activation>
+109-        <property>
+110:          <name>guice.with.noaop</name>
+111-          <value>!false</value>
+112-        </property>
+--
+174-      <activation>
+175-        <property>
+176:          <name>guice.with.jarjar</name>
+177-          <value>!false</value>
+178-        </property>
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/sonatype/sisu-guice/tree/sisu-guice-2.9.1/test" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/sonatype/sisu-guice" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+ succeeded in 428ms:
+404 https://github.com/sonatype/sisu-guice/tree/sisu-guice-2.9.1/test
+
+ succeeded in 656ms:
+200 https://github.com/sonatype/sisu-guice
+
+codex
+The GitHub `/test` path for tag `sisu-guice-2.9.1` returns 404, while Maven Central has `sources`, `javadoc`, and `tests` artifacts for 2.9.1. I’m going to use the Maven templates for all three versioned artifact URLs and keep `language` absent because this is not a Kotlin, Groovy, or Scala library.
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-guice/2.9.1/sisu-guice-2.9.1-tests.jar" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+ succeeded in 0ms:
+200 https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-guice/2.9.1/sisu-guice-2.9.1-tests.jar
+
+exec
+/usr/bin/bash -lc "curl -L -s https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/2.9.1/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/sonatype/sisu/sisu-guice/2.9.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/sonatype/sisu/sisu-guice/2.9.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="sisu-guice-2.9.1-javadoc.jar" title="sisu-guice-2.9.1-javadoc.jar">sisu-guice-2.9.1-javadoc.jar</a>                      2010-11-05 00:17    850558      
+<a href="sisu-guice-2.9.1-javadoc.jar.asc" title="sisu-guice-2.9.1-javadoc.jar.asc">sisu-guice-2.9.1-javadoc.jar.asc</a>                  2010-11-05 00:17       194      
+<a href="sisu-guice-2.9.1-javadoc.jar.asc.md5" title="sisu-guice-2.9.1-javadoc.jar.asc.md5">sisu-guice-2.9.1-javadoc.jar.asc.md5</a>              2010-11-05 00:17        32      
+<a href="sisu-guice-2.9.1-javadoc.jar.asc.sha1" title="sisu-guice-2.9.1-javadoc.jar.asc.sha1">sisu-guice-2.9.1-javadoc.jar.asc.sha1</a>             2010-11-05 00:17        40      
+<a href="sisu-guice-2.9.1-javadoc.jar.md5" title="sisu-guice-2.9.1-javadoc.jar.md5">sisu-guice-2.9.1-javadoc.jar.md5</a>                  2010-11-05 00:17        32      
+<a href="sisu-guice-2.9.1-javadoc.jar.sha1" title="sisu-guice-2.9.1-javadoc.jar.sha1">sisu-guice-2.9.1-javadoc.jar.sha1</a>                 2010-11-05 00:17        40      
+<a href="sisu-guice-2.9.1-noaop.jar" title="sisu-guice-2.9.1-noaop.jar">sisu-guice-2.9.1-noaop.jar</a>                        2010-11-05 00:17    477039      
+<a href="sisu-guice-2.9.1-noaop.jar.asc" title="sisu-guice-2.9.1-noaop.jar.asc">sisu-guice-2.9.1-noaop.jar.asc</a>                    2010-11-05 00:17       194      
+<a href="sisu-guice-2.9.1-noaop.jar.asc.md5" title="sisu-guice-2.9.1-noaop.jar.asc.md5">sisu-guice-2.9.1-noaop.jar.asc.md5</a>                2010-11-05 00:17        32      
+<a href="sisu-guice-2.9.1-noaop.jar.asc.sha1" title="sisu-guice-2.9.1-noaop.jar.asc.sha1">sisu-guice-2.9.1-noaop.jar.asc.sha1</a>               2010-11-05 00:17        40      
+<a href="sisu-guice-2.9.1-noaop.jar.md5" title="sisu-guice-2.9.1-noaop.jar.md5">sisu-guice-2.9.1-noaop.jar.md5</a>                    2010-11-05 00:17        32      
+<a href="sisu-guice-2.9.1-noaop.jar.sha1" title="sisu-guice-2.9.1-noaop.jar.sha1">sisu-guice-2.9.1-noaop.jar.sha1</a>                   2010-11-05 00:17        40      
+<a href="sisu-guice-2.9.1-nodeps.jar" title="sisu-guice-2.9.1-nodeps.jar">sisu-guice-2.9.1-nodeps.jar</a>                       2010-11-05 00:17    497630      
+<a href="sisu-guice-2.9.1-nodeps.jar.asc" title="sisu-guice-2.9.1-nodeps.jar.asc">sisu-guice-2.9.1-nodeps.jar.asc</a>                   2010-11-05 00:17       194      
+<a href="sisu-guice-2.9.1-nodeps.jar.asc.md5" title="sisu-guice-2.9.1-nodeps.jar.asc.md5">sisu-guice-2.9.1-nodeps.jar.asc.md5</a>               2010-11-05 00:17        32      
+<a href="sisu-guice-2.9.1-nodeps.jar.asc.sha1" title="sisu-guice-2.9.1-nodeps.jar.asc.sha1">sisu-guice-2.9.1-nodeps.jar.asc.sha1</a>              2010-11-05 00:17        40      
+<a href="sisu-guice-2.9.1-nodeps.jar.md5" title="sisu-guice-2.9.1-nodeps.jar.md5">sisu-guice-2.9.1-nodeps.jar.md5</a>                   2010-11-05 00:17        32      
+<a href="sisu-guice-2.9.1-nodeps.jar.sha1" title="sisu-guice-2.9.1-nodeps.jar.sha1">sisu-guice-2.9.1-nodeps.jar.sha1</a>                  2010-11-05 00:17        40      
+<a href="sisu-guice-2.9.1-sources.jar" title="sisu-guice-2.9.1-sources.jar">sisu-guice-2.9.1-sources.jar</a>                      2010-11-05 00:17    327313      
+<a href="sisu-guice-2.9.1-sources.jar.asc" title="sisu-guice-2.9.1-sources.jar.asc">sisu-guice-2.9.1-sources.jar.asc</a>                  2010-11-05 00:17       194      
+<a href="sisu-guice-2.9.1-sources.jar.asc.md5" title="sisu-guice-2.9.1-sources.jar.asc.md5">sisu-guice-2.9.1-sources.jar.asc.md5</a>              2010-11-05 00:17        32      
+<a href="sisu-guice-2.9.1-sources.jar.asc.sha1" title="sisu-guice-2.9.1-sources.jar.asc.sha1">sisu-guice-2.9.1-sources.jar.asc.sha1</a>             2010-11-05 00:17        40      
+<a href="sisu-guice-2.9.1-sources.jar.md5" title="sisu-guice-2.9.1-sources.jar.md5">sisu-guice-2.9.1-sources.jar.md5</a>                  2010-11-05 00:17        32      
+<a href="sisu-guice-2.9.1-sources.jar.sha1" title="sisu-guice-2.9.1-sources.jar.sha1">sisu-guice-2.9.1-sources.jar.sha1</a>                 2010-11-05 00:17        40      
+<a href="sisu-guice-2.9.1-tests.jar" title="sisu-guice-2.9.1-tests.jar">sisu-guice-2.9.1-tests.jar</a>                        2010-11-05 00:17   1038259      
+<a href="sisu-guice-2.9.1-tests.jar.asc" title="sisu-guice-2.9.1-tests.jar.asc">sisu-guice-2.9.1-tests.jar.asc</a>                    2010-11-05 00:17       194      
+<a href="sisu-guice-2.9.1-tests.jar.asc.md5" title="sisu-guice-2.9.1-tests.jar.asc.md5">sisu-guice-2.9.1-tests.jar.asc.md5</a>                2010-11-05 00:17        32      
+<a href="sisu-guice-2.9.1-tests.jar.asc.sha1" title="sisu-guice-2.9.1-tests.jar.asc.sha1">sisu-guice-2.9.1-tests.jar.asc.sha1</a>               2010-11-05 00:17        40      
+<a href="sisu-guice-2.9.1-tests.jar.md5" title="sisu-guice-2.9.1-tests.jar.md5">sisu-guice-2.9.1-tests.jar.md5</a>                    2010-11-05 00:17        32      
+<a href="sisu-guice-2.9.1-tests.jar.sha1" title="sisu-guice-2.9.1-tests.jar.sha1">sisu-guice-2.9.1-tests.jar.sha1</a>                   2010-11-05 00:17        40      
+<a href="sisu-guice-2.9.1.jar" title="sisu-guice-2.9.1.jar">sisu-guice-2.9.1.jar</a>                              2010-11-05 00:17    698704      
+<a href="sisu-guice-2.9.1.jar.asc" title="sisu-guice-2.9.1.jar.asc">sisu-guice-2.9.1.jar.asc</a>                          2010-11-05 00:17       194      
+<a href="sisu-guice-2.9.1.jar.asc.md5" title="sisu-guice-2.9.1.jar.asc.md5">sisu-guice-2.9.1.jar.asc.md5</a>                      2010-11-05 00:17        32      
+<a href="sisu-guice-2.9.1.jar.asc.sha1" title="sisu-guice-2.9.1.jar.asc.sha1">sisu-guice-2.9.1.jar.asc.sha1</a>                     2010-11-05 00:17        40      
+<a href="sisu-guice-2.9.1.jar.md5" title="sisu-guice-2.9.1.jar.md5">sisu-guice-2.9.1.jar.md5</a>                          2010-11-05 00:17        32      
+<a href="sisu-guice-2.9.1.jar.sha1" title="sisu-guice-2.9.1.jar.sha1">sisu-guice-2.9.1.jar.sha1</a>                         2010-11-05 00:17        40      
+<a href="sisu-guice-2.9.1.pom" title="sisu-guice-2.9.1.pom">sisu-guice-2.9.1.pom</a>                              2010-11-05 00:17      6689      
+<a href="sisu-guice-2.9.1.pom.asc" title="sisu-guice-2.9.1.pom.asc">sisu-guice-2.9.1.pom.asc</a>                          2010-11-05 00:17       194      
+<a href="sisu-guice-2.9.1.pom.asc.md5" title="sisu-guice-2.9.1.pom.asc.md5">sisu-guice-2.9.1.pom.asc.md5</a>                      2010-11-05 00:17        32      
+<a href="sisu-guice-2.9.1.pom.asc.sha1" title="sisu-guice-2.9.1.pom.asc.sha1">sisu-guice-2.9.1.pom.asc.sha1</a>                     2010-11-05 00:17        40      
+<a href="sisu-guice-2.9.1.pom.md5" title="sisu-guice-2.9.1.pom.md5">sisu-guice-2.9.1.pom.md5</a>                          2010-11-05 00:17        32      
+<a href="sisu-guice-2.9.1.pom.sha1" title="sisu-guice-2.9.1.pom.sha1">sisu-guice-2.9.1.pom.sha1</a>                         2010-11-05 00:17        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/2.9.1/sisu-guice-2.9.1-test-sources.jar" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+ succeeded in 217ms:
+404 https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/2.9.1/sisu-guice-2.9.1-test-sources.jar
+
+web search: 
+web search: https://github.com/sonatype/sisu-guice
+web search: 
+web search: repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/2.9.1 sisu-guice-2.9.1-sources.jar sisu-guice-2.9.1-tests.jar sisu-guice-2.9.1-javadoc.jar
+web search: 
+web search: "org/sonatype/sisu/sisu-guice/2.9.1/" "sisu-guice-2.9.1-sources.jar"
+web search: 
+web search: https://central.sonatype.com/artifact/org.sonatype.sisu/sisu-guice/2.9.1
+web search: 
+web search: site:central.sonatype.com/artifact/org.sonatype.sisu/sisu-guice/2.9.1 org.sonatype.sisu sisu-guice 2.9.1
+codex
+I’m adding the missing fields to the `2.9.1` entry now. The field order will match the older populated entry so the JSON stays consistent with this file.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2/metadata/org.sonatype.sisu/sisu-guice/index.json
+diff --git a/metadata/org.sonatype.sisu/sisu-guice/index.json b/metadata/org.sonatype.sisu/sisu-guice/index.json
+index 001372bb23322da3208c6ae14c04e0995c4bcac4..ddaa8336615169a945670de6f0d2f6ea75c00898
+--- a/metadata/org.sonatype.sisu/sisu-guice/index.json
++++ b/metadata/org.sonatype.sisu/sisu-guice/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.9.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu-guice",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-javadoc.jar",
++    "description" : "Sisu Guice is Sonatype's patched build of Google Guice, a lightweight Java dependency injection framework. It provides the com.google.inject API and runtime for binding, scoping, provider lookup, and object graph creation in Sisu-based applications.",
+     "tested-versions" : [
+       "2.9.1"
+     ],
+
+diff --git a/metadata/org.sonatype.sisu/sisu-guice/index.json b/metadata/org.sonatype.sisu/sisu-guice/index.json
+index 001372bb23322da3208c6ae14c04e0995c4bcac4..ddaa8336615169a945670de6f0d2f6ea75c00898
+--- a/metadata/org.sonatype.sisu/sisu-guice/index.json
++++ b/metadata/org.sonatype.sisu/sisu-guice/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.9.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu-guice",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-javadoc.jar",
++    "description" : "Sisu Guice is Sonatype's patched build of Google Guice, a lightweight Java dependency injection framework. It provides the com.google.inject API and runtime for binding, scoping, provider lookup, and object graph creation in Sisu-based applications.",
+     "tested-versions" : [
+       "2.9.1"
+     ],
+
+codex
+The file is patched. I’m doing a narrow validation pass now: JSON parse, diff review, and the metadata file check for this coordinate if it runs cleanly in the local environment.
+exec
+/usr/bin/bash -lc "jq . metadata/org.sonatype.sisu/sisu-guice/index.json >/dev/null && echo 'json ok'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+ succeeded in 0ms:
+json ok
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.sonatype.sisu/sisu-guice/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+ succeeded in 0ms:
+diff --git i/metadata/org.sonatype.sisu/sisu-guice/index.json w/metadata/org.sonatype.sisu/sisu-guice/index.json
+index 001372bb23..ddaa833661 100644
+--- i/metadata/org.sonatype.sisu/sisu-guice/index.json
++++ w/metadata/org.sonatype.sisu/sisu-guice/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.9.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu-guice",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-javadoc.jar",
++    "description" : "Sisu Guice is Sonatype's patched build of Google Guice, a lightweight Java dependency injection framework. It provides the com.google.inject API and runtime for binding, scoping, provider lookup, and object graph creation in Sisu-based applications.",
+     "tested-versions" : [
+       "2.9.1"
+     ],
+
+exec
+/usr/bin/bash -lc "for u in https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/2.9.1/sisu-guice-2.9.1-sources.jar https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/2.9.1/sisu-guice-2.9.1-tests.jar https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/2.9.1/sisu-guice-2.9.1-javadoc.jar https://github.com/sonatype/sisu-guice; do printf '%s ' \""'$u"; curl -I -L -s -o /dev/null -w '"'%{http_code}\\n' \""'$u"; done' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+diff --git a/metadata/org.sonatype.sisu/sisu-guice/index.json b/metadata/org.sonatype.sisu/sisu-guice/index.json
+index 001372bb23322da3208c6ae14c04e0995c4bcac4..ddaa8336615169a945670de6f0d2f6ea75c00898
+--- a/metadata/org.sonatype.sisu/sisu-guice/index.json
++++ b/metadata/org.sonatype.sisu/sisu-guice/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.9.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu-guice",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-javadoc.jar",
++    "description" : "Sisu Guice is Sonatype's patched build of Google Guice, a lightweight Java dependency injection framework. It provides the com.google.inject API and runtime for binding, scoping, provider lookup, and object graph creation in Sisu-based applications.",
+     "tested-versions" : [
+       "2.9.1"
+     ],
+
+ succeeded in 853ms:
+200
+https://github.com/sonatype/sisu-guice 200
+
+codex
+The edited JSON parses, and all rendered URLs for `2.9.1` return HTTP 200. I’m running the repository’s focused metadata validation for `org.sonatype.sisu:sisu-guice:2.9.1` next.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.sonatype.sisu:sisu-guice:2.9.1 --stacktrace' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+diff --git a/metadata/org.sonatype.sisu/sisu-guice/index.json b/metadata/org.sonatype.sisu/sisu-guice/index.json
+index 001372bb23322da3208c6ae14c04e0995c4bcac4..ddaa8336615169a945670de6f0d2f6ea75c00898
+--- a/metadata/org.sonatype.sisu/sisu-guice/index.json
++++ b/metadata/org.sonatype.sisu/sisu-guice/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.9.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu-guice",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-javadoc.jar",
++    "description" : "Sisu Guice is Sonatype's patched build of Google Guice, a lightweight Java dependency injection framework. It provides the com.google.inject API and runtime for binding, scoping, provider lookup, and object graph creation in Sisu-based applications.",
+     "tested-versions" : [
+       "2.9.1"
+     ],
+
+ exited 1 in 3272ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+Metadata files check failed for org.sonatype.sisu:sisu-guice:2.9.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2/metadata/org.sonatype.sisu/sisu-guice/2.9.1/
+
+> Task :checkMetadataFiles FAILED
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2/build/reports/problems/problems-report.html
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.sonatype.sisu:sisu-guice:2.9.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2/metadata/org.sonatype.sisu/sisu-guice/2.9.1/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.sonatype.sisu:sisu-guice:2.9.1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2/metadata/org.sonatype.sisu/sisu-guice/2.9.1/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+The focused Gradle metadata check fails because the `2.9.1` metadata directory is missing `reachability-metadata.json`, which is outside the requested index field update. I’ll leave that untouched and do one final file-level sanity check before closing.
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.sonatype.sisu/sisu-guice/index.json | sed -n '1,32p'" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+exec
+/usr/bin/bash -lc "jq -r '.[0] | keys_unsorted[]' metadata/org.sonatype.sisu/sisu-guice/index.json" in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "2.9.1",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/sonatype/sisu-guice",
+     7	    "test-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-tests.jar",
+     8	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-javadoc.jar",
+     9	    "description" : "Sisu Guice is Sonatype's patched build of Google Guice, a lightweight Java dependency injection framework. It provides the com.google.inject API and runtime for binding, scoping, provider lookup, and object graph creation in Sisu-based applications.",
+    10	    "tested-versions" : [
+    11	      "2.9.1"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "com.google.inject"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "2.1.7",
+    19	    "source-code-url" : "https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-sources.jar",
+    20	    "repository-url" : "https://github.com/sonatype/sisu-guice",
+    21	    "test-code-url" : "https://github.com/sonatype/sisu-guice/tree/sisu-guice-$version$/test",
+    22	    "documentation-url" : "https://repo1.maven.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-javadoc.jar",
+    23	    "description" : "Sisu Guice is Sonatype's patched build of Google Guice, a lightweight Java dependency injection framework. It provides the com.google.inject API and runtime for binding, scoping, provider lookup, and object graph creation in Sisu-based applications.",
+    24	    "tested-versions" : [
+    25	      "2.1.7",
+    26	      "2.9.0"
+    27	    ],
+    28	    "allowed-packages" : [
+    29	      "com.google.inject"
+    30	    ]
+    31	  }
+    32	]
+
+ succeeded in 0ms:
+latest
+metadata-version
+source-code-url
+repository-url
+test-code-url
+documentation-url
+description
+tested-versions
+allowed-packages
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.sonatype.sisu/sisu-guice/index.json' in /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2
+ succeeded in 0ms:
+ M metadata/org.sonatype.sisu/sisu-guice/index.json
+
+diff --git a/metadata/org.sonatype.sisu/sisu-guice/index.json b/metadata/org.sonatype.sisu/sisu-guice/index.json
+index 001372bb23322da3208c6ae14c04e0995c4bcac4..ddaa8336615169a945670de6f0d2f6ea75c00898
+--- a/metadata/org.sonatype.sisu/sisu-guice/index.json
++++ b/metadata/org.sonatype.sisu/sisu-guice/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.9.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu-guice",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-javadoc.jar",
++    "description" : "Sisu Guice is Sonatype's patched build of Google Guice, a lightweight Java dependency injection framework. It provides the com.google.inject API and runtime for binding, scoping, provider lookup, and object graph creation in Sisu-based applications.",
+     "tested-versions" : [
+       "2.9.1"
+     ],
+
+web search: 
+web search: Maven Central org.sonatype.sisu sisu-guice 2.9.1
+codex
+Updated [metadata/org.sonatype.sisu/sisu-guice/index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2/metadata/org.sonatype.sisu/sisu-guice/index.json:5) for the `metadata-version` `2.9.1` entry with Maven Central source, tests, and javadoc templates, the canonical GitHub repository root, and a two-sentence description. I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+Validation:
+- `jq` JSON parse: passed.
+- Rendered `2.9.1` source/tests/javadoc/repository URLs: all returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.sonatype.sisu:sisu-guice:2.9.1 --stacktrace`: failed because `metadata/org.sonatype.sisu/sisu-guice/2.9.1/reachability-metadata.json` is missing; I did not change that unrelated metadata content.
+diff --git a/metadata/org.sonatype.sisu/sisu-guice/index.json b/metadata/org.sonatype.sisu/sisu-guice/index.json
+index 001372bb23322da3208c6ae14c04e0995c4bcac4..ddaa8336615169a945670de6f0d2f6ea75c00898
+--- a/metadata/org.sonatype.sisu/sisu-guice/index.json
++++ b/metadata/org.sonatype.sisu/sisu-guice/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "2.9.1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-sources.jar",
++    "repository-url" : "https://github.com/sonatype/sisu-guice",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/sonatype/sisu/sisu-guice/$version$/sisu-guice-$version$-javadoc.jar",
++    "description" : "Sisu Guice is Sonatype's patched build of Google Guice, a lightweight Java dependency injection framework. It provides the com.google.inject API and runtime for binding, scoping, provider lookup, and object graph creation in Sisu-based applications.",
+     "tested-versions" : [
+       "2.9.1"
+     ],
+
+tokens used
+86,548
+Updated [metadata/org.sonatype.sisu/sisu-guice/index.json](/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2/metadata/org.sonatype.sisu/sisu-guice/index.json:5) for the `metadata-version` `2.9.1` entry with Maven Central source, tests, and javadoc templates, the canonical GitHub repository root, and a two-sentence description. I left `language` absent because this is not a Kotlin, Groovy, or Scala-specific library.
+
+Validation:
+- `jq` JSON parse: passed.
+- Rendered `2.9.1` source/tests/javadoc/repository URLs: all returned HTTP 200.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.sonatype.sisu:sisu-guice:2.9.1 --stacktrace`: failed because `metadata/org.sonatype.sisu/sisu-guice/2.9.1/reachability-metadata.json` is missing; I did not change that unrelated metadata content.
+Ran agent for org.sonatype.sisu:sisu-guice:2.9.1 (exit 0). Log: /home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2/build/agent-url-discovery-logs/org.sonatype.sisu-sisu-guice-2.9.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8858-0fe0adc2/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m
+9 actionable tasks: 1 executed, 8 up-to-date
