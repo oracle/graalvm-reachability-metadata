@@ -1,9 +1,9 @@
 {
   "add_new_library_support:2026-06-29": {
-    "timestamp": "2026-06-29T05:10:35.921072Z",
+    "timestamp": "2026-06-29T07:08:30.451032Z",
     "library": "org.jgroups:jgroups:5.2.0.Final",
-    "starting_commit": "de5350cc2351617138029069e4865c0787e11943",
-    "ending_commit": "de0f11d1f1ddfc708b4ed5423ecdc54ec05b1c75",
+    "starting_commit": "9cb6ad3c970b4185e8191f5881a7c8a39d1ae33b",
+    "ending_commit": "ae560d222c9effce2f2ea206e48e5044c9eb0b78",
     "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
     "agent": "pi",
     "model": "oca/gpt-5.5",
@@ -13,37 +13,37 @@
       "dynamicAccess": {
         "breakdown": {
           "reflection": {
-            "coverageRatio": 0.769784,
-            "coveredCalls": 107,
+            "coverageRatio": 0.94964,
+            "coveredCalls": 132,
             "totalCalls": 139
           },
           "resources": {
-            "coverageRatio": 0.666667,
-            "coveredCalls": 8,
+            "coverageRatio": 0.75,
+            "coveredCalls": 9,
             "totalCalls": 12
           }
         },
-        "coverageRatio": 0.761589,
-        "coveredCalls": 115,
+        "coverageRatio": 0.933775,
+        "coveredCalls": 141,
         "totalCalls": 151
       },
       "libraryCoverage": {
         "instruction": {
-          "covered": 29053,
-          "missed": 201454,
-          "ratio": 0.12604,
+          "covered": 36392,
+          "missed": 194115,
+          "ratio": 0.157878,
           "total": 230507
         },
         "line": {
-          "covered": 6912,
-          "missed": 42335,
-          "ratio": 0.140354,
+          "covered": 7731,
+          "missed": 41516,
+          "ratio": 0.156984,
           "total": 49247
         },
         "method": {
-          "covered": 1570,
-          "missed": 7905,
-          "ratio": 0.165699,
+          "covered": 1729,
+          "missed": 7746,
+          "ratio": 0.18248,
           "total": 9475
         }
       }
@@ -54,15 +54,41 @@
       "issue_number": 1498,
       "issue_label": "library-new-request",
       "library": "org.jgroups:jgroups:5.2.0.Final",
-      "summary": "No extra Maven dependency or Docker service is needed, but meaningful JGroups coverage should run local in-process channels with deterministic loopback/JDK-logging settings.",
-      "deterministic_setup": [],
-      "agent_guidance": "Before the first JGroups class is initialized, set system properties such as `jgroups.bind_addr=127.0.0.1`, `java.net.preferIPv4Stack=true`, and `jgroups.use.jdk_logger=true`. Prefer tests that create two local `JChannel` instances, connect them to the same cluster, exchange a message or verify the shared view, and always close/disconnect channels in cleanup. Avoid tests that depend on real multicast availability outside loopback, JMX, Kerberos, JDBC/cloud discovery protocols, or external cluster nodes.",
-      "risks": [
-        "The default `new JChannel()` stack uses UDP multicast and can bind to non-loopback container interfaces, which may be flaky or noisy in CI/native-image runs unless constrained.",
-        "The artifact declares Log4J2 and SLF4J only as optional dependencies; adding them is not necessary for normal coverage and may complicate native-image behavior.",
-        "Some bundled protocols cover external integrations such as Kerberos, JDBC discovery, relay/cloud discovery, or diagnostics; those should not be required for initial meaningful coverage."
+      "summary": "JGroups has no required runtime dependency, but meaningful reachability coverage benefits from its documented optional logging/OpenSSL paths and needs loopback JVM properties to avoid host-network-sensitive clustering behavior.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.slf4j:slf4j-api:1.7.31",
+          "scope": "testImplementation",
+          "reason": "The JGroups 5.2.0.Final POM declares SLF4J as an optional dependency, and LogFactory reflectively checks for org.slf4j.Logger to select a non-JDK logging backend."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.wildfly.openssl:wildfly-openssl:2.1.1.Final",
+          "scope": "testImplementation",
+          "reason": "SslContextFactory and SSL_KEY_EXCHANGE support WildFly OpenSSL via reflective loading of org.wildfly.openssl classes; adding the dependency lets generation exercise that optional dynamic provider path."
+        }
       ],
-      "applied_setup": [],
+      "agent_guidance": "Set test JVM and native runtime system properties jgroups.bind_addr=127.0.0.1 and java.net.preferIPv4Stack=true. Prefer loopback-only stacks such as SHARED_LOOPBACK/SHARED_LOOPBACK_PING or local TCP for channel tests; avoid requiring external multicast, databases, gossip routers, or cloud services. If testing custom logging, set jgroups.log_class before LogFactory is initialized or isolate/fork the test because LogFactory caches static availability decisions.",
+      "risks": [
+        "Default UDP/multicast configurations are sensitive to CI network interfaces and IPv6 behavior unless bound to loopback.",
+        "WildFly OpenSSL may silently fall back to the JDK SSL provider depending on native/provider availability, so tests should not require the provider name to be openssl.",
+        "LogFactory static initialization can make logger-related tests order-dependent if system properties are changed after the class is loaded."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.slf4j:slf4j-api:1.7.31",
+          "result": "already_present",
+          "target": "tests/src/org.jgroups/jgroups/5.2.0.Final/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.wildfly.openssl:wildfly-openssl:2.1.1.Final",
+          "result": "already_present",
+          "target": "tests/src/org.jgroups/jgroups/5.2.0.Final/build.gradle"
+        }
+      ],
       "input_evidence": [
         {
           "name": "issue",
@@ -70,30 +96,30 @@
         },
         {
           "name": "existing_tests",
-          "summary": "0 existing test file path(s) included"
+          "summary": "20 existing test file path(s) included"
         }
       ],
       "model": "oca/gpt-5.5",
-      "input_tokens_used": 46964,
-      "output_tokens_used": 3876,
+      "input_tokens_used": 37078,
+      "output_tokens_used": 4581,
       "prompt_path": "library-preflight-prompt.txt",
       "raw_response_path": "library-preflight-response.txt",
-      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.jgroups:jgroups:5.2.0.Final/library-preparation-preflight/pi-generation-2026-06-29T01-59-09-153721Z.log"
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.jgroups:jgroups:5.2.0.Final/library-preparation-preflight/pi-generation-2026-06-29T05-43-22-055680Z.log"
     },
     "metrics": {
-      "input_tokens_used": 1025747,
-      "cached_input_tokens_used": 13780480,
-      "output_tokens_used": 122917,
-      "iterations": 22,
-      "cost_usd": 10.5777,
-      "generated_loc": 1122,
-      "tested_library_loc": 6912,
-      "metadata_entries": 506,
-      "test_only_metadata_entries": 232,
-      "code_coverage_percent": 14.04
+      "input_tokens_used": 932372,
+      "cached_input_tokens_used": 6548480,
+      "output_tokens_used": 65397,
+      "iterations": 18,
+      "cost_usd": 5.2361,
+      "generated_loc": 1901,
+      "tested_library_loc": 7731,
+      "metadata_entries": 651,
+      "test_only_metadata_entries": 250,
+      "code_coverage_percent": 15.7
     },
     "artifacts": {
-      "test_file": "tests/src/org.jgroups/jgroups/5.2.0.Final/src/test/java/org_jgroups/jgroups/XmlConfiguratorTest.java",
+      "test_file": "tests/src/org.jgroups/jgroups/5.2.0.Final/src/test/java/org_jgroups/jgroups/ProtocolStackTest.java",
       "metadata_file": "metadata/org.jgroups/jgroups/5.2.0.Final/reachability-metadata.json"
     }
   }
