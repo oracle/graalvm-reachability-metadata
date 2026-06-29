@@ -1,0 +1,77 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "org.apache.jackrabbit:jackrabbit-webdav:2.0-beta4",
+  "issueNumber": 8851,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No Docker image or environment/system property setup is indicated. Prefer in-memory tests for XML/property/method classes and simple fake servlet request/response objects rather than relying on a live WebDAV server.",
+    "applied_setup": [],
+    "current_library": "org.apache.jackrabbit:jackrabbit-webdav:1.5.0",
+    "deterministic_setup": [
+      {
+        "coordinate": "javax.servlet:servlet-api:2.4",
+        "kind": "dependency",
+        "reason": "The artifact contains WebDAV request/response, input/output context, and AbstractWebdavServlet classes whose public APIs reference javax.servlet and javax.servlet.http types; the Maven artifact declares servlet-api as provided, so it is not supplied transitively to tests.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8851 [Automation] native-image run fails for org.apache.jackrabbit:jackrabbit-webdav:2.0-beta4; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "40 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 39074,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 8851,
+    "library": "org.apache.jackrabbit:jackrabbit-webdav:2.0-beta4",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0-beta4",
+    "output_tokens_used": 3811,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The library was compiled against an old provided servlet API; use javax.servlet-era APIs, not jakarta.servlet.",
+      "Some native-image failures may still be metadata/reflection issues unrelated to setup; local Gradle and Native Image verification remain authoritative."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.jackrabbit:jackrabbit-webdav:2.0-beta4/library-preparation-preflight/pi-generation-2026-06-29T13-25-30-500658Z.log",
+    "status": "completed",
+    "summary": "Jackrabbit WebDAV exposes servlet-based server APIs, and its POM marks the servlet API as provided, so generated tests need an explicit test dependency to compile and exercise meaningful servlet-facing coverage."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0-beta4",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8851-fails-native-image-run-org.apache.jackrabbit-jackrabbit-webdav-2.0-beta4-7edaac64",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
