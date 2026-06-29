@@ -177,8 +177,7 @@ public class UtilTest {
             InputStream missingFromSystemLoader = Util.getResourceAsStream(
                     "missing-jgroups-resource.properties", (ClassLoader) null);
             assertThat(missingFromSystemLoader).isNull();
-        }
-        finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(originalContextLoader);
         }
     }

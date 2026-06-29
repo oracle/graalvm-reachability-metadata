@@ -46,8 +46,7 @@ public class ReplicatedHashMapTest {
                     .containsEntry("alpha", "one")
                     .containsEntry("bravo", "two")
                     .hasSize(2);
-        }
-        finally {
+        } finally {
             target.stop();
             source.stop();
         }

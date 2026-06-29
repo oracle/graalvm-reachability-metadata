@@ -56,8 +56,7 @@ public class TPTest {
             assertThat(CustomBundler.initialized).isTrue();
             assertThat(CustomLocalTransport.created).hasValue(1);
             assertThat(CustomMessageProcessingPolicy.initialized).hasValue(1);
-        }
-        finally {
+        } finally {
             if (initialized) {
                 transport.stop();
             }
@@ -74,8 +73,7 @@ public class TPTest {
 
             assertThat(transport.getLocalTransport()).isInstanceOf(CustomLocalTransport.class);
             assertThat(CustomLocalTransport.started).isTrue();
-        }
-        finally {
+        } finally {
             transport.setLocalTransport((LocalTransport) null);
             transport.destroy();
         }

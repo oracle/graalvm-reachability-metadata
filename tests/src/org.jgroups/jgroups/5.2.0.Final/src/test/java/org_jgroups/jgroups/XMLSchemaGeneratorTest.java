@@ -45,8 +45,7 @@ public class XMLSchemaGeneratorTest {
                     new ExplodedProtocolResourceClassLoader(originalClassLoader, protocolsDirectory));
 
             XMLSchemaGenerator.main(new String[] {"-o", tempDir.toString()});
-        }
-        finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
 
@@ -78,8 +77,7 @@ public class XMLSchemaGeneratorTest {
             if (PROTOCOLS_PACKAGE_PATH.equals(name)) {
                 try {
                     return protocolsDirectory.toUri().toURL();
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     throw new IllegalStateException("Cannot expose protocol resource directory", e);
                 }
             }

@@ -63,8 +63,7 @@ public class XmlConfiguratorTest {
             System.setOut(new PrintStream(stdout, true, StandardCharsets.UTF_8));
 
             XmlConfigurator.main(new String[] {"-file", RESOURCE_NAME});
-        }
-        finally {
+        } finally {
             System.setOut(originalOut);
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }

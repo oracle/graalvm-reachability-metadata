@@ -66,8 +66,7 @@ public class ProtocolStackTest {
             assertThat(first.getProtocolStack().printProtocolSpec(true))
                     .contains("SHARED_LOOPBACK")
                     .contains("GMS");
-        }
-        finally {
+        } finally {
             if (second != null) {
                 second.close();
             }
@@ -88,8 +87,7 @@ public class ProtocolStackTest {
             assertThat(stack.getChannel()).isSameAs(channel);
             assertThat(protocol).isInstanceOf(STATS.class);
             assertThat(protocol.getProtocolStack()).isSameAs(stack);
-        }
-        finally {
+        } finally {
             channel.close();
         }
     }
