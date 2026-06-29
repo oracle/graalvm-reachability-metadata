@@ -1,0 +1,83 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.pekko:pekko-parsing_2.13:2.0.0-M1",
+  "issueNumber": 8878,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Do not use org.apache.pekko.http.ccompat.pre213 or since213: those classes existed in 1.3.0 but are absent from 2.0.0-M1. Focus tests on org.apache.pekko.macros.LogHelper and LogHelperMacro. Because LogHelper is private[pekko], direct Scala tests that implement or call it should be in package org.apache.pekko or a subpackage.",
+    "applied_setup": [],
+    "current_library": "org.apache.pekko:pekko-parsing_2.13:1.3.0",
+    "deterministic_setup": [
+      {
+        "coordinate": "org.apache.pekko:pekko-actor_2.13:2.0.0-M1",
+        "kind": "dependency",
+        "reason": "pekko-parsing_2.13:2.0.0-M1 declares pekko-actor_2.13 as provided, and LogHelper references org.apache.pekko.event.LoggingAdapter and org.apache.pekko.annotation.InternalApi from that artifact.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.scala-lang:scala-reflect:2.13.18",
+        "kind": "dependency",
+        "reason": "pekko-parsing_2.13:2.0.0-M1 declares scala-reflect as provided, and LogHelperMacro uses scala.reflect.macros.blackbox and related reflection APIs.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8878 [Automation] java run fails for org.apache.pekko:pekko-parsing_2.13:2.0.0-M1; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 65614,
+    "issue_label": "fails-java-run",
+    "issue_number": 8878,
+    "library": "org.apache.pekko:pekko-parsing_2.13:2.0.0-M1",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.0-M1",
+    "output_tokens_used": 4208,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The artifact is an internal support module with very small public surface, so coverage may be limited to macro class loading or carefully packaged Scala macro usage.",
+      "If the generated test tries to preserve the old ccompat macro-annotation coverage, compilation will fail because those classes were removed in 2.0.0-M1."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.apache.pekko:pekko-parsing_2.13:2.0.0-M1/library-preparation-preflight/pi-generation-2026-06-29T20-00-11-345055Z.log",
+    "status": "completed",
+    "summary": "The resolved 2.0.0-M1 artifact only contains internal LogHelper macro classes and declares pekko-actor_2.13 and scala-reflect as provided dependencies; those are needed for meaningful classloading or macro coverage."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.0-M1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8878-fails-java-run-org.apache.pekko-pekko-parsing_2.13-2.0.0-M1-b368c5fa",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
