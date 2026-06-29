@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "ognl:ognl:3.3.5",
+  "issueNumber": 7430,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "ognl:ognl:3.2.21",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7430 [Automation] java run fails for ognl:ognl:3.3.5; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "17 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 82860,
+    "issue_label": "fails-java-run",
+    "issue_number": 7430,
+    "library": "ognl:ognl:3.3.5",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.3.5",
+    "output_tokens_used": 4768,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "OGNL has optional SecurityManager and JDK 9+ access-handler modes controlled by system properties, and deeper internal tests may interact with JDK SecurityManager removal or module access, but those are scenario-specific rather than prerequisite setup for meaningful library coverage.",
+      "Expression compilation uses Javassist; because Javassist is a normal transitive dependency of ognl:ognl:3.3.5, adding it manually would likely be redundant unless local Gradle resolution proves otherwise."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/ognl:ognl:3.3.5/library-preparation-preflight/pi-generation-2026-06-29T16-22-59-594072Z.log",
+    "status": "completed",
+    "summary": "OGNL is a pure in-process Java expression/navigation library; its required Javassist dependency is declared transitively by ognl:ognl:3.3.5, and normal meaningful coverage can be reached with POJO-based expression parsing/evaluation tests without Docker, extra Maven dependencies, or required environment/system properties."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.3.5",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-7430-fails-java-run-ognl-ognl-3.3.5-164be992",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
