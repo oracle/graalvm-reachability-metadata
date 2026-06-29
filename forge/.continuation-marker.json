@@ -1,0 +1,83 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.pekko:pekko-parsing_2.13:2.0.0-M1",
+  "issueNumber": 8878,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No Docker image or environment/system property appears required. For 2.0.0-M1, do not reuse tests that import org.apache.pekko.http.ccompat.*; those classes existed in 1.3.0 but are absent from the 2.0.0-M1 jar. Target the remaining org.apache.pekko.macros APIs with Scala 2.13-compatible test code.",
+    "applied_setup": [],
+    "current_library": "org.apache.pekko:pekko-parsing_2.13:1.3.0",
+    "deterministic_setup": [
+      {
+        "coordinate": "org.apache.pekko:pekko-actor_2.13:2.0.0-M1",
+        "kind": "dependency",
+        "reason": "pekko-parsing_2.13:2.0.0-M1 declares pekko-actor_2.13 as a provided dependency, and org.apache.pekko.macros.LogHelper exposes org.apache.pekko.event.LoggingAdapter.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.scala-lang:scala-reflect:2.13.18",
+        "kind": "dependency",
+        "reason": "pekko-parsing_2.13:2.0.0-M1 declares scala-reflect as a provided dependency, and its macro support classes reference scala.reflect.macros.blackbox.Context.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8878 [Automation] java run fails for org.apache.pekko:pekko-parsing_2.13:2.0.0-M1; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 22483,
+    "issue_label": "fails-java-run",
+    "issue_number": 8878,
+    "library": "org.apache.pekko:pekko-parsing_2.13:2.0.0-M1",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.0-M1",
+    "output_tokens_used": 3721,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The current failure is primarily stale test code against removed ccompat classes, not evidence of a Docker or environment setup requirement.",
+      "If the provided dependencies are not added, meaningful tests that load or use LogHelper/LogHelperMacro may fail with missing Pekko Actor or Scala Reflect classes."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.pekko:pekko-parsing_2.13:2.0.0-M1/library-preparation-preflight/pi-generation-2026-06-29T17-13-21-092720Z.log",
+    "status": "completed",
+    "summary": "The resolved 2.0.0-M1 artifact declares required Pekko Actor and Scala Reflect dependencies as Maven provided dependencies, so they are not pulled transitively by a normal testImplementation on pekko-parsing but are needed to load or exercise the remaining macro classes."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.0-M1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8878-fails-java-run-org.apache.pekko-pekko-parsing_2.13-2.0.0-M1-1ba8a726",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
