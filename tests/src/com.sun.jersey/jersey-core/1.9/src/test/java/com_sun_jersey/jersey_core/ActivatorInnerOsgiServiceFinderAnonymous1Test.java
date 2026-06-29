@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.Iterator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -136,7 +135,7 @@ public class ActivatorInnerOsgiServiceFinderAnonymous1Test {
 
         @Override
         public Dictionary getHeaders() {
-            return new Hashtable();
+            return null;
         }
 
         @Override
@@ -171,7 +170,7 @@ public class ActivatorInnerOsgiServiceFinderAnonymous1Test {
 
         @Override
         public Dictionary getHeaders(String locale) {
-            return new Hashtable();
+            return null;
         }
 
         @Override
