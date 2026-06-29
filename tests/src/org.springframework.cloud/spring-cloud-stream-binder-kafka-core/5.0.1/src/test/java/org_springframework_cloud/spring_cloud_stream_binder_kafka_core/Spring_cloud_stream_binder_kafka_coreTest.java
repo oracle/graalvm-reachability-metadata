@@ -18,6 +18,8 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.header.internals.RecordHeader;
 import org.apache.kafka.common.header.internals.RecordHeaders;
+import org.apache.kafka.common.serialization.ByteArrayDeserializer;
+import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.Test;
@@ -31,6 +33,7 @@ import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.binder.HeaderMode;
 import org.springframework.cloud.stream.binder.kafka.common.BinderHeaderMapper;
 import org.springframework.cloud.stream.binder.kafka.common.BinderHeaderMapper.NonTrustedHeaderType;
+import org.springframework.cloud.stream.binder.kafka.common.KafkaBinderEnvironmentPostProcessor;
 import org.springframework.cloud.stream.binder.kafka.common.TopicInformation;
 import org.springframework.cloud.stream.binder.kafka.properties.JaasLoginModuleConfiguration;
 import org.springframework.cloud.stream.binder.kafka.properties.KafkaBinderConfigurationProperties;
@@ -45,6 +48,9 @@ import org.springframework.cloud.stream.binder.kafka.properties.KafkaTopicProper
 import org.springframework.cloud.stream.binder.kafka.utils.BindingUtils;
 import org.springframework.cloud.stream.binder.kafka.utils.KafkaTopicUtils;
 import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.StandardEnvironment;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.integration.IntegrationMessageHeaderAccessor;
@@ -167,6 +173,29 @@ public class Spring_cloud_stream_binder_kafka_coreTest {
         assertThat(headers.lastHeader(IntegrationMessageHeaderAccessor.DELIVERY_ATTEMPT)).isNull();
         assertThat(headers.lastHeader(BinderHeaders.NATIVE_HEADERS_PRESENT)).isNull();
         assertThat(headers.lastHeader("application").value()).isEqualTo(bytes("kept"));
+    }
+
+    @Test
+    void kafkaBinderEnvironmentPostProcessorAddsByteArrayKafkaDefaultsWithoutOverridingUserProperties() {
+        ConfigurableEnvironment environment = new StandardEnvironment();
+        environment.getPropertySources().addFirst(new MapPropertySource("userProperties", Map.of(
+                "spring.kafka.producer.keySerializer", StringSerializer.class.getName())));
+
+        KafkaBinderEnvironmentPostProcessor processor = new KafkaBinderEnvironmentPostProcessor();
+        processor.postProcessEnvironment(environment, null);
+        processor.postProcessEnvironment(environment, null);
+
+        assertThat(environment.getProperty("spring.kafka.producer.keySerializer"))
+                .isEqualTo(StringSerializer.class.getName());
+        assertThat(environment.getProperty("spring.kafka.producer.valueSerializer"))
+                .isEqualTo(ByteArraySerializer.class.getName());
+        assertThat(environment.getProperty("spring.kafka.consumer.keyDeserializer"))
+                .isEqualTo(ByteArrayDeserializer.class.getName());
+        assertThat(environment.getProperty("spring.kafka.consumer.valueDeserializer"))
+                .isEqualTo(ByteArrayDeserializer.class.getName());
+        assertThat(environment.getProperty("logging.level.kafka.server.KafkaConfig")).isEqualTo("ERROR");
+        assertThat(environment.getPropertySources()).extracting(source -> source.getName())
+                .containsOnlyOnce("kafkaBinderDefaultProperties");
     }
 
     @Test
