@@ -1,0 +1,100 @@
+{
+  "add_new_library_support:2026-06-29": {
+    "timestamp": "2026-06-29T05:10:35.921072Z",
+    "library": "org.jgroups:jgroups:5.2.0.Final",
+    "starting_commit": "de5350cc2351617138029069e4865c0787e11943",
+    "ending_commit": "de0f11d1f1ddfc708b4ed5423ecdc54ec05b1c75",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "5.2.0.Final",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.769784,
+            "coveredCalls": 107,
+            "totalCalls": 139
+          },
+          "resources": {
+            "coverageRatio": 0.666667,
+            "coveredCalls": 8,
+            "totalCalls": 12
+          }
+        },
+        "coverageRatio": 0.761589,
+        "coveredCalls": 115,
+        "totalCalls": 151
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 29053,
+          "missed": 201454,
+          "ratio": 0.12604,
+          "total": 230507
+        },
+        "line": {
+          "covered": 6912,
+          "missed": 42335,
+          "ratio": 0.140354,
+          "total": 49247
+        },
+        "method": {
+          "covered": 1570,
+          "missed": 7905,
+          "ratio": 0.165699,
+          "total": 9475
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 1498,
+      "issue_label": "library-new-request",
+      "library": "org.jgroups:jgroups:5.2.0.Final",
+      "summary": "No extra Maven dependency or Docker service is needed, but meaningful JGroups coverage should run local in-process channels with deterministic loopback/JDK-logging settings.",
+      "deterministic_setup": [],
+      "agent_guidance": "Before the first JGroups class is initialized, set system properties such as `jgroups.bind_addr=127.0.0.1`, `java.net.preferIPv4Stack=true`, and `jgroups.use.jdk_logger=true`. Prefer tests that create two local `JChannel` instances, connect them to the same cluster, exchange a message or verify the shared view, and always close/disconnect channels in cleanup. Avoid tests that depend on real multicast availability outside loopback, JMX, Kerberos, JDBC/cloud discovery protocols, or external cluster nodes.",
+      "risks": [
+        "The default `new JChannel()` stack uses UDP multicast and can bind to non-loopback container interfaces, which may be flaky or noisy in CI/native-image runs unless constrained.",
+        "The artifact declares Log4J2 and SLF4J only as optional dependencies; adding them is not necessary for normal coverage and may complicate native-image behavior.",
+        "Some bundled protocols cover external integrations such as Kerberos, JDBC discovery, relay/cloud discovery, or diagnostics; those should not be required for initial meaningful coverage."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#1498 Support for org.jgroups:jgroups:5.2.0.Final; label=library-new-request; body_chars=176"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 46964,
+      "output_tokens_used": 3876,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.jgroups:jgroups:5.2.0.Final/library-preparation-preflight/pi-generation-2026-06-29T01-59-09-153721Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 1025747,
+      "cached_input_tokens_used": 13780480,
+      "output_tokens_used": 122917,
+      "iterations": 22,
+      "cost_usd": 10.5777,
+      "generated_loc": 1122,
+      "tested_library_loc": 6912,
+      "metadata_entries": 506,
+      "test_only_metadata_entries": 232,
+      "code_coverage_percent": 14.04
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.jgroups/jgroups/5.2.0.Final/src/test/java/org_jgroups/jgroups/XmlConfiguratorTest.java",
+      "metadata_file": "metadata/org.jgroups/jgroups/5.2.0.Final/reachability-metadata.json"
+    }
+  }
+}
