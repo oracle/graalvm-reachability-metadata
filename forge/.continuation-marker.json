@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.pekko:pekko-actor_2.13:2.0.0-M1",
+  "issueNumber": 8742,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "If generated tests exercise org.apache.pekko.io.dns.DnsSettings or default DNS fallback behavior, keep/add the JVM and native-image argument `--add-exports=java.base/sun.net.dns=ALL-UNNAMED`, because the artifact still reflectively reaches `sun.net.dns.ResolverConfiguration` on JDK 9+. Do not use `org.apache.pekko.actor.TypedActor`, `TypedActorExtension`, or `TypedProps` for 2.0.0-M1; those classes are present in 1.1.5 but absent from the 2.0.0-M1 jar. Use remaining classic actor APIs such as `ActorSystem`, `Props`, serialization, configuration, and reflective dynamic-access paths for coverage.",
+    "applied_setup": [],
+    "current_library": "org.apache.pekko:pekko-actor_2.13:1.1.5",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8742 [Automation] java run fails for org.apache.pekko:pekko-actor_2.13:2.0.0-M1; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "15 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 31986,
+    "issue_label": "fails-java-run",
+    "issue_number": 8742,
+    "library": "org.apache.pekko:pekko-actor_2.13:2.0.0-M1",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.0-M1",
+    "output_tokens_used": 5003,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Copying the existing 1.1.5 TypedActor tests or metadata into 2.0.0-M1 will fail compilation because the classes were removed.",
+      "Pekko TestKit is documented as an optional test dependency for actor testing, but it is not required before meaningful core pekko-actor coverage is reachable; add it only if generated tests intentionally use TestKit APIs."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.apache.pekko:pekko-actor_2.13:2.0.0-M1/library-preparation-preflight/pi-generation-2026-06-29T08-17-31-779973Z.log",
+    "status": "completed",
+    "summary": "No extra Maven dependency or Docker image is required; pekko-actor_2.13 2.0.0-M1 resolves only scala-library and typesafe config transitively, but DNS fallback coverage may need JVM/native-image module exports and old TypedActor tests must be avoided."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.0-M1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8742-fails-java-run-org.apache.pekko-pekko-actor_2.13-2.0.0-M1-db82bbcc",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
