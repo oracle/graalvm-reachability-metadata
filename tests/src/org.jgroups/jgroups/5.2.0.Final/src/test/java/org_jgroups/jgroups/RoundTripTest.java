@@ -25,8 +25,7 @@ public class RoundTripTest {
             System.setOut(replacementOut);
 
             RoundTrip.main(new String[] {"-tp", "tcp", "-h"});
-        }
-        finally {
+        } finally {
             System.setOut(originalOut);
         }
 
