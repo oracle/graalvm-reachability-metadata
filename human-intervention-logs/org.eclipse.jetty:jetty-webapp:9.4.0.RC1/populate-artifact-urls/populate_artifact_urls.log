@@ -1,0 +1,1419 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f12f6-0375-7aa3-9627-b117eb8f9aad
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.eclipse.jetty:jetty-webapp:9.4.0.RC1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [9.4.0.RC1].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067/metadata/org.eclipse.jetty/jetty-webapp/index.json
+- Entry selector: "metadata-version" = "9.4.0.RC1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 9.4.0.RC1
+- Entry metadata-version: 9.4.0.RC1
+- Entry test-version: 9.4.0.RC1
+- Entry tested-versions: [9.4.0.RC1]
+codex
+I’ll inspect the existing metadata patterns first, then verify the Jetty 9.4.0.RC1 URLs before editing only the missing fields in the selected entry.
+exec
+/usr/bin/bash -lc "rg -n \"jetty-webapp|source-code-url|test-code-url|documentation-url|repository-url|description|language\" metadata/org.eclipse.jetty -g 'index.json'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+ succeeded in 0ms:
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:9:    "description" : "Jetty ALPN Java Server provides the JDK 9+ server-side ALPN processor used by Eclipse Jetty to negotiate application protocols during TLS handshakes. It integrates Jetty's Java ALPN implementation with server connections so secure sessions can select HTTP/1.1, HTTP/2, or other supported protocols.",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:64:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:65:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:66:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-alpn/jetty-alpn-java-server/src/test",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:67:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-java-server/$version$/jetty-alpn-java-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-java-server/index.json:68:    "description" : "Jetty ALPN Java Server provides the JDK 9+ server-side ALPN processor used by Eclipse Jetty to negotiate application protocols during TLS handshakes. It registers Jetty's Java ALPN implementation with the server connector layer so secure connections can select HTTP/1.1, HTTP/2, or other supported protocols.",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:9:    "description" : "Jetty Util Ajax provides JSON and Ajax utility classes for Jetty applications. It includes parsers, generators, and converters for mapping Java objects, collections, dates, enums, and POJOs to and from JSON.",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:118:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:119:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:120:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-util-ajax/src/test",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:121:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$version$/jetty-util-ajax-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util-ajax/index.json:122:    "description" : "Jetty Util Ajax provides JSON and Ajax utility classes used by Jetty for converting Java objects, collections, dates, enums, and POJOs to and from JSON. It supplies the org.eclipse.jetty.util.ajax JSON APIs, including synchronous and asynchronous JSON parsing and generation helpers for Jetty applications.",
+metadata/org.eclipse.jetty/jetty-session/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-session/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-session/$version$/jetty-session-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-session/index.json:9:    "description" : "Jetty Session provides the core session management implementation used by Eclipse Jetty servers. It includes session managers, caches, ID management, and data store implementations for file, JDBC, object stream, and null-backed session persistence.",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:7:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:9:    "description" : "Jetty Servlet provides the servlet container layer for Eclipse Jetty, including servlet holders, contexts, filters, mappings, and session integration. It lets Jetty applications host and manage Java Servlet API components inside embedded or standalone Jetty servers.",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:60:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:61:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:62:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:63:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:64:    "description" : "Jetty Servlet provides the servlet container layer for Eclipse Jetty, including servlet holders, contexts, filters, mappings, and session integration. It lets Jetty applications host and manage Java Servlet API components inside embedded or standalone Jetty servers.",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:77:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:78:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:79:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:80:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:81:    "description" : "Jetty Servlet provides the servlet container layer for Eclipse Jetty, including servlet holders, contexts, filters, mappings, and session integration. It lets Jetty applications host and manage Java Servlet API components inside embedded or standalone Jetty servers.",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:107:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:108:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:109:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:110:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:111:    "description" : "Jetty Servlet provides the servlet container layer for Eclipse Jetty, including servlet holders, contexts, filters, mappings, and session integration. It lets Jetty applications host and manage Java Servlet API components inside embedded or standalone Jetty servers.",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:139:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:140:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:141:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:142:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:143:    "description" : "Jetty Servlet provides the servlet container layer for Eclipse Jetty, including servlet holders, contexts, filters, mappings, and session integration. It lets Jetty applications host and manage Java Servlet API components inside embedded or standalone Jetty servers.",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:156:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:157:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:158:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:159:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:160:    "description" : "Jetty Servlet provides the servlet container layer for Eclipse Jetty, including servlet holders, contexts, filters, mappings, and session integration. It lets Jetty applications host and manage Java Servlet API components inside embedded or standalone Jetty servers.",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:173:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:174:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:175:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:176:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:177:    "description" : "Jetty Servlet provides the servlet container layer for Eclipse Jetty, including servlet holders, contexts, filters, mappings, and session integration. It lets Jetty applications host and manage Java Servlet API components inside embedded or standalone Jetty servers.",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:190:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:191:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:192:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:193:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:194:    "description" : "Jetty Servlet provides the servlet container layer for Eclipse Jetty, including servlet holders, contexts, filters, mappings, and session integration. It lets Jetty applications host and manage Java Servlet API components inside embedded or standalone Jetty servers.",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:207:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:208:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:209:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:210:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:211:    "description" : "Jetty Servlet provides the servlet container layer for Eclipse Jetty, including servlet holders, contexts, filters, mappings, and session integration. It lets Jetty applications host and manage Java Servlet API components inside embedded or standalone Jetty servers.",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:224:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:225:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:226:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:227:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:228:    "description" : "Jetty Servlet provides the servlet container layer for Eclipse Jetty, including servlet holders, contexts, filters, mappings, and session integration. It lets Jetty applications host and manage Java Servlet API components inside embedded or standalone Jetty servers.",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:241:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:242:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:243:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:244:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-servlet/$version$/jetty-servlet-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:245:    "description" : "Jetty Servlet provides the servlet container layer for Eclipse Jetty, including servlet holders, contexts, filters, mappings, and session integration. It lets Jetty applications host and manage Java Servlet API components inside embedded or standalone Jetty servers.",
+metadata/org.eclipse.jetty/jetty-io/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-io/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:9:    "description" : "Jetty IO Utility provides core non-blocking I/O abstractions and utilities for Eclipse Jetty, including buffers, endpoints, and connection support. It underpins Jetty's network transport layer for Java applications that embed or extend the server.",
+metadata/org.eclipse.jetty/jetty-io/index.json:56:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:57:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-io/index.json:58:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:59:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:60:    "description" : "Jetty IO Utility provides core non-blocking I/O abstractions and utilities for Eclipse Jetty, including buffers, endpoints, and connection support. It underpins Jetty's network transport layer for Java applications that embed or extend the server.",
+metadata/org.eclipse.jetty/jetty-io/index.json:71:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:72:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-io/index.json:73:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-io/src/test",
+metadata/org.eclipse.jetty/jetty-io/index.json:74:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-io/$version$/jetty-io-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-io/index.json:75:    "description" : "Jetty IO Utility provides core I/O abstractions and utilities used by the Eclipse Jetty server, including buffers, endpoints, and connection handling support. It underpins Jetty's non-blocking network transport layer and is intended for Java applications embedding or extending Jetty.",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/$version$/jetty-alpn-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:7:    "test-code-url" : "N/A",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/$version$/jetty-alpn-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:9:    "description" : "Jetty ALPN Client provides the client-side connection factory used by Eclipse Jetty to negotiate application protocols such as HTTP/1.1 and HTTP/2 during TLS handshakes. It discovers available Jetty ALPN processors and configures SSL client connections so the selected protocol can hand off to the appropriate client connection implementation.",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:26:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/$version$/jetty-alpn-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:27:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:28:    "test-code-url" : "N/A",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:29:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/$version$/jetty-alpn-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:30:    "description" : "Jetty ALPN Client provides the client-side connection factory used by Eclipse Jetty to negotiate application protocols such as HTTP/1.1 and HTTP/2 during TLS handshakes. It discovers available Jetty ALPN processors and configures SSL client connections so the selected protocol can hand off to the appropriate client connection implementation.",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:46:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/$version$/jetty-alpn-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:47:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:48:    "test-code-url" : "N/A",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:49:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/$version$/jetty-alpn-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:50:    "description" : "Jetty ALPN Client provides the client-side connection factory used by Eclipse Jetty to negotiate application protocols such as HTTP/1.1 and HTTP/2 during TLS handshakes. It discovers available Jetty ALPN processors and configures SSL client connections so the selected protocol can hand off to the appropriate client connection implementation.",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:67:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/$version$/jetty-alpn-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:68:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:69:    "test-code-url" : "N/A",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:70:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-client/$version$/jetty-alpn-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-client/index.json:71:    "description" : "Jetty ALPN Client provides the client-side connection factory used by Eclipse Jetty to negotiate application protocols such as HTTP/1.1 and HTTP/2 during TLS handshakes. It discovers available Jetty ALPN processors and configures SSL client connections so the selected protocol can hand off to the appropriate client connection implementation.",
+metadata/org.eclipse.jetty/jetty-security/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-security/$version$/jetty-security-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-security/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-security/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-security/src/test",
+metadata/org.eclipse.jetty/jetty-security/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-security/$version$/jetty-security-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-security/index.json:9:    "description" : "Jetty Security provides authentication, authorization, login services, identity handling, and constraint enforcement used by Jetty server and web applications. It supplies servlet security handlers and authenticators that plug into Jetty's request handling pipeline.",
+metadata/org.eclipse.jetty/jetty-util/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-util/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-util/src/test",
+metadata/org.eclipse.jetty/jetty-util/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$version$/jetty-util-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-util/index.json:9:    "description" : "Utility classes for Jetty. It provides foundational helpers for resources, security, SSL, threading, statistics, and other shared infrastructure used across Jetty components.",
+metadata/org.eclipse.jetty/jetty-http/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:9:    "description" : "Jetty HTTP provides core HTTP utilities for Eclipse Jetty, including request and response metadata, headers, cookies, MIME types, and URI handling. It is used by Jetty server and client components to parse, represent, and generate HTTP protocol data.",
+metadata/org.eclipse.jetty/jetty-http/index.json:90:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:91:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:92:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:93:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:94:    "description" : "Jetty HTTP provides core HTTP utilities for Eclipse Jetty, including request and response metadata, headers, cookies, MIME types, and URI handling. It is used by Jetty server and client components to parse, represent, and generate HTTP protocol data.",
+metadata/org.eclipse.jetty/jetty-http/index.json:111:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:112:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-http/index.json:113:    "test-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-tests.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:114:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-http/index.json:115:    "description" : "Jetty HTTP provides core HTTP utilities for Eclipse Jetty, including request and response metadata, headers, cookies, MIME types, and URI handling. It is used by Jetty server and client components to parse, represent, and generate HTTP protocol data.",
+metadata/org.eclipse.jetty/jetty-client/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:7:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-client/index.json:8:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:9:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:10:    "description" : "Jetty Client is an efficient, asynchronous, non-blocking HTTP client library for Java that also supports blocking request workflows through a simple API. It provides the HttpClient implementation, request and response APIs, connection pooling, and central configuration for network parameters, redirects, and cookies.",
+metadata/org.eclipse.jetty/jetty-client/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:26:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-client/index.json:27:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:28:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:29:    "description" : "Jetty Client is an efficient, asynchronous, non-blocking HTTP client library for Java that also supports blocking request workflows through a simple API. It provides the HttpClient implementation, request and response APIs, connection pooling, and central configuration for network settings, redirects, and cookies.",
+metadata/org.eclipse.jetty/jetty-client/index.json:64:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:65:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-client/index.json:66:    "test-code-url" : "https://github.com/eclipse/jetty.project/tree/jetty-$version$/jetty-client/src/test",
+metadata/org.eclipse.jetty/jetty-client/index.json:67:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-client/$version$/jetty-client-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-client/index.json:68:    "description" : "Jetty Client is an asynchronous HTTP client library for Java. It provides the HttpClient implementation, request and response APIs, and connection management needed to send HTTP requests and handle responses synchronously or asynchronously.",
+metadata/org.eclipse.jetty/jetty-webapp/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-webapp/index.json:6:    "repository-url" : "https://github.com/eclipse/jetty.project",
+metadata/org.eclipse.jetty/jetty-webapp/index.json:7:    "test-code-url" : "https://github.com/eclipse/jetty.project/tree/jetty-$version$/jetty-webapp/src/test",
+metadata/org.eclipse.jetty/jetty-webapp/index.json:8:    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-webapp/index.json:9:    "description" : "Jetty Webapp provides Eclipse Jetty support for deploying and configuring standard Java web applications. It implements WebAppContext, descriptor processing, class loading, and web.xml/webdefault.xml handling used by Jetty servlet-based applications.",
+metadata/org.eclipse.jetty/jetty-server/index.json:4:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:5:    "repository-url": "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-server/index.json:6:    "test-code-url": "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:7:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:8:    "description": "Jetty Server provides the core Eclipse Jetty server components for accepting connections, handling requests, and serving HTTP-based applications. It can be embedded in Java applications as the foundation for Jetty-based HTTP servers, handlers, and higher-level web modules.",
+metadata/org.eclipse.jetty/jetty-server/index.json:25:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:26:    "repository-url": "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-server/index.json:27:    "test-code-url": "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:28:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:29:    "description": "Jetty Server provides the core server components of Eclipse Jetty for handling HTTP requests in Java applications. It can be embedded as the foundation for Jetty-based HTTP servers and higher-level web application modules.",
+metadata/org.eclipse.jetty/jetty-server/index.json:55:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:56:    "repository-url": "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-server/index.json:57:    "test-code-url": "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:58:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:59:    "description": "Jetty Server provides the core server components of Eclipse Jetty for handling HTTP requests in Java applications. It can be embedded as the foundation for Servlet-based web applications and higher-level Jetty modules.",
+metadata/org.eclipse.jetty/jetty-server/index.json:70:    "source-code-url": "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:71:    "repository-url": "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-server/index.json:72:    "test-code-url": "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-server/src/test",
+metadata/org.eclipse.jetty/jetty-server/index.json:73:    "documentation-url": "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$version$/jetty-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-server/index.json:74:    "description": "Jetty Server provides the core Eclipse Jetty server components for accepting connections, handling requests, and serving HTTP-based applications. It can be embedded in Java applications as the foundation for Jetty-based HTTP servers, handlers, and higher-level web modules.",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-server/$version$/jetty-alpn-server-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:7:    "test-code-url" : "N/A",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-alpn-server/$version$/jetty-alpn-server-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-alpn-server/index.json:9:    "description" : "Jetty ALPN Server provides the server-side connection factory used by Eclipse Jetty to negotiate application protocols such as HTTP/1.1 and HTTP/2 during TLS handshakes. It integrates Jetty's server connector layer with ALPN so the server can select the correct protocol implementation for each secure connection.",
+metadata/org.eclipse.jetty/jetty-ee/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/$version$/jetty-ee-$version$-sources.jar",
+metadata/org.eclipse.jetty/jetty-ee/index.json:6:    "repository-url" : "https://github.com/jetty/jetty.project",
+metadata/org.eclipse.jetty/jetty-ee/index.json:7:    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-core/jetty-ee/src/test",
+metadata/org.eclipse.jetty/jetty-ee/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-ee/$version$/jetty-ee-$version$-javadoc.jar",
+metadata/org.eclipse.jetty/jetty-ee/index.json:9:    "description" : "Jetty EE provides common Eclipse Jetty support for enterprise web application class loading. It defines defaults and helper methods for protected and hidden class patterns used by Jetty web application environments and server instances.",
+
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.eclipse.jetty/jetty-webapp/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "9.3.19.v20170502",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-sources.jar",
+    "repository-url" : "https://github.com/eclipse/jetty.project",
+    "test-code-url" : "https://github.com/eclipse/jetty.project/tree/jetty-$version$/jetty-webapp/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-javadoc.jar",
+    "description" : "Jetty Webapp provides Eclipse Jetty support for deploying and configuring standard Java web applications. It implements WebAppContext, descriptor processing, class loading, and web.xml/webdefault.xml handling used by Jetty servlet-based applications.",
+    "tested-versions" : [
+      "9.3.19.v20170502",
+      "9.3.20.v20170531",
+      "9.3.21.M0",
+      "9.3.21.RC0",
+      "9.3.21.v20170918",
+      "9.3.22.v20171030",
+      "9.3.23.v20180228",
+      "9.3.24.v20180605",
+      "9.3.25.v20180904",
+      "9.3.26.v20190403",
+      "9.3.27.v20190418",
+      "9.3.28.v20191105",
+      "9.3.29.v20201019",
+      "9.3.30.v20211001",
+      "9.4.0.M0",
+      "9.4.0.M1",
+      "9.4.0.RC0"
+    ],
+    "allowed-packages" : [
+      "org.eclipse.jetty.webapp"
+    ]
+  },
+  {
+    "metadata-version" : "9.4.0.RC1",
+    "tested-versions" : [
+      "9.4.0.RC1"
+    ],
+    "allowed-packages" : [
+      "org.eclipse.jetty.webapp"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"\\s*:\\s*\"9\\.4\\.0\\.RC1\"|\"9\\.4\\.0\\.RC1\"|\"jetty-webapp\"' metadata -g 'index.json'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+ succeeded in 0ms:
+metadata/org.eclipse.jetty/jetty-servlet/index.json:189:    "metadata-version" : "9.4.0.RC1",
+metadata/org.eclipse.jetty/jetty-servlet/index.json:196:      "9.4.0.RC1"
+metadata/org.eclipse.jetty/jetty-io/index.json:12:      "9.4.0.RC1",
+metadata/org.eclipse.jetty/jetty-security/index.json:28:      "9.4.0.RC1",
+metadata/org.eclipse.jetty/jetty-http/index.json:99:      "9.4.0.RC1",
+metadata/org.eclipse.jetty/jetty-webapp/index.json:34:    "metadata-version" : "9.4.0.RC1",
+metadata/org.eclipse.jetty/jetty-webapp/index.json:36:      "9.4.0.RC1"
+
+web search: 
+web search: Maven Central org.eclipse.jetty jetty-webapp 9.4.0.RC1 sources jar tests jar javadoc jar
+web search: 
+web search: https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-webapp/
+web search: 
+web search: https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-webapp/
+web search: 
+web search: https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-webapp/
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/9.4.0.RC1/
+web search: 
+web search: repo.maven.apache.org org/eclipse/jetty/jetty-webapp/9.4.0.RC1/ jetty-webapp-9.4.0.RC1-tests.jar
+codex
+The existing Jetty metadata already uses Maven source and Javadoc artifacts where available. I’m checking whether a Maven tests classifier exists for this exact release before falling back to the tag’s `src/test` path.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/9.4.0.RC1/jetty-webapp-9.4.0.RC1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+ succeeded in 0ms:
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>org.eclipse.jetty</groupId>
+    <artifactId>jetty-project</artifactId>
+    <version>9.4.0.RC1</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>jetty-webapp</artifactId>
+  <name>Jetty :: Webapp Application Support</name>
+  <description>Jetty web application support</description>
+  <url>http://www.eclipse.org/jetty</url>
+  <properties>
+    <bundle-symbolic-name>${project.groupId}.webapp</bundle-symbolic-name>
+  </properties>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>src/main/config/etc</directory>
+        <targetPath>org/eclipse/jetty/webapp</targetPath>
+        <filtering>false</filtering>
+        <includes>
+          <include>webdefault.xml</include>
+        </includes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <configuration>
+          <onlyAnalyze>org.eclipse.jetty.webapp.*</onlyAnalyze>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkCount>1</forkCount>
+          <reuseForks>false</reuseForks>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-xml</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty.toolchain</groupId>
+      <artifactId>jetty-test-helper</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlet</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-jmx</artifactId>
+      <version>${project.version}</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/9.4.0.RC1/jetty-webapp-9.4.0.RC1-javadoc.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 29 Jun 2026 10:39:28 GMT
+content-type: application/java-archive
+content-length: 295625
+cf-ray: a1344eb9cba22799-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 21885
+etag: "0bc159a9032dba3f5c0b4a103f1f9d33"
+last-modified: Fri, 21 Oct 2016 20:07:25 GMT
+x-checksum-md5: 0bc159a9032dba3f5c0b4a103f1f9d33
+x-checksum-sha1: 5d8f6e548d35256dd7b3bb509ec7c52e56a1bb10
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/9.4.0.RC1/jetty-webapp-9.4.0.RC1-sources.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 29 Jun 2026 10:39:28 GMT
+content-type: application/java-archive
+content-length: 82334
+cf-ray: a1344eb9cb7b27a6-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 21885
+etag: "59d3252b5ac15f867846729ca653a1fe"
+last-modified: Fri, 21 Oct 2016 20:07:25 GMT
+x-checksum-md5: 59d3252b5ac15f867846729ca653a1fe
+x-checksum-sha1: 04fcc6d7b943af6ca7efe544aad28dc19b0578d8
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/9.4.0.RC1/jetty-webapp-9.4.0.RC1-tests.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+ exited 22 in 0ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 29 Jun 2026 10:39:28 GMT
+content-type: text/html
+cf-ray: a1344eb9cc1d6a35-LYS
+cf-cache-status: HIT
+age: 2369
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/eclipse/jetty/jetty-webapp/9.4.0.RC1/jetty-webapp-9.4.0.RC1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/eclipse/jetty.project/tree/jetty-9.4.0.RC1/jetty-webapp/src/test' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+ succeeded in 179ms:
+HTTP/2 301 
+date: Mon, 29 Jun 2026 10:39:28 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/jetty/jetty.project/tree/jetty-9.4.0.RC1/jetty-webapp/src/test
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com wss://production-copilot-host.webpubsub.azure.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=mQjJT5tln4Y3Fy8YYQRf7pGJTz6Di2xVyJAZqH4kBYMjnPqYeXO48InzQbVTGsx50%2F8lvaAwz2g7UjrhX3KoVA8DUzGIJumt%2BxfY7sNBBK2Me4sSF%2B7UKJHA7cj72GsCQaR0q7QcrqYv6CGstVkza45nvseBlkBvAxictr0%2BfrZUhz5Amr0UH4r2RLzA%2B0grOso2t8VUD93PVIASwxfhG19AoUWp5lLtaUNeBWdYSTgCO5HvvA2wlXywbf%2FRbVOfbZXo3NXMVG3lejW8%2Bd8R8w%3D%3D--Mv8tn4jfl%2B58bFpn--Q8iERKgtxDdVy42kwF8fpQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1038200800.1782729568; expires=Tue, 29 Jun 2027 10:39:28 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 29 Jun 2027 10:39:28 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+content-length: 0
+x-github-request-id: 620D:1C9E20:1EEA89:18B89B:6A424B60
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/jetty/jetty.project/tree/jetty-9.4.0.RC1/jetty-webapp/src/test' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+ succeeded in 508ms:
+HTTP/2 200 
+date: Mon, 29 Jun 2026 10:39:33 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"9eb3db413528e29ee24188768f2be848"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com wss://production-copilot-host.webpubsub.azure.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=ndT09fQMsKPioTlnEqM0X7jYJObhNiEov2ag%2BDeyWWrBhFiwp%2Fs0nWADqD6ZRk83deaF1u6i5sO1oWcmVw8xspiw18mEenXiqrYv6t4PFdpyDrxiXZAeSBA%2FRrsyovKxzygPlbRmpSuOYuzjdKRflmp%2Bt%2Fppe2e8EUF5ZhphnxGSUnitc56QoQklnvPMXG20len8oH%2FjBiOEaPr6qtEs4zyafa150lFiP%2Bgf%2BI6yiQDdi9hXSRYZcGzOWonaXnNTIhTTUoA5WB%2BjVg8tmJ08nA%3D%3D--yJyUzfvBQ%2FzrSC5Y--nPjS1zR9Rc%2FWgZracJWxxQ%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.659206006.1782729572; expires=Tue, 29 Jun 2027 10:39:32 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 29 Jun 2027 10:39:32 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6210:FC7B:2085FB:1A252F:6A424B64
+
+
+codex
+For 9.4.0.RC1, Maven has sources and Javadocs, but no `tests.jar`; the versioned GitHub `src/test` path resolves successfully under the canonical `jetty/jetty.project` repository. Next I’m checking the project POM/SCM metadata so the repository root is the right canonical URL.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-project/9.4.0.RC1/jetty-project-9.4.0.RC1.pom | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/9.4.0.RC1/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/eclipse/jetty/jetty-webapp/9.4.0.RC1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/eclipse/jetty/jetty-webapp/9.4.0.RC1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="jetty-webapp-9.4.0.RC1-config.jar" title="jetty-webapp-9.4.0.RC1-config.jar">jetty-webapp-9.4.0.RC1-config.jar</a>                 2016-10-21 20:07      6141      
+<a href="jetty-webapp-9.4.0.RC1-config.jar.asc" title="jetty-webapp-9.4.0.RC1-config.jar.asc">jetty-webapp-9.4.0.RC1-config.jar.asc</a>             2016-10-21 20:07       181      
+<a href="jetty-webapp-9.4.0.RC1-config.jar.asc.asc" title="jetty-webapp-9.4.0.RC1-config.jar.asc.asc">jetty-webapp-9.4.0.RC1-config.jar.asc.asc</a>         2016-10-21 20:07       181      
+<a href="jetty-webapp-9.4.0.RC1-config.jar.asc.asc.md5" title="jetty-webapp-9.4.0.RC1-config.jar.asc.asc.md5">jetty-webapp-9.4.0.RC1-config.jar.asc.asc.md5</a>     2016-10-21 20:07        32      
+<a href="jetty-webapp-9.4.0.RC1-config.jar.asc.asc.sha1" title="jetty-webapp-9.4.0.RC1-config.jar.asc.asc.sha1">jetty-webapp-9.4.0.RC1-config.jar.asc.asc.sha...</a>  2016-10-21 20:07        40      
+<a href="jetty-webapp-9.4.0.RC1-config.jar.asc.md5" title="jetty-webapp-9.4.0.RC1-config.jar.asc.md5">jetty-webapp-9.4.0.RC1-config.jar.asc.md5</a>         2016-10-21 20:07        32      
+<a href="jetty-webapp-9.4.0.RC1-config.jar.asc.sha1" title="jetty-webapp-9.4.0.RC1-config.jar.asc.sha1">jetty-webapp-9.4.0.RC1-config.jar.asc.sha1</a>        2016-10-21 20:07        40      
+<a href="jetty-webapp-9.4.0.RC1-config.jar.md5" title="jetty-webapp-9.4.0.RC1-config.jar.md5">jetty-webapp-9.4.0.RC1-config.jar.md5</a>             2016-10-21 20:07        32      
+<a href="jetty-webapp-9.4.0.RC1-config.jar.sha1" title="jetty-webapp-9.4.0.RC1-config.jar.sha1">jetty-webapp-9.4.0.RC1-config.jar.sha1</a>            2016-10-21 20:07        40      
+<a href="jetty-webapp-9.4.0.RC1-javadoc.jar" title="jetty-webapp-9.4.0.RC1-javadoc.jar">jetty-webapp-9.4.0.RC1-javadoc.jar</a>                2016-10-21 20:07    295625      
+<a href="jetty-webapp-9.4.0.RC1-javadoc.jar.asc" title="jetty-webapp-9.4.0.RC1-javadoc.jar.asc">jetty-webapp-9.4.0.RC1-javadoc.jar.asc</a>            2016-10-21 20:07       181      
+<a href="jetty-webapp-9.4.0.RC1-javadoc.jar.asc.asc" title="jetty-webapp-9.4.0.RC1-javadoc.jar.asc.asc">jetty-webapp-9.4.0.RC1-javadoc.jar.asc.asc</a>        2016-10-21 20:07       181      
+<a href="jetty-webapp-9.4.0.RC1-javadoc.jar.asc.asc.md5" title="jetty-webapp-9.4.0.RC1-javadoc.jar.asc.asc.md5">jetty-webapp-9.4.0.RC1-javadoc.jar.asc.asc.md...</a>  2016-10-21 20:07        32      
+<a href="jetty-webapp-9.4.0.RC1-javadoc.jar.asc.asc.sha1" title="jetty-webapp-9.4.0.RC1-javadoc.jar.asc.asc.sha1">jetty-webapp-9.4.0.RC1-javadoc.jar.asc.asc.sh...</a>  2016-10-21 20:07        40      
+<a href="jetty-webapp-9.4.0.RC1-javadoc.jar.asc.md5" title="jetty-webapp-9.4.0.RC1-javadoc.jar.asc.md5">jetty-webapp-9.4.0.RC1-javadoc.jar.asc.md5</a>        2016-10-21 20:07        32      
+<a href="jetty-webapp-9.4.0.RC1-javadoc.jar.asc.sha1" title="jetty-webapp-9.4.0.RC1-javadoc.jar.asc.sha1">jetty-webapp-9.4.0.RC1-javadoc.jar.asc.sha1</a>       2016-10-21 20:07        40      
+<a href="jetty-webapp-9.4.0.RC1-javadoc.jar.md5" title="jetty-webapp-9.4.0.RC1-javadoc.jar.md5">jetty-webapp-9.4.0.RC1-javadoc.jar.md5</a>            2016-10-21 20:07        32      
+<a href="jetty-webapp-9.4.0.RC1-javadoc.jar.sha1" title="jetty-webapp-9.4.0.RC1-javadoc.jar.sha1">jetty-webapp-9.4.0.RC1-javadoc.jar.sha1</a>           2016-10-21 20:07        40      
+<a href="jetty-webapp-9.4.0.RC1-sources.jar" title="jetty-webapp-9.4.0.RC1-sources.jar">jetty-webapp-9.4.0.RC1-sources.jar</a>                2016-10-21 20:07     82334      
+<a href="jetty-webapp-9.4.0.RC1-sources.jar.asc" title="jetty-webapp-9.4.0.RC1-sources.jar.asc">jetty-webapp-9.4.0.RC1-sources.jar.asc</a>            2016-10-21 20:07       181      
+<a href="jetty-webapp-9.4.0.RC1-sources.jar.asc.asc" title="jetty-webapp-9.4.0.RC1-sources.jar.asc.asc">jetty-webapp-9.4.0.RC1-sources.jar.asc.asc</a>        2016-10-21 20:07       181      
+<a href="jetty-webapp-9.4.0.RC1-sources.jar.asc.asc.md5" title="jetty-webapp-9.4.0.RC1-sources.jar.asc.asc.md5">jetty-webapp-9.4.0.RC1-sources.jar.asc.asc.md...</a>  2016-10-21 20:07        32      
+<a href="jetty-webapp-9.4.0.RC1-sources.jar.asc.asc.sha1" title="jetty-webapp-9.4.0.RC1-sources.jar.asc.asc.sha1">jetty-webapp-9.4.0.RC1-sources.jar.asc.asc.sh...</a>  2016-10-21 20:07        40      
+<a href="jetty-webapp-9.4.0.RC1-sources.jar.asc.md5" title="jetty-webapp-9.4.0.RC1-sources.jar.asc.md5">jetty-webapp-9.4.0.RC1-sources.jar.asc.md5</a>        2016-10-21 20:07        32      
+<a href="jetty-webapp-9.4.0.RC1-sources.jar.asc.sha1" title="jetty-webapp-9.4.0.RC1-sources.jar.asc.sha1">jetty-webapp-9.4.0.RC1-sources.jar.asc.sha1</a>       2016-10-21 20:07        40      
+<a href="jetty-webapp-9.4.0.RC1-sources.jar.md5" title="jetty-webapp-9.4.0.RC1-sources.jar.md5">jetty-webapp-9.4.0.RC1-sources.jar.md5</a>            2016-10-21 20:07        32      
+<a href="jetty-webapp-9.4.0.RC1-sources.jar.sha1" title="jetty-webapp-9.4.0.RC1-sources.jar.sha1">jetty-webapp-9.4.0.RC1-sources.jar.sha1</a>           2016-10-21 20:07        40      
+<a href="jetty-webapp-9.4.0.RC1.jar" title="jetty-webapp-9.4.0.RC1.jar">jetty-webapp-9.4.0.RC1.jar</a>                        2016-10-21 20:07    120369      
+<a href="jetty-webapp-9.4.0.RC1.jar.asc" title="jetty-webapp-9.4.0.RC1.jar.asc">jetty-webapp-9.4.0.RC1.jar.asc</a>                    2016-10-21 20:07       181      
+<a href="jetty-webapp-9.4.0.RC1.jar.asc.asc" title="jetty-webapp-9.4.0.RC1.jar.asc.asc">jetty-webapp-9.4.0.RC1.jar.asc.asc</a>                2016-10-21 20:07       181      
+<a href="jetty-webapp-9.4.0.RC1.jar.asc.asc.md5" title="jetty-webapp-9.4.0.RC1.jar.asc.asc.md5">jetty-webapp-9.4.0.RC1.jar.asc.asc.md5</a>            2016-10-21 20:07        32      
+<a href="jetty-webapp-9.4.0.RC1.jar.asc.asc.sha1" title="jetty-webapp-9.4.0.RC1.jar.asc.asc.sha1">jetty-webapp-9.4.0.RC1.jar.asc.asc.sha1</a>           2016-10-21 20:07        40      
+<a href="jetty-webapp-9.4.0.RC1.jar.asc.md5" title="jetty-webapp-9.4.0.RC1.jar.asc.md5">jetty-webapp-9.4.0.RC1.jar.asc.md5</a>                2016-10-21 20:07        32      
+<a href="jetty-webapp-9.4.0.RC1.jar.asc.sha1" title="jetty-webapp-9.4.0.RC1.jar.asc.sha1">jetty-webapp-9.4.0.RC1.jar.asc.sha1</a>               2016-10-21 20:07        40      
+<a href="jetty-webapp-9.4.0.RC1.jar.md5" title="jetty-webapp-9.4.0.RC1.jar.md5">jetty-webapp-9.4.0.RC1.jar.md5</a>                    2016-10-21 20:07        32      
+<a href="jetty-webapp-9.4.0.RC1.jar.sha1" title="jetty-webapp-9.4.0.RC1.jar.sha1">jetty-webapp-9.4.0.RC1.jar.sha1</a>                   2016-10-21 20:07        40      
+<a href="jetty-webapp-9.4.0.RC1.pom" title="jetty-webapp-9.4.0.RC1.pom">jetty-webapp-9.4.0.RC1.pom</a>                        2016-10-21 20:07      2350      
+<a href="jetty-webapp-9.4.0.RC1.pom.asc" title="jetty-webapp-9.4.0.RC1.pom.asc">jetty-webapp-9.4.0.RC1.pom.asc</a>                    2016-10-21 20:07       181      
+<a href="jetty-webapp-9.4.0.RC1.pom.asc.asc" title="jetty-webapp-9.4.0.RC1.pom.asc.asc">jetty-webapp-9.4.0.RC1.pom.asc.asc</a>                2016-10-21 20:07       181      
+<a href="jetty-webapp-9.4.0.RC1.pom.asc.asc.md5" title="jetty-webapp-9.4.0.RC1.pom.asc.asc.md5">jetty-webapp-9.4.0.RC1.pom.asc.asc.md5</a>            2016-10-21 20:07        32      
+<a href="jetty-webapp-9.4.0.RC1.pom.asc.asc.sha1" title="jetty-webapp-9.4.0.RC1.pom.asc.asc.sha1">jetty-webapp-9.4.0.RC1.pom.asc.asc.sha1</a>           2016-10-21 20:07        40      
+<a href="jetty-webapp-9.4.0.RC1.pom.asc.md5" title="jetty-webapp-9.4.0.RC1.pom.asc.md5">jetty-webapp-9.4.0.RC1.pom.asc.md5</a>                2016-10-21 20:07        32      
+<a href="jetty-webapp-9.4.0.RC1.pom.asc.sha1" title="jetty-webapp-9.4.0.RC1.pom.asc.sha1">jetty-webapp-9.4.0.RC1.pom.asc.sha1</a>               2016-10-21 20:07        40      
+<a href="jetty-webapp-9.4.0.RC1.pom.md5" title="jetty-webapp-9.4.0.RC1.pom.md5">jetty-webapp-9.4.0.RC1.pom.md5</a>                    2016-10-21 20:07        32      
+<a href="jetty-webapp-9.4.0.RC1.pom.sha1" title="jetty-webapp-9.4.0.RC1.pom.sha1">jetty-webapp-9.4.0.RC1.pom.sha1</a>                   2016-10-21 20:07        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+ succeeded in 3ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.eclipse.jetty</groupId>
+  <artifactId>jetty-project</artifactId>
+  <version>9.4.0.RC1</version>
+  
+  <name>Jetty :: Project</name>
+  <description>The Eclipse Jetty Project</description>
+  <packaging>pom</packaging>
+  <url>https://eclipse.org/jetty</url>
+  <inceptionYear>1995</inceptionYear>
+
+  <properties>
+    <jetty.url>http://www.eclipse.org/jetty</jetty.url>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <build-support-version>1.4</build-support-version>
+    <slf4j-version>1.6.6</slf4j-version>
+    <jetty-test-policy-version>1.2</jetty-test-policy-version>
+    <alpn.api.version>1.1.3.v20160715</alpn.api.version>
+    <jsp.version>8.5.4</jsp.version>
+    <!-- default values are unsupported, but required to be defined for reactor sanity reasons -->
+    <alpn.version>undefined</alpn.version>
+  </properties>
+
+  <licenses>
+    <license>
+      <name>Apache Software License - Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+    <license>
+      <name>Eclipse Public License - Version 1.0</name>
+      <url>http://www.eclipse.org/org/documents/epl-v10.php</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:https://github.com/eclipse/jetty.project.git</connection>
+    <developerConnection>scm:git:git@github.com:eclipse/jetty.project.git</developerConnection>
+    <url>https://github.com/eclipse/jetty.project</url>
+    <tag>jetty-9.3.13.M0</tag>
+  </scm>
+
+  <modules>
+    <module>jetty-ant</module>
+    <module>jetty-util</module>
+    <module>jetty-jmx</module>
+    <module>jetty-io</module>
+    <module>jetty-http</module>
+    <module>jetty-http2</module>
+    <module>jetty-continuation</module>
+    <module>jetty-server</module>
+    <module>jetty-xml</module>
+    <module>jetty-security</module>
+    <module>jetty-servlet</module>
+    <module>jetty-webapp</module>
+    <module>jetty-fcgi</module>
+    <module>jetty-websocket</module>
+    <module>jetty-servlets</module>
+    <module>jetty-util-ajax</module>
+    <module>apache-jsp</module>
+    <module>apache-jstl</module>
+    <module>jetty-maven-plugin</module>
+    <module>jetty-jspc-maven-plugin</module>
+    <module>jetty-deploy</module>
+    <module>jetty-start</module>
+    <module>jetty-plus</module>
+    <module>jetty-annotations</module>
+    <module>jetty-jndi</module>
+    <module>jetty-jaas</module>
+    <module>jetty-cdi</module>
+    <module>jetty-spring</module>
+    <module>jetty-client</module>
+    <module>jetty-proxy</module>
+    <module>jetty-jaspi</module>
+    <module>jetty-rewrite</module>
+    <module>jetty-nosql</module>
+    <module>jetty-infinispan</module>
+    <module>jetty-gcloud</module>
+    <module>jetty-memcached</module>
+    <module>jetty-unixsocket</module>
+    <module>tests</module>
+    <module>examples</module>
+    <module>jetty-quickstart</module>
+    <module>jetty-distribution</module>
+    <module>jetty-runner</module>
+    <module>jetty-http-spi</module>
+    <module>jetty-osgi</module>
+    <module>jetty-alpn</module>
+    <module>jetty-home</module>
+    <!-- modules that need fixed and added back, or simply dropped and not maintained -->
+    <!-- <module>jetty-rhttp</module> -->
+    <!-- <module>jetty-overlay-deployer</module> -->
+  </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-java</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>[3.0.0,)</version>
+                  <message>[ERROR] OLD MAVEN [${maven.version}] in use, Jetty ${project.version} requires Maven 3.0.0 or newer</message>
+                </requireMavenVersion>
+                <requireJavaVersion>
+                  <version>[1.8,)</version>
+                  <message>[ERROR] OLD JDK [${java.version}] in use. Jetty ${project.version} requires JDK 1.8.0 or newer</message>
+                </requireJavaVersion>
+                <versionTxtRule implementation="org.eclipse.jetty.toolchain.enforcer.rules.VersionTxtRule" />
+                <versionOsgiRule implementation="org.eclipse.jetty.toolchain.enforcer.rules.RequireOsgiCompatibleVersionRule" />
+                <versionRedhatRule implementation="org.eclipse.jetty.toolchain.enforcer.rules.RequireRedhatCompatibleVersionRule" />
+                <versionDebianRule implementation="org.eclipse.jetty.toolchain.enforcer.rules.RequireDebianCompatibleVersionRule" />
+              </rules>
+            </configuration>
+          </execution>
+          <execution>
+            <id>ban-junit-dep.jar</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <bannedDependencies>
+                  <excludes>
+                    <exclude>junit:junit-dep:*:jar</exclude>
+                  </excludes>
+                  <searchTransitive>true</searchTransitive>
+                  <message>We use junit.jar, not junit-dep.jar (as of junit 4.11, hamcrest is no longer embedded)</message>
+                </bannedDependencies>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.eclipse.jetty.toolchain</groupId>
+            <artifactId>jetty-build-support</artifactId>
+            <version>${build-support-version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.7.7.201606060606</version>
+        <configuration>
+          <excludes>
+            <!-- build tools -->
+            <exclude>**/org/eclipse/jetty/ant/**</exclude>
+            <exclude>**/org/eclipse/jetty/maven/**</exclude>
+            <exclude>**/org/eclipse/jetty/jspc/**</exclude>
+            <!-- example code / documentation -->
+            <exclude>**/org/eclipse/jetty/embedded/**</exclude>
+            <exclude>**/org/eclipse/jetty/asyncrest/**</exclude>
+            <exclude>**/org/eclipse/jetty/demo/**</exclude>
+            <!-- special environments / late integrations -->
+            <exclude>**/org/eclipse/jetty/gcloud/**</exclude>
+            <exclude>**/org/eclipse/jetty/infinispan/**</exclude>
+            <exclude>**/org/eclipse/jetty/osgi/**</exclude>
+            <exclude>**/org/eclipse/jetty/spring/**</exclude>
+            <exclude>**/org/eclipse/jetty/http/spi/**</exclude>
+            <!-- test classes -->
+            <exclude>**/org/eclipse/jetty/tests/**</exclude>
+            <exclude>**/org/eclipse/jetty/test/**</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <id>jacoco-initialize</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>jacoco-site</id>
+            <phase>package</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <!-- list of classes that you want to see in the report.
+                   Specify a narrow list of multi-module project
+                   classes you want to see here. 
+                   This is useful to remove 3rd party library classes
+                   from the report. -->
+              <includes>
+                <include>**/org/eclipse/jetty/**</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>named-logging-enforcement</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <verbose>true</verbose>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <targetJdk>1.8</targetJdk>
+          <rulesets>
+            <ruleset>jetty/pmd_logging_ruleset.xml</ruleset>
+          </rulesets>
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/eclipse/jetty.project' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/jetty/jetty.project' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+ succeeded in 195ms:
+HTTP/2 301 
+date: Mon, 29 Jun 2026 10:39:38 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With,Accept-Encoding, Accept, X-Requested-With
+location: https://github.com/jetty/jetty.project
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: origin-when-cross-origin, strict-origin-when-cross-origin
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com wss://production-copilot-host.webpubsub.azure.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=p2G2rc76FI%2FsLYuw9GVnZrbJTDv7w%2Bcu0ah5hODP4QhcCclN0YDeoGCB81HKGaYh5HFPqcfX0bqszNO5TpKWE5KYiakNdB6srWntUuqVax%2Bi9devTSgPiwo42FLCcpaVgSgbhLWc0s0NomSex%2F%2BkzXKZFfRh6XKFKw9zeggJDtDRZs16LV%2Fl%2FQnShFet2m%2BspNsEufiV03unKvXlR1szWO5EUY%2BlwYYOn95%2BZl%2FMXfTSCtzVi9OXV58tcKqT09g8JnzGgMZjGhwtw%2FLnyPxRqA%3D%3D--TPpl81%2FOw6P8Xn7A--aibUm%2Fe9KU1i6DVdhC8FFg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2071566414.1782729577; expires=Tue, 29 Jun 2027 10:39:37 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 29 Jun 2027 10:39:37 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+content-length: 0
+x-github-request-id: 6204:1BBDE2:2117AF:1A804B:6A424B69
+
+
+ succeeded in 588ms:
+HTTP/2 200 
+date: Mon, 29 Jun 2026 10:39:38 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"dd1a157106078259fb369ef403a33aee"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com wss://production-copilot-host.webpubsub.azure.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=w56LBMQ2NH7oPXqEjQqI6WkKPlT68zXjFDuqG8SfDAYoKY8oZChjUt4wXwcvwMsqd%2BK1wTzTYU5%2FexuhVYdUASf3Hg5N2e7SwF1JWsYGhCBN9t0CpsHaf4FJN%2BTjB1EbYi1Tppfrq%2FlaBmhPa0%2FdfmgGxlIT%2FkT2LozniwwCmp9EdSs8LTfCXqi373GYwuBJFXsZgdeIV%2BnZRWe7N5P7U1nUDMYR8WlDNZtegtADLIq71DNlQIYVqBbENDh%2BG1In%2BLCT9JJ3MEBa7cmOANy98A%3D%3D--IUwFAAGCV01cAUB2--SU9J%2FqMWASndutBmeln38Q%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.1418592630.1782729577; expires=Tue, 29 Jun 2027 10:39:37 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 29 Jun 2027 10:39:37 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6210:FC7B:20D592:1A6508:6A424B69
+
+
+web search: 
+web search: https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/9.4.0.RC1/jetty-webapp-9.4.0.RC1.pom
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/9.4.0.RC1 jetty-webapp-9.4.0.RC1-javadoc.jar sources.jar
+web search: 
+web search: Maven Repository org.eclipse.jetty jetty-webapp 9.4.0.RC1
+web search: 
+web search: https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-webapp/
+web search: 
+web search: https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-webapp/
+codex
+I found the canonical repository now resolves at `github.com/jetty/jetty.project`; the older `github.com/eclipse/jetty.project` URL redirects there. I’m going to add the missing Maven source/Javadoc URLs, the GitHub test path for the `jetty-$version$` tag, the repository root, and the two-sentence description; no `language` field is needed because this is not a Kotlin, Groovy, or Scala-specific artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067/metadata/org.eclipse.jetty/jetty-webapp/index.json
+diff --git a/metadata/org.eclipse.jetty/jetty-webapp/index.json b/metadata/org.eclipse.jetty/jetty-webapp/index.json
+index b3c36f98366fcec2161fdc345f79d1d040d8154c..9c4b1cb5db28e8d9f94646e7795a4413149ad5d7
+--- a/metadata/org.eclipse.jetty/jetty-webapp/index.json
++++ b/metadata/org.eclipse.jetty/jetty-webapp/index.json
+@@ -32,6 +32,11 @@
+   },
+   {
+     "metadata-version" : "9.4.0.RC1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-sources.jar",
++    "repository-url" : "https://github.com/jetty/jetty.project",
++    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-webapp/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-javadoc.jar",
++    "description" : "Jetty Webapp provides Eclipse Jetty support for deploying and configuring standard Java web applications. It implements WebAppContext, descriptor processing, class loading, and web.xml/webdefault.xml handling used by Jetty servlet-based applications.",
+     "tested-versions" : [
+       "9.4.0.RC1"
+     ],
+
+diff --git a/metadata/org.eclipse.jetty/jetty-webapp/index.json b/metadata/org.eclipse.jetty/jetty-webapp/index.json
+index b3c36f98366fcec2161fdc345f79d1d040d8154c..9c4b1cb5db28e8d9f94646e7795a4413149ad5d7
+--- a/metadata/org.eclipse.jetty/jetty-webapp/index.json
++++ b/metadata/org.eclipse.jetty/jetty-webapp/index.json
+@@ -32,6 +32,11 @@
+   },
+   {
+     "metadata-version" : "9.4.0.RC1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-sources.jar",
++    "repository-url" : "https://github.com/jetty/jetty.project",
++    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-webapp/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-javadoc.jar",
++    "description" : "Jetty Webapp provides Eclipse Jetty support for deploying and configuring standard Java web applications. It implements WebAppContext, descriptor processing, class loading, and web.xml/webdefault.xml handling used by Jetty servlet-based applications.",
+     "tested-versions" : [
+       "9.4.0.RC1"
+     ],
+
+codex
+The file is patched. I’ll do a quick structural check on the JSON and run the targeted metadata validation for this coordinate if the build can do it without needing broader test setup.
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.eclipse.jetty/jetty-webapp/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+exec
+/usr/bin/bash -lc "sed -n '28,52p' metadata/org.eclipse.jetty/jetty-webapp/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+ succeeded in 0ms:
+ succeeded in 0ms:
+    ],
+    "allowed-packages" : [
+      "org.eclipse.jetty.webapp"
+    ]
+  },
+  {
+    "metadata-version" : "9.4.0.RC1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-sources.jar",
+    "repository-url" : "https://github.com/jetty/jetty.project",
+    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-webapp/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-javadoc.jar",
+    "description" : "Jetty Webapp provides Eclipse Jetty support for deploying and configuring standard Java web applications. It implements WebAppContext, descriptor processing, class loading, and web.xml/webdefault.xml handling used by Jetty servlet-based applications.",
+    "tested-versions" : [
+      "9.4.0.RC1"
+    ],
+    "allowed-packages" : [
+      "org.eclipse.jetty.webapp"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.eclipse.jetty/jetty-webapp/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+ succeeded in 0ms:
+diff --git i/metadata/org.eclipse.jetty/jetty-webapp/index.json w/metadata/org.eclipse.jetty/jetty-webapp/index.json
+index b3c36f9836..9c4b1cb5db 100644
+--- i/metadata/org.eclipse.jetty/jetty-webapp/index.json
++++ w/metadata/org.eclipse.jetty/jetty-webapp/index.json
+@@ -32,6 +32,11 @@
+   },
+   {
+     "metadata-version" : "9.4.0.RC1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-sources.jar",
++    "repository-url" : "https://github.com/jetty/jetty.project",
++    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-webapp/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-javadoc.jar",
++    "description" : "Jetty Webapp provides Eclipse Jetty support for deploying and configuring standard Java web applications. It implements WebAppContext, descriptor processing, class loading, and web.xml/webdefault.xml handling used by Jetty servlet-based applications.",
+     "tested-versions" : [
+       "9.4.0.RC1"
+     ],
+
+diff --git a/metadata/org.eclipse.jetty/jetty-webapp/index.json b/metadata/org.eclipse.jetty/jetty-webapp/index.json
+index b3c36f98366fcec2161fdc345f79d1d040d8154c..9c4b1cb5db28e8d9f94646e7795a4413149ad5d7
+--- a/metadata/org.eclipse.jetty/jetty-webapp/index.json
++++ b/metadata/org.eclipse.jetty/jetty-webapp/index.json
+@@ -32,6 +32,11 @@
+   },
+   {
+     "metadata-version" : "9.4.0.RC1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-sources.jar",
++    "repository-url" : "https://github.com/jetty/jetty.project",
++    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-webapp/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-javadoc.jar",
++    "description" : "Jetty Webapp provides Eclipse Jetty support for deploying and configuring standard Java web applications. It implements WebAppContext, descriptor processing, class loading, and web.xml/webdefault.xml handling used by Jetty servlet-based applications.",
+     "tested-versions" : [
+       "9.4.0.RC1"
+     ],
+
+codex
+The JSON parses cleanly and the diff is scoped to the requested entry. I’m running `checkMetadataFiles` for `org.eclipse.jetty:jetty-webapp:9.4.0.RC1` now to catch any repository-specific validation rule.
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.eclipse.jetty:jetty-webapp:9.4.0.RC1 --stacktrace' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+diff --git a/metadata/org.eclipse.jetty/jetty-webapp/index.json b/metadata/org.eclipse.jetty/jetty-webapp/index.json
+index b3c36f98366fcec2161fdc345f79d1d040d8154c..9c4b1cb5db28e8d9f94646e7795a4413149ad5d7
+--- a/metadata/org.eclipse.jetty/jetty-webapp/index.json
++++ b/metadata/org.eclipse.jetty/jetty-webapp/index.json
+@@ -32,6 +32,11 @@
+   },
+   {
+     "metadata-version" : "9.4.0.RC1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-sources.jar",
++    "repository-url" : "https://github.com/jetty/jetty.project",
++    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-webapp/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-javadoc.jar",
++    "description" : "Jetty Webapp provides Eclipse Jetty support for deploying and configuring standard Java web applications. It implements WebAppContext, descriptor processing, class loading, and web.xml/webdefault.xml handling used by Jetty servlet-based applications.",
+     "tested-versions" : [
+       "9.4.0.RC1"
+     ],
+
+ exited 1 in 7656ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.eclipse.jetty:jetty-webapp:9.4.0.RC1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067/metadata/org.eclipse.jetty/jetty-webapp/9.4.0.RC1/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.eclipse.jetty:jetty-webapp:9.4.0.RC1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067/metadata/org.eclipse.jetty/jetty-webapp/9.4.0.RC1/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.execution.plan.DefaultPlanExecutor.process(DefaultPlanExecutor.java:111)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.executeWithServices(DefaultTaskExecutionGraph.java:146)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph.execute(DefaultTaskExecutionGraph.java:131)
+	at org.gradle.execution.SelectedTaskExecutionAction.execute(SelectedTaskExecutionAction.java:35)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:54)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor$ExecuteTasks.call(BuildOperationFiringBuildWorkerExecutor.java:43)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.execution.BuildOperationFiringBuildWorkerExecutor.execute(BuildOperationFiringBuildWorkerExecutor.java:40)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.lambda$executeTasks$10(DefaultBuildLifecycleController.java:313)
+	at org.gradle.internal.model.StateTransitionController.doTransition(StateTransitionController.java:266)
+	at org.gradle.internal.model.StateTransitionController.lambda$tryTransition$8(StateTransitionController.java:177)
+	at org.gradle.internal.work.DefaultSynchronizer.withLock(DefaultSynchronizer.java:45)
+	at org.gradle.internal.model.StateTransitionController.tryTransition(StateTransitionController.java:177)
+	at org.gradle.internal.build.DefaultBuildLifecycleController.executeTasks(DefaultBuildLifecycleController.java:304)
+	at org.gradle.internal.build.DefaultBuildWorkGraphController$DefaultBuildWorkGraph.runWork(DefaultBuildWorkGraphController.java:220)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:263)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:127)
+	at org.gradle.composite.internal.DefaultBuildController.doRun(DefaultBuildController.java:181)
+	at org.gradle.composite.internal.DefaultBuildController.access$000(DefaultBuildController.java:50)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.lambda$run$0(DefaultBuildController.java:198)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:198)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.eclipse.jetty:jetty-webapp:9.4.0.RC1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067/metadata/org.eclipse.jetty/jetty-webapp/9.4.0.RC1/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 57 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+9 actionable tasks: 1 executed, 8 up-to-dateBUILD FAILED in 7s
+
+
+codex
+The targeted `checkMetadataFiles` task fails before URL-specific validation because this entry has no `metadata/org.eclipse.jetty/jetty-webapp/9.4.0.RC1/reachability-metadata.json` directory/file. That looks outside the requested URL/description fields, so I’m leaving it unchanged and checking for any narrower index validation task.
+exec
+/usr/bin/bash -lc './gradlew tasks --all | rg -n "Index|index|Metadata|metadata"' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+ succeeded in 1356ms:
+12:GraalVM Reachability Metadata TCK
+18:Tasks runnable from root project 'reachability-metadata'
+39:artifactTransforms - Displays the Artifact Transforms that can be executed in root project 'reachability-metadata'.
+40:buildEnvironment - Displays all buildscript dependencies declared in root project 'reachability-metadata'.
+41:dependencies - Displays all dependencies declared in root project 'reachability-metadata'.
+42:dependencyInsight - Displays the insight into a specific dependency in root project 'reachability-metadata'.
+45:outgoingVariants - Displays the outgoing variants of root project 'reachability-metadata'.
+46:projects - Displays the sub-projects of root project 'reachability-metadata'.
+47:properties - Displays the properties of root project 'reachability-metadata'.
+48:resolvableConfigurations - Displays the configurations that can be resolved in root project 'reachability-metadata'.
+49:tasks - Displays the tasks runnable from root project 'reachability-metadata'.
+51:Metadata tasks
+53:addLibraryAsLatestMetadataIndexJson - Marks given coordinates as latest in metadata/group/artifact/index.json
+54:addLibraryMetadataIndexJson - Adds given coordinates to metadata/group/artifact/index.json without changing the latest entry
+58:checkMetadataFiles - Checks content of metadata files for matching coordinates
+59:contribute - Generates metadata and prepares pull request for contibuting on metadata repository based on provided tests.
+60:discoverArtifactMetadata - Uses a coding agent command to discover artifact metadata for a single coordinate and stores it under build/.
+67:generateChangedIndexFileCoordinatesList - Returns a list of changed coordinates for validation based on git diff
+68:generateChangedMetadataTestMatrix - Returns matrix definition populated with changed coordinates and batched tested versions from metadata index files
+73:generateLibraryStats - Generates local library stats and updates stats/<group>/<artifact>/<metadata-version>/stats.json
+76:generateMetadata - Generates metadata based on provided tests.
+83:mergeNativeTraceMetadata - Merges runtime metadata trace output directories with native-image-utils generate
+84:populateArtifactURLs - Uses a coding agent command to fill source-code-url, repository-url, test-code-url, documentation-url, description, and language in matching metadata index entries.
+86:scaffold - Creates a metadata and test scaffold for the given coordindates
+87:splitTestOnlyMetadata - Moves test-only entries from library reachability metadata into test resources metadata.
+91:package - Packages current repository to 'build/graalvm-reachability-metadata-1.0.0-SNAPSHOT.zip'
+98:diff - Tests GraalVM Reflection Metadata that was changed between 'baseCommit' and 'newCommit'
+108:testInfra - Runs clean and pullAllowedDockerImages, then runs (validateIndexFiles, checkstyle, spotlessCheck, checkMetadataFiles, fetchExistingLibrariesWithNewerVersions, test, jacocoTestReport, listLibraryJars, generateDynamicAccessReport, generateDynamicAccessCoverageReport, generateLibraryStats, listTopCoordinatesByMetric, generateTopCoordinatesByMetricMatrix, listCoordinates, generateDependencyGraph, splitTestOnlyMetadata) concurrently with isolated logs for a single coordinate.
+110:validateIndexFiles - Checks content of index.json files for matching coordinates or files
+147:[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067/build/reports/problems/problems-report.html
+
+exec
+/usr/bin/bash -lc 'find metadata/org.eclipse.jetty/jetty-webapp -maxdepth 2 -type f -print | sort' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+ succeeded in 0ms:
+metadata/org.eclipse.jetty/jetty-webapp/9.3.19.v20170502/reachability-metadata.json
+metadata/org.eclipse.jetty/jetty-webapp/index.json
+
+diff --git a/metadata/org.eclipse.jetty/jetty-webapp/index.json b/metadata/org.eclipse.jetty/jetty-webapp/index.json
+index b3c36f98366fcec2161fdc345f79d1d040d8154c..9c4b1cb5db28e8d9f94646e7795a4413149ad5d7
+--- a/metadata/org.eclipse.jetty/jetty-webapp/index.json
++++ b/metadata/org.eclipse.jetty/jetty-webapp/index.json
+@@ -32,6 +32,11 @@
+   },
+   {
+     "metadata-version" : "9.4.0.RC1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-sources.jar",
++    "repository-url" : "https://github.com/jetty/jetty.project",
++    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-webapp/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-javadoc.jar",
++    "description" : "Jetty Webapp provides Eclipse Jetty support for deploying and configuring standard Java web applications. It implements WebAppContext, descriptor processing, class loading, and web.xml/webdefault.xml handling used by Jetty servlet-based applications.",
+     "tested-versions" : [
+       "9.4.0.RC1"
+     ],
+
+codex
+There is a narrower `validateIndexFiles` task, which is the right fit for this change because it checks the index JSON entries rather than requiring reachability metadata files to exist.
+exec
+/usr/bin/bash -lc './gradlew validateIndexFiles -Pcoordinates=org.eclipse.jetty:jetty-webapp:9.4.0.RC1 --stacktrace' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+diff --git a/metadata/org.eclipse.jetty/jetty-webapp/index.json b/metadata/org.eclipse.jetty/jetty-webapp/index.json
+index b3c36f98366fcec2161fdc345f79d1d040d8154c..9c4b1cb5db28e8d9f94646e7795a4413149ad5d7
+--- a/metadata/org.eclipse.jetty/jetty-webapp/index.json
++++ b/metadata/org.eclipse.jetty/jetty-webapp/index.json
+@@ -32,6 +32,11 @@
+   },
+   {
+     "metadata-version" : "9.4.0.RC1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-sources.jar",
++    "repository-url" : "https://github.com/jetty/jetty.project",
++    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-webapp/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-javadoc.jar",
++    "description" : "Jetty Webapp provides Eclipse Jetty support for deploying and configuring standard Java web applications. It implements WebAppContext, descriptor processing, class loading, and web.xml/webdefault.xml handling used by Jetty servlet-based applications.",
+     "tested-versions" : [
+       "9.4.0.RC1"
+     ],
+
+ succeeded in 636ms:
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :validateIndexFiles
+✅ metadata/org.eclipse.jetty/jetty-webapp/index.json: Valid
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 634ms
+9 actionable tasks: 1 executed, 8 up-to-date
+
+codex
+Index validation passed. I’m collecting the final file location and line number so the summary points exactly at the changed entry.
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.eclipse.jetty/jetty-webapp/index.json | sed -n '32,44p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+ succeeded in 0ms:
+    32	  },
+    33	  {
+    34	    "metadata-version" : "9.4.0.RC1",
+    35	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-sources.jar",
+    36	    "repository-url" : "https://github.com/jetty/jetty.project",
+    37	    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-webapp/src/test",
+    38	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-javadoc.jar",
+    39	    "description" : "Jetty Webapp provides Eclipse Jetty support for deploying and configuring standard Java web applications. It implements WebAppContext, descriptor processing, class loading, and web.xml/webdefault.xml handling used by Jetty servlet-based applications.",
+    40	    "tested-versions" : [
+    41	      "9.4.0.RC1"
+    42	    ],
+    43	    "allowed-packages" : [
+    44	      "org.eclipse.jetty.webapp"
+
+exec
+/usr/bin/bash -lc 'git status --short -- metadata/org.eclipse.jetty/jetty-webapp/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067
+ succeeded in 0ms:
+ M metadata/org.eclipse.jetty/jetty-webapp/index.json
+
+diff --git a/metadata/org.eclipse.jetty/jetty-webapp/index.json b/metadata/org.eclipse.jetty/jetty-webapp/index.json
+index b3c36f98366fcec2161fdc345f79d1d040d8154c..9c4b1cb5db28e8d9f94646e7795a4413149ad5d7
+--- a/metadata/org.eclipse.jetty/jetty-webapp/index.json
++++ b/metadata/org.eclipse.jetty/jetty-webapp/index.json
+@@ -32,6 +32,11 @@
+   },
+   {
+     "metadata-version" : "9.4.0.RC1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-sources.jar",
++    "repository-url" : "https://github.com/jetty/jetty.project",
++    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-webapp/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-javadoc.jar",
++    "description" : "Jetty Webapp provides Eclipse Jetty support for deploying and configuring standard Java web applications. It implements WebAppContext, descriptor processing, class loading, and web.xml/webdefault.xml handling used by Jetty servlet-based applications.",
+     "tested-versions" : [
+       "9.4.0.RC1"
+     ],
+
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067/metadata/org.eclipse.jetty/jetty-webapp/index.json:34) for `metadata-version` `9.4.0.RC1`.
+
+Set:
+```text
+source-code-url: https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-sources.jar
+repository-url: https://github.com/jetty/jetty.project
+test-code-url: https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-webapp/src/test
+documentation-url: https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-javadoc.jar
+```
+
+No `language` field was added; this is not Kotlin, Groovy, or Scala-specific.
+
+Verification:
+- `jq empty metadata/org.eclipse.jetty/jetty-webapp/index.json` passed.
+- `./gradlew validateIndexFiles -Pcoordinates=org.eclipse.jetty:jetty-webapp:9.4.0.RC1 --stacktrace` passed.
+- `./gradlew checkMetadataFiles ...` failed because `metadata/org.eclipse.jetty/jetty-webapp/9.4.0.RC1/reachability-metadata.json` is missing, which is outside the requested field update.
+diff --git a/metadata/org.eclipse.jetty/jetty-webapp/index.json b/metadata/org.eclipse.jetty/jetty-webapp/index.json
+index b3c36f98366fcec2161fdc345f79d1d040d8154c..9c4b1cb5db28e8d9f94646e7795a4413149ad5d7
+--- a/metadata/org.eclipse.jetty/jetty-webapp/index.json
++++ b/metadata/org.eclipse.jetty/jetty-webapp/index.json
+@@ -32,6 +32,11 @@
+   },
+   {
+     "metadata-version" : "9.4.0.RC1",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-sources.jar",
++    "repository-url" : "https://github.com/jetty/jetty.project",
++    "test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-webapp/src/test",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-javadoc.jar",
++    "description" : "Jetty Webapp provides Eclipse Jetty support for deploying and configuring standard Java web applications. It implements WebAppContext, descriptor processing, class loading, and web.xml/webdefault.xml handling used by Jetty servlet-based applications.",
+     "tested-versions" : [
+       "9.4.0.RC1"
+     ],
+
+tokens used
+101,360
+Updated [index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067/metadata/org.eclipse.jetty/jetty-webapp/index.json:34) for `metadata-version` `9.4.0.RC1`.
+
+Set:
+```text
+source-code-url: https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-sources.jar
+repository-url: https://github.com/jetty/jetty.project
+test-code-url: https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-webapp/src/test
+documentation-url: https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-webapp/$version$/jetty-webapp-$version$-javadoc.jar
+```
+
+No `language` field was added; this is not Kotlin, Groovy, or Scala-specific.
+
+Verification:
+- `jq empty metadata/org.eclipse.jetty/jetty-webapp/index.json` passed.
+- `./gradlew validateIndexFiles -Pcoordinates=org.eclipse.jetty:jetty-webapp:9.4.0.RC1 --stacktrace` passed.
+- `./gradlew checkMetadataFiles ...` failed because `metadata/org.eclipse.jetty/jetty-webapp/9.4.0.RC1/reachability-metadata.json` is missing, which is outside the requested field update.
+Ran agent for org.eclipse.jetty:jetty-webapp:9.4.0.RC1 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067/build/agent-url-discovery-logs/org.eclipse.jetty-jetty-webapp-9.4.0.RC1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8856-6011e067/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m
+9 actionable tasks: 1 executed, 8 up-to-date
