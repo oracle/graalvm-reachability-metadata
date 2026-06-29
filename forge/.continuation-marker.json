@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.maven:maven-core:2.0.7",
+  "issueNumber": 8771,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.apache.maven:maven-core:2.0.6",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8771 [Automation] javac compile fails for org.apache.maven:maven-core:2.0.7; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "20 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 62696,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8771,
+    "library": "org.apache.maven:maven-core:2.0.7",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.7",
+    "output_tokens_used": 2488,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "If generated tests attempt a real Maven build or artifact resolution, they may become environment-sensitive because Maven reads user settings/local repository and may contact repositories. Prefer deterministic local/temp projects and avoid network-dependent assertions, but this is test design rather than required setup.",
+      "The constructors for org.apache.maven.artifact.resolver.ArtifactResolutionException and ArtifactNotFoundException differ in Maven 2.0.7; generated tests should use signatures from the resolved 2.0.7 artifacts."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.maven:maven-core:2.0.7/library-preparation-preflight/pi-generation-2026-06-29T01-32-04-714710Z.log",
+    "status": "completed",
+    "summary": "No concrete extra dependency, Docker service, environment variable, or system property is required before meaningful tests for org.apache.maven:maven-core:2.0.7 are reachable. The artifact POM already declares the Maven modules, Plexus, Classworlds, Wagon, and Commons CLI dependencies needed for embedded Maven/Core usage; the reported failure is an API-signature mismatch in generated tests, not missing setup."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.7",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8771-fails-javac-compile-org.apache.maven-maven-core-2.0.7-3bef0117",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
