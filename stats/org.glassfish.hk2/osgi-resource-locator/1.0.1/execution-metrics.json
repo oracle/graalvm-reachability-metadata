@@ -1,0 +1,108 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T18:22:32.562102Z",
+    "library": "org.glassfish.hk2:osgi-resource-locator:1.0.1",
+    "starting_commit": "0bfe247ca641a6d739ff5452eceeaa66a82e5680",
+    "ending_commit": "e3a6e027b6d54c11afdd0f1d863f42c49e018d69",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "1.0.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 2,
+        "totalCalls": 2
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 392,
+          "missed": 482,
+          "ratio": 0.448513,
+          "total": 874
+        },
+        "line": {
+          "covered": 101,
+          "missed": 102,
+          "ratio": 0.497537,
+          "total": 203
+        },
+        "method": {
+          "covered": 22,
+          "missed": 23,
+          "ratio": 0.488889,
+          "total": 45
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 2704,
+      "issue_label": "library-new-request",
+      "library": "org.glassfish.hk2:osgi-resource-locator:1.0.1",
+      "summary": "The artifact is an OSGi bundle whose implementation and public Activator depend on org.osgi.framework types declared as provided dependencies, so normal test resolution will not include the OSGi API needed for meaningful tests.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.osgi:org.osgi.core:4.2.0",
+          "scope": "testImplementation",
+          "reason": "The POM declares org.osgi.core:4.2.0 as provided, and the jar bytecode references org.osgi.framework.Bundle, BundleContext, BundleReference, BundleActivator, BundleListener, and BundleEvent. Provided dependencies are not pulled transitively for consumers, but tests need these interfaces to compile a\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Meaningful coverage should exercise the OSGi-oriented paths, not only the static null/exception behavior. ServiceLoaderImpl and ResourceFinderImpl constructors expect their defining ClassLoader to implement BundleReference and otherwise throw \"There is no bundle context available yet\". Use test doubles or a small custom class loader implementing BundleReference with mock Bundle and BundleContext objects, or run the bundle in an embedded OSGi framework if needed. No Docker image or environment/system property is required; the bundle context property org.glassfish.hk2.osgiresourcelocator.debug is only for optional debug output.",
+      "risks": [
+        "If tests only call ServiceLoader.lookupProviderInstances or ResourceFinder.findEntry before initialization, they will compile but provide shallow coverage.",
+        "A full embedded OSGi framework may be needed if simple Bundle/BundleContext test doubles cannot cover bundle tracking and META-INF/services provider discovery under native-image verification."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.osgi:org.osgi.core:4.2.0",
+          "result": "applied",
+          "target": "tests/src/org.glassfish.hk2/osgi-resource-locator/1.0.1/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#2704 Support for org.glassfish.hk2:osgi-resource-locator:1.0.1; label=library-new-request; body_chars=114"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 52309,
+      "output_tokens_used": 3618,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.glassfish.hk2:osgi-resource-locator:1.0.1/library-preparation-preflight/pi-generation-2026-06-28T17-54-06-724377Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 192077,
+      "cached_input_tokens_used": 2166784,
+      "output_tokens_used": 42431,
+      "iterations": 6,
+      "cost_usd": 2.3563,
+      "generated_loc": 203,
+      "tested_library_loc": 101,
+      "metadata_entries": 0,
+      "test_only_metadata_entries": 10,
+      "code_coverage_percent": 49.75
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.glassfish.hk2/osgi-resource-locator/1.0.1/src/test/java/org_glassfish_hk2/osgi_resource_locator/ServiceLoaderImplInnerDefaultFactoryTest.java",
+      "metadata_file": "metadata/org.glassfish.hk2/osgi-resource-locator/1.0.1/reachability-metadata.json"
+    }
+  }
+}
