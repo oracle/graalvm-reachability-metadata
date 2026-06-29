@@ -1,0 +1,190 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: io.micrometer:micrometer-core:1.8.2
+Command: `/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2448-0b815156/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 27 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses UP-TO-DATE
+> Task :test UP-TO-DATE
+> Task :generateTestResourcesConfigFile UP-TO-DATE
+> Task :nativeTestCompile UP-TO-DATE
+
+> Task :nativeTest FAILED
+[junit-platform-native] WARNING: -djunit.platform.listeners.uid.tracking.output.dir not specified, trying to find test-ids on default Gradle/Maven locations. As this is a fallback mode, it could take a while. This should only happen if you are running tests executable manually and you didn't pass uid output directory with -djunit.platform.listeners.uid.tracking.output.dir=<path>.
+[junit-platform-native] WARNING: Using test-ids from default Gradle project location:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2448-0b815156/tests/src/io.micrometer/micrometer-core/1.8.2/build/test-results/test/testlist
+[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2448-0b815156/tests/src/io.micrometer/micrometer-core/1.8.2/build/test-results/test/testlist] and its subfolders.
+JUnit Platform on Native Image - report
+----------------------------------------
+
+io_micrometer.micrometer_core.AbstractTimeWindowHistogramTest > timerWithPublishedPercentilesRecordsTimeWindowHistogramSnapshot() SUCCESSFUL
+
+io_micrometer.micrometer_core.ExecutorServiceMetricsTest > bindsMetricsForJdkDelegatedScheduledExecutorService() SUCCESSFUL
+
+io_micrometer.micrometer_core.FileDescriptorMetricsTest > bindsAndSamplesFileDescriptorGauges() SUCCESSFUL
+
+io_micrometer.micrometer_core.HazelcastIMapAdapterInnerLocalMapStatsTest > bindsMetricsFromHazelcastLocalMapStats() FAILED
+
+io_micrometer.micrometer_core.HazelcastIMapAdapterInnerNearCacheStatsTest > bindsMetricsFromHazelcastNearCacheStats() FAILED
+
+io_micrometer.micrometer_core.HazelcastIMapAdapterTest > bindsMetricsForHazelcastIMap() FAILED
+
+io_micrometer.micrometer_core.ProcessorMetricsTest > bindsAndSamplesProcessorGauges() SUCCESSFUL
+
+io_micrometer.micrometer_core.PropertyValidatorTest > reportsSupportedEnumValuesForInvalidProperty() SUCCESSFUL
+
+io_micrometer.micrometer_core.PropertyValidatorTest > returnsEnumConfiguredByCaseInsensitiveProperty() SUCCESSFUL
+
+
+Failures (3):
+  JUnit Jupiter:HazelcastIMapAdapterInnerLocalMapStatsTest:bindsMetricsFromHazelcastLocalMapStats()
+    MethodSource [className = 'io_micrometer.micrometer_core.HazelcastIMapAdapterInnerLocalMapStatsTest', methodName = 'bindsMetricsFromHazelcastLocalMapStats', methodParameterTypes = '']
+    => java.lang.ExceptionInInitializerError
+       io.micrometer.core.instrument.binder.cache.HazelcastCacheMetrics.<init>(HazelcastCacheMetrics.java:71)
+       io.micrometer.core.instrument.binder.cache.HazelcastCacheMetrics.monitor(HazelcastCacheMetrics.java:60)
+       io.micrometer.core.instrument.binder.cache.HazelcastCacheMetrics.monitor(HazelcastCacheMetrics.java:48)
+       io_micrometer.micrometer_core.HazelcastIMapAdapterInnerLocalMapStatsTest.bindsMetricsFromHazelcastLocalMapStats(HazelcastIMapAdapterInnerLocalMapStatsTest.java:32)
+       java.base@25.0.3/java.lang.reflect.Method.invoke(Method.java:565)
+       [...]
+     Caused by: java.lang.IllegalStateException: java.lang.NoSuchMethodException: no such method: com.hazelcast.map.IMap.getName()String/invokeInterface
+       io.micrometer.core.instrument.binder.cache.HazelcastIMapAdapter.resolveIMapMethod(HazelcastIMapAdapter.java:213)
+       io.micrometer.core.instrument.binder.cache.HazelcastIMapAdapter.<clinit>(HazelcastIMapAdapter.java:41)
+       [...]
+     Caused by: java.lang.NoSuchMethodException: no such method: com.hazelcast.map.IMap.getName()String/invokeInterface
+       java.base@25.0.3/java.lang.invoke.MemberName.makeAccessException(MemberName.java:910)
+       java.base@25.0.3/java.lang.invoke.MemberName$Factory.resolveOrFail(MemberName.java:989)
+       java.base@25.0.3/java.lang.invoke.MethodHandles$Lookup.resolveOrFail(MethodHandles.java:3591)
+       java.base@25.0.3/java.lang.invoke.MethodHandles$Lookup.findVirtual(MethodHandles.java:2610)
+       io.micrometer.core.instrument.binder.cache.HazelcastIMapAdapter.resolveIMapMethod(HazelcastIMapAdapter.java:211)
+       [...]
+     Caused by: java.lang.NoSuchMethodError: com.hazelcast.map.IMap.getName()
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.methodhandles.Util_java_lang_invoke_MethodHandleNatives.resolve(Target_java_lang_invoke_MethodHandleNatives.java:352)
+       java.base@25.0.3/java.lang.invoke.MethodHandleNatives.resolve(MethodHandleNatives.java:208)
+       java.base@25.0.3/java.lang.invoke.MemberName$Factory.resolve(MemberName.java:120)
+       java.base@25.0.3/java.lang.invoke.MemberName$Factory.resolveOrFail(MemberName.java:986)
+       [...]
+  JUnit Jupiter:HazelcastIMapAdapterInnerNearCacheStatsTest:bindsMetricsFromHazelcastNearCacheStats()
+    MethodSource [className = 'io_micrometer.micrometer_core.HazelcastIMapAdapterInnerNearCacheStatsTest', methodName = 'bindsMetricsFromHazelcastNearCacheStats', methodParameterTypes = '']
+    => java.lang.NoClassDefFoundError: Could not initialize class io.micrometer.core.instrument.binder.cache.HazelcastIMapAdapter
+       io.micrometer.core.instrument.binder.cache.HazelcastCacheMetrics.<init>(HazelcastCacheMetrics.java:71)
+       io.micrometer.core.instrument.binder.cache.HazelcastCacheMetrics.monitor(HazelcastCacheMetrics.java:60)
+       io.micrometer.core.instrument.binder.cache.HazelcastCacheMetrics.monitor(HazelcastCacheMetrics.java:48)
+       io_micrometer.micrometer_core.HazelcastIMapAdapterInnerNearCacheStatsTest.bindsMetricsFromHazelcastNearCacheStats(HazelcastIMapAdapterInnerNearCacheStatsTest.java:29)
+       java.base@25.0.3/java.lang.reflect.Method.invoke(Method.java:565)
+       org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+       org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+       org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+       org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+       java.base@25.0.3/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+       [...]
+  JUnit Jupiter:HazelcastIMapAdapterTest:bindsMetricsForHazelcastIMap()
+    MethodSource [className = 'io_micrometer.micrometer_core.HazelcastIMapAdapterTest', methodName = 'bindsMetricsForHazelcastIMap', methodParameterTypes = '']
+    => java.lang.NoClassDefFoundError: Could not initialize class io.micrometer.core.instrument.binder.cache.HazelcastIMapAdapter
+       io.micrometer.core.instrument.binder.cache.HazelcastCacheMetrics.<init>(HazelcastCacheMetrics.java:71)
+       io.micrometer.core.instrument.binder.cache.HazelcastCacheMetrics.monitor(HazelcastCacheMetrics.java:60)
+       io_micrometer.micrometer_core.HazelcastIMapAdapterTest.bindsMetricsForHazelcastIMap(HazelcastIMapAdapterTest.java:48)
+       java.base@25.0.3/java.lang.reflect.Method.invoke(Method.java:565)
+       org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+       org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+       org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+       org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+       java.base@25.0.3/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+       java.base@25.0.3/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+       [...]
+
+Test run finished after 5 ms
+[        10 containers found      ]
+[         0 containers skipped    ]
+[        10 containers started    ]
+[         0 containers aborted    ]
+[        10 containers successful ]
+[         0 containers failed     ]
+[         9 tests found           ]
+[         0 tests skipped         ]
+[         9 tests started         ]
+[         0 tests aborted         ]
+[         6 tests successful      ]
+[         3 tests failed          ]
+
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2448-0b815156/tests/src/io.micrometer/micrometer-core/1.8.2/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':nativeTest'.
+> Process 'command '/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2448-0b815156/tests/src/io.micrometer/micrometer-core/1.8.2/build/native/nativeTestCompile/io.micrometer.micrometer-core_tests-tests'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+BUILD FAILED in 7s
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+18 actionable tasks: 2 executed, 16 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2448-0b815156/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for io.micrometer:micrometer-core:1.8.2 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 9s
+9 actionable tasks: 1 executed, 8 up-to-date
