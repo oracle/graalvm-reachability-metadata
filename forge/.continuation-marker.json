@@ -1,0 +1,78 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "jakarta.activation:jakarta.activation-api:2.0.0",
+  "issueNumber": 8769,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Use jakarta.activation.* imports for 2.0.0 tests; do not keep the existing javax.activation imports. Be careful with global one-shot/static Activation state such as DataHandler.setDataContentHandlerFactory, CommandMap.setDefaultCommandMap, and FileTypeMap.setDefaultFileTypeMap; prefer local instances or isolate such assertions to avoid cross-test contamination.",
+    "applied_setup": [],
+    "current_library": "jakarta.activation:jakarta.activation-api:1.2.1",
+    "deterministic_setup": [
+      {
+        "coordinate": "com.sun.activation:jakarta.activation:2.0.0",
+        "kind": "dependency",
+        "reason": "The jakarta.activation-api:2.0.0 jar is documented as API-only and its classes reference com.sun.activation.registries classes that are not packaged in the API jar. The companion com.sun.activation:jakarta.activation:2.0.0 implementation jar provides those registry classes and enables meaningful cov\n...[truncated]",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8769 [Automation] javac compile fails for jakarta.activation:jakarta.activation-api:2.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "11 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 37406,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8769,
+    "library": "jakarta.activation:jakarta.activation-api:2.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.0",
+    "output_tokens_used": 5537,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "com.sun.activation:jakarta.activation:2.0.0 also contains jakarta.activation API classes, so Gradle and Native Image verification remain authoritative for classpath behavior.",
+      "Do not substitute org.eclipse.angus:angus-activation for this 2.0.0 case; it does not provide the same public com.sun.activation.registries compatibility needed by the 2.0.0 API classes.",
+      "Existing 1.2.1 tests are namespace-incompatible with 2.0.0 and will continue to fail javac until migrated from javax.activation to jakarta.activation."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/jakarta.activation:jakarta.activation-api:2.0.0/library-preparation-preflight/pi-generation-2026-06-29T00-32-36-236061Z.log",
+    "status": "completed",
+    "summary": "Jakarta Activation API 2.0.0 moved from javax.activation to jakarta.activation and the API jar alone omits com.sun.activation registry implementation classes needed by normal CommandMap, FileTypeMap, MimetypesFileTypeMap, and DataHandler usage."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8769-fails-javac-compile-jakarta.activation-jakarta.activation-api-2.0.0-2dc80bcf",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
