@@ -12,22 +12,23 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import com.hazelcast.aggregation.Aggregator;
+import com.hazelcast.config.IndexConfig;
 import com.hazelcast.core.EntryListener;
 import com.hazelcast.core.EntryView;
 import com.hazelcast.core.ExecutionCallback;
-import com.hazelcast.core.ICompletableFuture;
-import com.hazelcast.core.IMap;
 import com.hazelcast.map.EntryProcessor;
+import com.hazelcast.map.IMap;
 import com.hazelcast.map.MapInterceptor;
 import com.hazelcast.map.QueryCache;
 import com.hazelcast.map.listener.MapListener;
 import com.hazelcast.map.listener.MapPartitionLostListener;
-import com.hazelcast.mapreduce.JobTracker;
-import com.hazelcast.mapreduce.aggregation.Aggregation;
-import com.hazelcast.mapreduce.aggregation.Supplier;
 import com.hazelcast.monitor.LocalMapStats;
 import com.hazelcast.projection.Projection;
 import com.hazelcast.query.Predicate;
@@ -40,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class HazelcastIMapAdapterTest {
     @Test
-    void bindsMetricsForHazelcastThreeIMap() {
+    void bindsMetricsForHazelcastIMap() {
         SimpleMeterRegistry registry = new SimpleMeterRegistry();
         TestIMap cache = new TestIMap("orders");
 
@@ -157,44 +158,44 @@ public class HazelcastIMapAdapterTest {
         }
 
         @Override
-        public ICompletableFuture<String> getAsync(String key) {
+        public CompletionStage<String> getAsync(String key) {
             return unsupported();
         }
 
         @Override
-        public ICompletableFuture<String> putAsync(String key, String value) {
+        public CompletionStage<String> putAsync(String key, String value) {
             return unsupported();
         }
 
         @Override
-        public ICompletableFuture<String> putAsync(String key, String value, long ttl, TimeUnit ttlUnit) {
+        public CompletionStage<String> putAsync(String key, String value, long ttl, TimeUnit ttlUnit) {
             return unsupported();
         }
 
         @Override
-        public ICompletableFuture<String> putAsync(String key, String value, long ttl, TimeUnit ttlUnit, long maxIdle,
+        public CompletionStage<String> putAsync(String key, String value, long ttl, TimeUnit ttlUnit, long maxIdle,
                 TimeUnit maxIdleUnit) {
             return unsupported();
         }
 
         @Override
-        public ICompletableFuture<Void> setAsync(String key, String value) {
+        public CompletionStage<Void> setAsync(String key, String value) {
             return unsupported();
         }
 
         @Override
-        public ICompletableFuture<Void> setAsync(String key, String value, long ttl, TimeUnit ttlUnit) {
+        public CompletionStage<Void> setAsync(String key, String value, long ttl, TimeUnit ttlUnit) {
             return unsupported();
         }
 
         @Override
-        public ICompletableFuture<Void> setAsync(String key, String value, long ttl, TimeUnit ttlUnit, long maxIdle,
+        public CompletionStage<Void> setAsync(String key, String value, long ttl, TimeUnit ttlUnit, long maxIdle,
                 TimeUnit maxIdleUnit) {
             return unsupported();
         }
 
         @Override
-        public ICompletableFuture<String> removeAsync(String key) {
+        public CompletionStage<String> removeAsync(String key) {
             return unsupported();
         }
 
@@ -307,36 +308,36 @@ public class HazelcastIMapAdapterTest {
         }
 
         @Override
-        public String addLocalEntryListener(MapListener listener) {
+        public UUID addLocalEntryListener(MapListener listener) {
             return unsupported();
         }
 
         @Override
-        public String addLocalEntryListener(EntryListener listener) {
+        public UUID addLocalEntryListener(EntryListener<String, String> listener) {
             return unsupported();
         }
 
         @Override
-        public String addLocalEntryListener(MapListener listener, Predicate<String, String> predicate,
+        public UUID addLocalEntryListener(MapListener listener, Predicate<String, String> predicate,
                 boolean includeValue) {
             return unsupported();
         }
 
         @Override
-        public String addLocalEntryListener(EntryListener listener, Predicate<String, String> predicate,
+        public UUID addLocalEntryListener(EntryListener<String, String> listener,
+                Predicate<String, String> predicate, boolean includeValue) {
+            return unsupported();
+        }
+
+        @Override
+        public UUID addLocalEntryListener(MapListener listener, Predicate<String, String> predicate, String key,
                 boolean includeValue) {
             return unsupported();
         }
 
         @Override
-        public String addLocalEntryListener(MapListener listener, Predicate<String, String> predicate, String key,
-                boolean includeValue) {
-            return unsupported();
-        }
-
-        @Override
-        public String addLocalEntryListener(EntryListener listener, Predicate<String, String> predicate, String key,
-                boolean includeValue) {
+        public UUID addLocalEntryListener(EntryListener<String, String> listener,
+                Predicate<String, String> predicate, String key, boolean includeValue) {
             return unsupported();
         }
 
@@ -346,65 +347,65 @@ public class HazelcastIMapAdapterTest {
         }
 
         @Override
-        public void removeInterceptor(String id) {
-        }
-
-        @Override
-        public String addEntryListener(MapListener listener, boolean includeValue) {
-            return unsupported();
-        }
-
-        @Override
-        public String addEntryListener(EntryListener listener, boolean includeValue) {
-            return unsupported();
-        }
-
-        @Override
-        public boolean removeEntryListener(String id) {
+        public boolean removeInterceptor(String id) {
             return false;
         }
 
         @Override
-        public String addPartitionLostListener(MapPartitionLostListener listener) {
+        public UUID addEntryListener(MapListener listener, boolean includeValue) {
             return unsupported();
         }
 
         @Override
-        public boolean removePartitionLostListener(String id) {
+        public UUID addEntryListener(EntryListener<String, String> listener, boolean includeValue) {
+            return unsupported();
+        }
+
+        @Override
+        public boolean removeEntryListener(UUID id) {
             return false;
         }
 
         @Override
-        public String addEntryListener(MapListener listener, String key, boolean includeValue) {
+        public UUID addPartitionLostListener(MapPartitionLostListener listener) {
             return unsupported();
         }
 
         @Override
-        public String addEntryListener(EntryListener listener, String key, boolean includeValue) {
+        public boolean removePartitionLostListener(UUID id) {
+            return false;
+        }
+
+        @Override
+        public UUID addEntryListener(MapListener listener, String key, boolean includeValue) {
             return unsupported();
         }
 
         @Override
-        public String addEntryListener(MapListener listener, Predicate<String, String> predicate,
+        public UUID addEntryListener(EntryListener<String, String> listener, String key, boolean includeValue) {
+            return unsupported();
+        }
+
+        @Override
+        public UUID addEntryListener(MapListener listener, Predicate<String, String> predicate, boolean includeValue) {
+            return unsupported();
+        }
+
+        @Override
+        public UUID addEntryListener(EntryListener<String, String> listener,
+                Predicate<String, String> predicate, boolean includeValue) {
+            return unsupported();
+        }
+
+        @Override
+        public UUID addEntryListener(MapListener listener, Predicate<String, String> predicate, String key,
                 boolean includeValue) {
             return unsupported();
         }
 
         @Override
-        public String addEntryListener(EntryListener listener, Predicate<String, String> predicate,
-                boolean includeValue) {
-            return unsupported();
-        }
-
-        @Override
-        public String addEntryListener(MapListener listener, Predicate<String, String> predicate, String key,
-                boolean includeValue) {
-            return unsupported();
-        }
-
-        @Override
-        public String addEntryListener(EntryListener listener, Predicate<String, String> predicate, String key,
-                boolean includeValue) {
+        public UUID addEntryListener(EntryListener<String, String> listener,
+                Predicate<String, String> predicate, String key, boolean includeValue) {
             return unsupported();
         }
 
@@ -439,17 +440,17 @@ public class HazelcastIMapAdapterTest {
         }
 
         @Override
-        public Set<String> keySet(Predicate predicate) {
+        public Set<String> keySet(Predicate<String, String> predicate) {
             return entries.keySet();
         }
 
         @Override
-        public Set<Map.Entry<String, String>> entrySet(Predicate predicate) {
+        public Set<Map.Entry<String, String>> entrySet(Predicate<String, String> predicate) {
             return entries.entrySet();
         }
 
         @Override
-        public Collection<String> values(Predicate predicate) {
+        public Collection<String> values(Predicate<String, String> predicate) {
             return entries.values();
         }
 
@@ -459,12 +460,12 @@ public class HazelcastIMapAdapterTest {
         }
 
         @Override
-        public Set<String> localKeySet(Predicate predicate) {
+        public Set<String> localKeySet(Predicate<String, String> predicate) {
             return localKeySet();
         }
 
         @Override
-        public void addIndex(String attribute, boolean ordered) {
+        public void addIndex(IndexConfig indexConfig) {
         }
 
         @Override
@@ -473,66 +474,57 @@ public class HazelcastIMapAdapterTest {
         }
 
         @Override
-        public Object executeOnKey(String key, EntryProcessor entryProcessor) {
+        public <R> R executeOnKey(String key, EntryProcessor<String, String, R> entryProcessor) {
             return unsupported();
         }
 
         @Override
-        public Map<String, Object> executeOnKeys(Set<String> keys, EntryProcessor entryProcessor) {
+        public <R> Map<String, R> executeOnKeys(Set<String> keys,
+                EntryProcessor<String, String, R> entryProcessor) {
             return unsupported();
         }
 
         @Override
-        public void submitToKey(String key, EntryProcessor entryProcessor, ExecutionCallback callback) {
+        public <R> void submitToKey(String key, EntryProcessor<String, String, R> entryProcessor,
+                ExecutionCallback<? super R> callback) {
             unsupported();
         }
 
         @Override
-        public ICompletableFuture submitToKey(String key, EntryProcessor entryProcessor) {
+        public <R> CompletionStage<R> submitToKey(String key, EntryProcessor<String, String, R> entryProcessor) {
             return unsupported();
         }
 
         @Override
-        public Map<String, Object> executeOnEntries(EntryProcessor entryProcessor) {
+        public <R> Map<String, R> executeOnEntries(EntryProcessor<String, String, R> entryProcessor) {
             return unsupported();
         }
 
         @Override
-        public Map<String, Object> executeOnEntries(EntryProcessor entryProcessor, Predicate predicate) {
-            return unsupported();
-        }
-
-        @Override
-        public <R> R aggregate(Aggregator<Map.Entry<String, String>, R> aggregator) {
-            return unsupported();
-        }
-
-        @Override
-        public <R> R aggregate(Aggregator<Map.Entry<String, String>, R> aggregator,
+        public <R> Map<String, R> executeOnEntries(EntryProcessor<String, String, R> entryProcessor,
                 Predicate<String, String> predicate) {
             return unsupported();
         }
 
         @Override
-        public <R> Collection<R> project(Projection<Map.Entry<String, String>, R> projection) {
+        public <R> R aggregate(Aggregator<? super Map.Entry<String, String>, R> aggregator) {
             return unsupported();
         }
 
         @Override
-        public <R> Collection<R> project(Projection<Map.Entry<String, String>, R> projection,
+        public <R> R aggregate(Aggregator<? super Map.Entry<String, String>, R> aggregator,
                 Predicate<String, String> predicate) {
             return unsupported();
         }
 
         @Override
-        public <SuppliedValue, Result> Result aggregate(Supplier<String, String, SuppliedValue> supplier,
-                Aggregation<String, SuppliedValue, Result> aggregation) {
+        public <R> Collection<R> project(Projection<? super Map.Entry<String, String>, R> projection) {
             return unsupported();
         }
 
         @Override
-        public <SuppliedValue, Result> Result aggregate(Supplier<String, String, SuppliedValue> supplier,
-                Aggregation<String, SuppliedValue, Result> aggregation, JobTracker jobTracker) {
+        public <R> Collection<R> project(Projection<? super Map.Entry<String, String>, R> projection,
+                Predicate<String, String> predicate) {
             return unsupported();
         }
 
@@ -556,6 +548,29 @@ public class HazelcastIMapAdapterTest {
         @Override
         public boolean setTtl(String key, long ttl, TimeUnit timeunit) {
             return entries.containsKey(key);
+        }
+
+        @Override
+        public String computeIfPresent(String key,
+                BiFunction<? super String, ? super String, ? extends String> remappingFunction) {
+            return entries.computeIfPresent(key, remappingFunction);
+        }
+
+        @Override
+        public String computeIfAbsent(String key, Function<? super String, ? extends String> mappingFunction) {
+            return entries.computeIfAbsent(key, mappingFunction);
+        }
+
+        @Override
+        public String compute(String key,
+                BiFunction<? super String, ? super String, ? extends String> remappingFunction) {
+            return entries.compute(key, remappingFunction);
+        }
+
+        @Override
+        public String merge(String key, String value,
+                BiFunction<? super String, ? super String, ? extends String> remappingFunction) {
+            return entries.merge(key, value, remappingFunction);
         }
 
         @Override
