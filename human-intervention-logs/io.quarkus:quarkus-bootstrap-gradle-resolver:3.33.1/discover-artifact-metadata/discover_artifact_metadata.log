@@ -1,0 +1,1537 @@
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :discoverArtifactMetadata
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f1316-60f9-7962-97d4-70c071faf665
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.quarkus:quarkus-bootstrap-gradle-resolver:3.33.1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the entry metadata-version "3.33.1" when "$version$" is replaced with "3.33.1".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+Update this file directly:
+- File: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json
+- Set "coordinates" to "io.quarkus:quarkus-bootstrap-gradle-resolver:3.33.1".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "3.33.1".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+codex
+I’ll verify the artifact metadata against Maven and the upstream Quarkus repository, then patch the discovered JSON in place.
+exec
+/usr/bin/bash -lc "pwd && sed -n '1,200p' build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+{
+  "coordinates" : "io.quarkus:quarkus-bootstrap-gradle-resolver:3.33.1"
+}
+
+exec
+/usr/bin/bash -lc 'rg -n "quarkus-bootstrap-gradle-resolver|quarkus-bootstrap" metadata tests build/discovered-artifact-metadata || true' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+ succeeded in 0ms:
+build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json:2:  "coordinates" : "io.quarkus:quarkus-bootstrap-gradle-resolver:3.33.1"
+metadata/io.quarkus/quarkus-bootstrap-json/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-json/$version$/quarkus-bootstrap-json-$version$-sources.jar",
+metadata/io.quarkus/quarkus-bootstrap-json/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-json/$version$/quarkus-bootstrap-json-$version$-javadoc.jar",
+metadata/io.quarkus/quarkus-bootstrap-maven4-resolver/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven4-resolver/$version$/quarkus-bootstrap-maven4-resolver-$version$-sources.jar",
+metadata/io.quarkus/quarkus-bootstrap-maven4-resolver/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven4-resolver/$version$/quarkus-bootstrap-maven4-resolver-$version$-javadoc.jar",
+metadata/io.quarkus/quarkus-bootstrap-app-model/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-app-model/$version$/quarkus-bootstrap-app-model-$version$-sources.jar",
+metadata/io.quarkus/quarkus-bootstrap-app-model/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-app-model/$version$/quarkus-bootstrap-app-model-$version$-javadoc.jar",
+metadata/io.quarkus/quarkus-bootstrap-app-model/index.json:29:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-app-model/$version$/quarkus-bootstrap-app-model-$version$-sources.jar",
+metadata/io.quarkus/quarkus-bootstrap-app-model/index.json:32:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-app-model/$version$/quarkus-bootstrap-app-model-$version$-javadoc.jar",
+metadata/io.quarkus/quarkus-bootstrap-runner/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-runner/$version$/quarkus-bootstrap-runner-$version$-sources.jar",
+metadata/io.quarkus/quarkus-bootstrap-runner/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-runner/$version$/quarkus-bootstrap-runner-$version$-javadoc.jar",
+tests/src/io.quarkus/quarkus-bootstrap-json/3.33.1/build.gradle:14:    testImplementation "io.quarkus:quarkus-bootstrap-json:$libraryVersion"
+tests/src/io.quarkus/quarkus-bootstrap-json/3.33.1/settings.gradle:20:rootProject.name = 'io.quarkus.quarkus-bootstrap-json_tests'
+tests/src/io.quarkus/quarkus-bootstrap-app-model/3.34.0/build.gradle:14:    testImplementation "io.quarkus:quarkus-bootstrap-app-model:$libraryVersion"
+tests/src/io.quarkus/quarkus-bootstrap-app-model/3.34.0/settings.gradle:20:rootProject.name = 'io.quarkus.quarkus-bootstrap-app-model_tests'
+tests/src/io.quarkus/quarkus-bootstrap-json/3.33.1/src/test/java/io_quarkus/quarkus_bootstrap_json/Quarkus_bootstrap_jsonTest.java:97:                .put("name", "quarkus-bootstrap-json")
+tests/src/io.quarkus/quarkus-bootstrap-json/3.33.1/src/test/java/io_quarkus/quarkus_bootstrap_json/Quarkus_bootstrap_jsonTest.java:105:        assertThat(((JsonString) parsed.get("name")).value()).isEqualTo("quarkus-bootstrap-json");
+tests/src/io.quarkus/quarkus-bootstrap-json/3.33.1/gradle.properties:4:library.coordinates = io.quarkus:quarkus-bootstrap-json:3.33.1
+tests/src/io.quarkus/quarkus-bootstrap-json/3.33.1/gradle.properties:6:metadata.dir = io.quarkus/quarkus-bootstrap-json/3.33.1/
+tests/src/io.quarkus/quarkus-bootstrap-app-model/3.34.0/gradle.properties:4:library.coordinates = io.quarkus:quarkus-bootstrap-app-model:3.34.0
+tests/src/io.quarkus/quarkus-bootstrap-app-model/3.34.0/gradle.properties:6:metadata.dir = io.quarkus/quarkus-bootstrap-app-model/3.34.0/
+tests/src/io.quarkus/quarkus-bootstrap-app-model/3.33.1/build.gradle:14:    testImplementation "io.quarkus:quarkus-bootstrap-app-model:$libraryVersion"
+tests/src/io.quarkus/quarkus-bootstrap-app-model/3.33.1/settings.gradle:20:rootProject.name = 'io.quarkus.quarkus-bootstrap-app-model_tests'
+tests/src/io.quarkus/quarkus-bootstrap-app-model/3.33.1/gradle.properties:4:library.coordinates = io.quarkus:quarkus-bootstrap-app-model:3.33.1
+tests/src/io.quarkus/quarkus-bootstrap-app-model/3.33.1/gradle.properties:6:metadata.dir = io.quarkus/quarkus-bootstrap-app-model/3.33.1/
+tests/src/io.quarkus/quarkus-bootstrap-runner/3.33.1/build.gradle:14:    testImplementation("io.quarkus:quarkus-bootstrap-runner:$libraryVersion") {
+tests/src/io.quarkus/quarkus-bootstrap-runner/3.33.1/settings.gradle:20:rootProject.name = 'io.quarkus.quarkus-bootstrap-runner_tests'
+tests/src/io.quarkus/quarkus-bootstrap-runner/3.33.1/src/test/java/io_quarkus/quarkus_bootstrap_runner/BootstrapRunnerCoverageTest.java:118:        Path runnerJar = applicationRoot.resolve("lib/main/quarkus-bootstrap-runner.jar");
+tests/src/io.quarkus/quarkus-bootstrap-runner/3.33.1/gradle.properties:4:library.coordinates = io.quarkus:quarkus-bootstrap-runner:3.33.1
+tests/src/io.quarkus/quarkus-bootstrap-runner/3.33.1/gradle.properties:6:metadata.dir = io.quarkus/quarkus-bootstrap-runner/3.33.1/
+tests/src/io.quarkus/quarkus-bootstrap-maven4-resolver/3.33.1/build.gradle:14:    testImplementation "io.quarkus:quarkus-bootstrap-maven4-resolver:$libraryVersion"
+tests/src/io.quarkus/quarkus-bootstrap-maven4-resolver/3.33.1/settings.gradle:20:rootProject.name = 'io.quarkus.quarkus-bootstrap-maven4-resolver_tests'
+tests/src/io.quarkus/quarkus-bootstrap-maven4-resolver/3.33.1/gradle.properties:4:library.coordinates = io.quarkus:quarkus-bootstrap-maven4-resolver:3.33.1
+tests/src/io.quarkus/quarkus-bootstrap-maven4-resolver/3.33.1/gradle.properties:6:metadata.dir = io.quarkus/quarkus-bootstrap-maven4-resolver/3.33.1/
+
+web search: 
+web search: Maven io.quarkus quarkus-bootstrap-gradle-resolver 3.33.1 sources test javadoc
+codex
+The repository already has Quarkus bootstrap entries that prefer Maven Central source and javadoc jars. I’m checking whether this specific artifact also publishes test artifacts so the test URL follows that preference instead of falling back to GitHub.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/3.33.1/' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/quarkus/quarkus-bootstrap-gradle-resolver/3.33.1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/quarkus/quarkus-bootstrap-gradle-resolver/3.33.1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1-javadoc.jar" title="quarkus-bootstrap-gradle-resolver-3.33.1-javadoc.jar">quarkus-bootstrap-gradle-resolver-3.33.1-java...</a>  2026-03-25 09:37    112180      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1-javadoc.jar.asc" title="quarkus-bootstrap-gradle-resolver-3.33.1-javadoc.jar.asc">quarkus-bootstrap-gradle-resolver-3.33.1-java...</a>  2026-03-25 09:37       853      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1-javadoc.jar.md5" title="quarkus-bootstrap-gradle-resolver-3.33.1-javadoc.jar.md5">quarkus-bootstrap-gradle-resolver-3.33.1-java...</a>  2026-03-25 09:37        32      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1-javadoc.jar.sha1" title="quarkus-bootstrap-gradle-resolver-3.33.1-javadoc.jar.sha1">quarkus-bootstrap-gradle-resolver-3.33.1-java...</a>  2026-03-25 09:37        40      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1-javadoc.jar.sha256" title="quarkus-bootstrap-gradle-resolver-3.33.1-javadoc.jar.sha256">quarkus-bootstrap-gradle-resolver-3.33.1-java...</a>  2026-03-25 09:37        64      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1-javadoc.jar.sha512" title="quarkus-bootstrap-gradle-resolver-3.33.1-javadoc.jar.sha512">quarkus-bootstrap-gradle-resolver-3.33.1-java...</a>  2026-03-25 09:37       128      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1-sources.jar" title="quarkus-bootstrap-gradle-resolver-3.33.1-sources.jar">quarkus-bootstrap-gradle-resolver-3.33.1-sour...</a>  2026-03-25 09:37      4630      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1-sources.jar.asc" title="quarkus-bootstrap-gradle-resolver-3.33.1-sources.jar.asc">quarkus-bootstrap-gradle-resolver-3.33.1-sour...</a>  2026-03-25 09:37       853      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1-sources.jar.md5" title="quarkus-bootstrap-gradle-resolver-3.33.1-sources.jar.md5">quarkus-bootstrap-gradle-resolver-3.33.1-sour...</a>  2026-03-25 09:37        32      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1-sources.jar.sha1" title="quarkus-bootstrap-gradle-resolver-3.33.1-sources.jar.sha1">quarkus-bootstrap-gradle-resolver-3.33.1-sour...</a>  2026-03-25 09:37        40      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1-sources.jar.sha256" title="quarkus-bootstrap-gradle-resolver-3.33.1-sources.jar.sha256">quarkus-bootstrap-gradle-resolver-3.33.1-sour...</a>  2026-03-25 09:37        64      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1-sources.jar.sha512" title="quarkus-bootstrap-gradle-resolver-3.33.1-sources.jar.sha512">quarkus-bootstrap-gradle-resolver-3.33.1-sour...</a>  2026-03-25 09:37       128      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1.jar" title="quarkus-bootstrap-gradle-resolver-3.33.1.jar">quarkus-bootstrap-gradle-resolver-3.33.1.jar</a>      2026-03-25 09:37   2939347      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1.jar.asc" title="quarkus-bootstrap-gradle-resolver-3.33.1.jar.asc">quarkus-bootstrap-gradle-resolver-3.33.1.jar....</a>  2026-03-25 09:37       853      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1.jar.md5" title="quarkus-bootstrap-gradle-resolver-3.33.1.jar.md5">quarkus-bootstrap-gradle-resolver-3.33.1.jar....</a>  2026-03-25 09:37        32      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1.jar.sha1" title="quarkus-bootstrap-gradle-resolver-3.33.1.jar.sha1">quarkus-bootstrap-gradle-resolver-3.33.1.jar....</a>  2026-03-25 09:37        40      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1.jar.sha256" title="quarkus-bootstrap-gradle-resolver-3.33.1.jar.sha256">quarkus-bootstrap-gradle-resolver-3.33.1.jar....</a>  2026-03-25 09:37        64      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1.jar.sha512" title="quarkus-bootstrap-gradle-resolver-3.33.1.jar.sha512">quarkus-bootstrap-gradle-resolver-3.33.1.jar....</a>  2026-03-25 09:37       128      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1.pom" title="quarkus-bootstrap-gradle-resolver-3.33.1.pom">quarkus-bootstrap-gradle-resolver-3.33.1.pom</a>      2026-03-25 09:37      4667      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1.pom.asc" title="quarkus-bootstrap-gradle-resolver-3.33.1.pom.asc">quarkus-bootstrap-gradle-resolver-3.33.1.pom....</a>  2026-03-25 09:37       853      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1.pom.md5" title="quarkus-bootstrap-gradle-resolver-3.33.1.pom.md5">quarkus-bootstrap-gradle-resolver-3.33.1.pom....</a>  2026-03-25 09:37        32      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1.pom.sha1" title="quarkus-bootstrap-gradle-resolver-3.33.1.pom.sha1">quarkus-bootstrap-gradle-resolver-3.33.1.pom....</a>  2026-03-25 09:37        40      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1.pom.sha256" title="quarkus-bootstrap-gradle-resolver-3.33.1.pom.sha256">quarkus-bootstrap-gradle-resolver-3.33.1.pom....</a>  2026-03-25 09:37        64      
+<a href="quarkus-bootstrap-gradle-resolver-3.33.1.pom.sha512" title="quarkus-bootstrap-gradle-resolver-3.33.1.pom.sha512">quarkus-bootstrap-gradle-resolver-3.33.1.pom....</a>  2026-03-25 09:37       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/3.33.1/quarkus-bootstrap-gradle-resolver-3.33.1.pom' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+ succeeded in 0ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>quarkus-bootstrap-parent</artifactId>
+    <groupId>io.quarkus</groupId>
+    <version>3.33.1</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>quarkus-bootstrap-gradle-resolver</artifactId>
+  <name>Quarkus - Bootstrap - Gradle Resolver</name>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <minimizeJar>true</minimizeJar>
+              <artifactSet>
+                <includes>
+                  <include>org.gradle:gradle-tooling-api</include>
+                </includes>
+              </artifactSet>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+              <transformers>
+                <transformer />
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <repositories>
+    <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>central</id>
+      <name>Maven Central</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </repository>
+    <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>gradle</id>
+      <name>Gradle releases repository</name>
+      <url>https://repo.gradle.org/artifactory/libs-releases</url>
+    </repository>
+  </repositories>
+  <dependencies>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-bootstrap-app-model</artifactId>
+      <version>3.33.1</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+      <version>3.6.2.Final</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.slf4j</groupId>
+      <artifactId>slf4j-jboss-logmanager</artifactId>
+      <version>1.1.0.Final</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>6.0.3</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>junit-jupiter-api</artifactId>
+          <groupId>org.junit.jupiter</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>junit-jupiter-params</artifactId>
+          <groupId>org.junit.jupiter</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>junit-jupiter-engine</artifactId>
+          <groupId>org.junit.jupiter</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-bootstrap-bom</artifactId>
+      <version>3.33.1</version>
+      <type>pom</type>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-bootstrap-bom-test</artifactId>
+      <version>3.33.1</version>
+      <type>pom</type>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>*</artifactId>
+          <groupId>*</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-bootstrap-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-bootstrap-bom-test</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/3.33.1/quarkus-bootstrap-gradle-resolver-3.33.1-sources.jar && curl -fsI https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/3.33.1/quarkus-bootstrap-gradle-resolver-3.33.1-javadoc.jar && curl -fsI https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/3.33.1/quarkus-bootstrap-gradle-resolver-3.33.1-test-sources.jar && curl -fsI https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/3.33.1/quarkus-bootstrap-gradle-resolver-3.33.1-tests.jar' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+ exited 22 in 533ms:
+HTTP/2 200 
+date: Mon, 29 Jun 2026 11:14:46 GMT
+content-type: application/java-archive
+content-length: 112180
+cf-ray: a13482718c6e2db1-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+etag: "912c6ee2eaad106171084303078cf4fc"
+last-modified: Wed, 25 Mar 2026 09:37:19 GMT
+x-checksum-md5: 912c6ee2eaad106171084303078cf4fc
+x-checksum-sha1: 98bbe74e5ba7b27c7b9eff6cff753f193ab4dab7
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 404 
+date: Mon, 29 Jun 2026 11:14:47 GMT
+content-type: text/html
+cf-ray: a13482730a14278d-LYS
+cf-cache-status: MISS
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/3.33.1/quarkus-bootstrap-gradle-resolver-3.33.1-test-sources.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: quarkus-bootstrap-gradle-resolver GitHub path
+codex
+Maven Central publishes the main jar, sources jar, and javadoc jar for `3.33.1`, but no test classifier is listed there. I’m going to use the Quarkus release tag for the test suite URL and inspect the source/jar contents to make the description specific.
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); cd "$tmpdir"; curl -fsSLO https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/3.33.1/quarkus-bootstrap-gradle-resolver-3.33.1-sources.jar; jar tf quarkus-bootstrap-gradle-resolver-3.33.1-sources.jar | sed -n '"'1,120p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+ succeeded in 0ms:
+META-INF/
+META-INF/MANIFEST.MF
+io/
+io/quarkus/
+io/quarkus/bootstrap/
+io/quarkus/bootstrap/resolver/
+META-INF/maven/
+META-INF/maven/io.quarkus/
+META-INF/maven/io.quarkus/quarkus-bootstrap-gradle-resolver/
+io/quarkus/bootstrap/BootstrapGradleException.java
+io/quarkus/bootstrap/resolver/QuarkusGradleModelFactory.java
+io/quarkus/bootstrap/resolver/QuarkusModelBuildAction.java
+META-INF/maven/io.quarkus/quarkus-bootstrap-gradle-resolver/pom.xml
+META-INF/maven/io.quarkus/quarkus-bootstrap-gradle-resolver/pom.properties
+
+exec
+/usr/bin/bash -lc 'curl -fsI https://github.com/quarkusio/quarkus/tree/3.33.1/independent-projects/bootstrap/gradle-resolver && curl -fsI https://github.com/quarkusio/quarkus/tree/3.33.1/independent-projects/bootstrap/gradle-resolver/src/test && curl -fsI https://github.com/quarkusio/quarkus/tree/3.33.1/independent-projects/bootstrap/gradle-resolver/src/main/java' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+exec
+/usr/bin/bash -lc 'tmpdir=$(mktemp -d); cd "$tmpdir"; curl -fsSLO https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/3.33.1/quarkus-bootstrap-gradle-resolver-3.33.1.jar; jar tf quarkus-bootstrap-gradle-resolver-3.33.1.jar | sed -n '"'1,160p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+ succeeded in 242ms:
+META-INF/MANIFEST.MF
+io/
+io/quarkus/
+io/quarkus/bootstrap/
+io/quarkus/bootstrap/BootstrapGradleException.class
+io/quarkus/bootstrap/resolver/
+io/quarkus/bootstrap/resolver/QuarkusGradleModelFactory.class
+io/quarkus/bootstrap/resolver/QuarkusModelBuildAction.class
+META-INF/
+META-INF/maven/
+META-INF/maven/io.quarkus/
+META-INF/maven/io.quarkus/quarkus-bootstrap-gradle-resolver/
+META-INF/maven/io.quarkus/quarkus-bootstrap-gradle-resolver/pom.xml
+META-INF/maven/io.quarkus/quarkus-bootstrap-gradle-resolver/pom.properties
+org/
+org/gradle/
+org/gradle/build-receipt.properties
+org/gradle/tooling/
+org/gradle/tooling/TestFrameworkFailure.class
+org/gradle/tooling/FileComparisonTestAssertionFailure.class
+org/gradle/tooling/BuildCancelledException.class
+org/gradle/tooling/LongRunningOperation.class
+org/gradle/tooling/StreamedValueListener.class
+org/gradle/tooling/IntermediateResultHandler.class
+org/gradle/tooling/ListenerFailedException.class
+org/gradle/tooling/ModelBuilder.class
+org/gradle/tooling/UnsupportedVersionException.class
+org/gradle/tooling/TestExecutionException.class
+org/gradle/tooling/BuildException.class
+org/gradle/tooling/CancellationToken.class
+org/gradle/tooling/BuildController.class
+org/gradle/tooling/events/
+org/gradle/tooling/events/problems/
+org/gradle/tooling/events/problems/ProblemSummariesEvent.class
+org/gradle/tooling/events/problems/TaskPathLocation.class
+org/gradle/tooling/events/problems/Solution.class
+org/gradle/tooling/events/problems/ProblemAggregationEvent.class
+org/gradle/tooling/events/problems/ProblemEvent.class
+org/gradle/tooling/events/problems/Location.class
+org/gradle/tooling/events/problems/Severity.class
+org/gradle/tooling/events/problems/package-info.class
+org/gradle/tooling/events/problems/AdditionalData.class
+org/gradle/tooling/events/problems/CustomAdditionalData.class
+org/gradle/tooling/events/problems/LineInFileLocation.class
+org/gradle/tooling/events/problems/ContextualLabel.class
+org/gradle/tooling/events/problems/Details.class
+org/gradle/tooling/events/problems/ProblemId.class
+org/gradle/tooling/events/problems/FileLocation.class
+org/gradle/tooling/events/problems/ProblemDefinition.class
+org/gradle/tooling/events/problems/internal/
+org/gradle/tooling/events/problems/internal/DefaultSingleProblemEvent.class
+org/gradle/tooling/events/problems/internal/DefaultDocumentationLink.class
+org/gradle/tooling/events/problems/internal/DefaultProblemId.class
+org/gradle/tooling/events/problems/internal/DefaultTaskPathLocation.class
+org/gradle/tooling/events/problems/internal/DefaultProblem.class
+org/gradle/tooling/events/problems/internal/DefaultSolution.class
+org/gradle/tooling/events/problems/internal/package-info.class
+org/gradle/tooling/events/problems/internal/DefaultProblemsOperationContext.class
+org/gradle/tooling/events/problems/internal/DefaultProblemDefinition.class
+org/gradle/tooling/events/problems/internal/DefaultSeverity.class
+org/gradle/tooling/events/problems/internal/DefaultOffsetInFileLocation.class
+org/gradle/tooling/events/problems/internal/DefaultProblemAggregation.class
+org/gradle/tooling/events/problems/internal/DefaultAdditionalData.class
+org/gradle/tooling/events/problems/internal/DefaultProblemAggregationEvent.class
+org/gradle/tooling/events/problems/internal/DefaultDetails.class
+org/gradle/tooling/events/problems/internal/DefaultFileLocation.class
+org/gradle/tooling/events/problems/internal/DefaultProblemGroup.class
+org/gradle/tooling/events/problems/internal/DefaultProblemSummariesEvent.class
+org/gradle/tooling/events/problems/internal/DefaultLineInFileLocation.class
+org/gradle/tooling/events/problems/internal/DefaultPluginIdLocation.class
+org/gradle/tooling/events/problems/internal/DefaultContextualLabel.class
+org/gradle/tooling/events/problems/internal/DefaultCustomAdditionalData.class
+org/gradle/tooling/events/problems/internal/DefaultSeverity$1.class
+org/gradle/tooling/events/problems/internal/DefaultProblemSummary.class
+org/gradle/tooling/events/problems/Problem.class
+org/gradle/tooling/events/problems/ProblemSummary.class
+org/gradle/tooling/events/problems/ProblemAggregation.class
+org/gradle/tooling/events/problems/ProblemContext.class
+org/gradle/tooling/events/problems/PluginIdLocation.class
+org/gradle/tooling/events/problems/ProblemGroup.class
+org/gradle/tooling/events/problems/DocumentationLink.class
+org/gradle/tooling/events/problems/SingleProblemEvent.class
+org/gradle/tooling/events/problems/OffsetInFileLocation.class
+org/gradle/tooling/events/lifecycle/
+org/gradle/tooling/events/lifecycle/BuildPhaseStartEvent.class
+org/gradle/tooling/events/lifecycle/BuildPhaseOperationDescriptor.class
+org/gradle/tooling/events/lifecycle/BuildPhaseFinishEvent.class
+org/gradle/tooling/events/lifecycle/BuildPhaseProgressEvent.class
+org/gradle/tooling/events/lifecycle/internal/
+org/gradle/tooling/events/lifecycle/internal/DefaultBuildPhaseFinishEvent.class
+org/gradle/tooling/events/lifecycle/internal/DefaultBuildPhaseStartEvent.class
+org/gradle/tooling/events/lifecycle/internal/DefaultBuildPhaseOperationDescriptor.class
+org/gradle/tooling/events/FailureResult.class
+org/gradle/tooling/events/download/
+org/gradle/tooling/events/download/FileDownloadFinishEvent.class
+org/gradle/tooling/events/download/FileDownloadStartEvent.class
+org/gradle/tooling/events/download/FileDownloadNotFoundResult.class
+org/gradle/tooling/events/download/internal/
+org/gradle/tooling/events/download/internal/NotFoundFileDownloadSuccessResult.class
+org/gradle/tooling/events/download/internal/DefaultFileDownloadFinishEvent.class
+org/gradle/tooling/events/download/internal/DefaultFileDownloadFailureResult.class
+org/gradle/tooling/events/download/internal/DefaultFileDownloadStartEvent.class
+org/gradle/tooling/events/download/internal/DefaultFileDownloadOperationDescriptor.class
+org/gradle/tooling/events/download/internal/DefaultFileDownloadSuccessResult.class
+org/gradle/tooling/events/download/FileDownloadResult.class
+org/gradle/tooling/events/download/FileDownloadProgressEvent.class
+org/gradle/tooling/events/download/FileDownloadOperationDescriptor.class
+org/gradle/tooling/events/StartEvent.class
+org/gradle/tooling/events/SuccessResult.class
+org/gradle/tooling/events/FinishEvent.class
+org/gradle/tooling/events/PluginIdentifier.class
+org/gradle/tooling/events/configuration/
+org/gradle/tooling/events/configuration/ProjectConfigurationSuccessResult.class
+org/gradle/tooling/events/configuration/ProjectConfigurationProgressEvent.class
+org/gradle/tooling/events/configuration/ProjectConfigurationOperationResult.class
+org/gradle/tooling/events/configuration/ProjectConfigurationOperationResult$PluginApplicationResult.class
+org/gradle/tooling/events/configuration/internal/
+org/gradle/tooling/events/configuration/internal/DefaultProjectConfigurationFinishEvent.class
+org/gradle/tooling/events/configuration/internal/DefaultPluginApplicationResult.class
+org/gradle/tooling/events/configuration/internal/DefaultProjectConfigurationStartEvent.class
+org/gradle/tooling/events/configuration/internal/DefaultProjectConfigurationOperationDescriptor.class
+org/gradle/tooling/events/configuration/internal/DefaultProjectConfigurationSuccessResult.class
+org/gradle/tooling/events/configuration/internal/DefaultProjectConfigurationFailureResult.class
+org/gradle/tooling/events/configuration/ProjectConfigurationFinishEvent.class
+org/gradle/tooling/events/configuration/ProjectConfigurationStartEvent.class
+org/gradle/tooling/events/configuration/ProjectConfigurationOperationDescriptor.class
+org/gradle/tooling/events/configuration/ProjectConfigurationFailureResult.class
+org/gradle/tooling/events/test/
+org/gradle/tooling/events/test/JvmTestOperationDescriptor.class
+org/gradle/tooling/events/test/TestOperationResult.class
+org/gradle/tooling/events/test/TestOutputEvent.class
+org/gradle/tooling/events/test/TestOutputDescriptor.class
+org/gradle/tooling/events/test/TestFinishEvent.class
+org/gradle/tooling/events/test/TestSkippedResult.class
+org/gradle/tooling/events/test/TestProgressEvent.class
+org/gradle/tooling/events/test/TestSuccessResult.class
+org/gradle/tooling/events/test/TestMetadataEvent.class
+org/gradle/tooling/events/test/JvmTestKind.class
+org/gradle/tooling/events/test/Destination.class
+org/gradle/tooling/events/test/internal/
+org/gradle/tooling/events/test/internal/DefaultTestOutputEvent.class
+org/gradle/tooling/events/test/internal/DefaultTestSkippedResult.class
+org/gradle/tooling/events/test/internal/DefaultTestSuccessResult.class
+org/gradle/tooling/events/test/internal/DefaultTestMetadataEvent.class
+org/gradle/tooling/events/test/internal/DefaultTestFailureResult.class
+org/gradle/tooling/events/test/internal/DefaultTestOperationDescriptor.class
+org/gradle/tooling/events/test/internal/DefaultTestOutputOperationDescriptor.class
+org/gradle/tooling/events/test/internal/DefaultTestFinishEvent.class
+org/gradle/tooling/events/test/internal/DefaultTestStartEvent.class
+org/gradle/tooling/events/test/internal/DefaultJvmTestOperationDescriptor.class
+org/gradle/tooling/events/test/internal/DefaultDebugOptions.class
+org/gradle/tooling/events/test/TestOperationDescriptor.class
+org/gradle/tooling/events/test/TestStartEvent.class
+org/gradle/tooling/events/test/TestFailureResult.class
+org/gradle/tooling/events/ScriptPluginIdentifier.class
+org/gradle/tooling/events/OperationDescriptor.class
+org/gradle/tooling/events/work/
+org/gradle/tooling/events/work/WorkItemSuccessResult.class
+org/gradle/tooling/events/work/WorkItemOperationDescriptor.class
+org/gradle/tooling/events/work/WorkItemOperationResult.class
+
+ exited 22 in 1114ms:
+HTTP/2 200 
+date: Mon, 29 Jun 2026 11:14:57 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"58e7424b889cf32939125abbe8fdeb9b"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com wss://production-copilot-host.webpubsub.azure.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=tiui194JXVqusiwTakrhuR93hoPFsCdvVIpt90iSU%2F6y9TZgxD70D11lSEMaDwLSG2Ce%2FjNpKlsVFeRcppFHA4b4ObFLBQ%2Ba3frJ2o5zwCUyU0ATEdaSFqc%2BDpqH3gZOTcmnSyfQPzXf8prE9KQaGM1kRZvFAVPM7UAeKzXWVGp8V6hKTHxoBcLWOIZ8C9Vy8vEiFcFb%2BYNENcW9v0i2GKYpcOTL7wYnK%2BS8lCCCAOe204FXknWnO31L9ePBuXWpem3NoLX%2BtzKaKAQu%2FiX5jQ%3D%3D--yNVQAFJUgJSO%2Fsyy--LmsIkqutxnmsHEzPUYplUg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.992846793.1782731697; expires=Tue, 29 Jun 2027 11:14:57 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 29 Jun 2027 11:14:57 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 61FD:39B214:9B58C1:7D6258:6A4253B1
+
+HTTP/2 404 
+date: Mon, 29 Jun 2026 11:14:58 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+cache-control: no-cache
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com wss://production-copilot-host.webpubsub.azure.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+set-cookie: _gh_sess=RAKFlfCPNdeYDsxNxcRRwV7eaIINlqfp7BjMjQqZ8tJTCVsqYTMsZoRpMhpP6vCckObJGUbc2wrq%2FOizHcOpdILe0PBPxVGtI2v8PsS%2FAW%2FW%2BPo4wg94pQTxv5S1dz2FZO3eo%2BtQneHpxAO6bnI9Rj7oT4veZ%2FpwplpbH91N%2FBwDvWxmPSqTDEQ4pJA2F81lMa8vUqCNd7wb7w0mCxuyHtxRLncm%2FJDLgmMFlZFA4%2BHLcUPXh0%2BxaPBODITQBsiKXAHzbiZ78iVuwqDWqtMhtw%3D%3D--I4kPblEgZFcb8wRA--75jnGsfIy%2FNO28AIcN9JVg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.536996467.1782731698; expires=Tue, 29 Jun 2027 11:14:58 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 29 Jun 2027 11:14:58 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6221:11C3BF:9B8D7A:7D75F9:6A4253B2
+
+
+exec
+/usr/bin/bash -lc "curl -fsSL 'https://api.github.com/search/code?q=repo:quarkusio/quarkus+quarkus-bootstrap-gradle-resolver+ref:3.33.1'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/quarkusio/quarkus/contents/independent-projects/bootstrap/gradle-resolver?ref=3.33.1' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/independent-projects/bootstrap/gradle-resolver/pom.xml | sed -n '1,240p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+ succeeded in 144ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>quarkus-bootstrap-parent</artifactId>
+        <groupId>io.quarkus</groupId>
+        <version>3.33.1</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>quarkus-bootstrap-gradle-resolver</artifactId>
+    <name>Quarkus - Bootstrap - Gradle Resolver</name>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-bootstrap-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-bootstrap-bom-test</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-bootstrap-app-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.gradle</groupId>
+            <artifactId>gradle-tooling-api</artifactId>
+            <!--
+                 This will be bundled via shade-plugin (see further down), so don't propagate it.
+                 Note: "provided" scope doesn't work that well with shade-plugin.
+            -->
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.slf4j</groupId>
+            <artifactId>slf4j-jboss-logmanager</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-bootstrap-bom</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-bootstrap-bom-test</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!--
+                 We are bundling the Gradle Tooling API classes
+                 to avoid the need to configure the gradle libs artifact repository
+                 in Quarkus application projects to be able to resolve it.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <minimizeJar>true</minimizeJar>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.gradle:gradle-tooling-api</include>
+                                </includes>
+                            </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"/>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>Maven Central</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>gradle</id>
+            <name>Gradle releases repository</name>
+            <url>https://repo.gradle.org/artifactory/libs-releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+</project>
+
+ exited 22 in 164ms:
+curl: (22) The requested URL returned error: 401
+
+ succeeded in 235ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "independent-projects/bootstrap/gradle-resolver/pom.xml",
+    "sha": "ec8cd431a9a60cbbb3417f45c9b2160de276847b",
+    "size": 5627,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/independent-projects/bootstrap/gradle-resolver/pom.xml?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/independent-projects/bootstrap/gradle-resolver/pom.xml",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/blobs/ec8cd431a9a60cbbb3417f45c9b2160de276847b",
+    "download_url": "https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/independent-projects/bootstrap/gradle-resolver/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/independent-projects/bootstrap/gradle-resolver/pom.xml?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/blobs/ec8cd431a9a60cbbb3417f45c9b2160de276847b",
+      "html": "https://github.com/quarkusio/quarkus/blob/3.33.1/independent-projects/bootstrap/gradle-resolver/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "independent-projects/bootstrap/gradle-resolver/src",
+    "sha": "45420f13102b423517ebdf7305c81e9719124d3b",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/independent-projects/bootstrap/gradle-resolver/src?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/independent-projects/bootstrap/gradle-resolver/src",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/45420f13102b423517ebdf7305c81e9719124d3b",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/independent-projects/bootstrap/gradle-resolver/src?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/45420f13102b423517ebdf7305c81e9719124d3b",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/independent-projects/bootstrap/gradle-resolver/src"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/quarkusio/quarkus/contents/independent-projects/bootstrap/gradle-resolver/src?ref=3.33.1' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/quarkusio/quarkus/git/trees/3.33.1?recursive=1 | rg 'gradle-resolver|QuarkusGradleModelFactory|QuarkusModelBuildAction' | sed -n '1,200p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+exec
+/usr/bin/bash -lc "curl -fsSL https://api.github.com/repos/quarkusio/quarkus/git/trees/3.33.1?recursive=1 | rg 'src/test/.+Gradle|gradle.*src/test|bootstrap.*test' | sed -n '1,240p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+ succeeded in 253ms:
+[
+  {
+    "name": "main",
+    "path": "independent-projects/bootstrap/gradle-resolver/src/main",
+    "sha": "cc052aaa129e03b229968313fa4021a5f19da805",
+    "size": 0,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/independent-projects/bootstrap/gradle-resolver/src/main?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/tree/3.33.1/independent-projects/bootstrap/gradle-resolver/src/main",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/trees/cc052aaa129e03b229968313fa4021a5f19da805",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/independent-projects/bootstrap/gradle-resolver/src/main?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/trees/cc052aaa129e03b229968313fa4021a5f19da805",
+      "html": "https://github.com/quarkusio/quarkus/tree/3.33.1/independent-projects/bootstrap/gradle-resolver/src/main"
+    }
+  }
+]
+
+ succeeded in 3008ms:
+      "path": "devtools/cli-common/src/test/java/io/quarkus/cli/common/gradle/GradleInitScriptTest.java",
+      "path": "devtools/cli/src/test/java/io/quarkus/cli/CliProjectGradleTest.java",
+      "path": "devtools/cli/src/test/java/io/quarkus/cli/deploy/CliDeployGradleTest.java",
+      "path": "devtools/cli/src/test/java/io/quarkus/cli/image/CliImageGradleTest.java",
+      "path": "devtools/gradle/gradle-application-plugin/src/test",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/java",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/java/io",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/java/io/quarkus",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/java/io/quarkus/gradle",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/java/io/quarkus/gradle/QuarkusPluginTest.java",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/java/io/quarkus/gradle/extension",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/java/io/quarkus/gradle/extension/QuarkusExtensionTest.java",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/java/io/quarkus/gradle/tasks",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/java/io/quarkus/gradle/tasks/CachingTest.java",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/java/io/quarkus/gradle/tasks/CryptoConfigTest.java",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/java/io/quarkus/gradle/tasks/EagerResolutionTaskTest.java",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/java/io/quarkus/gradle/tasks/EffectiveConfigTest.java",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/java/io/quarkus/gradle/tasks/JvmArgsConfigTest.java",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/java/io/quarkus/gradle/tasks/TasksConfigurationCacheCompatibilityTest.java",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/caching",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/caching/main",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/caching/main/build.gradle.kts",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/caching/main/settings.gradle.kts",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/caching/main/src",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/caching/main/src/main",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/caching/main/src/main/java",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/caching/main/src/main/java/org",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/caching/main/src/main/java/org/acme",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/caching/main/src/main/java/org/acme/Foo.java",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/configurationcache",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/configurationcache/main",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/configurationcache/main/build.gradle.kts",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/configurationcache/main/settings.gradle.kts",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/configurationcache/main/src",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/configurationcache/main/src/main",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/configurationcache/main/src/main/java",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/configurationcache/main/src/main/java/org",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/configurationcache/main/src/main/java/org/acme",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/configurationcache/main/src/main/java/org/acme/Foo.java",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/crypto",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/crypto/main",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/crypto/main/build.gradle.kts",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/crypto/main/settings.gradle.kts",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/crypto/main/src",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/crypto/main/src/main",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/crypto/main/src/main/java",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/crypto/main/src/main/java/org",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/crypto/main/src/main/java/org/acme",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/crypto/main/src/main/java/org/acme/Foo.java",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/crypto/main/src/main/resources",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/crypto/main/src/main/resources/application.properties",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/effectiveConfig",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/effectiveConfig/overload",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/effectiveConfig/overload/1",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/effectiveConfig/overload/1/application.properties",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/effectiveConfig/overload/2",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/effectiveConfig/overload/2/application.yaml",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/effectiveConfig/overload/3",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/effectiveConfig/overload/3/application.properties",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/effectiveConfig/overload/4",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/effectiveConfig/overload/4/application.properties",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/effectiveConfig/overload/5",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/effectiveConfig/overload/5/application-prod.yaml",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/effectiveConfig/overload/5/application.yaml",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/jvmargs",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/jvmargs/main",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/jvmargs/main/build.gradle.kts",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/jvmargs/main/settings.gradle.kts",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/jvmargs/main/src",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/jvmargs/main/src/main",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/jvmargs/main/src/main/java",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/jvmargs/main/src/main/java/org",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/jvmargs/main/src/main/java/org/acme",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/jvmargs/main/src/main/java/org/acme/Foo.java",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/jvmargs/main/src/test",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/jvmargs/main/src/test/java",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/jvmargs/main/src/test/java/org",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/jvmargs/main/src/test/java/org/acme",
+      "path": "devtools/gradle/gradle-application-plugin/src/test/resources/io/quarkus/gradle/tasks/jvmargs/main/src/test/java/org/acme/JvmArgsTest.java",
+      "path": "devtools/gradle/gradle-extension-plugin/src/test",
+      "path": "devtools/gradle/gradle-extension-plugin/src/test/java",
+      "path": "devtools/gradle/gradle-extension-plugin/src/test/java/io",
+      "path": "devtools/gradle/gradle-extension-plugin/src/test/java/io/quarkus",
+      "path": "devtools/gradle/gradle-extension-plugin/src/test/java/io/quarkus/extension",
+      "path": "devtools/gradle/gradle-extension-plugin/src/test/java/io/quarkus/extension/gradle",
+      "path": "devtools/gradle/gradle-extension-plugin/src/test/java/io/quarkus/extension/gradle/QuarkusExtensionPluginTest.java",
+      "path": "devtools/gradle/gradle-extension-plugin/src/test/java/io/quarkus/extension/gradle/TestUtils.java",
+      "path": "devtools/gradle/gradle-extension-plugin/src/test/java/io/quarkus/extension/gradle/tasks",
+      "path": "devtools/gradle/gradle-extension-plugin/src/test/java/io/quarkus/extension/gradle/tasks/ExtensionDescriptorTaskTest.java",
+      "path": "devtools/gradle/gradle-extension-plugin/src/test/java/io/quarkus/extension/gradle/tasks/ValidateExtensionTaskTest.java",
+      "path": "devtools/gradle/gradle-model/src/test",
+      "path": "devtools/gradle/gradle-model/src/test/java",
+      "path": "devtools/gradle/gradle-model/src/test/java/io",
+      "path": "devtools/gradle/gradle-model/src/test/java/io/quarkus",
+      "path": "devtools/gradle/gradle-model/src/test/java/io/quarkus/gradle",
+      "path": "devtools/gradle/gradle-model/src/test/java/io/quarkus/gradle/tooling",
+      "path": "devtools/gradle/gradle-model/src/test/java/io/quarkus/gradle/tooling/GradleApplicationModelBuilderTest.java",
+      "path": "devtools/project-core-extension-codestarts/src/test/java/io/quarkus/codestarts/tooling/wrapper/GradleWrapperVersionTest.java",
+      "path": "independent-projects/bootstrap/app-model/src/test",
+      "path": "independent-projects/bootstrap/app-model/src/test/java",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io/quarkus",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io/quarkus/bootstrap",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io/quarkus/bootstrap/model",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io/quarkus/bootstrap/model/MutableStandardJvmOptionTest.java",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io/quarkus/bootstrap/model/MutableXxJvmOptionTest.java",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io/quarkus/bootstrap/model/PlatformImportsTest.java",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io/quarkus/bootstrap/model/PlatformInfoTest.java",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io/quarkus/bootstrap/model/PlatformStreamInfoTest.java",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io/quarkus/maven",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io/quarkus/maven/dependency",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io/quarkus/maven/dependency/ArtifactCoordsPatternTest.java",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io/quarkus/paths",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io/quarkus/paths/DirectoryPathTreeTest.java",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io/quarkus/paths/FilteredPathTreeTest.java",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io/quarkus/paths/JarPathTreeTest.java",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io/quarkus/paths/PathCollectingVisitor.java",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io/quarkus/paths/PathFilterTest.java",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io/quarkus/paths/SharedArchivePathTreeTest.java",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io/quarkus/paths/WalkSubtreeTest.java",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io/quarkus/util",
+      "path": "independent-projects/bootstrap/app-model/src/test/java/io/quarkus/util/GlobUtilTest.java",
+      "path": "independent-projects/bootstrap/app-model/src/test/resources",
+      "path": "independent-projects/bootstrap/app-model/src/test/resources/paths",
+      "path": "independent-projects/bootstrap/app-model/src/test/resources/paths/directory-path-tree",
+      "path": "independent-projects/bootstrap/app-model/src/test/resources/paths/directory-path-tree/external.txt",
+      "path": "independent-projects/bootstrap/app-model/src/test/resources/paths/directory-path-tree/root",
+      "path": "independent-projects/bootstrap/app-model/src/test/resources/paths/directory-path-tree/root/META-INF",
+      "path": "independent-projects/bootstrap/app-model/src/test/resources/paths/directory-path-tree/root/META-INF/MANIFEST.MF",
+      "path": "independent-projects/bootstrap/app-model/src/test/resources/paths/directory-path-tree/root/META-INF/versions",
+      "path": "independent-projects/bootstrap/app-model/src/test/resources/paths/directory-path-tree/root/META-INF/versions/9",
+      "path": "independent-projects/bootstrap/app-model/src/test/resources/paths/directory-path-tree/root/META-INF/versions/9/org",
+      "path": "independent-projects/bootstrap/app-model/src/test/resources/paths/directory-path-tree/root/META-INF/versions/9/org/acme",
+      "path": "independent-projects/bootstrap/app-model/src/test/resources/paths/directory-path-tree/root/META-INF/versions/9/org/acme/resource.txt",
+      "path": "independent-projects/bootstrap/app-model/src/test/resources/paths/directory-path-tree/root/README.md",
+      "path": "independent-projects/bootstrap/app-model/src/test/resources/paths/directory-path-tree/root/org",
+      "path": "independent-projects/bootstrap/app-model/src/test/resources/paths/directory-path-tree/root/org/acme",
+      "path": "independent-projects/bootstrap/app-model/src/test/resources/paths/directory-path-tree/root/org/acme/resource.txt",
+      "path": "independent-projects/bootstrap/app-model/src/test/resources/paths/directory-path-tree/root/src",
+      "path": "independent-projects/bootstrap/app-model/src/test/resources/paths/directory-path-tree/root/src/main",
+      "path": "independent-projects/bootstrap/app-model/src/test/resources/paths/directory-path-tree/root/src/main/java",
+      "path": "independent-projects/bootstrap/app-model/src/test/resources/paths/directory-path-tree/root/src/main/java/Main.java",
+      "path": "independent-projects/bootstrap/bom-test",
+      "path": "independent-projects/bootstrap/bom-test/pom.xml",
+      "path": "independent-projects/bootstrap/classloader-commons/src/test",
+      "path": "independent-projects/bootstrap/classloader-commons/src/test/java",
+      "path": "independent-projects/bootstrap/classloader-commons/src/test/java/io",
+      "path": "independent-projects/bootstrap/classloader-commons/src/test/java/io/quarkus",
+      "path": "independent-projects/bootstrap/classloader-commons/src/test/java/io/quarkus/commons",
+      "path": "independent-projects/bootstrap/classloader-commons/src/test/java/io/quarkus/commons/classloading",
+      "path": "independent-projects/bootstrap/classloader-commons/src/test/java/io/quarkus/commons/classloading/ClassLoaderHelperTest.java",
+      "path": "independent-projects/bootstrap/core/src/test",
+      "path": "independent-projects/bootstrap/core/src/test/java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/app",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/app/ApplicationModelSerializerTest.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/classloader",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/classloader/ClassLoadingInterruptTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/classloader/ClassLoadingPathTreeResourceUrlTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/classloader/ClassLoadingResourceUrlTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/classloader/ClassToLoad.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/classloader/InterruptClass.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/classloader/MultiReleaseJarTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/classloading",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/classloading/ClassPathResourceIndexTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/classloading/ConcurrentDefinePackageTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/BootstrapTestBase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/CollectDependenciesBase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/PropsBuilder.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/ResolverSetupCleanup.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/TsArtifact.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/TsDependency.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/TsJar.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/TsQuarkusExt.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/TsRepoBuilder.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/replace",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/replace/test",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/replace/test/ManagedReplacedDependencyTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/replace/test/SimpleReplacedDependencyTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/ConditionalDependenciesDevModelTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/ConditionalDependenciesDirectDependencyOnTransitiveDeploymentArtifactTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/ConditionalDependenciesProdModelTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/ConditionalDependenciesRuntimeOnlyProdModelTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/DependenciesOnDifferentVersionsOfAnArtifactTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/DependencyPresentTwiceInTheGraphInCompileAndProvidedScopesTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/DependencyPresentTwiceInTheGraphInCompileAndTestScopesTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/DependencyPresentTwiceInTheGraphTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/DependencyPresentTwiceInTheGraphWithDifferentClassifierAndTypeTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/DevModeConditionalDependencyWithExtraConditionTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/DevUiStyleConditionalDevModeDependenciesTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/DirectDependencyOverridesManagedDependencyTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/DirectDependencyVersionOverridesTransitiveVersionTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/DirectOptionalOverridesTransitiveNonOptionalVersionTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/ExclusionsTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/NearestDependencyVersionTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/OnlyDirectOptionalDepsAreCollectedTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/ProvidedScopeDepsAreNotCollectedTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/RequiredConditionalDependencyTest.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/SystemPropertyOverridesPomPropertyDependencyTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/TestScopeIsNotAmongRuntimeDependenciesTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/TransitiveVersionOverridesTestCase.java",
+      "path": "independent-projects/bootstrap/core/src/test/java/io/quarkus/bootstrap/resolver/test/VersionPropertyDependencyTestCase.java",
+      "path": "independent-projects/bootstrap/json/src/test",
+      "path": "independent-projects/bootstrap/json/src/test/java",
+      "path": "independent-projects/bootstrap/json/src/test/java/io",
+      "path": "independent-projects/bootstrap/json/src/test/java/io/quarkus",
+      "path": "independent-projects/bootstrap/json/src/test/java/io/quarkus/bootstrap",
+      "path": "independent-projects/bootstrap/json/src/test/java/io/quarkus/bootstrap/json",
+      "path": "independent-projects/bootstrap/json/src/test/java/io/quarkus/bootstrap/json/test",
+      "path": "independent-projects/bootstrap/json/src/test/java/io/quarkus/bootstrap/json/test/JsonDeserializerTest.java",
+      "path": "independent-projects/bootstrap/json/src/test/java/io/quarkus/bootstrap/json/test/JsonRoundTripTest.java",
+      "path": "independent-projects/bootstrap/json/src/test/java/io/quarkus/bootstrap/json/test/JsonSerializerTest.java",
+      "path": "independent-projects/bootstrap/maven-resolver/src/test",
+      "path": "independent-projects/bootstrap/maven-resolver/src/test/java",
+      "path": "independent-projects/bootstrap/maven-resolver/src/test/java/io",
+      "path": "independent-projects/bootstrap/maven-resolver/src/test/java/io/quarkus",
+      "path": "independent-projects/bootstrap/maven-resolver/src/test/java/io/quarkus/bootstrap",
+      "path": "independent-projects/bootstrap/maven-resolver/src/test/java/io/quarkus/bootstrap/resolver",
+      "path": "independent-projects/bootstrap/maven-resolver/src/test/java/io/quarkus/bootstrap/resolver/maven",
+      "path": "independent-projects/bootstrap/maven-resolver/src/test/java/io/quarkus/bootstrap/resolver/maven/OrderedDependencyVisitorTest.java",
+      "path": "independent-projects/bootstrap/maven-resolver/src/test/java/io/quarkus/bootstrap/resolver/maven/ReposInitializedFromEnvVarsTest.java",
+      "path": "independent-projects/bootstrap/maven-resolver/src/test/java/io/quarkus/bootstrap/resolver/maven/test",
+      "path": "independent-projects/bootstrap/maven-resolver/src/test/java/io/quarkus/bootstrap/resolver/maven/test/BasicPomReposEffectivePomTest.java",
+      "path": "independent-projects/bootstrap/maven-resolver/src/test/java/io/quarkus/bootstrap/resolver/maven/test/BootstrapMavenContextTestBase.java",
+      "path": "independent-projects/bootstrap/maven-resolver/src/test/java/io/quarkus/bootstrap/resolver/maven/test/BootstrapMavenOptionsTest.java",
+      "path": "independent-projects/bootstrap/maven-resolver/src/test/java/io/quarkus/bootstrap/resolver/maven/test/CentralRepoOverridesEffectivePomTest.java",
+      "path": "independent-projects/bootstrap/maven-resolver/src/test/java/io/quarkus/bootstrap/resolver/maven/test/ChainedLocalRepositoryManagerTest.java",
+      "path": "independent-projects/bootstrap/maven-resolver/src/test/java/io/quarkus/bootstrap/resolver/maven/test/NoProxyNoMirrorSettingsReposTest.java",
+      "path": "independent-projects/bootstrap/maven-resolver/src/test/java/io/quarkus/bootstrap/resolver/maven/test/PomProfileReposEffectivePomTest.java",
+      "path": "independent-projects/bootstrap/maven-resolver/src/test/java/io/quarkus/bootstrap/resolver/maven/test/PomReposMirroredTest.java",
+      "path": "independent-projects/bootstrap/maven-resolver/src/test/java/io/quarkus/bootstrap/resolver/maven/test/PreferPomsFromWorkspaceTest.java",
+
+ succeeded in 3009ms:
+      "path": "independent-projects/bootstrap/gradle-resolver",
+      "path": "independent-projects/bootstrap/gradle-resolver/pom.xml",
+      "path": "independent-projects/bootstrap/gradle-resolver/src",
+      "path": "independent-projects/bootstrap/gradle-resolver/src/main",
+      "path": "independent-projects/bootstrap/gradle-resolver/src/main/java",
+      "path": "independent-projects/bootstrap/gradle-resolver/src/main/java/io",
+      "path": "independent-projects/bootstrap/gradle-resolver/src/main/java/io/quarkus",
+      "path": "independent-projects/bootstrap/gradle-resolver/src/main/java/io/quarkus/bootstrap",
+      "path": "independent-projects/bootstrap/gradle-resolver/src/main/java/io/quarkus/bootstrap/BootstrapGradleException.java",
+      "path": "independent-projects/bootstrap/gradle-resolver/src/main/java/io/quarkus/bootstrap/resolver",
+      "path": "independent-projects/bootstrap/gradle-resolver/src/main/java/io/quarkus/bootstrap/resolver/QuarkusGradleModelFactory.java",
+      "path": "independent-projects/bootstrap/gradle-resolver/src/main/java/io/quarkus/bootstrap/resolver/QuarkusModelBuildAction.java",
+
+codex
+The artifact’s own module at the `3.33.1` tag has only `src/main`, so there is no module-local `src/test` URL to use. I’m checking the adjacent Gradle tooling tests before deciding whether the test field should point there or be marked `N/A`.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://api.github.com/repos/quarkusio/quarkus/contents/devtools/gradle/gradle-model/src/test/java/io/quarkus/gradle/tooling?ref=3.33.1' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/independent-projects/bootstrap/gradle-resolver/src/main/java/io/quarkus/bootstrap/resolver/QuarkusGradleModelFactory.java | sed -n '1,220p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/independent-projects/bootstrap/gradle-resolver/src/main/java/io/quarkus/bootstrap/resolver/QuarkusModelBuildAction.java | sed -n '1,220p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/devtools/gradle/gradle-model/src/test/java/io/quarkus/gradle/tooling/GradleApplicationModelBuilderTest.java | sed -n '1,220p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+ succeeded in 148ms:
+package io.quarkus.bootstrap.resolver;
+
+import java.io.Serializable;
+
+import org.gradle.tooling.BuildAction;
+import org.gradle.tooling.BuildController;
+
+import io.quarkus.bootstrap.model.ApplicationModel;
+import io.quarkus.bootstrap.model.gradle.ModelParameter;
+
+public class QuarkusModelBuildAction implements BuildAction<ApplicationModel>, Serializable {
+
+    private static final long serialVersionUID = 9152408068581769671L;
+
+    private final String mode;
+
+    public QuarkusModelBuildAction(String mode) {
+        this.mode = mode;
+    }
+
+    @Override
+    public ApplicationModel execute(BuildController controller) {
+        return controller.getModel(ApplicationModel.class, ModelParameter.class, p -> p.setMode(mode));
+    }
+}
+
+ succeeded in 155ms:
+package io.quarkus.bootstrap.resolver;
+
+import java.io.File;
+import java.util.List;
+
+import org.gradle.tooling.GradleConnector;
+import org.gradle.tooling.ModelBuilder;
+import org.gradle.tooling.ProjectConnection;
+import org.gradle.wrapper.GradleUserHomeLookup;
+
+import io.quarkus.bootstrap.model.ApplicationModel;
+
+public class QuarkusGradleModelFactory {
+
+    public static ApplicationModel create(File projectDir, String mode, String... tasks) {
+        return create(projectDir, mode, List.of(), tasks);
+    }
+
+    public static ApplicationModel create(File projectDir, String mode, List<String> jvmArgs, String... tasks) {
+        try (ProjectConnection connection = GradleConnector.newConnector()
+                .forProjectDirectory(projectDir)
+                .useGradleUserHomeDir(GradleUserHomeLookup.gradleUserHome())
+                .connect()) {
+            return connection.action(new QuarkusModelBuildAction(mode)).forTasks(tasks).addJvmArguments(jvmArgs).run();
+        }
+    }
+
+    public static ApplicationModel createForTasks(File projectDir, String... tasks) {
+        try (ProjectConnection connection = GradleConnector.newConnector()
+                .forProjectDirectory(projectDir)
+                .useGradleUserHomeDir(GradleUserHomeLookup.gradleUserHome())
+                .connect()) {
+            final ModelBuilder<ApplicationModel> modelBuilder = connection.model(ApplicationModel.class);
+            if (tasks.length != 0) {
+                modelBuilder.forTasks(tasks);
+            }
+            return modelBuilder.get();
+        }
+    }
+
+}
+
+ succeeded in 156ms:
+package io.quarkus.gradle.tooling;
+
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import org.assertj.core.util.Files;
+import org.gradle.api.artifacts.ModuleVersionIdentifier;
+import org.gradle.api.artifacts.ResolvedArtifact;
+import org.gradle.api.artifacts.ResolvedModuleVersion;
+import org.junit.jupiter.api.Test;
+
+public class GradleApplicationModelBuilderTest {
+
+    @Test
+    void testToAppDependency() {
+        ResolvedArtifact artifact = mock(ResolvedArtifact.class);
+        when(artifact.getName()).thenReturn("commons-lang");
+        ModuleVersionIdentifier id = mock(ModuleVersionIdentifier.class);
+        ResolvedModuleVersion version = mock(ResolvedModuleVersion.class);
+        when(version.getId()).thenReturn(id);
+        when(id.getGroup()).thenReturn("commons-lang");
+        when(artifact.getModuleVersion()).thenReturn(version);
+        when(artifact.getFile()).thenReturn(Files.currentFolder());
+        assertThatCode(() -> GradleApplicationModelBuilder.toDependency(artifact)).doesNotThrowAnyException();
+    }
+}
+
+ succeeded in 245ms:
+[
+  {
+    "name": "GradleApplicationModelBuilderTest.java",
+    "path": "devtools/gradle/gradle-model/src/test/java/io/quarkus/gradle/tooling/GradleApplicationModelBuilderTest.java",
+    "sha": "42d768f13dbb3dbe929cf9dde02f0cb0f7794c95",
+    "size": 1134,
+    "url": "https://api.github.com/repos/quarkusio/quarkus/contents/devtools/gradle/gradle-model/src/test/java/io/quarkus/gradle/tooling/GradleApplicationModelBuilderTest.java?ref=3.33.1",
+    "html_url": "https://github.com/quarkusio/quarkus/blob/3.33.1/devtools/gradle/gradle-model/src/test/java/io/quarkus/gradle/tooling/GradleApplicationModelBuilderTest.java",
+    "git_url": "https://api.github.com/repos/quarkusio/quarkus/git/blobs/42d768f13dbb3dbe929cf9dde02f0cb0f7794c95",
+    "download_url": "https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/devtools/gradle/gradle-model/src/test/java/io/quarkus/gradle/tooling/GradleApplicationModelBuilderTest.java",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/quarkusio/quarkus/contents/devtools/gradle/gradle-model/src/test/java/io/quarkus/gradle/tooling/GradleApplicationModelBuilderTest.java?ref=3.33.1",
+      "git": "https://api.github.com/repos/quarkusio/quarkus/git/blobs/42d768f13dbb3dbe929cf9dde02f0cb0f7794c95",
+      "html": "https://github.com/quarkusio/quarkus/blob/3.33.1/devtools/gradle/gradle-model/src/test/java/io/quarkus/gradle/tooling/GradleApplicationModelBuilderTest.java"
+    }
+  }
+]
+
+exec
+/usr/bin/bash -lc "find build/discovered-artifact-metadata -maxdepth 1 -type f | head -20 | xargs -r sed -n '1,80p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+ succeeded in 0ms:
+{
+  "coordinates" : "io.quarkus:quarkus-bootstrap-gradle-resolver:3.33.1"
+}
+
+exec
+/usr/bin/bash -lc "rg -n '\"test-code-url\" : \"N/A\"|\"test-code-url\"' metadata/io.quarkus build/discovered-artifact-metadata | sed -n '1,160p'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+ succeeded in 0ms:
+metadata/io.quarkus/quarkus-bootstrap-json/index.json:7:    "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/independent-projects/bootstrap/json/src/test",
+metadata/io.quarkus/quarkus-development-mode-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/io.quarkus/quarkus-classloader-commons/index.json:7:    "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/independent-projects/bootstrap/classloader-commons/src/test/java",
+metadata/io.quarkus/quarkus-junit-common/index.json:7:    "test-code-url" : "N/A",
+metadata/io.quarkus/quarkus-ide-launcher/index.json:7:    "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/integration-tests/ide-launcher/src/test",
+metadata/io.quarkus/quarkus-bootstrap-maven4-resolver/index.json:7:    "test-code-url" : "N/A",
+metadata/io.quarkus/quarkus-value-registry/index.json:7:    "test-code-url" : "N/A",
+metadata/io.quarkus/quarkus-bootstrap-runner/index.json:7:    "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/independent-projects/bootstrap/runner/src/test",
+metadata/io.quarkus/quarkus-bootstrap-app-model/index.json:7:    "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/independent-projects/bootstrap/app-model/src/test",
+metadata/io.quarkus/quarkus-bootstrap-app-model/index.json:31:    "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/independent-projects/bootstrap/app-model/src/test",
+metadata/io.quarkus/quarkus-hibernate-validator-spi/index.json:7:    "test-code-url" : "N/A",
+metadata/io.quarkus/quarkus-builder/index.json:7:    "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/core/builder/src/test/java",
+metadata/io.quarkus/quarkus-fs-util/index.json:7:    "test-code-url" : "https://github.com/quarkusio/quarkus-fs-util/tree/$version$/src/test",
+metadata/io.quarkus/quarkus-class-change-agent/index.json:7:    "test-code-url" : "N/A",
+
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/io.quarkus/quarkus-bootstrap-maven4-resolver/index.json && sed -n '1,80p' metadata/io.quarkus/quarkus-bootstrap-runner/index.json && sed -n '1,80p' metadata/io.quarkus/quarkus-bootstrap-json/index.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.33.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven4-resolver/$version$/quarkus-bootstrap-maven4-resolver-$version$-sources.jar",
+    "repository-url" : "https://github.com/quarkusio/quarkus",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-maven4-resolver/$version$/quarkus-bootstrap-maven4-resolver-$version$-javadoc.jar",
+    "description" : "Quarkus Bootstrap Maven 4 Resolver provides the Quarkus bootstrap integration classes needed to participate in Maven 4 artifact resolution through Maven Resolver and Sisu injection. The artifact contributes a bootstrap artifact transformer service used by Quarkus tooling when resolving and transforming application dependencies with the Maven 4 resolver stack.",
+    "tested-versions" : [
+      "3.33.1"
+    ],
+    "allowed-packages" : [
+      "io.quarkus.bootstrap.resolver.maven"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.33.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-runner/$version$/quarkus-bootstrap-runner-$version$-sources.jar",
+    "repository-url" : "https://github.com/quarkusio/quarkus",
+    "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/independent-projects/bootstrap/runner/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-runner/$version$/quarkus-bootstrap-runner-$version$-javadoc.jar",
+    "description" : "Quarkus Bootstrap Runner provides production runtime bootstrap classes, entry points, class loaders, resource access, and logging setup for Quarkus applications packaged with the runner architecture. It is used by generated Quarkus applications to load application classes and resources at runtime while keeping the bootstrap layer minimal and parent-first dependency behavior controlled.",
+    "tested-versions" : [
+      "3.33.1",
+      "3.34.0",
+      "3.34.1",
+      "3.34.2",
+      "3.34.3",
+      "3.34.4",
+      "3.34.5",
+      "3.34.6",
+      "3.34.7",
+      "3.35.0",
+      "3.35.1",
+      "3.35.2"
+    ],
+    "allowed-packages" : [
+      "io.quarkus.bootstrap"
+    ]
+  }
+]
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.33.1",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-json/$version$/quarkus-bootstrap-json-$version$-sources.jar",
+    "repository-url" : "https://github.com/quarkusio/quarkus",
+    "test-code-url" : "https://github.com/quarkusio/quarkus/tree/$version$/independent-projects/bootstrap/json/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-json/$version$/quarkus-bootstrap-json-$version$-javadoc.jar",
+    "description" : "Quarkus Bootstrap JSON is a small utility module that provides builders and value classes for generating JSON arrays, objects, and primitive values used by Quarkus bootstrap code. It also includes a lightweight JSON reader and transformation hook for parsing JSON text into its own value model and filtering or rewriting values while building output.",
+    "tested-versions" : [
+      "3.33.1",
+      "3.34.0",
+      "3.34.1",
+      "3.34.2",
+      "3.34.3",
+      "3.34.4",
+      "3.34.5",
+      "3.34.6",
+      "3.35.0",
+      "3.35.1",
+      "3.35.2"
+    ],
+    "allowed-packages" : [
+      "io.quarkus.bootstrap.json"
+    ]
+  }
+]
+
+codex
+The local metadata style confirms `N/A` is used for Quarkus modules without a known test suite URL, including a nearby resolver artifact. I’ve got enough evidence now: this is a JVM jar with class files, not a language-specific Kotlin/Groovy/Scala artifact, and it remains applicable to Native Image metadata.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-parent/3.33.1/quarkus-bootstrap-parent-3.33.1.pom | rg -n -C 3 '<scm>|<url>|github.com|quarkusio'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+ succeeded in 0ms:
+11-    </parent>
+12-    <artifactId>quarkus-bootstrap-parent</artifactId>
+13-    <name>Quarkus - Bootstrap - Parent</name>
+14:    <url>https://github.com/quarkusio/quarkus</url>
+15-    <packaging>pom</packaging>
+16-    <licenses>
+17-        <license>
+18-            <name>Apache License, Version 2.0</name>
+19-            <distribution>repo</distribution>
+20:            <url>https://www.apache.org/licenses/LICENSE-2.0.html</url>
+21-        </license>
+22-    </licenses>
+23-    <scm child.scm.connection.inherit.append.path="false"
+24-         child.scm.developerConnection.inherit.append.path="false"
+25-         child.scm.url.inherit.append.path="false">
+26:        <url>https://github.com/quarkusio/quarkus</url>
+27:        <connection>scm:git:git@github.com:quarkusio/quarkus.git</connection>
+28:        <developerConnection>scm:git:git@github.com:quarkusio/quarkus.git</developerConnection>
+29-        <tag>HEAD</tag>
+30-    </scm>
+31-    <properties>
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/pom.xml | rg -n -C 2 '<scm>|<url>|developerConnection|connection|tag>'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+exec
+/usr/bin/bash -lc 'curl -fsI https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/3.33.1/quarkus-bootstrap-gradle-resolver-3.33.1-tests.jar || true' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+ succeeded in 151ms:
+18-
+19-    <description>Quarkus - Kubernetes Native Java stack tailored for OpenJDK HotSpot and GraalVM</description>
+20:    <url>https://github.com/quarkusio/quarkus</url>
+21-
+22-    <developers>
+--
+32-        <license>
+33-            <name>The Apache Software License, Version 2.0</name>
+34:            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+35-            <distribution>repo</distribution>
+36-        </license>
+37-    </licenses>
+38-
+39:    <scm child.scm.connection.inherit.append.path="false"
+40:         child.scm.developerConnection.inherit.append.path="false"
+41-         child.scm.url.inherit.append.path="false">
+42:        <url>https://github.com/quarkusio/quarkus</url>
+43:        <connection>scm:git:git@github.com:quarkusio/quarkus.git</connection>
+44:        <developerConnection>scm:git:git@github.com:quarkusio/quarkus.git</developerConnection>
+45:        <tag>HEAD</tag>
+46-    </scm>
+47-
+48-    <issueManagement>
+49-        <system>GitHub</system>
+50:        <url>https://github.com/quarkusio/quarkus/issues/</url>
+51-    </issueManagement>
+52-
+--
+148-            <id>central</id>
+149-            <name>Maven Repository Switchboard</name>
+150:            <url>https://repo.maven.apache.org/maven2</url>
+151-            <snapshots>
+152-                <enabled>false</enabled>
+
+ succeeded in 239ms:
+HTTP/2 404 
+date: Mon, 29 Jun 2026 11:15:33 GMT
+content-type: text/html
+cf-ray: a13483936f1102f5-LYS
+cf-cache-status: EXPIRED
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/3.33.1/quarkus-bootstrap-gradle-resolver-3.33.1-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: io.quarkus quarkus-bootstrap-gradle-resolver 3.33.1 Maven Central
+codex
+I’m updating the discovered artifact JSON with Maven Central URLs for sources and javadocs, the Quarkus repository root, and `N/A` for tests because neither Maven Central nor the tagged module contains test sources for this artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json
+index 6a60784b62ef253a6d2514a3ada343be2914b4a7..a793c063fdd85d7e1313b265f5ed71ec2f198f11
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-bootstrap-gradle-resolver:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-bootstrap-gradle-resolver:3.33.1",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/$version$/quarkus-bootstrap-gradle-resolver-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/$version$/quarkus-bootstrap-gradle-resolver-$version$-javadoc.jar",
++  "description" : "Quarkus Bootstrap Gradle Resolver provides Quarkus bootstrap tooling for resolving a Gradle project's application model through the Gradle Tooling API. It connects to a Gradle project, runs Quarkus model build actions for selected tasks and modes, and returns the application model used by Quarkus build and bootstrap code."
+ }
+
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json
+index 6a60784b62ef253a6d2514a3ada343be2914b4a7..a793c063fdd85d7e1313b265f5ed71ec2f198f11
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-bootstrap-gradle-resolver:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-bootstrap-gradle-resolver:3.33.1",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/$version$/quarkus-bootstrap-gradle-resolver-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/$version$/quarkus-bootstrap-gradle-resolver-$version$-javadoc.jar",
++  "description" : "Quarkus Bootstrap Gradle Resolver provides Quarkus bootstrap tooling for resolving a Gradle project's application model through the Gradle Tooling API. It connects to a Gradle project, runs Quarkus model build actions for selected tasks and modes, and returns the application model used by Quarkus build and bootstrap code."
+ }
+
+codex
+The patch is in place. I’ll do a quick JSON parse and URL existence check with `3.33.1` substituted before wrapping up.
+exec
+/usr/bin/bash -lc 'jq . build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+ succeeded in 0ms:
+{
+  "coordinates": "io.quarkus:quarkus-bootstrap-gradle-resolver:3.33.1",
+  "repository-url": "https://github.com/quarkusio/quarkus",
+  "source-code-url": "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/$version$/quarkus-bootstrap-gradle-resolver-$version$-sources.jar",
+  "test-code-url": "N/A",
+  "documentation-url": "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/$version$/quarkus-bootstrap-gradle-resolver-$version$-javadoc.jar",
+  "description": "Quarkus Bootstrap Gradle Resolver provides Quarkus bootstrap tooling for resolving a Gradle project's application model through the Gradle Tooling API. It connects to a Gradle project, runs Quarkus model build actions for selected tasks and modes, and returns the application model used by Quarkus build and bootstrap code."
+}
+
+exec
+/usr/bin/bash -lc 'git diff -- build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "curl -fsI https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/3.33.1/quarkus-bootstrap-gradle-resolver-3.33.1-sources.jar >/tmp/source-head.txt && curl -fsI https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/3.33.1/quarkus-bootstrap-gradle-resolver-3.33.1-javadoc.jar >/tmp/doc-head.txt && printf 'source OK\\ndocs OK\\n'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+ succeeded in 0ms:
+source OK
+docs OK
+
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json
+index 6a60784b62ef253a6d2514a3ada343be2914b4a7..a793c063fdd85d7e1313b265f5ed71ec2f198f11
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-bootstrap-gradle-resolver:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-bootstrap-gradle-resolver:3.33.1",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/$version$/quarkus-bootstrap-gradle-resolver-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/$version$/quarkus-bootstrap-gradle-resolver-$version$-javadoc.jar",
++  "description" : "Quarkus Bootstrap Gradle Resolver provides Quarkus bootstrap tooling for resolving a Gradle project's application model through the Gradle Tooling API. It connects to a Gradle project, runs Quarkus model build actions for selected tasks and modes, and returns the application model used by Quarkus build and bootstrap code."
+ }
+
+web search: 
+web search: https://github.com/quarkusio/quarkus/tree/3.33.1/independent-projects/bootstrap/gradle-resolver
+web search: 
+web search: repo.maven.apache.org/maven2 io/quarkus/quarkus-bootstrap-gradle-resolver/3.33.1 quarkus-bootstrap-gradle-resolver-3.33.1-sources.jar
+web search: 
+web search: https://central.sonatype.com/artifact/io.quarkus/quarkus-bootstrap-gradle-resolver/3.33.0
+codex
+Validation passed: the JSON parses, and the substituted Maven source and javadoc URLs return HTTP 200. Since the file is under `build/`, it may not appear in `git diff` even though it was updated on disk.
+exec
+/usr/bin/bash -lc "sed -n '1,120p' build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+ succeeded in 0ms:
+{
+  "coordinates" : "io.quarkus:quarkus-bootstrap-gradle-resolver:3.33.1",
+  "repository-url" : "https://github.com/quarkusio/quarkus",
+  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/$version$/quarkus-bootstrap-gradle-resolver-$version$-sources.jar",
+  "test-code-url" : "N/A",
+  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/$version$/quarkus-bootstrap-gradle-resolver-$version$-javadoc.jar",
+  "description" : "Quarkus Bootstrap Gradle Resolver provides Quarkus bootstrap tooling for resolving a Gradle project's application model through the Gradle Tooling API. It connects to a Gradle project, runs Quarkus model build actions for selected tasks and modes, and returns the application model used by Quarkus build and bootstrap code."
+}
+
+exec
+/usr/bin/bash -lc 'git status --short --ignored build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json
+index 6a60784b62ef253a6d2514a3ada343be2914b4a7..a793c063fdd85d7e1313b265f5ed71ec2f198f11
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-bootstrap-gradle-resolver:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-bootstrap-gradle-resolver:3.33.1",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/$version$/quarkus-bootstrap-gradle-resolver-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/$version$/quarkus-bootstrap-gradle-resolver-$version$-javadoc.jar",
++  "description" : "Quarkus Bootstrap Gradle Resolver provides Quarkus bootstrap tooling for resolving a Gradle project's application model through the Gradle Tooling API. It connects to a Gradle project, runs Quarkus model build actions for selected tasks and modes, and returns the application model used by Quarkus build and bootstrap code."
+ }
+
+ succeeded in 268ms:
+!! build/
+
+web search: 
+web search: https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/independent-projects/bootstrap/gradle-resolver/pom.xml
+web search: 
+web search: https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/pom.xml
+web search: 
+web search: https://central.sonatype.com/artifact/io.quarkus/quarkus-bootstrap-gradle-resolver/3.33.1
+codex
+Updated [io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json:1).
+
+I set Maven Central source and javadoc URLs, `test-code-url` to `N/A`, and left `language` plus `not-for-native-image` absent. The tagged Quarkus POM identifies this JVM Gradle resolver module and its Gradle Tooling API dependency, and the Quarkus root POM points to the repository root used in the file. ([raw.githubusercontent.com](https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/independent-projects/bootstrap/gradle-resolver/pom.xml))
+
+Validation passed with `jq`, and the substituted source/javadoc URLs returned HTTP 200. The file is under ignored `build/`, so `git status` reports `!! build/`.
+diff --git a/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json b/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json
+index 6a60784b62ef253a6d2514a3ada343be2914b4a7..a793c063fdd85d7e1313b265f5ed71ec2f198f11
+--- a/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json
++++ b/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json
+@@ -1,3 +1,8 @@
+ {
+-  "coordinates" : "io.quarkus:quarkus-bootstrap-gradle-resolver:3.33.1"
++  "coordinates" : "io.quarkus:quarkus-bootstrap-gradle-resolver:3.33.1",
++  "repository-url" : "https://github.com/quarkusio/quarkus",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/$version$/quarkus-bootstrap-gradle-resolver-$version$-sources.jar",
++  "test-code-url" : "N/A",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/quarkus/quarkus-bootstrap-gradle-resolver/$version$/quarkus-bootstrap-gradle-resolver-$version$-javadoc.jar",
++  "description" : "Quarkus Bootstrap Gradle Resolver provides Quarkus bootstrap tooling for resolving a Gradle project's application model through the Gradle Tooling API. It connects to a Gradle project, runs Quarkus model build actions for selected tasks and modes, and returns the application model used by Quarkus build and bootstrap code."
+ }
+
+tokens used
+78,465
+Updated [io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e/build/discovered-artifact-metadata/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.json:1).
+
+I set Maven Central source and javadoc URLs, `test-code-url` to `N/A`, and left `language` plus `not-for-native-image` absent. The tagged Quarkus POM identifies this JVM Gradle resolver module and its Gradle Tooling API dependency, and the Quarkus root POM points to the repository root used in the file. ([raw.githubusercontent.com](https://raw.githubusercontent.com/quarkusio/quarkus/3.33.1/independent-projects/bootstrap/gradle-resolver/pom.xml))
+
+Validation passed with `jq`, and the substituted source/javadoc URLs returned HTTP 200. The file is under ignored `build/`, so `git status` reports `!! build/`.
+Ran agent for io.quarkus:quarkus-bootstrap-gradle-resolver:3.33.1 (exit 0). Log: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e/build/agent-artifact-discovery-logs/io.quarkus-quarkus-bootstrap-gradle-resolver-3.33.1.log
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/3820-c99d8d7e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 35s
+9 actionable tasks: 9 executed
