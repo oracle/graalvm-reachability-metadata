@@ -1,0 +1,99 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T14:23:35.076833Z",
+    "library": "org.eclipse.jetty:jetty-webapp:9.3.19.v20170502",
+    "starting_commit": "795513a326b2f3812c85bc8a5dd948352b056029",
+    "ending_commit": "5f26d87e53a659892401c5e63c9fea2029ffa006",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "9.3.19.v20170502",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 24,
+            "totalCalls": 24
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 27,
+        "totalCalls": 27
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 3747,
+          "missed": 10354,
+          "ratio": 0.265726,
+          "total": 14101
+        },
+        "line": {
+          "covered": 889,
+          "missed": 2119,
+          "ratio": 0.295545,
+          "total": 3008
+        },
+        "method": {
+          "covered": 162,
+          "missed": 211,
+          "ratio": 0.434316,
+          "total": 373
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 2802,
+      "issue_label": "library-new-request",
+      "library": "org.eclipse.jetty:jetty-webapp:9.3.19.v20170502",
+      "summary": "No extra Maven dependency or Docker service is required, but meaningful jetty-webapp coverage needs tests to create a local webapp/WAR-like directory and start a WebAppContext rather than only instantiating classes.",
+      "deterministic_setup": [],
+      "agent_guidance": "Build tests around embedded Jetty usage: create a temporary webapp directory with WEB-INF/web.xml and simple resources, configure WebAppContext with setContextPath(\"/\") and setWar(tempDir.toString()), attach it to a Server using port 0, start it, assert the context is available and/or serve a local request, then always stop/destroy the server. Prefer descriptor-based servlet/webapp coverage because org.eclipse.jetty:jetty-webapp already brings jetty-xml, jetty-servlet, jetty-security, jetty-server, jetty-http, jetty-io, jetty-util, and javax.servlet-api transitively.",
+      "risks": [
+        "JSP support is optional and not present with the base jetty-webapp artifact; tests that exercise JSPs would need additional Jetty JSP modules and should be avoided unless explicitly required.",
+        "Annotation, JNDI/Plus, JMX, and WebSocket scenarios are optional Jetty integrations outside the base artifact; descriptor-based WebAppContext coverage is the safer default.",
+        "Use an ephemeral port and local temporary files only; avoid fixed ports or external services."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#2802 Support for org.eclipse.jetty:jetty-webapp:9.3.19.v20170502; label=library-new-request; body_chars=116"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 42270,
+      "output_tokens_used": 4120,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.eclipse.jetty:jetty-webapp:9.3.19.v20170502/library-preparation-preflight/pi-generation-2026-06-28T13-49-32-406472Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 112200,
+      "cached_input_tokens_used": 1676800,
+      "output_tokens_used": 13704,
+      "iterations": 2,
+      "cost_usd": 1.2495,
+      "generated_loc": 206,
+      "tested_library_loc": 889,
+      "metadata_entries": 34,
+      "code_coverage_percent": 29.55
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.eclipse.jetty/jetty-webapp/9.3.19.v20170502/src/test/java/org_eclipse_jetty/jetty_webapp/StandardDescriptorProcessorTest.java",
+      "metadata_file": "metadata/org.eclipse.jetty/jetty-webapp/9.3.19.v20170502/reachability-metadata.json"
+    }
+  }
+}
