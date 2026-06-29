@@ -91,5 +91,115 @@
       "test_file": "tests/src/org.apache.activemq/activemq-client-jakarta/5.18.5/src/test/java/org_apache_activemq/activemq_client_jakarta/XPathExpressionTest.java",
       "metadata_file": "metadata/org.apache.activemq/activemq-client-jakarta/5.18.5/reachability-metadata.json"
     }
+  },
+  "add_new_library_support:2026-06-29": {
+    "timestamp": "2026-06-29T00:18:52.652689Z",
+    "library": "org.apache.activemq:activemq-client-jakarta:5.18.5",
+    "starting_commit": "a29bd6b28f8d8d2bdcfa75dd83e1827f9f45cc8e",
+    "ending_commit": "7c606af4bdacb82ef62682bc8035f4c38ca65334",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "5.18.5",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.846154,
+            "coveredCalls": 55,
+            "totalCalls": 65
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.855072,
+        "coveredCalls": 59,
+        "totalCalls": 69
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 22527,
+          "missed": 117695,
+          "ratio": 0.160652,
+          "total": 140222
+        },
+        "line": {
+          "covered": 5940,
+          "missed": 28865,
+          "ratio": 0.170665,
+          "total": 34805
+        },
+        "method": {
+          "covered": 1826,
+          "missed": 6339,
+          "ratio": 0.223637,
+          "total": 8165
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 1962,
+      "issue_label": "library-new-request",
+      "library": "org.apache.activemq:activemq-client-jakarta:5.18.5",
+      "summary": "Meaningful ActiveMQ Jakarta client coverage usually needs a broker-backed JMS path; the client artifact contains the Jakarta client classes, but embedded VM broker support and some optional SPI implementations are supplied by the ActiveMQ broker artifact.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.apache.activemq:activemq-broker:5.18.5",
+          "scope": "testImplementation",
+          "reason": "ActiveMQ Classic documentation centers normal client usage on an available broker, and the VM transport/embedded broker plus TransportLogger SPI implementation are not in activemq-client-jakarta but are present in activemq-broker, enabling in-process broker-backed JMS tests without an external servi\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "For broker-backed coverage, prefer isolated in-process tests using a unique broker name and non-persistent/no-JMX settings such as `vm://<unique-name>?broker.persistent=false&broker.useJmx=false`, or explicitly start and stop a `BrokerService`. Use unique queue/topic names and close JMS connections/sessions/producers/consumers deterministically.",
+      "risks": [
+        "The broker artifact has a transitive dependency on `org.apache.activemq:activemq-client`, while this target is `activemq-client-jakarta`; if Gradle pulls both, duplicate javax/jakarta client classes may appear. Local Gradle/native-image verification should catch this, and the generated build may need to exclude the transitive `activemq-client` from the broker dependency."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.apache.activemq:activemq-broker:5.18.5",
+          "result": "already_present",
+          "target": "tests/src/org.apache.activemq/activemq-client-jakarta/5.18.5/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#1962 Support for org.apache.activemq:activemq-client-jakarta:5.18.5; label=library-new-request; body_chars=132"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "21 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 61422,
+      "output_tokens_used": 7594,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.activemq:activemq-client-jakarta:5.18.5/library-preparation-preflight/pi-generation-2026-06-28T23-49-21-259983Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 296776,
+      "cached_input_tokens_used": 1761792,
+      "output_tokens_used": 25962,
+      "iterations": 5,
+      "cost_usd": 1.6598,
+      "generated_loc": 1023,
+      "tested_library_loc": 5940,
+      "metadata_entries": 65,
+      "test_only_metadata_entries": 7,
+      "code_coverage_percent": 17.07
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.apache.activemq/activemq-client-jakarta/5.18.5/src/test/java/org_apache_activemq/activemq_client_jakarta/XPathExpressionTest.java",
+      "metadata_file": "metadata/org.apache.activemq/activemq-client-jakarta/5.18.5/reachability-metadata.json"
+    }
   }
 }
