@@ -1,0 +1,89 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "net.sf.ehcache:ehcache-core:2.5.0",
+  "issueNumber": 8877,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Set `net.sf.ehcache.skipUpdateCheck=true` or configure `Configuration.updateCheck(false)` in tests to avoid Ehcache's background update check. Use temporary directories for disk-store tests. If exercising transaction-manager auto-discovery, create a temporary `bitronix.properties` with JMX disabled and journal set to `null`, set `bitronix.tm.configuration` for the test, then shut the transaction manager down and clear the property after the test.",
+    "applied_setup": [],
+    "current_library": "net.sf.ehcache:ehcache-core:2.4.4",
+    "deterministic_setup": [
+      {
+        "coordinate": "javax.transaction:jta:1.1",
+        "kind": "dependency",
+        "reason": "ehcache-core declares JTA as provided and exposes/uses javax.transaction and javax.transaction.xa types for XA/local transaction support; tests covering CacheTransactionHelper and DefaultTransactionManagerLookup need these APIs.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.codehaus.btm:btm:2.1.4",
+        "kind": "dependency",
+        "reason": "DefaultTransactionManagerLookup normally discovers Bitronix by reflection; the existing metadata and coverage exercise that in-process transaction manager path.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1",
+        "kind": "dependency",
+        "reason": "Bitronix has optional JMS API references; adding the JMS spec avoids missing optional API classes during test execution/native analysis of the Bitronix transaction-manager path.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8877 [Automation] native-image run fails for net.sf.ehcache:ehcache-core:2.5.0; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "15 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 72012,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 8877,
+    "library": "net.sf.ehcache:ehcache-core:2.5.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.5.0",
+    "output_tokens_used": 5627,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Terracotta clustering, Hibernate integration, servlet/web caching, and distributed RMI scenarios are optional integrations and should not be required for this issue unless the generated tests explicitly target those APIs.",
+      "Version 2.5.0 adds size-of/agent-related code paths; tests using heap byte limits may trigger JVM instrumentation or unsafe/reflection sizing behavior, so Native Image verification remains authoritative."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/net.sf.ehcache:ehcache-core:2.5.0/library-preparation-preflight/pi-generation-2026-06-29T15-28-47-915662Z.log",
+    "status": "completed",
+    "summary": "Ehcache core can cover basic cache/disk/search behavior without services, but the existing meaningful native coverage exercises JTA/XA transaction manager lookup, which requires provided/optional APIs not pulled by the normal scaffold."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.5.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8877-fails-native-image-run-net.sf.ehcache-ehcache-core-2.5.0-ee6fc008",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
