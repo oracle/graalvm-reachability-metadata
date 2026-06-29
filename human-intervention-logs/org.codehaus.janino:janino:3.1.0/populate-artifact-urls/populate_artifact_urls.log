@@ -1,0 +1,486 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8855-75dabf09
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f1352-af0b-7630-8b3d-c6fc037ee07f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.codehaus.janino:janino:3.1.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [3.1.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8855-75dabf09/metadata/org.codehaus.janino/janino/index.json
+- Entry selector: "metadata-version" = "3.1.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 3.1.0
+- Entry metadata-version: 3.1.0
+- Entry test-version: 3.1.0
+- Entry tested-versions: [3.1.0]
+codex
+I’ll verify the artifact metadata and available Maven source/test artifacts first, then update only the missing fields in the specified `index.json`.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.codehaus.janino/janino/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8855-75dabf09
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "3.1.0",
+    "tested-versions" : [
+      "3.1.0"
+    ],
+    "allowed-packages" : [
+      "org.codehaus.janino"
+    ]
+  },
+  {
+    "metadata-version" : "3.0.16",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/janino/$version$/janino-$version$-sources.jar",
+    "repository-url" : "https://github.com/janino-compiler/janino",
+    "test-code-url" : "https://github.com/janino-compiler/janino/tree/v$version$/janino/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/janino/$version$/janino-$version$-javadoc.jar",
+    "description" : "Janino is a lightweight Java compiler and expression evaluation library that can compile Java source, scripts, and expressions at run time without relying on the JDK tools compiler. The janino artifact provides the JANINO implementation of the commons-compiler API along with parser, evaluator, and utility classes for embedding dynamic Java compilation in JVM applications.",
+    "tested-versions" : [
+      "3.0.16"
+    ],
+    "allowed-packages" : [
+      "org.codehaus.janino"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8855-75dabf09
+ succeeded in 144ms:
+web search: 
+web search: Maven org.codehaus.janino janino 3.1.0 sources jar javadoc jar
+codex
+The existing older entry already points to Maven sources and Javadoc plus the GitHub test tree. I’m checking whether version `3.1.0` has matching Maven artifacts, including a tests JAR, before choosing the templates.
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/codehaus/janino/janino/3.1.0/janino-3.1.0.pom' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8855-75dabf09
+ succeeded in 0ms:
+<?xml version="1.0"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.codehaus.janino</groupId>
+    <artifactId>janino-parent</artifactId>
+    <version>3.1.0</version>
+    <relativePath>../janino-parent</relativePath>
+  </parent>
+
+  <artifactId>janino</artifactId>
+
+  <name>janino</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.janino</groupId>
+      <artifactId>commons-compiler</artifactId>
+      <version>${project.parent.version}</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.ant</groupId>
+    	<artifactId>ant</artifactId>
+    	<version>1.7.1</version>
+    	<scope>provided</scope>
+    	<optional>true</optional>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>-Xss2m</argLine>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+			<Export-Package>org.codehaus.janino, org.codehaus.janino.samples, org.codehaus.janino.tools, org.codehaus.janino.util, org.codehaus.janino.util.resource</Export-Package>
+            <Require-Bundle>org.codehaus.janino.commons-compiler</Require-Bundle>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <description>The &quot;JANINO&quot; implementation of the &quot;commons-compiler&quot; API: Super-small, super-fast, independent from the JDK's &quot;tools.jar&quot;.</description>
+</project>
+
+exec
+/usr/bin/bash -lc 'curl -fsSL https://repo1.maven.org/maven2/org/codehaus/janino/janino/3.1.0/' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8855-75dabf09
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/codehaus/janino/janino/3.1.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/codehaus/janino/janino/3.1.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="janino-3.1.0-javadoc.jar" title="janino-3.1.0-javadoc.jar">janino-3.1.0-javadoc.jar</a>                          2019-08-14 12:31   1993760      
+<a href="janino-3.1.0-javadoc.jar.asc" title="janino-3.1.0-javadoc.jar.asc">janino-3.1.0-javadoc.jar.asc</a>                      2019-08-14 12:31       455      
+<a href="janino-3.1.0-javadoc.jar.asc.md5" title="janino-3.1.0-javadoc.jar.asc.md5">janino-3.1.0-javadoc.jar.asc.md5</a>                  2019-08-14 12:31        32      
+<a href="janino-3.1.0-javadoc.jar.asc.sha1" title="janino-3.1.0-javadoc.jar.asc.sha1">janino-3.1.0-javadoc.jar.asc.sha1</a>                 2019-08-14 12:31        40      
+<a href="janino-3.1.0-javadoc.jar.md5" title="janino-3.1.0-javadoc.jar.md5">janino-3.1.0-javadoc.jar.md5</a>                      2019-08-14 12:31        32      
+<a href="janino-3.1.0-javadoc.jar.sha1" title="janino-3.1.0-javadoc.jar.sha1">janino-3.1.0-javadoc.jar.sha1</a>                     2019-08-14 12:31        40      
+<a href="janino-3.1.0-sources.jar" title="janino-3.1.0-sources.jar">janino-3.1.0-sources.jar</a>                          2019-08-14 12:31    346569      
+<a href="janino-3.1.0-sources.jar.asc" title="janino-3.1.0-sources.jar.asc">janino-3.1.0-sources.jar.asc</a>                      2019-08-14 12:31       455      
+<a href="janino-3.1.0-sources.jar.asc.md5" title="janino-3.1.0-sources.jar.asc.md5">janino-3.1.0-sources.jar.asc.md5</a>                  2019-08-14 12:31        32      
+<a href="janino-3.1.0-sources.jar.asc.sha1" title="janino-3.1.0-sources.jar.asc.sha1">janino-3.1.0-sources.jar.asc.sha1</a>                 2019-08-14 12:31        40      
+<a href="janino-3.1.0-sources.jar.md5" title="janino-3.1.0-sources.jar.md5">janino-3.1.0-sources.jar.md5</a>                      2019-08-14 12:31        32      
+<a href="janino-3.1.0-sources.jar.sha1" title="janino-3.1.0-sources.jar.sha1">janino-3.1.0-sources.jar.sha1</a>                     2019-08-14 12:31        40      
+<a href="janino-3.1.0.jar" title="janino-3.1.0.jar">janino-3.1.0.jar</a>                                  2019-08-14 12:31    868600      
+<a href="janino-3.1.0.jar.asc" title="janino-3.1.0.jar.asc">janino-3.1.0.jar.asc</a>                              2019-08-14 12:31       455      
+<a href="janino-3.1.0.jar.asc.md5" title="janino-3.1.0.jar.asc.md5">janino-3.1.0.jar.asc.md5</a>                          2019-08-14 12:31        32      
+<a href="janino-3.1.0.jar.asc.sha1" title="janino-3.1.0.jar.asc.sha1">janino-3.1.0.jar.asc.sha1</a>                         2019-08-14 12:31        40      
+<a href="janino-3.1.0.jar.md5" title="janino-3.1.0.jar.md5">janino-3.1.0.jar.md5</a>                              2019-08-14 12:31        32      
+<a href="janino-3.1.0.jar.sha1" title="janino-3.1.0.jar.sha1">janino-3.1.0.jar.sha1</a>                             2019-08-14 12:31        40      
+<a href="janino-3.1.0.pom" title="janino-3.1.0.pom">janino-3.1.0.pom</a>                                  2019-08-14 12:31      2016      
+<a href="janino-3.1.0.pom.asc" title="janino-3.1.0.pom.asc">janino-3.1.0.pom.asc</a>                              2019-08-14 12:31       455      
+<a href="janino-3.1.0.pom.asc.md5" title="janino-3.1.0.pom.asc.md5">janino-3.1.0.pom.asc.md5</a>                          2019-08-14 12:31        32      
+<a href="janino-3.1.0.pom.asc.sha1" title="janino-3.1.0.pom.asc.sha1">janino-3.1.0.pom.asc.sha1</a>                         2019-08-14 12:31        40      
+<a href="janino-3.1.0.pom.md5" title="janino-3.1.0.pom.md5">janino-3.1.0.pom.md5</a>                              2019-08-14 12:31        32      
+<a href="janino-3.1.0.pom.sha1" title="janino-3.1.0.pom.sha1">janino-3.1.0.pom.sha1</a>                             2019-08-14 12:31        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/codehaus/janino/janino/3.1.0/janino-3.1.0-sources.jar && curl -fsSI https://repo1.maven.org/maven2/org/codehaus/janino/janino/3.1.0/janino-3.1.0-javadoc.jar && curl -fsSI https://repo1.maven.org/maven2/org/codehaus/janino/janino/3.1.0/janino-3.1.0-tests.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8855-75dabf09
+ exited 22 in 112ms:
+curl: (22) The requested URL returned error: 404
+HTTP/2 404 
+date: Mon, 29 Jun 2026 12:20:38 GMT
+content-type: text/html
+cf-ray: a134e2eda95d2789-LYS
+cf-cache-status: HIT
+age: 1196
+last-modified: Sat, 11 Oct 2025 00:20:51 GMT
+x-amz-error-code: NoSuchKey
+x-amz-error-detail-key: maven2/org/codehaus/janino/janino/3.1.0/janino-3.1.0-tests.jar
+x-amz-error-message: The specified key does not exist.
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/codehaus/janino/janino/3.1.0/
+codex
+Maven Central has the `3.1.0` sources and Javadoc JARs, but no tests JAR for this artifact. I’m going to use Maven templates for source/docs and the versioned GitHub `janino/src/test` tree for tests, matching the existing entry style.
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/codehaus/janino/janino/3.1.0/janino-3.1.0-sources.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8855-75dabf09
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 29 Jun 2026 12:20:51 GMT
+content-type: application/java-archive
+content-length: 346569
+cf-ray: a134e33c69e427b5-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 31406
+etag: "b786fc5424fa2f3d08a3653cbc82a929"
+last-modified: Wed, 14 Aug 2019 12:31:35 GMT
+x-checksum-md5: b786fc5424fa2f3d08a3653cbc82a929
+x-checksum-sha1: 555e4785aa33163117c8e5490b5f849ada8fec1e
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo1.maven.org/maven2/org/codehaus/janino/janino/3.1.0/janino-3.1.0-javadoc.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8855-75dabf09
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 29 Jun 2026 12:20:51 GMT
+content-type: application/java-archive
+content-length: 1993760
+cf-ray: a134e33cccbd27bb-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 26676
+etag: "3fc85c7f7a9a7e70a6149c6ced02dbe2"
+last-modified: Wed, 14 Aug 2019 12:31:04 GMT
+x-checksum-md5: 3fc85c7f7a9a7e70a6149c6ced02dbe2
+x-checksum-sha1: 46a01cfbe8e540b8a2e6975085035d1d0068d889
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/janino-compiler/janino/tree/v3.1.0/janino/src/test' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8855-75dabf09
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/janino-compiler/janino' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8855-75dabf09
+ succeeded in 599ms:
+HTTP/2 200 
+date: Mon, 29 Jun 2026 12:20:51 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"0a396b338202564807499852f594f817"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com wss://production-copilot-host.webpubsub.azure.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=OIw5YPxoLlTeTq4rxRQCgvRsOJjt1jhKiwd12UgX2rqoAbmPCoxFAk3zIeYOlR5ykCDkSxHXQZ%2F4mzS3w099rr0WOFQ4P%2FCZcD7B42LDzpWcRs3gIF7cfPLei4WsYpYjJYpZbbNciRLukHe9%2FSJ5IZ%2BRiuvxsKIjcy0dyIDUfQgcqSOXNck47gvWi%2FFO7dp1Wt2Hrp8X4VnOBLBgsunJTkFcg79lh8u5mFia7VpUZtgyVcBp9618N2kz9KLSS140apTfQG4vcdIYO53dCDZ0OQ%3D%3D--vx9P%2Btb5cioxJV7I--Ao8BVBdwph3fAN8HbUYCog%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.2002416624.1782735651; expires=Tue, 29 Jun 2027 12:20:51 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 29 Jun 2027 12:20:51 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 621F:7D4C1:1819329:1395BDE:6A426323
+
+
+ succeeded in 720ms:
+HTTP/2 200 
+date: Mon, 29 Jun 2026 12:20:51 GMT
+content-type: text/html; charset=utf-8
+vary: X-PJAX, X-PJAX-Container, Turbo-Visit, Turbo-Frame, X-Requested-With, Sec-Fetch-Site,Accept-Encoding, Accept, X-Requested-With
+etag: W/"0ce016eabbfcac59549fc81a07913c67"
+cache-control: max-age=0, private, must-revalidate
+strict-transport-security: max-age=31536000; includeSubdomains; preload
+x-frame-options: deny
+x-content-type-options: nosniff
+x-xss-protection: 0
+referrer-policy: no-referrer-when-downgrade
+content-security-policy: default-src 'none'; base-uri 'self'; child-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/; connect-src 'self' uploads.github.com www.githubstatus.com collector.github.com raw.githubusercontent.com api.github.com github-cloud.s3.amazonaws.com github-production-repository-file-5c1aeb.s3.amazonaws.com github-production-upload-manifest-file-7fdce7.s3.amazonaws.com github-production-user-asset-6210df.s3.amazonaws.com *.rel.tunnels.api.visualstudio.com wss://*.rel.tunnels.api.visualstudio.com github.githubassets.com objects-origin.githubusercontent.com copilot-proxy.githubusercontent.com proxy.individual.githubcopilot.com proxy.business.githubcopilot.com proxy.enterprise.githubcopilot.com *.actions.githubusercontent.com wss://*.actions.githubusercontent.com productionresultssa0.blob.core.windows.net productionresultssa1.blob.core.windows.net productionresultssa2.blob.core.windows.net productionresultssa3.blob.core.windows.net productionresultssa4.blob.core.windows.net productionresultssa5.blob.core.windows.net productionresultssa6.blob.core.windows.net productionresultssa7.blob.core.windows.net productionresultssa8.blob.core.windows.net productionresultssa9.blob.core.windows.net productionresultssa10.blob.core.windows.net productionresultssa11.blob.core.windows.net productionresultssa12.blob.core.windows.net productionresultssa13.blob.core.windows.net productionresultssa14.blob.core.windows.net productionresultssa15.blob.core.windows.net productionresultssa16.blob.core.windows.net productionresultssa17.blob.core.windows.net productionresultssa18.blob.core.windows.net productionresultssa19.blob.core.windows.net github-production-repository-image-32fea6.s3.amazonaws.com github-production-release-asset-2e65be.s3.amazonaws.com insights.github.com wss://alive.github.com wss://alive-staging.github.com api.githubcopilot.com api.individual.githubcopilot.com api.business.githubcopilot.com api.enterprise.githubcopilot.com wss://production-copilot-host.webpubsub.azure.com; font-src github.githubassets.com; form-action 'self' github.com gist.github.com copilot-workspace.githubnext.com objects-origin.githubusercontent.com; frame-ancestors 'none'; frame-src viewscreen.githubusercontent.com notebooks.githubusercontent.com; img-src 'self' data: blob: github.githubassets.com media.githubusercontent.com camo.githubusercontent.com identicons.github.com avatars.githubusercontent.com private-avatars.githubusercontent.com github-cloud.s3.amazonaws.com objects.githubusercontent.com release-assets.githubusercontent.com secured-user-images.githubusercontent.com user-images.githubusercontent.com private-user-images.githubusercontent.com opengraph.githubassets.com marketplace-screenshots.githubusercontent.com copilotprodattachments.blob.core.windows.net/github-production-copilot-attachments/ github-production-user-asset-6210df.s3.amazonaws.com customer-stories-feed.github.com spotlights-feed.github.com explore-feed.github.com objects-origin.githubusercontent.com *.githubusercontent.com; manifest-src 'self'; media-src github.com user-images.githubusercontent.com secured-user-images.githubusercontent.com private-user-images.githubusercontent.com github-production-user-asset-6210df.s3.amazonaws.com gist.github.com github.githubassets.com; script-src github.githubassets.com; style-src 'unsafe-inline' github.githubassets.com; upgrade-insecure-requests; worker-src github.githubassets.com github.com/assets-cdn/worker/ github.com/assets/ gist.github.com/assets-cdn/worker/
+server: github.com
+accept-ranges: bytes
+set-cookie: _gh_sess=%2BJrUbC1mUhCZm9q%2B0zrbKM8Y8DSRRcYI44JtN0iBNQx0p4SP6fXwL5Ll1Ip6DZZLZ3Y7QN%2FshzDD8LGt6Z598e109zltMxGHsp%2BwBR9xmfRxYYRY%2F7W3ZcTpvwSnB3D8zrOGyvwNIDLKIzl%2FJcICHOVMFfCIYRyh0E4xpy98zqb%2FE19tEU7CINJlqfhkCyEmwYM3iNFJlyKS5RMZBFjpGUDKbjhE2G8DgOf8XyYwNK2xFLRyso1xmMGU0tSftPU8QKQNESz07JqhOvxjUG554w%3D%3D--IilZvjzr9eQQLmfK--VFVdd6SYMMaY8sy5s%2Btd%2Fg%3D%3D; path=/; HttpOnly; secure; SameSite=Lax
+set-cookie: _octo=GH1.1.176407404.1782735651; expires=Tue, 29 Jun 2027 12:20:51 GMT; domain=.github.com; path=/; secure; SameSite=Lax
+set-cookie: logged_in=no; expires=Tue, 29 Jun 2027 12:20:51 GMT; domain=.github.com; path=/; HttpOnly; secure; SameSite=Lax
+x-github-request-id: 6223:180FCB:18B71AA:1414814:6A426323
+
+
+web search: 
+web search: repo1.maven.org org/codehaus/janino/janino/3.1.0 janino-3.1.0-sources.jar
+codex
+I’m editing only the selected `3.1.0` entry now, adding the verified URL templates and the two-sentence description. Since Janino is not a Kotlin, Groovy, or Scala artifact, I’m leaving `language` absent.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8855-75dabf09/metadata/org.codehaus.janino/janino/index.json
+diff --git a/metadata/org.codehaus.janino/janino/index.json b/metadata/org.codehaus.janino/janino/index.json
+index df4fd860fb433cba42bbbee5b929a1254f18bc49..6eb14d9f9b0a7b02421c804cf662c9ca014b7467
+--- a/metadata/org.codehaus.janino/janino/index.json
++++ b/metadata/org.codehaus.janino/janino/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.1.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/janino/$version$/janino-$version$-sources.jar",
++    "repository-url" : "https://github.com/janino-compiler/janino",
++    "test-code-url" : "https://github.com/janino-compiler/janino/tree/v$version$/janino/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/janino/$version$/janino-$version$-javadoc.jar",
++    "description" : "Janino is a lightweight Java compiler and expression evaluation library that can compile Java source, scripts, and expressions at run time without relying on the JDK tools compiler. The janino artifact provides the JANINO implementation of the commons-compiler API along with parser, evaluator, and utility classes for embedding dynamic Java compilation in JVM applications.",
+     "tested-versions" : [
+       "3.1.0"
+     ],
+
+diff --git a/metadata/org.codehaus.janino/janino/index.json b/metadata/org.codehaus.janino/janino/index.json
+index df4fd860fb433cba42bbbee5b929a1254f18bc49..6eb14d9f9b0a7b02421c804cf662c9ca014b7467
+--- a/metadata/org.codehaus.janino/janino/index.json
++++ b/metadata/org.codehaus.janino/janino/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.1.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/janino/$version$/janino-$version$-sources.jar",
++    "repository-url" : "https://github.com/janino-compiler/janino",
++    "test-code-url" : "https://github.com/janino-compiler/janino/tree/v$version$/janino/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/janino/$version$/janino-$version$-javadoc.jar",
++    "description" : "Janino is a lightweight Java compiler and expression evaluation library that can compile Java source, scripts, and expressions at run time without relying on the JDK tools compiler. The janino artifact provides the JANINO implementation of the commons-compiler API along with parser, evaluator, and utility classes for embedding dynamic Java compilation in JVM applications.",
+     "tested-versions" : [
+       "3.1.0"
+     ],
+
+codex
+The file is updated. I’m doing a quick JSON parse and diff check so the final state is easy to verify.
+exec
+/usr/bin/bash -lc 'jq . metadata/org.codehaus.janino/janino/index.json >/dev/null' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8855-75dabf09
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.codehaus.janino/janino/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8855-75dabf09
+ succeeded in 0ms:
+diff --git i/metadata/org.codehaus.janino/janino/index.json w/metadata/org.codehaus.janino/janino/index.json
+index df4fd860fb..6eb14d9f9b 100644
+--- i/metadata/org.codehaus.janino/janino/index.json
++++ w/metadata/org.codehaus.janino/janino/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.1.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/janino/$version$/janino-$version$-sources.jar",
++    "repository-url" : "https://github.com/janino-compiler/janino",
++    "test-code-url" : "https://github.com/janino-compiler/janino/tree/v$version$/janino/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/janino/$version$/janino-$version$-javadoc.jar",
++    "description" : "Janino is a lightweight Java compiler and expression evaluation library that can compile Java source, scripts, and expressions at run time without relying on the JDK tools compiler. The janino artifact provides the JANINO implementation of the commons-compiler API along with parser, evaluator, and utility classes for embedding dynamic Java compilation in JVM applications.",
+     "tested-versions" : [
+       "3.1.0"
+     ],
+
+diff --git a/metadata/org.codehaus.janino/janino/index.json b/metadata/org.codehaus.janino/janino/index.json
+index df4fd860fb433cba42bbbee5b929a1254f18bc49..6eb14d9f9b0a7b02421c804cf662c9ca014b7467
+--- a/metadata/org.codehaus.janino/janino/index.json
++++ b/metadata/org.codehaus.janino/janino/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.1.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/janino/$version$/janino-$version$-sources.jar",
++    "repository-url" : "https://github.com/janino-compiler/janino",
++    "test-code-url" : "https://github.com/janino-compiler/janino/tree/v$version$/janino/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/janino/$version$/janino-$version$-javadoc.jar",
++    "description" : "Janino is a lightweight Java compiler and expression evaluation library that can compile Java source, scripts, and expressions at run time without relying on the JDK tools compiler. The janino artifact provides the JANINO implementation of the commons-compiler API along with parser, evaluator, and utility classes for embedding dynamic Java compilation in JVM applications.",
+     "tested-versions" : [
+       "3.1.0"
+     ],
+
+web search: 
+web search: Maven Central org.codehaus.janino janino 3.1.0 sources javadoc
+codex
+Updated [metadata/org.codehaus.janino/janino/index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8855-75dabf09/metadata/org.codehaus.janino/janino/index.json:4) for metadata version `3.1.0`.
+
+Added:
+- Maven Central sources JAR template
+- canonical GitHub repository URL
+- versioned GitHub test suite URL
+- Maven Central Javadoc JAR template
+- exactly two-sentence description
+
+I left `language` absent because Janino is a Java compiler library, not a Kotlin/Groovy/Scala-specific artifact. Maven Central lists the `3.1.0` sources and Javadoc artifacts, and Janino’s repository describes it as a Java compiler. ([repo1.maven.org](https://repo1.maven.org/maven2/org/codehaus/janino/janino/3.1.0/?utm_source=openai))
+
+Validation: `jq . metadata/org.codehaus.janino/janino/index.json` passed.
+diff --git a/metadata/org.codehaus.janino/janino/index.json b/metadata/org.codehaus.janino/janino/index.json
+index df4fd860fb433cba42bbbee5b929a1254f18bc49..6eb14d9f9b0a7b02421c804cf662c9ca014b7467
+--- a/metadata/org.codehaus.janino/janino/index.json
++++ b/metadata/org.codehaus.janino/janino/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "3.1.0",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/janino/$version$/janino-$version$-sources.jar",
++    "repository-url" : "https://github.com/janino-compiler/janino",
++    "test-code-url" : "https://github.com/janino-compiler/janino/tree/v$version$/janino/src/test",
++    "documentation-url" : "https://repo1.maven.org/maven2/org/codehaus/janino/janino/$version$/janino-$version$-javadoc.jar",
++    "description" : "Janino is a lightweight Java compiler and expression evaluation library that can compile Java source, scripts, and expressions at run time without relying on the JDK tools compiler. The janino artifact provides the JANINO implementation of the commons-compiler API along with parser, evaluator, and utility classes for embedding dynamic Java compilation in JVM applications.",
+     "tested-versions" : [
+       "3.1.0"
+     ],
+
+tokens used
+47,416
+Updated [metadata/org.codehaus.janino/janino/index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8855-75dabf09/metadata/org.codehaus.janino/janino/index.json:4) for metadata version `3.1.0`.
+
+Added:
+- Maven Central sources JAR template
+- canonical GitHub repository URL
+- versioned GitHub test suite URL
+- Maven Central Javadoc JAR template
+- exactly two-sentence description
+
+I left `language` absent because Janino is a Java compiler library, not a Kotlin/Groovy/Scala-specific artifact. Maven Central lists the `3.1.0` sources and Javadoc artifacts, and Janino’s repository describes it as a Java compiler. ([repo1.maven.org](https://repo1.maven.org/maven2/org/codehaus/janino/janino/3.1.0/?utm_source=openai))
+
+Validation: `jq . metadata/org.codehaus.janino/janino/index.json` passed.
+Ran agent for org.codehaus.janino:janino:3.1.0 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8855-75dabf09/build/agent-url-discovery-logs/org.codehaus.janino-janino-3.1.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8855-75dabf09/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 24s
+9 actionable tasks: 1 executed, 8 up-to-date
