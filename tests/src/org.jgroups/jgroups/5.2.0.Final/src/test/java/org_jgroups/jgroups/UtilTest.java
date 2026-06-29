@@ -21,10 +21,13 @@ import org.junit.jupiter.api.Test;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -154,6 +157,12 @@ public class UtilTest {
                 "missing/jgroups/package", Average.class, Util.class.getClassLoader())).isEmpty();
         assertThat(Util.findClassesAnnotatedWith("missing.jgroups.package", Deprecated.class)).isEmpty();
 
+        Set<Class<?>> assignableClasses = Util.findClassesAssignableFromPath(
+                "org_jgroups/jgroups", Object.class, UtilTest.class.getClassLoader());
+        List<Class<?>> annotatedClasses = Util.findClassesAnnotatedWith("org_jgroups.jgroups", Deprecated.class);
+        assertThat(assignableClasses).doesNotContain(String.class);
+        assertThat(annotatedClasses).doesNotContain(String.class);
+
         try (InputStream fromExplicitLoader = Util.getResourceAsStream(
                 "jg-messages.properties", Util.class.getClassLoader());
              InputStream fromContextLoader = Util.getResourceAsStream("jg-messages.properties", (ClassLoader) null)) {
@@ -171,6 +180,21 @@ public class UtilTest {
         }
         finally {
             Thread.currentThread().setContextClassLoader(originalContextLoader);
+        }
+    }
+
+    @Test
+    void createsAddressFromCustomSupplierCode() throws Exception {
+        InetAddress address = Util.getAddressByCustomCode(LoopbackAddressSupplier.class.getName());
+
+        assertThat(address.isLoopbackAddress()).isTrue();
+    }
+
+    @Deprecated
+    public static class LoopbackAddressSupplier implements Supplier<InetAddress> {
+        @Override
+        public InetAddress get() {
+            return InetAddress.getLoopbackAddress();
         }
     }
 }
