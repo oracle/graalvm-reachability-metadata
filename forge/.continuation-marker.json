@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.neo4j.driver:neo4j-java-driver:5.28.8",
+  "issueNumber": 8857,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.neo4j.driver:neo4j-java-driver:5.28.5",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8857 [Automation] java run fails for org.neo4j.driver:neo4j-java-driver:5.28.8; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "11 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 87588,
+    "issue_label": "fails-java-run",
+    "issue_number": 8857,
+    "library": "org.neo4j.driver:neo4j-java-driver:5.28.8",
+    "model": "oca/gpt-5.5",
+    "new_version": "5.28.8",
+    "output_tokens_used": 5608,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Neo4j Java Driver documentation shows normal query usage against a Neo4j server over Bolt; if the agent chooses live query/session integration coverage, that would require a Neo4j Docker container and test code to configure auth/URI, but it is not necessary for the current mapping-related failure.",
+      "Optional upstream test dependencies such as Testcontainers, Bouncy Castle, Micrometer, SLF4J, and logging are not needed unless tests deliberately cover container-backed, TLS, metrics, or logging-specific behavior."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.neo4j.driver:neo4j-java-driver:5.28.8/library-preparation-preflight/pi-generation-2026-06-29T16-25-53-151801Z.log",
+    "status": "completed",
+    "summary": "No extra setup is required: the resolved driver artifact brings its runtime Bolt/Netty/Reactor dependencies transitively, and meaningful coverage for the current java-run failure is reachable through offline value/object mapping APIs already exercised by the existing tests."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "5.28.8",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8857-fails-java-run-org.neo4j.driver-neo4j-java-driver-5.28.8-6b2ceb16",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
