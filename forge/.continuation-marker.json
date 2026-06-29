@@ -1,0 +1,72 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.codehaus.janino:janino:3.1.0",
+  "issueNumber": 8855,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.codehaus.janino:janino:3.0.16",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8855 [Automation] javac compile fails for org.codehaus.janino:janino:3.1.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "14 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 46880,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8855,
+    "library": "org.codehaus.janino:janino:3.1.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.1.0",
+    "output_tokens_used": 2482,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Janino 3.1.0 depends transitively on org.codehaus.janino:commons-compiler:3.1.0, so commons-compiler APIs are available without adding a separate dependency.",
+      "The removed import org.codehaus.janino.util.iterator.Iterables should not be used for 3.1.0; equivalent utility classes live under org.codehaus.commons.compiler.util.iterator in the transitive commons-compiler artifact.",
+      "Avoid testing optional Ant integration unless an explicit Ant dependency is intentionally added; it is optional/provided in Janino's POM.",
+      "Native-image execution may still expose Janino's inherent runtime code generation/class loading limitations, but that is a test/metadata concern rather than deterministic setup."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.codehaus.janino:janino:3.1.0/library-preparation-preflight/pi-generation-2026-06-29T18-50-57-569094Z.log",
+    "status": "completed",
+    "summary": "No extra Maven dependency, Docker image, environment variable, or system property is required for meaningful Janino coverage. The compile failure is caused by test code importing a Janino utility package that is absent in 3.1.0, not by missing setup."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.1.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8855-fails-javac-compile-org.codehaus.janino-janino-3.1.0-4bf9520d",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
