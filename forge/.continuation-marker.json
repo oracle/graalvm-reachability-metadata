@@ -1,0 +1,71 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.codehaus.janino:janino:3.1.0",
+  "issueNumber": 8855,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Configure native test builds with `--enable-url-protocols=jrt`. Janino 3.1.0's compiler code resolves JDK classes via the `jrt` URL protocol, and the existing Janino tests already carry this build argument. Do not use the removed `org.codehaus.janino.util.iterator.Iterables` package from 3.0.x-era tests; in 3.1.0 that utility is in `org.codehaus.commons.compiler.util.iterator.Iterables`, though coverage should prefer public Janino APIs such as `ExpressionEvaluator`, `ScriptEvaluator`, `ClassBodyEvaluator`, `SimpleCompiler`, and `Compiler`. Runtime-generated class loading may still be unsupported in native image, so tests that exercise generated class loading should handle the expected native-image unsupported dynamic-loading failure while still exercising the path on the JVM/agent run.",
+    "applied_setup": [],
+    "current_library": "org.codehaus.janino:janino:3.0.16",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8855 [Automation] javac compile fails for org.codehaus.janino:janino:3.1.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "14 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 35053,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8855,
+    "library": "org.codehaus.janino:janino:3.1.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.1.0",
+    "output_tokens_used": 3929,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Adding an explicit `commons-compiler` dependency is unnecessary for normal Janino use because `org.codehaus.janino:janino:3.1.0` already depends on the matching `commons-compiler` artifact.",
+      "The optional/provided Ant dependency is only relevant for Ant task integration and is not needed for meaningful Janino compiler/evaluator coverage.",
+      "Copying the existing 3.0.16 `IterablesTest` unchanged will continue to fail javac because the package changed between versions."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.codehaus.janino:janino:3.1.0/library-preparation-preflight/pi-generation-2026-06-29T12-38-20-977698Z.log",
+    "status": "completed",
+    "summary": "Janino 3.1.0 does not need extra Maven dependencies or Docker, but meaningful native-image tests should preserve Janino-specific native setup for JDK module resource access."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.1.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8855-fails-javac-compile-org.codehaus.janino-janino-3.1.0-880d4746",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
