@@ -1,0 +1,70 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "org.springframework.boot:spring-boot-actuator:3.0.0",
+  "issueNumber": 8867,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.springframework.boot:spring-boot-actuator:2.6.3",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8867 [Automation] javac compile fails for org.springframework.boot:spring-boot-actuator:3.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 49816,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8867,
+    "library": "org.springframework.boot:spring-boot-actuator:3.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.0.0",
+    "output_tokens_used": 2478,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The existing 2.6.3 tests fail because Spring Boot 3.0 changed Actuator APIs: HttpTrace moved to the HttpExchange/HttpExchanges API, and several endpoint constructors/descriptors changed. Generated tests must target the 3.0 API, but this is not an external setup requirement.",
+      "Some optional Actuator integration areas, such as metrics, Redis, MongoDB, Couchbase, RabbitMQ, Liquibase, servlet, or reactive web filters, reference optional libraries or services. Avoid those integration-specific paths unless tests intentionally add the corresponding dependency or service setup."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.springframework.boot:spring-boot-actuator:3.0.0/library-preparation-preflight/pi-generation-2026-06-29T15-00-23-075564Z.log",
+    "status": "completed",
+    "summary": "The resolved org.springframework.boot:spring-boot-actuator:3.0.0 artifact has only spring-boot as a required dependency, which brings the Spring core/context stack needed to exercise core Actuator endpoints directly. Meaningful coverage is reachable without extra Maven dependencies, Docker services, or environment/system properties."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8867-fails-javac-compile-org.springframework.boot-spring-boot-actuator-3.0.0-503d65fb",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
