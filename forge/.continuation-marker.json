@@ -1,0 +1,70 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "org.conscrypt:conscrypt-openjdk-uber:1.4.1",
+  "issueNumber": 8879,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No required environment variable or system property. Preserve the existing test JVM/native-image --add-opens arguments if socket/platform internals are exercised: java.base/java.lang, java.base/java.net, and java.base/sun.nio.ch.",
+    "applied_setup": [],
+    "current_library": "org.conscrypt:conscrypt-openjdk-uber:1.1.4",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8879 [Automation] native-image run fails for org.conscrypt:conscrypt-openjdk-uber:1.4.1; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "11 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 80523,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 8879,
+    "library": "org.conscrypt:conscrypt-openjdk-uber:1.4.1",
+    "model": "oca/gpt-5.5",
+    "new_version": "1.4.1",
+    "output_tokens_used": 4899,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Conscrypt extracts and loads a bundled native library at runtime; unusual noexec temp directories can require -Dorg.conscrypt.native.workdir=<executable-writable-dir>, but this is not normally needed on the target Ubuntu CI setup.",
+      "The 1.4.1 native library is old, so remaining failures are more likely native-image/JDK compatibility or reachability metadata gaps than missing external setup."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.conscrypt:conscrypt-openjdk-uber:1.4.1/library-preparation-preflight/pi-generation-2026-06-29T19-00-08-711311Z.log",
+    "status": "completed",
+    "summary": "Conscrypt OpenJDK Uber is self-contained: its POM has no extra Maven dependencies and the Uber JAR embeds the platform native libraries under META-INF/native. Normal usage is adding the provider via Conscrypt.newProvider()/Security.addProvider and exercising local TLS/crypto APIs; no external service or Docker image is required."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "1.4.1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8879-fails-native-image-run-org.conscrypt-conscrypt-openjdk-uber-1.4.1-37ca61ad",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
