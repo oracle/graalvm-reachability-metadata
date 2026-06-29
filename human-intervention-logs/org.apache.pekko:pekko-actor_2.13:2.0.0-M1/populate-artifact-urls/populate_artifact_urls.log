@@ -1,0 +1,857 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f13bb-2b73-7bf2-ad8b-4cceb0f3b884
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.apache.pekko:pekko-actor_2.13:2.0.0-M1
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.0.0-M1].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+- Entry selector: "metadata-version" = "2.0.0-M1"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: {"name": "scala", "version": "2"}
+
+Context:
+- Coordinate version: 2.0.0-M1
+- Entry metadata-version: 2.0.0-M1
+- Entry test-version: 2.0.0-M1
+- Entry tested-versions: [2.0.0-M1]
+codex
+I’ll verify the artifact metadata and URL targets first, then patch only the missing fields in the selected `index.json` entry. Since the request depends on externally hosted tag/artifact URLs, I’m going to validate those before writing anything.
+exec
+/usr/bin/bash -lc "sed -n '1,220p' metadata/org.apache.pekko/pekko-actor_2.13/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.0-M1",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "2.0.0-M1"
+    ],
+    "allowed-packages" : [
+      "org.apache.pekko"
+    ]
+  },
+  {
+    "metadata-version" : "1.1.5",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/pekko",
+    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
+    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "1.1.5",
+      "1.2.0",
+      "1.2.1",
+      "1.3.0",
+      "1.4.0",
+      "1.5.0",
+      "1.6.0"
+    ],
+    "allowed-packages" : [
+      "org.apache.pekko"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc "pwd && rg -n '\"metadata-version\"|source-code-url|repository-url|test-code-url|documentation-url|description|language|tested-versions' metadata/org.apache.pekko/pekko-actor_2.13/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+ succeeded in 0ms:
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+4:    "metadata-version" : "2.0.0-M1",
+5:    "language" : {
+9:    "tested-versions" : [
+17:    "metadata-version" : "1.1.5",
+18:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
+19:    "repository-url" : "https://github.com/apache/pekko",
+20:    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
+21:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
+22:    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+23:    "language" : {
+27:    "tested-versions" : [
+
+web search: 
+web search: Maven Central org.apache.pekko pekko-actor_2.13 2.0.0-M1 sources javadoc test jar
+codex
+The existing later entry already uses Maven Central for sources and Javadoc, and GitHub tag paths for tests. I’m checking whether the milestone artifact also has Maven sources/Javadoc/test archives and whether the matching Git tag exists before reusing that template.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/ | sed -n '1,220p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+ succeeded in 0ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/apache/pekko/pekko-actor_2.13/2.0.0-M1</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/apache/pekko/pekko-actor_2.13/2.0.0-M1</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="pekko-actor_2.13-2.0.0-M1-cyclonedx.json" title="pekko-actor_2.13-2.0.0-M1-cyclonedx.json">pekko-actor_2.13-2.0.0-M1-cyclonedx.json</a>          2025-12-02 22:22      4809      
+<a href="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc" title="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc">pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc</a>      2025-12-02 22:22       833      
+<a href="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc.md5" title="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc.md5">pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc....</a>  2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc.sha1" title="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc.sha1">pekko-actor_2.13-2.0.0-M1-cyclonedx.json.asc....</a>  2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.md5" title="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.md5">pekko-actor_2.13-2.0.0-M1-cyclonedx.json.md5</a>      2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.sha1" title="pekko-actor_2.13-2.0.0-M1-cyclonedx.json.sha1">pekko-actor_2.13-2.0.0-M1-cyclonedx.json.sha1</a>     2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1-javadoc.jar" title="pekko-actor_2.13-2.0.0-M1-javadoc.jar">pekko-actor_2.13-2.0.0-M1-javadoc.jar</a>             2025-12-02 22:22   8492433      
+<a href="pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc" title="pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc">pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc</a>         2025-12-02 22:22       833      
+<a href="pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc.md5" title="pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc.md5">pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc.md5</a>     2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc.sha1" title="pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc.sha1">pekko-actor_2.13-2.0.0-M1-javadoc.jar.asc.sha...</a>  2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1-javadoc.jar.md5" title="pekko-actor_2.13-2.0.0-M1-javadoc.jar.md5">pekko-actor_2.13-2.0.0-M1-javadoc.jar.md5</a>         2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1-javadoc.jar.sha1" title="pekko-actor_2.13-2.0.0-M1-javadoc.jar.sha1">pekko-actor_2.13-2.0.0-M1-javadoc.jar.sha1</a>        2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1-sources.jar" title="pekko-actor_2.13-2.0.0-M1-sources.jar">pekko-actor_2.13-2.0.0-M1-sources.jar</a>             2025-12-02 22:22    573675      
+<a href="pekko-actor_2.13-2.0.0-M1-sources.jar.asc" title="pekko-actor_2.13-2.0.0-M1-sources.jar.asc">pekko-actor_2.13-2.0.0-M1-sources.jar.asc</a>         2025-12-02 22:22       833      
+<a href="pekko-actor_2.13-2.0.0-M1-sources.jar.asc.md5" title="pekko-actor_2.13-2.0.0-M1-sources.jar.asc.md5">pekko-actor_2.13-2.0.0-M1-sources.jar.asc.md5</a>     2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1-sources.jar.asc.sha1" title="pekko-actor_2.13-2.0.0-M1-sources.jar.asc.sha1">pekko-actor_2.13-2.0.0-M1-sources.jar.asc.sha...</a>  2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1-sources.jar.md5" title="pekko-actor_2.13-2.0.0-M1-sources.jar.md5">pekko-actor_2.13-2.0.0-M1-sources.jar.md5</a>         2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1-sources.jar.sha1" title="pekko-actor_2.13-2.0.0-M1-sources.jar.sha1">pekko-actor_2.13-2.0.0-M1-sources.jar.sha1</a>        2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1.buildinfo" title="pekko-actor_2.13-2.0.0-M1.buildinfo">pekko-actor_2.13-2.0.0-M1.buildinfo</a>               2025-12-02 22:22       767      
+<a href="pekko-actor_2.13-2.0.0-M1.buildinfo.asc" title="pekko-actor_2.13-2.0.0-M1.buildinfo.asc">pekko-actor_2.13-2.0.0-M1.buildinfo.asc</a>           2025-12-02 22:22       833      
+<a href="pekko-actor_2.13-2.0.0-M1.buildinfo.asc.md5" title="pekko-actor_2.13-2.0.0-M1.buildinfo.asc.md5">pekko-actor_2.13-2.0.0-M1.buildinfo.asc.md5</a>       2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1.buildinfo.asc.sha1" title="pekko-actor_2.13-2.0.0-M1.buildinfo.asc.sha1">pekko-actor_2.13-2.0.0-M1.buildinfo.asc.sha1</a>      2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1.buildinfo.md5" title="pekko-actor_2.13-2.0.0-M1.buildinfo.md5">pekko-actor_2.13-2.0.0-M1.buildinfo.md5</a>           2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1.buildinfo.sha1" title="pekko-actor_2.13-2.0.0-M1.buildinfo.sha1">pekko-actor_2.13-2.0.0-M1.buildinfo.sha1</a>          2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1.jar" title="pekko-actor_2.13-2.0.0-M1.jar">pekko-actor_2.13-2.0.0-M1.jar</a>                     2025-12-02 22:22   3717334      
+<a href="pekko-actor_2.13-2.0.0-M1.jar.asc" title="pekko-actor_2.13-2.0.0-M1.jar.asc">pekko-actor_2.13-2.0.0-M1.jar.asc</a>                 2025-12-02 22:22       833      
+<a href="pekko-actor_2.13-2.0.0-M1.jar.asc.md5" title="pekko-actor_2.13-2.0.0-M1.jar.asc.md5">pekko-actor_2.13-2.0.0-M1.jar.asc.md5</a>             2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1.jar.asc.sha1" title="pekko-actor_2.13-2.0.0-M1.jar.asc.sha1">pekko-actor_2.13-2.0.0-M1.jar.asc.sha1</a>            2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1.jar.md5" title="pekko-actor_2.13-2.0.0-M1.jar.md5">pekko-actor_2.13-2.0.0-M1.jar.md5</a>                 2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1.jar.sha1" title="pekko-actor_2.13-2.0.0-M1.jar.sha1">pekko-actor_2.13-2.0.0-M1.jar.sha1</a>                2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1.pom" title="pekko-actor_2.13-2.0.0-M1.pom">pekko-actor_2.13-2.0.0-M1.pom</a>                     2025-12-02 22:22      2165      
+<a href="pekko-actor_2.13-2.0.0-M1.pom.asc" title="pekko-actor_2.13-2.0.0-M1.pom.asc">pekko-actor_2.13-2.0.0-M1.pom.asc</a>                 2025-12-02 22:22       833      
+<a href="pekko-actor_2.13-2.0.0-M1.pom.asc.md5" title="pekko-actor_2.13-2.0.0-M1.pom.asc.md5">pekko-actor_2.13-2.0.0-M1.pom.asc.md5</a>             2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1.pom.asc.sha1" title="pekko-actor_2.13-2.0.0-M1.pom.asc.sha1">pekko-actor_2.13-2.0.0-M1.pom.asc.sha1</a>            2025-12-02 22:22        40      
+<a href="pekko-actor_2.13-2.0.0-M1.pom.md5" title="pekko-actor_2.13-2.0.0-M1.pom.md5">pekko-actor_2.13-2.0.0-M1.pom.md5</a>                 2025-12-02 22:22        32      
+<a href="pekko-actor_2.13-2.0.0-M1.pom.sha1" title="pekko-actor_2.13-2.0.0-M1.pom.sha1">pekko-actor_2.13-2.0.0-M1.pom.sha1</a>                2025-12-02 22:22        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/apache/pekko" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/apache/pekko/tree/v2.0.0-M1/actor-tests/src/test" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/pekko-actor_2.13-2.0.0-M1-sources.jar && curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/pekko-actor_2.13-2.0.0-M1-javadoc.jar && curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/pekko-actor_2.13-2.0.0-M1-test-sources.jar && curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/pekko-actor_2.13-2.0.0-M1-tests.jar" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+ succeeded in 151ms:
+404 https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/pekko-actor_2.13-2.0.0-M1-test-sources.jar
+404 https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/pekko-actor_2.13-2.0.0-M1-tests.jar
+
+ succeeded in 490ms:
+200 https://github.com/apache/pekko/tree/v2.0.0-M1/actor-tests/src/test
+
+ succeeded in 947ms:
+200 https://github.com/apache/pekko
+
+web search: 
+web search: https://github.com/apache/pekko/tree/v2.0.0-M1/actor-tests/src/test
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1 pekko-actor_2.13-2.0.0-M1-sources.jar
+codex
+Maven Central has the `sources.jar` and `javadoc.jar` for `2.0.0-M1`; there is no `tests.jar` or `test-sources.jar` for this artifact, so the tag-specific GitHub test directory is the best available test URL. The artifact suffix `_2.13` makes this a Scala 2 artifact, and the existing `language` field is already present, so I’ll leave it unchanged.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/pekko-actor_2.13-2.0.0-M1.pom | sed -n '1,200p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+ succeeded in 0ms:
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apache.pekko</groupId>
+    <artifactId>pekko-actor_2.13</artifactId>
+    <packaging>jar</packaging>
+    <description>Apache Pekko is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.</description>
+    <url>https://pekko.apache.org/</url>
+    <version>2.0.0-M1</version>
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <name>Apache Pekko Actor</name>
+    <inceptionYear>2022</inceptionYear>
+    <organization>
+        <name>Apache Software Foundation</name>
+        <url>https://www.apache.org</url>
+    </organization>
+    <scm>
+        <url>https://github.com/apache/pekko</url>
+        <connection>scm:git:https://github.com/apache/pekko.git</connection>
+        <developerConnection>scm:git:git@github.com:apache/pekko.git</developerConnection>
+    </scm>
+    <developers>
+        <developer>
+            <id>pekko-contributors</id>
+            <name>Apache Pekko Contributors</name>
+            <url>https://github.com/apache/pekko/graphs/contributors</url>
+            <email>dev@pekko.apache.org</email>
+        </developer>
+    </developers>
+    <properties>
+        <info.apiURL>https://pekko.apache.org/api/pekko/2.0.0-M1</info.apiURL>
+        <info.versionScheme>semver-spec</info.versionScheme>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.13.18</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+            <version>1.4.5</version>
+        </dependency>
+    </dependencies>
+</project>
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/apache/pekko/tree/v2.0.0-M1/actor/src/main && curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://github.com/apache/pekko/tree/v2.0.0-M1/docs/src/main/paradox && curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/pekko-actor_2.13-2.0.0-M1-javadoc.jar" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+ succeeded in 1376ms:
+200 https://github.com/apache/pekko/tree/v2.0.0-M1/actor/src/main
+200 https://github.com/apache/pekko/tree/v2.0.0-M1/docs/src/main/paradox
+200 https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/2.0.0-M1/pekko-actor_2.13-2.0.0-M1-javadoc.jar
+
+codex
+I’m also checking Pekko’s own versioned API/docs URLs from the POM. The existing metadata style uses Maven Javadoc jars for documentation, but I want to avoid writing a URL that only downloads while a stable versioned rendered documentation page exists.
+exec
+/usr/bin/bash -lc "curl -fsSL https://pekko.apache.org/docs/pekko/2.0.0-M1/ | sed -n '1,80p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+ succeeded in 0ms:
+<!-- Adapted from sbt-paradox-material-theme version 0.6.0 -->
+<!-- https://github.com/sbt/sbt-paradox-material-theme/blob/2d57fe0567ea9fe7e8de14faef4fa777841d505a/theme/src/main/assets/page.st -->
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="description" content="Apache Pekko is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.">
+<meta name="generator" content="Paradox, paradox-material-theme=0.7.0, mkdocs-material=3.0.3">
+
+<meta name="lang:clipboard.copy" content="Copy to clipboard">
+<meta name="lang:clipboard.copied" content="Copied to clipboard">
+<meta name="lang:search.language" content="">
+<meta name="lang:search.pipeline.stopwords" content="true">
+<meta name="lang:search.pipeline.trimmer" content="true">
+<meta name="lang:search.result.none" content="No matching documents">
+<meta name="lang:search.result.one" content="1 matching document">
+<meta name="lang:search.result.other" content="# matching documents">
+<meta name="lang:search.tokenizer" content="[\s\-]+">
+
+
+<meta name="description" content="Apache Pekko is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.">
+<link rel="shortcut icon" href="https://pekko.apache.org/assets/images/pekko_favicon.png">
+<title>Apache Pekko Documentation</title>
+<link rel="stylesheet" href="https://pekko.apache.org/assets/stylesheets/application.451f80e5.css">
+<link rel="stylesheet" href="https://pekko.apache.org/assets/stylesheets/application-palette.22915126.css">
+<link rel="stylesheet" href="https://pekko.apache.org/lib/material__tabs/dist/mdc.tabs.min.css">
+<link rel="stylesheet" href="https://pekko.apache.org/lib/prettify/prettify.css">
+<script src="https://pekko.apache.org/assets/javascripts/modernizr.1aa3b519.js"></script>
+<link rel="stylesheet" href="https://pekko.apache.org/assets/fonts/font-awesome.css">
+<link rel="stylesheet" href="https://pekko.apache.org/assets/fonts/material-icons.css">
+<link rel="stylesheet" href="https://pekko.apache.org/assets/stylesheets/paradox-material-theme.css">
+<link rel="stylesheet" href="https://pekko.apache.org/assets/stylesheets/pekko-theme.css">
+</head>
+<body
+data-md-color-primary="white"
+data-md-color-accent="orange"
+>
+<input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+<input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+<label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+<!-- Adapted from sbt-paradox-material-theme version 0.6.0 -->
+<!-- https://github.com/sbt/sbt-paradox-material-theme/blob/2d57fe0567ea9fe7e8de14faef4fa777841d505a/theme/src/main/assets/partials/header.st -->
+<!-- Overrides the icon assets.hostname property -->
+<header class="md-header" data-md-component="header">
+<nav class="md-header-nav md-grid">
+<div class="md-flex">
+<div class="md-flex__cell md-flex__cell--shrink">
+<a href="index.html" title="Apache Pekko Documentation" class="md-header-nav__button md-logo">
+<img src="https://pekko.apache.org/assets/images/pekko_logo.png" width="24" height="24">
+</a>
+</div>
+<div class="md-flex__cell md-flex__cell--shrink">
+<label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+</div>
+<div class="md-flex__cell md-flex__cell--stretch">
+<div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+Apache Pekko Documentation
+</div>
+</div>
+<div class="md-flex__cell md-flex__cell--shrink">
+<label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+<label class="md-icon md-search__icon" for="__search"></label>
+<button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">&#xE5CD;</button>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix>
+<div class="md-search-result" data-md-component="result">
+<div class="md-search-result__meta">
+Type to start searching
+</div>
+<ol class="md-search-result__list"></ol>
+</div>
+</div>
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://pekko.apache.org/api/pekko/2.0.0-M1/ && curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://pekko.apache.org/docs/pekko/2.0.0-M1/ && curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://pekko.apache.org/docs/pekko/2.0.0-M1/typed/actors.html" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+ succeeded in 140ms:
+200 https://pekko.apache.org/docs/pekko/2.0.0-M1/typed/actors.html
+
+codex
+I found a rendered, versioned Pekko docs page for `2.0.0-M1`, but the neighboring entry in this same file uses the Maven Javadoc artifact as documentation. I’m going to favor the rendered versioned docs page because the request asks for documentation that renders and is not `latest/current`; the source URL will still use Maven Central.
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"https://pekko.apache.org/docs/pekko/\\"'$version'"\\"'$|"documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13'"' metadata/org.apache.pekko -g 'index.json'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+ succeeded in 0ms:
+metadata/org.apache.pekko/pekko-actor_2.13/index.json:21:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"https://repo.maven.apache.org/maven2/.+javadoc.jar\"' metadata/org.apache.pekko -g 'index.json' | head -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+ succeeded in 0ms:
+metadata/org.apache.pekko/pekko-parsing_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_3/$version$/pekko-parsing_3-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-parsing_2.13/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-parsing_2.13/$version$/pekko-parsing_2.13-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-actor_2.13/index.json:21:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:7:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:27:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:46:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_2.13/index.json:64:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_2.13/$version$/pekko-protobuf-v3_2.13-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_3/$version$/pekko-protobuf-v3_3-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:27:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_3/$version$/pekko-protobuf-v3_3-$version$-javadoc.jar",
+metadata/org.apache.pekko/pekko-protobuf-v3_3/index.json:51:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-protobuf-v3_3/$version$/pekko-protobuf-v3_3-$version$-javadoc.jar",
+
+exec
+/usr/bin/bash -lc "rg -n '\"documentation-url\" : \"https://pekko.apache.org/docs/pekko/\\"'$version'"\\"'$'"' metadata -g 'index.json' | head -40" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+ succeeded in 0ms:
+codex
+I’m going to patch the top entry now: Maven Central source artifact, canonical GitHub repository root, tag-specific GitHub test suite, versioned Pekko docs, and the two-sentence actor runtime description. I’ll leave the existing Scala language metadata untouched because it is already non-blank and correct for `_2.13`.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+diff --git a/metadata/org.apache.pekko/pekko-actor_2.13/index.json b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+index 9732f2ad72b234e3ecb53ac9b0c79f3156224355..be7d023e66e84e0f326461f24516a7d6f23fac11
+--- a/metadata/org.apache.pekko/pekko-actor_2.13/index.json
++++ b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+@@ -9,6 +9,11 @@
+     "tested-versions" : [
+       "2.0.0-M1"
+     ],
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko",
++    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++    "documentation-url" : "https://pekko.apache.org/docs/pekko/$version$/",
++    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+     "allowed-packages" : [
+       "org.apache.pekko"
+     ]
+
+diff --git a/metadata/org.apache.pekko/pekko-actor_2.13/index.json b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+index 9732f2ad72b234e3ecb53ac9b0c79f3156224355..be7d023e66e84e0f326461f24516a7d6f23fac11
+--- a/metadata/org.apache.pekko/pekko-actor_2.13/index.json
++++ b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+@@ -9,6 +9,11 @@
+     "tested-versions" : [
+       "2.0.0-M1"
+     ],
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko",
++    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++    "documentation-url" : "https://pekko.apache.org/docs/pekko/$version$/",
++    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+     "allowed-packages" : [
+       "org.apache.pekko"
+     ]
+
+codex
+The file is patched. I’m doing two checks now: JSON shape/diff sanity locally, then the repository metadata validation task for this coordinate.
+exec
+/usr/bin/bash -lc 'jq . metadata/org.apache.pekko/pekko-actor_2.13/index.json >/dev/null' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.apache.pekko/pekko-actor_2.13/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+ succeeded in 0ms:
+diff --git i/metadata/org.apache.pekko/pekko-actor_2.13/index.json w/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+index 9732f2ad72..be7d023e66 100644
+--- i/metadata/org.apache.pekko/pekko-actor_2.13/index.json
++++ w/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+@@ -9,6 +9,11 @@
+     "tested-versions" : [
+       "2.0.0-M1"
+     ],
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko",
++    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++    "documentation-url" : "https://pekko.apache.org/docs/pekko/$version$/",
++    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+     "allowed-packages" : [
+       "org.apache.pekko"
+     ]
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.apache.pekko:pekko-actor_2.13:2.0.0-M1 --stacktrace' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+diff --git a/metadata/org.apache.pekko/pekko-actor_2.13/index.json b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+index 9732f2ad72b234e3ecb53ac9b0c79f3156224355..be7d023e66e84e0f326461f24516a7d6f23fac11
+--- a/metadata/org.apache.pekko/pekko-actor_2.13/index.json
++++ b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+@@ -9,6 +9,11 @@
+     "tested-versions" : [
+       "2.0.0-M1"
+     ],
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko",
++    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++    "documentation-url" : "https://pekko.apache.org/docs/pekko/$version$/",
++    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+     "allowed-packages" : [
+       "org.apache.pekko"
+     ]
+
+ exited 1 in 3316ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.apache.pekko:pekko-actor_2.13:2.0.0-M1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03/metadata/org.apache.pekko/pekko-actor_2.13/2.0.0-M1/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.apache.pekko:pekko-actor_2.13:2.0.0-M1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03/metadata/org.apache.pekko/pekko-actor_2.13/2.0.0-M1/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.apache.pekko:pekko-actor_2.13:2.0.0-M1: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03/metadata/org.apache.pekko/pekko-actor_2.13/2.0.0-M1/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2s
+9 actionable tasks: 1 executed, 8 up-to-date
+
+exec
+/usr/bin/bash -lc "curl -I -L -s -o /dev/null -w '%{http_code} %{url_effective}\\n' https://pekko.apache.org/api/pekko/2.0.0-M1/org/apache/pekko/actor/index.html" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+ succeeded in 0ms:
+200 https://pekko.apache.org/api/pekko/2.0.0-M1/org/apache/pekko/actor/index.html
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://pekko.apache.org/api/pekko/2.0.0-M1/org/apache/pekko/actor/index.html | sed -n '1,40p'" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+ succeeded in 0ms:
+<!DOCTYPE html ><html><head><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/><title>Apache Pekko 2.0.0-M1 - org.apache.pekko.actor</title><meta content="Apache Pekko 2.0.0 - M1 - org.apache.pekko.actor" name="description"/><meta content="Apache Pekko 2.0.0 M1 org.apache.pekko.actor" name="keywords"/><meta http-equiv="content-type" content="text/html; charset=UTF-8"/><link href="https://pekko.apache.org/api/pekko/current/org/apache/pekko/actor/index.html" rel="canonical"/><link href="../../../../lib/index.css" media="screen" type="text/css" rel="stylesheet"/><link href="../../../../lib/template.css" media="screen" type="text/css" rel="stylesheet"/><link href="../../../../lib/print.css" media="print" type="text/css" rel="stylesheet"/><link href="../../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css"/><script type="text/javascript" src="../../../../lib/jquery.min.js"></script><script type="text/javascript" src="../../../../lib/index.js"></script><script type="text/javascript" src="../../../../index.js"></script><script type="text/javascript" src="../../../../lib/scheduler.js"></script><script type="text/javascript" src="../../../../lib/template.js"></script><script type="text/javascript" src="https://d3js.org/d3.v4.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/graphlib-dot@0.6.2/dist/graphlib-dot.min.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dagre-d3/0.6.1/dagre-d3.min.js"></script><script type="text/javascript">/* this variable can be used by the JS to determine the path to the root document */
+var toRoot = '../../../../';</script></head><body><div id="search"><span id="doc-title">Apache Pekko<span id="doc-version">2.0.0-M1</span></span> <span class="close-results"><span class="left">&lt;</span> Back</span><div id="textfilter"><span class="input"><input autocapitalize="none" placeholder="Search" id="index-input" type="text" accesskey="/"/><i class="clear material-icons"></i><i id="search-icon" class="material-icons"></i></span></div></div><div id="search-results"><div id="search-progress"><div id="progress-fill"></div></div><div id="results-content"><div id="entity-results"></div><div id="member-results"></div></div></div><div id="content-scroll-container" style="-webkit-overflow-scrolling: touch;"><div id="content-container" style="-webkit-overflow-scrolling: touch;"><div id="subpackage-spacer"><div id="packages"><h1>Packages</h1><ul><li class="indented0 " name="_root_.root" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="_root_" class="anchorToMember"></a><a id="root:_root_" class="anchorToMember"></a> <span class="permalink"><a href="../../../../index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../../../../index.html" title=""><span class="name">root</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../../../../index.html" name="_root_" id="_root_" class="extype">root</a></dd></dl></div></li><li class="indented1 " name="_root_.org" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="org" class="anchorToMember"></a><a id="org:org" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../../../index.html" title=""><span class="name">org</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../../../../index.html" name="_root_" id="_root_" class="extype">root</a></dd></dl></div></li><li class="indented2 " name="org.apache" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="apache" class="anchorToMember"></a><a id="apache:apache" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../../index.html" title=""><span class="name">apache</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../../../index.html" name="org" id="org" class="extype">org</a></dd></dl></div></li><li class="indented3 " name="org.apache.pekko" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="pekko" class="anchorToMember"></a><a id="pekko:pekko" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../index.html" title=""><span class="name">pekko</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../../index.html" name="org.apache" id="org.apache" class="extype">apache</a></dd></dl></div></li><li class="indented4 current" name="org.apache.pekko.actor" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="actor" class="anchorToMember"></a><a id="actor:actor" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/actor/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><span class="name">actor</span></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="org.apache.pekko" id="org.apache.pekko" class="extype">pekko</a></dd></dl></div></li><li class="indented5 " name="org.apache.pekko.actor.dungeon" group="Ungrouped" fullComment="no" data-isabs="false" visbl="pub"><a id="dungeon" class="anchorToMember"></a><a id="dungeon:dungeon" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/actor/dungeon/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="dungeon/index.html" title=""><span class="name">dungeon</span></a></span></li><li class="indented5 " name="org.apache.pekko.actor.setup" group="Ungrouped" fullComment="no" data-isabs="false" visbl="pub"><a id="setup" class="anchorToMember"></a><a id="setup:setup" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/actor/setup/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="setup/index.html" title=""><span class="name">setup</span></a></span></li><li class="indented5 " name="org.apache.pekko.actor.testkit" group="Ungrouped" fullComment="no" data-isabs="false" visbl="pub"><a id="testkit" class="anchorToMember"></a><a id="testkit:testkit" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/actor/testkit/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="testkit/index.html" title=""><span class="name">testkit</span></a></span></li><li class="indented5 " name="org.apache.pekko.actor.typed" group="Ungrouped" fullComment="no" data-isabs="false" visbl="pub"><a id="typed" class="anchorToMember"></a><a id="typed:typed" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/actor/typed/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="typed/index.html" title=""><span class="name">typed</span></a></span></li><li class="current-entities indented4"><a href="AbstractActor$.html" title="Java API: compatible with lambda expressions" class="object"></a> <a href="AbstractActor.html" title="Java API: compatible with lambda expressions" class="class"></a><a href="AbstractActor.html" title="Java API: compatible with lambda expressions">AbstractActor</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="AbstractActorWithStash.html" title="Java API: compatible with lambda expressions" class="class"></a><a href="AbstractActorWithStash.html" title="Java API: compatible with lambda expressions">AbstractActorWithStash</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="AbstractActorWithTimers.html" title="Java API: Support for scheduled self messages via TimerScheduler." class="class"></a><a href="AbstractActorWithTimers.html" title="Java API: Support for scheduled self messages via TimerScheduler.">AbstractActorWithTimers</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="AbstractActorWithUnboundedStash.html" title="Java API: compatible with lambda expressions" class="class"></a><a href="AbstractActorWithUnboundedStash.html" title="Java API: compatible with lambda expressions">AbstractActorWithUnboundedStash</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="AbstractActorWithUnrestrictedStash.html" title="Java API: compatible with lambda expressions" class="class"></a><a href="AbstractActorWithUnrestrictedStash.html" title="Java API: compatible with lambda expressions">AbstractActorWithUnrestrictedStash</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="AbstractExtensionId.html" title="Java API for ExtensionId" class="class"></a><a href="AbstractExtensionId.html" title="Java API for ExtensionId">AbstractExtensionId</a></li><li class="current-entities indented4"><a href="AbstractFSM$.html" title="Java API: compatible with lambda expressions" class="object"></a> <a href="AbstractFSM.html" title="Java API: compatible with lambda expressions" class="class"></a><a href="AbstractFSM.html" title="Java API: compatible with lambda expressions">AbstractFSM</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="AbstractFSMWithStash.html" title="Java API: compatible with lambda expressions" class="class"></a><a href="AbstractFSMWithStash.html" title="Java API: compatible with lambda expressions">AbstractFSMWithStash</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="AbstractLoggingActor.html" title="Java API: compatible with lambda expressions" class="class"></a><a href="AbstractLoggingActor.html" title="Java API: compatible with lambda expressions">AbstractLoggingActor</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="AbstractLoggingFSM.html" title="Java API: compatible with lambda expressions" class="class"></a><a href="AbstractLoggingFSM.html" title="Java API: compatible with lambda expressions">AbstractLoggingFSM</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="AbstractScheduler.html" title="An Apache Pekko scheduler service." class="class"></a><a href="AbstractScheduler.html" title="An Apache Pekko scheduler service.">AbstractScheduler</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="AbstractSchedulerBase.html" title="" class="class"></a><a href="AbstractSchedulerBase.html" title="">AbstractSchedulerBase</a></li><li class="current-entities indented4"><a href="Actor$.html" title="" class="object"></a> <a href="Actor.html" title="Actor base trait that should be extended by or mixed to create an Actor with the semantics of the 'Actor Model': https://en.wikipedia.org/wiki/Actor_model" class="trait"></a><a href="Actor.html" title="Actor base trait that should be extended by or mixed to create an Actor with the semantics of the 'Actor Model': https://en.wikipedia.org/wiki/Actor_model">Actor</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="ActorContext.html" title="The actor context - the view of the actor cell from the actor." class="trait"></a><a href="ActorContext.html" title="The actor context - the view of the actor cell from the actor.">ActorContext</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="ActorIdentity.html" title="Reply to pekko.actor.Identify." class="class"></a><a href="ActorIdentity.html" title="Reply to pekko.actor.Identify.">ActorIdentity</a></li><li class="current-entities indented4"><a href="ActorInitializationException$.html" title="" class="object"></a> <a href="ActorInitializationException.html" title="An ActorInitializationException is thrown when the initialization logic for an Actor fails." class="class"></a><a href="ActorInitializationException.html" title="An ActorInitializationException is thrown when the initialization logic for an Actor fails.">ActorInitializationException</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="ActorInterruptedException.html" title="When an InterruptedException is thrown inside an Actor, it is wrapped as an ActorInterruptedException as to avoid cascading interrupts to other threads than the originally interrupted one." class="class"></a><a href="ActorInterruptedException.html" title="When an InterruptedException is thrown inside an Actor, it is wrapped as an ActorInterruptedException as to avoid cascading interrupts to other threads than the originally interrupted one.">ActorInterruptedException</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="ActorKilledException.html" title="ActorKilledException is thrown when an Actor receives the pekko.actor.Kill message" class="class"></a><a href="ActorKilledException.html" title="ActorKilledException is thrown when an Actor receives the pekko.actor.Kill message">ActorKilledException</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="ActorLogMarker$.html" title="This is public with the purpose to document the used markers and properties of log events." class="object"></a><a href="ActorLogMarker$.html" title="This is public with the purpose to document the used markers and properties of log events.">ActorLogMarker</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="ActorLogging.html" title="Scala API: Mix in ActorLogging into your Actor to easily obtain a reference to a logger, which is available under the name &quot;log&quot;." class="trait"></a><a href="ActorLogging.html" title="Scala API: Mix in ActorLogging into your Actor to easily obtain a reference to a logger, which is available under the name &quot;log&quot;.">ActorLogging</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="ActorNotFound.html" title="When ActorSelection#resolveOne can't identify the actor the Future is completed with this failure." class="class"></a><a href="ActorNotFound.html" title="When ActorSelection#resolveOne can't identify the actor the Future is completed with this failure.">ActorNotFound</a></li><li class="current-entities indented4"><a href="ActorPath$.html" title="" class="object"></a> <a href="ActorPath.html" title="Actor path is a unique path to an actor that shows the creation path up through the actor tree to the root actor." class="trait"></a><a href="ActorPath.html" title="Actor path is a unique path to an actor that shows the creation path up through the actor tree to the root actor.">ActorPath</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="ActorPathExtractor$.html" title="Given an ActorPath it returns the Address and the path elements if the path is well-formed" class="object"></a><a href="ActorPathExtractor$.html" title="Given an ActorPath it returns the Address and the path elements if the path is well-formed">ActorPathExtractor</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="ActorPaths$.html" title="Java API" class="object"></a><a href="ActorPaths$.html" title="Java API">ActorPaths</a></li><li class="current-entities indented4"><a href="ActorRef$.html" title="" class="object"></a> <a href="ActorRef.html" title="Immutable and serializable handle to an actor, which may or may not reside on the local host or inside the same pekko.actor.ActorSystem." class="class"></a><a href="ActorRef.html" title="Immutable and serializable handle to an actor, which may or may not reside on the local host or inside the same pekko.actor.ActorSystem.">ActorRef</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="ActorRefFactory.html" title="Interface implemented by ActorSystem and ActorContext, the only two places from which you can get fresh actors." class="trait"></a><a href="ActorRefFactory.html" title="Interface implemented by ActorSystem and ActorContext, the only two places from which you can get fresh actors.">ActorRefFactory</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="ActorRefProvider.html" title="Interface for all ActorRef providers to implement." class="trait"></a><a href="ActorRefProvider.html" title="Interface for all ActorRef providers to implement.">ActorRefProvider</a></li><li class="current-entities indented4"><a href="ActorSelection$.html" title="An ActorSelection is a logical view of a section of an ActorSystem's tree of Actors, allowing for broadcasting of messages to that section." class="object"></a> <a href="ActorSelection.html" title="An ActorSelection is a logical view of a section of an ActorSystem's tree of Actors, allowing for broadcasting of messages to that section." class="class"></a><a href="ActorSelection.html" title="An ActorSelection is a logical view of a section of an ActorSystem's tree of Actors, allowing for broadcasting of messages to that section.">ActorSelection</a></li><li class="current-entities indented4"><a href="ActorSystem$.html" title="" class="object"></a> <a href="ActorSystem.html" title="An actor system is a hierarchical group of actors which share common configuration, e.g." class="class"></a><a href="ActorSystem.html" title="An actor system is a hierarchical group of actors which share common configuration, e.g.">ActorSystem</a></li><li class="current-entities indented4"><a href="Address$.html" title="" class="object"></a> <a href="Address.html" title="The address specifies the physical location under which an Actor can be reached." class="class"></a><a href="Address.html" title="The address specifies the physical location under which an Actor can be reached.">Address</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="AddressFromURIString$.html" title="This object serves as extractor for Scala and as address parser for Java." class="object"></a><a href="AddressFromURIString$.html" title="This object serves as extractor for Scala and as address parser for Java.">AddressFromURIString</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="AllDeadLetters.html" title="Subscribe to this class to be notified about all DeadLetter (also the suppressed ones) and Dropped." class="trait"></a><a href="AllDeadLetters.html" title="Subscribe to this class to be notified about all DeadLetter (also the suppressed ones) and Dropped.">AllDeadLetters</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="AllForOneStrategy.html" title="Applies the fault handling Directive (Resume, Restart, Stop) specified in the Decider to all children when one fails, as opposed to pekko.actor.OneForOneStrategy that applies it only to the child actor that failed." class="class"></a><a href="AllForOneStrategy.html" title="Applies the fault handling Directive (Resume, Restart, Stop) specified in the Decider to all children when one fails, as opposed to pekko.actor.OneForOneStrategy that applies it only to the child actor that failed.">AllForOneStrategy</a></li><li class="current-entities indented4"><a href="BootstrapSetup$.html" title="" class="object"></a> <a href="BootstrapSetup.html" title="Core bootstrap settings of the actor system, create using one of the factories in BootstrapSetup, constructor is *Internal API*." class="class"></a><a href="BootstrapSetup.html" title="Core bootstrap settings of the actor system, create using one of the factories in BootstrapSetup, constructor is *Internal API*.">BootstrapSetup</a></li><li class="current-entities indented4"><a href="Cancellable$.html" title="" class="object"></a> <a href="Cancellable.html" title="Signifies something that can be cancelled There is no strict guarantee that the implementation is thread-safe, but it should be good practice to make it so." class="trait"></a><a href="Cancellable.html" title="Signifies something that can be cancelled There is no strict guarantee that the implementation is thread-safe, but it should be good practice to make it so.">Cancellable</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="ChildActorPath.html" title="" class="class"></a><a href="ChildActorPath.html" title="">ChildActorPath</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="ChildRestartStats.html" title="ChildRestartStats is the statistics kept by every parent Actor for every child Actor and is used for SupervisorStrategies to know how to deal with problems that occur for the children." class="class"></a><a href="ChildRestartStats.html" title="ChildRestartStats is the statistics kept by every parent Actor for every child Actor and is used for SupervisorStrategies to know how to deal with problems that occur for the children.">ChildRestartStats</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="ClassicActorContextProvider.html" title="Glue API introduced to allow minimal user effort integration between classic and typed for example for streams." class="trait"></a><a href="ClassicActorContextProvider.html" title="Glue API introduced to allow minimal user effort integration between classic and typed for example for streams.">ClassicActorContextProvider</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="ClassicActorSystemProvider.html" title="Glue API introduced to allow minimal user effort integration between classic and typed for example for streams." class="trait"></a><a href="ClassicActorSystemProvider.html" title="Glue API introduced to allow minimal user effort integration between classic and typed for example for streams.">ClassicActorSystemProvider</a></li><li class="current-entities indented4"><a href="CoordinatedShutdown$.html" title="" class="object"></a> <a href="CoordinatedShutdown.html" title="" class="class"></a><a href="CoordinatedShutdown.html" title="">CoordinatedShutdown</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="DeadLetter.html" title="When a message is sent to an Actor that is terminated before receiving the message, it will be sent as a DeadLetter to the ActorSystem's EventStream." class="class"></a><a href="DeadLetter.html" title="When a message is sent to an Actor that is terminated before receiving the message, it will be sent as a DeadLetter to the ActorSystem's EventStream.">DeadLetter</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="DeadLetterSuppression.html" title="Use with caution: Messages extending this trait will not be logged by the default dead-letters listener." class="trait"></a><a href="DeadLetterSuppression.html" title="Use with caution: Messages extending this trait will not be logged by the default dead-letters listener.">DeadLetterSuppression</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="DeathPactException.html" title="A DeathPactException is thrown by an Actor that receives a Terminated(someActor) message that it doesn't handle itself, effectively crashing the Actor and escalating to the supervisor." class="class"></a><a href="DeathPactException.html" title="A DeathPactException is thrown by an Actor that receives a Terminated(someActor) message that it doesn't handle itself, effectively crashing the Actor and escalating to the supervisor.">DeathPactException</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="DefaultSupervisorStrategy.html" title="" class="class"></a><a href="DefaultSupervisorStrategy.html" title="">DefaultSupervisorStrategy</a></li><li class="current-entities indented4"><a href="Deploy$.html" title="" class="object"></a> <a href="Deploy.html" title="This class represents deployment configuration for a given actor path." class="class"></a><a href="Deploy.html" title="This class represents deployment configuration for a given actor path.">Deploy</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="DiagnosticActorLogging.html" title="Scala API: Mix in DiagnosticActorLogging into your Actor to easily obtain a reference to a logger with MDC support, which is available under the name &quot;log&quot;." class="trait"></a><a href="DiagnosticActorLogging.html" title="Scala API: Mix in DiagnosticActorLogging into your Actor to easily obtain a reference to a logger with MDC support, which is available under the name &quot;log&quot;.">DiagnosticActorLogging</a></li><li class="current-entities indented4"><a href="Dropped$.html" title="" class="object"></a> <a href="Dropped.html" title="Envelope that is published on the eventStream wrapped in pekko.actor.DeadLetter for every message that is dropped due to overfull queues or routers with no routees." class="class"></a><a href="Dropped.html" title="Envelope that is published on the eventStream wrapped in pekko.actor.DeadLetter for every message that is dropped due to overfull queues or routers with no routees.">Dropped</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="DynamicAccess.html" title="The DynamicAccess implementation is the class which is used for loading all configurable parts of an actor system (the pekko.actor.ReflectiveDynamicAccess is the default implementation)." class="class"></a><a href="DynamicAccess.html" title="The DynamicAccess implementation is the class which is used for loading all configurable parts of an actor system (the pekko.actor.ReflectiveDynamicAccess is the default implementation).">DynamicAccess</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="ExtendedActorSystem.html" title="More powerful interface to the actor system’s implementation which is presented to extensions (see pekko.actor.Extension)." class="class"></a><a href="ExtendedActorSystem.html" title="More powerful interface to the actor system’s implementation which is presented to extensions (see pekko.actor.Extension).">ExtendedActorSystem</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="Extension.html" title="The basic ActorSystem covers all that is needed for locally running actors, using futures and so on." class="trait"></a><a href="Extension.html" title="The basic ActorSystem covers all that is needed for locally running actors, using futures and so on.">Extension</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="ExtensionId.html" title="Identifies an Extension Lookup of Extensions is done by object identity, so the Id must be the same wherever it's used, otherwise you'll get the same extension loaded multiple times." class="trait"></a><a href="ExtensionId.html" title="Identifies an Extension Lookup of Extensions is done by object identity, so the Id must be the same wherever it's used, otherwise you'll get the same extension loaded multiple times.">ExtensionId</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="ExtensionIdProvider.html" title="To be able to load an ExtensionId from the configuration, a class that implements ExtensionIdProvider must be specified." class="trait"></a><a href="ExtensionIdProvider.html" title="To be able to load an ExtensionId from the configuration, a class that implements ExtensionIdProvider must be specified.">ExtensionIdProvider</a></li><li class="current-entities indented4"><a href="FSM$.html" title="" class="object"></a> <a href="FSM.html" title="Finite State Machine actor trait." class="trait"></a><a href="FSM.html" title="Finite State Machine actor trait.">FSM</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="Identify.html" title="A message all Actors will understand, that when processed will reply with pekko.actor.ActorIdentity containing the ActorRef." class="class"></a><a href="Identify.html" title="A message all Actors will understand, that when processed will reply with pekko.actor.ActorIdentity containing the ActorRef.">Identify</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="IllegalActorStateException.html" title="IllegalActorStateException is thrown when a core invariant in the Actor implementation has been violated." class="class"></a><a href="IllegalActorStateException.html" title="IllegalActorStateException is thrown when a core invariant in the Actor implementation has been violated.">IllegalActorStateException</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="IndirectActorProducer.html" title="This interface defines a class of actor creation strategies deviating from the usual default of just reflectively instantiating the Actor subclass." class="trait"></a><a href="IndirectActorProducer.html" title="This interface defines a class of actor creation strategies deviating from the usual default of just reflectively instantiating the Actor subclass.">IndirectActorProducer</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="InvalidActorNameException.html" title="An InvalidActorNameException is thrown when you try to convert something, usually a String, to an Actor name which doesn't validate." class="class"></a><a href="InvalidActorNameException.html" title="An InvalidActorNameException is thrown when you try to convert something, usually a String, to an Actor name which doesn't validate.">InvalidActorNameException</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="InvalidMessageException.html" title="InvalidMessageException is thrown when an invalid message is sent to an Actor; Currently only null is an invalid message." class="class"></a><a href="InvalidMessageException.html" title="InvalidMessageException is thrown when an invalid message is sent to an Actor; Currently only null is an invalid message.">InvalidMessageException</a></li><li class="current-entities indented4"><a href="Kill$.html" title="A message all Actors will understand, that when processed will make the Actor throw an ActorKilledException, which will trigger supervision." class="object"></a> <a href="Kill.html" title="" class="class"></a><a href="Kill.html" title="">Kill</a></li><li class="current-entities indented4"><a href="LightArrayRevolverScheduler$.html" title="" class="object"></a> <a href="LightArrayRevolverScheduler.html" title="This scheduler implementation is based on a revolving wheel of buckets, like Netty’s HashedWheelTimer, which it advances at a fixed tick rate and dispatches tasks it finds in the current bucket to their respective ExecutionContexts." class="class"></a><a href="LightArrayRevolverScheduler.html" title="This scheduler implementation is based on a revolving wheel of buckets, like Netty’s HashedWheelTimer, which it advances at a fixed tick rate and dispatches tasks it finds in the current bucket to their respective ExecutionContexts.">LightArrayRevolverScheduler</a></li><li class="current-entities indented4"><a href="LocalScope$.html" title="The Local Scope is the default one, which is assumed on all deployments which do not set a different scope." class="object"></a> <a href="LocalScope.html" title="" class="class"></a><a href="LocalScope.html" title="">LocalScope</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="LoggingFSM.html" title="Stackable trait for pekko.actor.FSM which adds a rolling event log and debug logging capabilities (analogous to pekko.event.LoggingReceive)." class="trait"></a><a href="LoggingFSM.html" title="Stackable trait for pekko.actor.FSM which adds a rolling event log and debug logging capabilities (analogous to pekko.event.LoggingReceive).">LoggingFSM</a></li><li class="current-entities indented4"><a href="NoScopeGiven$.html" title="" class="object"></a> <a href="NoScopeGiven.html" title="This is the default value and as such allows overrides." class="class"></a><a href="NoScopeGiven.html" title="This is the default value and as such allows overrides.">NoScopeGiven</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="NoSerializationVerificationNeeded.html" title="Marker trait to signal that this class should not be verified for serializability." class="trait"></a><a href="NoSerializationVerificationNeeded.html" title="Marker trait to signal that this class should not be verified for serializability.">NoSerializationVerificationNeeded</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="NotInfluenceReceiveTimeout.html" title="Marker trait to indicate that a message should not reset the receive timeout." class="trait"></a><a href="NotInfluenceReceiveTimeout.html" title="Marker trait to indicate that a message should not reset the receive timeout.">NotInfluenceReceiveTimeout</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="OneForOneStrategy.html" title="Applies the fault handling Directive (Resume, Restart, Stop) specified in the Decider to the child actor that failed, as opposed to pekko.actor.AllForOneStrategy that applies it to all children." class="class"></a><a href="OneForOneStrategy.html" title="Applies the fault handling Directive (Resume, Restart, Stop) specified in the Decider to the child actor that failed, as opposed to pekko.actor.AllForOneStrategy that applies it to all children.">OneForOneStrategy</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="OriginalRestartException$.html" title="This is an extractor for retrieving the original cause (i.e." class="object"></a><a href="OriginalRestartException$.html" title="This is an extractor for retrieving the original cause (i.e.">OriginalRestartException</a></li><li class="current-entities indented4"><a href="PoisonPill$.html" title="A message all Actors will understand, that when processed will terminate the Actor permanently." class="object"></a> <a href="PoisonPill.html" title="" class="class"></a><a href="PoisonPill.html" title="">PoisonPill</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="PossiblyHarmful.html" title="Marker trait to indicate that a message might be potentially harmful, this is used to block messages coming in over remoting." class="trait"></a><a href="PossiblyHarmful.html" title="Marker trait to indicate that a message might be potentially harmful, this is used to block messages coming in over remoting.">PossiblyHarmful</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="PostRestartException.html" title="A PostRestartException is thrown when constructor or postRestart() method fails during a restart attempt." class="class"></a><a href="PostRestartException.html" title="A PostRestartException is thrown when constructor or postRestart() method fails during a restart attempt.">PostRestartException</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="PreRestartException.html" title="A PreRestartException is thrown when the preRestart() method failed; this exception is not propagated to the supervisor, as it originates from the already failed instance, hence it is only visible as log entry on the event stream." class="class"></a><a href="PreRestartException.html" title="A PreRestartException is thrown when the preRestart() method failed; this exception is not propagated to the supervisor, as it originates from the already failed instance, hence it is only visible as log entry on the event stream.">PreRestartException</a></li><li class="current-entities indented4"><a href="Props$.html" title="Factory for Props instances." class="object"></a> <a href="Props.html" title="Props is a configuration object using in creating an Actor; it is immutable, so it is thread-safe and fully shareable." class="class"></a><a href="Props.html" title="Props is a configuration object using in creating an Actor; it is immutable, so it is thread-safe and fully shareable.">Props</a></li><li class="current-entities indented4"><a href="ProviderSelection$.html" title="" class="object"></a> <a href="ProviderSelection.html" title="" class="class"></a><a href="ProviderSelection.html" title="">ProviderSelection</a></li><li class="current-entities indented4"><a href="ReceiveTimeout$.html" title="When using ActorContext.setReceiveTimeout, the singleton instance of ReceiveTimeout will be sent to the Actor when there hasn't been any message for that long." class="object"></a> <a href="ReceiveTimeout.html" title="" class="class"></a><a href="ReceiveTimeout.html" title="">ReceiveTimeout</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="ReflectiveDynamicAccess.html" title="This is the default pekko.actor.DynamicAccess implementation used by pekko.actor.ExtendedActorSystem unless overridden." class="class"></a><a href="ReflectiveDynamicAccess.html" title="This is the default pekko.actor.DynamicAccess implementation used by pekko.actor.ExtendedActorSystem unless overridden.">ReflectiveDynamicAccess</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="RelativeActorPath$.html" title="Extractor for so-called “relative actor paths” as in “relative URI”, not in “relative to some actor”." class="object"></a><a href="RelativeActorPath$.html" title="Extractor for so-called “relative actor paths” as in “relative URI”, not in “relative to some actor”.">RelativeActorPath</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="RootActorPath.html" title="Root of the hierarchy of ActorPaths." class="class"></a><a href="RootActorPath.html" title="Root of the hierarchy of ActorPaths.">RootActorPath</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="ScalaActorSelection.html" title="Contains the Scala API (!-method) for ActorSelections) which provides automatic tracking of the sender, as per the usual implicit ActorRef pattern." class="trait"></a><a href="ScalaActorSelection.html" title="Contains the Scala API (!-method) for ActorSelections) which provides automatic tracking of the sender, as per the usual implicit ActorRef pattern.">ScalaActorSelection</a></li><li class="current-entities indented4"><a href="Scheduler$.html" title="" class="object"></a> <a href="Scheduler.html" title="An Apache Pekko scheduler service." class="trait"></a><a href="Scheduler.html" title="An Apache Pekko scheduler service.">Scheduler</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="SchedulerTask.html" title="A Task that will be notified when it is cancelled." class="trait"></a><a href="SchedulerTask.html" title="A Task that will be notified when it is cancelled.">SchedulerTask</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="Scope.html" title="The scope of a pekko.actor.Deploy serves two purposes: as a marker for pattern matching the “scope” (i.e." class="trait"></a><a href="Scope.html" title="The scope of a pekko.actor.Deploy serves two purposes: as a marker for pattern matching the “scope” (i.e.">Scope</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="Stash.html" title="The Stash trait enables an actor to temporarily stash away messages that can not or should not be handled using the actor's current behavior." class="trait"></a><a href="Stash.html" title="The Stash trait enables an actor to temporarily stash away messages that can not or should not be handled using the actor's current behavior.">Stash</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="StashOverflowException.html" title="Is thrown when the size of the Stash exceeds the capacity of the Stash" class="class"></a><a href="StashOverflowException.html" title="Is thrown when the size of the Stash exceeds the capacity of the Stash">StashOverflowException</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="Status$.html" title="Superseeded by pekko.pattern.StatusReply, prefer that when possible." class="object"></a><a href="Status$.html" title="Superseeded by pekko.pattern.StatusReply, prefer that when possible.">Status</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="StoppingSupervisorStrategy.html" title="" class="class"></a><a href="StoppingSupervisorStrategy.html" title="">StoppingSupervisorStrategy</a></li><li class="current-entities indented4"><a href="SupervisorStrategy$.html" title="" class="object"></a> <a href="SupervisorStrategy.html" title="A Pekko SupervisorStrategy is the policy to apply for crashing children." class="class"></a><a href="SupervisorStrategy.html" title="A Pekko SupervisorStrategy is the policy to apply for crashing children.">SupervisorStrategy</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="SupervisorStrategyConfigurator.html" title="Implement this interface in order to configure the supervisorStrategy for the top-level guardian actor (/user)." class="trait"></a><a href="SupervisorStrategyConfigurator.html" title="Implement this interface in order to configure the supervisorStrategy for the top-level guardian actor (/user).">SupervisorStrategyConfigurator</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="SupervisorStrategyLowPriorityImplicits.html" title="" class="trait"></a><a href="SupervisorStrategyLowPriorityImplicits.html" title="">SupervisorStrategyLowPriorityImplicits</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="SuppressedDeadLetter.html" title="Similar to DeadLetter with the slight twist of NOT being logged by the default dead letters listener." class="class"></a><a href="SuppressedDeadLetter.html" title="Similar to DeadLetter with the slight twist of NOT being logged by the default dead letters listener.">SuppressedDeadLetter</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="Terminated.html" title="When Death Watch is used, the watcher will receive a Terminated(watched) message when watched is terminated." class="class"></a><a href="Terminated.html" title="When Death Watch is used, the watcher will receive a Terminated(watched) message when watched is terminated.">Terminated</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="TimerScheduler.html" title="Support for scheduled self messages in an actor." class="class"></a><a href="TimerScheduler.html" title="Support for scheduled self messages in an actor.">TimerScheduler</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="Timers.html" title="Scala API: Mix in Timers into your Actor to get support for scheduled self messages via TimerScheduler." class="trait"></a><a href="Timers.html" title="Scala API: Mix in Timers into your Actor to get support for scheduled self messages via TimerScheduler.">Timers</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="UnboundedStash.html" title="The UnboundedStash trait is a version of pekko.actor.Stash that enforces an unbounded stash for you actor." class="trait"></a><a href="UnboundedStash.html" title="The UnboundedStash trait is a version of pekko.actor.Stash that enforces an unbounded stash for you actor.">UnboundedStash</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="UnhandledMessage.html" title="This message is published to the EventStream whenever an Actor receives a message it doesn't understand" class="class"></a><a href="UnhandledMessage.html" title="This message is published to the EventStream whenever an Actor receives a message it doesn't understand">UnhandledMessage</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="UnrestrictedStash.html" title="A version of pekko.actor.Stash that does not enforce any mailbox type." class="trait"></a><a href="UnrestrictedStash.html" title="A version of pekko.actor.Stash that does not enforce any mailbox type.">UnrestrictedStash</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="UntypedAbstractActor.html" title="If the validation of the ReceiveBuilder match logic turns out to be a bottleneck for some of your actors you can consider to implement it at lower level by extending UntypedAbstractActor instead of AbstractActor." class="class"></a><a href="UntypedAbstractActor.html" title="If the validation of the ReceiveBuilder match logic turns out to be a bottleneck for some of your actors you can consider to implement it at lower level by extending UntypedAbstractActor instead of AbstractActor.">UntypedAbstractActor</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="UntypedAbstractActorWithStash.html" title="Java API: compatible with lambda expressions" class="class"></a><a href="UntypedAbstractActorWithStash.html" title="Java API: compatible with lambda expressions">UntypedAbstractActorWithStash</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="UntypedAbstractActorWithTimers.html" title="Java API: Support for scheduled self messages via TimerScheduler." class="class"></a><a href="UntypedAbstractActorWithTimers.html" title="Java API: Support for scheduled self messages via TimerScheduler.">UntypedAbstractActorWithTimers</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="UntypedAbstractActorWithUnboundedStash.html" title="Java API: compatible with lambda expressions" class="class"></a><a href="UntypedAbstractActorWithUnboundedStash.html" title="Java API: compatible with lambda expressions">UntypedAbstractActorWithUnboundedStash</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="UntypedAbstractActorWithUnrestrictedStash.html" title="Java API: compatible with lambda expressions" class="class"></a><a href="UntypedAbstractActorWithUnrestrictedStash.html" title="Java API: compatible with lambda expressions">UntypedAbstractActorWithUnrestrictedStash</a></li><li class="current-entities indented4"><span class="separator"></span> <a href="UntypedAbstractLoggingActor.html" title="Java API: compatible with lambda expressions" class="class"></a><a href="UntypedAbstractLoggingActor.html" title="Java API: compatible with lambda expressions">UntypedAbstractLoggingActor</a></li><li class="current-entities indented4"><a href="WrappedMessage$.html" title="" class="object"></a> <a href="WrappedMessage.html" title="Message envelopes may implement this trait for better logging, such as logging of message class name of the wrapped message instead of the envelope class name." class="trait"></a><a href="WrappedMessage.html" title="Message envelopes may implement this trait for better logging, such as logging of message class name of the wrapped message instead of the envelope class name.">WrappedMessage</a></li><li class="indented4 " name="org.apache.pekko.annotation" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="annotation" class="anchorToMember"></a><a id="annotation:annotation" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/annotation/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../annotation/index.html" title=""><span class="name">annotation</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="org.apache.pekko" id="org.apache.pekko" class="extype">pekko</a></dd></dl></div></li><li class="indented4 " name="org.apache.pekko.cluster" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="cluster" class="anchorToMember"></a><a id="cluster:cluster" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/cluster/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../cluster/index.html" title=""><span class="name">cluster</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="org.apache.pekko" id="org.apache.pekko" class="extype">pekko</a></dd></dl></div></li><li class="indented4 " name="org.apache.pekko.coordination" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="coordination" class="anchorToMember"></a><a id="coordination:coordination" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/coordination/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../coordination/index.html" title=""><span class="name">coordination</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="org.apache.pekko" id="org.apache.pekko" class="extype">pekko</a></dd></dl></div></li><li class="indented4 " name="org.apache.pekko.discovery" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="discovery" class="anchorToMember"></a><a id="discovery:discovery" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/discovery/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../discovery/index.html" title=""><span class="name">discovery</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="org.apache.pekko" id="org.apache.pekko" class="extype">pekko</a></dd></dl></div></li><li class="indented4 " name="org.apache.pekko.dispatch" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="dispatch" class="anchorToMember"></a><a id="dispatch:dispatch" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/dispatch/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../dispatch/index.html" title=""><span class="name">dispatch</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="org.apache.pekko" id="org.apache.pekko" class="extype">pekko</a></dd></dl></div></li><li class="indented4 " name="org.apache.pekko.event" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="event" class="anchorToMember"></a><a id="event:event" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/event/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../event/index.html" title=""><span class="name">event</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="org.apache.pekko" id="org.apache.pekko" class="extype">pekko</a></dd></dl></div></li><li class="indented4 " name="org.apache.pekko.io" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="io" class="anchorToMember"></a><a id="io:io" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/io/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../io/index.html" title=""><span class="name">io</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="org.apache.pekko" id="org.apache.pekko" class="extype">pekko</a></dd></dl></div></li><li class="indented4 " name="org.apache.pekko.japi" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="japi" class="anchorToMember"></a><a id="japi:japi" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/japi/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../japi/index.html" title=""><span class="name">japi</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="org.apache.pekko" id="org.apache.pekko" class="extype">pekko</a></dd></dl></div></li><li class="indented4 " name="org.apache.pekko.osgi" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="osgi" class="anchorToMember"></a><a id="osgi:osgi" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/osgi/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../osgi/index.html" title=""><span class="name">osgi</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="org.apache.pekko" id="org.apache.pekko" class="extype">pekko</a></dd></dl></div></li><li class="indented4 " name="org.apache.pekko.pattern" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="pattern" class="anchorToMember"></a><a id="pattern:pattern" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/pattern/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../pattern/index.html" title="This package is used as a collection point for usage patterns which involve actors, futures, etc."><span class="name">pattern</span></a></span><p class="shortcomment cmt">This package is used as a collection point for usage patterns which involve
+actors, futures, etc.</p><div class="fullcomment"><div class="comment cmt"><h4> Commonly Used Patterns With Pekko </h4><p>This package is used as a collection point for usage patterns which involve
+actors, futures, etc. but are loosely enough coupled to (multiple of) them
+to present them separately from the core implementation. Currently supported
+are:</p><ul><li><b>ask:</b> create a temporary one-off actor for receiving a reply to a
+message and complete a <a href="https://www.scala-lang.org/api/2.13.18/scala/concurrent/Future.html" name="scala.concurrent.Future" id="scala.concurrent.Future" class="extype">scala.concurrent.Future</a> with it; returns said
+Future.</li><li><b>pipeTo:</b> feed eventually computed value of a future to an <a href="ActorRef.html" name="org.apache.pekko.actor.ActorRef" id="org.apache.pekko.actor.ActorRef" class="extype">org.apache.pekko.actor.ActorRef</a> as
+a message.</li><li><b>pipeToSelection:</b> feed eventually computed value of a future to an <a href="ActorSelection.html" name="org.apache.pekko.actor.ActorSelection" id="org.apache.pekko.actor.ActorSelection" class="extype">org.apache.pekko.actor.ActorSelection</a> as
+a message.</li></ul><p>In Scala the recommended usage is to import the pattern from the package
+object:</p><pre><span class="kw">import</span> org.apache.pekko.pattern.ask
+
+ask(actor, message) <span class="cmt">// use it directly</span>
+actor ask message   <span class="cmt">// use it by implicit conversion</span></pre><p>For Java the patterns are available as static methods of the <a href="../pattern/Patterns$.html" name="org.apache.pekko.pattern.Patterns" id="org.apache.pekko.pattern.Patterns" class="extype">org.apache.pekko.pattern.Patterns</a>
+class:</p><pre><span class="kw">import</span> static org.apache.pekko.pattern.Patterns.ask;
+
+ask(actor, message);</pre></div><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="org.apache.pekko" id="org.apache.pekko" class="extype">pekko</a></dd></dl></div></li><li class="indented4 " name="org.apache.pekko.persistence" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="persistence" class="anchorToMember"></a><a id="persistence:persistence" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/persistence/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../persistence/index.html" title=""><span class="name">persistence</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="org.apache.pekko" id="org.apache.pekko" class="extype">pekko</a></dd></dl></div></li><li class="indented4 " name="org.apache.pekko.pki" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="pki" class="anchorToMember"></a><a id="pki:pki" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/pki/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../pki/index.html" title=""><span class="name">pki</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="org.apache.pekko" id="org.apache.pekko" class="extype">pekko</a></dd></dl></div></li><li class="indented4 " name="org.apache.pekko.remote" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="remote" class="anchorToMember"></a><a id="remote:remote" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/remote/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../remote/index.html" title=""><span class="name">remote</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="org.apache.pekko" id="org.apache.pekko" class="extype">pekko</a></dd></dl></div></li><li class="indented4 " name="org.apache.pekko.routing" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="routing" class="anchorToMember"></a><a id="routing:routing" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/routing/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../routing/index.html" title=""><span class="name">routing</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="org.apache.pekko" id="org.apache.pekko" class="extype">pekko</a></dd></dl></div></li><li class="indented4 " name="org.apache.pekko.serialization" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="serialization" class="anchorToMember"></a><a id="serialization:serialization" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/serialization/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../serialization/index.html" title=""><span class="name">serialization</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="org.apache.pekko" id="org.apache.pekko" class="extype">pekko</a></dd></dl></div></li><li class="indented4 " name="org.apache.pekko.stream" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="stream" class="anchorToMember"></a><a id="stream:stream" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/stream/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../stream/index.html" title=""><span class="name">stream</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="org.apache.pekko" id="org.apache.pekko" class="extype">pekko</a></dd></dl></div></li><li class="indented4 " name="org.apache.pekko.testkit" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="testkit" class="anchorToMember"></a><a id="testkit:testkit" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/testkit/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../testkit/index.html" title=""><span class="name">testkit</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="org.apache.pekko" id="org.apache.pekko" class="extype">pekko</a></dd></dl></div></li><li class="indented4 " name="org.apache.pekko.util" group="Ungrouped" fullComment="yes" data-isabs="false" visbl="pub"><a id="util" class="anchorToMember"></a><a id="util:util" class="anchorToMember"></a> <span class="permalink"><a href="../../../../org/apache/pekko/util/index.html" title="Permalink"><i class="material-icons"></i></a></span> <span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><a href="../util/index.html" title=""><span class="name">util</span></a></span><div class="fullcomment"><dl class="attributes block"><dt>Definition Classes</dt><dd><a href="../index.html" name="org.apache.pekko" id="org.apache.pekko" class="extype">pekko</a></dd></dl></div></li></ul></div></div><div id="content"><body class="package value"><div id="definition"><div class="big-circle package">p</div><p id="owner"><a href="../../../index.html" name="org" id="org" class="extype">org</a>.<a href="../../index.html" name="org.apache" id="org.apache" class="extype">apache</a>.<a href="../index.html" name="org.apache.pekko" id="org.apache.pekko" class="extype">pekko</a></p><h1>actor<span class="permalink"><a href="../../../../org/apache/pekko/actor/index.html" title="Permalink"><i class="material-icons"></i></a></span></h1></div><h4 id="signature" class="signature"><span class="modifier_kind"><span class="modifier"></span> <span class="kind">package</span></span> <span class="symbol"><span class="name">actor</span></span></h4><div id="comment" class="fullcommenttop"><div id="content-diagram-container" class="toggleContainer block diagram-container"><span class="toggle diagram-link">Content Hierarchy</span><div id="content-diagram" class="diagram hiddenContent"><svg id="graph1" class="package-diagram" width="800" height="600"></svg><script type="text/dot" id="dot1">
+digraph G {
+  
+  
+  node0 [URL="WrappedMessage.html#inheritance-diagram-container", label="WrappedMessage", id="graph1_0", class="default", tooltip="org.apache.pekko.actor.WrappedMessage"] ;
+  node1 [URL="UntypedAbstractLoggingActor.html#inheritance-diagram-container", label="UntypedAbstractLoggingActor", id="graph1_1", class="default", tooltip="org.apache.pekko.actor.UntypedAbstractLoggingActor"] ;
+  node2 [URL="UntypedAbstractActorWithUnrestrictedStash.html#inheritance-diagram-container", label="UntypedAbstractActorWithUnrestrictedStash", id="graph1_2", class="default", tooltip="org.apache.pekko.actor.UntypedAbstractActorWithUnrestrictedStash"] ;
+  node3 [URL="UntypedAbstractActorWithUnboundedStash.html#inheritance-diagram-container", label="UntypedAbstractActorWithUnboundedStash", id="graph1_3", class="default", tooltip="org.apache.pekko.actor.UntypedAbstractActorWithUnboundedStash"] ;
+  node4 [URL="UntypedAbstractActorWithTimers.html#inheritance-diagram-container", label="UntypedAbstractActorWithTimers", id="graph1_4", class="default", tooltip="org.apache.pekko.actor.UntypedAbstractActorWithTimers"] ;
+  node5 [URL="UntypedAbstractActorWithStash.html#inheritance-diagram-container", label="UntypedAbstractActorWithStash", id="graph1_5", class="default", tooltip="org.apache.pekko.actor.UntypedAbstractActorWithStash"] ;
+  node6 [URL="UntypedAbstractActor.html#inheritance-diagram-container", label="UntypedAbstractActor", id="graph1_6", class="default", tooltip="org.apache.pekko.actor.UntypedAbstractActor"] ;
+  node7 [URL="UnrestrictedStash.html#inheritance-diagram-container", label="UnrestrictedStash", id="graph1_7", class="default", tooltip="org.apache.pekko.actor.UnrestrictedStash"] ;
+  node8 [URL="UnhandledMessage.html#inheritance-diagram-container", label="UnhandledMessage", id="graph1_8", class="default", tooltip="org.apache.pekko.actor.UnhandledMessage"] ;
+  node9 [URL="UnboundedStash.html#inheritance-diagram-container", label="UnboundedStash", id="graph1_9", class="default", tooltip="org.apache.pekko.actor.UnboundedStash"] ;
+  node10 [URL="Timers.html#inheritance-diagram-container", label="Timers", id="graph1_10", class="default", tooltip="org.apache.pekko.actor.Timers"] ;
+  node11 [URL="Terminated.html#inheritance-diagram-container", label="Terminated", id="graph1_11", class="default", tooltip="org.apache.pekko.actor.Terminated"] ;
+  node12 [URL="SuppressedDeadLetter.html#inheritance-diagram-container", label="SuppressedDeadLetter", id="graph1_12", class="default", tooltip="org.apache.pekko.actor.SuppressedDeadLetter"] ;
+  node13 [URL="SupervisorStrategyLowPriorityImplicits.html#inheritance-diagram-container", label="SupervisorStrategyLowPriorityImplicits", id="graph1_13", class="default", tooltip="org.apache.pekko.actor.SupervisorStrategyLowPriorityImplicits"] ;
+  node14 [URL="SupervisorStrategyConfigurator.html#inheritance-diagram-container", label="SupervisorStrategyConfigurator", id="graph1_14", class="default", tooltip="org.apache.pekko.actor.SupervisorStrategyConfigurator"] ;
+  node15 [URL="SupervisorStrategy$.html#inheritance-diagram-container", label="SupervisorStrategy", id="graph1_15", class="default", tooltip="org.apache.pekko.actor.SupervisorStrategy"] ;
+  node16 [URL="SupervisorStrategy.html#inheritance-diagram-container", label="SupervisorStrategy", id="graph1_16", class="default", tooltip="org.apache.pekko.actor.SupervisorStrategy"] ;
+  node17 [URL="StoppingSupervisorStrategy.html#inheritance-diagram-container", label="StoppingSupervisorStrategy", id="graph1_17", class="default", tooltip="org.apache.pekko.actor.StoppingSupervisorStrategy"] ;
+  node18 [URL="Stash.html#inheritance-diagram-container", label="Stash", id="graph1_18", class="default", tooltip="org.apache.pekko.actor.Stash"] ;
+  node19 [URL="Scope.html#inheritance-diagram-container", label="Scope", id="graph1_19", class="default", tooltip="org.apache.pekko.actor.Scope"] ;
+
+diff --git a/metadata/org.apache.pekko/pekko-actor_2.13/index.json b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+index 9732f2ad72b234e3ecb53ac9b0c79f3156224355..be7d023e66e84e0f326461f24516a7d6f23fac11
+--- a/metadata/org.apache.pekko/pekko-actor_2.13/index.json
++++ b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+@@ -9,6 +9,11 @@
+     "tested-versions" : [
+       "2.0.0-M1"
+     ],
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko",
++    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++    "documentation-url" : "https://pekko.apache.org/docs/pekko/$version$/",
++    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+     "allowed-packages" : [
+       "org.apache.pekko"
+     ]
+
+codex
+`jq` accepted the JSON. The Gradle metadata check fails before URL validation on an existing content issue for this coordinate: the `metadata/org.apache.pekko/pekko-actor_2.13/2.0.0-M1/` directory lacks `reachability-metadata.json`, which is outside the requested URL/description fields.
+exec
+/usr/bin/bash -lc "sed -n '1,36p' metadata/org.apache.pekko/pekko-actor_2.13/index.json" in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.0.0-M1",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "2.0.0-M1"
+    ],
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/pekko",
+    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
+    "documentation-url" : "https://pekko.apache.org/docs/pekko/$version$/",
+    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+    "allowed-packages" : [
+      "org.apache.pekko"
+    ]
+  },
+  {
+    "metadata-version" : "1.1.5",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
+    "repository-url" : "https://github.com/apache/pekko",
+    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-javadoc.jar",
+    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+    "language" : {
+      "name" : "scala",
+      "version" : "2"
+    },
+    "tested-versions" : [
+      "1.1.5",
+      "1.2.0",
+      "1.2.1",
+      "1.3.0",
+
+exec
+/usr/bin/bash -lc 'git diff --check -- metadata/org.apache.pekko/pekko-actor_2.13/index.json' in /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03
+ succeeded in 0ms:
+diff --git a/metadata/org.apache.pekko/pekko-actor_2.13/index.json b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+index 9732f2ad72b234e3ecb53ac9b0c79f3156224355..be7d023e66e84e0f326461f24516a7d6f23fac11
+--- a/metadata/org.apache.pekko/pekko-actor_2.13/index.json
++++ b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+@@ -9,6 +9,11 @@
+     "tested-versions" : [
+       "2.0.0-M1"
+     ],
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko",
++    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++    "documentation-url" : "https://pekko.apache.org/docs/pekko/$version$/",
++    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+     "allowed-packages" : [
+       "org.apache.pekko"
+     ]
+
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03/metadata/org.apache.pekko/pekko-actor_2.13/index.json:10) for `metadata-version` `2.0.0-M1`.
+
+Filled missing:
+- `source-code-url`
+- `repository-url`
+- `test-code-url`
+- `documentation-url`
+- `description`
+
+Left `language` unchanged as existing `{"name":"scala","version":"2"}`.
+
+Checks:
+- `jq` passed.
+- `git diff --check` passed.
+- URL targets were verified for `2.0.0-M1`.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.pekko:pekko-actor_2.13:2.0.0-M1 --stacktrace` failed because `metadata/org.apache.pekko/pekko-actor_2.13/2.0.0-M1/reachability-metadata.json` is missing, which is outside the requested field update.
+diff --git a/metadata/org.apache.pekko/pekko-actor_2.13/index.json b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+index 9732f2ad72b234e3ecb53ac9b0c79f3156224355..be7d023e66e84e0f326461f24516a7d6f23fac11
+--- a/metadata/org.apache.pekko/pekko-actor_2.13/index.json
++++ b/metadata/org.apache.pekko/pekko-actor_2.13/index.json
+@@ -9,6 +9,11 @@
+     "tested-versions" : [
+       "2.0.0-M1"
+     ],
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pekko/pekko-actor_2.13/$version$/pekko-actor_2.13-$version$-sources.jar",
++    "repository-url" : "https://github.com/apache/pekko",
++    "test-code-url" : "https://github.com/apache/pekko/tree/v$version$/actor-tests/src/test",
++    "documentation-url" : "https://pekko.apache.org/docs/pekko/$version$/",
++    "description" : "Apache Pekko Actor provides the core actor-system runtime for building concurrent, distributed, resilient message-driven JVM applications in Java and Scala. It includes the classic actor APIs, dispatching, supervision, routing, scheduling, event streams, configuration integration, and foundational utilities used by other Pekko modules.",
+     "allowed-packages" : [
+       "org.apache.pekko"
+     ]
+
+tokens used
+64,107
+Updated [index.json](/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03/metadata/org.apache.pekko/pekko-actor_2.13/index.json:10) for `metadata-version` `2.0.0-M1`.
+
+Filled missing:
+- `source-code-url`
+- `repository-url`
+- `test-code-url`
+- `documentation-url`
+- `description`
+
+Left `language` unchanged as existing `{"name":"scala","version":"2"}`.
+
+Checks:
+- `jq` passed.
+- `git diff --check` passed.
+- URL targets were verified for `2.0.0-M1`.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.pekko:pekko-actor_2.13:2.0.0-M1 --stacktrace` failed because `metadata/org.apache.pekko/pekko-actor_2.13/2.0.0-M1/reachability-metadata.json` is missing, which is outside the requested field update.
+Ran agent for org.apache.pekko:pekko-actor_2.13:2.0.0-M1 (exit 0). Log: /home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03/build/agent-url-discovery-logs/org.apache.pekko-pekko-actor_2.13-2.0.0-M1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8742-bb474d03/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 50s
+9 actionable tasks: 1 executed, 8 up-to-date
