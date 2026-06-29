@@ -1,0 +1,107 @@
+{
+  "add_new_library_support:2026-06-29": {
+    "timestamp": "2026-06-29T02:07:50.301130Z",
+    "library": "com.github.waffle:waffle-jna:3.5.0",
+    "starting_commit": "201614f8932a04c8df10194d03ed9048fe6bcb44",
+    "ending_commit": "60da43ef9c758910e8e5d354126eb554ccb31fbb",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "3.5.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 6,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 6,
+        "totalCalls": 6
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 420,
+          "missed": 4288,
+          "ratio": 0.08921,
+          "total": 4708
+        },
+        "line": {
+          "covered": 104,
+          "missed": 1060,
+          "ratio": 0.089347,
+          "total": 1164
+        },
+        "method": {
+          "covered": 25,
+          "missed": 196,
+          "ratio": 0.113122,
+          "total": 221
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 1315,
+      "issue_label": "library-new-request",
+      "library": "com.github.waffle:waffle-jna:3.5.0",
+      "summary": "waffle-jna is a Windows SSPI/JNA authentication library with servlet filter APIs; its servlet API is declared as provided and is not pulled into the Gradle test classpath, so servlet-facing coverage needs an explicit test dependency.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "jakarta.servlet:jakarta.servlet-api:4.0.4",
+          "scope": "testImplementation",
+          "reason": "waffle-jna 3.5.0 references javax.servlet/javax.servlet.http types in waffle.servlet and waffle.servlet.spi, but declares jakarta.servlet-api 4.0.4 with provided scope; Gradle does not add it transitively for generated tests."
+        }
+      ],
+      "agent_guidance": "Avoid tests that require live Windows SSPI, Active Directory, or a real Windows logon on the Linux Forge runner. For meaningful portable coverage, exercise pure utility classes, servlet filter configuration/control-flow, principals, headers, CORS helpers, and cache behavior using fakes or mocks for Windows/auth and servlet interfaces. Guard or avoid direct calls to WindowsAuthProviderImpl/WindowsAccountImpl live native operations unless the test explicitly skips on non-Windows.",
+      "risks": [
+        "The library documentation states Waffle relies on Windows SSPI and does not work on Unix-like systems; upstream Java CI runs tests on Windows.",
+        "Native-image/JNA behavior for real authentication paths remains dependent on Windows native APIs and cannot be fully validated by Linux Docker setup."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "jakarta.servlet:jakarta.servlet-api:4.0.4",
+          "result": "applied",
+          "target": "tests/src/com.github.waffle/waffle-jna/3.5.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#1315 Support for com.github.waffle:waffle-jna:3.5.0; label=library-new-request; body_chars=179"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 80173,
+      "output_tokens_used": 4290,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/com.github.waffle:waffle-jna:3.5.0/library-preparation-preflight/pi-generation-2026-06-29T01-45-48-734725Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 107697,
+      "cached_input_tokens_used": 516608,
+      "output_tokens_used": 7608,
+      "iterations": 2,
+      "cost_usd": 0.4865,
+      "generated_loc": 125,
+      "tested_library_loc": 104,
+      "metadata_entries": 13,
+      "code_coverage_percent": 8.93
+    },
+    "artifacts": {
+      "test_file": "tests/src/com.github.waffle/waffle-jna/3.5.0/src/test/java/com_github_waffle/waffle_jna/NegotiateSecurityFilterTest.java",
+      "metadata_file": "metadata/com.github.waffle/waffle-jna/3.5.0/reachability-metadata.json"
+    }
+  }
+}
