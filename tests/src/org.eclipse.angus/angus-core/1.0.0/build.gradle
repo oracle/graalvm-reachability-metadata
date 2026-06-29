@@ -17,6 +17,12 @@ dependencies {
 
 graalvmNative {
     agent {
+        binaries {
+            test {
+                buildArgs.add('--add-exports=java.base/sun.security.util=ALL-UNNAMED')
+            }
+        }
+
         defaultMode = "conditional"
         modes {
             conditional {
@@ -24,4 +30,8 @@ graalvmNative {
             }
         }
     }
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgs '--add-exports', 'java.base/sun.security.util=ALL-UNNAMED'
 }
