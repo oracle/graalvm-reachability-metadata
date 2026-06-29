@@ -1,0 +1,590 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2813-39277e73
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f10f0-4e40-7e13-82b5-c33f79f8d7e2
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.springframework.data:spring-data-commons:2.7.18
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [2.7.18].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2813-39277e73/metadata/org.springframework.data/spring-data-commons/index.json
+- Entry selector: "metadata-version" = "2.7.18"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo.maven.apache.org/maven2/org/springframework/data/spring-data-commons/$version$/spring-data-commons-$version$-sources.jar
+- repository-url: https://github.com/spring-projects/spring-data-commons
+- test-code-url: https://github.com/spring-projects/spring-data-commons/tree/$version$/src/test
+- documentation-url: https://repo.maven.apache.org/maven2/org/springframework/data/spring-data-commons/$version$/spring-data-commons-$version$-javadoc.jar
+- description: Spring Data Commons provides the shared repository, mapping, conversion, auditing, pagination, and query-method infrastructure used by Spring Data modules. It gives store-specific Spring Data projects and applications a common programming model for repositories and domain object handling.
+- language: <missing>
+
+Context:
+- Coordinate version: 2.7.18
+- Entry metadata-version: 2.7.18
+- Entry test-version: 2.7.18
+- Entry tested-versions: [2.7.18]
+codex
+I’ll verify the existing external URLs against the exact `2.7.18` alias first, then inspect the JSON so I only touch genuinely missing fields.
+web search: 
+web search: https://github.com/spring-projects/spring-data-commons
+web search: 
+web search: site:repo.maven.apache.org/maven2/org/springframework/data/spring-data-commons/2.7.18 spring-data-commons-2.7.18-sources.jar
+codex
+The repository and tag path resolve, and Maven Central lists both the sources and javadoc artifacts for `2.7.18`. I’m checking the local entry now to confirm whether there is actually anything missing to write.
+exec
+/usr/bin/bash -lc "rg -n '\"metadata-version\"|\"source-code-url\"|\"repository-url\"|\"test-code-url\"|\"documentation-url\"|\"description\"|\"language\"' metadata/org.springframework.data/spring-data-commons/index.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2813-39277e73
+ succeeded in 0ms:
+4:    "metadata-version" : "2.7.18",
+5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/data/spring-data-commons/$version$/spring-data-commons-$version$-sources.jar",
+6:    "repository-url" : "https://github.com/spring-projects/spring-data-commons",
+7:    "test-code-url" : "https://github.com/spring-projects/spring-data-commons/tree/$version$/src/test",
+8:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/data/spring-data-commons/$version$/spring-data-commons-$version$-javadoc.jar",
+9:    "description" : "Spring Data Commons provides the shared repository, mapping, conversion, auditing, pagination, and query-method infrastructure used by Spring Data modules. It gives store-specific Spring Data projects and applications a common programming model for repositories and domain object handling.",
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2813-39277e73
+ succeeded in 184ms:
+?? metadata/org.springframework.data/
+?? tests/src/org.springframework.data/
+
+codex
+The local entry already has non-blank values for the URL and description fields. I’m doing exact URL checks now; if they pass and the artifact is not language-specific, the correct repository update is to leave the file unchanged.
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/springframework/data/spring-data-commons/2.7.18/spring-data-commons-2.7.18-javadoc.jar | head -n 1' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2813-39277e73
+ succeeded in 0ms:
+HTTP/2 200 
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/springframework/data/spring-data-commons/2.7.18/spring-data-commons-2.7.18-sources.jar | head -n 1' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2813-39277e73
+ succeeded in 0ms:
+HTTP/2 200 
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/spring-projects/spring-data-commons/tree/2.7.18/src/test | head -n 1' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2813-39277e73
+exec
+/usr/bin/bash -lc 'curl -fsSI https://github.com/spring-projects/spring-data-commons | head -n 1' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2813-39277e73
+ succeeded in 641ms:
+HTTP/2 200 
+
+ succeeded in 642ms:
+HTTP/2 200 
+
+codex
+The exact source jar, javadoc jar, repository root, and GitHub test-suite URL all return HTTP 200. I’m also checking whether Maven Central publishes a test artifact, because the instructions prefer Maven-hosted tests when available.
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/data/spring-data-commons/2.7.18/ | rg 'test|tests|sources|javadoc'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2813-39277e73
+ succeeded in 0ms:
+<a href="spring-data-commons-2.7.18-javadoc.jar" title="spring-data-commons-2.7.18-javadoc.jar">spring-data-commons-2.7.18-javadoc.jar</a>            2023-11-17 09:31   3535782      
+<a href="spring-data-commons-2.7.18-javadoc.jar.asc" title="spring-data-commons-2.7.18-javadoc.jar.asc">spring-data-commons-2.7.18-javadoc.jar.asc</a>        2023-11-17 09:31       833      
+<a href="spring-data-commons-2.7.18-javadoc.jar.md5" title="spring-data-commons-2.7.18-javadoc.jar.md5">spring-data-commons-2.7.18-javadoc.jar.md5</a>        2023-11-17 09:31        32      
+<a href="spring-data-commons-2.7.18-javadoc.jar.sha1" title="spring-data-commons-2.7.18-javadoc.jar.sha1">spring-data-commons-2.7.18-javadoc.jar.sha1</a>       2023-11-17 09:31        40      
+<a href="spring-data-commons-2.7.18-sources.jar" title="spring-data-commons-2.7.18-sources.jar">spring-data-commons-2.7.18-sources.jar</a>            2023-11-17 09:31    871183      
+<a href="spring-data-commons-2.7.18-sources.jar.asc" title="spring-data-commons-2.7.18-sources.jar.asc">spring-data-commons-2.7.18-sources.jar.asc</a>        2023-11-17 09:31       833      
+<a href="spring-data-commons-2.7.18-sources.jar.md5" title="spring-data-commons-2.7.18-sources.jar.md5">spring-data-commons-2.7.18-sources.jar.md5</a>        2023-11-17 09:31        32      
+<a href="spring-data-commons-2.7.18-sources.jar.sha1" title="spring-data-commons-2.7.18-sources.jar.sha1">spring-data-commons-2.7.18-sources.jar.sha1</a>       2023-11-17 09:31        40      
+
+exec
+/usr/bin/bash -lc "jq . metadata/org.springframework.data/spring-data-commons/index.json >/dev/null && printf 'valid json\\n'" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2813-39277e73
+ succeeded in 0ms:
+valid json
+
+exec
+/usr/bin/bash -lc "curl -fsSL https://repo.maven.apache.org/maven2/org/springframework/data/spring-data-commons/2.7.18/spring-data-commons-2.7.18.pom | rg -n '<(artifactId|name|description|url|scm|connection|developerConnection|tag|kotlin|groovy|scala)' -C 2" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2813-39277e73
+ succeeded in 0ms:
+5-
+6-	<groupId>org.springframework.data</groupId>
+7:	<artifactId>spring-data-commons</artifactId>
+8-	<version>2.7.18</version>
+9-
+10:	<name>Spring Data Core</name>
+11-
+12-	<parent>
+13-		<groupId>org.springframework.data.build</groupId>
+14:		<artifactId>spring-data-parent</artifactId>
+15-		<version>2.7.18</version>
+16-	</parent>
+--
+18-	<properties>
+19-
+20:		<scala>2.11.7</scala>
+21-		<xmlbeam>1.4.24</xmlbeam>
+22-		<java-module-name>spring.data.commons</java-module-name>
+--
+27-		<dependency>
+28-			<groupId>org.springframework</groupId>
+29:			<artifactId>spring-core</artifactId>
+30-		</dependency>
+31-		<dependency>
+32-			<groupId>org.springframework</groupId>
+33:			<artifactId>spring-beans</artifactId>
+34-		</dependency>
+35-		<dependency>
+36-			<groupId>org.springframework</groupId>
+37:			<artifactId>spring-context</artifactId>
+38-			<optional>true</optional>
+39-		</dependency>
+40-		<dependency>
+41-			<groupId>org.springframework</groupId>
+42:			<artifactId>spring-expression</artifactId>
+43-			<optional>true</optional>
+44-		</dependency>
+45-		<dependency>
+46-			<groupId>org.springframework</groupId>
+47:			<artifactId>spring-tx</artifactId>
+48-			<optional>true</optional>
+49-		</dependency>
+50-		<dependency>
+51-			<groupId>org.springframework</groupId>
+52:			<artifactId>spring-oxm</artifactId>
+53-			<optional>true</optional>
+54-		</dependency>
+55-		<dependency>
+56-			<groupId>com.fasterxml.jackson.core</groupId>
+57:			<artifactId>jackson-databind</artifactId>
+58-			<optional>true</optional>
+59-		</dependency>
+60-		<dependency>
+61-			<groupId>org.springframework</groupId>
+62:			<artifactId>spring-web</artifactId>
+63-			<optional>true</optional>
+64-		</dependency>
+65-		<dependency>
+66-			<groupId>org.springframework</groupId>
+67:			<artifactId>spring-webflux</artifactId>
+68-			<optional>true</optional>
+69-		</dependency>
+--
+71-		<dependency>
+72-			<groupId>javax.servlet</groupId>
+73:			<artifactId>javax.servlet-api</artifactId>
+74-			<version>4.0.1</version>
+75-			<scope>provided</scope>
+--
+78-		<dependency>
+79-			<groupId>javax.annotation</groupId>
+80:			<artifactId>javax.annotation-api</artifactId>
+81-			<version>${javax-annotation-api}</version>
+82-			<optional>true</optional>
+--
+85-		<dependency>
+86-			<groupId>com.google.code.findbugs</groupId>
+87:			<artifactId>jsr305</artifactId>
+88-			<version>3.0.2</version>
+89-			<optional>true</optional>
+--
+92-		<dependency>
+93-			<groupId>joda-time</groupId>
+94:			<artifactId>joda-time</artifactId>
+95-			<version>${jodatime}</version>
+96-			<optional>true</optional>
+--
+99-		<dependency>
+100-			<groupId>org.threeten</groupId>
+101:			<artifactId>threetenbp</artifactId>
+102-			<version>${threetenbp}</version>
+103-			<optional>true</optional>
+--
+108-		<dependency>
+109-			<groupId>io.projectreactor</groupId>
+110:			<artifactId>reactor-core</artifactId>
+111-			<optional>true</optional>
+112-		</dependency>
+--
+114-		<dependency>
+115-			<groupId>io.projectreactor</groupId>
+116:			<artifactId>reactor-test</artifactId>
+117-			<scope>test</scope>
+118-		</dependency>
+--
+122-		<dependency>
+123-			<groupId>io.reactivex</groupId>
+124:			<artifactId>rxjava</artifactId>
+125-			<version>${rxjava}</version>
+126-			<optional>true</optional>
+--
+129-		<dependency>
+130-			<groupId>io.reactivex</groupId>
+131:			<artifactId>rxjava-reactive-streams</artifactId>
+132-			<version>${rxjava-reactive-streams}</version>
+133-			<optional>true</optional>
+--
+136-		<dependency>
+137-			<groupId>io.reactivex.rxjava2</groupId>
+138:			<artifactId>rxjava</artifactId>
+139-			<version>${rxjava2}</version>
+140-			<optional>true</optional>
+--
+143-		<dependency>
+144-			<groupId>io.reactivex.rxjava3</groupId>
+145:			<artifactId>rxjava</artifactId>
+146-			<version>${rxjava3}</version>
+147-			<optional>true</optional>
+--
+150-		<dependency>
+151-			<groupId>io.smallrye.reactive</groupId>
+152:			<artifactId>mutiny</artifactId>
+153-			<version>${smallrye-mutiny}</version>
+154-			<optional>true</optional>
+--
+159-		<dependency>
+160-			<groupId>com.querydsl</groupId>
+161:			<artifactId>querydsl-core</artifactId>
+162-			<version>${querydsl}</version>
+163-			<optional>true</optional>
+--
+166-		<dependency>
+167-			<groupId>com.querydsl</groupId>
+168:			<artifactId>querydsl-apt</artifactId>
+169-			<version>${querydsl}</version>
+170-			<scope>provided</scope>
+--
+173-		<dependency>
+174-			<groupId>com.querydsl</groupId>
+175:			<artifactId>querydsl-collections</artifactId>
+176-			<version>${querydsl}</version>
+177-			<optional>true</optional>
+--
+181-		<dependency>
+182-			<groupId>javax.ejb</groupId>
+183:			<artifactId>ejb-api</artifactId>
+184-			<version>3.0</version>
+185-			<optional>true</optional>
+--
+190-		<dependency>
+191-			<groupId>org.apache.geronimo.specs</groupId>
+192:			<artifactId>geronimo-jcdi_2.0_spec</artifactId>
+193-			<version>1.0.1</version>
+194-			<scope>test</scope>
+--
+197-		<dependency>
+198-			<groupId>javax.interceptor</groupId>
+199:			<artifactId>javax.interceptor-api</artifactId>
+200-			<version>1.2.2</version>
+201-			<scope>test</scope>
+--
+204-		<dependency>
+205-			<groupId>javax.enterprise</groupId>
+206:			<artifactId>cdi-api</artifactId>
+207-			<version>${cdi}</version>
+208-			<scope>provided</scope>
+--
+212-		<dependency>
+213-			<groupId>com.google.guava</groupId>
+214:			<artifactId>guava</artifactId>
+215-			<version>${guava}</version>
+216-			<optional>true</optional>
+--
+219-		<dependency>
+220-			<groupId>io.vavr</groupId>
+221:			<artifactId>vavr</artifactId>
+222-			<version>${vavr}</version>
+223-			<optional>true</optional>
+--
+228-		<dependency>
+229-			<groupId>org.eclipse.collections</groupId>
+230:			<artifactId>eclipse-collections-api</artifactId>
+231-			<version>${eclipse-collections}</version>
+232-			<optional>true</optional>
+--
+235-		<dependency>
+236-			<groupId>org.eclipse.collections</groupId>
+237:			<artifactId>eclipse-collections</artifactId>
+238-			<version>${eclipse-collections}</version>
+239-			<scope>test</scope>
+--
+242-		<dependency>
+243-			<groupId>javax.el</groupId>
+244:			<artifactId>el-api</artifactId>
+245-			<version>1.0</version>
+246-			<scope>test</scope>
+--
+249-		<dependency>
+250-			<groupId>org.apache.openwebbeans</groupId>
+251:			<artifactId>openwebbeans-se</artifactId>
+252-			<version>${webbeans}</version>
+253-			<scope>test</scope>
+--
+256-		<dependency>
+257-			<groupId>org.apache.xbean</groupId>
+258:			<artifactId>xbean-asm9-shaded</artifactId>
+259-			<version>${webbeans.xbean}</version>
+260-			<scope>test</scope>
+--
+263-		<dependency>
+264-			<groupId>org.springframework.hateoas</groupId>
+265:			<artifactId>spring-hateoas</artifactId>
+266-			<version>${spring-hateoas}</version>
+267-			<optional>true</optional>
+--
+270-		<dependency>
+271-			<groupId>org.springframework</groupId>
+272:			<artifactId>spring-webmvc</artifactId>
+273-			<optional>true</optional>
+274-		</dependency>
+--
+276-		<dependency>
+277-			<groupId>com.sun.xml.bind</groupId>
+278:			<artifactId>jaxb-impl</artifactId>
+279-			<version>2.3.5</version>
+280-			<scope>test</scope>
+--
+283-		<dependency>
+284-			<groupId>xmlunit</groupId>
+285:			<artifactId>xmlunit</artifactId>
+286-			<version>1.6</version>
+287-			<scope>test</scope>
+--
+291-		<dependency>
+292-			<groupId>org.codehaus.groovy</groupId>
+293:			<artifactId>groovy-all</artifactId>
+294-			<version>2.4.4</version>
+295-			<scope>test</scope>
+--
+299-		<dependency>
+300-			<groupId>org.jetbrains.kotlin</groupId>
+301:			<artifactId>kotlin-stdlib</artifactId>
+302-			<optional>true</optional>
+303-		</dependency>
+--
+305-		<dependency>
+306-			<groupId>org.jetbrains.kotlin</groupId>
+307:			<artifactId>kotlin-reflect</artifactId>
+308-			<optional>true</optional>
+309-		</dependency>
+--
+311-		<dependency>
+312-			<groupId>org.jetbrains.kotlinx</groupId>
+313:			<artifactId>kotlinx-coroutines-core</artifactId>
+314-			<optional>true</optional>
+315-		</dependency>
+--
+317-		<dependency>
+318-			<groupId>org.jetbrains.kotlinx</groupId>
+319:			<artifactId>kotlinx-coroutines-reactive</artifactId>
+320-			<optional>true</optional>
+321-		</dependency>
+--
+323-		<dependency>
+324-			<groupId>org.jetbrains.kotlinx</groupId>
+325:			<artifactId>kotlinx-coroutines-reactor</artifactId>
+326-			<optional>true</optional>
+327-		</dependency>
+--
+329-		<dependency>
+330-			<groupId>org.jetbrains.kotlin</groupId>
+331:			<artifactId>kotlin-test-junit5</artifactId>
+332-			<version>${kotlin}</version>
+333-			<scope>test</scope>
+--
+336-		<dependency>
+337-			<groupId>io.mockk</groupId>
+338:			<artifactId>mockk-jvm</artifactId>
+339-			<version>${mockk}</version>
+340-			<scope>test</scope>
+--
+344-		<dependency>
+345-			<groupId>org.scala-lang</groupId>
+346:			<artifactId>scala-library</artifactId>
+347-			<version>${scala}</version>
+348-			<optional>true</optional>
+--
+351-		<dependency>
+352-			<groupId>javax.transaction</groupId>
+353:			<artifactId>javax.transaction-api</artifactId>
+354-			<version>1.3</version>
+355-			<scope>test</scope>
+--
+358-		<dependency>
+359-			<groupId>com.jayway.jsonpath</groupId>
+360:			<artifactId>json-path</artifactId>
+361-			<version>${jsonpath}</version>
+362-			<optional>true</optional>
+--
+365-		<dependency>
+366-			<groupId>org.xmlbeam</groupId>
+367:			<artifactId>xmlprojector</artifactId>
+368-			<version>${xmlbeam}</version>
+369-			<optional>true</optional>
+--
+372-		<dependency>
+373-			<groupId>de.schauderhaft.degraph</groupId>
+374:			<artifactId>degraph-check</artifactId>
+375-			<version>0.1.4</version>
+376-			<scope>test</scope>
+--
+379-		<dependency>
+380-			<groupId>org.jmolecules.integrations</groupId>
+381:			<artifactId>jmolecules-spring</artifactId>
+382-			<version>${jmolecules-integration}</version>
+383-			<optional>true</optional>
+--
+390-			<plugin>
+391-				<groupId>org.apache.maven.plugins</groupId>
+392:				<artifactId>maven-assembly-plugin</artifactId>
+393-			</plugin>
+394-			<plugin>
+395-				<groupId>org.asciidoctor</groupId>
+396:				<artifactId>asciidoctor-maven-plugin</artifactId>
+397-			</plugin>
+398-
+
+codex
+Maven Central does not list a separate test-sources/test jar for this artifact, so the GitHub tag test path remains the right test-suite URL. The POM contains optional Kotlin/Scala integration dependencies, but the artifact itself is Spring Data’s shared Java/Spring infrastructure rather than a Kotlin, Groovy, or Scala-specific library, so `language` should remain absent.
+exec
+/usr/bin/bash -lc "rg -n '\"language\"' metadata | head -n 40" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2813-39277e73
+ succeeded in 0ms:
+metadata/com.github.ajalt.mordant/mordant-core-jvm/index.json:10:    "language" : {
+metadata/com.github.ajalt.mordant/mordant-jvm-ffm-jvm/index.json:10:    "language" : {
+metadata/io.github.oshai/kotlin-logging-jvm/index.json:10:    "language" : {
+metadata/com.charleskorn.kaml/kaml-jvm/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-parsing_3/index.json:10:    "language" : {
+metadata/com.squareup.okio/okio-jvm/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-parsing_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_3/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:10:    "language" : {
+metadata/com.typesafe.akka/akka-protobuf-v3_2.13/index.json:28:    "language" : {
+metadata/com.github.ghostdogpr/caliban_3/index.json:10:    "language" : {
+metadata/io.getquill/quill-engine_3/index.json:10:    "language" : {
+metadata/io.getquill/quill-engine_2.13/index.json:10:    "language" : {
+metadata/io.getquill/quill-util_3/index.json:10:    "language" : {
+metadata/com.softwaremill.magnolia1_3/magnolia_3/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_2.13/index.json:10:    "language" : {
+metadata/org.parboiled/parboiled_2.13/index.json:10:    "language" : {
+metadata/io.suzaku/boopickle_3/index.json:10:    "language" : {
+metadata/org.tpolecat/doobie-free_3/index.json:10:    "language" : {
+metadata/org.tpolecat/doobie-free_3/index.json:38:    "language" : {
+metadata/org.tpolecat/doobie-free_3/index.json:61:    "language" : {
+metadata/org.parboiled/parboiled_3/index.json:10:    "language" : {
+metadata/org.tpolecat/typename_3/index.json:10:    "language" : {
+metadata/org.tpolecat/sourcepos_3/index.json:10:    "language" : {
+metadata/org.playframework.twirl/twirl-api_3/index.json:10:    "language" : {
+metadata/org.tpolecat/skunk-core_3/index.json:10:    "language" : {
+metadata/io.circe/circe-jawn_3/index.json:10:    "language" : {
+metadata/dev.profunktor/redis4cats-core_3/index.json:10:    "language" : {
+metadata/dev.profunktor/redis4cats-core_3/index.json:29:    "language" : {
+metadata/io.circe/circe-parser_3/index.json:10:    "language" : {
+metadata/org.scala-lang/scalap/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/zio_3/index.json:10:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-core-jvm/index.json:10:    "language" : {
+metadata/io.circe/circe-numbers_3/index.json:10:    "language" : {
+metadata/io.circe/circe-numbers_3/index.json:28:    "language" : {
+metadata/com.github.ajalt.clikt/clikt-jvm/index.json:10:    "language" : {
+metadata/org.scala-lang/scala3-interfaces/index.json:10:    "language" : {
+metadata/com.softwaremill.sttp.shared/core_3/index.json:10:    "language" : {
+metadata/io.circe/circe-core_3/index.json:5:    "language" : {
+metadata/io.circe/circe-core_3/index.json:28:    "language" : {
+
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.springframework.data/spring-data-commons/index.json' in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2813-39277e73
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc "git ls-files metadata/org.springframework.data/spring-data-commons/index.json && test -f metadata/org.springframework.data/spring-data-commons/index.json && sed -n '1,40p' metadata/org.springframework.data/spring-data-commons/index.json" in /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2813-39277e73
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "2.7.18",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/data/spring-data-commons/$version$/spring-data-commons-$version$-sources.jar",
+    "repository-url" : "https://github.com/spring-projects/spring-data-commons",
+    "test-code-url" : "https://github.com/spring-projects/spring-data-commons/tree/$version$/src/test",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/data/spring-data-commons/$version$/spring-data-commons-$version$-javadoc.jar",
+    "description" : "Spring Data Commons provides the shared repository, mapping, conversion, auditing, pagination, and query-method infrastructure used by Spring Data modules. It gives store-specific Spring Data projects and applications a common programming model for repositories and domain object handling.",
+    "tested-versions" : [
+      "2.7.18"
+    ],
+    "allowed-packages" : [
+      "org.springframework.data"
+    ]
+  }
+]
+
+codex
+Verified `org.springframework.data:spring-data-commons:2.7.18`.
+
+No file edits were needed in [index.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2813-39277e73/metadata/org.springframework.data/spring-data-commons/index.json:1): all requested URL and description fields are already non-blank and correct, and `language` should remain absent because this is not a Kotlin/Groovy/Scala-specific library.
+
+Checks performed:
+- Maven sources jar: HTTP 200
+- Maven javadoc jar: HTTP 200
+- GitHub repository root: HTTP 200
+- GitHub `2.7.18/src/test` tag path: HTTP 200
+- Maven Central directory has no test-sources/test jar, so GitHub tests are appropriate.
+tokens used
+30,653
+Verified `org.springframework.data:spring-data-commons:2.7.18`.
+
+No file edits were needed in [index.json](/home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2813-39277e73/metadata/org.springframework.data/spring-data-commons/index.json:1): all requested URL and description fields are already non-blank and correct, and `language` should remain absent because this is not a Kotlin/Groovy/Scala-specific library.
+
+Checks performed:
+- Maven sources jar: HTTP 200
+- Maven javadoc jar: HTTP 200
+- GitHub repository root: HTTP 200
+- GitHub `2.7.18/src/test` tag path: HTTP 200
+- Maven Central directory has no test-sources/test jar, so GitHub tests are appropriate.
+Ran agent for org.springframework.data:spring-data-commons:2.7.18 (exit 0). Log: /home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2813-39277e73/build/agent-url-discovery-logs/org.springframework.data-spring-data-commons-2.7.18.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge3/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2813-39277e73/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 55s
+9 actionable tasks: 1 executed, 8 up-to-date
