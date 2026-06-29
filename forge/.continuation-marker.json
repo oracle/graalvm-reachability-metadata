@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "ognl:ognl:3.3.5",
+  "issueNumber": 7430,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Keep/configure test JVM args to open java.lang, e.g. `--add-opens=java.base/java.lang=ALL-UNNAMED`, when exercising OGNL reflection, constructor/static/member access, or Javassist-backed expression compilation. Do not set OGNL system properties globally unless a test specifically covers that behavior; if testing `ognl.security.manager`, `ognl.UseJDK9PlusAccessHandler`, `ognl.UseStricterInvocation`, or `ognl.UseFirstMatchGetSetLookup`, set and restore the property inside the test.",
+    "applied_setup": [],
+    "current_library": "ognl:ognl:3.2.21",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7430 [Automation] java run fails for ognl:ognl:3.3.5; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "17 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 43075,
+    "issue_label": "fails-java-run",
+    "issue_number": 7430,
+    "library": "ognl:ognl:3.3.5",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.3.5",
+    "output_tokens_used": 4901,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "OGNL 3.3.5 depends transitively on Javassist; extra Maven setup is not needed, but Javassist dynamic class generation may need guarded assertions in native-image runtime tests.",
+      "SecurityManager-related paths are JDK-version sensitive and may be unsupported or behave differently on JDK 25."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/ognl:ognl:3.3.5/library-preparation-preflight/pi-generation-2026-06-29T07-25-35-036925Z.log",
+    "status": "completed",
+    "summary": "OGNL has no external service or non-transitive test dependency requirement, but meaningful coverage of its reflective expression/runtime paths on JDK 9+ should preserve the existing JVM module opening used by the current tests."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.3.5",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-7430-fails-java-run-ognl-ognl-3.3.5-7e14c6a9",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
