@@ -1,0 +1,126 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.springframework.boot:spring-boot-flyway:4.0.6
+Command: `/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7056-3e805419/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 4 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :compileTestJava
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses
+
+> Task :test
+
+FlywayMigrationInitializerTest > runsMigrationWhenInitializerUsesReflectiveFallback() FAILED
+    org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "FLYWAY_SCHEMA_HISTORY" not found (candidates are: "flyway_schema_history"); SQL statement:
+    SELECT COUNT(*)
+    FROM FLYWAY_SCHEMA_HISTORY
+    WHERE SCRIPT = 'V1__create_books.sql' AND SUCCESS = TRUE
+     [42103-240]
+        at app//org.h2.message.DbException.getJdbcSQLException(DbException.java:514)
+        at app//org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+        at app//org.h2.message.DbException.get(DbException.java:223)
+        at app//org.h2.command.Parser.getTableOrViewNotFoundDbException(Parser.java:8052)
+        at app//org.h2.command.Parser.getTableOrViewNotFoundDbException(Parser.java:8020)
+        at app//org.h2.command.Parser.readTableOrView(Parser.java:7999)
+        at app//org.h2.command.Parser.readTablePrimary(Parser.java:1772)
+        at app//org.h2.command.Parser.readTableReference(Parser.java:2252)
+        at app//org.h2.command.Parser.parseSelectFromPart(Parser.java:2705)
+        at app//org.h2.command.Parser.parseSelect(Parser.java:2813)
+        at app//org.h2.command.Parser.parseQueryPrimary(Parser.java:2695)
+        at app//org.h2.command.Parser.parseQueryTerm(Parser.java:2550)
+        at app//org.h2.command.Parser.parseQueryExpressionBody(Parser.java:2529)
+        at app//org.h2.command.Parser.parseQueryExpressionBodyAndEndOfQuery(Parser.java:2522)
+        at app//org.h2.command.Parser.parseQueryExpression(Parser.java:2515)
+        at app//org.h2.command.Parser.parseQuery(Parser.java:2482)
+        at app//org.h2.command.Parser.parsePrepared(Parser.java:613)
+        at app//org.h2.command.Parser.parse(Parser.java:584)
+        at app//org.h2.command.Parser.parse(Parser.java:559)
+        at app//org.h2.command.Parser.prepareCommand(Parser.java:487)
+        at app//org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:647)
+        at app//org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:563)
+        at app//org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1160)
+        at app//org.h2.jdbc.JdbcStatement.executeQuery(JdbcStatement.java:94)
+        at app//org_springframework_boot.spring_boot_flyway.FlywayMigrationInitializerTest.count(FlywayMigrationInitializerTest.java:64)
+        at app//org_springframework_boot.spring_boot_flyway.FlywayMigrationInitializerTest.runsMigrationWhenInitializerUsesReflectiveFallback(FlywayMigrationInitializerTest.java:41)
+
+1 test completed, 1 failed
+
+
+> Task :test FAILED
+FAILURE: Build failed with an exception.
+
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7056-3e805419/tests/src/org.springframework.boot/spring-boot-flyway/4.0.6/build/reports/problems/problems-report.html
+* What went wrong:
+Execution failed for task ':test'.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+> There were failing tests. See the report at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7056-3e805419/tests/src/org.springframework.boot/spring-boot-flyway/4.0.6/build/reports/tests/test/index.html
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+
+* Try:
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+16 actionable tasks: 3 executed, 13 up-to-date
+
+BUILD FAILED in 24s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7056-3e805419/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.springframework.boot:spring-boot-flyway:4.0.6 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 28s
+9 actionable tasks: 1 executed, 8 up-to-date

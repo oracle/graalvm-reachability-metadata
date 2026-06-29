@@ -1,0 +1,82 @@
+{
+  "timestamp": "2026-06-29T00:50:38.539133Z",
+  "library": "org.springframework.boot:spring-boot-flyway:4.0.6",
+  "starting_commit": "535b1406af679cbd24777ef50e7efc6c4a0c4c84",
+  "ending_commit": "535b1406af679cbd24777ef50e7efc6c4a0c4c84",
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+  "agent": "pi",
+  "model": "oca/gpt-5.5",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 7056,
+    "issue_label": "library-new-request",
+    "library": "org.springframework.boot:spring-boot-flyway:4.0.6",
+    "summary": "Meaningful coverage of spring-boot-flyway requires exercising Spring Boot Flyway auto-configuration against a real JDBC database; the resolved artifact brings spring-boot-jdbc and flyway-core but not spring-boot-autoconfigure or an embedded database driver.",
+    "deterministic_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.0.6",
+        "scope": "testImplementation",
+        "reason": "spring-boot-flyway's main value is its auto-configuration classes, which import and annotate against org.springframework.boot.autoconfigure types that are normally supplied by Spring Boot starters rather than by the spring-boot-flyway artifact itself."
+      },
+      {
+        "kind": "dependency",
+        "coordinate": "com.h2database:h2:2.4.240",
+        "scope": "testImplementation",
+        "reason": "Spring Boot's Flyway support runs migrations against a DataSource or spring.flyway URL; the artifact has Flyway and JDBC integration but no database driver, while Spring Boot 4.0.6 dependency management uses H2 2.4.240 for embedded database tests."
+      }
+    ],
+    "agent_guidance": "Exercise the auto-configuration with an in-memory JDBC URL/DataSource and a real migration script under the default `classpath:db/migration` location, then assert that Flyway runs the migration and records/applies it. Keep the test focused on Spring Boot's Flyway integration rather than testing Flyway core alone.",
+    "risks": [
+      "A generated test that only instantiates FlywayProperties or Flyway core APIs may compile but will not meaningfully cover the spring-boot-flyway integration.",
+      "Native Image and local Gradle verification remain authoritative for whether H2-based coverage needs additional metadata or adjustment."
+    ],
+    "applied_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.0.6",
+        "result": "applied",
+        "target": "tests/src/org.springframework.boot/spring-boot-flyway/4.0.6/build.gradle"
+      },
+      {
+        "kind": "dependency",
+        "coordinate": "com.h2database:h2:2.4.240",
+        "result": "applied",
+        "target": "tests/src/org.springframework.boot/spring-boot-flyway/4.0.6/build.gradle"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7056 Support for org.springframework.boot:spring-boot-flyway:4.0.6; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "oca/gpt-5.5",
+    "input_tokens_used": 52292,
+    "output_tokens_used": 6301,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.springframework.boot:spring-boot-flyway:4.0.6/library-preparation-preflight/pi-generation-2026-06-28T23-44-07-908895Z.log"
+  },
+  "metrics": {
+    "input_tokens_used": 354955,
+    "cached_input_tokens_used": 3279872,
+    "output_tokens_used": 32262,
+    "iterations": 6,
+    "cost_usd": 2.6078,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "test_file": "None",
+    "metadata_file": "None"
+  }
+}
