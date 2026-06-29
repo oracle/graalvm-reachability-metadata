@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.sonatype.sisu:sisu-guice:2.9.1",
+  "issueNumber": 8858,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "If tests exercise method interception, proxy generation, or com.google.inject.internal.cglib paths, configure the test JVM with `--add-opens=java.base/java.lang=ALL-UNNAMED`; also pass the same `--add-opens` as a native-image build argument when those paths are covered. For the 2.9.1 javac failure specifically, do not reuse 2.1.7 internal imports blindly: many shaded internal classes are renamed with a `$` prefix in 2.9.1, e.g. `com.google.inject.internal.util.$MapMaker`, `.$FinalizableReferenceQueue`, `com.google.inject.internal.cglib.proxy.$MethodProxy`, and `com.google.inject.internal.cglib.core.$Signature`.",
+    "applied_setup": [],
+    "current_library": "org.sonatype.sisu:sisu-guice:2.1.7",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8858 [Automation] javac compile fails for org.sonatype.sisu:sisu-guice:2.9.1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "12 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 48945,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8858,
+    "library": "org.sonatype.sisu:sisu-guice:2.9.1",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.9.1",
+    "output_tokens_used": 3872,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Tests that rely on `com.google.inject.internal.*` are brittle across sisu-guice versions; public Guice APIs such as `Guice.createInjector`, `AbstractModule`, bindings, injection points, providers, and method interceptors are safer where they still reach the required metadata.",
+      "Without the `--add-opens` JVM/native-image argument, CGLIB-based method interception can fail on modern JDKs with an inaccessible `ClassLoader.defineClass` reflection error even though basic injection works."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.sonatype.sisu:sisu-guice:2.9.1/library-preparation-preflight/pi-generation-2026-06-29T05-13-38-289677Z.log",
+    "status": "completed",
+    "summary": "No extra Maven dependency or Docker image is needed; the artifact is self-contained apart from normal transitive javax.inject/aopalliance dependencies, but meaningful Guice AOP/proxy coverage on modern JDKs needs java.lang opened for the shaded CGLIB code."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.9.1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8858-fails-javac-compile-org.sonatype.sisu-sisu-guice-2.9.1-d74b722a",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
