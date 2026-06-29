@@ -1,0 +1,71 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.sonatype.sisu:sisu-guice:2.9.1",
+  "issueNumber": 8858,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Configure both JVM tests and native-image build args with `--add-opens=java.base/java.lang=ALL-UNNAMED`. Prefer normal Guice usage through `com.google.inject.Guice`, `Module`, bindings, injection, providers, scopes, and interceptors. If testing internals for coverage, inspect the 2.9.1 artifact names: many internal util/CGLIB classes are jarjar/munge-renamed with a leading `$`, for example `com.google.inject.internal.util.$MapMaker` and `com.google.inject.internal.cglib.proxy.$MethodProxy`; importing the older non-`$` internal names from 2.1.7 causes the reported javac failure.",
+    "applied_setup": [],
+    "current_library": "org.sonatype.sisu:sisu-guice:2.1.7",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8858 [Automation] javac compile fails for org.sonatype.sisu:sisu-guice:2.9.1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "12 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 40879,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8858,
+    "library": "org.sonatype.sisu:sisu-guice:2.9.1",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.9.1",
+    "output_tokens_used": 2892,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The compile failure appears to be caused by version-specific internal class renaming in 2.9.1, not by a missing dependency.",
+      "Adding standalone CGLIB or Guava-style helper dependencies would likely test the wrong artifact and mask the Sisu Guice packaging change.",
+      "Optional `slf4j-api` is declared by the artifact but is not required for normal dependency-injection coverage."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.sonatype.sisu:sisu-guice:2.9.1/library-preparation-preflight/pi-generation-2026-06-29T07-15-06-590674Z.log",
+    "status": "completed",
+    "summary": "No extra Maven dependency or Docker service is needed, but meaningful tests that exercise Sisu Guice's old embedded CGLIB/reflective code need module-opening JVM/native-image arguments on modern JDKs."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.9.1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8858-fails-javac-compile-org.sonatype.sisu-sisu-guice-2.9.1-5c1e0822",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
