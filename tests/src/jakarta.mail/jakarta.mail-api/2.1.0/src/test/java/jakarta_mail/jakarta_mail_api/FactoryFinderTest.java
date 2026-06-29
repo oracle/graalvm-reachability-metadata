@@ -4,7 +4,7 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package jakarta_mail.jakarta_mail_api;
+package org.glassfish.hk2.osgiresourcelocator;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -19,11 +19,9 @@ import jakarta.mail.util.LineInputStream;
 import jakarta.mail.util.LineOutputStream;
 import jakarta.mail.util.StreamProvider;
 
-import org.glassfish.hk2.osgiresourcelocator.ServiceLoader;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class FactoryFinderTest {
 
@@ -50,18 +48,27 @@ public class FactoryFinderTest {
     }
 
     @Test
-    void attemptsOsgiLookupWhenStandardServiceLoaderHasNoProvider() throws Exception {
+    void usesOsgiLookupWhenStandardServiceLoaderHasNoProvider() throws Exception {
         assertThat(ServiceLoader.lookupProviderInstances(StreamProvider.class)).isNull();
+        TestStreamProvider osgiProvider = new TestStreamProvider();
 
-        withClearedSystemProperty(STREAM_PROVIDER_FACTORY_ID, () -> {
-            ClassLoader classLoader = classLoaderWithoutServiceConfigurationResources();
-            withContextClassLoader(classLoader, () -> {
-                assertThatThrownBy(StreamProvider::provider)
-                        .isInstanceOf(IllegalStateException.class)
-                        .hasMessageContaining(StreamProvider.class.getName());
-                return null;
+        withTestOsgiServiceLoader(osgiProvider, () -> {
+            withClearedSystemProperty(STREAM_PROVIDER_FACTORY_ID, () -> {
+                ClassLoader classLoader = classLoaderWithoutServiceConfigurationResources();
+                StreamProvider provider = withContextClassLoader(classLoader, StreamProvider::provider);
+
+                assertThat(provider).isSameAs(osgiProvider);
             });
         });
+    }
+
+    private static void withTestOsgiServiceLoader(StreamProvider provider, ThrowingRunnable runnable) throws Exception {
+        ServiceLoader.initialize(new TestOsgiServiceLoader(provider));
+        try {
+            runnable.run();
+        } finally {
+            ServiceLoader.reset();
+        }
     }
 
     private static ClassLoader classLoaderWithoutServiceConfigurationResources() {
@@ -113,6 +120,28 @@ public class FactoryFinderTest {
             return supplier.get();
         } finally {
             currentThread.setContextClassLoader(originalClassLoader);
+        }
+    }
+
+    private static final class TestOsgiServiceLoader extends ServiceLoader {
+
+        private final StreamProvider provider;
+
+        private TestOsgiServiceLoader(StreamProvider provider) {
+            this.provider = provider;
+        }
+
+        @Override
+        <T> Iterable<? extends T> lookupProviderInstances1(Class<T> serviceType, ProviderFactory<T> factory) {
+            if (serviceType.isInstance(provider)) {
+                return Collections.singleton(serviceType.cast(provider));
+            }
+            return Collections.emptyList();
+        }
+
+        @Override
+        <T> Iterable<Class> lookupProviderClasses1(Class<T> serviceType) {
+            return Collections.emptyList();
         }
     }
 
