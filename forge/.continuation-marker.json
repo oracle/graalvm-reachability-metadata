@@ -1,0 +1,78 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "org.jgroups:jgroups:5.2.2.Final",
+  "issueNumber": 8866,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Set `jgroups.bind_addr=127.0.0.1` and `java.net.preferIPv4Stack=true` for JVM tests and native runtime arguments. Prefer `SHARED_LOOPBACK`/`SHARED_LOOPBACK_PING` or `Util.getTestStack(...)` for channels instead of default UDP multicast stacks. Avoid requiring real JDBC, DNS, Kubernetes, or multicast infrastructure; use in-memory/stub drivers or loopback stacks when covering protocols such as `JDBC_PING`.",
+    "applied_setup": [],
+    "current_library": "org.jgroups:jgroups:5.2.0.Final",
+    "deterministic_setup": [
+      {
+        "coordinate": "org.slf4j:slf4j-api:1.7.31",
+        "kind": "dependency",
+        "reason": "JGroups 5.2.2.Final declares SLF4J as an optional logging dependency and LogFactory selects SLF4J when present; existing JGroups tests in this repository also include it to exercise logging integration without requiring Log4J2.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8866 [Automation] native-image run fails for org.jgroups:jgroups:5.2.2.Final; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "36 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 89084,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 8866,
+    "library": "org.jgroups:jgroups:5.2.2.Final",
+    "model": "oca/gpt-5.5",
+    "new_version": "5.2.2.Final",
+    "output_tokens_used": 5184,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "JGroups supports discovery protocols backed by databases, DNS, Kubernetes, shared files, and multicast, but those are optional deployment modes and should not be introduced as hard test infrastructure unless a specific failing path requires them.",
+      "JGroups can optionally probe WildFly OpenSSL via `org.wildfly.openssl`, but TLS coverage can use the JDK SSL provider; adding WildFly OpenSSL may introduce native-provider behavior and should be done only if the failing path specifically requires that branch.",
+      "If tests instantiate default `JChannel` stacks without loopback/IPv4 setup, CI and native-image runs may be flaky or fail due host network, multicast, or IPv6 differences."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.jgroups:jgroups:5.2.2.Final/library-preparation-preflight/pi-generation-2026-06-29T12-08-14-078827Z.log",
+    "status": "completed",
+    "summary": "JGroups is mostly self-contained and does not need Docker or external services, but reliable meaningful tests should force loopback/IPv4 networking; SLF4J is an optional integration worth adding if logging paths are covered."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "5.2.2.Final",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8866-fails-native-image-run-org.jgroups-jgroups-5.2.2.Final-6cfa2d38",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
