@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.eclipse.jetty:jetty-webapp:9.4.0.RC1",
+  "issueNumber": 8856,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.eclipse.jetty:jetty-webapp:9.3.19.v20170502",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8856 [Automation] javac compile fails for org.eclipse.jetty:jetty-webapp:9.4.0.RC1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "7 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 24209,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8856,
+    "library": "org.eclipse.jetty:jetty-webapp:9.4.0.RC1",
+    "model": "oca/gpt-5.5",
+    "new_version": "9.4.0.RC1",
+    "output_tokens_used": 2712,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The reported failure is an API-compatibility issue in the existing test: WebAppClassLoader.Context changed in 9.4.0.RC1, adding resource checks and changing class-check signatures. That requires test source adaptation, not setup.",
+      "JSP-specific scenarios would need additional Jetty JSP modules, but they are not required for meaningful jetty-webapp coverage."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.eclipse.jetty:jetty-webapp:9.4.0.RC1/library-preparation-preflight/pi-generation-2026-06-29T08-38-45-157968Z.log",
+    "status": "completed",
+    "summary": "jetty-webapp is usable in-process with its resolved Jetty transitive dependencies; meaningful coverage is reachable via WebAppContext/WebAppClassLoader and local embedded-server tests without Docker, extra Maven dependencies, or environment properties."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "9.4.0.RC1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8856-fails-javac-compile-org.eclipse.jetty-jetty-webapp-9.4.0.RC1-889f9250",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
