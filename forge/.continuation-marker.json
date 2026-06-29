@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.springframework.boot:spring-boot-actuator:3.0.0",
+  "issueNumber": 8867,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No special environment or system properties are required. Generated tests should target Spring Boot 3.0 actuator APIs rather than carrying forward removed or changed 2.6 APIs such as HttpTrace, old HealthEndpoint constructors, old EnvironmentEndpoint constructors, or old Sanitizer overloads.",
+    "applied_setup": [],
+    "current_library": "org.springframework.boot:spring-boot-actuator:2.6.3",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8867 [Automation] javac compile fails for org.springframework.boot:spring-boot-actuator:3.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 34446,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8867,
+    "library": "org.springframework.boot:spring-boot-actuator:3.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.0.0",
+    "output_tokens_used": 3872,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Spring Boot documentation recommends spring-boot-starter-actuator for normal application usage, but that is not required to compile or exercise the target actuator artifact itself.",
+      "Optional actuator integrations such as Micrometer metrics, Jackson serialization, servlet/reactive web endpoints, RabbitMQ, Cassandra, Couchbase, Quartz, or similar integrations require their own optional libraries if the tests choose to cover those specific areas; the scaffold should avoid those unless intentionally adding dependencies."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.springframework.boot:spring-boot-actuator:3.0.0/library-preparation-preflight/pi-generation-2026-06-29T20-58-46-449140Z.log",
+    "status": "completed",
+    "summary": "No concrete extra dependency, Docker image, environment variable, or system property is required before meaningful tests are reachable. The resolved org.springframework.boot:spring-boot-actuator:3.0.0 artifact has only org.springframework.boot:spring-boot:3.0.0 as a required compile dependency, and core actuator endpoints can be exercised directly without external services."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8867-fails-javac-compile-org.springframework.boot-spring-boot-actuator-3.0.0-d929f0c8",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
