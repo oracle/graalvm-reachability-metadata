@@ -4,13 +4,12 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package org_hsqldb.hsqldb;
+package org.hsqldb.dynamicaccess;
 
-import org.junit.jupiter.api.Test;
+import javax.xml.transform.dom.DOMSource;
 
-class HsqldbTest {
-    @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+public class CustomDOMSource extends DOMSource {
+    public CustomDOMSource() {
+        super();
     }
 }

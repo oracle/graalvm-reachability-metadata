@@ -9,13 +9,30 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String routineTestMethodPattern = 'org.hsqldb.*'
 
 dependencies {
     testImplementation "org.hsqldb:hsqldb:$libraryVersion"
+    testImplementation 'ch.qos.reload4j:reload4j:1.2.25'
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.withType(Test).configureEach {
+    systemProperty 'hsqldb.method_class_names', routineTestMethodPattern
+}
+
+tasks.named('nativeTest') {
+    runtimeArgs.add("-Dhsqldb.method_class_names=$routineTestMethodPattern")
+}
+
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("-Dhsqldb.method_class_names=$routineTestMethodPattern")
+            buildArgs.add("--initialize-at-run-time=org.hsqldb.lib.FrameworkLogger")
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {
