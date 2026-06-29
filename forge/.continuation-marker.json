@@ -1,0 +1,76 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "com.sun.jersey:jersey-core:1.14",
+  "issueNumber": 8875,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No Docker image, environment variable, or system property appears necessary. If generated tests exercise Activator/OsgiRegistry, use lightweight Bundle/BundleContext fakes or mocks; no running OSGi container is required.",
+    "applied_setup": [],
+    "current_library": "com.sun.jersey:jersey-core:1.9",
+    "deterministic_setup": [
+      {
+        "coordinate": "org.osgi:org.osgi.core:4.2.0",
+        "kind": "dependency",
+        "reason": "com.sun.jersey:jersey-core:1.14 declares this as its provided OSGi API dependency and com.sun.jersey.core.osgi.OsgiRegistry references org.osgi.framework.BundleReference at runtime.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8875 [Automation] java run fails for com.sun.jersey:jersey-core:1.14; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "22 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 26027,
+    "issue_label": "fails-java-run",
+    "issue_number": 8875,
+    "library": "com.sun.jersey:jersey-core:1.14",
+    "model": "oca/gpt-5.5",
+    "new_version": "1.14",
+    "output_tokens_used": 2537,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "If both the old osgi_R4_core API jar and the newer OSGi API jar are present, duplicated org.osgi.framework classes could hide API mismatches; generated tests should target the API level required by jersey-core 1.14."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/com.sun.jersey:jersey-core:1.14/library-preparation-preflight/pi-generation-2026-06-29T21-26-37-934249Z.log",
+    "status": "completed",
+    "summary": "jersey-core 1.14's provided OSGi API moved to org.osgi.core 4.2.0, and its OSGi code references BundleReference, which is absent from the older osgi_R4_core dependency used by the current scaffold."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "1.14",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8875-fails-java-run-com.sun.jersey-jersey-core-1.14-03378f0d",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
