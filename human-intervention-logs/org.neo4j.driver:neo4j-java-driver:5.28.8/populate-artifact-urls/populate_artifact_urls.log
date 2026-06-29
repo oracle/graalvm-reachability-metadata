@@ -1,0 +1,608 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.137.0
+--------
+workdir: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e
+model: gpt-5.5
+provider: oca-responses
+approval: never
+sandbox: danger-full-access
+reasoning effort: high
+reasoning summaries: none
+session id: 019f141d-20dd-7a30-b436-7f7be5a48e41
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.neo4j.driver:neo4j-java-driver:5.28.8
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [5.28.8].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+- Entry selector: "metadata-version" = "5.28.8"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 5.28.8
+- Entry metadata-version: 5.28.8
+- Entry test-version: 5.28.8
+- Entry tested-versions: [5.28.8]
+codex
+I’ll inspect the existing metadata entry first, then verify the Maven/GitHub/tag URLs before editing only the missing fields.
+exec
+/usr/bin/bash -lc 'rg -n "neo4j-java-driver|source-code-url|test-code-url|documentation-url|repository-url|description|language" metadata/org.neo4j.driver/neo4j-java-driver/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e
+ succeeded in 0ms:
+14:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
+15:    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
+16:    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
+17:    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
+18:    "description" : "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+
+exec
+/usr/bin/bash -lc "jq '.[]? // .' metadata/org.neo4j.driver/neo4j-java-driver/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e
+ succeeded in 0ms:
+{
+  "latest": true,
+  "metadata-version": "5.28.8",
+  "tested-versions": [
+    "5.28.8"
+  ],
+  "allowed-packages": [
+    "org.neo4j.driver"
+  ]
+}
+{
+  "metadata-version": "5.28.5",
+  "source-code-url": "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
+  "repository-url": "https://github.com/neo4j/neo4j-java-driver",
+  "test-code-url": "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
+  "documentation-url": "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
+  "description": "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+  "tested-versions": [
+    "5.28.5",
+    "5.28.6",
+    "5.28.7"
+  ],
+  "allowed-packages": [
+    "org.neo4j.driver"
+  ]
+}
+
+exec
+/usr/bin/bash -lc 'git status --short' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e
+ succeeded in 201ms:
+codex
+The 5.28.8 entry is missing all requested fields, and the adjacent 5.28.5 entry already uses Maven Central source/test/javadoc artifacts plus the canonical GitHub repository. I’m going to verify those templates render for 5.28.8 rather than copying them blindly.
+web search: 
+web search: Maven Central org.neo4j.driver neo4j-java-driver 5.28.8 sources tests javadoc
+codex
+Maven Central lists the 5.28.8 sources, tests, and javadoc artifacts, so the existing template pattern is valid for this entry. I’ll confirm direct access to the exact rendered URLs and then patch the first entry only.
+exec
+/usr/bin/bash -lc "sed -n '1,80p' metadata/org.neo4j.driver/neo4j-java-driver/index.json" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "5.28.8",
+    "tested-versions" : [
+      "5.28.8"
+    ],
+    "allowed-packages" : [
+      "org.neo4j.driver"
+    ]
+  },
+  {
+    "metadata-version" : "5.28.5",
+    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
+    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
+    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
+    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
+    "description" : "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+    "tested-versions" : [
+      "5.28.5",
+      "5.28.6",
+      "5.28.7"
+    ],
+    "allowed-packages" : [
+      "org.neo4j.driver"
+    ]
+  }
+]
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/5.28.8/neo4j-java-driver-5.28.8-sources.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 29 Jun 2026 16:01:38 GMT
+content-type: application/java-archive
+content-length: 473199
+cf-ray: a13626a8fa28e7f3-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 49166
+etag: "aea0ad09f2851a4c935d0dece243b786"
+last-modified: Wed, 09 Jul 2025 17:15:06 GMT
+x-checksum-md5: aea0ad09f2851a4c935d0dece243b786
+x-checksum-sha1: c2d3c9184109299ef419d3c69761de1aef399917
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/5.28.8/neo4j-java-driver-5.28.8-javadoc.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 29 Jun 2026 16:01:38 GMT
+content-type: application/java-archive
+content-length: 1969218
+cf-ray: a13626a8fffa13a1-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 49166
+etag: "9c0977f625778dbc3561cd9d625aaa97"
+last-modified: Wed, 09 Jul 2025 17:15:06 GMT
+x-checksum-md5: 9c0977f625778dbc3561cd9d625aaa97
+x-checksum-sha1: 996a21a5e688ebcb39402dfb615bf43c5e95cedb
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+exec
+/usr/bin/bash -lc 'curl -fsSI https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/5.28.8/neo4j-java-driver-5.28.8-tests.jar' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e
+ succeeded in 0ms:
+HTTP/2 200 
+date: Mon, 29 Jun 2026 16:01:38 GMT
+content-type: application/java-archive
+content-length: 903568
+cf-ray: a13626a8fff02799-LYS
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 49166
+etag: "7cfc3c1b3eeccd40e9b661c5c6bce09e"
+last-modified: Wed, 09 Jul 2025 17:15:06 GMT
+x-checksum-md5: 7cfc3c1b3eeccd40e9b661c5c6bce09e
+x-checksum-sha1: 1fcf74e146cd8171796b20f86c6b7e3e825dc6d0
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+web search: 
+web search: https://github.com/neo4j/neo4j-java-driver/tree/5.28.8
+web search: 
+web search: repo.maven.apache.org maven2 org neo4j driver neo4j-java-driver 5.28.8 sources.jar tests.jar javadoc.jar
+codex
+I’m adding the verified Maven templates and canonical repository URL to the 5.28.8 object, reusing the existing two-sentence description because it matches the artifact and stays within the requested format. No `language` field is needed because this is a Java library, not a Kotlin/Groovy/Scala-specific artifact.
+apply patch
+patch: completed
+/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+diff --git a/metadata/org.neo4j.driver/neo4j-java-driver/index.json b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+index 6c61e48cac028e4e736d51ccf1c15dff0eb99010..7edfed14dad67f7ea4fb033d2f8b40810d592be4
+--- a/metadata/org.neo4j.driver/neo4j-java-driver/index.json
++++ b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "5.28.8",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
++    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
++    "description" : "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+     "tested-versions" : [
+       "5.28.8"
+     ],
+
+diff --git a/metadata/org.neo4j.driver/neo4j-java-driver/index.json b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+index 6c61e48cac028e4e736d51ccf1c15dff0eb99010..7edfed14dad67f7ea4fb033d2f8b40810d592be4
+--- a/metadata/org.neo4j.driver/neo4j-java-driver/index.json
++++ b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "5.28.8",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
++    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
++    "description" : "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+     "tested-versions" : [
+       "5.28.8"
+     ],
+
+codex
+The file is patched. I’ll validate the JSON shape and run the targeted metadata-file check for `org.neo4j.driver:neo4j-java-driver:5.28.8` so we catch formatting or schema issues before handing it back.
+exec
+/usr/bin/bash -lc 'jq empty metadata/org.neo4j.driver/neo4j-java-driver/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e
+ succeeded in 0ms:
+exec
+/usr/bin/bash -lc 'git diff -- metadata/org.neo4j.driver/neo4j-java-driver/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e
+ succeeded in 0ms:
+diff --git i/metadata/org.neo4j.driver/neo4j-java-driver/index.json w/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+index 6c61e48cac..7edfed14da 100644
+--- i/metadata/org.neo4j.driver/neo4j-java-driver/index.json
++++ w/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "5.28.8",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
++    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
++    "description" : "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+     "tested-versions" : [
+       "5.28.8"
+     ],
+
+diff --git a/metadata/org.neo4j.driver/neo4j-java-driver/index.json b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+index 6c61e48cac028e4e736d51ccf1c15dff0eb99010..7edfed14dad67f7ea4fb033d2f8b40810d592be4
+--- a/metadata/org.neo4j.driver/neo4j-java-driver/index.json
++++ b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "5.28.8",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
++    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
++    "description" : "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+     "tested-versions" : [
+       "5.28.8"
+     ],
+
+exec
+/usr/bin/bash -lc './gradlew checkMetadataFiles -Pcoordinates=org.neo4j.driver:neo4j-java-driver:5.28.8 --stacktrace' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e
+diff --git a/metadata/org.neo4j.driver/neo4j-java-driver/index.json b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+index 6c61e48cac028e4e736d51ccf1c15dff0eb99010..7edfed14dad67f7ea4fb033d2f8b40810d592be4
+--- a/metadata/org.neo4j.driver/neo4j-java-driver/index.json
++++ b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "5.28.8",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
++    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
++    "description" : "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+     "tested-versions" : [
+       "5.28.8"
+     ],
+
+ exited 1 in 4280ms:
+Starting a Gradle Daemon, 1 busy Daemon could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :checkMetadataFiles FAILED
+Metadata files check failed for org.neo4j.driver:neo4j-java-driver:5.28.8: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e/metadata/org.neo4j.driver/neo4j-java-driver/5.28.8/
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':checkMetadataFiles'.
+> Metadata files check failed for the following coordinates:
+   - org.neo4j.driver:neo4j-java-driver:5.28.8: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e/metadata/org.neo4j.driver/neo4j-java-driver/5.28.8/
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':checkMetadataFiles'.
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.lambda$executeIfValid$1(ExecuteActionsTaskExecuter.java:135)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:133)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.execute(ExecuteActionsTaskExecuter.java:121)
+	at org.gradle.api.internal.tasks.execution.ProblemsTaskPathTrackingTaskExecuter.execute(ProblemsTaskPathTrackingTaskExecuter.java:41)
+	at org.gradle.api.internal.tasks.execution.FinalizePropertiesTaskExecuter.execute(FinalizePropertiesTaskExecuter.java:46)
+	at org.gradle.api.internal.tasks.execution.ResolveTaskExecutionModeExecuter.execute(ResolveTaskExecutionModeExecuter.java:51)
+	at org.gradle.api.internal.tasks.execution.SkipTaskWithNoActionsExecuter.execute(SkipTaskWithNoActionsExecuter.java:57)
+	at org.gradle.api.internal.tasks.execution.SkipOnlyIfTaskExecuter.execute(SkipOnlyIfTaskExecuter.java:74)
+	at org.gradle.api.internal.tasks.execution.CatchExceptionTaskExecuter.execute(CatchExceptionTaskExecuter.java:36)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.executeTask(EventFiringTaskExecuter.java:77)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:55)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter$1.call(EventFiringTaskExecuter.java:52)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.api.internal.tasks.execution.EventFiringTaskExecuter.execute(EventFiringTaskExecuter.java:52)
+	at org.gradle.execution.plan.LocalTaskNodeExecutor.execute(LocalTaskNodeExecutor.java:45)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:355)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$InvokeNodeExecutorsAction.execute(DefaultTaskExecutionGraph.java:342)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.lambda$execute$0(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:84)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:338)
+	at org.gradle.execution.taskgraph.DefaultTaskExecutionGraph$BuildOperationAwareExecutionAction.execute(DefaultTaskExecutionGraph.java:327)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:459)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:376)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:64)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+Caused by: org.gradle.api.GradleException: Metadata files check failed for the following coordinates:
+ - org.neo4j.driver:neo4j-java-driver:5.28.8: ERROR: Missing reachability-metadata.json in file:/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e/metadata/org.neo4j.driver/neo4j-java-driver/5.28.8/
+	at org.graalvm.internal.tck.harness.tasks.CheckMetadataFilesAllTask.runAll(CheckMetadataFilesAllTask.java:64)
+	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
+	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:252)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:29)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:26)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:47)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:237)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:220)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:203)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:170)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:105)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:59)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:56)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:209)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:204)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:66)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:166)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:59)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:53)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:56)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:44)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:50)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:28)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:68)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.execute(RemovePreviousOutputsStep.java:38)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:61)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:26)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.execute(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:73)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:48)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.execute(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:49)
+	at org.gradle.internal.execution.steps.ResolveIncrementalCachingStateStep.executeDelegate(ResolveIncrementalCachingStateStep.java:27)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:71)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:64)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.execute(ResolveChangesStep.java:35)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:62)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:40)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:76)
+	at org.gradle.internal.execution.steps.AbstractCaptureStateBeforeExecutionStep.execute(AbstractCaptureStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.executeWithNonEmptySources(AbstractSkipEmptyWorkStep.java:136)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:61)
+	at org.gradle.internal.execution.steps.AbstractSkipEmptyWorkStep.execute(AbstractSkipEmptyWorkStep.java:38)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.execute(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:75)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.execute(HandleStaleOutputsStep.java:41)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$execute$0(AssignMutableWorkspaceStep.java:35)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:297)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:31)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.execute(AssignMutableWorkspaceStep.java:22)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+9 actionable tasks: 1 executed, 8 up-to-date
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:47)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:34)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:64)
+	at org.gradle.api.internal.tasks.execution.ExecuteActionsTaskExecuter.executeIfValid(ExecuteActionsTaskExecuter.java:132)
+	... 29 more
+
+
+BUILD FAILED in 3s
+
+codex
+`jq` accepts the edited JSON. The targeted `checkMetadataFiles` task failed for an existing structural reason: `metadata/org.neo4j.driver/neo4j-java-driver/5.28.8/reachability-metadata.json` is missing, not because of the URL fields.
+exec
+/usr/bin/bash -lc "nl -ba metadata/org.neo4j.driver/neo4j-java-driver/index.json | sed -n '1,24p'" in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e
+ succeeded in 0ms:
+     1	[
+     2	  {
+     3	    "latest" : true,
+     4	    "metadata-version" : "5.28.8",
+     5	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
+     6	    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
+     7	    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
+     8	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
+     9	    "description" : "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+    10	    "tested-versions" : [
+    11	      "5.28.8"
+    12	    ],
+    13	    "allowed-packages" : [
+    14	      "org.neo4j.driver"
+    15	    ]
+    16	  },
+    17	  {
+    18	    "metadata-version" : "5.28.5",
+    19	    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
+    20	    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
+    21	    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
+    22	    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
+    23	    "description" : "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+    24	    "tested-versions" : [
+
+exec
+/usr/bin/bash -lc 'git status --short metadata/org.neo4j.driver/neo4j-java-driver/index.json' in /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e
+ succeeded in 0ms:
+ M metadata/org.neo4j.driver/neo4j-java-driver/index.json
+
+diff --git a/metadata/org.neo4j.driver/neo4j-java-driver/index.json b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+index 6c61e48cac028e4e736d51ccf1c15dff0eb99010..7edfed14dad67f7ea4fb033d2f8b40810d592be4
+--- a/metadata/org.neo4j.driver/neo4j-java-driver/index.json
++++ b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "5.28.8",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
++    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
++    "description" : "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+     "tested-versions" : [
+       "5.28.8"
+     ],
+
+codex
+Updated [index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e/metadata/org.neo4j.driver/neo4j-java-driver/index.json:5) for metadata version `5.28.8`.
+
+Filled:
+- `source-code-url`
+- `repository-url`
+- `test-code-url`
+- `documentation-url`
+- `description`
+
+I left `language` absent because `org.neo4j.driver:neo4j-java-driver` is not a Kotlin, Groovy, or Scala-specific library.
+
+Verification:
+- Rendered Maven URLs for `5.28.8` returned HTTP 200 for sources, tests, and javadoc artifacts.
+- `jq empty metadata/org.neo4j.driver/neo4j-java-driver/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.neo4j.driver:neo4j-java-driver:5.28.8 --stacktrace` failed because `metadata/org.neo4j.driver/neo4j-java-driver/5.28.8/reachability-metadata.json` is missing, unrelated to the URL/description fields.
+diff --git a/metadata/org.neo4j.driver/neo4j-java-driver/index.json b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+index 6c61e48cac028e4e736d51ccf1c15dff0eb99010..7edfed14dad67f7ea4fb033d2f8b40810d592be4
+--- a/metadata/org.neo4j.driver/neo4j-java-driver/index.json
++++ b/metadata/org.neo4j.driver/neo4j-java-driver/index.json
+@@ -2,6 +2,11 @@
+   {
+     "latest" : true,
+     "metadata-version" : "5.28.8",
++    "source-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-sources.jar",
++    "repository-url" : "https://github.com/neo4j/neo4j-java-driver",
++    "test-code-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-tests.jar",
++    "documentation-url" : "https://repo.maven.apache.org/maven2/org/neo4j/driver/neo4j-java-driver/$version$/neo4j-java-driver-$version$-javadoc.jar",
++    "description" : "The Neo4j Java Driver is the official Java client for connecting Java applications to Neo4j databases. It manages Bolt protocol communication, connection pooling, transactions, and query execution against single-instance and clustered Neo4j deployments.",
+     "tested-versions" : [
+       "5.28.8"
+     ],
+
+tokens used
+41,409
+Updated [index.json](/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e/metadata/org.neo4j.driver/neo4j-java-driver/index.json:5) for metadata version `5.28.8`.
+
+Filled:
+- `source-code-url`
+- `repository-url`
+- `test-code-url`
+- `documentation-url`
+- `description`
+
+I left `language` absent because `org.neo4j.driver:neo4j-java-driver` is not a Kotlin, Groovy, or Scala-specific library.
+
+Verification:
+- Rendered Maven URLs for `5.28.8` returned HTTP 200 for sources, tests, and javadoc artifacts.
+- `jq empty metadata/org.neo4j.driver/neo4j-java-driver/index.json` passed.
+- `./gradlew checkMetadataFiles -Pcoordinates=org.neo4j.driver:neo4j-java-driver:5.28.8 --stacktrace` failed because `metadata/org.neo4j.driver/neo4j-java-driver/5.28.8/reachability-metadata.json` is missing, unrelated to the URL/description fields.
+Ran agent for org.neo4j.driver:neo4j-java-driver:5.28.8 (exit 0). Log: /home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e/build/agent-url-discovery-logs/org.neo4j.driver-neo4j-java-driver-5.28.8.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8857-b2c3132e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 53s
+9 actionable tasks: 1 executed, 8 up-to-date
