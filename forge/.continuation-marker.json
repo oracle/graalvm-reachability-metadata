@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.apache.pekko:pekko-actor_2.13:2.0.0-M1",
+  "issueNumber": 8742,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "Update tests away from removed org.apache.pekko.actor.TypedActor/TypedProps APIs in Pekko 2.0.0-M1. Prefer classic actor coverage that stays within pekko-actor_2.13, such as ActorSystem creation, Props, actor lifecycle/message handling, serializers, dispatchers/config, and orderly ActorSystem termination.",
+    "applied_setup": [],
+    "current_library": "org.apache.pekko:pekko-actor_2.13:1.1.5",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8742 [Automation] java run fails for org.apache.pekko:pekko-actor_2.13:2.0.0-M1; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "15 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 82111,
+    "issue_label": "fails-java-run",
+    "issue_number": 8742,
+    "library": "org.apache.pekko:pekko-actor_2.13:2.0.0-M1",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.0.0-M1",
+    "output_tokens_used": 4051,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Pekko 2.0.0-M1 is a milestone release with many deprecated APIs removed, so generated tests may need API refresh rather than setup.",
+      "Adding pekko-actor-typed_2.13 would cover a separate typed actor module and would not restore the removed org.apache.pekko.actor.TypedActor APIs from pekko-actor_2.13 1.x."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.pekko:pekko-actor_2.13:2.0.0-M1/library-preparation-preflight/pi-generation-2026-06-29T08-41-59-582043Z.log",
+    "status": "completed",
+    "summary": "No extra dependency, Docker image, environment variable, or system property is required for meaningful coverage of org.apache.pekko:pekko-actor_2.13:2.0.0-M1. The resolved artifact only depends on scala-library 2.13.18 and com.typesafe:config 1.4.5, and classic actor APIs such as ActorSystem and Props remain in the target artifact. The observed failure is caused by existing tests using removed 1.x deprecated TypedActor/TypedProps APIs, not by missing setup."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.0.0-M1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8742-fails-java-run-org.apache.pekko-pekko-actor_2.13-2.0.0-M1-5e5c2161",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
