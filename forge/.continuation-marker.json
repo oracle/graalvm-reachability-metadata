@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "ognl:ognl:3.3.5",
+  "issueNumber": 7430,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Configure the generated Gradle Test tasks with `jvmArgs '--add-opens=java.base/java.lang=ALL-UNNAMED'` if tests exercise `Ognl.compileExpression` or `ognl.enhance.ExpressionCompiler`; without it Javassist can fail with `InaccessibleObjectException` while defining generated accessor classes. Keep any `ognl.security.manager` or `ognl.UseJDK9PlusAccessHandler` properties local to tests that intentionally exercise those optional OGNL paths and restore them afterward.",
+    "applied_setup": [],
+    "current_library": "ognl:ognl:3.2.21",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7430 [Automation] java run fails for ognl:ognl:3.3.5; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "17 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 47500,
+    "issue_label": "fails-java-run",
+    "issue_number": 7430,
+    "library": "ognl:ognl:3.3.5",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.3.5",
+    "output_tokens_used": 3671,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "OGNL 3.3.5 uses deprecated SecurityManager APIs; tests that install or depend on a SecurityManager may be unstable on JDK 25 and should be guarded or avoided unless that path is the target.",
+      "The `org.javassist:javassist:3.29.0-GA` dependency is already a compile dependency of `ognl:ognl:3.3.5`, so adding it explicitly would be redundant unless dependency resolution proves otherwise locally."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/ognl:ognl:3.3.5/library-preparation-preflight/pi-generation-2026-06-29T13-40-10-329923Z.log",
+    "status": "completed",
+    "summary": "OGNL itself and its transitive Javassist dependency are resolved by the normal library dependency, and no Docker service is involved, but meaningful coverage of OGNL's expression compiler requires opening java.lang for Javassist on modern JDKs."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.3.5",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-7430-fails-java-run-ognl-ognl-3.3.5-1e453b50",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
