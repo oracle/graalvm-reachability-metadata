@@ -27,8 +27,10 @@ public class SslContextFactoryTest {
 
     @Test
     void initializesSslContextAndEngineWithJdkProvider() throws Exception {
-        String protocol = SslContextFactory.getDefaultSslProtocol();
+        String protocol = "TLSv1.2";
         String jdkProviderName = SSLContext.getInstance(protocol).getProvider().getName();
+
+        assertThat(SslContextFactory.getDefaultSslProtocol()).isEqualTo(protocol);
 
         SSLContext sslContext = new SslContextFactory()
                 .sslProtocol(protocol)
@@ -36,7 +38,6 @@ public class SslContextFactoryTest {
                 .getContext();
         SSLEngine sslEngine = SslContextFactory.getEngine(sslContext, true, false);
 
-        assertThat(protocol).isEqualTo("TLSv1.2");
         assertThat(sslContext.getProtocol()).isEqualTo(protocol);
         assertThat(sslEngine.getUseClientMode()).isTrue();
         assertThat(sslEngine.getNeedClientAuth()).isFalse();
