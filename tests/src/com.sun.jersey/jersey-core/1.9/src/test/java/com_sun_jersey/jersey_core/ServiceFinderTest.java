@@ -16,10 +16,12 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.Variant.VariantListBuilder;
 import javax.ws.rs.ext.RuntimeDelegate;
 import javax.ws.rs.ext.RuntimeDelegate.HeaderDelegate;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ServiceFinderTest {
     @BeforeAll
@@ -35,13 +37,20 @@ public class ServiceFinderTest {
 
         HeaderDelegateProvider[] providers = finder.toArray();
         Class<HeaderDelegateProvider>[] providerClasses = finder.toClassArray();
+        List<String> providerDescriptions = Arrays.stream(providers)
+                .map(provider -> provider.getClass().getName() + ":" + provider.supports(MediaType.class))
+                .toList();
+        List<String> providerClassNames = Arrays.stream(providerClasses)
+                .map(Class::getName)
+                .toList();
 
-        assertThat(providers)
-                .isNotEmpty()
-                .anySatisfy(provider -> assertThat(provider.supports(MediaType.class)).isTrue());
-        assertThat(providerClasses)
-                .extracting(Class::getName)
-                .contains(MediaTypeProvider.class.getName());
+        assertTrue(providers.length > 0, () -> "providers=" + providerDescriptions);
+        assertTrue(
+                Arrays.stream(providers).anyMatch(provider -> provider.supports(MediaType.class)),
+                () -> "providers=" + providerDescriptions);
+        assertTrue(
+                providerClassNames.contains(MediaTypeProvider.class.getName()),
+                () -> "providerClasses=" + providerClassNames);
     }
 
     @Test
@@ -50,10 +59,13 @@ public class ServiceFinderTest {
                 HeaderDelegateProvider.class, null);
 
         Class<HeaderDelegateProvider>[] providerClasses = finder.toClassArray();
+        List<String> providerClassNames = Arrays.stream(providerClasses)
+                .map(Class::getName)
+                .toList();
 
-        assertThat(providerClasses)
-                .extracting(Class::getName)
-                .contains(MediaTypeProvider.class.getName());
+        assertTrue(
+                providerClassNames.contains(MediaTypeProvider.class.getName()),
+                () -> "providerClasses=" + providerClassNames);
     }
 
     private static final class MinimalRuntimeDelegate extends RuntimeDelegate {
