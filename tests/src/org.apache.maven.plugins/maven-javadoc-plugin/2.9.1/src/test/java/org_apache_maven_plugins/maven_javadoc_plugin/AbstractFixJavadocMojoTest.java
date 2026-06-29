@@ -37,7 +37,7 @@ public class AbstractFixJavadocMojoTest {
 
     @Test
     void fixGoalRecognizesInheritedMethodsAndUsesClirrGoalLookup() throws Exception {
-        assertEquals("sample", new FixJavadocChildFixture().inherited("sample"));
+        assertEquals(7, new FixJavadocChildFixture().inherited(7));
 
         Path projectDirectory = tempDir.resolve("project");
         Path sourceDirectory = projectDirectory.resolve("src/main/java");
@@ -49,7 +49,7 @@ public class AbstractFixJavadocMojoTest {
                 package org_apache_maven_plugins.maven_javadoc_plugin;
 
                 class FixJavadocChildFixture extends FixJavadocParentFixture {
-                    public java.lang.String inherited(java.lang.String value) {
+                    public int inherited(int value) {
                         return value;
                     }
                 }
@@ -148,14 +148,14 @@ public class AbstractFixJavadocMojoTest {
 }
 
 class FixJavadocParentFixture {
-    public String inherited(String value) {
+    public int inherited(int value) {
         return value;
     }
 }
 
 class FixJavadocChildFixture extends FixJavadocParentFixture {
     @Override
-    public String inherited(String value) {
+    public int inherited(int value) {
         return value;
     }
 }

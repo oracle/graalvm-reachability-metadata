@@ -7,6 +7,7 @@
 package org_apache_maven_plugins.maven_javadoc_plugin;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +21,6 @@ import java.util.jar.JarOutputStream;
 import com.sun.javadoc.Tag;
 import com.sun.tools.doclets.Taglet;
 import org.apache.maven.plugin.javadoc.JavadocUtil;
-import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -30,17 +30,12 @@ public class JavadocUtilTest {
 
     @Test
     void tagletDiscoveryInspectsLegacyJavadocToolsJar() throws Exception {
+        assumeFalse(isNativeImageRuntime(), "Legacy taglet discovery relies on URLClassLoader-based jar loading");
+
         File tagletJar = createLegacyTagletJar();
+        List<String> tagletClasses = JavadocUtilAccessor.tagletClassNames(tagletJar);
 
-        try {
-            List<String> tagletClasses = JavadocUtilAccessor.tagletClassNames(tagletJar);
-
-            assertThat(tagletClasses).contains(LegacyTagletFixture.class.getName());
-        } catch (Error error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-                throw error;
-            }
-        }
+        assertThat(tagletClasses).contains(LegacyTagletFixture.class.getName());
     }
 
     private File createLegacyTagletJar() throws IOException {
@@ -60,6 +55,10 @@ public class JavadocUtilTest {
             input.transferTo(output);
         }
         output.closeEntry();
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     private static final class JavadocUtilAccessor extends JavadocUtil {

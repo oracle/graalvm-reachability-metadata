@@ -81,7 +81,7 @@ public class AbstractJavadocMojoTest {
         injector.inject(mojo, "javadocDirectory", javadocDirectory.toFile());
         injector.inject(mojo, "javadocExecutable", createJavadocExecutable(projectDirectory).toString());
         injector.inject(mojo, "stylesheet", "maven");
-        injector.inject(mojo, "helpfile", "docs/help.html");
+        injector.inject(mojo, "helpfile", resourcesDirectory.resolve("docs/help.html").toString());
         injector.inject(mojo, "source", "8");
         injector.inject(mojo, "encoding", "UTF-8");
         injector.inject(mojo, "docencoding", "UTF-8");
