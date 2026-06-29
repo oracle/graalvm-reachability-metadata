@@ -346,7 +346,7 @@ public class Spring_cloud_stream_binder_kafka_coreTest {
         producer.setSync(true);
         producer.setMessageKeyExpression(keyExpression);
         producer.setSendTimeoutExpression(parser.parseExpression("5000"));
-        producer.setHeaderPatterns(new String[] { "tenant-*", "trace-*" });
+        producer.setHeaderPatterns(new String[] {"tenant-*", "trace-*" });
         producer.setUseTopicHeader(true);
         producer.setRecordMetadataChannel("metadataChannel");
         producer.setTransactionManager("kafkaTransactionManager");
@@ -380,7 +380,7 @@ public class Spring_cloud_stream_binder_kafka_coreTest {
         consumer.setAutoRebalanceEnabled(false);
         consumer.setDlqName("orders.dlq");
         consumer.setDlqPartitions(3);
-        consumer.setTrustedPackages(new String[] { "com.example" });
+        consumer.setTrustedPackages(new String[] {"com.example" });
         consumer.setDlqProducerProperties(dlqProducer);
         consumer.setStandardHeaders(StandardHeaders.timestamp);
         consumer.setConverterBeanName("converter");
