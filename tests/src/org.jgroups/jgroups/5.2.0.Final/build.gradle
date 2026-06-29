@@ -12,6 +12,7 @@ String libraryVersion = tck.testedLibraryVersion.get()
 String customLoggerClass = 'org_jgroups.jgroups.LogFactoryTest$ConfiguredLog'
 
 tasks.withType(Test).configureEach {
+    forkEvery = 1
     systemProperty 'jgroups.bind_addr', '127.0.0.1'
     systemProperty 'java.net.preferIPv4Stack', 'true'
     systemProperty 'jgroups.log_class', customLoggerClass
@@ -25,6 +26,7 @@ tasks.named('nativeTest') {
 
 dependencies {
     testImplementation "org.jgroups:jgroups:$libraryVersion"
+    testImplementation 'org.slf4j:slf4j-api:1.7.31'
     testRuntimeOnly('org.wildfly.openssl:wildfly-openssl:2.1.1.Final') {
         transitive = false
     }

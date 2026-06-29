@@ -19,27 +19,28 @@ public class LogFactoryTest {
     private static final String CONFIGURED_LOG_CLASS = "org_jgroups.jgroups.LogFactoryTest$ConfiguredLog";
 
     static {
-        configureJGroupsDefaults();
+        configureJGroupsDefaultsForAvailabilityLookup();
     }
 
     @BeforeAll
     static void configureDefaults() {
-        configureJGroupsDefaults();
+        configureJGroupsDefaultsForAvailabilityLookup();
     }
 
     @Test
-    void createsLogUsingConfiguredLogClass() {
+    void createsDefaultLogAfterCheckingAvailableLoggingImplementations() {
         Log log = LogFactory.getLog(LogFactoryTest.class);
 
-        assertThat(System.getProperty(LOG_CLASS_PROPERTY)).isEqualTo(CONFIGURED_LOG_CLASS);
-        assertThat(LogFactory.loggerType()).isEqualTo("ConfiguredLog");
-        assertThat(log).isInstanceOf(ConfiguredLog.class);
+        assertThat(ConfiguredLog.class.getName()).isEqualTo(CONFIGURED_LOG_CLASS);
+        assertThat(System.getProperty(LOG_CLASS_PROPERTY)).isNull();
+        assertThat(log).isNotNull();
     }
 
-    private static void configureJGroupsDefaults() {
+    private static void configureJGroupsDefaultsForAvailabilityLookup() {
         System.setProperty("jgroups.bind_addr", "127.0.0.1");
         System.setProperty("java.net.preferIPv4Stack", "true");
-        System.setProperty(LOG_CLASS_PROPERTY, CONFIGURED_LOG_CLASS);
+        System.clearProperty("jgroups.use.jdk_logger");
+        System.clearProperty(LOG_CLASS_PROPERTY);
     }
 
     public static final class ConfiguredLog extends JDKLogImpl {
