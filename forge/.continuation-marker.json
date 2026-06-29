@@ -1,0 +1,88 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "org.springframework.boot:spring-boot-http-converter:4.0.2",
+  "issueNumber": 7066,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No Docker image or environment/system property is required. Exercise the auto-configuration in a non-reactive Spring application context and verify the contributed client/server message-converter customizers and actual JSON conversion behavior. The default preferred mapper is `jackson`; only set `spring.http.converters.preferred-json-mapper` when deliberately testing non-default mapper selection.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "coordinate": "org.springframework.boot:spring-boot-jackson:4.0.2",
+        "kind": "dependency",
+        "reason": "Provides the Jackson 3 JsonMapper support that Spring Boot's HTTP converter auto-configuration prefers by default and that the documentation uses for JSON HttpMessageConverter coverage.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.springframework.boot:spring-boot-test:4.0.2",
+        "kind": "dependency",
+        "reason": "Provides Spring Boot's ApplicationContextRunner/AutoConfigurations test support, which is the standard way to exercise auto-configuration conditions and bean contributions meaningfully.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7066 Support for org.springframework.boot:spring-boot-http-converter:4.0.2; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 50290,
+    "issue_label": "library-new-request",
+    "issue_number": 7066,
+    "library": "org.springframework.boot:spring-boot-http-converter:4.0.2",
+    "model": "oca/gpt-5.5",
+    "output_tokens_used": 6750,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Optional XML, Gson, JSON-B, and Kotlin serialization converter paths are classpath-conditional and are not covered by the minimal Jackson-focused setup.",
+      "Local Gradle and Native Image verification remain authoritative for whether these dependencies are sufficient."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.springframework.boot:spring-boot-http-converter:4.0.2/library-preparation-preflight/pi-generation-2026-06-28T23-18-58-459057Z.log",
+    "status": "completed",
+    "summary": "The artifact is a Spring Boot HTTP message-converter auto-configuration module; its resolved runtime deps only bring spring-boot and spring-web, while the documented object-to-JSON path and default preferred mapper require Jackson support."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 1,
+      "exhaustedClasses": [
+        "org.springframework.boot.http.converter.autoconfigure.HttpMessageConverters"
+      ],
+      "iteration": 3,
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-7066-library-new-request-org.springframework.boot-spring-boot-http-converter-4.0.2-ba316bf8",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springframework.boot:spring-boot-http-converter:4.0.2",
+    "timestamp": "2026-06-29T00:04:15.600779Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
