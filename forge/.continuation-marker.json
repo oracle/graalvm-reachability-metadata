@@ -1,0 +1,71 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.codehaus.janino:janino:3.1.0",
+  "issueNumber": 8855,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment variables or system properties are required. If preserving the existing `IterablesTest`, update it to the current 3.1.0 API/package (`org.codehaus.commons.compiler.util.iterator.Iterables`) rather than adding a dependency. Avoid covering optional Ant integration unless intentionally adding Ant-specific tests.",
+    "applied_setup": [],
+    "current_library": "org.codehaus.janino:janino:3.0.16",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8855 [Automation] javac compile fails for org.codehaus.janino:janino:3.1.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "14 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 25012,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8855,
+    "library": "org.codehaus.janino:janino:3.1.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.1.0",
+    "output_tokens_used": 3909,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Janino 3.1.0 moved iterator utilities out of `org.codehaus.janino.util.iterator`; stale imports from 3.0.16 will fail javac.",
+      "The Janino artifact declares Apache Ant as optional/provided for Ant adapter integration; core compiler usage does not require it.",
+      "Janino generates and loads classes dynamically, so native-image runtime behavior may still require tests to tolerate unsupported dynamic class loading, as the existing scaffold already does."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.codehaus.janino:janino:3.1.0/library-preparation-preflight/pi-generation-2026-06-29T05-33-57-020821Z.log",
+    "status": "completed",
+    "summary": "No extra setup is needed. `org.codehaus.janino:janino:3.1.0` transitively brings `org.codehaus.janino:commons-compiler:3.1.0`; the observed compile failure is caused by a package/API move of `Iterables`, not by a missing dependency, Docker service, or environment setting."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.1.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8855-fails-javac-compile-org.codehaus.janino-janino-3.1.0-a7ffe8ea",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
