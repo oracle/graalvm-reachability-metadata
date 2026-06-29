@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.logging.LogFactory;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.header.internals.RecordHeader;
@@ -46,6 +48,7 @@ import org.springframework.cloud.stream.binder.kafka.properties.KafkaProducerPro
 import org.springframework.cloud.stream.binder.kafka.properties.KafkaProducerProperties.CompressionType;
 import org.springframework.cloud.stream.binder.kafka.properties.KafkaTopicProperties;
 import org.springframework.cloud.stream.binder.kafka.utils.BindingUtils;
+import org.springframework.cloud.stream.binder.kafka.utils.DlqPartitionFunction;
 import org.springframework.cloud.stream.binder.kafka.utils.KafkaTopicUtils;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -483,6 +486,23 @@ public class Spring_cloud_stream_binder_kafka_coreTest {
         assertThat(binderProperties.getJaas().getControlFlag())
                 .isEqualTo(KafkaJaasLoginModuleInitializer.ControlFlag.OPTIONAL);
         assertThat(binderProperties.getJaas().getOptions()).containsEntry("useKeyTab", "true");
+    }
+
+    @Test
+    void dlqPartitionFunctionsSelectOriginalPartitionZeroPartitionAndFallbacks() {
+        ConsumerRecord<String, String> record = new ConsumerRecord<>("orders", 3, 42L, "key", "payload");
+        RuntimeException failure = new RuntimeException("delivery failed");
+
+        assertThat(DlqPartitionFunction.ORIGINAL_PARTITION.apply("orders.dlq", record, failure)).isEqualTo(3);
+        assertThat(DlqPartitionFunction.PARTITION_ZERO.apply("orders.dlq", record, failure)).isZero();
+        assertThat(DlqPartitionFunction.determineFallbackFunction(null, LogFactory.getLog(getClass())))
+                .isSameAs(DlqPartitionFunction.ORIGINAL_PARTITION);
+        assertThat(DlqPartitionFunction.determineFallbackFunction(0, LogFactory.getLog(getClass())))
+                .isSameAs(DlqPartitionFunction.PARTITION_ZERO);
+        assertThat(DlqPartitionFunction.determineFallbackFunction(1, LogFactory.getLog(getClass())))
+                .isSameAs(DlqPartitionFunction.PARTITION_ZERO);
+        assertThat(DlqPartitionFunction.determineFallbackFunction(2, LogFactory.getLog(getClass())))
+                .isSameAs(DlqPartitionFunction.ORIGINAL_PARTITION);
     }
 
     @Test
