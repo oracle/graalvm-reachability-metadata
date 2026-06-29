@@ -9,12 +9,21 @@ package org_wildfly_common.wildfly_common_jdk9_supplement;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 import org.wildfly.common.cpu.ProcessorInfo;
 import org.wildfly.common.os.Process;
 
 public class WildflyCommonJdk9SupplementTest {
+    private static final String PRINT_PROCESS_NAME_ARGUMENT = "print-process-name";
+    private static final String PROCESS_NAME_PROPERTY = "jboss.process.name";
+
     @Test
     void availableProcessorCountMatchesRuntime() {
         int availableProcessors = ProcessorInfo.availableProcessors();
@@ -46,6 +55,81 @@ public class WildflyCommonJdk9SupplementTest {
 
         assertThat(Process.getProcessId()).isEqualTo(processId);
         assertThat(Process.getProcessName()).isSameAs(processName);
+    }
+
+    @Test
+    void configuredProcessNameOverridesCommandDerivedName() throws Exception {
+        String configuredProcessName = "wildfly-common-configured-process";
+        java.lang.Process process = new ProcessBuilder(processNamePrinterCommand(configuredProcessName)).start();
+
+        boolean finished = process.waitFor(10, TimeUnit.SECONDS);
+        if (!finished) {
+            process.destroyForcibly();
+            process.waitFor(5, TimeUnit.SECONDS);
+        }
+        String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8).trim();
+        String errorOutput = new String(process.getErrorStream().readAllBytes(), StandardCharsets.UTF_8).trim();
+
+        assertThat(finished).as("child JVM completed").isTrue();
+        assertThat(process.exitValue()).as(errorOutput).isEqualTo(0);
+        assertThat(output).isEqualTo(configuredProcessName);
+    }
+
+    public static void main(String[] args) {
+        if (args.length == 1 && PRINT_PROCESS_NAME_ARGUMENT.equals(args[0])) {
+            System.out.print(Process.getProcessName());
+            return;
+        }
+        throw new IllegalArgumentException("Unsupported arguments");
+    }
+
+    private static List<String> processNamePrinterCommand(String processName) {
+        String classPath = firstNonBlank(System.getProperty("java.class.path"), System.getenv("CLASSPATH"));
+        assertThat(classPath).isNotBlank();
+
+        List<String> command = new ArrayList<>();
+        command.add(javaExecutable().toString());
+        command.add("-D" + PROCESS_NAME_PROPERTY + "=" + processName);
+        command.add("-cp");
+        command.add(classPath);
+        command.add(WildflyCommonJdk9SupplementTest.class.getName());
+        command.add(PRINT_PROCESS_NAME_ARGUMENT);
+        return command;
+    }
+
+    private static Path javaExecutable() {
+        List<String> javaHomes = List.of(
+                System.getProperty("java.home", ""),
+                System.getenv("JAVA_HOME") == null ? "" : System.getenv("JAVA_HOME"),
+                System.getenv("GRAALVM_HOME") == null ? "" : System.getenv("GRAALVM_HOME"));
+        for (String javaHome : javaHomes) {
+            if (!javaHome.isBlank()) {
+                Path executable = Path.of(javaHome, "bin", isWindows() ? "java.exe" : "java");
+                if (Files.isRegularFile(executable)) {
+                    return executable;
+                }
+            }
+        }
+
+        Path executable = Path.of(
+                firstNonBlank(javaHomes.toArray(String[]::new)),
+                "bin",
+                isWindows() ? "java.exe" : "java");
+        assertThat(executable).exists();
+        return executable;
+    }
+
+    private static boolean isWindows() {
+        return System.getProperty("os.name", "").toLowerCase().contains("win");
+    }
+
+    private static String firstNonBlank(String... candidates) {
+        for (String candidate : candidates) {
+            if (candidate != null && !candidate.isBlank()) {
+                return candidate;
+            }
+        }
+        return "";
     }
 
     private static String expectedProcessName() {
