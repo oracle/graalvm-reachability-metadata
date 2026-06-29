@@ -1,0 +1,71 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "org.conscrypt:conscrypt-openjdk-uber:1.4.1",
+  "issueNumber": 8879,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Preserve or add JVM test arguments and native-image build arguments for: --add-opens=java.base/java.lang=ALL-UNNAMED, --add-opens=java.base/java.net=ALL-UNNAMED, and --add-opens=java.base/sun.nio.ch=ALL-UNNAMED. Use org.conscrypt.Conscrypt.checkAvailability() before provider-dependent assertions, prefer loopback sockets or in-memory crypto/certificate tests, and avoid external network services.",
+    "applied_setup": [],
+    "current_library": "org.conscrypt:conscrypt-openjdk-uber:1.1.4",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8879 [Automation] native-image run fails for org.conscrypt:conscrypt-openjdk-uber:1.4.1; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "11 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 49286,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 8879,
+    "library": "org.conscrypt:conscrypt-openjdk-uber:1.4.1",
+    "model": "oca/gpt-5.5",
+    "new_version": "1.4.1",
+    "output_tokens_used": 3140,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The uber artifact embeds native libraries and extracts/loads them at runtime; failures may still occur if Native Image cannot load or include the packaged JNI library/resource correctly.",
+      "Version 1.4.1 is old relative to JDK 25, so native-image runtime failures may reflect library/JDK compatibility rather than missing test setup.",
+      "Do not add platform-classifier Conscrypt artifacts alongside conscrypt-openjdk-uber; the uber JAR is intended to avoid extra OS-specific dependency setup."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.conscrypt:conscrypt-openjdk-uber:1.4.1/library-preparation-preflight/pi-generation-2026-06-29T21-29-26-390668Z.log",
+    "status": "completed",
+    "summary": "Conscrypt OpenJDK uber has no transitive Maven dependencies and already bundles the platform native libraries, so no dependency or Docker setup is needed; however meaningful socket/provider coverage on modern JDKs needs module opens for Conscrypt's internal access to JDK socket/file-descriptor internals."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "1.4.1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8879-fails-native-image-run-org.conscrypt-conscrypt-openjdk-uber-1.4.1-5cfef481",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
