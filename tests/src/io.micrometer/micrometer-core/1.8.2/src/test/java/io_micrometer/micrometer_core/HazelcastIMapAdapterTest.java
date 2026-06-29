@@ -56,11 +56,11 @@ public class HazelcastIMapAdapterTest {
                 .isNotNull();
     }
 
-    private static final class TestIMap implements IMap<String, String> {
+    static class TestIMap implements IMap<String, String> {
         private final String name;
         private final Map<String, String> entries = new HashMap<>();
 
-        private TestIMap(String name) {
+        TestIMap(String name) {
             this.name = name;
         }
 
