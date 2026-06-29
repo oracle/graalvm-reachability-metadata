@@ -1,0 +1,94 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T18:35:21.666510Z",
+    "library": "org.easymock:easymock:2.2",
+    "starting_commit": "b9763a99b31a47d7448f81da5dad98b4a75ff217",
+    "ending_commit": "bb81bc0035b1e421ef322575808dcd3b49c234b2",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "2.2",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1298,
+          "missed": 3953,
+          "ratio": 0.247191,
+          "total": 5251
+        },
+        "line": {
+          "covered": 314,
+          "missed": 959,
+          "ratio": 0.246661,
+          "total": 1273
+        },
+        "method": {
+          "covered": 101,
+          "missed": 314,
+          "ratio": 0.243373,
+          "total": 415
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 2205,
+      "issue_label": "library-new-request",
+      "library": "org.easymock:easymock:2.2",
+      "summary": "EasyMock 2.2 is a standalone interface-mocking library; its POM declares no dependencies and the artifact uses JDK dynamic proxies rather than external services, Docker, or required environment/system properties.",
+      "deterministic_setup": [],
+      "agent_guidance": "Meaningful tests should exercise the normal EasyMock 2.2 API with a test-defined interface: createMock/createStrictMock/createNiceMock, expect, replay, verify, reset, argument matchers, and exception/return-value expectations. Avoid relying on class mocking or EasyMock class-extension behavior, which is not part of org.easymock:easymock:2.2.",
+      "risks": [
+        "Native Image may require dynamic-proxy metadata for the mocked test interface, but that should be discovered by the normal generated test/agent flow rather than preconfigured as deterministic setup.",
+        "Tests that only instantiate EasyMock classes without creating and using mocks would provide weak coverage."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#2205 Support for org.easymock:easymock:2.2; label=library-new-request; body_chars=170"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 33202,
+      "output_tokens_used": 1586,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.easymock:easymock:2.2/library-preparation-preflight/pi-generation-2026-06-28T18-22-05-154183Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 70304,
+      "cached_input_tokens_used": 414208,
+      "output_tokens_used": 5312,
+      "iterations": 1,
+      "cost_usd": 0.3665,
+      "generated_loc": 26,
+      "tested_library_loc": 314,
+      "metadata_entries": 1,
+      "test_only_metadata_entries": 1,
+      "code_coverage_percent": 24.67
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.easymock/easymock/2.2/src/test/java/org_easymock/easymock/JavaProxyFactoryTest.java",
+      "metadata_file": "metadata/org.easymock/easymock/2.2/reachability-metadata.json"
+    }
+  }
+}
