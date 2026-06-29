@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.sonatype.sisu:sisu-guice:2.9.1",
+  "issueNumber": 8858,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "Generate tests against the resolved binary artifact, not only the source/javadoc names: in 2.9.1 many internal util/cglib classes are jarjar-renamed with a leading '$' in the class name. Prefer public Guice APIs for meaningful coverage; if exercising internals, use the actual binary names. Preserve the existing --add-opens=java.base/java.lang=ALL-UNNAMED JVM/native-image configuration when proxy/CGLIB paths are tested.",
+    "applied_setup": [],
+    "current_library": "org.sonatype.sisu:sisu-guice:2.1.7",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8858 [Automation] javac compile fails for org.sonatype.sisu:sisu-guice:2.9.1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "12 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 39630,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8858,
+    "library": "org.sonatype.sisu:sisu-guice:2.9.1",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.9.1",
+    "output_tokens_used": 4574,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The source and javadoc jars expose pre-jarjar internal names such as com.google.inject.internal.util.MapMaker and com.google.inject.internal.cglib.proxy.MethodProxy, while the main runtime jar contains names such as $MapMaker and $MethodProxy; tests generated from docs alone can fail javac.",
+      "Adding a nodeps/classifier artifact to satisfy old internal imports would compile against a different artifact shape and is not appropriate setup for validating the normal sisu-guice jar."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.sonatype.sisu:sisu-guice:2.9.1/library-preparation-preflight/pi-generation-2026-06-29T05-54-37-509729Z.log",
+    "status": "completed",
+    "summary": "No extra Maven dependency, Docker image, or new environment setup is needed. The resolved org.sonatype.sisu:sisu-guice:2.9.1 artifact already carries its core Guice API plus jarjar-relocated ASM/CGLIB internals and has only normal transitive dependencies on javax.inject and aopalliance; optional slf4j is not required for meaningful DI coverage. The javac failure is from tests importing old internal class names that no longer match the binary jar, not from missing setup."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.9.1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8858-fails-javac-compile-org.sonatype.sisu-sisu-guice-2.9.1-e9fe52a2",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
