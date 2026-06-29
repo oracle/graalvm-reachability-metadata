@@ -1,0 +1,89 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "net.sf.ehcache:ehcache-core:2.5.0",
+  "issueNumber": 8877,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Set net.sf.ehcache.skipUpdateCheck=true in tests, or ensure all CacheManager/configuration creation uses updateCheck(false)/updateCheck=\"false\". Use temporary diskStore paths for disk persistence tests. If using Bitronix, point bitronix.tm.configuration at a temporary properties file with bitronix.tm.disableJmx=true and bitronix.tm.journal=null, then shut down the transaction manager and clear the property after each test.",
+    "applied_setup": [],
+    "current_library": "net.sf.ehcache:ehcache-core:2.4.4",
+    "deterministic_setup": [
+      {
+        "coordinate": "javax.transaction:jta:1.1",
+        "kind": "dependency",
+        "reason": "ehcache-core declares JTA as provided and exposes/uses javax.transaction types in transaction APIs.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.codehaus.btm:btm:2.1.4",
+        "kind": "dependency",
+        "reason": "Ehcache documentation describes JTA transactions under an application-server or third-party transaction manager such as Bitronix; DefaultTransactionManagerLookup coverage needs a concrete manager.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1.1",
+        "kind": "dependency",
+        "reason": "Bitronix references javax.jms classes through optional JMS support, so the JMS API prevents classpath/native-image missing-type issues when Bitronix is analyzed.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8877 [Automation] native-image run fails for net.sf.ehcache:ehcache-core:2.5.0; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "15 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 68456,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 8877,
+    "library": "net.sf.ehcache:ehcache-core:2.5.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "2.5.0",
+    "output_tokens_used": 4521,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Do not require a Docker service for normal ehcache-core coverage; avoid Terracotta clustered-cache scenarios unless explicitly adding a Terracotta server setup.",
+      "Hibernate and servlet integration classes are present but depend on provided containers/APIs; broad tests that load those integrations may require additional setup and are not necessary for core coverage."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/net.sf.ehcache:ehcache-core:2.5.0/library-preparation-preflight/pi-generation-2026-06-29T22-33-49-864410Z.log",
+    "status": "completed",
+    "summary": "Ehcache core has meaningful local-cache coverage without services, but its transaction APIs rely on provided JTA and a real transaction manager; existing coverage also needs update checks disabled to avoid network/background behavior."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.5.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8877-fails-native-image-run-net.sf.ehcache-ehcache-core-2.5.0-f7ed0d73",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
