@@ -1,0 +1,70 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.springframework.boot:spring-boot-actuator:3.0.0",
+  "issueNumber": 8867,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment variables or system properties are required. Generated tests should be updated for Spring Boot 3.0 actuator API changes rather than adding setup; for example, 2.6-era HttpTrace APIs were removed/replaced by HTTP exchange APIs, and several endpoint constructors/descriptors changed.",
+    "applied_setup": [],
+    "current_library": "org.springframework.boot:spring-boot-actuator:2.6.3",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8867 [Automation] javac compile fails for org.springframework.boot:spring-boot-actuator:3.0.0; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 49910,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 8867,
+    "library": "org.springframework.boot:spring-boot-actuator:3.0.0",
+    "model": "oca/gpt-5.5",
+    "new_version": "3.0.0",
+    "output_tokens_used": 2558,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Adding spring-boot-starter-actuator or actuator-autoconfigure would shift the test toward auto-configuration behavior for a different artifact and is not required to cover spring-boot-actuator itself.",
+      "Optional integration health indicators for Redis, MongoDB, RabbitMQ, Liquibase, Couchbase, R2DBC, mail, and security exist in the jar, but they require optional libraries/services only if tests choose to exercise those integrations; core actuator coverage does not need them."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.springframework.boot:spring-boot-actuator:3.0.0/library-preparation-preflight/pi-generation-2026-06-30T00-25-36-694044Z.log",
+    "status": "completed",
+    "summary": "The resolved org.springframework.boot:spring-boot-actuator:3.0.0 artifact depends only on spring-boot and Spring Framework core/context dependencies; meaningful tests can exercise actuator endpoint, health, info, audit, environment, and web endpoint classes directly without extra Maven dependencies, Docker services, or environment/system properties."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "3.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8867-fails-javac-compile-org.springframework.boot-spring-boot-actuator-3.0.0-76cfde96",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
