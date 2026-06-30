@@ -1,0 +1,88 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "com.sun.jersey:jersey-core:1.14",
+  "issueNumber": 8875,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No Docker image, environment variable, or system property appears necessary. If exercising OSGi support, use an in-test minimal/mock BundleContext rather than requiring an external OSGi container.",
+    "applied_setup": [],
+    "current_library": "com.sun.jersey:jersey-core:1.9",
+    "deterministic_setup": [
+      {
+        "coordinate": "org.osgi:org.osgi.core:4.2.0",
+        "kind": "dependency",
+        "reason": "jersey-core 1.14 declares this as a provided dependency, and its OsgiRegistry/Activator code references org.osgi.framework.BundleReference, which is absent from org.osgi:osgi_R4_core:1.0.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "javax.mail:mail:1.4",
+        "kind": "dependency",
+        "reason": "jersey-core 1.14 declares JavaMail as provided and contains MIME/DataSource providers that reference javax.mail and javax.activation APIs not present in modern JDKs.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "javax.xml.bind:jaxb-api:2.1",
+        "kind": "dependency",
+        "reason": "jersey-core 1.14 declares JAXB as provided and contains XML/JAXB provider classes that reference javax.xml.bind APIs not present in modern JDKs.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8875 [Automation] java run fails for com.sun.jersey:jersey-core:1.14; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "22 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 44692,
+    "issue_label": "fails-java-run",
+    "issue_number": 8875,
+    "library": "com.sun.jersey:jersey-core:1.14",
+    "model": "oca/gpt-5.5",
+    "new_version": "1.14",
+    "output_tokens_used": 5336,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "If the obsolete org.osgi:osgi_R4_core:1.0 dependency remains on the classpath alongside org.osgi.core 4.2.0, duplicate OSGi classes may make behavior classpath-order dependent; local Gradle and Native Image verification should confirm the final build file."
+    ],
+    "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/com.sun.jersey:jersey-core:1.14/library-preparation-preflight/pi-generation-2026-06-30T00-10-20-927791Z.log",
+    "status": "completed",
+    "summary": "Jersey core 1.14 declares several runtime APIs as Maven provided dependencies. Meaningful tests that exercise its JAXB, JavaMail/MIME, or OSGi support need those APIs on the test classpath; the current failure is specifically because Jersey 1.14 moved to OSGi Core 4.2.0, which provides org.osgi.framework.BundleReference while the old osgi_R4_core 1.0 does not."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "1.14",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-8875-fails-java-run-com.sun.jersey-jersey-core-1.14-8bc527c8",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
