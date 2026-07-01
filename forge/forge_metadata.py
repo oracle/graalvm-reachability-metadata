@@ -2901,10 +2901,11 @@ def review_pull_request(
     try:
         final_findings = extract_codex_final_message(log_path)
         token_usage = extract_codex_token_usage_summary(log_path)
-        if token_usage:
-            print(f"[Codex review token usage for PR #{pr_number}: {token_usage}]")
-        else:
-            print(f"[Codex review token usage for PR #{pr_number}: unavailable in {log_path_display}]")
+        token_usage_line = (
+            f"[Codex review token usage for PR #{pr_number}: {token_usage}]"
+            if token_usage
+            else f"[Codex review token usage for PR #{pr_number}: unavailable in {log_path_display}]"
+        )
         if result.returncode != 0:
             output_tail = read_log_tail(log_path)
             print(
@@ -2917,6 +2918,7 @@ def review_pull_request(
             )
             if final_findings:
                 print(f"[Final findings for PR #{pr_number}]\n{final_findings}")
+            print(token_usage_line)
             return False
 
         print(f"[Finished review for PR #{pr_number}: {pr_url}]")
@@ -2924,6 +2926,7 @@ def review_pull_request(
             print(f"[Final findings for PR #{pr_number}]\n{final_findings}")
         else:
             print(f"[Final findings for PR #{pr_number}: unavailable in {log_path_display}]")
+        print(token_usage_line)
         print_pull_request_discussion(pr_number)
         return True
     finally:
