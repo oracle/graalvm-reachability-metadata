@@ -545,8 +545,12 @@ def main(argv=None):
         # Re-apply deterministic docker setup now that the scaffolded test dir exists: this
         # writes `required-docker-images.txt` and re-pins the allow-list Dockerfiles. Stage the
         # shared pins explicitly so the library-scoped scaffold commit (the reset checkpoint)
-        # preserves them instead of dropping them on the next `git reset --hard`.
-        apply_library_preparation_setup(library_preparation_preflight, reachability_repo_path)
+        # preserves them instead of dropping them on the next `git reset --hard`. Restricted to
+        # docker so dependency edits stay advisory, matching the model context already rendered
+        # pre-scaffold (which lists them as pending work).
+        apply_library_preparation_setup(
+            library_preparation_preflight, reachability_repo_path, only_kinds={"docker_image"}
+        )
         docker_setup_targets = [
             os.path.join(reachability_repo_path, item["target"])
             for item in (library_preparation_preflight or {}).get("applied_setup") or []

@@ -369,6 +369,10 @@ def _library_preflight_prompt(input_bundle: dict[str, Any]) -> str:
         '  - {"kind": "dependency", "coordinate": "group:artifact:version", '
         '"scope": "testImplementation", "reason": "..."}\n'
         '  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}\n'
+        "If a test needs a Docker image that is already pinned under "
+        "`tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact "
+        "tag from that `Dockerfile-<slug>` instead of introducing a new one, since the "
+        "allow-list permits a single shared tag per image.\n"
         "Put environment variables, system properties, and other test-code setup in "
         "`agent_guidance`. Do not restate deterministic entries as guidance.\n\n"
         "Return a single JSON object with this shape:\n"
@@ -654,12 +658,19 @@ def _apply_docker_image_setup(reachability_repo_path: str, entry: dict[str, str]
 def apply_library_preparation_setup(
         preflight: dict[str, Any] | None,
         reachability_repo_path: str,
+        only_kinds: set[str] | None = None,
 ) -> dict[str, Any] | None:
     """Apply deterministic preflight setup once and idempotently, recording results.
 
     Driver-owned step (§ORCH-forge-orchestration-spec.1.1): typed `dependency` and
     `docker_image` entries are applied as source edits; unappliable entries are
     left for the advisory guidance fallback. Mutates and returns the record.
+
+    `only_kinds` restricts which entry kinds are (re)applied on this pass; entries of
+    other kinds keep their prior `applied_setup` result untouched. The post-scaffold
+    reapply passes `{"docker_image"}` so it re-pins allow-list Dockerfiles without
+    re-touching dependencies the model's already-rendered context still lists as
+    pending work.
     """
     if not isinstance(preflight, dict):
         return preflight
@@ -667,9 +678,18 @@ def apply_library_preparation_setup(
         preflight.setdefault("applied_setup", [])
         return preflight
     library_coordinate = str(preflight.get("library") or "")
+    previous: dict[tuple[Any, Any], dict[str, str]] = {}
+    for item in preflight.get("applied_setup") or []:
+        if isinstance(item, dict):
+            previous[(item.get("kind"), item.get("coordinate") or item.get("slug"))] = item
     applied: list[dict[str, str]] = []
     for entry in preflight.get("deterministic_setup") or []:
         kind = entry.get("kind") if isinstance(entry, dict) else None
+        key = (kind, entry.get("coordinate") or entry.get("slug")) if isinstance(entry, dict) else (kind, None)
+        if only_kinds is not None and kind not in only_kinds:
+            if key in previous:
+                applied.append(previous[key])
+            continue
         try:
             if kind == "dependency":
                 applied.append(_apply_dependency_setup(reachability_repo_path, library_coordinate, entry))
