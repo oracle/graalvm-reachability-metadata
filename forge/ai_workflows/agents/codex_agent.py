@@ -13,6 +13,80 @@ from ai_workflows.agents.codex_app_server import CodexAppServerClient
 from utility_scripts.gradle_test_runner import run_gradle_test_command
 
 
+def extract_codex_token_usage(output: str) -> tuple[int, int, int] | None:
+    """Parse cumulative `(input, cached_input, output)` token usage from a Codex `--json` stream.
+
+    Returns `None` when the output carries no recognizable usage payload.
+    """
+    usage_candidates: list[tuple[int, int, int]] = []
+    for line in output.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            payload = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        usage = _extract_usage_from_payload(payload)
+        if usage is not None:
+            usage_candidates.append(usage)
+
+    if not usage_candidates:
+        return None
+
+    return (
+        max(item[0] for item in usage_candidates),
+        max(item[1] for item in usage_candidates),
+        max(item[2] for item in usage_candidates),
+    )
+
+
+def _extract_usage_from_payload(payload) -> tuple[int, int, int] | None:
+    if isinstance(payload, dict):
+        input_tokens = 0
+        cached_input_tokens = 0
+        output_tokens = 0
+        found = False
+        for key, value in payload.items():
+            if isinstance(value, (dict, list)):
+                nested_usage = _extract_usage_from_payload(value)
+                if nested_usage is not None:
+                    input_tokens += nested_usage[0]
+                    cached_input_tokens += nested_usage[1]
+                    output_tokens += nested_usage[2]
+                    found = True
+                continue
+            if not isinstance(value, int):
+                continue
+            if key in {"input_tokens", "prompt_tokens", "total_input_tokens"}:
+                input_tokens += value
+                found = True
+            if key in {"cached_input_tokens", "cached_prompt_tokens", "total_cached_input_tokens"}:
+                cached_input_tokens += value
+                found = True
+            if key in {"output_tokens", "completion_tokens", "total_output_tokens"}:
+                output_tokens += value
+                found = True
+        return (input_tokens, cached_input_tokens, output_tokens) if found else None
+
+    if isinstance(payload, list):
+        input_tokens = 0
+        cached_input_tokens = 0
+        output_tokens = 0
+        found = False
+        for item in payload:
+            nested_usage = _extract_usage_from_payload(item)
+            if nested_usage is None:
+                continue
+            input_tokens += nested_usage[0]
+            cached_input_tokens += nested_usage[1]
+            output_tokens += nested_usage[2]
+            found = True
+        return (input_tokens, cached_input_tokens, output_tokens) if found else None
+
+    return None
+
+
 @Agent.register("codex")
 class CodexAgent(Agent):
     """Stateful Codex adapter that separates thread control from turn execution."""
@@ -260,7 +334,7 @@ class CodexAgent(Agent):
         return run_gradle_test_command(test_cmd, self._working_dir, library=self._library)
 
     def _record_token_usage(self, prompt: str, output: str) -> None:
-        usage = self._extract_usage_from_output(output)
+        usage = extract_codex_token_usage(output)
         if usage is None:
             self._total_tokens_sent += self._estimate_tokens(prompt)
             self._total_tokens_received += self._estimate_tokens(output)
@@ -273,74 +347,6 @@ class CodexAgent(Agent):
     @staticmethod
     def _estimate_tokens(text: str) -> int:
         return len(text.split())
-
-    def _extract_usage_from_output(self, output: str) -> tuple[int, int, int] | None:
-        usage_candidates: list[tuple[int, int, int]] = []
-        for line in output.splitlines():
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                payload = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-            usage = self._extract_usage_from_payload(payload)
-            if usage is not None:
-                usage_candidates.append(usage)
-
-        if not usage_candidates:
-            return None
-
-        return (
-            max(item[0] for item in usage_candidates),
-            max(item[1] for item in usage_candidates),
-            max(item[2] for item in usage_candidates),
-        )
-
-    def _extract_usage_from_payload(self, payload) -> tuple[int, int, int] | None:
-        if isinstance(payload, dict):
-            input_tokens = 0
-            cached_input_tokens = 0
-            output_tokens = 0
-            found = False
-            for key, value in payload.items():
-                if isinstance(value, (dict, list)):
-                    nested_usage = self._extract_usage_from_payload(value)
-                    if nested_usage is not None:
-                        input_tokens += nested_usage[0]
-                        cached_input_tokens += nested_usage[1]
-                        output_tokens += nested_usage[2]
-                        found = True
-                    continue
-                if not isinstance(value, int):
-                    continue
-                if key in {"input_tokens", "prompt_tokens", "total_input_tokens"}:
-                    input_tokens += value
-                    found = True
-                if key in {"cached_input_tokens", "cached_prompt_tokens", "total_cached_input_tokens"}:
-                    cached_input_tokens += value
-                    found = True
-                if key in {"output_tokens", "completion_tokens", "total_output_tokens"}:
-                    output_tokens += value
-                    found = True
-            return (input_tokens, cached_input_tokens, output_tokens) if found else None
-
-        if isinstance(payload, list):
-            input_tokens = 0
-            cached_input_tokens = 0
-            output_tokens = 0
-            found = False
-            for item in payload:
-                nested_usage = self._extract_usage_from_payload(item)
-                if nested_usage is None:
-                    continue
-                input_tokens += nested_usage[0]
-                cached_input_tokens += nested_usage[1]
-                output_tokens += nested_usage[2]
-                found = True
-            return (input_tokens, cached_input_tokens, output_tokens) if found else None
-
-        return None
 
     def _clone(self) -> "CodexAgent":
         child = CodexAgent(

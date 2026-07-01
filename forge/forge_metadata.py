@@ -86,6 +86,7 @@ from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
 )
+from ai_workflows.agents.codex_agent import extract_codex_token_usage
 from git_scripts.common_git import (
     GITHUB_TRANSIENT_RETRY_ATTEMPTS,
     GitHubError,
@@ -2769,6 +2770,18 @@ def extract_codex_final_message(log_path: str) -> str:
     return final_message.strip()
 
 
+def extract_codex_token_usage_summary(log_path: str) -> str:
+    """Return a human-readable Codex token-usage line from a JSONL log, or '' when unavailable."""
+    if not os.path.isfile(log_path):
+        return ""
+    with open(log_path, "r", encoding="utf-8") as log_file:
+        usage = extract_codex_token_usage(log_file.read())
+    if usage is None:
+        return ""
+    input_tokens, cached_input_tokens, output_tokens = usage
+    return f"input={input_tokens} cached_input={cached_input_tokens} output={output_tokens}"
+
+
 def get_pull_request_discussion(pr_number: int) -> dict:
     """Fetch issue comments and submitted reviews for the target pull request."""
     return gh_json(
@@ -2887,6 +2900,11 @@ def review_pull_request(
 
     try:
         final_findings = extract_codex_final_message(log_path)
+        token_usage = extract_codex_token_usage_summary(log_path)
+        if token_usage:
+            print(f"[Codex review token usage for PR #{pr_number}: {token_usage}]")
+        else:
+            print(f"[Codex review token usage for PR #{pr_number}: unavailable in {log_path_display}]")
         if result.returncode != 0:
             output_tail = read_log_tail(log_path)
             print(
