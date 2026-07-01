@@ -72,7 +72,7 @@ CI must pass before any merge, and is the authoritative gate — local runs are 
 
 ### 4.4 Releases
 
-Every Monday the `create-scheduled-release` workflow packages metadata into the next numbered release if it has changed and the latest completed test-all metadata workflow passed (§CI-create-scheduled-release). Manual release dispatches bypass this test-all gate. Numbered releases consider only semantic version tags when computing the previous version tag, so floating snapshot tags such as `SNAPSHOT` cannot affect the permanent release cadence.
+Every Monday the `create-scheduled-release` workflow packages metadata into the next numbered release if it has changed (§CI-create-scheduled-release). The release is deliberately not gated on the periodic `test-all-metadata` sweep: merged metadata is already gated per-PR (§5.3), and the sweep exercises bleeding-edge JDK and native-image configurations whose failures must not stall the release cadence. Numbered releases consider only semantic version tags when computing the previous version tag, so floating snapshot tags such as `SNAPSHOT` cannot affect the permanent release cadence.
 
 The `create-snapshot-release` workflow refreshes a floating `SNAPSHOT` GitHub Release on the `SNAPSHOT` tag after `master` pushes when metadata changed since the previous `SNAPSHOT` tag, or since the latest numbered release when bootstrapping (§CI-create-snapshot-release). It packages the repository with version `SNAPSHOT`, replaces the previous snapshot release/tag, and provides a continuously updated snapshot-style metadata bundle between numbered releases without taking GitHub's Latest marker from the newest numbered release. The packaged artifacts are what the GraalVM Gradle/Maven plugins consume.
 
@@ -242,7 +242,7 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 - **Spring AOT scope.** The Spring AOT smoke matrix runs only when `metadata/` changes affect a Spring AOT project.
 - **Compatibility budget.** `verify-new-library-version-compatibility` caps each scheduled run at a fixed library budget and at most 30 newer versions per library, expanding across the configured GraalVM JDK/OS combinations, and creates one aggregated GitHub issue per failed `(library, version)` pair.
 - **Docker tag sync.** Dependabot updates to `allowed-docker-images` trigger `sync-docker-tags.yml`, which back-commits the synchronized tags into the Dependabot PR.
-- **Full sweep.** `test-all-metadata` runs only on a weekly Sunday schedule or manual dispatch in the main repository, uses 85 batches, isolates failed batches down to concrete library versions, publishes result and failure-log artifacts, fails affected matrix batches, and is release-blocking when failures are found.
+- **Full sweep.** `test-all-metadata` runs only on a weekly Sunday schedule or manual dispatch in the main repository, uses 85 batches, isolates failed batches down to concrete library versions, publishes result and failure-log artifacts, and fails affected matrix batches. It surfaces sweep regressions but does not gate the scheduled release (§4.4).
 
 ### 5.4 Native-image modes
 
