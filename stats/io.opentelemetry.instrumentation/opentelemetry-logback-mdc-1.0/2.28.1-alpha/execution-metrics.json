@@ -1,0 +1,107 @@
+{
+  "add_new_library_support:2026-06-26": {
+    "timestamp": "2026-06-26T17:02:29.249201Z",
+    "library": "io.opentelemetry.instrumentation:opentelemetry-logback-mdc-1.0:2.28.1-alpha",
+    "starting_commit": "8bb109073f8335b5400fb3e34c14a24e9e15e3bd",
+    "ending_commit": "1c583ac5ee9c98d2a05e881c33a87fed8f9ef8b6",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "2.28.1-alpha",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 166,
+          "missed": 35,
+          "ratio": 0.825871,
+          "total": 201
+        },
+        "line": {
+          "covered": 49,
+          "missed": 12,
+          "ratio": 0.803279,
+          "total": 61
+        },
+        "method": {
+          "covered": 10,
+          "missed": 6,
+          "ratio": 0.625,
+          "total": 16
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8528,
+      "issue_label": "library-new-request",
+      "library": "io.opentelemetry.instrumentation:opentelemetry-logback-mdc-1.0:2.28.1-alpha",
+      "summary": "The artifact intentionally omits Logback as a runtime dependency but its only public class extends and operates on Logback classes, so meaningful tests need a concrete Logback backend.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "ch.qos.logback:logback-classic:1.0.0",
+          "scope": "testImplementation",
+          "reason": "opentelemetry-logback-mdc-1.0 is compiled against Logback 1.0 APIs using compileOnly dependencies; tests cannot meaningfully instantiate or exercise OpenTelemetryAppender and ILoggingEvent/MDC behavior without logback-classic on the test classpath."
+        }
+      ],
+      "agent_guidance": "No Docker image or environment variable is indicated. Generated tests should exercise OpenTelemetryAppender through a real Logback logging event, preferably with a test logback.xml or equivalent programmatic configuration that wraps a ListAppender/TestAppender with OpenTelemetryAppender. Create a current valid OpenTelemetry Span/SpanContext before logging, and optionally configure addBaggage or custom trace/span/flags keys to cover the appender setters and MDC injection paths.",
+      "risks": [
+        "A test that only constructs OpenTelemetryAppender without sending a Logback LoggingEvent under a current Span will provide little useful coverage.",
+        "Logback 1.0.0 is the library's minimum compile target; local Gradle and Native Image verification remain authoritative if a newer Logback version is required by the generated scaffold."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "ch.qos.logback:logback-classic:1.0.0",
+          "result": "applied",
+          "target": "tests/src/io.opentelemetry.instrumentation/opentelemetry-logback-mdc-1.0/2.28.1-alpha/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8528 Support for io.opentelemetry.instrumentation:opentelemetry-logback-mdc-1.0:2.28.1-alpha; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 63090,
+      "output_tokens_used": 4118,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/io.opentelemetry.instrumentation:opentelemetry-logback-mdc-1.0:2.28.1-alpha/library-preparation-preflight/pi-generation-2026-06-26T16-49-45-396196Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 40218,
+      "cached_input_tokens_used": 484352,
+      "output_tokens_used": 9432,
+      "iterations": 1,
+      "cost_usd": 0.5252,
+      "generated_loc": 83,
+      "tested_library_loc": 49,
+      "metadata_entries": 0,
+      "code_coverage_percent": 80.33
+    },
+    "artifacts": {
+      "test_file": "tests/src/io.opentelemetry.instrumentation/opentelemetry-logback-mdc-1.0/2.28.1-alpha/src/test/java/io_opentelemetry_instrumentation/opentelemetry_logback_mdc_1_0/OpenTelemetryAppenderTest.java",
+      "metadata_file": "metadata/io.opentelemetry.instrumentation/opentelemetry-logback-mdc-1.0/2.28.1-alpha/reachability-metadata.json"
+    }
+  }
+}
