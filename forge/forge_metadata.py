@@ -4368,6 +4368,24 @@ def baseline_stats_relpaths_for_preservation(repo_path: str) -> list[str]:
     return sorted(relpaths)
 
 
+def git_rebase_in_progress(repo_path: str, git_env: dict[str, str]) -> bool:
+    """Return whether a rebase is currently halted in the given worktree."""
+    # `git rev-parse --git-path` resolves the sequencer directories against the
+    # worktree-specific gitdir, so this stays correct inside linked worktrees.
+    for sequencer_dir in ("rebase-merge", "rebase-apply"):
+        resolved = subprocess.run(
+            ["git", "rev-parse", "--git-path", sequencer_dir],
+            cwd=repo_path,
+            env=git_env,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        if resolved and os.path.isdir(os.path.join(repo_path, resolved)):
+            return True
+    return False
+
+
 def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservationResult:
     """Commit and push the failed run worktree so it survives workspace cleanup."""
     branch_name = build_failure_preservation_branch_name(claimed_issue)
@@ -4379,8 +4397,12 @@ def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservat
     # A publication `git rebase` that halts on an index.json conflict leaves the
     # worktree mid-rebase with unmerged entries, and `git switch -C` then refuses
     # ("resolve your current index first"). Clear the sequencer state first so the
-    # generated work is still preserved for later resume. §FS-forge-run-continuation
-    subprocess.run(["git", "rebase", "--abort"], cwd=repo_path, env=git_env, check=False)
+    # generated work is still preserved for later resume. Gate the abort on an
+    # actual rebase so the common clean-worktree path does not log a spurious
+    # "fatal: No rebase in progress?" from git. §FS-forge-run-continuation
+    if git_rebase_in_progress(repo_path, git_env):
+        log_stage("preserve-failed-work", f"Aborting in-progress rebase before preserving issue #{issue_number}.")
+        subprocess.run(["git", "rebase", "--abort"], cwd=repo_path, env=git_env, check=False)
     subprocess.run(["git", "switch", "-C", branch_name], cwd=repo_path, env=git_env, check=True)
     logs_destination_relpath = copy_library_logs_to_preserved_worktree(claimed_issue)
     marker_path = continuation_marker_path(repo_path)
