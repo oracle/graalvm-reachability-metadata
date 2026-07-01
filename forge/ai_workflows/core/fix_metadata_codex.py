@@ -12,7 +12,7 @@ from utility_scripts.task_logs import build_task_log_path, display_log_path
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.gradle_environment import gradle_command_environment
 
-CODEX_MODEL_NAME = "oca/gpt-5.4"
+CODEX_MODEL_NAME = "gpt-5.6-terra"
 CODEX_TIMEOUT_SECONDS = 1200
 
 

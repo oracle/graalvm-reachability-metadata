@@ -90,7 +90,7 @@ DEFAULT_MAX_ITERATIONS = 40
 # ``fix_metadata_codex`` path (kept for the metadata-fix workflows), this lets the
 # agent either repair reachability metadata or remove a native-image-unsupported
 # generated test, then re-run until the native test passes.
-_CODEX_MODEL_NAME = "oca/gpt-5.4"
+_CODEX_MODEL_NAME = "gpt-5.6-terra"
 _CODEX_FIX_TIMEOUT_SECONDS = 30 * 60
 
 

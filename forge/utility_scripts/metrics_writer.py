@@ -34,18 +34,18 @@ DEFAULT_CACHED_INPUT_RATE_PER_1M = 3.00
 DEFAULT_OUTPUT_RATE_PER_1M = 12.00
 
 INPUT_TOKEN_RATE_PER_1M_BY_MODEL = {
-    "oca/gpt-5.4": 2.50,
-    "oca/gpt-5.5": 5.00,
+    "gpt-5.4": 2.50,
+    "gpt-5.5": 5.00,
 }
 
 CACHED_INPUT_TOKEN_RATE_PER_1M_BY_MODEL = {
-    "oca/gpt-5.4": 0.25,
-    "oca/gpt-5.5": 0.50,
+    "gpt-5.4": 0.25,
+    "gpt-5.5": 0.50,
 }
 
 OUTPUT_TOKEN_RATE_PER_1M_BY_MODEL = {
-    "oca/gpt-5.4": 15.00,
-    "oca/gpt-5.5": 30.00,
+    "gpt-5.4": 15.00,
+    "gpt-5.5": 30.00,
 }
 
 

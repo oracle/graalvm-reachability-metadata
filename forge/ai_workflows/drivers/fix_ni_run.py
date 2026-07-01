@@ -54,7 +54,7 @@ from utility_scripts.workflow_setup import (
     validate_repo_paths,
 )
 
-DEFAULT_MODEL_NAME = "oca/gpt-5.5"
+DEFAULT_MODEL_NAME = "gpt-5.5"
 DEFAULT_STRATEGY_NAME = "library_update_pi_gpt-5.5"
 METRICS_TASK_TYPE = "fix_ni_run"
 
