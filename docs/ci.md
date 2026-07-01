@@ -117,9 +117,9 @@ Every Sunday (`0 2 * * 0`) and on manual dispatch. Uses
 the full `test` lane, pulls only allowed images, then disables Docker networking.
 Failed batches are isolated down to concrete library versions, publish result
 and failure-log artifacts, and fail in the matrix so the Actions UI points at
-the failing batch. The aggregate job remains release-blocking when failures are
-found (§FS-repository-functional-spec.5.3) and gates the scheduled release
-(§CI-create-scheduled-release).
+the failing batch. The aggregate job publishes a failure report when failures are
+found (§FS-repository-functional-spec.5.3); it surfaces sweep regressions but does
+not gate the scheduled release (§CI-create-scheduled-release).
 
 ### CI-verify-new-library-version-compatibility: Verify new library version compatibility
 
@@ -148,9 +148,10 @@ to the `stats/coverage` branch. The published branch keeps only `COVERAGE.md`,
 ### CI-create-scheduled-release: Create scheduled release
 
 Every Monday (`0 3 * * 1`) and on manual dispatch. Packages metadata only if it
-changed and the latest completed test-all-metadata workflow passed
-(§CI-test-all-metadata); runs `spotlessCheck` before packaging
-(§FS-repository-functional-spec.5.3). Manual dispatches bypass the test-all gate.
+changed; runs `spotlessCheck` before packaging
+(§FS-repository-functional-spec.5.3). It is deliberately not gated on the periodic
+`test-all-metadata` sweep (§CI-test-all-metadata) so bleeding-edge sweep failures
+cannot stall the release cadence.
 The workflow considers only semantic version tags when choosing the previous
 numbered release tag, so floating snapshot tags such as `SNAPSHOT` are ignored.
 It then creates the next `<major>.<minor>.<patch>` release. The packaged ZIP is
