@@ -4376,6 +4376,11 @@ def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservat
     issue_number = claimed_issue.issue["number"]
 
     log_stage("preserve-failed-work", f"Preserving failed work for issue #{issue_number} on branch {branch_name}")
+    # A publication `git rebase` that halts on an index.json conflict leaves the
+    # worktree mid-rebase with unmerged entries, and `git switch -C` then refuses
+    # ("resolve your current index first"). Clear the sequencer state first so the
+    # generated work is still preserved for later resume. §FS-forge-run-continuation
+    subprocess.run(["git", "rebase", "--abort"], cwd=repo_path, env=git_env, check=False)
     subprocess.run(["git", "switch", "-C", branch_name], cwd=repo_path, env=git_env, check=True)
     logs_destination_relpath = copy_library_logs_to_preserved_worktree(claimed_issue)
     marker_path = continuation_marker_path(repo_path)
