@@ -775,7 +775,17 @@ def _run_test_matrix_entries(
             result,
         )
         if failed is not None:
-            return failed
+            # A declared image may be missing from the allow-list (e.g. a preflight pin dropped
+            # by the library-scoped scaffold commit). Pin it deterministically and retry once.
+            if _repair_missing_allowed_images(repo_path, coordinates):
+                failed = _run_recorded_command(
+                    repo_path,
+                    "pull-allowed-docker-images",
+                    ["./gradlew", "pullAllowedDockerImages", f"-Pcoordinates={coordinates}"],
+                    result,
+                )
+            if failed is not None:
+                return failed
         pulled_coordinates.add(coordinates)
 
     for entry in entries:
@@ -921,6 +931,48 @@ def _resolve_coordinate_test_version(repo_path: str, coordinates: str) -> str | 
 def _is_required_docker_image_line(line: str) -> bool:
     stripped = line.strip()
     return bool(stripped and not stripped.startswith("#"))
+
+
+def _docker_image_slug(image: str) -> str:
+    """Derive the allow-list slug: repository path without tag, `/` -> `_`."""
+    if ":" in image.rsplit("/", 1)[-1]:
+        image = image.rsplit(":", 1)[0]
+    return image.replace("/", "_")
+
+
+def _repair_missing_allowed_images(repo_path: str, coordinates: str) -> list[str]:
+    """Pin allow-list Dockerfiles for images declared in `required-docker-images.txt` but not
+    yet allow-listed, then commit them. Returns the repaired images (empty when nothing to do).
+    """
+    required_path = _required_docker_images_path(repo_path, coordinates)
+    if required_path is None or not os.path.isfile(required_path):
+        return []
+    with open(required_path, "r", encoding="utf-8") as required_file:
+        required = [line.strip() for line in required_file if _is_required_docker_image_line(line)]
+    images_dir = os.path.join(repo_path, "tests", "tck-build-logic", "src", "main", "resources", "allowed-docker-images")
+    if not os.path.isdir(images_dir):
+        return []
+    allowed: set[str] = set()
+    for name in os.listdir(images_dir):
+        path = os.path.join(images_dir, name)
+        if not os.path.isfile(path):
+            continue
+        with open(path, "r", encoding="utf-8") as image_file:
+            allowed.update(line[len("FROM"):].strip() for line in image_file if line.startswith("FROM"))
+    repaired: list[str] = []
+    for image in required:
+        if image in allowed:
+            continue
+        target = os.path.join(images_dir, f"Dockerfile-{_docker_image_slug(image)}")
+        if os.path.isfile(target):
+            continue
+        with open(target, "w", encoding="utf-8") as image_file:
+            image_file.write(f"FROM {image}\n")
+        repaired.append(image)
+    if repaired:
+        subprocess.run(["git", "add", images_dir], cwd=repo_path, check=False)
+        subprocess.run(["git", "commit", "-m", "Pin required Docker images to allow-list"], cwd=repo_path, check=False)
+    return repaired
 
 
 def _spring_aot_env(entry: dict) -> dict[str, str]:

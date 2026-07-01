@@ -602,7 +602,32 @@ def _apply_dependency_setup(
     return {**result, "result": "applied", "target": os.path.relpath(build_gradle, reachability_repo_path)}
 
 
-def _apply_docker_image_setup(reachability_repo_path: str, entry: dict[str, str]) -> dict[str, str]:
+def _ensure_required_docker_image(reachability_repo_path: str, library_coordinate: str, image: str) -> None:
+    """Declare `image` in the library's `required-docker-images.txt` once its test dir exists.
+
+    For a new library the test dir is created by `scaffold`, so at preflight time this is a
+    no-op and the driver re-applies the setup after scaffold.
+    """
+    parts = library_coordinate.split(":")
+    if len(parts) != 3:
+        return
+    group, artifact, version = parts
+    test_dir = os.path.join(reachability_repo_path, "tests", "src", group, artifact, version)
+    if not os.path.isdir(test_dir):
+        return
+    required_path = os.path.join(test_dir, "required-docker-images.txt")
+    lines: list[str] = []
+    if os.path.isfile(required_path):
+        with open(required_path, "r", encoding="utf-8") as required_file:
+            lines = [line.strip() for line in required_file if line.strip()]
+    if image in lines:
+        return
+    lines.append(image)
+    with open(required_path, "w", encoding="utf-8") as required_file:
+        required_file.write("\n".join(lines) + "\n")
+
+
+def _apply_docker_image_setup(reachability_repo_path: str, entry: dict[str, str], library_coordinate: str) -> dict[str, str]:
     """Idempotently add a Dockerfile pin to the allowed-docker-images directory."""
     image = entry["image"]
     slug = entry["slug"]
@@ -610,6 +635,7 @@ def _apply_docker_image_setup(reachability_repo_path: str, entry: dict[str, str]
     images_dir = os.path.join(reachability_repo_path, ALLOWED_DOCKER_IMAGES_RELDIR)
     if not os.path.isdir(images_dir):
         return {**result, "result": "skipped", "reason": "allowed_images_dir_absent"}
+    _ensure_required_docker_image(reachability_repo_path, library_coordinate, image)
     target = os.path.join(images_dir, f"Dockerfile-{slug}")
     relative_target = os.path.relpath(target, reachability_repo_path)
     desired = f"FROM {image}\n"
@@ -648,7 +674,7 @@ def apply_library_preparation_setup(
             if kind == "dependency":
                 applied.append(_apply_dependency_setup(reachability_repo_path, library_coordinate, entry))
             elif kind == "docker_image":
-                applied.append(_apply_docker_image_setup(reachability_repo_path, entry))
+                applied.append(_apply_docker_image_setup(reachability_repo_path, entry, library_coordinate))
         except Exception as exc:
             applied.append({"kind": str(kind), "result": "skipped", "reason": f"{type(exc).__name__}: {exc}"})
     preflight["applied_setup"] = applied
