@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit
 class Redis4cats_effects_3Test {
   @Test
   def utf8ClientExecutesStringHashSetListAndCounterCommands(): Unit = {
-    val containerId: String = runDocker("run", "--rm", "-d", "-p", "127.0.0.1::6379", "valkey/valkey:7.2.6")
+    val containerId: String = runDocker("run", "--rm", "-d", "-p", "127.0.0.1::6379", "bitnami/valkey@sha256:1d36cd0d9929e59f6dcf698189152f5ee09339242cfbe18aed01a38b0a5d981f")
     try {
       val port: Int = runDocker(
         "inspect",
@@ -63,7 +63,7 @@ class Redis4cats_effects_3Test {
 
   @Test
   def utf8ClientStoresAndRanksSortedSetMembers(): Unit = {
-    val containerId: String = runDocker("run", "--rm", "-d", "-p", "127.0.0.1::6379", "valkey/valkey:7.2.6")
+    val containerId: String = runDocker("run", "--rm", "-d", "-p", "127.0.0.1::6379", "bitnami/valkey@sha256:1d36cd0d9929e59f6dcf698189152f5ee09339242cfbe18aed01a38b0a5d981f")
     try {
       val port: Int = runDocker(
         "inspect",
@@ -100,7 +100,7 @@ class Redis4cats_effects_3Test {
 
   @Test
   def utf8ClientLoadsAndExecutesCachedLuaScripts(): Unit = {
-    val containerId: String = runDocker("run", "--rm", "-d", "-p", "127.0.0.1::6379", "valkey/valkey:7.2.6")
+    val containerId: String = runDocker("run", "--rm", "-d", "-p", "127.0.0.1::6379", "bitnami/valkey@sha256:1d36cd0d9929e59f6dcf698189152f5ee09339242cfbe18aed01a38b0a5d981f")
     try {
       val port: Int = runDocker(
         "inspect",
