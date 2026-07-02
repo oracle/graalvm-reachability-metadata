@@ -13,6 +13,7 @@ import dev.profunktor.redis4cats.Redis
 import dev.profunktor.redis4cats.effect.Log.NoOp.*
 import dev.profunktor.redis4cats.effects.Score
 import dev.profunktor.redis4cats.effects.ScoreWithValue
+import dev.profunktor.redis4cats.effects.ScriptOutputType
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -92,6 +93,39 @@ class Redis4cats_effects_3Test {
       assertEquals(List("Ada", "Linus", "Grace"), result._2)
       assertEquals(Some(2L), result._3)
       assertEquals(Some(22.0), result._4)
+    } finally {
+      runDocker("rm", "-f", containerId)
+    }
+  }
+
+  @Test
+  def utf8ClientLoadsAndExecutesCachedLuaScripts(): Unit = {
+    val containerId: String = runDocker("run", "--rm", "-d", "-p", "127.0.0.1::6379", "valkey/valkey:7.2.6")
+    try {
+      val port: Int = runDocker(
+        "inspect",
+        "--format",
+        "{{(index (index .NetworkSettings.Ports \"6379/tcp\") 0).HostPort}}",
+        containerId
+      ).toInt
+      awaitReady(port)
+
+      val result: (List[Boolean], String) =
+        Redis[IO].utf8(s"redis://127.0.0.1:$port?timeout=10s").use { redis =>
+          for {
+            digest <- redis.scriptLoad("return ARGV[1]")
+            exists <- redis.scriptExists(digest)
+            value <- redis.evalSha(
+              digest,
+              ScriptOutputType.Value[String],
+              List.empty[String],
+              List("cached result")
+            )
+          } yield (exists, value)
+        }.unsafeRunSync()
+
+      assertEquals(List(true), result._1)
+      assertEquals("cached result", result._2)
     } finally {
       runDocker("rm", "-f", containerId)
     }
