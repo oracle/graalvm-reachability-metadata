@@ -36,16 +36,25 @@ DEFAULT_OUTPUT_RATE_PER_1M = 12.00
 INPUT_TOKEN_RATE_PER_1M_BY_MODEL = {
     "gpt-5.4": 2.50,
     "gpt-5.5": 5.00,
+    "gpt-5.6-sol": 5.00,
+    "gpt-5.6-terra": 2.50,
+    "gpt-5.6-luna": 1.00,
 }
 
 CACHED_INPUT_TOKEN_RATE_PER_1M_BY_MODEL = {
     "gpt-5.4": 0.25,
     "gpt-5.5": 0.50,
+    "gpt-5.6-sol": 0.50,
+    "gpt-5.6-terra": 0.25,
+    "gpt-5.6-luna": 0.10,
 }
 
 OUTPUT_TOKEN_RATE_PER_1M_BY_MODEL = {
     "gpt-5.4": 15.00,
     "gpt-5.5": 30.00,
+    "gpt-5.6-sol": 30.00,
+    "gpt-5.6-terra": 15.00,
+    "gpt-5.6-luna": 6.00,
 }
 
 
@@ -65,6 +74,34 @@ def _get_model_rate(model_name: str | None, rates_by_model: dict[str, float], de
     if model_name and model_name in rates_by_model:
         return rates_by_model[model_name]
     return default_rate
+
+
+def calc_model_session_cost(
+        model_name: str | None,
+        input_tokens: int,
+        cached_input_tokens: int | None,
+        output_tokens: int,
+) -> float:
+    """Return the total USD cost for a session's token usage using per-model rates.
+
+    Cached input tokens are billed at the cached rate and the remaining
+    (uncached) input tokens at the standard input rate. Unknown models fall back
+    to the default rates. Token counts are normalized per million by
+    `calc_token_cost`.
+    """
+    cached_input_tokens = cached_input_tokens or 0
+    input_rate = _get_model_rate(model_name, INPUT_TOKEN_RATE_PER_1M_BY_MODEL, DEFAULT_INPUT_RATE_PER_1M)
+    cached_input_rate = _get_model_rate(
+        model_name, CACHED_INPUT_TOKEN_RATE_PER_1M_BY_MODEL, DEFAULT_CACHED_INPUT_RATE_PER_1M
+    )
+    output_rate = _get_model_rate(model_name, OUTPUT_TOKEN_RATE_PER_1M_BY_MODEL, DEFAULT_OUTPUT_RATE_PER_1M)
+    billable_input_tokens = max(input_tokens - cached_input_tokens, 0)
+    total = (
+        calc_input_cost(billable_input_tokens, input_rate)
+        + calc_input_cost(cached_input_tokens, cached_input_rate)
+        + calc_output_cost(output_tokens, output_rate)
+    )
+    return round(total, 4)
 
 
 def resolve_agent(strategy_name: str | None) -> str | None:

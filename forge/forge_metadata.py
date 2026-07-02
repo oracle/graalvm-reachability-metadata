@@ -165,6 +165,7 @@ from utility_scripts.metadata_index import (
 )
 from utility_scripts.metrics_writer import (
     PENDING_METRICS_FILENAME,
+    calc_model_session_cost,
     load_execution_metrics_for_timestamp,
     read_pending_metrics,
     write_pending_metrics,
@@ -2770,8 +2771,11 @@ def extract_codex_final_message(log_path: str) -> str:
     return final_message.strip()
 
 
-def extract_codex_token_usage_summary(log_path: str) -> str:
-    """Return a human-readable Codex token-usage line from a JSONL log, or '' when unavailable."""
+def extract_codex_token_usage_summary(log_path: str, model_name: str | None = None) -> str:
+    """Return a human-readable Codex token-usage line from a JSONL log, or '' when unavailable.
+
+    Includes the session cost derived from `model_name`'s per-token rates.
+    """
     if not os.path.isfile(log_path):
         return ""
     with open(log_path, "r", encoding="utf-8") as log_file:
@@ -2779,7 +2783,11 @@ def extract_codex_token_usage_summary(log_path: str) -> str:
     if usage is None:
         return ""
     input_tokens, cached_input_tokens, output_tokens = usage
-    return f"input={input_tokens} cached_input={cached_input_tokens} output={output_tokens}"
+    cost_usd = calc_model_session_cost(model_name, input_tokens, cached_input_tokens, output_tokens)
+    return (
+        f"input={input_tokens} cached_input={cached_input_tokens} output={output_tokens} "
+        f"cost=${cost_usd:.4f}"
+    )
 
 
 def get_pull_request_discussion(pr_number: int) -> dict:
@@ -2900,7 +2908,7 @@ def review_pull_request(
 
     try:
         final_findings = extract_codex_final_message(log_path)
-        token_usage = extract_codex_token_usage_summary(log_path)
+        token_usage = extract_codex_token_usage_summary(log_path, review_model)
         token_usage_line = (
             f"[Codex review token usage for PR #{pr_number}: {token_usage}]"
             if token_usage
