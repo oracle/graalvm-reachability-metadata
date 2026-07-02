@@ -1,0 +1,114 @@
+================================================================================
+Timestamp: 2026-07-02T23:40:00.178997+00:00
+Session: unknown
+Persistent instructions: not configured
+Prompt:
+  You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+  
+  Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+  
+  The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+    - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+    - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+  If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+  Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+  
+  Return a single JSON object with this shape:
+  {
+    "action": "no_action" | "advisory_preparation",
+    "summary": "short reason",
+    "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+    "agent_guidance": "environment/system property/test setup guidance, if any",
+    "risks": ["risk notes, if any"]
+  }
+  
+  Choose no_action unless your research finds concrete evidence that extra setup is needed.
+  
+  Context (starting point):
+  {
+    "issue": {
+      "number": 8923,
+      "title": "Update existing library: org.wildfly.common:wildfly-common:1.5.0.Final",
+      "label": "library-update-request",
+      "body": "Dynamic-access coverage for this version is low (0%, 0/8 call sites). The metadata and tests should be updated so the remaining dynamic-access call sites are exercised.",
+      "body_error": ""
+    },
+    "library": "org.wildfly.common:wildfly-common:1.5.0.Final",
+    "current_library": null,
+    "new_version": null,
+    "existing_tests": {
+      "org.wildfly.common:wildfly-common:1.5.0.Final": [
+        "tests/src/org.wildfly.common/wildfly-common/1.5.0.Final/.gitignore",
+        "tests/src/org.wildfly.common/wildfly-common/1.5.0.Final/build.gradle",
+        "tests/src/org.wildfly.common/wildfly-common/1.5.0.Final/gradle.properties",
+        "tests/src/org.wildfly.common/wildfly-common/1.5.0.Final/settings.gradle",
+        "tests/src/org.wildfly.common/wildfly-common/1.5.0.Final/user-code-filter.json",
+        "tests/src/org.wildfly.common/wildfly-common/1.5.0.Final/src/test/java/org_wildfly_common/wildfly_common/CompositeCharSequenceTest.java",
+        "tests/src/org.wildfly.common/wildfly-common/1.5.0.Final/src/test/java/org_wildfly_common/wildfly_common/Wildfly_commonTest.java",
+        "tests/src/org.wildfly.common/wildfly-common/1.5.0.Final/src/test/java/org/graalvm/compiler/api/directives/GraalDirectives.java",
+        "tests/src/org.wildfly.common/wildfly-common/1.5.0.Final/src/test/java/org/graalvm/compiler/nodes/PauseNode.java"
+      ]
+    }
+  }
+Error:
+  Pi RPC `prompt` failed: No API key found for azure-openai-responses.
+  
+  Use /login to log into a provider via OAuth or API key. See:
+    /home/mihailo/git/pi-mono/packages/coding-agent/docs/providers.md
+    /home/mihailo/git/pi-mono/packages/coding-agent/docs/models.md
+Event Trace:
+[send] prompt
+  You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+  
+  Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+  
+  The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+    - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+    - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+  If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+  Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+  
+  Return a single JSON object with this shape:
+  {
+    "action": "no_action" | "advisory_preparation",
+    "summary": "short reason",
+    "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+    "agent_guidance": "environment/system property/test setup guidance, if any",
+    "risks": ["risk notes, if any"]
+  }
+  
+  Choose no_action unless your research finds concrete evidence that extra setup is needed.
+  
+  Context (starting point):
+  {
+    "issue": {
+      "number": 8923,
+      "title": "Update existing library: org.wildfly.common:wildfly-common:1.5.0.Final",
+      "label": "library-update-request",
+      "body": "Dynamic-access coverage for this version is low (0%, 0/8 call sites). The metadata and tests should be updated so the remaining dynamic-access call sites are exercised.",
+      "body_error": ""
+    },
+    "library": "org.wildfly.common:wildfly-common:1.5.0.Final",
+    "current_library": null,
+    "new_version": null,
+    "existing_tests": {
+      "org.wildfly.common:wildfly-common:1.5.0.Final": [
+        "tests/src/org.wildfly.common/wildfly-common/1.5.0.Final/.gitignore",
+        "tests/src/org.wildfly.common/wildfly-common/1.5.0.Final/build.gradle",
+        "tests/src/org.wildfly.common/wildfly-common/1.5.0.Final/gradle.properties",
+        "tests/src/org.wildfly.common/wildfly-common/1.5.0.Final/settings.gradle",
+        "tests/src/org.wildfly.common/wildfly-common/1.5.0.Final/user-code-filter.json",
+        "tests/src/org.wildfly.common/wildfly-common/1.5.0.Final/src/test/java/org_wildfly_common/wildfly_common/CompositeCharSequenceTest.java",
+        "tests/src/org.wildfly.common/wildfly-common/1.5.0.Final/src/test/java/org_wildfly_common/wildfly_common/Wildfly_commonTest.java",
+        "tests/src/org.wildfly.common/wildfly-common/1.5.0.Final/src/test/java/org/graalvm/compiler/api/directives/GraalDirectives.java",
+        "tests/src/org.wildfly.common/wildfly-common/1.5.0.Final/src/test/java/org/graalvm/compiler/nodes/PauseNode.java"
+      ]
+    }
+  }
+[recv] prompt failure
+  error: No API key found for azure-openai-responses.
+
+Use /login to log into a provider via OAuth or API key. See:
+  /home/mihailo/git/pi-mono/packages/coding-agent/docs/providers.md
+  /home/mihailo/git/pi-mono/packages/coding-agent/docs/models.md
+
