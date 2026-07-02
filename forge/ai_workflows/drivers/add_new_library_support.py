@@ -52,6 +52,7 @@ from utility_scripts.continuation_marker import (
 from utility_scripts.dynamic_access_exhaust_report import resolve_workflow_exhaust_report
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_preparation_preflight import (
+    apply_library_preparation_setup,
     prepare_library_preparation_preflight,
 )
 from utility_scripts.metadata_index import is_not_for_native_image, write_not_for_native_image_marker
@@ -541,8 +542,22 @@ def main(argv=None):
     directory_path = module_dir
     index_json_path = os.path.join(reachability_repo_path, "metadata", package, artifact, "index.json")
     if not resume_existing_tree:
+        # Re-apply deterministic docker setup now that the scaffolded test dir exists: this
+        # writes `required-docker-images.txt` and re-pins the allow-list Dockerfiles. Stage the
+        # shared pins explicitly so the library-scoped scaffold commit (the reset checkpoint)
+        # preserves them instead of dropping them on the next `git reset --hard`. Restricted to
+        # docker so dependency edits stay advisory, matching the model context already rendered
+        # pre-scaffold (which lists them as pending work).
+        apply_library_preparation_setup(
+            library_preparation_preflight, reachability_repo_path, only_kinds={"docker_image"}
+        )
+        docker_setup_targets = [
+            os.path.join(reachability_repo_path, item["target"])
+            for item in (library_preparation_preflight or {}).get("applied_setup") or []
+            if isinstance(item, dict) and item.get("kind") == "docker_image" and item.get("target")
+        ]
         # Add generated files to git and commit; record commit hash (do not use it)
-        subprocess.run(["git", "add", directory_path, index_json_path], check=False)
+        subprocess.run(["git", "add", directory_path, index_json_path, *docker_setup_targets], check=False)
         subprocess.run(["git", "commit", "-m", f"Scaffold {library}"], check=False, capture_output=True, text=True)
     checkpoint_commit_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     log_stage("scaffold", f"Checkpoint at {checkpoint_commit_hash}")

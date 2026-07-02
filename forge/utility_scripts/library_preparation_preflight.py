@@ -369,6 +369,10 @@ def _library_preflight_prompt(input_bundle: dict[str, Any]) -> str:
         '  - {"kind": "dependency", "coordinate": "group:artifact:version", '
         '"scope": "testImplementation", "reason": "..."}\n'
         '  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}\n'
+        "If a test needs a Docker image that is already pinned under "
+        "`tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact "
+        "tag from that `Dockerfile-<slug>` instead of introducing a new one, since the "
+        "allow-list permits a single shared tag per image.\n"
         "Put environment variables, system properties, and other test-code setup in "
         "`agent_guidance`. Do not restate deterministic entries as guidance.\n\n"
         "Return a single JSON object with this shape:\n"
@@ -602,7 +606,32 @@ def _apply_dependency_setup(
     return {**result, "result": "applied", "target": os.path.relpath(build_gradle, reachability_repo_path)}
 
 
-def _apply_docker_image_setup(reachability_repo_path: str, entry: dict[str, str]) -> dict[str, str]:
+def _ensure_required_docker_image(reachability_repo_path: str, library_coordinate: str, image: str) -> None:
+    """Declare `image` in the library's `required-docker-images.txt` once its test dir exists.
+
+    For a new library the test dir is created by `scaffold`, so at preflight time this is a
+    no-op and the driver re-applies the setup after scaffold.
+    """
+    parts = library_coordinate.split(":")
+    if len(parts) != 3:
+        return
+    group, artifact, version = parts
+    test_dir = os.path.join(reachability_repo_path, "tests", "src", group, artifact, version)
+    if not os.path.isdir(test_dir):
+        return
+    required_path = os.path.join(test_dir, "required-docker-images.txt")
+    lines: list[str] = []
+    if os.path.isfile(required_path):
+        with open(required_path, "r", encoding="utf-8") as required_file:
+            lines = [line.strip() for line in required_file if line.strip()]
+    if image in lines:
+        return
+    lines.append(image)
+    with open(required_path, "w", encoding="utf-8") as required_file:
+        required_file.write("\n".join(lines) + "\n")
+
+
+def _apply_docker_image_setup(reachability_repo_path: str, entry: dict[str, str], library_coordinate: str) -> dict[str, str]:
     """Idempotently add a Dockerfile pin to the allowed-docker-images directory."""
     image = entry["image"]
     slug = entry["slug"]
@@ -610,6 +639,7 @@ def _apply_docker_image_setup(reachability_repo_path: str, entry: dict[str, str]
     images_dir = os.path.join(reachability_repo_path, ALLOWED_DOCKER_IMAGES_RELDIR)
     if not os.path.isdir(images_dir):
         return {**result, "result": "skipped", "reason": "allowed_images_dir_absent"}
+    _ensure_required_docker_image(reachability_repo_path, library_coordinate, image)
     target = os.path.join(images_dir, f"Dockerfile-{slug}")
     relative_target = os.path.relpath(target, reachability_repo_path)
     desired = f"FROM {image}\n"
@@ -628,12 +658,19 @@ def _apply_docker_image_setup(reachability_repo_path: str, entry: dict[str, str]
 def apply_library_preparation_setup(
         preflight: dict[str, Any] | None,
         reachability_repo_path: str,
+        only_kinds: set[str] | None = None,
 ) -> dict[str, Any] | None:
     """Apply deterministic preflight setup once and idempotently, recording results.
 
     Driver-owned step (§ORCH-forge-orchestration-spec.1.1): typed `dependency` and
     `docker_image` entries are applied as source edits; unappliable entries are
     left for the advisory guidance fallback. Mutates and returns the record.
+
+    `only_kinds` restricts which entry kinds are (re)applied on this pass; entries of
+    other kinds keep their prior `applied_setup` result untouched. The post-scaffold
+    reapply passes `{"docker_image"}` so it re-pins allow-list Dockerfiles without
+    re-touching dependencies the model's already-rendered context still lists as
+    pending work.
     """
     if not isinstance(preflight, dict):
         return preflight
@@ -641,14 +678,23 @@ def apply_library_preparation_setup(
         preflight.setdefault("applied_setup", [])
         return preflight
     library_coordinate = str(preflight.get("library") or "")
+    previous: dict[tuple[Any, Any], dict[str, str]] = {}
+    for item in preflight.get("applied_setup") or []:
+        if isinstance(item, dict):
+            previous[(item.get("kind"), item.get("coordinate") or item.get("slug"))] = item
     applied: list[dict[str, str]] = []
     for entry in preflight.get("deterministic_setup") or []:
         kind = entry.get("kind") if isinstance(entry, dict) else None
+        key = (kind, entry.get("coordinate") or entry.get("slug")) if isinstance(entry, dict) else (kind, None)
+        if only_kinds is not None and kind not in only_kinds:
+            if key in previous:
+                applied.append(previous[key])
+            continue
         try:
             if kind == "dependency":
                 applied.append(_apply_dependency_setup(reachability_repo_path, library_coordinate, entry))
             elif kind == "docker_image":
-                applied.append(_apply_docker_image_setup(reachability_repo_path, entry))
+                applied.append(_apply_docker_image_setup(reachability_repo_path, entry, library_coordinate))
         except Exception as exc:
             applied.append({"kind": str(kind), "result": "skipped", "reason": f"{type(exc).__name__}: {exc}"})
     preflight["applied_setup"] = applied
