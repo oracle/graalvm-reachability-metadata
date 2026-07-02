@@ -8,6 +8,7 @@ package io_fabric8.kubernetes_model_metrics;
 
 import java.util.Map;
 
+import io.fabric8.kubernetes.api.model.Duration;
 import io.fabric8.kubernetes.api.model.KubernetesResourceList;
 import io.fabric8.kubernetes.api.model.Namespaced;
 import io.fabric8.kubernetes.api.model.Quantity;
@@ -64,6 +65,19 @@ public class Kubernetes_model_metricsTest {
         assertThat(podMetrics.getContainers().get(0).getAdditionalProperties())
                 .containsEntry("source", "metrics-server");
         assertThat(podMetrics.getAdditionalProperties()).containsEntry("sample", "pod");
+    }
+
+    @Test
+    void podMetricsSupportMetricCollectionWindows() {
+        PodMetrics podMetrics = new PodMetricsBuilder()
+                .withNewMetadata()
+                    .withName("inventory-0")
+                .endMetadata()
+                .withTimestamp("2026-07-02T12:03:00Z")
+                .withWindow(new Duration(java.time.Duration.ofSeconds(30)))
+                .build();
+
+        assertThat(podMetrics.getWindow().getDuration()).isEqualTo(java.time.Duration.ofSeconds(30));
     }
 
     @Test
