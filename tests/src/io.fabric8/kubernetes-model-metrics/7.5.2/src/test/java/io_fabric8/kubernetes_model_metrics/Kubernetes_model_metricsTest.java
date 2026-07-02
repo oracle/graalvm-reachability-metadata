@@ -162,6 +162,47 @@ public class Kubernetes_model_metricsTest {
     }
 
     @Test
+    void podMetricsListBuildersSupportIndexedInsertionAndItemQueries() {
+        PodMetrics first = new PodMetricsBuilder()
+                .withNewMetadata()
+                    .withName("orders-0")
+                .endMetadata()
+                .build();
+        PodMetrics second = new PodMetricsBuilder()
+                .withNewMetadata()
+                    .withName("orders-2")
+                .endMetadata()
+                .build();
+        PodMetrics canary = new PodMetricsBuilder()
+                .withNewMetadata()
+                    .withName("orders-1")
+                .endMetadata()
+                .build();
+
+        PodMetricsListBuilder builder = new PodMetricsListBuilder()
+                .withItems(first, second)
+                .addToItems(1, canary);
+
+        assertThat(builder.hasMatchingItem(item -> "orders-1".equals(item.buildMetadata().getName())))
+                .isTrue();
+        assertThat(builder.buildItem(1).getMetadata().getName()).isEqualTo("orders-1");
+        assertThat(builder.buildMatchingItem(item -> "orders-2".equals(item.buildMetadata().getName())))
+                .isEqualTo(second);
+        assertThat(builder.buildItems()).extracting(item -> item.getMetadata().getName())
+                .containsExactly("orders-0", "orders-1", "orders-2");
+
+        PodMetricsList updated = builder.editItem(1)
+                .editMetadata()
+                    .withName("orders-canary")
+                .endMetadata()
+                .endItem()
+                .build();
+
+        assertThat(updated.getItems()).extracting(item -> item.getMetadata().getName())
+                .containsExactly("orders-0", "orders-canary", "orders-2");
+    }
+
+    @Test
     void podMetricListsSupportItemCopiesPositionalReplacementAndExtensions() {
         PodMetrics first = new PodMetricsBuilder()
                 .withNewMetadata()
