@@ -106,7 +106,7 @@ this document keeps one representative example to show the architecture shape
 defined in §STRAT-forge-predefined-strategy-contract without duplicating the
 configuration file. `library_update_dynamic_access_bulk_pi_gpt-5.5` selects the
 `optimistic_dynamic_access` workflow (§WF-improve-library-coverage), the `pi`
-agent, model `oca/gpt-5.5`, main-source read-only context, the
+agent, model `gpt-5.5`, main-source read-only context, the
 `optimistic-dynamic-access-iteration` prompt, and parameters for optimistic
 iterations, test retries, source-context materialization, and the native-test
 verification retry budget (§WF-native-test-verification-callers).

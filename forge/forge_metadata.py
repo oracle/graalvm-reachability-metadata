@@ -86,6 +86,7 @@ from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
 )
+from ai_workflows.agents.codex_agent import extract_codex_token_usage
 from git_scripts.common_git import (
     GITHUB_TRANSIENT_RETRY_ATTEMPTS,
     GitHubError,
@@ -164,6 +165,7 @@ from utility_scripts.metadata_index import (
 )
 from utility_scripts.metrics_writer import (
     PENDING_METRICS_FILENAME,
+    calc_model_session_cost,
     load_execution_metrics_for_timestamp,
     read_pending_metrics,
     write_pending_metrics,
@@ -324,7 +326,7 @@ RESUMABLE_LABEL_DESCRIPTION = "Issue has preserved automation work that Forge ca
 DEFAULT_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD = 15
 
 
-DEFAULT_REVIEW_MODEL = "gpt-5.4"
+DEFAULT_REVIEW_MODEL = "gpt-5.6-terra"
 DEFAULT_WORK_QUEUE_STRATEGY_NAME = "dynamic_access_main_sources_pi_gpt-5.5"
 CODEX_REVIEW_TIMEOUT_SECONDS = 1800
 DEFAULT_WORKTREE_BASE_REF = "master"
@@ -2769,6 +2771,25 @@ def extract_codex_final_message(log_path: str) -> str:
     return final_message.strip()
 
 
+def extract_codex_token_usage_summary(log_path: str, model_name: str | None = None) -> str:
+    """Return a human-readable Codex token-usage line from a JSONL log, or '' when unavailable.
+
+    Includes the session cost derived from `model_name`'s per-token rates.
+    """
+    if not os.path.isfile(log_path):
+        return ""
+    with open(log_path, "r", encoding="utf-8") as log_file:
+        usage = extract_codex_token_usage(log_file.read())
+    if usage is None:
+        return ""
+    input_tokens, cached_input_tokens, output_tokens = usage
+    cost_usd = calc_model_session_cost(model_name, input_tokens, cached_input_tokens, output_tokens)
+    return (
+        f"input={input_tokens} cached_input={cached_input_tokens} output={output_tokens} "
+        f"cost=${cost_usd:.4f}"
+    )
+
+
 def get_pull_request_discussion(pr_number: int) -> dict:
     """Fetch issue comments and submitted reviews for the target pull request."""
     return gh_json(
@@ -2887,6 +2908,12 @@ def review_pull_request(
 
     try:
         final_findings = extract_codex_final_message(log_path)
+        token_usage = extract_codex_token_usage_summary(log_path, review_model)
+        token_usage_line = (
+            f"[Codex review token usage for PR #{pr_number}: {token_usage}]"
+            if token_usage
+            else f"[Codex review token usage for PR #{pr_number}: unavailable in {log_path_display}]"
+        )
         if result.returncode != 0:
             output_tail = read_log_tail(log_path)
             print(
@@ -2899,6 +2926,7 @@ def review_pull_request(
             )
             if final_findings:
                 print(f"[Final findings for PR #{pr_number}]\n{final_findings}")
+            print(token_usage_line)
             return False
 
         print(f"[Finished review for PR #{pr_number}: {pr_url}]")
@@ -2906,6 +2934,7 @@ def review_pull_request(
             print(f"[Final findings for PR #{pr_number}]\n{final_findings}")
         else:
             print(f"[Final findings for PR #{pr_number}: unavailable in {log_path_display}]")
+        print(token_usage_line)
         print_pull_request_discussion(pr_number)
         return True
     finally:

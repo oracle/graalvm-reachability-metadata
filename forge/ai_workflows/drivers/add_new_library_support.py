@@ -82,7 +82,7 @@ from utility_scripts.workflow_setup import (
     validate_repo_paths,
 )
 
-DEFAULT_MODEL_NAME = "oca/gpt-5.4"
+DEFAULT_MODEL_NAME = "gpt-5.4"
 METRICS_TASK_TYPE = "add_new_library_support"
 
 

@@ -53,7 +53,7 @@ from utility_scripts.workflow_setup import (
 )
 from utility_scripts.worktree_reset import reset_worktree_to_commit
 
-DEFAULT_MODEL_NAME = "oca/gpt5"
+DEFAULT_MODEL_NAME = "gpt5"
 ADD_LIBRARY_METADATA_INDEX_TASK = "addLibraryMetadataIndexJson"
 ADD_LIBRARY_AS_LATEST_METADATA_INDEX_TASK = "addLibraryAsLatestMetadataIndexJson"
 

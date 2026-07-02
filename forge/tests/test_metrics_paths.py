@@ -565,7 +565,7 @@ class MetricsPathTests(unittest.TestCase):
                 artifact="demo",
                 library_version="1.0.0",
                 agent=DummyAgent(),
-                model_name="oca/gpt-5.4",
+                model_name="gpt-5.4",
                 global_iterations=1,
                 tests_root=tests_root,
                 strategy_name="basic_iterative_pi_gpt-5.4",
