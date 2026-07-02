@@ -11,6 +11,8 @@ import cats.effect.unsafe.implicits.global
 import cats.syntax.all.*
 import dev.profunktor.redis4cats.Redis
 import dev.profunktor.redis4cats.effect.Log.NoOp.*
+import dev.profunktor.redis4cats.effects.Score
+import dev.profunktor.redis4cats.effects.ScoreWithValue
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -53,6 +55,43 @@ class Redis4cats_effects_3Test {
       assertEquals(Set("reader", "writer"), result._3)
       assertEquals(List("created", "updated"), result._4)
       assertEquals(7L, result._5)
+    } finally {
+      runDocker("rm", "-f", containerId)
+    }
+  }
+
+  @Test
+  def utf8ClientStoresAndRanksSortedSetMembers(): Unit = {
+    val containerId: String = runDocker("run", "--rm", "-d", "-p", "127.0.0.1::6379", "valkey/valkey:7.2.6")
+    try {
+      val port: Int = runDocker(
+        "inspect",
+        "--format",
+        "{{(index (index .NetworkSettings.Ports \"6379/tcp\") 0).HostPort}}",
+        containerId
+      ).toInt
+      awaitReady(port)
+
+      val result: (Long, List[String], Option[Long], Option[Double]) =
+        Redis[IO].utf8(s"redis://127.0.0.1:$port?timeout=10s").use { redis =>
+          for {
+            added <- redis.zAdd(
+              "leaderboard",
+              None,
+              ScoreWithValue(Score(15.0), "Ada"),
+              ScoreWithValue(Score(30.0), "Grace"),
+              ScoreWithValue(Score(22.0), "Linus")
+            )
+            rankedMembers <- redis.zRange("leaderboard", 0, -1)
+            graceRank <- redis.zRank("leaderboard", "Grace")
+            linusScore <- redis.zScore("leaderboard", "Linus")
+          } yield (added, rankedMembers, graceRank, linusScore)
+        }.unsafeRunSync()
+
+      assertEquals(3L, result._1)
+      assertEquals(List("Ada", "Linus", "Grace"), result._2)
+      assertEquals(Some(2L), result._3)
+      assertEquals(Some(22.0), result._4)
     } finally {
       runDocker("rm", "-f", containerId)
     }
