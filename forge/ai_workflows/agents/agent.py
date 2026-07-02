@@ -32,6 +32,18 @@ class Agent(ABC):
 
     _registry: dict[str, type["Agent"]] = {}
 
+    # Fork token accounting. A fork child inherits this agent's counters, spends
+    # its own tokens, and is then discarded. On the child's ``with``-block exit
+    # it folds its delta into the parent's accumulators below, so a discarded
+    # child's usage still surfaces in run metrics. Token-tracking agents add
+    # these accumulators into their token properties. Class-level defaults let
+    # this work without every backend initializing them in ``__init__``.
+    _forked_tokens_sent: int = 0
+    _forked_tokens_received: int = 0
+    _forked_tokens_cached: int = 0
+    _fork_parent: "Agent | None" = None
+    _fork_baseline: "tuple[int, int, int] | None" = None
+
     @classmethod
     def register(cls, agent_key: str):
         """Class decorator that registers an agent implementation under the given key."""
@@ -67,6 +79,58 @@ class Agent(ABC):
     def cached_input_tokens_used(self) -> int | None:
         """Return cumulative cached input tokens when the backend reports them."""
         return None
+
+    def add_forked_usage(
+            self,
+            tokens_sent: int,
+            tokens_received: int,
+            cached_input_tokens: int = 0,
+    ) -> None:
+        """Accumulate token usage handed back by a discarded fork child.
+
+        Token-tracking agents surface these accumulators through their token
+        properties; keeping them on the base means the bookkeeping works for any
+        backend without extra per-agent code.
+        """
+        self._forked_tokens_sent += max(int(tokens_sent), 0)
+        self._forked_tokens_received += max(int(tokens_received), 0)
+        self._forked_tokens_cached += max(int(cached_input_tokens), 0)
+
+    def _begin_fork_child(self, parent: "Agent") -> None:
+        """Stamp a freshly forked child with its parent and pre-turn baseline.
+
+        Call this after the child inherits the parent's counters but before its
+        first turn is counted, so the child's delta (``total - baseline``) covers
+        every turn it runs, including the initial generation prompt.
+        """
+        self._fork_parent = parent
+        self._fork_baseline = self._usage_tuple()
+
+    def _usage_tuple(self) -> tuple[int, int, int]:
+        """Current (sent, received, cached) totals, tolerant of ``None`` cached."""
+        return (
+            int(self.total_tokens_sent or 0),
+            int(self.total_tokens_received or 0),
+            int(self.cached_input_tokens_used or 0),
+        )
+
+    def __enter__(self) -> "Agent":
+        return self
+
+    def __exit__(self, exc_type, exc, traceback) -> bool:
+        # Block exit is the fork child's "kill" point: fold its delta into the
+        # parent so the discarded child's tokens survive in run metrics.
+        if self._fork_parent is not None:
+            sent, received, cached = self._usage_tuple()
+            base_sent, base_received, base_cached = self._fork_baseline or (0, 0, 0)
+            self._fork_parent.add_forked_usage(
+                sent - base_sent,
+                received - base_received,
+                cached - base_cached,
+            )
+            self._fork_parent = None
+            self._fork_baseline = None
+        return False
 
     def _create_session_log_path(
             self,

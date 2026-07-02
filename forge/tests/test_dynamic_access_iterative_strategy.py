@@ -195,6 +195,15 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
             def send_prompt(self, prompt: str) -> None:
                 pass
 
+            def fork(self, prompt: str) -> "FakeAgent":
+                return self
+
+            def __enter__(self) -> "FakeAgent":
+                return self
+
+            def __exit__(self, *exc) -> bool:
+                return False
+
             def run_test_command(self, command: str) -> str:
                 return "BUILD SUCCESSFUL"
 
@@ -239,6 +248,15 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
             def send_prompt(self, prompt: str) -> None:
                 pass
 
+            def fork(self, prompt: str) -> "FakeAgent":
+                return self
+
+            def __enter__(self) -> "FakeAgent":
+                return self
+
+            def __exit__(self, *exc) -> bool:
+                return False
+
             def run_test_command(self, command: str) -> str:
                 return "BUILD SUCCESSFUL"
 
@@ -282,6 +300,15 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
         class FakeAgent:
             def send_prompt(self, prompt: str) -> None:
                 pass
+
+            def fork(self, prompt: str) -> "FakeAgent":
+                return self
+
+            def __enter__(self) -> "FakeAgent":
+                return self
+
+            def __exit__(self, *exc) -> bool:
+                return False
 
             def run_test_command(self, command: str) -> str:
                 return "BUILD SUCCESSFUL"
@@ -337,6 +364,15 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
         class FakeAgent:
             def send_prompt(self, prompt: str) -> None:
                 pass
+
+            def fork(self, prompt: str) -> "FakeAgent":
+                return self
+
+            def __enter__(self) -> "FakeAgent":
+                return self
+
+            def __exit__(self, *exc) -> bool:
+                return False
 
             def run_test_command(self, command: str) -> str:
                 return "BUILD SUCCESSFUL"

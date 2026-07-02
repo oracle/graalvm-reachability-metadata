@@ -17,6 +17,7 @@ from utility_scripts.dynamic_access_report import (
     DynamicAccessCoverageReport,
     compute_class_delta,
     format_call_sites,
+    format_full_report,
     load_dynamic_access_coverage_report,
 )
 from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport
@@ -34,6 +35,7 @@ from utility_scripts.strategy_loader import load_strategy_by_name
 FALLBACK_STRATEGY_NAME = "basic_iterative_pi_gpt-5.5"
 DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS = 40
 DEFAULT_NATIVE_TEST_VERIFICATION_BATCH_SIZE = 5
+DEFAULT_DYNAMIC_ACCESS_EXPLORE_PROMPT = "prompt_templates/dynamic_access/dynamic-access-explore.md"
 
 
 @WorkflowStrategy.register("dynamic_access_iterative")
@@ -55,6 +57,10 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
 
     def __init__(self, strategy_obj: dict, **context):
         super().__init__(strategy_obj, **context)
+        # The per-class exploration anchor prompt is optional in the bundle: when
+        # a strategy does not declare it, fall back to the packaged default so
+        # existing configs keep working without listing the new prompt key.
+        self.prompts.setdefault("dynamic-access-explore", DEFAULT_DYNAMIC_ACCESS_EXPLORE_PROMPT)
         self.library = self.context["library"]
         self.reachability_repo_path = self.context["reachability_repo_path"]
         self.keep_tests_without_dynamic_access = bool(self.context.get("keep_tests_without_dynamic_access", False))
@@ -360,6 +366,12 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             class_failed = False
             class_committed = False
             gate_failed = False
+            # Build one exploration anchor per class, then fork it for each
+            # attempt: the shared exploration is reused, but each attempt starts
+            # from the same lean, pre-generation state instead of accumulating
+            # the previous attempts' turns (§WF-dynamic-access-iterative-strategy).
+            agent.clear_context()
+            self._explore_class(agent, class_name, active_class, current_report)
             while class_attempts < self.max_class_iterations:
                 self._print_dynamic_access_detail(
                     "attempt {attempt}/{max_attempts}".format(
@@ -375,53 +387,55 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     dynamic_access_progress=self._format_progress(delta, class_attempts),
                     uncovered_dynamic_access_calls=format_call_sites(active_class.uncovered_call_sites),
                 )
-                self._print_dynamic_access_detail("agent: running dynamic-access prompt", indent_level=2)
-                agent.send_prompt(dynamic_prompt)
-                self._print_dynamic_access_detail("agent: complete", indent_level=2)
-                prompt_iterations += 1
-                save_phase_update(
-                    self.continuation_marker_path,
-                    lambda marker: marker.record_iteration(PHASE_EXPLORE, prompt_iterations),
-                )
-                class_attempts += 1
-
+                self._print_dynamic_access_detail("agent: forking exploration anchor for generation", indent_level=2)
                 reached_native_test = False
                 last_test_output = ""
                 last_failed_task = None
-                for test_iteration in range(self.max_class_test_iterations):
-                    self._print_dynamic_access_detail(
-                        "test {current}/{maximum}: running ./gradlew test -Pcoordinates={library}".format(
-                            current=test_iteration + 1,
-                            maximum=self.max_class_test_iterations,
-                            library=self.library,
-                        ),
-                        indent_level=2,
-                    )
-                    test_output = agent.run_test_command(f"./gradlew test -Pcoordinates={self.library}")
-                    failed_task = self._get_first_failed_task(test_output)
-                    last_test_output = test_output
-                    last_failed_task = failed_task
-                    self._print_dynamic_access_detail(
-                        "test: complete (failed task: {failed_task})".format(
-                            failed_task=failed_task or "none",
-                        ),
-                        indent_level=2,
-                    )
-                    if failed_task in {"nativeTest", None}:
-                        reached_native_test = True
-                        break
-                    self._print_dynamic_access_detail(
-                        "agent: test failed before nativeTest; sending failure output back to agent",
-                        indent_level=2,
-                    )
-                    agent.send_prompt(
-                        "When `./gradlew test -Pcoordinates={library}` is ran this is the error:\n{error_output}".format(
-                            library=self.library,
-                            error_output=test_output,
-                        )
-                    )
+                # Fork the anchor for this attempt. The child folds its own token
+                # usage into the anchor when the `with` block exits, so no per-site
+                # accounting is needed here (see Agent.fork / Agent.__exit__).
+                with agent.fork(dynamic_prompt) as attempt_agent:
                     self._print_dynamic_access_detail("agent: complete", indent_level=2)
                     prompt_iterations += 1
+                    save_phase_update(
+                        self.continuation_marker_path,
+                        lambda marker: marker.record_iteration(PHASE_EXPLORE, prompt_iterations),
+                    )
+                    class_attempts += 1
+
+                    for test_iteration in range(self.max_class_test_iterations):
+                        self._print_dynamic_access_detail(
+                            "test {current}/{maximum}: running ./gradlew test -Pcoordinates={library}".format(
+                                current=test_iteration + 1,
+                                maximum=self.max_class_test_iterations,
+                                library=self.library,
+                            ),
+                            indent_level=2,
+                        )
+                        test_output = attempt_agent.run_test_command(f"./gradlew test -Pcoordinates={self.library}")
+                        failed_task = self._get_first_failed_task(test_output)
+                        last_test_output = test_output
+                        last_failed_task = failed_task
+                        self._print_dynamic_access_detail(
+                            "test: complete (failed task: {failed_task})".format(
+                                failed_task=failed_task or "none",
+                            ),
+                            indent_level=2,
+                        )
+                        if failed_task in {"nativeTest", None}:
+                            reached_native_test = True
+                            break
+                        self._print_dynamic_access_detail(
+                            "agent: test failed before nativeTest; sending failure output back to agent",
+                            indent_level=2,
+                        )
+                        failure_message = (
+                            f"When `./gradlew test -Pcoordinates={self.library}` is ran "
+                            f"this is the error:\n{test_output}"
+                        )
+                        attempt_agent.send_prompt(failure_message)
+                        self._print_dynamic_access_detail("agent: complete", indent_level=2)
+                        prompt_iterations += 1
 
                 if not reached_native_test:
                     # Tests failed for this class, roll back to before this class
@@ -550,8 +564,8 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     )
                 active_class = updated_class
 
-            # Clear context between classes to keep the agent window focused.
-            agent.clear_context()
+            # The exploration anchor is rebuilt from scratch for the next class
+            # (clear + explore at the top of the loop), so no clear is needed here.
             if gate_failed:
                 self._print_failure_analysis(
                     "native_test_verification_gate_failed",
@@ -665,6 +679,25 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     len(terminal_classes_this_part),
                 )
                 return True, prompt_iterations
+
+    def _explore_class(self, agent, class_name: str, active_class, current_report) -> None:
+        """Prime a per-class exploration anchor that later attempts fork from.
+
+        This is the read-only exploration turn of
+        §WF-dynamic-access-iterative-strategy: the agent studies the active class
+        and the complete report and plans coverage, but writes nothing. Each
+        attempt then forks this anchor so the exploration is reused without
+        carrying prior attempts' turns forward.
+        """
+        explore_prompt = self._render_prompt(
+            "dynamic-access-explore",
+            active_class_name=class_name,
+            active_class_source_file=active_class.resolved_source_file or active_class.source_file or "N/A",
+            dynamic_access_report=format_full_report(current_report),
+        )
+        self._print_dynamic_access_detail("agent: exploring class (no test generation)", indent_level=2)
+        agent.send_prompt(explore_prompt)
+        self._print_dynamic_access_detail("agent: exploration complete", indent_level=2)
 
     def _mark_continuation_explore_completed(
             self,
