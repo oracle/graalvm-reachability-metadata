@@ -39,6 +39,18 @@ classes. Each selected class receives bounded prompt attempts, bounded test
 repair attempts, coverage-delta checks, per-class checkpointing, and native-test
 verification after each configured batch of coverage-gain commits.
 
+Within a class, the engine first primes a per-class exploration anchor: a single
+read-only turn (the `dynamic-access-explore` prompt) that studies the active
+class and the complete report and plans coverage without writing any files. Each
+attempt then **forks** that anchor and sends only a slim generation prompt (the
+`dynamic-access-iteration` prompt) carrying the latest report delta, so the
+shared exploration is reused once instead of re-accumulating across attempts.
+Because a fork branches the conversation but not the working tree, the slim
+prompt instructs the fork to read the tests already on disk and extend them
+additively so it does not clobber coverage authored by a sibling attempt it has
+no memory of. Token usage from each discarded fork child is folded back into the
+anchor so run metrics stay accurate.
+
 The iterative engine may return `RUN_STATUS_CHUNK_READY` when chunked issue
 orchestration gave it a class limit and the current chunk passed all local
 verification gates. Otherwise it returns success only when the dynamic-access
@@ -209,8 +221,10 @@ State held for one strategy `run(...)` invocation, independent of chunking:
   again within the run.
 - `class_checkpoint` — git SHA captured before each class attempt; used to roll
   back a failed class iteration without losing previously committed classes.
-- `prompt_iterations` — total agent prompts sent (returned to the caller as
-  `global_iterations`).
+- `prompt_iterations` — count of generation and test-repair prompts sent
+  (returned to the caller as `global_iterations`). The read-only per-class
+  exploration turn is not counted; its token cost is still captured in the
+  agent's token totals.
 - `successful_classes` — count of classes that contributed at least one newly
   covered call site and whose test changes were committed.
 

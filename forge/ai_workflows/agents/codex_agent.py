@@ -128,15 +128,15 @@ class CodexAgent(Agent):
 
     @property
     def total_tokens_sent(self) -> int:
-        return self._total_tokens_sent
+        return self._total_tokens_sent + self._forked_tokens_sent
 
     @property
     def total_tokens_received(self) -> int:
-        return self._total_tokens_received
+        return self._total_tokens_received + self._forked_tokens_received
 
     @property
     def cached_input_tokens_used(self) -> int:
-        return self._cached_input_tokens_used
+        return self._cached_input_tokens_used + self._forked_tokens_cached
 
     @property
     def thread_id(self) -> str | None:
@@ -302,6 +302,7 @@ class CodexAgent(Agent):
         child._total_tokens_sent = self._total_tokens_sent
         child._cached_input_tokens_used = self._cached_input_tokens_used
         child._total_tokens_received = self._total_tokens_received
+        child._begin_fork_child(self)
         child.send_prompt(prompt)
         return child
 
@@ -315,6 +316,7 @@ class CodexAgent(Agent):
         child._total_tokens_sent = self._total_tokens_sent
         child._cached_input_tokens_used = self._cached_input_tokens_used
         child._total_tokens_received = self._total_tokens_received
+        child._begin_fork_child(self)
         child.send_prompt(prompt)
         return child
 
