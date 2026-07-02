@@ -1,0 +1,109 @@
+{
+  "add_new_library_support:2026-07-02": {
+    "timestamp": "2026-07-02T15:38:29.965460Z",
+    "library": "dev.profunktor:redis4cats-effects_3:1.7.2",
+    "starting_commit": "9a1470768ba269acf8c7db7e6cc1e21dbb641b75",
+    "ending_commit": "cd60410d74ebf073fd2fe50462296f112de3c35c",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
+    "agent": "pi",
+    "model": "gpt-5.6-terra",
+    "status": "success",
+    "stats": {
+      "version": "1.7.2",
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 626,
+          "missed": 14894,
+          "ratio": 0.040335,
+          "total": 15520
+        },
+        "line": {
+          "covered": 57,
+          "missed": 687,
+          "ratio": 0.076613,
+          "total": 744
+        },
+        "method": {
+          "covered": 67,
+          "missed": 1831,
+          "ratio": 0.0353,
+          "total": 1898
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 4885,
+      "issue_label": "library-new-request",
+      "library": "dev.profunktor:redis4cats-effects_3:1.7.2",
+      "summary": "The effects API requires Cats Effect’s concrete IO runtime and meaningful command coverage requires a Redis-compatible server.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.typelevel:cats-effect_3:3.5.7",
+          "scope": "testImplementation",
+          "reason": "The artifact exposes Cats Effect kernel abstractions but its own POM declares cats-effect_3 only for tests; normal Redis[IO] usage requires IO."
+        },
+        {
+          "kind": "docker_image",
+          "image": "valkey/valkey:7.2.6",
+          "slug": "valkey_valkey",
+          "reason": "The upstream v1.7.2 docker-compose integration environment uses this single-node Redis-compatible server on port 6379; it is not currently allow-listed."
+        }
+      ],
+      "agent_guidance": "Exercise Redis[IO].utf8 against a loopback server with resource-safe acquisition/release and assert real set/get plus representative command operations. Wait for readiness and clean up the launched container; avoid cluster and replica coverage unless separately needed.",
+      "risks": [
+        "The new Docker image must be allow-listed and declared in required-docker-images.txt.",
+        "Port 6379 collisions or server readiness races can make tests flaky."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.typelevel:cats-effect_3:3.5.7",
+          "result": "applied",
+          "target": "tests/src/dev.profunktor/redis4cats-effects_3/1.7.2/build.gradle"
+        },
+        {
+          "kind": "docker_image",
+          "image": "valkey/valkey:7.2.6",
+          "slug": "valkey_valkey",
+          "result": "already_present",
+          "target": "tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-valkey_valkey"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#4885 Support for dev.profunktor:redis4cats-effects_3:1.7.2; label=library-new-request; body_chars=110"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-terra",
+      "input_tokens_used": 75196,
+      "output_tokens_used": 3039,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/dev.profunktor:redis4cats-effects_3:1.7.2/library-preparation-preflight/pi-generation-2026-07-02T15-01-32-685306Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 179385,
+      "cached_input_tokens_used": 2738688,
+      "output_tokens_used": 16900,
+      "iterations": 9,
+      "cost_usd": 0.9382,
+      "generated_loc": 150,
+      "tested_library_loc": 57,
+      "metadata_entries": 93,
+      "test_only_metadata_entries": 108,
+      "code_coverage_percent": 7.66
+    },
+    "artifacts": {
+      "test_file": "tests/src/dev.profunktor/redis4cats-effects_3/1.7.2/src/test/scala/dev_profunktor/redis4cats_effects_3/Redis4cats_effects_3Test.scala",
+      "metadata_file": "metadata/dev.profunktor/redis4cats-effects_3/1.7.2/reachability-metadata.json"
+    }
+  }
+}
