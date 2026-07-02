@@ -178,7 +178,10 @@ eligible. For automated native-build-tools issues with no labels and the standar
 `Support for groupId:artifactId:version` title, the workflow adds
 `library-new-request` and `priority` first. Once eligible it extracts and
 validates the Maven coordinates, closes invalid/duplicate/already-supported
-requests, and — via `open-dependency-issues-and-link-blockers.js`
+requests, and also closes requests whose `groupId:artifactId` already has an
+`index.json` recorded as `not-for-native-image` even when that index carries no
+per-version `tested-versions`. It then — via
+`open-dependency-issues-and-link-blockers.js`
 (§CI-shared-scripts) — generates a deps.dev dependency graph and opens or reuses
 `library-new-request` issues for unsupported transitive dependencies, linking
 them as blockers. The label vocabulary it applies is defined in
