@@ -15,7 +15,7 @@ import org.wildfly.common.net.Inet;
 
 public class InetTest {
     @Test
-    void resolvesAllAddressesUsingTheRequestedConcreteType() throws Exception {
+    void resolvesAllAddressesUsingTheRequestedConcreteAddressType() throws Exception {
         Inet4Address[] addresses = Inet.getAllAddressesByNameAndType("127.0.0.1", Inet4Address.class);
 
         assertThat(addresses).hasSize(1);
