@@ -294,7 +294,6 @@ that persistent layer was configured without printing the instruction text.
       library_version="1.2.3",
       agent=None,  # Agent implementation exposing token counters
       global_iterations=3,
-      tests_root="/abs/path/to/tests/root",
       strategy_name="basic_iterative",
       status="success",
   )

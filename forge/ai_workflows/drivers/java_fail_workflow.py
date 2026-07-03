@@ -625,7 +625,6 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
             agent=agent,
             model_name=model_name,
             global_iterations=iterations,
-            tests_root=test_source_layout.source_root,
             strategy_name=strategy_name,
             status=workflow_status,
             starting_commit=commit_checkpoint,

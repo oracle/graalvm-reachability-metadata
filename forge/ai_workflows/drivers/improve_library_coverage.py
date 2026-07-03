@@ -973,7 +973,6 @@ def main(argv=None) -> int:
             agent=agent,
             model_name=model_name,
             global_iterations=iterations,
-            tests_root=test_source_layout.source_root,
             strategy_name=strategy_name,
             status=workflow_status,
             starting_commit=checkpoint_commit,
