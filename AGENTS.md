@@ -1,7 +1,7 @@
 # Development Cheat Sheet
 
 ## Prerequisites (assume exists)
-- JAVA_HOME set to JDK 21 (GraalVM recommended to match CI)
+- JAVA_HOME set to JDK 25 (GraalVM recommended to match CI)
 - Docker
 - grype v0.104.0 (install: curl -sSfL https://get.anchore.io/grype/v0.104.0/install.sh | sudo sh -s -- -b /usr/local/bin)
 

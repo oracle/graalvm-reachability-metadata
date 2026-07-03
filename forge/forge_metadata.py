@@ -2958,8 +2958,12 @@ def build_review_prompt(pr_number: int) -> str:
         "the wrong metadata bucket or duplicated across buckets, use the `fix-index-file-inconsistencies` skill. "
         "In that exception path, you may check out the PR branch, fix only the required `index.json` files, commit "
         "the repair, and push it to this PR branch before submitting the GitHub review. "
-        "If you find blocking issues, submit a review that requests changes with a concise summary. "
-        "If there are no blocking issues, submit an approval review summarizing the check and stating that you found no blocking issues."
+        "Only request changes for a concrete violation of an enumerated review rule in the applicable review skill for this PR's label. "
+        "Do not block on self-formed test-quality, test-scope, or 'end-user behavior' judgments that are not backed by a specific enumerated rule; "
+        "in particular, do not require a test to exercise a chosen public API entry point when it already exercises the library's types, "
+        "including relocated or shaded types that ship in the library JAR. "
+        "If you find such a rule-backed blocking issue, submit a review that requests changes with a concise summary that cites the specific rule. "
+        "If there are no rule-backed blocking issues, submit an approval review summarizing the check and stating that you found no blocking issues."
     )
 
 
