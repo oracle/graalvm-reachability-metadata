@@ -14,14 +14,22 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.nio.file.Path;
 import java.time.Duration;
+import java.util.Arrays;
 
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.catalina.Context;
+import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.connector.Connector;
+import org.apache.catalina.core.StandardHost;
+import org.apache.catalina.startup.ContextConfig;
+import org.apache.catalina.startup.FailedContext;
 import org.apache.catalina.startup.Tomcat;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -30,6 +38,42 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TomcatTests {
 
     private static final int AUTO_BIND_PORT = 0;
+
+    @Test
+    void addWebappCreatesContextWithReflectiveHostConfiguration(@TempDir Path webappDirectory) throws Exception {
+        Tomcat tomcat = new Tomcat();
+        tomcat.setBaseDir(webappDirectory.resolve("base").toString());
+        tomcat.setAddDefaultWebXmlToWebapp(false);
+
+        try {
+            Context context = tomcat.addWebapp(null, "/webapp", webappDirectory.toAbsolutePath().toString());
+            LifecycleListener[] listeners = context.findLifecycleListeners();
+
+            assertThat(context.getPath()).isEqualTo("/webapp");
+            assertThat(context.getDocBase()).isEqualTo(webappDirectory.toAbsolutePath().toString());
+            assertThat(Arrays.stream(listeners)).anyMatch(ContextConfig.class::isInstance);
+        } finally {
+            tomcat.destroy();
+        }
+    }
+
+    @Test
+    void addContextCreatesConfiguredContextClass(@TempDir Path docBase) throws Exception {
+        Tomcat tomcat = new Tomcat();
+        tomcat.setBaseDir(docBase.resolve("base").toString());
+        StandardHost host = (StandardHost) tomcat.getHost();
+        host.setContextClass(FailedContext.class.getName());
+
+        try {
+            Context context = tomcat.addContext(null, "/custom", docBase.toAbsolutePath().toString());
+
+            assertThat(context).isInstanceOf(FailedContext.class);
+            assertThat(context.getPath()).isEqualTo("/custom");
+            assertThat(context.getDocBase()).isEqualTo(docBase.toAbsolutePath().toString());
+        } finally {
+            tomcat.destroy();
+        }
+    }
 
     @ParameterizedTest
     @ValueSource(strings = {"HTTP/1.1", "org.apache.coyote.http11.Http11NioProtocol",
