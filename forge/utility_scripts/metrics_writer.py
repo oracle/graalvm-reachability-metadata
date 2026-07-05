@@ -225,10 +225,12 @@ def collect_token_usage_metrics(agent, model_name: str | None) -> dict[str, int 
         DEFAULT_CACHED_INPUT_RATE_PER_1M,
     )
 
+    # `total_tokens_sent` counts full-rate input; cached reads are a separate
+    # counter billed at the cached rate. They do not overlap, so the two costs
+    # simply add up.
     billable_input_tokens = input_tokens_used
     cached_input_cost_usd = 0.0
     if cached_input_tokens_used is not None:
-        billable_input_tokens = max(input_tokens_used - cached_input_tokens_used, 0)
         cached_input_cost_usd = calc_input_cost(
             cached_input_tokens_used,
             cached_input_rate or DEFAULT_CACHED_INPUT_RATE_PER_1M,
