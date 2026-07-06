@@ -14,6 +14,9 @@ from utility_scripts.gradle_test_runner import run_gradle_test_command
 from utility_scripts.pi_logs import build_pi_log_path
 
 
+DEFAULT_PI_PROVIDER = "openai-codex"
+
+
 @Agent.register("pi")
 class PiAgent(Agent):
     """Agent adapter that drives Pi through its RPC mode."""
@@ -32,7 +35,7 @@ class PiAgent(Agent):
             **_,
     ):
         self._model_name = model_name
-        self._provider = provider
+        self._provider = provider or DEFAULT_PI_PROVIDER
         self._pi_command = pi_command
         self._session_dir = session_dir
         self._working_dir = os.path.abspath(working_dir)
