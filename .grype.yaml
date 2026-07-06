@@ -1,0 +1,19 @@
+# grype configuration for the docker-image vulnerability gate (§CI-scan-docker-images).
+#
+# grype auto-loads this file from the repository root, so it applies to the
+# `checkAllowedDockerImages` / `GrypeTask` scan both on PRs (changed images) and
+# on the weekly all-images run.
+#
+# gosu (/usr/sbin/gosu) is a ~200-line setuid helper that only drops privileges
+# and execs the container entrypoint at startup. It is statically linked against
+# an old Go stdlib, so grype attributes every Go stdlib CVE for that version to
+# the binary even though gosu exercises none of the vulnerable code paths (no
+# net/http, crypto/tls, crypto/x509, net/url, encoding/gob, or archive parsing).
+# These are unreachable false positives in test-only fixture images, and gosu
+# ships that stdlib upstream so there is nothing to patch. Scoped to the Go
+# stdlib artifact on the gosu binary only: a real CVE in gosu's own package or
+# in any other image package is still reported.
+ignore:
+  - package:
+      name: stdlib
+      location: "/usr/sbin/gosu"
