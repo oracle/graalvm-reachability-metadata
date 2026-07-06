@@ -84,10 +84,10 @@ def calc_model_session_cost(
 ) -> float:
     """Return the total USD cost for a session's token usage using per-model rates.
 
-    Cached input tokens are billed at the cached rate and the remaining
-    (uncached) input tokens at the standard input rate. Unknown models fall back
-    to the default rates. Token counts are normalized per million by
-    `calc_token_cost`.
+    `input_tokens` counts full-rate input; `cached_input_tokens` counts cache
+    reads billed at the cached rate. The two counters do not overlap, so their
+    costs simply add up. Unknown models fall back to the default rates. Token
+    counts are normalized per million by `calc_token_cost`.
     """
     cached_input_tokens = cached_input_tokens or 0
     input_rate = _get_model_rate(model_name, INPUT_TOKEN_RATE_PER_1M_BY_MODEL, DEFAULT_INPUT_RATE_PER_1M)
@@ -95,9 +95,8 @@ def calc_model_session_cost(
         model_name, CACHED_INPUT_TOKEN_RATE_PER_1M_BY_MODEL, DEFAULT_CACHED_INPUT_RATE_PER_1M
     )
     output_rate = _get_model_rate(model_name, OUTPUT_TOKEN_RATE_PER_1M_BY_MODEL, DEFAULT_OUTPUT_RATE_PER_1M)
-    billable_input_tokens = max(input_tokens - cached_input_tokens, 0)
     total = (
-        calc_input_cost(billable_input_tokens, input_rate)
+        calc_input_cost(input_tokens, input_rate)
         + calc_input_cost(cached_input_tokens, cached_input_rate)
         + calc_output_cost(output_tokens, output_rate)
     )
