@@ -17,6 +17,7 @@ import com.mailjet.client.enums.ApiAuthenticationType;
 import com.mailjet.client.enums.ApiVersion;
 import com.mailjet.client.resource.Contact;
 import com.mailjet.client.resource.Contactslist;
+import com.mailjet.client.resource.Csvimport;
 import com.mailjet.client.transactional.Attachment;
 import com.mailjet.client.transactional.SendContact;
 import com.mailjet.client.transactional.SendEmailsRequest;
@@ -37,6 +38,8 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -221,6 +224,53 @@ public class Mailjet_clientTest {
             assertThat(new JSONObject(recorded.body()).getString(Contactslist.NAME)).isEqualTo("Updated list");
             assertThat(response.getStatus()).isEqualTo(200);
             assertThat(response.getData().getJSONObject(0).getString(Contactslist.NAME)).isEqualTo("Updated list");
+        }
+    }
+
+    @Test
+    void csvDataPostReadsFileDataAndSendsEncodedPlainTextBody() throws Exception {
+        Path csvFile = Files.createTempFile("mailjet-contacts", ".csv");
+        try {
+            String csvData = "email,name\nreader@example.com,Reader\n";
+            Files.writeString(csvFile, csvData, StandardCharsets.UTF_8);
+            Resource csvDataResource = new Resource(
+                    "csvimport",
+                    "csvdata",
+                    ApiVersion.V3,
+                    ApiAuthenticationType.Basic);
+            try (TestServer server = TestServer.respondingWith(201, """
+                    {
+                      "Count": 1,
+                      "Total": 1,
+                      "Data": [ { "ID": 77, "Status": "Upload" } ]
+                    }
+                    """);
+                    TestHttpClient httpClient = TestHttpClient.create()) {
+                MailjetClient client = new MailjetClient(ClientOptions.builder()
+                        .baseUrl(server.baseUrl())
+                        .apiKey("key")
+                        .apiSecretKey("secret")
+                        .okHttpClient(httpClient.client())
+                        .build());
+                MailjetRequest request = new MailjetRequest(csvDataResource, 77L)
+                        .filter(Csvimport.ERRTRESHOLD, 5)
+                        .setData(csvFile.toString());
+
+                MailjetResponse response = client.post(request);
+
+                RecordedRequest recorded = server.takeRequest();
+                assertThat(recorded.method()).isEqualTo("POST");
+                assertThat(recorded.path()).isEqualTo("/v3/DATA/csvimport/77/csvdata/text:plain");
+                assertThat(recorded.query()).contains("ErrTreshold=5");
+                assertThat(recorded.headers().getFirst("Content-Type")).startsWith("text/plain");
+                assertThat(recorded.body())
+                        .isEqualTo(Base64.getEncoder().encodeToString(csvData.getBytes(StandardCharsets.UTF_8)));
+                assertThat(request.getContentType()).isEqualTo("text/plain");
+                assertThat(response.getStatus()).isEqualTo(201);
+                assertThat(response.getData().getJSONObject(0).getString(Csvimport.STATUS)).isEqualTo("Upload");
+            }
+        } finally {
+            Files.deleteIfExists(csvFile);
         }
     }
 
