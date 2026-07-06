@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -225,17 +226,61 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
 
         boolean dynamicAccessAvailable = generateReportsForCoordinate(coordinates);
         if (dynamicAccessAvailable) {
+            Path tracePath = maybeCollectAgentTrace(coordinates, libraryJars);
             return LibraryStatsSupport.buildVersionStats(
                     coordinates,
                     libraryJars,
                     getDynamicAccessDir(coordinates),
-                    getJacocoReport(coordinates)
+                    getJacocoReport(coordinates),
+                    LibraryStatsSupport.parseAgentTrace(tracePath)
             );
         }
         return LibraryStatsSupport.buildVersionStatsWithoutDynamicAccess(
                 coordinates,
                 getJacocoReport(coordinates)
         );
+    }
+
+    /// §TCK-test-harness.8: agent-trace fallback for coordinates whose dynamic-access frames carry
+    /// no line numbers. Returns null (today's behaviour) unless line-based matching is impossible;
+    /// otherwise runs the JVM-only `javaTest` lane under `native-image-agent` and returns the trace
+    /// path. `javaTest` is used rather than the full `test` lane so the native build (and the
+    /// dynamic-access reports it produced) is not re-run and clobbered. A failed or missing trace
+    /// degrades gracefully to null — it never fails the stats task.
+    protected Path maybeCollectAgentTrace(String coordinates, List<Path> libraryJars) {
+        if (!LibraryStatsSupport.lineMatchingImpossible(getDynamicAccessDir(coordinates), libraryJars)) {
+            return null;
+        }
+        Path tracePath = tckExtension.getTestDir(coordinates)
+                .resolve("build")
+                .resolve("reports")
+                .resolve("dynamic-access")
+                .resolve("agent-trace.json");
+        getLogger().lifecycle(
+                "Dynamic-access frames for {} carry no line numbers; collecting native-image-agent trace.",
+                coordinates
+        );
+        try {
+            // The agent does not create the trace-output parent directory itself.
+            Files.createDirectories(tracePath.getParent());
+            Files.deleteIfExists(tracePath);
+        } catch (IOException e) {
+            getLogger().warn("Could not prepare agent-trace output for {}: {}", coordinates, e.getMessage());
+            return null;
+        }
+        CommandResult trace = runGradle(
+                List.of("javaTest", "-Pcoordinates=" + coordinates, "-PdynamicAccessTraceOutput=" + tracePath),
+                true
+        );
+        if (trace.exitCode() != 0 || !Files.isRegularFile(tracePath)) {
+            getLogger().warn(
+                    "Agent-trace collection for {} failed (exit code {}); falling back to line-based coverage only.",
+                    coordinates,
+                    trace.exitCode()
+            );
+            return null;
+        }
+        return tracePath;
     }
 
     protected void validateCommittedStatsFiles() {

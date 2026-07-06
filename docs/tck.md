@@ -123,3 +123,14 @@ These emit the GitHub Actions matrices the workflows consume, all driven by
 | `generateDynamicAccessCoverageReport`, `analyzeExternalLibraryDynamicAccess` | Dynamic-access coverage reporting (§FS-repository-functional-spec.4.5). |
 | `generateLibraryStats`, `listTopCoordinatesByMetric`, `generateTopCoordinatesByMetricMatrix`, `generateReadmeBadgeSummary`, `generateDependencyGraph` | Produce and query the stats mirror, README badge inputs, and dependency graphs that feed the coverage dashboard (§CI-publish-scheduled-coverage). |
 | `package` | Zip the `metadata/` directory into the release artifact consumed by native-build-tools (§FS-repository-functional-spec.4). |
+
+Dynamic-access coverage normally marks a call site covered when its stack frame
+carries a source line and JaCoCo covered that line. Some jars are compiled
+without a `LineNumberTable`, so every dynamic-access frame is line-less
+(`Unknown Source`) and line-based matching can never succeed. In that case only
+— the report has call sites but none carries a line number — the harness
+collects a `native-image-agent` trace from a JVM `test` run and falls back to
+matching a call site by the tracked-API method name plus the caller class: a
+call site is covered when a trace event for the same JDK entry-point method name
+fired from exactly that caller class. Line-based matching stays the primary path
+and is unchanged for jars that carry line information.

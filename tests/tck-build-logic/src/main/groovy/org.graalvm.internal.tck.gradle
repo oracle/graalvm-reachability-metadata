@@ -523,10 +523,19 @@ tasks.register("mergeNativeTraceMetadata", Exec) { Exec task ->
 }
 
 // Ensure detailed exception/stacktrace logging for all Test tasks, including nativeTest
-tasks.withType(Test).configureEach {
+tasks.withType(Test).configureEach { Test testTask ->
     // §TCK-test-harness.3: downstream pass/fail gates can run without coverage instrumentation.
     if (skipJacoco) {
         jacoco.enabled = false
+    }
+    // §TCK-test-harness.8: when a jar has no line info, the dynamic-access report has no
+    // usable line numbers, so the harness collects a native-image-agent trace from the JVM
+    // `test` run and falls back to matching call sites by tracked-API method plus caller class.
+    if (testTask.name == 'test' && providers.gradleProperty('dynamicAccessTraceOutput').isPresent()) {
+        String traceOutput = providers.gradleProperty('dynamicAccessTraceOutput').get()
+        testTask.jvmArgs "-agentlib:native-image-agent=trace-output=${traceOutput}"
+        testTask.jacoco.enabled = false
+        testTask.outputs.upToDateWhen { false }
     }
     systemProperty "junit.jupiter.execution.timeout.default", "${maxJUnitTestTimeoutSeconds} s"
     systemProperty "junit.jupiter.execution.timeout.mode", "enabled"

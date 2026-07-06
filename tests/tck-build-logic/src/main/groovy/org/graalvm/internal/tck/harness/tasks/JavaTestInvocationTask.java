@@ -23,6 +23,9 @@ public abstract class JavaTestInvocationTask extends AllCoordinatesExecTask {
         ));
         // §TCK-test-harness.3
         appendProperty(command, "skipJacoco");
+        // §TCK-test-harness.8: forward the agent-trace output path so the inner `test` run
+        // attaches native-image-agent when the dynamic-access fallback needs a trace.
+        appendProperty(command, "dynamicAccessTraceOutput");
         return command;
     }
 

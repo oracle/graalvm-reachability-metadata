@@ -327,6 +327,18 @@ public final class LibraryStatsSupport {
             Path dynamicAccessDir,
             Path jacocoReport
     ) {
+        return buildVersionStats(coordinate, libraryJars, dynamicAccessDir, jacocoReport, Map.of());
+    }
+
+    /// §TCK-test-harness.8: `traceCallersByFunction` (from `parseAgentTrace`) enables the
+    /// agent-trace fallback for line-less call sites; pass `Map.of()` for the line-based path.
+    public static LibraryStatsModels.VersionStats buildVersionStats(
+            String coordinate,
+            List<Path> libraryJars,
+            Path dynamicAccessDir,
+            Path jacocoReport,
+            Map<String, Set<String>> traceCallersByFunction
+    ) {
         Set<String> libraryClasses = loadLibraryClasses(libraryJars);
         if (libraryClasses.isEmpty()) {
             return new LibraryStatsModels.VersionStats(
@@ -336,7 +348,7 @@ public final class LibraryStatsSupport {
             );
         }
         ParsedJacocoReport parsedJacocoReport = parseJacocoReport(jacocoReport);
-        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, parsedJacocoReport.coveredLinesBySource());
+        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, parsedJacocoReport.coveredLinesBySource(), traceCallersByFunction);
         return versionStats(
                 coordinate,
                 LibraryStatsModels.DynamicAccessStatsValue.available(parsedDynamicAccess.dynamicAccessStats()),
@@ -361,7 +373,7 @@ public final class LibraryStatsSupport {
         if (libraryClasses.isEmpty()) {
             return new ExternalDynamicAccessSummary(0L, Map.of());
         }
-        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, Map.of());
+        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, Map.of(), Map.of());
         return new ExternalDynamicAccessSummary(
                 parsedDynamicAccess.dynamicAccessStats().totalCalls(),
                 parsedDynamicAccess.dynamicAccessStats().breakdown()
@@ -374,6 +386,18 @@ public final class LibraryStatsSupport {
             Path dynamicAccessDir,
             Path jacocoReport
     ) {
+        return buildDynamicAccessCoverageReport(coordinate, libraryJars, dynamicAccessDir, jacocoReport, Map.of());
+    }
+
+    /// §TCK-test-harness.8: `traceCallersByFunction` (from `parseAgentTrace`) enables the
+    /// agent-trace fallback for line-less call sites; pass `Map.of()` for the line-based path.
+    public static LibraryStatsModels.DynamicAccessCoverageReport buildDynamicAccessCoverageReport(
+            String coordinate,
+            List<Path> libraryJars,
+            Path dynamicAccessDir,
+            Path jacocoReport,
+            Map<String, Set<String>> traceCallersByFunction
+    ) {
         Set<String> libraryClasses = loadLibraryClasses(libraryJars);
         if (libraryClasses.isEmpty()) {
             return new LibraryStatsModels.DynamicAccessCoverageReport(
@@ -384,7 +408,7 @@ public final class LibraryStatsSupport {
             );
         }
         ParsedJacocoReport parsedJacocoReport = parseJacocoReport(jacocoReport);
-        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, parsedJacocoReport.coveredLinesBySource());
+        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, parsedJacocoReport.coveredLinesBySource(), traceCallersByFunction);
         return new LibraryStatsModels.DynamicAccessCoverageReport(
                 coordinate,
                 parsedDynamicAccess.dynamicAccessStats().totalCalls() > 0,
@@ -394,6 +418,73 @@ public final class LibraryStatsSupport {
                 ),
                 parsedDynamicAccess.classCoverage()
         );
+    }
+
+    /// §TCK-test-harness.8: parses a `native-image-agent` trace (a JSON array of event objects,
+    /// each with `tracer`/`function` and usually `caller_class`) into `function name -> caller
+    /// classes`. Entries without a `caller_class` are ignored; the tracer type is not filtered
+    /// because the caller-class equality check downstream already excludes noise. Returns an empty
+    /// map when the file is absent.
+    public static Map<String, Set<String>> parseAgentTrace(Path traceFile) {
+        if (traceFile == null || !Files.isRegularFile(traceFile)) {
+            return Map.of();
+        }
+        Map<String, Set<String>> callersByFunction = new HashMap<>();
+        try {
+            JsonNode root = OBJECT_MAPPER.readTree(traceFile.toFile());
+            if (!root.isArray()) {
+                return Map.of();
+            }
+            for (JsonNode entry : root) {
+                JsonNode function = entry.get("function");
+                JsonNode callerClass = entry.get("caller_class");
+                if (function == null || function.isNull() || callerClass == null || callerClass.isNull()) {
+                    continue;
+                }
+                callersByFunction
+                        .computeIfAbsent(function.asText(), ignored -> new LinkedHashSet<>())
+                        .add(callerClass.asText());
+            }
+        } catch (IOException e) {
+            throw new GradleException("Failed to parse native-image-agent trace " + traceFile, e);
+        }
+        return callersByFunction;
+    }
+
+    /// §TCK-test-harness.8: the agent-trace fallback is the only-when-lines-are-absent gate.
+    /// Returns true iff the dynamic-access reports contain at least one library call site and
+    /// every such call site is line-less, so line-based matching can never succeed. Purely
+    /// data-driven — no jar bytecode scanning.
+    public static boolean lineMatchingImpossible(Path dynamicAccessDir, List<Path> libraryJars) {
+        Set<String> libraryClasses = loadLibraryClasses(libraryJars);
+        if (libraryClasses.isEmpty()) {
+            return false;
+        }
+        ParsedDynamicAccess parsed = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, Map.of(), Map.of());
+        if (parsed.dynamicAccessStats().totalCalls() == 0L) {
+            return false;
+        }
+        for (LibraryStatsModels.DynamicAccessClassCoverage classCoverage : parsed.classCoverage()) {
+            for (LibraryStatsModels.DynamicAccessCallSiteCoverage callSite : classCoverage.callSites()) {
+                if (callSite.line() != null) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /// Extracts the bare method name from a tracked-API key such as
+    /// `java.lang.Class#forName(java.lang.String)` -> `forName`, to compare against the agent
+    /// trace's `function` field. Returns null when the key has no `#...(` method segment.
+    private static String methodNameOfTrackedApi(String trackedApi) {
+        int hash = trackedApi.indexOf('#');
+        if (hash < 0) {
+            return null;
+        }
+        int paren = trackedApi.indexOf('(', hash);
+        String method = paren < 0 ? trackedApi.substring(hash + 1) : trackedApi.substring(hash + 1, paren);
+        return method.isBlank() ? null : method;
     }
 
     private static LibraryStatsModels.VersionStats versionStats(
@@ -661,7 +752,8 @@ public final class LibraryStatsSupport {
     private static ParsedDynamicAccess parseDynamicAccessReports(
             Path dynamicAccessDir,
             Set<String> libraryClasses,
-            Map<String, Set<Integer>> coveredLinesBySource
+            Map<String, Set<Integer>> coveredLinesBySource,
+            Map<String, Set<String>> traceCallersByFunction
     ) {
         if (!Files.isDirectory(dynamicAccessDir)) {
             return emptyDynamicAccess();
@@ -674,7 +766,7 @@ public final class LibraryStatsSupport {
                     .filter(Files::isRegularFile)
                     .filter(path -> DYNAMIC_ACCESS_REPORT.matcher(path.getFileName().toString()).matches())
                     .sorted(Comparator.comparing(path -> path.toAbsolutePath().toString()))
-                    .forEach(path -> parseDynamicAccessFile(path, libraryClasses, coveredLinesBySource, callSitesByKey));
+                    .forEach(path -> parseDynamicAccessFile(path, libraryClasses, coveredLinesBySource, traceCallersByFunction, callSitesByKey));
         } catch (IOException e) {
             throw new GradleException("Failed to traverse dynamic access directory " + dynamicAccessDir, e);
         }
@@ -732,6 +824,7 @@ public final class LibraryStatsSupport {
             Path path,
             Set<String> libraryClasses,
             Map<String, Set<Integer>> coveredLinesBySource,
+            Map<String, Set<String>> traceCallersByFunction,
             Map<String, ParsedDynamicAccessCallSite> callSitesByKey
     ) {
         Matcher matcher = DYNAMIC_ACCESS_REPORT.matcher(path.getFileName().toString());
@@ -754,11 +847,22 @@ public final class LibraryStatsSupport {
                     if (callSitesByKey.containsKey(callSiteKey)) {
                         continue;
                     }
+                    // §TCK-test-harness.8: line-based matching is the primary path. Only when a
+                    // frame carries no line number (line-less jar) do we fall back to the agent
+                    // trace: covered = a trace event for the same JDK entry-point method name was
+                    // performed by exactly this caller class. Matching on method name only (not
+                    // owner class) is deliberate; the agent's `function` field is the intercepted
+                    // method name, and cross-owner name collisions at the same caller class are
+                    // acceptable over-attribution.
                     boolean covered = false;
                     if (parsedFrame.lineNumber() != null) {
                         String sourceKey = sourceKey(parsedFrame.className(), parsedFrame.sourceFile());
                         Set<Integer> coveredLines = coveredLinesBySource.get(sourceKey);
                         covered = coveredLines != null && coveredLines.contains(parsedFrame.lineNumber());
+                    } else if (!traceCallersByFunction.isEmpty()) {
+                        String apiMethod = methodNameOfTrackedApi(trackedApi);
+                        Set<String> callers = apiMethod == null ? null : traceCallersByFunction.get(apiMethod);
+                        covered = callers != null && callers.contains(parsedFrame.className());
                     }
                     callSitesByKey.put(
                             callSiteKey,
@@ -797,10 +901,11 @@ public final class LibraryStatsSupport {
             return null;
         }
         String className = matcher.group(1);
+        String methodName = matcher.group(2);
         String sourceFile = matcher.group(3);
         String lineNumberString = matcher.group(4);
         Integer lineNumber = lineNumberString == null ? null : Integer.parseInt(lineNumberString);
-        return new ParsedStackFrame(className, sourceFile, lineNumber);
+        return new ParsedStackFrame(className, methodName, sourceFile, lineNumber);
     }
 
     private static ParsedJacocoReport parseJacocoReport(Path jacocoReport) {
@@ -992,7 +1097,9 @@ public final class LibraryStatsSupport {
         );
     }
 
-    private record ParsedStackFrame(String className, String sourceFile, Integer lineNumber) {
+    /// `methodName` (the caller method) is retained as the designated expansion point for
+    /// per-method agent-trace matching later (§TCK-test-harness.8); v1 matches on caller class.
+    private record ParsedStackFrame(String className, String methodName, String sourceFile, Integer lineNumber) {
     }
 
     private record ParsedDynamicAccess(
