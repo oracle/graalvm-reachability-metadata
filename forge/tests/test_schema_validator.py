@@ -12,7 +12,7 @@ from utility_scripts.schema_validator import validate_run_metrics
 
 
 class RunMetricsSchemaTests(unittest.TestCase):
-    def test_run_metrics_schema_accepts_chunk_ready_status(self) -> None:
+    def test_run_metrics_schema_accepts_current_and_historical_artifacts(self) -> None:
         run_metrics = [
             {
                 "timestamp": "2026-05-02T00:00:00Z",
@@ -29,7 +29,6 @@ class RunMetricsSchemaTests(unittest.TestCase):
                     "metadata_entries": 0,
                 },
                 "artifacts": {
-                    "test_file": "tests/src/org.example/lib/1.0.0/src/test/java/org/example/LibTest.java",
                     "metadata_file": "metadata/org.example/lib/1.0.0/reflect-config.json",
                 },
             },
@@ -37,6 +36,14 @@ class RunMetricsSchemaTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tmpdir:
             metrics_path = os.path.join(tmpdir, "results.json")
+            with open(metrics_path, "w", encoding="utf-8") as metrics_file:
+                json.dump(run_metrics, metrics_file)
+
+            validate_run_metrics(metrics_path)
+
+            run_metrics[0]["artifacts"]["test_file"] = (
+                "tests/src/org.example/lib/1.0.0/src/test/java/org/example/LibTest.java"
+            )
             with open(metrics_path, "w", encoding="utf-8") as metrics_file:
                 json.dump(run_metrics, metrics_file)
 

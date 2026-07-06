@@ -435,7 +435,6 @@ def build_run_metrics_dict(
         lines_covered: int,
         coverage_percent: float,
         total_entries: int,
-        test_file: str,
         metadata_file: str,
         test_only_metadata_entries: int = 0,
         generated_loc: int | None = None,
@@ -502,25 +501,14 @@ def build_run_metrics_dict(
         run_metrics["library_preparation_preflight"] = library_preparation_preflight
     run_metrics["metrics"] = metrics
     run_metrics["artifacts"] = {
-        "test_file": test_file,
         "metadata_file": metadata_file,
     }
 
     return run_metrics
 
 
-def resolve_artifact_paths(repo_path, package, artifact, library_version, tests_root):
-    """Resolve test file and metadata file paths for a library version."""
-    test_file_path = None
-    for dirpath, _, filenames in os.walk(tests_root):
-        for fname in filenames:
-            if _is_test_source_file(fname):
-                test_file_path = os.path.relpath(os.path.join(dirpath, fname), repo_path)
-                break
-        if test_file_path:
-            break
-
-    # Determine metadata_file path (either reachability-metadata.json or the metadata dir)
+def resolve_metadata_artifact_path(repo_path: str, package: str, artifact: str, library_version: str) -> str:
+    """Resolve the metadata artifact path for a library version."""
     metadata_version = resolve_metadata_version(repo_path, package, artifact, library_version)
     reach_json = os.path.join(repo_path, "metadata", package, artifact, metadata_version, "reachability-metadata.json")
     if os.path.isfile(reach_json):
@@ -531,7 +519,7 @@ def resolve_artifact_paths(repo_path, package, artifact, library_version, tests_
             repo_path,
         )
 
-    return str(test_file_path), str(metadata_file_path)
+    return str(metadata_file_path)
 
 
 def _is_test_source_file(file_name: str) -> bool:
@@ -570,7 +558,6 @@ def create_run_metrics_output_json(
         agent,
         model_name,
         global_iterations,
-        tests_root,
         strategy_name,
         status,
         starting_commit: str | None = None,
@@ -591,7 +578,7 @@ def create_run_metrics_output_json(
         global_iterations,
         starting_commit=starting_commit,
     )
-    test_file, metadata_file = resolve_artifact_paths(repo_path, package, artifact, library_version, tests_root)
+    metadata_file = resolve_metadata_artifact_path(repo_path, package, artifact, library_version)
     agent_name = resolve_agent(strategy_name)
     stats = load_library_stats_snapshot(repo_path, package, artifact, library_version)
 
@@ -615,7 +602,6 @@ def create_run_metrics_output_json(
         coverage_percent=metrics.get("coverage_percent", 0.0),
         total_entries=metrics.get("total_entries", 0),
         test_only_metadata_entries=metrics.get("test_only_metadata_entries", 0),
-        test_file=test_file,
         metadata_file=metadata_file,
         stats=stats,
         post_generation_intervention=post_generation_intervention,
@@ -632,7 +618,6 @@ def create_javac_fix_run_metrics_output_json(
         agent,
         model_name,
         global_iterations,
-        tests_root,
         strategy_name,
         status,
         starting_commit: str | None = None,
@@ -651,7 +636,7 @@ def create_javac_fix_run_metrics_output_json(
         global_iterations,
         starting_commit=starting_commit,
     )
-    test_file, metadata_file = resolve_artifact_paths(repo_path, package, artifact, new_library_version, tests_root)
+    metadata_file = resolve_metadata_artifact_path(repo_path, package, artifact, new_library_version)
 
     previous_coverage_percent, _ = collect_version_coverage_metrics(
         repo_path=repo_path,
@@ -684,7 +669,6 @@ def create_javac_fix_run_metrics_output_json(
         coverage_percent=metrics.get("coverage_percent", 0.0),
         total_entries=metrics.get("total_entries", 0),
         test_only_metadata_entries=metrics.get("test_only_metadata_entries", 0),
-        test_file=test_file,
         metadata_file=metadata_file,
         previous_library=f"{package}:{artifact}:{previous_library_version}",
         previous_library_metadata_entries=previous_entries,
@@ -736,7 +720,6 @@ def create_failure_run_metrics_output(
         lines_covered=0,
         coverage_percent=0.0,
         total_entries=0,
-        test_file="None",
         metadata_file="None",
         library_preparation_preflight=library_preparation_preflight,
     )
