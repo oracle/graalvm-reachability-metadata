@@ -1,0 +1,77 @@
+{
+  "continueFrom": "publication",
+  "coordinate": "org.projectlombok:lombok:1.18.38",
+  "issueNumber": 7771,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Keep the normal Lombok testImplementation dependency and add `testAnnotationProcessor \"org.projectlombok:lombok:$libraryVersion\"` to the generated test module. Test Lombok-generated members (for example `@Getter`, `@Builder`, or `@Value`) rather than only calling `lombok.Lombok` runtime helpers.",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7771 Support for org.projectlombok:lombok:1.18.38; label=library-new-request; body_chars=52"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 53754,
+    "issue_label": "library-new-request",
+    "issue_number": 7771,
+    "library": "org.projectlombok:lombok:1.18.38",
+    "model": "gpt-5.6-terra",
+    "output_tokens_used": 3375,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Lombok 1.18.38 officially added JDK 24 support; JDK 25 support was declared in 1.18.40. Basic annotation processing succeeds on the local JDK 25 with Unsafe deprecation warnings, but Gradle and Native Image verification remain necessary."
+    ],
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.projectlombok:lombok:1.18.38/library-preparation-preflight/pi-generation-2026-07-06T10-04-41-477436Z.log",
+    "status": "completed",
+    "summary": "Lombok\u2019s meaningful behavior is compile-time annotation processing, which the normal testImplementation scaffold does not enable."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 4,
+      "exhaustedClasses": [
+        "lombok.launch.Agent",
+        "lombok.launch.Main",
+        "lombok.launch.PatchFixesHider$Util",
+        "lombok.launch.ShadowClassLoader"
+      ],
+      "iteration": 16,
+      "status": "completed"
+    },
+    "finalization": {
+      "status": "completed"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-7771-library-new-request-org.projectlombok-lombok-1.18.38-9f0ba912",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.projectlombok:lombok:1.18.38",
+    "timestamp": "2026-07-06T11:31:32.182564Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.6-terra"
+}

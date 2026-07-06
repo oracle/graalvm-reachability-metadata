@@ -1,0 +1,97 @@
+{
+  "add_new_library_support:2026-07-06": {
+    "timestamp": "2026-07-06T11:31:32.182564Z",
+    "library": "org.projectlombok:lombok:1.18.38",
+    "starting_commit": "a8006dc1e760596b1ef8172c5210bc0843ce3240",
+    "ending_commit": "fb504de9a4f395e0c518f1f5999a00dd26e59faf",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
+    "agent": "pi",
+    "model": "gpt-5.6-terra",
+    "status": "success",
+    "stats": {
+      "version": "1.18.38",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 18
+          },
+          "resources": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 0.0,
+        "coveredCalls": 0,
+        "totalCalls": 24
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 0,
+          "missed": 7776,
+          "ratio": 0.0,
+          "total": 7776
+        },
+        "line": {
+          "covered": 0,
+          "missed": 1333,
+          "ratio": 0.0,
+          "total": 1333
+        },
+        "method": {
+          "covered": 0,
+          "missed": 314,
+          "ratio": 0.0,
+          "total": 314
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 7771,
+      "issue_label": "library-new-request",
+      "library": "org.projectlombok:lombok:1.18.38",
+      "summary": "Lombok’s meaningful behavior is compile-time annotation processing, which the normal testImplementation scaffold does not enable.",
+      "deterministic_setup": [],
+      "agent_guidance": "Keep the normal Lombok testImplementation dependency and add `testAnnotationProcessor \"org.projectlombok:lombok:$libraryVersion\"` to the generated test module. Test Lombok-generated members (for example `@Getter`, `@Builder`, or `@Value`) rather than only calling `lombok.Lombok` runtime helpers.",
+      "risks": [
+        "Lombok 1.18.38 officially added JDK 24 support; JDK 25 support was declared in 1.18.40. Basic annotation processing succeeds on the local JDK 25 with Unsafe deprecation warnings, but Gradle and Native Image verification remain necessary."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#7771 Support for org.projectlombok:lombok:1.18.38; label=library-new-request; body_chars=52"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-terra",
+      "input_tokens_used": 53754,
+      "output_tokens_used": 3375,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.projectlombok:lombok:1.18.38/library-preparation-preflight/pi-generation-2026-07-06T10-04-41-477436Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 284872,
+      "cached_input_tokens_used": 4303360,
+      "output_tokens_used": 43799,
+      "iterations": 16,
+      "cost_usd": 2.445,
+      "generated_loc": 28,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.projectlombok/lombok/1.18.38/src/test/java/org_projectlombok/lombok/ShadowClassLoaderTest.java",
+      "metadata_file": "metadata/org.projectlombok/lombok/1.18.38/reachability-metadata.json"
+    }
+  }
+}
