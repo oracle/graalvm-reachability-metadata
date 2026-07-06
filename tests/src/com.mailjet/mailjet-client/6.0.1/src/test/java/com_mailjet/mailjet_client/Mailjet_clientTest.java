@@ -16,6 +16,7 @@ import com.mailjet.client.Resource;
 import com.mailjet.client.enums.ApiAuthenticationType;
 import com.mailjet.client.enums.ApiVersion;
 import com.mailjet.client.resource.Contact;
+import com.mailjet.client.resource.Contactslist;
 import com.mailjet.client.transactional.Attachment;
 import com.mailjet.client.transactional.SendContact;
 import com.mailjet.client.transactional.SendEmailsRequest;
@@ -39,6 +40,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -187,6 +189,38 @@ public class Mailjet_clientTest {
             assertThat(response.getMessages()[0].getStatus()).isEqualTo(SentMessageStatus.SUCCESS);
             assertThat(response.getMessages()[0].getCustomID()).isEqualTo("custom-123");
             assertThat(response.getMessages()[0].getTo().get(0).getMessageID()).isEqualTo(12345);
+        }
+    }
+
+    @Test
+    void asyncPutSendsJsonBodyAndCompletesWithParsedResponse() throws Exception {
+        try (TestServer server = TestServer.respondingWith(200, """
+                {
+                  "Count": 1,
+                  "Total": 1,
+                  "Data": [ { "ID": 123, "Name": "Updated list" } ]
+                }
+                """);
+                TestHttpClient httpClient = TestHttpClient.create()) {
+            MailjetClient client = new MailjetClient(ClientOptions.builder()
+                    .baseUrl(server.baseUrl())
+                    .apiKey("key")
+                    .apiSecretKey("secret")
+                    .okHttpClient(httpClient.client())
+                    .build());
+            MailjetRequest request = new MailjetRequest(Contactslist.resource, 123L)
+                    .property(Contactslist.NAME, "Updated list");
+
+            CompletableFuture<MailjetResponse> future = client.putAsync(request);
+            MailjetResponse response = future.get(10, TimeUnit.SECONDS);
+
+            RecordedRequest recorded = server.takeRequest();
+            assertThat(recorded.method()).isEqualTo("PUT");
+            assertThat(recorded.path()).isEqualTo("/v3/REST/contactslist/123");
+            assertThat(recorded.headers().getFirst("Content-Type")).startsWith("application/json");
+            assertThat(new JSONObject(recorded.body()).getString(Contactslist.NAME)).isEqualTo("Updated list");
+            assertThat(response.getStatus()).isEqualTo(200);
+            assertThat(response.getData().getJSONObject(0).getString(Contactslist.NAME)).isEqualTo("Updated list");
         }
     }
 
