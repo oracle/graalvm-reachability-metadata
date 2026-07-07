@@ -61,13 +61,17 @@ public abstract class GenerateDynamicAccessCoverageReportTask extends AbstractLi
         for (String coordinate : coordinates) {
             generateReportsForCoordinate(coordinate);
             List<Path> libraryJars = listLibraryJars(coordinate);
-            Path tracePath = maybeCollectAgentTrace(coordinate, libraryJars);
+            Path originsOutput = maybeCollectAgentOrigins(coordinate, libraryJars);
             LibraryStatsModels.DynamicAccessCoverageReport report = LibraryStatsSupport.buildDynamicAccessCoverageReport(
                     coordinate,
                     libraryJars,
                     getDynamicAccessDir(coordinate),
                     getJacocoReport(coordinate),
-                    LibraryStatsSupport.parseAgentTrace(tracePath)
+                    LibraryStatsSupport.parseAgentOrigins(
+                            originsOutput,
+                            getDynamicAccessDir(coordinate),
+                            libraryJars
+                    )
             );
             Path outputFile = getDynamicAccessCoverageReport(coordinate);
             LibraryStatsSupport.writeJson(outputFile, report);

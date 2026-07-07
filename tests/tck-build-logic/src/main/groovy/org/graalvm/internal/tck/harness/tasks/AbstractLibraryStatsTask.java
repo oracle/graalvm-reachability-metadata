@@ -226,13 +226,17 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
 
         boolean dynamicAccessAvailable = generateReportsForCoordinate(coordinates);
         if (dynamicAccessAvailable) {
-            Path tracePath = maybeCollectAgentTrace(coordinates, libraryJars);
+            Path originsOutput = maybeCollectAgentOrigins(coordinates, libraryJars);
             return LibraryStatsSupport.buildVersionStats(
                     coordinates,
                     libraryJars,
                     getDynamicAccessDir(coordinates),
                     getJacocoReport(coordinates),
-                    LibraryStatsSupport.parseAgentTrace(tracePath)
+                    LibraryStatsSupport.parseAgentOrigins(
+                            originsOutput,
+                            getDynamicAccessDir(coordinates),
+                            libraryJars
+                    )
             );
         }
         return LibraryStatsSupport.buildVersionStatsWithoutDynamicAccess(
@@ -241,46 +245,45 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
         );
     }
 
-    /// §TCK-test-harness.8: agent-trace fallback for coordinates whose dynamic-access frames carry
+    /// §TCK-test-harness.8: agent-origin fallback for coordinates whose dynamic-access frames carry
     /// no line numbers. Returns null (today's behaviour) unless line-based matching is impossible;
-    /// otherwise runs the JVM-only `javaTest` lane under `native-image-agent` and returns the trace
-    /// path. `javaTest` is used rather than the full `test` lane so the native build (and the
-    /// dynamic-access reports it produced) is not re-run and clobbered. A failed or missing trace
-    /// degrades gracefully to null — it never fails the stats task.
-    protected Path maybeCollectAgentTrace(String coordinates, List<Path> libraryJars) {
+    /// otherwise runs the JVM-only `javaTest` lane under `native-image-agent` and returns its
+    /// configuration-origin directory. `javaTest` avoids re-running and clobbering the native
+    /// dynamic-access reports. Failed or missing origins degrade gracefully to today's behaviour.
+    protected Path maybeCollectAgentOrigins(String coordinates, List<Path> libraryJars) {
         if (!LibraryStatsSupport.lineMatchingImpossible(getDynamicAccessDir(coordinates), libraryJars)) {
             return null;
         }
-        Path tracePath = tckExtension.getTestDir(coordinates)
+        Path originsOutput = tckExtension.getTestDir(coordinates)
                 .resolve("build")
                 .resolve("reports")
                 .resolve("dynamic-access")
-                .resolve("agent-trace.json");
+                .resolve("agent-origins");
+        Path originsFile = originsOutput.resolve("reachability-metadata-origins.txt");
         getLogger().lifecycle(
-                "Dynamic-access frames for {} carry no line numbers; collecting native-image-agent trace.",
+                "Dynamic-access frames for {} carry no line numbers; collecting native-image-agent origins.",
                 coordinates
         );
         try {
-            // The agent does not create the trace-output parent directory itself.
-            Files.createDirectories(tracePath.getParent());
-            Files.deleteIfExists(tracePath);
+            Files.createDirectories(originsOutput);
+            Files.deleteIfExists(originsFile);
         } catch (IOException e) {
-            getLogger().warn("Could not prepare agent-trace output for {}: {}", coordinates, e.getMessage());
+            getLogger().warn("Could not prepare agent-origin output for {}: {}", coordinates, e.getMessage());
             return null;
         }
-        CommandResult trace = runGradle(
-                List.of("javaTest", "-Pcoordinates=" + coordinates, "-PdynamicAccessTraceOutput=" + tracePath),
+        CommandResult origins = runGradle(
+                List.of("javaTest", "-Pcoordinates=" + coordinates, "-PdynamicAccessOriginsOutput=" + originsOutput),
                 true
         );
-        if (trace.exitCode() != 0 || !Files.isRegularFile(tracePath)) {
+        if (origins.exitCode() != 0 || !Files.isRegularFile(originsFile)) {
             getLogger().warn(
-                    "Agent-trace collection for {} failed (exit code {}); falling back to line-based coverage only.",
+                    "Agent-origin collection for {} failed (exit code {}); falling back to line-based coverage only.",
                     coordinates,
-                    trace.exitCode()
+                    origins.exitCode()
             );
             return null;
         }
-        return tracePath;
+        return originsOutput;
     }
 
     protected void validateCommittedStatsFiles() {
