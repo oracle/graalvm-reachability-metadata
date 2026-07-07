@@ -9,6 +9,7 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String javaHome = System.getenv('JAVA_HOME') ?: System.getenv('GRAALVM_HOME')
 
 dependencies {
 	testImplementation "org.apache.tomcat.embed:tomcat-embed-core:$libraryVersion"
@@ -19,15 +20,22 @@ dependencies {
 }
 
 tasks.withType(Test).configureEach {
+    jvmArgs '--add-opens=java.base/java.io=ALL-UNNAMED'
     jvmArgs '--add-opens=java.base/java.lang=ALL-UNNAMED'
+    jvmArgs '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED'
     jvmArgs '--add-opens=java.base/java.util=ALL-UNNAMED'
     jvmArgs '--add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED'
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Djava.home=${javaHome}")
 }
 
 graalvmNative {
     binaries {
         test {
             buildArgs.add('--allow-incomplete-classpath')
+            runtimeArgs("-Djava.home=${javaHome}")
         }
     }
     agent {

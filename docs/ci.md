@@ -117,9 +117,9 @@ Every Sunday (`0 2 * * 0`) and on manual dispatch. Uses
 the full `test` lane, pulls only allowed images, then disables Docker networking.
 Failed batches are isolated down to concrete library versions, publish result
 and failure-log artifacts, and fail in the matrix so the Actions UI points at
-the failing batch. The aggregate job remains release-blocking when failures are
-found (§FS-repository-functional-spec.5.3) and gates the scheduled release
-(§CI-create-scheduled-release).
+the failing batch. The aggregate job publishes a failure report when failures are
+found (§FS-repository-functional-spec.5.3); it surfaces sweep regressions but does
+not gate the scheduled release (§CI-create-scheduled-release).
 
 ### CI-verify-new-library-version-compatibility: Verify new library version compatibility
 
@@ -148,9 +148,10 @@ to the `stats/coverage` branch. The published branch keeps only `COVERAGE.md`,
 ### CI-create-scheduled-release: Create scheduled release
 
 Every Monday (`0 3 * * 1`) and on manual dispatch. Packages metadata only if it
-changed and the latest completed test-all-metadata workflow passed
-(§CI-test-all-metadata); runs `spotlessCheck` before packaging
-(§FS-repository-functional-spec.5.3). Manual dispatches bypass the test-all gate.
+changed; runs `spotlessCheck` before packaging
+(§FS-repository-functional-spec.5.3). It is deliberately not gated on the periodic
+`test-all-metadata` sweep (§CI-test-all-metadata) so bleeding-edge sweep failures
+cannot stall the release cadence.
 The workflow considers only semantic version tags when choosing the previous
 numbered release tag, so floating snapshot tags such as `SNAPSHOT` are ignored.
 It then creates the next `<major>.<minor>.<patch>` release. The packaged ZIP is
@@ -177,7 +178,10 @@ eligible. For automated native-build-tools issues with no labels and the standar
 `Support for groupId:artifactId:version` title, the workflow adds
 `library-new-request` and `priority` first. Once eligible it extracts and
 validates the Maven coordinates, closes invalid/duplicate/already-supported
-requests, and — via `open-dependency-issues-and-link-blockers.js`
+requests, and also closes requests whose `groupId:artifactId` already has an
+`index.json` recorded as `not-for-native-image` even when that index carries no
+per-version `tested-versions`. It then — via
+`open-dependency-issues-and-link-blockers.js`
 (§CI-shared-scripts) — generates a deps.dev dependency graph and opens or reuses
 `library-new-request` issues for unsupported transitive dependencies, linking
 them as blockers. The label vocabulary it applies is defined in

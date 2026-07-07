@@ -175,7 +175,7 @@ jobs:
             await github.rest.issues.createComment({ owner, repo, issue_number, body });
             await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
 
-      - name: "Check if library/version is already supported by the repository"
+      - name: "Check whether the request is already covered by the repository"
         if: ${{ steps.classify.outputs.should_triage == 'true' && steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' }}
         id: support
         env:
@@ -188,10 +188,15 @@ jobs:
           STATUS=$?
           set -e
           echo "$OUTPUT"
-          if grep -qF "is supported" <<<"$OUTPUT"; then
+          if grep -q '^STATUS=supported$' <<<"$OUTPUT"; then
             echo "supported=true" >> "$GITHUB_OUTPUT"
           else
             echo "supported=false" >> "$GITHUB_OUTPUT"
+          fi
+          if grep -q '^STATUS=not-for-native-image$' <<<"$OUTPUT"; then
+            echo "not_for_native_image=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "not_for_native_image=false" >> "$GITHUB_OUTPUT"
           fi
           echo "exit_code=$STATUS" >> "$GITHUB_OUTPUT"
 
@@ -215,8 +220,29 @@ jobs:
             await github.rest.issues.createComment({ owner, repo, issue_number, body });
             await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
 
+      - name: "Close issue - artifact is already marked not-for-native-image"
+        if: ${{ steps.classify.outputs.should_triage == 'true' && steps.support.outputs.not_for_native_image == 'true' }}
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        env:
+          COORDS: ${{ steps.extract.outputs.coords }}
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = context.issue.number;
+            const coords = process.env.COORDS || "";
+            const body = [
+              `Automated triage: The requested artifact (${coords}) is already recorded by the GraalVM Reachability Metadata repository as \`not-for-native-image\`.`,
+              "",
+              "Closing this issue because the repository already tracks that this artifact is intentionally not a native-image metadata target.",
+              "If you believe this classification is wrong, please reopen the issue with additional details.",
+              "Note: Reopening will not re-run automation; maintainers will review manually."
+            ].join("\n");
+            await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
+
       - name: "Mark issue eligible for dependency graph expansion"
-        if: ${{ steps.classify.outputs.should_triage == 'true' && steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' && steps.support.outputs.supported != 'true' }}
+        if: ${{ steps.classify.outputs.should_triage == 'true' && steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' && steps.support.outputs.supported != 'true' && steps.support.outputs.not_for_native_image != 'true' }}
         id: expand
         run: |
           set -Eeuo pipefail

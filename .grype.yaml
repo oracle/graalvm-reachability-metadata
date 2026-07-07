@@ -1,0 +1,186 @@
+# grype configuration for the docker-image vulnerability gate (§CI-scan-docker-images).
+#
+# grype auto-loads this file from the repository root, so it applies to the
+# `checkAllowedDockerImages` / `GrypeTask` scan both on PRs (changed images) and
+# on the weekly all-images run.
+#
+# Every rule below suppresses ONE confirmed false-positive High/Critical finding
+# in the Go stdlib statically linked into `/usr/sbin/gosu`. gosu is a ~200-line
+# setuid shim that only calls setuid/setgid/execve to drop privileges and exec
+# the container entrypoint; it does not invoke any of the affected stdlib
+# subsystems (net/http, crypto/tls, crypto/x509, net/url, encoding/gob,
+# archive/*), so none of these CVEs are reachable through it. gosu ships this
+# stdlib upstream, so there is nothing for us to patch.
+#
+# Each rule is pinned to vulnerability id + package stdlib + version go1.22.2 +
+# location /usr/sbin/gosu. Consequences of this narrow scope:
+#   - a NEW go1.22.2 stdlib CVE (an id not listed here) is still reported;
+#   - the same CVE in any OTHER binary/path is still reported;
+#   - once gosu is rebuilt against a newer Go, the version pin no longer matches
+#     and every finding re-surfaces for re-evaluation (acts as an implicit expiry).
+ignore:
+  - vulnerability: CVE-2024-24790
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2024-24791
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2024-34156
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2024-34158
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2025-22871
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2025-4674
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2025-47907
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2025-58187
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2025-58188
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2025-61723
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2025-61725
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2025-61726
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2025-61729
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2025-61731
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2025-61732
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2025-68121
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2026-25679
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2026-27140
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2026-27143
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2026-27144
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2026-27145
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2026-32280
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2026-32281
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2026-32283
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2026-33811
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2026-33814
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2026-39820
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2026-39836
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2026-42499
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2026-42501
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: CVE-2026-42504
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2024-2887
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2024-2963
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2024-3106
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2024-3107
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2025-3563
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2025-3849
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2025-4006
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2025-4007
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2025-4009
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2025-4013
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2025-4155
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2026-4337
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2026-4341
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2026-4601
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2026-4870
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2026-4918
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2026-4946
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2026-4947
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2026-4971
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2026-4977
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2026-4981
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2026-4986
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2026-5037
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."
+  - vulnerability: GO-2026-5038
+    package: { name: stdlib, version: go1.22.2, location: "/usr/sbin/gosu" }
+    reason: "vulnerable_code_not_in_execute_path: gosu (setuid exec shim) never calls the affected go1.22.2 stdlib subsystem; re-surfaces if gosu is rebuilt on a newer Go."

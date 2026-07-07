@@ -83,7 +83,7 @@ from utility_scripts.workflow_setup import (
 )
 from utility_scripts.worktree_reset import reset_worktree_preserving_paths
 
-DEFAULT_MODEL_NAME = "oca/gpt-5.5"
+DEFAULT_MODEL_NAME = "gpt-5.5"
 DEFAULT_STRATEGY_NAME = "library_update_pi_gpt-5.5"
 METRICS_TASK_TYPE = "improve_library_coverage"
 BASELINE_STATS_FILENAME = ".baseline-stats.json"
@@ -973,7 +973,6 @@ def main(argv=None) -> int:
             agent=agent,
             model_name=model_name,
             global_iterations=iterations,
-            tests_root=test_source_layout.source_root,
             strategy_name=strategy_name,
             status=workflow_status,
             starting_commit=checkpoint_commit,

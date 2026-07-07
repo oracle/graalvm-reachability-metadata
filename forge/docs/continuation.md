@@ -181,7 +181,12 @@ durable execution-metrics entry because that would lose local-only PR fields.
 Continuation does not change the human-intervention contract
 (§FS-human-intervention-policy). A logical failure still preserves the work
 branch and labels the issue `human-intervention`, so a maintainer always retains
-the existing safety signal and diagnostics. The marker rides that same preserved
+the existing safety signal and diagnostics. This holds even when the failure
+halts the worktree mid-rebase — for example a publication `git rebase` that stops
+on an `index.json` conflict from a sibling same-artifact PR that landed while the
+run was in flight: preservation first aborts any in-progress rebase so the
+generated tree still commits to the preserved branch instead of the branch being
+silently dropped. The marker rides that same preserved
 branch, giving a later automated run — or the maintainer — a precise place to
 continue. A repeated failure in the same resumed phase only removes
 `resumable`; it leaves the earlier `human-intervention` signal and comment in

@@ -53,7 +53,7 @@ from utility_scripts.workflow_setup import (
 )
 from utility_scripts.worktree_reset import reset_worktree_to_commit
 
-DEFAULT_MODEL_NAME = "oca/gpt5"
+DEFAULT_MODEL_NAME = "gpt5"
 ADD_LIBRARY_METADATA_INDEX_TASK = "addLibraryMetadataIndexJson"
 ADD_LIBRARY_AS_LATEST_METADATA_INDEX_TASK = "addLibraryAsLatestMetadataIndexJson"
 
@@ -625,7 +625,6 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
             agent=agent,
             model_name=model_name,
             global_iterations=iterations,
-            tests_root=test_source_layout.source_root,
             strategy_name=strategy_name,
             status=workflow_status,
             starting_commit=commit_checkpoint,

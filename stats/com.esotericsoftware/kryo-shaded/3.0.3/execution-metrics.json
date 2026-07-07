@@ -1,0 +1,99 @@
+{
+  "add_new_library_support:2026-06-24": {
+    "timestamp": "2026-06-24T22:24:48.556157Z",
+    "library": "com.esotericsoftware:kryo-shaded:3.0.3",
+    "starting_commit": "acfadf914708b2ff781936815e8eead5487faf07",
+    "ending_commit": "b9f390deee38c607627728ba407dab3629a6e523",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "3.0.3",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.660714,
+            "coveredCalls": 74,
+            "totalCalls": 112
+          },
+          "resources": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.654867,
+        "coveredCalls": 74,
+        "totalCalls": 113
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 7336,
+          "missed": 54935,
+          "ratio": 0.117808,
+          "total": 62271
+        },
+        "line": {
+          "covered": 1653,
+          "missed": 6792,
+          "ratio": 0.195737,
+          "total": 8445
+        },
+        "method": {
+          "covered": 297,
+          "missed": 1413,
+          "ratio": 0.173684,
+          "total": 1710
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 3033,
+      "issue_label": "library-new-request",
+      "library": "com.esotericsoftware:kryo-shaded:3.0.3",
+      "summary": "Kryo 3.0.3 is self-contained apart from normal transitive dependencies and needs no Docker service, but meaningful native-image-safe serialization tests should disable Kryo's ReflectASM runtime class generation before constructing Kryo.",
+      "deterministic_setup": [],
+      "agent_guidance": "Before creating any Kryo instance in generated tests, set `com.esotericsoftware.kryo.util.Util.isAndroid = true` to force Kryo's DefaultInstantiatorStrategy onto the reflection path instead of ReflectASM runtime class generation. Also call `kryo.setAsmEnabled(false)` for serializer instances. Use ordinary `Input`/`Output`, POJOs with accessible no-arg constructors, and concrete collections such as `new ArrayList<>(...)`; avoid making `Arrays.asList(...)` itself the deserialization target because Kryo 3 cannot instantiate `java.util.Arrays$ArrayList`.",
+      "risks": [
+        "The `kryo-shaded` artifact embeds shaded ReflectASM/ASM; if tests exercise the default ReflectASM path, native-image execution can fail with unsupported runtime class definition such as `*ConstructorAccess`.",
+        "Setting `Util.isAndroid = true` is a test workaround that avoids covering ReflectASM acceleration, but it enables meaningful coverage of Kryo serialization APIs under Native Image."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#3033 Support for com.esotericsoftware:kryo-shaded:3.0.3; label=library-new-request; body_chars=107"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 41398,
+      "output_tokens_used": 6620,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/com.esotericsoftware:kryo-shaded:3.0.3/library-preparation-preflight/pi-generation-2026-06-24T20-12-29-506164Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 1331963,
+      "cached_input_tokens_used": 9942528,
+      "output_tokens_used": 106415,
+      "iterations": 24,
+      "cost_usd": 8.1638,
+      "generated_loc": 1104,
+      "tested_library_loc": 1653,
+      "metadata_entries": 17,
+      "test_only_metadata_entries": 121,
+      "code_coverage_percent": 19.57
+    },
+    "artifacts": {
+      "test_file": "tests/src/com.esotericsoftware/kryo-shaded/3.0.3/src/test/java/com_esotericsoftware/kryo_shaded/ObjectFieldInnerObjectIntFieldTest.java",
+      "metadata_file": "metadata/com.esotericsoftware/kryo-shaded/3.0.3/reachability-metadata.json"
+    }
+  }
+}

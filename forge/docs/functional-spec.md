@@ -222,6 +222,9 @@ transiently in the Forge metrics directory as `.pending_metrics.json` and
 consumed by the PR step; they are not a durable output. Benchmark-mode runs
 instead record durable, schema-validated metrics under
 `benchmarks/benchmark_results/` (§BENCH-forge-generation-benchmarking.4).
+Run metrics may identify the generated metadata artifact, but must not record a
+single test-file artifact: the version-controlled test tree and pull-request
+diff are the authoritative set of test files for the run.
 When a failed run is preserved for continuation, `.pending_metrics.json` carries
 the accumulated token, cached-token, cost, and iteration counters for the
 preserved work. Any later resumed run for the same library must add its current

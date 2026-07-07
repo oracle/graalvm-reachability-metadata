@@ -1,0 +1,94 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T20:38:57.673391Z",
+    "library": "org.apache.maven:maven-settings:2.0.6",
+    "starting_commit": "a2fdc0043b8d9800a434c446d7e10c421d55db42",
+    "ending_commit": "56aa4f82b5e227dacea6c1a6b9530a32478adb14",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "2.0.6",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 10,
+          "missed": 7501,
+          "ratio": 0.001331,
+          "total": 7511
+        },
+        "line": {
+          "covered": 1,
+          "missed": 1647,
+          "ratio": 0.000607,
+          "total": 1648
+        },
+        "method": {
+          "covered": 1,
+          "missed": 255,
+          "ratio": 0.003906,
+          "total": 256
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 2327,
+      "issue_label": "library-new-request",
+      "library": "org.apache.maven:maven-settings:2.0.6",
+      "summary": "No extra dependency or Docker image is needed, but deterministic tests for the settings builder should isolate Maven settings locations with system properties.",
+      "deterministic_setup": [],
+      "agent_guidance": "For meaningful coverage of `DefaultMavenSettingsBuilder`, create temporary user/global `settings.xml` files and a temporary local repository, then set `org.apache.maven.user-settings`, `org.apache.maven.global-settings`, and `maven.repo.local` before constructing/initializing the builder; restore properties afterward. Avoid relying on the host `${user.home}/.m2/settings.xml` or `${maven.home}/conf/settings.xml`. `SettingsXpp3Reader`, `SettingsXpp3Writer`, and model classes can be tested with in-memory XML and do not need external setup.",
+      "risks": [
+        "The builder falls back to host Maven settings paths and can create/use a local repository path if `maven.repo.local` is not set.",
+        "`DefaultMavenSettingsBuilder.userHome` is a static field captured at class load, so tests should prefer the explicit Maven override properties instead of changing `user.home` late.",
+        "Using Plexus component lookup instead of direct construction may add reflective/container behavior; direct API use is simpler unless the test specifically targets Plexus integration."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#2327 Support for org.apache.maven:maven-settings:2.0.6; label=library-new-request; body_chars=106"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 24328,
+      "output_tokens_used": 4161,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.apache.maven:maven-settings:2.0.6/library-preparation-preflight/pi-generation-2026-06-28T20-26-46-239047Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 33968,
+      "cached_input_tokens_used": 146432,
+      "output_tokens_used": 1614,
+      "iterations": 1,
+      "cost_usd": 0.1216,
+      "generated_loc": 16,
+      "tested_library_loc": 1,
+      "metadata_entries": 2,
+      "code_coverage_percent": 0.06
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.apache.maven/maven-settings/2.0.6/src/test/java/org_apache_maven/maven_settings/MavenSettingsBuilderAnonymous1Test.java",
+      "metadata_file": "metadata/org.apache.maven/maven-settings/2.0.6/reachability-metadata.json"
+    }
+  }
+}

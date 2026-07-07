@@ -26,6 +26,22 @@ public class OrgApacheKafkaCommonUtilsChildFirstClassLoaderTest {
     Path classPathRoot;
 
     @Test
+    void resolvesResourceFromParentWhenChildPathDoesNotContainIt() throws Exception {
+        Path parentResource = classPathRoot.resolve("parent-only-resource.txt");
+        Files.writeString(parentResource, "parent", StandardCharsets.UTF_8);
+        ClassLoader parent = new StaticResourceClassLoader(
+                "parent-only-resource.txt",
+                parentResource.toUri().toURL());
+
+        try (ChildFirstClassLoader classLoader = new ChildFirstClassLoader("", parent)) {
+            URL resource = classLoader.getResource("parent-only-resource.txt");
+
+            assertThat(resource).isNotNull();
+            assertThat(Path.of(resource.toURI())).hasContent("parent");
+        }
+    }
+
+    @Test
     void loadsParentClassAndEnumeratesChildFirstResources() throws Exception {
         Files.writeString(classPathRoot.resolve("child-first-resource.txt"), "child", StandardCharsets.UTF_8);
 
@@ -43,6 +59,25 @@ public class OrgApacheKafkaCommonUtilsChildFirstClassLoaderTest {
             if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
                 throw error;
             }
+        }
+    }
+
+    private static final class StaticResourceClassLoader extends ClassLoader {
+        private final String resourceName;
+        private final URL resourceUrl;
+
+        private StaticResourceClassLoader(String resourceName, URL resourceUrl) {
+            super(null);
+            this.resourceName = resourceName;
+            this.resourceUrl = resourceUrl;
+        }
+
+        @Override
+        public URL getResource(String name) {
+            if (resourceName.equals(name)) {
+                return resourceUrl;
+            }
+            return null;
         }
     }
 }

@@ -294,7 +294,6 @@ that persistent layer was configured without printing the instruction text.
       library_version="1.2.3",
       agent=None,  # Agent implementation exposing token counters
       global_iterations=3,
-      tests_root="/abs/path/to/tests/root",
       strategy_name="basic_iterative",
       status="success",
   )
@@ -358,7 +357,7 @@ If you want to run an existing workflow with a different model or tuned paramete
   "description": "Iterative strategy with higher iteration limits",
   "agent": "pi",
   "workflow": "basic_iterative",
-  "model": "oca/gpt-5.4",
+  "model": "gpt-5.4",
   "prompts": {
     "initial": "prompt_templates/initial/basic_initial.md",
     "after-successful-iteration": "prompt_templates/after-successful-iteration/basic_after_success.md",

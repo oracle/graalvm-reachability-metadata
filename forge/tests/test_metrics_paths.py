@@ -17,11 +17,13 @@ from ai_workflows.drivers.java_fail_workflow import JAVAC_CONFIG, resolve_fix_me
 from utility_scripts.library_stats import load_library_stats_entry, resolve_stats_file_path
 from utility_scripts.metrics_writer import (
     append_execution_metrics,
+    calc_model_session_cost,
+    collect_token_usage_metrics,
     count_metadata_entries,
     count_test_only_metadata_entries,
     create_run_metrics_output_json,
     execution_metrics_path,
-    resolve_artifact_paths,
+    resolve_metadata_artifact_path,
 )
 from utility_scripts.native_image_config_policy import (
     find_legacy_test_native_image_config_files_for_coordinate,
@@ -63,7 +65,6 @@ def _minimal_run_metrics(library: str = "org.example:demo:1.0.0") -> dict:
             "metadata_entries": 5,
         },
         "artifacts": {
-            "test_file": "tests/src/org.example/demo/1.0.0/src/test/java/DemoTest.java",
             "metadata_file": "metadata/org.example/demo/1.0.0/reachability-metadata.json",
         },
     }
@@ -89,6 +90,44 @@ class DummyAgent:
     total_tokens_sent = 1
     total_tokens_received = 2
     cached_input_tokens_used = 0
+
+
+class TokenCostTests(unittest.TestCase):
+    """Full-rate input and cached input are separate, non-overlapping counters;
+    the input cost must not be zeroed out when cached reads exceed full-rate input.
+    """
+
+    # gpt-5.6-terra rates: input $2.50/1M, cached $0.25/1M, output $15.00/1M.
+    INPUT_TOKENS = 212_117
+    CACHED_INPUT_TOKENS = 1_833_984
+    OUTPUT_TOKENS = 23_679
+    EXPECTED_INPUT_COST = 0.5303
+    EXPECTED_CACHED_COST = 0.4585
+    EXPECTED_OUTPUT_COST = 0.3552
+    EXPECTED_TOTAL_COST = 1.3440
+
+    def test_calc_model_session_cost_bills_input_when_cached_exceeds_input(self) -> None:
+        cost = calc_model_session_cost(
+            "gpt-5.6-terra",
+            self.INPUT_TOKENS,
+            self.CACHED_INPUT_TOKENS,
+            self.OUTPUT_TOKENS,
+        )
+
+        self.assertEqual(cost, self.EXPECTED_TOTAL_COST)
+
+    def test_collect_token_usage_metrics_bills_input_when_cached_exceeds_input(self) -> None:
+        agent = DummyAgent()
+        agent.total_tokens_sent = self.INPUT_TOKENS
+        agent.cached_input_tokens_used = self.CACHED_INPUT_TOKENS
+        agent.total_tokens_received = self.OUTPUT_TOKENS
+
+        metrics = collect_token_usage_metrics(agent, "gpt-5.6-terra")
+
+        self.assertEqual(metrics["input_cost_usd"], self.EXPECTED_INPUT_COST)
+        self.assertEqual(metrics["cached_input_cost_usd"], self.EXPECTED_CACHED_COST)
+        self.assertEqual(metrics["output_cost_usd"], self.EXPECTED_OUTPUT_COST)
+        self.assertEqual(metrics["cost_usd"], self.EXPECTED_TOTAL_COST)
 
 
 class MetricsPathTests(unittest.TestCase):
@@ -122,23 +161,11 @@ class MetricsPathTests(unittest.TestCase):
 
             self.assertEqual(count_metadata_entries(temp_dir, "org.example", "demo", "1.0.1"), 2)
 
-    def test_resolve_artifact_paths_uses_metadata_version_for_tested_version(self) -> None:
+    def test_resolve_metadata_artifact_path_uses_metadata_version_for_tested_version(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             metadata_dir = os.path.join(temp_dir, "metadata", "org.example", "demo", "1.0.0")
             metadata_index_dir = os.path.dirname(metadata_dir)
-            tests_root = os.path.join(
-                temp_dir,
-                "tests",
-                "src",
-                "org.example",
-                "demo",
-                "1.0.0",
-                "src",
-                "test",
-                "java",
-            )
             os.makedirs(metadata_dir)
-            os.makedirs(tests_root)
             with open(os.path.join(metadata_index_dir, "index.json"), "w", encoding="utf-8") as file:
                 json.dump(
                     [
@@ -151,15 +178,11 @@ class MetricsPathTests(unittest.TestCase):
                 )
             with open(os.path.join(metadata_dir, "reachability-metadata.json"), "w", encoding="utf-8") as file:
                 json.dump({"reflection": [{"type": "org.example.Demo"}]}, file)
-            with open(os.path.join(tests_root, "DemoTest.java"), "w", encoding="utf-8") as file:
-                file.write("class DemoTest {}\n")
-
-            _test_file, metadata_file = resolve_artifact_paths(
+            metadata_file = resolve_metadata_artifact_path(
                 temp_dir,
                 "org.example",
                 "demo",
                 "1.0.1",
-                tests_root,
             )
 
             self.assertEqual(
@@ -565,13 +588,13 @@ class MetricsPathTests(unittest.TestCase):
                 artifact="demo",
                 library_version="1.0.0",
                 agent=DummyAgent(),
-                model_name="oca/gpt-5.4",
+                model_name="gpt-5.4",
                 global_iterations=1,
-                tests_root=tests_root,
                 strategy_name="basic_iterative_pi_gpt-5.4",
                 status="success",
             )
 
+            self.assertNotIn("test_file", run_metrics["artifacts"])
             self.assertEqual(run_metrics["metrics"]["metadata_entries"], 1)
             self.assertEqual(run_metrics["metrics"]["test_only_metadata_entries"], 1)
 

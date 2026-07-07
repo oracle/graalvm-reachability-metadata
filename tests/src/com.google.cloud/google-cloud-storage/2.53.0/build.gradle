@@ -1,0 +1,129 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
+import org.gradle.api.artifacts.transform.InputArtifact
+import org.gradle.api.artifacts.transform.TransformAction
+import org.gradle.api.artifacts.transform.TransformOutputs
+import org.gradle.api.artifacts.transform.TransformParameters
+import org.gradle.api.artifacts.type.ArtifactTypeDefinition
+import org.gradle.api.attributes.Attribute
+import org.gradle.api.file.FileSystemLocation
+import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
+
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+// StorageOptions falls back to a package-relative pom.properties lookup only when the
+// root META-INF lookup misses, so the test runtime uses a jar with that resource layout.
+abstract class StoragePomFallbackTransform implements TransformAction<TransformParameters.None> {
+    private static final String STORAGE_JAR_PREFIX = "google-cloud-storage-"
+    private static final String PRIMARY_POM_PROPERTIES =
+            "META-INF/maven/com.google.cloud/google-cloud-storage/pom.properties"
+    private static final String FALLBACK_POM_PROPERTIES =
+            "com/google/cloud/storage/" + PRIMARY_POM_PROPERTIES
+
+    @InputArtifact
+    @PathSensitive(PathSensitivity.NAME_ONLY)
+    abstract Provider<FileSystemLocation> getInputArtifact()
+
+    @Override
+    void transform(TransformOutputs outputs) {
+        File input = inputArtifact.get().asFile
+        File output = outputs.file(input.name)
+        if (!input.name.startsWith(STORAGE_JAR_PREFIX) || !input.name.endsWith(".jar")) {
+            Files.copy(input.toPath(), output.toPath(), StandardCopyOption.REPLACE_EXISTING)
+            return
+        }
+
+        rewriteStorageJar(input, output)
+    }
+
+    private static void rewriteStorageJar(File input, File output) {
+        output.parentFile.mkdirs()
+        Set<String> copiedEntries = new HashSet<>()
+        byte[] buffer = new byte[8192]
+        input.withInputStream { inputStream ->
+            output.withOutputStream { outputStream ->
+                ZipInputStream zipInputStream = new ZipInputStream(inputStream)
+                ZipOutputStream zipOutputStream = new ZipOutputStream(outputStream)
+                ZipEntry entry
+                while ((entry = zipInputStream.nextEntry) != null) {
+                    if (PRIMARY_POM_PROPERTIES == entry.name) {
+                        zipInputStream.closeEntry()
+                        continue
+                    }
+
+                    ZipEntry outputEntry = new ZipEntry(entry.name)
+                    outputEntry.time = entry.time
+                    zipOutputStream.putNextEntry(outputEntry)
+                    if (!entry.directory) {
+                        int read
+                        while ((read = zipInputStream.read(buffer)) > 0) {
+                            zipOutputStream.write(buffer, 0, read)
+                        }
+                    }
+                    zipOutputStream.closeEntry()
+                    zipInputStream.closeEntry()
+                    copiedEntries.add(entry.name)
+                }
+
+                if (!copiedEntries.contains(FALLBACK_POM_PROPERTIES)) {
+                    zipOutputStream.putNextEntry(new ZipEntry(FALLBACK_POM_PROPERTIES))
+                    zipOutputStream.write("version=fallback-loaded\n".getBytes(StandardCharsets.UTF_8))
+                    zipOutputStream.closeEntry()
+                }
+                zipOutputStream.finish()
+            }
+        }
+    }
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+Attribute<Boolean> storagePomFallback = Attribute.of("com.google.cloud.storage.pom-fallback", Boolean)
+
+dependencies {
+    attributesSchema {
+        attribute(storagePomFallback)
+    }
+    artifactTypes.getByName(ArtifactTypeDefinition.JAR_TYPE) {
+        attributes.attribute(storagePomFallback, false)
+    }
+    registerTransform(StoragePomFallbackTransform) {
+        from.attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, ArtifactTypeDefinition.JAR_TYPE)
+                .attribute(storagePomFallback, false)
+        to.attribute(ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, ArtifactTypeDefinition.JAR_TYPE)
+                .attribute(storagePomFallback, true)
+    }
+
+    testImplementation "com.google.cloud:google-cloud-storage:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+configurations.matching {
+    it.name in ["testRuntimeClasspath", "nativeImageTestClasspath", "nativeImageTestClasspathInternal"]
+}.configureEach {
+    attributes.attribute(storagePomFallback, true)
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

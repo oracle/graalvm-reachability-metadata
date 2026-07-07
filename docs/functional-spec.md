@@ -72,7 +72,7 @@ CI must pass before any merge, and is the authoritative gate — local runs are 
 
 ### 4.4 Releases
 
-Every Monday the `create-scheduled-release` workflow packages metadata into the next numbered release if it has changed and the latest completed test-all metadata workflow passed (§CI-create-scheduled-release). Manual release dispatches bypass this test-all gate. Numbered releases consider only semantic version tags when computing the previous version tag, so floating snapshot tags such as `SNAPSHOT` cannot affect the permanent release cadence.
+Every Monday the `create-scheduled-release` workflow packages metadata into the next numbered release if it has changed (§CI-create-scheduled-release). The release is deliberately not gated on the periodic `test-all-metadata` sweep: merged metadata is already gated per-PR (§5.3), and the sweep exercises bleeding-edge JDK and native-image configurations whose failures must not stall the release cadence. Numbered releases consider only semantic version tags when computing the previous version tag, so floating snapshot tags such as `SNAPSHOT` cannot affect the permanent release cadence.
 
 The `create-snapshot-release` workflow refreshes a floating `SNAPSHOT` GitHub Release on the `SNAPSHOT` tag after `master` pushes when metadata changed since the previous `SNAPSHOT` tag, or since the latest numbered release when bootstrapping (§CI-create-snapshot-release). It packages the repository with version `SNAPSHOT`, replaces the previous snapshot release/tag, and provides a continuously updated snapshot-style metadata bundle between numbered releases without taking GitHub's Latest marker from the newest numbered release. The packaged artifacts are what the GraalVM Gradle/Maven plugins consume.
 
@@ -219,7 +219,7 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 - **Metadata-only bundles.** Metadata files contain only JSON entries described by GraalVM's manual-configuration reference. Native-image properties (`native-image.properties`) and other build-time tweaks are forbidden — by default every library is runtime-initialized.
 - **Conditional registration.** Every metadata entry must use [Conditional Configuration](https://www.graalvm.org/latest/reference-manual/native-image/metadata/#specifying-reflection-metadata-in-json): a `condition` whose only key is `typeReached`, so registration is gated on actual reachability. `typeReached` is the sole condition form the vendored schema accepts; the older `typeReachable` is not valid and is rejected by `checkMetadataFiles`.
 - **Allowed-package conditions.** Every metadata entry's `typeReached` condition must reference a class inside the artifact's `allowed-packages`.
-- **No test-only shipped entries.** No metadata entry may target a class or resource that exists only for testing.
+- **No test-only shipped entries.** A metadata entry is test-only when the type it describes belongs to a package from the test suite; such entries must not ship. A type from the library JAR or one of its dependencies is library metadata even when a test is what exercised it.
 - **Index coverage.** Each `metadata/<group>/<artifact>/` directory must include a valid `index.json` enumerating its metadata versions and tested library versions.
 - **Single latest entry.** Exactly one entry in a non-empty `index.json` must carry `latest: true`. If a library version is not in `tested-versions`, the harness selects an entry by matching the optional `default-for` regex.
 - **Dependency and test-only split.** Metadata can declare dependencies on other artifacts via `requires`. Metadata needed only by the tests — entries whose type or `typeReached` names a test package, or whose resource is a test resource — must not ship to consumers; `splitTestOnlyMetadata` moves them out of the library's `reachability-metadata.json` into the test project's `src/test/resources/META-INF/native-image/reachability-metadata.json`, keeping the shipped metadata free of test-only types (§METADATA-suite).
@@ -242,7 +242,7 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 - **Spring AOT scope.** The Spring AOT smoke matrix runs only when `metadata/` changes affect a Spring AOT project.
 - **Compatibility budget.** `verify-new-library-version-compatibility` caps each scheduled run at a fixed library budget and at most 30 newer versions per library, expanding across the configured GraalVM JDK/OS combinations, and creates one aggregated GitHub issue per failed `(library, version)` pair.
 - **Docker tag sync.** Dependabot updates to `allowed-docker-images` trigger `sync-docker-tags.yml`, which back-commits the synchronized tags into the Dependabot PR.
-- **Full sweep.** `test-all-metadata` runs only on a weekly Sunday schedule or manual dispatch in the main repository, uses 85 batches, isolates failed batches down to concrete library versions, publishes result and failure-log artifacts, fails affected matrix batches, and is release-blocking when failures are found.
+- **Full sweep.** `test-all-metadata` runs only on a weekly Sunday schedule or manual dispatch in the main repository, uses 85 batches, isolates failed batches down to concrete library versions, publishes result and failure-log artifacts, and fails affected matrix batches. It surfaces sweep regressions but does not gate the scheduled release (§4.4).
 
 ### 5.4 Native-image modes
 
@@ -305,7 +305,9 @@ every dependency in your build and passes it to `native-image` (§4.7). Concrete
   `curl -sSL …/check-library-support.sh | bash -s "<group>:<artifact>:<version>"`,
   or browse the [libraries-and-frameworks page](https://www.graalvm.org/native-image/libraries-and-frameworks/),
   which is derived from `metadata/library-and-framework-list.json` (§METADATA-suite).
-  The script checks the published `index.json` tested-version contract (§4.7).
+  The script checks the published `index.json` contract (§4.7): it reports exact
+  tested-version support when present, and it also reports when the artifact is
+  already recorded as `not-for-native-image`.
 - **Request a missing library.** File a
   [`01_support_new_library`](../.github/ISSUE_TEMPLATE/01_support_new_library.yml)
   issue, or `02_update_existing_library` to extend an existing entry.
