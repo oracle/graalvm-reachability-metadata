@@ -26,14 +26,19 @@ import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.io.TempDir;
 
+@TestMethodOrder(OrderAnnotation.class)
 public class ShadowClassLoaderTest {
     @TempDir
     private Path temporaryDirectory;
 
     @Test
+    @Order(1)
     void serviceLoaderDiscoversLombokAnnotationProcessor() {
         List<Processor> processors = ServiceLoader.load(Processor.class).stream()
                 .map(ServiceLoader.Provider::get)
@@ -52,6 +57,7 @@ public class ShadowClassLoaderTest {
     }
 
     @Test
+    @Order(2)
     void commandLineEntryPointInstallsShadowClassLoaderAsContextClassLoader() throws Throwable {
         ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
         try {
@@ -69,6 +75,7 @@ public class ShadowClassLoaderTest {
     }
 
     @Test
+    @Order(3)
     void javaCompilerRunsLombokAnnotationProcessorFromClasspath() throws IOException {
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         assertThat(compiler).isNotNull();
@@ -103,7 +110,8 @@ public class ShadowClassLoaderTest {
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
         try (StandardJavaFileManager fileManager = compiler.getStandardFileManager(
                 diagnostics, Locale.ROOT, StandardCharsets.UTF_8)) {
-            Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects(source);
+            Iterable<? extends JavaFileObject> compilationUnits =
+                    fileManager.getJavaFileObjects(source);
             List<String> options = List.of(
                     "-classpath", System.getProperty("java.class.path"),
                     "-processor", "lombok.launch.AnnotationProcessorHider$AnnotationProcessor",
@@ -120,12 +128,63 @@ public class ShadowClassLoaderTest {
         assertThat(classesDirectory.resolve("example/UsesGeneratedGetter.class")).exists();
     }
 
+    @Test
+    @Order(4)
+    void overrideClasspathSkipsSelfAndDelegatesToPrependedParent() throws Throwable {
+        ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            invokeLombokCommand("version");
+            ClassLoader shadowClassLoader = Thread.currentThread().getContextClassLoader();
+
+            Path emptyOverride = Files.createDirectories(
+                    temporaryDirectory.resolve("empty-override"));
+            invokeClassLoaderMethod(
+                    shadowClassLoader,
+                    "addOverrideClasspathEntry",
+                    String.class,
+                    emptyOverride.toString());
+
+            assertThat(shadowClassLoader.getResource(
+                    "lombok/launch/ShadowClassLoader.class")).isNull();
+
+            ClassLoader prependedParent = new ClassLoader(null) {
+                @Override
+                public Class<?> loadClass(String name) throws ClassNotFoundException {
+                    if ("example.ParentOnly".equals(name)) {
+                        return String.class;
+                    }
+                    throw new ClassNotFoundException(name);
+                }
+            };
+            invokeClassLoaderMethod(
+                    shadowClassLoader, "prependParent", ClassLoader.class, prependedParent);
+
+            assertThat(shadowClassLoader.loadClass("example.ParentOnly")).isSameAs(String.class);
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalContextClassLoader);
+        }
+    }
+
     private void invokeLombokCommand(String command) throws Throwable {
         Class<?> mainClass = Class.forName("lombok.launch.Main");
         Method main = mainClass.getDeclaredMethod("main", String[].class);
         main.setAccessible(true);
         try {
             main.invoke(null, (Object) new String[] {command});
+        } catch (InvocationTargetException ex) {
+            throw ex.getCause();
+        }
+    }
+
+    private void invokeClassLoaderMethod(
+            ClassLoader shadowClassLoader,
+            String name,
+            Class<?> parameterType,
+            Object argument) throws Throwable {
+        Method method = shadowClassLoader.getClass().getMethod(name, parameterType);
+        method.setAccessible(true);
+        try {
+            method.invoke(shadowClassLoader, argument);
         } catch (InvocationTargetException ex) {
             throw ex.getCause();
         }
