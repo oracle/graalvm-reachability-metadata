@@ -1,0 +1,173 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.apache.tomcat.embed:tomcat-embed-core:11.0.18
+Command: `/home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5926-fc427e1d/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 6 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:processResources NO-SOURCE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+
+Note: /home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5926-fc427e1d/tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/src/test/java/tomcat/ClasspathURLStreamHandlerTest.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+> Task :compileTestJava
+
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::invokeCleaner has been called by org.apache.tomcat.util.buf.ByteBufferUtilsUnsafe (file:/tmp/metadata-forge-gradle/d42260ab701c130c/caches/modules-2/files-2.1/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/a96bb1b8a21ee7e93ce01cce7fd63f8e7561ec92/tomcat-embed-core-11.0.18.jar)
+WARNING: Please consider reporting this to the maintainers of class org.apache.tomcat.util.buf.ByteBufferUtilsUnsafe
+WARNING: sun.misc.Unsafe::invokeCleaner will be removed in a future release
+
+> Task :test
+
+BeanFactoryTest > createsBeanAndSetsPropertiesFromResourceReference() FAILED
+    javax.naming.NamingException: String conversion for property [custom] of type [tomcat.BeanFactoryTest$CustomValue] not available
+        at org.apache.naming.factory.BeanFactory.getObjectInstance(BeanFactory.java:169)
+        at tomcat.BeanFactoryTest.createsBeanAndSetsPropertiesFromResourceReference(BeanFactoryTest.java:27)
+
+CsrfPreventionFilterBaseTest > instantiatesConfiguredRandomSource() FAILED
+    java.lang.AssertionError: 
+    Expecting code not to raise a throwable but caught
+      "java.lang.NullPointerException: Cannot invoke "jakarta.servlet.ServletContext.setAttribute(String, Object)" because the return value of "jakarta.servlet.FilterConfig.getServletContext()" is null
+    	at org.apache.catalina.filters.CsrfPreventionFilter.init(CsrfPreventionFilter.java:315)
+    	at tomcat.CsrfPreventionFilterBaseTest.lambda$instantiatesConfiguredRandomSource$0(CsrfPreventionFilterBaseTest.java:28)
+    	at org.assertj.core.api.ThrowableAssert.catchThrowable(ThrowableAssert.java:63)
+    	at org.assertj.core.api.AssertionsForClassTypes.catchThrowable(AssertionsForClassTypes.java:878)
+    	at org.assertj.core.api.AssertionsForClassTypes.assertThatCode(AssertionsForClassTypes.java:849)
+    	at org.assertj.core.api.Assertions.assertThatCode(Assertions.java:1258)
+    	at tomcat.CsrfPreventionFilterBaseTest.instantiatesConfiguredRandomSource(CsrfPreventionFilterBaseTest.java:28)
+    	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+    	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+    	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+    	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+    	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+    	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+    	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+    	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+    	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+    	at java.base/java.lang.Thread.run(Thread.java:1474)
+    "
+        at tomcat.CsrfPreventionFilterBaseTest.instantiatesConfiguredRandomSource(CsrfPreventionFilterBaseTest.java:28)
+
+FactoryBaseTest > createsExplicitFactoryFromReference() FAILED
+    javax.naming.NamingException: Could not create resource instance
+        at org.apache.naming.factory.FactoryBase.getObjectInstance(FactoryBase.java:87)
+        at tomcat.FactoryBaseTest.createsExplicitFactoryFromReference(FactoryBaseTest.java:31)
+
+RateLimitFilterTest > instantiatesConfiguredRateLimiter() FAILED
+    java.lang.AssertionError: 
+    Expecting code not to raise a throwable but caught
+      "java.lang.NullPointerException: Cannot invoke "jakarta.servlet.ServletContext.getAttribute(String)" because the return value of "jakarta.servlet.FilterConfig.getServletContext()" is null
+    	at org.apache.catalina.util.RateLimiterBase.setFilterConfig(RateLimiterBase.java:134)
+    	at org.apache.catalina.filters.RateLimitFilter.init(RateLimitFilter.java:211)
+    	at tomcat.RateLimitFilterTest.lambda$instantiatesConfiguredRateLimiter$0(RateLimitFilterTest.java:28)
+    	at org.assertj.core.api.ThrowableAssert.catchThrowable(ThrowableAssert.java:63)
+    	at org.assertj.core.api.AssertionsForClassTypes.catchThrowable(AssertionsForClassTypes.java:878)
+    	at org.assertj.core.api.AssertionsForClassTypes.assertThatCode(AssertionsForClassTypes.java:849)
+    	at org.assertj.core.api.Assertions.assertThatCode(Assertions.java:1258)
+    	at tomcat.RateLimitFilterTest.instantiatesConfiguredRateLimiter(RateLimitFilterTest.java:28)
+    	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+    	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+    	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+    	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+    	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+    	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+    	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+    	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+    	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+    	at java.base/java.lang.Thread.run(Thread.java:1474)
+    "
+        at tomcat.RateLimitFilterTest.instantiatesConfiguredRateLimiter(RateLimitFilterTest.java:28)
+
+WebappClassLoaderBaseTest > delegatesClassAndResourceLookupsToParent() FAILED
+    java.lang.ClassNotFoundException: Illegal access: this web application instance has been stopped already. Could not load [tomcat.WebappClassLoaderBaseTest]. The following stack trace is thrown for debugging purposes as well as to attempt to terminate the thread which caused the illegal access.
+        at org.apache.catalina.loader.WebappClassLoaderBase.checkStateForClassLoading(WebappClassLoaderBase.java:1235)
+        at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1089)
+        at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1056)
+        at tomcat.WebappClassLoaderBaseTest.delegatesClassAndResourceLookupsToParent(WebappClassLoaderBaseTest.java:24)
+
+        Caused by:
+        java.lang.IllegalStateException: Illegal access: this web application instance has been stopped already. Could not load [tomcat.WebappClassLoaderBaseTest]. The following stack trace is thrown for debugging purposes as well as to attempt to terminate the thread which caused the illegal access.
+            at org.apache.catalina.loader.WebappClassLoaderBase.checkStateForResourceLoading(WebappClassLoaderBase.java:1244)
+            at org.apache.catalina.loader.WebappClassLoaderBase.checkStateForClassLoading(WebappClassLoaderBase.java:1233)
+            ... 3 more
+
+51 tests completed, 5 failed
+
+
+> Task :test FAILED
+
+FAILURE: Build failed with an exception.
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5926-fc427e1d/tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/build/reports/problems/problems-report.html
+
+
+* What went wrong:
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+Execution failed for task ':test'.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+> There were failing tests. See the report at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5926-fc427e1d/tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/build/reports/tests/test/index.html
+14 actionable tasks: 3 executed, 11 up-to-date
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 16s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/jovan/Work/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/5926-fc427e1d/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.apache.tomcat.embed:tomcat-embed-core:11.0.18 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 18s
+9 actionable tasks: 1 executed, 8 up-to-date

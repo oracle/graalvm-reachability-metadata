@@ -1,0 +1,17 @@
+=== Pi checkstyle attempt 1 ===
+Warning: Model "gpt-5.5" not found for provider "OCA". Using custom model id.
+Fixed checkstyle violations in:
+
+`tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/src/test/java/tomcat/DefaultInstanceManagerTest.java`
+
+Changes made:
+- Removed `Hashtable` import/usages by passing `null` for empty `NamingContext` environments.
+- Added missing whitespace in generic type declarations.
+
+Verified with:
+
+```bash
+./gradlew checkstyle -Pcoordinates=org.apache.tomcat.embed:tomcat-embed-core:11.0.18 --stacktrace
+```
+
+Result: `BUILD SUCCESSFUL`
