@@ -9,9 +9,13 @@ package org_projectlombok.lombok;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.ServiceLoader;
@@ -27,16 +31,41 @@ import org.junit.jupiter.api.io.TempDir;
 
 public class ShadowClassLoaderTest {
     @TempDir
-    Path temporaryDirectory;
+    private Path temporaryDirectory;
 
     @Test
     void serviceLoaderDiscoversLombokAnnotationProcessor() {
-        List<String> processorClassNames = ServiceLoader.load(Processor.class).stream()
-                .map(provider -> provider.get().getClass().getName())
+        List<Processor> processors = ServiceLoader.load(Processor.class).stream()
+                .map(ServiceLoader.Provider::get)
+                .toList();
+        List<String> processorClassNames = processors.stream()
+                .map(processor -> processor.getClass().getName())
                 .toList();
 
         assertThat(processorClassNames)
                 .contains("lombok.launch.AnnotationProcessorHider$AnnotationProcessor");
+        assertThat(processors)
+                .anySatisfy(processor -> {
+                    assertThat(processor.getSupportedAnnotationTypes()).contains("*");
+                    assertThat(processor.getSupportedSourceVersion()).isNotNull();
+                });
+    }
+
+    @Test
+    void commandLineEntryPointInstallsShadowClassLoaderAsContextClassLoader() throws Throwable {
+        ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
+        try {
+            invokeLombokCommand("version");
+
+            ClassLoader shadowClassLoader = Thread.currentThread().getContextClassLoader();
+            assertThat(shadowClassLoader).isNotSameAs(originalContextClassLoader);
+
+            List<URL> shadowedClassResources = Collections.list(
+                    shadowClassLoader.getResources("lombok/core/AnnotationProcessor.class"));
+            assertThat(shadowedClassResources).isNotEmpty();
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalContextClassLoader);
+        }
     }
 
     @Test
@@ -72,14 +101,16 @@ public class ShadowClassLoaderTest {
                 """, StandardCharsets.UTF_8);
 
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
-        try (StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, Locale.ROOT, StandardCharsets.UTF_8)) {
+        try (StandardJavaFileManager fileManager = compiler.getStandardFileManager(
+                diagnostics, Locale.ROOT, StandardCharsets.UTF_8)) {
             Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects(source);
             List<String> options = List.of(
                     "-classpath", System.getProperty("java.class.path"),
                     "-processor", "lombok.launch.AnnotationProcessorHider$AnnotationProcessor",
                     "-d", classesDirectory.toString());
 
-            Boolean successful = compiler.getTask(null, fileManager, diagnostics, options, null, compilationUnits).call();
+            Boolean successful = compiler.getTask(
+                    null, fileManager, diagnostics, options, null, compilationUnits).call();
 
             assertThat(successful)
                     .describedAs(formatDiagnostics(diagnostics))
@@ -87,6 +118,17 @@ public class ShadowClassLoaderTest {
         }
         assertThat(classesDirectory.resolve("example/Person.class")).exists();
         assertThat(classesDirectory.resolve("example/UsesGeneratedGetter.class")).exists();
+    }
+
+    private void invokeLombokCommand(String command) throws Throwable {
+        Class<?> mainClass = Class.forName("lombok.launch.Main");
+        Method main = mainClass.getDeclaredMethod("main", String[].class);
+        main.setAccessible(true);
+        try {
+            main.invoke(null, (Object) new String[] {command});
+        } catch (InvocationTargetException ex) {
+            throw ex.getCause();
+        }
     }
 
     private String formatDiagnostics(DiagnosticCollector<JavaFileObject> diagnostics) {
