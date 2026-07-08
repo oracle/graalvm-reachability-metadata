@@ -1,0 +1,137 @@
+================================================================================
+Timestamp: 2026-07-08T10:57:32.024736+00:00
+Session: unknown
+Persistent instructions: not configured
+Prompt:
+  You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+  
+  Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+  
+  The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+    - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+    - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+  If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+  Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+  
+  Return a single JSON object with this shape:
+  {
+    "action": "no_action" | "advisory_preparation",
+    "summary": "short reason",
+    "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+    "agent_guidance": "environment/system property/test setup guidance, if any",
+    "risks": ["risk notes, if any"]
+  }
+  
+  Choose no_action unless your research finds concrete evidence that extra setup is needed.
+  
+  Context (starting point):
+  {
+    "issue": {
+      "number": 8988,
+      "title": "[Automation] native-image run fails for org.postgresql:postgresql:42.7.13",
+      "label": "fails-native-image-run",
+      "body": "## native-image run on ubuntu-latest / JDK 25 / mode current-defaults\n\nFailure kind: native-image run\nOS: ubuntu-latest\nJDK: 25\nNative-image mode: current-defaults\nReproducer: `env GVM_TCK_LV=42.7.13 GVM_TCK_NATIVE_IMAGE_MODE=current-defaults ./gradlew clean test -Pcoordinates=org.postgresql:postgresql:42.7.3`\nRunner log: https://github.com/oracle/graalvm-reachability-metadata/actions/runs/28833489800\nLast 300 lines of the log:\n```console\n------------------------------------------------------------------------------------------------------------------------\nTop 10 origins of code area:                                Top 10 object types in image heap:\n   8.11MB java.base                                            4.75MB byte[] for code metadata\n   2.99MB svm.jar (Native Image)                               3.39MB byte[] for java.lang.String\n   1.38MB postgresql-42.7.13.jar                               1.83MB java.lang.String\n 571.76kB assertj-core-3.22.0.jar                              1.40MB java.lang.Class\n 483.06kB java.xml                                             1.13MB com.oracle.svm.core.hub.DynamicHubCompanion\n 318.70kB jdk.proxy4                                           1.09MB byte[] for general heap data\n 233.87kB java.rmi                                           474.21kB java.util.concurrent.ConcurrentHashMap$Node\n 204.48kB junit-jupiter-engine-5.9.2.jar                     414.28kB byte[] for reflection metadata\n 124.84kB java.naming                                        326.30kB java.util.HashMap$Node\n 123.02kB junit-platform-launcher-1.9.2.jar                  318.24kB c.o.svm.core.hub.DynamicHub$ReflectionMetadata\n   1.14MB for 36 more packages                                 3.62MB for 2771 more object types\n                            Use '--emit build-report' to create a report with more details.\n------------------------------------------------------------------------------------------------------------------------\nSecurity report:\n - Binary includes Java deserialization.\n - CycloneDX SBOM with 22 component(s) is embedded in binary (1.13kB). 14 type(s) could not be associated to a component.\n - Advanced obfuscation not enabled; enable with '-H:AdvancedObfuscation=\"\"' (experimental support).\n------------------------------------------------------------------------------------------------------------------------\nRecommendations:\n G1GC: Use the G1 GC ('--gc=G1') for improved latency and throughput.\n PGO:  Use Profile-Guided Optimizations ('--pgo') for improved throughput.\n FUTR: Use '--future-defaults=all' to prepare for future releases.\n HEAP: Set max heap for improved and more predictable memory usage.\n CPU:  Enable more CPU features with '-march=native' for improved performance.\n------------------------------------------------------------------------------------------------------------------------\n                       7.7s (7.8% of total time) in 1079 GCs | Peak RSS: 2.26GB | CPU load: 3.63\n------------------------------------------------------------------------------------------------------------------------\nBuild artifacts:\n /home/runner/work/graalvm-reachability-metadata/graalvm-reachability-metadata/tests/src/org.postgresql/postgresql/42.7.3/build/native/nativeTestCompile/libmanagement_ext.so (jdk_library)\n /home/runner/work/graalvm-reachability-metadata/graalvm-reachability-metadata/tests/src/org.postgresql/postgresql/42.7.3/build/native/nativeTestCompile/postgresql-tests-tests (executable)\n /tmp/native-image-build-output.json (build_info)\n========================================================================================================================\nFinished generating 'postgresql-tests-tests' in 1m 37s.\n[native-image-plugin] Native Image written to: /home/runner/work/graalvm-reachability-metadata/graalvm-reachability-metadata/tests/src/org.postgresql/postgresql/42.7.3/build/native/nativeTestCompile\n\n> Task :nativeTest\n[junit-platform-native] WARNING: -djunit.platform.listeners.uid.tracking.output.dir not specified, trying to find test-ids on default Gradle/Maven locations. As this is a fallback mode, it could take a while. This should only happen if you are running tests executable manually and you didn't pass uid output directory with -djunit.platform.listeners.uid.tracking.output.dir=<path>.\n[junit-platform-native] WARNING: Using test-ids from default Gradle project location:/home/runner/work/graalvm-reachability-metadata/graalvm-reachability-metadata/tests/src/org.postgresql/postgresql/42.7.3/build/test-results/test/testlist\n[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/runner/work/graalvm-reachability-metadata/graalvm-reachability-metadata/tests/src/org.postgresql/postgresql/42.7.3/build/test-results/test/testlist] and its subfolders.\nJUnit Platform on Native Image - report\n----------------------------------------\n\nStarting PostgreSQL ...\nPostgreSQL started\ncolumn 1: 9223372036854775807\ncolumn 2: true\ncolumn 3: true\ncolumn 4: [B@1b80ea68\ncolumn 5: c\ncolumn 6: some-string\ncolumn 7: 2020-01-02\ncolumn 8: 3.141592653589793\ncolumn 9: 42\ncolumn 10: { \"foo\": \"bar\"}\ncolumn 11: {\"foo\": \"bar\"}\ncolumn 12: 3.1415927\ncolumn 13: 5\ncolumn 14: some-text\ncolumn 15: 23:59:00\ncolumn 16: 21:59:00\ncolumn 17: 2020-01-02 23:59:00.0\ncolumn 18: 2020-01-02 20:59:00.0\ncolumn 19: 84d896eb-e92e-48aa-9500-4d272019e85f\ncolumn 20: org.postgresql.jdbc.PgSQLXML@c377763\ncolumn 21: null\ncolumn 1: (10.0,10.0),(0.0,0.0)\ncolumn 2: <(0.0,0.0),5.0>\ncolumn 3: {1.0,2.0,3.0}\ncolumn 4: [(0.0,1.0),(2.0,3.0)]\ncolumn 5: [(1.0,2.0),(3.0,4.0),(5.0,6.0)]\ncolumn 6: (1.0,2.0)\ncolumn 7: ((1.0,2.0),(3.0,4.0),(5.0,6.0))\ncolumn 1: 192.168.100.128/25\ncolumn 2: fe80::20c:29ff:fe8a:cd55/64\ncolumn 3: 1 years 2 mons 3 days 4 hours 5 mins 6 secs\ncolumn 4: 08:00:2b:01:02:03\ncolumn 5: 08:00:2b:01:02:03:04:05\ncolumn 6: 12.0\ncolumn 7: 3.14\ncolumn 8: 'an' 'example' 'is' 'sentence' 'this'\nShutting down PostgreSQL\npostgresql.GTTest > translateLoadsResourceBundleAndFormatsMessage() SUCCESSFUL\n\npostgresql.PgConnectionTest > constructorLoadsDatatypePropertiesDuringObjectTypeInitialization() SUCCESSFUL\n\npostgresql.PgConnectionTest > customXmlFactoryFactoryPropertyUsesConfiguredClassName() SUCCESSFUL\n\npostgresql.PgConnectionTest > addDataTypeLoadsClassNameThroughConnectionApi() SUCCESSFUL\n\npostgresql.OidTest > knownOidValuesResolveToNames() FAILED\n\npostgresql.OidTest > unknownOidNameIsRejected() FAILED\n\npostgresql.OidTest > knownOidNamesResolveToValues() FAILED\n\npostgresql.OidTest > unknownOidValueUsesDiagnosticName() FAILED\n\npostgresql.PGPooledConnectionInnerStatementHandlerTest > statementHandlerDelegatesUnhandledObjectMethodsToWrappedStatement() SUCCESSFUL\n\npostgresql.BaseDataSourceTest > initializeFromCopiesConnectionAndDriverPropertiesThroughBaseSerialization() SUCCESSFUL\n\npostgresql.EscapedFunctionsTest > legacyEscapeFunctionTranslatesSingleArgumentCall() SUCCESSFUL\n\npostgresql.EscapedFunctionsTest > getFunctionDiscoversLegacyTranslatorByName() SUCCESSFUL\n\npostgresql.PostgresqlTests > simpleDatatypes() SUCCESSFUL\n\npostgresql.PostgresqlTests > geometricDatatypes() SUCCESSFUL\n\npostgresql.PostgresqlTests > otherDatatypes() SUCCESSFUL\n\npostgresql.PostgresqlTests > commitAndRollback() SUCCESSFUL\n\npostgresql.SingleCertValidatingFactoryTest > loadsCertificateFromFactoryClassResourceWhenThreadContextClassLoaderIsUnavailable() SUCCESSFUL\n\npostgresql.SingleCertValidatingFactoryTest > loadsCertificateFromThreadContextClassLoaderResource() SUCCESSFUL\n\npostgresql.ObjectFactoryTest > instantiateFallsBackToStringConstructorWhenRequested() SUCCESSFUL\n\npostgresql.ObjectFactoryTest > instantiatePrefersPropertiesConstructorWhenAvailable() SUCCESSFUL\n\npostgresql.ObjectFactoryTest > instantiateFallsBackToNoArgumentConstructor() SUCCESSFUL\n\npostgresql.ParserTest > replaceProcessingUnwrapsEscapedFunctionSqlException() SUCCESSFUL\n\npostgresql.ParserTest > replaceProcessingInvokesEscapedFunctionTranslation() \n...[truncated]",
+      "body_error": ""
+    },
+    "library": "org.postgresql:postgresql:42.7.13",
+    "current_library": "org.postgresql:postgresql:42.7.3",
+    "new_version": "42.7.13",
+    "existing_tests": {
+      "org.postgresql:postgresql:42.7.3": [
+        "tests/src/org.postgresql/postgresql/42.7.3/.gitignore",
+        "tests/src/org.postgresql/postgresql/42.7.3/build.gradle",
+        "tests/src/org.postgresql/postgresql/42.7.3/gradle.properties",
+        "tests/src/org.postgresql/postgresql/42.7.3/required-docker-images.txt",
+        "tests/src/org.postgresql/postgresql/42.7.3/settings.gradle",
+        "tests/src/org.postgresql/postgresql/42.7.3/user-code-filter.json",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/ArrayDecodingInnerAbstractObjectStringArrayDecoderTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/BaseDataSourceTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/EscapedFunctionsTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/GTTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/ObjectFactoryTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/OidTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/PGPooledConnectionInnerConnectionHandlerTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/PGPooledConnectionInnerStatementHandlerTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/PGXAConnectionTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/ParserTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/PgConnectionTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/PostgresqlTests.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/SingleCertValidatingFactoryTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/TimestampUtilsTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/resources/postgresql/single-cert-validating-factory-cert.pem",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/resources/META-INF/native-image/reachability-metadata.json"
+      ]
+    }
+  }
+Error:
+  Pi RPC `prompt` failed: No API key found for openai-codex.
+  
+  Use /login or set an API key environment variable. See /home/jovan/.nvm/versions/node/v20.19.6/lib/node_modules/@mariozechner/pi-coding-agent/docs/providers.md
+  Warning: Model "gpt-5.5" not found for provider "openai-codex". Using custom model id.
+Event Trace:
+[send] prompt
+  You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+  
+  Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+  
+  The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+    - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+    - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+  If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+  Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+  
+  Return a single JSON object with this shape:
+  {
+    "action": "no_action" | "advisory_preparation",
+    "summary": "short reason",
+    "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+    "agent_guidance": "environment/system property/test setup guidance, if any",
+    "risks": ["risk notes, if any"]
+  }
+  
+  Choose no_action unless your research finds concrete evidence that extra setup is needed.
+  
+  Context (starting point):
+  {
+    "issue": {
+      "number": 8988,
+      "title": "[Automation] native-image run fails for org.postgresql:postgresql:42.7.13",
+      "label": "fails-native-image-run",
+      "body": "## native-image run on ubuntu-latest / JDK 25 / mode current-defaults\n\nFailure kind: native-image run\nOS: ubuntu-latest\nJDK: 25\nNative-image mode: current-defaults\nReproducer: `env GVM_TCK_LV=42.7.13 GVM_TCK_NATIVE_IMAGE_MODE=current-defaults ./gradlew clean test -Pcoordinates=org.postgresql:postgresql:42.7.3`\nRunner log: https://github.com/oracle/graalvm-reachability-metadata/actions/runs/28833489800\nLast 300 lines of the log:\n```console\n------------------------------------------------------------------------------------------------------------------------\nTop 10 origins of code area:                                Top 10 object types in image heap:\n   8.11MB java.base                                            4.75MB byte[] for code metadata\n   2.99MB svm.jar (Native Image)                               3.39MB byte[] for java.lang.String\n   1.38MB postgresql-42.7.13.jar                               1.83MB java.lang.String\n 571.76kB assertj-core-3.22.0.jar                              1.40MB java.lang.Class\n 483.06kB java.xml                                             1.13MB com.oracle.svm.core.hub.DynamicHubCompanion\n 318.70kB jdk.proxy4                                           1.09MB byte[] for general heap data\n 233.87kB java.rmi                                           474.21kB java.util.concurrent.ConcurrentHashMap$Node\n 204.48kB junit-jupiter-engine-5.9.2.jar                     414.28kB byte[] for reflection metadata\n 124.84kB java.naming                                        326.30kB java.util.HashMap$Node\n 123.02kB junit-platform-launcher-1.9.2.jar                  318.24kB c.o.svm.core.hub.DynamicHub$ReflectionMetadata\n   1.14MB for 36 more packages                                 3.62MB for 2771 more object types\n                            Use '--emit build-report' to create a report with more details.\n------------------------------------------------------------------------------------------------------------------------\nSecurity report:\n - Binary includes Java deserialization.\n - CycloneDX SBOM with 22 component(s) is embedded in binary (1.13kB). 14 type(s) could not be associated to a component.\n - Advanced obfuscation not enabled; enable with '-H:AdvancedObfuscation=\"\"' (experimental support).\n------------------------------------------------------------------------------------------------------------------------\nRecommendations:\n G1GC: Use the G1 GC ('--gc=G1') for improved latency and throughput.\n PGO:  Use Profile-Guided Optimizations ('--pgo') for improved throughput.\n FUTR: Use '--future-defaults=all' to prepare for future releases.\n HEAP: Set max heap for improved and more predictable memory usage.\n CPU:  Enable more CPU features with '-march=native' for improved performance.\n------------------------------------------------------------------------------------------------------------------------\n                       7.7s (7.8% of total time) in 1079 GCs | Peak RSS: 2.26GB | CPU load: 3.63\n------------------------------------------------------------------------------------------------------------------------\nBuild artifacts:\n /home/runner/work/graalvm-reachability-metadata/graalvm-reachability-metadata/tests/src/org.postgresql/postgresql/42.7.3/build/native/nativeTestCompile/libmanagement_ext.so (jdk_library)\n /home/runner/work/graalvm-reachability-metadata/graalvm-reachability-metadata/tests/src/org.postgresql/postgresql/42.7.3/build/native/nativeTestCompile/postgresql-tests-tests (executable)\n /tmp/native-image-build-output.json (build_info)\n========================================================================================================================\nFinished generating 'postgresql-tests-tests' in 1m 37s.\n[native-image-plugin] Native Image written to: /home/runner/work/graalvm-reachability-metadata/graalvm-reachability-metadata/tests/src/org.postgresql/postgresql/42.7.3/build/native/nativeTestCompile\n\n> Task :nativeTest\n[junit-platform-native] WARNING: -djunit.platform.listeners.uid.tracking.output.dir not specified, trying to find test-ids on default Gradle/Maven locations. As this is a fallback mode, it could take a while. This should only happen if you are running tests executable manually and you didn't pass uid output directory with -djunit.platform.listeners.uid.tracking.output.dir=<path>.\n[junit-platform-native] WARNING: Using test-ids from default Gradle project location:/home/runner/work/graalvm-reachability-metadata/graalvm-reachability-metadata/tests/src/org.postgresql/postgresql/42.7.3/build/test-results/test/testlist\n[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/runner/work/graalvm-reachability-metadata/graalvm-reachability-metadata/tests/src/org.postgresql/postgresql/42.7.3/build/test-results/test/testlist] and its subfolders.\nJUnit Platform on Native Image - report\n----------------------------------------\n\nStarting PostgreSQL ...\nPostgreSQL started\ncolumn 1: 9223372036854775807\ncolumn 2: true\ncolumn 3: true\ncolumn 4: [B@1b80ea68\ncolumn 5: c\ncolumn 6: some-string\ncolumn 7: 2020-01-02\ncolumn 8: 3.141592653589793\ncolumn 9: 42\ncolumn 10: { \"foo\": \"bar\"}\ncolumn 11: {\"foo\": \"bar\"}\ncolumn 12: 3.1415927\ncolumn 13: 5\ncolumn 14: some-text\ncolumn 15: 23:59:00\ncolumn 16: 21:59:00\ncolumn 17: 2020-01-02 23:59:00.0\ncolumn 18: 2020-01-02 20:59:00.0\ncolumn 19: 84d896eb-e92e-48aa-9500-4d272019e85f\ncolumn 20: org.postgresql.jdbc.PgSQLXML@c377763\ncolumn 21: null\ncolumn 1: (10.0,10.0),(0.0,0.0)\ncolumn 2: <(0.0,0.0),5.0>\ncolumn 3: {1.0,2.0,3.0}\ncolumn 4: [(0.0,1.0),(2.0,3.0)]\ncolumn 5: [(1.0,2.0),(3.0,4.0),(5.0,6.0)]\ncolumn 6: (1.0,2.0)\ncolumn 7: ((1.0,2.0),(3.0,4.0),(5.0,6.0))\ncolumn 1: 192.168.100.128/25\ncolumn 2: fe80::20c:29ff:fe8a:cd55/64\ncolumn 3: 1 years 2 mons 3 days 4 hours 5 mins 6 secs\ncolumn 4: 08:00:2b:01:02:03\ncolumn 5: 08:00:2b:01:02:03:04:05\ncolumn 6: 12.0\ncolumn 7: 3.14\ncolumn 8: 'an' 'example' 'is' 'sentence' 'this'\nShutting down PostgreSQL\npostgresql.GTTest > translateLoadsResourceBundleAndFormatsMessage() SUCCESSFUL\n\npostgresql.PgConnectionTest > constructorLoadsDatatypePropertiesDuringObjectTypeInitialization() SUCCESSFUL\n\npostgresql.PgConnectionTest > customXmlFactoryFactoryPropertyUsesConfiguredClassName() SUCCESSFUL\n\npostgresql.PgConnectionTest > addDataTypeLoadsClassNameThroughConnectionApi() SUCCESSFUL\n\npostgresql.OidTest > knownOidValuesResolveToNames() FAILED\n\npostgresql.OidTest > unknownOidNameIsRejected() FAILED\n\npostgresql.OidTest > knownOidNamesResolveToValues() FAILED\n\npostgresql.OidTest > unknownOidValueUsesDiagnosticName() FAILED\n\npostgresql.PGPooledConnectionInnerStatementHandlerTest > statementHandlerDelegatesUnhandledObjectMethodsToWrappedStatement() SUCCESSFUL\n\npostgresql.BaseDataSourceTest > initializeFromCopiesConnectionAndDriverPropertiesThroughBaseSerialization() SUCCESSFUL\n\npostgresql.EscapedFunctionsTest > legacyEscapeFunctionTranslatesSingleArgumentCall() SUCCESSFUL\n\npostgresql.EscapedFunctionsTest > getFunctionDiscoversLegacyTranslatorByName() SUCCESSFUL\n\npostgresql.PostgresqlTests > simpleDatatypes() SUCCESSFUL\n\npostgresql.PostgresqlTests > geometricDatatypes() SUCCESSFUL\n\npostgresql.PostgresqlTests > otherDatatypes() SUCCESSFUL\n\npostgresql.PostgresqlTests > commitAndRollback() SUCCESSFUL\n\npostgresql.SingleCertValidatingFactoryTest > loadsCertificateFromFactoryClassResourceWhenThreadContextClassLoaderIsUnavailable() SUCCESSFUL\n\npostgresql.SingleCertValidatingFactoryTest > loadsCertificateFromThreadContextClassLoaderResource() SUCCESSFUL\n\npostgresql.ObjectFactoryTest > instantiateFallsBackToStringConstructorWhenRequested() SUCCESSFUL\n\npostgresql.ObjectFactoryTest > instantiatePrefersPropertiesConstructorWhenAvailable() SUCCESSFUL\n\npostgresql.ObjectFactoryTest > instantiateFallsBackToNoArgumentConstructor() SUCCESSFUL\n\npostgresql.ParserTest > replaceProcessingUnwrapsEscapedFunctionSqlException() SUCCESSFUL\n\npostgresql.ParserTest > replaceProcessingInvokesEscapedFunctionTranslation() \n...[truncated]",
+      "body_error": ""
+    },
+    "library": "org.postgresql:postgresql:42.7.13",
+    "current_library": "org.postgresql:postgresql:42.7.3",
+    "new_version": "42.7.13",
+    "existing_tests": {
+      "org.postgresql:postgresql:42.7.3": [
+        "tests/src/org.postgresql/postgresql/42.7.3/.gitignore",
+        "tests/src/org.postgresql/postgresql/42.7.3/build.gradle",
+        "tests/src/org.postgresql/postgresql/42.7.3/gradle.properties",
+        "tests/src/org.postgresql/postgresql/42.7.3/required-docker-images.txt",
+        "tests/src/org.postgresql/postgresql/42.7.3/settings.gradle",
+        "tests/src/org.postgresql/postgresql/42.7.3/user-code-filter.json",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/ArrayDecodingInnerAbstractObjectStringArrayDecoderTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/BaseDataSourceTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/EscapedFunctionsTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/GTTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/ObjectFactoryTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/OidTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/PGPooledConnectionInnerConnectionHandlerTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/PGPooledConnectionInnerStatementHandlerTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/PGXAConnectionTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/ParserTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/PgConnectionTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/PostgresqlTests.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/SingleCertValidatingFactoryTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/java/postgresql/TimestampUtilsTest.java",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/resources/postgresql/single-cert-validating-factory-cert.pem",
+        "tests/src/org.postgresql/postgresql/42.7.3/src/test/resources/META-INF/native-image/reachability-metadata.json"
+      ]
+    }
+  }
+[recv] prompt failure
+  error: No API key found for openai-codex.
+
+Use /login or set an API key environment variable. See /home/jovan/.nvm/versions/node/v20.19.6/lib/node_modules/@mariozechner/pi-coding-agent/docs/providers.md
+
