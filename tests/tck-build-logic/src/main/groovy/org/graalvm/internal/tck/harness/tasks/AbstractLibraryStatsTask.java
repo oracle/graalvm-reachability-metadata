@@ -232,11 +232,7 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
                     libraryJars,
                     getDynamicAccessDir(coordinates),
                     getJacocoReport(coordinates),
-                    LibraryStatsSupport.parseAgentOrigins(
-                            originsOutput,
-                            getDynamicAccessDir(coordinates),
-                            libraryJars
-                    )
+                    LibraryStatsSupport.parseAgentOrigins(originsOutput, getDynamicAccessDir(coordinates))
             );
         }
         return LibraryStatsSupport.buildVersionStatsWithoutDynamicAccess(

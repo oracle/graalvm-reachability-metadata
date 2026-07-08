@@ -67,11 +67,7 @@ public abstract class GenerateDynamicAccessCoverageReportTask extends AbstractLi
                     libraryJars,
                     getDynamicAccessDir(coordinate),
                     getJacocoReport(coordinate),
-                    LibraryStatsSupport.parseAgentOrigins(
-                            originsOutput,
-                            getDynamicAccessDir(coordinate),
-                            libraryJars
-                    )
+                    LibraryStatsSupport.parseAgentOrigins(originsOutput, getDynamicAccessDir(coordinate))
             );
             Path outputFile = getDynamicAccessCoverageReport(coordinate);
             LibraryStatsSupport.writeJson(outputFile, report);

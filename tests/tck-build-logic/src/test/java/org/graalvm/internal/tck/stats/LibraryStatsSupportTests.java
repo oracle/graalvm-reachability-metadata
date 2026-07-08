@@ -416,11 +416,7 @@ class LibraryStatsSupportTests {
                 StandardCharsets.UTF_8
         );
 
-        Set<LibraryStatsSupport.AgentCoveredCallSite> coveredCallSites = LibraryStatsSupport.parseAgentOrigins(
-                originsFile,
-                dynamicAccessDir,
-                List.of(libraryJar)
-        );
+        Set<LibraryStatsSupport.AgentCoveredCallSite> coveredCallSites = LibraryStatsSupport.parseAgentOrigins(originsFile, dynamicAccessDir);
 
         assertThat(coveredCallSites).containsExactly(new LibraryStatsSupport.AgentCoveredCallSite(
                 "java.lang.Class#getResource(java.lang.String)",
@@ -450,7 +446,6 @@ class LibraryStatsSupportTests {
 
     @Test
     void agentOriginsNormalizeTrackedApiParameterSpacing() throws IOException {
-        Path libraryJar = createLibraryJar(tempDir.resolve("demo.jar"), List.of("com/example/Foo.class"));
         Path dynamicAccessDir = tempDir.resolve("dynamic-access");
         Files.createDirectories(dynamicAccessDir.resolve("demo"));
         Files.writeString(
@@ -477,11 +472,7 @@ class LibraryStatsSupportTests {
                 StandardCharsets.UTF_8
         );
 
-        Set<LibraryStatsSupport.AgentCoveredCallSite> coveredCallSites = LibraryStatsSupport.parseAgentOrigins(
-                originsFile,
-                dynamicAccessDir,
-                List.of(libraryJar)
-        );
+        Set<LibraryStatsSupport.AgentCoveredCallSite> coveredCallSites = LibraryStatsSupport.parseAgentOrigins(originsFile, dynamicAccessDir);
 
         assertThat(coveredCallSites).containsExactly(new LibraryStatsSupport.AgentCoveredCallSite(
                 "java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[])",

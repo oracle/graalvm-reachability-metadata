@@ -422,20 +422,17 @@ public final class LibraryStatsSupport {
     }
 
     /// §TCK-test-harness.8: streams the agent's compressed configuration-origin trees and
-    /// retains only statically reported line-less call sites whose exact tracked API and caller
+    /// retains the statically reported call sites whose exact tracked API and caller
     /// class/method occur, in that order, on a path carrying configuration. `originsOutput` may
     /// be one origins file or the agent output directory. Returns an empty set when no origins
-    /// output or no eligible call sites exist.
-    public static Set<AgentCoveredCallSite> parseAgentOrigins(
-            Path originsOutput,
-            Path dynamicAccessDir,
-            List<Path> libraryJars
-    ) {
+    /// output or no reported call sites exist. Candidates are taken from the reports as-is:
+    /// the reports only contain library call sites, and the coverage side only consults the
+    /// result for line-less library frames.
+    public static Set<AgentCoveredCallSite> parseAgentOrigins(Path originsOutput, Path dynamicAccessDir) {
         if (originsOutput == null || !Files.exists(originsOutput)) {
             return Set.of();
         }
-        Set<String> libraryClasses = loadLibraryClasses(libraryJars);
-        Set<AgentCoveredCallSite> candidates = loadAgentOriginCandidates(dynamicAccessDir, libraryClasses);
+        Set<AgentCoveredCallSite> candidates = loadAgentOriginCandidates(dynamicAccessDir);
         if (candidates.isEmpty()) {
             return Set.of();
         }
@@ -457,11 +454,8 @@ public final class LibraryStatsSupport {
         return Set.copyOf(coveredCallSites);
     }
 
-    private static Set<AgentCoveredCallSite> loadAgentOriginCandidates(
-            Path dynamicAccessDir,
-            Set<String> libraryClasses
-    ) {
-        if (!Files.isDirectory(dynamicAccessDir) || libraryClasses.isEmpty()) {
+    private static Set<AgentCoveredCallSite> loadAgentOriginCandidates(Path dynamicAccessDir) {
+        if (!Files.isDirectory(dynamicAccessDir)) {
             return Set.of();
         }
         Set<AgentCoveredCallSite> candidates = new LinkedHashSet<>();
@@ -477,9 +471,7 @@ public final class LibraryStatsSupport {
                     for (Map.Entry<String, List<String>> entry : report.entrySet()) {
                         for (String rawFrame : entry.getValue()) {
                             ParsedStackFrame frame = parseStackFrame(rawFrame);
-                            if (frame != null
-                                    && frame.lineNumber() == null
-                                    && libraryClasses.contains(frame.className())) {
+                            if (frame != null) {
                                 candidates.add(new AgentCoveredCallSite(
                                         entry.getKey(),
                                         frame.className(),
