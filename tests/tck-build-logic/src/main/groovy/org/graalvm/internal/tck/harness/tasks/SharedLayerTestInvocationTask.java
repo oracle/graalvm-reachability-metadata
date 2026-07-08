@@ -12,6 +12,8 @@ import java.util.Objects;
 
 /**
  * Task that runs native tests with the shared Native Image base layer.
+ * <p>
+ * Implements §TCK-test-harness.3 — the LayerUse test lane.
  */
 @SuppressWarnings("unused")
 public abstract class SharedLayerTestInvocationTask extends TestInvocationTask {
@@ -44,4 +46,5 @@ public abstract class SharedLayerTestInvocationTask extends TestInvocationTask {
         }
         return getProject().file(reportPath.toString());
     }
+
 }
