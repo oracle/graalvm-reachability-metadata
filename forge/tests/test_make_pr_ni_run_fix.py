@@ -62,6 +62,33 @@ class SevereMetadataDropGuardrailTests(unittest.TestCase):
 
 
 class NativeImageRunFinalizationTests(unittest.TestCase):
+    def test_build_test_comparison_section_returns_bounded_markdown_section(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path:
+            new_test_dir = os.path.join(
+                repo_path,
+                "tests",
+                "src",
+                "org.example",
+                "demo",
+                "2.0.0",
+            )
+            os.makedirs(new_test_dir)
+            bounded_section = (
+                "**Test-source comparison**\n\n```text\n1 file changed\n```\n\n"
+                "```diff\n+change\n```"
+            )
+
+            with patch.object(
+                    make_pr_ni_run_fix,
+                    "format_bounded_test_diff_section",
+                    return_value=bounded_section,
+            ):
+                comparison_section = make_pr_ni_run_fix.build_test_comparison_section(
+                    "org.example", "demo", "1.0.0", "2.0.0", repo_path,
+                )
+
+        self.assertEqual(comparison_section, bounded_section)
+
     def test_stage_and_commit_includes_jvm_test_source_directories(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path:
             test_version_dir = os.path.join(

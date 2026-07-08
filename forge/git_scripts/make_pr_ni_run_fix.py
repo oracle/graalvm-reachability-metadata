@@ -221,12 +221,7 @@ def build_test_comparison_section(group: str, artifact: str, old_version: str, n
     new_test_dir = os.path.join(repo_path, "tests", "src", group, artifact, new_version)
     if not os.path.isdir(new_test_dir):
         return ""
-    return (
-        "\n\n**Comparison between existing test version and AI-Generated update**\n\n"
-        "```diff\n"
-        f"{format_bounded_test_diff_section(group, artifact, old_version, new_version, repo_path)}\n"
-        "```"
-    )
+    return format_bounded_test_diff_section(group, artifact, old_version, new_version, repo_path)
 
 
 def build_pull_request_preview(
