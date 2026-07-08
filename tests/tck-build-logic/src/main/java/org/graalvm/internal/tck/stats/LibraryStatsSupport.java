@@ -19,6 +19,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -327,6 +328,18 @@ public final class LibraryStatsSupport {
             Path dynamicAccessDir,
             Path jacocoReport
     ) {
+        return buildVersionStats(coordinate, libraryJars, dynamicAccessDir, jacocoReport, Set.of());
+    }
+
+    /// §TCK-test-harness.8: `agentCoveredCallSites` (from `parseAgentOrigins`) enables the
+    /// agent-origin fallback for line-less call sites; pass `Set.of()` for the line-based path.
+    public static LibraryStatsModels.VersionStats buildVersionStats(
+            String coordinate,
+            List<Path> libraryJars,
+            Path dynamicAccessDir,
+            Path jacocoReport,
+            Set<AgentCoveredCallSite> agentCoveredCallSites
+    ) {
         Set<String> libraryClasses = loadLibraryClasses(libraryJars);
         if (libraryClasses.isEmpty()) {
             return new LibraryStatsModels.VersionStats(
@@ -336,7 +349,7 @@ public final class LibraryStatsSupport {
             );
         }
         ParsedJacocoReport parsedJacocoReport = parseJacocoReport(jacocoReport);
-        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, parsedJacocoReport.coveredLinesBySource());
+        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, parsedJacocoReport.coveredLinesBySource(), agentCoveredCallSites);
         return versionStats(
                 coordinate,
                 LibraryStatsModels.DynamicAccessStatsValue.available(parsedDynamicAccess.dynamicAccessStats()),
@@ -361,7 +374,7 @@ public final class LibraryStatsSupport {
         if (libraryClasses.isEmpty()) {
             return new ExternalDynamicAccessSummary(0L, Map.of());
         }
-        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, Map.of());
+        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, Map.of(), Set.of());
         return new ExternalDynamicAccessSummary(
                 parsedDynamicAccess.dynamicAccessStats().totalCalls(),
                 parsedDynamicAccess.dynamicAccessStats().breakdown()
@@ -374,6 +387,18 @@ public final class LibraryStatsSupport {
             Path dynamicAccessDir,
             Path jacocoReport
     ) {
+        return buildDynamicAccessCoverageReport(coordinate, libraryJars, dynamicAccessDir, jacocoReport, Set.of());
+    }
+
+    /// §TCK-test-harness.8: `agentCoveredCallSites` (from `parseAgentOrigins`) enables the
+    /// agent-origin fallback for line-less call sites; pass `Set.of()` for the line-based path.
+    public static LibraryStatsModels.DynamicAccessCoverageReport buildDynamicAccessCoverageReport(
+            String coordinate,
+            List<Path> libraryJars,
+            Path dynamicAccessDir,
+            Path jacocoReport,
+            Set<AgentCoveredCallSite> agentCoveredCallSites
+    ) {
         Set<String> libraryClasses = loadLibraryClasses(libraryJars);
         if (libraryClasses.isEmpty()) {
             return new LibraryStatsModels.DynamicAccessCoverageReport(
@@ -384,7 +409,7 @@ public final class LibraryStatsSupport {
             );
         }
         ParsedJacocoReport parsedJacocoReport = parseJacocoReport(jacocoReport);
-        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, parsedJacocoReport.coveredLinesBySource());
+        ParsedDynamicAccess parsedDynamicAccess = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, parsedJacocoReport.coveredLinesBySource(), agentCoveredCallSites);
         return new LibraryStatsModels.DynamicAccessCoverageReport(
                 coordinate,
                 parsedDynamicAccess.dynamicAccessStats().totalCalls() > 0,
@@ -394,6 +419,206 @@ public final class LibraryStatsSupport {
                 ),
                 parsedDynamicAccess.classCoverage()
         );
+    }
+
+    /// §TCK-test-harness.8: streams the agent's compressed configuration-origin trees and
+    /// retains the statically reported call sites whose exact tracked API and caller
+    /// class/method occur, in that order, on a path carrying configuration. `originsOutput` may
+    /// be one origins file or the agent output directory. Returns an empty set when no origins
+    /// output or no reported call sites exist. Candidates are taken from the reports as-is:
+    /// the reports only contain library call sites, and the coverage side only consults the
+    /// result for line-less library frames.
+    public static Set<AgentCoveredCallSite> parseAgentOrigins(Path originsOutput, Path dynamicAccessDir) {
+        if (originsOutput == null || !Files.exists(originsOutput)) {
+            return Set.of();
+        }
+        Set<AgentCoveredCallSite> candidates = loadAgentOriginCandidates(dynamicAccessDir);
+        if (candidates.isEmpty()) {
+            return Set.of();
+        }
+
+        Map<String, List<AgentCoveredCallSite>> candidatesByTrackedApi = new HashMap<>();
+        for (AgentCoveredCallSite candidate : candidates) {
+            candidatesByTrackedApi
+                    .computeIfAbsent(normalizeMethodSignature(candidate.trackedApi()), ignored -> new ArrayList<>())
+                    .add(candidate);
+        }
+
+        Set<AgentCoveredCallSite> coveredCallSites = new LinkedHashSet<>();
+        for (Path originsFile : listAgentOriginsFiles(originsOutput)) {
+            parseAgentOriginsFile(originsFile, candidatesByTrackedApi, candidates.size(), coveredCallSites);
+            if (coveredCallSites.size() == candidates.size()) {
+                break;
+            }
+        }
+        return Set.copyOf(coveredCallSites);
+    }
+
+    private static Set<AgentCoveredCallSite> loadAgentOriginCandidates(Path dynamicAccessDir) {
+        if (!Files.isDirectory(dynamicAccessDir)) {
+            return Set.of();
+        }
+        Set<AgentCoveredCallSite> candidates = new LinkedHashSet<>();
+        try (Stream<Path> files = Files.walk(dynamicAccessDir)) {
+            for (Path reportFile : files
+                    .filter(Files::isRegularFile)
+                    .filter(path -> DYNAMIC_ACCESS_REPORT.matcher(path.getFileName().toString()).matches())
+                    .sorted(Comparator.comparing(path -> path.toAbsolutePath().toString()))
+                    .toList()) {
+                try (InputStream inputStream = Files.newInputStream(reportFile)) {
+                    Map<String, List<String>> report = OBJECT_MAPPER.readValue(inputStream, new TypeReference<>() {
+                    });
+                    for (Map.Entry<String, List<String>> entry : report.entrySet()) {
+                        for (String rawFrame : entry.getValue()) {
+                            ParsedStackFrame frame = parseStackFrame(rawFrame);
+                            if (frame != null) {
+                                candidates.add(new AgentCoveredCallSite(
+                                        entry.getKey(),
+                                        frame.className(),
+                                        frame.methodName()
+                                ));
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new GradleException("Failed to load agent-origin candidates from " + dynamicAccessDir, e);
+        }
+        return candidates;
+    }
+
+    private static List<Path> listAgentOriginsFiles(Path originsOutput) {
+        if (Files.isRegularFile(originsOutput)) {
+            return List.of(originsOutput);
+        }
+        if (!Files.isDirectory(originsOutput)) {
+            return List.of();
+        }
+        try (Stream<Path> files = Files.list(originsOutput)) {
+            return files
+                    .filter(Files::isRegularFile)
+                    .filter(path -> path.getFileName().toString().endsWith("-origins.txt"))
+                    .sorted(Comparator.comparing(path -> path.toAbsolutePath().toString()))
+                    .toList();
+        } catch (IOException e) {
+            throw new GradleException("Failed to list native-image-agent origins in " + originsOutput, e);
+        }
+    }
+
+    private static void parseAgentOriginsFile(
+            Path originsFile,
+            Map<String, List<AgentCoveredCallSite>> candidatesByTrackedApi,
+            int candidateCount,
+            Set<AgentCoveredCallSite> coveredCallSites
+    ) {
+        List<AgentOriginMethod> currentPath = new ArrayList<>();
+        try (BufferedReader reader = Files.newBufferedReader(originsFile, StandardCharsets.UTF_8)) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                ParsedAgentOriginLine parsedLine = parseAgentOriginLine(line);
+                if (parsedLine == null) {
+                    continue;
+                }
+                if (parsedLine.depth() > currentPath.size()) {
+                    throw new GradleException("Invalid native-image-agent origin depth in " + originsFile);
+                }
+                while (currentPath.size() > parsedLine.depth()) {
+                    currentPath.remove(currentPath.size() - 1);
+                }
+                currentPath.add(parsedLine.method());
+                if (parsedLine.hasConfiguration()) {
+                    matchAgentOriginPath(currentPath, candidatesByTrackedApi, coveredCallSites);
+                    if (coveredCallSites.size() == candidateCount) {
+                        return;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new GradleException("Failed to parse native-image-agent origins " + originsFile, e);
+        }
+    }
+
+    private static ParsedAgentOriginLine parseAgentOriginLine(String line) {
+        int branchIndex = Math.max(line.lastIndexOf("├── "), line.lastIndexOf("└── "));
+        if (branchIndex < 2) {
+            return null;
+        }
+        String branchPrefix = line.substring(2, branchIndex);
+        if (branchPrefix.length() % 4 != 0) {
+            return null;
+        }
+        int depth = branchPrefix.length() / 4;
+        String entry = line.substring(branchIndex + 4);
+        int configurationIndex = entry.indexOf(" - [");
+        boolean hasConfiguration = configurationIndex >= 0;
+        String methodSignature = hasConfiguration ? entry.substring(0, configurationIndex) : entry;
+        int hashIndex = methodSignature.indexOf('#');
+        int parametersIndex = methodSignature.indexOf('(', hashIndex + 1);
+        if (hashIndex < 1 || parametersIndex < 0) {
+            return null;
+        }
+        AgentOriginMethod method = new AgentOriginMethod(
+                normalizeMethodSignature(methodSignature),
+                methodSignature.substring(0, hashIndex),
+                methodSignature.substring(hashIndex + 1, parametersIndex)
+        );
+        return new ParsedAgentOriginLine(depth, method, hasConfiguration);
+    }
+
+    private static void matchAgentOriginPath(
+            List<AgentOriginMethod> originPath,
+            Map<String, List<AgentCoveredCallSite>> candidatesByTrackedApi,
+            Set<AgentCoveredCallSite> coveredCallSites
+    ) {
+        for (int apiIndex = 0; apiIndex < originPath.size(); apiIndex++) {
+            AgentOriginMethod apiMethod = originPath.get(apiIndex);
+            List<AgentCoveredCallSite> candidates = candidatesByTrackedApi.get(apiMethod.signature());
+            if (candidates == null) {
+                continue;
+            }
+            for (int callerIndex = apiIndex - 1; callerIndex >= 0; callerIndex--) {
+                AgentOriginMethod callerMethod = originPath.get(callerIndex);
+                if (candidatesByTrackedApi.containsKey(callerMethod.signature())) {
+                    break;
+                }
+                List<AgentCoveredCallSite> matches = candidates.stream()
+                        .filter(candidate -> candidate.className().equals(callerMethod.className()))
+                        .filter(candidate -> candidate.methodName().equals(callerMethod.methodName()))
+                        .toList();
+                if (!matches.isEmpty()) {
+                    coveredCallSites.addAll(matches);
+                    break;
+                }
+            }
+        }
+    }
+
+    private static String normalizeMethodSignature(String methodSignature) {
+        return methodSignature.replace(" ", "");
+    }
+
+    /// §TCK-test-harness.8: the agent-origin fallback is the only-when-lines-are-absent gate.
+    /// Returns true iff the dynamic-access reports contain at least one library call site and
+    /// every such call site is line-less, so line-based matching can never succeed. Purely
+    /// data-driven — no jar bytecode scanning.
+    public static boolean lineMatchingImpossible(Path dynamicAccessDir, List<Path> libraryJars) {
+        Set<String> libraryClasses = loadLibraryClasses(libraryJars);
+        if (libraryClasses.isEmpty()) {
+            return false;
+        }
+        ParsedDynamicAccess parsed = parseDynamicAccessReports(dynamicAccessDir, libraryClasses, Map.of(), Set.of());
+        if (parsed.dynamicAccessStats().totalCalls() == 0L) {
+            return false;
+        }
+        for (LibraryStatsModels.DynamicAccessClassCoverage classCoverage : parsed.classCoverage()) {
+            for (LibraryStatsModels.DynamicAccessCallSiteCoverage callSite : classCoverage.callSites()) {
+                if (callSite.line() != null) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private static LibraryStatsModels.VersionStats versionStats(
@@ -661,7 +886,8 @@ public final class LibraryStatsSupport {
     private static ParsedDynamicAccess parseDynamicAccessReports(
             Path dynamicAccessDir,
             Set<String> libraryClasses,
-            Map<String, Set<Integer>> coveredLinesBySource
+            Map<String, Set<Integer>> coveredLinesBySource,
+            Set<AgentCoveredCallSite> agentCoveredCallSites
     ) {
         if (!Files.isDirectory(dynamicAccessDir)) {
             return emptyDynamicAccess();
@@ -674,7 +900,7 @@ public final class LibraryStatsSupport {
                     .filter(Files::isRegularFile)
                     .filter(path -> DYNAMIC_ACCESS_REPORT.matcher(path.getFileName().toString()).matches())
                     .sorted(Comparator.comparing(path -> path.toAbsolutePath().toString()))
-                    .forEach(path -> parseDynamicAccessFile(path, libraryClasses, coveredLinesBySource, callSitesByKey));
+                    .forEach(path -> parseDynamicAccessFile(path, libraryClasses, coveredLinesBySource, agentCoveredCallSites, callSitesByKey));
         } catch (IOException e) {
             throw new GradleException("Failed to traverse dynamic access directory " + dynamicAccessDir, e);
         }
@@ -732,6 +958,7 @@ public final class LibraryStatsSupport {
             Path path,
             Set<String> libraryClasses,
             Map<String, Set<Integer>> coveredLinesBySource,
+            Set<AgentCoveredCallSite> agentCoveredCallSites,
             Map<String, ParsedDynamicAccessCallSite> callSitesByKey
     ) {
         Matcher matcher = DYNAMIC_ACCESS_REPORT.matcher(path.getFileName().toString());
@@ -754,11 +981,20 @@ public final class LibraryStatsSupport {
                     if (callSitesByKey.containsKey(callSiteKey)) {
                         continue;
                     }
+                    // §TCK-test-harness.8: line-based matching is primary. A line-less site falls
+                    // back to an exact tracked API plus caller class/method match from an agent
+                    // configuration-origin path.
                     boolean covered = false;
                     if (parsedFrame.lineNumber() != null) {
                         String sourceKey = sourceKey(parsedFrame.className(), parsedFrame.sourceFile());
                         Set<Integer> coveredLines = coveredLinesBySource.get(sourceKey);
                         covered = coveredLines != null && coveredLines.contains(parsedFrame.lineNumber());
+                    } else if (!agentCoveredCallSites.isEmpty()) {
+                        covered = agentCoveredCallSites.contains(new AgentCoveredCallSite(
+                                trackedApi,
+                                parsedFrame.className(),
+                                parsedFrame.methodName()
+                        ));
                     }
                     callSitesByKey.put(
                             callSiteKey,
@@ -797,10 +1033,11 @@ public final class LibraryStatsSupport {
             return null;
         }
         String className = matcher.group(1);
+        String methodName = matcher.group(2);
         String sourceFile = matcher.group(3);
         String lineNumberString = matcher.group(4);
         Integer lineNumber = lineNumberString == null ? null : Integer.parseInt(lineNumberString);
-        return new ParsedStackFrame(className, sourceFile, lineNumber);
+        return new ParsedStackFrame(className, methodName, sourceFile, lineNumber);
     }
 
     private static ParsedJacocoReport parseJacocoReport(Path jacocoReport) {
@@ -992,7 +1229,13 @@ public final class LibraryStatsSupport {
         );
     }
 
-    private record ParsedStackFrame(String className, String sourceFile, Integer lineNumber) {
+    private record ParsedStackFrame(String className, String methodName, String sourceFile, Integer lineNumber) {
+    }
+
+    private record AgentOriginMethod(String signature, String className, String methodName) {
+    }
+
+    private record ParsedAgentOriginLine(int depth, AgentOriginMethod method, boolean hasConfiguration) {
     }
 
     private record ParsedDynamicAccess(
@@ -1018,6 +1261,9 @@ public final class LibraryStatsSupport {
             LibraryStatsModels.CoverageMetricValue instruction,
             LibraryStatsModels.CoverageMetricValue method
     ) {
+    }
+
+    public record AgentCoveredCallSite(String trackedApi, String className, String methodName) {
     }
 
     public record ExternalDynamicAccessSummary(
