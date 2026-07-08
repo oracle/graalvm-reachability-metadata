@@ -55,6 +55,34 @@ public class Spring_cloud_stream_binder_kafkaTest {
         }
     }
 
+    @Test
+    void sendsMessagesToDynamicallyCreatedKafkaDestination() throws InterruptedException {
+        String identifier = UUID.randomUUID().toString();
+        String topic = "dynamic-destination-" + identifier;
+        String group = "dynamic-group-" + identifier;
+        String message = "message sent to a dynamic Kafka destination";
+        EmbeddedKafkaKraftBroker broker = new EmbeddedKafkaKraftBroker(1, 1, topic);
+        broker.afterPropertiesSet();
+
+        try (ConfigurableApplicationContext context = new SpringApplicationBuilder(BindingConfiguration.class)
+                .web(WebApplicationType.NONE)
+                .properties(
+                        "spring.cloud.function.definition=consumer",
+                        "spring.cloud.stream.kafka.binder.brokers=" + broker.getBrokersAsString(),
+                        "spring.cloud.stream.bindings.consumer-in-0.destination=" + topic,
+                        "spring.cloud.stream.bindings.consumer-in-0.group=" + group)
+                .run()) {
+            MessageCollector collector = context.getBean(MessageCollector.class);
+            StreamBridge streamBridge = context.getBean(StreamBridge.class);
+
+            assertThat(streamBridge.send(topic, message)).isTrue();
+            assertThat(collector.awaitMessage()).isTrue();
+            assertThat(collector.message()).isEqualTo(message);
+        } finally {
+            broker.destroy();
+        }
+    }
+
     @Configuration
     @EnableAutoConfiguration
     public static class BindingConfiguration {
