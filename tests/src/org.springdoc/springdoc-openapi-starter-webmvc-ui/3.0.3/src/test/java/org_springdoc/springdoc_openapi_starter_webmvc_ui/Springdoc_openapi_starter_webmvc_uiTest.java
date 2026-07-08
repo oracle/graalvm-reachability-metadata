@@ -62,6 +62,17 @@ public class Springdoc_openapi_starter_webmvc_uiTest {
         assertThat(swaggerUi.body()).contains("swagger-ui");
     }
 
+    @Test
+    void exposesSwaggerUiConfigurationForDefaultOpenApiDocument() throws Exception {
+        HttpResponse<String> swaggerConfiguration = get("/v3/api-docs/swagger-config");
+
+        assertThat(swaggerConfiguration.statusCode()).isEqualTo(200);
+        assertThat(swaggerConfiguration.headers().firstValue("content-type")).hasValueSatisfying(
+                contentType -> assertThat(contentType).contains("application/json"));
+        assertThat(swaggerConfiguration.body()).contains("\"url\":\"/v3/api-docs\"");
+        assertThat(swaggerConfiguration.body()).contains("\"configUrl\":\"/v3/api-docs/swagger-config\"");
+    }
+
     private static HttpResponse<String> get(String path) throws Exception {
         HttpRequest request = HttpRequest.newBuilder(URI.create(baseUrl + path))
                 .timeout(REQUEST_TIMEOUT)
