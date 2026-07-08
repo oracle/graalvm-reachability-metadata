@@ -15,6 +15,16 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+String routineTestMethods = "org_hsqldb.hsqldb.RoutineTest.*"
+
+tasks.withType(Test).configureEach {
+    systemProperty "hsqldb.method_class_names", routineTestMethods
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Dhsqldb.method_class_names=$routineTestMethods")
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
