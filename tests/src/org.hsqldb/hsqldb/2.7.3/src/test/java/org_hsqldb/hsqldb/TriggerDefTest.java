@@ -51,7 +51,7 @@ public class TriggerDefTest {
     }
 
     public static final class RecordingTrigger implements Trigger {
-        public RecordingTrigger() {}
+        public RecordingTrigger() { }
 
         @Override
         public void fire(

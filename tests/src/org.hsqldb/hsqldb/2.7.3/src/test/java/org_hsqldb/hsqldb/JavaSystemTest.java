@@ -22,7 +22,7 @@ public class JavaSystemTest {
     @Test
     void unmapsWritableMappedBuffer(@TempDir Path temporaryDirectory) throws Exception {
         Path file = temporaryDirectory.resolve("mapped-data.bin");
-        Files.write(file, new byte[] { 1 });
+        Files.write(file, new byte[] {1});
 
         try (FileChannel channel = FileChannel.open(
                 file,

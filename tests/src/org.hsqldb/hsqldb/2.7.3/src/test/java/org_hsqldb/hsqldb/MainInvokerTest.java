@@ -16,7 +16,7 @@ public class MainInvokerTest {
 
     @Test
     void invokesNamedClassMainMethodWithArguments() throws Exception {
-        String[] arguments = { "first", "second" };
+        String[] arguments = {"first", "second"};
 
         MainInvoker.invoke(MainInvokerTest.class.getName(), arguments);
 
