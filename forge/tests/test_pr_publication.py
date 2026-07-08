@@ -7,6 +7,7 @@ import os
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from git_scripts import pr_publication
 from utility_scripts.continuation_marker import CONTINUATION_MARKER_FILENAME
@@ -26,6 +27,34 @@ def _git(repo_path: str, *args: str) -> str:
 
 
 class PrPublicationTests(unittest.TestCase):
+    def test_format_bounded_test_diff_section_truncates_large_diff(self) -> None:
+        diff_text = "Q" * (pr_publication.MAX_INLINE_TEST_DIFF_CHARS + 1)
+        with patch.object(
+                pr_publication,
+                "_generate_test_diff_outputs",
+                return_value=(diff_text, " 1 file changed, 1 insertion(+)")
+        ):
+            section = pr_publication.format_bounded_test_diff_section(
+                "org.example", "demo", "1.0.0", "2.0.0", "/repo",
+            )
+
+        self.assertIn("1 file changed", section)
+        self.assertIn("Files changed", section)
+        self.assertNotIn(diff_text, section)
+        self.assertEqual(section.count("Q"), pr_publication.MAX_INLINE_TEST_DIFF_CHARS)
+
+    def test_bound_pr_body_keeps_body_below_github_limit(self) -> None:
+        oversized_body = (
+            "x" * (pr_publication.MAX_PR_BODY_CHARS + 100)
+            + "\n\n## Local CI Verification\n\nPassed"
+        )
+
+        bounded_body = pr_publication.bound_pr_body(oversized_body)
+
+        self.assertLessEqual(len(bounded_body), pr_publication.MAX_PR_BODY_CHARS)
+        self.assertIn("GitHub's size limit", bounded_body)
+        self.assertIn("Local CI Verification", bounded_body)
+
     def test_preservation_cleanup_keeps_pending_metrics_as_local_input(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path:
             _git(repo_path, "init")
