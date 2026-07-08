@@ -94,6 +94,10 @@ image is built.
 `-Ptck.layered.coordinateFailureReport=<file>`, it writes one failed coordinate
 per line before failing the task at the end of the batch.
 
+The manual layered workflow supplies `-Ptck.excludedCoordinatesFile` with its
+maintained residual-failure list, so known LayerUse incompatibilities do not
+hide new failures. Other workflows do not supply an exclusion file.
+
 ## 4. Native-image metadata tracing
 
 Helpers for collecting metadata with the native-image tracing agent (see also

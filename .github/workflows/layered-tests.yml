@@ -98,6 +98,7 @@ jobs:
           failure_report="${RUNNER_TEMP}/shared-layer-test-failures.txt"
           ./gradlew testSharedLayer \
             -Pcoordinates="${{ matrix.coordinates }}" \
+            -Ptck.excludedCoordinatesFile="tests/tck-build-logic/src/main/resources/shared-layered-test-exclusions.txt" \
             -Ptck.layered.continueOnCoordinateFailure=true \
             -Ptck.layered.coordinateFailureReport="${failure_report}" \
             --stacktrace
