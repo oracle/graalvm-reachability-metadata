@@ -1,0 +1,113 @@
+{
+  "improve_library_coverage:2026-06-24": {
+    "timestamp": "2026-06-24T21:00:00.520899Z",
+    "library": "org.hibernate.validator:hibernate-validator:9.1.0.Final",
+    "starting_commit": "1f77ca5c1546b67b98bbabedc46ffb08a8563a8c",
+    "ending_commit": "a9584395413e543405823f16b1658803f3783fa9",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "9.1.0.Final",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.716981,
+            "coveredCalls": 38,
+            "totalCalls": 53
+          },
+          "resources": {
+            "coverageRatio": 0.857143,
+            "coveredCalls": 6,
+            "totalCalls": 7
+          }
+        },
+        "coverageRatio": 0.733333,
+        "coveredCalls": 44,
+        "totalCalls": 60
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 24106,
+          "missed": 43213,
+          "ratio": 0.358086,
+          "total": 67319
+        },
+        "line": {
+          "covered": 5933,
+          "missed": 9881,
+          "ratio": 0.375174,
+          "total": 15814
+        },
+        "method": {
+          "covered": 1637,
+          "missed": 2867,
+          "ratio": 0.363455,
+          "total": 4504
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8397,
+      "issue_label": "library-update-request",
+      "library": "org.hibernate.validator:hibernate-validator:9.1.0.Final",
+      "summary": "Hibernate Validator 9.1.0.Final does not bring a Jakarta Expression Language implementation transitively, but its documented default Java SE bootstrap requires one for message interpolation; without it, ordinary Validation.buildDefaultValidatorFactory() coverage may fail before exercising meaningful validation paths.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.glassfish.expressly:expressly:6.0.0",
+          "scope": "testImplementation",
+          "reason": "Hibernate Validator 9.1 documentation recommends the Expressly Jakarta EL implementation for Java SE use because the hibernate-validator artifact only declares jakarta.el-api as optional/provided, not an implementation."
+        }
+      ],
+      "agent_guidance": "Exercise normal Jakarta Validation/Hibernate Validator bootstrap, such as Validation.buildDefaultValidatorFactory() or Validation.byProvider(HibernateValidator.class).configure().buildValidatorFactory(), and validate beans using built-in constraints. Avoid switching to ParameterMessageInterpolator unless deliberately testing the non-EL fallback, because that bypasses the default interpolation path used by typical applications.",
+      "risks": [
+        "The reported Spring Boot failure can likely be reproduced through plain Hibernate Validator bootstrap because the stack reaches Hibernate Validator logger initialization before Spring-specific behavior, but final Gradle/native-image verification remains authoritative.",
+        "If tests use only message templates or avoid default bootstrap, they may miss the default EL/message-interpolation path and provide weaker coverage."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.glassfish.expressly:expressly:6.0.0",
+          "result": "applied",
+          "target": "tests/src/org.hibernate.validator/hibernate-validator/9.1.0.Final/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8397 Update existing library: org.hibernate.validator:hibernate-validator:9.1.0.Final; label=library-update-request; body_chars=6808"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "8 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 44133,
+      "output_tokens_used": 2679,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.hibernate.validator:hibernate-validator:9.1.0.Final/library-preparation-preflight/pi-generation-2026-06-24T19-13-10-311134Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 942673,
+      "cached_input_tokens_used": 5609472,
+      "output_tokens_used": 75215,
+      "iterations": 17,
+      "cost_usd": 5.0612,
+      "generated_loc": 908,
+      "tested_library_loc": 5933,
+      "metadata_entries": 7,
+      "test_only_metadata_entries": 1037,
+      "code_coverage_percent": 37.52
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.hibernate.validator/hibernate-validator/9.1.0.Final/src/test/java/hibernate_validator/GetDeclaredConstructorTest.java",
+      "metadata_file": "metadata/org.hibernate.validator/hibernate-validator/9.1.0.Final/reachability-metadata.json"
+    }
+  }
+}
