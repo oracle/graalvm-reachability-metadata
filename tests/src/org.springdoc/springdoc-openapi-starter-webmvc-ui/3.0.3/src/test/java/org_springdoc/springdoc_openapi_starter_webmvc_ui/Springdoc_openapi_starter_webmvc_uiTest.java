@@ -73,6 +73,15 @@ public class Springdoc_openapi_starter_webmvc_uiTest {
         assertThat(swaggerConfiguration.body()).contains("\"configUrl\":\"/v3/api-docs/swagger-config\"");
     }
 
+    @Test
+    void redirectsLegacySwaggerUiPathToIndexPage() throws Exception {
+        HttpResponse<String> response = get("/swagger-ui.html");
+
+        assertThat(response.statusCode()).isEqualTo(302);
+        assertThat(response.headers().firstValue("location")).hasValueSatisfying(
+                location -> assertThat(location).contains("/swagger-ui/index.html"));
+    }
+
     private static HttpResponse<String> get(String path) throws Exception {
         HttpRequest request = HttpRequest.newBuilder(URI.create(baseUrl + path))
                 .timeout(REQUEST_TIMEOUT)
