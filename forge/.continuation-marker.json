@@ -1,0 +1,78 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3",
+  "issueNumber": 7020,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Create a minimal @SpringBootApplication with a @RestController, run it on a random port, and exercise /v3/api-docs plus /swagger-ui/index.html. No environment variable or system property is required.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "coordinate": "org.springframework.boot:spring-boot-starter-webmvc:4.0.5",
+        "kind": "dependency",
+        "reason": "springdoc 3.0.3 is built against Spring Boot 4.0.5 and its UI auto-configuration is conditional on a servlet web application; the Web MVC starter provides the normal embedded-server application runtime.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7020 Support for org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3; label=library-new-request; body_chars=124"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 32066,
+    "issue_label": "library-new-request",
+    "issue_number": 7020,
+    "library": "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3",
+    "model": "gpt-5.6-terra",
+    "output_tokens_used": 3202,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The artifact's direct servlet API dependency is provided and it does not transitively provide an embedded servlet container; tests that only instantiate springdoc classes will bypass the meaningful auto-configuration and endpoint paths."
+    ],
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3/library-preparation-preflight/pi-generation-2026-07-08T21-22-10-862869Z.log",
+    "status": "completed",
+    "summary": "This starter only activates inside a servlet Spring Boot application; a conventional Web MVC starter supplies the embedded server absent from its transitive runtime dependencies."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 7,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-7020-library-new-request-org.springdoc-springdoc-openapi-starter-webmvc-ui-3.0.3-37159123",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3",
+    "timestamp": "2026-07-08T22:13:13.233711Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.6-terra"
+}
