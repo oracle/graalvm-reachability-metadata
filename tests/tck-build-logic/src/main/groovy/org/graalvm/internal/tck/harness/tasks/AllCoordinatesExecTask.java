@@ -83,6 +83,10 @@ public abstract class AllCoordinatesExecTask extends CoordinatesAwareTask {
     public final void runAll() {
         List<String> coords = resolveCoordinates();
         if (coords.isEmpty()) {
+            if (excludedCoordinates()) {
+                getLogger().lifecycle("All matching coordinates were excluded. Nothing to do.");
+                return;
+            }
             // If the user explicitly provided -Pcoordinates (non-empty, non-batch), fail fast with a clear error.
             List<String> override = getCoordinatesOverride().getOrNull();
             boolean hasProgrammaticOverride = override != null && !override.isEmpty();

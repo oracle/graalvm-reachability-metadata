@@ -29,6 +29,12 @@ not be counted as public supported-library output. The `testInfra` bundle uses
 the public-library coordinate set and excludes `samples:*`, because the bundle
 includes reporting/public-output tasks that do not operate on fixture-only
 coordinates.
+`-Ptck.excludedCoordinatesFile=<file>` optionally removes coordinates whose
+`group:artifact` library key occurs in the supplied UTF-8 file. Versions are
+ignored; blank lines and lines beginning with `#` are ignored. This common
+filter applies to coordinate-scoped tasks using the shared resolver, so callers
+can reuse a single known-failure list across test or validation lanes when
+appropriate.
 
 | Task | Purpose |
 | --- | --- |
