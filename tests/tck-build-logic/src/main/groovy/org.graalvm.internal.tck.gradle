@@ -5,13 +5,16 @@
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 import groovy.json.JsonSlurper
+import org.graalvm.internal.tck.Coordinates
 import org.graalvm.internal.tck.utils.DynamicAccessUtils
+import org.graalvm.internal.tck.utils.MetadataGenerationUtils
 import org.graalvm.internal.tck.utils.NativeImageConfigUtils
 
 import org.graalvm.buildtools.gradle.tasks.BuildNativeImageTask
 import org.graalvm.buildtools.gradle.tasks.NativeRunTask
 import org.gradle.api.tasks.PathSensitivity
 
+import java.nio.file.Path
 import java.util.jar.JarFile
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -311,38 +314,40 @@ dependencies {
 }
 
 Closure<List<File>> resolveTestedLibraryJars = {
-    String targetGroup = ""
-    String targetArtifact = ""
-    String targetVersion = ""
-    def coordsParts = (libraryGAV ?: "").split(":")
-    if (coordsParts.length >= 3) {
-        targetGroup = coordsParts[0]
-        targetArtifact = coordsParts[1]
-        targetVersion = coordsParts[2]
+    if (libraryGAV == null || libraryGAV.isBlank()) {
+        throw new GradleException("No eligible artifacts found on the classpath for ${libraryGAV}.\nPlease verify that the provided artifact exists.")
+    }
+    try {
+        List<File> libraryJars = MetadataGenerationUtils.resolveLibraryJars(
+                project,
+                Coordinates.parse(libraryGAV)
+        ).collect { Path path -> path.toFile() }
+        if (!libraryJars.isEmpty()) {
+            return libraryJars.sort { File file -> file.absolutePath }
+        }
+    } catch (IOException exception) {
+        throw new GradleException("Failed to resolve library JARs for ${libraryGAV}.", exception)
     }
 
+    // Preserve compatibility with wrapper/substitution POMs that expose the tested JAR only
+    // through the resolved test runtime classpath and do not declare Maven relocation metadata.
+    String[] coordinates = libraryGAV.split(":")
+    String targetGroup = coordinates.length >= 1 ? coordinates[0] : ""
+    String targetArtifact = coordinates.length >= 2 ? coordinates[1] : ""
+    String targetVersion = coordinates.length >= 3 ? coordinates[2] : ""
     def artifacts = configurations.testRuntimeClasspath.resolvedConfiguration.resolvedArtifacts
     Set<File> matched = new LinkedHashSet<>(artifacts.findAll { artifact ->
         (artifact.moduleVersion.id.group == targetGroup) && (artifact.moduleVersion.id.name == targetArtifact)
-    }.collect { artifact ->
-        artifact.file
-    })
-
+    }.collect { artifact -> artifact.file })
     if (matched.isEmpty()) {
-        // Fallback for relocated or substituted modules: the requested G:A coordinates may resolve
-        // to a different group in published metadata, so no resolved artifact carries the original group.
         matched.addAll(artifacts.findAll { artifact ->
             (artifact.moduleVersion.id.name == targetArtifact) && (artifact.moduleVersion.id.version == targetVersion)
-        }.collect { artifact ->
-            artifact.file
-        })
+        }.collect { artifact -> artifact.file })
     }
-
-    if (matched.isEmpty()) {
-        throw new GradleException("No eligible artifacts found on the classpath for ${libraryGAV}.\nPlease verify that the provided artifact exists.")
+    if (!matched.isEmpty()) {
+        return matched.toList().sort { File file -> file.absolutePath }
     }
-
-    return matched.toList().sort { File file -> file.absolutePath }
+    throw new GradleException("No eligible artifacts found on the classpath for ${libraryGAV}.\nPlease verify that the provided artifact exists.")
 }
 
 tasks.register("listLibraryJars") { task ->

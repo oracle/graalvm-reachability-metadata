@@ -28,6 +28,9 @@ import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.process.ExecOperations;
 import org.gradle.util.internal.VersionNumber;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,6 +50,10 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
 
 /**
  * Static utility class for operations shared by metadata-generation tasks.
@@ -93,40 +100,13 @@ public final class MetadataGenerationUtils {
     }
 
     /**
-     * Resolves the binary JAR for the given coordinates and derives minimal package roots.
+     * Resolves the selected binary JAR for the given coordinates and derives minimal package roots.
+     *
+     * <p>When a Maven coordinate is a relocation POM rather than a JAR, resolve its declared
+     * relocation target. Ordinary transitive dependencies are deliberately not considered.</p>
      */
     public static List<String> derivePackageRootsFromJar(Project project, Coordinates coordinates) throws IOException {
-        DependencyHandler dependencies = project.getDependencies();
-        Configuration configuration = project.getConfigurations().detachedConfiguration(
-                dependencies.create(coordinates.group() + ":" + coordinates.artifact() + ":" + coordinates.version())
-        );
-        configuration.setTransitive(false);
-        configuration.attributes(attributes -> {
-            attributes.attribute(
-                    Category.CATEGORY_ATTRIBUTE,
-                    project.getObjects().named(Category.class, Category.LIBRARY)
-            );
-            attributes.attribute(
-                    Bundling.BUNDLING_ATTRIBUTE,
-                    project.getObjects().named(Bundling.class, Bundling.EXTERNAL)
-            );
-            attributes.attribute(
-                    LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE,
-                    project.getObjects().named(LibraryElements.class, LibraryElements.JAR)
-            );
-            attributes.attribute(
-                    Usage.USAGE_ATTRIBUTE,
-                    project.getObjects().named(Usage.class, Usage.JAVA_RUNTIME)
-            );
-            attributes.attribute(
-                    TargetJvmEnvironment.TARGET_JVM_ENVIRONMENT_ATTRIBUTE,
-                    project.getObjects().named(TargetJvmEnvironment.class, TargetJvmEnvironment.STANDARD_JVM)
-            );
-        });
-
-        List<Path> jars = configuration.resolve().stream()
-                .map(file -> file.toPath().toAbsolutePath())
-                .toList();
+        List<Path> jars = resolveLibraryJars(project, coordinates);
 
         if (jars.isEmpty()) {
             throw new GradleException("Failed to resolve JAR for " + coordinates);
@@ -142,6 +122,80 @@ public final class MetadataGenerationUtils {
 
         project.getLogger().log(LogLevel.INFO, "Derived package roots for {}: {}", coordinates, roots);
         return roots;
+    }
+
+    /**
+     * Resolves binary JARs for a library coordinate, following any declared Maven relocations.
+     */
+    public static List<Path> resolveLibraryJars(Project project, Coordinates coordinates) throws IOException {
+        Coordinates currentCoordinates = coordinates;
+        Set<String> resolvedCoordinates = new LinkedHashSet<>();
+        while (resolvedCoordinates.add(currentCoordinates.toString())) {
+            List<Path> jars = resolveBinaryJars(project, currentCoordinates);
+            if (!jars.isEmpty()) {
+                return jars;
+            }
+            Coordinates relocatedCoordinates = resolveRelocationTarget(project, currentCoordinates);
+            if (relocatedCoordinates == null) {
+                return List.of();
+            }
+            currentCoordinates = relocatedCoordinates;
+        }
+        throw new GradleException("Circular Maven relocation for " + coordinates);
+    }
+
+    private static List<Path> resolveBinaryJars(Project project, Coordinates coordinates) {
+        DependencyHandler dependencies = project.getDependencies();
+        Configuration configuration = project.getConfigurations().detachedConfiguration(
+                dependencies.create(coordinates.group() + ":" + coordinates.artifact() + ":" + coordinates.version())
+        );
+        configuration.setTransitive(false);
+        configuration.attributes(attributes -> {
+            attributes.attribute(Category.CATEGORY_ATTRIBUTE, project.getObjects().named(Category.class, Category.LIBRARY));
+            attributes.attribute(Bundling.BUNDLING_ATTRIBUTE, project.getObjects().named(Bundling.class, Bundling.EXTERNAL));
+            attributes.attribute(LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, project.getObjects().named(LibraryElements.class, LibraryElements.JAR));
+            attributes.attribute(Usage.USAGE_ATTRIBUTE, project.getObjects().named(Usage.class, Usage.JAVA_RUNTIME));
+            attributes.attribute(TargetJvmEnvironment.TARGET_JVM_ENVIRONMENT_ATTRIBUTE, project.getObjects().named(TargetJvmEnvironment.class, TargetJvmEnvironment.STANDARD_JVM));
+        });
+        return configuration.resolve().stream().map(file -> file.toPath().toAbsolutePath()).toList();
+    }
+
+    private static Coordinates resolveRelocationTarget(Project project, Coordinates coordinates) throws IOException {
+        DependencyHandler dependencies = project.getDependencies();
+        Configuration configuration = project.getConfigurations().detachedConfiguration(
+                dependencies.create(coordinates.group() + ":" + coordinates.artifact() + ":" + coordinates.version() + "@pom")
+        );
+        configuration.setTransitive(false);
+        File pom = configuration.resolve().stream().findFirst().orElse(null);
+        if (pom == null) {
+            return null;
+        }
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setNamespaceAware(true);
+            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            Document document = factory.newDocumentBuilder().parse(pom);
+            NodeList relocations = document.getElementsByTagNameNS("*", "relocation");
+            if (relocations.getLength() == 0) {
+                return null;
+            }
+            Element relocation = (Element) relocations.item(0);
+            String group = relocationValue(relocation, "groupId", coordinates.group());
+            String artifact = relocationValue(relocation, "artifactId", coordinates.artifact());
+            String version = relocationValue(relocation, "version", coordinates.version());
+            return Coordinates.parse(group + ":" + artifact + ":" + version);
+        } catch (ParserConfigurationException | SAXException exception) {
+            throw new IOException("Failed to read relocation POM for " + coordinates, exception);
+        }
+    }
+
+    private static String relocationValue(Element relocation, String name, String defaultValue) {
+        NodeList values = relocation.getElementsByTagNameNS("*", name);
+        if (values.getLength() == 0) {
+            return defaultValue;
+        }
+        String value = values.item(0).getTextContent().trim();
+        return value.isEmpty() ? defaultValue : value;
     }
 
     /**
