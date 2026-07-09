@@ -75,6 +75,12 @@ parameters its workflow's metrics actually produce. The subsections below state
 that per-publisher subset; publishers whose workflows share a body shape are
 grouped together.
 
+PR bodies must remain publishable through GitHub. The shared publication helper
+therefore bounds optional generated detail below GitHub's body limit while
+preserving the issue link, summary, metrics, intervention record, and local CI
+evidence. Version-to-version test comparisons include a diff stat and a bounded
+excerpt; reviewers use the PR's **Files changed** tab for the complete diff.
+
 ### New library support and coverage improvement
 
 Publishers: `make_pr_new_library_support.py` (`library-new-request`) and
@@ -96,8 +102,8 @@ single-PR run and `Refs:` for non-final chunked dynamic-access chunks
 Publishers: `make_pr_javac_fix.py` (`fixes-javac-fail`) and
 `make_pr_java_run_fix.py` (`fixes-java-run-fail`). They share one body shape:
 the agent generation metrics above, a stats comparison for the bumped version,
-and a unified diff between the previous version's and the new version's test
-sources so reviewers can see exactly what the fix changed. The two differ only
+and a bounded test-source comparison so reviewers can see what the fix changed
+without preventing PR creation. The two differ only
 in workflow identity (compilation vs. runtime wording), the metrics file, and
 the PR label (§WF-java-fail-fix-workflow).
 

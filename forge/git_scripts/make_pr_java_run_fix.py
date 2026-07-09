@@ -23,7 +23,8 @@ from git_scripts.pr_publication import (
     BASE_BRANCH,
     REPO,
     REVIEWERS,
-    generate_diff_text,
+    bound_pr_body,
+    format_bounded_test_diff_section,
     publish_branch,
     stage_library_version_paths,
 )
@@ -88,7 +89,7 @@ def create_pull_request(
         "--title",
         title,
         "--body",
-        body,
+        bound_pr_body(body),
         "--base",
         BASE_BRANCH,
         "--head",
@@ -158,11 +159,7 @@ Summary:
 
 {format_forge_revision_section()}
 {format_stats_diff(repo_path, old_coordinates, new_coordinates)}
-**Comparison between existing test version and AI-Generated update**
-
-```diff
-{generate_diff_text(group, artifact, old_version, new_version, repo_path)}
-```
+{format_bounded_test_diff_section(group, artifact, old_version, new_version, repo_path)}
 """
     post_generation_intervention = metrics_entry.get("post_generation_intervention")
     if post_generation_intervention:
