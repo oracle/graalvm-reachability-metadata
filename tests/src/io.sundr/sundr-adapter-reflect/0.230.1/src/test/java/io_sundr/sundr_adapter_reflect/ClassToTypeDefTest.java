@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 public class ClassToTypeDefTest {
 
     @Test
+    @SuppressWarnings("checkstyle:annotationAccess")
     void adaptsDeclaredMembersNestedTypesAndAnnotationValues() {
         AdapterContext context = AdapterContext.create(DefinitionRepository.createRepository());
         ReflectionAdapter adapter = new ReflectionAdapter(context);
@@ -36,8 +37,10 @@ public class ClassToTypeDefTest {
                 .anySatisfy(arguments -> assertThat(arguments).hasSize(1));
         assertThat(type.getMethods()).extracting(Method::getName).contains("increment");
         assertThat(type.getInnerTypes()).extracting(TypeDef::getName).contains("NestedType");
+        // Checkstyle: allow direct annotation access
         assertThat(type.getAnnotations()).extracting(AnnotationRef::getParameters)
                 .anySatisfy(parameters -> assertThat(parameters).containsEntry("value", 7));
+        // Checkstyle: disallow direct annotation access
     }
 
     @Retention(RetentionPolicy.RUNTIME)
