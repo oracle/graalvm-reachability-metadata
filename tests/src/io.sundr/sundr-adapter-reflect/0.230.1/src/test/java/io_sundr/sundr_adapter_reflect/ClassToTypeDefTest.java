@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.sundr.adapter.api.AdapterContext;
 import io.sundr.adapter.reflect.ReflectionAdapter;
+import io.sundr.model.AnnotationRef;
 import io.sundr.model.Method;
 import io.sundr.model.Property;
 import io.sundr.model.TypeDef;
@@ -35,12 +36,13 @@ public class ClassToTypeDefTest {
                 .anySatisfy(arguments -> assertThat(arguments).hasSize(1));
         assertThat(type.getMethods()).extracting(Method::getName).contains("increment");
         assertThat(type.getInnerTypes()).extracting(TypeDef::getName).contains("NestedType");
-        assertThat(type.getAnnotations()).hasSize(1);
+        assertThat(type.getAnnotations()).extracting(AnnotationRef::getParameters)
+                .anySatisfy(parameters -> assertThat(parameters).containsEntry("value", 7));
     }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ElementType.TYPE, ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.METHOD})
-    private @interface FixtureAnnotation {
+    public @interface FixtureAnnotation {
         int value();
     }
 
