@@ -505,7 +505,13 @@ class WorkflowStrategy(ABC):
     def _finalize_successful_iteration(self, base_commit: str | None = None) -> tuple[str, str | None]:
         """Generate metadata, run follow-up Gradle tasks, and commit the iteration."""
         log_stage("generate-metadata", f"Running generateMetadata for {self.library}")
-        self._run_command(f"./gradlew generateMetadata -Pcoordinates={self.library} --agentAllowedPackages=fromJar")
+        if not self._run_gradle_command([
+            "./gradlew",
+            "generateMetadata",
+            f"-Pcoordinates={self.library}",
+            "--agentAllowedPackages=fromJar",
+        ]):
+            return RUN_STATUS_FAILURE, None
         final_status = RUN_STATUS_SUCCESS
         finalization_libraries = self._finalization_libraries()
         for library in finalization_libraries:

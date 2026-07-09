@@ -506,6 +506,13 @@ resort before the run fails. Native tracing is **not** part of finalization —
 it runs earlier, in the per-class native test verification gate (§6.4,
 §WF-native-test-verification-gate), which is where missing reachability
 metadata is collected from a real native run.
+Finalization must run `generateMetadata` even when the initial dynamic-access
+
+report is unavailable or reports zero calls. Those report states do not prove
+that the library or its transitive dependencies need no metadata. A failed
+`generateMetadata` task is a hard finalization failure: Forge must not continue
+to testing, validation, or stats collection with a missing metadata artifact.
+
 
 The `--keep-tests-without-dynamic-access` flag is the only mechanism for
 producing a successful run when no class achieved coverage gain. It is

@@ -137,7 +137,7 @@ class WorkflowStrategyTests(unittest.TestCase):
             finalized_libraries.append(kwargs["library"])
             return True
 
-        with patch.object(strategy, "_run_command"), \
+        with patch.object(strategy, "_run_gradle_command", return_value=True), \
                 patch.object(
                     strategy,
                     "_run_test_with_retry",
@@ -157,6 +157,26 @@ class WorkflowStrategyTests(unittest.TestCase):
         self.assertEqual(checkpoint, "checkpoint")
         self.assertEqual(tested_libraries, expected_libraries)
         self.assertEqual(finalized_libraries, expected_libraries)
+
+    def test_finalize_successful_iteration_stops_when_metadata_generation_fails(self) -> None:
+        strategy = _TestWorkflowStrategy(
+            {"model": "test-model"},
+            reachability_repo_path="/tmp/reachability",
+            library="org.example:demo:1.0.0",
+        )
+
+        strategy.library = "org.example:demo:1.0.0"
+        with patch.object(strategy, "_run_gradle_command", return_value=False), \
+                patch.object(strategy, "_run_test_with_retry") as run_test, \
+                patch("ai_workflows.core.workflow_strategy.run_library_finalization") as finalization, \
+                patch.object(strategy, "_commit_library_iteration") as commit:
+            status, checkpoint = strategy._finalize_successful_iteration()
+
+        self.assertEqual(status, RUN_STATUS_FAILURE)
+        self.assertIsNone(checkpoint)
+        run_test.assert_not_called()
+        finalization.assert_not_called()
+        commit.assert_not_called()
 
     def test_finalize_run_merges_finalization_status_for_all_driver_cases(self) -> None:
         strategy = _TestWorkflowStrategy(
