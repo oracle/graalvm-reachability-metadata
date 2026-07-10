@@ -14,9 +14,11 @@ import com.oracle.bmc.http.client.ProxyConfiguration;
 import com.oracle.bmc.http.client.StandardClientProperties;
 import com.oracle.bmc.http.client.pki.Pem;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.nio.channels.Channels;
+import java.nio.channels.WritableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -102,6 +104,27 @@ public class Oci_java_sdk_common_httpclientTest {
             }
             encryption.close();
             Arrays.fill(encryptionPassword, '\0');
+        }
+    }
+
+    @Test
+    void pemWritesDefaultPrivateKeysToWritableChannels() throws Exception {
+        KeyPair keyPair = createRsaKeyPair();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        byte[] encodedPrivateKey = null;
+
+        try (WritableByteChannel channel = Channels.newChannel(output)) {
+            assertThat(Pem.encoder().write(channel, keyPair.getPrivate())).isSameAs(channel);
+            encodedPrivateKey = output.toByteArray();
+
+            assertThat(encodedPrivateKey)
+                    .startsWith("-----BEGIN PRIVATE KEY-----".getBytes(StandardCharsets.UTF_8));
+            assertThat(Pem.decoder().decodePrivateKey(encodedPrivateKey).getEncoded())
+                    .isEqualTo(keyPair.getPrivate().getEncoded());
+        } finally {
+            if (encodedPrivateKey != null) {
+                Arrays.fill(encodedPrivateKey, (byte) 0);
+            }
         }
     }
 
