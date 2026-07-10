@@ -150,6 +150,57 @@ public class Oci_java_sdk_addons_saslTest {
     }
 
     @Test
+    void createsClientFromLoginModuleCredentialCache(@TempDir Path temporaryDirectory) throws Exception {
+        byte[] privateKey = privateKeyPem(newRsaKeyPair());
+        Path privateKeyPath = temporaryDirectory.resolve("oci_api_key.pem");
+        Files.write(privateKeyPath, privateKey);
+        Path configPath = temporaryDirectory.resolve("config");
+        Files.writeString(configPath, """
+                [DEFAULT]
+                user=ocid1.user.oc1..example
+                fingerprint=aa:bb:cc:dd
+                tenancy=ocid1.tenancy.oc1..example
+                region=us-phoenix-1
+                key_file=%s
+                """.formatted(privateKeyPath), StandardCharsets.UTF_8);
+
+        Subject subject = new Subject();
+        UserPrincipalsLoginModule loginModule = new UserPrincipalsLoginModule();
+        loginModule.initialize(
+                subject,
+                null,
+                Collections.emptyMap(),
+                Map.of("config", configPath.toString(), "profile", "DEFAULT", "intent", "database"));
+        String intent = subject.getPublicCredentials(String.class).iterator().next();
+        String authProviderCacheKey = subject.getPrivateCredentials(String.class).iterator().next();
+        CallbackHandler callbackHandler = callbacks -> {
+            for (Callback callback : callbacks) {
+                if (callback instanceof NameCallback) {
+                    ((NameCallback) callback).setName(intent);
+                } else if (callback instanceof PasswordCallback) {
+                    ((PasswordCallback) callback).setPassword(authProviderCacheKey.toCharArray());
+                } else {
+                    throw new UnsupportedCallbackException(callback);
+                }
+            }
+        };
+
+        SaslClient client = Sasl.createSaslClient(
+                new String[] {OciMechanism.OCI_RSA_SHA256.mechanismName()},
+                null,
+                "kafka",
+                "example.com",
+                Collections.emptyMap(),
+                callbackHandler);
+
+        assertThat(client).isInstanceOf(OciSaslClient.class);
+        Key key = Key.parseFrom(client.evaluateChallenge(new byte[0]));
+        assertThat(key.getKeyId()).isNotBlank();
+        assertThat(key.getIntent()).isEqualTo("database");
+        client.dispose();
+    }
+
+    @Test
     void exposesMechanismsAndProtobufMessageRoundTrips() throws Exception {
         OciMechanism mechanism = OciMechanism.OCI_RSA_SHA256;
         assertThat(OciMechanism.mechanismNames()).containsExactly(mechanism.mechanismName());
