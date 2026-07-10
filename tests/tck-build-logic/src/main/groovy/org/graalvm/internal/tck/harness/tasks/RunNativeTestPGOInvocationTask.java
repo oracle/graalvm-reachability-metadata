@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Task that runs the instrumented-PGO native test image once on matching
- * subprojects to collect the {@code .iprof} profile.
+ * Task that runs the PGO-sampling native test image once on matching
+ * subprojects to collect the sampled {@code .iprof} profile.
  * <p>
- * Supports the phase-6 PGO discovery analyzer of §WF-code-coverage-improvement.
+ * Supports the phase-7 near-call analyzer of §WF-code-coverage-improvement.
  */
 @SuppressWarnings("unused")
 public abstract class RunNativeTestPGOInvocationTask extends AllCoordinatesExecTask {
@@ -30,7 +30,7 @@ public abstract class RunNativeTestPGOInvocationTask extends AllCoordinatesExecT
 
     @Override
     protected String errorMessageFor(String coordinates, int exitCode) {
-        return "Instrumented PGO native image run failed for " + coordinates
+        return "PGO-sampling native image run failed for " + coordinates
                 + " with exit code " + exitCode + ".";
     }
 }

@@ -9,8 +9,8 @@ Shared method-identity model for the code coverage improvement helpers
 
 The three coverage helpers each speak a different dialect of "which method is
 this": the API inventory uses `owner#name(params):ret`, the GraalVM analysis
-call tree and `used_methods` reports use `origin:owner.name(params):ret`, and
-the instrumented PGO `.iprof` profile encodes a method as integer ids into a
+call-tree CSV dump uses `Type`/`Name`/`Parameters`/`Return` columns, and the
+sampled PGO `.iprof` profile encodes a method as integer ids into a
 `types`/`methods` symbol table. This module normalizes all three onto one
 canonical id so coverage evidence can be joined against API targets.
 """
@@ -109,40 +109,24 @@ def parse_inventory_id(target_id: str) -> MethodRef | None:
     )
 
 
-def parse_fqn_method_label(label: str) -> MethodRef | None:
-    """Parse a GraalVM report label `[origin:]pkg.Class.name(params):ret`.
+def method_ref_from_call_tree_row(row: dict) -> MethodRef | None:
+    """Build a MethodRef from one `call_tree_methods_*.csv` row.
 
-    Accepts the `app:`/`null:` origin prefix used by the analysis call tree and
-    the `app->null:` prefix used by `used_methods` reports; both are dropped.
-    `virtually calls` site labels (no origin prefix) are parsed the same way.
+    The analysis call-tree CSV dump (`-H:PrintAnalysisCallTreeType=CSV`) writes
+    `Type`/`Name`/`Parameters`/`Return` columns; `Parameters` is space-separated
+    with the literal sentinel `empty` for a no-argument method.
     """
-    text = label.strip()
-    paren = text.find("(")
-    if paren < 0:
+    owner = normalize_type_name((row.get("Type") or "").strip())
+    name = (row.get("Name") or "").strip()
+    if not owner or not name:
         return None
-    # Drop a leading origin prefix. Real GraalVM call trees prefix each method
-    # with its origin, which may be `app`, `null`, `app->null`, or even the
-    # fully-qualified class-loader name (`com.oracle.svm.hosted.NativeImage...`).
-    # A method/class name never contains a colon, so any colon before the first
-    # `(` separates the origin from the fully-qualified name.
-    origin_colon = text.rfind(":", 0, paren)
-    if origin_colon != -1:
-        text = text[origin_colon + 1:]
-        paren = text.find("(")
-    before = text[:paren]
-    after = text[paren:]
-    close = after.rfind(")")
-    if close < 0:
-        return None
-    params = _split_params(after[1:close])
-    ret_part = after[close + 1:]
-    return_type = None
-    if ret_part.startswith(":"):
-        return_type = normalize_type_name(ret_part[1:].strip())
-    if "." not in before:
-        return None
-    owner, name = before.rsplit(".", 1)
-    return MethodRef(owner=owner, name=name, params=params, return_type=return_type)
+    param_text = (row.get("Parameters") or "").strip()
+    if not param_text or param_text == "empty":
+        params: tuple[str, ...] = ()
+    else:
+        params = tuple(normalize_type_name(part) for part in param_text.split())
+    return_type = normalize_type_name((row.get("Return") or "").strip())
+    return MethodRef(owner=owner, name=name, params=params, return_type=return_type or None)
 
 
 def _read_field_descriptor(descriptor: str, index: int) -> tuple[str, int]:

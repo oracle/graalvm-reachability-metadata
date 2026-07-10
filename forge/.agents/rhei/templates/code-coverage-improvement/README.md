@@ -21,7 +21,7 @@ The rendered workspace contains a static phase chain:
 3. Generate API inventory artifacts.
 4. Run three JVM-only API-cover and JaCoCo validation iterations.
 5. Prepare native metadata once (generate plus Codex repair) for the PGO builds.
-6. Run three instrumented-PGO discovery report and discovery-cover iterations.
+6. Run three sampled-PGO near-call report and bulk-cover iterations.
 7. Finalize local validation.
 8. Publish a pull request with coverage evidence.
 

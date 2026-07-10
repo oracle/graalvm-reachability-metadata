@@ -184,8 +184,8 @@
 **Prior:** Task code-coverage-test-validate-3
 
 - Helper script: `forge/utility_scripts/code_coverage_prepare_native_metadata.py`
-- Purpose: generate and repair reachability metadata once so the instrumented
-  PGO Native Image builds succeed, keeping metadata work out of the JVM JaCoCo
+- Purpose: generate and repair reachability metadata once so the PGO-sampling
+  Native Image builds succeed, keeping metadata work out of the JVM JaCoCo
   phase and out of every PGO iteration §WF-code-coverage-improvement.
 - Required work:
   - Generate metadata with `./gradlew generateMetadata -Pcoordinates=org.example:example-library:1.2.3`.
@@ -199,51 +199,53 @@
   - `runtime/code-coverage/prepare/native-metadata-prepare.md`
   - `runtime/code-coverage/work/code-coverage-prepare-native-metadata.md`
 
-### Task code-coverage-pgo-report-1: Generate PGO correlation report 1
+### Task code-coverage-pgo-report-1: Generate PGO near-call report 1
 **State:** simple-prepared
 **Prior:** Task code-coverage-prepare-native-metadata
 
 - Helper script: `forge/utility_scripts/code_coverage_profile_report.py`
-- Collection tasks: `./gradlew nativeTestPGOInstrument -Pcoordinates=org.example:example-library:1.2.3`
+- Collection tasks: `./gradlew nativeTestPGOSampling -Pcoordinates=org.example:example-library:1.2.3`
   then `./gradlew runNativeTestPGO -Pcoordinates=org.example:example-library:1.2.3 -PpgoProfilePath=<abs .iprof>`.
-- Purpose: collect instrumented Native Image PGO evidence and correlate it with
-  the static call graph and API inventory.
+- Purpose: collect sampled Native Image PGO evidence and rank uncovered public
+  API inventory targets by near-call distance.
 - Required work:
-  - Build the instrumented image and collect an `.iprof` profile with
-    `runNativeTestPGO`; reject sampled profiles.
-  - Read the analysis call tree (`reports/call_tree_*.txt`) and
-    `used_methods_*.txt` reachable-method denominator emitted by the
-    `nativeTestPGOInstrument` build.
-  - Parse executed methods and edges from profile context chains, not from the
-    profile method symbol table.
-  - Compute reachable-but-unobserved targets by joining call-graph edges with
-    observed profile edges.
-  - Walk backward to the nearest public API inventory entry and attach reaching
-    paths for not-observed-but-reachable targets.
-  - Map bytecode-index evidence to source lines when debug information is
-    available.
+  - Build the PGO-sampling image and collect a sampled `.iprof` profile with
+    `runNativeTestPGO`; profiles without a `samplingProfiles` section are
+    rejected.
+  - Read the analysis call-tree CSV dump
+    (`reports/call_tree_{methods,invokes,targets}_*.csv`) emitted by the
+    `nativeTestPGOSampling` build.
+  - Take covered/uncovered statuses from the latest JaCoCo api-cover report;
+    sampled evidence is guidance only and never proves non-execution.
+  - For each uncovered public API method, compute the near-call record: the
+    shortest static call-graph path from a sampled stack frame (or from the
+    nearest public API entry when no sampled frame joins) to the target.
+  - Rank targets nearest-first, group by owning class, and list at most 100
+    methods; attach detailed sampled-stack/static-path/divergence guidance for
+    the top targets.
   - Emit LCOV plus prompt-ready JSON and Markdown reports.
 - Artifacts:
   - `runtime/code-coverage/discovery/pgo-profile-1.iprof`
-  - `runtime/code-coverage/discovery/call-tree-1.txt`
-  - `runtime/code-coverage/discovery/reachable-set-1.json`
+  - `runtime/code-coverage/discovery/call-tree-1/` (copied `call_tree_*.csv`)
   - `runtime/code-coverage/discovery/coverage-1.lcov`
   - `runtime/code-coverage/discovery/discovery-report-1.json`
   - `runtime/code-coverage/discovery/discovery-report-1.md`
   - `runtime/code-coverage/work/code-coverage-pgo-report-1.md`
 
-### Task code-coverage-discovery-cover-1: Cover discovery targets, iteration 1
+### Task code-coverage-discovery-cover-1: Bulk-cover uncovered API methods, iteration 1
 **State:** prepared
 **Prior:** Task code-coverage-pgo-report-1
 
 - Discovery report: `runtime/code-coverage/discovery/discovery-report-1.json`
 - Coverage suite: `tests/<group>/<artifact>/<version>/code-coverage`
-- Purpose: cover reachable-but-unobserved targets in batches.
+- Purpose: cover the listed uncovered public API methods in bulk.
 - Required work:
-  - Group discovery targets by shared public entry point, reaching path, or
-    owning class.
-  - Add tests that drive the shared public entry point and cover as much of the
-    batch as possible.
+  - Work from the report's bulk list (at most 100 methods, nearest-first,
+    grouped by owning class).
+  - Batch related methods per owning class or shared entry path; add tests that
+    drive the public entry and cover as much of each batch as possible.
+  - Use the detailed near-call guidance to steer execution from the sampled
+    join point toward each target.
   - Prefer broad behavior coverage per iteration over superficial invocations.
   - Mark statically-reachable-but-infeasible targets skipped or exhausted with a
     concrete reason.
@@ -251,32 +253,31 @@
   - `runtime/code-coverage/targets/discovery-cover-1.md`
   - `runtime/code-coverage/work/code-coverage-discovery-cover-1.md`
 
-### Task code-coverage-pgo-report-2: Generate PGO correlation report 2
+### Task code-coverage-pgo-report-2: Generate PGO near-call report 2
 **State:** simple-prepared
 **Prior:** Task code-coverage-discovery-cover-1
 
 - Helper script: `forge/utility_scripts/code_coverage_profile_report.py`
-- Purpose: refresh PGO and call-graph correlation after the first discovery
-  cover pass.
-- Required work: repeat the PGO correlation requirements from report 1 and
-  compare with prior discovery evidence.
+- Purpose: refresh the near-call ranking after the first bulk cover pass.
+- Required work: refresh the JaCoCo api-cover report with the JVM validate
+  helper so covered statuses stay exact, then repeat the near-call requirements
+  from report 1 and compare progress with the prior report.
 - Artifacts:
   - `runtime/code-coverage/discovery/pgo-profile-2.iprof`
-  - `runtime/code-coverage/discovery/call-tree-2.txt`
-  - `runtime/code-coverage/discovery/reachable-set-2.json`
+  - `runtime/code-coverage/discovery/call-tree-2/` (copied `call_tree_*.csv`)
   - `runtime/code-coverage/discovery/coverage-2.lcov`
   - `runtime/code-coverage/discovery/discovery-report-2.json`
   - `runtime/code-coverage/discovery/discovery-report-2.md`
   - `runtime/code-coverage/work/code-coverage-pgo-report-2.md`
 
-### Task code-coverage-discovery-cover-2: Cover discovery targets, iteration 2
+### Task code-coverage-discovery-cover-2: Bulk-cover uncovered API methods, iteration 2
 **State:** prepared
 **Prior:** Task code-coverage-pgo-report-2
 
 - Discovery report: `runtime/code-coverage/discovery/discovery-report-2.json`
 - Coverage suite: `tests/<group>/<artifact>/<version>/code-coverage`
-- Purpose: continue batch coverage for remaining reachable-but-unobserved
-  targets.
+- Purpose: continue bulk coverage for the remaining listed uncovered public
+  API methods.
 - Required work:
   - If no actionable discovery targets remain, record a no-op completion note.
   - Otherwise group remaining targets and add meaningful public API tests.
@@ -285,25 +286,24 @@
   - `runtime/code-coverage/targets/discovery-cover-2.md`
   - `runtime/code-coverage/work/code-coverage-discovery-cover-2.md`
 
-### Task code-coverage-pgo-report-3: Generate PGO correlation report 3
+### Task code-coverage-pgo-report-3: Generate PGO near-call report 3
 **State:** simple-prepared
 **Prior:** Task code-coverage-discovery-cover-2
 
 - Helper script: `forge/utility_scripts/code_coverage_profile_report.py`
-- Purpose: refresh PGO and call-graph correlation after the second discovery
-  cover pass.
-- Required work: repeat the PGO correlation requirements from report 1 and
-  compare with prior discovery evidence.
+- Purpose: refresh the near-call ranking after the second bulk cover pass.
+- Required work: refresh the JaCoCo api-cover report with the JVM validate
+  helper so covered statuses stay exact, then repeat the near-call requirements
+  from report 1 and compare progress with the prior report.
 - Artifacts:
   - `runtime/code-coverage/discovery/pgo-profile-3.iprof`
-  - `runtime/code-coverage/discovery/call-tree-3.txt`
-  - `runtime/code-coverage/discovery/reachable-set-3.json`
+  - `runtime/code-coverage/discovery/call-tree-3/` (copied `call_tree_*.csv`)
   - `runtime/code-coverage/discovery/coverage-3.lcov`
   - `runtime/code-coverage/discovery/discovery-report-3.json`
   - `runtime/code-coverage/discovery/discovery-report-3.md`
   - `runtime/code-coverage/work/code-coverage-pgo-report-3.md`
 
-### Task code-coverage-discovery-cover-3: Cover discovery targets, iteration 3
+### Task code-coverage-discovery-cover-3: Bulk-cover uncovered API methods, iteration 3
 **State:** prepared
 **Prior:** Task code-coverage-pgo-report-3
 
