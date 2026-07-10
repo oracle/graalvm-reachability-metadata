@@ -14,6 +14,7 @@ import com.oracle.bmc.auth.sasl.OciAuthProviderCallback;
 import com.oracle.bmc.auth.sasl.OciMechanism;
 import com.oracle.bmc.auth.sasl.OciSaslClient;
 import com.oracle.bmc.auth.sasl.OciSaslClientProvider;
+import com.oracle.bmc.auth.sasl.UserPrincipalsLoginModule;
 import com.oracle.bmc.identity.auth.sasl.messages.OciSaslMessages.Challenge;
 import com.oracle.bmc.identity.auth.sasl.messages.OciSaslMessages.Key;
 import com.oracle.bmc.identity.auth.sasl.messages.OciSaslMessages.Response;
@@ -21,10 +22,14 @@ import com.google.protobuf.ByteString;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Map;
+import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
@@ -34,6 +39,7 @@ import javax.security.sasl.Sasl;
 import javax.security.sasl.SaslClient;
 import javax.security.sasl.SaslException;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class Oci_java_sdk_addons_saslTest {
     @Test
@@ -103,6 +109,47 @@ public class Oci_java_sdk_addons_saslTest {
     }
 
     @Test
+    void initializesUserPrincipalsLoginModuleFromConfiguredCredentials(@TempDir Path temporaryDirectory)
+            throws Exception {
+        byte[] privateKey = privateKeyPem(newRsaKeyPair());
+        Path privateKeyPath = temporaryDirectory.resolve("oci_api_key.pem");
+        Files.write(privateKeyPath, privateKey);
+        Path configPath = temporaryDirectory.resolve("config");
+        Files.writeString(configPath, """
+                [DEFAULT]
+                user=ocid1.user.oc1..example
+                fingerprint=aa:bb:cc:dd
+                tenancy=ocid1.tenancy.oc1..example
+                region=us-phoenix-1
+                key_file=%s
+                """.formatted(privateKeyPath), StandardCharsets.UTF_8);
+
+        Subject subject = new Subject();
+        UserPrincipalsLoginModule loginModule = new UserPrincipalsLoginModule();
+        loginModule.initialize(
+                subject,
+                null,
+                Collections.emptyMap(),
+                Map.of("config", configPath.toString(), "profile", "DEFAULT", "intent", "streaming"));
+
+        assertThat(subject.getPublicCredentials(String.class)).containsExactly("streaming");
+        BasicAuthenticationDetailsProvider authProvider = subject
+                .getPrivateCredentials(BasicAuthenticationDetailsProvider.class)
+                .iterator()
+                .next();
+        assertThat(authProvider.getKeyId()).isNotBlank();
+        try (InputStream configuredPrivateKey = authProvider.getPrivateKey()) {
+            assertThat(configuredPrivateKey.readAllBytes()).isEqualTo(privateKey);
+        }
+        String authProviderCacheKey = subject.getPrivateCredentials(String.class).iterator().next();
+        assertThat(authProviderCacheKey).isNotBlank();
+        assertThat(loginModule.login()).isTrue();
+        assertThat(loginModule.commit()).isTrue();
+        assertThat(loginModule.abort()).isFalse();
+        assertThat(loginModule.logout()).isTrue();
+    }
+
+    @Test
     void exposesMechanismsAndProtobufMessageRoundTrips() throws Exception {
         OciMechanism mechanism = OciMechanism.OCI_RSA_SHA256;
         assertThat(OciMechanism.mechanismNames()).containsExactly(mechanism.mechanismName());
@@ -138,6 +185,14 @@ public class Oci_java_sdk_addons_saslTest {
                 }
             }
         };
+    }
+
+    private static byte[] privateKeyPem(KeyPair keyPair) {
+        String pem = "-----BEGIN PRIVATE KEY-----\n"
+                + Base64.getMimeEncoder(64, "\n".getBytes(StandardCharsets.US_ASCII))
+                        .encodeToString(keyPair.getPrivate().getEncoded())
+                + "\n-----END PRIVATE KEY-----\n";
+        return pem.getBytes(StandardCharsets.US_ASCII);
     }
 
     private static KeyPair newRsaKeyPair() throws Exception {
