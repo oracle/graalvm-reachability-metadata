@@ -7,13 +7,13 @@
 Native-metadata preparation for the code coverage improvement workflow
 (§WF-code-coverage-improvement, §WF-code-coverage-improvement-architecture).
 
-This runs once between the JVM JaCoCo phase (phase 5) and the instrumented-PGO
+This runs once between the JVM JaCoCo phase (phase 5) and the sampled-PGO
 discovery phase (phase 6). The PGO phase builds a Native Image, which needs
 valid reachability metadata for the newly generated code coverage tests; the
 JaCoCo phase deliberately stays JVM-only. Mirroring how the other workflows
 finalize, this helper generates metadata and then repairs it with the
 Codex-backed `fix-missing-reachability-metadata` skill until a Native Image test
-passes, so the three instrumented PGO builds do not each have to discover and
+passes, so the three PGO-sampling builds do not each have to discover and
 repair metadata gaps.
 
 Loop: `generateMetadata` -> `nativeTest`; while it fails and a fix budget

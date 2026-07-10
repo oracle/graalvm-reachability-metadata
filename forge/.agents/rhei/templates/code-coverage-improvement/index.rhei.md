@@ -11,7 +11,7 @@ must carry `{{issue_label}}` and identify a Maven coordinate in
 The workflow keeps generated code coverage tests under the dedicated suite path
 `tests/<group>/<artifact>/<version>/code-coverage`, writes runtime evidence under
 `runtime/code-coverage/`, and separates JVM JaCoCo API coverage from Native
-Image instrumented-PGO discovery evidence §WF-code-coverage-improvement.
+Image sampled-PGO near-call evidence §WF-code-coverage-improvement.
 
 ## Source
 

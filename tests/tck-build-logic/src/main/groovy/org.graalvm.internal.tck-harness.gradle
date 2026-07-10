@@ -40,7 +40,7 @@ import org.graalvm.internal.tck.harness.tasks.PopulateArtifactURLs
 import org.graalvm.internal.tck.utils.CoordinateUtils
 import org.graalvm.internal.tck.utils.MetadataGenerationUtils
 import org.graalvm.internal.tck.harness.tasks.JacocoTestReportInvocationTask
-import org.graalvm.internal.tck.harness.tasks.NativeTestPGOInstrumentInvocationTask
+import org.graalvm.internal.tck.harness.tasks.NativeTestPGOSamplingInvocationTask
 import org.graalvm.internal.tck.harness.tasks.RunNativeTestPGOInvocationTask
 import org.graalvm.internal.tck.harness.tasks.GenerateDependencyGraphTask
 import org.graalvm.internal.tck.harness.tasks.GenerateLibraryStatsTask
@@ -216,15 +216,15 @@ tasks.register("mergeNativeTraceMetadata", Exec) { Exec task ->
     }
 }
 
-// gradle nativeTestPGOInstrument -Pcoordinates=<maven-coordinates>  §forge/WF-code-coverage-improvement
-tasks.register("nativeTestPGOInstrument", NativeTestPGOInstrumentInvocationTask.class) { task ->
-    task.setDescription("Builds instrumented-PGO native tests with the analysis call-tree dump for matching coordinates")
+// gradle nativeTestPGOSampling -Pcoordinates=<maven-coordinates>  §forge/WF-code-coverage-improvement
+tasks.register("nativeTestPGOSampling", NativeTestPGOSamplingInvocationTask.class) { task ->
+    task.setDescription("Builds PGO-sampling native tests with the analysis call-tree CSV dump for matching coordinates")
     task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
 }
 
 // gradle runNativeTestPGO -Pcoordinates=<maven-coordinates> -PpgoProfilePath=<path>  §forge/WF-code-coverage-improvement
 tasks.register("runNativeTestPGO", RunNativeTestPGOInvocationTask.class) { task ->
-    task.setDescription("Runs instrumented-PGO native tests once for matching coordinates and writes the .iprof profile")
+    task.setDescription("Runs PGO-sampling native tests once for matching coordinates and writes the .iprof profile")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
     task.doFirst {
         requiredAbsolutePathProperty("pgoProfilePath")

@@ -16,7 +16,7 @@ against the same targets; redundant split fields are avoided.
 The inventory is derived from the library jar via `javap`, so it is repeatable
 and needs no network access or library execution. Generic type arguments are
 erased and varargs are normalized to arrays so target ids line up with the raw
-types used by the analysis call tree and the instrumented profile.
+types used by the analysis call tree and the sampled profile.
 
 Usage:
   python3 utility_scripts/code_coverage_api_inventory.py \

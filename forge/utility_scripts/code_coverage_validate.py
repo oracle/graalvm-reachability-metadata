@@ -17,7 +17,7 @@ remaining-uncovered-API report that feeds the next API-cover pass.
 Native Image and reachability-metadata concerns are intentionally NOT here:
 JaCoCo coverage measurement needs only the JVM. Metadata is generated and
 repaired once before the PGO discovery phase by
-`code_coverage_prepare_native_metadata.py`, so the instrumented native build can
+`code_coverage_prepare_native_metadata.py`, so the PGO-sampling native build can
 succeed without rebuilding a native image on every API-cover iteration.
 
 The deterministic, library-execution-free core is `correlate_jacoco`: it joins

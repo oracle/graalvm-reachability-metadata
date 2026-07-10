@@ -203,11 +203,12 @@ boolean nativeTraceImageTaskRequested = !informationalTaskRequested &&
 boolean runNativeTraceImageTaskRequested = !informationalTaskRequested && isTaskRequested("runNativeTraceImage")
 boolean nativeTestTaskRequested = !informationalTaskRequested &&
         (isTaskRequested("nativeTest") || isTaskRequested("nativeTestCompile"))
-// §forge/WF-code-coverage-improvement: the phase-6 PGO discovery analyzer needs an
-// instrumented image (so count==0 means not-executed) plus the analysis
-// call-tree dump as the reachable-method denominator.
-boolean nativeTestPGOInstrumentTaskRequested = !informationalTaskRequested &&
-        (isTaskRequested("nativeTestPGOInstrument") || isTaskRequested("runNativeTestPGO"))
+// §forge/WF-code-coverage-improvement: the phase-7 near-call analyzer needs a
+// PGO-sampling image (sampled stacks as guidance-only execution evidence) plus
+// the analysis call-tree CSV dump as the static call graph.
+boolean nativeTestPGOSamplingTaskRequested = !informationalTaskRequested &&
+        (isTaskRequested("nativeTestPGOSampling") || isTaskRequested("runNativeTestPGO"))
+String pgoSamplingPeriodMicros = providers.gradleProperty("pgoSamplingPeriodMicros").getOrElse("10")
 
 Closure<String> requiredGradleProperty = { String propertyName ->
     String propertyValue = providers.gradleProperty(propertyName).getOrElse("")
@@ -413,15 +414,16 @@ Provider<List<String>> nativeTraceBuildArgs = providers.provider {
 
 Provider<List<String>> pgoBuildArgs = providers.provider {
     List<String> buildArgs = []
-    if (nativeTestPGOInstrumentTaskRequested) {
-        // Instrumented profiles only: count==0 ⇒ not executed holds only here,
-        // not for sampled collection. -g preserves the LineNumberTable so the
-        // analyzer can map bytecode indices to source. PrintAnalysisCallTree
-        // dumps reports/call_tree_*.txt + used_methods_*.txt as the denominator.
-        buildArgs.add("--pgo-instrument")
-        buildArgs.add("-g")
+    if (nativeTestPGOSamplingTaskRequested) {
+        // Sampled profiles are guidance-only evidence: sampled stacks show where
+        // execution already runs; absence never proves non-execution (JaCoCo is
+        // the coverage metric). PrintAnalysisCallTreeType=CSV dumps
+        // reports/call_tree_{methods,invokes,targets}_*.csv as the static call graph.
+        buildArgs.add("--pgo-sampling")
         buildArgs.add("-H:+UnlockExperimentalVMOptions")
+        buildArgs.add("-H:PGOSamplingPeriodMicros=${pgoSamplingPeriodMicros}")
         buildArgs.add("-H:+PrintAnalysisCallTree")
+        buildArgs.add("-H:PrintAnalysisCallTreeType=CSV")
         buildArgs.add("-H:-UnlockExperimentalVMOptions")
     }
     return buildArgs
@@ -543,16 +545,16 @@ tasks.register("mergeNativeTraceMetadata", Exec) { Exec task ->
     }
 }
 
-tasks.register("nativeTestPGOInstrument") { task ->
-    task.setDescription("Builds the test native image with instrumented PGO and analysis call-tree dump enabled")
+tasks.register("nativeTestPGOSampling") { task ->
+    task.setDescription("Builds the test native image with PGO sampling and the analysis call-tree CSV dump enabled")
     task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
     task.dependsOn(tasks.named("nativeTestCompile"))
 }
 
 tasks.register("runNativeTestPGO", Exec) { Exec task ->
-    task.setDescription("Runs the instrumented PGO test native image once and writes the .iprof profile")
+    task.setDescription("Runs the PGO-sampling test native image once and writes the .iprof profile")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
-    task.dependsOn(tasks.named("nativeTestPGOInstrument"))
+    task.dependsOn(tasks.named("nativeTestPGOSampling"))
     task.ignoreExitValue = true
     task.doFirst {
         String pgoProfilePath = requiredAbsolutePathProperty("pgoProfilePath")
@@ -562,7 +564,7 @@ tasks.register("runNativeTestPGO", Exec) { Exec task ->
         List<String> runtimeArgs = []
         runtimeArgs.addAll(nativeTest.internalRuntimeArgs.get())
         runtimeArgs.addAll(nativeTest.runtimeArgs.get())
-        // Instrumented images dump the profile on exit; pin the output path so the
+        // PGO images dump the profile on exit; pin the output path so the
         // analyzer reads a known location instead of a working-directory default.iprof.
         runtimeArgs.add("-XX:ProfilesDumpFile=${pgoProfilePath}")
         task.executable = imageFile.absolutePath

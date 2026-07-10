@@ -70,9 +70,10 @@ The workflow should build a target model from two inputs:
 - **JVM coverage observation** — JaCoCo method and line coverage for the code
   coverage suite, correlated with the API inventory to identify public API
   targets still uncovered after an iteration.
-- **Native Image discovery observation** — instrumented GraalVM PGO profile
-  data correlated with the Native Image static call graph and reachable-method
-  denominator to find reachable library behavior that the tests did not execute.
+- **Native Image discovery observation** — sampled GraalVM PGO profile data
+  correlated with the Native Image static call graph to rank uncovered API
+  inventory targets by how close existing test execution already gets
+  (near-call distance) and to derive the call chains new tests must drive.
 
 Coverage targets should describe behavior to exercise, not raw bytecode
 addresses or dynamic-access call sites. Examples include untested public
@@ -84,15 +85,19 @@ The API inventory should be emitted as compact JSON and Markdown under
 full identity; redundant split fields should be avoided unless a helper needs
 them for stable processing.
 
-The Native Image discovery phase must treat `.iprof` files as positive evidence
-only. Sound coverage interpretation requires instrumented profiles, not sampled
-profiles; a reachable-method denominator from the image analysis/call-tree
-reports; and bytecode-index-to-source mapping from preserved debug information.
-Executed methods and edges are derived from profile context chains, not from the
-profile's method symbol table. Uncovered discovery targets are computed by
-joining the static call graph with observed profile edges and walking backward
-to the nearest public API inventory target. PGO-derived coverage should also be
-emitted as LCOV so standard coverage tools can consume it.
+JaCoCo is the only coverage metric: an inventory target counts as covered only
+when the JVM JaCoCo correlation says so. The Native Image discovery phase
+consumes sampled PGO profiles (`--pgo-sampling`) as guidance-only evidence:
+sampled stacks show where test execution already runs, and each uncovered
+inventory target is ranked by its near-call distance — the shortest static
+call-graph path from a sampled stack frame to the target. Absence of samples
+never proves non-execution and must never be reported as coverage. The static
+call graph comes from the analysis call-tree CSV dump; each uncovered target
+carries the reaching call chain from the sampled join point (or the nearest
+public API entry when no sampled frame joins) to the target. The bulk discovery
+list is capped at 100 methods per report; targets beyond the cap stay in the
+JSON report for later iterations. Sampled observations are also emitted as LCOV
+so standard coverage tools can consume them, with the guidance-only caveat.
 
 The workflow should aim to cover the whole practical library API over repeated
 runs. If the API is too large for one PR, the workflow may use chunks, but each
@@ -121,18 +126,22 @@ The Rhei template should decompose the workflow into these phases:
 6. **Prepare native metadata** — run once after the API-cover loop and before
    PGO discovery: generate reachability metadata and repair it with the Codex
    `fix-missing-reachability-metadata` skill until a Native Image test passes, so
-   the instrumented PGO builds succeed without rediscovering metadata on every
+   the PGO-sampling builds succeed without rediscovering metadata on every
    iteration. Route unresolved metadata or Native Image failures to human
    intervention.
-7. **Generate PGO correlation report** — collect an instrumented Native Image
-   PGO profile, collect the static call graph and reachable set, reject sampled
-   profiles, emit LCOV, and write prompt-ready discovery reports with reaching
-   paths from public API entries to reachable-but-unobserved targets.
-8. **Discovery cover loop** — group reachable-but-unobserved targets by shared
-   public entry point, reaching path, or owning class, and cover batches rather
-   than one target per iteration.
+7. **Generate PGO near-call report** — build and run the native tests with PGO
+   sampling and the analysis call-tree CSV dump, take uncovered targets from the
+   latest JaCoCo API-cover report, rank every uncovered public API method by
+   near-call distance from the sampled stacks, group by owning class, list at
+   most 100 methods per report, attach detailed sampled-stack/static-path/
+   divergence guidance for the most reachable targets, and emit LCOV plus JSON
+   and prompt-ready Markdown.
+8. **Bulk cover loop** — run bounded agent work over the whole capped near-call
+   list at once: batch related methods per owning class or shared entry path,
+   re-validate with JaCoCo each iteration to measure progress, and record
+   skipped or exhausted targets with reasons.
 9. **Finalization** — verify the final result against latest GraalVM, metadata
-   validity, JVM tests, Native Image tests, and the final PGO correlation report.
+   validity, JVM tests, Native Image tests, and the final near-call report.
 10. **Publication** — open a PR with source issue, coordinate, coverage suite,
     baseline/final coverage, coverage delta, completed targets,
     skipped/exhausted targets, and validation commands.
@@ -158,12 +167,13 @@ A code coverage improvement run is successful only when all of these hold:
   user-callable targets.
 - JVM validation runs under JaCoCo and reports which inventory targets remain
   uncovered after each API-cover iteration.
-- Instrumented PGO coverage is normalized against the call-graph denominator,
-  sampled profiles are rejected, executed edges come from profile contexts, and
-  not-observed-but-reachable targets carry backward-derived reaching paths to
-  public API entries.
-- PGO-derived coverage is emitted as LCOV.
-- Discovery work covers reachable-but-unobserved targets in batches and records
+- JaCoCo is the sole coverage metric; sampled PGO profiles are used only as
+  near-call guidance and never interpreted as proof of non-execution.
+- The near-call report ranks uncovered public API methods by distance from
+  sampled execution, groups them by owning class, lists at most 100 methods per
+  report, and carries the reaching call chain for each listed target.
+- PGO-derived observations are emitted as LCOV.
+- Bulk cover work covers listed uncovered targets in batches and records
   skipped or exhausted targets with reasons.
 - Existing dynamic-access coverage, metadata validity, and JVM/native test
   gates do not regress.
@@ -183,8 +193,8 @@ can judge whether the new tests exercise valuable library behavior.
 
 The workflow is partially implemented as a Rhei workspace template backed by
 deterministic Forge helper scripts (API inventory, JVM JaCoCo validation,
-instrumented-PGO discovery correlation, and PR publication) and the
-`nativeTestPGOInstrument` / `runNativeTestPGO` Gradle harness tasks. Until a
+sampled-PGO near-call correlation, and PR publication) and the
+`nativeTestPGOSampling` / `runNativeTestPGO` Gradle harness tasks. Until a
 Forge driver or driver mode, a target-state store, and a metrics schema wire
 those helpers into an autonomous lane, references to the end-to-end automation
 beyond the template and helpers describe intended Forge functionality rather
@@ -223,18 +233,20 @@ engine:
 - **Native metadata preparer** — runs once after the API-cover loop and before
   PGO discovery: generates reachability metadata and repairs it with the Codex
   `fix-missing-reachability-metadata` skill until a Native Image test passes, so
-  the instrumented PGO builds succeed. Implemented in
+  the PGO-sampling builds succeed. Implemented in
   `forge/utility_scripts/code_coverage_prepare_native_metadata.py`.
-- **Native Image PGO analyzer** — collects instrumented `.iprof` data, rejects
-  sampled profiles, joins profile contexts with the static call graph and
-  reachable-method set, maps BCI evidence to source, and emits LCOV plus
-  prompt-ready discovery reports. Implemented in
-  `forge/utility_scripts/code_coverage_profile_report.py`; the instrumented
-  image and analysis call-tree dump are produced by the `nativeTestPGOInstrument`
-  and `runNativeTestPGO` harness tasks (`--pgo-instrument -g
-  -H:+PrintAnalysisCallTree`). Executed methods and observed edges are derived
-  from the profile `<`-chain contexts, which are leaf-first
-  (`callee:bci<caller:bci`), so observed edges read right-to-left.
+- **Native Image PGO analyzer** — collects sampled `.iprof` data from the
+  PGO-sampling native test run, joins sampled stack contexts with the analysis
+  call-tree CSV dump, ranks uncovered API inventory targets by near-call
+  distance, and emits LCOV plus a bulk prompt-ready near-call report that lists
+  at most 100 methods. Implemented in
+  `forge/utility_scripts/code_coverage_profile_report.py`; the sampling image
+  and call-tree CSVs are produced by the `nativeTestPGOSampling` and
+  `runNativeTestPGO` harness tasks (`--pgo-sampling
+  -H:PGOSamplingPeriodMicros=<micros> -H:+PrintAnalysisCallTree
+  -H:PrintAnalysisCallTreeType=CSV`; the run dumps the profile through
+  `-XX:ProfilesDumpFile`). Profile `<`-chain contexts are leaf-first
+  (`callee:bci<caller:bci`), so sampled stacks read right-to-left from the root.
 - **Coverage analyzer** — joins the API inventory with JVM and Native Image
   coverage summaries to identify weakly covered or uncovered behavior. Shared
   identity normalization lives in `forge/utility_scripts/code_coverage_model.py`.
@@ -283,6 +295,12 @@ normalized summaries that are stable, concise, and mapped back to library API
 targets. The collector/analyzer boundary should hide GraalVM profile file
 details from the agent unless a targeted debugging prompt needs them.
 
+Sampled profiles are guidance, not coverage: JaCoCo remains the only coverage
+metric, and a missing sample must never be interpreted as proof that a method
+did not run. The analyzer uses sampled stacks solely to rank uncovered API
+targets by how close existing execution already gets and to render the call
+chain a new test must drive from the sampled join point to the target.
+
 Profile comparison should answer two questions:
 
 - Did generated tests execute the selected API or behavior targets more than
@@ -318,10 +336,10 @@ also ran and reported the dynamic-access workflow (§WF-improve-library-coverage
 
 This architecture is partially implemented. The component has a Rhei template,
 a validated example workspace, the deterministic helper utilities (API inventory
-builder, JVM JaCoCo coverage validator, instrumented-PGO and call-graph
-correlation analyzer, shared identity model, and PR publication helper), and the
-`nativeTestPGOInstrument` / `runNativeTestPGO` Gradle harness tasks that produce
-the instrumented `.iprof` and analysis call-tree denominator. It still requires
+builder, JVM JaCoCo coverage validator, sampled-PGO near-call analyzer, shared
+identity model, and PR publication helper), and the
+`nativeTestPGOSampling` / `runNativeTestPGO` Gradle harness tasks that produce
+the sampled `.iprof` and analysis call-tree CSV dump. It still requires
 a new Forge driver or driver mode, a target-state schema for chunked/resumed
 runs, and metrics support before it is a fully autonomous Forge lane; today the
 helpers are invoked through the Rhei task plan.
