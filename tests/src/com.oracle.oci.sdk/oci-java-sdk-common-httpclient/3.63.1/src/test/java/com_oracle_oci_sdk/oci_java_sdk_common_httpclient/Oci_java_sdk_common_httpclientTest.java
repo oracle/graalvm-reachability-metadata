@@ -23,7 +23,9 @@ import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
+import java.security.cert.Certificate;
 import java.util.Arrays;
+import java.util.Collection;
 import org.junit.jupiter.api.Test;
 
 public class Oci_java_sdk_common_httpclientTest {
@@ -159,6 +161,50 @@ public class Oci_java_sdk_common_httpclientTest {
             Options.shouldAutoCloseResponseInputStream(originalAutoClose);
         }
 
+    }
+
+    @Test
+    void pemEncodesAndDecodesCertificatesAndCertificateChains() throws Exception {
+        String certificatePem =
+                """
+                -----BEGIN CERTIFICATE-----
+                MIIDCTCCAfGgAwIBAgIUGfXfFJsWLOD2egJjcy3vW9atBKswDQYJKoZIhvcNAQEL
+                BQAwFDESMBAGA1UEAwwJbG9jYWxob3N0MB4XDTI2MDcxMDEzMTkwNVoXDTI2MDcx
+                MTEzMTkwNVowFDESMBAGA1UEAwwJbG9jYWxob3N0MIIBIjANBgkqhkiG9w0BAQEF
+                AAOCAQ8AMIIBCgKCAQEAtQui6U3xGzuKBhDi1HLMJRbvrlAgO6wpRVUqMFZ17o8Q
+                v4nGqReSuqYkWAR9dkzg1wgq8WK6+s0+eOnQaNEcCHLp5yBCBFLRuDJLBvhcJtZJ
+                gC3VE8sWW5KwIWUCwBk5RqCLhOS9O4Ws3vg4ITSsK3wvmBocrd993fjOSJfINMRH
+                qi9ygv5JdAFKDfl+1VshQ5LoJDvKsBU23vs4CN2/woF2YwiPoGQQcWCZmaqA5u5A
+                7qQT9nE2+S6WfnHVQRidd4ooUedZggdERkceQCUDOml3wilcMFPvWTKMpEq9Mv7X
+                2Ypw1OcDapbou9/RRotDTxBsT36YlCIiRZ+lieJ/ZQIDAQABo1MwUTAdBgNVHQ4E
+                FgQUM2Ic4kTNtwpGx+V/57KpN9bN6ZwwHwYDVR0jBBgwFoAUM2Ic4kTNtwpGx+V/
+                57KpN9bN6ZwwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAdR61
+                mz8tp5YJfYQZu91PNrtD5IZNQElUg5PgCI+DGWAZc4Fc7s4VEGlA/Hzose98Ngj5
+                Yv2emKjxsa0Ojs5r0VQ+NzR10txc9mjHRBskfJgLCAOJbB44OPHGFM3W6j6sOx2B
+                /rce/EKuKY4eBQoZ1KPM87nIAYqY+0wxEEJGkRImXa1U0YKac0z17eSwWR/Wpj3b
+                hIpLOSPIVvVjc+TW8IIMZDAPjRg4Hn7ahC+YSAAmA6pWK9AHUzP0eocSESSvyrMV
+                UzsySZwM989m7CtZyvLrmC9AlZqNHaMkIzEOZwNBa2D2DUhQhhA5duSqQslCNb43
+                v+/3DMprIoULBoNqrQ==
+                -----END CERTIFICATE-----
+                """;
+
+        Certificate certificate = Pem.decoder().decodeCertificate(certificatePem);
+        String encodedCertificate = Pem.encoder().encode(certificate);
+        Collection<? extends Certificate> certificateChain =
+                Pem.decoder().decodeCertificateChain(encodedCertificate + "\n" + encodedCertificate);
+
+        assertThat(encodedCertificate).contains("BEGIN CERTIFICATE");
+        assertThat(Pem.decoder().decodeCertificate(encodedCertificate).getEncoded())
+                .isEqualTo(certificate.getEncoded());
+        assertThat(certificateChain).hasSize(2);
+        Collection<? extends Certificate> encodedAndDecodedCertificateChain =
+                Pem.decoder().decodeCertificateChain(Pem.encoder().encode(certificateChain));
+        assertThat(encodedAndDecodedCertificateChain)
+                .hasSize(2)
+                .allSatisfy(
+                        decodedCertificate ->
+                                assertThat(decodedCertificate.getEncoded())
+                                        .isEqualTo(certificate.getEncoded()));
     }
 
     private KeyPair createRsaKeyPair() throws Exception {
