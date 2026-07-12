@@ -20,6 +20,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -298,6 +300,50 @@ class MetadataGenerationUtilsTests {
                 .containsExactly("io_grpc.grpc_auth");
     }
 
+    @Test
+    void derivePackageRootsFromJarFollowsMavenRelocationWithoutIncludingDependencies() throws IOException {
+        Path repository = tempDir.resolve("repository");
+        writePom(
+                repository.resolve("com/example/legacy-library/1.0.0/legacy-library-1.0.0.pom"),
+                """
+                <project xmlns="http://maven.apache.org/POM/4.0.0">
+                  <modelVersion>4.0.0</modelVersion>
+                  <groupId>com.example</groupId>
+                  <artifactId>legacy-library</artifactId>
+                  <version>1.0.0</version>
+                  <distributionManagement>
+                    <relocation>
+                      <artifactId>library</artifactId>
+                    </relocation>
+                  </distributionManagement>
+                </project>
+                """
+        );
+        writePom(
+                repository.resolve("com/example/library/1.0.0/library-1.0.0.pom"),
+                """
+                <project xmlns="http://maven.apache.org/POM/4.0.0">
+                  <modelVersion>4.0.0</modelVersion>
+                  <groupId>com.example</groupId>
+                  <artifactId>library</artifactId>
+                  <version>1.0.0</version>
+                </project>
+                """
+        );
+        writeJar(
+                repository.resolve("com/example/library/1.0.0/library-1.0.0.jar"),
+                "com/relocated/Library.class"
+        );
+
+        Project project = createProject();
+        project.getRepositories().maven(repositoryHandler -> repositoryHandler.setUrl(repository.toUri()));
+
+        assertThat(MetadataGenerationUtils.derivePackageRootsFromJar(
+                project,
+                Coordinates.parse("com.example:legacy-library:1.0.0")
+        )).containsExactly("com.relocated");
+    }
+
     private Project createProject() {
         return ProjectBuilder.builder()
                 .withProjectDir(tempDir.toFile())
@@ -307,6 +353,20 @@ class MetadataGenerationUtilsTests {
     private void writeSource(Path file, String content) throws IOException {
         Files.createDirectories(file.getParent());
         Files.writeString(file, content.stripIndent(), StandardCharsets.UTF_8);
+    }
+
+    private void writePom(Path file, String content) throws IOException {
+        Files.createDirectories(file.getParent());
+        Files.writeString(file, content.stripIndent(), StandardCharsets.UTF_8);
+    }
+
+    private void writeJar(Path file, String entry) throws IOException {
+        Files.createDirectories(file.getParent());
+        try (JarOutputStream output = new JarOutputStream(Files.newOutputStream(file))) {
+            output.putNextEntry(new JarEntry(entry));
+            output.write(new byte[]{0});
+            output.closeEntry();
+        }
     }
 
     private void writeIndex(String group, String artifact, String content) throws IOException {
