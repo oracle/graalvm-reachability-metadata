@@ -17,6 +17,11 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('--enable-url-protocols=http,https')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
