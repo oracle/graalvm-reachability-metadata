@@ -6,6 +6,12 @@
 import os
 from datetime import datetime, timezone
 
+# Operator-provided log destination. When set, logs land here instead of
+# `<forge-repo-root>/logs`, letting the Incus runner point them at a host
+# directory mounted into the VM so they survive teardown.
+# §FS-forge-vm-isolated-execution
+FORGE_LOGS_DIR_ENV = "FORGE_LOGS_DIR"
+
 
 def sanitize_log_segment(value: str | None) -> str:
     """Return a filesystem-safe directory or file name segment."""
@@ -32,7 +38,16 @@ def _repo_root() -> str:
 
 
 def resolve_logs_root() -> str:
-    """Return the metadata-forge log root."""
+    """Return the metadata-forge log root.
+
+    Honors the `FORGE_LOGS_DIR` override so a run can write its durable logs to
+    an operator-provided location, such as a host directory mounted into an
+    Incus VM (§FS-forge-vm-isolated-execution); otherwise logs stay under
+    `<forge-repo-root>/logs`.
+    """
+    override = os.environ.get(FORGE_LOGS_DIR_ENV)
+    if override:
+        return os.path.abspath(os.path.expanduser(override))
     return os.path.join(_repo_root(), "logs")
 
 

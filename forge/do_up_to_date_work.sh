@@ -26,6 +26,7 @@ REVIEW_LABEL="${FORGE_REVIEW_LABEL:-}"
 REVIEW_LIMIT="${FORGE_REVIEW_LIMIT:-1}"
 REVIEW_MODEL="${FORGE_REVIEW_MODEL:-gpt-5.4}"
 USER_REQUESTED_ONLY="${FORGE_USER_REQUESTED_ISSUES_ONLY:-0}"
+USE_INCUS="${FORGE_INCUS:-0}"
 WORK_STRATEGY_NAME="${FORGE_STRATEGY_NAME:-dynamic_access_main_sources_pi_gpt-5.5}"
 GITHUB_RATE_LIMIT_EXIT_CODE=75
 MAX_PARALLELISM=4
@@ -113,6 +114,10 @@ Options:
       Fetch only user-requested issue queue items by excluding configured
       automation and maintainer issue authors. Defaults to
       FORGE_USER_REQUESTED_ISSUES_ONLY, then 0.
+  --incus
+      Run each generation inside a fresh, single-use Incus VM instead of on the
+      host. Requires a host prepared per forge/README.md; Forge preflights and
+      fails fast if the setup is incomplete. Defaults to FORGE_INCUS, then off.
 
 Environment:
   DO_WORK_SLEEP_SECONDS
@@ -138,6 +143,9 @@ Environment:
   FORGE_USER_REQUESTED_ISSUES_ONLY
       Set to 1 to fetch only user-requested issue queue items, or 0 to process
       all eligible issue authors. Defaults to 0.
+  FORGE_INCUS
+      Set to 1 to run each generation inside a fresh, single-use Incus VM, or 0
+      to run on the host. Defaults to 0.
   FORGE_LIBRARY_REVIEW_LIMIT, FORGE_JAVAC_REVIEW_LIMIT, FORGE_JAVA_RUN_REVIEW_LIMIT,
   FORGE_NI_RUN_REVIEW_LIMIT, FORGE_BULK_UPDATE_REVIEW_LIMIT
       Override FORGE_REVIEW_LIMIT for one default review queue.
@@ -389,6 +397,7 @@ export_work_configuration() {
     export FORGE_REVIEW_LIMIT="$REVIEW_LIMIT"
     export FORGE_REVIEW_MODEL="$REVIEW_MODEL"
     export FORGE_USER_REQUESTED_ISSUES_ONLY="$USER_REQUESTED_ONLY"
+    export FORGE_INCUS="$USE_INCUS"
 
     if [[ -n "$REVIEW_LABEL" ]]; then
         export FORGE_REVIEW_LABEL="$REVIEW_LABEL"
@@ -403,6 +412,9 @@ process_work_queues() {
         "--parallelism"
         "$PARALLELISM"
     )
+    if [[ "$USE_INCUS" == "1" ]]; then
+        forge_metadata_args+=("--incus")
+    fi
 
     run_step "Processing configured work queues via forge_metadata." \
         "$PYTHON_BIN" "$SCRIPT_DIR/forge_metadata.py" "${forge_metadata_args[@]}"
@@ -543,6 +555,10 @@ while [[ "$#" -gt 0 ]]; do
             USER_REQUESTED_ONLY=1
             shift
             ;;
+        --incus)
+            USE_INCUS=1
+            shift
+            ;;
         --)
             shift
             if [[ "$#" -gt 1 || -n "$BRANCH_ARG" ]]; then
@@ -629,6 +645,11 @@ fi
 
 if [[ "$USER_REQUESTED_ONLY" != "0" && "$USER_REQUESTED_ONLY" != "1" ]]; then
     echo "FORGE_USER_REQUESTED_ISSUES_ONLY must be 0 or 1." >&2
+    exit 1
+fi
+
+if [[ "$USE_INCUS" != "0" && "$USE_INCUS" != "1" ]]; then
+    echo "FORGE_INCUS must be 0 or 1." >&2
     exit 1
 fi
 

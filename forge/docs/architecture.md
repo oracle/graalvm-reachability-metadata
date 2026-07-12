@@ -21,6 +21,7 @@ structure chosen to satisfy it, with the workflow catalog in
 | §WF-forge-workflow-drivers | behavioral contract for deterministic workflow drivers |
 | §STRAT-forge-predefined-strategy-contract | behavioral contract for named strategy configuration bundles |
 | §AR-forge-control-plane | how the worker loop, dispatcher, GitHub queues, and worktrees compose |
+| §AR-forge-vm-runner-boundary | how VM isolation wraps Forge without changing workflow semantics |
 | §AR-forge-workflow-boundary | how workflow drivers turn a claimed issue into an isolated workflow run |
 | §AR-forge-strategy-agent-boundary | how strategy configuration, workflow engines, agents, and post-generation interventions are separated |
 | §AR-forge-verification-publication-boundary | why PR creation is a publication step after verification, not part of generation |
@@ -80,6 +81,106 @@ flowchart LR
     PR --> GitHub
     Dispatcher -->|failure / review bookkeeping| GitHub
 ```
+
+## AR-forge-vm-runner-boundary: VM isolation wraps Forge worker execution
+
+VM isolation lives at the worker and orchestration boundary
+(§FS-forge-vm-isolated-execution), not in workflow engines or generated-test
+prompts. The opt-in flag is `--incus` on `forge_metadata.py`, forwarded by the
+`do-work.sh` / `do_up_to_date_work.sh` loops (which stay on the host). The
+realization is re-entrant: the *same* script runs twice — on the host to claim
+work (the host owns the claim and its queue accounting), then again inside a
+fresh VM to process that already-claimed work without claiming it again.
+
+```mermaid
+flowchart TB
+    Base[("base image — a template<br/>GraalVM · caches · Docker · checkout")]
+    GitHub[("GitHub<br/>issues · branches · PRs · metrics")]
+
+    subgraph Host["HOST"]
+        Loop["do-work.sh → do_up_to_date_work.sh"]
+        Disp["forge_metadata.py --incus<br/>(claim work)"]
+        Runner["VM runner<br/>launch · mount · seed · destroy"]
+        HostLogs[("forge logs<br/>host directory")]
+        Loop --> Disp -->|per claimed run| Runner
+    end
+
+    subgraph VM["FRESH SINGLE-USE VM — per run"]
+        Inner["forge_metadata.py --issue-number N<br/>(generate · Gradle · Docker · agent)"]
+    end
+
+    Disp -->|scan + claim| GitHub
+    Runner -->|launch fresh VM| VM
+    Base -.->|template for| VM
+    Runner -->|incus exec| Inner
+    Inner -->|logs via mount| HostLogs
+    Inner -->|push: branch · PR · metrics| GitHub
+    Runner -->|destroy after run| VM
+```
+
+For each claimed run, the VM runner executes this per-run sequence:
+
+1. **Preflight** — verify Incus, the base image, configuration, and GitHub
+   credentials; stop with an actionable error if anything is missing. The runner
+   never installs or configures Incus itself.
+2. **Launch** a fresh VM from the cached base image (the image is never modified).
+3. **Mount** a per-run host log directory at a clean top-level path (with
+   `FORGE_LOGS_DIR` pointed at it) and the operator's host checkout read-only.
+4. **Refresh** the VM's Forge checkout by re-cloning it from the mounted host
+   repo, so the run uses the operator's *current* code rather than the snapshot
+   baked into the image (which otherwise drifts between base-image rebuilds);
+   then **seed** GitHub credentials and agent config.
+5. **Run** the run's existing per-issue workflow (`forge_metadata.py
+   --issue-number N`) inside the VM, told via `FORGE_ALREADY_CLAIMED` to process
+   the host-claimed issue without claiming again.
+6. **Publish** — branches, PRs, and metrics leave over the network.
+7. **Destroy** the VM; mounted logs remain on the host. If the run failed, the
+   host reverts its claim so the issue returns to `Todo`.
+
+Two invariants hold the boundary. `--incus` is the only Incus-aware surface:
+workflow drivers, engines, and agents run the same code as on the host and never
+shell through Incus or pick VM policy (§AR-forge-control-plane,
+§AR-forge-workflow-boundary). And nothing durable lives on the disposable VM —
+logs cross through the mount, metrics and preserved-work branches leave over the
+network, and `FORGE_PARALLELISM` gives each concurrent run its own VM.
+
+The base image is a template, not a running machine: a saved disk (OS, GraalVM,
+Gradle caches, Docker, and a reachability checkout) plus metadata, built once and
+cached in the local Incus image store. Each run launches a fresh VM *from* that
+image, adds the issue's worktree, and runs `forge_metadata.py --issue-number N`;
+the image itself is never modified, and the VM is deleted afterwards. Building the
+image once is what makes runs cheap — GraalVM, Docker, and caches are installed a
+single time and reused, not rebuilt per run:
+
+```text
+  BUILT ONCE, reused by every run (a template, not a running machine):
+  +---------------------------------------------------+
+  | base image "forge-base"                           |
+  |   OS · GraalVM · Gradle caches · Docker · checkout |
+  +---------------------------------------------------+
+                 |
+                 |  each run launches a fresh VM FROM the image
+                 |  (the image itself is never modified)
+                 v
+  +---------------------------------------------------+
+  | fresh VM for issue 9101   (deleted after the run) |
+  |   = base image  +  this issue's worktree          |
+  |   runs:  forge_metadata.py --issue-number 9101    |
+  +---------------------------------------------------+
+                 |
+                 |  logs -> mounted host directory
+                 v
+  ~/forge-out/9101    (stays on the HOST after the VM is gone)
+
+  Concurrency: each issue gets its own fresh VM (up to FORGE_PARALLELISM).
+  Teardown deletes the VM and its worktree; the base image and host logs remain.
+```
+
+Rebuilding the base image (to refresh GraalVM, Gradle caches, or other baked
+dependencies) is the only time the expensive setup is paid for again. The Forge
+checkout is *not* a reason to rebuild: each run re-clones it from the operator's
+host repo (step 4), so Forge code changes take effect on the next run without a
+rebuild.
 
 ## AR-forge-workflow-boundary: Workflow drivers compose setup, workflow engine, and metrics
 

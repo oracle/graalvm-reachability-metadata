@@ -148,6 +148,14 @@ from utility_scripts.continuation_marker import (
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
 from utility_scripts.fixture_github import FixtureGitHubState, load_fixture_github_state
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.incus_runner import (
+    FORGE_ALREADY_CLAIMED_ENV,
+    FORGE_CLAIMED_ITEM_ID_ENV,
+    IncusError,
+    IncusPreflightError,
+    preflight as incus_preflight,
+    run_issue_in_vm,
+)
 from utility_scripts.library_stats import resolve_stats_file_path
 from utility_scripts.library_preparation_preflight import (
     LIBRARY_PREPARATION_PREFLIGHT_FILENAME,
@@ -6056,27 +6064,18 @@ def maybe_handle_not_for_native_image_issue(issue: dict, base_reachability_metad
     return True
 
 
-def claim_issue_for_processing(
+def _resolve_claim_metadata(
         issue: dict,
         label: str,
         base_reachability_metadata_path: str,
-        canonical_metrics_repo_path: str,
-        authenticated_user: str,
-        take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
-) -> Optional[ClaimedIssue]:
-    """Claim an issue and prepare its isolated execution workspace.
+):
+    """Resolve coordinates, continuation, and chunked state for a claimable issue.
 
-    Claiming, assignment validation, and worktree creation are orchestration
-    responsibilities, not strategy logic (§AR-forge-control-plane). Chunked
-    dynamic-access continuation derives its exhaust report from the coordinate
-    in the checked-out repository (§WF-dynamic-access-exhaust-report).
+    Shared by the host claim path and the Incus already-claimed path. Returns
+    `(issue_coordinates, current_coordinates, new_version, continuation_marker,
+    chunked_exhaust_report)`, or None when the issue is not processable
+    (§AR-forge-control-plane, §WF-dynamic-access-exhaust-report).
     """
-    if not refresh_issue_payload_for_claim(issue, label, authenticated_user):
-        return None
-
-    if maybe_handle_not_for_native_image_issue(issue, base_reachability_metadata_path):
-        return None
-
     claim_metadata = build_claim_metadata(issue, label, base_reachability_metadata_path)
     if claim_metadata is None:
         return None
@@ -6109,11 +6108,27 @@ def claim_issue_for_processing(
             file=sys.stderr,
         )
         return None
+    return issue_coordinates, current_coordinates, new_version, continuation_marker, chunked_exhaust_report
 
-    item_id = try_claim_issue(issue, authenticated_user, label, take_blocked_issues)
-    if not item_id:
-        return None
 
+def _build_workspace_for_claimed_issue(
+        issue: dict,
+        label: str,
+        base_reachability_metadata_path: str,
+        canonical_metrics_repo_path: str,
+        item_id: str,
+        resolved,
+        *,
+        revert_claim_on_failure: bool,
+) -> Optional[ClaimedIssue]:
+    """Build the isolated worktree and ClaimedIssue for an already-claimed issue.
+
+    `revert_claim_on_failure` reverts the GitHub claim if setup fails in host mode
+    (where this process owns the claim); the Incus VM passes False because the
+    host owns the claim and reverts it on a failed VM run
+    (§AR-forge-vm-runner-boundary).
+    """
+    issue_coordinates, current_coordinates, new_version, continuation_marker, chunked_exhaust_report = resolved
     try:
         worktree_path, scratch_metrics_repo_path = create_issue_workspace(
             base_reachability_metadata_path,
@@ -6129,12 +6144,13 @@ def claim_issue_for_processing(
                 worktree_path,
             )
     except BaseException as exc:
-        revert_issue_claim(
-            item_id,
-            issue["number"],
-            "claim setup interrupted by Ctrl+C" if is_interrupt_exception(exc)
-            else f"claim setup failure ({type(exc).__name__})",
-        )
+        if revert_claim_on_failure:
+            revert_issue_claim(
+                item_id,
+                issue["number"],
+                "claim setup interrupted by Ctrl+C" if is_interrupt_exception(exc)
+                else f"claim setup failure ({type(exc).__name__})",
+            )
         if isinstance(exc, Exception):
             return None
         raise
@@ -6151,6 +6167,100 @@ def claim_issue_for_processing(
         new_version=new_version,
         preflight_info_path=preflight_info_path,
         continuation_marker=continuation_marker,
+    )
+
+
+def claim_issue_on_github_only(
+        issue: dict,
+        label: str,
+        base_reachability_metadata_path: str,
+        authenticated_user: str,
+        take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
+):
+    """Run claim gating and claim the issue on GitHub, without building a workspace.
+
+    Returns `(item_id, resolved_metadata)` on a successful claim, else None. The
+    control plane claims here (§AR-forge-control-plane): host mode then builds a
+    worktree locally, while Incus mode hands the claimed issue to a VM that builds
+    its own (§AR-forge-vm-runner-boundary).
+    """
+    if not refresh_issue_payload_for_claim(issue, label, authenticated_user):
+        return None
+
+    if maybe_handle_not_for_native_image_issue(issue, base_reachability_metadata_path):
+        return None
+
+    resolved = _resolve_claim_metadata(issue, label, base_reachability_metadata_path)
+    if resolved is None:
+        return None
+
+    item_id = try_claim_issue(issue, authenticated_user, label, take_blocked_issues)
+    if not item_id:
+        return None
+    return item_id, resolved
+
+
+def claim_issue_for_processing(
+        issue: dict,
+        label: str,
+        base_reachability_metadata_path: str,
+        canonical_metrics_repo_path: str,
+        authenticated_user: str,
+        take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
+) -> Optional[ClaimedIssue]:
+    """Claim an issue and prepare its isolated execution workspace.
+
+    Claiming, assignment validation, and worktree creation are orchestration
+    responsibilities, not strategy logic (§AR-forge-control-plane). Chunked
+    dynamic-access continuation derives its exhaust report from the coordinate
+    in the checked-out repository (§WF-dynamic-access-exhaust-report).
+    """
+    claimed = claim_issue_on_github_only(
+        issue,
+        label,
+        base_reachability_metadata_path,
+        authenticated_user,
+        take_blocked_issues,
+    )
+    if claimed is None:
+        return None
+    item_id, resolved = claimed
+    return _build_workspace_for_claimed_issue(
+        issue,
+        label,
+        base_reachability_metadata_path,
+        canonical_metrics_repo_path,
+        item_id,
+        resolved,
+        revert_claim_on_failure=True,
+    )
+
+
+def build_already_claimed_issue(
+        issue: dict,
+        label: str,
+        base_reachability_metadata_path: str,
+        canonical_metrics_repo_path: str,
+        item_id: str,
+) -> Optional[ClaimedIssue]:
+    """Build a ClaimedIssue for an issue the host already claimed, without re-claiming.
+
+    Incus mode claims on the host (§AR-forge-control-plane) and hands the claimed
+    issue to the VM, which only builds its own workspace and processes the work
+    (§AR-forge-vm-runner-boundary). A setup failure here is not reverted: the host
+    owns the claim and reverts it when the VM run reports failure.
+    """
+    resolved = _resolve_claim_metadata(issue, label, base_reachability_metadata_path)
+    if resolved is None:
+        return None
+    return _build_workspace_for_claimed_issue(
+        issue,
+        label,
+        base_reachability_metadata_path,
+        canonical_metrics_repo_path,
+        item_id,
+        resolved,
+        revert_claim_on_failure=False,
     )
 
 
@@ -7866,6 +7976,38 @@ def process_fixture_issues_for_label(
     return processed_count
 
 
+def dispatch_issue_to_vm(
+        issue_number: int,
+        strategy_name: str | None,
+        keep_tests_without_dynamic_access: bool,
+        claimed_item_id: str,
+) -> bool:
+    """Run one already-claimed issue inside a fresh Incus VM.
+
+    The host scans, selects, and claims the issue (§AR-forge-control-plane); the
+    VM builds its own worktree, processes the already-claimed work without
+    claiming again, and publishes over the network (§AR-forge-vm-runner-boundary).
+    A failed VM run is reported as a failed issue so the host reverts its claim; a
+    setup failure (`IncusPreflightError`) propagates to abort the run rather than
+    falling back to the host (§FS-forge-vm-isolated-execution).
+    """
+    try:
+        return run_issue_in_vm(
+            issue_number,
+            strategy_name=strategy_name,
+            keep_tests_without_dynamic_access=keep_tests_without_dynamic_access,
+            claimed_item_id=claimed_item_id,
+        )
+    except IncusPreflightError:
+        raise
+    except IncusError as exc:
+        log_failure_banner(
+            f"Incus VM run for issue #{issue_number} failed: {exc}",
+            file=sys.stderr,
+        )
+        return False
+
+
 def process_issues_with_label(
         label: str,
         limit: int,
@@ -7879,6 +8021,7 @@ def process_issues_with_label(
         take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
         environment_already_validated: bool = False,
         user_requested_only: bool = False,
+        use_incus: bool = False,
 ) -> int:
     """
     Process up to `limit` claimable issues, skipping over unclaimed candidates.
@@ -7908,7 +8051,11 @@ def process_issues_with_label(
     priority_exhausted = False
     unresolved_candidates: list[tuple[dict, CachedIssueClaimSkip | None]] = []
     pending_issues: list[tuple[dict, IssueClaimPreflight | None, CachedIssueClaimSkip | None]] = []
-    active_futures: dict[concurrent.futures.Future[bool], ClaimedIssue] = {}
+    active_futures: dict[concurrent.futures.Future[bool], ClaimedIssue | None] = {}
+    # Incus runs claim on the host (§AR-forge-control-plane) but build no host
+    # worktree, so they cannot be reverted via a ClaimedIssue. Track their GitHub
+    # claim (item_id, issue_number) here to revert on VM failure or interrupt.
+    incus_claims: dict[concurrent.futures.Future[bool], tuple[str, int]] = {}
 
     log_issue_scan_start(label, offset)
 
@@ -8007,6 +8154,35 @@ def process_issues_with_label(
                     claim_kwargs: dict[str, bool] = {}
                     if not take_blocked_issues:
                         claim_kwargs["take_blocked_issues"] = False
+
+                    if use_incus:
+                        # The host claims the issue (same race check and queue
+                        # accounting as host mode); only after we own it does the
+                        # VM process the already-claimed work without claiming
+                        # again. On VM failure the host reverts the claim
+                        # (§AR-forge-control-plane, §AR-forge-vm-runner-boundary).
+                        claimed = claim_issue_on_github_only(
+                            issue,
+                            label,
+                            base_reachability_metadata_path,
+                            authenticated_user,
+                            **claim_kwargs,
+                        )
+                        if claimed is None:
+                            continue
+                        item_id, _resolved = claimed
+                        future = executor.submit(
+                            dispatch_issue_to_vm,
+                            issue["number"],
+                            strategy_name,
+                            keep_tests_without_dynamic_access,
+                            item_id,
+                        )
+                        active_futures[future] = None
+                        incus_claims[future] = (item_id, issue["number"])
+                        processed_count += 1
+                        continue
+
                     claimed_issue = claim_issue_for_processing(
                         issue,
                         label,
@@ -8042,7 +8218,13 @@ def process_issues_with_label(
                 continue
             for future in done_futures:
                 active_futures.pop(future, None)
-                future.result()
+                incus_claim = incus_claims.pop(future, None)
+                succeeded = future.result()
+                if incus_claim is not None and not succeeded:
+                    # The host owns this claim; the VM reported failure, so reset
+                    # the issue to Todo for another worker (§AR-forge-control-plane).
+                    item_id, claim_issue_number = incus_claim
+                    revert_issue_claim(item_id, claim_issue_number, "Incus VM run reported failure")
     except KeyboardInterrupt:
         if is_shutdown_requested():
             mark_shutdown_requested()
@@ -8059,6 +8241,21 @@ def process_issues_with_label(
             file=sys.stderr,
         )
         for future, claimed_issue in list(active_futures.items()):
+            if claimed_issue is None:
+                # Incus run: the host owns the claim (§AR-forge-control-plane).
+                # Cancel the dispatch and revert the claim so the issue returns to
+                # Todo; the runner tears down any launched VM.
+                cancelled = future.cancel()
+                incus_claim = incus_claims.pop(future, None)
+                if incus_claim is not None:
+                    item_id, claim_issue_number = incus_claim
+                    if cancelled:
+                        print(
+                            f"[Cancelled queued issue #{claim_issue_number} future before revert.]",
+                            file=sys.stderr,
+                        )
+                    revert_issue_claim(item_id, claim_issue_number, f"{interrupt_reason} in main loop")
+                continue
             if future.cancel():
                 print(
                     f"[Cancelled queued issue #{claimed_issue.issue['number']} future before revert.]",
@@ -8083,6 +8280,7 @@ def process_work_queues(
         parallelism_default: int = DEFAULT_PARALLELISM,
         random_offset_override: bool | None = None,
         user_requested_only_override: bool | None = None,
+        use_incus: bool = False,
 ) -> None:
     """Process all configured issue and review queues in one Python process."""
     queue_configs = get_work_queue_configs_from_environment(work_strategy_name_override, random_offset_override)
@@ -8161,6 +8359,7 @@ def process_work_queues(
             parallelism,
             user_requested_only=user_requested_only,
             environment_already_validated=True,
+            use_incus=use_incus,
         )
 
     for review_queue_config in review_queue_configs:
@@ -8310,6 +8509,17 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=DEFAULT_TAKE_BLOCKED_ISSUES,
         help="Claim issues even when GitHub shows open blocking issues. Defaults to enabled.",
     )
+    parser.add_argument(
+        "--incus",
+        dest="incus",
+        action="store_true",
+        default=False,
+        help=(
+            "Run each generation inside a fresh, single-use Incus VM instead of on the host. "
+            "Requires a host prepared per forge/README.md; Forge preflights and fails fast if the "
+            "setup is incomplete rather than installing anything."
+        ),
+    )
 
     args = parser.parse_args(argv)
     if args.period is not None and args.review_pr is None:
@@ -8321,6 +8531,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             parser.error("--fixture-testing cannot be combined with --offset")
         if args.random_offset is not None:
             parser.error("--fixture-testing cannot be combined with --random-offset/--no-random-offset")
+    if args.incus:
+        if args.review_pr is not None or args.clear_issue_caches:
+            parser.error("--incus only applies to issue generation (--label, --issue-number, or --run-work-queues)")
+        if args.fixture_testing:
+            parser.error("--incus cannot be combined with --fixture-testing")
     if args.random_offset is not None and args.label is None and not args.run_work_queues:
         parser.error("--random-offset/--no-random-offset can only be used with --label or --run-work-queues")
     if args.random_offset is True and args.offset != 0:
@@ -8353,8 +8568,45 @@ def process_single_issue(
         keep_tests_without_dynamic_access: bool,
         authenticated_user: str,
         take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
+        use_incus: bool = False,
 ) -> bool:
     """Fetch and process a single issue by number, claiming only in live GitHub mode."""
+    if use_incus:
+        # The host claims the issue (race check), then the VM processes the
+        # already-claimed work without claiming again; on VM failure or dispatch
+        # abort the host reverts the claim (§AR-forge-control-plane,
+        # §AR-forge-vm-runner-boundary).
+        validate_issue_processing_environment()
+        issue, label = get_issue_by_number(issue_number)
+        print()
+        log_stage("issue-scan", f"Issue #{issue_number} matched pipeline label: {label}")
+        claim_kwargs: dict[str, bool] = {}
+        if not take_blocked_issues:
+            claim_kwargs["take_blocked_issues"] = False
+        claimed = claim_issue_on_github_only(
+            issue,
+            label,
+            base_reachability_metadata_path,
+            authenticated_user,
+            **claim_kwargs,
+        )
+        if claimed is None:
+            log_failure_banner(f"Could not claim issue #{issue_number}.", file=sys.stderr)
+            sys.exit(1)
+        item_id, _resolved = claimed
+        try:
+            succeeded = dispatch_issue_to_vm(
+                issue_number,
+                strategy_name,
+                keep_tests_without_dynamic_access,
+                item_id,
+            )
+        except BaseException:
+            revert_issue_claim(item_id, issue_number, "Incus VM dispatch aborted")
+            raise
+        if not succeeded:
+            revert_issue_claim(item_id, issue_number, "Incus VM run reported failure")
+        return succeeded
     validate_issue_processing_environment()
 
     issue, label = get_issue_by_number(issue_number)
@@ -8379,6 +8631,27 @@ def process_single_issue(
                 keep_tests_without_dynamic_access,
                 canonical_metrics_repo_path,
             )
+
+    if os.environ.get(FORGE_ALREADY_CLAIMED_ENV) == "1":
+        # Launched by the Incus host, which already owns the GitHub claim
+        # (§AR-forge-vm-runner-boundary): build the workspace for the claimed
+        # issue without claiming again. The host reverts on a failed run.
+        claimed_issue = build_already_claimed_issue(
+            issue,
+            label,
+            base_reachability_metadata_path,
+            canonical_metrics_repo_path,
+            os.environ.get(FORGE_CLAIMED_ITEM_ID_ENV, ""),
+        )
+        if not claimed_issue:
+            log_failure_banner(f"Could not prepare already-claimed issue #{issue_number}.", file=sys.stderr)
+            sys.exit(1)
+        return process_claimed_issue_lifecycle(
+            claimed_issue,
+            strategy_name,
+            keep_tests_without_dynamic_access,
+            canonical_metrics_repo_path,
+        )
 
     claim_kwargs: dict[str, bool] = {}
     if not take_blocked_issues:
@@ -8444,6 +8717,11 @@ def main() -> None:
         if not PROJECT_NUMBER:
             print("ERROR: GITHUB_PROJECT_NUMBER env var is not set.", file=sys.stderr)
             sys.exit(1)
+        if args.incus:
+            # Fail fast before any scanning if the host is not set up for Incus,
+            # rather than running partially or falling back to the host
+            # (§FS-forge-vm-isolated-execution).
+            incus_preflight()
         if args.run_work_queues:
             process_work_queues(
                 reachability_metadata_path,
@@ -8454,6 +8732,7 @@ def main() -> None:
                 args.parallelism,
                 random_offset_override=args.random_offset,
                 user_requested_only_override=args.user_requested_only,
+                use_incus=args.incus,
             )
         elif args.review_pr is not None:
             authenticated_user = resolve_authenticated_user()
@@ -8475,6 +8754,7 @@ def main() -> None:
                 args.keep_tests_without_dynamic_access,
                 authenticated_user,
                 args.take_blocked_issues,
+                use_incus=args.incus,
             )
         elif is_fixture_testing_enabled():
             process_fixture_issues_for_label(
@@ -8509,6 +8789,7 @@ def main() -> None:
                 args.parallelism,
                 take_blocked_issues=args.take_blocked_issues,
                 user_requested_only=user_requested_only,
+                use_incus=args.incus,
             )
         normal_exit = True
     except KeyboardInterrupt:
@@ -8527,6 +8808,12 @@ def main() -> None:
     except GitHubRateLimitExceeded as exc:
         log_failure_banner(f"{exc}. Stop current run and retry after reset.", file=sys.stderr)
         sys.exit(GITHUB_RATE_LIMIT_EXIT_CODE)
+    except IncusPreflightError as exc:
+        log_failure_banner(
+            f"Incus setup is incomplete; cannot run with --incus.\n{exc}",
+            file=sys.stderr,
+        )
+        sys.exit(1)
     finally:
         if normal_exit:
             log_success_banner("Run complete.")

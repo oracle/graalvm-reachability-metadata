@@ -6,11 +6,12 @@ Completed roadmap points stay in this file for citation history. It serves the
 overall Forge direction in §GOAL-forge-direction.
 
 1. Better structure of `ai_workflows/` (§ROADMAP-forge-ai-workflows-structure).
-2. Library-specific preparation preflight (§ROADMAP-forge-library-preflight).
-3. Missing-version library-update router (§ROADMAP-forge-missing-version-router).
-4. Native metadata exploration finalization path (§ROADMAP-forge-native-finalization).
-5. Human-intervention strictness (§ROADMAP-forge-human-intervention-strictness).
-6. Planned code coverage improvement workflow (§ROADMAP-forge-code-coverage-workflow).
+2. Incus VM runner and setup docs (§ROADMAP-forge-incus-vm-runner).
+3. Library-specific preparation preflight (§ROADMAP-forge-library-preflight).
+4. Missing-version library-update router (§ROADMAP-forge-missing-version-router).
+5. Native metadata exploration finalization path (§ROADMAP-forge-native-finalization).
+6. Human-intervention strictness (§ROADMAP-forge-human-intervention-strictness).
+7. Planned code coverage improvement workflow (§ROADMAP-forge-code-coverage-workflow).
 
 Completed roadmap points:
 
@@ -40,6 +41,39 @@ and the workflow-engine registration in `__init__.py`, and updates the path
 references in code and in the remaining docs (README.md, AGENTS.md,
 DEVELOPING.md, and workflow specs) to match the canonical layout already
 described by §WF-forge-workflow-drivers and §WF-forge-workflow-engine.
+
+# ROADMAP-forge-incus-vm-runner: Incus VM runner and setup docs
+
+This item of §ROADMAP-forge-implementation adds the operator-facing Incus VM
+runner and setup instructions required by §FS-forge-vm-isolated-execution and
+§AR-forge-vm-runner-boundary.
+
+The implementation should add the opt-in `--incus` flag on `forge_metadata.py`
+(forwarded by the loop wrappers), a reusable base image, a checked-in
+Incus configuration, and step-by-step setup documentation in
+README.md and AGENTS.md — written so a human or agent can install Incus and build
+the base image on any machine — for running a whole Forge generation in a fresh,
+single-use VM that can safely absorb generated-test side effects. The base image
+is a template that bakes in the expensive setup — GraalVM installations, Gradle
+caches, Docker layers, and a reachability checkout — is built once and cached in
+the host's local Incus image store for reuse across runs, and is rebuilt only to
+refresh tooling. Each run launches a fresh VM from the image without modifying it,
+re-clones the Forge checkout from the operator's host repo so it runs current
+code, and injects GitHub authentication at launch.
+It must also add a configurable log destination (for example a `FORGE_LOGS_DIR`
+setting routed through `resolve_logs_root()`) so a per-run host directory mounted
+at a clean top-level path in the VM captures logs that land on the host as the
+run proceeds and survive teardown; metrics and preserved failed-work branches
+keep leaving over the network.
+
+The runner should preflight the environment when the flag is set — failing
+clearly if Incus, the base image, configuration, or credentials are missing
+rather than installing anything — then launch the VM per run, invoke the existing
+Forge entrypoints, and tear the VM down afterwards rather than teaching workflow
+drivers or agents about Incus. Acceptance should include a documented smoke run
+that proves stop files, Gradle commands, Docker-backed tests, worktree cleanup,
+and failed-work preservation behave as on the host, and that run logs are
+observable on the host through the mounted log directory.
 
 # ROADMAP-forge-fixture-backed-e2e: Fixture-backed E2E mode
 
