@@ -182,13 +182,24 @@ Continuation does not change the human-intervention contract
 (§FS-human-intervention-policy). A logical failure still preserves the work
 branch and labels the issue `human-intervention`, so a maintainer always retains
 the existing safety signal and diagnostics. This holds even when the failure
-halts the worktree mid-rebase — for example a publication `git rebase` that stops
-on an `index.json` conflict from a sibling same-artifact PR that landed while the
-run was in flight: preservation first aborts any in-progress rebase so the
-generated tree still commits to the preserved branch instead of the branch being
-silently dropped. The marker rides that same preserved
-branch, giving a later automated run — or the maintainer — a precise place to
-continue. A repeated failure in the same resumed phase only removes
+halts the worktree mid-rebase, in either publication rebase mode: the rebase
+*starts* and then stops on an `index.json` conflict from a sibling same-artifact
+PR that landed while the run was in flight, or the rebase *refuses to start*
+because the worktree carries changes outside the narrowly staged expected paths
+(§GIT-expected-paths). Preservation first aborts any in-progress rebase — a no-op
+in the refuse-to-start mode, where no sequencer state exists — then commits the
+generated tree (including those unstaged changes) to the preserved branch, so the
+branch is never silently dropped. The marker rides that same preserved branch,
+giving a later automated run — or the maintainer — a precise place to continue.
+
+Because publication runs only after the workflow has already produced a
+PR-eligible result, a publication failure carries a *successful* workflow status
+and therefore no generation-analysis candidate. Forge still labels the issue
+`human-intervention` and `resumable` whenever the preserved branch carries a
+continuation marker, rather than treating the successful workflow status as a
+non-failure and reverting the issue to `Todo` with the marker orphaned: the
+`resumable` label is the precondition resume discovery requires (§3). A repeated
+failure in the same resumed phase only removes
 `resumable`; it leaves the earlier `human-intervention` signal and comment in
 place instead of adding another report. External or transient failures take no
 issue action and write no marker, exactly as today.
