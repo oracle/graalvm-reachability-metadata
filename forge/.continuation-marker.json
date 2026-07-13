@@ -1,0 +1,67 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "io.vertx:vertx-docgen:0.9.4",
+  "issueNumber": 7782,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "In a JVM test, use the JDK `ToolProvider.getSystemJavaCompiler()` to compile temporary sources containing a `package-info.java` annotated with `@io.vertx.docgen.Document` and documented types. Explicitly install `new DocGenProcessor(new JavaDocGenerator())` as the processor, pass `-Adocgen.output=<temporary-output-directory>`, and assert the generated `.adoc` content/file. Do not rely on `DocGenProcessor` service loading: this artifact does not package a generator service registration.",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7782 Support for io.vertx:vertx-docgen:0.9.4; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 52742,
+    "issue_label": "library-new-request",
+    "issue_number": 7782,
+    "library": "io.vertx:vertx-docgen:0.9.4",
+    "model": "gpt-5.6-terra",
+    "output_tokens_used": 2439,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Version 0.9.4 targets Java 8 and reports `RELEASE_8`; current JDK compilation may emit a source-version warning. Its optional Java-8 `tools.jar` POM dependency is not needed when tests run on a full modern JDK with `jdk.compiler`."
+    ],
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/io.vertx:vertx-docgen:0.9.4/library-preparation-preflight/pi-generation-2026-07-13T13-20-42-930647Z.log",
+    "status": "completed",
+    "summary": "This is a Java annotation-processor library; meaningful coverage requires compiling annotated temporary sources and asserting generated documentation output."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "running"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-7782-library-new-request-io.vertx-vertx-docgen-0.9.4-e76ad302",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.6-terra"
+}
