@@ -233,18 +233,23 @@ def run_library_finalization(
         library_version=library_version,
         log_stage_name="check-metadata-files",
     ):
-        # Avoid the workflow core's import back into this finalization module.
-        from ai_workflows.core.fix_metadata_codex import (  # pylint: disable=import-outside-toplevel
-            run_codex_metadata_fix,
-        )
+        from ai_workflows.agents.codex_agent import CodexAgent  # pylint: disable=import-outside-toplevel
 
         log_stage("check-metadata-files", f"Running Codex metadata fix for {library}")
-        codex_rc, _codex_log_path, codex_timed_out = run_codex_metadata_fix(
-            repo_path,
-            library,
-            reproduction_command=f"./gradlew checkMetadataFiles -Pcoordinates={library}",
+        codex = CodexAgent(
+            model_name="gpt-5.6-terra",
+            working_dir=repo_path,
+            task_type="check-metadata-files",
+            library=library,
         )
-        if codex_timed_out or codex_rc != 0:
+        try:
+            codex.send_prompt(
+                f"Fix the checkMetadataFiles failure for {library}. "
+                f"Reproduce it with ./gradlew checkMetadataFiles -Pcoordinates={library}, "
+                "make the minimal fix, and rerun the command until it passes."
+            )
+        except RuntimeError as exception:
+            print(f"ERROR: Codex metadata fix failed for {library}: {exception}", file=sys.stderr)
             return False
         log_stage("split-test-only-metadata", f"Rerunning splitTestOnlyMetadata for {library}")
         if not _run_gradle_command(repo_path, ["./gradlew", "splitTestOnlyMetadata", f"-Pcoordinates={library}"]):

@@ -39,8 +39,7 @@ class LibraryFinalizationTests(unittest.TestCase):
                     side_effect=[False, True],
                 ) as check_metadata, \
                 patch(
-                    "ai_workflows.core.fix_metadata_codex.run_codex_metadata_fix",
-                    return_value=(0, "codex.log", False),
+                    "ai_workflows.agents.codex_agent.CodexAgent",
                 ) as codex, \
                 patch("utility_scripts.library_finalization.run_style_fix_and_checks", return_value=True):
             result = run_library_finalization(
@@ -54,10 +53,12 @@ class LibraryFinalizationTests(unittest.TestCase):
         self.assertTrue(result)
         self.assertEqual(check_metadata.call_count, 2)
         codex.assert_called_once_with(
-            os.getcwd(),
-            "org.example:demo:1.0.0",
-            reproduction_command="./gradlew checkMetadataFiles -Pcoordinates=org.example:demo:1.0.0",
+            model_name="gpt-5.6-terra",
+            working_dir=os.getcwd(),
+            task_type="check-metadata-files",
+            library="org.example:demo:1.0.0",
         )
+        codex.return_value.send_prompt.assert_called_once()
         self.assertEqual(gradle.call_count, 3)
 
     def test_fails_when_codex_cannot_fix_metadata_validation(self) -> None:
@@ -67,10 +68,10 @@ class LibraryFinalizationTests(unittest.TestCase):
                     return_value=False,
                 ) as check_metadata, \
                 patch(
-                    "ai_workflows.core.fix_metadata_codex.run_codex_metadata_fix",
-                    return_value=(1, "codex.log", False),
+                    "ai_workflows.agents.codex_agent.CodexAgent",
                 ) as codex, \
                 patch("utility_scripts.library_finalization.run_style_fix_and_checks") as style_checks:
+            codex.return_value.send_prompt.side_effect = RuntimeError("failed")
             result = run_library_finalization(
                 repo_path=os.getcwd(),
                 library="org.example:demo:1.0.0",
