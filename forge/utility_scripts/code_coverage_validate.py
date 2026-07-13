@@ -5,12 +5,12 @@
 
 """
 JVM coverage validator for the code coverage improvement workflow
-(§WF-code-coverage-improvement, §WF-code-coverage-improvement-architecture).
+(§WF-code-coverage-improvement.3.1, §WF-code-coverage-improvement-architecture).
 
-Phase-5 helper. It is JVM-only: it compiles the coverage test suite, runs the
+Public-API phase helper. It compiles the dedicated coverage suite and runs the
 JVM tests under JaCoCo (genuine Java-agent instrumentation, not the rejected PGO
-`.exec` path), and correlates JaCoCo method coverage against the phase-3 API
-inventory to compute which public-API targets remain uncovered after the
+`.exec` path), and correlates exact JaCoCo method coverage against the phase-3
+API inventory to compute which public-API targets remain uncovered after the
 iteration. It writes the per-iteration JaCoCo report copy and the
 remaining-uncovered-API report that feeds the next API-cover pass.
 
@@ -28,133 +28,153 @@ thin wrappers over the existing harness tasks (`compileTestJava`, `javaTest`,
 Usage:
   python3 utility_scripts/code_coverage_validate.py \
     --repo-path <worktree> --coordinate group:artifact:version \
-    --api-inventory <api-inventory.json> --iteration 1 \
+    --api-inventory <api-inventory.json> --coverage-suite <suite-root> \
+    --iteration 1 \
     --output-dir runtime/code-coverage/validation [--skip-gradle]
 """
 
 from __future__ import annotations
 
 import argparse
-import glob
 import json
 import os
+import shlex
 import shutil
-import xml.etree.ElementTree as ET
+import sys
 
-from utility_scripts.code_coverage_model import (
-    MethodRef,
-    parse_inventory_id,
-    parse_jvm_descriptor,
+from utility_scripts.code_coverage_jacoco import (
+    JacocoMethodCoverage,
+    JacocoReportError,
+    load_jacoco_method_coverage,
 )
+from utility_scripts.code_coverage_model import MethodRef, parse_inventory_id
 from utility_scripts.gradle_test_runner import run_gradle_test_command
-
-
-def _method_covered(method_element: ET.Element) -> bool:
-    for counter in method_element.findall("counter"):
-        if counter.get("type") in ("INSTRUCTION", "LINE", "METHOD"):
-            try:
-                if int(counter.get("covered", "0")) > 0:
-                    return True
-            except ValueError:
-                continue
-    return False
-
-
-def covered_refs_from_jacoco(xml_path: str) -> set[str]:
-    """Return canonical ids of methods JaCoCo recorded as executed."""
-    covered: set[str] = set()
-    tree = ET.parse(xml_path)
-    for class_element in tree.getroot().iter("class"):
-        owner = (class_element.get("name") or "").replace("/", ".")
-        if not owner:
-            continue
-        for method_element in class_element.findall("method"):
-            name = method_element.get("name") or ""
-            descriptor = method_element.get("desc") or ""
-            if not name or "(" not in descriptor:
-                continue
-            if not _method_covered(method_element):
-                continue
-            params, return_type = parse_jvm_descriptor(descriptor)
-            ref = MethodRef(owner=owner, name=name, params=params, return_type=return_type)
-            covered.add(ref.canonical_id)
-            covered.add(ref.loose_key)
-    return covered
+from utility_scripts.metadata_index import resolve_test_dir
 
 
 def correlate_jacoco(inventory: dict, jacoco_xml_paths: list[str]) -> dict:
-    """Classify each inventory target as covered/uncovered from JaCoCo evidence."""
-    covered_keys: set[str] = set()
-    for xml_path in jacoco_xml_paths:
-        if os.path.isfile(xml_path):
-            covered_keys |= covered_refs_from_jacoco(xml_path)
+    """Classify public API methods from exact JaCoCo evidence only.
+
+    Sampled evidence and loose owner/name/arity keys cannot affect phase-one
+    coverage (§WF-code-coverage-improvement.3.1).
+    """
+    coverage_by_id: dict[str, JacocoMethodCoverage] = load_jacoco_method_coverage(
+        jacoco_xml_paths
+    )
 
     targets: list[dict] = []
-    covered_count = 0
+    covered_count: int = 0
+    uncovered_count: int = 0
+    not_reported_count: int = 0
     for target in inventory.get("targets", []):
-        ref = parse_inventory_id(target.get("id", ""))
+        target_id: str = target.get("id", "")
+        ref: MethodRef | None = parse_inventory_id(target_id)
         if ref is None:
-            continue
-        is_covered = ref.canonical_id in covered_keys or ref.loose_key in covered_keys
-        if is_covered:
-            covered_count += 1
-        targets.append({"id": ref.canonical_id, "kind": target.get("kind"),
-                        "status": "covered" if is_covered else "uncovered"})
+            raise JacocoReportError(
+                f"API inventory target is not a canonical method or constructor id: '{target_id}'."
+            )
+        coverage: JacocoMethodCoverage | None = coverage_by_id.get(ref.canonical_id)
+        entry: dict = {
+            "id": ref.canonical_id,
+            "kind": target.get("kind"),
+        }
+        if coverage is None:
+            not_reported_count += 1
+            entry.update({
+                "status": "not-reported",
+                "sourcePath": target.get("sourcePath"),
+                "sourceLine": target.get("sourceLine"),
+                "evidence": [],
+                "reason": "No exact method record exists in the JaCoCo report.",
+            })
+        else:
+            entry.update({
+                "status": coverage.status,
+                "sourcePath": coverage.source_path,
+                "sourceLine": coverage.source_line,
+                "evidence": ["jacoco"],
+            })
+            if coverage.covered:
+                covered_count += 1
+            else:
+                uncovered_count += 1
+        targets.append(entry)
+
+    measured_count: int = covered_count + uncovered_count
     return {
         "coordinate": inventory.get("coordinate"),
         "summary": {
             "total": len(targets),
+            "measured": measured_count,
             "covered": covered_count,
-            "uncovered": len(targets) - covered_count,
-            "coveragePercent": round(100.0 * covered_count / len(targets), 2) if targets else 0.0,
+            "uncovered": uncovered_count,
+            "notReported": not_reported_count,
+            "coveragePercent": (
+                round(100.0 * covered_count / measured_count, 2) if measured_count else 0.0
+            ),
         },
         "targets": targets,
     }
 
 
 def find_jacoco_reports(repo_path: str, group: str, artifact: str, version: str) -> list[str]:
-    """Locate JaCoCo XML reports produced for the coordinate's test module."""
-    module_dir = os.path.join(repo_path, "tests", "src", group, artifact, version)
-    patterns = [
-        os.path.join(module_dir, "**", "build", "reports", "jacoco", "**", "*.xml"),
-        os.path.join(repo_path, "tests", "**", "build", "reports", "jacoco", "**", "*.xml"),
-    ]
-    found: list[str] = []
-    for pattern in patterns:
-        found.extend(glob.glob(pattern, recursive=True))
-    return sorted(set(found))
+    """Locate the one deterministic report in the coordinate's indexed test project."""
+    module_dir: str = resolve_test_dir(repo_path, group, artifact, version)
+    report_path: str = os.path.join(
+        module_dir, "build", "reports", "jacoco", "test", "jacocoTestReport.xml",
+    )
+    return [report_path] if os.path.isfile(report_path) else []
 
 
-def _gradle_step(repo_path: str, task: str, coordinate: str) -> dict:
-    command = f"./gradlew {task} -Pcoordinates={coordinate} --stacktrace"
-    output = run_gradle_test_command(command, working_dir=repo_path, library=coordinate)
-    succeeded = "BUILD SUCCESSFUL" in output
-    return {"task": task, "command": command, "succeeded": succeeded,
-            "tail": output[-2000:] if not succeeded else ""}
+def _gradle_step(
+        repo_path: str,
+        task: str,
+        coordinate: str,
+        coverage_suite_path: str,
+) -> dict:
+    coordinate_arg: str = shlex.quote(f"-Pcoordinates={coordinate}")
+    suite_arg: str = shlex.quote(f"-PcodeCoverageSuitePath={coverage_suite_path}")
+    command: str = f"./gradlew {task} {coordinate_arg} {suite_arg} --stacktrace"
+    output: str = run_gradle_test_command(
+        command,
+        working_dir=repo_path,
+        library=coordinate,
+    )
+    succeeded: bool = "BUILD SUCCESSFUL" in output
+    return {
+        "task": task,
+        "command": command,
+        "succeeded": succeeded,
+        "tail": output[-2000:] if not succeeded else "",
+    }
 
 
-def write_reports(report: dict, gradle_steps: list[dict], iteration: int, output_dir: str,
-                  jacoco_xml_paths: list[str]) -> None:
+def write_reports(
+        report: dict,
+        gradle_steps: list[dict],
+        iteration: int,
+        output_dir: str,
+        jacoco_xml_paths: list[str],
+) -> None:
     os.makedirs(output_dir, exist_ok=True)
     report = dict(report)
     report["iteration"] = iteration
     report["gradle"] = gradle_steps
-    json_path = os.path.join(output_dir, f"api-cover-report-{iteration}.json")
-    md_path = os.path.join(output_dir, f"api-cover-report-{iteration}.md")
+    json_path: str = os.path.join(output_dir, f"api-cover-report-{iteration}.json")
+    md_path: str = os.path.join(output_dir, f"api-cover-report-{iteration}.md")
     with open(json_path, "w", encoding="utf-8") as json_file:
         json.dump(report, json_file, indent=2)
         json_file.write("\n")
 
-    # Keep a per-iteration copy of the JaCoCo XML alongside the report.
-    if jacoco_xml_paths:
-        shutil.copy2(jacoco_xml_paths[0], os.path.join(output_dir, f"jacoco-{iteration}.xml"))
+    shutil.copy2(jacoco_xml_paths[0], os.path.join(output_dir, f"jacoco-{iteration}.xml"))
 
-    summary = report["summary"]
-    lines = [
+    summary: dict = report["summary"]
+    lines: list[str] = [
         f"# API cover report {iteration} — {report.get('coordinate')}",
         "",
-        f"- JVM JaCoCo coverage of inventory: {summary['covered']}/{summary['total']} "
+        f"- JVM JaCoCo coverage of reported methods: {summary['covered']}/{summary['measured']} "
         f"({summary['coveragePercent']}%)",
+        f"- API methods absent from the JaCoCo report: {summary['notReported']}",
         "",
         "## Gradle validation steps",
         "",
@@ -162,28 +182,81 @@ def write_reports(report: dict, gradle_steps: list[dict], iteration: int, output
     for step in gradle_steps:
         lines.append(f"- `{step['task']}`: {'ok' if step['succeeded'] else 'FAILED'}")
     lines += ["", "## Still-uncovered public API targets", ""]
-    uncovered = [t for t in report["targets"] if t["status"] == "uncovered"]
+    uncovered: list[dict] = [
+        target for target in report["targets"] if target["status"] == "uncovered"
+    ]
     if not uncovered:
-        lines.append("_All inventory targets are covered by the JVM suite._")
+        lines.append("_All JaCoCo-reported API methods are covered by the JVM suite._")
     for target in uncovered:
         lines.append(f"- `{target['id']}` ({target['kind']})")
+
+    not_reported: list[dict] = [
+        target for target in report["targets"] if target["status"] == "not-reported"
+    ]
+    if not_reported:
+        lines += ["", "## API methods without exact JaCoCo evidence", ""]
+        lines += [f"- `{target['id']}` ({target['kind']})" for target in not_reported]
+
     with open(md_path, "w", encoding="utf-8") as md_file:
         md_file.write("\n".join(lines) + "\n")
 
 
-def run_validation(repo_path: str, coordinate: str, api_inventory_path: str, iteration: int,
-                   output_dir: str, skip_gradle: bool) -> dict:
-    group, artifact, version = coordinate.split(":")
-    with open(api_inventory_path, "r", encoding="utf-8") as inventory_file:
-        inventory = json.load(inventory_file)
+def run_validation(
+        repo_path: str,
+        coordinate: str,
+        api_inventory_path: str,
+        iteration: int,
+        output_dir: str,
+        skip_gradle: bool,
+        coverage_suite_path: str | None = None,
+) -> dict:
+    coordinate_parts: list[str] = coordinate.split(":")
+    if len(coordinate_parts) != 3 or any(not part for part in coordinate_parts):
+        raise ValueError(
+            f"Coordinate must use non-empty group:artifact:version form; got '{coordinate}'."
+        )
+    group: str
+    artifact: str
+    version: str
+    group, artifact, version = coordinate_parts
+    try:
+        with open(api_inventory_path, "r", encoding="utf-8") as inventory_file:
+            inventory: dict = json.load(inventory_file)
+    except (OSError, json.JSONDecodeError) as error:
+        raise ValueError(f"Cannot read API inventory '{api_inventory_path}': {error}") from error
+    inventory_coordinate: str | None = inventory.get("coordinate")
+    if inventory_coordinate != coordinate:
+        raise ValueError(
+            f"API inventory coordinate '{inventory_coordinate}' does not match '{coordinate}'."
+        )
 
     gradle_steps: list[dict] = []
     if not skip_gradle:
+        resolved_suite_path: str = os.path.abspath(
+            coverage_suite_path or os.path.join(
+                repo_path, "tests", group, artifact, version, "code-coverage",
+            )
+        )
+        if not os.path.isdir(resolved_suite_path):
+            raise ValueError(f"Code coverage suite does not exist: '{resolved_suite_path}'.")
         for task in ("compileTestJava", "javaTest", "jacocoTestReport"):
-            gradle_steps.append(_gradle_step(repo_path, task, coordinate))
+            step: dict = _gradle_step(
+                repo_path, task, coordinate, resolved_suite_path,
+            )
+            gradle_steps.append(step)
+            if not step["succeeded"]:
+                raise JacocoReportError(
+                    f"Gradle task '{task}' failed; refusing to reuse existing JaCoCo XML. "
+                    f"Command: {step['command']}"
+                )
 
-    jacoco_xml_paths = find_jacoco_reports(repo_path, group, artifact, version)
-    report = correlate_jacoco(inventory, jacoco_xml_paths)
+    jacoco_xml_paths: list[str] = find_jacoco_reports(
+        repo_path,
+        group,
+        artifact,
+        version,
+    )
+    report: dict = correlate_jacoco(inventory, jacoco_xml_paths)
     write_reports(report, gradle_steps, iteration, output_dir, jacoco_xml_paths)
     return report
 
@@ -193,23 +266,39 @@ def main() -> None:
     parser.add_argument("--repo-path", required=True, help="Issue worktree / repo root.")
     parser.add_argument("--coordinate", required=True, help="group:artifact:version.")
     parser.add_argument("--api-inventory", required=True, help="api-inventory.json path.")
+    parser.add_argument(
+        "--coverage-suite",
+        default=None,
+        help="Dedicated suite root; defaults to tests/<group>/<artifact>/<version>/code-coverage.",
+    )
     parser.add_argument("--iteration", type=int, default=1, help="API-cover iteration number.")
     parser.add_argument("--output-dir", required=True, help="Directory for validation artifacts.")
-    parser.add_argument("--skip-gradle", action="store_true",
-                        help="Only correlate existing JaCoCo reports; do not run Gradle.")
+    parser.add_argument(
+        "--skip-gradle",
+        action="store_true",
+        help="Only correlate existing JaCoCo reports; do not run Gradle.",
+    )
     args = parser.parse_args()
 
-    report = run_validation(
-        repo_path=args.repo_path,
-        coordinate=args.coordinate,
-        api_inventory_path=args.api_inventory,
-        iteration=args.iteration,
-        output_dir=args.output_dir,
-        skip_gradle=args.skip_gradle,
+    try:
+        report: dict = run_validation(
+            repo_path=args.repo_path,
+            coordinate=args.coordinate,
+            api_inventory_path=args.api_inventory,
+            iteration=args.iteration,
+            output_dir=args.output_dir,
+            skip_gradle=args.skip_gradle,
+            coverage_suite_path=args.coverage_suite,
+        )
+    except (JacocoReportError, ValueError) as error:
+        print(f"ERROR: {error}", file=sys.stderr)
+        raise SystemExit(2) from error
+    summary: dict = report["summary"]
+    print(
+        f"JVM coverage {summary['covered']}/{summary['measured']} "
+        f"({summary['coveragePercent']}%); uncovered {summary['uncovered']}; "
+        f"not reported {summary['notReported']}."
     )
-    summary = report["summary"]
-    print(f"JVM coverage {summary['covered']}/{summary['total']} ({summary['coveragePercent']}%); "
-          f"uncovered {summary['uncovered']}.")
 
 
 if __name__ == "__main__":

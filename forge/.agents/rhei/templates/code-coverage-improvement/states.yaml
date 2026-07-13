@@ -1,83 +1,58 @@
 # State machine diagram
 # ---------------------
 #
-# Helper-backed tasks:
-#   simple-prepared -> simple-execute -> completed
+# Pipeline tasks (convert, prepare, api-inventory, native metadata, publication):
+#   prepared -> execute -> completed / human-intervention
 #
-# Reviewed tasks:
-#   prepared -> execute -> agent-review -> review-dispatch -- no  -> completed
-#                                      |                  |
-#                                      |                  +-- yes -> agent-fix
-#                                      |                              |
-#                                      +------------------------------+
+# API coverage loop (one task):
+#   api-measure -- 0 (phase done) -> completed
+#     |  ^     \-- 10 (uncovered remain; prompt written) -> api-cover --+
+#     |  +--------------------------------------------------------------+
+#     +-- step failed (exit 1/2) -> api-fix -> api-measure
+#         (budget exhausted -> human-intervention)
 #
-# Human intervention is a gate for product/spec decisions, unresolved metadata
-# generation, or Native Image validation that cannot be fixed automatically.
+# Deep coverage loop (one task): identical shape with deep-measure (JaCoCo +
+# sampled PGO + call-tree steps, exits 1-6), deep-cover, deep-fix.
+#
+# Final verified task (finalization only):
+#   reviewed-prepared -> reviewed-execute -- 0 -> finalize-verify -- 0 -> completed
+#     (exit N names the failed step -> finalize-fix -> re-run; 75/80 as before)
+#
+# Measurement is a deterministic program that always writes the current
+# report to one fixed path and, when the loop continues, derives the cover
+# prompt from that report in the same step. JaCoCo is the
+# only coverage authority; sampled PGO is navigation guidance. An agent can
+# never claim progress: only re-measurement moves the loop forward.
 
 name: code-coverage-improvement
 version: 1.0.0
 
 states:
-  simple-prepared:
-    description: Helper-backed task is generated and ready for execution.
+  prepared:
+    description: Pipeline task is generated and ready for execution.
     initial: true
     concurrent: true
     program: "true"
 
-  simple-execute:
-    description: Execute a helper-backed workflow phase and complete after writing artifacts.
-    target: "{{worker_agent}}"
-    concurrent: true
-    instructions: |
-      Execute helper-backed Task {task_id}: {task_title}.
-
-      Read the task body and use the deterministic Forge helper named there
-      when it exists. If the helper is not implemented yet, perform only the
-      deterministic inspection or setup that the task body explicitly allows,
-      then record the missing helper as remaining implementation risk instead of
-      inventing product behavior.
-
-      Keep code/docs edits inside the resolved issue worktree and work path.
-      Keep Rhei artifacts under `runtime/code-coverage/` in this workspace.
-
-      Write `{output.work.path}` with:
-      - source issue URL
-      - coordinate and coverage suite path
-      - worktree and work path used
-      - files inspected or changed
-      - phase artifacts written
-      - commands run and results
-      - decisions made
-      - remaining risk or human follow-up
-    outputs:
-      - name: work
-        path: runtime/code-coverage/work/{task_id}.md
-        description: Execution summary for one helper-backed phase.
-
-  prepared:
-    description: Reviewed task is generated and ready for execution.
-    concurrent: true
-    program: "true"
-
   execute:
-    description: Execute a reviewed code coverage workflow phase.
+    description: Execute one code coverage pipeline phase.
     target: "{{worker_agent}}"
     concurrent: true
     instructions: |
-      Execute reviewed Task {task_id}: {task_title}.
+      Execute pipeline Task {task_id}: {task_title}.
 
       Read the task body, prior runtime artifacts under `runtime/code-coverage/`,
       and the resolved issue worktree/work path from
-      `runtime/code-coverage/issues/conversion.md`.
+      `runtime/code-coverage/issues/conversion.md` when it exists.
 
       Rules:
-      - Edit generated tests only under
-        `tests/<group>/<artifact>/<version>/code-coverage`.
-      - Do not weaken metadata-generation tests or dynamic-access evidence.
-      - Target public user-callable API behavior, not private internals just for
-        superficial coverage hits.
-      - Use deterministic Forge helper scripts for validation, PGO correlation,
-        and PR publication whenever the task names one.
+      - Use the deterministic Forge helper named by the task body. Every named
+        helper and required artifact is mandatory. If a helper is missing,
+        fails, or cannot produce coherent artifacts, record the blocker and
+        request `human-intervention`; do not report the phase complete or
+        invent replacement product behavior.
+      - Keep code/docs edits inside the resolved issue worktree and work path.
+      - Keep Rhei artifacts under `runtime/code-coverage/` in this workspace.
       - If metadata generation or Native Image validation cannot be resolved
         automatically, write the work artifact with the blocker and request
         `human-intervention`.
@@ -90,101 +65,526 @@ states:
       - phase artifacts written
       - commands run and results
       - decisions made
-      - validation or coverage evidence
       - remaining risk or human follow-up
     outputs:
       - name: work
         path: runtime/code-coverage/work/{task_id}.md
-        description: Execution summary for one reviewed phase.
+        description: Execution summary for one pipeline phase.
 
-  agent-review:
-    description: Lightweight review of a reviewed task before it completes.
-    target: "{{reviewer_agent}}"
+  api-measure:
+    description: JaCoCo report generation and API correlation; decides whether the API loop continues.
     concurrent: true
-    visits: {{review_passes}}
-    instructions: |
-      Review pass {visit_count} of {visits} for Task {task_id}: {task_title}.
-
-      Read the task body, `{input.work.path}`, prior runtime artifacts, and the
-      current issue worktree diff when the task changed files.
-
-      Check only:
-      - Did the task follow its generated task body?
-      - Did it write the required artifact?
-      - Did it stay inside the intended worktree and coverage-test location?
-      - Did generated tests target public user-callable API behavior?
-      - Did validation output include required commands and results?
-      - For verification tasks, did metadata generation or repair succeed
-        automatically?
-      - If `generateMetadata` or Native Image validation needs manual handling,
-        did the task route to human follow-up?
-
-      Write both `{output.review-summary.path}` and
-      `{output.review-summary-pass.path}` using exactly this structure:
-
-      **Review summary:**
-      <brief review result, including any material findings>
-
-      **Needs fixes:** <yes/no>
-
-      Set `**Needs fixes:** yes` only for material correctness, validation,
-      scope, artifact, metadata, or PR-publication problems. Set
-      `**Needs fixes:** no` for small, stylistic, optional, or non-blocking
-      observations.
-    inputs:
-      - name: work
-        path: runtime/code-coverage/work/{task_id}.md
-    outputs:
-      - name: review-summary
-        path: runtime/code-coverage/review-summary/{task_id}.md
-        description: Latest review summary and fix verdict for one task.
-      - name: review-summary-pass
-        path: runtime/code-coverage/review-summary/{task_id}-pass-{visit_count}.md
-        description: Per-pass review marker so repeated reviews cannot reuse stale output.
-
-  review-dispatch:
-    description: Route a reviewed task based on the latest review verdict.
-    concurrent: true
-    visits: {{review_passes}}
+    visits: {{measure_visits}}
     program: |
-      review_file="$RHEI_INPUT_REVIEW_SUMMARY_PATH"
-      if grep -qiE '^\*\*Needs fixes:\*\*[[:space:]]*no[[:space:]]*$' "$review_file"; then
-        exit 0
-      fi
-      if grep -qiE '^\*\*Needs fixes:\*\*[[:space:]]*yes[[:space:]]*$' "$review_file"; then
-        exit 75
-      fi
-      printf 'review summary must contain exactly "**Needs fixes:** yes" or "**Needs fixes:** no"\n' >&2
-      exit 2
-    program_timeout: 1m
-    inputs:
-      - name: review-summary
-        path: runtime/code-coverage/review-summary/{task_id}.md
+      python3 - "$RHEI_INPUT_CONVERSION_PATH" <<'PY'
+      import json
+      import os
+      import re
+      import shutil
+      import subprocess
+      import sys
+      from pathlib import Path
 
-  agent-fix:
-    description: Address only the latest agent-review findings.
+      def fail(step: int, message: str) -> None:
+          print(f"step {step}: {message}", file=sys.stderr)
+          sys.exit(step)
+
+      # Step 1: read the conversion record.
+      try:
+          conversion = json.load(open(sys.argv[1]))
+          coordinate = conversion["coordinate"]
+          worktree = conversion["worktreePath"]
+          work_path = conversion["workPath"]
+          suite_absolute = conversion["coverageSuiteAbsolutePath"]
+      except Exception as error:
+          fail(1, f"conversion.json missing or invalid: {error}")
+
+      validation = Path("runtime/code-coverage/validation")
+      validation.mkdir(parents=True, exist_ok=True)
+      iteration = len(list(validation.glob("api-cover-report-*.json")))
+
+      # Step 2: JVM JaCoCo run and exact API-inventory correlation.
+      helper = [
+          sys.executable, f"{work_path}/utility_scripts/code_coverage_validate.py",
+          "--repo-path", worktree,
+          "--coordinate", coordinate,
+          "--api-inventory", "runtime/code-coverage/api-inventory/api-inventory.json",
+          "--coverage-suite", suite_absolute,
+          "--iteration", str(iteration),
+          "--output-dir", str(validation),
+      ]
+      print(f"[api-measure] iteration {iteration}: {' '.join(helper)}", flush=True)
+      try:
+          if subprocess.run(helper, env=dict(os.environ, PYTHONPATH=work_path)).returncode != 0:
+              fail(2, "code_coverage_validate.py failed")
+      except OSError as error:
+          fail(2, f"code_coverage_validate.py could not run: {error}")
+
+      # The fixed handoff location the cover agent reads from.
+      report_path = validation / f"api-cover-report-{iteration}.json"
+      if not report_path.is_file():
+          fail(2, f"helper wrote no report at {report_path}")
+      shutil.copy(report_path, validation / "api-cover-report.json")
+
+      # Decide: 0 = phase done, 10 = uncovered targets remain and budget left.
+      report = json.load(open(report_path))
+      uncovered = [
+          entry for entry in report.get("targets", report.get("inventory", []))
+          if entry.get("status") == "uncovered"
+      ]
+      print(f"[api-measure] iteration {iteration}: {len(uncovered)} uncovered public targets", flush=True)
+      if not uncovered or iteration >= {{coverage_iterations}}:
+          sys.exit(0)
+
+      # Steering: derive the next cover prompt from the report just written.
+      prompts = Path("runtime/code-coverage/prompts")
+      prompts.mkdir(parents=True, exist_ok=True)
+      lines = [
+          "# Uncovered public API targets",
+          "",
+          "Write meaningful behavior tests in the dedicated coverage suite for",
+          "every target below. Each id is an exact JaCoCo-uncovered public",
+          "method or constructor; use realistic public API usage with real",
+          "assertions, never superficial coverage-only invocation.",
+          "",
+      ]
+      for entry in uncovered:
+          hint = entry.get("behaviorHint", "")
+          lines.append(f"- `{entry['id']}`" + (f" - {hint}" if hint else ""))
+      (prompts / "api-cover-prompt.md").write_text("\n".join(lines) + "\n")
+      print(f"[api-measure] wrote prompt with {len(uncovered)} targets", flush=True)
+      sys.exit(10)
+      PY
+    program_timeout: 60m
+    inputs:
+      - name: conversion
+        path: runtime/code-coverage/issues/conversion.json
+
+  api-cover:
+    description: Generate tests for the JaCoCo-uncovered public API targets in the prompt.
+    target: "{{worker_agent}}"
+    concurrent: true
+    visits: {{coverage_iterations}}
+    instructions: |
+      Cover uncovered public API targets for Task {task_id}: {task_title}.
+
+      Read the prompt at `{input.prompt.path}` and the resolved issue
+      worktree/coverage-suite paths from
+      `runtime/code-coverage/issues/conversion.json`.
+
+      Rules:
+      - Attempt every target listed in the prompt; work across the whole batch.
+      - Edit generated tests only under
+        `tests/<group>/<artifact>/<version>/code-coverage`.
+      - Target meaningful public user-callable behavior with real assertions,
+        not superficial coverage hits.
+      - Do not weaken metadata-generation tests.
+      - Do not measure or claim coverage yourself: deterministic re-measurement
+        runs right after this state and decides the loop.
+
+      Write `{output.work.path}` with:
+      - targets attempted and how each was exercised
+      - files changed
+      - commands run and results
+      - remaining risk
+    inputs:
+      - name: prompt
+        path: runtime/code-coverage/prompts/api-cover-prompt.md
+    outputs:
+      - name: work
+        path: runtime/code-coverage/work/{task_id}-cover-{visit_count}.md
+        description: Cover-pass summary for one API iteration.
+
+  api-fix:
+    description: Repair the cause of a failed API measurement step.
     target: "{{worker_agent}}"
     concurrent: true
     instructions: |
-      Fix review findings for Task {task_id}: {task_title}.
+      Fix the API measurement failure for Task {task_id}: {task_title}.
 
-      Read `{input.work.path}` and the latest review summary at
-      `{input.review-summary.path}`. Make only the fixes required by that latest
-      review summary in the task's worktree/work path or runtime artifact, then
-      write `{output.fix.path}` with:
-      - findings addressed
+      The deterministic API measurement failed. Its stderr in the latest state
+      log names the failed step:
+      - step 1: `runtime/code-coverage/issues/conversion.json` is missing or
+        invalid - repair it from the conversion task evidence.
+      - step 2: the JVM JaCoCo run or correlation failed - fix the generated
+        coverage tests in the issue worktree; do not weaken or delete
+        meaningful assertions; never hand-craft reports.
+
+      Fix only that cause. Measurement re-runs automatically after this state.
+      Write `{output.fix.path}` with:
+      - failure addressed
       - files changed
       - commands run and results
       - residual risk
     inputs:
+      - name: conversion
+        path: runtime/code-coverage/issues/conversion.json
+    outputs:
+      - name: fix
+        path: runtime/code-coverage/fixes/{task_id}-{visit_count}.md
+        description: Fixes applied after a failed API measurement step.
+
+  deep-measure:
+    description: JaCoCo plus sampled-PGO measurement; decides whether the deep loop continues.
+    concurrent: true
+    visits: {{measure_visits}}
+    program: |
+      python3 - "$RHEI_INPUT_CONVERSION_PATH" <<'PY'
+      import json
+      import os
+      import shutil
+      import subprocess
+      import sys
+      from pathlib import Path
+
+      def fail(step: int, message: str) -> None:
+          print(f"step {step}: {message}", file=sys.stderr)
+          sys.exit(step)
+
+      # Step 1: read the conversion record.
+      try:
+          conversion = json.load(open(sys.argv[1]))
+          coordinate = conversion["coordinate"]
+          worktree = conversion["worktreePath"]
+          work_path = conversion["workPath"]
+          suite_absolute = conversion["coverageSuiteAbsolutePath"]
+      except Exception as error:
+          fail(1, f"conversion.json missing or invalid: {error}")
+
+      def run(step: int, command: list, cwd: str | None = None, env: dict | None = None) -> None:
+          command = [str(part) for part in command]
+          print(f"[deep-measure] step {step}: {' '.join(command)}", flush=True)
+          try:
+              if subprocess.run(command, cwd=cwd, env=env).returncode != 0:
+                  fail(step, f"command failed: {' '.join(command[:2])}")
+          except OSError as error:
+              fail(step, f"command could not run: {error}")
+
+      group, artifact, version = coordinate.split(":")
+      subproject = Path(worktree) / "tests" / group / artifact / version
+      gradle = [
+          f"{worktree}/gradlew",
+          f"-Pcoordinates={coordinate}",
+          f"-PcodeCoverageSuitePath={suite_absolute}",
+      ]
+      discovery = Path("runtime/code-coverage/discovery")
+      discovery.mkdir(parents=True, exist_ok=True)
+      iteration = len(list(discovery.glob("discovery-report-*.json")))
+      helper_env = dict(os.environ, PYTHONPATH=work_path)
+
+      # Step 2: JVM JaCoCo XML for exact internal-method statuses.
+      run(2, gradle + ["jacocoTestReport"], cwd=worktree)
+      jacoco_xml = subproject / "build/reports/jacoco/test/jacocoTestReport.xml"
+      if not jacoco_xml.is_file():
+          fail(2, f"missing JaCoCo XML at {jacoco_xml}")
+      shutil.copy(jacoco_xml, discovery / f"jacoco-deep-{iteration}.xml")
+
+      # Step 3: PGO-sampling image with the analysis call-tree CSV dump.
+      run(3, gradle + ["nativeTestPGOSampling"], cwd=worktree)
+
+      # Step 4: run the sampling image once; it dumps the .iprof on exit.
+      profile = (discovery / f"pgo-profile-{iteration}.iprof").resolve()
+      run(4, gradle + ["runNativeTestPGO", f"-PpgoProfilePath={profile}"], cwd=worktree)
+      if not profile.is_file():
+          fail(4, "sampling run wrote no .iprof")
+
+      # Step 5: copy exactly one coherent common-suffix call-tree CSV triplet.
+      reports_dir = subproject / "build/native/nativeTestCompile/reports"
+      triplets: dict = {}
+      for csv_path in reports_dir.glob("call_tree_*.csv"):
+          rest = csv_path.stem.partition("call_tree_")[2]
+          csv_kind, _, suffix = rest.partition("_")
+          triplets.setdefault(suffix, {})[csv_kind] = csv_path
+      complete = {
+          suffix: files
+          for suffix, files in triplets.items()
+          if {"methods", "invokes", "targets"} <= set(files)
+      }
+      if not complete:
+          fail(5, f"no coherent call-tree CSV triplet under {reports_dir}")
+      chosen = sorted(complete)[-1]
+      triplet_dir = discovery / f"call-tree-{iteration}"
+      triplet_dir.mkdir(exist_ok=True)
+      for csv_path in complete[chosen].values():
+          shutil.copy(csv_path, triplet_dir / csv_path.name)
+
+      # Step 6: JaCoCo-exact deep paths with sampled-PGO guidance.
+      analyzer = [
+          sys.executable, f"{work_path}/utility_scripts/code_coverage_profile_report.py",
+          "--profile", profile,
+          "--reports-dir", triplet_dir,
+          "--api-inventory", "runtime/code-coverage/api-inventory/api-inventory.json",
+          "--jacoco-xml", discovery / f"jacoco-deep-{iteration}.xml",
+          "--coordinate", coordinate,
+          "--iteration", iteration,
+          "--output-dir", discovery,
+      ]
+      target_state = Path("runtime/code-coverage/targets/deep-cover.json")
+      if target_state.is_file():
+          analyzer += ["--target-state", target_state]
+      run(6, analyzer, env=helper_env)
+
+      # The fixed handoff location the cover agent reads from.
+      report_path = discovery / f"discovery-report-{iteration}.json"
+      if not report_path.is_file():
+          fail(6, f"analyzer wrote no report at {report_path}")
+      shutil.copy(report_path, discovery / "discovery-report.json")
+
+      # Decide: 0 = phase done, 10 = actionable targets remain and budget left.
+      report = json.load(open(report_path))
+      actionable = report.get("bulkTargets", [])
+      print(f"[deep-measure] iteration {iteration}: {len(actionable)} actionable deep targets", flush=True)
+      if not actionable or iteration >= {{coverage_iterations}}:
+          sys.exit(0)
+
+      # Steering: the analyzer already renders the compact Observed /
+      # Uncovered paths Markdown next to the JSON; reuse it as the prompt.
+      markdown = discovery / f"discovery-report-{iteration}.md"
+      if not markdown.is_file():
+          fail(6, f"analyzer wrote no markdown at {markdown}")
+      prompts = Path("runtime/code-coverage/prompts")
+      prompts.mkdir(parents=True, exist_ok=True)
+      (prompts / "deep-cover-prompt.md").write_text(markdown.read_text())
+      print(f"[deep-measure] wrote prompt with {len(actionable)} targets", flush=True)
+      sys.exit(10)
+      PY
+    program_timeout: 120m
+    inputs:
+      - name: conversion
+        path: runtime/code-coverage/issues/conversion.json
+
+  deep-cover:
+    description: Generate tests reaching uncovered internal paths through public behavior.
+    target: "{{worker_agent}}"
+    concurrent: true
+    visits: {{coverage_iterations}}
+    instructions: |
+      Cover uncovered internal paths for Task {task_id}: {task_title}.
+
+      Read the prompt at `{input.prompt.path}` and the resolved issue
+      worktree/coverage-suite paths from
+      `runtime/code-coverage/issues/conversion.json`.
+
+      Rules:
+      - Attempt every listed uncovered path through its shown public entry;
+        never invoke an internal target directly.
+      - `Observed:` lines are sampled guidance only; every `Uncovered paths`
+        target is uncovered according to exact JaCoCo evidence.
+      - Edit generated tests only under
+        `tests/<group>/<artifact>/<version>/code-coverage`.
+      - Do not weaken metadata-generation tests.
+      - Record per-target attempt state in
+        `runtime/code-coverage/targets/deep-cover.json` (schema
+        `code_coverage_target_state`): update attempted, completed, skipped,
+        and exhausted entries so later iterations rotate past hopeless targets.
+      - Do not measure or claim coverage yourself: deterministic re-measurement
+        runs right after this state and decides the loop.
+
+      Write `{output.work.path}` with:
+      - paths attempted and how each public entry was driven
+      - files changed
+      - commands run and results
+      - remaining risk
+    inputs:
+      - name: prompt
+        path: runtime/code-coverage/prompts/deep-cover-prompt.md
+    outputs:
       - name: work
-        path: runtime/code-coverage/work/{task_id}.md
-      - name: review-summary
-        path: runtime/code-coverage/review-summary/{task_id}.md
+        path: runtime/code-coverage/work/{task_id}-cover-{visit_count}.md
+        description: Cover-pass summary for one deep iteration.
+
+  deep-fix:
+    description: Repair the cause of a failed deep measurement step.
+    target: "{{worker_agent}}"
+    concurrent: true
+    instructions: |
+      Fix the deep measurement failure for Task {task_id}: {task_title}.
+
+      The deterministic deep measurement failed. Its stderr in the latest state
+      log names the failed step:
+      - step 1: `runtime/code-coverage/issues/conversion.json` is missing or
+        invalid - repair it from the conversion task evidence.
+      - step 2: the JVM JaCoCo run failed - fix the generated coverage tests in
+        the issue worktree; do not weaken or delete meaningful assertions.
+      - step 3/4: the PGO-sampling build or run failed - inspect the Gradle
+        output; repair missing reachability metadata through the native
+        metadata preparation helper if needed.
+      - step 5/6: measurement artifacts are missing or incoherent - repair the
+        inputs; never hand-craft reports.
+
+      Fix only that cause. Measurement re-runs automatically after this state.
+      Write `{output.fix.path}` with:
+      - failure addressed
+      - files changed
+      - commands run and results
+      - residual risk
+    inputs:
+      - name: conversion
+        path: runtime/code-coverage/issues/conversion.json
+    outputs:
+      - name: fix
+        path: runtime/code-coverage/fixes/{task_id}-{visit_count}.md
+        description: Fixes applied after a failed deep measurement step.
+
+  reviewed-prepared:
+    description: Final verified task is generated and ready for execution.
+    concurrent: true
+    program: "true"
+
+  reviewed-execute:
+    description: Run the deterministic finalization steps; a nonzero exit code names the failed step.
+    concurrent: true
+    visits: {{fix_passes}}
+    program: |
+      python3 - "$RHEI_INPUT_CONVERSION_PATH" <<'PY'
+      import json
+      import os
+      import subprocess
+      import sys
+      from pathlib import Path
+
+      def fail(step: int, message: str) -> None:
+          print(f"step {step}: {message}", file=sys.stderr)
+          sys.exit(step)
+
+      # Step 1: read the machine-readable conversion record.
+      try:
+          conversion = json.load(open(sys.argv[1]))
+          coordinate = conversion["coordinate"]
+          worktree_path = conversion["worktreePath"]
+          work_path = conversion["workPath"]
+          suite_absolute = conversion["coverageSuiteAbsolutePath"]
+          suite_relative = conversion["coverageSuiteRepoRelativePath"]
+      except Exception as error:
+          fail(1, f"conversion.json missing or invalid: {error}")
+
+      # Step 2: JVM tests with the dedicated coverage suite. Finalization runs
+      # no Native Image validation at this stage.
+      jvm_command = [
+          f"{worktree_path}/gradlew",
+          "javaTest",
+          f"-Pcoordinates={coordinate}",
+          f"-PcodeCoverageSuitePath={suite_absolute}",
+          "--stacktrace",
+      ]
+      try:
+          if subprocess.run(jvm_command, cwd=worktree_path).returncode != 0:
+              fail(2, "JVM tests failed")
+      except OSError as error:
+          fail(2, f"JVM tests could not run: {error}")
+
+      # Step 3: finalize separate API/deep JaCoCo metrics and guidance-only PGO
+      # evidence from the recorded reports and target state.
+      def report_bounds(directory: str, stem: str) -> tuple:
+          reports = sorted(
+              Path(directory).glob(f"{stem}-[0-9]*.json"),
+              key=lambda p: int(p.stem.rsplit("-", 1)[1]),
+          )
+          if not reports:
+              fail(3, f"no {stem} reports under {directory}")
+          return reports[0], reports[-1]
+
+      api_baseline, api_final = report_bounds("runtime/code-coverage/validation", "api-cover-report")
+      deep_baseline, deep_final = report_bounds("runtime/code-coverage/discovery", "discovery-report")
+      finalize_command = [
+          sys.executable,
+          f"{work_path}/utility_scripts/code_coverage_finalize.py",
+          "--coordinate", coordinate,
+          "--coverage-suite-path", suite_relative,
+          "--api-baseline", str(api_baseline),
+          "--api-final", str(api_final),
+          "--deep-baseline", str(deep_baseline),
+          "--deep-final", str(deep_final),
+          "--output-dir", "runtime/code-coverage/finalization",
+          "--validation-command", " ".join(jvm_command),
+      ]
+      for target_state in sorted(Path("runtime/code-coverage/targets").glob("*.json")):
+          finalize_command += ["--target-state", str(target_state)]
+      finalize_env = dict(os.environ, PYTHONPATH=work_path)
+      try:
+          if subprocess.run(finalize_command, env=finalize_env).returncode != 0:
+              fail(3, "code_coverage_finalize.py failed")
+      except OSError as error:
+          fail(3, f"code_coverage_finalize.py could not run: {error}")
+      PY
+    program_timeout: 90m
+    inputs:
+      - name: conversion
+        path: runtime/code-coverage/issues/conversion.json
+
+  finalize-verify:
+    description: Deterministically verify finalization artifacts and route by outcome.
+    concurrent: true
+    visits: {{fix_passes}}
+    program: |
+      metrics="$RHEI_INPUT_FINAL_METRICS_PATH"
+      summary="$RHEI_INPUT_FINAL_SUMMARY_PATH"
+      if [ ! -s "$summary" ]; then
+        echo "missing or empty final-summary.md" >&2
+        exit 75
+      fi
+      if [ ! -s "$metrics" ]; then
+        echo "missing or empty final-metrics.json" >&2
+        exit 75
+      fi
+      if ! python3 "{{repo_checkout}}/{{work_subdir}}/utility_scripts/schema_validator.py" \
+          code_coverage_final_metrics "$metrics" >&2; then
+        echo "final-metrics.json failed schema validation" >&2
+        exit 75
+      fi
+      python3 - "$metrics" <<'PY'
+      import json, sys
+
+      metrics = json.load(open(sys.argv[1]))
+      if metrics["needsHumanIntervention"]:
+          print("final metrics set needsHumanIntervention", file=sys.stderr)
+          sys.exit(80)
+      if metrics["targets"]["failed"]:
+          print("final metrics contain failed targets", file=sys.stderr)
+          sys.exit(80)
+      if not metrics["validationCommands"]:
+          print("final metrics record no validation commands", file=sys.stderr)
+          sys.exit(75)
+      PY
+    program_timeout: 5m
+    inputs:
+      - name: final-metrics
+        path: runtime/code-coverage/finalization/final-metrics.json
+      - name: final-summary
+        path: runtime/code-coverage/finalization/final-summary.md
+
+  finalize-fix:
+    description: Repair the cause of a failed finalization step or verification.
+    target: "{{worker_agent}}"
+    concurrent: true
+    instructions: |
+      Fix the finalization failure for Task {task_id}: {task_title}.
+
+      A deterministic finalization program failed. Its stderr in the latest
+      state log names the failed step or verification check:
+      - step 1: `runtime/code-coverage/issues/conversion.json` is missing or
+        invalid - repair it from the conversion task evidence.
+      - step 2: JVM tests failed - fix the generated coverage tests in the
+        issue worktree; do not weaken or delete meaningful assertions.
+      - step 3: `code_coverage_finalize.py` failed - repair the report or
+        target-state artifacts it rejected; never edit its output by hand.
+      - verification: finalization artifacts are missing, empty, or
+        schema-invalid - repair the inputs and let the program regenerate them.
+
+      Fix only that cause. The finalization steps re-run automatically after
+      this state, so do not run the finalize helper to hand-craft final
+      artifacts. Write `{output.fix.path}` with:
+      - failure addressed
+      - files changed
+      - commands run and results
+      - residual risk
+    inputs:
+      - name: conversion
+        path: runtime/code-coverage/issues/conversion.json
     outputs:
       - name: fix
         path: runtime/code-coverage/fixes/{task_id}.md
-        description: Fixes applied after review findings.
+        description: Fixes applied after a failed finalization step or verification.
 
   human-intervention:
     description: Human decision or manual repair is required.
@@ -193,8 +593,8 @@ states:
       Stop autonomous work on Task {task_id}: {task_title}.
 
       A human must review the task body, the latest work artifact under
-      `runtime/code-coverage/work/`, and any review summary. Do not transition
-      out of this state autonomously.
+      `runtime/code-coverage/work/`, and the finalization artifacts when they
+      exist. Do not transition out of this state autonomously.
 
   completed:
     description: Work is complete.
@@ -205,54 +605,244 @@ states:
     final: true
 
 transitions:
-  - from: simple-prepared
-    to: simple-execute
-    description: Helper-backed task enters execution.
-
-  - from: simple-execute
-    to: completed
-    description: Helper-backed task wrote its artifacts.
-
   - from: prepared
     to: execute
-    description: Reviewed task enters execution.
+    description: Pipeline task enters execution.
 
   - from: execute
-    to: agent-review
-    description: Work artifact is ready for review.
+    to: completed
+    description: Pipeline task wrote its artifacts.
 
   - from: execute
     to: human-intervention
-    description: Task requires a human decision or manual repair.
+    description: A required helper or artifact is missing or failed.
 
-  - from: agent-review
-    to: review-dispatch
-    description: Latest review summary written; route by verdict.
-
-  - from: review-dispatch
+  - from: api-measure
     to: completed
     exit_code: 0
-    description: Review summary says fixes are not needed.
+    description: No uncovered public targets remain, or the iteration budget is spent.
 
-  - from: review-dispatch
-    to: agent-fix
+  - from: api-measure
+    to: api-cover
+    exit_code: 10
+    description: Uncovered public targets remain; the prompt was written for the cover agent.
+
+  - from: api-measure
+    to: api-fix
+    exit_code: 1
+    condition: visitCount < visits
+    description: Step 1 failed - conversion.json is missing or invalid.
+
+  - from: api-measure
+    to: api-fix
+    exit_code: 2
+    condition: visitCount < visits
+    description: Step 2 failed - the JVM JaCoCo run or correlation failed.
+
+  - from: api-measure
+    to: human-intervention
+    exit_code: 1
+    condition: visitCount >= visits
+    description: Step 1 still fails after the maximum fix passes.
+
+  - from: api-measure
+    to: human-intervention
+    exit_code: 2
+    condition: visitCount >= visits
+    description: Step 2 still fails after the maximum fix passes.
+
+  - from: api-cover
+    to: api-measure
+    description: Cover pass finished; re-measure deterministically.
+
+  - from: api-cover
+    to: human-intervention
+    description: Cover pass requires a human decision.
+
+  - from: api-fix
+    to: api-measure
+    description: Repairs applied; the API measurement re-runs.
+
+  - from: deep-measure
+    to: completed
+    exit_code: 0
+    description: No actionable deep targets remain, or the iteration budget is spent.
+
+  - from: deep-measure
+    to: deep-cover
+    exit_code: 10
+    description: Actionable deep targets remain; the prompt was written for the cover agent.
+
+  - from: deep-measure
+    to: deep-fix
+    exit_code: 1
+    condition: visitCount < visits
+    description: Step 1 failed - conversion.json is missing or invalid.
+
+  - from: deep-measure
+    to: deep-fix
+    exit_code: 2
+    condition: visitCount < visits
+    description: Step 2 failed - the JVM JaCoCo run failed.
+
+  - from: deep-measure
+    to: deep-fix
+    exit_code: 3
+    condition: visitCount < visits
+    description: Step 3 failed - the PGO-sampling image build failed.
+
+  - from: deep-measure
+    to: deep-fix
+    exit_code: 4
+    condition: visitCount < visits
+    description: Step 4 failed - the sampling run produced no profile.
+
+  - from: deep-measure
+    to: deep-fix
+    exit_code: 5
+    condition: visitCount < visits
+    description: Step 5 failed - no coherent call-tree CSV triplet.
+
+  - from: deep-measure
+    to: deep-fix
+    exit_code: 6
+    condition: visitCount < visits
+    description: Step 6 failed - the deep-path analyzer rejected its inputs.
+
+  - from: deep-measure
+    to: human-intervention
+    exit_code: 1
+    condition: visitCount >= visits
+    description: Step 1 still fails after the maximum fix passes.
+
+  - from: deep-measure
+    to: human-intervention
+    exit_code: 2
+    condition: visitCount >= visits
+    description: Step 2 still fails after the maximum fix passes.
+
+  - from: deep-measure
+    to: human-intervention
+    exit_code: 3
+    condition: visitCount >= visits
+    description: Step 3 still fails after the maximum fix passes.
+
+  - from: deep-measure
+    to: human-intervention
+    exit_code: 4
+    condition: visitCount >= visits
+    description: Step 4 still fails after the maximum fix passes.
+
+  - from: deep-measure
+    to: human-intervention
+    exit_code: 5
+    condition: visitCount >= visits
+    description: Step 5 still fails after the maximum fix passes.
+
+  - from: deep-measure
+    to: human-intervention
+    exit_code: 6
+    condition: visitCount >= visits
+    description: Step 6 still fails after the maximum fix passes.
+
+  - from: deep-cover
+    to: deep-measure
+    description: Cover pass finished; re-measure deterministically.
+
+  - from: deep-cover
+    to: human-intervention
+    description: Cover pass requires a human decision.
+
+  - from: deep-fix
+    to: deep-measure
+    description: Repairs applied; the deep measurement re-runs.
+
+  - from: reviewed-prepared
+    to: reviewed-execute
+    description: Final verified task enters execution.
+
+  - from: reviewed-execute
+    to: finalize-verify
+    exit_code: 0
+    description: All finalization steps passed; verify artifacts deterministically.
+
+  - from: reviewed-execute
+    to: finalize-fix
+    exit_code: 1
+    condition: visitCount < visits
+    description: Step 1 failed - conversion.json is missing or invalid.
+
+  - from: reviewed-execute
+    to: finalize-fix
+    exit_code: 2
+    condition: visitCount < visits
+    description: Step 2 failed - JVM tests with the coverage suite failed.
+
+  - from: reviewed-execute
+    to: finalize-fix
+    exit_code: 3
+    condition: visitCount < visits
+    description: Step 3 failed - code_coverage_finalize.py rejected its inputs.
+
+  - from: reviewed-execute
+    to: human-intervention
+    exit_code: 1
+    condition: visitCount >= visits
+    description: Step 1 still fails after the maximum fix passes.
+
+  - from: reviewed-execute
+    to: human-intervention
+    exit_code: 2
+    condition: visitCount >= visits
+    description: Step 2 still fails after the maximum fix passes.
+
+  - from: reviewed-execute
+    to: human-intervention
+    exit_code: 3
+    condition: visitCount >= visits
+    description: Step 3 still fails after the maximum fix passes.
+
+  - from: finalize-verify
+    to: completed
+    exit_code: 0
+    description: Artifacts are present, schema-valid, and demand no human action.
+
+  - from: finalize-verify
+    to: finalize-fix
     exit_code: 75
     condition: visitCount < visits
-    description: Review summary says fixes are needed.
+    description: Artifacts are missing or invalid and can be repaired.
 
-  - from: review-dispatch
-    to: completed
+  - from: finalize-verify
+    to: human-intervention
     exit_code: 75
     condition: visitCount >= visits
-    description: Review still requests fixes after the maximum review passes.
+    description: Artifact problems remain after the maximum fix passes.
 
-  - from: agent-fix
-    to: agent-review
-    description: Required review findings were addressed.
+  - from: finalize-verify
+    to: human-intervention
+    exit_code: 80
+    description: Final metrics demand human action (failed targets or explicit flag).
+
+  - from: finalize-fix
+    to: reviewed-execute
+    description: Repairs applied; the finalization steps re-run from the start.
 
   - from: human-intervention
     to: execute
-    description: Human requested rework.
+    description: Human requested rework of a pipeline task.
+
+  - from: human-intervention
+    to: api-measure
+    description: Human requested rework of the API coverage loop.
+
+  - from: human-intervention
+    to: deep-measure
+    description: Human requested rework of the deep coverage loop.
+
+  - from: human-intervention
+    to: reviewed-execute
+    description: Human requested rework of the final verified task.
 
   - from: human-intervention
     to: completed

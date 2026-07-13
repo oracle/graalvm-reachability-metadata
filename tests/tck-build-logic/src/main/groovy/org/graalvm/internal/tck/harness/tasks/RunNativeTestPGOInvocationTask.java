@@ -13,7 +13,8 @@ import java.util.List;
  * Task that runs the PGO-sampling native test image once on matching
  * subprojects to collect the sampled {@code .iprof} profile.
  * <p>
- * Supports the phase-7 near-call analyzer of §WF-code-coverage-improvement.
+ * Supports sampled deep-path navigation (§TCK-test-harness.8,
+ * §forge/WF-code-coverage-improvement.3.2).
  */
 @SuppressWarnings("unused")
 public abstract class RunNativeTestPGOInvocationTask extends AllCoordinatesExecTask {
@@ -25,6 +26,8 @@ public abstract class RunNativeTestPGOInvocationTask extends AllCoordinatesExecT
                 "runNativeTestPGO"
         ));
         appendProperty(command, "pgoProfilePath");
+        appendProperty(command, "pgoSamplingPeriodMicros");
+        appendProperty(command, "codeCoverageSuitePath");
         return command;
     }
 

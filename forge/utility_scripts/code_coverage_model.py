@@ -97,16 +97,20 @@ def _split_params(param_text: str) -> tuple[str, ...]:
 
 
 def parse_inventory_id(target_id: str) -> MethodRef | None:
-    """Parse an API inventory id `owner#name(params):ret`."""
-    match = re.match(r"^(?P<owner>[^#]+)#(?P<name>[^(]+)\((?P<params>[^)]*)\)(?::(?P<ret>.+))?$", target_id)
+    """Parse one exact canonical API inventory method id."""
+    match = re.match(
+        r"^(?P<owner>[^#]+)#(?P<name>[^(]+)\((?P<params>[^)]*)\):(?P<ret>.+)$",
+        target_id,
+    )
     if not match:
         return None
-    return MethodRef(
+    ref = MethodRef(
         owner=match.group("owner"),
         name=match.group("name"),
         params=_split_params(match.group("params")),
-        return_type=normalize_type_name(match.group("ret")) if match.group("ret") else None,
+        return_type=normalize_type_name(match.group("ret")),
     )
+    return ref if ref.canonical_id == target_id else None
 
 
 def method_ref_from_call_tree_row(row: dict) -> MethodRef | None:
@@ -129,19 +133,38 @@ def method_ref_from_call_tree_row(row: dict) -> MethodRef | None:
     return MethodRef(owner=owner, name=name, params=params, return_type=return_type or None)
 
 
-def _read_field_descriptor(descriptor: str, index: int) -> tuple[str, int]:
+def _read_field_descriptor(
+        descriptor: str,
+        index: int,
+        allow_void: bool = False,
+) -> tuple[str, int]:
+    if index >= len(descriptor):
+        raise ValueError("Unexpected end of JVM descriptor.")
     dimensions = 0
     while index < len(descriptor) and descriptor[index] == "[":
         dimensions += 1
         index += 1
+    if index >= len(descriptor):
+        raise ValueError("Array descriptor has no component type.")
     code = descriptor[index]
+    if code == "V":
+        if dimensions or not allow_void:
+            raise ValueError("void is only valid as a non-array return type.")
+        return "void", index + 1
     if code == "L":
-        end = descriptor.index(";", index)
-        base = descriptor[index + 1:end].replace("/", ".")
+        end = descriptor.find(";", index)
+        if end < 0:
+            raise ValueError("Object descriptor has no terminating semicolon.")
+        internal_name = descriptor[index + 1:end]
+        if not internal_name or any(char in internal_name for char in ".;[()"):
+            raise ValueError(f"Invalid object type in JVM descriptor: '{internal_name}'.")
+        base = internal_name.replace("/", ".")
         index = end + 1
-    else:
-        base = _PRIMITIVE_DESCRIPTORS.get(code, code)
+    elif code in _PRIMITIVE_DESCRIPTORS and code != "V":
+        base = _PRIMITIVE_DESCRIPTORS[code]
         index += 1
+    else:
+        raise ValueError(f"Unknown JVM descriptor type code: '{code}'.")
     return base + "[]" * dimensions, index
 
 
@@ -151,12 +174,20 @@ def parse_jvm_descriptor(descriptor: str) -> tuple[tuple[str, ...], str]:
     For example `(Ljava/lang/String;[I)V` -> `(("java.lang.String", "int[]"), "void")`.
     Used to turn JaCoCo `<method desc=...>` entries into canonical ids.
     """
+    if not descriptor.startswith("("):
+        raise ValueError("JVM method descriptor must start with '('.")
     params: list[str] = []
-    index = descriptor.index("(") + 1
-    while descriptor[index] != ")":
+    index = 1
+    while True:
+        if index >= len(descriptor):
+            raise ValueError("JVM method descriptor has no closing ')'.")
+        if descriptor[index] == ")":
+            break
         param_type, index = _read_field_descriptor(descriptor, index)
         params.append(param_type)
-    return_type, _ = _read_field_descriptor(descriptor, index + 1)
+    return_type, index = _read_field_descriptor(descriptor, index + 1, allow_void=True)
+    if index != len(descriptor):
+        raise ValueError(f"Trailing data in JVM method descriptor: '{descriptor[index:]}'.")
     return tuple(params), return_type
 
 

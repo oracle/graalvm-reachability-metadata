@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from utility_scripts import code_coverage_api_inventory as inventory_module
 
@@ -47,6 +48,16 @@ public final class com.example.Mode extends java.lang.Enum<com.example.Mode> {
   public static com.example.Mode valueOf(java.lang.String);
 }
 '''
+JAVAP_DESCRIPTOR_SAMPLE = '''Compiled from "GenericApi.java"
+public class com.example.GenericApi<T> {
+  public T identity(T);
+    descriptor: (Ljava/lang/Object;)Ljava/lang/Object;
+  public <R extends java.lang.Number> R bounded(R);
+    descriptor: (Ljava/lang/Number;)Ljava/lang/Number;
+}
+'''
+
+
 
 
 class JavapParsingTests(unittest.TestCase):
@@ -61,11 +72,11 @@ class JavapParsingTests(unittest.TestCase):
         self.assertEqual(of_target.kind, "staticMethod")
         self.assertEqual(greeter.source_path, "src/main/java/com/example/Greeter.java")
 
-    def test_enum_constant_and_generics_erasure(self) -> None:
+    def test_enum_fields_are_excluded_but_generated_methods_remain(self) -> None:
         classes = inventory_module.parse_javap(JAVAP_SAMPLE)
         mode = next(c for c in classes if c.owner == "com.example.Mode")
-        kinds = {t.target_id: t.kind for t in mode.targets}
-        self.assertEqual(kinds.get("com.example.Mode#QUIET"), "enumConstant")
+        kinds = {target.target_id: target.kind for target in mode.targets}
+        self.assertNotIn("com.example.Mode#QUIET", kinds)
         self.assertIn("com.example.Mode#valueOf(java.lang.String):com.example.Mode", kinds)
 
     def test_varargs_normalized_to_array(self) -> None:
@@ -78,6 +89,58 @@ class JavapParsingTests(unittest.TestCase):
         classes = inventory_module.parse_javap(text)
         ids = [t.target_id for t in classes[0].targets]
         self.assertIn("com.example.F#log(java.lang.String[]):void", ids)
+
+    def test_jvm_descriptor_erases_generic_type_variables_and_bounds(self) -> None:
+        classes = inventory_module.parse_javap(JAVAP_DESCRIPTOR_SAMPLE)
+        ids = [target.target_id for target in classes[0].targets]
+        self.assertEqual(
+            ids,
+            [
+                "com.example.GenericApi#identity(java.lang.Object):java.lang.Object",
+                "com.example.GenericApi#bounded(java.lang.Number):java.lang.Number",
+            ],
+        )
+
+    def test_field_descriptor_does_not_rebind_preceding_method(self) -> None:
+        text = '''Compiled from "Mixed.java"
+public class com.example.Mixed {
+  public void first();
+    descriptor: ()V
+  public int value;
+    descriptor: I
+  public void second();
+    descriptor: ()V
+}
+'''
+        classes = inventory_module.parse_javap(text)
+        ids = [target.target_id for target in classes[0].targets]
+        self.assertEqual(
+            ids,
+            ["com.example.Mixed#first():void", "com.example.Mixed#second():void"],
+        )
+
+    def test_run_javap_rejects_partial_output_from_failed_batch(self) -> None:
+        failed = subprocess.CompletedProcess(
+            args=[], returncode=1, stdout="partial output", stderr="class not found",
+        )
+        with patch.object(inventory_module, "_resolve_tool", return_value="/jdk/bin/javap"):
+            with patch.object(inventory_module.subprocess, "run", return_value=failed):
+                with self.assertRaisesRegex(
+                    inventory_module.ApiInventoryError, "class not found",
+                ):
+                    inventory_module.run_javap(["demo.jar"], ["com.example.Missing"])
+
+
+    def test_generate_inventory_reports_missing_jar_clearly(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_dir:
+            with self.assertRaisesRegex(inventory_module.ApiInventoryError, "Cannot read library jar"):
+                inventory_module.generate_inventory(
+                    coordinate="com.example:missing:1.0.0",
+                    jar_paths=[os.path.join(temporary_dir, "missing.jar")],
+                    output_dir=os.path.join(temporary_dir, "out"),
+                    include_package=None,
+                    source_root="",
+                )
 
 
 @unittest.skipUnless(_java_tool("javac") and _java_tool("jar") and _java_tool("javap"),

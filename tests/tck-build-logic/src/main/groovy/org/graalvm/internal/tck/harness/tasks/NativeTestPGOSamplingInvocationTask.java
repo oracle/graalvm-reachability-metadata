@@ -6,23 +6,28 @@
  */
 package org.graalvm.internal.tck.harness.tasks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Task that builds PGO-sampling native test images, with the analysis
  * call-tree CSV dump enabled, on matching subprojects.
  * <p>
- * Supports the phase-7 near-call analyzer of §WF-code-coverage-improvement.
+ * Supports sampled deep-path navigation (§TCK-test-harness.8,
+ * §forge/WF-code-coverage-improvement.3.2).
  */
 @SuppressWarnings("unused")
 public abstract class NativeTestPGOSamplingInvocationTask extends AllCoordinatesExecTask {
 
     @Override
     public List<String> commandFor(String coordinates) {
-        return List.of(
+        List<String> command = new ArrayList<>(List.of(
                 tckExtension.getRepoRoot().get().getAsFile().toPath().resolve("gradlew").toString(),
                 "nativeTestPGOSampling"
-        );
+        ));
+        appendProperty(command, "pgoSamplingPeriodMicros");
+        appendProperty(command, "codeCoverageSuitePath");
+        return command;
     }
 
     @Override
