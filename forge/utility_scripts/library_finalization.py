@@ -207,7 +207,10 @@ def run_library_finalization(
         model_name: str | None = None,
         base_commit: str | None = None,
 ) -> bool:
-    """Run the shared end-of-workflow finalization steps for one library."""
+    """Run the shared end-of-workflow finalization steps for one library.
+
+    §WF-forge-workflow-drivers.3
+    """
     del log_prefix
     log_stage("split-test-only-metadata", f"Running splitTestOnlyMetadata for {library}")
     if not _run_gradle_command(repo_path, ["./gradlew", "splitTestOnlyMetadata", f"-Pcoordinates={library}"]):
@@ -230,7 +233,31 @@ def run_library_finalization(
         library_version=library_version,
         log_stage_name="check-metadata-files",
     ):
-        return False
+        # Avoid the workflow core's import back into this finalization module.
+        from ai_workflows.core.fix_metadata_codex import (  # pylint: disable=import-outside-toplevel
+            run_codex_metadata_fix,
+        )
+
+        log_stage("check-metadata-files", f"Running Codex metadata fix for {library}")
+        codex_rc, _codex_log_path, codex_timed_out = run_codex_metadata_fix(
+            repo_path,
+            library,
+            reproduction_command=f"./gradlew checkMetadataFiles -Pcoordinates={library}",
+        )
+        if codex_timed_out or codex_rc != 0:
+            return False
+        log_stage("split-test-only-metadata", f"Rerunning splitTestOnlyMetadata for {library}")
+        if not _run_gradle_command(repo_path, ["./gradlew", "splitTestOnlyMetadata", f"-Pcoordinates={library}"]):
+            return False
+        if not _run_check_metadata_files_with_allowed_packages_fix(
+            repo_path=repo_path,
+            library=library,
+            group=group,
+            artifact=artifact,
+            library_version=library_version,
+            log_stage_name="check-metadata-files",
+        ):
+            return False
     log_stage("style-checks", f"Running style checks for {library}")
     if not run_style_fix_and_checks(repo_path, library, model_name=model_name):
         return False
