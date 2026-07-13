@@ -63,15 +63,15 @@ class PiAgent(Agent):
 
     @property
     def total_tokens_sent(self) -> int:
-        return self._total_tokens_sent
+        return self._total_tokens_sent + self._forked_tokens_sent
 
     @property
     def total_tokens_received(self) -> int:
-        return self._total_tokens_received
+        return self._total_tokens_received + self._forked_tokens_received
 
     @property
     def cached_input_tokens_used(self) -> int:
-        return self._cached_input_tokens_used
+        return self._cached_input_tokens_used + self._forked_tokens_cached
 
     def graphify(self, source_dirs: list[str]) -> str:
         """Send /skill:graphify to the Pi session to build a merged knowledge graph context."""
@@ -137,6 +137,7 @@ class PiAgent(Agent):
         child._prev_input = self._prev_input
         child._prev_output = self._prev_output
         child._prev_cache = self._prev_cache
+        child._begin_fork_child(self)
         child._apply_fork_token_delta(result.session_stats)
         child._print_session_log_once("Pi", child._session_log_path)
         child._write_turn_log(child._session_path, prompt, result)
