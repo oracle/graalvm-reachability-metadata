@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import javax.tools.Diagnostic;
@@ -133,8 +134,48 @@ public class Vertx_docgenTest {
                 .contains("This document relies on the default file name.");
     }
 
+    @Test
+    void generatesDocumentationFromConfiguredSourceFiles(@TempDir Path temporaryDirectory) throws IOException {
+        Path sourceDirectory = temporaryDirectory.resolve("sources");
+        Path outputDirectory = temporaryDirectory.resolve("documentation");
+        Path documentDirectory = temporaryDirectory.resolve("manual");
+        Path document = documentDirectory.resolve("getting-started.adoc");
+        Path handbook = sourceDirectory.resolve("example/manual/Handbook.java");
+        Files.createDirectories(documentDirectory);
+        Files.createDirectories(handbook.getParent());
+        Files.writeString(document, """
+                = Getting started
+
+                Consult {@link example.manual.Handbook} before continuing.
+                """, StandardCharsets.UTF_8);
+        Files.writeString(handbook, """
+                package example.manual;
+
+                public class Handbook {
+                }
+                """, StandardCharsets.UTF_8);
+
+        compileDocumentation(
+                sourceDirectory,
+                outputDirectory,
+                List.of(handbook),
+                List.of("-Adocgen.source=" + documentDirectory));
+
+        Path generatedDocument = outputDirectory.resolve("getting-started.adoc");
+        assertThat(generatedDocument).exists();
+        assertThat(Files.readString(generatedDocument, StandardCharsets.UTF_8))
+                .contains("= Getting started")
+                .contains("`link:../../apidocs/example/manual/Handbook.html[Handbook]`");
+    }
+
     private static void compileDocumentation(
             Path sourceDirectory, Path outputDirectory, List<Path> sourceFiles) throws IOException {
+        compileDocumentation(sourceDirectory, outputDirectory, sourceFiles, List.of());
+    }
+
+    private static void compileDocumentation(
+            Path sourceDirectory, Path outputDirectory, List<Path> sourceFiles, List<String> processorOptions)
+            throws IOException {
         Path classDirectory = sourceDirectory.resolveSibling("classes");
         Files.createDirectories(outputDirectory);
         Files.createDirectories(classDirectory);
@@ -145,11 +186,13 @@ public class Vertx_docgenTest {
         try (StandardJavaFileManager fileManager = compiler.getStandardFileManager(
                 diagnostics, Locale.ROOT, StandardCharsets.UTF_8)) {
             fileManager.setLocationFromPaths(StandardLocation.CLASS_OUTPUT, List.of(classDirectory));
+            List<String> options = new ArrayList<>(List.of("-proc:only", "-Adocgen.output=" + outputDirectory));
+            options.addAll(processorOptions);
             JavaCompiler.CompilationTask task = compiler.getTask(
                     null,
                     fileManager,
                     diagnostics,
-                    List.of("-proc:only", "-Adocgen.output=" + outputDirectory),
+                    options,
                     null,
                     fileManager.getJavaFileObjectsFromPaths(sourceFiles));
             task.setProcessors(List.of(new DocGenProcessor(new JavaDocGenerator())));
