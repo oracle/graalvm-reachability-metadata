@@ -289,7 +289,7 @@ public final class MetadataGenerationUtils {
      * the results into the computed metadata directory for the given coordinates.
      */
     public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew) {
-        collectMetadataWithCoverageSuite(execOps, testsDirectory, layout, coordinates, gradlew, null);
+        collectMetadataWithCoverageSuite(execOps, testsDirectory, layout, coordinates, gradlew, false);
     }
 
     public static void collectMetadataWithCoverageSuite(
@@ -298,7 +298,7 @@ public final class MetadataGenerationUtils {
             ProjectLayout layout,
             String coordinates,
             Path gradlew,
-            String codeCoverageSuitePath
+            boolean includeCodeCoverageSuite
     ) {
         Path metadataDirectory = GeneralUtils.computeMetadataDirectory(layout, coordinates);
         try {
@@ -307,7 +307,7 @@ public final class MetadataGenerationUtils {
             try {
                 collectMetadata(
                         execOps, testsDirectory, layout, coordinates, gradlew,
-                        agentMetadataDirectory, codeCoverageSuitePath
+                        agentMetadataDirectory, includeCodeCoverageSuite
                 );
                 mergeMetadataIntoDurableDirectory(
                         execOps, layout, gradlew, metadataDirectory,
@@ -327,7 +327,7 @@ public final class MetadataGenerationUtils {
      * the results into the requested output directory without durable merging.
      */
     public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew, Path metadataDirectory) {
-        collectMetadata(execOps, testsDirectory, layout, coordinates, gradlew, metadataDirectory, null);
+        collectMetadata(execOps, testsDirectory, layout, coordinates, gradlew, metadataDirectory, false);
     }
 
     public static void collectMetadata(
@@ -337,12 +337,12 @@ public final class MetadataGenerationUtils {
             String coordinates,
             Path gradlew,
             Path metadataDirectory,
-            String codeCoverageSuitePath
+            boolean includeCodeCoverageSuite
     ) {
         Path resolvedMetadataDirectory = resolveMetadataDirectory(layout, metadataDirectory);
         List<String> testArguments = new ArrayList<>(List.of("-Pagent"));
-        if (codeCoverageSuitePath != null && !codeCoverageSuitePath.isBlank()) {
-            testArguments.add("-PcodeCoverageSuitePath=" + codeCoverageSuitePath);
+        if (includeCodeCoverageSuite) {
+            testArguments.add("-PincludeCodeCoverageSuite=true");
         }
         testArguments.add("test");
 

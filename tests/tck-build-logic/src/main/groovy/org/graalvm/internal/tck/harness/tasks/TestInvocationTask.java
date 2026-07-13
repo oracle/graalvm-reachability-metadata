@@ -42,7 +42,7 @@ public abstract class TestInvocationTask extends AllCoordinatesExecTask {
         appendProperty(defaultArgs, "metadataConfigDirs");
         // §TCK-test-harness.3
         appendProperty(defaultArgs, "skipJacoco");
-        appendProperty(defaultArgs, "codeCoverageSuitePath");
+        appendProperty(defaultArgs, "includeCodeCoverageSuite");
         return defaultArgs;
     }
 

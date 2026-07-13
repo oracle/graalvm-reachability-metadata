@@ -21,7 +21,7 @@ public abstract class JacocoTestReportInvocationTask extends AllCoordinatesExecT
                 tckExtension.getRepoRoot().get().getAsFile().toPath().resolve("gradlew").toString(),
                 "jacocoTestReport"
         ));
-        appendProperty(command, "codeCoverageSuitePath");
+        appendProperty(command, "includeCodeCoverageSuite");
         return command;
     }
 

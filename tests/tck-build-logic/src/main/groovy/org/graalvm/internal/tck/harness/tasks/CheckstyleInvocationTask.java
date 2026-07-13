@@ -21,7 +21,7 @@ public abstract class CheckstyleInvocationTask extends AllCoordinatesExecTask {
                 tckExtension.getRepoRoot().get().getAsFile().toPath().resolve("gradlew").toString(),
                 "checkstyle"
         ));
-        appendProperty(command, "codeCoverageSuitePath");
+        appendProperty(command, "includeCodeCoverageSuite");
         return command;
     }
 

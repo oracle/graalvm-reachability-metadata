@@ -27,7 +27,7 @@ public abstract class RunNativeTestPGOInvocationTask extends AllCoordinatesExecT
         ));
         appendProperty(command, "pgoProfilePath");
         appendProperty(command, "pgoSamplingPeriodMicros");
-        appendProperty(command, "codeCoverageSuitePath");
+        appendProperty(command, "includeCodeCoverageSuite");
         return command;
     }
 
