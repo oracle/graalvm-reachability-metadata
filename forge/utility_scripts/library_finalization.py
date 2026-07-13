@@ -258,20 +258,20 @@ def run_library_finalization(
         library_version=library_version,
         log_stage_name="check-metadata-files",
     ):
-        log_stage("check-metadata-files", f"Running Codex metadata fix for {library}")
-        if not _run_codex_check_metadata_fix(repo_path, library):
-            return False
-        log_stage("split-test-only-metadata", f"Rerunning splitTestOnlyMetadata for {library}")
-        if not _run_gradle_command(repo_path, ["./gradlew", "splitTestOnlyMetadata", f"-Pcoordinates={library}"]):
-            return False
-        if not _run_check_metadata_files_with_allowed_packages_fix(
-            repo_path=repo_path,
-            library=library,
-            group=group,
-            artifact=artifact,
-            library_version=library_version,
-            log_stage_name="check-metadata-files",
-        ):
+        for attempt in range(1, 4):
+            log_stage("check-metadata-files", f"Running Codex metadata fix attempt {attempt}/3 for {library}")
+            if not _run_codex_check_metadata_fix(repo_path, library):
+                continue
+            if _run_check_metadata_files_with_allowed_packages_fix(
+                repo_path=repo_path,
+                library=library,
+                group=group,
+                artifact=artifact,
+                library_version=library_version,
+                log_stage_name="check-metadata-files",
+            ):
+                break
+        else:
             return False
     log_stage("style-checks", f"Running style checks for {library}")
     if not run_style_fix_and_checks(repo_path, library, model_name=model_name):

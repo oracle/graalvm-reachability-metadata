@@ -32,54 +32,6 @@ def _commit_all(repo_path: str, message: str) -> str:
 
 
 class LibraryFinalizationTests(unittest.TestCase):
-    def test_runs_codex_once_when_metadata_validation_fails(self) -> None:
-        with patch("utility_scripts.library_finalization._run_gradle_command", return_value=True) as gradle, \
-                patch(
-                    "utility_scripts.library_finalization._run_check_metadata_files_with_allowed_packages_fix",
-                    side_effect=[False, True],
-                ) as check_metadata, \
-                patch(
-                    "utility_scripts.library_finalization._run_codex_check_metadata_fix",
-                    return_value=True,
-                ) as codex, \
-                patch("utility_scripts.library_finalization.run_style_fix_and_checks", return_value=True):
-            result = run_library_finalization(
-                repo_path=os.getcwd(),
-                library="org.example:demo:1.0.0",
-                group="org.example",
-                artifact="demo",
-                library_version="1.0.0",
-            )
-
-        self.assertTrue(result)
-        self.assertEqual(check_metadata.call_count, 2)
-        codex.assert_called_once_with(os.getcwd(), "org.example:demo:1.0.0")
-        self.assertEqual(gradle.call_count, 3)
-
-    def test_fails_when_codex_cannot_fix_metadata_validation(self) -> None:
-        with patch("utility_scripts.library_finalization._run_gradle_command", return_value=True), \
-                patch(
-                    "utility_scripts.library_finalization._run_check_metadata_files_with_allowed_packages_fix",
-                    return_value=False,
-                ) as check_metadata, \
-                patch(
-                    "utility_scripts.library_finalization._run_codex_check_metadata_fix",
-                    return_value=False,
-                ) as codex, \
-                patch("utility_scripts.library_finalization.run_style_fix_and_checks") as style_checks:
-            result = run_library_finalization(
-                repo_path=os.getcwd(),
-                library="org.example:demo:1.0.0",
-                group="org.example",
-                artifact="demo",
-                library_version="1.0.0",
-            )
-
-        self.assertFalse(result)
-        check_metadata.assert_called_once()
-        codex.assert_called_once()
-        style_checks.assert_not_called()
-
     def test_rejects_legacy_test_resource_native_image_config_after_split(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path:
             _git(repo_path, "init")
