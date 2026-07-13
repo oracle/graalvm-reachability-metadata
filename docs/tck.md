@@ -160,7 +160,7 @@ reusing the coordinate's dependencies and build configuration
 `nativeTestPGOSampling` builds with `--pgo-sampling`, a positive
 `-H:PGOSamplingPeriodMicros=<micros>`, `-H:+PrintAnalysisCallTree`, and
 `-H:PrintAnalysisCallTreeType=CSV`. The optional Gradle property
-`pgoSamplingPeriodMicros` defaults to `10` and must be forwarded through the
+`pgoSamplingPeriodMicros` defaults to `100` (the Native Image minimum) and must be forwarded through the
 root coordinate fan-out for both build-only and build-and-run invocations.
 `runNativeTestPGO` depends on that sampling build and dumps the profile through
 `-XX:ProfilesDumpFile=<absolute path>`. A nonzero sampling-image exit fails the

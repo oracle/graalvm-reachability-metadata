@@ -238,7 +238,8 @@ boolean nativeTestTaskRequested = !informationalTaskRequested &&
 // decides coverage.
 boolean nativeTestPGOSamplingTaskRequested = !informationalTaskRequested &&
         (isTaskRequested("nativeTestPGOSampling") || isTaskRequested("runNativeTestPGO"))
-String pgoSamplingPeriodMicros = providers.gradleProperty("pgoSamplingPeriodMicros").getOrElse("10")
+// Native Image requires a sampling period of at least 100 microseconds.
+String pgoSamplingPeriodMicros = providers.gradleProperty("pgoSamplingPeriodMicros").getOrElse("100")
 
 Closure<String> requiredGradleProperty = { String propertyName ->
     String propertyValue = providers.gradleProperty(propertyName).getOrElse("")
