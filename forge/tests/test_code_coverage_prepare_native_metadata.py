@@ -63,7 +63,7 @@ class PrepareNativeMetadataTests(unittest.TestCase):
                 patch.object(prepare_module, "run_gradle_test_command", gradle), \
                 patch.object(prepare_module, "run_codex_metadata_fix", fake_fix):
             relative_suite: str = os.path.join(
-                "tests", "g", "a", "1.0", "code-coverage",
+                "tests", "src", "g", "a", "1.0", "code-coverage-improvement",
             )
             suite_path: str = os.path.join(tmp, relative_suite)
             os.makedirs(os.path.join(suite_path, "src", "test", "java"))
@@ -88,10 +88,10 @@ class PrepareNativeMetadataTests(unittest.TestCase):
         self.assertTrue(artifact)
         self.assertEqual(len(gradle.commands), 2)
         for command in gradle.commands:
-            self.assertIn(f"-PcodeCoverageSuitePath={suite_path}", command)
+            self.assertIn("-PincludeCodeCoverageSuite=true", command)
 
     def test_codex_fix_then_pass(self) -> None:
-        report, _gradle, fix_calls, _artifact, suite_path = self._run(
+        report, _gradle, fix_calls, _artifact, _suite_path = self._run(
             native_results=[False, True],
         )
         self.assertEqual(report["fixPasses"], 1)
@@ -100,7 +100,7 @@ class PrepareNativeMetadataTests(unittest.TestCase):
         self.assertEqual(len(fix_calls), 1)
         # The Codex fix is given the nativeTest reproduction command.
         self.assertIn("nativeTest", fix_calls[0][2])
-        self.assertIn(f"-PcodeCoverageSuitePath={suite_path}", fix_calls[0][2])
+        self.assertIn("-PincludeCodeCoverageSuite=true", fix_calls[0][2])
 
     def test_exhausts_budget_routes_to_human(self) -> None:
         report, _gradle, fix_calls, _artifact, _suite_path = self._run(

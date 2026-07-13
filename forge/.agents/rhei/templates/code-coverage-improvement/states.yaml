@@ -95,7 +95,6 @@ states:
           coordinate = conversion["coordinate"]
           worktree = conversion["worktreePath"]
           work_path = conversion["workPath"]
-          suite_absolute = conversion["coverageSuiteAbsolutePath"]
       except Exception as error:
           fail(1, f"conversion.json missing or invalid: {error}")
 
@@ -103,13 +102,14 @@ states:
       validation.mkdir(parents=True, exist_ok=True)
       iteration = len(list(validation.glob("api-cover-report-*.json")))
 
-      # Step 2: JVM JaCoCo run and exact API-inventory correlation.
+      # Step 2: JVM JaCoCo run and exact API-inventory correlation. The
+      # validator resolves the tracked code-coverage-improvement suite inside
+      # the coordinate's indexed test project itself.
       helper = [
           sys.executable, f"{work_path}/utility_scripts/code_coverage_validate.py",
           "--repo-path", worktree,
           "--coordinate", coordinate,
           "--api-inventory", "runtime/code-coverage/api-inventory/api-inventory.json",
-          "--coverage-suite", suite_absolute,
           "--iteration", str(iteration),
           "--output-dir", str(validation),
       ]
@@ -174,8 +174,10 @@ states:
 
       Rules:
       - Attempt every target listed in the prompt; work across the whole batch.
-      - Edit generated tests only under
-        `tests/<group>/<artifact>/<version>/code-coverage`.
+      - Edit generated tests only under the tracked extension suite
+        `code-coverage-improvement/src/test/java` inside the coordinate's
+        indexed test project (`coverageSuiteRepoRelativePath` in
+        conversion.json); never touch the regular `src/test` sources.
       - Target meaningful public user-callable behavior with real assertions,
         not superficial coverage hits.
       - Do not weaken metadata-generation tests.
@@ -247,7 +249,6 @@ states:
           coordinate = conversion["coordinate"]
           worktree = conversion["worktreePath"]
           work_path = conversion["workPath"]
-          suite_absolute = conversion["coverageSuiteAbsolutePath"]
       except Exception as error:
           fail(1, f"conversion.json missing or invalid: {error}")
 
@@ -261,30 +262,38 @@ states:
               fail(step, f"command could not run: {error}")
 
       group, artifact, version = coordinate.split(":")
-      subproject = Path(worktree) / "tests" / group / artifact / version
+      # Indexed versions may reuse a different tests/src project. Resolve it
+      # exactly as the JVM coverage validator does instead of assuming the
+      # requested version names the Gradle subproject.
+      sys.path.insert(0, work_path)
+      from utility_scripts.metadata_index import resolve_test_dir
+      subproject = Path(resolve_test_dir(worktree, group, artifact, version))
       gradle = [
           f"{worktree}/gradlew",
           f"-Pcoordinates={coordinate}",
-          f"-PcodeCoverageSuitePath={suite_absolute}",
       ]
+      # The native test binary is derived from the test source set; the include
+      # flag widens it with the tracked extension suite for the PGO lane only.
+      include_suite = "-PincludeCodeCoverageSuite=true"
       discovery = Path("runtime/code-coverage/discovery")
       discovery.mkdir(parents=True, exist_ok=True)
       iteration = len(list(discovery.glob("discovery-report-*.json")))
       helper_env = dict(os.environ, PYTHONPATH=work_path)
 
-      # Step 2: JVM JaCoCo XML for exact internal-method statuses.
-      run(2, gradle + ["jacocoTestReport"], cwd=worktree)
-      jacoco_xml = subproject / "build/reports/jacoco/test/jacocoTestReport.xml"
+      # Step 2: combined JVM JaCoCo XML (regular + extension suite) for exact
+      # internal-method statuses.
+      run(2, gradle + ["jacocoCodeCoverageReport"], cwd=worktree)
+      jacoco_xml = subproject / "build/reports/jacoco/jacocoCodeCoverageReport/jacocoCodeCoverageReport.xml"
       if not jacoco_xml.is_file():
           fail(2, f"missing JaCoCo XML at {jacoco_xml}")
       shutil.copy(jacoco_xml, discovery / f"jacoco-deep-{iteration}.xml")
 
       # Step 3: PGO-sampling image with the analysis call-tree CSV dump.
-      run(3, gradle + ["nativeTestPGOSampling"], cwd=worktree)
+      run(3, gradle + ["nativeTestPGOSampling", include_suite], cwd=worktree)
 
       # Step 4: run the sampling image once; it dumps the .iprof on exit.
       profile = (discovery / f"pgo-profile-{iteration}.iprof").resolve()
-      run(4, gradle + ["runNativeTestPGO", f"-PpgoProfilePath={profile}"], cwd=worktree)
+      run(4, gradle + ["runNativeTestPGO", include_suite, f"-PpgoProfilePath={profile}"], cwd=worktree)
       if not profile.is_file():
           fail(4, "sampling run wrote no .iprof")
 
@@ -370,8 +379,10 @@ states:
         never invoke an internal target directly.
       - `Observed:` lines are sampled guidance only; every `Uncovered paths`
         target is uncovered according to exact JaCoCo evidence.
-      - Edit generated tests only under
-        `tests/<group>/<artifact>/<version>/code-coverage`.
+      - Edit generated tests only under the tracked extension suite
+        `code-coverage-improvement/src/test/java` inside the coordinate's
+        indexed test project (`coverageSuiteRepoRelativePath` in
+        conversion.json); never touch the regular `src/test` sources.
       - Do not weaken metadata-generation tests.
       - Record per-target attempt state in
         `runtime/code-coverage/targets/deep-cover.json` (schema
@@ -453,25 +464,27 @@ states:
           coordinate = conversion["coordinate"]
           worktree_path = conversion["worktreePath"]
           work_path = conversion["workPath"]
-          suite_absolute = conversion["coverageSuiteAbsolutePath"]
           suite_relative = conversion["coverageSuiteRepoRelativePath"]
       except Exception as error:
           fail(1, f"conversion.json missing or invalid: {error}")
 
-      # Step 2: JVM tests with the dedicated coverage suite. Finalization runs
-      # no Native Image validation at this stage.
-      jvm_command = [
-          f"{worktree_path}/gradlew",
-          "javaTest",
-          f"-Pcoordinates={coordinate}",
-          f"-PcodeCoverageSuitePath={suite_absolute}",
-          "--stacktrace",
+      # Step 2: regular JVM tests plus the tracked extension suite.
+      # Finalization runs no Native Image validation at this stage.
+      jvm_commands = [
+          [
+              f"{worktree_path}/gradlew",
+              task,
+              f"-Pcoordinates={coordinate}",
+              "--stacktrace",
+          ]
+          for task in ("javaTest", "codeCoverageTest")
       ]
-      try:
-          if subprocess.run(jvm_command, cwd=worktree_path).returncode != 0:
-              fail(2, "JVM tests failed")
-      except OSError as error:
-          fail(2, f"JVM tests could not run: {error}")
+      for jvm_command in jvm_commands:
+          try:
+              if subprocess.run(jvm_command, cwd=worktree_path).returncode != 0:
+                  fail(2, f"JVM tests failed: {jvm_command[1]}")
+          except OSError as error:
+              fail(2, f"JVM tests could not run: {error}")
 
       # Step 3: finalize separate API/deep JaCoCo metrics and guidance-only PGO
       # evidence from the recorded reports and target state.
@@ -496,8 +509,9 @@ states:
           "--deep-baseline", str(deep_baseline),
           "--deep-final", str(deep_final),
           "--output-dir", "runtime/code-coverage/finalization",
-          "--validation-command", " ".join(jvm_command),
       ]
+      for jvm_command in jvm_commands:
+          finalize_command += ["--validation-command", " ".join(jvm_command)]
       for target_state in sorted(Path("runtime/code-coverage/targets").glob("*.json")):
           finalize_command += ["--target-state", str(target_state)]
       finalize_env = dict(os.environ, PYTHONPATH=work_path)

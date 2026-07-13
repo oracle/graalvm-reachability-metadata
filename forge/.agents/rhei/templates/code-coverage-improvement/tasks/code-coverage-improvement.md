@@ -28,7 +28,10 @@
   - Write `runtime/code-coverage/issues/conversion.json` with exactly these
     fields: `coordinate`, `worktreePath`, `workPath`,
     `coverageSuiteAbsolutePath`, and `coverageSuiteRepoRelativePath`
-    (`tests/<group>/<artifact>/<version>/code-coverage`). The deterministic
+    (`tests/src/<group>/<artifact>/<test-version>/code-coverage-improvement`,
+    where `<test-version>` is the indexed test project directory that covers
+    the coordinate — resolve it with
+    `utility_scripts.metadata_index.resolve_test_dir`). The deterministic
     finalization program reads this record; all paths except the
     repository-relative suite path must be absolute.
 - Artifacts:
@@ -52,9 +55,10 @@
   - Confirm the library has an existing metadata or test entry in the source
     checkout.
   - Resolve the existing metadata-generation test location.
-  - Create or verify the dedicated suite at
-    `tests/<group>/<artifact>/<version>/code-coverage`, including
-    `src/test/java` and optional `src/test/resources` below that suite root.
+  - Create or verify the tracked extension suite at
+    `code-coverage-improvement/` inside the resolved test project, including
+    `src/test/java` and optional `src/test/resources` below that suite root,
+    plus a `suite.json` recording the true `coordinates` being improved.
   - Prepare source context for main sources, upstream tests, and documentation
     when available.
   - Record baseline facts without mutating metadata-generation tests.
@@ -119,8 +123,8 @@
 - Required work:
   - Read the resolved coordinate and absolute suite root from the conversion
     and preparation artifacts.
-  - Generate metadata with `./gradlew generateMetadata -Pcoordinates=<resolved coordinate> -PcodeCoverageSuitePath=<absolute suite root>`.
-  - Run `./gradlew nativeTest -Pcoordinates=<resolved coordinate> -PcodeCoverageSuitePath=<absolute suite root>`; if it fails, repair
+  - Generate metadata with `./gradlew generateMetadata -Pcoordinates=<resolved coordinate> -PincludeCodeCoverageSuite=true`.
+  - Run `./gradlew nativeTest -Pcoordinates=<resolved coordinate> -PincludeCodeCoverageSuite=true`; if it fails, repair
     metadata with the Codex `fix-missing-reachability-metadata` skill and re-run,
     up to the helper's fix budget.
   - If Native Image validation cannot be repaired automatically, request
@@ -134,8 +138,9 @@
 **State:** deep-measure
 **Prior:** Task code-coverage-prepare-native-metadata
 
-- Measurement program: `jacocoTestReport`, `nativeTestPGOSampling`,
-  `runNativeTestPGO`, one coherent call-tree CSV triplet, then
+- Measurement program: `jacocoCodeCoverageReport`, `nativeTestPGOSampling`,
+  `runNativeTestPGO` (both native tasks with `-PincludeCodeCoverageSuite=true`),
+  one coherent call-tree CSV triplet, then
   `forge/utility_scripts/code_coverage_profile_report.py`, driven by the
   `deep-measure` state.
 - Fixed report location: `runtime/code-coverage/discovery/discovery-report.json`
@@ -167,15 +172,16 @@
 - Program steps:
   1. Read `runtime/code-coverage/issues/conversion.json` for the resolved
      coordinate, worktree, work path, and coverage suite paths.
-  2. Run the JVM tests with the dedicated coverage suite:
-     `./gradlew javaTest -Pcoordinates=<resolved coordinate> -PcodeCoverageSuitePath=<absolute suite root> --stacktrace`.
+  2. Run the regular JVM tests and the tracked extension suite:
+     `./gradlew javaTest -Pcoordinates=<resolved coordinate> --stacktrace` and
+     `./gradlew codeCoverageTest -Pcoordinates=<resolved coordinate> --stacktrace`.
   3. Invoke `forge/utility_scripts/code_coverage_finalize.py` with the resolved
      `--coordinate`, repository-relative `--coverage-suite-path`, the API
      baseline/final reports (`api-cover-report-0.json` and the highest-iteration report),
      the deep baseline/final reports (`discovery-report-0.json` and the
      highest-iteration report), every `runtime/code-coverage/targets/*.json`
-     as repeated `--target-state` arguments, the exact JVM
-     test command as `--validation-command`, and
+     as repeated `--target-state` arguments, each exact JVM
+     test command as a repeated `--validation-command`, and
      `--output-dir runtime/code-coverage/finalization`.
 - Verification: the `finalize-verify` program then schema-validates
   `final-metrics.json` (`code_coverage_final_metrics` alias) and requires

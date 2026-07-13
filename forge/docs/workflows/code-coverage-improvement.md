@@ -47,17 +47,31 @@ The suites may target the same coordinate, but they must have separate
 locations, metrics, and publication evidence so improving broad API coverage
 does not change the meaning of metadata-generation coverage.
 
-Generated code coverage tests must be written under
-`tests/<group>/<artifact>/<version>/code-coverage`. The workflow may read the
-metadata-generation tests as context, but generated code coverage tests must not
-be placed in the metadata-generation suite.
-
+Generated code coverage tests are a tracked extension suite written under
+`tests/src/<group>/<artifact>/<test-version>/code-coverage-improvement`, where
+`<test-version>` is the indexed test project directory that covers the
+coordinate. The workflow may read the metadata-generation tests as context, but
+generated code coverage tests must not be placed in the metadata-generation
+suite, and the regular `src/test` sources are read-only for this workflow.
 
 The suite root must contain `src/test/java` and may contain
-`src/test/resources`. Workflow commands pass its absolute path as
-`codeCoverageSuitePath`; the coordinate Gradle project adds it only for those
-opt-in commands. Ordinary metadata-generation and validation commands that omit
-the property continue to use only their existing test source tree.
+`src/test/resources`, a `suite.json` recording the true coordinate being
+improved, and a `metadata/` directory with supplemental native-image configs
+the extension suite needs beyond the shipped metadata (each entry is a
+promotion candidate for `metadata/`). The build maps the suite to a dedicated
+`codeCoverage` source set with its own `codeCoverageTest` JVM task and a
+combined `jacocoCodeCoverageReport`; `jacocoTestReport` stays the
+regular-suite baseline. Native lanes opt in with
+`-PincludeCodeCoverageSuite=true`, which widens the test source set for that
+invocation because the plugin-managed native test binary is derived from it.
+Ordinary metadata-generation and validation commands that omit the property
+continue to use only their existing test source tree.
+
+When an extension test exposes a real metadata gap, the fix belongs in the
+shipped `metadata/`, and the test justifying it should be promoted into the
+regular metadata-generation suite so the invariant "shipped metadata is
+justified by always-run tests" holds; the extension suite remains an optional
+breadth layer.
 This workflow must not replace dynamic-access generation. It complements it:
 
 - Dynamic-access workflows answer whether tests cover metadata-relevant calls.
@@ -184,7 +198,8 @@ The Rhei template should decompose the workflow into these phases:
    internal methods through public behavior, records completed, skipped, and
    exhausted target state, and always returns to measurement.
 7. **Finalization** — a deterministic step program: read the machine-readable
-   conversion record, run the JVM tests with the dedicated coverage suite, and
+   conversion record, run the regular JVM tests (`javaTest`) and the tracked
+   extension suite (`codeCoverageTest`), and
    persist final metrics from the baseline and highest-iteration JaCoCo and
    deep reports. No Native Image validation runs at this stage; a nonzero exit
    code names the failed step.

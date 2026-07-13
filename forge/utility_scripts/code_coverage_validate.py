@@ -7,12 +7,13 @@
 JVM coverage validator for the code coverage improvement workflow
 (§WF-code-coverage-improvement.3.1, §WF-code-coverage-improvement-architecture).
 
-Public-API phase helper. It compiles the dedicated coverage suite and runs the
-JVM tests under JaCoCo (genuine Java-agent instrumentation, not the rejected PGO
-`.exec` path), and correlates exact JaCoCo method coverage against the phase-3
-API inventory to compute which public-API targets remain uncovered after the
-iteration. It writes the per-iteration JaCoCo report copy and the
-remaining-uncovered-API report that feeds the next API-cover pass.
+Public-API phase helper. It compiles the tracked code-coverage-improvement
+extension suite and runs the regular plus extension JVM tests under JaCoCo
+(genuine Java-agent instrumentation, not the rejected PGO `.exec` path), and
+correlates exact JaCoCo method coverage against the phase-3 API inventory to
+compute which public-API targets remain uncovered after the iteration. It
+writes the per-iteration JaCoCo report copy and the remaining-uncovered-API
+report that feeds the next API-cover pass.
 
 Native Image and reachability-metadata concerns are intentionally NOT here:
 JaCoCo coverage measurement needs only the JVM. Metadata is generated and
@@ -22,13 +23,15 @@ succeed without rebuilding a native image on every API-cover iteration.
 
 The deterministic, library-execution-free core is `correlate_jacoco`: it joins
 JaCoCo `<method>` entries against API inventory target ids. The Gradle steps are
-thin wrappers over the existing harness tasks (`compileTestJava`, `javaTest`,
-`jacocoTestReport`).
+thin wrappers over the existing harness tasks (`compileTestJava`,
+`codeCoverageTest`, `jacocoCodeCoverageReport`). The extension suite lives at
+the tracked `code-coverage-improvement/` directory inside the coordinate's
+indexed test project (§forge/WF-code-coverage-improvement.3.1).
 
 Usage:
   python3 utility_scripts/code_coverage_validate.py \
     --repo-path <worktree> --coordinate group:artifact:version \
-    --api-inventory <api-inventory.json> --coverage-suite <suite-root> \
+    --api-inventory <api-inventory.json> \
     --iteration 1 \
     --output-dir runtime/code-coverage/validation [--skip-gradle]
 """
@@ -118,23 +121,28 @@ def correlate_jacoco(inventory: dict, jacoco_xml_paths: list[str]) -> dict:
 
 
 def find_jacoco_reports(repo_path: str, group: str, artifact: str, version: str) -> list[str]:
-    """Locate the one deterministic report in the coordinate's indexed test project."""
+    """Locate the one deterministic combined report in the coordinate's indexed test project."""
     module_dir: str = resolve_test_dir(repo_path, group, artifact, version)
     report_path: str = os.path.join(
-        module_dir, "build", "reports", "jacoco", "test", "jacocoTestReport.xml",
+        module_dir, "build", "reports", "jacoco",
+        "jacocoCodeCoverageReport", "jacocoCodeCoverageReport.xml",
     )
     return [report_path] if os.path.isfile(report_path) else []
+
+
+def resolve_coverage_suite_dir(repo_path: str, group: str, artifact: str, version: str) -> str:
+    """Return the tracked extension-suite directory inside the indexed test project."""
+    module_dir: str = resolve_test_dir(repo_path, group, artifact, version)
+    return os.path.join(module_dir, "code-coverage-improvement")
 
 
 def _gradle_step(
         repo_path: str,
         task: str,
         coordinate: str,
-        coverage_suite_path: str,
 ) -> dict:
     coordinate_arg: str = shlex.quote(f"-Pcoordinates={coordinate}")
-    suite_arg: str = shlex.quote(f"-PcodeCoverageSuitePath={coverage_suite_path}")
-    command: str = f"./gradlew {task} {coordinate_arg} {suite_arg} --stacktrace"
+    command: str = f"./gradlew {task} {coordinate_arg} --stacktrace"
     output: str = run_gradle_test_command(
         command,
         working_dir=repo_path,
@@ -233,15 +241,14 @@ def run_validation(
     gradle_steps: list[dict] = []
     if not skip_gradle:
         resolved_suite_path: str = os.path.abspath(
-            coverage_suite_path or os.path.join(
-                repo_path, "tests", group, artifact, version, "code-coverage",
-            )
+            coverage_suite_path
+            or resolve_coverage_suite_dir(repo_path, group, artifact, version)
         )
-        if not os.path.isdir(resolved_suite_path):
+        if coverage_suite_path is not None and not os.path.isdir(resolved_suite_path):
             raise ValueError(f"Code coverage suite does not exist: '{resolved_suite_path}'.")
-        for task in ("compileTestJava", "javaTest", "jacocoTestReport"):
+        for task in ("compileTestJava", "codeCoverageTest", "jacocoCodeCoverageReport"):
             step: dict = _gradle_step(
-                repo_path, task, coordinate, resolved_suite_path,
+                repo_path, task, coordinate,
             )
             gradle_steps.append(step)
             if not step["succeeded"]:
@@ -269,7 +276,7 @@ def main() -> None:
     parser.add_argument(
         "--coverage-suite",
         default=None,
-        help="Dedicated suite root; defaults to tests/<group>/<artifact>/<version>/code-coverage.",
+        help="Extension suite root; defaults to <indexed test project>/code-coverage-improvement.",
     )
     parser.add_argument("--iteration", type=int, default=1, help="API-cover iteration number.")
     parser.add_argument("--output-dir", required=True, help="Directory for validation artifacts.")

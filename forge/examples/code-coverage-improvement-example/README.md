@@ -41,7 +41,7 @@ schema-validated target state so skipped/exhausted methods rotate out of the
 prompt.
 
 Generated tests are constrained to
-`tests/<group>/<artifact>/<version>/code-coverage/src/test/java` (plus optional
+`tests/src/<group>/<artifact>/<test-version>/code-coverage-improvement/src/test/java` (plus optional
 `src/test/resources`), while runtime evidence stays under
 `runtime/code-coverage/` inside the Rhei workspace. The pipeline tasks run
 unreviewed; finalization executes as a deterministic step program (JVM tests
