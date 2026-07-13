@@ -39,7 +39,8 @@ class LibraryFinalizationTests(unittest.TestCase):
                     side_effect=[False, True],
                 ) as check_metadata, \
                 patch(
-                    "ai_workflows.agents.codex_agent.CodexAgent",
+                    "utility_scripts.library_finalization._run_codex_check_metadata_fix",
+                    return_value=True,
                 ) as codex, \
                 patch("utility_scripts.library_finalization.run_style_fix_and_checks", return_value=True):
             result = run_library_finalization(
@@ -52,13 +53,7 @@ class LibraryFinalizationTests(unittest.TestCase):
 
         self.assertTrue(result)
         self.assertEqual(check_metadata.call_count, 2)
-        codex.assert_called_once_with(
-            model_name="gpt-5.6-terra",
-            working_dir=os.getcwd(),
-            task_type="check-metadata-files",
-            library="org.example:demo:1.0.0",
-        )
-        codex.return_value.send_prompt.assert_called_once()
+        codex.assert_called_once_with(os.getcwd(), "org.example:demo:1.0.0")
         self.assertEqual(gradle.call_count, 3)
 
     def test_fails_when_codex_cannot_fix_metadata_validation(self) -> None:
@@ -68,10 +63,10 @@ class LibraryFinalizationTests(unittest.TestCase):
                     return_value=False,
                 ) as check_metadata, \
                 patch(
-                    "ai_workflows.agents.codex_agent.CodexAgent",
+                    "utility_scripts.library_finalization._run_codex_check_metadata_fix",
+                    return_value=False,
                 ) as codex, \
                 patch("utility_scripts.library_finalization.run_style_fix_and_checks") as style_checks:
-            codex.return_value.send_prompt.side_effect = RuntimeError("failed")
             result = run_library_finalization(
                 repo_path=os.getcwd(),
                 library="org.example:demo:1.0.0",

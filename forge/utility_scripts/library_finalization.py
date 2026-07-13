@@ -48,6 +48,31 @@ def _run_gradle_command(repo_path: str, command: list[str]) -> bool:
     return True
 
 
+def _run_codex_check_metadata_fix(repo_path: str, library: str) -> bool:
+    """Ask Codex to repair an unresolved metadata validation failure."""
+    prompt = (
+        f"Fix the checkMetadataFiles failure for {library}. "
+        f"Reproduce it with ./gradlew checkMetadataFiles -Pcoordinates={library}, "
+        "make the minimal fix, and rerun the command until it passes."
+    )
+    result = subprocess.run(
+        [
+            "codex",
+            "exec",
+            "--dangerously-bypass-approvals-and-sandbox",
+            "-m",
+            "gpt-5.6-terra",
+            prompt,
+        ],
+        cwd=repo_path,
+        check=False,
+    )
+    if result.returncode != 0:
+        print(f"ERROR: Codex metadata fix failed for {library}.", file=sys.stderr)
+        return False
+    return True
+
+
 def _extract_missing_allowed_packages(check_metadata_output: str) -> set[str]:
     """Extract package names from TypeReached entries for index.json allowed-packages."""
     packages: set[str] = set()
@@ -233,23 +258,8 @@ def run_library_finalization(
         library_version=library_version,
         log_stage_name="check-metadata-files",
     ):
-        from ai_workflows.agents.codex_agent import CodexAgent  # pylint: disable=import-outside-toplevel
-
         log_stage("check-metadata-files", f"Running Codex metadata fix for {library}")
-        codex = CodexAgent(
-            model_name="gpt-5.6-terra",
-            working_dir=repo_path,
-            task_type="check-metadata-files",
-            library=library,
-        )
-        try:
-            codex.send_prompt(
-                f"Fix the checkMetadataFiles failure for {library}. "
-                f"Reproduce it with ./gradlew checkMetadataFiles -Pcoordinates={library}, "
-                "make the minimal fix, and rerun the command until it passes."
-            )
-        except RuntimeError as exception:
-            print(f"ERROR: Codex metadata fix failed for {library}: {exception}", file=sys.stderr)
+        if not _run_codex_check_metadata_fix(repo_path, library):
             return False
         log_stage("split-test-only-metadata", f"Rerunning splitTestOnlyMetadata for {library}")
         if not _run_gradle_command(repo_path, ["./gradlew", "splitTestOnlyMetadata", f"-Pcoordinates={library}"]):
