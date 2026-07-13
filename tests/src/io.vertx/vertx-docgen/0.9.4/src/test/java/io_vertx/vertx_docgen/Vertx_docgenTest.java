@@ -28,22 +28,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class Vertx_docgenTest {
     @Test
-    void generatesAsciidocFromAnnotatedPackageDocumentation(@TempDir Path temporaryDirectory) throws IOException {
+    void generatesAsciidocWithJavaLinksAndLiteralJavadoc(@TempDir Path temporaryDirectory) throws IOException {
         Path sourceDirectory = temporaryDirectory.resolve("sources");
         Path outputDirectory = temporaryDirectory.resolve("documentation");
-        Path classDirectory = temporaryDirectory.resolve("classes");
         Path packageInfo = sourceDirectory.resolve("example/docs/package-info.java");
         Path greeting = sourceDirectory.resolve("example/docs/Greeting.java");
         Files.createDirectories(packageInfo.getParent());
-        Files.createDirectories(outputDirectory);
-        Files.createDirectories(classDirectory);
         Files.writeString(packageInfo, """
                 /**
                  * = Greeting guide
                  *
-                 * This guide documents {@link Greeting} and uses {@code greeting} as an example.
+                 * This guide documents {@link example.docs.Greeting},
+                 * {@link example.docs.Greeting#message(String) a personalized greeting}, and
+                 * {@link example.docs.Greeting#DEFAULT_GREETING}. It uses {@code greeting} as an example.
                  */
-                @io.vertx.docgen.Document(fileName = "greeting-guide.adoc")
+                @io.vertx.docgen.Document(fileName = "guides/greeting-guide.adoc")
                 package example.docs;
                 """, StandardCharsets.UTF_8);
         Files.writeString(greeting, """
@@ -51,12 +50,58 @@ public class Vertx_docgenTest {
 
                 /** A documented greeting type. */
                 public class Greeting {
+                    public static final String DEFAULT_GREETING = "Hello";
+
                     /** Returns a greeting for the supplied name. */
                     public String message(String name) {
-                        return "Hello " + name;
+                        return DEFAULT_GREETING + " " + name;
                     }
                 }
                 """, StandardCharsets.UTF_8);
+
+        compileDocumentation(sourceDirectory, outputDirectory, List.of(packageInfo, greeting));
+
+        Path generatedGuide = outputDirectory.resolve("guides/greeting-guide.adoc");
+        assertThat(generatedGuide).exists();
+        assertThat(Files.readString(generatedGuide, StandardCharsets.UTF_8))
+                .contains("= Greeting guide")
+                .contains("`link:../../apidocs/example/docs/Greeting.html[Greeting]`")
+                .contains("`link:../../apidocs/example/docs/Greeting.html#message-java.lang.String-[a personalized greeting]`")
+                .contains("`link:../../apidocs/example/docs/Greeting.html#DEFAULT_GREETING[Greeting.DEFAULT_GREETING]`")
+                .contains("`greeting`");
+    }
+
+    @Test
+    void usesTheQualifiedPackageNameWhenDocumentFileNameIsNotConfigured(@TempDir Path temporaryDirectory)
+            throws IOException {
+        Path sourceDirectory = temporaryDirectory.resolve("sources");
+        Path outputDirectory = temporaryDirectory.resolve("documentation");
+        Path packageInfo = sourceDirectory.resolve("example/defaultdoc/package-info.java");
+        Files.createDirectories(packageInfo.getParent());
+        Files.writeString(packageInfo, """
+                /**
+                 * = Default document
+                 *
+                 * This document relies on the default file name.
+                 */
+                @io.vertx.docgen.Document
+                package example.defaultdoc;
+                """, StandardCharsets.UTF_8);
+
+        compileDocumentation(sourceDirectory, outputDirectory, List.of(packageInfo));
+
+        Path generatedGuide = outputDirectory.resolve("example.defaultdoc.adoc");
+        assertThat(generatedGuide).exists();
+        assertThat(Files.readString(generatedGuide, StandardCharsets.UTF_8))
+                .contains("= Default document")
+                .contains("This document relies on the default file name.");
+    }
+
+    private static void compileDocumentation(
+            Path sourceDirectory, Path outputDirectory, List<Path> sourceFiles) throws IOException {
+        Path classDirectory = sourceDirectory.resolveSibling("classes");
+        Files.createDirectories(outputDirectory);
+        Files.createDirectories(classDirectory);
 
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         assertThat(compiler).as("system Java compiler").isNotNull();
@@ -64,27 +109,17 @@ public class Vertx_docgenTest {
         try (StandardJavaFileManager fileManager = compiler.getStandardFileManager(
                 diagnostics, Locale.ROOT, StandardCharsets.UTF_8)) {
             fileManager.setLocationFromPaths(StandardLocation.CLASS_OUTPUT, List.of(classDirectory));
-            List<String> options = List.of(
-                    "-proc:only",
-                    "-Adocgen.output=" + outputDirectory);
             JavaCompiler.CompilationTask task = compiler.getTask(
                     null,
                     fileManager,
                     diagnostics,
-                    options,
+                    List.of("-proc:only", "-Adocgen.output=" + outputDirectory),
                     null,
-                    fileManager.getJavaFileObjectsFromPaths(List.of(packageInfo, greeting)));
+                    fileManager.getJavaFileObjectsFromPaths(sourceFiles));
             task.setProcessors(List.of(new DocGenProcessor(new JavaDocGenerator())));
 
-            assertThat(task.call()).as(diagnosticText(diagnostics)).isTrue();
+            assertThat(task.call()).as(diagnosticText(diagnostics.getDiagnostics())).isTrue();
         }
-
-        Path generatedGuide = outputDirectory.resolve("greeting-guide.adoc");
-        assertThat(generatedGuide).exists();
-        assertThat(Files.readString(generatedGuide, StandardCharsets.UTF_8))
-                .contains("Greeting guide")
-                .contains("Greeting")
-                .contains("greeting");
     }
 
     private static String diagnosticText(List<Diagnostic<? extends JavaFileObject>> diagnostics) {
