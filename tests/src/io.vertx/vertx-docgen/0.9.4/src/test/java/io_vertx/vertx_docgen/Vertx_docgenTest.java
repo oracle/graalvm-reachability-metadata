@@ -72,6 +72,42 @@ public class Vertx_docgenTest {
     }
 
     @Test
+    void includesAnnotatedExampleMethodSource(@TempDir Path temporaryDirectory) throws IOException {
+        Path sourceDirectory = temporaryDirectory.resolve("sources");
+        Path outputDirectory = temporaryDirectory.resolve("documentation");
+        Path packageInfo = sourceDirectory.resolve("example/source/package-info.java");
+        Path example = sourceDirectory.resolve("example/source/GreetingExample.java");
+        Files.createDirectories(packageInfo.getParent());
+        Files.writeString(packageInfo, """
+                /**
+                 * = Source guide
+                 *
+                 * {@link example.source.GreetingExample#greeting(String)}
+                 */
+                @io.vertx.docgen.Document(fileName = "guides/source-guide.adoc")
+                package example.source;
+                """, StandardCharsets.UTF_8);
+        Files.writeString(example, """
+                package example.source;
+
+                public class GreetingExample {
+                    @io.vertx.docgen.Source
+                    public static String greeting(String name) {
+                        return "Hello " + name;
+                    }
+                }
+                """, StandardCharsets.UTF_8);
+
+        compileDocumentation(sourceDirectory, outputDirectory, List.of(packageInfo, example));
+
+        Path generatedGuide = outputDirectory.resolve("guides/source-guide.adoc");
+        assertThat(generatedGuide).exists();
+        assertThat(Files.readString(generatedGuide, StandardCharsets.UTF_8))
+                .contains("return \"Hello \" + name;")
+                .doesNotContain("GreetingExample.html#greeting-java.lang.String-");
+    }
+
+    @Test
     void usesTheQualifiedPackageNameWhenDocumentFileNameIsNotConfigured(@TempDir Path temporaryDirectory)
             throws IOException {
         Path sourceDirectory = temporaryDirectory.resolve("sources");
