@@ -1,0 +1,70 @@
+{
+  "add_new_library_support:2026-07-13": {
+    "timestamp": "2026-07-13T13:16:24.638270Z",
+    "library": "org.glassfish.jersey.core:jersey-server:3.0.8",
+    "starting_commit": "f716993a4452a503a5b4b86b5f94167500f8d822",
+    "ending_commit": "a6b354f83fd64e4bda7e58d46992c63b1692500b",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
+    "agent": "pi",
+    "model": "gpt-5.6-terra",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 7778,
+      "issue_label": "library-new-request",
+      "library": "org.glassfish.jersey.core:jersey-server:3.0.8",
+      "summary": "jersey-server does not bring an InjectionManager implementation transitively; meaningful server bootstrap via ApplicationHandler requires Jersey's HK2 provider.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.glassfish.jersey.inject:jersey-hk2:3.0.8",
+          "scope": "testImplementation",
+          "reason": "jersey-server's own 3.0.8 tests add this provider; it supplies the InjectionManagerFactory needed when ResourceConfig/ApplicationHandler bootstraps."
+        }
+      ],
+      "agent_guidance": "Exercise a ResourceConfig with annotated JAX-RS resources/providers through an in-process ApplicationHandler; no Docker image, environment variable, or system property is required.",
+      "risks": [
+        "A real HTTP endpoint would additionally require a Jersey container adapter such as Grizzly, but it is not necessary for meaningful jersey-server coverage."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.glassfish.jersey.inject:jersey-hk2:3.0.8",
+          "result": "applied",
+          "target": "tests/src/org.glassfish.jersey.core/jersey-server/3.0.8/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#7778 Support for org.glassfish.jersey.core:jersey-server:3.0.8; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-terra",
+      "input_tokens_used": 109318,
+      "output_tokens_used": 2377,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.glassfish.jersey.core:jersey-server:3.0.8/library-preparation-preflight/pi-generation-2026-07-13T11-28-08-400047Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 582800,
+      "cached_input_tokens_used": 5002240,
+      "output_tokens_used": 51533,
+      "iterations": 22,
+      "cost_usd": 3.4806,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}
