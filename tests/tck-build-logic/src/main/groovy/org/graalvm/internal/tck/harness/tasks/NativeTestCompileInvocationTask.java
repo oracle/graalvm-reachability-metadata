@@ -22,7 +22,7 @@ public abstract class NativeTestCompileInvocationTask extends AllCoordinatesExec
                 "nativeTestCompile"
         ));
         appendProperty(command, "metadataConfigDirs");
-        appendProperty(command, "codeCoverageSuitePath");
+        appendProperty(command, "includeCodeCoverageSuite");
         return command;
     }
 

@@ -21,7 +21,7 @@ public abstract class CompileTestJavaInvocationTask extends AllCoordinatesExecTa
                 tckExtension.getRepoRoot().get().getAsFile().toPath().resolve("gradlew").toString(),
                 "compileTestJava"
         ));
-        appendProperty(command, "codeCoverageSuitePath");
+        appendProperty(command, "includeCodeCoverageSuite");
         return command;
     }
 

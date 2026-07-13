@@ -29,10 +29,9 @@ class CodeCoverageSuiteInvocationTaskTests {
     Path tempDir;
 
     @Test
-    void coverageWorkflowTasksForwardDedicatedSuitePath() throws IOException {
+    void coverageWorkflowTasksForwardSuiteInclusionFlag() throws IOException {
         Project project = createProject();
-        String suitePath = tempDir.resolve("coverage-suite").toString();
-        project.getExtensions().getExtraProperties().set("codeCoverageSuitePath", suitePath);
+        project.getExtensions().getExtraProperties().set("includeCodeCoverageSuite", "true");
 
         List<AllCoordinatesExecTask> tasks = List.of(
                 project.getTasks().create("coverageCompile", CompileTestJavaInvocationTask.class),
@@ -48,8 +47,20 @@ class CodeCoverageSuiteInvocationTaskTests {
         for (AllCoordinatesExecTask task : tasks) {
             assertThat(task.commandFor("com.example:demo:1.0.0"))
                     .as(task.getName())
-                    .contains("-PcodeCoverageSuitePath=" + suitePath);
+                    .contains("-PincludeCodeCoverageSuite=true");
         }
+    }
+
+    @Test
+    void extensionSuiteTasksInvokeDedicatedGradleTasks() throws IOException {
+        Project project = createProject();
+
+        assertThat(project.getTasks().create("coverageSuiteTest", CodeCoverageTestInvocationTask.class)
+                .commandFor("com.example:demo:1.0.0"))
+                .contains("codeCoverageTest");
+        assertThat(project.getTasks().create("coverageSuiteReport", JacocoCodeCoverageReportInvocationTask.class)
+                .commandFor("com.example:demo:1.0.0"))
+                .contains("jacocoCodeCoverageReport");
     }
 
     private Project createProject() throws IOException {

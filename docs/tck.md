@@ -119,7 +119,9 @@ These emit the GitHub Actions matrices the workflows consume, all driven by
 
 | Task | Output |
 | --- | --- |
-| `jacocoTestReport` | JaCoCo coverage for a coordinate. |
+| `jacocoTestReport` | JaCoCo coverage for a coordinate's regular test suite. |
+| `codeCoverageTest` | Run the tracked `code-coverage-improvement/` extension suite of a coordinate on the JVM. |
+| `jacocoCodeCoverageReport` | Combined JaCoCo coverage over the regular and extension suites (§forge/WF-code-coverage-improvement.3.1). |
 | `generateDynamicAccessCoverageReport`, `analyzeExternalLibraryDynamicAccess` | Dynamic-access coverage reporting (§FS-repository-functional-spec.4.5). |
 | `nativeTestPGOSampling` | Build coordinate native tests with sampled PGO and the analysis call-tree CSV dump for Forge deep-coverage navigation (§forge/WF-code-coverage-improvement.3.2). |
 | `runNativeTestPGO` | Run the sampling image and write its sampled `.iprof` to the required absolute `pgoProfilePath`. |
@@ -142,14 +144,17 @@ nested tracked API ends the caller search so delegated JDK calls do not cover a
 different API with the same method name. Line-based matching stays the primary
 path and is unchanged for jars that carry line information.
 
-The code-coverage workflow supplies an absolute `codeCoverageSuitePath` whose
-suite contains `src/test/java` and may contain `src/test/resources`. Compile,
-JVM test, JaCoCo, Checkstyle, native compile/run, and sampled-PGO root tasks
-forward that property to the coordinate project. When the property is absent,
-the dedicated suite is not added to the metadata-generation test source set.
-This keeps broad coverage tests in their separate
-`tests/<group>/<artifact>/<version>/code-coverage` tree while reusing the
-coordinate's dependencies and build configuration
+The code-coverage extension suite lives at the tracked
+`code-coverage-improvement/` directory inside a coordinate's test project
+(`src/test/java`, optional `src/test/resources`, optional supplemental
+`metadata/`). It maps to a dedicated `codeCoverage` source set, so ordinary
+metadata-generation and validation commands never compile or run it. Native
+lanes opt in with `-PincludeCodeCoverageSuite=true`, which widens the test
+source set for that invocation because the plugin-managed native test binary
+is derived from it; compile, JVM test, JaCoCo, Checkstyle, native compile/run,
+and sampled-PGO root tasks forward that property to the coordinate project.
+This keeps broad coverage tests separate from metadata-generation tests while
+reusing the coordinate's dependencies and build configuration
 (§forge/WF-code-coverage-improvement.3.1).
 
 `nativeTestPGOSampling` builds with `--pgo-sampling`, a positive

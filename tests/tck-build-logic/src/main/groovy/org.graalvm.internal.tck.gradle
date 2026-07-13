@@ -25,28 +25,32 @@ plugins {
 }
 
 
-// §forge/WF-code-coverage-improvement.3.1: broad coverage tests are opt-in and
-// remain outside the metadata-generation test source tree.
-String codeCoverageSuitePath = providers.gradleProperty("codeCoverageSuitePath")
-        .getOrElse("").trim()
-if (!codeCoverageSuitePath.isBlank()) {
-    File suiteDirectory = new File(codeCoverageSuitePath)
-    if (!suiteDirectory.isAbsolute()) {
-        throw new GradleException(
-                "'codeCoverageSuitePath' must be absolute, got '${codeCoverageSuitePath}'."
-        )
+// §forge/WF-code-coverage-improvement.3.1: coverage-improvement tests are a
+// tracked extension suite in code-coverage-improvement/, kept out of the
+// metadata-generation test source set. Native lanes opt in with
+// -PincludeCodeCoverageSuite=true because the plugin-managed test binary is
+// derived from the test source set.
+File codeCoverageSuiteDir = new File(projectDir, "code-coverage-improvement")
+boolean includeCodeCoverageSuite = providers.gradleProperty("includeCodeCoverageSuite")
+        .map { it.toBoolean() }.getOrElse(false)
+
+sourceSets {
+    codeCoverage {
+        java.srcDir(new File(codeCoverageSuiteDir, "src/test/java"))
+        resources.srcDir(new File(codeCoverageSuiteDir, "src/test/resources"))
     }
-    File javaSources = new File(suiteDirectory, "src/test/java")
-    if (!javaSources.isDirectory()) {
-        throw new GradleException(
-                "Coverage suite must contain src/test/java: ${suiteDirectory.absolutePath}"
-        )
-    }
-    sourceSets.test.java.srcDir(javaSources)
-    File resources = new File(suiteDirectory, "src/test/resources")
-    if (resources.isDirectory()) {
-        sourceSets.test.resources.srcDir(resources)
-    }
+}
+
+configurations {
+    codeCoverageImplementation.extendsFrom(testImplementation)
+    codeCoverageRuntimeOnly.extendsFrom(testRuntimeOnly)
+}
+
+if (includeCodeCoverageSuite) {
+    // Widen the test source set for this invocation only, so the native test
+    // image executes the regular suite plus the extension suite.
+    sourceSets.test.java.srcDir(new File(codeCoverageSuiteDir, "src/test/java"))
+    sourceSets.test.resources.srcDir(new File(codeCoverageSuiteDir, "src/test/resources"))
 }
 def skipJacoco = providers.gradleProperty("skipJacoco").map { it.toBoolean() }.getOrElse(false)
 
@@ -168,6 +172,8 @@ tasks.register("checkTestTimeoutAnnotations") {
     description = "Rejects JUnit @Timeout annotations above ${maxJUnitTestTimeoutSeconds} seconds."
     group = JavaBasePlugin.VERIFICATION_GROUP
     def testSources = fileTree("src/test") {
+        include "**/*.java", "**/*.kt", "**/*.groovy", "**/*.scala"
+    } + fileTree("code-coverage-improvement/src/test") {
         include "**/*.java", "**/*.kt", "**/*.groovy", "**/*.scala"
     }
     inputs.files(testSources)
@@ -459,6 +465,18 @@ Provider<List<String>> pgoBuildArgs = providers.provider {
     return buildArgs
 }
 
+Provider<List<String>> codeCoverageSuiteBuildArgs = providers.provider {
+    List<String> buildArgs = []
+    File suiteMetadataDir = new File(codeCoverageSuiteDir, "metadata")
+    if (includeCodeCoverageSuite && suiteMetadataDir.isDirectory()) {
+        // Supplemental configs the extension suite needs beyond the shipped
+        // metadata; each entry is a promotion candidate for metadata/
+        // (§forge/WF-code-coverage-improvement.3.1).
+        buildArgs.add("-H:ConfigurationFileDirectories=${suiteMetadataDir.absolutePath}")
+    }
+    return buildArgs
+}
+
 tasks.named("nativeTestCompile", BuildNativeImageTask).configure { BuildNativeImageTask task ->
     task.doFirst {
         File nativeImageOutputDirectory = task.outputFile.get().asFile.parentFile
@@ -633,6 +651,28 @@ tasks.named('test') {
     dependsOn tasks.named("checkTestTimeoutAnnotations")
 }
 
+// §forge/WF-code-coverage-improvement.3.1: the extension suite runs and is
+// measured separately from the metadata-justifying tests.
+tasks.register("codeCoverageTest", Test) {
+    description = "Runs the code-coverage-improvement extension suite on the JVM"
+    group = JavaBasePlugin.VERIFICATION_GROUP
+    testClassesDirs = sourceSets.codeCoverage.output.classesDirs
+    classpath = sourceSets.codeCoverage.runtimeClasspath
+    useJUnitPlatform()
+    dependsOn tasks.named("checkTestTimeoutAnnotations")
+    onlyIf { !sourceSets.codeCoverage.java.isEmpty() }
+}
+
+// Combined regular + extension coverage; jacocoTestReport stays the
+// regular-suite baseline, so the extension delta is the difference.
+tasks.register("jacocoCodeCoverageReport", org.gradle.testing.jacoco.tasks.JacocoReport) {
+    description = "Generates the combined JaCoCo report for the regular and code-coverage-improvement suites"
+    group = JavaBasePlugin.VERIFICATION_GROUP
+    dependsOn tasks.named("codeCoverageTest")
+    executionData fileTree(layout.buildDirectory.dir("jacoco")) { include "*.exec" }
+    sourceDirectories.setFrom(files())
+}
+
 tasks.named("nativeTest", NativeRunTask).configure { NativeRunTask task ->
     task.runtimeArgs.addAll(junitTimeoutRuntimeArgs)
 }
@@ -720,6 +760,7 @@ graalvmNative {
             buildArgs.addAll(nativeImageArgs)
             buildArgs.addAll(nativeTraceBuildArgs)
             buildArgs.addAll(pgoBuildArgs)
+            buildArgs.addAll(codeCoverageSuiteBuildArgs)
             if (generateDynamicAccessReport) {
                 buildArgs.addAll(providers.provider {
                     DynamicAccessUtils.buildArgsForClasspathEntries(resolveTestedLibraryJars())

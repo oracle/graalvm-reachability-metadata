@@ -147,14 +147,12 @@ class GenerateMetadataTaskTests {
     }
 
     @Test
-    void runForwardsDedicatedCoverageSuiteToAgentTest() throws IOException {
+    void runForwardsCoverageSuiteInclusionToAgentTest() throws IOException {
         Coordinates coordinates = Coordinates.parse("com.example:demo:1.0.0");
         Project project = createProject();
         prepareTestProject(coordinates, "plugins { id 'java' }\n");
-        Path suitePath = tempDir.resolve("tests/com.example/demo/1.0.0/code-coverage");
-        Files.createDirectories(suitePath.resolve("src/test/java"));
         project.getExtensions().getExtraProperties().set(
-                "codeCoverageSuitePath", suitePath.toString()
+                "includeCodeCoverageSuite", "true"
         );
         TestGenerateMetadataTask task = registerGenerateMetadataTask(
                 project, "generateMetadata", coordinates
@@ -163,7 +161,7 @@ class GenerateMetadataTaskTests {
         task.run();
 
         assertThat(readGradlewInvocations()).contains(
-                "-Pagent -PcodeCoverageSuitePath=" + suitePath + " test"
+                "-Pagent -PincludeCodeCoverageSuite=true test"
         );
     }
 
