@@ -21,6 +21,8 @@ SCHEMA_NAME_MAP = {
     "benchmark_run_metrics": "benchmark_run_metrics_schema.json",
     "benchmark_suite": "benchmark_suite_schema.json",
     "continuation_marker": "continuation_marker_schema.json",
+    "code_coverage_final_metrics": "code_coverage_final_metrics_schema.json",
+    "code_coverage_target_state": "code_coverage_target_state_schema.json",
     "strategy": "strategy_schema.json",
 }
 
@@ -75,6 +77,16 @@ def validate_benchmark_suite(file_path: str):
     validate_json_file(file_path, "benchmark_suite")
 
 
+def validate_code_coverage_final_metrics(file_path: str):
+    """Validate against `schemas/code_coverage_final_metrics_schema.json`."""
+    validate_json_file(file_path, "code_coverage_final_metrics")
+
+
+def validate_code_coverage_target_state(file_path: str):
+    """Validate against `schemas/code_coverage_target_state_schema.json`."""
+    validate_json_file(file_path, "code_coverage_target_state")
+
+
 def validate_strategy(file_path: str):
     """Validate against `schemas/strategy_schema.json`."""
     validate_json_file(file_path, "strategy")
@@ -92,13 +104,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "schema_name",
-        choices=[
-            "run_metrics_output",
-            "benchmark_run_metrics",
-            "benchmark_suite",
-            "continuation_marker",
-            "strategy",
-        ],
+        choices=sorted(SCHEMA_NAME_MAP),
         help="Schema alias to validate against.",
     )
     parser.add_argument("file_path", help="Path to the JSON file to validate.")

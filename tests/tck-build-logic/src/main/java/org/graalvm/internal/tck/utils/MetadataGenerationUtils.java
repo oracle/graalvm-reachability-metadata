@@ -289,13 +289,30 @@ public final class MetadataGenerationUtils {
      * the results into the computed metadata directory for the given coordinates.
      */
     public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew) {
+        collectMetadataWithCoverageSuite(execOps, testsDirectory, layout, coordinates, gradlew, null);
+    }
+
+    public static void collectMetadataWithCoverageSuite(
+            ExecOperations execOps,
+            Path testsDirectory,
+            ProjectLayout layout,
+            String coordinates,
+            Path gradlew,
+            String codeCoverageSuitePath
+    ) {
         Path metadataDirectory = GeneralUtils.computeMetadataDirectory(layout, coordinates);
         try {
             Path agentMetadataDirectory = Files.createTempDirectory("generate-metadata-agent-");
             Path mergedMetadataDirectory = Files.createTempDirectory("generate-metadata-merged-");
             try {
-                collectMetadata(execOps, testsDirectory, layout, coordinates, gradlew, agentMetadataDirectory);
-                mergeMetadataIntoDurableDirectory(execOps, layout, gradlew, metadataDirectory, agentMetadataDirectory, mergedMetadataDirectory);
+                collectMetadata(
+                        execOps, testsDirectory, layout, coordinates, gradlew,
+                        agentMetadataDirectory, codeCoverageSuitePath
+                );
+                mergeMetadataIntoDurableDirectory(
+                        execOps, layout, gradlew, metadataDirectory,
+                        agentMetadataDirectory, mergedMetadataDirectory
+                );
             } finally {
                 deleteRecursively(agentMetadataDirectory);
                 deleteRecursively(mergedMetadataDirectory);
@@ -310,10 +327,30 @@ public final class MetadataGenerationUtils {
      * the results into the requested output directory without durable merging.
      */
     public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew, Path metadataDirectory) {
+        collectMetadata(execOps, testsDirectory, layout, coordinates, gradlew, metadataDirectory, null);
+    }
+
+    public static void collectMetadata(
+            ExecOperations execOps,
+            Path testsDirectory,
+            ProjectLayout layout,
+            String coordinates,
+            Path gradlew,
+            Path metadataDirectory,
+            String codeCoverageSuitePath
+    ) {
         Path resolvedMetadataDirectory = resolveMetadataDirectory(layout, metadataDirectory);
+        List<String> testArguments = new ArrayList<>(List.of("-Pagent"));
+        if (codeCoverageSuitePath != null && !codeCoverageSuitePath.isBlank()) {
+            testArguments.add("-PcodeCoverageSuitePath=" + codeCoverageSuitePath);
+        }
+        testArguments.add("test");
 
         GeneralUtils.printInfo("Generating metadata");
-        GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("-Pagent", "test"), "Cannot generate metadata", testsDirectory);
+        GeneralUtils.invokeCommand(
+                execOps, gradlew.toString(), testArguments,
+                "Cannot generate metadata", testsDirectory
+        );
 
         GeneralUtils.printInfo("Performing metadata copy");
         GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("metadataCopy", "--task", "test", "--dir", resolvedMetadataDirectory.toString()), "Cannot perform metadata copy", testsDirectory);

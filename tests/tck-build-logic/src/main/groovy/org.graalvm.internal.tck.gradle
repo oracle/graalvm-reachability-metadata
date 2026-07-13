@@ -24,6 +24,30 @@ plugins {
     id 'jacoco'
 }
 
+
+// §forge/WF-code-coverage-improvement.3.1: broad coverage tests are opt-in and
+// remain outside the metadata-generation test source tree.
+String codeCoverageSuitePath = providers.gradleProperty("codeCoverageSuitePath")
+        .getOrElse("").trim()
+if (!codeCoverageSuitePath.isBlank()) {
+    File suiteDirectory = new File(codeCoverageSuitePath)
+    if (!suiteDirectory.isAbsolute()) {
+        throw new GradleException(
+                "'codeCoverageSuitePath' must be absolute, got '${codeCoverageSuitePath}'."
+        )
+    }
+    File javaSources = new File(suiteDirectory, "src/test/java")
+    if (!javaSources.isDirectory()) {
+        throw new GradleException(
+                "Coverage suite must contain src/test/java: ${suiteDirectory.absolutePath}"
+        )
+    }
+    sourceSets.test.java.srcDir(javaSources)
+    File resources = new File(suiteDirectory, "src/test/resources")
+    if (resources.isDirectory()) {
+        sourceSets.test.resources.srcDir(resources)
+    }
+}
 def skipJacoco = providers.gradleProperty("skipJacoco").map { it.toBoolean() }.getOrElse(false)
 
 repositories {
@@ -203,9 +227,9 @@ boolean nativeTraceImageTaskRequested = !informationalTaskRequested &&
 boolean runNativeTraceImageTaskRequested = !informationalTaskRequested && isTaskRequested("runNativeTraceImage")
 boolean nativeTestTaskRequested = !informationalTaskRequested &&
         (isTaskRequested("nativeTest") || isTaskRequested("nativeTestCompile"))
-// §forge/WF-code-coverage-improvement: the phase-7 near-call analyzer needs a
-// PGO-sampling image (sampled stacks as guidance-only execution evidence) plus
-// the analysis call-tree CSV dump as the static call graph.
+// §TCK-test-harness.8, §forge/WF-code-coverage-improvement.3.2: deep-path guidance
+// needs a PGO-sampling image plus the analysis call-tree CSV graph; JaCoCo alone
+// decides coverage.
 boolean nativeTestPGOSamplingTaskRequested = !informationalTaskRequested &&
         (isTaskRequested("nativeTestPGOSampling") || isTaskRequested("runNativeTestPGO"))
 String pgoSamplingPeriodMicros = providers.gradleProperty("pgoSamplingPeriodMicros").getOrElse("10")
@@ -415,6 +439,12 @@ Provider<List<String>> nativeTraceBuildArgs = providers.provider {
 Provider<List<String>> pgoBuildArgs = providers.provider {
     List<String> buildArgs = []
     if (nativeTestPGOSamplingTaskRequested) {
+        if (!pgoSamplingPeriodMicros.matches("[1-9][0-9]*")) {
+            throw new GradleException(
+                    "'pgoSamplingPeriodMicros' must be a positive integer, got '${pgoSamplingPeriodMicros}'."
+            )
+        }
+
         // Sampled profiles are guidance-only evidence: sampled stacks show where
         // execution already runs; absence never proves non-execution (JaCoCo is
         // the coverage metric). PrintAnalysisCallTreeType=CSV dumps
@@ -546,6 +576,7 @@ tasks.register("mergeNativeTraceMetadata", Exec) { Exec task ->
 }
 
 tasks.register("nativeTestPGOSampling") { task ->
+    task.inputs.property("pgoSamplingPeriodMicros", pgoSamplingPeriodMicros)
     task.setDescription("Builds the test native image with PGO sampling and the analysis call-tree CSV dump enabled")
     task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
     task.dependsOn(tasks.named("nativeTestCompile"))
@@ -555,7 +586,6 @@ tasks.register("runNativeTestPGO", Exec) { Exec task ->
     task.setDescription("Runs the PGO-sampling test native image once and writes the .iprof profile")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
     task.dependsOn(tasks.named("nativeTestPGOSampling"))
-    task.ignoreExitValue = true
     task.doFirst {
         String pgoProfilePath = requiredAbsolutePathProperty("pgoProfilePath")
         BuildNativeImageTask nativeTestCompile = tasks.named("nativeTestCompile", BuildNativeImageTask).get()

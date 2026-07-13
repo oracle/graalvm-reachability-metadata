@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/oracle/graalvm-reachability-metadata/schemas/code_coverage_target_state_schema.json",
+  "title": "Code coverage deep target state",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["coordinate", "iteration", "targets"],
+  "properties": {
+    "coordinate": {
+      "type": "string",
+      "pattern": "^[^:]+:[^:]+:[^:]+$"
+    },
+    "iteration": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "targets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "status",
+          "attemptCount",
+          "lastAttemptedIteration",
+          "reason"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "selected",
+              "attempted",
+              "completed",
+              "skipped",
+              "exhausted",
+              "failed"
+            ]
+          },
+          "attemptCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "lastAttemptedIteration": {
+            "type": ["integer", "null"],
+            "minimum": 1,
+            "maximum": 5
+          },
+          "reason": {
+            "type": ["string", "null"]
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "enum": ["skipped", "exhausted", "failed"]
+                }
+              },
+              "required": ["status"]
+            },
+            "then": {
+              "properties": {
+                "reason": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

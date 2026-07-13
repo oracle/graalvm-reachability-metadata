@@ -1,6 +1,6 @@
 # Code Coverage Improvement Template
 
-This Rhei template converts one GitHub issue labeled `improve-code-coverage`
+This Rhei template converts one GitHub issue labeled `code-coverage-improvement`
 into a bounded workspace for the planned Forge code coverage workflow
 §WF-code-coverage-improvement.
 
@@ -14,25 +14,46 @@ rhei instantiate code-coverage-improvement \
   --output code-coverage-1234
 ```
 
-The rendered workspace contains a static phase chain:
+The rendered workspace contains eight tasks:
 
 1. Convert the issue and create or reuse the per-issue worktree.
 2. Prepare the already-supported library and dedicated coverage suite.
 3. Generate API inventory artifacts.
-4. Run three JVM-only API-cover and JaCoCo validation iterations.
+4. The API coverage loop: `api-measure -> api-cover -> api-measure`.
 5. Prepare native metadata once (generate plus Codex repair) for the PGO builds.
-6. Run three sampled-PGO near-call report and bulk-cover iterations.
-7. Finalize local validation.
-8. Publish a pull request with coverage evidence.
+6. The deep coverage loop: `deep-measure -> deep-cover -> deep-measure`.
+7. Finalize validation and metrics deterministically.
+8. Publish a pull request with separate JaCoCo and sampled-path evidence.
+
+The coverage loops live in the state machine, not in unrolled tasks.
+Measurement (JaCoCo report generation and correlation; for the deep loop also
+sampled PGO and the static call graph) is a deterministic program that always
+writes the current report to one fixed location and, when the loop continues,
+derives the prompt of exact JaCoCo-uncovered targets from it in the same step.
+The cover agent generates tests from the prompt
+and always returns to measurement, so only re-measurement can complete a phase
+— an agent can never claim progress. A phase completes when no actionable
+target remains or `coverage_iterations` passes are spent. Public API prompts
+contain only methods the latest exact JaCoCo report marks uncovered. Deep
+prompts list at most 100 JaCoCo-uncovered internal methods using compact
+`Observed` / `Uncovered paths` navigation, and the cover agent maintains
+schema-validated target state so skipped/exhausted methods rotate out of the
+prompt.
 
 Generated tests are constrained to
-`tests/<group>/<artifact>/<version>/code-coverage`, while runtime evidence stays
-under `runtime/code-coverage/` inside the Rhei workspace. Reviewed tasks use a
-lightweight `agent-review` and `agent-fix` loop capped by `review_passes`; helper
-tasks complete directly after writing their artifacts. The review checks are
-limited to task adherence, artifact sufficiency, scope, public API targeting,
-validation evidence, and whether manual metadata or Native Image handling must
-route to `human-intervention` §WF-code-coverage-improvement.
+`tests/<group>/<artifact>/<version>/code-coverage/src/test/java` (plus optional
+`src/test/resources`), while runtime evidence stays under
+`runtime/code-coverage/` inside the Rhei workspace. The pipeline tasks run
+unreviewed; finalization executes as a deterministic step program (JVM tests
+only at this stage — no Native Image validation) whose nonzero exit code names
+the failed step, and completes only when the deterministic `finalize-verify`
+program accepts its artifacts. Fixable failures are repaired by `finalize-fix`
+for at most `fix_passes` pass(es) before the steps re-run. Failed targets or an
+explicit `needsHumanIntervention` flag route to `human-intervention`. Pipeline
+tasks also route there when a required helper or artifact fails instead of
+completing with partial evidence. Finalization writes schema-validated,
+separate API/deep JaCoCo metrics and labels PGO as guidance only
+§WF-code-coverage-improvement.
 
 The rendered example in `examples/code-coverage-improvement-example/` is a dry
 workspace that validates and dry-runs without touching GitHub or a worktree.

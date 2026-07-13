@@ -81,6 +81,13 @@ public abstract class GenerateMetadataTask extends DefaultTask {
         return metadataOutputDir;
     }
 
+    @Input
+    @Optional
+    public String getCodeCoverageSuitePath() {
+        Object value = getProject().findProperty("codeCoverageSuitePath");
+        return value == null ? null : value.toString();
+    }
+
     @TaskAction
     public void run() throws IOException {
         Path testsDirectory = GeneralUtils.computeTestsDirectory(getLayout(), coordinates);
@@ -96,8 +103,12 @@ public abstract class GenerateMetadataTask extends DefaultTask {
             MetadataGenerationUtils.addUserCodeFilterFile(testsDirectory, List.of(coordinatesValue.group()));
             MetadataGenerationUtils.addAgentConfigBlock(testsDirectory);
         }
+        String codeCoverageSuitePath = getCodeCoverageSuitePath();
         if (metadataOutputDir == null || metadataOutputDir.isBlank()) {
-            MetadataGenerationUtils.collectMetadata(getExecOperations(), testsDirectory, getLayout(), coordinates, gradlewPath);
+            MetadataGenerationUtils.collectMetadataWithCoverageSuite(
+                    getExecOperations(), testsDirectory, getLayout(), coordinates,
+                    gradlewPath, codeCoverageSuitePath
+            );
         } else {
             MetadataGenerationUtils.collectMetadata(
                     getExecOperations(),
@@ -105,7 +116,8 @@ public abstract class GenerateMetadataTask extends DefaultTask {
                     getLayout(),
                     coordinates,
                     gradlewPath,
-                    Path.of(metadataOutputDir)
+                    Path.of(metadataOutputDir),
+                    codeCoverageSuitePath
             );
         }
         if (isFromJarAllowedPackages()) {

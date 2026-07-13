@@ -5,17 +5,18 @@
 
 """
 Deterministic public-API inventory for the code coverage improvement workflow
-(§WF-code-coverage-improvement, §WF-code-coverage-improvement-architecture).
+(§WF-code-coverage-improvement.3.1, §WF-code-coverage-improvement-architecture).
 
-Phase-3 helper. It enumerates the public, user-callable API surface of a
+It enumerates the public, user-callable method and constructor surface of a
 resolved library artifact and emits compact JSON and Markdown reports. The
 canonical target `id` carries full identity (`owner#name(params):ret`) so the
-JaCoCo validator and the PGO discovery analyzer can join coverage evidence
-against the same targets; redundant split fields are avoided.
+JaCoCo validator can classify public entries exactly. The deep-path analyzer
+uses those identities as public navigation boundaries and removes them from its
+internal-method target set; redundant split fields are avoided.
 
-The inventory is derived from the library jar via `javap`, so it is repeatable
+The inventory is derived from the library jar via `javap -public -s`, so it is repeatable
 and needs no network access or library execution. Generic type arguments are
-erased and varargs are normalized to arrays so target ids line up with the raw
+erased, varargs are normalized to arrays, and fields are excluded so target ids line up with the raw
 types used by the analysis call tree and the sampled profile.
 
 Usage:
@@ -37,12 +38,20 @@ import subprocess
 import sys
 import zipfile
 
-from utility_scripts.code_coverage_model import MethodRef, normalize_type_name
+from utility_scripts.code_coverage_model import (
+    MethodRef,
+    normalize_type_name,
+    parse_jvm_descriptor,
+)
 
 _MODIFIERS = {
     "public", "protected", "private", "static", "final", "abstract",
     "synchronized", "native", "default", "volatile", "transient", "strictfp",
 }
+
+
+class ApiInventoryError(RuntimeError):
+    """Raised when the public API inventory cannot be generated completely."""
 
 
 @dataclass
@@ -133,14 +142,32 @@ def parse_javap(text: str, source_root: str = "") -> list[ClassInfo]:
     classes: list[ClassInfo] = []
     current: ClassInfo | None = None
     pending_source_file = ""
+    pending_method: ApiTarget | None = None
 
     for raw_line in text.splitlines():
         line = raw_line.strip()
         if not line:
             continue
+        descriptor = re.match(r"^descriptor:\s*(?P<value>\S+)$", line)
+        if descriptor:
+            if pending_method is not None and pending_method.method_ref is not None:
+                params: tuple[str, ...]
+                return_type: str
+                params, return_type = parse_jvm_descriptor(descriptor.group("value"))
+                ref = MethodRef(
+                    owner=pending_method.method_ref.owner,
+                    name=pending_method.method_ref.name,
+                    params=params,
+                    return_type=return_type,
+                )
+                pending_method.method_ref = ref
+                pending_method.target_id = ref.canonical_id
+            pending_method = None
+            continue
         compiled = re.match(r'^Compiled from "(?P<file>.+)"$', line)
         if compiled:
             pending_source_file = compiled.group("file")
+            pending_method = None
             continue
 
         decl = re.match(
@@ -151,6 +178,7 @@ def parse_javap(text: str, source_root: str = "") -> list[ClassInfo]:
             mods = set(decl.group("mods").split())
             if "public" not in mods:
                 current = None
+                pending_method = None
                 continue
             owner = decl.group("owner")
             package_path = owner.rsplit(".", 1)[0].replace(".", "/") if "." in owner else ""
@@ -163,15 +191,18 @@ def parse_javap(text: str, source_root: str = "") -> list[ClassInfo]:
             current.source_path = source_path.replace(os.sep, "/")
             classes.append(current)
             pending_source_file = ""
+            pending_method = None
             continue
 
         if current is None:
             continue
         if not line.endswith(";"):
             continue
+        pending_method = None
         member = _parse_member(line[:-1], current)
         if member is not None:
             current.targets.append(member)
+            pending_method = member if member.method_ref is not None else None
     return classes
 
 
@@ -206,14 +237,8 @@ def _parse_member(body: str, owner_class: ClassInfo) -> ApiTarget | None:
         return ApiTarget(ref, ref.canonical_id, kind, owner_class.source_path,
                          _behavior_hint(name, kind), is_static)
 
-    # Field or enum constant.
-    field_tokens = remainder.split()
-    if len(field_tokens) < 2:
-        return None
-    name = field_tokens[-1]
-    kind = "enumConstant" if owner_class.kind == "enum" else "field"
-    target_id = f"{owner}#{name}"
-    return ApiTarget(None, target_id, kind, owner_class.source_path, _behavior_hint(name, kind), is_static)
+    # §WF-code-coverage-improvement.3.1: fields are not callable entry targets.
+    return None
 
 
 def enumerate_public_classes(jar_path: str, include_package: str | None) -> list[str]:
@@ -237,7 +262,7 @@ def enumerate_public_classes(jar_path: str, include_package: str | None) -> list
 
 
 def run_javap(jar_paths: list[str], class_names: list[str]) -> str:
-    """Run `javap -public` for the given classes against the jar classpath."""
+    """Run `javap -public -s` so inventory ids use erased JVM descriptors."""
     javap = _resolve_tool("javap")
     classpath = os.pathsep.join(jar_paths)
     output: list[str] = []
@@ -245,9 +270,16 @@ def run_javap(jar_paths: list[str], class_names: list[str]) -> str:
     for start in range(0, len(class_names), 200):
         batch = class_names[start:start + 200]
         result = subprocess.run(
-            [javap, "-public", "-classpath", classpath, *batch],
+            [javap, "-public", "-s", "-classpath", classpath, *batch],
             check=False, capture_output=True, text=True,
         )
+        if result.returncode != 0:
+            stderr: str = (result.stderr or "").strip()[-2000:]
+            first_class: str = batch[0] if batch else "<empty batch>"
+            raise ApiInventoryError(
+                f"javap failed for the batch starting with '{first_class}': "
+                f"{stderr or 'no diagnostic output'}"
+            )
         output.append(result.stdout)
     return "\n".join(output)
 
@@ -314,7 +346,10 @@ def generate_inventory(
 ) -> dict:
     class_names: list[str] = []
     for jar_path in jar_paths:
-        class_names.extend(enumerate_public_classes(jar_path, include_package))
+        try:
+            class_names.extend(enumerate_public_classes(jar_path, include_package))
+        except (OSError, zipfile.BadZipFile) as error:
+            raise ApiInventoryError(f"Cannot read library jar '{jar_path}': {error}") from error
     class_names = sorted(set(class_names))
     javap_output = run_javap(jar_paths, class_names) if class_names else ""
     classes = parse_javap(javap_output, source_root=source_root)
@@ -339,13 +374,17 @@ def main() -> None:
     parser.add_argument("--source-root", default="", help="Prefix for emitted sourcePath values.")
     args = parser.parse_args()
 
-    inventory = generate_inventory(
-        coordinate=args.coordinate,
-        jar_paths=args.library_jar,
-        output_dir=args.output_dir,
-        include_package=args.include_package,
-        source_root=args.source_root,
-    )
+    try:
+        inventory = generate_inventory(
+            coordinate=args.coordinate,
+            jar_paths=args.library_jar,
+            output_dir=args.output_dir,
+            include_package=args.include_package,
+            source_root=args.source_root,
+        )
+    except ApiInventoryError as error:
+        print(f"ERROR: {error}", file=sys.stderr)
+        raise SystemExit(2) from error
     print(f"API inventory: {len(inventory['targets'])} public targets for {args.coordinate}.")
 
 

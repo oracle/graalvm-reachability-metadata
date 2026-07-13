@@ -1,6 +1,6 @@
 name: code-coverage-improvement
 version: 1.0.0
-description: Convert one improve-code-coverage GitHub issue into a bounded Rhei workflow that improves tests for an already-supported library.
+description: Convert one code-coverage-improvement GitHub issue into a bounded Rhei workflow that improves tests for an already-supported library.
 
 inputs:
   - name: repo
@@ -10,7 +10,7 @@ inputs:
     validate: "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
 
   - name: issue_number
-    description: GitHub issue number to convert. The issue must carry improve-code-coverage.
+    description: GitHub issue number to convert. The issue must carry code-coverage-improvement.
     type: number
     validate: "[1-9][0-9]*"
 
@@ -23,7 +23,7 @@ inputs:
   - name: issue_label
     description: Label that identifies code coverage improvement issues.
     type: string
-    default: improve-code-coverage
+    default: code-coverage-improvement
     validate: "^[A-Za-z0-9_.-]+$"
 
   - name: repo_checkout
@@ -83,15 +83,22 @@ inputs:
   - name: worker_agent
     description: Agent used for execution and fix states.
     type: string
-    default: codex[yolo]:openai:gpt-5.5
+    default: pi:openai-codex/gpt-5.6-terra
 
-  - name: reviewer_agent
-    description: Agent used for lightweight task review.
-    type: string
-    default: codex[yolo]:openai:gpt-5.5
-
-  - name: review_passes
-    description: Maximum automated review passes for reviewed tasks.
+  - name: fix_passes
+    description: Maximum automated fix passes when finalization verification fails.
     type: number
     default: 2
+    validate: "[1-9][0-9]*"
+
+  - name: coverage_iterations
+    description: Maximum cover iterations per phase; measurement completes the phase when the budget is spent.
+    type: number
+    default: 5
+    validate: "[1-9][0-9]*"
+
+  - name: measure_visits
+    description: Hard visit cap on each measurement state, bounding the loop including fix re-runs.
+    type: number
+    default: 16
     validate: "[1-9][0-9]*"

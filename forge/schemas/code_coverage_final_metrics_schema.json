@@ -1,0 +1,246 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Code Coverage Final Metrics",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "coordinate",
+    "coverageSuitePath",
+    "apiJacoco",
+    "deepJacoco",
+    "pgoGuidance",
+    "targets",
+    "validationCommands",
+    "needsHumanIntervention"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "1.0.0"},
+    "coordinate": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.+-]+$"
+    },
+    "coverageSuitePath": {"type": "string", "minLength": 1},
+    "apiJacoco": {"$ref": "#/$defs/apiEvidence"},
+    "deepJacoco": {"$ref": "#/$defs/deepEvidence"},
+    "pgoGuidance": {"$ref": "#/$defs/pgoGuidance"},
+    "targets": {"$ref": "#/$defs/outcomes"},
+    "validationCommands": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "resolvesIssue": {"type": "boolean"},
+    "needsHumanIntervention": {"type": "boolean"}
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "targets": {
+            "properties": {"failed": {"minItems": 1}},
+            "required": ["failed"]
+          }
+        },
+        "required": ["targets"]
+      },
+      "then": {
+        "properties": {"needsHumanIntervention": {"const": true}}
+      },
+      "else": {
+        "properties": {"needsHumanIntervention": {"const": false}}
+      }
+    }
+  ],
+  "$defs": {
+    "apiSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "total",
+        "measured",
+        "covered",
+        "uncovered",
+        "notReported",
+        "coveragePercent"
+      ],
+      "properties": {
+        "total": {"type": "integer", "minimum": 0},
+        "measured": {"type": "integer", "minimum": 0},
+        "covered": {"type": "integer", "minimum": 0},
+        "uncovered": {"type": "integer", "minimum": 0},
+        "notReported": {"type": "integer", "minimum": 0},
+        "coveragePercent": {"type": "number", "minimum": 0, "maximum": 100}
+      }
+    },
+    "deepSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["total", "covered", "uncovered", "coveragePercent"],
+      "properties": {
+        "total": {"type": "integer", "minimum": 0},
+        "covered": {"type": "integer", "minimum": 0},
+        "uncovered": {"type": "integer", "minimum": 0},
+        "coveragePercent": {"type": "number", "minimum": 0, "maximum": 100}
+      }
+    },
+    "apiDelta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "covered",
+        "uncovered",
+        "notReported",
+        "coveragePercentagePoints"
+      ],
+      "properties": {
+        "covered": {"type": "integer"},
+        "uncovered": {"type": "integer"},
+        "notReported": {"type": "integer"},
+        "coveragePercentagePoints": {
+          "type": "number",
+          "minimum": -100,
+          "maximum": 100
+        }
+      }
+    },
+    "deepDelta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["covered", "uncovered", "coveragePercentagePoints"],
+      "properties": {
+        "covered": {"type": "integer"},
+        "uncovered": {"type": "integer"},
+        "coveragePercentagePoints": {
+          "type": "number",
+          "minimum": -100,
+          "maximum": 100
+        }
+      }
+    },
+    "apiEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseline", "final", "delta"],
+      "properties": {
+        "baseline": {"$ref": "#/$defs/apiSnapshot"},
+        "final": {"$ref": "#/$defs/apiSnapshot"},
+        "delta": {"$ref": "#/$defs/apiDelta"}
+      }
+    },
+    "deepEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["baseline", "final", "delta"],
+      "properties": {
+        "baseline": {"$ref": "#/$defs/deepSnapshot"},
+        "final": {"$ref": "#/$defs/deepSnapshot"},
+        "delta": {"$ref": "#/$defs/deepDelta"}
+      }
+    },
+    "pgoSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "samplingContexts",
+        "sampledMethods",
+        "sampleCount",
+        "sampledJoins"
+      ],
+      "properties": {
+        "samplingContexts": {"type": "integer", "minimum": 0},
+        "sampledMethods": {"type": "integer", "minimum": 0},
+        "sampleCount": {"type": "integer", "minimum": 0},
+        "sampledJoins": {"type": "integer", "minimum": 0}
+      }
+    },
+    "pgoGuidance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["guidanceOnly", "note", "baseline", "final"],
+      "properties": {
+        "guidanceOnly": {"const": true},
+        "note": {"type": "string", "minLength": 1},
+        "baseline": {"$ref": "#/$defs/pgoSnapshot"},
+        "final": {"$ref": "#/$defs/pgoSnapshot"}
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "phase", "status"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "phase": {"enum": ["api", "deep"]},
+        "status": {"enum": ["completed", "skipped", "exhausted", "failed"]},
+        "attemptCount": {"type": "integer", "minimum": 0},
+        "lastAttemptedIteration": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 5
+        },
+        "reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "completedTarget": {
+      "allOf": [
+        {"$ref": "#/$defs/target"},
+        {"properties": {"status": {"const": "completed"}}}
+      ]
+    },
+    "terminalTarget": {
+      "allOf": [
+        {"$ref": "#/$defs/target"},
+        {
+          "required": [
+            "attemptCount",
+            "lastAttemptedIteration",
+            "reason"
+          ],
+          "properties": {"phase": {"const": "deep"}}
+        }
+      ]
+    },
+    "skippedTarget": {
+      "allOf": [
+        {"$ref": "#/$defs/terminalTarget"},
+        {"properties": {"status": {"const": "skipped"}}}
+      ]
+    },
+    "exhaustedTarget": {
+      "allOf": [
+        {"$ref": "#/$defs/terminalTarget"},
+        {"properties": {"status": {"const": "exhausted"}}}
+      ]
+    },
+    "failedTarget": {
+      "allOf": [
+        {"$ref": "#/$defs/terminalTarget"},
+        {"properties": {"status": {"const": "failed"}}}
+      ]
+    },
+    "outcomes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["completed", "skipped", "exhausted", "failed"],
+      "properties": {
+        "completed": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/completedTarget"}
+        },
+        "skipped": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/skippedTarget"}
+        },
+        "exhausted": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/exhaustedTarget"}
+        },
+        "failed": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/failedTarget"}
+        }
+      }
+    }
+  }
+}

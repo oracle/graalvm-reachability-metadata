@@ -147,19 +147,23 @@ This item of §ROADMAP-forge-implementation implements the planned
 PGO/API-coverage workflow for already-supported libraries
 (§WF-code-coverage-improvement). The workflow must be separate from
 dynamic-access coverage: it targets broader public API and runtime behavior
-using GraalVM PGO runtime profiles, while dynamic-access workflows target
-metadata-relevant calls (§FS-forge-code-coverage-improvement).
+using exact JaCoCo coverage plus sampled-PGO/static-graph navigation, while
+dynamic-access workflows target metadata-relevant calls
+(§FS-forge-code-coverage-improvement).
 
-The implementation needs a driver mode, a registered workflow engine
-(§WF-code-coverage-improvement-architecture), a PGO profile collector, an API inventory
-builder, target selection and durable target-state format, metrics schema
-support, and a publication path. Generated tests must live in a separate code
-coverage suite with separate metrics and review evidence, not in the
-metadata-generation suite (§WF-code-coverage-improvement.2).
+The Rhei lane provides the PGO collector, exact API inventory/JaCoCo helpers,
+target selection, durable target-state and metrics schemas, dedicated suite
+wiring, validation, and publication path
+(§WF-code-coverage-improvement-architecture). A registered Forge driver or
+driver mode remains before the control plane can launch it autonomously.
+Generated tests live in a separate code coverage suite with separate metrics
+and review evidence, not in the metadata-generation suite
+(§WF-code-coverage-improvement.2).
 
-Acceptance requires meaningful behavior tests, measurable profile improvement
-or recorded skipped/exhausted targets, no regression in metadata validity or
-JVM/native gates (§FS-local-ci-equivalent-verification), and metrics that record
-baseline and updated profiles, selected targets, profile deltas, generated test
-paths, strategy, model, skipped/exhausted targets, and verification commands
+Acceptance requires meaningful behavior tests, exact JaCoCo improvement across
+the separate public-entry and deep-internal phases or recorded
+skipped/exhausted targets, no regression in metadata validity or JVM/native
+gates (§FS-local-ci-equivalent-verification), and metrics that keep JaCoCo
+coverage results separate from sampled-path guidance while recording generated
+test paths, strategy, model, target outcomes, and verification commands
 (§WF-code-coverage-improvement.5).

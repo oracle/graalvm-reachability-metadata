@@ -26,6 +26,7 @@ public abstract class JavaTestInvocationTask extends AllCoordinatesExecTask {
         // §TCK-test-harness.8: forward the agent-origin output directory so the inner `test` run
         // attaches native-image-agent when the dynamic-access fallback needs origin paths.
         appendProperty(command, "dynamicAccessOriginsOutput");
+        appendProperty(command, "codeCoverageSuitePath");
         return command;
     }
 

@@ -6,6 +6,7 @@
  */
 package org.graalvm.internal.tck.harness.tasks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,10 +17,12 @@ public abstract class CheckstyleInvocationTask extends AllCoordinatesExecTask {
 
     @Override
     public List<String> commandFor(String coordinates) {
-        return List.of(
+        List<String> command = new ArrayList<>(List.of(
                 tckExtension.getRepoRoot().get().getAsFile().toPath().resolve("gradlew").toString(),
                 "checkstyle"
-        );
+        ));
+        appendProperty(command, "codeCoverageSuitePath");
+        return command;
     }
 
     @Override

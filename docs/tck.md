@@ -121,6 +121,8 @@ These emit the GitHub Actions matrices the workflows consume, all driven by
 | --- | --- |
 | `jacocoTestReport` | JaCoCo coverage for a coordinate. |
 | `generateDynamicAccessCoverageReport`, `analyzeExternalLibraryDynamicAccess` | Dynamic-access coverage reporting (§FS-repository-functional-spec.4.5). |
+| `nativeTestPGOSampling` | Build coordinate native tests with sampled PGO and the analysis call-tree CSV dump for Forge deep-coverage navigation (§forge/WF-code-coverage-improvement.3.2). |
+| `runNativeTestPGO` | Run the sampling image and write its sampled `.iprof` to the required absolute `pgoProfilePath`. |
 | `generateLibraryStats`, `listTopCoordinatesByMetric`, `generateTopCoordinatesByMetricMatrix`, `generateReadmeBadgeSummary`, `generateDependencyGraph` | Produce and query the stats mirror, README badge inputs, and dependency graphs that feed the coverage dashboard (§CI-publish-scheduled-coverage). |
 | `package` | Zip the `metadata/` directory into the release artifact consumed by native-build-tools (§FS-repository-functional-spec.4). |
 
@@ -139,3 +141,24 @@ memory. If multiple reported callers precede the API, the nearest one wins; a
 nested tracked API ends the caller search so delegated JDK calls do not cover a
 different API with the same method name. Line-based matching stays the primary
 path and is unchanged for jars that carry line information.
+
+The code-coverage workflow supplies an absolute `codeCoverageSuitePath` whose
+suite contains `src/test/java` and may contain `src/test/resources`. Compile,
+JVM test, JaCoCo, Checkstyle, native compile/run, and sampled-PGO root tasks
+forward that property to the coordinate project. When the property is absent,
+the dedicated suite is not added to the metadata-generation test source set.
+This keeps broad coverage tests in their separate
+`tests/<group>/<artifact>/<version>/code-coverage` tree while reusing the
+coordinate's dependencies and build configuration
+(§forge/WF-code-coverage-improvement.3.1).
+
+`nativeTestPGOSampling` builds with `--pgo-sampling`, a positive
+`-H:PGOSamplingPeriodMicros=<micros>`, `-H:+PrintAnalysisCallTree`, and
+`-H:PrintAnalysisCallTreeType=CSV`. The optional Gradle property
+`pgoSamplingPeriodMicros` defaults to `10` and must be forwarded through the
+root coordinate fan-out for both build-only and build-and-run invocations.
+`runNativeTestPGO` depends on that sampling build and dumps the profile through
+`-XX:ProfilesDumpFile=<absolute path>`. A nonzero sampling-image exit fails the
+task, so a profile from a failing native suite cannot be accepted. Sampling is
+guidance only; JaCoCo remains the coverage metric
+(§forge/WF-code-coverage-improvement.3.2).
