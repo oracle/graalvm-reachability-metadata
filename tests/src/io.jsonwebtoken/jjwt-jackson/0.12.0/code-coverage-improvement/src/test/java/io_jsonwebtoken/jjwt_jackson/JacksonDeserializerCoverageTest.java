@@ -7,6 +7,8 @@
 package io_jsonwebtoken.jjwt_jackson;
 
 import io.jsonwebtoken.jackson.io.JacksonDeserializer;
+import io.jsonwebtoken.jackson.io.JacksonSerializer;
+import io.jsonwebtoken.lang.Supplier;
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
@@ -30,6 +32,16 @@ class JacksonDeserializerCoverageTest {
                     assertThat(user.getFirstName()).isEqualTo("Jill");
                     assertThat(user.getLastName()).isEqualTo("Coder");
                 });
+    }
+
+    @Test
+    void serializesSupplierValueThroughJacksonSerializer() {
+        Supplier<String> supplier = () -> "resolved-value";
+        JacksonSerializer<Supplier<String>> serializer = new JacksonSerializer<>();
+
+        byte[] serialized = serializer.serialize(supplier);
+
+        assertThat(serialized).asString().isEqualTo("\"resolved-value\"");
     }
 
     public static final class User {
