@@ -643,7 +643,7 @@ def build_parser() -> argparse.ArgumentParser:
             "Example:\n"
             "  python3 utility_scripts/code_coverage_finalize.py "
             "--coordinate group:artifact:version "
-            "--coverage-suite-path tests/group/artifact/version/code-coverage "
+            "--coverage-suite-path tests/src/group/artifact/version/code-coverage-improvement "
             "--api-baseline api-cover-report-0.json "
             "--api-final api-cover-report-5.json "
             "--deep-baseline discovery-report-0.json "

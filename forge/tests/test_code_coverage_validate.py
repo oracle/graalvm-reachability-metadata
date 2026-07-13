@@ -195,10 +195,10 @@ class JacocoCorrelationTests(unittest.TestCase):
                 "build",
                 "reports",
                 "jacoco",
-                "test",
+                "jacocoCodeCoverageReport",
             )
             os.makedirs(module)
-            shutil.copy2(DEMO_JACOCO, os.path.join(module, "jacocoTestReport.xml"))
+            shutil.copy2(DEMO_JACOCO, os.path.join(module, "jacocoCodeCoverageReport.xml"))
             output_dir = os.path.join(temporary_dir, "out")
             report: dict = validate_module.run_validation(
                 repo_path=temporary_dir,
@@ -263,10 +263,10 @@ class JacocoCorrelationTests(unittest.TestCase):
                 ], index_file)
             report_dir = os.path.join(
                 temporary_dir, "tests", "src", "com.example", "demo",
-                "shared-tests", "build", "reports", "jacoco", "test",
+                "shared-tests", "build", "reports", "jacoco", "jacocoCodeCoverageReport",
             )
             os.makedirs(report_dir)
-            report_path = os.path.join(report_dir, "jacocoTestReport.xml")
+            report_path = os.path.join(report_dir, "jacocoCodeCoverageReport.xml")
             shutil.copy2(DEMO_JACOCO, report_path)
 
             report = validate_module.run_validation(
@@ -315,7 +315,7 @@ class JacocoCorrelationTests(unittest.TestCase):
                         coverage_suite_path=stale_dir,
                     )
             run.assert_called_once_with(
-                temporary_dir, "compileTestJava", "com.example:demo:1.0.0", stale_dir,
+                temporary_dir, "compileTestJava", "com.example:demo:1.0.0",
             )
 
     def test_validation_does_not_fall_back_to_another_coordinate_report(self) -> None:

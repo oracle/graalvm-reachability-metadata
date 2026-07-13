@@ -127,7 +127,7 @@ class FinalizerTests(unittest.TestCase):
         )
         return module.finalize_coverage(
             coordinate=COORDINATE,
-            coverage_suite_path="tests/com.example/demo/1.0.0/code-coverage",
+            coverage_suite_path="tests/src/com.example/demo/1.0.0/code-coverage-improvement",
             api_baseline_path=baseline_api,
             api_final_path=final_api,
             deep_baseline_path=baseline_deep,

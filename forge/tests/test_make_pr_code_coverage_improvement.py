@@ -20,7 +20,7 @@ class PublisherTests(unittest.TestCase):
         return {
             "schemaVersion": "1.0.0",
             "coordinate": "com.example:demo:1.0.0",
-            "coverageSuitePath": "tests/com.example/demo/1.0.0/code-coverage",
+            "coverageSuitePath": "tests/src/com.example/demo/1.0.0/code-coverage-improvement",
             "apiJacoco": {
                 "baseline": {
                     "total": 10, "measured": 10, "covered": 4,
@@ -158,7 +158,7 @@ class PublisherTests(unittest.TestCase):
                 group,
                 artifact,
                 test_version,
-                "code-coverage",
+                "code-coverage-improvement",
             )
             os.makedirs(os.path.join(repo_path, coverage_suite))
 

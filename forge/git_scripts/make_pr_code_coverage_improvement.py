@@ -293,7 +293,7 @@ def main(argv: list[str] | None = None) -> None:
             "--repo-path <worktree> --coordinate group:artifact:version "
             "--issue-number 8380 "
             "--finalization-dir runtime/code-coverage/finalization "
-            "--coverage-suite-path tests/group/artifact/version/code-coverage"
+            "--coverage-suite-path tests/src/group/artifact/version/code-coverage-improvement"
         ),
         formatter_class=argparse.RawTextHelpFormatter,
     )

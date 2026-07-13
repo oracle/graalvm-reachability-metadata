@@ -9,9 +9,13 @@ Native-metadata preparation for the code coverage improvement workflow
 §WF-code-coverage-improvement-architecture).
 
 This runs once between public API coverage and sampled-PGO deep discovery. The
-deep phase builds Native Images from the dedicated code coverage suite, which
-needs valid reachability metadata; the public JaCoCo phase deliberately stays
-JVM-only. Mirroring how the other workflows finalize, this helper generates
+deep phase builds Native Images with the tracked code-coverage-improvement
+extension suite included (`-PincludeCodeCoverageSuite=true`), which needs valid
+reachability metadata; the public JaCoCo phase deliberately stays JVM-only.
+The suite runs against the shipped metadata for the indexed test version;
+supplemental configs the suite additionally needs live in the suite-local
+`code-coverage-improvement/metadata/` directory, which the build applies on
+the include lane and which are promotion candidates for `metadata/`. Mirroring how the other workflows finalize, this helper generates
 metadata and then repairs it with the Codex-backed
 `fix-missing-reachability-metadata` skill until a Native Image test passes, so
 the six deep collections (one baseline and five post-iteration reports) do not
@@ -27,7 +31,7 @@ validating or repairing stale metadata.
 Usage:
   python3 utility_scripts/code_coverage_prepare_native_metadata.py \
     --repo-path <worktree> --coordinate group:artifact:version \
-    --coverage-suite tests/<group>/<artifact>/<version>/code-coverage \
+    --coverage-suite <indexed test project>/code-coverage-improvement \
     --output-dir runtime/code-coverage/prepare [--max-fix-passes 2] [--skip-gradle]
 """
 
@@ -85,10 +89,9 @@ def _normalize_coverage_suite(repo_path: str, coverage_suite: str) -> str:
     return suite_path
 
 
-def _gradle_command(task: str, coordinate: str, coverage_suite: str) -> str:
+def _gradle_command(task: str, coordinate: str) -> str:
     coordinate_arg: str = shlex.quote(f"-Pcoordinates={coordinate}")
-    suite_arg: str = shlex.quote(f"-PcodeCoverageSuitePath={coverage_suite}")
-    return f"./gradlew {task} {coordinate_arg} {suite_arg} --stacktrace"
+    return f"./gradlew {task} {coordinate_arg} -PincludeCodeCoverageSuite=true --stacktrace"
 
 
 def prepare_native_metadata(
@@ -121,8 +124,8 @@ def prepare_native_metadata(
         _write_reports(report, output_dir)
         return report
 
-    generate_command: str = _gradle_command("generateMetadata", coordinate, suite_path)
-    native_command: str = _gradle_command("nativeTest", coordinate, suite_path)
+    generate_command: str = _gradle_command("generateMetadata", coordinate)
+    native_command: str = _gradle_command("nativeTest", coordinate)
 
     generate_output: str = run_gradle_test_command(
         generate_command,

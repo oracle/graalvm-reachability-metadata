@@ -9,7 +9,8 @@ must carry `code-coverage-improvement` and identify a Maven coordinate in
 `group:artifact:version` form unless `org.example:example-library:1.2.3` is provided.
 
 The workflow keeps generated code coverage tests under the dedicated suite path
-`tests/<group>/<artifact>/<version>/code-coverage`, writes runtime evidence under
+`tests/src/<group>/<artifact>/<test-version>/code-coverage-improvement` (a tracked
+extension suite inside the indexed test project), writes runtime evidence under
 `runtime/code-coverage/`, and runs two separately measured phases
 §WF-code-coverage-improvement. The first gives the agent only exact
 JaCoCo-uncovered public API entries. The second gives it at most 100
