@@ -1,21 +1,574 @@
-> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
-> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
-> Task :tck-build-logic:compileJava UP-TO-DATE
-> Task :tck-build-logic:compileGroovy UP-TO-DATE
-> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
-> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
-> Task :tck-build-logic:processResources UP-TO-DATE
-> Task :tck-build-logic:classes UP-TO-DATE
-> Task :tck-build-logic:jar UP-TO-DATE
+
+Welcome to Gradle 9.1.0!
+
+Here are the highlights of this release:
+ - Full Java 25 support
+ - Native task graph visualization
+ - Enhanced console output
+
+For more details see https://docs.gradle.org/9.1.0/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :tck-build-logic:extractPluginRequests
+> Task :tck-build-logic:generatePluginAdapters
+
+> Task :tck-build-logic:compileJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :tck-build-logic:compileGroovy
+Note: /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/7782-ad34cccd/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/CheckMetadataFilesAllTask.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/7782-ad34cccd/tests/tck-build-logic/src/main/groovy/org/graalvm/internal/tck/harness/tasks/GenerateDependencyGraphTask.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :tck-build-logic:compileGroovyPlugins
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
 
 > Configure project :
 GraalVM Reachability Metadata TCK
 ---------------------------------
 
 > Task :discoverArtifactMetadata
-Skipping io.vertx:vertx-docgen:0.9.4 because discovered metadata already exists at /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/7782-02b4245a/build/discovered-artifact-metadata/io.vertx-vertx-docgen-0.9.4.json.
+Reading additional input from stdin...
+OpenAI Codex v0.144.1
+--------
+workdir: /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/7782-ad34cccd
+model: gpt-5.6-sol
+provider: openai
+approval: on-request
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 019f5dd8-539a-7e42-8d14-8173b18726bb
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: io.vertx:vertx-docgen:0.9.4
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+Also determine whether this artifact is not applicable to GraalVM Native Image reachability metadata because it is not a JVM artifact consumed by native-image.
+Mark "not-for-native-image": true only for certain cases such as Android-only AAR/tooling artifacts, Scala.js artifacts, Kotlin Native/JS/Wasm artifacts, or artifacts with no JVM class files.
+If you set "not-for-native-image": true, also set "reason" to a short evidence-based explanation and set "replacement" when there is an obvious JVM replacement artifact.
+If the artifact might still be usable from JVM code, leave "not-for-native-image", "reason", and "replacement" absent.
+The sources URL, the test suite URL, and the documentation URL must render to the metadata index version "0.9.4" when "$version$" is replaced with "0.9.4".
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
 
-[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/7782-02b4245a/build/reports/problems/problems-report.html
+Update this file directly:
+- File: /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/7782-ad34cccd/build/discovered-artifact-metadata/io.vertx-vertx-docgen-0.9.4.json
+- Use only these top-level JSON keys: "coordinates", "repository-url", "source-code-url", "test-code-url", "documentation-url", "description", "language", "not-for-native-image", "reason", and "replacement".
+- Do not add "metadata-version"; the metadata index version is derived from the coordinate version later.
+- Set "coordinates" to "io.vertx:vertx-docgen:0.9.4".
+- Set "repository-url" to the discovered repository root URL.
+- Set "source-code-url", "test-code-url", and "documentation-url" to the discovered values with "$version$" replacing version "0.9.4".
+- Set "description" to the selected two-sentence explanation.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Set "not-for-native-image", "reason", and "replacement" only when the artifact is certainly not a Native Image metadata target.
+- Keep the JSON valid and consistently formatted.
+warning: Codex's Linux sandbox uses bubblewrap and needs access to create user namespaces.
+warning: Configured value for `permission_profile` is disallowed by requirements; falling back to required value Managed { file_system: Restricted { entries: [FileSystemSandboxEntry { path: Special { value: Root }, access: Read }], glob_scan_max_depth: None }, network: Restricted }. Details: invalid value for `sandbox_mode`: `DangerFullAccess` is not in the allowed set [ReadOnly, WorkspaceWrite] (set by enterprise-managed requirements Group requirements (307e5667-2f9a-4de6-b397-6c50f2ee2a12))
+codex
+I’ll verify the artifact from Maven metadata/JAR contents and the upstream Vert.x DocGen tag, then update only the requested JSON fields.
+web search: 
+2026-07-13T23:38:17.050962Z ERROR codex_core::tools::router: error=Fatal error: http 404 Not Found: Some("{\"detail\":\"Not found\"}")
+web search: 
+2026-07-13T23:38:21.658001Z ERROR codex_core::tools::router: error=Fatal error: http 404 Not Found: Some("{\"detail\":\"Not found\"}")
+exec
+/usr/bin/zsh -lc "git status --short && sed -n '1,200p' build/discovered-artifact-metadata/io.vertx-vertx-docgen-0.9.4.json && rg -n 'vertx-docgen' build/discovered-artifact-metadata metadata tests | head -80" in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/7782-ad34cccd
+ succeeded in 698ms:
+{
+  "coordinates" : "io.vertx:vertx-docgen:0.9.4"
+}
+zsh:1: command not found: rg
+
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo.maven.apache.org/maven2/io/vertx/vertx-docgen/0.9.4/vertx-docgen-0.9.4.pom' in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/7782-ad34cccd
+ succeeded in 126ms:
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <parent>
+    <groupId>io.vertx</groupId>
+    <artifactId>vertx-parent</artifactId>
+    <version>19</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>vertx-docgen</artifactId>
+  <version>0.9.4</version>
+
+  <scm>
+    <connection>scm:git:git@github.com:vert-x3/vertx-docgen.git</connection>
+    <developerConnection>scm:git:git@github.com:vert-x3/vertx-docgen.git</developerConnection>
+    <url>git@github.com:vert-x3/vertx-docgen.git</url>
+  </scm>
+
+  <properties>
+    <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.sun</groupId>
+      <artifactId>tools</artifactId>
+      <version>1.8</version>
+      <scope>system</scope>
+      <systemPath>${tools.jar}</systemPath>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+
+        <!-- Don't compile io.vertx.test since that's what our test resources -->
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>default-testCompile</id>
+              <configuration>
+                <testExcludes>
+                  <testExclude>io/vertx/test/**</testExclude>
+                </testExcludes>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+</project>
+
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo.maven.apache.org/maven2/io/vertx/vertx-docgen/0.9.4/' in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/7782-ad34cccd
+ succeeded in 128ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: io/vertx/vertx-docgen/0.9.4</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>io/vertx/vertx-docgen/0.9.4</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="vertx-docgen-0.9.4-javadoc.jar" title="vertx-docgen-0.9.4-javadoc.jar">vertx-docgen-0.9.4-javadoc.jar</a>                    2021-05-17 17:06     75868      
+<a href="vertx-docgen-0.9.4-javadoc.jar.asc" title="vertx-docgen-0.9.4-javadoc.jar.asc">vertx-docgen-0.9.4-javadoc.jar.asc</a>                2021-05-17 17:06       488      
+<a href="vertx-docgen-0.9.4-javadoc.jar.md5" title="vertx-docgen-0.9.4-javadoc.jar.md5">vertx-docgen-0.9.4-javadoc.jar.md5</a>                2021-05-17 17:06        32      
+<a href="vertx-docgen-0.9.4-javadoc.jar.sha1" title="vertx-docgen-0.9.4-javadoc.jar.sha1">vertx-docgen-0.9.4-javadoc.jar.sha1</a>               2021-05-17 17:06        40      
+<a href="vertx-docgen-0.9.4-sources.jar" title="vertx-docgen-0.9.4-sources.jar">vertx-docgen-0.9.4-sources.jar</a>                    2021-05-17 17:06     18985      
+<a href="vertx-docgen-0.9.4-sources.jar.asc" title="vertx-docgen-0.9.4-sources.jar.asc">vertx-docgen-0.9.4-sources.jar.asc</a>                2021-05-17 17:06       488      
+<a href="vertx-docgen-0.9.4-sources.jar.md5" title="vertx-docgen-0.9.4-sources.jar.md5">vertx-docgen-0.9.4-sources.jar.md5</a>                2021-05-17 17:06        32      
+<a href="vertx-docgen-0.9.4-sources.jar.sha1" title="vertx-docgen-0.9.4-sources.jar.sha1">vertx-docgen-0.9.4-sources.jar.sha1</a>               2021-05-17 17:06        40      
+<a href="vertx-docgen-0.9.4-test-sources.jar" title="vertx-docgen-0.9.4-test-sources.jar">vertx-docgen-0.9.4-test-sources.jar</a>               2021-05-17 17:06     49296      
+<a href="vertx-docgen-0.9.4-test-sources.jar.asc" title="vertx-docgen-0.9.4-test-sources.jar.asc">vertx-docgen-0.9.4-test-sources.jar.asc</a>           2021-05-17 17:06       488      
+<a href="vertx-docgen-0.9.4-test-sources.jar.md5" title="vertx-docgen-0.9.4-test-sources.jar.md5">vertx-docgen-0.9.4-test-sources.jar.md5</a>           2021-05-17 17:06        32      
+<a href="vertx-docgen-0.9.4-test-sources.jar.sha1" title="vertx-docgen-0.9.4-test-sources.jar.sha1">vertx-docgen-0.9.4-test-sources.jar.sha1</a>          2021-05-17 17:06        40      
+<a href="vertx-docgen-0.9.4-tests.jar" title="vertx-docgen-0.9.4-tests.jar">vertx-docgen-0.9.4-tests.jar</a>                      2021-05-17 17:06     34015      
+<a href="vertx-docgen-0.9.4-tests.jar.asc" title="vertx-docgen-0.9.4-tests.jar.asc">vertx-docgen-0.9.4-tests.jar.asc</a>                  2021-05-17 17:06       488      
+<a href="vertx-docgen-0.9.4-tests.jar.md5" title="vertx-docgen-0.9.4-tests.jar.md5">vertx-docgen-0.9.4-tests.jar.md5</a>                  2021-05-17 17:06        32      
+<a href="vertx-docgen-0.9.4-tests.jar.sha1" title="vertx-docgen-0.9.4-tests.jar.sha1">vertx-docgen-0.9.4-tests.jar.sha1</a>                 2021-05-17 17:06        40      
+<a href="vertx-docgen-0.9.4.jar" title="vertx-docgen-0.9.4.jar">vertx-docgen-0.9.4.jar</a>                            2021-05-17 17:06     47543      
+<a href="vertx-docgen-0.9.4.jar.asc" title="vertx-docgen-0.9.4.jar.asc">vertx-docgen-0.9.4.jar.asc</a>                        2021-05-17 17:06       488      
+<a href="vertx-docgen-0.9.4.jar.md5" title="vertx-docgen-0.9.4.jar.md5">vertx-docgen-0.9.4.jar.md5</a>                        2021-05-17 17:06        32      
+<a href="vertx-docgen-0.9.4.jar.sha1" title="vertx-docgen-0.9.4.jar.sha1">vertx-docgen-0.9.4.jar.sha1</a>                       2021-05-17 17:06        40      
+<a href="vertx-docgen-0.9.4.pom" title="vertx-docgen-0.9.4.pom">vertx-docgen-0.9.4.pom</a>                            2021-05-17 17:06      2054      
+<a href="vertx-docgen-0.9.4.pom.asc" title="vertx-docgen-0.9.4.pom.asc">vertx-docgen-0.9.4.pom.asc</a>                        2021-05-17 17:06       488      
+<a href="vertx-docgen-0.9.4.pom.md5" title="vertx-docgen-0.9.4.pom.md5">vertx-docgen-0.9.4.pom.md5</a>                        2021-05-17 17:06        32      
+<a href="vertx-docgen-0.9.4.pom.sha1" title="vertx-docgen-0.9.4.pom.sha1">vertx-docgen-0.9.4.pom.sha1</a>                       2021-05-17 17:06        40      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+codex
+Maven Central publishes all three preferred artifacts for 0.9.4: sources, test sources/tests, and Javadocs. I’m checking the project description and confirming that the main JAR contains ordinary JVM classes before writing the record.
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://raw.githubusercontent.com/vert-x3/vertx-docgen/0.9.4/README.md' in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/7782-ad34cccd
+ succeeded in 497ms:
+# Docgen
+
+[![Build Status](https://travis-ci.org/vert-x3/vertx-docgen.svg?branch=master?branch=master)](https://travis-ci.org/vert-x3/vertx-docgen)
+
+## Description
+
+Create an Asciidoc document from package Javadoc. It comes as an annotation processor that process the various
+package Javadoc and create a single Asciidoc file during the compilation phase.
+
+## Motivation
+
+- The documentation can reference the underlying API doc (Javadoc, Scaladoc, JSdoc, etc…) : when the Asciidoc
+content is created the `{@link}` are transformed to a link to the API doc
+- The documentation always point to an existing API, i.e the {@link} references validity are checked
+and make the compilation fails
+- Refactoring friendly, when you rename a method the corresponding {@link} are updated, allowing you
+easily spot the affected doc (using git diff or something)
+
+## Features
+
+### Document declaration
+
+`@Document` annotations are processed, each annotated package creates a corresponding asciidoc document. The
+annotation can specify an optional `fileName` member otherwise the document file name will be generated using the
+annotated element.
+
+File documents can also be processed with the `docgen.source` processor option.
+
+### Document modulalization
+
+The `{@link }` Javadoc tag includes or link to the target doc when the target is a package. This can be used to make your
+documentation modular and split the various chapters of the document accross the API packages.
+
+When the package is annotated with `@Document` the link renders to a relative file url, otherwise its content
+will be literaly included in the document.
+
+### Source inclusion
+
+The `{@link }` Javadoc tag includes the referenced elements when this element is annotated with a `io.vertx.docgen.Source`
+annotation (otherwise it will just create a link). The `@Source` annotation can annotate a single method, a class
+or a package.
+
+By default the source code is translated to the output language. This feature can be disabled with `@Source
+(translate=false)`. When including source code, the _closest_ (class, package, parent package...) `@Source` annotation
+ is looked up and the value of the `translate` attribute is used.
+
+When `translate` is set to `false`, it supports the inclusion of Java file (entire file) in the documentation with
+the following syntax:
+
+```
+[source, java]
+----
+{@link org.acme.MyClass}
+----
+```
+
+### Lang token
+
+The `$lang` token is replaced by the processed language in:
+- `docgen.output`
+- processed text (@Source is excluded)
+
+The `\$lang` escapes to `$lang`.
+
+### Language-based content
+
+You can decided that some content is only applicable for a set of languages. This is doable using:
+
+```
+[language, java]
+----
+This is only for java
+----
+```
+
+or
+
+```
+[language, ruby, groovy]
+----
+This is only for ruby and groovy.
+----
+```
+
+If the block is only on one line the following syntax is accepted:
+
+```
+[language, ruby]
+This is only for ruby
+```
+
+If the block contains a "sub-block" such as code, the `----` must be prepended by a `\`:
+
+```
+[language, java]
+----
+
+[source]
+\----
+System.out.println("Hello");
+\----
+
+----
+```
+
+### Referencing program elements
+
+The `{@link }` Javadoc tag creates a link to the Javadoc of a program element when the target is
+ a type, a field or a method.
+
+## Configuration
+
+The annotation processor can be configured via annotation processing options:
+
+- `docgen.output` : path of the file output dir, the path may contain the token `$lang` that will be subsituted by
+the current language being generated (the `docgen.json` name field)
+- `docgen.extension` : the file extension to use when file names are generated, defaults to `.adoc`
+
+## Example
+
+See the nested [test_proj](https://github.com/vert-x3/vertx-docgen/tree/master/test-proj) project for Maven and Gradle examples.
+
+Given the files:
+
+```
+/**
+ * = The great project
+ *
+ * include::{@link test.proj.foofeature}[]
+ *
+ */
+@io.vertx.docgen.Document(fileName = "index.adoc")
+package test.proj;
+```
+
+```
+/**
+ * == The foo feature.
+ *
+ * The {@link test.proj.foofeature.FooApi api class}
+ * The {@link test.proj.foofeature.FooApi#myMethod api method}
+ * The {@link test.proj.foofeature.FooApi#myField api field}
+ *
+ * * item1
+ * * item 2
+ * * item 3
+ *
+ * Some code:
+ *
+ * [source,java]
+ * ----
+ * {@link test.proj.foofeature.Examples#fooExample}
+ * ----
+ * <1> get a Foo
+ * <2> call {@link test.proj.foofeature.FooApi#myMethod api method}
+ *
+ * === A sub section
+ *
+ * {@link test.proj.foofeature.subsection}
+ */
+@io.vertx.docgen.Document
+package test.proj.foofeature;
+```
+
+```
+/**
+ * A literaly included section
+ */
+package test.proj.foofeature.subsection;
+```
+
+Generate the following Asciidoc files:
+
+```
+= The great project
+
+include::test.proj.foofeature.adoc[]
+```
+_test.proj.adoc_
+
+```
+== The foo feature.
+
+The link:apidocs/test/proj/foofeature/FooApi.html[`api class`]
+The link:apidocs/test/proj/foofeature/FooApi.html#myMethod-java.lang.String-int-java.util.List-java.util.Set-[`api method`]
+The link:apidocs/test/proj/foofeature/FooApi.html#myField[`api field`]
+
+* item1
+* item 2
+* item 3
+
+Some code:
+
+[source,java]
+----
+FooApi foo = getFoo(); // <1>
+List<Boolean> list = new ArrayList<>();
+Set<Long> set = new HashSet<>();
+foo.myMethod("whatever", 0, list, set); // <2>
+----
+<1> get a Foo
+<2> call link:apidocs/test/proj/foofeature/FooApi.html#myMethod-java.lang.String-int-java.util.List-java.util.Set-[`api method`]
+
+=== A sub section
+
+A literaly included section
+```
+_test.proj.foofeature.adoc_
+
+exec
+/usr/bin/zsh -lc 'curl -fsSL https://repo.maven.apache.org/maven2/io/vertx/vertx-docgen/0.9.4/vertx-docgen-0.9.4.jar -o /tmp/vertx-docgen-0.9.4.jar && jar tf /tmp/vertx-docgen-0.9.4.jar' in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/7782-ad34cccd
+ succeeded in 269ms:
+META-INF/MANIFEST.MF
+META-INF/
+io/
+io/vertx/
+io/vertx/docgen/
+META-INF/maven/
+META-INF/maven/io.vertx/
+META-INF/maven/io.vertx/vertx-docgen/
+io/vertx/docgen/BaseProcessor$Doc.class
+io/vertx/docgen/DocGenProcessor.class
+io/vertx/docgen/BaseProcessor$2.class
+io/vertx/docgen/BaseProcessor$ElementResolution.class
+io/vertx/docgen/BaseProcessor$PackageDoc.class
+io/vertx/docgen/JavaDocGenerator.class
+META-INF/maven/io.vertx/vertx-docgen/pom.xml
+io/vertx/docgen/Source.class
+io/vertx/docgen/BaseProcessor$LinkProcessing.class
+io/vertx/docgen/DocWriter.class
+io/vertx/docgen/BaseProcessor$FileDoc.class
+io/vertx/docgen/DocGenException.class
+io/vertx/docgen/JavaDocGenProcessor.class
+META-INF/maven/io.vertx/vertx-docgen/pom.properties
+io/vertx/docgen/Syntax$2.class
+io/vertx/docgen/LanguageFilterPostProcessor.class
+io/vertx/docgen/BaseProcessor$Doc$1.class
+io/vertx/docgen/BaseProcessor.class
+io/vertx/docgen/Helper.class
+io/vertx/docgen/Syntax$1.class
+io/vertx/docgen/Document.class
+io/vertx/docgen/EntityUtils.class
+io/vertx/docgen/PostProcessor.class
+io/vertx/docgen/Syntax.class
+io/vertx/docgen/BaseProcessor$1.class
+io/vertx/docgen/DocGenerator.class
+META-INF/INDEX.LIST
+
+exec
+/usr/bin/zsh -lc "grep -R -n 'test-sources.jar\\|javadoc.jar\\|sources.jar' build/discovered-artifact-metadata 2>/dev/null | head -60" in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/7782-ad34cccd
+ succeeded in 0ms:
+exec
+/usr/bin/zsh -lc "grep -R -n 'repo.maven.apache.org\\|repo1.maven.org' build/discovered-artifact-metadata 2>/dev/null | head -80" in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/7782-ad34cccd
+ succeeded in 0ms:
+2026-07-13T23:39:50.933053Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to read file to update /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/7782-ad34cccd/build/discovered-artifact-metadata/io.vertx-vertx-docgen-0.9.4.json: fs sandbox helper failed with status exit status: 1: bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted
+exec
+/usr/bin/zsh -lc apply_patch in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/7782-ad34cccd
+ succeeded in 9631ms:
+*** Begin Patch
+*** Update File: build/discovered-artifact-metadata/io.vertx-vertx-docgen-0.9.4.json
+@@
+-{
+-  "coordinates" : "io.vertx:vertx-docgen:0.9.4"
+-}
++{
++  "coordinates" : "io.vertx:vertx-docgen:0.9.4",
++  "repository-url" : "https://github.com/vert-x3/vertx-docgen",
++  "source-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-docgen/$version$/vertx-docgen-$version$-sources.jar",
++  "test-code-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-docgen/$version$/vertx-docgen-$version$-test-sources.jar",
++  "documentation-url" : "https://repo.maven.apache.org/maven2/io/vertx/vertx-docgen/$version$/vertx-docgen-$version$-javadoc.jar",
++  "description" : "Vert.x DocGen is an annotation processor that generates AsciiDoc documents from package Javadocs during compilation. It resolves Javadoc links, includes referenced source elements, and supports language-aware documentation output."
++}
+*** End Patch
+Success. Updated the following files:
+M build/discovered-artifact-metadata/io.vertx-vertx-docgen-0.9.4.json
+
+exec
+/usr/bin/zsh -lc 'jq empty build/discovered-artifact-metadata/io.vertx-vertx-docgen-0.9.4.json && git diff --check && git diff -- build/discovered-artifact-metadata/io.vertx-vertx-docgen-0.9.4.json' in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/7782-ad34cccd
+ succeeded in 102ms:
+exec
+/usr/bin/zsh -lc "sed -n '1,160p' build/discovered-artifact-metadata/io.vertx-vertx-docgen-0.9.4.json && curl -fsSIL https://repo.maven.apache.org/maven2/io/vertx/vertx-docgen/0.9.4/vertx-docgen-0.9.4-sources.jar && curl -fsSIL https://repo.maven.apache.org/maven2/io/vertx/vertx-docgen/0.9.4/vertx-docgen-0.9.4-test-sources.jar && curl -fsSIL https://repo.maven.apache.org/maven2/io/vertx/vertx-docgen/0.9.4/vertx-docgen-0.9.4-javadoc.jar" in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/7782-ad34cccd
+ succeeded in 339ms:
+HTTP/2 200 
+date: Mon, 13 Jul 2026 23:40:31 GMT
+content-type: application/java-archive
+content-length: 18985
+cf-ray: a1ac221b5da4562e-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 207921
+etag: "bf717b37030d9694afd0441ae8756fde"
+last-modified: Mon, 17 May 2021 17:06:32 GMT
+x-checksum-md5: bf717b37030d9694afd0441ae8756fde
+x-checksum-sha1: 917170a5a99c6f755eb93c2a366ba787701be733
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Mon, 13 Jul 2026 23:40:32 GMT
+content-type: application/java-archive
+content-length: 49296
+cf-ray: a1ac221bf85fb30c-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 36942
+etag: "1fd4bace2f67ad6110ab5e8022818474"
+last-modified: Mon, 17 May 2021 17:06:33 GMT
+x-checksum-md5: 1fd4bace2f67ad6110ab5e8022818474
+x-checksum-sha1: 32b5cca91a4c34f4fe9ddb8a5ccfb59c2d7a90da
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+HTTP/2 200 
+date: Mon, 13 Jul 2026 23:40:32 GMT
+content-type: application/java-archive
+content-length: 75868
+cf-ray: a1ac221c9ef91f09-BEG
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 36942
+etag: "14b0d6ef0f77ae25613a1f0b753e1828"
+last-modified: Mon, 17 May 2021 17:06:34 GMT
+x-checksum-md5: 14b0d6ef0f77ae25613a1f0b753e1828
+x-checksum-sha1: 5996268c53c2513fd327b975d9c14184d50e1822
+server: cloudflare
+alt-svc: h3=":443"; ma=86400
+
+
+codex
+Updated [io.vertx-vertx-docgen-0.9.4.json](/home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/7782-ad34cccd/build/discovered-artifact-metadata/io.vertx-vertx-docgen-0.9.4.json).
+
+- Used published Maven sources, test sources, and Javadocs; all version-substituted URLs return HTTP 200.
+- Omitted `language` because it is not Kotlin-, Groovy-, or Scala-specific.
+- Omitted Native Image exclusion fields because the artifact contains standard JVM class files.
+- Validated the JSON successfully.
+tokens used
+40,980
+Updated [io.vertx-vertx-docgen-0.9.4.json](/home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/7782-ad34cccd/build/discovered-artifact-metadata/io.vertx-vertx-docgen-0.9.4.json).
+
+- Used published Maven sources, test sources, and Javadocs; all version-substituted URLs return HTTP 200.
+- Omitted `language` because it is not Kotlin-, Groovy-, or Scala-specific.
+- Omitted Native Image exclusion fields because the artifact contains standard JVM class files.
+- Validated the JSON successfully.
+Ran agent for io.vertx:vertx-docgen:0.9.4 (exit 0). Log: /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/7782-ad34cccd/build/agent-artifact-discovery-logs/io.vertx-vertx-docgen-0.9.4.log
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/7782-ad34cccd/build/reports/problems/problems-report.html
 
 Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
 
@@ -23,5 +576,5 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD SUCCESSFUL in 1s
-9 actionable tasks: 1 executed, 8 up-to-date
+BUILD SUCCESSFUL in 3m 47s
+9 actionable tasks: 9 executed
