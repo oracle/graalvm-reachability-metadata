@@ -218,6 +218,13 @@ state, after which the steps re-run; failed targets or an explicit
 human-intervention flag in the metrics, and failures that survive the fix
 budget, route to human intervention.
 
+Every fix state that can be entered more than once is a counted Rhei state and
+writes a visit-scoped output. API and deep fix states use the corresponding
+measurement visit cap, which records each fix entry without tightening the
+measurement-owned retry budget. The finalization fix state uses the configured
+`fix_passes` cap. This ensures that an output from an earlier repair pass cannot
+satisfy the output-existence completion check for a later pass.
+
 ## 5. Acceptance Criteria
 
 A code coverage improvement run is successful only when all of these hold:
@@ -225,6 +232,8 @@ A code coverage improvement run is successful only when all of these hold:
 - A Rhei template can convert one `code-coverage-improvement` issue into an
   executable workspace with deterministic finalization verification and bounded
   fix routing.
+- Re-entering an API, deep, or finalization fix state starts a fresh agent pass
+  and requires a distinct visit-scoped fix artifact.
 - The generated tests are meaningful behavior tests and do not invoke internal
   methods directly merely to raise coverage.
 - Public API and deep implementation work use separate reports and prompts.

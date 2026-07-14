@@ -201,6 +201,7 @@ states:
     description: Repair the cause of a failed API measurement step.
     target: "{{worker_agent}}"
     concurrent: true
+    visits: {{measure_visits}}
     instructions: |
       Fix the API measurement failure for Task {task_id}: {task_title}.
 
@@ -408,6 +409,7 @@ states:
     description: Repair the cause of a failed deep measurement step.
     target: "{{worker_agent}}"
     concurrent: true
+    visits: {{measure_visits}}
     instructions: |
       Fix the deep measurement failure for Task {task_id}: {task_title}.
 
@@ -571,6 +573,7 @@ states:
     description: Repair the cause of a failed finalization step or verification.
     target: "{{worker_agent}}"
     concurrent: true
+    visits: {{fix_passes}}
     instructions: |
       Fix the finalization failure for Task {task_id}: {task_title}.
 
@@ -597,7 +600,7 @@ states:
         path: runtime/code-coverage/issues/conversion.json
     outputs:
       - name: fix
-        path: runtime/code-coverage/fixes/{task_id}.md
+        path: runtime/code-coverage/fixes/{task_id}-{visit_count}.md
         description: Fixes applied after a failed finalization step or verification.
 
   human-intervention:
