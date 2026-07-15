@@ -19,6 +19,7 @@ from utility_scripts.native_image_config_policy import (
 )
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
+from utility_scripts.task_logs import build_timestamped_task_log_path, display_log_path
 from utility_scripts.test_quality_checks import (
     collect_generated_test_validity_issues,
     format_generated_test_validity_issue,
@@ -52,25 +53,30 @@ def _run_gradle_command(repo_path: str, command: list[str]) -> bool:
 
 def _run_codex_check_metadata_fix(repo_path: str, library: str) -> bool:
     """Ask Codex to repair an unresolved metadata validation failure."""
+    log_path = build_timestamped_task_log_path("metadata-fix", library, "check-metadata-codex")
     prompt = (
         f"Fix the checkMetadataFiles failure for {library}. "
         f"Reproduce it with ./gradlew checkMetadataFiles -Pcoordinates={library}, "
         "make the minimal fix, and rerun the command until it passes."
     )
+    print(f"[Codex running... Output: {display_log_path(log_path)}]")
     try:
-        result = subprocess.run(
-            [
-                "codex",
-                "exec",
-                "--dangerously-bypass-approvals-and-sandbox",
-                "-m",
-                "gpt-5.6-terra",
-                prompt,
-            ],
-            cwd=repo_path,
-            timeout=CODEX_CHECK_METADATA_TIMEOUT_SECONDS,
-            check=False,
-        )
+        with open(log_path, "w", encoding="utf-8") as log_file:
+            result = subprocess.run(
+                [
+                    "codex",
+                    "exec",
+                    "--dangerously-bypass-approvals-and-sandbox",
+                    "-m",
+                    "gpt-5.6-terra",
+                    prompt,
+                ],
+                cwd=repo_path,
+                stdout=log_file,
+                stderr=subprocess.STDOUT,
+                timeout=CODEX_CHECK_METADATA_TIMEOUT_SECONDS,
+                check=False,
+            )
     except subprocess.TimeoutExpired:
         print(
             f"ERROR: Codex metadata fix timed out after {CODEX_CHECK_METADATA_TIMEOUT_SECONDS} "

@@ -245,7 +245,8 @@ re-implement the status merge at their call sites.
 Per-coordinate finalization repairs missing `allowed-packages`
 deterministically. If `checkMetadataFiles` still fails, Forge runs up to three
 Codex metadata fix and validation attempts before failing the run. Each Codex
-invocation is limited to 20 minutes.
+invocation is limited to 20 minutes, and its combined output is written to a
+printed coordinate-scoped metadata-fix log path (§FS-durable-generation-logs).
 
 Run metrics flow through the shared writer
 (`metrics_writer.write_workflow_run_metrics`): it appends the run entry to the
