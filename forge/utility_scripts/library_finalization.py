@@ -24,6 +24,8 @@ from utility_scripts.test_quality_checks import (
     format_generated_test_validity_issue,
 )
 
+CODEX_CHECK_METADATA_TIMEOUT_SECONDS = 1200
+
 
 def _run_gradle_command_with_output(repo_path: str, command: list[str]) -> subprocess.CompletedProcess[str]:
     """Run a Gradle command in the reachability repo and capture combined output."""
@@ -55,18 +57,27 @@ def _run_codex_check_metadata_fix(repo_path: str, library: str) -> bool:
         f"Reproduce it with ./gradlew checkMetadataFiles -Pcoordinates={library}, "
         "make the minimal fix, and rerun the command until it passes."
     )
-    result = subprocess.run(
-        [
-            "codex",
-            "exec",
-            "--dangerously-bypass-approvals-and-sandbox",
-            "-m",
-            "gpt-5.6-terra",
-            prompt,
-        ],
-        cwd=repo_path,
-        check=False,
-    )
+    try:
+        result = subprocess.run(
+            [
+                "codex",
+                "exec",
+                "--dangerously-bypass-approvals-and-sandbox",
+                "-m",
+                "gpt-5.6-terra",
+                prompt,
+            ],
+            cwd=repo_path,
+            timeout=CODEX_CHECK_METADATA_TIMEOUT_SECONDS,
+            check=False,
+        )
+    except subprocess.TimeoutExpired:
+        print(
+            f"ERROR: Codex metadata fix timed out after {CODEX_CHECK_METADATA_TIMEOUT_SECONDS} "
+            f"seconds for {library}.",
+            file=sys.stderr,
+        )
+        return False
     if result.returncode != 0:
         print(f"ERROR: Codex metadata fix failed for {library}.", file=sys.stderr)
         return False
