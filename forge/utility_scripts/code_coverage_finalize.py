@@ -293,8 +293,7 @@ def _validate_target_state_document(
 def _load_latest_target_states(
         paths: list[str], coordinate: str
 ) -> dict[str, dict[str, Any]]:
-    if not paths:
-        raise FinalizationError("At least one target-state JSON file is required.")
+    """Load optional externally supplied state; the workflow itself writes none."""
     latest: dict[str, dict[str, Any]] = {}
     for path in paths:
         document: dict[str, Any] = _read_object(path, "Target-state file")

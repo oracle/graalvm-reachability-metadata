@@ -12,11 +12,12 @@ The workflow keeps generated code coverage tests under the dedicated suite path
 `tests/src/<group>/<artifact>/<test-version>/code-coverage-improvement` (a tracked
 extension suite inside the indexed test project), writes runtime evidence under
 `runtime/code-coverage/`, and runs two separately measured phases
-§WF-code-coverage-improvement. The first gives the agent only exact
-JaCoCo-uncovered public API entries. The second gives it at most 100
+§WF-code-coverage-improvement. The first gives the agent at most 200 exact
+JaCoCo-uncovered public API entries. The second gives it at most 200
 JaCoCo-uncovered internal methods as compact paths derived from sampled PGO and
-the Native Image static call graph. Each phase has five bounded editing passes,
-and every pass is followed by a fresh JaCoCo result.
+the Native Image static call graph. Each phase has a bounded editing-pass
+budget scaled heuristically from its baseline uncovered count, and every pass
+is followed by a fresh JaCoCo result.
 
 ## Source
 
@@ -46,10 +47,12 @@ loops are measurement-driven: a deterministic measurement program
 graph) always writes the current report to one fixed location, decides
 whether the loop continues, and derives the cover prompt from that report in
 the same step; the cover agent always returns to
-measurement — at most `5` cover passes per phase, with
+measurement — a heuristic per-phase budget of baseline-uncovered / 2 / 250
+cover passes, at least one and at most `10`, with
 measurement step failures repaired through a bounded fix state. The
 finalization task runs as a deterministic program of numbered steps (read the
-conversion record, run the JVM tests with the coverage suite, finalize
+conversion record, run checkstyle, run the JVM tests with the coverage
+suite, finalize
 metrics); a nonzero exit code is the number of the failed step and routes to
 `finalize-fix`, after which the steps re-run from the start. `finalize-verify`
 then accepts the artifacts only on presence, schema validation of

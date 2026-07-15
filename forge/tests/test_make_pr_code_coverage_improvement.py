@@ -23,12 +23,12 @@ class PublisherTests(unittest.TestCase):
             "coverageSuitePath": "tests/src/com.example/demo/1.0.0/code-coverage-improvement",
             "apiJacoco": {
                 "baseline": {
-                    "total": 10, "measured": 10, "covered": 4,
-                    "uncovered": 6, "notReported": 0, "coveragePercent": 40.0,
+                    "total": 16, "measured": 10, "covered": 4,
+                    "uncovered": 6, "notReported": 6, "coveragePercent": 40.0,
                 },
                 "final": {
-                    "total": 10, "measured": 10, "covered": 8,
-                    "uncovered": 2, "notReported": 0, "coveragePercent": 80.0,
+                    "total": 16, "measured": 10, "covered": 8,
+                    "uncovered": 2, "notReported": 6, "coveragePercent": 80.0,
                 },
                 "delta": {
                     "covered": 4, "uncovered": -4, "notReported": 0,
@@ -100,22 +100,24 @@ class PublisherTests(unittest.TestCase):
             "needsHumanIntervention": True,
         }
 
-    def test_body_keeps_evidence_separate(self) -> None:
+    def test_body_reports_phase_totals(self) -> None:
         body = module.build_pull_request_body(
             "com.example:demo:1.0.0", 8380, self._metrics()
         )
 
-        self.assertIn("### Public API entries", body)
-        self.assertIn("Baseline: 4/10 (40.0%)", body)
-        self.assertIn("### Deep internal methods", body)
+        self.assertIn("### Simple Jacoco guidance phase", body)
+        self.assertIn("Baseline: 4/16 (25.0%)", body)
+        self.assertIn("Final: 8/16 (50.0%)", body)
+        self.assertIn("Delta: +25.0pp", body)
+        self.assertIn("Remaining uncovered: 8", body)
+        self.assertIn("### PGO guidance phase", body)
         self.assertIn("Final: 12/20 (60.0%)", body)
-        self.assertIn("## Sampled PGO guidance only", body)
-        self.assertIn("84 samples", body)
-        self.assertNotIn("PGO coverage", body)
-        self.assertNotIn("executed methods", body)
-        self.assertIn("[api] `example.Greeter#greet():java.lang.String`", body)
-        self.assertIn("No public route.", body)
+        self.assertNotIn("Sampled PGO", body)
+        self.assertNotIn("84 samples", body)
 
+        self.assertIn("## Completed targets (1)", body)
+        self.assertNotIn("example.Greeter#greet():java.lang.String", body)
+        self.assertIn("No public route.", body)
         self.assertIn("## Failed targets (1)", body)
         self.assertIn("Needs human intervention: yes", body)
         self.assertIn("attempts: 4, last attempted iteration: 5", body)

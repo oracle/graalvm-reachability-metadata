@@ -133,7 +133,14 @@ states:
           if entry.get("status") == "uncovered"
       ]
       print(f"[api-measure] iteration {iteration}: {len(uncovered)} uncovered public targets", flush=True)
-      if not uncovered or iteration >= 5:
+
+      # Heuristic iteration budget: one cover pass lands at most ~250 methods
+      # and roughly half the uncovered targets are reachable in practice, so
+      # baseline_uncovered / 2 / 250 passes, clamped to [1, 10].
+      baseline = json.load(open(validation / "api-cover-report-0.json"))
+      budget = min(10, max(1, baseline["summary"]["uncovered"] // 500))
+      print(f"[api-measure] iteration budget {budget} from {baseline['summary']['uncovered']} baseline uncovered targets", flush=True)
+      if not uncovered or iteration >= budget:
           sys.exit(0)
 
       # Steering: derive the next cover prompt from the report just written.
@@ -148,11 +155,13 @@ states:
           "assertions, never superficial coverage-only invocation.",
           "",
       ]
-      for entry in uncovered:
+      # A longer list only dilutes one cover pass; keep the top 200 targets.
+      prompt_targets = uncovered[:200]
+      for entry in prompt_targets:
           hint = entry.get("behaviorHint", "")
           lines.append(f"- `{entry['id']}`" + (f" - {hint}" if hint else ""))
       (prompts / "api-cover-prompt.md").write_text("\n".join(lines) + "\n")
-      print(f"[api-measure] wrote prompt with {len(uncovered)} targets", flush=True)
+      print(f"[api-measure] wrote prompt with {len(prompt_targets)} targets", flush=True)
       sys.exit(10)
       PY
     program_timeout: 60m
@@ -164,7 +173,7 @@ states:
     description: Generate tests for the JaCoCo-uncovered public API targets in the prompt.
     target: "pi:openai-codex/gpt-5.6-terra"
     concurrent: true
-    visits: 5
+    visits: 10
     instructions: |
       Cover uncovered public API targets for Task {task_id}: {task_title}.
 
@@ -329,9 +338,6 @@ states:
           "--iteration", iteration,
           "--output-dir", discovery,
       ]
-      target_state = Path("runtime/code-coverage/targets/deep-cover.json")
-      if target_state.is_file():
-          analyzer += ["--target-state", target_state]
       run(6, analyzer, env=helper_env)
 
       # The fixed handoff location the cover agent reads from.
@@ -344,7 +350,14 @@ states:
       report = json.load(open(report_path))
       actionable = report.get("bulkTargets", [])
       print(f"[deep-measure] iteration {iteration}: {len(actionable)} actionable deep targets", flush=True)
-      if not actionable or iteration >= 5:
+
+      # Heuristic iteration budget: one cover pass lands at most ~250 methods
+      # and roughly half the uncovered targets are reachable in practice, so
+      # baseline_uncovered / 2 / 250 passes, clamped to [1, 10].
+      baseline = json.load(open(discovery / "discovery-report-0.json"))
+      budget = min(10, max(1, baseline["summary"]["deepUncovered"] // 500))
+      print(f"[deep-measure] iteration budget {budget} from {baseline['summary']['deepUncovered']} baseline uncovered methods", flush=True)
+      if not actionable or iteration >= budget:
           sys.exit(0)
 
       # Steering: the analyzer already renders the compact Observed /
@@ -367,7 +380,7 @@ states:
     description: Generate tests reaching uncovered internal paths through public behavior.
     target: "pi:openai-codex/gpt-5.6-terra"
     concurrent: true
-    visits: 5
+    visits: 10
     instructions: |
       Cover uncovered internal paths for Task {task_id}: {task_title}.
 
@@ -385,10 +398,8 @@ states:
         indexed test project (`coverageSuiteRepoRelativePath` in
         conversion.json); never touch the regular `src/test` sources.
       - Do not weaken metadata-generation tests.
-      - Record per-target attempt state in
-        `runtime/code-coverage/targets/deep-cover.json` (schema
-        `code_coverage_target_state`): update attempted, completed, skipped,
-        and exhausted entries so later iterations rotate past hopeless targets.
+      - Do not write any target state: measurement tracks attempts and target
+        rotation deterministically from its own report history.
       - Do not measure or claim coverage yourself: deterministic re-measurement
         runs right after this state and decides the loop.
 
@@ -470,7 +481,21 @@ states:
       except Exception as error:
           fail(1, f"conversion.json missing or invalid: {error}")
 
-      # Step 2: regular JVM tests plus the tracked extension suite.
+      # Step 2: checkstyle over the coordinate's subprojects, including the
+      # tracked coverage suite source set.
+      checkstyle_command = [
+          f"{worktree_path}/gradlew",
+          "checkstyle",
+          f"-Pcoordinates={coordinate}",
+          "--stacktrace",
+      ]
+      try:
+          if subprocess.run(checkstyle_command, cwd=worktree_path).returncode != 0:
+              fail(2, "checkstyle failed")
+      except OSError as error:
+          fail(2, f"checkstyle could not run: {error}")
+
+      # Step 3: regular JVM tests plus the tracked extension suite.
       # Finalization runs no Native Image validation at this stage.
       jvm_commands = [
           [
@@ -484,11 +509,11 @@ states:
       for jvm_command in jvm_commands:
           try:
               if subprocess.run(jvm_command, cwd=worktree_path).returncode != 0:
-                  fail(2, f"JVM tests failed: {jvm_command[1]}")
+                  fail(3, f"JVM tests failed: {jvm_command[1]}")
           except OSError as error:
-              fail(2, f"JVM tests could not run: {error}")
+              fail(3, f"JVM tests could not run: {error}")
 
-      # Step 3: finalize separate API/deep JaCoCo metrics and guidance-only PGO
+      # Step 4: finalize separate API/deep JaCoCo metrics and guidance-only PGO
       # evidence from the recorded reports and target state.
       def report_bounds(directory: str, stem: str) -> tuple:
           reports = sorted(
@@ -496,7 +521,7 @@ states:
               key=lambda p: int(p.stem.rsplit("-", 1)[1]),
           )
           if not reports:
-              fail(3, f"no {stem} reports under {directory}")
+              fail(4, f"no {stem} reports under {directory}")
           return reports[0], reports[-1]
 
       api_baseline, api_final = report_bounds("runtime/code-coverage/validation", "api-cover-report")
@@ -512,16 +537,16 @@ states:
           "--deep-final", str(deep_final),
           "--output-dir", "runtime/code-coverage/finalization",
       ]
-      for jvm_command in jvm_commands:
-          finalize_command += ["--validation-command", " ".join(jvm_command)]
+      for validation_command in [checkstyle_command] + jvm_commands:
+          finalize_command += ["--validation-command", " ".join(validation_command)]
       for target_state in sorted(Path("runtime/code-coverage/targets").glob("*.json")):
           finalize_command += ["--target-state", str(target_state)]
       finalize_env = dict(os.environ, PYTHONPATH=work_path)
       try:
           if subprocess.run(finalize_command, env=finalize_env).returncode != 0:
-              fail(3, "code_coverage_finalize.py failed")
+              fail(4, "code_coverage_finalize.py failed")
       except OSError as error:
-          fail(3, f"code_coverage_finalize.py could not run: {error}")
+          fail(4, f"code_coverage_finalize.py could not run: {error}")
       PY
     program_timeout: 90m
     inputs:
@@ -581,9 +606,11 @@ states:
       state log names the failed step or verification check:
       - step 1: `runtime/code-coverage/issues/conversion.json` is missing or
         invalid - repair it from the conversion task evidence.
-      - step 2: JVM tests failed - fix the generated coverage tests in the
+      - step 2: checkstyle failed - fix the style violations in the generated
+        coverage tests; do not suppress or weaken the checkstyle rules.
+      - step 3: JVM tests failed - fix the generated coverage tests in the
         issue worktree; do not weaken or delete meaningful assertions.
-      - step 3: `code_coverage_finalize.py` failed - repair the report or
+      - step 4: `code_coverage_finalize.py` failed - repair the report or
         target-state artifacts it rejected; never edit its output by hand.
       - verification: finalization artifacts are missing, empty, or
         schema-invalid - repair the inputs and let the program regenerate them.
@@ -793,13 +820,19 @@ transitions:
     to: finalize-fix
     exit_code: 2
     condition: visitCount < visits
-    description: Step 2 failed - JVM tests with the coverage suite failed.
+    description: Step 2 failed - checkstyle failed for the coverage suite.
 
   - from: reviewed-execute
     to: finalize-fix
     exit_code: 3
     condition: visitCount < visits
-    description: Step 3 failed - code_coverage_finalize.py rejected its inputs.
+    description: Step 3 failed - JVM tests with the coverage suite failed.
+
+  - from: reviewed-execute
+    to: finalize-fix
+    exit_code: 4
+    condition: visitCount < visits
+    description: Step 4 failed - code_coverage_finalize.py rejected its inputs.
 
   - from: reviewed-execute
     to: human-intervention
@@ -818,6 +851,12 @@ transitions:
     exit_code: 3
     condition: visitCount >= visits
     description: Step 3 still fails after the maximum fix passes.
+
+  - from: reviewed-execute
+    to: human-intervention
+    exit_code: 4
+    condition: visitCount >= visits
+    description: Step 4 still fails after the maximum fix passes.
 
   - from: finalize-verify
     to: completed

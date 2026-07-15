@@ -67,7 +67,7 @@ class FinalizerTests(unittest.TestCase):
             json.dump(value, output)
         return path
 
-    def _run(self) -> dict:
+    def _run(self, include_target_state: bool = True) -> dict:
         baseline_api = self._write(
             "api-0.json", _api(["covered", "uncovered", "uncovered", "uncovered"])
         )
@@ -132,10 +132,20 @@ class FinalizerTests(unittest.TestCase):
             api_final_path=final_api,
             deep_baseline_path=baseline_deep,
             deep_final_path=final_deep,
-            target_state_paths=[state],
+            target_state_paths=[state] if include_target_state else [],
             validation_commands=["./gradlew test -Pcoordinates=com.example:demo:1.0.0"],
             output_dir=os.path.join(self.directory.name, "output"),
         )
+
+    def test_finalizes_without_target_state_files(self) -> None:
+        metrics = self._run(include_target_state=False)
+
+        completed = {target["id"] for target in metrics["targets"]["completed"]}
+        self.assertIn("example.Internal#m1():void", completed)
+        self.assertEqual(metrics["targets"]["skipped"], [])
+        self.assertEqual(metrics["targets"]["exhausted"], [])
+        self.assertEqual(metrics["targets"]["failed"], [])
+        self.assertFalse(metrics["needsHumanIntervention"])
 
     def test_coverage_reports_determine_completion(self) -> None:
         metrics = self._run()
