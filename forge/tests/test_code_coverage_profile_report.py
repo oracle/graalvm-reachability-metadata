@@ -339,7 +339,7 @@ class DeepCorrelationTest(unittest.TestCase):
 
     def test_hard_cap_retains_full_json_and_rotates_attempted_targets(self) -> None:
         entry = MethodRef("bulk.PublicApi", "start", (), "void")
-        refs = [MethodRef("bulk.Targets", f"method{index:03d}", (), "void") for index in range(101)]
+        refs = [MethodRef("bulk.Targets", f"method{index:03d}", (), "void") for index in range(201)]
         methods = {1: entry, **{index + 2: ref for index, ref in enumerate(refs)}}
         graph = report_module.CallGraph(
             methods=methods,
@@ -364,8 +364,8 @@ class DeepCorrelationTest(unittest.TestCase):
         first, _ = report_module.correlate(
             report_module.SampledProfile(), graph, inventory, jacoco, max_listed=1000
         )
-        self.assertEqual(len(first["uncoveredPaths"]), 101)
-        self.assertEqual(len(first["promptTargetIds"]), 100)
+        self.assertEqual(len(first["uncoveredPaths"]), 201)
+        self.assertEqual(len(first["promptTargetIds"]), 200)
         omitted = next(
             entry for entry in first["uncoveredPaths"]
             if entry["id"] not in first["promptTargetIds"]
@@ -376,11 +376,11 @@ class DeepCorrelationTest(unittest.TestCase):
         }
         second, _ = report_module.correlate(
             report_module.SampledProfile(), graph, inventory, jacoco,
-            max_listed=100, target_states=attempted_states,
+            max_listed=200, target_states=attempted_states,
         )
         self.assertEqual(second["promptTargetIds"][0], omitted["id"])
         rotated = next(entry for entry in second["uncoveredPaths"] if entry["id"] == omitted["id"])
-        self.assertEqual(rotated["rank"], 101)
+        self.assertEqual(rotated["rank"], 201)
         self.assertEqual(rotated["attemptCount"], 0)
 
 
@@ -430,7 +430,7 @@ class ReportArtifactsTest(unittest.TestCase):
         with open(os.path.join(self.output_dir, "discovery-report-1.md"), encoding="utf-8") as md_file:
             markdown = md_file.read()
         self.assertIn("## Observed (sampled guidance only)", markdown)
-        self.assertIn("## Uncovered paths (JaCoCo-exact, top 100)", markdown)
+        self.assertIn("## Uncovered paths (JaCoCo-exact, top 200)", markdown)
         navigation = (
             "Observed:\n"
             "`Registry.init()`\n\n"

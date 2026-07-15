@@ -33,12 +33,15 @@ derives the prompt of exact JaCoCo-uncovered targets from it in the same step.
 The cover agent generates tests from the prompt
 and always returns to measurement, so only re-measurement can complete a phase
 — an agent can never claim progress. A phase completes when no actionable
-target remains or `coverage_iterations` passes are spent. Public API prompts
-contain only methods the latest exact JaCoCo report marks uncovered. Deep
-prompts list at most 100 JaCoCo-uncovered internal methods using compact
-`Observed` / `Uncovered paths` navigation, and the cover agent maintains
-schema-validated target state so skipped/exhausted methods rotate out of the
-prompt.
+target remains or its heuristic iteration budget (baseline-uncovered / 2 /
+250 passes, at least one and at most `coverage_iterations`) is spent. Public
+API prompts contain at most 200 methods the latest exact JaCoCo report marks
+uncovered. Deep
+prompts list at most 200 JaCoCo-uncovered internal methods using compact
+`Observed` / `Uncovered paths` navigation. Measurement owns target rotation:
+attempt counts are carried deterministically in the discovery-report history
+and previously prompted methods are deprioritized; the cover agent writes no
+target state.
 
 Generated tests are constrained to
 `tests/src/<group>/<artifact>/<test-version>/code-coverage-improvement/src/test/java` (plus optional

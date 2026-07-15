@@ -178,7 +178,7 @@ def write_reports(
 
     summary: dict = report["summary"]
     lines: list[str] = [
-        f"# API cover report {iteration} — {report.get('coordinate')}",
+        f"# API cover report (iteration {iteration}) — {report.get('coordinate')}",
         "",
         f"- JVM JaCoCo coverage of reported methods: {summary['covered']}/{summary['measured']} "
         f"({summary['coveragePercent']}%)",

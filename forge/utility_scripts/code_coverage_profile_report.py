@@ -54,7 +54,7 @@ from utility_scripts.code_coverage_model import (
     parse_inventory_id,
 )
 
-MAX_LISTED_METHODS = 100
+MAX_LISTED_METHODS = 200
 TARGET_STATE_STATUSES: frozenset[str] = frozenset({
     "pending", "selected", "attempted", "completed", "skipped", "exhausted", "failed",
 })
@@ -938,7 +938,7 @@ def write_markdown(
 ) -> None:
     summary: dict = report["summary"]
     lines: list[str] = [
-        f"# Deep coverage paths {iteration} — {coordinate}",
+        f"# Deep coverage paths (iteration {iteration}) — {coordinate}",
         "",
         "JaCoCo is the coverage authority. Sampled PGO is guidance only.",
         "Attempt every listed uncovered path in this iteration through public API "

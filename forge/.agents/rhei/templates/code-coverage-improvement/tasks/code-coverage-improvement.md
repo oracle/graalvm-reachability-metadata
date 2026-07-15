@@ -148,9 +148,10 @@
 - Prompt location: `runtime/code-coverage/prompts/deep-cover-prompt.md`, taken
   by the measurement program from the analyzer's compact
   `Observed` / `Uncovered paths` Markdown when the loop continues.
-- Target state: `runtime/code-coverage/targets/deep-cover.json`
-  (schema `code_coverage_target_state`), updated by the cover agent and folded
-  into every re-measurement so exhausted targets rotate out of the prompt.
+- Target state: measurement-owned. Attempt counts and rotation are carried
+  deterministically in the `discovery-report-<n>.json` history; every target
+  prompted in one iteration is deprioritized at the next. The cover agent
+  writes no target state.
 - Loop: measure -> cover -> measure, exactly like the API loop.
   JaCoCo is the sole coverage authority; sampled PGO and the static call graph
   provide navigation only. The phase completes when no actionable target
@@ -163,7 +164,7 @@
 - Final API report: highest-iteration `runtime/code-coverage/validation/api-cover-report-<n>.json`
 - Final deep report: highest-iteration `runtime/code-coverage/discovery/discovery-report-<n>.json`
 - Helper script: `forge/utility_scripts/code_coverage_finalize.py`
-- Purpose: gate publication on deterministic, post-iteration-five validation and
+- Purpose: gate publication on deterministic post-loop validation and
   summarize separate JaCoCo results and sampled-path guidance.
 - Execution: this task is a deterministic program (the `reviewed-execute`
   state), not an agent checklist. A nonzero exit code is the number of the
@@ -172,16 +173,20 @@
 - Program steps:
   1. Read `runtime/code-coverage/issues/conversion.json` for the resolved
      coordinate, worktree, work path, and coverage suite paths.
-  2. Run the regular JVM tests and the tracked extension suite:
+  2. Run checkstyle over the coordinate's subprojects, including the tracked
+     coverage suite source set:
+     `./gradlew checkstyle -Pcoordinates=<resolved coordinate> --stacktrace`.
+  3. Run the regular JVM tests and the tracked extension suite:
      `./gradlew javaTest -Pcoordinates=<resolved coordinate> --stacktrace` and
      `./gradlew codeCoverageTest -Pcoordinates=<resolved coordinate> --stacktrace`.
-  3. Invoke `forge/utility_scripts/code_coverage_finalize.py` with the resolved
+  4. Invoke `forge/utility_scripts/code_coverage_finalize.py` with the resolved
      `--coordinate`, repository-relative `--coverage-suite-path`, the API
      baseline/final reports (`api-cover-report-0.json` and the highest-iteration report),
      the deep baseline/final reports (`discovery-report-0.json` and the
-     highest-iteration report), every `runtime/code-coverage/targets/*.json`
-     as repeated `--target-state` arguments, each exact JVM
-     test command as a repeated `--validation-command`, and
+     highest-iteration report), any externally provided
+     `runtime/code-coverage/targets/*.json` as repeated `--target-state`
+     arguments (the workflow itself no longer produces them), the exact
+     checkstyle and JVM test commands as repeated `--validation-command`s, and
      `--output-dir runtime/code-coverage/finalization`.
 - Verification: the `finalize-verify` program then schema-validates
   `final-metrics.json` (`code_coverage_final_metrics` alias) and requires

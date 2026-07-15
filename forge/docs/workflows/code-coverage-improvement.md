@@ -95,10 +95,11 @@ inventory with JVM JaCoCo method coverage. Overloads must remain distinct, and
 an absent or ambiguous correlation must not inherit another method's status.
 
 Each API-cover prompt contains only public API methods that the latest JaCoCo
-report marks uncovered. The agent must work across the whole supplied batch
-through realistic public API usage and assertions, without superficial
-coverage-only invocation. The phase runs for at most five iterations and stops
-early when no public target remains uncovered.
+report marks uncovered, at most 200 per pass. The agent must work across the
+whole supplied batch through realistic public API usage and assertions, without
+superficial coverage-only invocation. The phase runs for a heuristic iteration
+budget of baseline-uncovered / 2 / 250 passes, at least one and at most
+`coverage_iterations`, and stops early when no public target remains uncovered.
 
 ### 3.2 Deep implementation coverage
 
@@ -138,11 +139,15 @@ methods directly.
 
 The full JSON report retains every uncovered internal target, its JaCoCo
 evidence, graph status, rank, sampled context, and static path. The prompt-facing
-Markdown and target-id list contain at most 100 methods globally. Attempt,
-completion, skip, and exhaustion state must let later iterations advance beyond
-the first 100 instead of repeatedly selecting the same unsuccessful targets.
-The deep phase runs for at most five iterations and stops early when no
-actionable target remains.
+Markdown and target-id list contain at most 200 methods globally. Measurement
+itself carries attempt state deterministically in the discovery-report history:
+every target it prompted gets its attempt count incremented at the next
+measurement, ranking prefers less-attempted targets, and covered targets leave
+the uncovered set — so later iterations advance beyond the first 200 without
+any agent-written state.
+The deep phase runs for the same heuristic iteration budget, computed from its
+baseline deep-uncovered count, and stops early when no actionable target
+remains.
 
 Sampled observations may be emitted as LCOV guidance for standard tooling. That
 artifact contains positive sample counts only, is labeled guidance-only, and is
@@ -177,9 +182,13 @@ The Rhei template should decompose the workflow into these phases:
    agent cover pass. Measurement runs JVM JaCoCo
    plus exact API-inventory correlation, persists `api-cover-report-<n>` history
    and one fixed-location report, and decides the loop: the phase completes when
-   no uncovered public target remains or at most five cover passes are spent.
-   When the loop continues, measurement also derives the prompt of exact
-   JaCoCo-uncovered public methods from that report. The cover agent attempts the complete supplied batch through
+   no uncovered public target remains or the iteration budget is spent. The
+   budget is heuristic: one cover pass lands at most ~250 methods and roughly
+   half the uncovered targets are reachable in practice, so it is
+   `baseline_uncovered / 2 / 250`, clamped to at least one and at most
+   `coverage_iterations` (default 10) passes.
+   When the loop continues, measurement also derives the prompt of at most 200
+   exact JaCoCo-uncovered public methods from that report. The cover agent attempts the complete supplied batch through
    normal public API behavior and always returns to measurement. Reachability
    metadata and Native Image are intentionally out of scope in this phase.
 5. **Prepare native metadata** — run once after the API loop and before
@@ -193,19 +202,26 @@ The Rhei template should decompose the workflow into these phases:
    JaCoCo-uncovered internal methods by shortest sampled/static path, retains
    every record in JSON plus sampled-guidance LCOV, persists
    `discovery-report-<n>` history and one fixed-location report, and decides
-   the loop with the same five-pass budget, and derives the compact
-   at-most-100-method prompt when it continues. The cover agent batches related paths, reaches
-   internal methods through public behavior, records completed, skipped, and
-   exhausted target state, and always returns to measurement.
+   the loop with the same heuristically scaled iteration budget (computed from
+   the baseline deep-uncovered count), and derives the compact
+   at-most-200-method prompt when it continues. The cover agent batches related paths, reaches
+   internal methods through public behavior, and always returns to measurement;
+   it writes no target state — measurement tracks attempts and rotation
+   deterministically from its own report history.
 7. **Finalization** — a deterministic step program: read the machine-readable
-   conversion record, run the regular JVM tests (`javaTest`) and the tracked
-   extension suite (`codeCoverageTest`), and
+   conversion record, run checkstyle over the coordinate's subprojects
+   (including the tracked coverage suite), run the regular JVM tests
+   (`javaTest`) and the tracked extension suite (`codeCoverageTest`), and
    persist final metrics from the baseline and highest-iteration JaCoCo and
    deep reports. No Native Image validation runs at this stage; a nonzero exit
    code names the failed step.
 8. **Publication** — open a PR with source issue, coordinate, coverage suite,
-   baseline/final JaCoCo coverage, completed paths, skipped/exhausted targets,
-   sampled guidance evidence, and validation commands.
+   baseline/final JaCoCo coverage reported against the total method count of
+   each guidance phase, the completed-target count (individual covered methods
+   are not listed, keeping the body within the GitHub description limit),
+   skipped/exhausted/failed targets with reasons, and validation commands.
+   Sampled PGO evidence stays in the local finalization summary and is not
+   published in the PR body.
 
 The pipeline tasks run unreviewed: deterministic helpers, schema-validated
 artifacts, and zero-exit validation gates decide their completion. The
@@ -239,8 +255,9 @@ A code coverage improvement run is successful only when all of these hold:
 - Public API and deep implementation work use separate reports and prompts.
 - API inventory generation produces compact JSON and Markdown for public
   user-callable methods and constructors.
-- API iteration zero establishes a JaCoCo baseline; each of at most five public
-  API agent iterations is followed by exact JaCoCo correlation.
+- API iteration zero establishes a JaCoCo baseline that also fixes the
+  heuristic iteration budget; each public API agent iteration is followed by
+  exact JaCoCo correlation.
 - API prompts contain only exact JaCoCo-uncovered public targets and ask the
   agent to attempt the complete supplied batch.
 - Deep targets are library-owned JaCoCo methods minus public API inventory
@@ -250,9 +267,9 @@ A code coverage improvement run is successful only when all of these hold:
 - Near-call distance is the shortest directed static path from a sampled frame;
   prompt-quality and sample-count preferences only break equal-distance ties.
 - Full JSON retains every deep target and path record. Prompt Markdown contains
-  at most 100 actionable methods and uses compact `Observed` /
+  at most 200 actionable methods and uses compact `Observed` /
   `Uncovered paths` navigation.
-- A fifth deep-cover iteration is followed by a fifth report before
+- The last budgeted deep-cover iteration is followed by a final report before
   finalization.
 - Sampled observations emitted as LCOV contain positive sample evidence only
   and are labeled guidance-only.
@@ -275,8 +292,8 @@ rhei run examples/code-coverage-improvement-example --dry-run --parallel 2
 PGO profile data is navigation, not a replacement for JaCoCo or maintainer
 review. The workflow must not claim that profile growth or sample absence proves
 coverage or semantic completeness. Metrics and the PR description expose
-JaCoCo results, sampled paths, generated-test rationale, and skipped/exhausted
-targets as separate evidence so reviewers can judge whether the tests exercise
+JaCoCo results, sampled paths, generated-test rationale, and target outcomes
+as separate evidence so reviewers can judge whether the tests exercise
 valuable library behavior.
 
 The workflow has a runnable Rhei lane backed by deterministic Forge helpers for
@@ -342,8 +359,9 @@ engine:
 - **Identity model** — normalizes API inventory, JaCoCo, call-tree CSV, and
   sampled-profile method identities in
   `forge/utility_scripts/code_coverage_model.py`.
-- **Target-state store** — persists selected, attempted, completed, skipped,
-  exhausted, and failed public/deep targets for chunked or resumed runs.
+- **Target-state store** — measurement-owned attempt and rotation state carried
+  in the discovery-report history; agents never author target state. Externally
+  supplied schema-valid state files remain accepted at finalization.
 - **Workflow engine** — owns prompt/command cycles, retries, target selection,
   JaCoCo progress comparison, path refresh, and terminal status.
 - **Publication handoff** — publishes only PR-eligible runs after local
@@ -365,16 +383,14 @@ written to the coverage-suite root and measured with code-coverage metrics.
 Metadata-generation tests remain the source of dynamic-access and native-image
 metadata evidence.
 
-Target state should include:
+Target state is derived deterministically by measurement from its own prompt
+and report history — no agent-authored status exists. It should include:
 
 - target identifier and human-readable behavior description
 - phase and source of the target
 - baseline and current exact JaCoCo evidence
 - sampled context and static reaching path when available
-- selected generated test files
 - attempt count and last attempted iteration
-- terminal target status: completed, skipped, exhausted, failed, or pending
-- semantic reason when the target cannot be covered automatically
 
 The persisted state should be coordinate-scoped and stable enough for
 orchestration to resume later runs from the coordinate alone, following the same

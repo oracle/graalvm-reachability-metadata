@@ -5,9 +5,9 @@
 
 """Publish schema-validated code coverage improvement evidence.
 
-JaCoCo evidence for public API and deep methods stays separate. Sampled PGO is
-shown only as navigation guidance (§WF-code-coverage-improvement,
-§AR-forge-verification-publication-boundary).
+The PR body reports each guidance phase against its total method count and
+keeps completed targets as a count to stay within the GitHub body limit
+(§WF-code-coverage-improvement, §AR-forge-verification-publication-boundary).
 """
 
 from __future__ import annotations
@@ -46,42 +46,27 @@ def _signed(value: int | float) -> str:
     return f"{'+' if value > 0 else ''}{value}"
 
 
+def _total_percent(covered: int, total: int) -> float:
+    return round(100 * covered / total, 2) if total else 0.0
+
+
 def _jacoco_lines(label: str, evidence: dict[str, Any]) -> list[str]:
     baseline: dict[str, Any] = evidence["baseline"]
     final: dict[str, Any] = evidence["final"]
-    denominator: str = "measured" if "measured" in baseline else "total"
+    total: int = final["total"]
+    baseline_percent: float = _total_percent(baseline["covered"], total)
+    final_percent: float = _total_percent(final["covered"], total)
     return [
         f"### {label}",
         "",
-        f"- Baseline: {baseline['covered']}/{baseline[denominator]} "
-        f"({baseline['coveragePercent']}%)",
-        f"- Final: {final['covered']}/{final[denominator]} "
-        f"({final['coveragePercent']}%)",
-        f"- Delta: {_signed(evidence['delta']['coveragePercentagePoints'])}pp",
-        f"- Remaining uncovered: {final['uncovered']}",
+        f"- Baseline: {baseline['covered']}/{total} ({baseline_percent}%)",
+        f"- Final: {final['covered']}/{total} ({final_percent}%)",
+        f"- Delta: {_signed(round(final_percent - baseline_percent, 2))}pp",
+        f"- Remaining uncovered: {total - final['covered']}",
     ]
 
 
-def _pgo_lines(guidance: dict[str, Any]) -> list[str]:
-    baseline: dict[str, Any] = guidance["baseline"]
-    final: dict[str, Any] = guidance["final"]
-    return [
-        "## Sampled PGO guidance only",
-        "",
-        guidance["note"],
-        "",
-        f"- Baseline: {baseline['samplingContexts']} contexts, "
-        f"{baseline['sampledMethods']} sampled methods, "
-        f"{baseline['sampleCount']} samples, {baseline['sampledJoins']} sampled joins",
-        f"- Final: {final['samplingContexts']} contexts, "
-        f"{final['sampledMethods']} sampled methods, "
-        f"{final['sampleCount']} samples, {final['sampledJoins']} sampled joins",
-    ]
-
-
-def _target_lines(
-        targets: list[dict[str, Any]], include_reason: bool
-) -> list[str]:
+def _target_lines(targets: list[dict[str, Any]]) -> list[str]:
     if not targets:
         return ["_None recorded._"]
     lines: list[str] = []
@@ -94,8 +79,7 @@ def _target_lines(
                 f" — attempts: {target['attemptCount']}, "
                 f"last attempted iteration: {last}"
             )
-        if include_reason:
-            line += f" — {target['reason']}"
+        line += f" — {target['reason']}"
         lines.append(line)
     return lines
 
@@ -118,15 +102,15 @@ def build_pull_request_body(
         "## JaCoCo coverage",
         "",
     ]
-    lines += _jacoco_lines("Public API entries", metrics["apiJacoco"])
+    lines += _jacoco_lines("Simple Jacoco guidance phase", metrics["apiJacoco"])
     lines += [""] + _jacoco_lines(
-        "Deep internal methods", metrics["deepJacoco"]
+        "PGO guidance phase", metrics["deepJacoco"]
     )
-    lines += [""] + _pgo_lines(metrics["pgoGuidance"])
-    for status in ("completed", "skipped", "exhausted", "failed"):
+    lines += ["", f"## Completed targets ({len(targets['completed'])})"]
+    for status in ("skipped", "exhausted", "failed"):
         entries: list[dict[str, Any]] = targets[status]
         lines += ["", f"## {status.title()} targets ({len(entries)})", ""]
-        lines += _target_lines(entries, status != "completed")
+        lines += _target_lines(entries)
     lines += ["", "## Validation commands", "", "```console"]
     lines += metrics["validationCommands"]
     lines += ["```", ""]
