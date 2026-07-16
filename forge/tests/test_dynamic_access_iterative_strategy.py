@@ -155,6 +155,46 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
             strategy.dynamic_access_report_path,
         )
 
+    def test_phase_failure_resets_to_latest_committed_class_checkpoint(self) -> None:
+        """Preserve class commits on late failure. §WF-dynamic-access-fallback-and-failure"""
+        class FakeAgent:
+            def send_prompt(self, prompt: str) -> None:
+                pass
+
+            def run_test_command(self, command: str) -> str:
+                return "BUILD SUCCESSFUL"
+
+            def clear_context(self) -> None:
+                pass
+
+        class_names = ["org.example.A", "org.example.B"]
+        initial_report = self._report_for_class_names(class_names, [])
+        after_first_class = self._report_for_class_names(class_names, ["org.example.A"])
+        strategy = self._strategy()
+
+        with patch.object(strategy, "_render_prompt", return_value="prompt"), \
+                patch.object(
+                    strategy,
+                    "_generate_dynamic_access_report",
+                    side_effect=[initial_report, after_first_class, None],
+                ), \
+                patch.object(strategy, "_commit_test_sources", return_value="class-a-checkpoint"), \
+                patch.object(strategy, "_library_test_change_signature", return_value="clean"), \
+                patch(
+                    "ai_workflows.core.dynamic_access_iterative_strategy.subprocess.check_output",
+                    return_value="scaffold-checkpoint\n",
+                ), \
+                patch(
+                    "ai_workflows.core.dynamic_access_iterative_strategy.subprocess.run",
+                ) as run_command:
+            result = strategy.run(FakeAgent(), "scaffold-checkpoint")
+
+        self.assertEqual(result, (RUN_STATUS_FAILURE, 2, 0))
+        run_command.assert_called_once_with(
+            ["git", "reset", "--hard", "class-a-checkpoint"],
+            check=False,
+        )
+
     def test_issue_requested_metadata_phase_commits_when_native_test_is_reached(self) -> None:
         class FakeAgent:
             def __init__(self) -> None:
