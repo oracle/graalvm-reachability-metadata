@@ -6,11 +6,35 @@
  */
 package io_sundr.builder_annotations;
 
+import io.sundr.builder.annotations.Buildable;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
-class Builder_annotationsTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class Builder_annotationsTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void generatesBuilderWithEagerCollectionInitialization() {
+        CollectionHolder emptyHolder = new CollectionHolderBuilder().build();
+        CollectionHolder populatedHolder = new CollectionHolderBuilder()
+            .addToLabels("stable")
+            .addToLabels("native")
+            .build();
+
+        assertThat(emptyHolder.getLabels()).isEmpty();
+        assertThat(populatedHolder.getLabels()).containsExactly("stable", "native");
+    }
+}
+
+@Buildable(lazyCollectionInitEnabled = false)
+class CollectionHolder {
+    private final List<String> labels;
+
+    CollectionHolder(List<String> labels) {
+        this.labels = labels;
+    }
+
+    List<String> getLabels() {
+        return labels;
     }
 }
