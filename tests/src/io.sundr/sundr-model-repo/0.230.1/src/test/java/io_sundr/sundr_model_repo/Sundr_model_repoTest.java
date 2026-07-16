@@ -65,6 +65,19 @@ public class Sundr_model_repoTest {
     }
 
     @Test
+    void preservesTheFirstDirectlyRegisteredDefinition() {
+        DefinitionRepository repository = DefinitionRepository.createRepository();
+        TypeDef original = type("stable", "Definition");
+        TypeDef replacement = type("stable", "Definition", method("replacement", null));
+
+        repository.registerIfAbsent(original);
+        repository.registerIfAbsent(replacement);
+
+        assertThat(repository.getDefinition("stable.Definition")).isSameAs(original);
+        assertThat(repository.getDefinitions()).containsExactly(original);
+    }
+
+    @Test
     void createsReferenceMapAndTemporarilyScopesRepository() {
         DefinitionRepository repository = DefinitionRepository.createRepository();
         repository.register(type("one", "Duplicate"));
