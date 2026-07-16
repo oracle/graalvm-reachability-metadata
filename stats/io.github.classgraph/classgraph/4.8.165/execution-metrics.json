@@ -1,0 +1,56 @@
+{
+  "add_new_library_support:2026-07-16": {
+    "timestamp": "2026-07-16T15:25:31.255781Z",
+    "library": "io.github.classgraph:classgraph:4.8.165",
+    "starting_commit": "e950eafe6b530e74e1d82154e0ce3a73e7f72a91",
+    "ending_commit": "cba32638c40e7c2488b9a9f50ebec0d827aec88d",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
+    "agent": "pi",
+    "model": "gpt-5.6-terra",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 7785,
+      "issue_label": "library-new-request",
+      "library": "io.github.classgraph:classgraph:4.8.165",
+      "summary": "ClassGraph native scans require module scanning disabled; native-image scanning may still find no classes.",
+      "deterministic_setup": [],
+      "agent_guidance": "Use disableModuleScanning() and package-scoped scans. Assert scan results are non-empty; do not treat a no-exception zero-result native scan as meaningful coverage.",
+      "risks": [
+        "A GraalVM 25 scratch native image ran successfully but returned zero ClassGraph classes. Upstream GraalVM native-image issues remain open."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#7785 Support for io.github.classgraph:classgraph:4.8.165; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-terra",
+      "input_tokens_used": 70537,
+      "output_tokens_used": 5154,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/io.github.classgraph:classgraph:4.8.165/library-preparation-preflight/pi-generation-2026-07-16T15-01-51-653331Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 107620,
+      "cached_input_tokens_used": 988672,
+      "output_tokens_used": 11668,
+      "iterations": 4,
+      "cost_usd": 0.6913,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}

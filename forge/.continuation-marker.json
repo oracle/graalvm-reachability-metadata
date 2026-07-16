@@ -1,0 +1,77 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "io.github.classgraph:classgraph:4.8.165",
+  "issueNumber": 7785,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Use disableModuleScanning() and package-scoped scans. Assert scan results are non-empty; do not treat a no-exception zero-result native scan as meaningful coverage.",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#7785 Support for io.github.classgraph:classgraph:4.8.165; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 70537,
+    "issue_label": "library-new-request",
+    "issue_number": 7785,
+    "library": "io.github.classgraph:classgraph:4.8.165",
+    "model": "gpt-5.6-terra",
+    "output_tokens_used": 5154,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "A GraalVM 25 scratch native image ran successfully but returned zero ClassGraph classes. Upstream GraalVM native-image issues remain open."
+    ],
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/io.github.classgraph:classgraph:4.8.165/library-preparation-preflight/pi-generation-2026-07-16T15-01-51-653331Z.log",
+    "status": "completed",
+    "summary": "ClassGraph native scans require module scanning disabled; native-image scanning may still find no classes."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": 15,
+      "chunkProcessedClassCount": 4,
+      "exhaustedClasses": [
+        "nonapi.io.github.classgraph.classloaderhandler.ClassLoaderHandlerRegistry$ClassLoaderHandlerRegistryEntry",
+        "nonapi.io.github.classgraph.classpath.CallStackReader$1",
+        "nonapi.io.github.classgraph.reflection.ReflectionUtils",
+        "nonapi.io.github.classgraph.reflection.StandardReflectionDriver"
+      ],
+      "iteration": 4,
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-7785-library-new-request-io.github.classgraph-classgraph-4.8.165-f2b16ea0",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "io.github.classgraph:classgraph:4.8.165",
+    "timestamp": "2026-07-16T15:25:31.255781Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.6-terra"
+}
