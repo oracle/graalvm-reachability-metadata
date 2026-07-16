@@ -65,6 +65,22 @@ public class Sundr_model_repoTest {
     }
 
     @Test
+    void createsAnIsolatedRepositoryForCallableWork() throws Exception {
+        DefinitionRepository globalRepository = DefinitionRepository.getRepository();
+        TypeDef scopedType = type("scoped", "OnlyHere");
+
+        TypeDef resolved = DefinitionRepository.withNewRepository().call(() -> {
+            DefinitionRepository scopedRepository = DefinitionRepository.getRepository();
+            scopedRepository.register(scopedType);
+            return scopedRepository.getDefinition("scoped.OnlyHere");
+        });
+
+        assertThat(resolved).isSameAs(scopedType);
+        assertThat(DefinitionRepository.getRepository()).isSameAs(globalRepository);
+        assertThat(globalRepository.hasDefinition("scoped.OnlyHere")).isFalse();
+    }
+
+    @Test
     void preservesTheFirstDirectlyRegisteredDefinition() {
         DefinitionRepository repository = DefinitionRepository.createRepository();
         TypeDef original = type("stable", "Definition");
