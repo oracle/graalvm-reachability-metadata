@@ -216,8 +216,9 @@ State held for one strategy `run(...)` invocation, independent of chunking:
 - `class_checkpoint` — git SHA captured before each class attempt; used to roll
   back a failed class iteration without losing previously committed classes.
 - `latest_class_checkpoint` — newest git SHA returned after committing resolved
-  or partial class progress; initialized to the scaffold checkpoint and used by
-  whole-phase failure recovery.
+  or partial class progress, advanced again when a passing native-test gate
+  commits verified test fixes and durable metadata (§6.4); initialized to the
+  scaffold checkpoint and used by whole-phase failure recovery.
 - `prompt_iterations` — total agent prompts sent (returned to the caller as
   `global_iterations`).
 - `successful_classes` — count of classes that contributed at least one newly
@@ -451,7 +452,11 @@ Effects within this workflow:
    merged trace output is written to `<output_dir>/trace`. Only after the
    gate passes are existing durable metadata, staged agent metadata, and
    staged trace metadata merged into the durable
-   `metadata/<group>/<artifact>/<version>/` directory.
+   `metadata/<group>/<artifact>/<version>/` directory. A passing gate then
+   commits the coordinate's test sources (including any fixes the gate's
+   verification cycles applied) and the merged durable metadata, and advances
+   `latest_class_checkpoint` past both commits, so whole-phase failure
+   recovery never separates verified tests from the metadata they require.
 2. The dynamic-access coverage report is regenerated **after** the gate so
    that any call sites covered by JVM-agent, traced, or Codex-supplied metadata are
    reflected in the next class's prompt delta.

@@ -806,7 +806,10 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             f"native-test gate {result.status} for {class_name} after {result.iterations_used} cycles",
             indent_level=2,
         )
-        self._commit_library_metadata(f"Native metadata for {class_name}")
+        self._commit_test_sources(f"Native-test gate fixes for {class_name}")
+        self._latest_class_checkpoint = self._commit_library_metadata(
+            f"Native metadata for {class_name}"
+        )
         return True
 
     def _refresh_report_after_gate(self, class_name: str):
@@ -1021,8 +1024,13 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             text=True,
         ).strip()
 
-    def _commit_library_metadata(self, message: str) -> None:
-        """Stage and commit durable library metadata created by the class gate."""
+    def _commit_library_metadata(self, message: str) -> str:
+        """Stage and commit durable library metadata created by the class gate.
+
+        Returns the resulting `HEAD` SHA so a passing gate can advance the
+        whole-phase recovery checkpoint past the verified test and metadata
+        commits, per §WF-dynamic-access-fallback-and-failure.
+        """
         metadata_version = resolve_metadata_version(
             self.reachability_repo_path,
             self.group,
@@ -1044,13 +1052,17 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             cwd=self.reachability_repo_path,
             capture_output=True, check=False,
         ).returncode
-        if diff_rc == 0:
-            return
-        subprocess.run(
-            ["git", "commit", "-m", message, "--", metadata_dir],
+        if diff_rc != 0:
+            subprocess.run(
+                ["git", "commit", "-m", message, "--", metadata_dir],
+                cwd=self.reachability_repo_path,
+                capture_output=True, check=False,
+            )
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
             cwd=self.reachability_repo_path,
-            capture_output=True, check=False,
-        )
+            text=True,
+        ).strip()
 
     def _generate_dynamic_access_report(self, indent_level: int = 0):
         """Generate and load the dynamic-access report used as strategy guidance.
