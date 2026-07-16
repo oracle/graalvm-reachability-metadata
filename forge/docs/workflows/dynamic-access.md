@@ -110,8 +110,10 @@ Dynamic-access workflows must fail when any of these conditions occur:
 
 Failures return `RUN_STATUS_FAILURE`. After iterative exploration has started,
 the engine resets the feature branch to the latest committed class checkpoint,
-or to the scaffold checkpoint when no class has been committed. This preserves
-accepted class progress while discarding the failing class's uncommitted work.
+or to the scaffold checkpoint when no class has been committed. The latest class
+commit is used because it is the last coherent checkpoint from which exploration
+can resume: it preserves accepted class progress and the corresponding
+exploration information while discarding the failing class's uncommitted work.
 Bulk exploration retains its scaffold checkpoint behavior. A composite workflow
 with a primary workflow preserves and returns the primary workflow failure
 instead of starting the dynamic-access coverage phase.
