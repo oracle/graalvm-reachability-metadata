@@ -103,6 +103,18 @@ JUnit's initialization and reachability policy without trying to resolve absent
 test classes. The application invocation uses the coordinate's real unique-ID
 files to discover and register those classes. The written test code therefore
 remains exclusively in the final application layer.
+The base build uses the same resolved Native Image configuration directories as
+the final test image. For both builds, it stages test-scoped
+`reachability-metadata.json` without conditions because LayerCreate does not
+preserve runtime `typeReached` tracking for selected JAR types. The normal test
+lane still validates the original conditions; the dedicated lane applies the
+same metadata unconditionally in both analyses to keep class-initialization
+policy stable without including test classes or unrelated test resources in the
+base layer.
+Gradle rebuilds the layer when its coordinate, Native Image settings,
+configuration, or base-analysis classpath changes. The final test image retains
+the complete standalone test runtime classpath while using the
+coordinate-specific layer.
 CI supplies `-Ptck.layered.deleteDedicatedLayerAfterTest=true` to delete each
 large coordinate layer after its test; local runs retain layers for reuse unless
 they explicitly request the same cleanup behavior.

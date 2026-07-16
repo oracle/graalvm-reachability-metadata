@@ -4,6 +4,7 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.graalvm.internal.tck.utils.DynamicAccessUtils
 import org.graalvm.internal.tck.utils.BaseLayerUtils
@@ -14,6 +15,7 @@ import org.graalvm.buildtools.gradle.tasks.NativeRunTask
 import org.gradle.api.file.Directory
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.PathSensitivity
+import org.gradle.api.tasks.TaskProvider
 
 import java.util.jar.JarFile
 import java.util.regex.Matcher
@@ -391,8 +393,23 @@ Closure<List<File>> resolveDedicatedLayerJars = {
 File coordinateMetadataDirectory = file(metadataPath).absoluteFile
 String coordinateMetadataArgument = "-H:ConfigurationFileDirectories=${coordinateMetadataDirectory.absolutePath}"
 String junitPlatformFeatureArgument = "--features=org.graalvm.junit.platform.JUnitPlatformFeature"
+TaskProvider<BuildNativeImageTask> nativeTestCompileTask = tasks.named(
+        "nativeTestCompile", BuildNativeImageTask)
 Provider<Directory> dedicatedLayerJUnitTestListDirectory = layout.buildDirectory.dir(
         "native/generated/dedicatedLayerJUnitTestList")
+Provider<Directory> dedicatedLayerConfigurationDirectory = layout.buildDirectory.dir(
+        "native/generated/dedicatedLayerConfiguration")
+Provider<Directory> dedicatedLayerReachabilityMetadataDirectory = layout.buildDirectory.dir(
+        "native/generated/dedicatedLayerReachabilityMetadata")
+
+if (dedicatedLayer) {
+    tasks.named("processTestResources").configure { task ->
+        task.exclude("META-INF/native-image/**/reachability-metadata.json")
+    }
+    tasks.named("generateTestResourcesConfigFile").configure { task ->
+        task.dependsOn(tasks.named("processTestResources"))
+    }
+}
 
 tasks.register("generateDedicatedLayerJUnitTestList") { task ->
     task.setDescription("Generates engine-root JUnit selectors for the dedicated layer")
@@ -414,8 +431,114 @@ tasks.register("generateDedicatedLayerJUnitTestList") { task ->
     }
 }
 
+Closure<List<File>> resolveTestReachabilityMetadataFiles = {
+    return sourceSets.test.resources.srcDirs.collectMany { File resourceDirectory ->
+        fileTree(resourceDirectory) {
+            include("META-INF/native-image/**/reachability-metadata.json")
+        }.files
+    }.unique().sort { File file -> file.absolutePath }
+}
+
+Closure<Object> withoutReachabilityConditions
+withoutReachabilityConditions = { Object value ->
+    if (value instanceof Map) {
+        Map<String, Object> result = new LinkedHashMap<>()
+        value.each { Object key, Object nestedValue ->
+            if (key != "condition") {
+                result.put(key.toString(), withoutReachabilityConditions(nestedValue))
+            }
+        }
+        return result
+    }
+    if (value instanceof List) {
+        return value.collect { Object nestedValue -> withoutReachabilityConditions(nestedValue) }
+    }
+    return value
+}
+
+tasks.register("prepareDedicatedLayerReachabilityMetadata") { task ->
+    task.setDescription("Prepares test-scoped reachability metadata for dedicated-layer builds")
+    task.setGroup("build")
+    task.inputs.files(providers.provider { resolveTestReachabilityMetadataFiles() })
+            .withPropertyName("testReachabilityMetadata")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+    task.outputs.dir(dedicatedLayerReachabilityMetadataDirectory)
+    task.doLast {
+        File outputDirectory = dedicatedLayerReachabilityMetadataDirectory.get().asFile
+        delete(outputDirectory)
+        if (!outputDirectory.mkdirs()) {
+            throw new GradleException("Failed to create dedicated-layer reachability metadata directory: " +
+                    outputDirectory.absolutePath)
+        }
+        resolveTestReachabilityMetadataFiles().eachWithIndex { File metadataFile, int index ->
+            File metadataDirectory = new File(outputDirectory, "entry-${index}")
+            if (!metadataDirectory.mkdirs()) {
+                throw new GradleException("Failed to create dedicated-layer metadata entry: " +
+                        metadataDirectory.absolutePath)
+            }
+            Object metadata = new JsonSlurper().parse(metadataFile)
+            String json = JsonOutput.prettyPrint(JsonOutput.toJson(withoutReachabilityConditions(metadata)))
+            new File(metadataDirectory, "reachability-metadata.json").text =
+                    json + System.lineSeparator()
+        }
+    }
+}
+
+Closure<List<File>> resolveDedicatedLayerReachabilityMetadataDirectories = {
+    File outputDirectory = dedicatedLayerReachabilityMetadataDirectory.get().asFile
+    return resolveTestReachabilityMetadataFiles().indices.collect { int index ->
+        new File(outputDirectory, "entry-${index}")
+    }
+}
+
+Closure<List<File>> resolveNativeTestConfigurationDirectories = {
+    Set<File> directories = new LinkedHashSet<>(nativeTestCompileTask.get()
+            .options.get().configurationFileDirectories.files)
+    directories.add(coordinateMetadataDirectory)
+    directories.addAll(resolveDedicatedLayerReachabilityMetadataDirectories())
+    return directories.findAll { File directory -> directory.isDirectory() }
+            .toList()
+            .sort { File directory -> directory.absolutePath }
+}
+
+tasks.register("prepareDedicatedLayerConfiguration") { task ->
+    task.setDescription("Prepares Native Image configuration for the dedicated layer")
+    task.setGroup("build")
+    task.dependsOn(tasks.named("generateTestResourcesConfigFile"))
+    task.dependsOn(tasks.named("prepareDedicatedLayerReachabilityMetadata"))
+    task.inputs.dir(dedicatedLayerReachabilityMetadataDirectory)
+            .withPropertyName("dedicatedLayerReachabilityMetadata")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+    task.outputs.dir(dedicatedLayerConfigurationDirectory)
+    task.outputs.upToDateWhen { false }
+    task.doLast {
+        File outputDirectory = dedicatedLayerConfigurationDirectory.get().asFile
+        delete(outputDirectory)
+        if (!outputDirectory.mkdirs()) {
+            throw new GradleException("Failed to create base-layer configuration directory: " +
+                    outputDirectory.absolutePath)
+        }
+        resolveNativeTestConfigurationDirectories().eachWithIndex { File directory, int index ->
+            copy {
+                from(directory)
+                into(new File(outputDirectory, "entry-${index}"))
+            }
+        }
+    }
+}
+
+Closure<List<File>> resolveDedicatedLayerConfigurationDirectories = {
+    File outputDirectory = dedicatedLayerConfigurationDirectory.get().asFile
+    File[] directories = outputDirectory.listFiles({ File file -> file.isDirectory() } as FileFilter)
+    return directories == null ? [] : directories.toList().sort { File file -> file.absolutePath }
+}
+
 Closure<List<String>> resolveDedicatedLayerNativeImageArgs = {
     List<String> arguments = new ArrayList<>(nativeImageArgs)
+    arguments.add("-H:ConfigurationFileDirectories=" +
+            resolveDedicatedLayerConfigurationDirectories()
+                    .collect { File directory -> directory.absolutePath }
+                    .join(","))
     arguments.add(junitPlatformFeatureArgument)
     arguments.add("-Djunit.platform.listeners.uid.tracking.output.dir=" +
             dedicatedLayerJUnitTestListDirectory.get().asFile.absolutePath)
@@ -766,6 +889,13 @@ graalvmNative {
             buildArgs.addAll(nativeTraceBuildArgs)
             if (dedicatedLayer) {
                 buildArgs.add(coordinateMetadataArgument)
+                buildArgs.addAll(providers.provider {
+                    List<File> metadataDirectories = resolveDedicatedLayerReachabilityMetadataDirectories()
+                    return metadataDirectories.isEmpty() ? [] : [
+                            "-H:ConfigurationFileDirectories=" +
+                                    metadataDirectories.collect { File file -> file.absolutePath }.join(",")
+                    ]
+                })
             }
             if (layeredNativeImage && !dedicatedLayer) {
                 buildArgs.addAll([
@@ -790,6 +920,7 @@ graalvmNative {
 if (dedicatedLayer) {
     tasks.named("nativeLibDedicatedCompile", BuildNativeImageTask).configure { task ->
         task.dependsOn(tasks.named("generateDedicatedLayerJUnitTestList"))
+        task.dependsOn(tasks.named("prepareDedicatedLayerConfiguration"))
         task.outputDirectory.set(baseLayerFile.parentFile)
         task.doFirst {
             File workingDirectory = task.workingDirectory.get().asFile
