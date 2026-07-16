@@ -220,8 +220,10 @@ The Rhei template should decompose the workflow into these phases:
    each guidance phase, the completed-target count (individual covered methods
    are not listed, keeping the body within the GitHub description limit),
    skipped/exhausted/failed targets with reasons, and validation commands.
-   Sampled PGO evidence stays in the local finalization summary and is not
-   published in the PR body.
+   The body also reports baseline and final sampled-PGO context, method, sample,
+   and sampled/static-join counts as navigation-only evidence; it must state
+   that sampling is not a coverage metric and that missing samples do not prove
+   non-execution.
 
 The pipeline tasks run unreviewed: deterministic helpers, schema-validated
 artifacts, and zero-exit validation gates decide their completion. The

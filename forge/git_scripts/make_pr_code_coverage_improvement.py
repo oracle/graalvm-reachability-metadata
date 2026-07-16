@@ -66,6 +66,33 @@ def _jacoco_lines(label: str, evidence: dict[str, Any]) -> list[str]:
     ]
 
 
+def _pgo_guidance_lines(evidence: dict[str, Any]) -> list[str]:
+    baseline: dict[str, Any] = evidence["baseline"]
+    final: dict[str, Any] = evidence["final"]
+    return [
+        "## Sampled PGO guidance only",
+        "",
+        "Sampled PGO is navigation evidence only; sample counts do not measure "
+        "coverage, and sample absence does not prove non-execution.",
+        "",
+        "| Metric | Baseline | Final |",
+        "| --- | ---: | ---: |",
+        (
+            f"| Sampling contexts | {baseline['samplingContexts']} | "
+            f"{final['samplingContexts']} |"
+        ),
+        (
+            f"| Sampled methods | {baseline['sampledMethods']} | "
+            f"{final['sampledMethods']} |"
+        ),
+        f"| Samples | {baseline['sampleCount']} | {final['sampleCount']} |",
+        (
+            f"| Sampled/static joins | {baseline['sampledJoins']} | "
+            f"{final['sampledJoins']} |"
+        ),
+    ]
+
+
 def _target_lines(targets: list[dict[str, Any]]) -> list[str]:
     if not targets:
         return ["_None recorded._"]
@@ -106,6 +133,7 @@ def build_pull_request_body(
     lines += [""] + _jacoco_lines(
         "PGO guidance phase", metrics["deepJacoco"]
     )
+    lines += [""] + _pgo_guidance_lines(metrics["pgoGuidance"])
     lines += ["", f"## Completed targets ({len(targets['completed'])})"]
     for status in ("skipped", "exhausted", "failed"):
         entries: list[dict[str, Any]] = targets[status]

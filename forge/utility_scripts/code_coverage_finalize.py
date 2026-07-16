@@ -666,9 +666,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--target-state",
         action="append",
-        required=True,
+        default=[],
         dest="target_state_paths",
-        help="Deep target-state JSON; repeat in chronological order.",
+        help="Optional deep target-state JSON; repeat in chronological order.",
     )
     parser.add_argument(
         "--validation-command",
