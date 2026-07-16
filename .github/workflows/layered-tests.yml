@@ -6,6 +6,15 @@ on:
     - cron: "30 0 * * 0"
   workflow_dispatch:
     inputs:
+      lane:
+        description: "Layered tests to run"
+        required: true
+        type: choice
+        options:
+          - "Shared Layered Tests"
+          - "Dedicated Layered Tests"
+          - "All Layered Tests"
+        default: "All Layered Tests"
       ref:
         description: "Branch, tag, or SHA to test"
         required: true
@@ -27,7 +36,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: "workflow = ${{ github.workflow }}, ref = ${{ inputs.ref || github.event.repository.default_branch }}, coordinates = ${{ inputs.coordinates || 'all' }}, java = ${{ inputs.java-version || 'latest-ea' }}, mode = ${{ inputs.native-image-mode || 'current-defaults' }}"
+  group: "workflow = ${{ github.workflow }}, lane = ${{ inputs.lane || 'All Layered Tests' }}, ref = ${{ inputs.ref || github.event.repository.default_branch }}, coordinates = ${{ inputs.coordinates || 'all' }}, java = ${{ inputs.java-version || 'latest-ea' }}, mode = ${{ inputs.native-image-mode || 'current-defaults' }}"
   cancel-in-progress: true
 
 jobs:
@@ -43,22 +52,53 @@ jobs:
         id: matrix
         env:
           COORDINATES: ${{ inputs.coordinates || 'all' }}
+          LAYER_SELECTION: ${{ inputs.lane || 'All Layered Tests' }}
         run: |
-          if [[ "${COORDINATES}" == "all" ]]; then
-            matrix="$(jq -cn '{coordinates: [range(1; 17) | "\(.)/16"]}')"
-          else
-            matrix="$(jq -cn --arg coordinates "${COORDINATES}" '{coordinates: [$coordinates]}')"
-          fi
+          matrix="$(jq -cn \
+            --arg coordinates "${COORDINATES}" \
+            --arg selection "${LAYER_SELECTION}" '
+            [
+              {
+                selection: "Shared Layered Tests",
+                shards: 16,
+                name: "Shared",
+                task: "testSharedLayer",
+                failureReport: "shared-layer-test-failures.txt",
+                exclusions: "tests/tck-build-logic/src/main/resources/shared-layered-test-exclusions.txt",
+                deleteDedicatedLayer: "false"
+              },
+              {
+                selection: "Dedicated Layered Tests",
+                shards: 64,
+                name: "Dedicated",
+                task: "testDedicatedLayer",
+                failureReport: "dedicated-layer-test-failures.txt",
+                exclusions: "",
+                deleteDedicatedLayer: "true"
+              }
+            ]
+            | if $selection == "All Layered Tests" then . else map(select(.selection == $selection)) end
+            | {
+                include: [
+                  .[] as $lane
+                  | if $coordinates == "all" then
+                      range(1; $lane.shards + 1) as $shard
+                      | {coordinates: "\($shard)/\($lane.shards)", lane: $lane}
+                    else
+                      {coordinates: $coordinates, lane: $lane}
+                    end
+                ]
+              }')"
           echo "matrix=${matrix}" >> "${GITHUB_OUTPUT}"
 
-  shared-layer-tests:
-    name: "Shared layer tests for ${{ matrix.coordinates }} on ${{ inputs.ref || github.event.repository.default_branch }}"
+  layered-tests:
+    name: "${{ matrix.lane.name }} layer tests for ${{ matrix.coordinates }} on ${{ inputs.ref || github.event.repository.default_branch }}"
     runs-on: "ubuntu-latest"
     timeout-minutes: 360
     needs: prepare-shards
     strategy:
       fail-fast: false
-      max-parallel: 16
+      max-parallel: 64
       matrix: ${{ fromJson(needs.prepare-shards.outputs.matrix) }}
     env:
       GVM_TCK_NATIVE_IMAGE_MODE: ${{ inputs.native-image-mode || 'current-defaults' }}
@@ -82,6 +122,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Setup Native Image base layer"
+        if: matrix.lane.name == 'Shared'
         uses: ./.github/actions/setup-native-image-base-layer
 
       - name: "Pull allowed docker images"
@@ -92,15 +133,23 @@ jobs:
         run: |
           ./gradlew checkMetadataFiles -Pcoordinates="${{ matrix.coordinates }}"
 
-      - name: "Run shared layer tests"
+      - name: "Run layered tests"
+        env:
+          LAYER_NAME: ${{ matrix.lane.name }}
+          LAYER_TASK: ${{ matrix.lane.task }}
+          FAILURE_REPORT_NAME: ${{ matrix.lane.failureReport }}
+          EXCLUDED_COORDINATES_FILE: ${{ matrix.lane.exclusions }}
+          DELETE_DEDICATED_LAYER: ${{ matrix.lane.deleteDedicatedLayer }}
+          GVM_TCK_DEDICATED_LAYER_ROOT: ${{ runner.temp }}/native-image-dedicated-layers
         run: |
+          failure_report="${RUNNER_TEMP}/${FAILURE_REPORT_NAME}"
           set +e
-          failure_report="${RUNNER_TEMP}/shared-layer-test-failures.txt"
-          ./gradlew testSharedLayer \
+          ./gradlew "${LAYER_TASK}" \
             -Pcoordinates="${{ matrix.coordinates }}" \
-            -Ptck.excludedCoordinatesFile="tests/tck-build-logic/src/main/resources/shared-layered-test-exclusions.txt" \
+            -Ptck.excludedCoordinatesFile="${EXCLUDED_COORDINATES_FILE}" \
             -Ptck.layered.continueOnCoordinateFailure=true \
             -Ptck.layered.coordinateFailureReport="${failure_report}" \
+            -Ptck.layered.deleteDedicatedLayerAfterTest="${DELETE_DEDICATED_LAYER}" \
             --stacktrace
           result=$?
           set -e
@@ -108,7 +157,7 @@ jobs:
           if [[ -s "${failure_report}" ]]; then
             failure_count="$(wc -l < "${failure_report}" | tr -d ' ')"
             {
-              echo "### Shared layer test failures"
+              echo "### ${LAYER_NAME} layer test failures"
               echo
               echo "Failing libraries: ${failure_count}"
               echo
@@ -117,7 +166,7 @@ jobs:
               done < "${failure_report}"
             } >> "${GITHUB_STEP_SUMMARY}"
 
-            echo "Shared layer test failures (${failure_count}):"
+            echo "${LAYER_NAME} layer test failures (${failure_count}):"
             sed 's/^/ - /' "${failure_report}"
           fi
 

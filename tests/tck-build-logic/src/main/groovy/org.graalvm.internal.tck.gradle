@@ -11,6 +11,8 @@ import org.graalvm.internal.tck.utils.NativeImageConfigUtils
 
 import org.graalvm.buildtools.gradle.tasks.BuildNativeImageTask
 import org.graalvm.buildtools.gradle.tasks.NativeRunTask
+import org.gradle.api.file.Directory
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.PathSensitivity
 
 import java.util.jar.JarFile
@@ -311,34 +313,12 @@ if (ciJsonFile.exists()) {
 
 String baseLayerFilePath = providers.gradleProperty("tck.baseLayerFile").getOrElse("").trim()
 boolean layeredNativeImage = !baseLayerFilePath.isEmpty()
+boolean dedicatedLayer = providers.gradleProperty("tck.dedicatedLayer")
+        .map { String value -> value.toBoolean() }
+        .getOrElse(false)
 File baseLayerFile = layeredNativeImage ? file(baseLayerFilePath) : null
-
-Closure<Void> validateBaseLayer = {
-    if (!layeredNativeImage) {
-        return
-    }
-    if (!baseLayerFile.isAbsolute()) {
-        throw new GradleException("Property 'tck.baseLayerFile' must contain an absolute path. Got: ${baseLayerFilePath}")
-    }
-    if (!baseLayerFile.isFile()) {
-        throw new GradleException("Native Image base layer does not exist: ${baseLayerFile.absolutePath}")
-    }
-    File manifestFile = new File(baseLayerFile.parentFile, "manifest.json")
-    if (!manifestFile.isFile()) {
-        throw new GradleException("Native Image base-layer manifest does not exist: ${manifestFile.absolutePath}")
-    }
-    def currentManifest = new JsonSlurper().parse(manifestFile)
-    def expectedManifest = BaseLayerUtils.expectedManifest(
-            baseLayerFile,
-            providers.exec {
-                commandLine(nativeImageTool("native-image"), "--version")
-            }.standardOutput.asText.get().trim(),
-            selectedNativeImageMode,
-            baseLayerNativeImageArgs
-    )
-    if (currentManifest != expectedManifest) {
-        throw new GradleException("Native Image base-layer manifest does not match the current toolchain and mode: ${manifestFile.absolutePath}")
-    }
+if (dedicatedLayer && !layeredNativeImage) {
+    throw new GradleException("Property 'tck.dedicatedLayer=true' requires 'tck.baseLayerFile'.")
 }
 
 tck.testedLibraryVersion = libraryVersion
@@ -385,6 +365,103 @@ Closure<List<File>> resolveTestedLibraryJars = {
     }
 
     return matched.toList().sort { File file -> file.absolutePath }
+}
+
+Closure<List<File>> resolveJUnitRuntimeJars = {
+    Set<File> matched = new LinkedHashSet<>(
+            configurations.nativeImageTestClasspath.resolvedConfiguration.resolvedArtifacts.findAll { artifact ->
+                BaseLayerUtils.isJUnitRuntimeArtifact(
+                        artifact.moduleVersion.id.group,
+                        artifact.moduleVersion.id.name)
+            }.collect { artifact ->
+                artifact.file
+            })
+    if (matched.isEmpty()) {
+        throw new GradleException("No JUnit runtime artifacts found on the test runtime classpath.")
+    }
+    return matched.toList().sort { File file -> file.absolutePath }
+}
+
+Closure<List<File>> resolveDedicatedLayerJars = {
+    Set<File> includedJars = new LinkedHashSet<>(resolveTestedLibraryJars())
+    includedJars.addAll(resolveJUnitRuntimeJars())
+    return includedJars.toList().sort { File file -> file.absolutePath }
+}
+
+File coordinateMetadataDirectory = file(metadataPath).absoluteFile
+String coordinateMetadataArgument = "-H:ConfigurationFileDirectories=${coordinateMetadataDirectory.absolutePath}"
+String junitPlatformFeatureArgument = "--features=org.graalvm.junit.platform.JUnitPlatformFeature"
+Provider<Directory> dedicatedLayerJUnitTestListDirectory = layout.buildDirectory.dir(
+        "native/generated/dedicatedLayerJUnitTestList")
+
+tasks.register("generateDedicatedLayerJUnitTestList") { task ->
+    task.setDescription("Generates engine-root JUnit selectors for the dedicated layer")
+    task.setGroup("build")
+    task.outputs.dir(dedicatedLayerJUnitTestListDirectory)
+    task.doLast {
+        File outputDirectory = dedicatedLayerJUnitTestListDirectory.get().asFile
+        delete(outputDirectory)
+        if (!outputDirectory.mkdirs()) {
+            throw new GradleException("Failed to create base-layer JUnit test-list directory: " +
+                    outputDirectory.absolutePath)
+        }
+        File selectorsFile = new File(outputDirectory, "junit-platform-unique-ids-base")
+        List<String> engineRootSelectors = [
+                "[engine:junit-jupiter]",
+                "[engine:junit-vintage]"
+        ]
+        selectorsFile.text = engineRootSelectors.join(System.lineSeparator()) + System.lineSeparator()
+    }
+}
+
+Closure<List<String>> resolveDedicatedLayerNativeImageArgs = {
+    List<String> arguments = new ArrayList<>(nativeImageArgs)
+    arguments.add(junitPlatformFeatureArgument)
+    arguments.add("-Djunit.platform.listeners.uid.tracking.output.dir=" +
+            dedicatedLayerJUnitTestListDirectory.get().asFile.absolutePath)
+    return arguments
+}
+
+Closure<List<File>> resolveDedicatedLayerClasspath = {
+    Set<File> classpath = new LinkedHashSet<>(configurations.testRuntimeClasspath
+            .resolvedConfiguration.resolvedArtifacts.collect { artifact -> artifact.file })
+    classpath.addAll(configurations.nativeImageTestClasspath
+            .resolvedConfiguration.resolvedArtifacts.collect { artifact -> artifact.file })
+    return classpath
+            .findAll { File file -> file.isFile() }
+            .toList()
+            .sort { File file -> file.absolutePath }
+}
+
+Closure<Void> validateBaseLayer = {
+    if (!layeredNativeImage) {
+        return
+    }
+    if (!baseLayerFile.isAbsolute()) {
+        throw new GradleException("Property 'tck.baseLayerFile' must contain an absolute path. Got: ${baseLayerFilePath}")
+    }
+    if (!baseLayerFile.isFile()) {
+        throw new GradleException("Native Image base layer does not exist: ${baseLayerFile.absolutePath}")
+    }
+    if (dedicatedLayer) {
+        return
+    }
+    File manifestFile = new File(baseLayerFile.parentFile, "manifest.json")
+    if (!manifestFile.isFile()) {
+        throw new GradleException("Native Image base-layer manifest does not exist: ${manifestFile.absolutePath}")
+    }
+    def currentManifest = new JsonSlurper().parse(manifestFile)
+    def expectedManifest = BaseLayerUtils.expectedManifest(
+            baseLayerFile,
+            providers.exec {
+                commandLine(nativeImageTool("native-image"), "--version")
+            }.standardOutput.asText.get().trim(),
+            selectedNativeImageMode,
+            baseLayerNativeImageArgs
+    )
+    if (currentManifest != expectedManifest) {
+        throw new GradleException("Native Image base-layer manifest does not match the current inputs: ${manifestFile.absolutePath}")
+    }
 }
 
 tasks.register("listLibraryJars") { task ->
@@ -449,6 +526,9 @@ Provider<List<String>> nativeTraceBuildArgs = providers.provider {
 }
 
 tasks.named("nativeTestCompile", BuildNativeImageTask).configure { BuildNativeImageTask task ->
+    if (dedicatedLayer) {
+        task.dependsOn(tasks.named("nativeLibDedicatedCompile"))
+    }
     task.doFirst {
         validateBaseLayer()
         File nativeImageOutputDirectory = task.outputFile.get().asFile.parentFile
@@ -668,13 +748,26 @@ graalvmNative {
     agent {
     }
     binaries {
+        if (dedicatedLayer) {
+            libDedicated {
+                classpath.from(providers.provider { resolveDedicatedLayerClasspath() })
+                buildArgs.addAll(providers.provider { resolveDedicatedLayerNativeImageArgs() })
+                createLayer {
+                    modules = BaseLayerUtils.layerModules()
+                    jars.from(providers.provider { resolveDedicatedLayerJars() })
+                }
+            }
+        }
         test {
             if (override) {
                 excludeConfig.put(libraryGAV, [".*"])
             }
             buildArgs.addAll(nativeImageArgs)
             buildArgs.addAll(nativeTraceBuildArgs)
-            if (layeredNativeImage) {
+            if (dedicatedLayer) {
+                buildArgs.add(coordinateMetadataArgument)
+            }
+            if (layeredNativeImage && !dedicatedLayer) {
                 buildArgs.addAll([
                         "-H:+UnlockExperimentalVMOptions",
                         "-H:LayerUse=${baseLayerFile.absolutePath}",
@@ -686,6 +779,23 @@ graalvmNative {
                 buildArgs.addAll(providers.provider {
                     DynamicAccessUtils.buildArgsForClasspathEntries(resolveTestedLibraryJars())
                 })
+            }
+            if (dedicatedLayer) {
+                useLayer("libDedicated")
+            }
+        }
+    }
+}
+
+if (dedicatedLayer) {
+    tasks.named("nativeLibDedicatedCompile", BuildNativeImageTask).configure { task ->
+        task.dependsOn(tasks.named("generateDedicatedLayerJUnitTestList"))
+        task.outputDirectory.set(baseLayerFile.parentFile)
+        task.doFirst {
+            File workingDirectory = task.workingDirectory.get().asFile
+            if (!workingDirectory.isDirectory() && !workingDirectory.mkdirs()) {
+                throw new GradleException("Failed to create native-image working directory: " +
+                        workingDirectory.absolutePath)
             }
         }
     }
