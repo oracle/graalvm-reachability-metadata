@@ -74,6 +74,7 @@ data.
 | `nativeTestCompile` | Build the native image used by native tests (compile-only). |
 | `buildBaseLayer` | Build or validate the shared JDK-module Native Image layer used by layered tests. |
 | `testSharedLayer` | Run the native tests with `LayerUse` pointing at the shared base layer. |
+| `testDedicatedLayer` | Build one base layer per coordinate containing the tested library, then run its native tests with that layer. |
 | `test` / `tckTest` | The full lane: validation, JVM tests, then native-image tests. |
 | `clean` / `tckClean` | Clear a coordinate's build outputs. |
 
@@ -88,6 +89,23 @@ base-layer module set (`java.base`, `java.management`, `java.naming`, `java.sql`
 `jdk.jsobject`, `jdk.localedata`, and `jdk.xml.dom`), and build arguments,
 so a stale or mismatched layer is rejected before any per-coordinate native
 image is built.
+
+The dedicated-layer lane keeps the shared-layer lane intact but moves layer
+creation into each coordinate build. Each layer includes the same JDK modules
+as the shared layer plus every class and resource in the resolved tested-library
+JARs and the resolved JUnit runtime JARs, including JUnit's support artifacts
+and the Native Build Tools `junit-platform-native` artifact that supplies
+`JUnitPlatformFeature`. The base analysis classpath contains resolved dependency
+JARs but excludes the coordinate's compiled test classes, test resources, and
+test JAR. Both layer builds activate `JUnitPlatformFeature`. The base invocation
+uses infrastructure-generated selectors for the JUnit engine roots, establishing
+JUnit's initialization and reachability policy without trying to resolve absent
+test classes. The application invocation uses the coordinate's real unique-ID
+files to discover and register those classes. The written test code therefore
+remains exclusively in the final application layer.
+CI supplies `-Ptck.layered.deleteDedicatedLayerAfterTest=true` to delete each
+large coordinate layer after its test; local runs retain layers for reuse unless
+they explicitly request the same cleanup behavior.
 
 `testSharedLayer` can run a coordinate batch in collecting mode with
 `-Ptck.layered.continueOnCoordinateFailure=true`; when combined with

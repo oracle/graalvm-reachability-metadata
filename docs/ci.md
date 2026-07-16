@@ -110,15 +110,23 @@ on the workflow definitions themselves (for example, pinned action SHAs).
 These run on `cron` (and usually `workflow_dispatch`) and keep coverage current
 and releases flowing without a human in the loop.
 
-### CI-layered-tests: Shared layer Native Image tests
+### CI-layered-tests: Shared and dedicated Native Image layer tests
 
 Every Sunday at 00:30 UTC (`30 0 * * 0`) and on manual dispatch. The scheduled
 run checks every supported library on the default branch with GraalVM `latest-ea`
 and the `current-defaults` Native Image mode, using the cached shared base layer
-(§TCK-test-harness.3). It fans the `all` selection into 16 independent shards,
-allows all 16 to run in parallel, and permits six hours per shard. Manual
-dispatch defaults to `master`, `all`, and `latest-ea`, and may select a different
-ref, coordinate, JDK, or mode; an `all` selection uses the same shard matrix.
+(§TCK-test-harness.3). An `all` selection uses 16 independent shared-layer
+shards and 64 independent dedicated-layer shards, allows up to 64 matrix jobs
+to run in parallel, and permits six hours per shard. Manual dispatch defaults
+to both lanes, `master`, `all`, and `latest-ea`; it may instead run only the
+shared or dedicated lane and select a different ref, coordinate, JDK, or mode.
+A concrete coordinate creates one job per selected lane. The scheduled
+workflow runs both independent matrix lanes: the original shared JDK-layer
+lane and a library-layer lane that creates one base layer per coordinate with
+the tested library code included (§TCK-test-harness.3).
+Dedicated layers are deleted after each coordinate to bound runner disk use;
+failures are collected independently so the two layer layouts remain directly
+comparable.
 
 ### CI-test-all-metadata: Test all metadata
 

@@ -26,6 +26,7 @@ import org.graalvm.internal.tck.harness.tasks.CleanInvocationTask
 import org.graalvm.internal.tck.harness.tasks.CompileTestJavaInvocationTask
 import org.graalvm.internal.tck.harness.tasks.JavaTestInvocationTask
 import org.graalvm.internal.tck.harness.tasks.SharedLayerTestInvocationTask
+import org.graalvm.internal.tck.harness.tasks.DedicatedLayerTestInvocationTask
 import org.graalvm.internal.tck.harness.tasks.NativeTestCompileInvocationTask
 import org.graalvm.internal.tck.harness.tasks.NativeTraceImageInvocationTask
 import org.graalvm.internal.tck.harness.tasks.FetchExistingLibrariesWithNewerVersionsTask
@@ -333,6 +334,11 @@ tasks.register("testSharedLayer", SharedLayerTestInvocationTask.class) { task ->
     task.setDescription("Runs Native Image tests with LayerUse for all matching coordinates")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
     task.dependsOn(tasks.named("buildBaseLayer"))
+}
+
+tasks.register("testDedicatedLayer", DedicatedLayerTestInvocationTask.class) { task ->
+    task.setDescription("Runs dedicated-layer Native Image tests with one base layer per coordinate")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
 }
 
 tasks.register("validateIndexFiles", ValidateIndexFilesTask.class) { task ->

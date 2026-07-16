@@ -10,6 +10,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Objects;
 
+import org.graalvm.internal.tck.utils.BaseLayerUtils;
+
 /**
  * Task that runs native tests with the shared Native Image base layer.
  * <p>
@@ -23,8 +25,12 @@ public abstract class SharedLayerTestInvocationTask extends TestInvocationTask {
     @Override
     public List<String> commandFor(String coordinates) {
         List<String> command = super.commandFor(coordinates);
-        appendBaseLayerFileProperty(command);
+        command.add("-Ptck.baseLayerFile=" + baseLayerFileFor(coordinates).getAbsolutePath());
         return command;
+    }
+
+    protected File baseLayerFileFor(String coordinates) {
+        return BaseLayerUtils.resolveBaseLayerFile(getProject());
     }
 
     @Override
@@ -46,5 +52,4 @@ public abstract class SharedLayerTestInvocationTask extends TestInvocationTask {
         }
         return getProject().file(reportPath.toString());
     }
-
 }
