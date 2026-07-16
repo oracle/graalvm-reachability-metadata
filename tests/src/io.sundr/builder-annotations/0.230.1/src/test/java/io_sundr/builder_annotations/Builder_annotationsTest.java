@@ -24,6 +24,15 @@ public class Builder_annotationsTest {
         assertThat(emptyHolder.getLabels()).isEmpty();
         assertThat(populatedHolder.getLabels()).containsExactly("stable", "native");
     }
+
+    @Test
+    void generatesEditableValuesThatCreateModifiedCopies() {
+        EditableProfile draft = new ProfileBuilder().withName("draft").build();
+        EditableProfile published = draft.edit().withName("published").build();
+
+        assertThat(draft.getName()).isEqualTo("draft");
+        assertThat(published.getName()).isEqualTo("published");
+    }
 }
 
 @Buildable(lazyCollectionInitEnabled = false)
@@ -36,5 +45,18 @@ class CollectionHolder {
 
     List<String> getLabels() {
         return labels;
+    }
+}
+
+@Buildable(editableEnabled = true)
+class Profile {
+    private final String name;
+
+    Profile(String name) {
+        this.name = name;
+    }
+
+    String getName() {
+        return name;
     }
 }
