@@ -4,152 +4,24 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-import java.io.OutputStream
-import java.nio.charset.StandardCharsets
-import javax.tools.JavaCompiler
-import javax.tools.ToolProvider
-
 plugins {
     id "org.graalvm.internal.tck"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
-String kotlinVersion = '1.8.22'
-String nativeJavaHome = System.getenv('JAVA_HOME')
-Provider<Directory> inlineFixtureClassesDir = layout.buildDirectory.dir('generated/inline-fixture/classes')
-Provider<Directory> inlineFixtureSourcesDir = layout.buildDirectory.dir('generated/inline-fixture/src')
-Provider<Directory> generatedTestRuntimePropertiesDir = layout.buildDirectory.dir('generated/test-runtime-properties')
-String inlineFixtureSource = '''
-package org_mockito.mockito_core;
-
-@kotlin.jvm.JvmInline
-public final class KotlinInlineCounter {
-    private final int value;
-
-    public KotlinInlineCounter(int value) {
-        this.value = value;
-    }
-
-    public static KotlinInlineCounter box_impl(int value) {
-        return new KotlinInlineCounter(value);
-    }
-
-    public int unbox_impl() {
-        return value;
-    }
-}
-'''
 
 java {
     modularity.inferModulePath = true
-}
-
-configurations {
-    inlineFixtureCompileClasspath
 }
 
 dependencies {
     testImplementation "org.mockito:mockito-core:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
     testImplementation 'junit:junit:4.13.2'
-    testImplementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-    inlineFixtureCompileClasspath "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
-    testRuntimeOnly files(inlineFixtureClassesDir)
     testRuntimeOnly 'net.bytebuddy:byte-buddy:1.12.22'
     testRuntimeOnly 'net.bytebuddy:byte-buddy-agent:1.12.22'
 }
-
-TaskProvider<Task> generateKotlinInlineFixture = tasks.register('generateKotlinInlineFixture') {
-    File sourceFile = inlineFixtureSourcesDir.get().file(
-            'org_mockito/mockito_core/KotlinInlineCounter.java').asFile
-    File classFile = inlineFixtureClassesDir.get().file(
-            'org_mockito/mockito_core/KotlinInlineCounter.class').asFile
-    inputs.property('inlineFixtureSource', inlineFixtureSource)
-    outputs.file(classFile)
-
-    doLast {
-        sourceFile.parentFile.mkdirs()
-        sourceFile.text = inlineFixtureSource
-
-        File classesDir = inlineFixtureClassesDir.get().asFile
-        classesDir.mkdirs()
-        JavaCompiler compiler = ToolProvider.systemJavaCompiler
-        if (compiler == null) {
-            throw new GradleException('A JDK compiler is required to generate the Kotlin inline fixture')
-        }
-        List<String> compilerArguments = [
-                '-classpath', configurations.inlineFixtureCompileClasspath.asPath,
-                '-d', classesDir.absolutePath,
-                sourceFile.absolutePath,
-        ]
-        int result = compiler.run(null, null, null, compilerArguments as String[])
-        if (result != 0) {
-            throw new GradleException('Could not compile the Kotlin inline fixture')
-        }
-
-        String classBytes = new String(classFile.bytes, StandardCharsets.ISO_8859_1)
-                .replace('box_impl', 'box-impl')
-                .replace('unbox_impl', 'unbox-impl')
-        classFile.bytes = classBytes.getBytes(StandardCharsets.ISO_8859_1)
-    }
-}
-
-tasks.register("generateNativeRuntimeProperties") {
-    outputs.dir(generatedTestRuntimePropertiesDir)
-    doLast {
-        File outputDir = generatedTestRuntimePropertiesDir.get().asFile
-        outputDir.mkdirs()
-
-        Properties properties = new Properties()
-        properties.setProperty("java.home", System.getenv("JAVA_HOME") ?: "")
-        properties.setProperty("java.class.path", sourceSets.test.runtimeClasspath.asPath)
-
-        File outputFile = new File(outputDir, "native-runtime.properties")
-        outputFile.withOutputStream { OutputStream outputStream ->
-            properties.store(outputStream, "Generated runtime properties for Mockito native tests")
-        }
-    }
-}
-
-sourceSets {
-    test {
-        output.dir(inlineFixtureClassesDir, builtBy: generateKotlinInlineFixture)
-    }
-}
-
-processTestResources {
-    dependsOn(tasks.named("generateNativeRuntimeProperties"))
-    from(generatedTestRuntimePropertiesDir)
-}
-
-tasks.named('compileTestJava') {
-    dependsOn generateKotlinInlineFixture
-    classpath += files(inlineFixtureClassesDir)
-}
-
-tasks.withType(Test).configureEach {
-    jvmArgs '-Dnet.bytebuddy.experimental=true'
-}
-
-tasks.named('nativeTest') {
-    if (nativeJavaHome != null) {
-        runtimeArgs.add("-Djava.home=${nativeJavaHome}")
-    }
-}
-
 graalvmNative {
-    binaries {
-        test {
-            classpath(inlineFixtureClassesDir)
-            buildArgs.add('-Dnet.bytebuddy.experimental=true')
-            runtimeArgs('-Dnet.bytebuddy.experimental=true')
-            runtimeArgs("-Djava.class.path=${sourceSets.test.runtimeClasspath.asPath}")
-            if (nativeJavaHome != null) {
-                runtimeArgs("-Djava.home=${nativeJavaHome}")
-            }
-        }
-    }
-
     agent {
         defaultMode = "conditional"
         modes {
