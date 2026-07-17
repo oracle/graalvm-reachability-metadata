@@ -119,8 +119,12 @@ These emit the GitHub Actions matrices the workflows consume, all driven by
 
 | Task | Output |
 | --- | --- |
-| `jacocoTestReport` | JaCoCo coverage for a coordinate. |
+| `jacocoTestReport` | JaCoCo coverage for a coordinate's regular test suite. |
+| `codeCoverageTest` | Run the tracked `code-coverage-improvement/` extension suite of a coordinate on the JVM. |
+| `jacocoCodeCoverageReport` | Combined JaCoCo coverage over the regular and extension suites (§forge/WF-code-coverage-improvement.3.1). |
 | `generateDynamicAccessCoverageReport`, `analyzeExternalLibraryDynamicAccess` | Dynamic-access coverage reporting (§FS-repository-functional-spec.4.5). |
+| `nativeTestPGOSampling` | Build coordinate native tests with sampled PGO and the analysis call-tree CSV dump for Forge deep-coverage navigation (§forge/WF-code-coverage-improvement.3.2). |
+| `runNativeTestPGO` | Run the sampling image and write its sampled `.iprof` to the required absolute `pgoProfilePath`. |
 | `generateLibraryStats`, `listTopCoordinatesByMetric`, `generateTopCoordinatesByMetricMatrix`, `generateReadmeBadgeSummary`, `generateDependencyGraph` | Produce and query the stats mirror, README badge inputs, and dependency graphs that feed the coverage dashboard (§CI-publish-scheduled-coverage). |
 | `package` | Zip the `metadata/` directory into the release artifact consumed by native-build-tools (§FS-repository-functional-spec.4). |
 
@@ -139,3 +143,27 @@ memory. If multiple reported callers precede the API, the nearest one wins; a
 nested tracked API ends the caller search so delegated JDK calls do not cover a
 different API with the same method name. Line-based matching stays the primary
 path and is unchanged for jars that carry line information.
+
+The code-coverage extension suite lives at the tracked
+`code-coverage-improvement/` directory inside a coordinate's test project
+(`src/test/java`, optional `src/test/resources`, optional supplemental
+`metadata/`). It maps to a dedicated `codeCoverage` source set, so ordinary
+metadata-generation and validation commands never compile or run it. Native
+lanes opt in with `-PincludeCodeCoverageSuite=true`, which widens the test
+source set for that invocation because the plugin-managed native test binary
+is derived from it; compile, JVM test, JaCoCo, Checkstyle, native compile/run,
+and sampled-PGO root tasks forward that property to the coordinate project.
+This keeps broad coverage tests separate from metadata-generation tests while
+reusing the coordinate's dependencies and build configuration
+(§forge/WF-code-coverage-improvement.3.1).
+
+`nativeTestPGOSampling` builds with `--pgo-sampling`, a positive
+`-H:PGOSamplingPeriodMicros=<micros>`, `-H:+PrintAnalysisCallTree`, and
+`-H:PrintAnalysisCallTreeType=CSV`. The optional Gradle property
+`pgoSamplingPeriodMicros` defaults to `100` (the Native Image minimum) and must be forwarded through the
+root coordinate fan-out for both build-only and build-and-run invocations.
+`runNativeTestPGO` depends on that sampling build and dumps the profile through
+`-XX:ProfilesDumpFile=<absolute path>`. A nonzero sampling-image exit fails the
+task, so a profile from a failing native suite cannot be accepted. Sampling is
+guidance only; JaCoCo remains the coverage metric
+(§forge/WF-code-coverage-improvement.3.2).

@@ -76,11 +76,17 @@ Forge should support a planned workflow that improves ordinary library runtime
 code coverage, not only dynamic-access coverage (see
 §WF-code-coverage-improvement), broadening the library coverage outcome
 described in §GOAL-maximize-library-coverage. The workflow creates or improves
-tests for libraries that are already present
-in the reachability repo, uses GraalVM PGO runtime profiles as the execution
-signal, and targets the whole practical public API surface over repeated runs.
-Those tests must live in a separate code coverage test suite, not in the test
-suite used to generate or validate reachability metadata.
+tests for libraries that are already present in the reachability repo. JaCoCo
+is the sole coverage metric across two ordered phases: first exact public API
+entry coverage, then coverage of internal library methods. The phases keep
+separate targets, reports, and prompts.
+
+The internal-method phase uses sampled GraalVM PGO stacks correlated with the
+Native Image static call graph only to navigate from observed execution toward
+JaCoCo-uncovered methods. Sampling never changes coverage status and missing
+samples never prove non-execution. Generated tests must reach internal behavior
+through public library APIs and must live in a separate code coverage test
+suite, not in the suite used to generate or validate reachability metadata.
 
 This functionality is distinct from the `library-update-request`
 dynamic-access coverage workflow defined in §WF-improve-library-coverage.

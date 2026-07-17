@@ -19,10 +19,10 @@ expect from a useful support test.
 The intent is to add or improve tests for libraries that are already present in
 the reachability repo. The generated tests should drive realistic public API
 usage across the library, not only the calls that appear in a dynamic-access
-report. GraalVM PGO runtime profiles provide the execution signal: Forge
-collects a baseline profile for the current tests, identifies API areas and
-runtime code that remain unexecuted or weakly exercised, generates tests for
-those gaps, and compares the updated profile with the baseline.
+report. JaCoCo is the sole coverage metric. Sampled GraalVM PGO profiles and the
+Native Image static call graph provide a later, separate navigation signal that
+shows an agent how current execution diverges from JaCoCo-uncovered internal
+library methods; sampling never changes a coverage result.
 
 ## 2. Scope
 
@@ -30,6 +30,14 @@ The workflow targets supported libraries with an existing test suite in the
 repo. It may also run after a new-library or version-update workflow has
 produced a passing test suite, but its own work product is broader API coverage
 for a library that is already represented locally.
+
+The initial automation entry point should be a Rhei workspace template for one
+GitHub issue labeled `code-coverage-improvement`. The issue body must identify one
+Maven coordinate in `group:artifact:version` form. Template conversion resolves
+that coordinate, verifies that the library is already represented locally,
+creates or reuses a per-issue worktree, and generates bounded Rhei tasks for
+preparation, inventory, coverage generation, validation, discovery, finalization,
+and publication.
 
 The tests produced by this workflow must be a separate test suite from the
 tests used to generate or validate reachability metadata. Code coverage tests
@@ -39,6 +47,31 @@ The suites may target the same coordinate, but they must have separate
 locations, metrics, and publication evidence so improving broad API coverage
 does not change the meaning of metadata-generation coverage.
 
+Generated code coverage tests are a tracked extension suite written under
+`tests/src/<group>/<artifact>/<test-version>/code-coverage-improvement`, where
+`<test-version>` is the indexed test project directory that covers the
+coordinate. The workflow may read the metadata-generation tests as context, but
+generated code coverage tests must not be placed in the metadata-generation
+suite, and the regular `src/test` sources are read-only for this workflow.
+
+The suite root must contain `src/test/java` and may contain
+`src/test/resources`, a `suite.json` recording the true coordinate being
+improved, and a `metadata/` directory with supplemental native-image configs
+the extension suite needs beyond the shipped metadata (each entry is a
+promotion candidate for `metadata/`). The build maps the suite to a dedicated
+`codeCoverage` source set with its own `codeCoverageTest` JVM task and a
+combined `jacocoCodeCoverageReport`; `jacocoTestReport` stays the
+regular-suite baseline. Native lanes opt in with
+`-PincludeCodeCoverageSuite=true`, which widens the test source set for that
+invocation because the plugin-managed native test binary is derived from it.
+Ordinary metadata-generation and validation commands that omit the property
+continue to use only their existing test source tree.
+
+When an extension test exposes a real metadata gap, the fix belongs in the
+shipped `metadata/`, and the test justifying it should be promoted into the
+regular metadata-generation suite so the invariant "shipped metadata is
+justified by always-run tests" holds; the extension suite remains an optional
+breadth layer.
 This workflow must not replace dynamic-access generation. It complements it:
 
 - Dynamic-access workflows answer whether tests cover metadata-relevant calls.
@@ -49,74 +82,230 @@ This workflow must not replace dynamic-access generation. It complements it:
 
 ## 3. Coverage Model
 
-The workflow should build a target model from two inputs:
+The workflow has two ordered phases with separate targets, reports, and prompts.
 
-- **API inventory** — public or realistically reachable library packages,
-  classes, methods, constructors, and behavior groups derived from library
-  artifacts, sources, documentation, or upstream tests.
-- **PGO profile observation** — profile-derived evidence of what library code
-  the current repo tests execute.
+JaCoCo is authoritative in both phases; sampled PGO never changes whether a
+method is covered.
+
+### 3.1 Public API entry coverage
+
+The first phase covers the public user-callable API surface derived from the
+library artifacts. It joins exact canonical method identities from the API
+inventory with JVM JaCoCo method coverage. Overloads must remain distinct, and
+an absent or ambiguous correlation must not inherit another method's status.
+
+Each API-cover prompt contains only public API methods that the latest JaCoCo
+report marks uncovered, at most 200 per pass. The agent must work across the
+whole supplied batch through realistic public API usage and assertions, without
+superficial coverage-only invocation. The phase runs for a heuristic iteration
+budget of baseline-uncovered / 2 / 250 passes, at least one and at most
+`coverage_iterations`, and stops early when no public target remains uncovered.
+
+### 3.2 Deep implementation coverage
+
+The second phase starts only after public API coverage and native metadata
+preparation. Its target universe is library-owned methods reported by JaCoCo
+that are not public API inventory entries. JaCoCo remains the sole coverage
+metric for these internal methods.
+
+The Native Image analysis call-tree CSV dump and sampled PGO profile provide
+navigation for JaCoCo-uncovered internal targets. For each target, the analyzer
+uses the shortest directed static path from any sampled frame. When no sampled
+frame joins, it may use the shortest path from a public API inventory entry.
+Distance is the primary ranking key; frame quality and sample count may only
+break equal-distance ties.
+
+A target absent from the static graph remains JaCoCo-uncovered but is recorded
+as not present in the current graph. A target present in the graph without a
+sampled or public-API route remains in the full JSON report as a no-route
+candidate. Neither condition changes its JaCoCo status. Only actionable
+sampled-path and public-entry-path targets enter the agent prompt.
+
+The prompt navigation stays compact and groups paths that share a divergence:
+
+```text
+Observed:
+Parser.parse(...) → parseJson(...)
+
+Uncovered paths:
+Parser.parse(...) → parseCSV(...)
+Parser.parse(...) → parseXML(...)
+```
+
+`Observed` is sampled guidance only. Every `Uncovered paths` target is
+uncovered according to exact JaCoCo evidence. The agent must reach internal
+methods through the shown public behavior rather than invoke implementation
+methods directly.
+
+The full JSON report retains every uncovered internal target, its JaCoCo
+evidence, graph status, rank, sampled context, and static path. The prompt-facing
+Markdown and target-id list contain at most 200 methods globally. Measurement
+itself carries attempt state deterministically in the discovery-report history:
+every target it prompted gets its attempt count incremented at the next
+measurement, ranking prefers less-attempted targets, and covered targets leave
+the uncovered set — so later iterations advance beyond the first 200 without
+any agent-written state.
+The deep phase runs for the same heuristic iteration budget, computed from its
+baseline deep-uncovered count, and stops early when no actionable target
+remains.
+
+Sampled observations may be emitted as LCOV guidance for standard tooling. That
+artifact contains positive sample counts only, is labeled guidance-only, and is
+never used as a coverage result.
 
 Coverage targets should describe behavior to exercise, not raw bytecode
 addresses or dynamic-access call sites. Examples include untested public
 builders, serializers, parsers, adapters, configuration branches, error
-handling paths, and common object lifecycle operations.
+handling paths, and common object lifecycle operations. The API inventory is
+emitted as compact JSON and Markdown under
+`runtime/code-coverage/api-inventory/`; its canonical target `id` carries the
+full method identity.
 
-The workflow should aim to cover the whole practical library API over repeated
-runs. If the API is too large for one PR, the workflow may use chunks, but each
-chunk must persist enough target/exhaust state for a later run to continue
-without redoing already completed, skipped, or semantically impossible targets
-(§GOAL-maximize-library-coverage).
+The workflow should aim to cover the whole practical library API and internal
+runtime surface over repeated runs. If the target set is too large for one PR,
+the workflow may use chunks, but each chunk must persist enough target/exhaust
+state for a later run to continue without redoing already completed, skipped,
+or semantically impossible targets (§GOAL-maximize-library-coverage).
 
 ## 4. Workflow
 
-1. **Eligibility and baseline** — resolve the supported coordinate, confirm
-   that the repo already contains a test suite, and run baseline verification.
-2. **Baseline profile** — run the existing tests and collect a GraalVM PGO
-   runtime profile for the target coordinate.
-3. **Target discovery** — combine API inventory with profile observation to
-   produce a promptable list of weakly covered or uncovered behavior targets.
-4. **Target selection** — choose a bounded set of targets for this run or
-   chunk, preserving durable skipped/exhausted state for targets that cannot be
-   handled automatically.
-5. **Test generation** — ask the configured agent to add or improve tests that
-   cover selected behavior through public or realistically reachable APIs.
-6. **Profile comparison** — rerun profile collection and compare the updated
-   profile against the baseline and selected targets.
-7. **Verification** — run local CI-equivalent verification for the coordinate
-   before returning a PR-eligible status (§FS-local-ci-equivalent-verification).
+The Rhei template should decompose the workflow into these phases:
+
+1. **Convert issue** — fetch one `code-coverage-improvement` issue, parse the
+   coordinate, create or reuse the worktree, and record conversion rationale.
+2. **Prepare library** — resolve the coordinate, confirm existing repository
+   support, create or verify the code coverage suite, prepare source context,
+   and record baseline facts.
+3. **Generate API inventory** — deterministically write compact JSON and
+   Markdown reports for public user-callable API targets.
+4. **API coverage loop** — one task cycling deterministic measurement and an
+   agent cover pass. Measurement runs JVM JaCoCo
+   plus exact API-inventory correlation, persists `api-cover-report-<n>` history
+   and one fixed-location report, and decides the loop: the phase completes when
+   no uncovered public target remains or the iteration budget is spent. The
+   budget is heuristic: one cover pass lands at most ~250 methods and roughly
+   half the uncovered targets are reachable in practice, so it is
+   `baseline_uncovered / 2 / 250`, clamped to at least one and at most
+   `coverage_iterations` (default 10) passes.
+   When the loop continues, measurement also derives the prompt of at most 200
+   exact JaCoCo-uncovered public methods from that report. The cover agent attempts the complete supplied batch through
+   normal public API behavior and always returns to measurement. Reachability
+   metadata and Native Image are intentionally out of scope in this phase.
+5. **Prepare native metadata** — run once after the API loop and before
+   deep discovery: generate reachability metadata and repair it with the Codex
+   `fix-missing-reachability-metadata` skill until a Native Image test passes.
+   Route unresolved metadata or Native Image failures to human intervention.
+6. **Deep coverage loop** — the same measure/cover cycle for internal
+   methods. Measurement runs JaCoCo over the library-owned method set, builds
+   and runs native tests with PGO sampling, loads one coherent analysis
+   call-tree CSV triplet, excludes public API inventory entries, ranks exact
+   JaCoCo-uncovered internal methods by shortest sampled/static path, retains
+   every record in JSON plus sampled-guidance LCOV, persists
+   `discovery-report-<n>` history and one fixed-location report, and decides
+   the loop with the same heuristically scaled iteration budget (computed from
+   the baseline deep-uncovered count), and derives the compact
+   at-most-200-method prompt when it continues. The cover agent batches related paths, reaches
+   internal methods through public behavior, and always returns to measurement;
+   it writes no target state — measurement tracks attempts and rotation
+   deterministically from its own report history.
+7. **Finalization** — a deterministic step program: read the machine-readable
+   conversion record, run checkstyle over the coordinate's subprojects
+   (including the tracked coverage suite), run the regular JVM tests
+   (`javaTest`) and the tracked extension suite (`codeCoverageTest`), and
+   persist final metrics from the baseline and highest-iteration JaCoCo and
+   deep reports. No Native Image validation runs at this stage; a nonzero exit
+   code names the failed step.
+8. **Publication** — open a PR with source issue, coordinate, coverage suite,
+   baseline/final JaCoCo coverage reported against the total method count of
+   each guidance phase, the completed-target count (individual covered methods
+   are not listed, keeping the body within the GitHub description limit),
+   skipped/exhausted/failed targets with reasons, and validation commands.
+   The body also reports baseline and final sampled-PGO context, method, sample,
+   and sampled/static-join counts as navigation-only evidence; it must state
+   that sampling is not a coverage metric and that missing samples do not prove
+   non-execution.
+
+The pipeline tasks run unreviewed: deterministic helpers, schema-validated
+artifacts, and zero-exit validation gates decide their completion. The
+finalization task executes as a deterministic program of numbered steps whose
+nonzero exit code names the failed step, and its completion is decided by a
+deterministic verification program, not by an agent's own claim: it checks the
+finalization artifacts exist, schema-validates the final metrics, and inspects
+their outcomes. Fixable step or verification failures return to a bounded fix
+state, after which the steps re-run; failed targets or an explicit
+human-intervention flag in the metrics, and failures that survive the fix
+budget, route to human intervention.
+
+Every fix state that can be entered more than once is a counted Rhei state and
+writes a visit-scoped output. API and deep fix states use the corresponding
+measurement visit cap, which records each fix entry without tightening the
+measurement-owned retry budget. The finalization fix state uses the configured
+`fix_passes` cap. This ensures that an output from an earlier repair pass cannot
+satisfy the output-existence completion check for a later pass.
 
 ## 5. Acceptance Criteria
 
 A code coverage improvement run is successful only when all of these hold:
 
-- The generated tests are meaningful behavior tests and do not only execute
-  methods for superficial profile hits.
-- The generated tests are written to the separate code coverage suite, not to
-  the metadata-generation test suite.
-- The profile comparison shows a measurable increase in executed library API or
-  runtime surface for the selected targets, or the run records why a target was
-  skipped or exhausted.
-- Existing dynamic-access coverage, metadata validity, and JVM/native test
-  gates do not regress.
-- Metrics record the baseline profile, updated profile, selected targets,
-  profile comparison summary, generated test paths, strategy, model, skipped or
-  exhausted targets, and verification commands.
-- Local CI-equivalent verification passes before PR publication
-  (§FS-local-ci-equivalent-verification).
+- A Rhei template can convert one `code-coverage-improvement` issue into an
+  executable workspace with deterministic finalization verification and bounded
+  fix routing.
+- Re-entering an API, deep, or finalization fix state starts a fresh agent pass
+  and requires a distinct visit-scoped fix artifact.
+- The generated tests are meaningful behavior tests and do not invoke internal
+  methods directly merely to raise coverage.
+- Public API and deep implementation work use separate reports and prompts.
+- API inventory generation produces compact JSON and Markdown for public
+  user-callable methods and constructors.
+- API iteration zero establishes a JaCoCo baseline that also fixes the
+  heuristic iteration budget; each public API agent iteration is followed by
+  exact JaCoCo correlation.
+- API prompts contain only exact JaCoCo-uncovered public targets and ask the
+  agent to attempt the complete supplied batch.
+- Deep targets are library-owned JaCoCo methods minus public API inventory
+  entries. Exact JaCoCo evidence alone determines their status.
+- Sampled PGO and the static call graph change only deep-path guidance and
+  ranking; they never change covered, uncovered, or unknown status.
+- Near-call distance is the shortest directed static path from a sampled frame;
+  prompt-quality and sample-count preferences only break equal-distance ties.
+- Full JSON retains every deep target and path record. Prompt Markdown contains
+  at most 200 actionable methods and uses compact `Observed` /
+  `Uncovered paths` navigation.
+- The last budgeted deep-cover iteration is followed by a final report before
+  finalization.
+- Sampled observations emitted as LCOV contain positive sample evidence only
+  and are labeled guidance-only.
+- Completion, skip, and exhaustion state prevents a hard target batch from
+  starving later methods.
+- Existing dynamic-access coverage, metadata validity, JVM/native tests, and
+  local CI-equivalent verification do not regress.
+- Metrics and PR evidence keep JaCoCo coverage results separate from PGO
+  sampling guidance and include the validation commands.
+
+The checked-in Rhei example must pass:
+
+```bash
+rhei validate examples/code-coverage-improvement-example
+rhei run examples/code-coverage-improvement-example --dry-run --parallel 2
+```
 
 ## 6. Boundaries
 
-PGO profile data is a workflow signal, not a replacement for maintainer review.
-The workflow should not claim that profile growth proves semantic completeness.
-It should expose the API targets, profile comparison, generated test rationale,
-and skipped/exhausted targets in metrics and the PR description so reviewers
-can judge whether the new tests exercise valuable library behavior.
+PGO profile data is navigation, not a replacement for JaCoCo or maintainer
+review. The workflow must not claim that profile growth or sample absence proves
+coverage or semantic completeness. Metrics and the PR description expose
+JaCoCo results, sampled paths, generated-test rationale, and target outcomes
+as separate evidence so reviewers can judge whether the tests exercise
+valuable library behavior.
 
-The workflow is planned and not yet implemented. Until a driver, workflow
-engine, profile collector, API inventory builder, target-state format, metrics
-schema, and publication path exist, references to this workflow describe
-intended Forge functionality rather than runnable automation
+The workflow has a runnable Rhei lane backed by deterministic Forge helpers for
+API inventory, exact JVM JaCoCo validation, native metadata preparation,
+sampled-PGO/static-path correlation, durable target state, final metrics, and
+PR publication. The `nativeTestPGOSampling` / `runNativeTestPGO` Gradle tasks
+provide the sampled profile and coherent call-tree inputs. A Forge driver or
+driver mode is still required before the control plane can autonomously claim
+issues and launch this lane; that missing integration does not make the Rhei
+workspace or helper chain non-executable
 (§WF-code-coverage-improvement-architecture).
 
 # WF-code-coverage-improvement-architecture: Code coverage improvement workflow architecture
@@ -133,30 +322,61 @@ and API-target state needed to broaden tests for already-supported libraries.
 The component should be split into deterministic utilities plus a workflow
 engine:
 
+- **Rhei template and converter** — consumes one `code-coverage-improvement` issue,
+  resolves the coordinate and worktree, and renders the executable task plan.
 - **Workflow driver** — resolves the coordinate, existing metadata-generation
   test suite, separate code coverage test suite, strategy, metrics root, source
   context, and optional chunk state before constructing the workflow engine.
-- **PGO profile collector** — runs the configured test command with GraalVM PGO
-  profile collection enabled and stores the raw profile artifact plus a stable
-  normalized summary.
 - **API inventory builder** — derives promptable API and behavior groups from
   the library artifact, sources, documentation, and upstream tests when
-  available.
-- **Coverage analyzer** — joins the API inventory with baseline and updated
-  profile summaries to identify weakly covered or uncovered behavior.
-- **Target-state store** — persists selected, completed, skipped, exhausted,
-  and failed API coverage targets for chunked or resumed runs.
+  available. Implemented deterministically from the library jar via `javap` in
+  `forge/utility_scripts/code_coverage_api_inventory.py`.
+- **JVM coverage validator** — runs Java compilation and JVM tests under JaCoCo,
+  joins exact JaCoCo identities with the API inventory, and writes the public
+  API baseline and post-iteration reports. Implemented in
+  `forge/utility_scripts/code_coverage_validate.py`, driving the existing
+  `compileTestJava`/`javaTest`/`jacocoTestReport` harness tasks.
+- **JaCoCo evidence parser** — normalizes every method in the tested library's
+  JaCoCo XML into an exact identity, covered/uncovered status, and source
+  evidence shared by the public API validator and deep analyzer. Implemented in
+  `forge/utility_scripts/code_coverage_jacoco.py`. It never uses arity-only
+  identities to decide coverage.
+- **Native metadata preparer** — runs once after the API-cover loop and before
+  PGO discovery: generates reachability metadata and repairs it with the Codex
+  `fix-missing-reachability-metadata` skill until a Native Image test passes, so
+  the PGO-sampling builds succeed. Implemented in
+  `forge/utility_scripts/code_coverage_prepare_native_metadata.py`.
+- **Native Image deep-path analyzer** — intersects exact JaCoCo library methods
+  with the analysis call-tree CSV graph, subtracts public API inventory entries,
+  and uses sampled `.iprof` stacks only to navigate JaCoCo-uncovered internal
+  methods. It retains every record in JSON and emits compact `Observed` /
+  `Uncovered paths` Markdown capped at 100 methods. Implemented in
+  `forge/utility_scripts/code_coverage_profile_report.py`; the sampling image
+  and call-tree CSVs are produced by the `nativeTestPGOSampling` and
+  `runNativeTestPGO` harness tasks (`--pgo-sampling
+  -H:PGOSamplingPeriodMicros=<micros> -H:+PrintAnalysisCallTree
+  -H:PrintAnalysisCallTreeType=CSV`; the run dumps the profile through
+  `-XX:ProfilesDumpFile`). Profile `<`-chain contexts are leaf-first
+  (`callee:bci<caller:bci`), so sampled stacks read right-to-left from the root.
+- **Identity model** — normalizes API inventory, JaCoCo, call-tree CSV, and
+  sampled-profile method identities in
+  `forge/utility_scripts/code_coverage_model.py`.
+- **Target-state store** — measurement-owned attempt and rotation state carried
+  in the discovery-report history; agents never author target state. Externally
+  supplied schema-valid state files remain accepted at finalization.
 - **Workflow engine** — owns prompt/command cycles, retries, target selection,
-  profile comparison, verification interpretation, and terminal status.
+  JaCoCo progress comparison, path refresh, and terminal status.
 - **Publication handoff** — publishes only PR-eligible runs after local
   CI-equivalent verification passes (§AR-forge-verification-publication-boundary).
+  Implemented in `forge/git_scripts/make_pr_code_coverage_improvement.py`, which
+  renders the PR body from the phase-9 finalization metrics.
 
 ## 2. Workflow State
 
-The workflow state should be target-based, not call-site-based. Dynamic-access
-workflows iterate over uncovered dynamic-access classes and calls; code
-coverage improvement iterates over API and behavior targets selected from the
-inventory/profile join (§WF-dynamic-access-workflow).
+The workflow state is target-based, not call-site-based. Public API state comes
+from the exact inventory/JaCoCo join. Deep state comes from exact JaCoCo library
+methods joined to the static graph after public inventory entries are removed
+(§WF-dynamic-access-workflow).
 
 The code coverage test suite should be physically and logically separate from
 the test suite used to generate reachability metadata. The workflow may inspect
@@ -165,15 +385,14 @@ written to the coverage-suite root and measured with code-coverage metrics.
 Metadata-generation tests remain the source of dynamic-access and native-image
 metadata evidence.
 
-Target state should include:
+Target state is derived deterministically by measurement from its own prompt
+and report history — no agent-authored status exists. It should include:
 
 - target identifier and human-readable behavior description
-- source of the target, such as artifact inspection, source context,
-  documentation, upstream tests, or profile gap
-- baseline profile evidence and updated profile evidence
-- selected generated test files
-- terminal target status: completed, skipped, exhausted, failed, or pending
-- semantic reason when the target cannot be covered automatically
+- phase and source of the target
+- baseline and current exact JaCoCo evidence
+- sampled context and static reaching path when available
+- attempt count and last attempted iteration
 
 The persisted state should be coordinate-scoped and stable enough for
 orchestration to resume later runs from the coordinate alone, following the same
@@ -182,34 +401,40 @@ dynamic-access report schema (§WF-dynamic-access-exhaust-report).
 
 ## 3. PGO Profile Handling
 
-Raw PGO artifacts should be treated as machine evidence. Prompts should receive
-normalized summaries that are stable, concise, and mapped back to library API
-targets. The collector/analyzer boundary should hide GraalVM profile file
-details from the agent unless a targeted debugging prompt needs them.
+Raw PGO artifacts are machine navigation evidence. The analyzer maps sampled
+contexts onto the static graph and emits concise path groups; it does not infer
+coverage or non-execution from sampling.
 
-Profile comparison should answer two questions:
+For each exact JaCoCo-uncovered internal method, the analyzer first finds the
+shortest static path from any mapped sampled frame. If no sample joins, it finds
+the shortest public API entry path. A missing sample, missing graph node, or
+missing public route changes only navigation fields. It never changes the
+JaCoCo status.
 
-- Did generated tests execute the selected API or behavior targets more than
-  the baseline?
-- Did the run preserve existing dynamic-access, metadata, JVM, and native-image
-  verification quality?
+The prompt presents representative divergence groups rather than raw profile
+records. JSON retains the complete sampled contexts and method records for
+auditing. PGO progress asks whether navigation changed; JaCoCo progress asks
+whether generated tests covered methods. Only the JaCoCo answer contributes to
+coverage success.
 
-Profile growth alone is not sufficient for success. The workflow engine should
-pair profile evidence with a generated-test rationale and deterministic
-verification results before reporting a PR-eligible status.
+A PR-eligible result pairs exact JaCoCo deltas with generated-test rationale,
+sampled/static guidance, and deterministic verification results. Profile growth
+alone is never sufficient.
 
 ## 4. Prompting and Review Evidence
 
-The agent prompt should be framed around library behavior, public API usage,
-and existing repo test conventions. It should avoid instructions that encourage
-direct invocation of implementation details only to increase profile counts.
+The public prompt lists exact uncovered API entries. The deep prompt lists
+compact observed/uncovered path groups and instructs the agent once to reach
+internal methods through public behavior. Neither prompt encourages direct
+invocation of implementation details merely to increase coverage.
 
 Metrics and PR publication should expose:
 
-- baseline and updated profile summary paths
-- selected API coverage targets and their terminal statuses
+- baseline and updated JaCoCo summary paths for each phase
+- sampled-profile and static-graph evidence paths, labeled guidance-only
+- selected public and deep targets with terminal statuses and attempt counts
 - generated or modified test paths
-- profile delta summary for the selected targets
+- exact JaCoCo delta summary
 - verification commands and results
 - skipped or exhausted target reasons
 
@@ -220,7 +445,11 @@ also ran and reported the dynamic-access workflow (§WF-improve-library-coverage
 
 ## 5. Implementation Status
 
-This architecture is planned. The component requires a new driver or
-driver mode, a registered workflow engine, PGO collector utilities, an API
-inventory builder, a coverage analyzer, a target-state schema, metrics support,
-and publication wiring before it is executable.
+The Rhei implementation includes a validated template/example, exact API and
+deep JaCoCo helpers, sampled-PGO/static-path analysis, an opt-in dedicated test
+suite, native metadata preparation, durable target-state and final-metrics
+schemas, schema-validated finalization, and PR publication. The Gradle harness
+produces the sampled `.iprof` and one analysis call-tree CSV triplet per deep
+report. The remaining architecture work is a Forge driver or driver mode that
+lets the control plane claim an issue and launch this already executable Rhei
+lane automatically.
