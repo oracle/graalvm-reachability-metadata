@@ -1,0 +1,98 @@
+{
+  "add_new_library_support:2026-07-09": {
+    "timestamp": "2026-07-09T00:22:03.594967Z",
+    "library": "org.eclipse.platform:org.eclipse.swt.win32.win32.x86_64:3.133.0",
+    "starting_commit": "d8dc58fabfe344568f4a910b688a804eb6364331",
+    "ending_commit": "a2dad7768d433310bae5002e97a031cf797c0a78",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
+    "agent": "pi",
+    "model": "gpt-5.6-terra",
+    "status": "success",
+    "stats": {
+      "version": "3.133.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 2
+          },
+          "resources": {
+            "coverageRatio": 0.5,
+            "coveredCalls": 2,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.333333,
+        "coveredCalls": 2,
+        "totalCalls": 6
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 306,
+          "missed": 421097,
+          "ratio": 0.000726,
+          "total": 421403
+        },
+        "line": {
+          "covered": 88,
+          "missed": 83945,
+          "ratio": 0.001047,
+          "total": 84033
+        },
+        "method": {
+          "covered": 19,
+          "missed": 9609,
+          "ratio": 0.001973,
+          "total": 9628
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 7707,
+      "issue_label": "library-new-request",
+      "library": "org.eclipse.platform:org.eclipse.swt.win32.win32.x86_64:3.133.0",
+      "summary": "This SWT artifact bundles Windows x86_64 PE DLLs and requires a Windows GUI runtime; no extra Maven dependency or supported Docker image enables meaningful execution on Linux.",
+      "deterministic_setup": [],
+      "agent_guidance": "Run meaningful native/runtime coverage only on 64-bit Windows with an available desktop/windowing session. Do not spoof `os.name` on Linux: the bundled DLLs are Windows binaries. Exercise `Display`/`Shell` creation and disposal without an indefinite event loop.",
+      "risks": [
+        "The normal Linux-based verification environment cannot load the bundled `swt-*-win32-*.dll` files.",
+        "Windows GUI, OLE, browser, printing, and WebView2 paths may require additional OS components and cannot be validated by a headless Linux scaffold."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#7707 Support for org.eclipse.platform:org.eclipse.swt.win32.win32.x86_64:3.133.0; label=library-new-request; body_chars=389"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-terra",
+      "input_tokens_used": 47549,
+      "output_tokens_used": 2060,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.eclipse.platform:org.eclipse.swt.win32.win32.x86_64:3.133.0/library-preparation-preflight/pi-generation-2026-07-08T23-20-38-158425Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 132816,
+      "cached_input_tokens_used": 1613824,
+      "output_tokens_used": 22238,
+      "iterations": 11,
+      "cost_usd": 1.0691,
+      "generated_loc": 131,
+      "tested_library_loc": 88,
+      "metadata_entries": 16,
+      "test_only_metadata_entries": 4,
+      "code_coverage_percent": 0.1
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.eclipse.platform/org.eclipse.swt.win32.win32.x86_64/3.133.0/reachability-metadata.json"
+    }
+  }
+}
