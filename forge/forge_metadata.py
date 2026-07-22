@@ -4660,6 +4660,24 @@ def maybe_apply_human_intervention_follow_up(
     return True
 
 
+def _build_finalization_failure_comment(claimed_issue: ClaimedIssue) -> str:
+    """Explain a post-success finalization/publication failure for maintainers.
+
+    The workflow produced a PR-ready result, so there is no generation gap to
+    analyze; publication simply did not complete. The preserved branch carries a
+    continuation marker, so this issue is resumable. §FS-forge-run-continuation
+    """
+    return (
+        f"Automated generation for `{claimed_issue.issue_coordinates}` completed, but "
+        "publishing the pull request did not finish during finalization (for example a "
+        "publication `git rebase` that could not complete on the work branch). The "
+        "generated work and a continuation marker are preserved on the branch below, so "
+        f"a later Forge run can resume from the publication phase; the `{LABEL_RESUMABLE}` "
+        "label marks it for that resume. A maintainer can also finish publication "
+        "manually from the preserved branch."
+    )
+
+
 def apply_failed_run_follow_up(
         claimed_issue: ClaimedIssue,
         started_at: float | None = None,
@@ -4668,7 +4686,9 @@ def apply_failed_run_follow_up(
     """Run Codex failure analysis and apply the `human-intervention` follow-up.
 
     Only reached for logical failures; external failures are released upstream
-    without any issue action. §FS-human-intervention-policy
+    without any issue action. A successful workflow that fails during
+    finalization/publication carries no analysis candidate but still preserves a
+    continuation marker, so it is labeled resumable. §FS-human-intervention-policy
     """
     if is_user_interrupt_requested():
         raise KeyboardInterrupt
@@ -4678,6 +4698,23 @@ def apply_failed_run_follow_up(
         workflow_success=False,
     )
     if candidate is None:
+        # No generation-analysis candidate normally means a non-library issue or a
+        # workflow that never produced coverage to analyze. But a *successful*
+        # workflow that fails only during finalization or publication — whether the
+        # publication `git rebase` halts mid-sequence on a conflict (aborted) or
+        # refuses a dirty worktree before it starts (failed) — still preserves a
+        # continuation marker on the work branch. Label it human-intervention +
+        # resumable so a later run can resume the publication phase instead of
+        # orphaning the marker. §FS-forge-run-continuation §FS-human-intervention-policy
+        if preservation_result_has_continuation_marker(preservation_result):
+            post_human_intervention_comment_and_label(
+                claimed_issue.issue["number"],
+                ensure_preserved_branch_link_in_comment(
+                    _build_finalization_failure_comment(claimed_issue),
+                    preservation_result,
+                ),
+                resumable=True,
+            )
         return
 
     try:
