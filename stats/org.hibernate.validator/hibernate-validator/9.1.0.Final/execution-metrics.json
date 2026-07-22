@@ -109,5 +109,114 @@
       "test_file": "tests/src/org.hibernate.validator/hibernate-validator/9.1.0.Final/src/test/java/hibernate_validator/GetDeclaredConstructorTest.java",
       "metadata_file": "metadata/org.hibernate.validator/hibernate-validator/9.1.0.Final/reachability-metadata.json"
     }
+  },
+  "improve_library_coverage:2026-07-22": {
+    "timestamp": "2026-07-22T22:28:49.141179Z",
+    "library": "org.hibernate.validator:hibernate-validator:9.1.0.Final",
+    "starting_commit": "76d24ff7b4d7a09eeb7b79e8c9494373c0f1809a",
+    "ending_commit": "fafaaabf450bbd9f8f29ce2dbde9e0e4e22f328f",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
+    "agent": "pi",
+    "model": "gpt-5.6-terra",
+    "status": "success",
+    "stats": {
+      "version": "9.1.0.Final",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.754717,
+            "coveredCalls": 40,
+            "totalCalls": 53
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 7,
+            "totalCalls": 7
+          }
+        },
+        "coverageRatio": 0.783333,
+        "coveredCalls": 47,
+        "totalCalls": 60
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 24604,
+          "missed": 42715,
+          "ratio": 0.365484,
+          "total": 67319
+        },
+        "line": {
+          "covered": 6055,
+          "missed": 9759,
+          "ratio": 0.382889,
+          "total": 15814
+        },
+        "method": {
+          "covered": 1667,
+          "missed": 2837,
+          "ratio": 0.370115,
+          "total": 4504
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8397,
+      "issue_label": "library-update-request",
+      "library": "org.hibernate.validator:hibernate-validator:9.1.0.Final",
+      "summary": "Hibernate Validator requires a Unified EL implementation in standalone SE tests for its default message interpolator; the artifact declares only the EL API as optional.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.glassfish.expressly:expressly:6.0.0",
+          "scope": "testImplementation",
+          "reason": "Hibernate Validator 9.1 documentation explicitly requires this Unified EL implementation in SE environments; it transitively provides jakarta.el-api 6.0.1."
+        }
+      ],
+      "agent_guidance": "Exercise Validation.buildDefaultValidatorFactory() with a constraint message containing an EL expression so the default ResourceBundleMessageInterpolator and its EL ServiceLoader path are covered.",
+      "risks": [
+        "Spring Boot may supply an EL implementation through its web container, but the generated standalone TCK test does not; without this preparation default validator bootstrap/interpolation is not representative."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.glassfish.expressly:expressly:6.0.0",
+          "result": "already_present",
+          "target": "tests/src/org.hibernate.validator/hibernate-validator/9.1.0.Final/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8397 Update existing library: org.hibernate.validator:hibernate-validator:9.1.0.Final; label=library-update-request; body_chars=6808"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "20 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-terra",
+      "input_tokens_used": 65132,
+      "output_tokens_used": 2689,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.hibernate.validator:hibernate-validator:9.1.0.Final/library-preparation-preflight/pi-generation-2026-07-22T21-58-26-780566Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 104812,
+      "cached_input_tokens_used": 789504,
+      "output_tokens_used": 9857,
+      "iterations": 4,
+      "cost_usd": 0.6073,
+      "generated_loc": 1022,
+      "tested_library_loc": 6055,
+      "metadata_entries": 890,
+      "test_only_metadata_entries": 168,
+      "code_coverage_percent": 38.29
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.hibernate.validator/hibernate-validator/9.1.0.Final/reachability-metadata.json"
+    }
   }
 }
