@@ -857,6 +857,15 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         self._run_exhaust_report_git_command(
             ["git", "commit", "-m", message, "--", self.dynamic_access_exhaust_report_path]
         )
+        # The exhaust-report commit records terminal class state above the last
+        # test/metadata commit, so advance the whole-phase recovery checkpoint
+        # past it too; otherwise a later reset drops the completed-class marker
+        # while keeping its tests, per §WF-dynamic-access-fallback-and-failure.
+        self._latest_class_checkpoint = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=self.reachability_repo_path,
+            text=True,
+        ).strip()
 
     def _run_exhaust_report_git_command(self, command: list[str]) -> None:
         result = subprocess.run(

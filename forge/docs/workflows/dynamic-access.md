@@ -217,8 +217,9 @@ State held for one strategy `run(...)` invocation, independent of chunking:
   back a failed class iteration without losing previously committed classes.
 - `latest_class_checkpoint` — newest git SHA returned after committing resolved
   or partial class progress, advanced again when a passing native-test gate
-  commits verified test fixes and durable metadata (§6.4); initialized to the
-  scaffold checkpoint and used by whole-phase failure recovery.
+  commits verified test fixes and durable metadata (§6.4) and when a terminal
+  class transition commits the chunk exhaust report; initialized to the scaffold
+  checkpoint and used by whole-phase failure recovery.
 - `prompt_iterations` — total agent prompts sent (returned to the caller as
   `global_iterations`).
 - `successful_classes` — count of classes that contributed at least one newly
@@ -593,6 +594,12 @@ reprocessing classes and to resume safely:
 - class threshold and the current chunk count
 - completed/skipped/exhausted/failed class names
 - latest chunk PR number and commit
+
+Each terminal class transition (completed, skipped, exhausted, or failed)
+commits the updated exhaust report and advances `latest_class_checkpoint` past
+that commit, so a later whole-phase failure reset (§WF-dynamic-access-fallback-and-failure)
+preserves the recorded chunk state instead of resurrecting an already-processed
+class.
 
 It does not store a precomputed chunk manifest. Every resume regenerates the
 dynamic-access report and filters out classes recorded in the exhaust report.
