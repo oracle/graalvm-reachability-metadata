@@ -86,6 +86,9 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
 
             def fake_run(cmd, **kwargs):  # type: ignore[no-untyped-def]
                 calls.append(list(cmd))
+                # `check_output` for `git rev-parse HEAD` delegates to `subprocess.run`.
+                if "rev-parse" in cmd:
+                    return subprocess.CompletedProcess(cmd, 0, stdout="abc123\n")
                 # Simulate `git diff --cached --quiet` finding staged changes (rc=1).
                 if "diff" in cmd and "--quiet" in cmd:
                     return subprocess.CompletedProcess(cmd, 1)
@@ -95,8 +98,9 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
                     "ai_workflows.core.dynamic_access_iterative_strategy.subprocess.run",
                     side_effect=fake_run,
             ):
-                strategy._commit_library_metadata("Native metadata for org.example.Demo")
+                head_sha = strategy._commit_library_metadata("Native metadata for org.example.Demo")
 
+        self.assertEqual(head_sha, "abc123")
         self.assertEqual(calls[0][:3], ["git", "add", "-A"])
         self.assertEqual(calls[0][3], metadata_dir)
         # Diff and commit must both be scoped to the metadata dir to avoid
@@ -118,6 +122,9 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
 
             def fake_run(cmd, **kwargs):  # type: ignore[no-untyped-def]
                 calls.append(list(cmd))
+                # `check_output` for `git rev-parse HEAD` delegates to `subprocess.run`.
+                if "rev-parse" in cmd:
+                    return subprocess.CompletedProcess(cmd, 0, stdout="abc123\n")
                 # rc=0 from `git diff --cached --quiet` means nothing to commit.
                 return subprocess.CompletedProcess(cmd, 0)
 
@@ -127,7 +134,7 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
             ):
                 strategy._commit_library_metadata("Native metadata for org.example.Demo")
 
-        self.assertEqual([cmd[1] for cmd in calls], ["add", "diff"])
+        self.assertEqual([cmd[1] for cmd in calls], ["add", "diff", "rev-parse"])
         self.assertFalse(any("commit" in cmd for cmd in calls))
 
     def test_report_path_uses_indexed_test_version_for_reused_test_project(self) -> None:

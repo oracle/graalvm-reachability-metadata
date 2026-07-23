@@ -85,6 +85,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         )
         self.chunk_class_count = int(self.context.get("chunk_class_count") or 0)
         self._last_phase_status = RUN_STATUS_SUCCESS
+        self._latest_class_checkpoint: str | None = None
         self.dynamic_access_report_path = os.path.join(
             self.reachability_repo_path,
             "tests",
@@ -105,6 +106,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         available; once the class loop begins, report loss and gate failure are
         hard workflow failures, per §WF-dynamic-access-fallback-and-failure.
         """
+        self._latest_class_checkpoint = checkpoint_commit_hash
         initial_report = self._generate_dynamic_access_report()
         if self._should_fallback_to_basic_flow(initial_report):
             self._print_dynamic_access_message(
@@ -121,7 +123,8 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         if self._last_phase_status == RUN_STATUS_CHUNK_READY:
             return RUN_STATUS_CHUNK_READY, global_iterations, 1
         if not phase_ok:
-            subprocess.run(["git", "reset", "--hard", checkpoint_commit_hash], check=False)
+            recovery_checkpoint = self._latest_class_checkpoint or checkpoint_commit_hash
+            subprocess.run(["git", "reset", "--hard", recovery_checkpoint], check=False)
             return RUN_STATUS_FAILURE, global_iterations, 0
 
         return RUN_STATUS_SUCCESS, global_iterations, 1
@@ -463,7 +466,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                 if updated_class is None:
                     if current_report.covered_calls > previous_report.covered_calls:
                         self._print_dynamic_access_detail("result: resolved", indent_level=2)
-                        self._commit_test_sources(
+                        self._latest_class_checkpoint = self._commit_test_sources(
                             f"Dynamic-access coverage for {class_name} "
                             f"({current_report.covered_calls}/{current_report.total_calls})"
                         )
@@ -491,7 +494,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     break
                 if updated_class.uncovered_calls == 0:
                     self._print_dynamic_access_detail("result: resolved", indent_level=2)
-                    self._commit_test_sources(
+                    self._latest_class_checkpoint = self._commit_test_sources(
                         f"Dynamic-access coverage for {class_name} "
                         f"({current_report.covered_calls}/{current_report.total_calls})"
                     )
@@ -520,14 +523,12 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         ),
                         indent_level=2,
                     )
-                    self._commit_test_sources(
+                    class_checkpoint = self._commit_test_sources(
                         f"Partial dynamic-access coverage for {class_name} "
                         f"({updated_class.covered_calls}/{updated_class.total_calls})"
                     )
+                    self._latest_class_checkpoint = class_checkpoint
                     class_committed = True
-                    class_checkpoint = subprocess.check_output(
-                        ["git", "rev-parse", "HEAD"], text=True,
-                    ).strip()
                     if not self._queue_native_test_verification_step(
                             pending_native_test_classes,
                             class_name,
@@ -805,7 +806,10 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             f"native-test gate {result.status} for {class_name} after {result.iterations_used} cycles",
             indent_level=2,
         )
-        self._commit_library_metadata(f"Native metadata for {class_name}")
+        self._commit_test_sources(f"Native-test gate fixes for {class_name}")
+        self._latest_class_checkpoint = self._commit_library_metadata(
+            f"Native metadata for {class_name}"
+        )
         return True
 
     def _refresh_report_after_gate(self, class_name: str):
@@ -853,6 +857,15 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         self._run_exhaust_report_git_command(
             ["git", "commit", "-m", message, "--", self.dynamic_access_exhaust_report_path]
         )
+        # The exhaust-report commit records terminal class state above the last
+        # test/metadata commit, so advance the whole-phase recovery checkpoint
+        # past it too; otherwise a later reset drops the completed-class marker
+        # while keeping its tests, per §WF-dynamic-access-fallback-and-failure.
+        self._latest_class_checkpoint = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=self.reachability_repo_path,
+            text=True,
+        ).strip()
 
     def _run_exhaust_report_git_command(self, command: list[str]) -> None:
         result = subprocess.run(
@@ -996,7 +1009,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         )
         return "\n".join([tracked_diff.stdout, "--untracked--", untracked_files.stdout])
 
-    def _commit_test_sources(self, message: str) -> None:
+    def _commit_test_sources(self, message: str) -> str:
         """Stage and commit test sources so the next class has a clean checkpoint."""
         tests_dir = os.path.join(
             self.reachability_repo_path, "tests", "src",
@@ -1014,9 +1027,19 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             cwd=self.reachability_repo_path,
             capture_output=True, check=False,
         )
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=self.reachability_repo_path,
+            text=True,
+        ).strip()
 
-    def _commit_library_metadata(self, message: str) -> None:
-        """Stage and commit durable library metadata created by the class gate."""
+    def _commit_library_metadata(self, message: str) -> str:
+        """Stage and commit durable library metadata created by the class gate.
+
+        Returns the resulting `HEAD` SHA so a passing gate can advance the
+        whole-phase recovery checkpoint past the verified test and metadata
+        commits, per §WF-dynamic-access-fallback-and-failure.
+        """
         metadata_version = resolve_metadata_version(
             self.reachability_repo_path,
             self.group,
@@ -1038,13 +1061,17 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             cwd=self.reachability_repo_path,
             capture_output=True, check=False,
         ).returncode
-        if diff_rc == 0:
-            return
-        subprocess.run(
-            ["git", "commit", "-m", message, "--", metadata_dir],
+        if diff_rc != 0:
+            subprocess.run(
+                ["git", "commit", "-m", message, "--", metadata_dir],
+                cwd=self.reachability_repo_path,
+                capture_output=True, check=False,
+            )
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
             cwd=self.reachability_repo_path,
-            capture_output=True, check=False,
-        )
+            text=True,
+        ).strip()
 
     def _generate_dynamic_access_report(self, indent_level: int = 0):
         """Generate and load the dynamic-access report used as strategy guidance.

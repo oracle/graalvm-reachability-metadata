@@ -108,10 +108,15 @@ Dynamic-access workflows must fail when any of these conditions occur:
 5. Chunked mode reaches a chunk boundary but cannot pass the local
    CI-equivalent verification required for a reviewable chunk PR.
 
-Failures return `RUN_STATUS_FAILURE` and the driver resets the feature
-branch to the scaffold checkpoint. A composite workflow with a primary workflow
-preserves and returns the primary workflow failure instead of starting the
-dynamic-access coverage phase.
+Failures return `RUN_STATUS_FAILURE`. After iterative exploration has started,
+the engine resets the feature branch to the latest committed class checkpoint,
+or to the scaffold checkpoint when no class has been committed. The latest class
+commit is used because it is the last coherent checkpoint from which exploration
+can resume: it preserves accepted class progress and the corresponding
+exploration information while discarding the failing class's uncommitted work.
+Bulk exploration retains its scaffold checkpoint behavior. A composite workflow
+with a primary workflow preserves and returns the primary workflow failure
+instead of starting the dynamic-access coverage phase.
 
 ## 2. Inputs
 
@@ -192,8 +197,9 @@ The following preconditions are established by `add_new_library_support.main`
 5. `prepare_source_contexts(...)` has downloaded and extracted the artifacts
    declared by the strategy's `source-context-types`. Their files become the
    agent's read-only context.
-6. Scaffold commit recorded as `checkpoint_commit_hash`. Failure recovery
-   uses `git reset --hard <checkpoint_commit_hash>`.
+6. Scaffold commit recorded as `checkpoint_commit_hash`. It is the initial
+   failure-recovery checkpoint; iterative exploration advances recovery to each
+   committed class checkpoint.
 
 ## 5. State Model
 
@@ -209,6 +215,11 @@ State held for one strategy `run(...)` invocation, independent of chunking:
   again within the run.
 - `class_checkpoint` — git SHA captured before each class attempt; used to roll
   back a failed class iteration without losing previously committed classes.
+- `latest_class_checkpoint` — newest git SHA returned after committing resolved
+  or partial class progress, advanced again when a passing native-test gate
+  commits verified test fixes and durable metadata (§6.4) and when a terminal
+  class transition commits the chunk exhaust report; initialized to the scaffold
+  checkpoint and used by whole-phase failure recovery.
 - `prompt_iterations` — total agent prompts sent (returned to the caller as
   `global_iterations`).
 - `successful_classes` — count of classes that contributed at least one newly
@@ -396,8 +407,9 @@ fields with the full dynamic-access report.
 
 A missing or unparsable `dynamic-access-coverage.json` after the initial
 phase is a hard failure: the workflow engine returns `RUN_STATUS_FAILURE` with
-the prompt-iteration count, and the workflow driver resets the branch to
-`checkpoint_commit_hash`.
+the prompt-iteration count, and the workflow engine resets the branch to the
+latest committed class checkpoint, falling back to `checkpoint_commit_hash`
+when no class has been committed.
 
 ### 6.4 Per-class native-test verification gate
 
@@ -441,7 +453,11 @@ Effects within this workflow:
    merged trace output is written to `<output_dir>/trace`. Only after the
    gate passes are existing durable metadata, staged agent metadata, and
    staged trace metadata merged into the durable
-   `metadata/<group>/<artifact>/<version>/` directory.
+   `metadata/<group>/<artifact>/<version>/` directory. A passing gate then
+   commits the coordinate's test sources (including any fixes the gate's
+   verification cycles applied) and the merged durable metadata, and advances
+   `latest_class_checkpoint` past both commits, so whole-phase failure
+   recovery never separates verified tests from the metadata they require.
 2. The dynamic-access coverage report is regenerated **after** the gate so
    that any call sites covered by JVM-agent, traced, or Codex-supplied metadata are
    reflected in the next class's prompt delta.
@@ -449,9 +465,10 @@ Effects within this workflow:
    (§WF-native-test-verification-gate).
    Native Image must always work; partial dynamic-access coverage with a
    broken `nativeTest` is not an acceptable terminal state. The entry
-   script resets the feature branch to `checkpoint_commit_hash`, records
-   the gate's `last_native_test_log_path` and `intervention_records` in
-   the run metrics, and exits non-zero.
+   script records the gate's `last_native_test_log_path` and
+   `intervention_records` in the run metrics, resets to the latest committed
+   class checkpoint (or the scaffold checkpoint before the first class commit),
+   and exits non-zero.
 4. Metadata remains cumulative across chunks. The gate's final durable merge
    includes any existing durable metadata from prior merged chunk PRs and the
    staged metadata generated for the current chunk.
@@ -471,7 +488,7 @@ flowchart TD
 
     PhaseOK --> Final[Workflow engine returns RUN_STATUS_SUCCESS]
     KeepOK --> Final
-    PhaseFail --> Reset[git reset --hard checkpoint_commit_hash]
+    PhaseFail --> Reset[git reset --hard latest_class_checkpoint]
     Reset --> FinalFail[Workflow engine returns RUN_STATUS_FAILURE]
 
     Final --> EntryFinalize[add_new_library_support.main]
@@ -578,6 +595,12 @@ reprocessing classes and to resume safely:
 - completed/skipped/exhausted/failed class names
 - latest chunk PR number and commit
 
+Each terminal class transition (completed, skipped, exhausted, or failed)
+commits the updated exhaust report and advances `latest_class_checkpoint` past
+that commit, so a later whole-phase failure reset (§WF-dynamic-access-fallback-and-failure)
+preserves the recorded chunk state instead of resurrecting an already-processed
+class.
+
 It does not store a precomputed chunk manifest. Every resume regenerates the
 dynamic-access report and filters out classes recorded in the exhaust report.
 The exhaust report path is not passed as an explicit resume-state argument. It
@@ -654,5 +677,7 @@ support iff **all** requirements for its selected engine hold at exit:
    behavior were correct.
 10. The metrics record validates against the active schema.
 
-Any deviation produces `RUN_STATUS_FAILURE` and a feature branch reset to the
-scaffold checkpoint.
+Any deviation produces `RUN_STATUS_FAILURE`. Iterative exploration resets to
+the latest committed class checkpoint, or to the scaffold checkpoint if no
+class progress was committed; other dynamic-access engines retain their
+specified recovery behavior.
