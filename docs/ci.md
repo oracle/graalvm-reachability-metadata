@@ -184,7 +184,9 @@ per-version `tested-versions`. It then — via
 `open-dependency-issues-and-link-blockers.js`
 (§CI-shared-scripts) — generates a deps.dev dependency graph and opens or reuses
 `library-new-request` issues for unsupported transitive dependencies, linking
-them as blockers. The label vocabulary it applies is defined in
+them as blockers. Newly created transitive dependency issues do not receive
+`priority`, even when the direct request has it. The label vocabulary it applies
+is defined in
 §FS-repository-functional-spec.4.
 
 ## Composite actions
