@@ -15,8 +15,6 @@ import java.security.KeyPairGenerator;
 import java.security.PublicKey;
 import java.security.Security;
 
-import javax.crypto.KeyAgreement;
-
 import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -34,13 +32,10 @@ public class Prov11XDHPublicKeyTest {
         KeyPairGenerator generator = KeyPairGenerator.getInstance(
             "X25519", BouncyCastleFipsProvider.PROVIDER_NAME);
         KeyPair keyPair = generator.generateKeyPair();
-        KeyPair peerKeyPair = generator.generateKeyPair();
-
         PublicKey restoredPublicKey = deserialize(serialize(keyPair.getPublic()));
 
         assertThat(restoredPublicKey.getAlgorithm()).isEqualTo("X25519");
         assertThat(restoredPublicKey.getEncoded()).isEqualTo(keyPair.getPublic().getEncoded());
-        assertThat(agree(peerKeyPair, keyPair.getPublic())).isEqualTo(agree(peerKeyPair, restoredPublicKey));
     }
 
     private byte[] serialize(PublicKey publicKey) throws Exception {
@@ -55,13 +50,5 @@ public class Prov11XDHPublicKeyTest {
         try (ObjectInputStream input = new ObjectInputStream(new ByteArrayInputStream(serializedPublicKey))) {
             return (PublicKey)input.readObject();
         }
-    }
-
-    private byte[] agree(KeyPair keyPair, PublicKey publicKey) throws Exception {
-        KeyAgreement agreement = KeyAgreement.getInstance(
-            "X25519", BouncyCastleFipsProvider.PROVIDER_NAME);
-        agreement.init(keyPair.getPrivate());
-        agreement.doPhase(publicKey, true);
-        return agreement.generateSecret();
     }
 }

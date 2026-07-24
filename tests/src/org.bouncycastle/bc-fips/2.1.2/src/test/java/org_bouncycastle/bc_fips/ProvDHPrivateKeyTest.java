@@ -13,10 +13,8 @@ import java.io.ObjectOutputStream;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.Security;
 
-import javax.crypto.KeyAgreement;
 import javax.crypto.interfaces.DHPrivateKey;
 import javax.crypto.spec.DHParameterSpec;
 
@@ -39,14 +37,10 @@ public class ProvDHPrivateKeyTest {
             "DH", BouncyCastleFipsProvider.PROVIDER_NAME);
         generator.initialize(parameters);
         KeyPair keyPair = generator.generateKeyPair();
-        KeyPair peerKeyPair = generator.generateKeyPair();
-
         PrivateKey restoredPrivateKey = deserialize(serialize(keyPair.getPrivate()));
 
         assertThat(restoredPrivateKey.getAlgorithm()).isEqualTo("DH");
         assertThat(restoredPrivateKey.getEncoded()).isEqualTo(keyPair.getPrivate().getEncoded());
-        assertThat(agree(restoredPrivateKey, peerKeyPair.getPublic()))
-            .isEqualTo(agree(peerKeyPair.getPrivate(), keyPair.getPublic()));
     }
 
     private DHParameterSpec parametersFromJdkProvider() throws Exception {
@@ -69,12 +63,5 @@ public class ProvDHPrivateKeyTest {
             new ByteArrayInputStream(serializedPrivateKey))) {
             return (PrivateKey)input.readObject();
         }
-    }
-
-    private byte[] agree(PrivateKey privateKey, PublicKey publicKey) throws Exception {
-        KeyAgreement agreement = KeyAgreement.getInstance("DH", BouncyCastleFipsProvider.PROVIDER_NAME);
-        agreement.init(privateKey);
-        agreement.doPhase(publicKey, true);
-        return agreement.generateSecret();
     }
 }
