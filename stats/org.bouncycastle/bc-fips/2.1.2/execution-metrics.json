@@ -1,0 +1,92 @@
+{
+  "add_new_library_support:2026-07-24": {
+    "timestamp": "2026-07-24T16:41:07.359387Z",
+    "library": "org.bouncycastle:bc-fips:2.1.2",
+    "starting_commit": "0fc2c562af5f7da81027be3562a5fb70bd1a1237",
+    "ending_commit": "01358a0d9ee414f7cd0d790253db0a03d800b7a7",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
+    "agent": "pi",
+    "model": "gpt-5.6-terra",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "2.1.2",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.220588,
+            "coveredCalls": 15,
+            "totalCalls": 68
+          },
+          "resources": {
+            "coverageRatio": 0.6,
+            "coveredCalls": 3,
+            "totalCalls": 5
+          }
+        },
+        "coverageRatio": 0.246575,
+        "coveredCalls": 18,
+        "totalCalls": 73
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 88017,
+          "missed": 451509,
+          "ratio": 0.163138,
+          "total": 539526
+        },
+        "method": {
+          "covered": 2676,
+          "missed": 13777,
+          "ratio": 0.162645,
+          "total": 16453
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 5950,
+      "issue_label": "library-new-request",
+      "library": "org.bouncycastle:bc-fips:2.1.2",
+      "summary": "BC-FIPS is self-contained but must be registered as the BCFIPS JCA provider; Native Image also requires provider registration at image build time.",
+      "deterministic_setup": [],
+      "agent_guidance": "In tests, add `new BouncyCastleFipsProvider()` through `Security.addProvider` before obtaining BCFIPS algorithms, then exercise provider-backed crypto. For native tests, configure BCFIPS as a security provider during image generation; runtime-only registration fails with Native Image provider-verification errors. Set `org.bouncycastle.native.cpu_variant=java` for native-image tests to disable BC-FIPS extraction/loading of its bundled Linux JNI acceleration libraries.",
+      "risks": [
+        "Approved-only mode is irreversible for a thread/process; do not enable `org.bouncycastle.fips.approved_only` unless the test is isolated and specifically covers approved-only behavior.",
+        "Native Image provider initialization/build arguments need Gradle verification; the artifact includes JNI acceleration resources that are unsuitable for ordinary native-image resource extraction."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#5950 Support for org.bouncycastle:bc-fips:2.1.2; label=library-new-request; body_chars=301"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-terra",
+      "input_tokens_used": 118793,
+      "output_tokens_used": 7377,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.bouncycastle:bc-fips:2.1.2/library-preparation-preflight/pi-generation-2026-07-24T14-11-56-174389Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 445722,
+      "cached_input_tokens_used": 4414976,
+      "output_tokens_used": 53495,
+      "iterations": 20,
+      "cost_usd": 3.0204,
+      "generated_loc": 396,
+      "tested_library_loc": 0,
+      "metadata_entries": 447,
+      "test_only_metadata_entries": 24,
+      "code_coverage_percent": 16.31
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.bouncycastle/bc-fips/2.1.2/reachability-metadata.json"
+    }
+  }
+}
