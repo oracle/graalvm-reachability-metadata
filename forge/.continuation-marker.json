@@ -1,0 +1,68 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "xerces:xercesImpl:2.3.0",
+  "issueNumber": 984,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#984 Support for xerces:xercesImpl:2.3.0; label=library-new-request; body_chars=422"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 75960,
+    "issue_label": "library-new-request",
+    "issue_number": 984,
+    "library": "xerces:xercesImpl:2.3.0",
+    "model": "gpt-5.6-terra",
+    "output_tokens_used": 4833,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "On JDK 25, DOM JAXP parsing fails with NoClassDefFoundError for org.w3c.dom.ls.DocumentLS because this pre-module artifact bundles obsolete DOM APIs that conflict with JDK modules. System properties do not remedy it; initially exercise SAX/XNI paths and let local Gradle/Native Image verification determine any viable DOM coverage."
+    ],
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/xerces:xercesImpl:2.3.0/library-preparation-preflight/pi-generation-2026-07-24T12-01-22-845931Z.log",
+    "status": "completed",
+    "summary": "xercesImpl 2.3.0 is self-contained and its JAXP SAX/DOM providers are discovered through bundled META-INF/services entries; no extra dependency, Docker image, or property is needed for SAX coverage."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": 15,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 14,
+      "status": "running"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-984-library-new-request-xerces-xercesImpl-2.3.0-bf05a0f4",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.6-terra"
+}
