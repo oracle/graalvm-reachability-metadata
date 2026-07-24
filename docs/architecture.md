@@ -30,6 +30,7 @@ patching, no `Feature` classes, no untested metadata) are specified in
 | Infrastructure E2E tests | `testInfra`/`testAllInfra`, which exercise the whole task surface to prove the infrastructure itself works. | §E2E-infrastructure-tests |
 | CI | GitHub Actions workflows that gate PRs, sweep metadata on a schedule, track upstream versions, scan images, and publish coverage and releases. | §CI-repository-ci |
 | Forge | The automation subproject that turns labeled issues into review-ready PRs. | §forge/AR-forge-architecture |
+| Repository status | `repository_status/` reports weighted unresolved issue state and recent progress for humans and agents. | §AR-repository-status-tool |
 
 ## 3. How work flows through the system
 
