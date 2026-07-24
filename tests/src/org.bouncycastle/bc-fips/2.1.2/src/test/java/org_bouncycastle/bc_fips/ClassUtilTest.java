@@ -31,7 +31,6 @@ public class ClassUtilTest {
 
     @BeforeAll
     static void registerProvider() {
-        System.setProperty("org.bouncycastle.native.cpu_variant", "java");
         Security.addProvider(new BouncyCastleFipsProvider());
     }
 
