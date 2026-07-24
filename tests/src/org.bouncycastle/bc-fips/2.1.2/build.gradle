@@ -16,6 +16,13 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs("-H:AdditionalSecurityProviders=org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider")
+            buildArgs("-J-Dorg.bouncycastle.native.cpu_variant=java")
+            runtimeArgs("-Dorg.bouncycastle.native.cpu_variant=java")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
