@@ -1,0 +1,41 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+repositories {
+    maven {
+        url = uri("https://packages.confluent.io/maven/")
+        content {
+            includeGroup "io.confluent"
+        }
+    }
+}
+
+dependencies {
+    testImplementation "io.confluent:kafka-schema-serializer:$libraryVersion"
+    testImplementation "io.confluent:kafka-avro-serializer:$libraryVersion"
+    testImplementation "io.confluent:kafka-schema-registry-client:$libraryVersion"
+    testImplementation "org.apache.avro:avro:1.12.0"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+    testImplementation 'ch.qos.logback:logback-classic:1.4.5'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "metadata-user-code-filter.json"
+                extraFilterPath = "metadata-extra-filter.json"
+            }
+        }
+    }
+}
