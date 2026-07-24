@@ -10,6 +10,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PublicKey;
@@ -18,6 +19,7 @@ import java.security.Security;
 import javax.crypto.interfaces.DHPrivateKey;
 import javax.crypto.interfaces.DHPublicKey;
 import javax.crypto.spec.DHParameterSpec;
+import javax.crypto.spec.DHPublicKeySpec;
 
 import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
 import org.junit.jupiter.api.BeforeAll;
@@ -38,11 +40,17 @@ public class ProvDHPublicKeyTest {
             "DH", BouncyCastleFipsProvider.PROVIDER_NAME);
         generator.initialize(parameters);
         KeyPair keyPair = generator.generateKeyPair();
-        DHPublicKey restoredPublicKey = deserialize(serialize(keyPair.getPublic()));
+        DHPublicKey generatedPublicKey = (DHPublicKey) keyPair.getPublic();
+        KeyFactory keyFactory = KeyFactory.getInstance("DH", BouncyCastleFipsProvider.PROVIDER_NAME);
+        DHPublicKey publicKey = (DHPublicKey) keyFactory.generatePublic(new DHPublicKeySpec(
+            generatedPublicKey.getY(), parameters.getP(), parameters.getG()));
+        DHPublicKey restoredPublicKey = deserialize(serialize(publicKey));
+        DHPublicKey restoredUnsharedPublicKey = deserializeUnshared(serializeUnshared(publicKey));
 
         assertThat(restoredPublicKey.getAlgorithm()).isEqualTo("DH");
-        assertThat(restoredPublicKey.getY()).isEqualTo(((DHPublicKey) keyPair.getPublic()).getY());
-        assertThat(restoredPublicKey.getEncoded()).isEqualTo(keyPair.getPublic().getEncoded());
+        assertThat(restoredPublicKey.getY()).isEqualTo(generatedPublicKey.getY());
+        assertThat(restoredPublicKey.getEncoded()).isEqualTo(publicKey.getEncoded());
+        assertThat(restoredUnsharedPublicKey.getEncoded()).isEqualTo(publicKey.getEncoded());
     }
 
     private DHParameterSpec parametersFromJdkProvider() throws Exception {
@@ -60,10 +68,25 @@ public class ProvDHPublicKeyTest {
         return bytes.toByteArray();
     }
 
+    private byte[] serializeUnshared(PublicKey publicKey) throws Exception {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
+            output.writeUnshared(publicKey);
+        }
+        return bytes.toByteArray();
+    }
+
     private DHPublicKey deserialize(byte[] serializedPublicKey) throws Exception {
         try (ObjectInputStream input = new ObjectInputStream(
             new ByteArrayInputStream(serializedPublicKey))) {
             return (DHPublicKey) input.readObject();
+        }
+    }
+
+    private DHPublicKey deserializeUnshared(byte[] serializedPublicKey) throws Exception {
+        try (ObjectInputStream input = new ObjectInputStream(
+            new ByteArrayInputStream(serializedPublicKey))) {
+            return (DHPublicKey) input.readUnshared();
         }
     }
 }

@@ -47,7 +47,7 @@ public class ProvDHPrivateKeyTest {
         KeyPairGenerator generator = KeyPairGenerator.getInstance("DH", "SunJCE");
         generator.initialize(2048);
         KeyPair keyPair = generator.generateKeyPair();
-        return ((DHPrivateKey)keyPair.getPrivate()).getParams();
+        return ((DHPrivateKey) keyPair.getPrivate()).getParams();
     }
 
     private byte[] serialize(PrivateKey privateKey) throws Exception {
@@ -61,7 +61,7 @@ public class ProvDHPrivateKeyTest {
     private PrivateKey deserialize(byte[] serializedPrivateKey) throws Exception {
         try (ObjectInputStream input = new ObjectInputStream(
             new ByteArrayInputStream(serializedPrivateKey))) {
-            return (PrivateKey)input.readObject();
+            return (PrivateKey) input.readObject();
         }
     }
 }

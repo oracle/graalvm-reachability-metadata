@@ -48,7 +48,7 @@ public class Prov11XDHPublicKeyTest {
 
     private PublicKey deserialize(byte[] serializedPublicKey) throws Exception {
         try (ObjectInputStream input = new ObjectInputStream(new ByteArrayInputStream(serializedPublicKey))) {
-            return (PublicKey)input.readObject();
+            return (PublicKey) input.readObject();
         }
     }
 }

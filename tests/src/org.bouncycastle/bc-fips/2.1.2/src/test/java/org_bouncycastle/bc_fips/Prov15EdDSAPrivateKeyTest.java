@@ -62,7 +62,7 @@ public class Prov15EdDSAPrivateKeyTest {
     private PrivateKey deserialize(byte[] serializedPrivateKey) throws Exception {
         try (ObjectInputStream input = new ObjectInputStream(
             new ByteArrayInputStream(serializedPrivateKey))) {
-            return (PrivateKey)input.readUnshared();
+            return (PrivateKey) input.readUnshared();
         }
     }
 
