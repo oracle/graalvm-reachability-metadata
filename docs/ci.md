@@ -110,6 +110,24 @@ on the workflow definitions themselves (for example, pinned action SHAs).
 These run on `cron` (and usually `workflow_dispatch`) and keep coverage current
 and releases flowing without a human in the loop.
 
+### CI-layered-tests: Shared and dedicated Native Image layer tests
+
+Every Sunday at 00:30 UTC (`30 0 * * 0`) and on manual dispatch. The scheduled
+run checks every supported library on the default branch with GraalVM `latest-ea`
+and the `current-defaults` Native Image mode, using the cached shared base layer
+(§TCK-test-harness.3). An `all` selection uses 16 independent shared-layer
+shards and 64 independent dedicated-layer shards, allows up to 64 matrix jobs
+to run in parallel, and permits six hours per shard. Manual dispatch defaults
+to both lanes, `master`, `all`, and `latest-ea`; it may instead run only the
+shared or dedicated lane and select a different ref, coordinate, JDK, or mode.
+A concrete coordinate creates one job per selected lane. The scheduled
+workflow runs both independent matrix lanes: the original shared JDK-layer
+lane and a library-layer lane that creates one base layer per coordinate with
+the tested library code included (§TCK-test-harness.3).
+Dedicated layers are deleted after each coordinate to bound runner disk use;
+failures are collected independently so the two layer layouts remain directly
+comparable.
+
 ### CI-test-all-metadata: Test all metadata
 
 Every Sunday (`0 2 * * 0`) and on manual dispatch. Uses
@@ -206,6 +224,16 @@ repository (or when `enabled-by-default` is set). It checks out that NBT ref,
 reads `nativeBuildTools` from its `libs.versions.toml`, publishes it to
 `mavenLocal`, and updates the caller repo's catalog to match — so a PR can be
 tested against an in-progress NBT change just by matching branch names.
+
+### CI-setup-native-image-base-layer: setup-native-image-base-layer action
+
+A composite action that restores or builds the shared JDK-module Native Image
+base layer used by the layered TCK lane (§TCK-test-harness.3). Its cache key is
+derived from the actual installed `native-image --version`, runner
+OS/architecture, selected native-image mode, `ci.json`, and TCK build
+logic inputs. The action exports `GVM_TCK_BASE_LAYER_DIR` so subsequent Gradle
+invocations in the manual layered workflow consume the exact cached layer
+directory.
 
 ## CI-shared-scripts: Shared scripts and test isolation
 
