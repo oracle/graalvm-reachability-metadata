@@ -16,6 +16,17 @@ dependencies {
     testImplementation 'org.awaitility:awaitility:4.2.0'
 }
 
+tasks.named("nativeTest") {
+    if (libraryVersion.startsWith('4.2.')) {
+        // Netty 4.2.x requires explicit unsafe access on Java 25 native runs.
+        // §FS-library-version-update-automation.2
+        runtimeArgs.addAll([
+                '-Dsun.misc.unsafe.memory.access=allow',
+                '-Dio.netty.tryReflectionSetAccessible=true'
+        ])
+    }
+}
+
 graalvmNative {
     binaries {
         test {
