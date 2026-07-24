@@ -24,13 +24,21 @@ public class DOMImplementationRegistryTest {
     @Test
     void discoversConfiguredDomImplementationSource() throws Exception {
         String originalSourceList = System.getProperty(DOM_IMPLEMENTATION_SOURCE_LIST);
+        ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
         try {
             System.setProperty(DOM_IMPLEMENTATION_SOURCE_LIST, XERCES_DOM_IMPLEMENTATION_SOURCE);
+            Thread.currentThread().setContextClassLoader(ClassLoader.getSystemClassLoader());
 
-            DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
+            DOMImplementationRegistry contextLoaderRegistry = DOMImplementationRegistry.newInstance();
 
-            assertThat(registry).isNotNull();
+            assertThat(contextLoaderRegistry).isNotNull();
+
+            Thread.currentThread().setContextClassLoader(null);
+            DOMImplementationRegistry fallbackRegistry = DOMImplementationRegistry.newInstance();
+
+            assertThat(fallbackRegistry).isNotNull();
         } finally {
+            Thread.currentThread().setContextClassLoader(originalContextClassLoader);
             if (originalSourceList == null) {
                 System.clearProperty(DOM_IMPLEMENTATION_SOURCE_LIST);
             } else {
