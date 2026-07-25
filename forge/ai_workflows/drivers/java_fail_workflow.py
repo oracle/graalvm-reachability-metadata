@@ -59,7 +59,7 @@ ADD_LIBRARY_AS_LATEST_METADATA_INDEX_TASK = "addLibraryAsLatestMetadataIndexJson
 
 # Default strategy names per mode
 DEFAULT_JAVAC_STRATEGY = "javac_iterative_with_coverage_sources_pi_gpt-5.5"
-DEFAULT_JAVA_RUN_STRATEGY = "java_run_iterative_with_coverage_sources_pi_gpt-5.5"
+DEFAULT_JAVA_RUN_STRATEGY = "java_run_iterative_with_coverage_sources_pi_gpt-5.6-terra"
 
 
 class JavaFailWorkflowConfig:
