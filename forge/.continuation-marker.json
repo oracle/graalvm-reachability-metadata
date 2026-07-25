@@ -1,0 +1,77 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.hibernate:hibernate-core:6.1.0.Final",
+  "issueNumber": 818,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No Docker service appears necessary for the existing Hibernate coverage pattern; the tests can continue using an in-memory H2 JDBC URL, including H2 compatibility modes for dialect smoke tests.",
+    "applied_setup": [],
+    "current_library": "org.hibernate:hibernate-core:6.0.0.Final",
+    "deterministic_setup": [
+      {
+        "coordinate": "com.oracle.database.jdbc:ojdbc11:21.5.0.0",
+        "kind": "dependency",
+        "reason": "Provides oracle.jdbc.OracleConnection required by Hibernate 6.1 OracleArrayJdbcType during OracleDialect initialization.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#818 [Automation] java run fails for org.hibernate:hibernate-core:6.1.0.Final; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "26 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 22376,
+    "issue_label": "fails-java-run",
+    "issue_number": 818,
+    "library": "org.hibernate:hibernate-core:6.1.0.Final",
+    "model": "gpt-5.5",
+    "new_version": "6.1.0.Final",
+    "output_tokens_used": 2771,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "If the generated tests exercise real Oracle-specific JDBC behavior beyond dialect initialization, ojdbc11 alone may not be enough without an Oracle-compatible database service.",
+      "Oracle JDBC classes may introduce additional reachability metadata needs during native-image verification."
+    ],
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.hibernate:hibernate-core:6.1.0.Final/library-preparation-preflight/pi-generation-2026-07-25T14-34-07-700578Z.log",
+    "status": "completed",
+    "summary": "Hibernate 6.1 initializes OracleArrayJdbcType when OracleDialect is resolved, and that class reflectively requires oracle.jdbc.OracleConnection, which is not provided by hibernate-core or the existing test dependencies."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "6.1.0.Final",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-818-fails-java-run-org.hibernate-hibernate-core-6.1.0.Final-9581aceb",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5"
+}
