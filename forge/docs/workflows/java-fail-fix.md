@@ -69,8 +69,8 @@ python3 ai_workflows/drivers/fix_java_fails.py \
 
 Mode defaults:
 
-- `--javac`: `javac_iterative_with_coverage_sources_pi_gpt-5.4`
-- `--java-run`: `java_run_iterative_with_coverage_sources_pi_gpt-5.4`
+- `--javac`: `javac_iterative_with_coverage_sources_pi_gpt-5.5`
+- `--java-run`: `java_run_iterative_with_coverage_sources_pi_gpt-5.6-terra`
 
 The mode-specific entry points `ai_workflows/drivers/fix_javac_fail.py` and
 `ai_workflows/drivers/fix_java_run_fail.py` remain for focused mode invocation,
