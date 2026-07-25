@@ -50,6 +50,7 @@ from urllib.parse import quote
 import ai_workflows.core  # noqa: F401 - triggers strategy registration
 from ai_workflows.drivers.add_new_library_support import (
     DEFAULT_MODEL_NAME,
+    DEFAULT_STRATEGY_NAME as DEFAULT_NEW_LIBRARY_STRATEGY_NAME,
     ScaffoldError,
     create_feature_branch_for_library,
     init_agent as init_workflow_agent,
@@ -64,9 +65,11 @@ from ai_workflows.drivers.fix_java_run_fail import (
     main as run_fix_java_run_workflow,
 )
 from ai_workflows.drivers.fix_ni_run import (
+    DEFAULT_STRATEGY_NAME as DEFAULT_NI_RUN_STRATEGY_NAME,
     main as run_fix_ni_run_workflow,
 )
 from ai_workflows.drivers.improve_library_coverage import (
+    DEFAULT_STRATEGY_NAME as DEFAULT_LIBRARY_UPDATE_STRATEGY_NAME,
     main as run_improve_library_coverage_workflow,
     prepare_library_update_target,
 )
@@ -79,6 +82,10 @@ from ai_workflows.drivers.library_update_router import (
     load_library_update_route,
     select_library_update_route,
     write_library_update_route,
+)
+from ai_workflows.drivers.java_fail_workflow import (
+    DEFAULT_JAVAC_STRATEGY,
+    DEFAULT_JAVA_RUN_STRATEGY,
 )
 from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_CHUNK_READY,
@@ -5299,6 +5306,35 @@ def build_workflow_driver_invocation(
     raise ValueError(f"Unknown label '{claimed_issue.label}'")
 
 
+def resolve_workflow_default_strategy_name(
+        claimed_issue: ClaimedIssue,
+        library_update_route: LibraryUpdateRoute | None,
+) -> str:
+    """Return the selected workflow driver.s default strategy for durable run state.
+
+    Omitted strategy overrides remain omitted at dispatch (§E2E-forge-workflow-testing.2).
+    """
+    if claimed_issue.label == LABEL_LIBRARY_NEW:
+        return DEFAULT_NEW_LIBRARY_STRATEGY_NAME
+    if claimed_issue.label == LABEL_JAVAC_FAIL:
+        return DEFAULT_JAVAC_STRATEGY
+    if claimed_issue.label == LABEL_JAVA_RUN_FAIL:
+        return DEFAULT_JAVA_RUN_STRATEGY
+    if claimed_issue.label == LABEL_NI_RUN_FAIL:
+        return DEFAULT_NI_RUN_STRATEGY_NAME
+    if claimed_issue.label != LABEL_LIBRARY_UPDATE or library_update_route is None:
+        raise ValueError(f"Cannot resolve workflow default strategy for label '{claimed_issue.label}'")
+    if library_update_route.selected_driver == ROUTE_FIX_JAVAC:
+        return DEFAULT_JAVAC_STRATEGY
+    if library_update_route.selected_driver == ROUTE_FIX_JAVA_RUN:
+        return DEFAULT_JAVA_RUN_STRATEGY
+    if library_update_route.selected_driver == ROUTE_FIX_NI_RUN:
+        return DEFAULT_NI_RUN_STRATEGY_NAME
+    if library_update_route.selected_driver == ROUTE_IMPROVE_COVERAGE:
+        return DEFAULT_LIBRARY_UPDATE_STRATEGY_NAME
+    raise ValueError(f"Unknown library-update route '{library_update_route.selected_driver}'")
+
+
 def invoke_pipeline(
         claimed_issue: ClaimedIssue,
         strategy_name: str | None,
@@ -5312,14 +5348,33 @@ def invoke_pipeline(
     strategy names, and chunk context.
     """
     require_claimed_issue_worktree(claimed_issue, "workflow execution")
-    effective_strategy_name = strategy_name or DEFAULT_WORK_QUEUE_STRATEGY_NAME
+    strategy_override = strategy_name
     if claimed_issue.continuation_marker is not None:
-        effective_strategy_name = claimed_issue.continuation_marker.strategy_name
+        strategy_override = claimed_issue.continuation_marker.strategy_name
+
+    library_update_route = None
+    if claimed_issue.label == LABEL_LIBRARY_UPDATE:
+        library_update_route = restore_library_update_route_from_marker(
+            claimed_issue,
+            claimed_issue.continuation_marker,
+        )
+        if library_update_route is None:
+            library_update_route = select_library_update_route(
+                claimed_issue.worktree_path,
+                library_update_route_artifact_root(claimed_issue),
+                claimed_issue.issue_coordinates,
+            )
+
+    run_strategy_name = strategy_override or resolve_workflow_default_strategy_name(
+        claimed_issue,
+        library_update_route,
+    )
     continuation_path = create_or_load_run_continuation_marker(
         claimed_issue,
-        effective_strategy_name,
+        run_strategy_name,
     )
     marker = load_continuation_marker(continuation_path)
+    record_library_update_route_in_marker(continuation_path, library_update_route)
     if marker is not None and marker.continue_from == PHASE_PUBLICATION:
         restore_library_update_route_from_marker(claimed_issue, marker, required=True)
         log_stage(
@@ -5340,23 +5395,12 @@ def invoke_pipeline(
     else:
         library_preparation_preflight_path = run_library_preparation_preflight(
             claimed_issue,
-            effective_strategy_name,
+            run_strategy_name,
         )
         record_library_preparation_preflight_in_marker(
             continuation_path,
             library_preparation_preflight_path,
         )
-    library_update_route = None
-    if claimed_issue.label == LABEL_LIBRARY_UPDATE:
-        library_update_route = restore_library_update_route_from_marker(claimed_issue, marker)
-        if library_update_route is None:
-            library_update_route = select_library_update_route(
-                claimed_issue.worktree_path,
-                library_update_route_artifact_root(claimed_issue),
-                claimed_issue.issue_coordinates,
-            )
-            record_library_update_route_in_marker(continuation_path, library_update_route)
-
     chunk_class_count = None
     if (
             claimed_issue.label == LABEL_LIBRARY_NEW
@@ -5368,11 +5412,11 @@ def invoke_pipeline(
     ):
         chunk_class_count = prepare_dynamic_access_chunking(
             claimed_issue,
-            effective_strategy_name,
+            run_strategy_name,
         )
     invocation = build_workflow_driver_invocation(
             claimed_issue,
-            effective_strategy_name,
+            strategy_override,
             keep_tests_without_dynamic_access,
             library_preparation_preflight_path,
             chunk_class_count,

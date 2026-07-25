@@ -407,6 +407,34 @@ class LibraryUpdateIssueTests(unittest.TestCase):
         self.assertNotIn("--issue-requested-metadata-context", argv)
 
 
+class WorkflowStrategyDispatchTests(unittest.TestCase):
+    def test_omitted_strategy_lets_java_run_driver_apply_default(self) -> None:
+        with tempfile.TemporaryDirectory() as worktree_path:
+            claimed_issue = forge_metadata.ClaimedIssue(
+                issue={"number": 1412},
+                label=forge_metadata.LABEL_JAVA_RUN_FAIL,
+                item_id="item-1",
+                base_reachability_metadata_path="/tmp/reachability",
+                worktree_path=worktree_path,
+                scratch_metrics_repo_path="/tmp/metrics-worktree",
+                issue_coordinates="org.example:lib:2.0.0",
+                current_coordinates="org.example:lib:1.0.0",
+                new_version="2.0.0",
+            )
+
+            with patch.object(forge_metadata, "require_claimed_issue_worktree"), \
+                    patch.object(forge_metadata, "run_library_preparation_preflight", return_value=None), \
+                    patch.object(forge_metadata, "run_fix_java_run_workflow", return_value=0) as workflow:
+                self.assertTrue(forge_metadata.invoke_pipeline(claimed_issue, None, False))
+
+            argv = workflow.call_args.args[0]
+            self.assertNotIn("--strategy-name", argv)
+            marker = forge_metadata.load_continuation_marker(
+                forge_metadata.continuation_marker_path(worktree_path),
+            )
+            self.assertEqual(marker.strategy_name, forge_metadata.DEFAULT_JAVA_RUN_STRATEGY)
+
+
 class IssueClaimPreflightTests(unittest.TestCase):
     def test_forge_gh_does_not_log_github_query_by_default(self) -> None:
         completed_process = subprocess.CompletedProcess(
