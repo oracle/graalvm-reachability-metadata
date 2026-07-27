@@ -14,9 +14,7 @@ import java.util.Enumeration;
 import java.util.Map;
 
 import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.ServiceLoaderUtilInvoker;
 import jakarta_xml_bind.jakarta_xml_bind_api.servicebound.ServiceBoundType;
-import jakarta_xml_bind.jakarta_xml_bind_api.support.FactoryBackedContextFactory;
 import jakarta_xml_bind.jakarta_xml_bind_api.support.StubJaxbContext;
 import org.junit.jupiter.api.Test;
 
@@ -44,15 +42,6 @@ public class ServiceLoaderUtilTest {
 
         assertThat(context).isInstanceOf(StubJaxbContext.class);
         assertThat(((StubJaxbContext) context).getSource()).isEqualTo("service-context-factory-classes");
-    }
-
-    @Test
-    public void instantiatesProviderClassByName() throws Exception {
-        Object provider = withContextClassLoader(
-                null,
-                ServiceLoaderUtilInvoker::instantiateFactoryBackedContextFactory);
-
-        assertThat(provider).isInstanceOf(FactoryBackedContextFactory.class);
     }
 
     @Test

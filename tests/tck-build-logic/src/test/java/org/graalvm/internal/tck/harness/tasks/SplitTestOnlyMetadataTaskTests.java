@@ -110,6 +110,72 @@ class SplitTestOnlyMetadataTaskTests {
                 .containsExactly("io_grpc.grpc_auth.GrpcAuthTest$Fixture");
     }
 
+    @Test
+    void movesTestResourceBundlesOutOfShippedMetadata() throws IOException {
+        String coordinate = "com.example:demo:1.0.0";
+        writeSource(
+                "tests/src/com.example/demo/1.0.0/src/test/java/com_example/demo/DemoTest.java",
+                """
+                package com_example.demo;
+
+                import org.junit.jupiter.api.Test;
+
+                public class DemoTest {
+                    @Test
+                    void exercisesBundle() {
+                    }
+                }
+                """
+        );
+        writeSource(
+                "tests/src/com.example/demo/1.0.0/src/test/resources/com_example/demo/Messages.properties",
+                "message=test"
+        );
+        writeJson(
+                "metadata/com.example/demo/1.0.0/reachability-metadata.json",
+                """
+                {
+                  "resources": [
+                    {
+                      "bundle": "com.example.demo.Messages"
+                    },
+                    {
+                      "bundle": "com_example.demo.Messages"
+                    },
+                    {
+                      "glob": "com_example/demo/DemoTest.class"
+                    }
+                  ]
+                }
+                """
+        );
+
+        Project project = ProjectBuilder.builder()
+                .withProjectDir(tempDir.toFile())
+                .build();
+        SplitTestOnlyMetadataTask task = project.getTasks()
+                .register("splitTestOnlyMetadata", SplitTestOnlyMetadataTask.class)
+                .get();
+        task.setCoordinatesOverride(List.of(coordinate));
+
+        task.run();
+
+        JsonNode shippedMetadata = readJson("metadata/com.example/demo/1.0.0/reachability-metadata.json");
+        JsonNode testOnlyMetadata = readJson(
+                "tests/src/com.example/demo/1.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json"
+        );
+
+        assertThat(shippedMetadata.get("resources"))
+                .extracting(entry -> entry.get("bundle").asText())
+                .containsExactly("com.example.demo.Messages");
+        assertThat(testOnlyMetadata.get("resources"))
+                .hasSize(2);
+        assertThat(testOnlyMetadata.get("resources").get(0).get("bundle").asText())
+                .isEqualTo("com_example.demo.Messages");
+        assertThat(testOnlyMetadata.get("resources").get(1).get("glob").asText())
+                .isEqualTo("com_example/demo/DemoTest.class");
+    }
+
     private void writeSource(String relativePath, String content) throws IOException {
         Path file = tempDir.resolve(relativePath);
         Files.createDirectories(file.getParent());

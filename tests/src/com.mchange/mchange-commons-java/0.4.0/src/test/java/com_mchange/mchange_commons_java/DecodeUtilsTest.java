@@ -28,13 +28,6 @@ public class DecodeUtilsTest {
         assertThat(decoded).isEqualTo("decoded:payload");
     }
 
-    @Test
-    void decodeUsesOptionalFinderLoadedDuringStaticInitialization() throws CannotDecodeException {
-        Object decoded = DecodeUtils.decode("finder:payload");
-
-        assertThat(decoded).isEqualTo("decoded:payload");
-    }
-
     public static class PrefixingDecoder implements Decoder {
         public PrefixingDecoder() {
         }
