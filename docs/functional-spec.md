@@ -229,6 +229,7 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 - **Coverage-backed support.** Every supported library version must have tests that exercise the library's reachable surface enough to fail when metadata is wrong or missing.
 - **Per-coordinate layout.** Tests live under `tests/src/<group>/<artifact>/<version>` unless an `index.json` entry sets `test-version` to share a suite across versions.
 - **Consumer-like exercise.** Tests must not pin to specific library versions or bypass the library's public API in ways that would mask metadata gaps. Scaffold-only tests are not acceptable.
+- **Separate test namespaces.** Tests and their helper types must use a package namespace that does not overlap the target library's allowed packages. This keeps test-only metadata separation from classifying library metadata as test-owned.
 - **Declared Docker images.** Tests that use Docker must declare every image they need in `required-docker-images.txt`. Each image must already appear in `tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-<dockerImageName>`. Tests fail otherwise.
 - **Required lanes.** Tests must compile under JDK 25 and pass both `javaTest` and `nativeTest` lanes on every JDK/OS combination listed in `ci.json`.
 - **Recorded passing versions.** Newly added `tested-versions` entries are recorded in `index.json` only after they pass on **every** required environment (enforced by `verify-new-library-version-compatibility`).
