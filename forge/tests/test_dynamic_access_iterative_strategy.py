@@ -15,6 +15,7 @@ from ai_workflows.core.increase_dynamic_access_coverage_strategy import Increase
 from ai_workflows.core.dynamic_access_iterative_strategy import DynamicAccessIterativeStrategy
 from ai_workflows.core.workflow_strategy import RUN_STATUS_CHUNK_READY, RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS
 from utility_scripts.dynamic_access_report import DynamicAccessClass, DynamicAccessCoverageReport
+from utility_scripts.continuation_marker import ContinuationMarker, PHASE_EXPLORE
 from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport
 
 
@@ -534,6 +535,199 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
         ):
             self.assertEqual(strategy.run(agent=object()), (RUN_STATUS_FAILURE, 0))
 
+
+    def test_java_fix_handoff_skips_large_dynamic_access_exploration(self) -> None:
+        report = self._report_for_class_names(
+            [f"org.example.Class{index}" for index in range(16)],
+            [],
+        )
+        calls: list[str] = []
+
+        class Primary:
+            post_generation_intervention = None
+
+            def run(self, agent, **kwargs) -> tuple[str, int]:
+                calls.append("primary")
+                return RUN_STATUS_SUCCESS, 2
+
+        class HandoffDynamicAccess:
+            def __init__(self, strategy_obj: dict, **context) -> None:
+                calls.append("reporter")
+
+            def _generate_dynamic_access_report(self) -> DynamicAccessCoverageReport:
+                calls.append("report")
+                return report
+
+            def _run_dynamic_access_phase(self, agent, initial_report=None) -> tuple[bool, int]:
+                raise AssertionError("large handoff must skip exploration")
+
+        class Agent:
+            def clear_context(self) -> None:
+                calls.append("clear")
+
+        strategy = IncreaseDynamicAccessCoverageStrategy(
+            {"model": "test-model", "parameters": {}, "prompts": {}},
+            reachability_repo_path="/tmp/reachability",
+            library="org.example:lib:1.0.0",
+            dynamic_access_handoff_class_threshold=15,
+        )
+        strategy.primary = Primary()
+
+        with patch(
+                "ai_workflows.core.increase_dynamic_access_coverage_strategy.DynamicAccessIterativeStrategy",
+                HandoffDynamicAccess,
+        ):
+            result = strategy.run(agent=Agent())
+
+        self.assertEqual(result, (RUN_STATUS_SUCCESS, 2))
+        self.assertEqual(calls, ["primary", "clear", "reporter", "report"])
+        self.assertEqual(
+            strategy.dynamic_access_handoff,
+            {
+                "coordinate": "org.example:lib:1.0.0",
+                "uncovered_class_count": 16,
+                "class_threshold": 15,
+                "exploration_skipped": True,
+            },
+        )
+
+    def test_java_fix_handoff_threshold_is_strictly_greater_than(self) -> None:
+        report = self._report_for_class_names(
+            [f"org.example.Class{index}" for index in range(15)],
+            [],
+        )
+        initial_reports: list[DynamicAccessCoverageReport | None] = []
+
+        class Primary:
+            post_generation_intervention = None
+
+            def run(self, agent, **kwargs) -> tuple[str, int]:
+                return RUN_STATUS_SUCCESS, 2
+
+        class InlineDynamicAccess:
+            def __init__(self, strategy_obj: dict, **context) -> None:
+                self._last_phase_status = RUN_STATUS_SUCCESS
+
+            def _generate_dynamic_access_report(self) -> DynamicAccessCoverageReport:
+                return report
+
+            def _run_dynamic_access_phase(
+                    self,
+                    agent,
+                    initial_report=None,
+            ) -> tuple[bool, int]:
+                initial_reports.append(initial_report)
+                return True, 3
+
+            def has_issue_requested_metadata_context(self) -> bool:
+                return False
+
+        class Agent:
+            def clear_context(self) -> None:
+                pass
+
+        strategy = IncreaseDynamicAccessCoverageStrategy(
+            {"model": "test-model", "parameters": {}, "prompts": {}},
+            reachability_repo_path="/tmp/reachability",
+            library="org.example:lib:1.0.0",
+            dynamic_access_handoff_class_threshold=15,
+        )
+        strategy.primary = Primary()
+
+        with patch(
+                "ai_workflows.core.increase_dynamic_access_coverage_strategy.DynamicAccessIterativeStrategy",
+                InlineDynamicAccess,
+        ):
+            result = strategy.run(agent=Agent())
+
+        self.assertEqual(result, (RUN_STATUS_SUCCESS, 5))
+        self.assertEqual(initial_reports, [report])
+        self.assertIsNone(strategy.dynamic_access_handoff)
+
+    def test_java_fix_handoff_does_not_run_after_primary_failure(self) -> None:
+        class Primary:
+            post_generation_intervention = None
+
+            def run(self, agent, **kwargs) -> tuple[str, int]:
+                return RUN_STATUS_FAILURE, 2
+
+        strategy = IncreaseDynamicAccessCoverageStrategy(
+            {"model": "test-model", "parameters": {}, "prompts": {}},
+            reachability_repo_path="/tmp/reachability",
+            library="org.example:lib:1.0.0",
+            dynamic_access_handoff_class_threshold=15,
+        )
+        strategy.primary = Primary()
+
+        with patch(
+                "ai_workflows.core.increase_dynamic_access_coverage_strategy.DynamicAccessIterativeStrategy",
+                side_effect=AssertionError("report must not run after failed repair"),
+        ):
+            result = strategy.run(agent=object())
+
+        self.assertEqual(result, (RUN_STATUS_FAILURE, 2))
+        self.assertIsNone(strategy.dynamic_access_handoff)
+
+    def test_java_fix_handoff_survives_finalization_continuation(self) -> None:
+        report = self._report_for_class_names(
+            ["org.example.First", "org.example.Second"],
+            [],
+        )
+
+        class HandoffDynamicAccess:
+            def __init__(self, strategy_obj: dict, **context) -> None:
+                pass
+
+            def _generate_dynamic_access_report(self) -> DynamicAccessCoverageReport:
+                return report
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            marker_path = os.path.join(tmpdir, ".continuation-marker.json")
+            marker = ContinuationMarker.create(
+                strategy_name="test-strategy",
+                issue_number=1234,
+                label="fails-javac-compile",
+                coordinate="org.example:lib:1.0.0",
+                new_version="1.0.0",
+            )
+            marker.save(marker_path)
+            strategy_context = {
+                "reachability_repo_path": "/tmp/reachability",
+                "library": "org.example:lib:1.0.0",
+                "dynamic_access_handoff_class_threshold": 1,
+                "continuation_marker_path": marker_path,
+            }
+            strategy_definition = {
+                "model": "test-model",
+                "parameters": {},
+                "prompts": {},
+            }
+            strategy = IncreaseDynamicAccessCoverageStrategy(
+                strategy_definition,
+                **strategy_context,
+            )
+
+            with patch(
+                    "ai_workflows.core.increase_dynamic_access_coverage_strategy.DynamicAccessIterativeStrategy",
+                    HandoffDynamicAccess,
+            ):
+                self.assertEqual(strategy.run(agent=object()), (RUN_STATUS_SUCCESS, 0))
+
+            loaded_marker = ContinuationMarker.load(marker_path)
+            resumed_strategy = IncreaseDynamicAccessCoverageStrategy(
+                strategy_definition,
+                **strategy_context,
+            )
+
+        self.assertEqual(loaded_marker.phases[PHASE_EXPLORE]["status"], "skipped")
+        self.assertEqual(
+            loaded_marker.get_dynamic_access_handoff(),
+            strategy.dynamic_access_handoff,
+        )
+        self.assertEqual(
+            resumed_strategy.dynamic_access_handoff,
+            strategy.dynamic_access_handoff,
+        )
     @staticmethod
     def _class_coverage(class_name: str, total_calls: int, covered_calls: int) -> DynamicAccessClass:
         return DynamicAccessClass(

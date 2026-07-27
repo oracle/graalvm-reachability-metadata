@@ -192,7 +192,7 @@ def ensure_alias_split_follow_up_issue(
     issue_number = _find_existing_open_issue_number(repo, coordinates)
     if issue_number is None:
         issue_number = _create_follow_up_issue(repo, split, current_issue_number)
-    _ensure_issue_project_status(repo, PROJECT_NUMBER, issue_number, STATUS_IN_PROGRESS)
+    ensure_issue_project_status(repo, PROJECT_NUMBER, issue_number, STATUS_IN_PROGRESS)
 
     updated_split = dict(split)
     updated_split["follow_up_issue_number"] = issue_number
@@ -515,7 +515,7 @@ and copies baseline support for this successor range.
     return int(match.group(1))
 
 
-def _ensure_issue_project_status(repo: str, project_number: int, issue_number: int, status: str) -> None:
+def ensure_issue_project_status(repo: str, project_number: int, issue_number: int, status: str) -> None:
     item_id, current_status = get_issue_project_item_status(
         repo,
         project_number,

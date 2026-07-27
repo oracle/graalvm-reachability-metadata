@@ -34,6 +34,10 @@ from utility_scripts.local_ci_verification import (
     format_local_ci_verification_pr_section,
     local_ci_requires_human_intervention,
 )
+from utility_scripts.java_fix_coverage_handoff import (
+    DYNAMIC_ACCESS_HANDOFF_KEY,
+    format_dynamic_access_handoff_pr_section,
+)
 from utility_scripts.metrics_writer import read_pending_metrics
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 
@@ -161,6 +165,10 @@ Summary:
 {format_stats_diff(repo_path, old_coordinates, new_coordinates)}
 {format_bounded_test_diff_section(group, artifact, old_version, new_version, repo_path)}
 """
+    body += format_dynamic_access_handoff_pr_section(
+        metrics_entry.get(DYNAMIC_ACCESS_HANDOFF_KEY),
+        REPO,
+    )
     post_generation_intervention = metrics_entry.get("post_generation_intervention")
     if post_generation_intervention:
         body += (

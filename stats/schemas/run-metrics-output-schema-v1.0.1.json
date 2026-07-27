@@ -447,6 +447,43 @@
             }
           }
         },
+        "dynamic_access_handoff": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "coordinate",
+            "uncovered_class_count",
+            "class_threshold",
+            "exploration_skipped"
+          ],
+          "properties": {
+            "coordinate": {
+              "type": "string",
+              "pattern": "^[^:]+:[^:]+:[^:]+$"
+            },
+            "uncovered_class_count": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "class_threshold": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "exploration_skipped": {
+              "type": "boolean",
+              "const": true
+            },
+            "follow_up_issue_number": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "follow_up_issue_url": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "description": "Deferred post-repair dynamic-access work handed to a new library-update issue."
+        },
         "library_preparation_preflight": {
           "$ref": "#/definitions/libraryPreparationPreflight",
           "description": "Dispatcher advisory preflight record collected before workflow-driver dispatch."

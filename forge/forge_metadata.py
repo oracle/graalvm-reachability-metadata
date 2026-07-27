@@ -153,6 +153,11 @@ from utility_scripts.continuation_marker import (
     save_phase_update,
 )
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
+from utility_scripts.java_fix_coverage_handoff import (
+    ensure_coverage_follow_up_issue,
+    load_dynamic_access_handoff,
+    record_coverage_follow_up_issue,
+)
 from utility_scripts.fixture_github import FixtureGitHubState, load_fixture_github_state
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_stats import resolve_stats_file_path
@@ -260,6 +265,7 @@ LABEL_NOT_FOR_NATIVE_IMAGE = "not-for-native-image"
 LABEL_CHUNKED_DYNAMIC_ACCESS = "chunked-dynamic-access"
 LABEL_RESUMABLE = "resumable"
 FIXTURE_AUTHENTICATED_USER = "fixture-runner"
+FIXTURE_COVERAGE_FOLLOW_UP_ISSUE_OFFSET = 9_000_000
 NON_USER_REQUESTED_ISSUE_AUTHORS: tuple[str, ...] = (
     "graalvmbot",
     "github-actions[bot]",
@@ -312,6 +318,7 @@ PUBLICATION_METRICS_EXTRA_KEYS: tuple[str, ...] = (
     "post_generation_intervention",
     "local_ci_verification",
     "library_update_alias_split",
+    "dynamic_access_handoff",
 )
 # A workflow failure is logical (driver/core/CI-check) and gets `human-intervention`
 # by default. The only exception is an external dependency failure, which surfaces
@@ -2543,12 +2550,13 @@ def apply_chunked_dynamic_access_failed_ci_follow_up(pr: dict) -> None:
         )
 
 
-def apply_library_update_alias_split_merge_follow_up(pr: dict) -> None:
-    """Release parked successor issues after their splitting PR merges.
+def apply_unblocked_issue_merge_follow_up(pr: dict) -> None:
+    """Release issues parked behind a PR after that PR merges.
 
-    Library-update alias splits park successor issues in `In Progress`; the PR
-    trailer is the explicit automation signal to move them to `Todo`.
-    §FS-library-update-tested-version-split
+    The shared `Forge-Unblocks-Issue` trailer releases both library-update alias
+    successors and deferred Java-fix coverage issues from `In Progress` to
+    `Todo`. §FS-library-update-tested-version-split,
+    §WF-java-fail-fix-workflow.3
     """
     for issue_number in extract_follow_up_issue_numbers(pr.get("body")):
         item_id = get_project_item_id(issue_number)
@@ -2561,8 +2569,8 @@ def apply_library_update_alias_split_merge_follow_up(pr: dict) -> None:
         clear_issue_assignees(issue_number)
         invalidate_issue_claim_cache_entry(issue_number)
         log_stage(
-            "library-update-alias-split",
-            f"Released successor issue #{issue_number} after PR #{pr.get('number')} merged.",
+            "issue-unblock",
+            f"Released issue #{issue_number} after PR #{pr.get('number')} merged.",
         )
 
 
@@ -2597,7 +2605,7 @@ def merge_pull_request(pr: dict, reachability_metadata_path: str | None = None) 
     gh(*merge_args)
     if not pr.get("isMergeQueueEnabled"):
         apply_chunked_dynamic_access_merge_follow_up(pr)
-        apply_library_update_alias_split_merge_follow_up(pr)
+        apply_unblocked_issue_merge_follow_up(pr)
 
 
 def reconcile_reviewed_pull_request(
@@ -5096,6 +5104,8 @@ def build_workflow_driver_invocation(
             "--new-version", claimed_issue.new_version,
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            "--dynamic-access-handoff-class-threshold",
+            str(dynamic_access_chunk_class_threshold()),
         ]
         append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
         append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
@@ -5126,6 +5136,8 @@ def build_workflow_driver_invocation(
             "--new-version", claimed_issue.new_version,
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            "--dynamic-access-handoff-class-threshold",
+            str(dynamic_access_chunk_class_threshold()),
         ]
         append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
         append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
@@ -6912,6 +6924,48 @@ def apply_chunked_dynamic_access_completion_follow_up(claimed_issue: ClaimedIssu
         add_issue_label(issue_number, LABEL_CHUNKED_DYNAMIC_ACCESS)
 
 
+def prepare_java_fix_coverage_follow_up(claimed_issue: ClaimedIssue) -> None:
+    """Create the deferred coverage issue before publishing a Java repair PR.
+
+    §WF-java-fail-fix-workflow.3
+    """
+    if claimed_issue.label not in {LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL}:
+        return
+    restore_pending_run_metrics_from_execution_metrics(claimed_issue)
+    handoff = load_dynamic_access_handoff(claimed_issue.scratch_metrics_repo_path)
+    if handoff is None:
+        return
+
+    try:
+        if is_fixture_testing_enabled():
+            issue_number = handoff.get("follow_up_issue_number")
+            if not isinstance(issue_number, int):
+                issue_number = FIXTURE_COVERAGE_FOLLOW_UP_ISSUE_OFFSET + int(
+                    claimed_issue.issue["number"]
+                )
+                record_coverage_follow_up_issue(
+                    metrics_repo_path=claimed_issue.scratch_metrics_repo_path,
+                    issue_number=issue_number,
+                    issue_url=f"https://github.com/{REPO}/issues/{issue_number}",
+                )
+                log_stage(
+                    "coverage-handoff",
+                    f"Fixture mode: simulated new library-update issue #{issue_number}.",
+                )
+        else:
+            ensure_coverage_follow_up_issue(
+                metrics_repo_path=claimed_issue.scratch_metrics_repo_path,
+                repair_issue_number=int(claimed_issue.issue["number"]),
+                repo=REPO,
+            )
+    finally:
+        persisted_handoff = load_dynamic_access_handoff(claimed_issue.scratch_metrics_repo_path)
+        if isinstance(persisted_handoff, dict) and isinstance(
+                persisted_handoff.get("follow_up_issue_number"), int
+        ):
+            record_pending_publication_metrics_for_resume(claimed_issue)
+
+
 def finalize_successful_issue(
         claimed_issue: ClaimedIssue,
 ) -> None:
@@ -6921,6 +6975,7 @@ def finalize_successful_issue(
     workflow records a PR-eligible status (§GIT-pr-eligibility), keeping
     generation and publication separate (§AR-forge-verification-publication-boundary).
     """
+    prepare_java_fix_coverage_follow_up(claimed_issue)
     if is_fixture_testing_enabled():
         handoff = build_publication_handoff(claimed_issue)
         publication_path = write_fixture_publication_handoff(handoff)

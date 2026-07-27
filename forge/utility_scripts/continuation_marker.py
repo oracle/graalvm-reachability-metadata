@@ -233,6 +233,16 @@ class ContinuationMarker:
         self._phase(PHASE_EXPLORE)["exhaustedClasses"] = sorted(set(exhausted_classes))
         self.recompute_continue_from()
 
+    def record_dynamic_access_handoff(self, handoff: dict[str, Any]) -> None:
+        """Persist a deliberately deferred Java-fix coverage decision."""
+        self._phase(PHASE_EXPLORE)["dynamicAccessHandoff"] = copy.deepcopy(handoff)
+        self.recompute_continue_from()
+
+    def get_dynamic_access_handoff(self) -> dict[str, Any] | None:
+        """Return the persisted Java-fix coverage decision, if present."""
+        handoff = self._phase(PHASE_EXPLORE).get("dynamicAccessHandoff")
+        return copy.deepcopy(handoff) if isinstance(handoff, dict) else None
+
     def record_chunk_progress(
             self,
             chunk_class_count: int | None,

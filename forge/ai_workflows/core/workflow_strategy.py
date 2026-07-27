@@ -132,8 +132,11 @@ class WorkflowStrategy(ABC):
         self.parameters = self.strategy_obj.get("parameters", {})
         self.persistent_instructions = load_persistent_instructions(self.strategy_obj, **self.context)
         self.post_generation_intervention: dict | None = None
+        self.dynamic_access_handoff: dict | None = None
         self.continuation_marker_path: str | None = self.context.get("continuation_marker_path")
         self.continuation_marker = load_continuation_marker(self.continuation_marker_path)
+        if self.continuation_marker is not None:
+            self.dynamic_access_handoff = self.continuation_marker.get_dynamic_access_handoff()
         self._validate_required_prompts()
         self._validate_required_params()
 

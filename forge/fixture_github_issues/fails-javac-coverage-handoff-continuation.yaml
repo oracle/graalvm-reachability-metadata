@@ -1,0 +1,125 @@
+# Fixture-backed Java-repair coverage handoff. The marker starts at
+# publication after a successful javac repair deliberately skipped an
+# oversized dynamic-access exploration phase.
+number: 9108
+title: "Fix javac failure for org.glassfish.grizzly:grizzly-http-servlet:2.1.11"
+state: OPEN
+labels:
+  - fails-javac-compile
+assignees: []
+project:
+  number: 30
+  item_id: fixture-project-item-9108
+  status: Todo
+blocked_by: []
+body: |
+  Resume publication after the successful javac repair for
+  `org.glassfish.grizzly:grizzly-http-servlet:2.1.11`.
+
+  The compatibility failure originally reproduced against the previous test
+  coordinate with:
+
+  `./gradlew compileTestJava -Pcoordinates=org.glassfish.grizzly:grizzly-http-servlet:2.1.2`
+comments:
+  - author: fixture-runner
+    created_at: "2026-07-27T18:00:00Z"
+    body: |
+      Fixture preserved completed repair work for publication resume.
+
+      Branch name: `fixture/preserved-work/issue-9108-javac-coverage-handoff`
+worktree_files:
+  metadata/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/reachability-metadata.json: {}
+  tests/src/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/build.gradle: |
+    // Fixture placeholder for the completed javac repair.
+  tests/src/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/.gitignore: ""
+  tests/src/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/gradle.properties: |
+    # Fixture placeholder for the completed javac repair.
+  tests/src/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/settings.gradle: |
+    rootProject.name = "grizzly-http-servlet-fixture"
+  tests/src/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/src/test/java/org_glassfish_grizzly/grizzly_http_servlet/Grizzly_http_servletTest.java: |
+    package org_glassfish_grizzly.grizzly_http_servlet;
+    class Grizzly_http_servletTest {}
+  tests/src/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/src/test/java/org_glassfish_grizzly/grizzly_http_servlet/ServletContextImplTest.java: |
+    package org_glassfish_grizzly.grizzly_http_servlet;
+    class ServletContextImplTest {}
+  tests/src/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/src/test/resources/META-INF/native-image/org.glassfish.grizzly/grizzly-http-servlet-tests/native-image.properties: |
+    # Fixture placeholder for the completed javac repair.
+  tests/src/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/src/test/resources/META-INF/native-image/reachability-metadata.json: {}
+  tests/src/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/user-code-filter.json:
+    rules: []
+  stats/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/stats.json:
+    versions:
+      - version: "2.1.11"
+        dynamicAccess:
+          coveredCalls: 10
+          totalCalls: 100
+          coverageRatio: 0.1
+          breakdown: {}
+        libraryCoverage:
+          line:
+            covered: 100
+            missed: 900
+            total: 1000
+            ratio: 0.1
+  stats/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/execution-metrics.json:
+    "fix_javac_fail:2026-07-27":
+      timestamp: "2026-07-27T18:00:00Z"
+      library: "org.glassfish.grizzly:grizzly-http-servlet:2.1.11"
+      previous_library: "org.glassfish.grizzly:grizzly-http-servlet:2.1.2"
+      strategy_name: javac_iterative_with_coverage_sources_pi_gpt-5.6-terra
+      agent: pi
+      model: gpt-5.6-terra
+      status: success
+      metrics:
+        input_tokens_used: 100
+        cached_input_tokens_used: 25
+        output_tokens_used: 20
+        iterations: 1
+        cost_usd: 0.01
+        tested_library_loc: 100
+        code_coverage_percent: 10
+        metadata_entries: 1
+        previous_library_metadata_entries: 1
+        previous_library_coverage_percent: 21
+      artifacts:
+        metadata_file: metadata/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/reachability-metadata.json
+continuation_marker:
+  schemaVersion: 1
+  continueFrom: publication
+  preservedBranch: fixture/preserved-work/issue-9108-javac-coverage-handoff
+  strategyName: javac_iterative_with_coverage_sources_pi_gpt-5.6-terra
+  issueNumber: 9108
+  label: fails-javac-compile
+  coordinate: org.glassfish.grizzly:grizzly-http-servlet:2.1.11
+  newVersion: "2.1.11"
+  libraryUpdateRoute: null
+  libraryPreparationPreflight: null
+  publicationMetrics:
+    library: org.glassfish.grizzly:grizzly-http-servlet:2.1.11
+    timestamp: "2026-07-27T18:00:00Z"
+    extras:
+      dynamic_access_handoff:
+        coordinate: org.glassfish.grizzly:grizzly-http-servlet:2.1.11
+        uncovered_class_count: 90
+        class_threshold: 15
+        exploration_skipped: true
+  phases:
+    setup:
+      status: completed
+      preflightDone: true
+      setupDone: true
+    fix:
+      status: completed
+      iteration: 1
+    explore:
+      status: skipped
+      exhaustedClasses: []
+      dynamicAccessHandoff:
+        coordinate: org.glassfish.grizzly:grizzly-http-servlet:2.1.11
+        uncovered_class_count: 90
+        class_threshold: 15
+        exploration_skipped: true
+    finalization:
+      status: completed
+    publication:
+      status: pending

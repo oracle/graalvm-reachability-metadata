@@ -108,6 +108,13 @@ intended to make routing and current-version resolution demonstrable for those
 labels; the primary `9101` fixture remains the default dynamic-access acceptance
 target. §E2E-forge-workflow-testing.5
 
+The `9108` Java-fix publication-continuation fixture covers oversized
+post-repair dynamic access: its completed repair records 90 uncovered classes
+against a threshold of 15, skips exploration, reconstructs pending metrics,
+and produces a dry-run repair PR body that states the skip and links a newly
+simulated `library-update-request`. Fixture mode must not create a live issue;
+it records the same handoff and PR text in fixture-owned handoff state.
+
 The `9107` fixture is a publication-continuation smoke test: its marker starts at
 `publication` and points at durable execution metrics plus marker-local PR
 extras, so it verifies `.pending_metrics.json` reconstruction and dry-run PR

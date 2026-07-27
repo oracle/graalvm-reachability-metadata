@@ -452,6 +452,7 @@ def build_run_metrics_dict(
         previous_library_stats: dict | None = None,
         post_generation_intervention: dict | None = None,
         library_preparation_preflight: dict | None = None,
+        dynamic_access_handoff: dict | None = None,
 ):
     """Assemble the run_metrics dict."""
     metrics = {
@@ -500,6 +501,8 @@ def build_run_metrics_dict(
         run_metrics["post_generation_intervention"] = post_generation_intervention
     if library_preparation_preflight is not None:
         run_metrics["library_preparation_preflight"] = library_preparation_preflight
+    if dynamic_access_handoff is not None:
+        run_metrics["dynamic_access_handoff"] = dynamic_access_handoff
     run_metrics["metrics"] = metrics
     run_metrics["artifacts"] = {
         "metadata_file": metadata_file,
@@ -625,6 +628,7 @@ def create_javac_fix_run_metrics_output_json(
         ending_commit: str | None = None,
         post_generation_intervention: dict | None = None,
         library_preparation_preflight: dict | None = None,
+        dynamic_access_handoff: dict | None = None,
 ):
     """Build run metrics for fix_javac_fail workflow including previous-version metrics."""
     metrics = collect_base_metrics(
@@ -679,6 +683,7 @@ def create_javac_fix_run_metrics_output_json(
         previous_library_stats=previous_stats,
         post_generation_intervention=post_generation_intervention,
         library_preparation_preflight=library_preparation_preflight,
+        dynamic_access_handoff=dynamic_access_handoff,
     )
 
 

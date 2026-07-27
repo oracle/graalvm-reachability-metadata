@@ -77,7 +77,8 @@ python3 ai_workflows/drivers/fix_javac_fail.py \
 ```
 
 Options:
-- `--strategy-name NAME` select a predefined workflow strategy from `strategies/predefined_strategies.json`. Defaults to `javac_iterative_with_coverage_sources_pi_gpt-5.5`.
+- `--strategy-name NAME` select a predefined workflow strategy from `strategies/predefined_strategies.json`. Defaults to `javac_iterative_with_coverage_sources_pi_gpt-5.6-terra`.
+- `--dynamic-access-handoff-class-threshold N` skip oversized post-repair exploration and open a chunkable `library-update-request`; `0` disables the handoff for direct CLI use. Issue-driven Forge runs supply `FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD` automatically.
 - `-v`, `--verbose` enable verbose agent output.
 
 Notes:

@@ -38,6 +38,7 @@ simplify a test to triviality just to make it pass
 | Reachability repo path | `--reachability-metadata-path` (default: parent checkout of `forge/`) | no |
 | Metrics repo path | `--metrics-repo-path` | no |
 | Docs path | `--docs-path` (extra read-only agent context) | no |
+| Coverage handoff threshold | `--dynamic-access-handoff-class-threshold N`; issue runs use `FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD` | no (`0` disables direct CLI handoff) |
 | Claimed issue label | `fails-javac-compile` or `fails-java-run` routed by `forge_metadata.py` | yes for issue-driven runs |
 
 The preferred CLI is `ai_workflows/drivers/fix_java_fails.py`
@@ -52,6 +53,7 @@ python3 ai_workflows/drivers/fix_java_fails.py \
   [--reachability-metadata-path /path/to/graalvm-reachability-metadata] \
   [--metrics-repo-path /path/to/metrics-storage] \
   [--docs-path /path/to/docs] \
+  [--dynamic-access-handoff-class-threshold N] \
   [-v]
 ```
 
@@ -64,12 +66,13 @@ python3 ai_workflows/drivers/fix_java_fails.py \
   [--reachability-metadata-path /path/to/graalvm-reachability-metadata] \
   [--metrics-repo-path /path/to/metrics-storage] \
   [--docs-path /path/to/docs] \
+  [--dynamic-access-handoff-class-threshold N] \
   [-v]
 ```
 
 Mode defaults:
 
-- `--javac`: `javac_iterative_with_coverage_sources_pi_gpt-5.5`
+- `--javac`: `javac_iterative_with_coverage_sources_pi_gpt-5.6-terra`
 - `--java-run`: `java_run_iterative_with_coverage_sources_pi_gpt-5.6-terra`
 
 The mode-specific entry points `ai_workflows/drivers/fix_javac_fail.py` and
@@ -95,8 +98,11 @@ flowchart TD
     Retest --> Failed2{still failing?}
     Failed2 -- yes, under budget --> Prompt
     Failed2 -- budget exhausted --> Fail[Return failure]
-    Failed2 -- no --> Coverage
-    Failed -- nativeTest or none --> Coverage[Composite dynamic-access<br/>coverage phase]
+    Failed2 -- no --> CoverageSize{uncovered classes<br/>above threshold?}
+    Failed -- nativeTest or none --> CoverageSize
+    CoverageSize -- yes --> Handoff[Skip exploration and record<br/>library-update handoff]
+    CoverageSize -- no --> Coverage[Composite dynamic-access<br/>coverage phase]
+    Handoff --> Finalize
     Coverage --> Finalize[Generate metadata, validate,<br/>collect stats, commit]
     Finalize --> Success[Return success]
 ```
@@ -113,11 +119,28 @@ Required behavior — shared by both modes:
 4. Loop: rerun `./gradlew test` and send subsequent failure output back to the
    agent until the test passes or `max-test-iterations` is exhausted.
 5. Treat reaching `nativeTest`, or no failed Gradle task, as JVM success.
-6. After the JVM fix succeeds, run the dynamic-access coverage phase for the new
-   version through the composite strategy, so a version-bump repair also leaves
-   the new version better covered (§WF-improve-library-coverage,
+6. After the JVM fix succeeds, generate the dynamic-access report before
+   entering exploration. When the report has no more uncovered classes than
+   `FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD`, run the coverage phase inline
+   through the composite strategy (§WF-improve-library-coverage,
    §STRAT-java-fail-fix-composite-strategy-config).
-7. Finalize: generate metadata, validate tests, collect stats, and commit.
+7. When the report has more uncovered classes than the threshold, skip
+   exploration in the repair run and record a dynamic-access handoff containing
+   the target coordinate, uncovered-class count, and threshold. The handoff and
+   the intentionally skipped exploration phase must be durable in the run's
+   continuation marker so a finalization resume preserves the decision. The
+   repair is still successful because its compilation or JVM-runtime goal is
+   complete.
+8. Finalize: generate metadata, validate tests, collect stats, and commit.
+9. Publication for a recorded handoff must always create a new
+   `library-update-request` issue, park it in `In Progress`, and link it from the
+   repair PR. It must not reuse an older matching library-update issue. The PR
+   closes the repair issue, states that exploration was skipped, links the new
+   issue, and carries `Forge-Unblocks-Issue: #<issue>` so merge follow-up moves
+   the new issue to `Todo`. Chunk selection then runs through the existing
+   library-update workflow against the repaired version on the default branch.
+   Publication retries reuse only the issue number already persisted by that
+   same handoff attempt, preventing duplicate issues for one repair PR.
 
 The only differences between the two modes are workflow identity and prompt
 wording: javac fixes use compilation-failure wording and write
@@ -149,8 +172,9 @@ Successful runs produce:
 - A repaired, still-meaningful test project for the new version under
   `tests/src/<group>/<artifact>/<newVersion>/`.
 - Updated metadata, index, and stats artifacts for the new version.
-- Improved dynamic-access coverage for the new version from the composite phase
-  (§WF-improve-library-coverage).
+- Improved dynamic-access coverage from the inline composite phase
+  (§WF-improve-library-coverage), or a durable `dynamic_access_handoff` record
+  when oversized exploration was skipped.
 - Durable logs for the initial Gradle run, each agent turn, the coverage phase,
   and finalization (§FS-durable-generation-logs).
 - Run metrics written to `fix_javac_fail.json` or `fix_java_run_fail.json`;
@@ -166,6 +190,11 @@ Successful runs produce:
   generation stats, a stats comparison, and an old-vs-new test diff; and commits
   successful run metrics to
   `stats/<group>/<artifact>/<version>/execution-metrics.json`.
+  When exploration was deferred, the PR body includes the uncovered-class
+  count and configured threshold, explains that exploration was skipped, links
+  the newly opened `library-update-request`, and carries the merge-unblock
+  trailer required to release that issue only after the repair reaches the
+  default branch (§GIT-pr-body).
 
 ## 5. Failure Rules
 

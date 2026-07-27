@@ -41,6 +41,16 @@ class RunMetricsSchemaTests(unittest.TestCase):
 
             validate_run_metrics(metrics_path)
 
+            run_metrics[0]["dynamic_access_handoff"] = {
+                "coordinate": "org.example:lib:1.0.0",
+                "uncovered_class_count": 90,
+                "class_threshold": 15,
+                "exploration_skipped": True,
+                "follow_up_issue_number": 9999,
+                "follow_up_issue_url": (
+                    "https://github.com/oracle/graalvm-reachability-metadata/issues/9999"
+                ),
+            }
             run_metrics[0]["artifacts"]["test_file"] = (
                 "tests/src/org.example/lib/1.0.0/src/test/java/org/example/LibTest.java"
             )

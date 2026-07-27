@@ -10,7 +10,8 @@ from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_SUCCESS,
     WorkflowStrategy,
 )
-from utility_scripts.continuation_marker import PHASE_FIX, save_phase_update
+from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
+from utility_scripts.java_fix_coverage_handoff import build_dynamic_access_handoff
 
 
 @WorkflowStrategy.register("increase_dynamic_access_coverage")
@@ -29,6 +30,11 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
         self.reachability_repo_path = self.context["reachability_repo_path"]
         self.library = self.context.get("library") or self.context.get("updated_library")
         self.group, self.artifact, self.version = self.library.split(":")
+        self.dynamic_access_handoff_class_threshold = int(
+            self.context.get("dynamic_access_handoff_class_threshold") or 0
+        )
+        if self.dynamic_access_handoff_class_threshold < 0:
+            raise ValueError("dynamic_access_handoff_class_threshold must be non-negative")
         if primary_workflow_name:
             PrimaryClass = WorkflowStrategy.get_class(primary_workflow_name)
             self.primary = PrimaryClass(strategy_obj, **context)
@@ -67,8 +73,38 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
         da_context["library"] = library
 
         da = DynamicAccessIterativeStrategy(self.strategy_obj, **da_context)
+        current_report = None
+        if self.dynamic_access_handoff_class_threshold > 0:
+            current_report = da._generate_dynamic_access_report()
+            self.dynamic_access_handoff = build_dynamic_access_handoff(
+                library,
+                current_report,
+                self.dynamic_access_handoff_class_threshold,
+            )
+            if self.dynamic_access_handoff is not None:
+                self._print_message(
+                    "skipping dynamic-access exploration: "
+                    "uncovered_classes={uncovered} threshold={threshold}".format(
+                        uncovered=self.dynamic_access_handoff["uncovered_class_count"],
+                        threshold=self.dynamic_access_handoff["class_threshold"],
+                    )
+                )
+                save_phase_update(
+                    self.continuation_marker_path,
+                    lambda marker: (
+                        marker.record_dynamic_access_handoff(self.dynamic_access_handoff),
+                        marker.mark_phase_skipped(PHASE_EXPLORE),
+                    ),
+                )
+                if self.primary is None or len(result) == 2:
+                    return status, iterations
+                return (status, iterations) + result[2:]
+
         self._print_message("starting dynamic-access coverage phase")
-        phase_ok, da_iterations = da._run_dynamic_access_phase(agent)
+        if current_report is None:
+            phase_ok, da_iterations = da._run_dynamic_access_phase(agent)
+        else:
+            phase_ok, da_iterations = da._run_dynamic_access_phase(agent, current_report)
         iterations += da_iterations
         self._print_message(
             "dynamic-access coverage phase completed with phase_ok={phase_ok}, iterations_added={iterations}".format(
