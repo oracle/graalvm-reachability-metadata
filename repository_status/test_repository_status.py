@@ -1,3 +1,8 @@
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
 """Fixture tests for repository issue status. §FS-repository-status-report"""
 
 from __future__ import annotations
