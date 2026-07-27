@@ -16,4 +16,14 @@ class JnaTest {
         int number = CLibrary.INSTANCE.atol("42");
         assertThat(number).isEqualTo(42);
     }
+
+    @Test
+    void testStructure() {
+        PointStructure point = new PointStructure();
+        point.x = 42;
+        point.y = 43;
+        point.write();
+        assertThat(point.x).isEqualTo(42);
+        assertThat(point.y).isEqualTo(43);
+    }
 }
