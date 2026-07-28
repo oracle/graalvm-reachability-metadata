@@ -15,9 +15,6 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.dialect.Dialect;
-import org.hibernate.engine.jdbc.connections.spi.JdbcConnectionAccess;
-import org.hibernate.engine.spi.SessionFactoryImplementor;
-import org.hibernate.metamodel.mapping.internal.MappingModelCreationProcess;
 import org.hibernate.query.spi.DomainQueryExecutionContext;
 import org.hibernate.query.sqm.internal.DomainParameterXref;
 import org.hibernate.query.sqm.mutation.spi.SqmMultiTableInsertStrategy;
@@ -135,8 +132,7 @@ public class SessionFactoryOptionsBuilderTest {
                 sessionFactoryBuilder.applyStatelessInterceptor(statelessInterceptorClass);
             }
             return sessionFactoryBuilder.build();
-        }
-        catch (RuntimeException exception) {
+        } catch (RuntimeException exception) {
             StandardServiceRegistryBuilder.destroy(serviceRegistry);
             throw exception;
         }
