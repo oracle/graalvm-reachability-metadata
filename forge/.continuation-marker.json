@@ -1,0 +1,91 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "org.hibernate:hibernate-core:6.1.0.Final",
+  "issueNumber": 9119,
+  "label": "library-update-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Bootstrap Hibernate through a `META-INF/persistence.xml` persistence unit backed by an H2 in-memory JDBC URL. Set `hibernate.bytecode.provider=none` (for example in `hibernate.properties`) to avoid bytecode-provider requirements during native-image-oriented tests. Exercise dialects with H2 modes rather than Docker databases.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "coordinate": "com.h2database:h2:2.1.214",
+        "kind": "dependency",
+        "reason": "Hibernate does not bundle a JDBC driver; H2 enables self-contained in-memory EntityManagerFactory and dialect coverage.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "org.postgresql:postgresql:42.3.8",
+        "kind": "dependency",
+        "reason": "PostgreSQLDialect initialization references PostgreSQL driver types even when tests use H2 PostgreSQL mode.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "com.oracle.database.jdbc:ojdbc11:23.2.0.0",
+        "kind": "dependency",
+        "reason": "OracleDialect initialization references Oracle JDBC types even when tests use H2 Oracle mode.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9119 Improve coverage for org.hibernate:hibernate-core:6.1.0.Final; label=library-update-request; body_chars=198"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "26 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 26846,
+    "issue_label": "library-update-request",
+    "issue_number": 9119,
+    "library": "org.hibernate:hibernate-core:6.1.0.Final",
+    "model": "gpt-5.6-terra",
+    "output_tokens_used": 2686,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "H2 compatibility modes do not fully reproduce PostgreSQL, Oracle, MySQL, MariaDB, or SQL Server behavior; Local Gradle and Native Image verification must determine whether real database coverage is required."
+    ],
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.hibernate:hibernate-core:6.1.0.Final/library-preparation-preflight/pi-generation-2026-07-28T13-33-04-956281Z.log",
+    "status": "completed",
+    "summary": "Hibernate Core needs an explicit JDBC driver for meaningful JPA bootstrapping; existing coverage also initializes PostgreSQL and Oracle dialects against H2 compatibility modes."
+  },
+  "libraryUpdateRoute": {
+    "baseline_coordinates": null,
+    "new_version": "6.1.0.Final",
+    "selected_driver": "improve_library_coverage"
+  },
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": 15,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 8,
+      "status": "running"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9119-library-update-request-org.hibernate-hibernate-core-6.1.0.Final-3cb568cd",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.6-terra"
+}
