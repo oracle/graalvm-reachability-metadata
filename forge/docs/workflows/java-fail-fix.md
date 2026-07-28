@@ -125,20 +125,34 @@ Required behavior — shared by both modes:
    through the composite strategy (§WF-improve-library-coverage,
    §STRAT-java-fail-fix-composite-strategy-config).
 7. When the report has more uncovered classes than the threshold, skip
-   exploration in the repair run. The repair is still successful because its
+   exploration in the repair run and record the skip on the continuation
+   marker's `explore` phase together with the uncovered class count and the
+   threshold that produced it. The repair is still successful because its
    compilation or JVM-runtime goal is complete.
 8. Finalize: generate metadata, validate tests, collect stats, and commit.
-9. Publication for skipped oversized exploration must always create a new
-   `library-update-request` issue, park it in `In Progress`, and link it from the
-   repair PR. It must not reuse an older matching library-update issue. The PR
-   closes the repair issue, states that exploration was skipped, links the new
-   issue, and carries `Forge-Unblocks-Issue: #<issue>` so merge follow-up moves
-   the new issue to `Todo`. Chunk selection then runs through the existing
-   library-update workflow against the repaired version on the default branch.
-   The issue title names the fixed coordinate and its body is one brief sentence:
-   it was opened while resolving the repair issue because the uncovered class
-   count exceeded the configured threshold. Java-fix metrics and continuation
-   markers do not persist separate state for this decision or issue.
+9. Publication reads the recorded `explore` skip rather than regenerating a
+   report and re-deciding, so the run's single decision is the one the PR
+   describes. For a skipped oversized exploration it opens a new
+   `library-update-request` issue, parks it in `In Progress`, and links it from
+   the repair PR. It must not reuse an older matching library-update issue,
+   though a retried publication reuses the issue this same repair already
+   opened. The continuation marker's `publication` phase records that issue
+   number before PR creation, so later publication attempts reuse it directly.
+   If issue creation succeeded immediately before the marker save was
+   interrupted, publication recovers the issue by its exact repair reference
+   and records it. The PR closes the repair issue, states that exploration was
+   skipped, links the new issue, and carries `Forge-Unblocks-Issue: #<issue>` so merge
+   follow-up moves the new issue to `Todo`. Chunk selection then runs through the
+   existing library-update workflow against the repaired version on the default
+   branch. The issue title names the fixed coordinate and its body is one brief
+   sentence: it was opened while resolving the repair issue because the uncovered
+   class count exceeded the configured threshold. Beyond the `explore` decision
+   and publication issue number, Java-fix metrics and continuation markers
+   persist no separate handoff state.
+10. Publication never blocks on a dynamic-access category losing full coverage
+    between the previous and the repaired version. A repair that trades coverage
+    is a review question, not a reason to discard a successful run, and after a
+    deferred exploration the reduction is the intended outcome.
 
 The only differences between the two modes are workflow identity and prompt
 wording: javac fixes use compilation-failure wording and write

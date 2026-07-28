@@ -101,23 +101,33 @@ single-PR run and `Refs:` for non-final chunked dynamic-access chunks
 
 Publishers: `make_pr_javac_fix.py` (`fixes-javac-fail`) and
 `make_pr_java_run_fix.py` (`fixes-java-run-fail`). They share one body shape:
-the compact strategy, agent, model, token, and iteration summary, followed by a
-deferred-exploration section when applicable, Forge revision details, and a
-bounded test-source comparison so reviewers can see what the fix changed
-without preventing PR creation. The two differ only
-in workflow identity (compilation vs. runtime wording), the metrics file, and
-the PR label (§WF-java-fail-fix-workflow).
+the agent generation metrics, a stats comparison for the bumped version, and a
+bounded test-source comparison so reviewers can see what the fix changed without
+preventing PR creation. The two differ only in workflow identity (compilation
+vs. runtime wording), the metrics file, and the PR label
+(§WF-java-fail-fix-workflow).
 
 When post-repair dynamic-access exploration is skipped because the report
-exceeds the configured class threshold, both publishers show the uncovered
-class count and configured threshold, then link the new
-fixed-version `library-update-request`. The body retains
-`Fixes: #<repair-issue>`, adds `Refs: #<coverage-issue>`, and includes
+exceeds the configured class threshold, the body reports only what that run
+actually did: the strategy, agent, model, token, and iteration summary, then a
+deferred-exploration section, Forge revision details, and the test-source
+comparison. Metadata-entry counts, coverage percentages, and the stats
+comparison are omitted, because they would describe coverage work the run never
+attempted and invite reading a deliberate deferral as a regression. Runs that do
+explore keep the full body unchanged.
+
+The deferred-exploration section shows the uncovered class count and configured
+threshold, then links the new fixed-version `library-update-request`. The body
+retains `Fixes: #<repair-issue>`, adds `Refs: #<coverage-issue>`, and includes
 `Forge-Unblocks-Issue: #<coverage-issue>` so orchestration releases the parked
 coverage issue only after the repair PR merges (§WF-java-fail-fix-workflow).
 The generated follow-up issue keeps the coordinate in its title and uses one
 brief sentence stating that it was opened while resolving the repair issue
 because the dynamic-access class count exceeded the threshold.
+
+Neither publisher blocks on a dynamic-access category regression between the
+previous and repaired version; coverage trade-offs are settled in review
+(§WF-java-fail-fix-workflow).
 
 ### Native-image run-fix
 

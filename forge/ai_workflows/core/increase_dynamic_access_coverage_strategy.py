@@ -10,7 +10,7 @@ from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_SUCCESS,
     WorkflowStrategy,
 )
-from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
+from utility_scripts.continuation_marker import PHASE_FIX, save_phase_update
 from utility_scripts.java_fix_coverage_follow_up import uncovered_dynamic_access_class_count
 
 
@@ -87,7 +87,10 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
                 )
                 save_phase_update(
                     self.continuation_marker_path,
-                    lambda marker: marker.mark_phase_skipped(PHASE_EXPLORE),
+                    lambda marker: marker.defer_dynamic_access_coverage(
+                        uncovered_class_count,
+                        self.dynamic_access_class_threshold,
+                    ),
                 )
                 if self.primary is None or len(result) == 2:
                     return status, iterations

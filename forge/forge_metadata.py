@@ -153,12 +153,9 @@ from utility_scripts.continuation_marker import (
     save_phase_update,
 )
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
-from utility_scripts.java_fix_coverage_follow_up import (
-    create_coverage_follow_up_issue,
-    uncovered_dynamic_access_class_count,
-)
 from utility_scripts.fixture_github import FixtureGitHubState, load_fixture_github_state
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.java_fix_coverage_follow_up import ensure_coverage_follow_up_issue
 from utility_scripts.library_stats import resolve_stats_file_path
 from utility_scripts.library_preparation_preflight import (
     LIBRARY_PREPARATION_PREFLIGHT_FILENAME,
@@ -6967,6 +6964,9 @@ def prepare_java_fix_coverage_follow_up(
 ) -> tuple[int, int, int] | None:
     """Open a fixed-version coverage issue when post-repair exploration was oversized.
 
+    The composite strategy already made this decision against the report it had
+    when the repair finished, so publication reads that recorded decision instead
+    of regenerating a report and deciding a second time.
     §WF-java-fail-fix-workflow.3
     """
     is_java_fix_issue = claimed_issue.label in {LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL}
@@ -6978,30 +6978,46 @@ def prepare_java_fix_coverage_follow_up(
     )
     if not is_java_fix_issue and not is_library_update_java_fix:
         return None
-    if not is_fixture_testing_enabled():
-        _generate_dispatcher_dynamic_access_report(claimed_issue)
-    report = _load_dispatcher_dynamic_access_report(claimed_issue)
-    uncovered_class_count = uncovered_dynamic_access_class_count(report)
-    threshold = dynamic_access_chunk_class_threshold()
-    if uncovered_class_count <= threshold:
+
+    marker = load_continuation_marker(continuation_marker_path(claimed_issue.worktree_path))
+    deferred_coverage = marker.deferred_dynamic_access_coverage() if marker is not None else None
+    if deferred_coverage is None:
         return None
+    uncovered_class_count, threshold = deferred_coverage
+    existing_issue_number = marker.coverage_follow_up_issue_number()
+    marker_path = continuation_marker_path(claimed_issue.worktree_path)
 
     if is_fixture_testing_enabled():
-        issue_number = FIXTURE_COVERAGE_FOLLOW_UP_ISSUE_OFFSET + int(
-            claimed_issue.issue["number"]
-        )
+        issue_number = existing_issue_number
+        if issue_number is None:
+            issue_number = FIXTURE_COVERAGE_FOLLOW_UP_ISSUE_OFFSET + int(
+                claimed_issue.issue["number"]
+            )
+            save_phase_update(
+                marker_path,
+                lambda current_marker: current_marker.record_coverage_follow_up_issue(
+                    issue_number
+                ),
+            )
         log_stage(
             "coverage-follow-up",
-            f"Fixture mode: simulated new library-update issue #{issue_number}.",
+            f"Fixture mode: using simulated library-update issue #{issue_number}.",
         )
         return issue_number, uncovered_class_count, threshold
 
-    issue_number = create_coverage_follow_up_issue(
+    issue_number = ensure_coverage_follow_up_issue(
         coordinate=claimed_issue.issue_coordinates,
         repair_issue_number=int(claimed_issue.issue["number"]),
         uncovered_class_count=uncovered_class_count,
         class_threshold=threshold,
         repo=REPO,
+        existing_issue_number=existing_issue_number,
+        record_issue_number=lambda resolved_issue_number: save_phase_update(
+            marker_path,
+            lambda current_marker: current_marker.record_coverage_follow_up_issue(
+                resolved_issue_number
+            ),
+        ),
     )
     return issue_number, uncovered_class_count, threshold
 

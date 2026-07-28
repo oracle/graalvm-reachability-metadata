@@ -181,9 +181,15 @@ this functional spec.
   exploration. Publication then opens a new `library-update-request` for the
   fixed version. That issue enters the ordinary library-update workflow after
   the repair merges, where the existing dispatcher-owned chunking logic
-  regenerates the report and selects chunks. No separate Java-fix handoff state
-  is persisted. For ordinary chunked runs, `forge_metadata.py` still computes
-  the concrete chunk size rather than passing a generic workflow policy.
+  regenerates the report and selects chunks. The skip is decided exactly once:
+  the composite records it on the continuation marker's `explore` phase, and
+  publication reads that phase instead of regenerating a report and deciding
+  again. Publication records the follow-up issue number before PR creation, so
+  retries reuse one issue; if the marker save was interrupted immediately after
+  creation, it recovers that issue from its repair reference. No other Java-fix
+  handoff state is persisted. For ordinary chunked runs, `forge_metadata.py`
+  still computes the concrete chunk size rather than passing a generic workflow
+  policy.
 
 ### 4.4 Repository availability for test and metadata artifacts
 
