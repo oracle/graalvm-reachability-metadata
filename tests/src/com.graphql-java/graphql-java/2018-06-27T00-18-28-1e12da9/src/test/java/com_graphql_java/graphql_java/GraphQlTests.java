@@ -15,6 +15,8 @@ import java.util.function.Consumer;
 
 import com_graphql_java.graphql_java.starwars.Droid;
 import com_graphql_java.graphql_java.starwars.Human;
+import graphql.ExecutionResult;
+import graphql.GraphQL;
 import graphql.introspection.IntrospectionQuery;
 import graphql.relay.Connection;
 import graphql.relay.DefaultConnection;
