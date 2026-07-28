@@ -4,13 +4,7 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package com_google_protobuf.protobuf_java_util;
-
-
-import com.google.protobuf.util.Durations;
-import com.google.protobuf.util.FieldMaskUtil;
-import com.google.protobuf.util.JsonFormat;
-import com.google.protobuf.util.Timestamps;
+package com.google.protobuf.util;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonSyntaxException;
@@ -1877,6 +1871,14 @@ public class JsonFormatTest {
         parser.merge(input, builder);
         TestRecursive message = builder.build();
         assertThat(message.getNested().getNested().getNested().getNested().getValue()).isEqualTo(1234);
+
+        parser = JsonFormat.parser().usingRecursionLimit(3);
+        builder = TestRecursive.newBuilder();
+        try {
+            parser.merge(input, builder);
+            assertWithMessage("Exception is expected.").fail();
+        } catch (InvalidProtocolBufferException ignored) {
+        }
     }
 
     @Test

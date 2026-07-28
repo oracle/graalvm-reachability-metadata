@@ -38,8 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class WebappClassLoaderBaseTest {
 
-    private static final String PARENT_ONLY_RESOURCE =
-            TomcatTests.class.getName().replace('.', '/') + ".class";
+    private static final String PARENT_ONLY_RESOURCE = "org_apache_tomcat_embed/tomcat_embed_core/TomcatTests.class";
     private static final String PARENT_ONLY_CLASS = "org_apache_tomcat_embed.tomcat_embed_core.TomcatTests";
 
     @TempDir

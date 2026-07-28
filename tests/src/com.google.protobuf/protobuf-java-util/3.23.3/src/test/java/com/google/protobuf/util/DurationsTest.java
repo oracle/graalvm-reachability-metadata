@@ -4,11 +4,7 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package com_google_protobuf.protobuf_java_util;
-
-
-import com.google.protobuf.util.Durations;
-import com.google.protobuf.util.Timestamps;
+package com.google.protobuf.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.truth.Truth;
@@ -210,13 +206,13 @@ public class DurationsTest {
     @Test
     public void testDurationInvalidFormat() {
         try {
-            Durations.toString(Duration.newBuilder().setSeconds(-315_576_000_000L - 1).build());
+            Durations.toString(Duration.newBuilder().setSeconds(Durations.DURATION_SECONDS_MIN - 1).build());
             fail();
         } catch (IllegalArgumentException expected) {
             assertThat(expected).hasMessageThat().isNotNull();
         }
         try {
-            Durations.toString(Duration.newBuilder().setSeconds(315_576_000_000L + 1).build());
+            Durations.toString(Duration.newBuilder().setSeconds(Durations.DURATION_SECONDS_MAX + 1).build());
             fail();
         } catch (IllegalArgumentException expected) {
             assertThat(expected).hasMessageThat().isNotNull();

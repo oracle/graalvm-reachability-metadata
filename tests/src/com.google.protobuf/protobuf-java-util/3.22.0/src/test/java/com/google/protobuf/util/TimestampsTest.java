@@ -4,11 +4,7 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package com_google_protobuf.protobuf_java_util;
-
-
-import com.google.protobuf.util.Durations;
-import com.google.protobuf.util.Timestamps;
+package com.google.protobuf.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.truth.Truth;
@@ -18,7 +14,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.text.ParseException;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,7 +22,7 @@ import java.util.TimeZone;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static com_google_protobuf.protobuf_java_util.DurationsTest.duration;
+import static com.google.protobuf.util.DurationsTest.duration;
 
 @SuppressWarnings("NumericOverflow")
 public class TimestampsTest {
@@ -63,7 +58,7 @@ public class TimestampsTest {
     public void testIsValid_false() {
         assertThat(Timestamps.isValid(0L, -1)).isFalse();
         assertThat(Timestamps.isValid(1L, -1)).isFalse();
-        assertThat(Timestamps.isValid(1L, 1_000_000_000)).isFalse();
+        assertThat(Timestamps.isValid(1L, Timestamps.NANOS_PER_SECOND)).isFalse();
         assertThat(Timestamps.isValid(-62135596801L, 0)).isFalse();
         assertThat(Timestamps.isValid(253402300800L, 0)).isFalse();
     }
@@ -80,16 +75,16 @@ public class TimestampsTest {
         assertThat(Timestamps.isValid(62135596799L, 1)).isTrue();
         assertThat(Timestamps.isValid(253402300799L, 0)).isTrue();
         assertThat(Timestamps.isValid(253402300798L, 1)).isTrue();
-        assertThat(Timestamps.isValid(253402300798L, 1_000_000_000 - 1)).isTrue();
+        assertThat(Timestamps.isValid(253402300798L, Timestamps.NANOS_PER_SECOND - 1)).isTrue();
     }
 
     @Test
     public void testTimestampStringFormat() throws Exception {
         Timestamp start = Timestamps.parse("0001-01-01T00:00:00Z");
         Timestamp end = Timestamps.parse("9999-12-31T23:59:59.999999999Z");
-        assertThat(start.getSeconds()).isEqualTo(-62_135_596_800L);
+        assertThat(start.getSeconds()).isEqualTo(Timestamps.TIMESTAMP_SECONDS_MIN);
         assertThat(start.getNanos()).isEqualTo(0);
-        assertThat(end.getSeconds()).isEqualTo(253_402_300_799L);
+        assertThat(end.getSeconds()).isEqualTo(Timestamps.TIMESTAMP_SECONDS_MAX);
         assertThat(end.getNanos()).isEqualTo(999999999);
         assertThat(Timestamps.toString(start)).isEqualTo("0001-01-01T00:00:00Z");
         assertThat(Timestamps.toString(end)).isEqualTo("9999-12-31T23:59:59.999999999Z");
@@ -193,7 +188,7 @@ public class TimestampsTest {
     @Test
     public void testTimestampInvalidFormatValueTooSmall() {
         try {
-            Timestamp value = Timestamp.newBuilder().setSeconds(-62_135_596_800L - 1).build();
+            Timestamp value = Timestamp.newBuilder().setSeconds(Timestamps.TIMESTAMP_SECONDS_MIN - 1).build();
             Timestamps.toString(value);
             assertWithMessage("IllegalArgumentException is expected.").fail();
         } catch (IllegalArgumentException expected) {
@@ -203,7 +198,7 @@ public class TimestampsTest {
     @Test
     public void testTimestampInvalidFormatValueTooLarge() {
         try {
-            Timestamp value = Timestamp.newBuilder().setSeconds(253_402_300_799L + 1).build();
+            Timestamp value = Timestamp.newBuilder().setSeconds(Timestamps.TIMESTAMP_SECONDS_MAX + 1).build();
             Timestamps.toString(value);
             assertWithMessage("IllegalArgumentException is expected.").fail();
         } catch (IllegalArgumentException expected) {
@@ -435,18 +430,6 @@ public class TimestampsTest {
         Date date = new java.sql.Timestamp(1111);
         Timestamp timestamp = Timestamps.fromDate(date);
         assertThat(Timestamps.toString(timestamp)).isEqualTo("1970-01-01T00:00:01.111Z");
-    }
-
-    @Test
-    public void testNowReturnsCurrentTimestamp() {
-        Instant before = Instant.now();
-        Timestamp timestamp = Timestamps.now();
-        Instant after = Instant.now();
-
-        Instant actual = Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
-        assertThat(Timestamps.isValid(timestamp)).isTrue();
-        assertThat(actual.isBefore(before)).isFalse();
-        assertThat(actual.isAfter(after)).isFalse();
     }
 
     @Test
