@@ -152,5 +152,151 @@
     "artifacts": {
       "metadata_file": "metadata/org.hibernate/hibernate-core/6.1.0.Final/reachability-metadata.json"
     }
+  },
+  "improve_library_coverage:2026-07-28": {
+    "timestamp": "2026-07-28T17:17:31.853690Z",
+    "library": "org.hibernate:hibernate-core:6.1.0.Final",
+    "starting_commit": "7901afd3fde7c93c8a0df6c918539207c3d2c346",
+    "ending_commit": "f666cc8a26a289019768ec24743e2a6866adc0df",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
+    "agent": "pi",
+    "model": "gpt-5.6-terra",
+    "status": "success_with_intervention",
+    "stats": {
+      "version": "6.1.0.Final",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.14532,
+            "coveredCalls": 59,
+            "totalCalls": 406
+          },
+          "resources": {
+            "coverageRatio": 0.727273,
+            "coveredCalls": 16,
+            "totalCalls": 22
+          }
+        },
+        "coverageRatio": 0.175234,
+        "coveredCalls": 75,
+        "totalCalls": 428
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 118649,
+          "missed": 531962,
+          "ratio": 0.182365,
+          "total": 650611
+        },
+        "line": {
+          "covered": 29564,
+          "missed": 132163,
+          "ratio": 0.182802,
+          "total": 161727
+        },
+        "method": {
+          "covered": 7951,
+          "missed": 35984,
+          "ratio": 0.180972,
+          "total": 43935
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9119,
+      "issue_label": "library-update-request",
+      "library": "org.hibernate:hibernate-core:6.1.0.Final",
+      "summary": "Hibernate ORM needs a JDBC-backed persistence unit for meaningful coverage; the existing suite uses in-memory H2 and targeted dialect initialization rather than Dockerized databases.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.1.214",
+          "scope": "testImplementation",
+          "reason": "Hibernate's documented bootstrap requires JDBC configuration; H2 provides the in-memory database used by the existing 6.1.0.Final coverage tests."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.jboss.logging:jboss-logging:3.4.3.Final",
+          "scope": "testImplementation",
+          "reason": "The resolved Hibernate POM declares JBoss Logging only at runtime, while metadata-oriented tests may directly exercise generated Hibernate logger implementations."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.postgresql:postgresql:42.3.8",
+          "scope": "testImplementation",
+          "reason": "Hibernate's PostgreSQL dialect initialization references PostgreSQL driver types; this enables dialect coverage without a PostgreSQL server."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.oracle.database.jdbc:ojdbc11:23.2.0.0",
+          "scope": "testImplementation",
+          "reason": "Hibernate's Oracle dialect initialization references Oracle JDBC types; this enables dialect coverage without an Oracle server."
+        }
+      ],
+      "agent_guidance": "Create a Jakarta Persistence `META-INF/persistence.xml` with annotated entities and an H2 JDBC URL, then bootstrap an `EntityManagerFactory` through `Persistence.createEntityManagerFactory`. Set `hibernate.bytecode.provider=none` (resource property or equivalent test configuration) for native-image-compatible execution; exercise H2 plus dialect resolution/initialization using H2 compatibility modes rather than external databases.",
+      "risks": [
+        "`org.hibernate:hibernate-core:6.1.0.Final` is a relocation POM; the class-bearing artifact resolves as `org.hibernate.orm:hibernate-core:6.1.0.Final`.",
+        "Use Jakarta (`jakarta.persistence`) APIs, not legacy `javax.persistence` APIs."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.1.214",
+          "result": "already_present",
+          "target": "tests/src/org.hibernate/hibernate-core/6.1.0.Final/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.jboss.logging:jboss-logging:3.4.3.Final",
+          "result": "already_present",
+          "target": "tests/src/org.hibernate/hibernate-core/6.1.0.Final/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.postgresql:postgresql:42.3.8",
+          "result": "already_present",
+          "target": "tests/src/org.hibernate/hibernate-core/6.1.0.Final/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.oracle.database.jdbc:ojdbc11:23.2.0.0",
+          "result": "already_present",
+          "target": "tests/src/org.hibernate/hibernate-core/6.1.0.Final/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9119 Improve coverage for org.hibernate:hibernate-core:6.1.0.Final; label=library-update-request; body_chars=198"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "26 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-terra",
+      "input_tokens_used": 49032,
+      "output_tokens_used": 3043,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.hibernate:hibernate-core:6.1.0.Final/library-preparation-preflight/pi-generation-2026-07-28T14-18-52-485535Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 203649,
+      "cached_input_tokens_used": 3453952,
+      "output_tokens_used": 35211,
+      "iterations": 11,
+      "cost_usd": 1.9008,
+      "generated_loc": 974,
+      "tested_library_loc": 29564,
+      "metadata_entries": 19,
+      "test_only_metadata_entries": 57,
+      "code_coverage_percent": 18.28
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.hibernate/hibernate-core/6.1.0.Final/reachability-metadata.json"
+    }
   }
 }
