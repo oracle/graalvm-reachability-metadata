@@ -1,0 +1,220 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+2026-07-28T14:23:23.947345Z ERROR codex_models_manager::cache: failed to load models cache: missing field `supports_reasoning_summaries` at line 87 column 5
+OpenAI Codex v0.145.0
+--------
+workdir: /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9119-da8d3b1e
+model: gpt-5.6-sol
+provider: openai
+approval: on-request
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 019fa91b-e1e1-7dd2-8ee7-ece5c3be8d7f
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.hibernate:hibernate-core:6.1.0.Final
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [6.1.0.Final].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9119-da8d3b1e/metadata/org.hibernate/hibernate-core/index.json
+- Entry selector: "metadata-version" = "6.1.0.Final"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-sources.jar
+- repository-url: https://github.com/hibernate/hibernate-orm
+- test-code-url: https://github.com/hibernate/hibernate-orm/tree/6.1.0/hibernate-core/src/test
+- documentation-url: https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-javadoc.jar
+- description: Hibernate Core is the main module of Hibernate ORM, providing object-relational mapping between Java domain models and relational databases. It implements Jakarta Persistence and adds native APIs for mapping, querying, caching, and managing persistence.
+- language: <missing>
+
+Context:
+- Coordinate version: 6.1.0.Final
+- Entry metadata-version: 6.1.0.Final
+- Entry test-version: 6.1.0.Final
+- Entry tested-versions: [6.1.0.Final]
+warning: Codex's Linux sandbox uses bubblewrap and needs access to create user namespaces.
+warning: Configured value for `permission_profile` is disallowed by requirements; falling back to required value Managed { file_system: Restricted { entries: [FileSystemSandboxEntry { path: Special { value: Root }, access: Read }], glob_scan_max_depth: None }, network: Restricted }. Details: invalid value for `sandbox_mode`: `DangerFullAccess` is not in the allowed set [ReadOnly, WorkspaceWrite] (set by enterprise-managed requirements Codex Citizen Developers (307e5667-2f9a-4de6-b397-6c50f2ee2a12))
+codex
+I’ll verify the Maven artifacts and exact Hibernate ORM tag, then inspect the target entry and make only the permitted changes. Because the library is Java-based rather than Kotlin/Groovy/Scala-specific, I’ll leave `language` absent unless the published artifacts show otherwise.
+exec
+/usr/bin/zsh -lc "sed -n '1,240p' metadata/org.hibernate/hibernate-core/index.json && git status --short -- metadata/org.hibernate/hibernate-core/index.json" in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9119-da8d3b1e
+ succeeded in 0ms:
+[
+  {
+    "latest" : true,
+    "metadata-version" : "6.1.0.Final",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/hibernate/hibernate-orm",
+    "test-code-url" : "https://github.com/hibernate/hibernate-orm/tree/6.1.0/hibernate-core/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-javadoc.jar",
+    "description" : "Hibernate Core is the main module of Hibernate ORM, providing object-relational mapping between Java domain models and relational databases. It implements Jakarta Persistence and adds native APIs for mapping, querying, caching, and managing persistence.",
+    "tested-versions" : [
+      "6.1.0.Final"
+    ],
+    "allowed-packages" : [
+      "com.microsoft.sqlserver.jdbc.SQLServerDriver",
+      "com.mysql.cj.jdbc.Driver",
+      "jakarta",
+      "oracle.jdbc.driver.OracleDriver",
+      "org.h2.Driver",
+      "org.hibernate",
+      "org.hsqldb.jdbc.JDBCDriver",
+      "org.mariadb.jdbc.Driver",
+      "org.postgresql.Driver"
+    ]
+  },
+  {
+    "metadata-version" : "6.0.0.Final",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/hibernate/hibernate-orm",
+    "test-code-url" : "https://github.com/hibernate/hibernate-orm/tree/6.0.0/hibernate-core/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-core/$version$/hibernate-core-$version$-javadoc.jar",
+    "description" : "Hibernate Core is the main module of Hibernate ORM, providing object-relational mapping between Java domain models and relational databases. It implements Jakarta Persistence and adds native APIs for mapping, querying, caching, and managing persistence.",
+    "tested-versions" : [
+      "6.0.0.Final",
+      "6.0.1.Final",
+      "6.0.2.Final"
+    ],
+    "allowed-packages" : [
+      "com.microsoft.sqlserver.jdbc.SQLServerDriver",
+      "com.mysql.cj.jdbc.Driver",
+      "jakarta",
+      "oracle.jdbc.driver.OracleDriver",
+      "org.h2.Driver",
+      "org.hibernate",
+      "org.hsqldb.jdbc.JDBCDriver",
+      "org.mariadb.jdbc.Driver",
+      "org.postgresql.Driver"
+    ]
+  },
+  {
+    "metadata-version" : "5.6.14.Final",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/hibernate/hibernate-core/$version$/hibernate-core-$version$-sources.jar",
+    "repository-url" : "https://github.com/hibernate/hibernate-orm",
+    "test-code-url" : "https://github.com/hibernate/hibernate-orm/tree/5.6.14/hibernate-core/src/test",
+    "documentation-url" : "https://repo1.maven.org/maven2/org/hibernate/hibernate-core/$version$/hibernate-core-$version$-javadoc.jar",
+    "description" : "Hibernate Core is the main module of Hibernate ORM, providing object-relational mapping between Java domain models and relational databases. It implements JPA and adds native APIs for mapping, querying, caching, and managing persistence.",
+    "tested-versions" : [
+      "5.6.14.Final",
+      "5.6.15.Final"
+    ],
+    "allowed-packages" : [
+      "com.microsoft.sqlserver.jdbc.SQLServerDriver",
+      "com.mysql.cj.jdbc.Driver",
+      "jakarta",
+      "oracle.jdbc.driver.OracleDriver",
+      "org.h2.Driver",
+      "org.hibernate",
+      "org.hsqldb.jdbc.JDBCDriver",
+      "org.mariadb.jdbc.Driver",
+      "org.postgresql.Driver"
+    ]
+  }
+]
+
+web search: 
+web search: https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-core/6.1.0.Final/
+web search: 
+web search: site:github.com/hibernate/hibernate-orm/releases/tag/6.1.0 Hibernate ORM ...
+web search: 
+web search: https://api.github.com/repos/hibernate/hibernate-orm/git/ref/tags/6.1.0
+codex
+Maven Central confirms that 6.1.0.Final publishes both the sources and Javadoc JARs, but no tests JAR, so the repository test directory remains the preferred test-suite URL. I’m checking the release tag mapping now; Hibernate’s artifact suffix `.Final` maps to a repository tag without that suffix for this release.
+exec
+/usr/bin/zsh -lc "git ls-remote --tags https://github.com/hibernate/hibernate-orm.git 'refs/tags/6.1.0*'" in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9119-da8d3b1e
+ succeeded in 599ms:
+981c6981ec492bd374b1a275826e721ed9a225a9	refs/tags/6.1.0
+9b934f6fb00cc9859cfd1ed48e7557e02c1e35a9	refs/tags/6.1.0^{}
+
+exec
+/usr/bin/zsh -lc "curl -L -s -o /dev/null -w 'source %{http_code} %{url_effective}\\n' 'https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-core/6.1.0.Final/hibernate-core-6.1.0.Final-sources.jar' --next -L -s -o /dev/null -w 'tests %{http_code} %{url_effective}\\n' 'https://github.com/hibernate/hibernate-orm/tree/6.1.0/hibernate-core/src/test' --next -L -s -o /dev/null -w 'docs %{http_code} %{url_effective}\\n' 'https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-core/6.1.0.Final/hibernate-core-6.1.0.Final-javadoc.jar'" in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9119-da8d3b1e
+ succeeded in 3267ms:
+source 200 https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-core/6.1.0.Final/hibernate-core-6.1.0.Final-sources.jar
+tests 200 https://github.com/hibernate/hibernate-orm/tree/6.1.0/hibernate-core/src/test
+docs 200 https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-core/6.1.0.Final/hibernate-core-6.1.0.Final-javadoc.jar
+
+exec
+/usr/bin/zsh -lc "jq -e 'map(select(.\"metadata-version\" == \"6.1.0.Final\")) | length == 1' metadata/org.hibernate/hibernate-core/index.json && git diff --check -- metadata/org.hibernate/hibernate-core/index.json && git diff -- metadata/org.hibernate/hibernate-core/index.json" in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9119-da8d3b1e
+ succeeded in 0ms:
+true
+
+codex
+No repository change was necessary: every applicable field was already populated and verified in [index.json](/home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9119-da8d3b1e/metadata/org.hibernate/hibernate-core/index.json). Hibernate Core is not Kotlin-, Groovy-, or Scala-specific, so `language` correctly remains absent.
+
+- Repository: [hibernate/hibernate-orm](https://github.com/hibernate/hibernate-orm)
+- Sources: [6.1.0.Final sources JAR](https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-core/6.1.0.Final/hibernate-core-6.1.0.Final-sources.jar)
+- Tests: [6.1.0 test suite](https://github.com/hibernate/hibernate-orm/tree/6.1.0/hibernate-core/src/test)
+- Documentation: [6.1.0.Final Javadoc JAR](https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-core/6.1.0.Final/hibernate-core-6.1.0.Final-javadoc.jar)
+- Description: “Hibernate Core is the main module of Hibernate ORM, providing object-relational mapping between Java domain models and relational databases. It implements Jakarta Persistence and adds native APIs for mapping, querying, caching, and managing persistence.”
+
+All rendered URLs returned HTTP 200. Maven Central publishes sources and Javadoc but no tests JAR for this version, and the repository’s exact release tag is `6.1.0`.
+tokens used
+53,282
+No repository change was necessary: every applicable field was already populated and verified in [index.json](/home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9119-da8d3b1e/metadata/org.hibernate/hibernate-core/index.json). Hibernate Core is not Kotlin-, Groovy-, or Scala-specific, so `language` correctly remains absent.
+
+- Repository: [hibernate/hibernate-orm](https://github.com/hibernate/hibernate-orm)
+- Sources: [6.1.0.Final sources JAR](https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-core/6.1.0.Final/hibernate-core-6.1.0.Final-sources.jar)
+- Tests: [6.1.0 test suite](https://github.com/hibernate/hibernate-orm/tree/6.1.0/hibernate-core/src/test)
+- Documentation: [6.1.0.Final Javadoc JAR](https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-core/6.1.0.Final/hibernate-core-6.1.0.Final-javadoc.jar)
+- Description: “Hibernate Core is the main module of Hibernate ORM, providing object-relational mapping between Java domain models and relational databases. It implements Jakarta Persistence and adds native APIs for mapping, querying, caching, and managing persistence.”
+
+All rendered URLs returned HTTP 200. Maven Central publishes sources and Javadoc but no tests JAR for this version, and the repository’s exact release tag is `6.1.0`.
+Ran agent for org.hibernate:hibernate-core:6.1.0.Final (exit 0). Log: /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9119-da8d3b1e/build/agent-url-discovery-logs/org.hibernate-hibernate-core-6.1.0.Final.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9119-da8d3b1e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 2s
+9 actionable tasks: 1 executed, 8 up-to-date
