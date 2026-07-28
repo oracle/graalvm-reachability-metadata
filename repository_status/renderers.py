@@ -14,7 +14,24 @@ from typing import Any
 
 def render_json(report: dict[str, Any]) -> str:
     """Render the stable agent representation."""
-    return json.dumps(report, indent=2, ensure_ascii=False) + "\n"
+    calculation_policy: dict[str, Any] = report["calculationPolicy"]
+    agent_report: dict[str, Any] = {
+        "schemaVersion": report["schemaVersion"],
+        "generatedAt": report["generatedAt"],
+        "repository": report["repository"],
+        "calculationPolicy": {
+            "priorityLabels": calculation_policy["priorityLabels"],
+            "priorityWeights": calculation_policy["priorityWeights"],
+            "ageBasis": calculation_policy["ageBasis"],
+        },
+        "tiers": report["tiers"],
+        "flow": report["flow"],
+        "ageDebtMeter": report["ageDebtMeter"],
+        "project": report["project"],
+        "warnings": report["warnings"],
+        "attentionQueue": report["attentionQueue"][:3],
+    }
+    return json.dumps(agent_report, indent=2, ensure_ascii=False) + "\n"
 
 
 def render_html(report: dict[str, Any]) -> str:
