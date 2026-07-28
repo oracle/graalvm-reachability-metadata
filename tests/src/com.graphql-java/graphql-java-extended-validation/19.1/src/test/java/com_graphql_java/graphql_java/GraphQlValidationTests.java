@@ -4,7 +4,7 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package graphql;
+package com_graphql_java.graphql_java;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,7 +53,7 @@ public class GraphQlValidationTests {
   }
 
   private GraphQLSchema parseSchema(String schemaFileName, Consumer<RuntimeWiring.Builder> consumer) throws IOException {
-    try (InputStream inputStream = GraphQlValidationTests.class.getResourceAsStream(schemaFileName + ".graphqls")) {
+    try (InputStream inputStream = GraphQlValidationTests.class.getResourceAsStream("/graphql/" + schemaFileName + ".graphqls")) {
       TypeDefinitionRegistry registry = new SchemaParser().parse(inputStream);
     ValidationRules validationRules = ValidationRules.newValidationRules()
         .onValidationErrorStrategy(OnValidationErrorStrategy.RETURN_NULL)

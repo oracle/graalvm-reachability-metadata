@@ -4,23 +4,23 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package graphql.starwars;
+package com_graphql_java.graphql_java.starwars;
 
 import java.util.List;
 
 /**
  * @author Brian Clozel
  */
-public class Droid implements Character {
+public class Human implements Character {
 
   @Override
   public Long getId() {
-    return null;
+    return 42L;
   }
 
   @Override
   public String getName() {
-    return null;
+    return "GraalVM";
   }
 
   @Override
@@ -33,7 +33,7 @@ public class Droid implements Character {
     return null;
   }
 
-  public String getPrimaryFunction() {
+  public String getHomePlanet() {
     return null;
   }
 }

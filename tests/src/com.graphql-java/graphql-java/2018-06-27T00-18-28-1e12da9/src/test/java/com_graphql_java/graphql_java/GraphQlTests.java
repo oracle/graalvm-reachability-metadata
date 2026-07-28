@@ -4,7 +4,7 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package graphql;
+package com_graphql_java.graphql_java;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +13,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Consumer;
 
+import com_graphql_java.graphql_java.starwars.Droid;
+import com_graphql_java.graphql_java.starwars.Human;
 import graphql.introspection.IntrospectionQuery;
 import graphql.relay.Connection;
 import graphql.relay.DefaultConnection;
@@ -28,8 +30,6 @@ import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
-import graphql.starwars.Droid;
-import graphql.starwars.Human;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -79,9 +79,10 @@ public class GraphQlTests {
   }
 
   private GraphQLSchema parseSchema(String schemaFileName, Consumer<RuntimeWiring.Builder> consumer) throws IOException {
-    try (InputStream inputStream = GraphQlTests.class.getResourceAsStream(schemaFileName + ".graphqls");
-        InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
-      TypeDefinitionRegistry registry = new SchemaParser().parse(reader);
+    try (InputStream inputStream = GraphQlTests.class.getResourceAsStream("/graphql/" + schemaFileName + ".graphqls")) {
+      assertThat(inputStream).isNotNull();
+      TypeDefinitionRegistry registry = new SchemaParser().parse(
+          new InputStreamReader(inputStream, StandardCharsets.UTF_8));
       RuntimeWiring.Builder runtimeWiringBuilder = RuntimeWiring.newRuntimeWiring();
       consumer.accept(runtimeWiringBuilder);
       return new SchemaGenerator().makeExecutableSchema(registry, runtimeWiringBuilder.build());
