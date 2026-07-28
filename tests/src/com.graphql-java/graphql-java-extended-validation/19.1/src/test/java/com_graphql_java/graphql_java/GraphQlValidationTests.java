@@ -56,7 +56,7 @@ public class GraphQlValidationTests {
   }
 
   private GraphQLSchema parseSchema(String schemaFileName, Consumer<RuntimeWiring.Builder> consumer) throws IOException {
-    try (InputStream inputStream = GraphQlValidationTests.class.getResourceAsStream("/graphql/" + schemaFileName + ".graphqls")) {
+    try (InputStream inputStream = GraphQlValidationTests.class.getResourceAsStream(schemaFileName + ".graphqls")) {
       TypeDefinitionRegistry registry = new SchemaParser().parse(inputStream);
     ValidationRules validationRules = ValidationRules.newValidationRules()
         .onValidationErrorStrategy(OnValidationErrorStrategy.RETURN_NULL)

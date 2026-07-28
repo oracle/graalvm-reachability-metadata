@@ -81,7 +81,7 @@ public class GraphQlTests {
   }
 
   private GraphQLSchema parseSchema(String schemaFileName, Consumer<RuntimeWiring.Builder> consumer) throws IOException {
-    try (InputStream inputStream = GraphQlTests.class.getResourceAsStream("/graphql/" + schemaFileName + ".graphqls")) {
+    try (InputStream inputStream = GraphQlTests.class.getResourceAsStream(schemaFileName + ".graphqls")) {
       assertThat(inputStream).isNotNull();
       TypeDefinitionRegistry registry = new SchemaParser().parse(
           new InputStreamReader(inputStream, StandardCharsets.UTF_8));
