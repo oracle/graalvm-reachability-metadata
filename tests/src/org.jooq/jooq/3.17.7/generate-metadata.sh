@@ -5,5 +5,5 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 ./gradlew clean
-./gradlew test --tests "metadata_tests.org_jooq.jooq.JooqTest" -Pagent
+./gradlew test --tests "org_jooq.jooq.JooqTest" -Pagent
 ./gradlew updateGeneratedMetadata
