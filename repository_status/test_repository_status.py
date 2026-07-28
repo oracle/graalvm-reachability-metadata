@@ -183,8 +183,35 @@ class RepositoryStatusTest(unittest.TestCase):
         """Agent output remains one stable JSON document. §FS-repository-status-report.4"""
         rendered: str = render_json(self.report)
         parsed: dict[str, Any] = json.loads(rendered)
+        self.assertEqual(
+            list(parsed),
+            [
+                "schemaVersion",
+                "generatedAt",
+                "repository",
+                "calculationPolicy",
+                "tiers",
+                "flow",
+                "ageDebtMeter",
+                "project",
+                "warnings",
+                "attentionQueue",
+            ],
+        )
         self.assertEqual(parsed["schemaVersion"], "1.0")
-        self.assertEqual(parsed["attentionQueue"][0]["priority"], "high")
+        self.assertEqual(
+            parsed["ageDebtMeter"]["value"],
+            self.report["summary"]["priorityAgeDebt"],
+        )
+        self.assertNotIn("ageBands", parsed["calculationPolicy"])
+        self.assertNotIn("attentionOrder", parsed["calculationPolicy"])
+        self.assertEqual(parsed["flow"], self.report["flow"])
+        self.assertEqual(
+            [issue["number"] for issue in parsed["attentionQueue"]],
+            [101, 102, 103],
+        )
+        self.assertNotIn("summary", parsed)
+        self.assertNotIn("ageBands", parsed)
         self.assertTrue(rendered.endswith("\n"))
 
     def test_human_html_is_self_contained_and_escaped(self) -> None:

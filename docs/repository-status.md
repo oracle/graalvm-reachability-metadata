@@ -1,11 +1,12 @@
 # FS-repository-status-report: Repository issue progress and state
 
+The repository status report helps shorten the path from an issue to shipped
+metadata by making unresolved work and recent progress visible.
+§forge/GOAL-shorten-issue-to-shipped-metadata
+
 Maintainers and agents must be able to inspect the repository's unresolved issue
 state from one deterministic report. The report measures both the current
-weighted backlog and the time that unresolved work has accumulated, helping
-maintainers shorten the path from an issue to shipped metadata while continuing
-to broaden tested library coverage.
-§GOAL-broad-version-coverage §forge/GOAL-shorten-issue-to-shipped-metadata
+weighted backlog and the time that unresolved work has accumulated.
 
 ## 1. Issue scope and priority
 
@@ -91,23 +92,12 @@ The command exposes exactly one required representation mode:
   is priority pressure, followed by the recent-flow meter and the ordered
   attention queue. It must not put a general unresolved-issue summary ahead of
   priority pressure. Data-quality warnings remain compact and secondary.
-- `--agent` writes a stable, schema-versioned JSON document containing numeric
-  values, explicit calculation policy, warnings, and the ordered issue records.
+- `--agent` writes a stable, schema-versioned JSON document containing the
+  priority labels and weights, priority tiers, recent flow, the priority
+  age-debt meter, project state, warnings, and at most the first three ordered
+  issue records. It omits the aggregate backlog summary, aggregate age-band
+  totals, age-band thresholds, and attention-order description.
 
 Both representations must be rendered from the same normalized snapshot and
 measurements. In agent mode stdout contains only the JSON document; diagnostics
 go to stderr. Fetch or validation failures return a non-zero exit status.
-
-# AR-repository-status-tool: Repository status tool
-
-The repository status implementation lives in the root
-`repository_status/` directory as a small Python standard-library application.
-It invokes the authenticated GitHub CLI for issue data, normalizes GitHub values
-into typed internal records, computes the measurements in pure functions, and
-passes one report model to separate HTML and JSON renderers.
-§FS-repository-status-report
-
-The versioned policy file owns the repository, project title, priority weights,
-age-band boundaries, default flow window, and the age-debt meter maximum. Fixture-based unit tests exercise
-classification, age calculations, flow, warning detection, deterministic
-ordering, and both renderers without accessing GitHub.
