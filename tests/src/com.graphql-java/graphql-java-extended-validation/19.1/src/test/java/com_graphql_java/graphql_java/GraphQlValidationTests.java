@@ -11,6 +11,9 @@ import java.io.InputStream;
 import java.util.Locale;
 import java.util.function.Consumer;
 
+import graphql.ExecutionInput;
+import graphql.ExecutionResult;
+import graphql.GraphQL;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.StaticDataFetcher;
 import graphql.schema.idl.RuntimeWiring;
