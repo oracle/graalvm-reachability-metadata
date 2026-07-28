@@ -33,10 +33,7 @@ from utility_scripts.local_ci_verification import (
     format_local_ci_verification_pr_section,
     local_ci_requires_human_intervention,
 )
-from utility_scripts.java_fix_coverage_follow_up import (
-    CoverageFollowUp,
-    format_coverage_follow_up_pr_section,
-)
+from utility_scripts.java_fix_coverage_follow_up import format_coverage_follow_up_pr_section
 from utility_scripts.metrics_writer import read_pending_metrics
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 
@@ -55,7 +52,9 @@ def create_pull_request(
         repo_path: str,
         issue_number: int | None = None,
         pr_label: str = DEFAULT_PR_LABEL,
-        coverage_follow_up: CoverageFollowUp | None = None,
+        coverage_follow_up_issue_number: int | None = None,
+        coverage_follow_up_class_count: int | None = None,
+        coverage_follow_up_class_threshold: int | None = None,
 ):
     """
     Create a GitHub pull request for the current branch with an auto-generated body,
@@ -87,7 +86,9 @@ def create_pull_request(
         metrics_repo_root=metrics_repo_root,
         repo_path=repo_path,
         issue_number=issue_number,
-        coverage_follow_up=coverage_follow_up,
+        coverage_follow_up_issue_number=coverage_follow_up_issue_number,
+        coverage_follow_up_class_count=coverage_follow_up_class_count,
+        coverage_follow_up_class_threshold=coverage_follow_up_class_threshold,
     )
 
     cmd = [
@@ -127,7 +128,9 @@ def build_pull_request_preview(
         metrics_repo_root: str,
         repo_path: str,
         issue_number: int | None = None,
-        coverage_follow_up: CoverageFollowUp | None = None,
+        coverage_follow_up_issue_number: int | None = None,
+        coverage_follow_up_class_count: int | None = None,
+        coverage_follow_up_class_threshold: int | None = None,
 ) -> tuple[str, str, dict]:
     """Build the PR title/body without creating a GitHub pull request."""
     issue_no = issue_number if issue_number is not None else find_issue_common(new_coordinates, REPO)
@@ -137,7 +140,12 @@ def build_pull_request_preview(
     model_display_name = get_model_display_name(strategy_name)
     agent_name = get_agent_name(strategy_name)
     title = f"[GenAI] Test fix for {new_coordinates} using {model_display_name}"
-    deferred_section = format_coverage_follow_up_pr_section(coverage_follow_up, REPO)
+    deferred_section = format_coverage_follow_up_pr_section(
+        coverage_follow_up_issue_number,
+        coverage_follow_up_class_count,
+        coverage_follow_up_class_threshold,
+        REPO,
+    )
     body = f"""## What does this PR do?
 
 Fixes: #{issue_no}
@@ -238,14 +246,12 @@ def parse_flags(argv_list):
         flags.coverage_follow_up_class_count,
         flags.coverage_follow_up_class_threshold,
     )
-    coverage_follow_up = None
-    if any(value is not None for value in follow_up_values):
-        if not all(value is not None for value in follow_up_values):
-            parser.error("coverage follow-up issue number, class count, and threshold must be provided together")
-        coverage_follow_up = CoverageFollowUp(
-            issue_number=flags.coverage_follow_up_issue_number,
-            uncovered_class_count=flags.coverage_follow_up_class_count,
-            class_threshold=flags.coverage_follow_up_class_threshold,
+    if any(value is not None for value in follow_up_values) and not all(
+            value is not None for value in follow_up_values
+    ):
+        parser.error(
+            "coverage follow-up issue number, class count, and threshold "
+            "must be provided together"
         )
     return (
         flags.coordinates,
@@ -254,7 +260,9 @@ def parse_flags(argv_list):
         metrics_repo_path,
         flags.issue_number,
         flags.pr_label,
-        coverage_follow_up,
+        flags.coverage_follow_up_issue_number,
+        flags.coverage_follow_up_class_count,
+        flags.coverage_follow_up_class_threshold,
     )
 
 
@@ -294,7 +302,9 @@ def main(argv=None):
         metrics_repo_path,
         issue_number,
         pr_label,
-        coverage_follow_up,
+        coverage_follow_up_issue_number,
+        coverage_follow_up_class_count,
+        coverage_follow_up_class_threshold,
     ) = parse_flags(
         argv if argv is not None else sys.argv[1:]
     )
@@ -317,7 +327,9 @@ def main(argv=None):
         repo_path=repo_path,
         issue_number=issue_number,
         pr_label=pr_label,
-        coverage_follow_up=coverage_follow_up,
+        coverage_follow_up_issue_number=coverage_follow_up_issue_number,
+        coverage_follow_up_class_count=coverage_follow_up_class_count,
+        coverage_follow_up_class_threshold=coverage_follow_up_class_threshold,
     )
 
 if __name__ == "__main__":
