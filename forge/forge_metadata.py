@@ -153,10 +153,9 @@ from utility_scripts.continuation_marker import (
     save_phase_update,
 )
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
-from utility_scripts.java_fix_coverage_handoff import (
-    ensure_coverage_follow_up_issue,
-    load_dynamic_access_handoff,
-    record_coverage_follow_up_issue,
+from utility_scripts.java_fix_coverage_follow_up import (
+    create_coverage_follow_up_issue,
+    uncovered_dynamic_access_class_count,
 )
 from utility_scripts.fixture_github import FixtureGitHubState, load_fixture_github_state
 from utility_scripts.gradle_environment import gradle_command_environment
@@ -318,7 +317,6 @@ PUBLICATION_METRICS_EXTRA_KEYS: tuple[str, ...] = (
     "post_generation_intervention",
     "local_ci_verification",
     "library_update_alias_split",
-    "dynamic_access_handoff",
 )
 # A workflow failure is logical (driver/core/CI-check) and gets `human-intervention`
 # by default. The only exception is an external dependency failure, which surfaces
@@ -483,6 +481,7 @@ class PublicationHandoff:
     chunked_dynamic_access_final: bool | None
     not_for_native_image: bool = False
     publication_kind: str | None = None
+    coverage_follow_up_issue_number: int | None = None
 
     def to_json(self) -> dict:
         return {
@@ -503,6 +502,7 @@ class PublicationHandoff:
             "chunked_dynamic_access_final": self.chunked_dynamic_access_final,
             "not_for_native_image": self.not_for_native_image,
             "publication_kind": self.publication_kind,
+            "coverage_follow_up_issue_number": self.coverage_follow_up_issue_number,
         }
 
 
@@ -5104,7 +5104,7 @@ def build_workflow_driver_invocation(
             "--new-version", claimed_issue.new_version,
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
-            "--dynamic-access-handoff-class-threshold",
+            "--dynamic-access-class-threshold",
             str(dynamic_access_chunk_class_threshold()),
         ]
         append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
@@ -5136,7 +5136,7 @@ def build_workflow_driver_invocation(
             "--new-version", claimed_issue.new_version,
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
-            "--dynamic-access-handoff-class-threshold",
+            "--dynamic-access-class-threshold",
             str(dynamic_access_chunk_class_threshold()),
         ]
         append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
@@ -5202,6 +5202,8 @@ def build_workflow_driver_invocation(
                 "--new-version", route.new_version,
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+                "--dynamic-access-class-threshold",
+                str(dynamic_access_chunk_class_threshold()),
             ]
             append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
             append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
@@ -5231,6 +5233,8 @@ def build_workflow_driver_invocation(
                 "--new-version", route.new_version,
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+                "--dynamic-access-class-threshold",
+                str(dynamic_access_chunk_class_threshold()),
             ]
             append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
             append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
@@ -6507,7 +6511,10 @@ def restore_pending_run_metrics_from_execution_metrics(claimed_issue: ClaimedIss
         _restore_pending_run_metrics_from_marker(claimed_issue, marker)
 
 
-def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff:
+def build_publication_handoff(
+        claimed_issue: ClaimedIssue,
+        coverage_follow_up_issue_number: int | None = None,
+) -> PublicationHandoff:
     """Build the live-or-fixture PR publication handoff.
 
     The dispatcher makes the routing decision once, then either executes the
@@ -6529,6 +6536,12 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
         workflow_status,
     )
     chunked_dynamic_access_final = None
+    coverage_follow_up_args: list[str] = []
+    if coverage_follow_up_issue_number is not None:
+        coverage_follow_up_args = [
+            "--coverage-follow-up-issue-number",
+            str(coverage_follow_up_issue_number),
+        ]
     if exhaust_report_path is not None:
         chunked_dynamic_access_final = workflow_status != RUN_STATUS_CHUNK_READY
 
@@ -6588,6 +6601,7 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
             "--issue-number", str(issue_number),
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            *coverage_follow_up_args,
         ]
     elif claimed_issue.label == LABEL_JAVA_RUN_FAIL:
         script_name = "git_scripts/make_pr_java_run_fix.py"
@@ -6607,6 +6621,7 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
             "--issue-number", str(issue_number),
             "--reachability-metadata-path", claimed_issue.worktree_path,
             "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+            *coverage_follow_up_args,
         ]
     elif claimed_issue.label == LABEL_NI_RUN_FAIL:
         script_name = "git_scripts/make_pr_ni_run_fix.py"
@@ -6648,6 +6663,7 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
                 "--pr-label", result_label,
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+                *coverage_follow_up_args,
             ]
         elif library_update_route is not None and library_update_route.selected_driver == ROUTE_FIX_JAVA_RUN:
             script_name = "git_scripts/make_pr_java_run_fix.py"
@@ -6669,6 +6685,7 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
                 "--pr-label", result_label,
                 "--reachability-metadata-path", claimed_issue.worktree_path,
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
+                *coverage_follow_up_args,
             ]
         elif library_update_route is not None and library_update_route.selected_driver == ROUTE_FIX_NI_RUN:
             script_name = "git_scripts/make_pr_ni_run_fix.py"
@@ -6725,6 +6742,7 @@ def build_publication_handoff(claimed_issue: ClaimedIssue) -> PublicationHandoff
         chunked_dynamic_access_final=chunked_dynamic_access_final,
         not_for_native_image=not_for_native_image,
         publication_kind=publication_kind or result_label,
+        coverage_follow_up_issue_number=coverage_follow_up_issue_number,
     )
 
 
@@ -6793,6 +6811,7 @@ def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[st
                 metrics_repo_root=handoff.scratch_metrics_path,
                 repo_path=handoff.worktree_path,
                 issue_number=handoff.issue_number,
+                coverage_follow_up_issue_number=handoff.coverage_follow_up_issue_number,
             )
             return title, body
         if publication_kind == LABEL_PR_JAVA_RUN_FIX:
@@ -6806,6 +6825,7 @@ def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[st
                 metrics_repo_root=handoff.scratch_metrics_path,
                 repo_path=handoff.worktree_path,
                 issue_number=handoff.issue_number,
+                coverage_follow_up_issue_number=handoff.coverage_follow_up_issue_number,
             )
             return title, body
         if publication_kind == LABEL_PR_NI_RUN_FIX:
@@ -6924,46 +6944,45 @@ def apply_chunked_dynamic_access_completion_follow_up(claimed_issue: ClaimedIssu
         add_issue_label(issue_number, LABEL_CHUNKED_DYNAMIC_ACCESS)
 
 
-def prepare_java_fix_coverage_follow_up(claimed_issue: ClaimedIssue) -> None:
-    """Create the deferred coverage issue before publishing a Java repair PR.
+def prepare_java_fix_coverage_follow_up(
+        claimed_issue: ClaimedIssue,
+) -> int | None:
+    """Open a fixed-version coverage issue when post-repair exploration was oversized.
 
     §WF-java-fail-fix-workflow.3
     """
-    if claimed_issue.label not in {LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL}:
-        return
-    restore_pending_run_metrics_from_execution_metrics(claimed_issue)
-    handoff = load_dynamic_access_handoff(claimed_issue.scratch_metrics_repo_path)
-    if handoff is None:
-        return
+    is_java_fix_issue = claimed_issue.label in {LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL}
+    library_update_route = _load_library_update_publication_route(claimed_issue)
+    is_library_update_java_fix = (
+        claimed_issue.label == LABEL_LIBRARY_UPDATE
+        and library_update_route is not None
+        and library_update_route.selected_driver in {ROUTE_FIX_JAVAC, ROUTE_FIX_JAVA_RUN}
+    )
+    if not is_java_fix_issue and not is_library_update_java_fix:
+        return None
+    if not is_fixture_testing_enabled():
+        _generate_dispatcher_dynamic_access_report(claimed_issue)
+    report = _load_dispatcher_dynamic_access_report(claimed_issue)
+    uncovered_class_count = uncovered_dynamic_access_class_count(report)
+    threshold = dynamic_access_chunk_class_threshold()
+    if uncovered_class_count <= threshold:
+        return None
 
-    try:
-        if is_fixture_testing_enabled():
-            issue_number = handoff.get("follow_up_issue_number")
-            if not isinstance(issue_number, int):
-                issue_number = FIXTURE_COVERAGE_FOLLOW_UP_ISSUE_OFFSET + int(
-                    claimed_issue.issue["number"]
-                )
-                record_coverage_follow_up_issue(
-                    metrics_repo_path=claimed_issue.scratch_metrics_repo_path,
-                    issue_number=issue_number,
-                    issue_url=f"https://github.com/{REPO}/issues/{issue_number}",
-                )
-                log_stage(
-                    "coverage-handoff",
-                    f"Fixture mode: simulated new library-update issue #{issue_number}.",
-                )
-        else:
-            ensure_coverage_follow_up_issue(
-                metrics_repo_path=claimed_issue.scratch_metrics_repo_path,
-                repair_issue_number=int(claimed_issue.issue["number"]),
-                repo=REPO,
-            )
-    finally:
-        persisted_handoff = load_dynamic_access_handoff(claimed_issue.scratch_metrics_repo_path)
-        if isinstance(persisted_handoff, dict) and isinstance(
-                persisted_handoff.get("follow_up_issue_number"), int
-        ):
-            record_pending_publication_metrics_for_resume(claimed_issue)
+    if is_fixture_testing_enabled():
+        issue_number = FIXTURE_COVERAGE_FOLLOW_UP_ISSUE_OFFSET + int(
+            claimed_issue.issue["number"]
+        )
+        log_stage(
+            "coverage-follow-up",
+            f"Fixture mode: simulated new library-update issue #{issue_number}.",
+        )
+        return issue_number
+
+    return create_coverage_follow_up_issue(
+        coordinate=claimed_issue.issue_coordinates,
+        repair_issue_number=int(claimed_issue.issue["number"]),
+        repo=REPO,
+    )
 
 
 def finalize_successful_issue(
@@ -6975,9 +6994,9 @@ def finalize_successful_issue(
     workflow records a PR-eligible status (§GIT-pr-eligibility), keeping
     generation and publication separate (§AR-forge-verification-publication-boundary).
     """
-    prepare_java_fix_coverage_follow_up(claimed_issue)
+    coverage_follow_up_issue_number = prepare_java_fix_coverage_follow_up(claimed_issue)
     if is_fixture_testing_enabled():
-        handoff = build_publication_handoff(claimed_issue)
+        handoff = build_publication_handoff(claimed_issue, coverage_follow_up_issue_number)
         publication_path = write_fixture_publication_handoff(handoff)
         preserve_fixture_preflight_evidence(claimed_issue)
         log_stage(
@@ -6989,7 +7008,7 @@ def finalize_successful_issue(
         )
         return
 
-    handoff = build_publication_handoff(claimed_issue)
+    handoff = build_publication_handoff(claimed_issue, coverage_follow_up_issue_number)
     handoff.runner(handoff.argv)
 
 

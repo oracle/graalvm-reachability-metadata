@@ -107,10 +107,9 @@ without preventing PR creation. The two differ only
 in workflow identity (compilation vs. runtime wording), the metrics file, and
 the PR label (§WF-java-fail-fix-workflow).
 
-When the post-repair dynamic-access report exceeds the configured class
-threshold, both publishers also report that exploration was skipped, show the
-uncovered-class count and threshold, and link the new
-`library-update-request` created for the deferred work. The body retains
+When post-repair dynamic-access exploration is skipped because the report
+exceeds the configured class threshold, both publishers link the new
+fixed-version `library-update-request`. The body retains
 `Fixes: #<repair-issue>`, adds `Refs: #<coverage-issue>`, and includes
 `Forge-Unblocks-Issue: #<coverage-issue>` so orchestration releases the parked
 coverage issue only after the repair PR merges (§WF-java-fail-fix-workflow).

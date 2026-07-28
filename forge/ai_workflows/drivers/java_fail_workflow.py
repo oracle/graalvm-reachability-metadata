@@ -153,13 +153,13 @@ def build_parser(config: JavaFailWorkflowConfig):
         help="Path to the Forge run-continuation marker for this issue run.",
     )
     parser.add_argument(
-        "--dynamic-access-handoff-class-threshold",
+        "--dynamic-access-class-threshold",
         type=int,
         default=0,
         help=(
-            "Skip post-repair dynamic-access exploration and hand coverage to a new "
-            "library-update issue when the uncovered class count exceeds this value. "
-            "A value of 0 disables the handoff."
+            "Skip post-repair dynamic-access exploration when the uncovered class count "
+            "exceeds this value. "
+            "A value of 0 disables the check."
         ),
     )
     parser.add_argument("-v", "--verbose", action="store_true", help="enable verbose mode for the configured agent")
@@ -191,7 +191,7 @@ def parse_flags(config: JavaFailWorkflowConfig, argv_list):
         flags.metrics_repo_path,
         flags.library_preparation_preflight_path,
         flags.continuation_marker_path,
-        flags.dynamic_access_handoff_class_threshold,
+        flags.dynamic_access_class_threshold,
     )
 
 
@@ -455,7 +455,7 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         explicit_metrics_repo_path,
         library_preparation_preflight_path,
         continuation_marker_path,
-        dynamic_access_handoff_class_threshold,
+        dynamic_access_class_threshold,
     ) = parse_flags(config, argv if argv is not None else sys.argv[1:])
 
     strategy = require_strategy_by_name(strategy_name)
@@ -561,7 +561,7 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         test_source_dir_name=test_source_layout.source_dir_name,
         library_preparation_preflight_context=library_preparation_preflight_context,
         continuation_marker_path=continuation_marker_path,
-        dynamic_access_handoff_class_threshold=dynamic_access_handoff_class_threshold,
+        dynamic_access_class_threshold=dynamic_access_class_threshold,
     )
 
     model_name = strategy.get("model") or DEFAULT_MODEL_NAME
@@ -644,7 +644,6 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
             ending_commit=ending_commit,
             post_generation_intervention=strategy_obj.post_generation_intervention,
             library_preparation_preflight=library_preparation_preflight,
-            dynamic_access_handoff=strategy_obj.dynamic_access_handoff,
         )
     write_fix_metrics(config, run_metrics, metrics_repo_dir, metrics_repo_root=metrics_repo_root)
     return 0 if workflow_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS} else 1

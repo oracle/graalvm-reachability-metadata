@@ -34,10 +34,7 @@ from utility_scripts.local_ci_verification import (
     format_local_ci_verification_pr_section,
     local_ci_requires_human_intervention,
 )
-from utility_scripts.java_fix_coverage_handoff import (
-    DYNAMIC_ACCESS_HANDOFF_KEY,
-    format_dynamic_access_handoff_pr_section,
-)
+from utility_scripts.java_fix_coverage_follow_up import format_coverage_follow_up_pr_section
 from utility_scripts.metrics_writer import read_pending_metrics
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 
@@ -56,6 +53,7 @@ def create_pull_request(
         repo_path: str,
         issue_number: int | None = None,
         pr_label: str = DEFAULT_PR_LABEL,
+        coverage_follow_up_issue_number: int | None = None,
 ):
     """Create a GitHub pull request for the java-run fix branch."""
     if shutil.which("gh") is None:
@@ -82,6 +80,7 @@ def create_pull_request(
         metrics_repo_root=metrics_repo_root,
         repo_path=repo_path,
         issue_number=issue_number,
+        coverage_follow_up_issue_number=coverage_follow_up_issue_number,
     )
 
     cmd = [
@@ -121,6 +120,7 @@ def build_pull_request_preview(
         metrics_repo_root: str,
         repo_path: str,
         issue_number: int | None = None,
+        coverage_follow_up_issue_number: int | None = None,
 ) -> tuple[str, str, dict]:
     """Build the PR title/body without creating a GitHub pull request."""
     issue_no = issue_number if issue_number is not None else find_issue_common(new_coordinates, REPO)
@@ -165,10 +165,7 @@ Summary:
 {format_stats_diff(repo_path, old_coordinates, new_coordinates)}
 {format_bounded_test_diff_section(group, artifact, old_version, new_version, repo_path)}
 """
-    body += format_dynamic_access_handoff_pr_section(
-        metrics_entry.get(DYNAMIC_ACCESS_HANDOFF_KEY),
-        REPO,
-    )
+    body += format_coverage_follow_up_pr_section(coverage_follow_up_issue_number, REPO)
     post_generation_intervention = metrics_entry.get("post_generation_intervention")
     if post_generation_intervention:
         body += (
@@ -210,6 +207,7 @@ def build_parser():
         help="Path to the metrics repository root.",
     )
     parser.add_argument("--issue-number", type=int, help="Explicit backing GitHub issue number.")
+    parser.add_argument("--coverage-follow-up-issue-number", type=int)
     parser.add_argument(
         "--pr-label",
         default=DEFAULT_PR_LABEL,
@@ -226,7 +224,15 @@ def parse_flags(argv_list):
         flags.reachability_metadata_path,
         flags.metrics_repo_path,
     )
-    return flags.coordinates, flags.new_version, repo_path, metrics_repo_path, flags.issue_number, flags.pr_label
+    return (
+        flags.coordinates,
+        flags.new_version,
+        repo_path,
+        metrics_repo_path,
+        flags.issue_number,
+        flags.pr_label,
+        flags.coverage_follow_up_issue_number,
+    )
 
 
 def push_current_branch_to_origin(
@@ -258,7 +264,15 @@ def push_current_branch_to_origin(
 def main(argv=None):
     ensure_gh_authenticated()
 
-    old_coordinates, new_version, repo_path, metrics_repo_path, issue_number, pr_label = parse_flags(
+    (
+        old_coordinates,
+        new_version,
+        repo_path,
+        metrics_repo_path,
+        issue_number,
+        pr_label,
+        coverage_follow_up_issue_number,
+    ) = parse_flags(
         argv if argv is not None else sys.argv[1:]
     )
 
@@ -280,6 +294,7 @@ def main(argv=None):
         repo_path=repo_path,
         issue_number=issue_number,
         pr_label=pr_label,
+        coverage_follow_up_issue_number=coverage_follow_up_issue_number,
     )
 
 if __name__ == "__main__":

@@ -85,12 +85,12 @@ def build_parser():
         help="Optional path with additional read-only docs/sources for agent context",
     )
     parser.add_argument(
-        "--dynamic-access-handoff-class-threshold",
+        "--dynamic-access-class-threshold",
         type=int,
         default=0,
         help=(
-            "Skip post-repair dynamic-access exploration and hand coverage to a new "
-            "library-update issue when the uncovered class count exceeds this value"
+            "Skip post-repair dynamic-access exploration when the uncovered class count "
+            "exceeds this value"
         ),
     )
     parser.add_argument("-v", "--verbose", action="store_true", help="enable verbose mode for the configured agent")
@@ -113,11 +113,11 @@ def _workflow_argv(flags):
         workflow_argv.extend(["--strategy-name", flags.strategy_name])
     if flags.docs_path:
         workflow_argv.extend(["--docs-path", flags.docs_path])
-    if flags.dynamic_access_handoff_class_threshold > 0:
+    if flags.dynamic_access_class_threshold > 0:
         workflow_argv.extend(
             [
-                "--dynamic-access-handoff-class-threshold",
-                str(flags.dynamic_access_handoff_class_threshold),
+                "--dynamic-access-class-threshold",
+                str(flags.dynamic_access_class_threshold),
             ]
         )
     if flags.verbose:
