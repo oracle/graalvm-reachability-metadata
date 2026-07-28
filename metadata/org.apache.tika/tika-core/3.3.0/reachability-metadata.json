@@ -492,6 +492,20 @@
       },
       "type" : "org.apache.tika.pipes.fetcher.FetchKey",
       "serializable" : true
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tika.fork.ParserFactoryFactory"
+      },
+      "type" : "org.apache.tika.parser.AutoDetectParserFactory",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [
+            "java.util.Map"
+          ]
+        }
+      ]
     }
   ],
   "resources" : [
@@ -566,6 +580,56 @@
         "typeReached" : "org.apache.tika.detect.NNExampleModelDetector"
       },
       "glob" : "org/apache/tika/detect/tika-example.nnmodel"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tika.fork.ForkClient"
+      },
+      "glob" : "org/apache/tika/exception/TikaException.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tika.fork.ClassLoaderProxy"
+      },
+      "glob" : "org/apache/tika/parser/EmptyParser.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tika.fork.ClassLoaderProxy"
+      },
+      "glob" : "org/apache/tika/parser/ErrorParser.class"
+    }
+  ],
+  "serialization" : [
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tika.fork.ForkClient"
+      },
+      "type" : "java.util.HashSet"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tika.fork.ForkClient"
+      },
+      "type" : "org.apache.tika.fork.ClassLoaderProxy"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tika.fork.ForkClient"
+      },
+      "type" : "org.apache.tika.fork.ContentHandlerProxy"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tika.fork.ForkClient"
+      },
+      "type" : "org.apache.tika.fork.InputStreamProxy"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tika.fork.ForkClient"
+      },
+      "type" : "org.apache.tika.fork.RecursiveMetadataContentHandlerProxy"
     }
   ]
 }
