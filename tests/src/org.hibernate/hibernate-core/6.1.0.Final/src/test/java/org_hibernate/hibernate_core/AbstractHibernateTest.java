@@ -65,6 +65,10 @@ abstract class AbstractHibernateTest {
 
     protected abstract String getHibernateDialect();
 
+    protected EntityManager getEntityManager() {
+        return entityManager;
+    }
+
     @Test
     public void testLoadStudent() {
         Student student = entityManager.find(Student.class, studentIds.get("John Smith"));
@@ -165,6 +169,7 @@ abstract class AbstractHibernateTest {
         Student student = new Student();
         student.setFirstName(firstName);
         student.setLastName(lastName);
+        student.setEmail(firstName.toLowerCase() + "." + lastName.toLowerCase() + "@example.test");
         student.setGender(gender);
         student.setAge(age);
         student.setBirthDate(new Date());

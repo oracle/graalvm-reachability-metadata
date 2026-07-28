@@ -16,12 +16,33 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.Check;
+import org.hibernate.annotations.DialectOverride;
+import org.hibernate.annotations.Where;
+import org.hibernate.dialect.H2Dialect;
+import org.hibernate.dialect.MySQLDialect;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "COURSE")
-public class Course {
+@Where(clause = "title <> 'base-hidden'")
+@DialectOverride.Where(
+        dialect = H2Dialect.class,
+        override = @Where(clause = "title <> 'Design'")
+)
+@DialectOverride.Check(
+        dialect = MySQLDialect.class,
+        override = @Check(constraints = "title <> 'mysql-hidden'")
+)
+@DialectOverride.Check(
+        dialect = H2Dialect.class,
+        override = @Check(constraints = "title <> 'h2-hidden'")
+)
+public class Course implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "course_gen")
