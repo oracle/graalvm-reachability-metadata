@@ -15,6 +15,7 @@ from git_scripts.common_git import (
     find_issue_for_coordinates as find_issue_common,
     get_model_display_name,
     get_agent_name,
+    format_stats_diff,
     format_forge_revision_section,
     assert_no_dynamic_access_category_regressions,
 )
@@ -140,6 +141,21 @@ def build_pull_request_preview(
     model_display_name = get_model_display_name(strategy_name)
     agent_name = get_agent_name(strategy_name)
     title = f"[GenAI] Test fix for {new_coordinates} using {model_display_name}"
+    test_only_metadata_entries = int(metrics.get("test_only_metadata_entries", 0) or 0)
+    previous_library_test_only_metadata_entries = int(
+        metrics.get("previous_library_test_only_metadata_entries", 0) or 0
+    )
+    test_only_metadata_entries_line = ""
+    if test_only_metadata_entries > 0:
+        test_only_metadata_entries_line = (
+            f"- Test-only metadata entries: {test_only_metadata_entries}\n"
+        )
+    previous_test_only_metadata_entries_line = ""
+    if previous_library_test_only_metadata_entries > 0:
+        previous_test_only_metadata_entries_line = (
+            "- Previous library version test-only metadata entries: "
+            f"{previous_library_test_only_metadata_entries}\n"
+        )
     deferred_section = format_coverage_follow_up_pr_section(
         coverage_follow_up_issue_number,
         coverage_follow_up_class_count,
@@ -159,9 +175,16 @@ Summary:
 - Input tokens: {int(metrics.get("input_tokens_used", 0))}
 - Cached input tokens: {int(metrics.get("cached_input_tokens_used", 0) or 0)}
 - Output tokens: {int(metrics.get("output_tokens_used", 0))}
+- Metadata entries: {int(metrics.get("metadata_entries", 0))}
+{test_only_metadata_entries_line}\
 - Iterations: {int(metrics.get("iterations", 0))}
+- Library coverage percentage: {metrics.get("code_coverage_percent", 0)}
+- Previous library version metadata entries: {int(metrics.get("previous_library_metadata_entries", 0))}
+{previous_test_only_metadata_entries_line}\
+- Previous library version coverage percentage: {metrics.get("previous_library_coverage_percent", 0)}
 {deferred_section}
 {format_forge_revision_section()}
+{format_stats_diff(repo_path, old_coordinates, new_coordinates)}
 {format_bounded_test_diff_section(group, artifact, old_version, new_version, repo_path)}
 """
     post_generation_intervention = metrics_entry.get("post_generation_intervention")
