@@ -15,8 +15,10 @@ import java.util.Enumeration;
 import java.util.Map;
 
 import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.ServiceLoaderUtilInvoker;
 import jakarta_xml_bind.jakarta_xml_bind_api.factorybacked.FactoryBackedBoundType;
 import jakarta_xml_bind.jakarta_xml_bind_api.servicebound.ServiceBoundType;
+import jakarta_xml_bind.jakarta_xml_bind_api.support.FactoryBackedContextFactory;
 import jakarta_xml_bind.jakarta_xml_bind_api.support.StubJaxbContext;
 import org.junit.jupiter.api.Test;
 
@@ -47,6 +49,15 @@ public class ServiceLoaderUtilTest {
     }
 
     @Test
+    public void instantiatesProviderClassByName() throws Exception {
+        Object provider = withContextClassLoader(
+                null,
+                ServiceLoaderUtilInvoker::instantiateFactoryBackedContextFactory);
+
+        assertThat(provider).isInstanceOf(FactoryBackedContextFactory.class);
+    }
+
+    @Test
     public void loadsProviderClassByNameWithoutContextClassLoader() throws Exception {
         JAXBContext context = withContextClassLoader(
                 null,
@@ -56,6 +67,29 @@ public class ServiceLoaderUtilTest {
 
         assertThat(context).isInstanceOf(StubJaxbContext.class);
         assertThat(((StubJaxbContext) context).getSource()).isEqualTo("factory-backed-classes-factory");
+    }
+
+    @Test
+    @SuppressWarnings("removal")
+    public void fallsBackToClassForNameWhenDefaultImplementationPackageAccessIsDenied() throws Exception {
+        SecurityManager previousSecurityManager = System.getSecurityManager();
+        PackageAccessDenyingSecurityManager securityManager =
+                new PackageAccessDenyingSecurityManager(FactoryBackedContextFactory.class.getPackage().getName());
+        boolean securityManagerInstalled = installSecurityManagerIfSupported(securityManager);
+
+        try {
+            Class<?> providerClass = ServiceLoaderUtilInvoker.loadFactoryBackedContextFactory(
+                    getClass().getClassLoader());
+
+            assertThat(providerClass).isEqualTo(FactoryBackedContextFactory.class);
+            if (securityManagerInstalled) {
+                assertThat(securityManager.wasCheckPackageAccessCalled()).isTrue();
+            }
+        } finally {
+            if (securityManagerInstalled) {
+                System.setSecurityManager(previousSecurityManager);
+            }
+        }
     }
 
     @Test

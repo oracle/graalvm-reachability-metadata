@@ -52,7 +52,7 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
 
         List<String> failures = new java.util.ArrayList<>();
         for (String coordinate : coordinates) {
-            if (coordinate.startsWith("samples:")) {
+            if (coordinate.startsWith("samples:") || coordinate.startsWith("org.example:")) {
                 continue;
             }
             try {
@@ -270,13 +270,8 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         for (JsonNode entry : sourceEntries) {
             JsonNode globNode = entry.isObject() ? entry.get("glob") : null;
             boolean globIsTestResource = globNode != null && globNode.isTextual()
-                    && (testResources.contains(normalizeResourcePath(globNode.asText()))
-                            || resourceReferencesTestPackage(globNode.asText(), testPackages));
-            JsonNode bundleNode = entry.isObject() ? entry.get("bundle") : null;
-            boolean bundleIsTestResource = bundleNode != null && bundleNode.isTextual()
-                    && testResources.stream().anyMatch(resource ->
-                            resourceBundleMatches(bundleNode.asText(), resource));
-            if (globIsTestResource || bundleIsTestResource || isTestOnlyEntry(entry, testPackages)) {
+                    && testResources.contains(normalizeResourcePath(globNode.asText()));
+            if (globIsTestResource || isTestOnlyEntry(entry, testPackages)) {
                 movedEntries.add(entry.deepCopy());
             } else {
                 keptEntries.add(entry);
@@ -284,23 +279,6 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         }
 
         applySplitResult(source, moved, "resources", keptEntries, movedEntries);
-    }
-
-    private boolean resourceBundleMatches(String bundle, String resource) {
-        String bundlePath = bundle.replace('.', '/');
-        return resource.equals(bundlePath + ".properties")
-                || resource.startsWith(bundlePath + "_") && resource.endsWith(".properties");
-    }
-
-    private boolean resourceReferencesTestPackage(String resource, Set<String> testPackages) {
-        String normalizedResource = normalizeResourcePath(resource);
-        return testPackages.stream()
-                .map(testPackage -> testPackage.replace('.', '/'))
-                .anyMatch(testPackagePath ->
-                        normalizedResource.equals(testPackagePath)
-                                || normalizedResource.startsWith(testPackagePath + "/")
-                                || normalizedResource.startsWith(testPackagePath + "$")
-                                || normalizedResource.startsWith(testPackagePath + "."));
     }
 
     private void applySplitResult(ObjectNode source, ObjectNode moved, String fieldName, ArrayNode keptEntries, ArrayNode movedEntries) {

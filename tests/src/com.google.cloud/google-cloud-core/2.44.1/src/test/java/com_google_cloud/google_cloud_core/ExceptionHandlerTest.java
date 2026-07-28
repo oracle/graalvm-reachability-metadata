@@ -6,25 +6,45 @@
  */
 package com_google_cloud.google_cloud_core;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.google.cloud.ExceptionHandler;
+import com.google.cloud.ExceptionHandlerAccess;
 import java.io.IOException;
+import java.util.concurrent.Callable;
 import org.junit.jupiter.api.Test;
 
 public class ExceptionHandlerTest {
     @Test
-    void retriesConfiguredException() {
+    void verifiesCallableDeclaredCheckedExceptionIsCovered() {
         ExceptionHandler handler = ExceptionHandler.newBuilder().retryOn(IOException.class).build();
 
-        assertThat(handler.shouldRetry(new IOException("retry"), null)).isTrue();
+        assertThatCode(
+                        () ->
+                                ExceptionHandlerAccess.verifyCaller(
+                                        handler, new IOExceptionCallable()))
+                .doesNotThrowAnyException();
     }
 
     @Test
-    void abortsConfiguredException() {
+    void rejectsCallableDeclaredCheckedExceptionWhenNotCovered() {
         ExceptionHandler handler =
                 ExceptionHandler.newBuilder().abortOn(RuntimeException.class).build();
 
-        assertThat(handler.shouldRetry(new RuntimeException("abort"), null)).isFalse();
+        assertThatThrownBy(
+                        () ->
+                                ExceptionHandlerAccess.verifyCaller(
+                                        handler, new IOExceptionCallable()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Declared exception")
+                .hasMessageContaining(IOException.class.getName());
+    }
+
+    public static class IOExceptionCallable implements Callable<Object> {
+        @Override
+        public Object call() throws IOException {
+            return "ok";
+        }
     }
 }
