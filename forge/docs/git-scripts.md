@@ -101,18 +101,23 @@ single-PR run and `Refs:` for non-final chunked dynamic-access chunks
 
 Publishers: `make_pr_javac_fix.py` (`fixes-javac-fail`) and
 `make_pr_java_run_fix.py` (`fixes-java-run-fail`). They share one body shape:
-the agent generation metrics above, a stats comparison for the bumped version,
-and a bounded test-source comparison so reviewers can see what the fix changed
+the compact strategy, agent, model, token, and iteration summary, followed by a
+deferred-exploration section when applicable, Forge revision details, and a
+bounded test-source comparison so reviewers can see what the fix changed
 without preventing PR creation. The two differ only
 in workflow identity (compilation vs. runtime wording), the metrics file, and
 the PR label (§WF-java-fail-fix-workflow).
 
 When post-repair dynamic-access exploration is skipped because the report
-exceeds the configured class threshold, both publishers link the new
+exceeds the configured class threshold, both publishers show the uncovered
+class count and configured threshold, then link the new
 fixed-version `library-update-request`. The body retains
 `Fixes: #<repair-issue>`, adds `Refs: #<coverage-issue>`, and includes
 `Forge-Unblocks-Issue: #<coverage-issue>` so orchestration releases the parked
 coverage issue only after the repair PR merges (§WF-java-fail-fix-workflow).
+The generated follow-up issue keeps the coordinate in its title and uses one
+brief sentence stating that it was opened while resolving the repair issue
+because the dynamic-access class count exceeded the threshold.
 
 ### Native-image run-fix
 

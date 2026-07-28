@@ -135,8 +135,10 @@ Required behavior — shared by both modes:
    issue, and carries `Forge-Unblocks-Issue: #<issue>` so merge follow-up moves
    the new issue to `Todo`. Chunk selection then runs through the existing
    library-update workflow against the repaired version on the default branch.
-   Java-fix metrics and continuation markers do not persist separate state for
-   this decision or issue.
+   The issue title names the fixed coordinate and its body is one brief sentence:
+   it was opened while resolving the repair issue because the uncovered class
+   count exceeded the configured threshold. Java-fix metrics and continuation
+   markers do not persist separate state for this decision or issue.
 
 The only differences between the two modes are workflow identity and prompt
 wording: javac fixes use compilation-failure wording and write
@@ -183,14 +185,14 @@ Successful runs produce:
   `fixes-java-run-fail` label. The java-run script stages the versioned tests,
   metadata index, metadata version directory, and stats; creates branch
   `ai/<gh-login>/fix-java-run-<group>-<artifact>-<newVersion>`; includes
-  generation stats, a stats comparison, and an old-vs-new test diff; and commits
+  the compact strategy/agent/model/token/iteration summary and an old-vs-new
+  test diff, without library-generation or coverage-stat comparisons; and commits
   successful run metrics to
   `stats/<group>/<artifact>/<version>/execution-metrics.json`.
-  When exploration was deferred, the PR body explains that exploration was
-  skipped, links the newly opened `library-update-request`, and carries the
-  merge-unblock
-  trailer required to release that issue only after the repair reaches the
-  default branch (§GIT-pr-body).
+  When exploration was deferred, its section follows the compact summary and
+  states the uncovered-class count and threshold, links the newly opened
+  `library-update-request`, and carries the merge-unblock trailer required to release that issue
+  only after the repair reaches the default branch (§GIT-pr-body).
 
 ## 5. Failure Rules
 

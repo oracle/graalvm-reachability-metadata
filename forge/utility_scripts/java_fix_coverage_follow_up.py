@@ -6,6 +6,7 @@
 """Fixed-version coverage follow-up for Java repair workflows."""
 
 import re
+from dataclasses import dataclass
 
 from git_scripts.common_git import gh
 from utility_scripts.dynamic_access_report import DynamicAccessCoverageReport
@@ -18,6 +19,15 @@ from utility_scripts.library_update_alias_split import (
 
 
 LIBRARY_UPDATE_LABEL = "library-update-request"
+
+
+@dataclass(frozen=True)
+class CoverageFollowUp:
+    """Ephemeral publication details for one fixed-version coverage issue."""
+
+    issue_number: int
+    uncovered_class_count: int
+    class_threshold: int
 
 
 def uncovered_dynamic_access_class_count(
@@ -33,20 +43,35 @@ def uncovered_dynamic_access_class_count(
     )
 
 
+def format_coverage_follow_up_issue_body(
+        *,
+        coordinate: str,
+        repair_issue_number: int,
+        uncovered_class_count: int,
+        class_threshold: int,
+) -> str:
+    """Return the brief fixed-version coverage issue description."""
+    return (
+        f"This issue was opened by Forge while resolving #{repair_issue_number} because "
+        f"dynamic-access generation found {uncovered_class_count} classes to cover for "
+        f"`{coordinate}`, above the configured threshold of {class_threshold}.\n"
+    )
+
+
 def create_coverage_follow_up_issue(
         *,
         coordinate: str,
         repair_issue_number: int,
+        uncovered_class_count: int,
+        class_threshold: int,
         repo: str,
-) -> int:
+) -> CoverageFollowUp:
     """Create and park a new fixed-version library-update issue."""
-    body = (
-        f"Forge repaired the compilation or JVM-runtime failure for `{coordinate}` "
-        f"in issue #{repair_issue_number}, but skipped the oversized dynamic-access "
-        "exploration phase.\n\n"
-        "This issue remains parked until the repair PR merges into the default branch. "
-        "Forge will then process it through the normal `library-update-request` workflow, "
-        "which will select chunked execution when required.\n"
+    body = format_coverage_follow_up_issue_body(
+        coordinate=coordinate,
+        repair_issue_number=repair_issue_number,
+        uncovered_class_count=uncovered_class_count,
+        class_threshold=class_threshold,
     )
     result = gh(
         "issue",
@@ -66,21 +91,27 @@ def create_coverage_follow_up_issue(
         raise RuntimeError(f"Could not parse created coverage issue number from: {issue_url}")
     issue_number = int(match.group(1))
     ensure_issue_project_status(repo, PROJECT_NUMBER, issue_number, STATUS_IN_PROGRESS)
-    return issue_number
+    return CoverageFollowUp(
+        issue_number=issue_number,
+        uncovered_class_count=uncovered_class_count,
+        class_threshold=class_threshold,
+    )
 
 
 def format_coverage_follow_up_pr_section(
-        issue_number: int | None,
+        follow_up: CoverageFollowUp | None,
         repo: str,
 ) -> str:
     """Return repair-PR text linking the fixed-version coverage issue."""
-    if issue_number is None:
+    if follow_up is None:
         return ""
+    issue_number = follow_up.issue_number
     issue_url = f"https://github.com/{repo}/issues/{issue_number}"
     return (
         "\n### Deferred Dynamic-Access Exploration\n\n"
-        "Exploration was skipped after the repair succeeded because the fixed "
-        "library has more uncovered classes than the configured threshold.\n\n"
+        "Exploration was skipped after the repair succeeded because the "
+        f"dynamic-access report contained **{follow_up.uncovered_class_count} uncovered "
+        f"classes**, above the configured threshold of **{follow_up.class_threshold}**.\n\n"
         f"Coverage work will continue in the newly opened "
         f"[library-update-request #{issue_number}]({issue_url}).\n\n"
         f"Refs: #{issue_number}\n"

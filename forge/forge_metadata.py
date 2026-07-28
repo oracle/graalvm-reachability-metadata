@@ -154,6 +154,7 @@ from utility_scripts.continuation_marker import (
 )
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
 from utility_scripts.java_fix_coverage_follow_up import (
+    CoverageFollowUp,
     create_coverage_follow_up_issue,
     uncovered_dynamic_access_class_count,
 )
@@ -481,7 +482,7 @@ class PublicationHandoff:
     chunked_dynamic_access_final: bool | None
     not_for_native_image: bool = False
     publication_kind: str | None = None
-    coverage_follow_up_issue_number: int | None = None
+    coverage_follow_up: CoverageFollowUp | None = None
 
     def to_json(self) -> dict:
         return {
@@ -502,7 +503,6 @@ class PublicationHandoff:
             "chunked_dynamic_access_final": self.chunked_dynamic_access_final,
             "not_for_native_image": self.not_for_native_image,
             "publication_kind": self.publication_kind,
-            "coverage_follow_up_issue_number": self.coverage_follow_up_issue_number,
         }
 
 
@@ -6513,7 +6513,7 @@ def restore_pending_run_metrics_from_execution_metrics(claimed_issue: ClaimedIss
 
 def build_publication_handoff(
         claimed_issue: ClaimedIssue,
-        coverage_follow_up_issue_number: int | None = None,
+        coverage_follow_up: CoverageFollowUp | None = None,
 ) -> PublicationHandoff:
     """Build the live-or-fixture PR publication handoff.
 
@@ -6537,10 +6537,14 @@ def build_publication_handoff(
     )
     chunked_dynamic_access_final = None
     coverage_follow_up_args: list[str] = []
-    if coverage_follow_up_issue_number is not None:
+    if coverage_follow_up is not None:
         coverage_follow_up_args = [
             "--coverage-follow-up-issue-number",
-            str(coverage_follow_up_issue_number),
+            str(coverage_follow_up.issue_number),
+            "--coverage-follow-up-class-count",
+            str(coverage_follow_up.uncovered_class_count),
+            "--coverage-follow-up-class-threshold",
+            str(coverage_follow_up.class_threshold),
         ]
     if exhaust_report_path is not None:
         chunked_dynamic_access_final = workflow_status != RUN_STATUS_CHUNK_READY
@@ -6742,7 +6746,7 @@ def build_publication_handoff(
         chunked_dynamic_access_final=chunked_dynamic_access_final,
         not_for_native_image=not_for_native_image,
         publication_kind=publication_kind or result_label,
-        coverage_follow_up_issue_number=coverage_follow_up_issue_number,
+        coverage_follow_up=coverage_follow_up,
     )
 
 
@@ -6811,7 +6815,7 @@ def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[st
                 metrics_repo_root=handoff.scratch_metrics_path,
                 repo_path=handoff.worktree_path,
                 issue_number=handoff.issue_number,
-                coverage_follow_up_issue_number=handoff.coverage_follow_up_issue_number,
+                coverage_follow_up=handoff.coverage_follow_up,
             )
             return title, body
         if publication_kind == LABEL_PR_JAVA_RUN_FIX:
@@ -6825,7 +6829,7 @@ def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[st
                 metrics_repo_root=handoff.scratch_metrics_path,
                 repo_path=handoff.worktree_path,
                 issue_number=handoff.issue_number,
-                coverage_follow_up_issue_number=handoff.coverage_follow_up_issue_number,
+                coverage_follow_up=handoff.coverage_follow_up,
             )
             return title, body
         if publication_kind == LABEL_PR_NI_RUN_FIX:
@@ -6946,7 +6950,7 @@ def apply_chunked_dynamic_access_completion_follow_up(claimed_issue: ClaimedIssu
 
 def prepare_java_fix_coverage_follow_up(
         claimed_issue: ClaimedIssue,
-) -> int | None:
+) -> CoverageFollowUp | None:
     """Open a fixed-version coverage issue when post-repair exploration was oversized.
 
     §WF-java-fail-fix-workflow.3
@@ -6976,11 +6980,17 @@ def prepare_java_fix_coverage_follow_up(
             "coverage-follow-up",
             f"Fixture mode: simulated new library-update issue #{issue_number}.",
         )
-        return issue_number
+        return CoverageFollowUp(
+            issue_number=issue_number,
+            uncovered_class_count=uncovered_class_count,
+            class_threshold=threshold,
+        )
 
     return create_coverage_follow_up_issue(
         coordinate=claimed_issue.issue_coordinates,
         repair_issue_number=int(claimed_issue.issue["number"]),
+        uncovered_class_count=uncovered_class_count,
+        class_threshold=threshold,
         repo=REPO,
     )
 
@@ -6994,9 +7004,9 @@ def finalize_successful_issue(
     workflow records a PR-eligible status (§GIT-pr-eligibility), keeping
     generation and publication separate (§AR-forge-verification-publication-boundary).
     """
-    coverage_follow_up_issue_number = prepare_java_fix_coverage_follow_up(claimed_issue)
+    coverage_follow_up = prepare_java_fix_coverage_follow_up(claimed_issue)
     if is_fixture_testing_enabled():
-        handoff = build_publication_handoff(claimed_issue, coverage_follow_up_issue_number)
+        handoff = build_publication_handoff(claimed_issue, coverage_follow_up)
         publication_path = write_fixture_publication_handoff(handoff)
         preserve_fixture_preflight_evidence(claimed_issue)
         log_stage(
@@ -7008,7 +7018,7 @@ def finalize_successful_issue(
         )
         return
 
-    handoff = build_publication_handoff(claimed_issue, coverage_follow_up_issue_number)
+    handoff = build_publication_handoff(claimed_issue, coverage_follow_up)
     handoff.runner(handoff.argv)
 
 
