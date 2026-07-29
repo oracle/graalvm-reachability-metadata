@@ -4621,6 +4621,17 @@ def preservation_result_has_continuation_marker(preservation_result: FailurePres
     return os.path.isfile(continuation_marker_path(preservation_result.reviewable_worktree_path))
 
 
+def load_preservation_result_continuation_marker(
+        preservation_result: FailurePreservationResult | None,
+) -> ContinuationMarker | None:
+    """Load the continuation marker carried by preserved work."""
+    if preservation_result is None or preservation_result.reviewable_worktree_path is None:
+        return None
+    return load_continuation_marker(
+        continuation_marker_path(preservation_result.reviewable_worktree_path),
+    )
+
+
 def maybe_apply_human_intervention_follow_up(
         claimed_issue: ClaimedIssue,
         workflow_success: bool = True,
@@ -4698,15 +4709,11 @@ def apply_failed_run_follow_up(
         workflow_success=False,
     )
     if candidate is None:
-        # No generation-analysis candidate normally means a non-library issue or a
-        # workflow that never produced coverage to analyze. But a *successful*
-        # workflow that fails only during finalization or publication — whether the
-        # publication `git rebase` halts mid-sequence on a conflict (aborted) or
-        # refuses a dirty worktree before it starts (failed) — still preserves a
-        # continuation marker on the work branch. Label it human-intervention +
-        # resumable so a later run can resume the publication phase instead of
-        # orphaning the marker. §FS-forge-run-continuation §FS-human-intervention-policy
-        if preservation_result_has_continuation_marker(preservation_result):
+        marker = load_preservation_result_continuation_marker(preservation_result)
+        # A successful workflow that fails during publication has no generation-analysis
+        # candidate. Gate this fallback on the authoritative marker phase so earlier
+        # workflow failures are not presented as PR-ready. §FS-forge-run-continuation.2
+        if marker is not None and marker.continue_from == PHASE_PUBLICATION:
             post_human_intervention_comment_and_label(
                 claimed_issue.issue["number"],
                 ensure_preserved_branch_link_in_comment(

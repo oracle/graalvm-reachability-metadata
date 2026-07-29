@@ -195,11 +195,13 @@ giving a later automated run — or the maintainer — a precise place to contin
 Because publication runs only after the workflow has already produced a
 PR-eligible result, a publication failure carries a *successful* workflow status
 and therefore no generation-analysis candidate. Forge still labels the issue
-`human-intervention` and `resumable` whenever the preserved branch carries a
-continuation marker, rather than treating the successful workflow status as a
-non-failure and reverting the issue to `Todo` with the marker orphaned: the
-`resumable` label is the precondition resume discovery requires (§3). A repeated
-failure in the same resumed phase only removes
+`human-intervention` and `resumable` when the preserved branch carries a
+continuation marker whose authoritative `continueFrom` is `publication`, rather
+than treating the successful workflow status as a non-failure and reverting the
+issue to `Todo` with the marker orphaned. Markers for earlier phases do not
+trigger this publication-specific fallback. The `resumable` label is the
+precondition resume discovery requires (§3). A repeated failure in the same
+resumed phase only removes
 `resumable`; it leaves the earlier `human-intervention` signal and comment in
 place instead of adding another report. External or transient failures take no
 issue action and write no marker, exactly as today.
