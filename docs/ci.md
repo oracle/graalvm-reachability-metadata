@@ -141,10 +141,11 @@ not gate the scheduled release (§CI-create-scheduled-release).
 
 ### CI-verify-new-library-version-compatibility: Verify new library version compatibility
 
-Every six hours (`0 */6 * * *`) and on manual dispatch. Owns the upstream-version
+Every day (`0 0 * * *`) and on manual dispatch. Owns the upstream-version
 tracking loop fully specified in §FS-repository-functional-spec.9
 (§GOAL-broad-version-coverage, §GOAL-fresh-metadata): it discovers newer versions
-with `fetchExistingLibrariesWithNewerVersions`, builds a matrix with
+only for libraries whose latest index entry sets `auto-update: true`, using
+`fetchExistingLibrariesWithNewerVersions`, and builds a matrix with
 `generateNewLibraryVersionCompatibilityMatrix` (capped per
 §FS-repository-functional-spec.5.3), tests every candidate across the matrix
 using `run-consecutive-tests.sh` (§CI-shared-scripts), records versions that pass

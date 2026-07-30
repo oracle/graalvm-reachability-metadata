@@ -1,11 +1,11 @@
-# Scheduled upstream-version tracker (every 6 hours): discovers newer versions, tests each across
-# the matrix, records passing ones via addTestedVersion (§TCK-test-harness.5) and files issues.
+# Daily upstream-version tracker: discovers opted-in libraries, tests the matrix, records passing
+# versions via addTestedVersion (§TCK-test-harness.5), and files issues.
 # §CI-verify-new-library-version-compatibility implements §FS-library-version-update-automation.
 name: "Verify compatibility with latest library versions"
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 permissions:
@@ -16,8 +16,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  get-all-libraries:
-    name: "📋 Get list of all supported libraries with newer versions"
+  get-opted-in-libraries:
+    name: "📋 Get opted-in libraries with newer versions"
     # Opens PRs, with labels and assignees. Works only on the main repo.
     if: github.repository == 'oracle/graalvm-reachability-metadata'
     runs-on: ubuntu-22.04
@@ -114,9 +114,9 @@ jobs:
 
   test-all-metadata:
     name: "🧪 ${{ matrix.name }} [${{ matrix.nativeImageMode }}] (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
-    if: needs.get-all-libraries.outputs.none-found != 'true'
+    if: needs.get-opted-in-libraries.outputs.none-found != 'true'
     runs-on: ${{ matrix.os }}
-    needs: get-all-libraries
+    needs: get-opted-in-libraries
     permissions:
       contents: read
     env:
@@ -124,7 +124,7 @@ jobs:
       LOG_LINES: "300"
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.get-all-libraries.outputs.matrix) }}
+      matrix: ${{ fromJson(needs.get-opted-in-libraries.outputs.matrix) }}
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -236,9 +236,9 @@ jobs:
       ISSUE_BODY_CHAR_LIMIT: "60000"
       LOG_LINES: "300"
     needs:
-      - get-all-libraries
+      - get-opted-in-libraries
       - test-all-metadata
-    if: needs.get-all-libraries.outputs.none-found != 'true'
+    if: needs.get-opted-in-libraries.outputs.none-found != 'true'
     steps:
       - name: "☁️ Checkout repository"
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -350,7 +350,7 @@ jobs:
       - name: "✔️ New library versions are supported (with locks, waiting and retries)"
         if: steps.aggregate.outputs.has-successful-updates == 'true'
         env:
-          BRANCH: ${{ needs.get-all-libraries.outputs.branch }}
+          BRANCH: ${{ needs.get-opted-in-libraries.outputs.branch }}
         run: |
           set -euo pipefail
           git config --local user.email "actions@github.com"
@@ -674,8 +674,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GRAALBOT_PR_TOKEN }}
         run: |
-          git fetch origin "${{ needs.get-all-libraries.outputs.branch }}"
-          git checkout "${{ needs.get-all-libraries.outputs.branch }}"
+          git fetch origin "${{ needs.get-opted-in-libraries.outputs.branch }}"
+          git checkout "${{ needs.get-opted-in-libraries.outputs.branch }}"
           if git rev-parse --verify HEAD >/dev/null 2>&1 && ! git diff --quiet "origin/master...HEAD"; then
             PR_BODY_FILE="$(mktemp)"
             {

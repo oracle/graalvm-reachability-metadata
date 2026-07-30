@@ -230,10 +230,16 @@ class ScaffoldTask extends DefaultTask {
         writeIndexFile(metadataIndex.toPath(), entries);
     }
 
-    private void setLatest(List<MetadataVersionsIndexEntry> list, int index, Boolean newValue) {
+    private void setLatest(
+            List<MetadataVersionsIndexEntry> list,
+            int index,
+            Boolean latest,
+            Boolean autoUpdate
+    ) {
         MetadataVersionsIndexEntry oldEntry = list.get(index);
         list.set(index, new MetadataVersionsIndexEntry(
-                newValue,
+                latest,
+                autoUpdate,
                 oldEntry.override(),
                 oldEntry.defaultFor(),
                 oldEntry.metadataVersion(),
@@ -257,6 +263,7 @@ class ScaffoldTask extends DefaultTask {
     private void updateLatestEntry(List<MetadataVersionsIndexEntry> entries) {
         int latestIndex = 0;
         VersionNumber latestVersion = VersionNumber.parse(entries.get(0).metadataVersion());
+        boolean autoUpdate = entries.stream().anyMatch(entry -> Boolean.TRUE.equals(entry.autoUpdate()));
         for (int i = 1; i < entries.size(); i++) {
             VersionNumber nextVersion = VersionNumber.parse(entries.get(i).metadataVersion());
             if (latestVersion.compareTo(nextVersion) < 0) {
@@ -266,7 +273,13 @@ class ScaffoldTask extends DefaultTask {
         }
 
         for (int i = 0; i < entries.size(); i++) {
-            setLatest(entries, i, i == latestIndex ? true : null);
+            boolean latest = i == latestIndex;
+            setLatest(
+                    entries,
+                    i,
+                    latest ? Boolean.TRUE : null,
+                    latest && autoUpdate ? Boolean.TRUE : null
+            );
         }
     }
 
@@ -332,6 +345,7 @@ class ScaffoldTask extends DefaultTask {
     private MetadataVersionsIndexEntry createIndexEntry(Coordinates coordinates, List<String> packageRoots, DiscoveredArtifactMetadata discoveredMetadata, LibraryLanguage language, boolean latest) {
         return new MetadataVersionsIndexEntry(
                 latest ? Boolean.TRUE : null,
+                null, // auto-update
                 null, // override
                 null, // default-for
                 coordinates.version(), // metadata-version

@@ -169,6 +169,7 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
                 if (METADATA_PATTERN.matcher(filePath).matches()) {
                     checkLibraryIndexTestedVersions(json, filePath, failures);
                     checkLibraryIndexUrlTemplates(json, filePath, failures);
+                    checkLibraryIndexAutoUpdate(json, filePath, failures);
                 }
 
                 // Print success only if no new failures were added by schema or semantic checks
@@ -183,6 +184,31 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
         if (!failures.isEmpty()) {
             failures.forEach(f -> getLogger().error(f));
             throw new GradleException("Validation failed for " + failures.size() + " file(s).");
+        }
+    }
+
+    /**
+     * Enforces the artifact-level automation marker placement from
+     * §FS-library-version-update-automation.1.
+     */
+    static void checkLibraryIndexAutoUpdate(JsonNode json, String filePath, List<String> failures) {
+        if (json == null || !json.isArray()) {
+            return;
+        }
+
+        int autoUpdateEntries = 0;
+        for (JsonNode entry : json) {
+            if (!entry.path("auto-update").asBoolean(false)) {
+                continue;
+            }
+            autoUpdateEntries++;
+            if (!entry.path("latest").asBoolean(false)) {
+                failures.add("❌ " + filePath
+                        + ": auto-update is allowed only on the entry with latest: true");
+            }
+        }
+        if (autoUpdateEntries > 1) {
+            failures.add("❌ " + filePath + ": auto-update may appear on at most one entry");
         }
     }
 
@@ -390,7 +416,7 @@ public abstract class ValidateIndexFilesTask extends CoordinatesAwareTask {
 
     public static String mapToSchemaPath(String filePath) {
         if (METADATA_PATTERN.matcher(filePath).matches()) {
-            return "metadata/schemas/metadata-library-index-schema-v2.1.0.json";
+            return "metadata/schemas/metadata-library-index-schema-v2.2.0.json";
         }
         return "";
     }

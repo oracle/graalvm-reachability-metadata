@@ -42,7 +42,7 @@ These constraints apply uniformly to human-authored PRs and to Forge output, and
 ### 4.1 Metadata distribution
 
 - A directory hierarchy under `metadata/<groupId>/<artifactId>/<metadata-version>/` containing JSON files in the format described by GraalVM's [Native Image Manual Configuration](https://www.graalvm.org/latest/reference-manual/native-image/dynamic-features/Reflection/#manual-configuration) reference.
-- An artifact-level `metadata/<groupId>/<artifactId>/index.json` that records, per metadata version: tested library versions, allowed packages, source/test/documentation URLs, optional `requires`, `default-for`, `skipped-versions`, and `override` flags.
+- An artifact-level `metadata/<groupId>/<artifactId>/index.json` that records, per metadata version: tested library versions, allowed packages, source/test/documentation URLs, optional `requires`, `default-for`, `skipped-versions`, `override`, and compatibility-automation opt-in flags.
 - A repository-level `metadata/library-and-framework-list.json` enumerating every supported library, with `test_level` ∈ `{untested, community-tested, fully-tested}`.
 - A `stats/<groupId>/<artifactId>/<metadata-version>/` mirror of per-version metrics — `stats.json` (dynamic-access call sites, coverage, lines of code, dependency information) produced by the harness, alongside the schema-validated `execution-metrics.json` each Forge run records.
 
@@ -65,7 +65,7 @@ The harness uses a single coordinates filter `-Pcoordinates=` accepting `all`, `
 
 GitHub Actions, configured by [`ci.json`](../ci.json) as the single source of truth for OS/JDK matrix, run the workflows enumerated in [ci.md](ci.md):
 - PR-scoped: changed-metadata, changed-infrastructure, new-library-version, Spring AOT smoke, library-stats validation, library-and-framework-list validation, checkstyle.
-- Schedule-driven: full metadata sweep every three days to prevent incomplete or breaking metadata from shipping in releases, new-library-version compatibility (every six hours), Docker image vulnerability scans, scheduled release every Monday, scheduled coverage publication.
+- Schedule-driven: full metadata sweep every three days to prevent incomplete or breaking metadata from shipping in releases, opted-in new-library-version compatibility (daily), Docker image vulnerability scans, scheduled release every Monday, scheduled coverage publication.
 - Event-driven snapshot publication: every push to `master` may refresh the floating `SNAPSHOT` release when metadata changed since the previous `SNAPSHOT` tag.
 
 CI must pass before any merge, and is the authoritative gate — local runs are best-effort.
@@ -174,11 +174,11 @@ schemas/                                                 # vendored JSON schemas
 
 Plugin-relevant content is `<groupId>/<artifactId>/index.json` and the per-version `reachability-metadata.json` files; the plugin discovers libraries by directory walk. `library-and-framework-list.json` and `schemas/` are present for downstream tooling (the libraries-and-frameworks page and offline validators) and are not consumed by native-build-tools at native-image time.
 
-**2. `<groupId>/<artifactId>/index.json`** — one per supported artifact, schema [metadata-library-index-schema-v2.1.0.json](../metadata/schemas/metadata-library-index-schema-v2.1.0.json). It is a JSON **array** of entries. Metadata entries require `metadata-version`, `tested-versions`, and `allowed-packages`, with optional `default-for` (Java regex), `latest: true`, `override: true`, `requires: ["<group>:<artifact>", …]`, `test-version`, `skipped-versions`, `language`, and the four URL fields. Plugin-relevant fields are the first six.
+**2. `<groupId>/<artifactId>/index.json`** — one per supported artifact, schema [metadata-library-index-schema-v2.2.0.json](../metadata/schemas/metadata-library-index-schema-v2.2.0.json). It is a JSON **array** of entries. Metadata entries require `metadata-version`, `tested-versions`, and `allowed-packages`, with optional `default-for` (Java regex), `latest: true`, `override: true`, `requires: ["<group>:<artifact>", …]`, `test-version`, `skipped-versions`, `language`, `auto-update: true`, and the four URL fields. `auto-update` is a repository-automation opt-in allowed only on the unique `latest: true` entry; omission disables automated upstream-version compatibility checks for the artifact. Plugin-relevant fields are the first six.
 
 Alternatively, the array can hold a single `not-for-native-image: true` entry with a required `reason` and an optional `replacement`, and no other fields. This marks an artifact that is intentionally not a native-image metadata target — a Scala.js artifact, a pure test framework, or a coordinate superseded by another — so the absence of any `metadata-version` directory is a recorded decision rather than missing support. native-build-tools loads no metadata for such a coordinate; the `reason`/`replacement` are surfaced to humans and the libraries-and-frameworks page.
 
-The schema follows semver. **Minor- and patch-version bumps** (e.g., `v2.1.0` → `v2.1.1` or `v2.1.x` → `v2.2.0`) are guaranteed backward-compatible with native-build-tools: minor bumps add new optional fields or non-plugin index formats used by the website, the test harness, or future tooling (`requires`, `test-version`, `skipped-versions`, `language`, `source-code-url`, `test-code-url`, `documentation-url`, `repository-url`, `not-for-native-image`); patch bumps refine validation of those same auxiliary fields and formats. The plugin reads only the six fields enumerated above, so an older native-build-tools release continues to resolve metadata correctly against any newer minor or patch version of the schema. A **major-version bump** (e.g., `v2.x` → `v3.0.0`) is reserved for changes that native-build-tools itself must adopt; it is shipped in lockstep with a plugin release rather than absorbed silently by older plugins.
+The schema follows semver. **Minor- and patch-version bumps** (e.g., `v2.1.0` → `v2.1.1` or `v2.1.x` → `v2.2.0`) are guaranteed backward-compatible with native-build-tools: minor bumps add new optional fields or non-plugin index formats used by the website, the test harness, or future tooling (`requires`, `test-version`, `skipped-versions`, `language`, `source-code-url`, `test-code-url`, `documentation-url`, `repository-url`, `not-for-native-image`, `auto-update`); patch bumps refine validation of those same auxiliary fields and formats. The plugin reads only the six fields enumerated above, so an older native-build-tools release continues to resolve metadata correctly against any newer minor or patch version of the schema. A **major-version bump** (e.g., `v2.x` → `v3.0.0`) is reserved for changes that native-build-tools itself must adopt; it is shipped in lockstep with a plugin release rather than absorbed silently by older plugins.
 
 **3. `<groupId>/<artifactId>/<metadata-version>/reachability-metadata.json`** — the only file the plugin loads at native-image time. Schema [reachability-metadata-schema-v1.2.0.json](../metadata/schemas/reachability-metadata-schema-v1.2.0.json) (a vendored copy of the upstream GraalVM schema), with top-level keys `reflection`, `jni`, `resources`, `bundles`, `serialization`, and `foreignCalls`. Every entry's `condition` carries exactly one key, `typeReached`, so the plugin can rely on conditional registration; `typeReached` is the schema's only condition form. The legacy split-config layout (`reflect-config.json`, `jni-config.json`, …) is no longer present.
 
@@ -362,7 +362,7 @@ in §5.3.
 The repository must keep its tested-version coverage current as upstream
 libraries release new versions, without a human watching Maven Central. The
 [`verify-new-library-version-compatibility`](../.github/workflows/verify-new-library-version-compatibility.yml)
-GitHub Actions workflow owns this loop. It runs on a schedule (every six hours)
+GitHub Actions workflow owns this loop. It runs on a schedule (daily)
 and on manual `workflow_dispatch`, and performs its mutating steps only on the
 canonical `oracle/graalvm-reachability-metadata` repository. Each run discovers
 newer upstream versions, tests every candidate across the supported environment
@@ -379,11 +379,13 @@ label it applies is defined in the
 #### 1. Discovery of newer versions
 
 `./gradlew fetchExistingLibrariesWithNewerVersions` lists every already-supported
-library whose newest upstream release is ahead of its highest tested version,
-emitting candidate versions newest-first. Before a candidate enters the run it
+library whose unique `latest: true` index entry opts in with `auto-update: true`
+and whose newest upstream release is ahead of its highest tested version,
+emitting candidate versions newest-first. Libraries without the marker are
+discarded before Maven Central is queried. Before a candidate enters the run it
 is de-duplicated against open issues: a library whose newest candidate version
 already has an open `[Automation] … fails for <group:artifact:version>` issue is
-skipped, so a known-failing version is not re-tested every six hours.
+skipped, so a known-failing version is not re-tested every day.
 `generateNewLibraryVersionCompatibilityMatrix` turns the surviving candidates
 into the CI test matrix, bounded by the per-run library budget and the
 ≤ 30-newer-versions-per-library cap (§FS-repository-functional-spec.5.3). When

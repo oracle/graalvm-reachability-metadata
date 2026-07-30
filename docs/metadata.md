@@ -17,7 +17,10 @@ would otherwise miss, and must never change how a consumer's code runs
   JSON array recording, per metadata version, the `tested-versions`,
   `allowed-packages`, the source/test/documentation/repository URLs, and optional
   `default-for`, `latest`, `override`, `requires`, `test-version`,
-  `skipped-versions`, and `language`. This is how native-build-tools selects a
+  `skipped-versions`, `language`, and `auto-update`. The automation-only
+  `auto-update: true` marker may appear on the unique latest entry to opt the
+  artifact into daily upstream-version compatibility checks; native-build-tools
+  ignores it. The remaining fields define how native-build-tools selects a
   metadata version for a dependency (§FS-repository-functional-spec.4).
 - `metadata/<groupId>/<artifactId>/<metadata-version>/reachability-metadata.json`
   — the only file `native-image` loads. It carries `reflection`, `jni`,
