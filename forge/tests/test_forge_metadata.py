@@ -13,6 +13,12 @@ from unittest.mock import call, patch
 
 import forge_metadata
 from git_scripts import common_git
+from utility_scripts.continuation_marker import (
+    PHASE_EXPLORE,
+    PHASE_FINALIZATION,
+    PHASE_PUBLICATION,
+    PHASE_SETUP,
+)
 from utility_scripts.fixture_github import FixtureGitHubState, FixtureIssue
 from utility_scripts.dynamic_access_report import DynamicAccessClass, DynamicAccessCoverageReport
 from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME
@@ -2564,6 +2570,78 @@ class EnvironmentValidationTests(unittest.TestCase):
             call(forge_metadata.POST_GENERATION_GRAALVM_ENV_VAR),
             call(forge_metadata.LATEST_EA_GRAALVM_ENV_VAR),
         ])
+
+
+class FailedRunFollowUpTests(unittest.TestCase):
+    def test_publication_marker_applies_publication_failure_follow_up(self) -> None:
+        claimed_issue = _claimed_issue(forge_metadata.LABEL_JAVAC_FAIL)
+
+        with tempfile.TemporaryDirectory() as repo_path:
+            marker = forge_metadata.ContinuationMarker.create(
+                strategy_name="strategy",
+                issue_number=1412,
+                label=claimed_issue.label,
+                coordinate=claimed_issue.issue_coordinates,
+                new_version=None,
+            )
+            marker.mark_setup_done(skip_fix_phase=True)
+            marker.mark_phase_skipped(PHASE_EXPLORE)
+            marker.mark_phase_completed(PHASE_FINALIZATION)
+            self.assertEqual(marker.continue_from, PHASE_PUBLICATION)
+            marker.save(forge_metadata.continuation_marker_path(repo_path))
+            preservation_result = forge_metadata.FailurePreservationResult(
+                branch_name="ai/test/preserved",
+                branch_url="https://github.com/oracle/graalvm-reachability-metadata/tree/ai/test/preserved",
+                committed_changes=True,
+                reviewable_worktree_path=repo_path,
+            )
+
+            with patch.object(forge_metadata, "resolve_human_intervention_candidate", return_value=None), \
+                    patch.object(
+                        forge_metadata,
+                        "post_human_intervention_comment_and_label",
+                    ) as post_follow_up:
+                forge_metadata.apply_failed_run_follow_up(
+                    claimed_issue,
+                    preservation_result=preservation_result,
+                )
+
+        post_follow_up.assert_called_once()
+        self.assertEqual(post_follow_up.call_args.args[0], 1412)
+        self.assertIn("publishing the pull request did not finish", post_follow_up.call_args.args[1])
+        self.assertEqual(post_follow_up.call_args.kwargs, {"resumable": True})
+
+    def test_setup_marker_does_not_apply_publication_failure_follow_up(self) -> None:
+        claimed_issue = _claimed_issue(forge_metadata.LABEL_JAVAC_FAIL)
+
+        with tempfile.TemporaryDirectory() as repo_path:
+            marker = forge_metadata.ContinuationMarker.create(
+                strategy_name="strategy",
+                issue_number=1412,
+                label=claimed_issue.label,
+                coordinate=claimed_issue.issue_coordinates,
+                new_version=None,
+            )
+            self.assertEqual(marker.continue_from, PHASE_SETUP)
+            marker.save(forge_metadata.continuation_marker_path(repo_path))
+            preservation_result = forge_metadata.FailurePreservationResult(
+                branch_name="ai/test/preserved",
+                branch_url="https://github.com/oracle/graalvm-reachability-metadata/tree/ai/test/preserved",
+                committed_changes=True,
+                reviewable_worktree_path=repo_path,
+            )
+
+            with patch.object(forge_metadata, "resolve_human_intervention_candidate", return_value=None), \
+                    patch.object(
+                        forge_metadata,
+                        "post_human_intervention_comment_and_label",
+                    ) as post_follow_up:
+                forge_metadata.apply_failed_run_follow_up(
+                    claimed_issue,
+                    preservation_result=preservation_result,
+                )
+
+        post_follow_up.assert_not_called()
 
 
 class InterruptHandlingTests(unittest.TestCase):
