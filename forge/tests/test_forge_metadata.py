@@ -2903,7 +2903,7 @@ class PullRequestReviewTests(unittest.TestCase):
                 "get_pull_request_changed_files",
                 return_value=[
                     "metadata/org.example/demo/index.json",
-                    "metadata/schemas/metadata-library-index-schema-v2.1.0.json",
+                    "metadata/schemas/metadata-library-index-schema-v2.2.0.json",
                     "tests/src/org.example/demo/1.0.0/build.gradle",
                     "metadata/org.example/demo/1.0.0/reachability-metadata.json",
                 ],

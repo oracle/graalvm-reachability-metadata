@@ -41,6 +41,7 @@ class MetadataGenerationUtilsTests {
                 [
                   {
                     "latest" : true,
+                    "auto-update" : true,
                     "metadata-version" : "2021-03-30T02-06-56-9a47743",
                     "tested-versions" : [
                       "2021-03-30T02-06-56-9a47743"
@@ -72,6 +73,7 @@ class MetadataGenerationUtilsTests {
         List<Map<String, Object>> entries = readIndex(group, artifact);
         assertThat(entries.get(0))
                 .containsEntry("latest", true)
+                .containsEntry("auto-update", true)
                 .containsEntry("metadata-version", newVersion)
                 .containsEntry("tested-versions", List.of(
                         newVersion,
@@ -79,6 +81,8 @@ class MetadataGenerationUtilsTests {
                 ));
         assertThat(findEntry(entries, "2021-07-17T01-39-28-682c652"))
                 .containsEntry("tested-versions", List.of("2021-07-17T01-39-28-682c652"));
+        assertThat(findEntry(entries, "2021-03-30T02-06-56-9a47743"))
+                .doesNotContainKeys("latest", "auto-update");
     }
 
     @Test
