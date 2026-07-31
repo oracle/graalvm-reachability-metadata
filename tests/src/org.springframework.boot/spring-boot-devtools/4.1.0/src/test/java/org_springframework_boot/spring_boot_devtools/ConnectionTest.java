@@ -41,8 +41,7 @@ public class ConnectionTest {
                     assertThat(response).contains("Content-Type: text/javascript\r\n");
                 }
             }
-        }
-        finally {
+        } finally {
             server.stop();
         }
     }

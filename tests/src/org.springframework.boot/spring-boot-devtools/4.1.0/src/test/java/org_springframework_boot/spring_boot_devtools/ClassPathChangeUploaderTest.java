@@ -58,8 +58,7 @@ public class ClassPathChangeUploaderTest {
             uploader.onApplicationEvent(event);
 
             assertThat(uploadedContent.get()).isNotNull().isNotEmpty();
-        }
-        finally {
+        } finally {
             server.stop(0);
         }
     }

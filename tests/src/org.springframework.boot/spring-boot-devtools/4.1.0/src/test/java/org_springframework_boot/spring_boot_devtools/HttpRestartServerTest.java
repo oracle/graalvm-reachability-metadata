@@ -40,7 +40,7 @@ public class HttpRestartServerTest {
     @Test
     void handlesSerializedClassLoaderFiles() throws Exception {
         ClassLoaderFiles files = new ClassLoaderFiles();
-        files.addFile("classes", "example.txt", new ClassLoaderFile(ClassLoaderFile.Kind.MODIFIED, new byte[] { 1 }));
+        files.addFile("classes", "example.txt", new ClassLoaderFile(ClassLoaderFile.Kind.MODIFIED, new byte[] {1}));
         byte[] content = serialize(files);
         RecordingRestartServer restartServer = new RecordingRestartServer();
         HttpRestartServer server = new HttpRestartServer(restartServer);
