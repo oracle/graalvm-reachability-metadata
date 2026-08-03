@@ -131,7 +131,7 @@ Every Sunday at 00:30 UTC (`30 0 * * 0`) and on manual dispatch. The scheduled
 run checks every supported library on the default branch with GraalVM `latest-ea`
 and the `current-defaults` Native Image mode, using the cached shared base layer
 (§TCK-test-harness.3). An `all` selection uses 16 independent shared-layer
-shards and 64 independent dedicated-layer shards, allows up to 64 matrix jobs
+shards and 128 independent dedicated-layer shards, allows up to 64 matrix jobs
 to run in parallel, and permits six hours per shard. Manual dispatch defaults
 to both lanes, `master`, `all`, and `latest-ea`; it may instead run only the
 shared or dedicated lane and select a different ref, coordinate, JDK, or mode.
