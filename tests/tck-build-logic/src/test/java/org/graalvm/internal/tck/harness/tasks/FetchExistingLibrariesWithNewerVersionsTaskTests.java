@@ -145,6 +145,7 @@ class FetchExistingLibrariesWithNewerVersionsTaskTests {
                   {
                     "latest": true,
                     "auto-update": true,
+                    "high-priority": true,
                     "metadata-version": "2.0.0",
                     "tested-versions": ["2.0.0"],
                     "allowed-packages": ["com.example"]

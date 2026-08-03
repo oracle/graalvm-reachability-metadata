@@ -19,6 +19,8 @@ public record MetadataVersionsIndexEntry(
         Boolean latest,
         @JsonProperty("auto-update")
         Boolean autoUpdate,
+        @JsonProperty("high-priority")
+        Boolean highPriority,
         Boolean override,
         @JsonProperty("default-for")
         String defaultFor,

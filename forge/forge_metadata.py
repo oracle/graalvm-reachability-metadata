@@ -246,6 +246,7 @@ LABEL_PR_JAVA_RUN_FIX = "fixes-java-run-fail"
 LABEL_PR_NI_RUN_FIX = "fixes-native-image-run-fail"
 LABEL_PR_LIBRARY_UPDATE = "library-update-request"
 LABEL_PR_LIBRARY_BULK_UPDATE = "library-bulk-update"
+LABEL_HIGH_PRIORITY = "high-priority"
 LABEL_PRIORITY = "priority"
 LABEL_HUMAN_INTERVENTION = "human-intervention"
 LABEL_HUMAN_INTERVENTION_FIXED = "human-intervention-fixed"
@@ -1742,7 +1743,7 @@ def get_prioritized_issues_with_label(
         priority_exhausted: bool = False,
         user_requested_only: bool = False,
 ) -> tuple[list[dict], int, int, bool, bool]:
-    """Fetch one issue batch and return priority issues first within that batch."""
+    """Fetch one issue batch and rank high-priority, priority, then regular issues."""
     regular_issues = get_issues_with_label(
         label,
         limit,
@@ -1754,10 +1755,19 @@ def get_prioritized_issues_with_label(
         try_mark_issues_blocking_many_libraries_as_priority(filtered_issues)
     sorted_issues = sorted(
         filtered_issues,
-        key=lambda issue: not issue_has_label(issue, LABEL_PRIORITY),
+        key=issue_priority_rank,
     )
     exhausted = len(regular_issues) == 0
     return sorted_issues, priority_offset, regular_offset, True, exhausted
+
+
+def issue_priority_rank(issue: dict) -> int:
+    """Return the queue rank required by §ORCH-forge-orchestration-spec."""
+    if issue_has_label(issue, LABEL_HIGH_PRIORITY):
+        return 0
+    if issue_has_label(issue, LABEL_PRIORITY):
+        return 1
+    return 2
 
 
 def get_project_item_state(issue_number: int) -> tuple[str | None, str | None]:
@@ -7827,7 +7837,7 @@ def format_issue_scan_position(
 def log_issue_scan_start(label: str, offset: int) -> None:
     """Log where an issue scan starts."""
     if offset == 0:
-        position = "from the most recently updated issues with priority-first ordering"
+        position = "from the most recently updated issues with high-priority-first ordering"
     else:
         position = f"from offset {offset}"
     print()

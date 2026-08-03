@@ -234,12 +234,14 @@ class ScaffoldTask extends DefaultTask {
             List<MetadataVersionsIndexEntry> list,
             int index,
             Boolean latest,
-            Boolean autoUpdate
+            Boolean autoUpdate,
+            Boolean highPriority
     ) {
         MetadataVersionsIndexEntry oldEntry = list.get(index);
         list.set(index, new MetadataVersionsIndexEntry(
                 latest,
                 autoUpdate,
+                highPriority,
                 oldEntry.override(),
                 oldEntry.defaultFor(),
                 oldEntry.metadataVersion(),
@@ -264,6 +266,7 @@ class ScaffoldTask extends DefaultTask {
         int latestIndex = 0;
         VersionNumber latestVersion = VersionNumber.parse(entries.get(0).metadataVersion());
         boolean autoUpdate = entries.stream().anyMatch(entry -> Boolean.TRUE.equals(entry.autoUpdate()));
+        boolean highPriority = entries.stream().anyMatch(entry -> Boolean.TRUE.equals(entry.highPriority()));
         for (int i = 1; i < entries.size(); i++) {
             VersionNumber nextVersion = VersionNumber.parse(entries.get(i).metadataVersion());
             if (latestVersion.compareTo(nextVersion) < 0) {
@@ -278,7 +281,8 @@ class ScaffoldTask extends DefaultTask {
                     entries,
                     i,
                     latest ? Boolean.TRUE : null,
-                    latest && autoUpdate ? Boolean.TRUE : null
+                    latest && autoUpdate ? Boolean.TRUE : null,
+                    latest && highPriority ? Boolean.TRUE : null
             );
         }
     }
@@ -346,6 +350,7 @@ class ScaffoldTask extends DefaultTask {
         return new MetadataVersionsIndexEntry(
                 latest ? Boolean.TRUE : null,
                 null, // auto-update
+                null, // high-priority
                 null, // override
                 null, // default-for
                 coordinates.version(), // metadata-version

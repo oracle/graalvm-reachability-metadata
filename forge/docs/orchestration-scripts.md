@@ -30,6 +30,11 @@ the contract for that producer is the repository functional spec's
 [Library version update automation](../../docs/functional-spec.md#fs-library-version-update-automation-library-version-update-automation)
 (root-namespace ID `FS-library-version-update-automation`).
 
+Queue scans rank issues within each fetched pipeline batch by label-derived
+urgency: `high-priority` first, `priority` second, and issues with neither label
+last. An issue carrying both priority labels remains in the highest tier, matching
+the repository status classification (§root/FS-repository-status-report.1).
+
 Orchestration must claim exactly one issue per workflow run, dispatch the
 matching workflow driver, and either hand PR-eligible results to publication
 (§GIT-pr-eligibility) or preserve failed results according to the workflow

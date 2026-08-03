@@ -25,7 +25,8 @@ A supported issue starts from a work label such as `library-new-request`,
 `library-update-request`, `fails-javac-compile`, `fails-java-run`, or
 `fails-native-image-run`. Section 2 (Scope) enumerates the queues Forge
 resolves, and its "Origin of the `fails-*` queues" subsection records where the
-`fails-*` work comes from.
+`fails-*` work comes from. Within each pipeline scan batch, Forge processes
+`high-priority` issues first, then `priority` issues, then regular issues.
 
 ## 2. Scope
 
