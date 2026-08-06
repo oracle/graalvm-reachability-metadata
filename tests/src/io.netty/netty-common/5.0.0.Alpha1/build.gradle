@@ -43,3 +43,14 @@ tasks.named("nativeTest") {
         ])
     }
 }
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
