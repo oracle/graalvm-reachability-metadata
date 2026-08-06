@@ -1,0 +1,115 @@
+{
+  "add_new_library_support:2026-06-29": {
+    "timestamp": "2026-06-29T02:39:26.483103Z",
+    "library": "com.rabbitmq.client:amqp-client:0.8.0",
+    "starting_commit": "7b0f6f9e5452d5d14342fc87fc3681c03e69f355",
+    "ending_commit": "dd94212ff04d663499f4af24d1557a42a4b70439",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "0.8.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 19,
+            "totalCalls": 19
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 21,
+        "totalCalls": 21
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 19513,
+          "missed": 100817,
+          "ratio": 0.162162,
+          "total": 120330
+        },
+        "line": {
+          "covered": 4882,
+          "missed": 23490,
+          "ratio": 0.172071,
+          "total": 28372
+        },
+        "method": {
+          "covered": 1695,
+          "missed": 6536,
+          "ratio": 0.205929,
+          "total": 8231
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 7103,
+      "issue_label": "library-new-request",
+      "library": "com.rabbitmq.client:amqp-client:0.8.0",
+      "summary": "Meaningful coverage needs a real RabbitMQ 4.x broker because the AMQP 1.0 client is broker-specific and its normal use is connecting, declaring topology, publishing, and consuming messages.",
+      "deterministic_setup": [
+        {
+          "kind": "docker_image",
+          "image": "rabbitmq:4.1",
+          "slug": "rabbitmq",
+          "reason": "The upstream README documents running tests against RabbitMQ via `docker run ... rabbitmq:4.1`; the library targets RabbitMQ 4.0+ and RabbitMQ 4.x supports AMQP 1.0 natively on port 5672."
+        }
+      ],
+      "agent_guidance": "No special environment variable or system property is required by the client for basic coverage. Tests should use the default URI `amqp://guest:guest@localhost:5672/%2f`, wait until a connection can be opened before assertions, use unique queue/address names, and close connections/environment resources cleanly.",
+      "risks": [
+        "Tests that only instantiate builders or value objects without a broker are likely scaffold-level and will miss the main dynamic behavior.",
+        "RabbitMQ startup can take several seconds; tests need a readiness loop to avoid flakes.",
+        "Optional Micrometer/Gson-related APIs exist but their optional dependencies are not needed for basic publish/consume/topology coverage; revisit only if tests intentionally exercise those optional integrations."
+      ],
+      "applied_setup": [
+        {
+          "kind": "docker_image",
+          "image": "rabbitmq:4.1",
+          "slug": "rabbitmq",
+          "result": "applied",
+          "target": "tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-rabbitmq"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#7103 Support for com.rabbitmq.client:amqp-client:0.8.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 67238,
+      "output_tokens_used": 4709,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/com.rabbitmq.client:amqp-client:0.8.0/library-preparation-preflight/pi-generation-2026-06-29T01-45-48-249709Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 563570,
+      "cached_input_tokens_used": 5624832,
+      "output_tokens_used": 45469,
+      "iterations": 7,
+      "cost_usd": 4.1765,
+      "generated_loc": 308,
+      "tested_library_loc": 4882,
+      "metadata_entries": 85,
+      "test_only_metadata_entries": 1,
+      "code_coverage_percent": 17.21
+    },
+    "artifacts": {
+      "test_file": "tests/src/com.rabbitmq.client/amqp-client/0.8.0/src/test/java/com_rabbitmq_client/amqp_client/UtilsTest.java",
+      "metadata_file": "metadata/com.rabbitmq.client/amqp-client/0.8.0/reachability-metadata.json"
+    }
+  }
+}
