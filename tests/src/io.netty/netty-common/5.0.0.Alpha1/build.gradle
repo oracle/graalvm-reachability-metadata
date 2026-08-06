@@ -16,10 +16,21 @@ dependencies {
     testImplementation 'org.awaitility:awaitility:4.2.0'
 }
 
+List<String> platformDependentAccessArgs = [
+        "--add-opens=java.base/java.nio=ALL-UNNAMED",
+        "--add-opens=java.base/jdk.internal.ref=ALL-UNNAMED"
+]
+
 tasks.withType(Test).configureEach {
-    jvmArgs += [
-        "--add-opens=java.base/java.nio=ALL-UNNAMED"
-    ]
+    jvmArgs += platformDependentAccessArgs
+}
+
+graalvmNative {
+    binaries {
+        all {
+            buildArgs.addAll(platformDependentAccessArgs)
+        }
+    }
 }
 
 tasks.named("nativeTest") {
