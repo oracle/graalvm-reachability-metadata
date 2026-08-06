@@ -16,6 +16,12 @@ dependencies {
     testImplementation 'org.awaitility:awaitility:4.2.0'
 }
 
+tasks.withType(Test).configureEach {
+    jvmArgs += [
+        "--add-opens=java.base/java.nio=ALL-UNNAMED"
+    ]
+}
+
 tasks.named("nativeTest") {
     if (libraryVersion.startsWith('4.2.')) {
         // Netty 4.2.x requires explicit unsafe access on Java 25 native runs.
