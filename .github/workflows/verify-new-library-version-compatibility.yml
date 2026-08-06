@@ -450,6 +450,21 @@ jobs:
             ' >/dev/null
           }
 
+          latest_master_is_high_priority() {
+            local name="$1"
+            local group="${name%%:*}"
+            local artifact="${name#*:}"
+            local index_path="metadata/$group/$artifact/index.json"
+
+            if ! git cat-file -e "origin/master:$index_path" 2>/dev/null; then
+              return 1
+            fi
+
+            git show "origin/master:$index_path" | jq -e '
+              any(.[]?; (.latest == true) and (."high-priority" == true))
+            ' >/dev/null
+          }
+
           jq -c '.failures[]' aggregate-results.json | while read -r library; do
             NAME="$(printf '%s' "$library" | jq -r '.name')"
             printf '%s' "$library" | jq -c '.failures[]' | while read -r failure; do
@@ -595,12 +610,18 @@ jobs:
                 ASSIGNEE_ARGS=(--assignee "vjovanov")
               fi
 
+              PRIORITY_ARGS=()
+              if latest_master_is_high_priority "$NAME"; then
+                PRIORITY_ARGS=(--label "high-priority")
+              fi
+
               gh issue create \
                 --repo "${{ github.repository }}" \
                 --title "$TITLE" \
                 --body-file "$BODY_FILE" \
                 --label "library-unsupported-version" \
                 --label "$FAILURE_LABEL" \
+                "${PRIORITY_ARGS[@]}" \
                 "${ASSIGNEE_ARGS[@]}"
 
               rm "$BODY_FILE"

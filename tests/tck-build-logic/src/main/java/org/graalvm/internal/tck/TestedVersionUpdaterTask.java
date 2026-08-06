@@ -201,6 +201,7 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
                 return new MetadataVersionsIndexEntry(
                         entry.latest(),
                         entry.autoUpdate(),
+                        entry.highPriority(),
                         entry.override(),
                         entry.defaultFor(),
                         newVersion,
@@ -560,6 +561,7 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
                 MetadataVersionsIndexEntry updatedEntry = new MetadataVersionsIndexEntry(
                         entry.latest(),
                         entry.autoUpdate(),
+                        entry.highPriority(),
                         entry.override(),
                         entry.defaultFor(),
                         entry.metadataVersion(),

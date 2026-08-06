@@ -834,35 +834,37 @@ class IssueClaimPreflightTests(unittest.TestCase):
         self.assertTrue(forge_metadata.issue_has_label(priority_issue, forge_metadata.LABEL_PRIORITY))
         self.assertFalse(forge_metadata.issue_has_label(regular_issue, forge_metadata.LABEL_PRIORITY))
 
-    def test_prioritized_issue_fetch_marks_blocking_libraries_before_sorting(self) -> None:
+    def test_prioritized_issue_fetch_orders_high_priority_before_priority_and_regular(self) -> None:
         regular_issue = _search_issue(1412)
         priority_issue = _search_issue(1413)
+        high_priority_issue = _search_issue(1414, [forge_metadata.LABEL_HIGH_PRIORITY])
 
         with patch.object(
                 forge_metadata,
                 "get_issues_with_label",
-                return_value=[regular_issue, priority_issue],
+                return_value=[regular_issue, priority_issue, high_priority_issue],
         ), \
                 patch.object(
                     forge_metadata,
-                    "get_open_issues_blocked_by_issue_counts",
-                    return_value={
-                        1412: 0,
-                        1413: forge_metadata.PRIORITY_BLOCKING_LIBRARY_THRESHOLD,
-                    },
+                "get_open_issues_blocked_by_issue_counts",
+                return_value={
+                    1412: 0,
+                    1413: forge_metadata.PRIORITY_BLOCKING_LIBRARY_THRESHOLD,
+                    1414: 0,
+                },
                 ), \
                 patch.object(forge_metadata, "add_issue_label"), \
                 patch("sys.stdout", new_callable=io.StringIO):
             issues, priority_offset, regular_offset, priority_exhausted, exhausted = (
                 forge_metadata.get_prioritized_issues_with_label(
                     forge_metadata.LABEL_LIBRARY_NEW,
-                    2,
+                    3,
                 )
             )
 
-        self.assertEqual([issue["number"] for issue in issues], [1413, 1412])
+        self.assertEqual([issue["number"] for issue in issues], [1414, 1413, 1412])
         self.assertEqual(priority_offset, 0)
-        self.assertEqual(regular_offset, 2)
+        self.assertEqual(regular_offset, 3)
         self.assertTrue(priority_exhausted)
         self.assertFalse(exhausted)
 
@@ -2903,7 +2905,7 @@ class PullRequestReviewTests(unittest.TestCase):
                 "get_pull_request_changed_files",
                 return_value=[
                     "metadata/org.example/demo/index.json",
-                    "metadata/schemas/metadata-library-index-schema-v2.2.0.json",
+                    "metadata/schemas/metadata-library-index-schema-v2.3.0.json",
                     "tests/src/org.example/demo/1.0.0/build.gradle",
                     "metadata/org.example/demo/1.0.0/reachability-metadata.json",
                 ],

@@ -17,10 +17,12 @@ would otherwise miss, and must never change how a consumer's code runs
   JSON array recording, per metadata version, the `tested-versions`,
   `allowed-packages`, the source/test/documentation/repository URLs, and optional
   `default-for`, `latest`, `override`, `requires`, `test-version`,
-  `skipped-versions`, `language`, and `auto-update`. The automation-only
+  `skipped-versions`, `language`, `auto-update`, and `high-priority`. The automation-only
   `auto-update: true` marker may appear on the unique latest entry to opt the
-  artifact into daily upstream-version compatibility checks; native-build-tools
-  ignores it. The remaining fields define how native-build-tools selects a
+  artifact into daily upstream-version compatibility checks. The automation-only
+  `high-priority: true` marker may appear there to label failed compatibility
+  updates as highest-priority Forge work; native-build-tools ignores both markers.
+  The remaining fields define how native-build-tools selects a
   metadata version for a dependency (§FS-repository-functional-spec.4).
 - `metadata/<groupId>/<artifactId>/<metadata-version>/reachability-metadata.json`
   — the only file `native-image` loads. It carries `reflection`, `jni`,

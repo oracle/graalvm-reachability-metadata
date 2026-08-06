@@ -1,5 +1,5 @@
 {
-  "$id": "https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/metadata/schemas/metadata-library-index-schema-v2.2.0.json",
+  "$id": "https://raw.githubusercontent.com/oracle/graalvm-reachability-metadata/master/metadata/schemas/metadata-library-index-schema-v2.3.0.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "description": "Schema for metadata/<groupId>/<artifactId>/index.json. Each file either describes Native Image metadata bundles for a range of library versions, or marks the artifact as not applicable to Native Image.",
   "type": "array",
@@ -84,6 +84,11 @@
           "type": "boolean",
           "const": true,
           "description": "Opts the artifact into automated upstream-version compatibility checks. This marker is allowed only on the entry with 'latest: true'."
+        },
+        "high-priority": {
+          "type": "boolean",
+          "const": true,
+          "description": "Marks failed automated compatibility updates for this artifact as high-priority. This marker is allowed only on the entry with 'latest: true'."
         },
         "default-for": {
           "type": "string",
@@ -236,6 +241,7 @@
       {
         "latest": true,
         "auto-update": true,
+        "high-priority": true,
         "metadata-version": "1.0.0",
         "tested-versions": [ "1.0.0", "1.1.0" , "1.2.0"],
         "allowed-packages": [ "org.example.library" ]

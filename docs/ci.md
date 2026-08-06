@@ -151,7 +151,9 @@ only for libraries whose latest index entry sets `auto-update: true`, using
 using `run-consecutive-tests.sh` (§CI-shared-scripts), records versions that pass
 everywhere via `addTestedVersion` in one
 `library-bulk-update` PR (refreshing the root coverage table), and files one
-aggregated `fails-*` failure issue per failing version. Those failure issues are
+aggregated `fails-*` failure issue per failing version. A failure for an artifact
+whose latest index entry sets `high-priority: true` also receives the
+`high-priority` label. Those failure issues are
 the entry point of the Forge repair queue (§forge/FS-forge-functional-spec).
 
 ### CI-publish-scheduled-coverage: Publish scheduled coverage

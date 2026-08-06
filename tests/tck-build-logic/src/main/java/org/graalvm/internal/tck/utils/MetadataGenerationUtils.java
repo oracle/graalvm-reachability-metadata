@@ -648,6 +648,7 @@ public final class MetadataGenerationUtils {
         List<String> latestRequires = null;
         LibraryLanguage latestLanguage = null;
         Boolean latestAutoUpdate = null;
+        Boolean latestHighPriority = null;
         // Copy default metadata properties from the current latest entry.
         for (int i = 0; i < entries.size(); i++) {
             MetadataVersionsIndexEntry entry = entries.get(i);
@@ -656,8 +657,9 @@ public final class MetadataGenerationUtils {
                 latestRequires = entry.requires();
                 latestLanguage = entry.language();
                 latestAutoUpdate = entry.autoUpdate();
+                latestHighPriority = entry.highPriority();
                 if (markAsLatest) {
-                    entries.set(i, copyWithLatest(entry, null, null));
+                    entries.set(i, copyWithLatest(entry, null, null, null));
                 }
             }
         }
@@ -668,6 +670,7 @@ public final class MetadataGenerationUtils {
         MetadataVersionsIndexEntry newEntry = new MetadataVersionsIndexEntry(
                 markAsLatest ? Boolean.TRUE : null, // latest
                 markAsLatest ? latestAutoUpdate : null, // auto-update
+                markAsLatest ? latestHighPriority : null, // high-priority
                 null, // override
                 null, // default-for
                 newCoords.version(), // metadata-version
@@ -787,6 +790,7 @@ public final class MetadataGenerationUtils {
         return new MetadataVersionsIndexEntry(
                 entry.latest(),
                 entry.autoUpdate(),
+                entry.highPriority(),
                 entry.override(),
                 entry.defaultFor(),
                 entry.metadataVersion(),
@@ -810,11 +814,13 @@ public final class MetadataGenerationUtils {
     private static MetadataVersionsIndexEntry copyWithLatest(
             MetadataVersionsIndexEntry entry,
             Boolean latest,
-            Boolean autoUpdate
+            Boolean autoUpdate,
+            Boolean highPriority
     ) {
         return new MetadataVersionsIndexEntry(
                 latest,
                 autoUpdate,
+                highPriority,
                 entry.override(),
                 entry.defaultFor(),
                 entry.metadataVersion(),
