@@ -130,6 +130,32 @@ residual-failure list to the dedicated lane. This keeps known failures from
 hiding new failures while allowing each lane's failures to be triaged
 independently. Other workflows do not supply an exclusion file.
 
+### 3.1 Running the JVM lane on a different JDK
+
+`GVM_TCK_TEST_JAVA_HOME` selects the JDK that executes the forked JVM test
+workers, independently of the JDK running Gradle itself. When it is unset — the
+default — workers inherit the Gradle daemon's JVM and nothing changes. When it
+is set, the `test` task runs `$GVM_TCK_TEST_JAVA_HOME/bin/java` with the JVM
+arguments it would use anyway: the variable selects an interpreter, it never
+adds, removes, or rewrites a JVM flag. Coordinates that pin a toolchain (the
+Kotlin and Scala projects) have their toolchain-derived launcher cleared so the
+selected JDK wins uniformly across every coordinate.
+
+This exists so the whole test suite can be run against a JDK that is not able to
+host Gradle — the Crema JVM of §CI-test-all-metadata-crema is the motivating
+case. Because the selected JDK is used unmodified, a failure under it is a
+property of that JDK and not of the harness, which is what makes the resulting
+run usable as a bug report.
+
+`GVM_TCK_TEST_DISABLE_ASSERTIONS=true` is the one exception, and it is opt-in and
+off by default. Gradle enables assertions on every test worker, so a JDK that
+rejects `-ea` outright fails all workers at VM startup and the run yields a
+single finding repeated once per coordinate instead of a survey. Setting this
+clears Gradle's `enableAssertions` so the sweep can reach the failures behind
+that one. It changes what the tests check: assertions no longer fire, so a test
+that verifies via `assert` passes vacuously. A run with this set is a
+bug-discovery run, never evidence that a library is supported.
+
 ## 4. Native-image metadata tracing
 
 Helpers for collecting metadata with the native-image tracing agent (see also
