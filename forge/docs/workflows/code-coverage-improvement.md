@@ -31,6 +31,14 @@ repo. It may also run after a new-library or version-update workflow has
 produced a passing test suite, but its own work product is broader API coverage
 for a library that is already represented locally.
 
+The initial automation entry point should be a Rhei workspace template for one
+GitHub issue labeled `improve-code-coverage`. The issue body must identify one
+Maven coordinate in `group:artifact:version` form. Template conversion resolves
+that coordinate, verifies that the library is already represented locally,
+creates or reuses a per-issue worktree, and generates bounded Rhei tasks for
+preparation, inventory, coverage generation, validation, discovery, finalization,
+and publication.
+
 The tests produced by this workflow must be a separate test suite from the
 tests used to generate or validate reachability metadata. Code coverage tests
 exist to exercise the whole practical library API; metadata-generation tests
@@ -38,6 +46,11 @@ exist to exercise dynamic-access behavior and validate native-image metadata.
 The suites may target the same coordinate, but they must have separate
 locations, metrics, and publication evidence so improving broad API coverage
 does not change the meaning of metadata-generation coverage.
+
+Generated code coverage tests must be written under
+`tests/<group>/<artifact>/<version>/code-coverage`. The workflow may read the
+metadata-generation tests as context, but generated code coverage tests must not
+be placed in the metadata-generation suite.
 
 This workflow must not replace dynamic-access generation. It complements it:
 
@@ -54,13 +67,32 @@ The workflow should build a target model from two inputs:
 - **API inventory** — public or realistically reachable library packages,
   classes, methods, constructors, and behavior groups derived from library
   artifacts, sources, documentation, or upstream tests.
-- **PGO profile observation** — profile-derived evidence of what library code
-  the current repo tests execute.
+- **JVM coverage observation** — JaCoCo method and line coverage for the code
+  coverage suite, correlated with the API inventory to identify public API
+  targets still uncovered after an iteration.
+- **Native Image discovery observation** — instrumented GraalVM PGO profile
+  data correlated with the Native Image static call graph and reachable-method
+  denominator to find reachable library behavior that the tests did not execute.
 
 Coverage targets should describe behavior to exercise, not raw bytecode
 addresses or dynamic-access call sites. Examples include untested public
 builders, serializers, parsers, adapters, configuration branches, error
 handling paths, and common object lifecycle operations.
+
+The API inventory should be emitted as compact JSON and Markdown under
+`runtime/code-coverage/api-inventory/`. Its canonical target `id` carries the
+full identity; redundant split fields should be avoided unless a helper needs
+them for stable processing.
+
+The Native Image discovery phase must treat `.iprof` files as positive evidence
+only. Sound coverage interpretation requires instrumented profiles, not sampled
+profiles; a reachable-method denominator from the image analysis/call-tree
+reports; and bytecode-index-to-source mapping from preserved debug information.
+Executed methods and edges are derived from profile context chains, not from the
+profile's method symbol table. Uncovered discovery targets are computed by
+joining the static call graph with observed profile edges and walking backward
+to the nearest public API inventory target. PGO-derived coverage should also be
+emitted as LCOV so standard coverage tools can consume it.
 
 The workflow should aim to cover the whole practical library API over repeated
 runs. If the API is too large for one PR, the workflow may use chunks, but each
@@ -70,33 +102,61 @@ without redoing already completed, skipped, or semantically impossible targets
 
 ## 4. Workflow
 
-1. **Eligibility and baseline** — resolve the supported coordinate, confirm
-   that the repo already contains a test suite, and run baseline verification.
-2. **Baseline profile** — run the existing tests and collect a GraalVM PGO
-   runtime profile for the target coordinate.
-3. **Target discovery** — combine API inventory with profile observation to
-   produce a promptable list of weakly covered or uncovered behavior targets.
-4. **Target selection** — choose a bounded set of targets for this run or
-   chunk, preserving durable skipped/exhausted state for targets that cannot be
-   handled automatically.
-5. **Test generation** — ask the configured agent to add or improve tests that
-   cover selected behavior through public or realistically reachable APIs.
-6. **Profile comparison** — rerun profile collection and compare the updated
-   profile against the baseline and selected targets.
-7. **Verification** — run local CI-equivalent verification for the coordinate
-   before returning a PR-eligible status (§FS-local-ci-equivalent-verification).
+The Rhei template should decompose the workflow into these phases:
+
+1. **Convert issue** — fetch one `improve-code-coverage` issue, parse the
+   coordinate, create or reuse the worktree, and record conversion rationale.
+2. **Prepare library** — resolve the coordinate, confirm existing repository
+   support, create or verify the code coverage suite, prepare source context,
+   and record baseline facts.
+3. **Generate API inventory** — deterministically write compact JSON and
+   Markdown reports for public user-callable API targets.
+4. **API cover loop** — run bounded agent work that adds or refines tests for
+   API inventory targets through normal public API usage.
+5. **Test validate** — run Java compilation, JVM tests under JaCoCo, automatic
+   metadata generation or repair when possible, and Native Image tests; emit the
+   per-iteration JaCoCo and API-cover reports.
+6. **Generate PGO correlation report** — collect an instrumented Native Image
+   PGO profile, collect the static call graph and reachable set, reject sampled
+   profiles, emit LCOV, and write prompt-ready discovery reports with reaching
+   paths from public API entries to reachable-but-unobserved targets.
+7. **Discovery cover loop** — group reachable-but-unobserved targets by shared
+   public entry point, reaching path, or owning class, and cover batches rather
+   than one target per iteration.
+8. **Finalization** — verify the final result against latest GraalVM, metadata
+   validity, JVM tests, Native Image tests, and the final PGO correlation report.
+9. **Publication** — open a PR with source issue, coordinate, coverage suite,
+   baseline/final coverage, coverage delta, completed targets,
+   skipped/exhausted targets, and validation commands.
+
+Agent-reviewed Rhei tasks should use a lightweight review/fix loop. Review
+checks whether the task followed its generated body, wrote required artifacts,
+stayed inside the intended worktree and coverage-test location, targeted public
+user-callable API behavior, and included validation evidence. Verification work
+routes to human intervention when metadata generation or Native Image validation
+cannot be resolved automatically.
 
 ## 5. Acceptance Criteria
 
 A code coverage improvement run is successful only when all of these hold:
 
+- A Rhei template can convert one `improve-code-coverage` issue into an
+  executable workspace with bounded tasks and review routing.
 - The generated tests are meaningful behavior tests and do not only execute
   methods for superficial profile hits.
 - The generated tests are written to the separate code coverage suite, not to
   the metadata-generation test suite.
-- The profile comparison shows a measurable increase in executed library API or
-  runtime surface for the selected targets, or the run records why a target was
-  skipped or exhausted.
+- API inventory generation produces compact JSON and Markdown reports for public
+  user-callable targets.
+- JVM validation runs under JaCoCo and reports which inventory targets remain
+  uncovered after each API-cover iteration.
+- Instrumented PGO coverage is normalized against the call-graph denominator,
+  sampled profiles are rejected, executed edges come from profile contexts, and
+  not-observed-but-reachable targets carry backward-derived reaching paths to
+  public API entries.
+- PGO-derived coverage is emitted as LCOV.
+- Discovery work covers reachable-but-unobserved targets in batches and records
+  skipped or exhausted targets with reasons.
 - Existing dynamic-access coverage, metadata validity, and JVM/native test
   gates do not regress.
 - Metrics record the baseline profile, updated profile, selected targets,
@@ -113,10 +173,11 @@ It should expose the API targets, profile comparison, generated test rationale,
 and skipped/exhausted targets in metrics and the PR description so reviewers
 can judge whether the new tests exercise valuable library behavior.
 
-The workflow is planned and not yet implemented. Until a driver, workflow
-engine, profile collector, API inventory builder, target-state format, metrics
-schema, and publication path exist, references to this workflow describe
-intended Forge functionality rather than runnable automation
+The workflow is partially implemented as a Rhei workspace template. Until a
+driver, helper-backed profile collector, API inventory builder, target-state
+format, metrics schema, and publication path exist, references to this workflow
+describe intended Forge functionality beyond the template rather than a fully
+runnable automation lane
 (§WF-code-coverage-improvement-architecture).
 
 # WF-code-coverage-improvement-architecture: Code coverage improvement workflow architecture
@@ -133,17 +194,23 @@ and API-target state needed to broaden tests for already-supported libraries.
 The component should be split into deterministic utilities plus a workflow
 engine:
 
+- **Rhei template and converter** — consumes one `improve-code-coverage` issue,
+  resolves the coordinate and worktree, and renders the executable task plan.
 - **Workflow driver** — resolves the coordinate, existing metadata-generation
   test suite, separate code coverage test suite, strategy, metrics root, source
   context, and optional chunk state before constructing the workflow engine.
-- **PGO profile collector** — runs the configured test command with GraalVM PGO
-  profile collection enabled and stores the raw profile artifact plus a stable
-  normalized summary.
 - **API inventory builder** — derives promptable API and behavior groups from
   the library artifact, sources, documentation, and upstream tests when
   available.
-- **Coverage analyzer** — joins the API inventory with baseline and updated
-  profile summaries to identify weakly covered or uncovered behavior.
+- **JVM coverage validator** — runs Java compilation and JVM tests under JaCoCo,
+  joins JaCoCo evidence with the API inventory, and writes remaining-target
+  reports for the API-cover loop.
+- **Native Image PGO analyzer** — collects instrumented `.iprof` data, rejects
+  sampled profiles, joins profile contexts with the static call graph and
+  reachable-method set, maps BCI evidence to source, and emits LCOV plus
+  prompt-ready discovery reports.
+- **Coverage analyzer** — joins the API inventory with JVM and Native Image
+  coverage summaries to identify weakly covered or uncovered behavior.
 - **Target-state store** — persists selected, completed, skipped, exhausted,
   and failed API coverage targets for chunked or resumed runs.
 - **Workflow engine** — owns prompt/command cycles, retries, target selection,
@@ -220,7 +287,9 @@ also ran and reported the dynamic-access workflow (§WF-improve-library-coverage
 
 ## 5. Implementation Status
 
-This architecture is planned. The component requires a new driver or
-driver mode, a registered workflow engine, PGO collector utilities, an API
-inventory builder, a coverage analyzer, a target-state schema, metrics support,
-and publication wiring before it is executable.
+This architecture is partially implemented. The component has a Rhei template
+and a validated example workspace. It still requires a new driver or driver
+mode, deterministic helper utilities, an API inventory builder, JaCoCo
+validation, instrumented PGO and call-graph correlation, a coverage analyzer, a
+target-state schema, metrics support, and publication wiring before it is a
+fully executable Forge lane.
