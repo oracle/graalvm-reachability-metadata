@@ -168,15 +168,14 @@ def publish_branch(
         metrics_repo_path: str | None = None,
         before_rebase: Callable[[], None] | None = None,
         before_verification: Callable[[str], None] | None = None,
-        after_verification: Callable[[], None] | None = None,
 ) -> tuple[str, LocalCIVerificationResult]:
     """Create, stage, rebase, verify, and push the publication branch.
 
     The one shared path from a verified worktree to a pushed PR branch
     (§GIT-shared-publication-pipeline): publishers supply only their staging
-    policy (§GIT-expected-paths) and optional pre-rebase / post-verification
-    assertions. Local CI-equivalent verification always runs before the push
-    that makes the branch PR-eligible (§GIT-pr-eligibility).
+    policy (§GIT-expected-paths) and optional pre-rebase hooks. Local
+    CI-equivalent verification always runs before the push that makes the branch
+    PR-eligible (§GIT-pr-eligibility).
     """
     resume_marker = _publication_resume_marker(repo_path)
     resume_branch = None if resume_marker is None or not resume_marker.publication_is_pushed() else resume_marker.publication_branch()
@@ -213,8 +212,6 @@ def publish_branch(
         base_commit=base_ref,
         metrics_repo_path=metrics_repo_path,
     )
-    if after_verification is not None:
-        after_verification()
     run_git_transport(["push", "origin", branch], cwd=repo_path)
     _record_publication_pushed(repo_path, branch, resume_marker)
     return branch, local_ci_verification

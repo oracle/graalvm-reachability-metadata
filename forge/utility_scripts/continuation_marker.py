@@ -58,7 +58,12 @@ def _default_phases() -> dict[str, dict[str, Any]]:
             "chunkProcessedClassCount": 0,
         },
         PHASE_FINALIZATION: {"status": STATUS_PENDING},
-        PHASE_PUBLICATION: {"status": STATUS_PENDING, "isPushed": False, "branch": None},
+        PHASE_PUBLICATION: {
+            "status": STATUS_PENDING,
+            "isPushed": False,
+            "branch": None,
+            "coverageFollowUpIssueNumber": None,
+        },
     }
 
 
@@ -233,6 +238,25 @@ class ContinuationMarker:
         self._phase(PHASE_EXPLORE)["exhaustedClasses"] = sorted(set(exhausted_classes))
         self.recompute_continue_from()
 
+    def defer_dynamic_access_coverage(self, uncovered_class_count: int, class_threshold: int) -> None:
+        """Skip exploration and record why, so publication reuses this one decision."""
+        self.mark_phase_skipped(
+            PHASE_EXPLORE,
+            deferredUncoveredClassCount=int(uncovered_class_count),
+            deferredClassThreshold=int(class_threshold),
+        )
+
+    def deferred_dynamic_access_coverage(self) -> tuple[int, int] | None:
+        """Return the deferred uncovered class count and threshold, or None when exploration ran."""
+        phase = self.phases.get(PHASE_EXPLORE, {})
+        if phase.get("status") != STATUS_SKIPPED:
+            return None
+        uncovered_class_count = phase.get("deferredUncoveredClassCount")
+        class_threshold = phase.get("deferredClassThreshold")
+        if uncovered_class_count is None or class_threshold is None:
+            return None
+        return int(uncovered_class_count), int(class_threshold)
+
     def record_chunk_progress(
             self,
             chunk_class_count: int | None,
@@ -310,6 +334,16 @@ class ContinuationMarker:
         """Return the recorded publication branch."""
         branch = self._phase(PHASE_PUBLICATION).get("branch")
         return str(branch) if branch else None
+
+    def record_coverage_follow_up_issue(self, issue_number: int) -> None:
+        """Record the issue opened for deferred Java-fix coverage."""
+        self._phase(PHASE_PUBLICATION)["coverageFollowUpIssueNumber"] = int(issue_number)
+        self.recompute_continue_from()
+
+    def coverage_follow_up_issue_number(self) -> int | None:
+        """Return the deferred-coverage issue already opened by this run."""
+        issue_number = self._phase(PHASE_PUBLICATION).get("coverageFollowUpIssueNumber")
+        return int(issue_number) if issue_number is not None else None
 
     def _phase(self, phase_name: str) -> dict[str, Any]:
         if phase_name not in self.phases:

@@ -1,0 +1,140 @@
+# Fixture-backed Java-repair coverage follow-up. The composite strategy already
+# recorded the oversized-exploration decision in the marker; publication reuses
+# it and opens a new issue.
+number: 9108
+title: "Fix javac failure for org.glassfish.grizzly:grizzly-http-servlet:2.1.11"
+state: OPEN
+labels:
+  - fails-javac-compile
+assignees: []
+project:
+  number: 30
+  item_id: fixture-project-item-9108
+  status: Todo
+blocked_by: []
+body: |
+  Resume publication after the successful javac repair for
+  `org.glassfish.grizzly:grizzly-http-servlet:2.1.11`.
+
+  The compatibility failure originally reproduced against the previous test
+  coordinate with:
+
+  `./gradlew compileTestJava -Pcoordinates=org.glassfish.grizzly:grizzly-http-servlet:2.1.2`
+comments:
+  - author: fixture-runner
+    created_at: "2026-07-27T18:00:00Z"
+    body: |
+      Fixture preserved completed repair work for publication resume.
+
+      Branch name: `fixture/preserved-work/issue-9108-javac-coverage-follow-up`
+worktree_files:
+  metadata/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/reachability-metadata.json: {}
+  tests/src/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/build.gradle: |
+    // Fixture placeholder for the completed javac repair.
+  tests/src/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/.gitignore: ""
+  tests/src/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/gradle.properties: |
+    # Fixture placeholder for the completed javac repair.
+  tests/src/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/settings.gradle: |
+    rootProject.name = "grizzly-http-servlet-fixture"
+  tests/src/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/src/test/java/org_glassfish_grizzly/grizzly_http_servlet/Grizzly_http_servletTest.java: |
+    package org_glassfish_grizzly.grizzly_http_servlet;
+    class Grizzly_http_servletTest {}
+  tests/src/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/src/test/java/org_glassfish_grizzly/grizzly_http_servlet/ServletContextImplTest.java: |
+    package org_glassfish_grizzly.grizzly_http_servlet;
+    class ServletContextImplTest {}
+  tests/src/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/src/test/resources/META-INF/native-image/org.glassfish.grizzly/grizzly-http-servlet-tests/native-image.properties: |
+    # Fixture placeholder for the completed javac repair.
+  tests/src/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/src/test/resources/META-INF/native-image/reachability-metadata.json: {}
+  tests/src/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/user-code-filter.json:
+    rules: []
+  tests/src/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/build/reports/dynamic-access/dynamic-access-coverage.json:
+    coordinate: org.glassfish.grizzly:grizzly-http-servlet:2.1.11
+    hasDynamicAccess: true
+    totals:
+      totalCalls: 16
+      coveredCalls: 0
+    classes:
+      - {className: example.Class01, totalCalls: 1, coveredCalls: 0}
+      - {className: example.Class02, totalCalls: 1, coveredCalls: 0}
+      - {className: example.Class03, totalCalls: 1, coveredCalls: 0}
+      - {className: example.Class04, totalCalls: 1, coveredCalls: 0}
+      - {className: example.Class05, totalCalls: 1, coveredCalls: 0}
+      - {className: example.Class06, totalCalls: 1, coveredCalls: 0}
+      - {className: example.Class07, totalCalls: 1, coveredCalls: 0}
+      - {className: example.Class08, totalCalls: 1, coveredCalls: 0}
+      - {className: example.Class09, totalCalls: 1, coveredCalls: 0}
+      - {className: example.Class10, totalCalls: 1, coveredCalls: 0}
+      - {className: example.Class11, totalCalls: 1, coveredCalls: 0}
+      - {className: example.Class12, totalCalls: 1, coveredCalls: 0}
+      - {className: example.Class13, totalCalls: 1, coveredCalls: 0}
+      - {className: example.Class14, totalCalls: 1, coveredCalls: 0}
+      - {className: example.Class15, totalCalls: 1, coveredCalls: 0}
+      - {className: example.Class16, totalCalls: 1, coveredCalls: 0}
+  stats/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/stats.json:
+    versions:
+      - version: "2.1.11"
+        dynamicAccess:
+          coveredCalls: 10
+          totalCalls: 100
+          coverageRatio: 0.1
+          breakdown: {}
+        libraryCoverage:
+          line:
+            covered: 100
+            missed: 900
+            total: 1000
+            ratio: 0.1
+  stats/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/execution-metrics.json:
+    "fix_javac_fail:2026-07-27":
+      timestamp: "2026-07-27T18:00:00Z"
+      library: "org.glassfish.grizzly:grizzly-http-servlet:2.1.11"
+      previous_library: "org.glassfish.grizzly:grizzly-http-servlet:2.1.2"
+      strategy_name: javac_iterative_with_coverage_sources_pi_gpt-5.6-terra
+      agent: pi
+      model: gpt-5.6-terra
+      status: success
+      metrics:
+        input_tokens_used: 100
+        cached_input_tokens_used: 25
+        output_tokens_used: 20
+        iterations: 1
+        cost_usd: 0.01
+        tested_library_loc: 100
+        code_coverage_percent: 10
+        metadata_entries: 1
+        previous_library_metadata_entries: 1
+        previous_library_coverage_percent: 21
+      artifacts:
+        metadata_file: metadata/org.glassfish.grizzly/grizzly-http-servlet/2.1.11/reachability-metadata.json
+continuation_marker:
+  schemaVersion: 1
+  continueFrom: publication
+  preservedBranch: fixture/preserved-work/issue-9108-javac-coverage-follow-up
+  strategyName: javac_iterative_with_coverage_sources_pi_gpt-5.6-terra
+  issueNumber: 9108
+  label: fails-javac-compile
+  coordinate: org.glassfish.grizzly:grizzly-http-servlet:2.1.11
+  newVersion: "2.1.11"
+  libraryUpdateRoute: null
+  libraryPreparationPreflight: null
+  publicationMetrics:
+    library: org.glassfish.grizzly:grizzly-http-servlet:2.1.11
+    timestamp: "2026-07-27T18:00:00Z"
+    extras: {}
+  phases:
+    setup:
+      status: completed
+      preflightDone: true
+      setupDone: true
+    fix:
+      status: completed
+      iteration: 1
+    explore:
+      status: skipped
+      exhaustedClasses: []
+      deferredUncoveredClassCount: 16
+      deferredClassThreshold: 15
+    finalization:
+      status: completed
+    publication:
+      status: pending

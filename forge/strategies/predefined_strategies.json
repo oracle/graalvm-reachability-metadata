@@ -433,6 +433,28 @@
     "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
   },
   {
+    "name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-terra",
+    "description": "Same configuration as javac_iterative_with_coverage_sources_pi_gpt-5.5, but uses gpt-5.6-terra instead.",
+    "agent": "pi",
+    "workflow": "increase_dynamic_access_coverage",
+    "primary-workflow": "javac_iterative",
+    "model": "gpt-5.6-terra",
+    "prompts": {
+      "initial": "prompt_templates/fix-javac/initial-with-sources.md",
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-test-iterations": 5,
+      "max-iterations": 2,
+      "max-class-test-iterations": 2,
+      "source-context-types": [
+        "main"
+      ]
+    },
+    "mcps": [],
+    "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
+  },
+  {
     "name": "optimistic_dynamic_access_iterative_pi_gpt-5.4",
     "description": "Composite strategy: optimistic bulk DA coverage, then per-class DA refinement.",
     "agent": "pi",
@@ -479,6 +501,28 @@
     "workflow": "increase_dynamic_access_coverage",
     "primary-workflow": "java_run_iterative",
     "model": "gpt-5.5",
+    "prompts": {
+      "initial": "prompt_templates/fix-java-run/initial-with-sources.md",
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-test-iterations": 5,
+      "max-iterations": 2,
+      "max-class-test-iterations": 2,
+      "source-context-types": [
+        "main"
+      ]
+    },
+    "mcps": [],
+    "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
+  },
+  {
+    "name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-terra",
+    "description": "Same configuration as java_run_iterative_with_coverage_sources_pi_gpt-5.5, but uses gpt-5.6-terra instead.",
+    "agent": "pi",
+    "workflow": "increase_dynamic_access_coverage",
+    "primary-workflow": "java_run_iterative",
+    "model": "gpt-5.6-terra",
     "prompts": {
       "initial": "prompt_templates/fix-java-run/initial-with-sources.md",
       "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"

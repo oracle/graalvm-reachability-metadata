@@ -11,6 +11,7 @@ from ai_workflows.core.workflow_strategy import (
     WorkflowStrategy,
 )
 from utility_scripts.continuation_marker import PHASE_FIX, save_phase_update
+from utility_scripts.java_fix_coverage_follow_up import uncovered_dynamic_access_class_count
 
 
 @WorkflowStrategy.register("increase_dynamic_access_coverage")
@@ -29,6 +30,11 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
         self.reachability_repo_path = self.context["reachability_repo_path"]
         self.library = self.context.get("library") or self.context.get("updated_library")
         self.group, self.artifact, self.version = self.library.split(":")
+        self.dynamic_access_class_threshold = int(
+            self.context.get("dynamic_access_class_threshold") or 0
+        )
+        if self.dynamic_access_class_threshold < 0:
+            raise ValueError("dynamic_access_class_threshold must be non-negative")
         if primary_workflow_name:
             PrimaryClass = WorkflowStrategy.get_class(primary_workflow_name)
             self.primary = PrimaryClass(strategy_obj, **context)
@@ -67,8 +73,34 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
         da_context["library"] = library
 
         da = DynamicAccessIterativeStrategy(self.strategy_obj, **da_context)
+        current_report = None
+        if self.dynamic_access_class_threshold > 0:
+            current_report = da._generate_dynamic_access_report()
+            uncovered_class_count = uncovered_dynamic_access_class_count(current_report)
+            if uncovered_class_count > self.dynamic_access_class_threshold:
+                self._print_message(
+                    "skipping dynamic-access exploration: "
+                    "uncovered_classes={uncovered} threshold={threshold}".format(
+                        uncovered=uncovered_class_count,
+                        threshold=self.dynamic_access_class_threshold,
+                    )
+                )
+                save_phase_update(
+                    self.continuation_marker_path,
+                    lambda marker: marker.defer_dynamic_access_coverage(
+                        uncovered_class_count,
+                        self.dynamic_access_class_threshold,
+                    ),
+                )
+                if self.primary is None or len(result) == 2:
+                    return status, iterations
+                return (status, iterations) + result[2:]
+
         self._print_message("starting dynamic-access coverage phase")
-        phase_ok, da_iterations = da._run_dynamic_access_phase(agent)
+        if current_report is None:
+            phase_ok, da_iterations = da._run_dynamic_access_phase(agent)
+        else:
+            phase_ok, da_iterations = da._run_dynamic_access_phase(agent, current_report)
         iterations += da_iterations
         self._print_message(
             "dynamic-access coverage phase completed with phase_ok={phase_ok}, iterations_added={iterations}".format(
