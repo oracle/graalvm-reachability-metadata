@@ -176,6 +176,41 @@ this functional spec.
   generic workflow policy; `forge_metadata.py` computes the concrete chunk size
   for each run.
 
+### FS-forge-vm-isolated-execution: Optional VM-isolated Forge execution
+
+Forge must offer an optional `--incus` mode that runs a whole generation inside a
+fresh, single-use Incus VM, so generated tests and agent commands that open
+windows, write into `$HOME`, fill `/tmp`, delete files, or start Docker-backed
+services hit a disposable VM instead of the operator's machine. Docker is not the
+isolation boundary — Forge workflows start their own Docker containers for test
+resources, so Docker is a workload *inside* the VM. The flag changes only *where*
+a generation runs, never *what* it does.
+
+- **Opt-in flag.** `--incus` lives on the `forge_metadata.py` entry point,
+  forwarded by the `do-work.sh` / `do_up_to_date_work.sh` loops like
+  `--parallelism`. When it is absent, Forge runs on the host exactly as today.
+- **Fresh VM per run.** Each claimed run gets its own single-use VM, discarded
+  afterwards so no state carries over. The VM must hold a complete
+  reachability-repo checkout (§FS-forge-functional-spec) at current `master`,
+  Forge tooling, the required GraalVM installation(s), `gh` authentication, the
+  Docker capability tests need, and Gradle caches; Forge runs that run's existing
+  per-issue workflow inside it.
+- **Behavior unchanged.** Workflow selection, strategy configuration, logging,
+  metrics, stop-file handling, worktree cleanup, and failed-work preservation
+  behave the same and produce the same artifacts, and local Forge automation
+  stays non-privileged inside the run (§FS-local-ci-equivalent-verification).
+- **Logs survive the VM.** Forge must support directing run logs to an
+  operator-provided location so it can be a host directory mounted into the VM;
+  logs then land on the host as they are written and remain after teardown.
+  Metrics and preserved failed-work branches already leave over the network; the
+  worktree and other side effects stay in the VM and are discarded with it.
+- **Setup is a prerequisite, not a run action.** Forge must not install or
+  configure Incus, or otherwise mutate the host outside the documented one-time
+  setup. When the flag is passed, Forge must verify the environment is ready —
+  Incus available, base image built, configuration and credentials present — and
+  stop with a clear, actionable error rather than running partially or falling
+  back to the host.
+
 ### 4.4 Repository availability for test and metadata artifacts
 
 - Every Forge workflow artifact that runs reachability-repo Gradle tasks for

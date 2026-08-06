@@ -1701,6 +1701,7 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             forge_metadata.DEFAULT_PARALLELISM,
             user_requested_only=False,
             environment_already_validated=True,
+            use_incus=False,
         )
         process_reviews.assert_not_called()
 
@@ -1747,6 +1748,7 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             forge_metadata.DEFAULT_PARALLELISM,
             user_requested_only=False,
             environment_already_validated=True,
+            use_incus=False,
         )
         process_reviews.assert_not_called()
 
@@ -1790,6 +1792,7 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             forge_metadata.DEFAULT_PARALLELISM,
             user_requested_only=True,
             environment_already_validated=True,
+            use_incus=False,
         )
 
     def test_process_work_queues_resolves_auth_for_review_only_queue(self) -> None:
