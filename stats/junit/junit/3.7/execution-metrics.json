@@ -88,5 +88,96 @@
     "artifacts": {
       "metadata_file": "metadata/junit/junit/3.7/reachability-metadata.json"
     }
+  },
+  "add_new_library_support:2026-08-07": {
+    "timestamp": "2026-08-07T11:39:47.904350Z",
+    "library": "junit:junit:3.7",
+    "starting_commit": "883ded077dd238d8500de5222c9ed1eb4e60d418",
+    "ending_commit": "4effce240b6af595c289efcf0c5c07541d1867d0",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "gpt-5.5",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "3.7",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.871429,
+            "coveredCalls": 61,
+            "totalCalls": 70
+          }
+        },
+        "coverageRatio": 0.871429,
+        "coveredCalls": 61,
+        "totalCalls": 70
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 6999,
+          "missed": 14497,
+          "ratio": 0.325595,
+          "total": 21496
+        },
+        "line": {
+          "covered": 1653,
+          "missed": 3238,
+          "ratio": 0.337968,
+          "total": 4891
+        },
+        "method": {
+          "covered": 623,
+          "missed": 1007,
+          "ratio": 0.382209,
+          "total": 1630
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 995,
+      "issue_label": "library-new-request",
+      "library": "junit:junit:3.7",
+      "summary": "JUnit 3.7 itself has no external service or extra library dependency, but the normal TCK scaffold can upgrade it to JUnit 4.13.2 via JUnit Vintage, making coverage non-meaningful for 3.7.",
+      "deterministic_setup": [],
+      "agent_guidance": "Ensure the test runtime actually resolves `junit:junit:3.7`; the default scaffold's `org.junit.vintage:junit-vintage-engine` dependency pulls `junit:junit:4.13.2` and Gradle conflict resolution upgrades 3.7. Exclude/disable that upgrade or enforce the 3.7 artifact before judging coverage. Write coverage tests against JUnit 3 APIs such as `junit.framework.*`, `junit.runner.*`, and text UI runner classes; avoid JUnit 4-only APIs.",
+      "risks": [
+        "If dependency resolution is not corrected, generated tests may pass while covering JUnit 4.13.2 instead of the requested 3.7 artifact.",
+        "Forcing JUnit 3.7 while leaving JUnit Vintage active may break JUnit Platform discovery because Vintage expects JUnit 4 classes."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#995 Support for junit:junit:3.7; label=library-new-request; body_chars=453"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "13 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.5",
+      "input_tokens_used": 28230,
+      "output_tokens_used": 3055,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/jovan/Work/graalvm-reachability-metadata/forge/logs/junit:junit:3.7/library-preparation-preflight/pi-generation-2026-08-07T10-30-10-608929Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 364612,
+      "cached_input_tokens_used": 2867712,
+      "output_tokens_used": 29826,
+      "iterations": 11,
+      "cost_usd": 4.1518,
+      "generated_loc": 708,
+      "tested_library_loc": 1653,
+      "metadata_entries": 99,
+      "test_only_metadata_entries": 133,
+      "code_coverage_percent": 33.8
+    },
+    "artifacts": {
+      "metadata_file": "metadata/junit/junit/3.7/reachability-metadata.json"
+    }
   }
 }
