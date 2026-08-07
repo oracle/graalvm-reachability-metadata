@@ -1,0 +1,78 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "io.netty:netty-transport:5.0.0.Alpha1",
+  "issueNumber": 9162,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "Use Netty 5.0.0.Alpha1-compatible APIs: override `messageReceived`, use older `HttpHeaders` helpers instead of `HttpHeaderNames`/`HttpUtil`, and avoid `SslContextBuilder`/`InsecureTrustManagerFactory` unless building SSL with JDK `SSLEngine` directly.",
+    "applied_setup": [],
+    "current_library": "io.netty:netty-transport:4.1.115.Final",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9162 [Automation] javac compile fails for io.netty:netty-transport:5.0.0.Alpha1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "8 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 28966,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 9162,
+    "library": "io.netty:netty-transport:5.0.0.Alpha1",
+    "model": "gpt-5.5",
+    "new_version": "5.0.0.Alpha1",
+    "output_tokens_used": 3182,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Netty 5.0.0.Alpha1 is an old alpha with APIs that differ significantly from Netty 4.x and later Netty versions.",
+      "HTTP/SSL examples copied from current Netty documentation or the existing 4.1 test are likely to fail compilation without API adaptation."
+    ],
+    "session_log_path": "/home/jovan/Work/graalvm-reachability-metadata/forge/logs/io.netty:netty-transport:5.0.0.Alpha1/library-preparation-preflight/pi-generation-2026-08-07T06-06-43-758544Z.log",
+    "status": "completed",
+    "summary": "No concrete extra dependency, Docker image, environment variable, or system property is required; the javac failure is from Netty 5.0.0.Alpha1 API incompatibility with the existing Netty 4.x test code."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "5.0.0.Alpha1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 2,
+      "exhaustedClasses": [
+        "io.netty.channel.nio.NioEventLoop",
+        "io.netty.channel.socket.nio.NioDatagramChannelConfig"
+      ],
+      "iteration": 2,
+      "status": "completed"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 1,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/jormundur00/human-intervention/issue-9162-fails-javac-compile-io.netty-netty-transport-5.0.0.Alpha1-35185bea",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "io.netty:netty-transport:5.0.0.Alpha1",
+    "timestamp": "2026-08-07T06:51:53.185464Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "javac_iterative_with_coverage_sources_pi_gpt-5.5"
+}

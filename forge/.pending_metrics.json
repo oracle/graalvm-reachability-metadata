@@ -1,0 +1,57 @@
+{
+  "timestamp": "2026-08-07T06:51:53.185464Z",
+  "library": "io.netty:netty-transport:5.0.0.Alpha1",
+  "starting_commit": "218a3639c9b702ec9ece25936c1c1cd30ed5e9e7",
+  "ending_commit": "a1cada099d70a94a0ce5e6f5c930b57f144b5387",
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.5",
+  "agent": "pi",
+  "model": "gpt-5.5",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "no_action",
+    "issue_number": 9162,
+    "issue_label": "fails-javac-compile",
+    "library": "io.netty:netty-transport:5.0.0.Alpha1",
+    "summary": "No concrete extra dependency, Docker image, environment variable, or system property is required; the javac failure is from Netty 5.0.0.Alpha1 API incompatibility with the existing Netty 4.x test code.",
+    "deterministic_setup": [],
+    "agent_guidance": "Use Netty 5.0.0.Alpha1-compatible APIs: override `messageReceived`, use older `HttpHeaders` helpers instead of `HttpHeaderNames`/`HttpUtil`, and avoid `SslContextBuilder`/`InsecureTrustManagerFactory` unless building SSL with JDK `SSLEngine` directly.",
+    "risks": [
+      "Netty 5.0.0.Alpha1 is an old alpha with APIs that differ significantly from Netty 4.x and later Netty versions.",
+      "HTTP/SSL examples copied from current Netty documentation or the existing 4.1 test are likely to fail compilation without API adaptation."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9162 [Automation] javac compile fails for io.netty:netty-transport:5.0.0.Alpha1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "8 existing test file path(s) included"
+      }
+    ],
+    "current_library": "io.netty:netty-transport:4.1.115.Final",
+    "new_version": "5.0.0.Alpha1",
+    "model": "gpt-5.5",
+    "input_tokens_used": 28966,
+    "output_tokens_used": 3182,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "session_log_path": "/home/jovan/Work/graalvm-reachability-metadata/forge/logs/io.netty:netty-transport:5.0.0.Alpha1/library-preparation-preflight/pi-generation-2026-08-07T06-06-43-758544Z.log"
+  },
+  "metrics": {
+    "input_tokens_used": 142208,
+    "cached_input_tokens_used": 1528832,
+    "output_tokens_used": 15120,
+    "iterations": 3,
+    "cost_usd": 1.929,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}
