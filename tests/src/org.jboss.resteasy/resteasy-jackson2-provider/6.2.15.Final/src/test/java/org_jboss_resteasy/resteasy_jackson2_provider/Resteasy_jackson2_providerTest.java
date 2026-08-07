@@ -19,9 +19,14 @@ import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 
 import org.jboss.resteasy.annotations.providers.jackson.Formatted;
+import org.jboss.resteasy.plugins.providers.jackson.JsonProcessingExceptionMapper;
 import org.jboss.resteasy.plugins.providers.jackson.ResteasyJackson2Provider;
+
+import com.fasterxml.jackson.core.JsonLocation;
+import com.fasterxml.jackson.core.JsonParseException;
 import org.junit.jupiter.api.Test;
 
 public class Resteasy_jackson2_providerTest {
@@ -122,6 +127,18 @@ public class Resteasy_jackson2_providerTest {
         assertThat(json).contains("\n");
         assertThat(json).contains("  \"name\" : \"Dorothy\"");
         assertThat(json).contains("  \"address\" : {");
+    }
+
+    @Test
+    void jsonProcessingExceptionMapperReturnsBadRequestResponse() {
+        JsonProcessingExceptionMapper mapper = new JsonProcessingExceptionMapper();
+        JsonParseException exception = new JsonParseException("Unexpected JSON token", JsonLocation.NA);
+
+        try (Response response = mapper.toResponse(exception)) {
+            assertThat(response.getStatus()).isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
+            assertThat(response.getEntity()).isInstanceOf(String.class);
+            assertThat((String) response.getEntity()).contains("deserialize data");
+        }
     }
 
     @SuppressWarnings("unchecked")
