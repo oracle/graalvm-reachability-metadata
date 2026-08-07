@@ -25,6 +25,7 @@ import org.jboss.resteasy.annotations.providers.jackson.Formatted;
 import org.jboss.resteasy.plugins.providers.jackson.JsonProcessingExceptionMapper;
 import org.jboss.resteasy.plugins.providers.jackson.ResteasyJackson2Provider;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonLocation;
 import com.fasterxml.jackson.core.JsonParseException;
 import org.junit.jupiter.api.Test;
@@ -130,6 +131,28 @@ public class Resteasy_jackson2_providerTest {
     }
 
     @Test
+    void jsonViewAnnotationLimitsSerializedProperties() throws Exception {
+        ResteasyJackson2Provider provider = new ResteasyJackson2Provider();
+        Account account = new Account("apollo", "launch-code");
+        ByteArrayOutputStream entityStream = new ByteArrayOutputStream();
+        Annotation[] annotations = new Annotation[] {new JsonViewLiteral(PublicView.class)};
+
+        provider.writeTo(
+                account,
+                Account.class,
+                Account.class,
+                annotations,
+                MediaType.APPLICATION_JSON_TYPE,
+                new MultivaluedHashMap<>(),
+                entityStream);
+
+        String json = entityStream.toString(StandardCharsets.UTF_8);
+        assertThat(json).contains("\"username\":\"apollo\"");
+        assertThat(json).doesNotContain("secret");
+        assertThat(json).doesNotContain("launch-code");
+    }
+
+    @Test
     void jsonProcessingExceptionMapperReturnsBadRequestResponse() {
         JsonProcessingExceptionMapper mapper = new JsonProcessingExceptionMapper();
         JsonParseException exception = new JsonParseException("Unexpected JSON token", JsonLocation.NA);
@@ -174,10 +197,50 @@ public class Resteasy_jackson2_providerTest {
         }
     }
 
+    public interface PublicView {
+    }
+
+    public interface InternalView extends PublicView {
+    }
+
+    public static class Account {
+        @JsonView(PublicView.class)
+        public String username;
+
+        @JsonView(InternalView.class)
+        public String secret;
+
+        public Account() {
+        }
+
+        public Account(String username, String secret) {
+            this.username = username;
+            this.secret = secret;
+        }
+    }
+
     private static final class FormattedLiteral implements Formatted {
         @Override
         public Class<? extends Annotation> annotationType() {
             return Formatted.class;
+        }
+    }
+
+    private static final class JsonViewLiteral implements JsonView {
+        private final Class<?>[] views;
+
+        JsonViewLiteral(Class<?>... views) {
+            this.views = views.clone();
+        }
+
+        @Override
+        public Class<?>[] value() {
+            return views.clone();
+        }
+
+        @Override
+        public Class<? extends Annotation> annotationType() {
+            return JsonView.class;
         }
     }
 }
