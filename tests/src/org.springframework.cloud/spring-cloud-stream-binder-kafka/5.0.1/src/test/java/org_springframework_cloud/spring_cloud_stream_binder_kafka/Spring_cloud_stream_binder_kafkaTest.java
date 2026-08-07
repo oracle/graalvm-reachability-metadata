@@ -24,6 +24,7 @@ import org.springframework.boot.kafka.autoconfigure.KafkaProperties;
 import org.springframework.cloud.stream.binder.ExtendedConsumerProperties;
 import org.springframework.cloud.stream.binder.ExtendedProducerProperties;
 import org.springframework.cloud.stream.binder.kafka.KafkaBindingRebalanceListener;
+import org.springframework.cloud.stream.binder.kafka.KafkaExpressionEvaluatingInterceptor;
 import org.springframework.cloud.stream.binder.kafka.KafkaNullConverter;
 import org.springframework.cloud.stream.binder.kafka.aot.KafkaBinderRuntimeHints;
 import org.springframework.cloud.stream.binder.kafka.properties.JaasLoginModuleConfiguration;
@@ -38,6 +39,7 @@ import org.springframework.cloud.stream.provisioning.ConsumerDestination;
 import org.springframework.cloud.stream.provisioning.ProducerDestination;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.security.jaas.KafkaJaasLoginModuleInitializer;
 import org.springframework.kafka.support.KafkaNull;
@@ -234,6 +236,23 @@ public class Spring_cloud_stream_binder_kafkaTest {
 
         assertThat(converter.fromMessage(kafkaNullMessage, Object.class)).isSameAs(KafkaNull.INSTANCE);
         assertThat(converter.fromMessage(regularMessage, Object.class)).isNull();
+    }
+
+    @Test
+    void expressionEvaluatingInterceptorAddsComputedMessageKeyHeader() {
+        KafkaExpressionEvaluatingInterceptor interceptor = new KafkaExpressionEvaluatingInterceptor(
+                PARSER.parseExpression("headers['tenant'] + ':' + payload"), new StandardEvaluationContext());
+        Message<String> message = MessageBuilder.withPayload("order-42")
+                .setHeader("tenant", "acme")
+                .build();
+
+        Message<?> intercepted = interceptor.preSend(message, null);
+
+        assertThat(intercepted.getPayload()).isEqualTo("order-42");
+        assertThat(intercepted.getHeaders()).containsEntry("tenant", "acme");
+        assertThat(intercepted.getHeaders())
+                .containsEntry(KafkaExpressionEvaluatingInterceptor.MESSAGE_KEY_HEADER, "acme:order-42");
+        assertThat(message.getHeaders()).doesNotContainKey(KafkaExpressionEvaluatingInterceptor.MESSAGE_KEY_HEADER);
     }
 
     @Test
