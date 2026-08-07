@@ -7,6 +7,7 @@
 package org_springframework_cloud.spring_cloud_stream_binder_kafka;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ import org.springframework.cloud.stream.binder.kafka.KafkaBindingRebalanceListen
 import org.springframework.cloud.stream.binder.kafka.KafkaExpressionEvaluatingInterceptor;
 import org.springframework.cloud.stream.binder.kafka.KafkaNullConverter;
 import org.springframework.cloud.stream.binder.kafka.aot.KafkaBinderRuntimeHints;
+import org.springframework.cloud.stream.binder.kafka.config.DefaultMessageConverterHelper;
 import org.springframework.cloud.stream.binder.kafka.properties.JaasLoginModuleConfiguration;
 import org.springframework.cloud.stream.binder.kafka.properties.KafkaBinderConfigurationProperties;
 import org.springframework.cloud.stream.binder.kafka.properties.KafkaBindingProperties;
@@ -236,6 +238,29 @@ public class Spring_cloud_stream_binder_kafkaTest {
 
         assertThat(converter.fromMessage(kafkaNullMessage, Object.class)).isSameAs(KafkaNull.INSTANCE);
         assertThat(converter.fromMessage(regularMessage, Object.class)).isNull();
+    }
+
+    @Test
+    void defaultMessageConverterHelperRemovesFailedRecordFromKafkaBatchHeaders() {
+        DefaultMessageConverterHelper helper = new DefaultMessageConverterHelper();
+        ArrayList<String> receivedTopics = new ArrayList<>(List.of("orders.created", "orders.updated"));
+        ArrayList<Integer> receivedPartitions = new ArrayList<>(List.of(0, 1));
+        List<Long> offsets = List.of(11L, 12L);
+        ArrayList<String> applicationValues = new ArrayList<>(List.of("first", "second"));
+        Message<List<String>> batchMessage = MessageBuilder.withPayload(List.of("created", "updated"))
+                .setHeader("kafka_receivedTopic", receivedTopics)
+                .setHeader("kafka_receivedPartitionId", receivedPartitions)
+                .setHeader("kafka_offsets", offsets)
+                .setHeader("applicationValues", applicationValues)
+                .build();
+
+        helper.postProcessBatchMessageOnFailure(batchMessage, 0);
+
+        assertThat(helper.shouldFailIfCantConvert(batchMessage)).isFalse();
+        assertThat(receivedTopics).containsExactly("orders.updated");
+        assertThat(receivedPartitions).containsExactly(1);
+        assertThat(offsets).containsExactly(11L, 12L);
+        assertThat(applicationValues).containsExactly("first", "second");
     }
 
     @Test
