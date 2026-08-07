@@ -1,0 +1,119 @@
+{
+  "add_new_library_support:2026-08-07": {
+    "timestamp": "2026-08-07T10:22:15.699706Z",
+    "library": "org.springframework.boot:spring-boot-jackson2:4.1.0",
+    "starting_commit": "af5c6a715286f93ff3891d51ae3cb02a820cb32d",
+    "ending_commit": "2075a3eee488ac627c923ee157e1b1a2faf68393",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "4.1.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.25,
+            "coveredCalls": 1,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.25,
+        "coveredCalls": 1,
+        "totalCalls": 4
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 147,
+          "missed": 1555,
+          "ratio": 0.086369,
+          "total": 1702
+        },
+        "line": {
+          "covered": 40,
+          "missed": 362,
+          "ratio": 0.099502,
+          "total": 402
+        },
+        "method": {
+          "covered": 10,
+          "missed": 119,
+          "ratio": 0.077519,
+          "total": 129
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9227,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.boot:spring-boot-jackson2:4.1.0",
+      "summary": "Meaningful coverage targets Spring Boot Jackson 2 auto-configuration and test auto-configuration paths that reference Spring Boot modules not declared by the artifact POM.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.1.0",
+          "scope": "testImplementation",
+          "reason": "The artifact contains auto-configuration classes using org.springframework.boot.autoconfigure APIs, but spring-boot-autoconfigure is not a declared dependency."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-test:4.1.0",
+          "scope": "testImplementation",
+          "reason": "The artifact includes Jackson2TesterTestAutoConfiguration referencing Spring Boot JSON tester classes, and normal auto-configuration tests use Spring Boot test context runners."
+        }
+      ],
+      "agent_guidance": "No Docker image or environment setup is indicated. Keep tests focused on Jackson 2; avoid adding Jackson 3 unless explicitly testing mapper-selection behavior.",
+      "risks": [
+        "spring-boot-jackson2 is deprecated in Spring Boot 4.x in favor of spring-boot-jackson/Jackson 3.",
+        "The published dependency metadata appears insufficient for exercising all public auto-configuration classes without additional Spring Boot modules."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.1.0",
+          "result": "applied",
+          "target": "tests/src/org.springframework.boot/spring-boot-jackson2/4.1.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-test:4.1.0",
+          "result": "applied",
+          "target": "tests/src/org.springframework.boot/spring-boot-jackson2/4.1.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9227 Support for org.springframework.boot:spring-boot-jackson2:4.1.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.5",
+      "input_tokens_used": 41455,
+      "output_tokens_used": 4119,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/jovan/Work/graalvm-reachability-metadata/forge/logs/org.springframework.boot:spring-boot-jackson2:4.1.0/library-preparation-preflight/pi-generation-2026-08-07T09-27-41-641636Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 172869,
+      "cached_input_tokens_used": 2082304,
+      "output_tokens_used": 17520,
+      "iterations": 3,
+      "cost_usd": 2.4311,
+      "generated_loc": 40,
+      "tested_library_loc": 40,
+      "metadata_entries": 7,
+      "test_only_metadata_entries": 9,
+      "code_coverage_percent": 9.95
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.boot/spring-boot-jackson2/4.1.0/reachability-metadata.json"
+    }
+  }
+}
