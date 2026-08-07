@@ -180,6 +180,50 @@ public class Micrometer_registry_otlpTest {
     }
 
     @Test
+    void histogramFlavorCanBeSelectedPerMeter() throws Exception {
+        CapturingMetricsSender sender = new CapturingMetricsSender();
+        TestOtlpConfig config = new TestOtlpConfig("http://collector.example/v1/metrics", Map.of(), Map.of()) {
+            @Override
+            public HistogramFlavor histogramFlavor() {
+                return HistogramFlavor.EXPLICIT_BUCKET_HISTOGRAM;
+            }
+
+            @Override
+            public Map<String, HistogramFlavor> histogramFlavorPerMeter() {
+                return Map.of("rpc.server.duration", HistogramFlavor.BASE2_EXPONENTIAL_BUCKET_HISTOGRAM);
+            }
+        };
+
+        OtlpMeterRegistry registry = registry(config, sender);
+        try {
+            Timer.builder("rpc.server.duration")
+                    .publishPercentileHistogram()
+                    .tag("rpc.system", "grpc")
+                    .register(registry)
+                    .record(Duration.ofMillis(15));
+            Timer.builder("http.client.duration")
+                    .publishPercentileHistogram()
+                    .tag("method", "POST")
+                    .register(registry)
+                    .record(Duration.ofMillis(25));
+        }
+        finally {
+            registry.close();
+        }
+
+        Map<String, Metric> metrics = metricsByName(exportRequest(sender.singleRequest()));
+        Metric rpcDuration = metrics.get("rpc.server.duration");
+        assertThat(rpcDuration.hasExponentialHistogram()).isTrue();
+        assertThat(rpcDuration.getExponentialHistogram().getDataPoints(0).getCount()).isEqualTo(1L);
+        assertThat(attributes(rpcDuration)).containsEntry("rpc.system", "grpc");
+
+        Metric httpClientDuration = metrics.get("http.client.duration");
+        assertThat(httpClientDuration.hasHistogram()).isTrue();
+        assertThat(httpClientDuration.getHistogram().getDataPoints(0).getCount()).isEqualTo(1L);
+        assertThat(attributes(httpClientDuration)).containsEntry("method", "POST");
+    }
+
+    @Test
     void longTaskTimersAndMeterRemovalAreReflectedAtPublishTime() throws Exception {
         CapturingMetricsSender sender = new CapturingMetricsSender();
         TestOtlpConfig config = new TestOtlpConfig("http://collector.example/v1/metrics", Map.of(), Map.of());
