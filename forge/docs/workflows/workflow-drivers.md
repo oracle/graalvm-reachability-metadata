@@ -242,6 +242,14 @@ finalization succeeds, otherwise the finalization status becomes the run
 status. Drivers must not call the private finalization internals and must not
 re-implement the status merge at their call sites.
 
+The iteration commit stages the whole `metadata/` tree, not just the target
+coordinate's `metadata/<group>/<artifact>/<metadata-version>` directory and
+`index.json`. Metadata generation traces through the target's transitive
+dependencies, so a run can produce entries that belong to a dependency's
+artifact; staging the artifact-scoped paths alone would drop them, and the next
+checkpoint reset would delete them. Test sources and stats stay scoped to the
+target coordinate.
+
 Per-coordinate finalization repairs missing `allowed-packages`
 deterministically. If `checkMetadataFiles` still fails, Forge runs up to three
 Codex metadata fix and validation attempts before failing the run. Each Codex

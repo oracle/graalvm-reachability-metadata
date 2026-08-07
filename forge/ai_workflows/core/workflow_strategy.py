@@ -548,10 +548,6 @@ class WorkflowStrategy(ABC):
             self.context.get("test_version")
             or resolve_test_version(self.reachability_repo_path, self.group, self.artifact, self.version)
         )
-        metadata_version = str(
-            self.context.get("metadata_version")
-            or resolve_metadata_version(self.reachability_repo_path, self.group, self.artifact, self.version)
-        )
         stage_paths = [
             os.path.join(
                 self.reachability_repo_path,
@@ -561,20 +557,10 @@ class WorkflowStrategy(ABC):
                 self.artifact,
                 test_version,
             ),
-            os.path.join(
-                self.reachability_repo_path,
-                "metadata",
-                self.group,
-                self.artifact,
-                "index.json",
-            ),
-            os.path.join(
-                self.reachability_repo_path,
-                "metadata",
-                self.group,
-                self.artifact,
-                metadata_version,
-            ),
+            # Whole `metadata/` tree, not the target artifact's directory: generation traces
+            # through transitive dependencies and can produce entries owned by another
+            # artifact, which artifact-scoped staging would drop (§WF-forge-workflow-drivers.3).
+            os.path.join(self.reachability_repo_path, "metadata"),
             stats_artifact_dir(self.reachability_repo_path, self.group, self.artifact),
         ]
         existing_paths = [path for path in stage_paths if os.path.exists(path)]
