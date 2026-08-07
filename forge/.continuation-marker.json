@@ -1,0 +1,67 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "io.micrometer:micrometer-registry-otlp:1.17.0",
+  "issueNumber": 9249,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment variables or system properties are required. If testing publish behavior, avoid depending on the default localhost OTLP endpoint; use OtlpMeterRegistry.builder(...).metricsSender(...) with an in-memory OtlpMetricsSender to capture the protobuf request.",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9249 Support for io.micrometer:micrometer-registry-otlp:1.17.0; label=library-new-request; body_chars=2706"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 31448,
+    "issue_label": "library-new-request",
+    "issue_number": 9249,
+    "library": "io.micrometer:micrometer-registry-otlp:1.17.0",
+    "model": "gpt-5.5",
+    "output_tokens_used": 2833,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Tests that rely on the default HTTP sender may silently log failed sends if no OTLP collector is running, so assertions should not depend on a real network export."
+    ],
+    "session_log_path": "/home/jovan/Work/graalvm-reachability-metadata/forge/logs/io.micrometer:micrometer-registry-otlp:1.17.0/library-preparation-preflight/pi-generation-2026-08-07T07-16-09-604564Z.log",
+    "status": "completed",
+    "summary": "The artifact brings the required Micrometer core, OpenTelemetry proto, and protobuf runtime dependencies transitively; initializing OtlpMeterRegistry and exercising OTLP protobuf conversion does not require an external collector, Docker image, or system property."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/jormundur00/human-intervention/issue-9249-library-new-request-io.micrometer-micrometer-registry-otlp-1.17.0-eba4b3d5",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "javac_iterative_with_coverage_sources_pi_gpt-5.5"
+}
