@@ -14,7 +14,6 @@ import io.micrometer.core.instrument.FunctionTimer;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.LongTaskTimer;
 import io.micrometer.core.instrument.Meter;
-import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.registry.otlp.AggregationTemporality;
 import io.micrometer.registry.otlp.CompressionMode;
@@ -80,8 +79,7 @@ public class Micrometer_registry_otlpTest {
                             TimeUnit.MILLISECONDS)
                     .tag("cache", "products")
                     .register(registry);
-        }
-        finally {
+        } finally {
             registry.close();
         }
 
@@ -160,8 +158,7 @@ public class Micrometer_registry_otlpTest {
                     .publishPercentileHistogram()
                     .register(registry)
                     .record(Duration.ofMillis(20));
-        }
-        finally {
+        } finally {
             registry.close();
         }
 
@@ -206,8 +203,7 @@ public class Micrometer_registry_otlpTest {
                     .tag("method", "POST")
                     .register(registry)
                     .record(Duration.ofMillis(25));
-        }
-        finally {
+        } finally {
             registry.close();
         }
 
@@ -240,8 +236,7 @@ public class Micrometer_registry_otlpTest {
             Counter.builder("batch.counter.three").register(registry).increment(3);
             Counter.builder("batch.counter.four").register(registry).increment(4);
             Counter.builder("batch.counter.five").register(registry).increment(5);
-        }
-        finally {
+        } finally {
             registry.close();
         }
 
@@ -289,12 +284,10 @@ public class Micrometer_registry_otlpTest {
             try {
                 assertThat(importTimer.activeTasks()).isEqualTo(1);
                 assertThat(importTimer.duration(TimeUnit.MILLISECONDS)).isGreaterThanOrEqualTo(0.0);
-            }
-            finally {
+            } finally {
                 sample.stop();
             }
-        }
-        finally {
+        } finally {
             registry.close();
         }
 
