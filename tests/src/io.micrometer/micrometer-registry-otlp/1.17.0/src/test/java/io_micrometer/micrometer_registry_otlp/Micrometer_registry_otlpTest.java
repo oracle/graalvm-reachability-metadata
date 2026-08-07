@@ -224,6 +224,45 @@ public class Micrometer_registry_otlpTest {
     }
 
     @Test
+    void partitionsPublishedMetersAccordingToConfiguredBatchSize() throws Exception {
+        CapturingMetricsSender sender = new CapturingMetricsSender();
+        TestOtlpConfig config = new TestOtlpConfig("http://collector.example/v1/metrics", Map.of(), Map.of()) {
+            @Override
+            public int batchSize() {
+                return 2;
+            }
+        };
+
+        OtlpMeterRegistry registry = registry(config, sender);
+        try {
+            Counter.builder("batch.counter.one").register(registry).increment(1);
+            Counter.builder("batch.counter.two").register(registry).increment(2);
+            Counter.builder("batch.counter.three").register(registry).increment(3);
+            Counter.builder("batch.counter.four").register(registry).increment(4);
+            Counter.builder("batch.counter.five").register(registry).increment(5);
+        }
+        finally {
+            registry.close();
+        }
+
+        List<OtlpMetricsSender.Request> requests = sender.requests();
+        List<String> exportedMetricNames = new ArrayList<>();
+        for (OtlpMetricsSender.Request request : requests) {
+            assertThat(request.getAddress()).isEqualTo("http://collector.example/v1/metrics");
+            Map<String, Metric> metrics = metricsByName(exportRequest(request));
+            assertThat(metrics.size()).isLessThanOrEqualTo(2);
+            exportedMetricNames.addAll(metrics.keySet());
+        }
+        assertThat(requests).hasSize(3);
+        assertThat(exportedMetricNames).containsExactlyInAnyOrder(
+                "batch.counter.one",
+                "batch.counter.two",
+                "batch.counter.three",
+                "batch.counter.four",
+                "batch.counter.five");
+    }
+
+    @Test
     void longTaskTimersAndMeterRemovalAreReflectedAtPublishTime() throws Exception {
         CapturingMetricsSender sender = new CapturingMetricsSender();
         TestOtlpConfig config = new TestOtlpConfig("http://collector.example/v1/metrics", Map.of(), Map.of());
@@ -355,6 +394,10 @@ public class Micrometer_registry_otlpTest {
         OtlpMetricsSender.Request singleRequest() {
             assertThat(requests).hasSize(1);
             return requests.get(0);
+        }
+
+        List<OtlpMetricsSender.Request> requests() {
+            return new ArrayList<>(requests);
         }
     }
 
