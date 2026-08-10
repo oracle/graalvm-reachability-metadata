@@ -64,5 +64,115 @@
       "test_file": "tests/src/org.liquibase/liquibase-core/5.0.3/src/test/java/org_liquibase/liquibase_core/LiquibaseCoreTest.java",
       "metadata_file": "metadata/org.liquibase/liquibase-core/5.0.3/reachability-metadata.json"
     }
+  },
+  "improve_library_coverage:2026-08-10": {
+    "timestamp": "2026-08-10T17:12:50.699266Z",
+    "library": "org.liquibase:liquibase-core:5.0.3",
+    "starting_commit": "d0b3a5f0d4c4be050ef20c260db3559d3e00907a",
+    "ending_commit": "5eb107bc5dd4874e7b65bd5e7ef141f35013addd",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
+    "agent": "pi",
+    "model": "gpt-5.6-terra",
+    "status": "success",
+    "stats": {
+      "version": "5.0.3",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.956989,
+            "coveredCalls": 178,
+            "totalCalls": 186
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 25,
+            "totalCalls": 25
+          }
+        },
+        "coverageRatio": 0.962085,
+        "coveredCalls": 203,
+        "totalCalls": 211
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 84372,
+          "missed": 144162,
+          "ratio": 0.369188,
+          "total": 228534
+        },
+        "line": {
+          "covered": 17563,
+          "missed": 30856,
+          "ratio": 0.36273,
+          "total": 48419
+        },
+        "method": {
+          "covered": 4482,
+          "missed": 5451,
+          "ratio": 0.451223,
+          "total": 9933
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9262,
+      "issue_label": "library-update-request",
+      "library": "org.liquibase:liquibase-core:5.0.3",
+      "summary": "Meaningful Liquibase changelog execution requires a JDBC database; the existing Liquibase suite uses in-memory H2 for this purpose.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.1.210",
+          "scope": "testImplementation",
+          "reason": "liquibase-core does not include a JDBC driver. Existing tests instantiate H2Database and run Liquibase updates through an in-memory H2 JDBC connection."
+        }
+      ],
+      "agent_guidance": "Add a classpath YAML changelog plus referenced SQL resource. Run it through Liquibase with ClassLoaderResourceAccessor and a JDBC-backed H2Database, then call update(). Include createProcedure with path and sqlFile with splitStatements: false so YAML binding reflectively invokes the reported setters.",
+      "risks": [
+        "Use H2-compatible SQL in the procedure resource; database-specific CREATE PROCEDURE syntax may fail before exercising the metadata path.",
+        "No Docker image or environment/system property is needed."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.1.210",
+          "result": "already_present",
+          "target": "tests/src/org.liquibase/liquibase-core/5.0.3/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9262 Update existing library: org.liquibase:liquibase-core:5.0.3; label=library-update-request; body_chars=2432"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "40 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-terra",
+      "input_tokens_used": 75888,
+      "output_tokens_used": 3116,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.liquibase:liquibase-core:5.0.3/library-preparation-preflight/pi-generation-2026-08-10T16-27-52-139902Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 129893,
+      "cached_input_tokens_used": 1572352,
+      "output_tokens_used": 20180,
+      "iterations": 8,
+      "cost_usd": 1.0205,
+      "generated_loc": 2799,
+      "tested_library_loc": 17563,
+      "metadata_entries": 2575,
+      "test_only_metadata_entries": 1307,
+      "code_coverage_percent": 36.27
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.liquibase/liquibase-core/5.0.3/reachability-metadata.json"
+    }
   }
 }
