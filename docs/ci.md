@@ -285,7 +285,20 @@ eligible. For automated native-build-tools issues with no labels and the standar
 validates the Maven coordinates, closes invalid/duplicate/already-supported
 requests, and also closes requests whose `groupId:artifactId` already has an
 `index.json` recorded as `not-for-native-image` even when that index carries no
-per-version `tested-versions`. It then — via
+per-version `tested-versions`.
+
+It then closes requests whose artifact cannot be resolved from any repository the
+test builds configure (Maven Central and Confluent, per
+`org.graalvm.internal.tck.gradle`). Resolution is a closed-world search: a miss
+proves only that the artifact is absent from the repositories we query, never
+that it does not exist, so the close comment asks the reporter for the repository
+URL when the artifact is published somewhere public and points them at the
+tracing agent when it is private. The check distinguishes an unknown
+`groupId:artifactId` (no `maven-metadata.xml` anywhere) from a known artifact
+whose requested version is missing, and reports each with its own message. Only a
+definite `404` from every configured repository closes an issue; transport
+failures and `5xx` responses leave the issue open for normal triage, so an
+upstream outage cannot mass-close valid requests. It then — via
 `open-dependency-issues-and-link-blockers.js`
 (§CI-shared-scripts) — generates a deps.dev dependency graph and opens or reuses
 `library-new-request` issues for unsupported transitive dependencies, linking
