@@ -17,9 +17,9 @@ JaCoCo-uncovered public API entries, chosen for how much still-uncovered
 internal code each one unlocks over a bytecode call graph
 (§WF-code-coverage-improvement.3.1.1). The second gives it at most 200
 JaCoCo-uncovered internal methods as compact paths derived from sampled PGO and
-the Native Image static call graph. Each phase has a bounded editing-pass
-budget scaled heuristically from its baseline uncovered count, and every pass
-is followed by a fresh JaCoCo result.
+the Native Image static call graph. Each phase has a fixed editing-pass budget
+of `coverage_iterations` passes, and every pass is followed by a fresh JaCoCo
+result.
 
 ## Source
 
@@ -49,9 +49,8 @@ loops are measurement-driven: a deterministic measurement program
 graph) always writes the current report to one fixed location, decides
 whether the loop continues, and derives the cover prompt from that report in
 the same step; the cover agent always returns to
-measurement — a heuristic per-phase budget of baseline-uncovered / 2 / 250
-cover passes, at least one and at most `{{coverage_iterations}}`, with
-measurement step failures repaired through a bounded fix state. The
+measurement — a fixed per-phase budget of `{{coverage_iterations}}` cover
+passes, with measurement step failures repaired through a bounded fix state. The
 finalization task runs as a deterministic program of numbered steps (read the
 conversion record, run checkstyle, run the JVM tests with the coverage
 suite, finalize

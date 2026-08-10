@@ -33,8 +33,8 @@ derives the prompt of exact JaCoCo-uncovered targets from it in the same step.
 The cover agent generates tests from the prompt
 and always returns to measurement, so only re-measurement can complete a phase
 — an agent can never claim progress. A phase completes when no actionable
-target remains or its heuristic iteration budget (baseline-uncovered / 2 /
-250 passes, at least one and at most `coverage_iterations`) is spent. Public
+target remains or its fixed iteration budget of `coverage_iterations` passes
+is spent. Public
 API prompts contain at most 200 methods the latest exact JaCoCo report marks
 uncovered, selected by how much still-uncovered internal code each one unlocks
 over a bytecode call graph rather than by identifier order

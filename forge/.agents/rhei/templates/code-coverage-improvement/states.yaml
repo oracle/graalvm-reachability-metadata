@@ -137,12 +137,12 @@ states:
       ]
       print(f"[api-measure] iteration {iteration}: {len(uncovered)} uncovered public targets", flush=True)
 
-      # Heuristic iteration budget: one cover pass lands at most ~250 methods
-      # and roughly half the uncovered targets are reachable in practice, so
-      # baseline_uncovered / 2 / 250 passes, clamped to [1, {{coverage_iterations}}].
-      baseline = json.load(open(validation / "api-cover-report-0.json"))
-      budget = min({{coverage_iterations}}, max(1, baseline["summary"]["uncovered"] // 500))
-      print(f"[api-measure] iteration budget {budget} from {baseline['summary']['uncovered']} baseline uncovered targets", flush=True)
+      # Fixed iteration budget. Scaling it from the baseline uncovered count
+      # made the phase length depend on how that count is defined, so a change
+      # to the summary basis silently halved the budget; a constant cannot
+      # drift that way (§WF-code-coverage-improvement.3.1).
+      budget = {{coverage_iterations}}
+      print(f"[api-measure] iteration budget {budget}", flush=True)
       if not uncovered or iteration >= budget:
           sys.exit(0)
 
@@ -389,12 +389,9 @@ states:
       actionable = report.get("bulkTargets", [])
       print(f"[deep-measure] iteration {iteration}: {len(actionable)} actionable deep targets", flush=True)
 
-      # Heuristic iteration budget: one cover pass lands at most ~250 methods
-      # and roughly half the uncovered targets are reachable in practice, so
-      # baseline_uncovered / 2 / 250 passes, clamped to [1, {{coverage_iterations}}].
-      baseline = json.load(open(discovery / "discovery-report-0.json"))
-      budget = min({{coverage_iterations}}, max(1, baseline["summary"]["deepUncovered"] // 500))
-      print(f"[deep-measure] iteration budget {budget} from {baseline['summary']['deepUncovered']} baseline uncovered methods", flush=True)
+      # Fixed iteration budget, matching the API phase (§WF-code-coverage-improvement.3.1).
+      budget = {{coverage_iterations}}
+      print(f"[deep-measure] iteration budget {budget}", flush=True)
       if not actionable or iteration >= budget:
           sys.exit(0)
 
