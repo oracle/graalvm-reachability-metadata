@@ -51,14 +51,14 @@ public class EnumConversionTest {
         FIRST("first-method"),
         SECOND("second-method");
 
-        private final String code;
+        private final String value;
 
-        MethodValue(String code) {
-            this.code = code;
+        MethodValue(String value) {
+            this.value = value;
         }
 
         private String code() {
-            return code;
+            return value;
         }
     }
 
