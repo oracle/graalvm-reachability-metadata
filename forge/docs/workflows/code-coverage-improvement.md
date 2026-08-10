@@ -97,9 +97,12 @@ an absent or ambiguous correlation must not inherit another method's status.
 Each API-cover prompt contains only public API methods that the latest JaCoCo
 report marks uncovered, at most 200 per pass. The agent must work across the
 whole supplied batch through realistic public API usage and assertions, without
-superficial coverage-only invocation. The phase runs for a heuristic iteration
-budget of baseline-uncovered / 2 / 250 passes, at least one and at most
-`coverage_iterations`, and stops early when no public target remains uncovered.
+superficial coverage-only invocation. The phase runs for a fixed budget of
+`coverage_iterations` passes and stops early when no public target remains
+uncovered. The budget is deliberately a constant rather than a function of the
+baseline uncovered count: scaling it made phase length depend on how that count
+is defined, so redefining the report summary silently halved it, and a
+constant cannot drift that way.
 
 #### 3.1.1 Target selection by unlocked internal code
 
@@ -193,9 +196,8 @@ every target it prompted gets its attempt count incremented at the next
 measurement, ranking prefers less-attempted targets, and covered targets leave
 the uncovered set — so later iterations advance beyond the first 200 without
 any agent-written state.
-The deep phase runs for the same heuristic iteration budget, computed from its
-baseline deep-uncovered count, and stops early when no actionable target
-remains.
+The deep phase runs for the same fixed `coverage_iterations` budget and stops
+early when no actionable target remains.
 
 Sampled observations may be emitted as LCOV guidance for standard tooling. That
 artifact contains positive sample counts only, is labeled guidance-only, and is
@@ -230,11 +232,8 @@ The Rhei template should decompose the workflow into these phases:
    agent cover pass. Measurement runs JVM JaCoCo
    plus exact API-inventory correlation, persists `api-cover-report-<n>` history
    and one fixed-location report, and decides the loop: the phase completes when
-   no uncovered public target remains or the iteration budget is spent. The
-   budget is heuristic: one cover pass lands at most ~250 methods and roughly
-   half the uncovered targets are reachable in practice, so it is
-   `baseline_uncovered / 2 / 250`, clamped to at least one and at most
-   `coverage_iterations` (default 10) passes.
+   no uncovered public target remains or the fixed budget of
+   `coverage_iterations` (default 6) passes is spent.
    When the loop continues, measurement also derives the prompt of at most 200
    exact JaCoCo-uncovered public methods from that report. The cover agent attempts the complete supplied batch through
    normal public API behavior and always returns to measurement. Reachability
@@ -250,8 +249,7 @@ The Rhei template should decompose the workflow into these phases:
    JaCoCo-uncovered internal methods by shortest sampled/static path, retains
    every record in JSON plus sampled-guidance LCOV, persists
    `discovery-report-<n>` history and one fixed-location report, and decides
-   the loop with the same heuristically scaled iteration budget (computed from
-   the baseline deep-uncovered count), and derives the compact
+   the loop with the same fixed `coverage_iterations` budget, and derives the compact
    at-most-200-method prompt when it continues. The cover agent batches related paths, reaches
    internal methods through public behavior, and always returns to measurement;
    it writes no target state — measurement tracks attempts and rotation
@@ -303,9 +301,8 @@ A code coverage improvement run is successful only when all of these hold:
 - Public API and deep implementation work use separate reports and prompts.
 - API inventory generation produces compact JSON and Markdown for public
   user-callable methods and constructors.
-- API iteration zero establishes a JaCoCo baseline that also fixes the
-  heuristic iteration budget; each public API agent iteration is followed by
-  exact JaCoCo correlation.
+- API iteration zero establishes a JaCoCo baseline; each public API agent
+  iteration is followed by exact JaCoCo correlation.
 - API prompts contain only exact JaCoCo-uncovered public targets and ask the
   agent to attempt the complete supplied batch.
 - Deep targets are library-owned JaCoCo methods minus public API inventory
