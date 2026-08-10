@@ -173,8 +173,8 @@ states:
           except OSError as error:
               fail(3, f"CallGraphExtractor.java could not run: {error}")
 
-      # Step 4: rank the uncovered public entries by how much still-uncovered
-      # internal code each unlocks, and render the cover prompt from that.
+      # Step 4: order the uncovered public entries by how much still-uncovered
+      # code each unlocks, and render the cover prompt from that.
       # The validator copies the report it correlated as jacoco-<iteration>.xml.
       jacoco_xml = validation / f"jacoco-{iteration}.xml"
       if not jacoco_xml.is_file():

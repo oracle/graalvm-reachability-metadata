@@ -102,9 +102,9 @@
   - `forge/utility_scripts/java/CallGraphExtractor.java` — bytecode call graph,
     built once from `libraryJars` and cached under
     `runtime/code-coverage/graph/` (step 3).
-  - `forge/utility_scripts/code_coverage_api_rank.py` — ranks the uncovered
-    public entries by how much still-uncovered internal code each unlocks and
-    renders the prompt (step 4).
+  - `forge/utility_scripts/code_coverage_api_rank.py` — orders the uncovered
+    public entries by how much still-uncovered code each unlocks and renders the
+    prompt, filled to its 200-target cap (step 4).
 - Fixed report location: `runtime/code-coverage/validation/api-cover-report.json`
   (iteration history stays at `api-cover-report-<n>.json`); ranking evidence
   stays at `api-rank-<n>.json`.
