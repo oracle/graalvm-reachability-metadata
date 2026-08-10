@@ -298,7 +298,15 @@ tracing agent when it is private. The check distinguishes an unknown
 whose requested version is missing, and reports each with its own message. Only a
 definite `404` from every configured repository closes an issue; transport
 failures and `5xx` responses leave the issue open for normal triage, so an
-upstream outage cannot mass-close valid requests. It then — via
+upstream outage cannot mass-close valid requests.
+
+The repository list the gate probes is maintained by hand in the workflow and
+must be kept in sync with the `repositories` block in
+`org.graalvm.internal.tck.gradle`: `mavenCentral()` contributes no URL literal to
+extract, so the list cannot be derived from the build. Adding a repository to the
+build therefore requires adding it to the workflow in the same change. A workflow
+list that has fallen behind the build closes requests the build could in fact
+resolve. It then — via
 `open-dependency-issues-and-link-blockers.js`
 (§CI-shared-scripts) — generates a deps.dev dependency graph and opens or reuses
 `library-new-request` issues for unsupported transitive dependencies, linking
