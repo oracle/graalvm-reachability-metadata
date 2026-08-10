@@ -275,9 +275,12 @@ jobs:
                  "$1" 2>/dev/null || true
           }
 
-          version_found="false"
+          # Every outcome below rests on proof: a definite 404 from every repository to
+          # claim absence, a 200 to claim existence. A 5xx, a 401/403, or a transport
+          # failure proves neither, so the issue continues through triage uncommented.
+          version_absent="true"
+          artifact_absent="true"
           artifact_found="false"
-          indeterminate="false"
 
           for BASE in "${REPOSITORIES[@]}"; do
             POM_URL="${BASE}/${GROUP_PATH}/${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}.pom"
@@ -285,13 +288,10 @@ jobs:
 
             POM_STATUS="$(probe "$POM_URL")"
             echo "  ${POM_STATUS}  ${POM_URL}"
-            if [[ "$POM_STATUS" == "200" ]]; then
-              version_found="true"
-              break
-            fi
             if [[ "$POM_STATUS" != "404" ]]; then
-              # 5xx, 401/403, timeout, DNS failure: absence is unproven.
-              indeterminate="true"
+              # Resolved, or unproven; either way there is nothing left to establish.
+              version_absent="false"
+              break
             fi
 
             METADATA_STATUS="$(probe "$METADATA_URL")"
@@ -299,22 +299,22 @@ jobs:
             if [[ "$METADATA_STATUS" == "200" ]]; then
               artifact_found="true"
             elif [[ "$METADATA_STATUS" != "404" ]]; then
-              indeterminate="true"
+              artifact_absent="false"
             fi
           done
 
-          if [[ "$version_found" == "true" ]]; then
-            echo "Resolved $COORDS from a configured repository."
-            echo "outcome=resolvable" >> "$GITHUB_OUTPUT"
-          elif [[ "$indeterminate" == "true" ]]; then
-            echo "Could not prove absence of $COORDS; leaving the issue open for triage."
-            echo "outcome=indeterminate" >> "$GITHUB_OUTPUT"
+          if [[ "$version_absent" != "true" ]]; then
+            echo "Nothing proven about $COORDS; continuing triage."
+            echo "outcome=none" >> "$GITHUB_OUTPUT"
           elif [[ "$artifact_found" == "true" ]]; then
             echo "$GROUP:$ARTIFACT exists but version $VERSION was not found."
             echo "outcome=version-missing" >> "$GITHUB_OUTPUT"
-          else
+          elif [[ "$artifact_absent" == "true" ]]; then
             echo "$COORDS was not found in any configured repository."
             echo "outcome=unresolvable" >> "$GITHUB_OUTPUT"
+          else
+            echo "Nothing proven about $GROUP:$ARTIFACT; continuing triage."
+            echo "outcome=none" >> "$GITHUB_OUTPUT"
           fi
 
       - name: "Close issue - artifact version not found in a configured repository"
@@ -334,8 +334,9 @@ jobs:
               "",
               "This usually means the version in the issue title has a typo, or it has not been released yet.",
               "",
-              `Closing this issue. Please open a new request with a published version of \`${group}:${artifact}\` in the title.`,
-              "Note: Reopening will not re-run automation; maintainers will review manually."
+              `Please open a new request with a published version of \`${group}:${artifact}\` in the title.`,
+              "",
+              "If these coordinates are valid and this triage is wrong, please reply here and we will take another look."
             ].join("\n");
             await github.rest.issues.createComment({ owner, repo, issue_number, body });
             await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
@@ -354,16 +355,13 @@ jobs:
             const body = [
               `Automated triage: \`${coords}\` could not be resolved from any repository this project builds against (Maven Central, Confluent).`,
               "",
-              "Metadata in this repository is always shipped together with a test that resolves the library and runs in CI on every change. When we cannot download the artifact, we cannot build that test, and we cannot re-verify the metadata as new versions are released — so we are unable to support the coordinates as requested.",
+              "Metadata in this repository is always shipped together with a test that resolves the library and runs in CI on every change. When we cannot download the artifact, we cannot build that test, and we cannot re-verify the metadata as new versions are released, so we are unable to support the coordinates as requested.",
               "",
               "**If this artifact is published to a public repository we do not yet configure**, please reply with the repository URL and we will consider adding it.",
               "",
               "**If this artifact is private or internal**, we cannot access it, but you can generate the metadata yourself: run your application with the tracing agent and place the generated configuration in your application's `META-INF/native-image` directory. See https://www.graalvm.org/latest/reference-manual/native-image/metadata/AutomaticMetadataCollection/",
               "",
-              "**If your native image fails inside a public library** that this private artifact depends on, please open a request for that library's coordinates and include the error — we can act on that.",
-              "",
-              "Closing this issue.",
-              "Note: Reopening will not re-run automation; maintainers will review manually."
+              "**If your native image fails inside a public library** that this private artifact depends on, please open a request for that library's coordinates and include the error, which we can act on."
             ].join("\n");
             await github.rest.issues.createComment({ owner, repo, issue_number, body });
             await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
