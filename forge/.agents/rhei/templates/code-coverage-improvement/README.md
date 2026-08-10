@@ -36,7 +36,9 @@ and always returns to measurement, so only re-measurement can complete a phase
 target remains or its heuristic iteration budget (baseline-uncovered / 2 /
 250 passes, at least one and at most `coverage_iterations`) is spent. Public
 API prompts contain at most 200 methods the latest exact JaCoCo report marks
-uncovered. Deep
+uncovered, selected by how much still-uncovered internal code each one unlocks
+over a bytecode call graph rather than by identifier order
+(§WF-code-coverage-improvement.3.1.1). Deep
 prompts list at most 200 JaCoCo-uncovered internal methods using compact
 `Observed` / `Uncovered paths` navigation. Measurement owns target rotation:
 attempt counts are carried deterministically in the discovery-report history

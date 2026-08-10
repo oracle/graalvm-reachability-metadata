@@ -298,7 +298,7 @@ def _resolve_tool(tool: str) -> str:
     return resolved
 
 
-def build_inventory(coordinate: str, classes: list[ClassInfo]) -> dict:
+def build_inventory(coordinate: str, classes: list[ClassInfo], jar_paths: list[str] | None = None) -> dict:
     targets: list[dict] = []
     for class_info in classes:
         for target in class_info.targets:
@@ -312,7 +312,14 @@ def build_inventory(coordinate: str, classes: list[ClassInfo]) -> dict:
             }
             targets.append(entry)
     targets.sort(key=lambda item: item["id"])
-    return {"coordinate": coordinate, "targets": targets}
+    # The resolved jars are recorded so later deterministic steps — notably the
+    # bytecode call-graph extractor — need no separate artifact resolution
+    # (§WF-code-coverage-improvement.3.1.1).
+    return {
+        "coordinate": coordinate,
+        "libraryJars": sorted(os.path.abspath(path) for path in (jar_paths or [])),
+        "targets": targets,
+    }
 
 
 def write_markdown(inventory: dict, md_path: str) -> None:
@@ -353,7 +360,7 @@ def generate_inventory(
     class_names = sorted(set(class_names))
     javap_output = run_javap(jar_paths, class_names) if class_names else ""
     classes = parse_javap(javap_output, source_root=source_root)
-    inventory = build_inventory(coordinate, classes)
+    inventory = build_inventory(coordinate, classes, jar_paths)
 
     os.makedirs(output_dir, exist_ok=True)
     json_path = os.path.join(output_dir, "api-inventory.json")

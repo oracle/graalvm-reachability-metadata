@@ -85,6 +85,8 @@
     accessor methods, builders, configuration, parsing, serialization,
     adapters, lifecycle methods, and error-handling calls. Exclude fields.
   - Do not prioritize private implementation details as direct test targets.
+  - Record the resolved library jars as `libraryJars` so the later bytecode
+    call-graph extraction resolves no artifacts of its own.
 - Artifacts:
   - `runtime/code-coverage/api-inventory/api-inventory.json`
   - `runtime/code-coverage/api-inventory/api-inventory.md`
@@ -94,20 +96,28 @@
 **State:** api-measure
 **Prior:** Task code-coverage-api-inventory
 
-- Measurement program: `forge/utility_scripts/code_coverage_validate.py`
-  (JVM JaCoCo run plus exact API-inventory correlation), driven by the
-  `api-measure` state.
+- Measurement programs, driven by the `api-measure` state in numbered steps:
+  - `forge/utility_scripts/code_coverage_validate.py` — JVM JaCoCo run plus
+    exact API-inventory correlation (step 2).
+  - `forge/utility_scripts/java/CallGraphExtractor.java` — bytecode call graph,
+    built once from `libraryJars` and cached under
+    `runtime/code-coverage/graph/` (step 3).
+  - `forge/utility_scripts/code_coverage_api_rank.py` — ranks the uncovered
+    public entries by how much still-uncovered internal code each unlocks and
+    renders the prompt (step 4).
 - Fixed report location: `runtime/code-coverage/validation/api-cover-report.json`
-  (iteration history stays at `api-cover-report-<n>.json`).
+  (iteration history stays at `api-cover-report-<n>.json`); ranking evidence
+  stays at `api-rank-<n>.json`.
 - Prompt location: `runtime/code-coverage/prompts/api-cover-prompt.md`, derived
   by the measurement program from the fixed report when the loop continues.
-- Loop: measure -> cover -> measure. Measurement always writes the
-  report to the fixed location and lists only exact JaCoCo-uncovered
-  public targets in the prompt; the cover agent generates meaningful behavior tests in the
-  dedicated coverage suite and always returns to measurement. The phase
-  completes when no uncovered public target remains or the iteration budget is
-  spent. Only re-measurement moves the loop forward; the agent cannot claim
-  coverage.
+- Loop: measure -> cover -> measure. Measurement always writes the report to the
+  fixed location and lists only exact JaCoCo-uncovered public targets in the
+  prompt, ordered by unlocked internal code rather than by identifier
+  (§WF-code-coverage-improvement.3.1.1); the cover agent generates meaningful
+  behavior tests in the dedicated coverage suite and always returns to
+  measurement. The phase completes when no uncovered public target remains or
+  the iteration budget is spent. Only re-measurement moves the loop forward;
+  the agent cannot claim coverage.
 
 ### Task code-coverage-prepare-native-metadata: Prepare native metadata
 **State:** prepared
