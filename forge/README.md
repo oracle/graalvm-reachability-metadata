@@ -93,6 +93,153 @@ distribution cache under the system temp directory. Set
 `FORGE_GRADLE_USER_HOME` to override the full Gradle user home.
 §AR-forge-workflow-boundary
 
+## Isolated execution with Incus (optional)
+
+`forge_metadata.py --incus` runs each generation inside a fresh, single-use Incus
+VM instead of on the host, so generated tests that open windows, fill `/tmp`,
+write into `$HOME`, or start Docker containers cannot touch the operator's
+machine. Forge never installs or configures Incus: prepare the host once with the
+steps below, then pass `--incus`. With the flag set Forge preflights this setup
+and fails fast if anything is missing. The runner itself is tracked in
+§ROADMAP-forge-incus-vm-runner.
+§FS-forge-vm-isolated-execution §AR-forge-vm-runner-boundary
+
+### Prepare the host (one-time)
+
+Forge never installs or configures Incus; do this once. Each step is a real
+prerequisite — VM support, networking, storage, and Docker coexistence — and
+`--incus` preflights the most important ones and fails fast if they are missing.
+
+**1. Incus with VM support.** `--incus` launches real virtual machines
+(`incus launch --vm`), which require QEMU and KVM (`/dev/kvm` present; the CPU
+must expose `vmx`/`svm`). Install both Incus and QEMU:
+
+```console
+sudo apt install incus qemu-system-x86       # package names for Debian/Ubuntu
+# If Incus was already running when QEMU was installed, restart it so the daemon
+# detects the VM backend — otherwise launches fail with
+# "QEMU command not available for CPU architecture":
+sudo systemctl restart incus
+```
+
+**2. Initialize Incus and its bridge network.**
+
+```console
+sudo incus admin init --minimal          # storage pool + managed incusbr0 bridge
+sudo usermod -aG incus-admin "$USER"     # drive Incus without sudo; re-login to apply
+incus list                               # should print an empty table
+```
+
+The checked-in profile attaches each VM's NIC to `incusbr0` (the bridge
+`init --minimal` creates); if your bridge has another name, edit the `eth0`
+device in `incus/forge.profile.yaml`.
+
+**3. Apply the Forge profile.**
+
+```console
+incus profile create forge
+incus profile edit forge < incus/forge.profile.yaml
+```
+
+**4. Give the VMs room on disk.** The base image plus per-run VMs (GraalVM
+installs, Gradle caches, Docker images, native-image scratch) need tens of GB.
+If your root filesystem is small, put the Forge VMs on a roomier disk by creating
+a storage pool there and pointing the `forge` profile's root device at it:
+
+```console
+mkdir -p /path/on/big/disk/incus-storage
+incus storage create forge dir source=/path/on/big/disk/incus-storage
+incus profile device set forge root pool forge   # this machine only; the committed profile stays generic
+```
+
+This redirects only the per-run VMs; Incus's image cache and the published
+`forge-base` image still live under `/var/lib/incus` on the root filesystem, so
+keep some headroom there too.
+
+**5. If the host also runs Docker.** Docker sets the iptables `FORWARD` policy to
+`DROP`, which blocks the Incus bridge from reaching the internet — `apt`, the
+repo clone, and Docker pulls inside the VM all time out. Allow `incusbr0` through
+the Docker-managed chain:
+
+```console
+sudo iptables -I DOCKER-USER -i incusbr0 -j ACCEPT
+sudo iptables -I DOCKER-USER -o incusbr0 -j ACCEPT
+```
+
+These are runtime rules; persist them with your firewall manager (e.g.
+`iptables-persistent`) if you want them to survive a reboot.
+
+### Build the base image (one-time, rebuilt only to refresh tooling)
+
+The base image is a read-only template the per-run VMs are launched from (via
+copy-on-write, so launching is cheap). It bakes in the expensive, generic,
+non-secret setup so each run reuses it instead of rebuilding it: GraalVM, Docker,
+warmed Gradle caches, and a reachability checkout at
+`/root/graalvm-reachability-metadata` (override with `FORGE_INCUS_REPO_PATH`).
+The image is built locally on each host and never shipped.
+
+First record your machine's VM environment. Copy the template and set the
+GraalVM homes generation needs — all of `GRAALVM_HOME`/`JAVA_HOME`,
+`GRAALVM_HOME_25_0`, and `GRAALVM_HOME_LATEST_EA` are required by Forge's
+pre-processing preflight — to your local installs. The build copies each
+referenced installation into the image so the VM matches local generation
+rather than downloading a separate version; `GRAALVM_HOME` and
+`GRAALVM_HOME_25_0` typically share one JDK 25 path, while
+`GRAALVM_HOME_LATEST_EA` is a distinct early-access build:
+
+```console
+cp incus/forge.env.example incus/forge.env
+$EDITOR incus/forge.env                   # set the GraalVM homes; add any generation vars
+```
+
+`incus/build-base-image.sh` is the reproducible definition of the image. It
+launches a throwaway builder VM, copies in your local GraalVM, bakes
+`forge.env` into the VM's environment, provisions it, publishes the disk as the
+`forge-base` alias, and deletes the builder:
+
+```console
+./incus/build-base-image.sh
+incus image list forge-base              # "forge-base" should be listed
+```
+
+Everything `forge.env` defines becomes part of the VM's environment, so put any
+other variable a generation run needs there. Override any of `FORGE_INCUS_IMAGE`,
+`FORGE_INCUS_SOURCE_IMAGE`, `FORGE_INCUS_REPO_URL`, or `FORGE_INCUS_REPO_PATH` to
+target a different image alias, base OS, or checkout. Re-run the script to
+refresh the image when GraalVM, the checkout, or `forge.env` change.
+
+### Credentials and logs
+
+- Authenticate `gh` for the reachability repo on the host (`gh auth login`, or
+  export `GH_TOKEN`/`GITHUB_TOKEN`); the runner reads that token and seeds it
+  into each VM at launch with `gh auth login --with-token`.
+- The runner mounts a per-run host directory into each VM at `/forge-logs` and
+  points the configurable log destination (`FORGE_LOGS_DIR`) at it, so run logs
+  land on the host under `<logs-root>/issue-<number>` and survive VM teardown.
+  Metrics and preserved-work branches leave over the network, so they need no
+  shared directory.
+
+### Settings
+
+The runner reads these optional environment variables; defaults match the setup
+above.
+
+- `FORGE_INCUS_IMAGE` — base image alias (default `forge-base`).
+- `FORGE_INCUS_PROFILE` — profile applied at launch (default `forge`).
+- `FORGE_INCUS_REPO_PATH` — baked checkout path in the VM
+  (default `/root/graalvm-reachability-metadata`).
+- `FORGE_INCUS_LOGS_ROOT` — host directory holding the per-run log mounts
+  (default the Forge `logs/` root).
+- `FORGE_INCUS_LAUNCH_TIMEOUT` — seconds to wait for the VM guest agent
+  (default `300`).
+
+### Run
+
+```console
+python3 forge_metadata.py --run-work-queues --incus
+./do-work.sh --incus                     # same flag, forwarded by the loop wrapper
+```
+
 ## Manual Workflows
 
 The top-level worker delegates to these lower-level entry points. Use them
