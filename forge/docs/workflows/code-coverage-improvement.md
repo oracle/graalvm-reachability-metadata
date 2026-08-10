@@ -101,6 +101,54 @@ superficial coverage-only invocation. The phase runs for a heuristic iteration
 budget of baseline-uncovered / 2 / 250 passes, at least one and at most
 `coverage_iterations`, and stops early when no public target remains uncovered.
 
+#### 3.1.1 Target selection by unlocked internal code
+
+Public API entries are not equally valuable. An entry only matters to the second
+phase (§3.2) to the extent that calling it can reach internal code, so selection
+ranks entries by how much still-uncovered internal code each one unlocks, and
+never by identifier order. Ranking is advisory navigation; it never changes any
+method's JaCoCo status.
+
+The unlock universe is every library-owned method **with a body, derived from
+the library bytecode**, minus the public API inventory entries. It is fixed once
+per library and does not shrink as coverage lands. Deriving it from JaCoCo
+instead would be wrong here: a JaCoCo report contains only classes some test
+loaded, so a JaCoCo-derived universe systematically omits the untouched code
+this phase exists to open up. JaCoCo remains the sole coverage authority — the
+bytecode decides which methods exist, JaCoCo decides which are covered, and any
+universe method absent from the JaCoCo report counts as uncovered.
+
+Note that this universe is deliberately **not** the same set as the deep phase's
+target universe (§3.2), which is JaCoCo-derived. The two lists serve different
+jobs: this one ranks entries for selection, that one enumerates deep targets for
+measurement.
+
+Reachability comes from a static call graph built from the library bytecode, not
+from the Native Image analysis call tree. The analysis call tree contains only
+methods reachable in the built image, which excludes precisely the code no
+current test reaches, and it costs a native build to obtain. Virtual and
+interface calls are resolved by class-hierarchy analysis, so reachability
+over-approximates; that is acceptable for ordering candidates and never used as
+evidence of coverage.
+
+Selection is a budgeted greedy maximum-coverage pass. It repeatedly takes the
+uncovered public entry that unlocks the most universe methods not already
+unlocked by an earlier pick, then removes that entry's reachable set from
+further consideration. Overlap subtraction is what makes redundant overloads
+and delegating wrappers rank near zero without any special-casing: once one
+member of a delegating family is picked, the rest unlock nothing new. Ties break
+on canonical id so selection is deterministic.
+
+Because the universe and the graph are both fixed per library, each entry's
+reachable set is a property of the library and is computed once and cached
+against the resolved artifact digest. Per-iteration coverage progress applies as
+an exclusion mask over that cached result rather than recomputing it.
+
+Selection cost weighting — preferring entries that are cheap for an agent to
+construct — is deliberately not part of this contract. Parameter count is a poor
+proxy for construction difficulty, and repeated-attempt state provides an
+empirical signal instead.
+
 ### 3.2 Deep implementation coverage
 
 The second phase starts only after public API coverage and native metadata
@@ -329,6 +377,18 @@ engine:
   the library artifact, sources, documentation, and upstream tests when
   available. Implemented deterministically from the library jar via `javap` in
   `forge/utility_scripts/code_coverage_api_inventory.py`.
+- **Bytecode call-graph extractor** — reads the resolved library artifacts and
+  emits every method and every call edge as CSV, using canonical identities
+  shared with the identity model. Implemented with the JDK Class-File API in
+  `forge/utility_scripts/java/CallGraphExtractor.java`, run through single-file
+  source launch so it needs no build step. It reads class files directly rather
+  than parsing `javap` output, which keeps `invokedynamic` lambda targets and
+  raw descriptors exact (§WF-code-coverage-improvement.3.1.1).
+- **API target ranker** — ranks JaCoCo-uncovered public entries by the amount of
+  still-uncovered internal code each unlocks and renders the API-cover prompt.
+  Implemented in `forge/utility_scripts/code_coverage_api_rank.py`. Reachable
+  sets are cached per artifact digest and reused across iterations; coverage
+  progress applies as an exclusion mask (§WF-code-coverage-improvement.3.1.1).
 - **JVM coverage validator** — runs Java compilation and JVM tests under JaCoCo,
   joins exact JaCoCo identities with the API inventory, and writes the public
   API baseline and post-iteration reports. Implemented in

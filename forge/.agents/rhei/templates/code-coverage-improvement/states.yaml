@@ -6,10 +6,13 @@
 #
 # API coverage loop (one task):
 #   api-measure -- 0 (phase done) -> completed
-#     |  ^     \-- 10 (uncovered remain; prompt written) -> api-cover --+
-#     |  +--------------------------------------------------------------+
-#     +-- step failed (exit 1/2) -> api-fix -> api-measure
+#     |  ^     \-- 10 (uncovered remain; ranked prompt written) -> api-cover --+
+#     |  +----------------------------------------------------------------------+
+#     +-- step failed (exit 1-4) -> api-fix -> api-measure
 #         (budget exhausted -> human-intervention)
+#
+# Measurement steps: 1 conversion record, 2 JaCoCo correlation, 3 bytecode
+# call-graph extraction (cached), 4 unlock-score ranking and prompt render.
 #
 # Deep coverage loop (one task): identical shape with deep-measure (JaCoCo +
 # sampled PGO + call-tree steps, exits 1-6), deep-cover, deep-fix.
@@ -143,25 +146,54 @@ states:
       if not uncovered or iteration >= budget:
           sys.exit(0)
 
-      # Steering: derive the next cover prompt from the report just written.
-      prompts = Path("runtime/code-coverage/prompts")
-      prompts.mkdir(parents=True, exist_ok=True)
-      lines = [
-          "# Uncovered public API targets",
-          "",
-          "Write meaningful behavior tests in the dedicated coverage suite for",
-          "every target below. Each id is an exact JaCoCo-uncovered public",
-          "method or constructor; use realistic public API usage with real",
-          "assertions, never superficial coverage-only invocation.",
-          "",
+      # Step 3: static call graph from the library bytecode, built once and
+      # cached. The Native Image call tree cannot serve here: it holds only
+      # methods current tests already reach, which excludes exactly the code
+      # this phase opens up (§WF-code-coverage-improvement.3.1.1).
+      inventory_path = Path("runtime/code-coverage/api-inventory/api-inventory.json")
+      graph_dir = Path("runtime/code-coverage/graph")
+      if not (graph_dir / "edges.csv").is_file():
+          try:
+              library_jars = json.load(open(inventory_path))["libraryJars"]
+          except Exception as error:
+              fail(3, f"api-inventory.json has no usable libraryJars: {error}")
+          if not library_jars:
+              fail(3, "api-inventory.json records no library jars")
+          graph_dir.mkdir(parents=True, exist_ok=True)
+          java = f"{os.environ.get('GRAALVM_HOME') or os.environ['JAVA_HOME']}/bin/java"
+          extractor = [
+              java, "--source", "25",
+              f"{work_path}/utility_scripts/java/CallGraphExtractor.java",
+              "--output-dir", str(graph_dir), *library_jars,
+          ]
+          print(f"[api-measure] {' '.join(extractor)}", flush=True)
+          try:
+              if subprocess.run(extractor).returncode != 0:
+                  fail(3, "CallGraphExtractor.java failed")
+          except OSError as error:
+              fail(3, f"CallGraphExtractor.java could not run: {error}")
+
+      # Step 4: rank the uncovered public entries by how much still-uncovered
+      # internal code each unlocks, and render the cover prompt from that.
+      # The validator copies the report it correlated as jacoco-<iteration>.xml.
+      jacoco_xml = validation / f"jacoco-{iteration}.xml"
+      if not jacoco_xml.is_file():
+          fail(4, f"validator wrote no JaCoCo XML copy at {jacoco_xml}")
+      ranker = [
+          sys.executable, f"{work_path}/utility_scripts/code_coverage_api_rank.py",
+          "--graph-dir", str(graph_dir),
+          "--api-inventory", str(inventory_path),
+          "--jacoco-xml", str(jacoco_xml),
+          "--iteration", str(iteration),
+          "--output-dir", str(validation),
+          "--prompt-path", "runtime/code-coverage/prompts/api-cover-prompt.md",
       ]
-      # A longer list only dilutes one cover pass; keep the top 200 targets.
-      prompt_targets = uncovered[:200]
-      for entry in prompt_targets:
-          hint = entry.get("behaviorHint", "")
-          lines.append(f"- `{entry['id']}`" + (f" - {hint}" if hint else ""))
-      (prompts / "api-cover-prompt.md").write_text("\n".join(lines) + "\n")
-      print(f"[api-measure] wrote prompt with {len(prompt_targets)} targets", flush=True)
+      print(f"[api-measure] {' '.join(ranker)}", flush=True)
+      try:
+          if subprocess.run(ranker, env=dict(os.environ, PYTHONPATH=work_path)).returncode != 0:
+              fail(4, "code_coverage_api_rank.py failed")
+      except OSError as error:
+          fail(4, f"code_coverage_api_rank.py could not run: {error}")
       sys.exit(10)
       PY
     program_timeout: 60m
@@ -221,6 +253,12 @@ states:
       - step 2: the JVM JaCoCo run or correlation failed - fix the generated
         coverage tests in the issue worktree; do not weaken or delete
         meaningful assertions; never hand-craft reports.
+      - step 3: the bytecode call-graph extraction failed - check that
+        `api-inventory.json` records `libraryJars` and that those jars exist;
+        repair the inventory artifact by re-running its helper, never by hand.
+      - step 4: the API target ranker rejected its inputs - repair the call
+        graph or JaCoCo XML copy it named; never hand-craft the rank report or
+        the cover prompt.
 
       Fix only that cause. Measurement re-runs automatically after this state.
       Write `{output.fix.path}` with:
@@ -538,7 +576,7 @@ states:
           "--output-dir", "runtime/code-coverage/finalization",
       ]
       for validation_command in [checkstyle_command] + jvm_commands:
-          finalizHoe_command += ["--validation-command", " ".join(validation_command)]
+          finalize_command += ["--validation-command", " ".join(validation_command)]
       for target_state in sorted(Path("runtime/code-coverage/targets").glob("*.json")):
           finalize_command += ["--target-state", str(target_state)]
       finalize_env = dict(os.environ, PYTHONPATH=work_path)
@@ -684,6 +722,18 @@ transitions:
     description: Step 2 failed - the JVM JaCoCo run or correlation failed.
 
   - from: api-measure
+    to: api-fix
+    exit_code: 3
+    condition: visitCount < visits
+    description: Step 3 failed - the bytecode call-graph extraction failed.
+
+  - from: api-measure
+    to: api-fix
+    exit_code: 4
+    condition: visitCount < visits
+    description: Step 4 failed - the API target ranker rejected its inputs.
+
+  - from: api-measure
     to: human-intervention
     exit_code: 1
     condition: visitCount >= visits
@@ -694,6 +744,18 @@ transitions:
     exit_code: 2
     condition: visitCount >= visits
     description: Step 2 still fails after the maximum fix passes.
+
+  - from: api-measure
+    to: human-intervention
+    exit_code: 3
+    condition: visitCount >= visits
+    description: Step 3 still fails after the maximum fix passes.
+
+  - from: api-measure
+    to: human-intervention
+    exit_code: 4
+    condition: visitCount >= visits
+    description: Step 4 still fails after the maximum fix passes.
 
   - from: api-cover
     to: api-measure
