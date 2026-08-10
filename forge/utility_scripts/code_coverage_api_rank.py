@@ -13,12 +13,17 @@ extracted from the library bytecode by `java/CallGraphExtractor.java`. After eac
 pick the winner's reachable set is removed from every remaining candidate, so
 delegating overloads collapse to zero marginal value without special-casing.
 
-The unlock universe is every library method with a body that is not a public API
-inventory entry, taken from the bytecode rather than from JaCoCo: a JaCoCo report
-only contains classes some test loaded, so a JaCoCo-derived universe omits
-exactly the untouched code this phase exists to open up. JaCoCo stays the sole
-coverage authority — it decides which methods are covered, and any universe
-method absent from its report counts as uncovered.
+The unlock universe is every still-uncovered library method with a body, taken
+from the bytecode rather than from JaCoCo: a JaCoCo report only contains classes
+some test loaded, so a JaCoCo-derived universe omits exactly the untouched code
+this phase exists to open up. JaCoCo stays the sole coverage authority — it
+decides which methods are covered, and any universe method absent from its
+report counts as uncovered.
+
+Public API entries belong to that universe alongside internal methods, so each
+candidate contributes its own bit and scores at least one. The phase is measured
+on public methods covered, so covering an entry is a gain in itself; an entry
+drops to zero only when an already-selected entry calls it.
 
 Reachability over-approximates virtual dispatch and is navigation only; it never
 changes a method's JaCoCo status.
@@ -228,7 +233,9 @@ def select_targets(
             continue
         if exact == 0:
             # This node is the maximum and unlocks nothing, so every remaining
-            # candidate is bounded above by zero too.
+            # candidate is bounded above by zero too. Reached only once the
+            # bodiless entries and the delegation targets of earlier picks are
+            # all that is left, since every other candidate holds its own bit.
             break
         unlocked |= reach[node]
         selected.append((node, exact))
@@ -262,10 +269,13 @@ def rank(
     }
 
     # The universe is bytecode-derived; anything JaCoCo does not report counts
-    # as uncovered (§WF-code-coverage-improvement.3.1.1).
+    # as uncovered (§WF-code-coverage-improvement.3.1.1). Public API entries are
+    # members too, so every candidate holds its own bit and is worth at least
+    # one: this phase is scored on public methods covered, so covering the entry
+    # itself is a real gain, not merely a means of reaching internal code.
     universe: list[str] = sorted(
         method_id for method_id, body in has_code.items()
-        if body and method_id not in inventory_ids and method_id not in covered_ids
+        if body and method_id not in covered_ids
     )
     universe_bit: dict[int, int] = {
         index[method_id]: 1 << bit for bit, method_id in enumerate(universe)
@@ -320,15 +330,18 @@ def render_prompt(report: dict) -> str:
         "",
         f"{summary['selected']} targets, selected from {summary['uncoveredCandidates']} "
         f"uncovered public entries because together they put "
-        f"{summary['totalUnlocked']} currently-uncovered internal methods within reach.",
+        f"{summary['totalUnlocked']} currently-uncovered methods within reach.",
         "",
         "Write meaningful behavior tests in the dedicated coverage suite for every",
         "target below. Each id is an exact JaCoCo-uncovered public method or",
         "constructor; use realistic public API usage with real assertions, never",
-        "superficial coverage-only invocation.",
+        "superficial coverage-only invocation. Cover every target, including the",
+        "ones listed last: an entry worth 1 is still an uncovered public method",
+        "this phase is measured on.",
         "",
-        "`unlocks N` is how much internal code that entry newly puts within reach.",
-        "It is static navigation guidance, not a coverage measurement.",
+        "`unlocks N` is how many currently-uncovered methods that entry newly puts",
+        "within reach, counting the entry itself. It is static navigation guidance,",
+        "not a coverage measurement.",
         "",
     ]
     for owner in sorted(groups, key=lambda name: (-sum(
@@ -392,7 +405,7 @@ def main() -> None:
     print(
         f"API rank: selected {summary['selected']} of {summary['uncoveredCandidates']} "
         f"uncovered entries, unlocking {summary['totalUnlocked']} of "
-        f"{summary['universeMethods']} uncovered internal methods."
+        f"{summary['universeMethods']} uncovered methods."
     )
 
 

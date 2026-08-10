@@ -58,6 +58,99 @@ def _graph(directory: str, methods: list[tuple[str, bool]], edges: list[tuple[st
     return directory
 
 
+def _jacoco(path: str, methods: list[tuple[str, str, str, bool]]) -> str:
+    """Write a minimal JaCoCo XML report from (owner, name, desc, covered)."""
+    lines: list[str] = ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?>', '<report name="rank">']
+    owners: dict[str, list[tuple[str, str, bool]]] = {}
+    for owner, name, desc, covered in methods:
+        owners.setdefault(owner, []).append((name, desc, covered))
+    for owner, entries in owners.items():
+        package, _, simple = owner.rpartition("/")
+        lines.append(f'  <package name="{package}">')
+        lines.append(f'    <class name="{owner}" sourcefilename="{simple}.java">')
+        for name, desc, covered in entries:
+            hit, miss = (1, 0) if covered else (0, 1)
+            lines.append(f'      <method name="{name}" desc="{desc}" line="1">')
+            lines.append(f'        <counter type="METHOD" missed="{miss}" covered="{hit}"/>')
+            lines.append("      </method>")
+        lines.append("    </class>")
+        lines.append("  </package>")
+    lines.append("</report>")
+    with open(path, "w", encoding="utf-8") as handle:
+        handle.write("\n".join(lines) + "\n")
+    return path
+
+
+class RankUniverseTests(unittest.TestCase):
+    """The universe includes public entries, so every candidate is worth >= 1.
+
+    `delegate` calls `entry`, which calls the internal `helper`; `lonely` calls
+    nothing; `bodiless` has no bytecode; `done` is already covered.
+    """
+
+    OWNER = "com/example/Api"
+    ENTRY = "com.example.Api#entry():void"
+    LONELY = "com.example.Api#lonely():void"
+    DELEGATE = "com.example.Api#delegate():void"
+    BODILESS = "com.example.Api#bodiless():void"
+    DONE = "com.example.Api#done():void"
+    HELPER = "com.example.Internal#helper():void"
+
+    def _rank(self, directory: str) -> dict:
+        graph_dir = _graph(
+            os.path.join(directory, "graph"),
+            [
+                (self.ENTRY, True), (self.LONELY, True), (self.DELEGATE, True),
+                (self.BODILESS, False), (self.DONE, True), (self.HELPER, True),
+            ],
+            [(self.DELEGATE, self.ENTRY), (self.ENTRY, self.HELPER)],
+        )
+        jacoco = _jacoco(os.path.join(directory, "jacoco.xml"), [
+            (self.OWNER, "done", "()V", True),
+            (self.OWNER, "entry", "()V", False),
+        ])
+        inventory = {"coordinate": "g:a:1", "targets": [
+            {"id": self.ENTRY}, {"id": self.LONELY}, {"id": self.DELEGATE},
+            {"id": self.BODILESS}, {"id": self.DONE},
+        ]}
+        return rank_module.rank(graph_dir, inventory, [jacoco], 10)
+
+    def test_entry_that_reaches_nothing_still_scores_one(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            report = self._rank(directory)
+        selected = {target["id"]: target["unlocks"] for target in report["targets"]}
+        # Without its own bit `lonely` would score zero and stop the greedy pass,
+        # dropping every remaining uncovered public method from the prompt.
+        self.assertEqual(selected.get(self.LONELY), 1)
+
+    def test_delegating_caller_outranks_the_entry_it_calls(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            report = self._rank(directory)
+        selected = {target["id"]: target["unlocks"] for target in report["targets"]}
+        # `delegate` reaches itself, `entry` and `helper`; testing it covers all
+        # three, so `entry` has nothing left to add and is not selected again.
+        self.assertEqual(selected[self.DELEGATE], 3)
+        self.assertNotIn(self.ENTRY, selected)
+
+    def test_bodiless_entry_is_never_selected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            report = self._rank(directory)
+        ids = {target["id"] for target in report["targets"]}
+        # Abstract and interface methods carry no bytecode, so JaCoCo can never
+        # mark them covered and the agent cannot target them directly.
+        self.assertNotIn(self.BODILESS, ids)
+
+    def test_covered_entry_leaves_both_the_candidates_and_the_universe(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            report = self._rank(directory)
+        ids = {target["id"] for target in report["targets"]}
+        self.assertNotIn(self.DONE, ids)
+        # Universe: entry, lonely, delegate, helper — done is covered, bodiless
+        # has no code.
+        self.assertEqual(report["summary"]["universeMethods"], 4)
+        self.assertEqual(report["summary"]["uncoveredCandidates"], 4)
+
+
 class ReachableSetTests(unittest.TestCase):
 
     def test_transitive_reach_is_collected_in_one_pass(self) -> None:
