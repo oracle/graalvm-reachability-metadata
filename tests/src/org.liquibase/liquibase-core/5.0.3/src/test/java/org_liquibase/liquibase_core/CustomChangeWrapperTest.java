@@ -54,13 +54,16 @@ public class CustomChangeWrapperTest {
         Activator.LiquibaseBundle liquibaseBundle = activator.addingBundle(bundle, null);
 
         try {
-            Scope.child(Scope.Attr.osgiPlatform, true, () -> wrapper.setClass(ExampleCustomTaskChange.class.getName()));
+            Scope.child(Scope.Attr.osgiPlatform, true, () -> {
+                wrapper.setClass(ExampleCustomTaskChange.class.getName());
+
+                assertThat(wrapper.getCustomChange()).isInstanceOf(ExampleCustomTaskChange.class);
+            });
         } finally {
             activator.removedBundle(bundle, null, liquibaseBundle);
         }
 
         assertThat(wrapper.getClassName()).isEqualTo(ExampleCustomTaskChange.class.getName());
-        assertThat(wrapper.getCustomChange()).isInstanceOf(ExampleCustomTaskChange.class);
     }
 
     @Test
