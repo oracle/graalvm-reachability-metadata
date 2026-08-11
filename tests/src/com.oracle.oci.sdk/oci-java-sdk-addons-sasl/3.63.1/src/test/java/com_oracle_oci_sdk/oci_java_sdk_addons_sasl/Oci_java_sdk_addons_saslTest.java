@@ -12,10 +12,15 @@ import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.sasl.OciAuthProviderCallback;
 import com.oracle.bmc.auth.sasl.OciMechanism;
 import com.oracle.bmc.auth.sasl.OciSaslClientProvider;
+import com.oracle.bmc.auth.sasl.UserPrincipalsLoginModule;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.Provider;
 import java.security.Security;
+import java.util.Map;
+import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
@@ -23,6 +28,7 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.sasl.Sasl;
 import javax.security.sasl.SaslClient;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class Oci_java_sdk_addons_saslTest {
     @Test
@@ -55,6 +61,53 @@ public class Oci_java_sdk_addons_saslTest {
             assertThat(client.wrap(new byte[] {1, 2}, 0, 2)).isEmpty();
             assertThat(client.getNegotiatedProperty("qop")).isNull();
             client.dispose();
+        } finally {
+            if (!providerWasRegistered) {
+                Security.removeProvider(providerName);
+            }
+        }
+    }
+
+    @Test
+    void initializesUserPrincipalsLoginModuleFromConfiguredProfile(@TempDir Path temporaryDirectory)
+            throws Exception {
+        Path privateKey = temporaryDirectory.resolve("oci_api_key.pem");
+        Path configFile = temporaryDirectory.resolve("oci_config");
+        Files.writeString(privateKey, "key material is not read during login module initialization");
+        Files.writeString(
+                configFile,
+                """
+                [TEST]
+                user=test-user
+                fingerprint=test-fingerprint
+                tenancy=test-tenancy
+                region=us-ashburn-1
+                key_file=%s
+                """
+                        .formatted(privateKey));
+
+        String providerName = "SASL/OCI Client Provider";
+        boolean providerWasRegistered = Security.getProvider(providerName) != null;
+        try {
+            Subject subject = new Subject();
+            UserPrincipalsLoginModule loginModule = new UserPrincipalsLoginModule();
+            loginModule.initialize(
+                    subject,
+                    null,
+                    Map.of(),
+                    Map.of("intent", "streaming", "config", configFile.toString(), "profile", "TEST"));
+
+            assertThat(subject.getPublicCredentials()).contains("streaming");
+            assertThat(subject.getPrivateCredentials(BasicAuthenticationDetailsProvider.class))
+                    .singleElement()
+                    .satisfies(
+                            authenticationProvider ->
+                                    assertThat(authenticationProvider.getKeyId())
+                                            .contains("test-tenancy", "test-user", "test-fingerprint"));
+            assertThat(loginModule.login()).isTrue();
+            assertThat(loginModule.commit()).isTrue();
+            assertThat(loginModule.abort()).isFalse();
+            assertThat(loginModule.logout()).isTrue();
         } finally {
             if (!providerWasRegistered) {
                 Security.removeProvider(providerName);
