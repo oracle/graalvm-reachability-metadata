@@ -39,6 +39,11 @@ creates or reuses a per-issue worktree, and generates bounded Rhei tasks for
 preparation, inventory, coverage generation, validation, discovery, finalization,
 and publication.
 
+That worktree's branch is created from the HEAD of the source checkout, never
+from `origin/master`. Measurement resolves this workflow's own helpers from the
+issue worktree, so basing it on a commit that predates them fails the
+measurement steps outright rather than degrading gracefully.
+
 The tests produced by this workflow must be a separate test suite from the
 tests used to generate or validate reachability metadata. Code coverage tests
 exist to exercise the whole practical library API; metadata-generation tests

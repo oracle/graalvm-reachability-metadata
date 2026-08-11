@@ -22,7 +22,11 @@
     `{{in_progress_status}}` only after the worktree and conversion artifacts
     are written.
   - Create or reuse one worktree below `{{worktree_root}}` for the issue using a
-    branch name like `rhei/code-coverage-issue-{{issue_number}}-<slug>`.
+    branch name like `rhei/code-coverage-issue-{{issue_number}}-<slug>`, with
+    its branch created from the HEAD of `{{repo_checkout}}` — never from
+    `origin/master`. The workflow's own measurement helpers are resolved from
+    the issue worktree, so a base without them fails measurement outright
+    (§WF-code-coverage-improvement.2).
   - Record the resolved worktree and work path, where work path is the worktree
     joined with `{{work_subdir}}`.
   - Write `runtime/code-coverage/issues/conversion.json` with exactly these
