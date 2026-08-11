@@ -18,7 +18,10 @@ import io.opentelemetry.proto.logs.v1.ResourceLogs;
 import io.opentelemetry.proto.logs.v1.ScopeLogs;
 import io.opentelemetry.proto.logs.v1.SeverityNumber;
 import io.opentelemetry.proto.metrics.v1.AggregationTemporality;
+import io.opentelemetry.proto.metrics.v1.Exemplar;
 import io.opentelemetry.proto.metrics.v1.Gauge;
+import io.opentelemetry.proto.metrics.v1.Histogram;
+import io.opentelemetry.proto.metrics.v1.HistogramDataPoint;
 import io.opentelemetry.proto.metrics.v1.Metric;
 import io.opentelemetry.proto.metrics.v1.MetricsData;
 import io.opentelemetry.proto.metrics.v1.NumberDataPoint;
@@ -137,6 +140,55 @@ public class Opentelemetry_protoTest {
         assertThat(parsedSum.getSum().getAggregationTemporality())
                 .isEqualTo(AggregationTemporality.AGGREGATION_TEMPORALITY_CUMULATIVE);
         assertThat(parsedSum.getSum().getDataPoints(0).getAsInt()).isEqualTo(42L);
+    }
+
+    @Test
+    void histogramMetricRepresentsDistributionBucketsAndExemplars() {
+        Exemplar exemplar = Exemplar.newBuilder()
+                .setTimeUnixNano(15L)
+                .setAsDouble(4.2D)
+                .setTraceId(TRACE_ID)
+                .setSpanId(SPAN_ID)
+                .addFilteredAttributes(attribute("sampled", "true"))
+                .build();
+        HistogramDataPoint point = HistogramDataPoint.newBuilder()
+                .setStartTimeUnixNano(10L)
+                .setTimeUnixNano(20L)
+                .setCount(8L)
+                .setSum(27.5D)
+                .addBucketCounts(2L)
+                .addBucketCounts(3L)
+                .addBucketCounts(3L)
+                .addExplicitBounds(2.0D)
+                .addExplicitBounds(5.0D)
+                .setMin(1.1D)
+                .setMax(8.7D)
+                .addExemplars(exemplar)
+                .build();
+        Metric metric = Metric.newBuilder()
+                .setName("request.duration")
+                .setUnit("ms")
+                .setHistogram(Histogram.newBuilder()
+                        .setAggregationTemporality(AggregationTemporality.AGGREGATION_TEMPORALITY_DELTA)
+                        .addDataPoints(point))
+                .build();
+
+        HistogramDataPoint recordedPoint = metric.getHistogram().getDataPoints(0);
+
+        assertThat(metric.getDataCase()).isEqualTo(Metric.DataCase.HISTOGRAM);
+        assertThat(metric.getHistogram().getAggregationTemporality())
+                .isEqualTo(AggregationTemporality.AGGREGATION_TEMPORALITY_DELTA);
+        assertThat(recordedPoint.getBucketCountsList()).containsExactly(2L, 3L, 3L);
+        assertThat(recordedPoint.getExplicitBoundsList()).containsExactly(2.0D, 5.0D);
+        assertThat(recordedPoint.getCount()).isEqualTo(8L);
+        assertThat(recordedPoint.hasSum()).isTrue();
+        assertThat(recordedPoint.getSum()).isEqualTo(27.5D);
+        assertThat(recordedPoint.hasMin()).isTrue();
+        assertThat(recordedPoint.getMin()).isEqualTo(1.1D);
+        assertThat(recordedPoint.hasMax()).isTrue();
+        assertThat(recordedPoint.getMax()).isEqualTo(8.7D);
+        assertThat(recordedPoint.getExemplars(0).getAsDouble()).isEqualTo(4.2D);
+        assertThat(recordedPoint.getExemplars(0).getFilteredAttributes(0).getKey()).isEqualTo("sampled");
     }
 
     @Test
