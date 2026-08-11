@@ -16,11 +16,13 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -31,6 +33,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.security.oauth2.jwt.JwtValidationException;
 import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.JwsHeader;
+import org.springframework.security.oauth2.jwt.MappedJwtClaimSetConverter;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 
@@ -71,6 +74,21 @@ public class Spring_security_oauth2_joseTest {
 
         assertThatThrownBy(() -> decoder.decode(encoded.getTokenValue()))
                 .isInstanceOf(JwtValidationException.class);
+    }
+
+    @Test
+    void mappedClaimSetConverterCustomizesAndRemovesClaims() {
+        Converter<Object, Object> rolesConverter = (roles) -> ((List<?>) roles).stream().map(Object::toString)
+                .map(String::toLowerCase).toList();
+        Converter<Object, Object> claimRemovalConverter = (claim) -> null;
+        MappedJwtClaimSetConverter converter = MappedJwtClaimSetConverter.withDefaults(Map.of("roles", rolesConverter,
+                "temporary", claimRemovalConverter));
+
+        Map<String, Object> convertedClaims = converter.convert(Map.of("sub", "customer-42", "aud", "orders-api",
+                "roles", List.of("ORDER_READ", "BILLING_READ"), "temporary", "one-time-value"));
+
+        assertThat(convertedClaims).containsEntry("sub", "customer-42").containsEntry("aud", List.of("orders-api"))
+                .containsEntry("roles", List.of("order_read", "billing_read")).doesNotContainKey("temporary");
     }
 
     @Test
