@@ -95,6 +95,26 @@ def _load_json_object(path: str, label: str) -> dict:
     return document
 
 
+def load_library_methods(path: str) -> set[str]:
+    """Read the canonical ids the resolved library jars declare.
+
+    The file is the `methods.csv` that `java/CallGraphExtractor.java` writes for
+    the API phase, so both phases anchor to the same jars rather than to
+    whatever the JaCoCo report happens to instrument.
+    """
+    try:
+        with open(path, "r", encoding="utf-8", newline="") as handle:
+            rows = list(csv.reader(handle))
+    except OSError as error:
+        raise ProfileFormatError(f"Cannot read library method list '{path}'.") from error
+    if not rows or rows[0][:1] != ["id"]:
+        raise ProfileFormatError(f"Library method list '{path}' has no 'id' header column.")
+    methods: set[str] = {row[0] for row in rows[1:] if row and row[0]}
+    if not methods:
+        raise ProfileFormatError(f"Library method list '{path}' declares no methods.")
+    return methods
+
+
 @dataclass
 class CallGraph:
     methods: dict[int, MethodRef] = field(default_factory=dict)
@@ -735,6 +755,7 @@ def correlate(
         max_listed: int = MAX_LISTED_METHODS,
         attempt_counts: dict[str, int] | None = None,
         target_states: dict[str, TargetState] | None = None,
+        library_methods: set[str] | None = None,
 ) -> tuple[dict, list[NearCallRecord]]:
     """Build exact public coverage and deep uncovered-method path records."""
     if max_listed <= 0:
@@ -758,7 +779,15 @@ def correlate(
 
     graph_ids: set[str] = set(graph.key_to_id)
     jacoco_ids: set[str] = set(jacoco_methods)
-    deep_ids: list[str] = sorted(jacoco_ids - inventory_ids)
+    # A JaCoCo report covers every instrumented class on the test runtime
+    # classpath, which for libraries publishing a `test`-classifier artifact
+    # includes their own unit tests. Restrict the deep universe to methods the
+    # resolved library jars actually declare (§WF-code-coverage-improvement.3.2).
+    deep_candidate_ids: set[str] = jacoco_ids - inventory_ids
+    foreign_ids: set[str] = (
+        deep_candidate_ids - library_methods if library_methods is not None else set()
+    )
+    deep_ids: list[str] = sorted(deep_candidate_ids - foreign_ids)
     jacoco_only_ids: list[str] = sorted((jacoco_ids - graph_ids) - inventory_ids)
     graph_only_ids: list[str] = sorted((graph_ids - jacoco_ids) - inventory_ids)
     invalid_state_ids: list[str] = sorted(set(states) - set(deep_ids))
@@ -830,6 +859,7 @@ def correlate(
             "deepMethods": len(deep_coverage),
             "deepCovered": len(deep_coverage) - len(deep_uncovered),
             "deepUncovered": len(deep_uncovered),
+            "nonLibraryMethodsExcluded": len(foreign_ids),
             "terminalUncovered": sum(
                 1 for record in uncovered_records if record.target_state.terminal
             ),
@@ -878,7 +908,11 @@ def correlate(
             "JaCoCo is the only coverage authority; sampled PGO evidence is guidance only.",
             "Absence of a sample never proves non-execution.",
             "The analysis call graph over-approximates; static paths may be infeasible.",
-        ],
+        ] + ([
+            "No library method list was supplied, so the deep universe still counts "
+            "every JaCoCo-reported method, including any the library's own "
+            "test-classifier artifact contributes."
+        ] if library_methods is None else []),
     }
     return report, prompt_records
 
@@ -1131,6 +1165,7 @@ def generate_report(
         output_dir: str,
         max_listed: int = MAX_LISTED_METHODS,
         target_state_paths: list[str] | None = None,
+        library_methods_path: str | None = None,
 ) -> dict:
     if not isinstance(coordinate, str) or not coordinate.strip():
         raise ProfileFormatError("coordinate must be non-empty.")
@@ -1148,6 +1183,9 @@ def generate_report(
     previous: dict | None = _previous_report(output_dir, iteration)
     target_states: dict[str, TargetState] = _previous_target_states(previous)
     target_states.update(load_target_states(target_state_paths, coordinate))
+    library_methods: set[str] | None = (
+        load_library_methods(library_methods_path) if library_methods_path else None
+    )
     report, prompt_records = correlate(
         profile,
         graph,
@@ -1156,6 +1194,7 @@ def generate_report(
         max_listed,
         _next_attempt_counts(previous),
         target_states,
+        library_methods,
     )
     report["coordinate"] = coordinate
     report["iteration"] = iteration
@@ -1198,6 +1237,11 @@ def main() -> None:
         dest="target_state_paths",
         help="Coordinate-scoped target state; repeat in chronological order.",
     )
+    parser.add_argument(
+        "--library-methods",
+        help="methods.csv from the bytecode call-graph extractor; restricts the deep "
+             "universe to methods the resolved library jars declare.",
+    )
     parser.add_argument("--coordinate", required=True, help="group:artifact:version.")
     parser.add_argument("--iteration", type=int, default=1, help="Discovery iteration number.")
     parser.add_argument("--output-dir", required=True, help="Directory for discovery artifacts.")
@@ -1220,6 +1264,7 @@ def main() -> None:
             output_dir=args.output_dir,
             max_listed=args.max_listed_methods,
             target_state_paths=args.target_state_paths,
+            library_methods_path=args.library_methods,
         )
     except (ProfileFormatError, JacocoReportError) as error:
         print(f"ERROR: {error}", file=sys.stderr)

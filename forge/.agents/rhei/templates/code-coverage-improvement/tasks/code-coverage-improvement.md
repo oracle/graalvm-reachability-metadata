@@ -159,6 +159,11 @@
   `deep-measure` state.
 - Fixed report location: `runtime/code-coverage/discovery/discovery-report.json`
   (iteration history stays at `discovery-report-<n>.json`).
+- Target universe: JaCoCo methods that are neither API inventory entries nor
+  absent from `runtime/code-coverage/graph/methods.csv`. The method list keeps
+  the library's own `test`-classifier classes out of the universe, since JaCoCo
+  reports them in the library's own packages
+  (§WF-code-coverage-improvement.3.2).
 - Prompt location: `runtime/code-coverage/prompts/deep-cover-prompt.md`, taken
   by the measurement program from the analyzer's compact
   `Observed` / `Uncovered paths` Markdown when the loop continues.
