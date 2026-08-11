@@ -175,6 +175,23 @@ preparation. Its target universe is library-owned methods reported by JaCoCo
 that are not public API inventory entries. JaCoCo remains the sole coverage
 metric for these internal methods.
 
+"Library-owned" is decided by the resolved library jars, not by the JaCoCo
+report alone. A JaCoCo report covers every instrumented class on the test
+runtime classpath, and a library that publishes a `test`-classifier artifact
+puts its own unit tests there — in its own packages, so no package prefix
+separates them. Taking the report at face value silently makes those tests deep
+targets and inflates the denominator the phase reports. The universe is
+therefore intersected with the method list the bytecode extractor writes for the
+API phase (§3.1.1), so both phases anchor to the same jars. Methods dropped this
+way are counted as `nonLibraryMethodsExcluded`; when no method list is supplied
+the report carries an explicit caveat instead of filtering silently.
+
+Note that the corresponding Gradle behaviour is deliberately left alone:
+`resolveTestedLibraryJars` matches artifacts by group and name without a
+classifier, so JaCoCo analyses the `test` artifact too. Narrowing it there would
+also narrow the repository's dynamic-access measurement, which may legitimately
+need metadata for classes in that artifact. The workflow defends itself instead.
+
 The Native Image analysis call-tree CSV dump and sampled PGO profile provide
 navigation for JaCoCo-uncovered internal targets. For each target, the analyzer
 uses the shortest directed static path from any sampled frame. When no sampled
@@ -419,8 +436,9 @@ engine:
   `forge/utility_scripts/code_coverage_prepare_native_metadata.py`.
 - **Native Image deep-path analyzer** — intersects exact JaCoCo library methods
   with the analysis call-tree CSV graph, subtracts public API inventory entries,
-  and uses sampled `.iprof` stacks only to navigate JaCoCo-uncovered internal
-  methods. It retains every record in JSON and emits compact `Observed` /
+  restricts what remains to the methods the resolved library jars declare via
+  `--library-methods`, and uses sampled `.iprof` stacks only to navigate
+  JaCoCo-uncovered internal methods. It retains every record in JSON and emits compact `Observed` /
   `Uncovered paths` Markdown capped at 100 methods. Implemented in
   `forge/utility_scripts/code_coverage_profile_report.py`; the sampling image
   and call-tree CSVs are produced by the `nativeTestPGOSampling` and

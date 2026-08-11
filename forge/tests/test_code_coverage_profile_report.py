@@ -730,5 +730,59 @@ class ReportArtifactsTest(unittest.TestCase):
             )
 
 
+class LibraryMethodFilterTest(unittest.TestCase):
+    """The deep universe must hold library methods only.
+
+    A library that publishes a `test`-classifier artifact puts its own unit
+    tests on the test runtime classpath, and JaCoCo reports them in the same
+    packages as the library itself, so package prefixes cannot separate them.
+    """
+
+    LIB = MethodRef("com.example.Internal", "work", (), "void")
+    FOREIGN = MethodRef("com.example.InternalTest", "shouldWork", (), "void")
+
+    def _report(self, library_methods: set[str] | None) -> dict:
+        report, _ = report_module.correlate(
+            report_module.SampledProfile(),
+            report_module.CallGraph(),
+            {"targets": []},
+            {
+                self.LIB.canonical_id: _coverage(self.LIB, covered=True),
+                self.FOREIGN.canonical_id: _coverage(self.FOREIGN, covered=True),
+            },
+            library_methods=library_methods,
+        )
+        return report
+
+    def test_foreign_test_methods_leave_the_deep_universe(self) -> None:
+        summary = self._report({self.LIB.canonical_id})["summary"]
+        self.assertEqual(summary["deepMethods"], 1)
+        self.assertEqual(summary["deepCovered"], 1)
+        self.assertEqual(summary["nonLibraryMethodsExcluded"], 1)
+
+    def test_without_a_method_list_nothing_is_excluded_but_it_is_declared(self) -> None:
+        report = self._report(None)
+        self.assertEqual(report["summary"]["deepMethods"], 2)
+        self.assertEqual(report["summary"]["nonLibraryMethodsExcluded"], 0)
+        self.assertTrue(any("test-classifier" in caveat for caveat in report["caveats"]))
+
+    def test_loading_rejects_a_file_without_the_id_header(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = os.path.join(directory, "methods.csv")
+            with open(path, "w", encoding="utf-8") as handle:
+                handle.write("name,hasCode\n\"a.B#c():void\",true\n")
+            with self.assertRaises(report_module.ProfileFormatError) as raised:
+                report_module.load_library_methods(path)
+            self.assertIn("id", str(raised.exception))
+
+    def test_loading_reads_canonical_ids_from_the_extractor_csv(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = os.path.join(directory, "methods.csv")
+            with open(path, "w", encoding="utf-8") as handle:
+                handle.write("id,hasCode,isPublicApi\n")
+                handle.write(f'"{self.LIB.canonical_id}",true,false\n')
+            self.assertEqual(report_module.load_library_methods(path), {self.LIB.canonical_id})
+
+
 if __name__ == "__main__":
     unittest.main()

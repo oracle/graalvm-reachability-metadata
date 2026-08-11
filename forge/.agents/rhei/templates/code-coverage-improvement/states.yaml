@@ -129,27 +129,12 @@ states:
           fail(2, f"helper wrote no report at {report_path}")
       shutil.copy(report_path, validation / "api-cover-report.json")
 
-      # Decide: 0 = phase done, 10 = uncovered targets remain and budget left.
-      report = json.load(open(report_path))
-      uncovered = [
-          entry for entry in report.get("targets", report.get("inventory", []))
-          if entry.get("status") == "uncovered"
-      ]
-      print(f"[api-measure] iteration {iteration}: {len(uncovered)} uncovered public targets", flush=True)
-
-      # Fixed iteration budget. Scaling it from the baseline uncovered count
-      # made the phase length depend on how that count is defined, so a change
-      # to the summary basis silently halved the budget; a constant cannot
-      # drift that way (§WF-code-coverage-improvement.3.1).
-      budget = {{coverage_iterations}}
-      print(f"[api-measure] iteration budget {budget}", flush=True)
-      if not uncovered or iteration >= budget:
-          sys.exit(0)
-
       # Step 3: static call graph from the library bytecode, built once and
       # cached. The Native Image call tree cannot serve here: it holds only
       # methods current tests already reach, which excludes exactly the code
-      # this phase opens up (§WF-code-coverage-improvement.3.1.1).
+      # this phase opens up (§WF-code-coverage-improvement.3.1.1). It runs
+      # before the loop decision because the deep phase needs its method list
+      # even when this phase completes on the first measurement.
       inventory_path = Path("runtime/code-coverage/api-inventory/api-inventory.json")
       graph_dir = Path("runtime/code-coverage/graph")
       if not (graph_dir / "edges.csv").is_file():
@@ -172,6 +157,23 @@ states:
                   fail(3, "CallGraphExtractor.java failed")
           except OSError as error:
               fail(3, f"CallGraphExtractor.java could not run: {error}")
+
+      # Decide: 0 = phase done, 10 = uncovered targets remain and budget left.
+      report = json.load(open(report_path))
+      uncovered = [
+          entry for entry in report.get("targets", report.get("inventory", []))
+          if entry.get("status") == "uncovered"
+      ]
+      print(f"[api-measure] iteration {iteration}: {len(uncovered)} uncovered public targets", flush=True)
+
+      # Fixed iteration budget. Scaling it from the baseline uncovered count
+      # made the phase length depend on how that count is defined, so a change
+      # to the summary basis silently halved the budget; a constant cannot
+      # drift that way (§WF-code-coverage-improvement.3.1).
+      budget = {{coverage_iterations}}
+      print(f"[api-measure] iteration budget {budget}", flush=True)
+      if not uncovered or iteration >= budget:
+          sys.exit(0)
 
       # Step 4: order the uncovered public entries by how much still-uncovered
       # code each unlocks, and render the cover prompt from that.
@@ -365,13 +367,21 @@ states:
       for csv_path in complete[chosen].values():
           shutil.copy(csv_path, triplet_dir / csv_path.name)
 
-      # Step 6: JaCoCo-exact deep paths with sampled-PGO guidance.
+      # Step 6: JaCoCo-exact deep paths with sampled-PGO guidance. The library
+      # method list keeps the deep universe to methods the resolved jars declare;
+      # a JaCoCo report also covers whatever else the test runtime classpath
+      # instruments, including the library's own test-classifier artifact
+      # (§WF-code-coverage-improvement.3.2).
+      library_methods = Path("runtime/code-coverage/graph/methods.csv")
+      if not library_methods.is_file():
+          fail(6, f"the API phase left no library method list at {library_methods}")
       analyzer = [
           sys.executable, f"{work_path}/utility_scripts/code_coverage_profile_report.py",
           "--profile", profile,
           "--reports-dir", triplet_dir,
           "--api-inventory", "runtime/code-coverage/api-inventory/api-inventory.json",
           "--jacoco-xml", discovery / f"jacoco-deep-{iteration}.xml",
+          "--library-methods", library_methods,
           "--coordinate", coordinate,
           "--iteration", iteration,
           "--output-dir", discovery,
