@@ -15,11 +15,13 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.DefaultOAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.BearerTokenError;
 import org.springframework.security.oauth2.server.resource.BearerTokenErrors;
@@ -28,6 +30,7 @@ import org.springframework.security.oauth2.server.resource.authentication.Bearer
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.DelegatingJwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtBearerTokenAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.introspection.OAuth2IntrospectionAuthenticatedPrincipal;
 
@@ -92,6 +95,28 @@ public class Spring_security_oauth2_resource_serverTest {
                 .containsExactlyInAnyOrder("FACTOR_BEARER", "SCOPE_catalog.read");
         assertThat(authentication.getCredentials()).isEqualTo(jwt);
         assertThat(authentication.isAuthenticated()).isTrue();
+    }
+
+    @Test
+    void jwtBearerTokenAuthenticationConverterUsesCustomPrincipalConverter() {
+        Jwt jwt = jwt(Map.of("scope", "orders.read", "sub", "token-subject"));
+        DefaultOAuth2AuthenticatedPrincipal customPrincipal = new DefaultOAuth2AuthenticatedPrincipal(
+                "service-account", Map.of("client_id", "orders-client"),
+                List.of(new SimpleGrantedAuthority("ROLE_SERVICE")));
+        JwtBearerTokenAuthenticationConverter converter = new JwtBearerTokenAuthenticationConverter();
+        converter.setJwtPrincipalConverter(new Converter<>() {
+            @Override
+            public OAuth2AuthenticatedPrincipal convert(Jwt source) {
+                return customPrincipal;
+            }
+        });
+
+        BearerTokenAuthentication authentication = (BearerTokenAuthentication) converter.convert(jwt);
+
+        assertThat(authentication.getPrincipal()).isSameAs(customPrincipal);
+        assertThat(authentication.getName()).isEqualTo("service-account");
+        assertThat(authorityNames(authentication.getAuthorities())).containsExactly("SCOPE_orders.read");
+        assertThat(authentication.getToken().getTokenValue()).isEqualTo("token-value");
     }
 
     @Test
