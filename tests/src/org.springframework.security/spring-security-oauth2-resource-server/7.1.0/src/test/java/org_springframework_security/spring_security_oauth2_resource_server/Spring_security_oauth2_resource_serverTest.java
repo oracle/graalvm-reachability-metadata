@@ -29,10 +29,12 @@ import org.springframework.security.oauth2.server.resource.OAuth2ProtectedResour
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.DelegatingJwtGrantedAuthoritiesConverter;
+import org.springframework.security.oauth2.server.resource.authentication.ExpressionJwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtBearerTokenAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.oauth2.server.resource.introspection.OAuth2IntrospectionAuthenticatedPrincipal;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -80,6 +82,18 @@ public class Spring_security_oauth2_resource_serverTest {
         List<String> authorities = authorityNames(converter.convert(jwt));
 
         assertThat(authorities).containsExactly("SCOPE_read", "SCOPE_write", "PERMISSION_export", "PERMISSION_admin");
+    }
+
+    @Test
+    void expressionJwtAuthoritiesConverterReadsAuthoritiesFromClaimExpression() {
+        Jwt jwt = jwt(Map.of("resource_access", Map.of("orders", List.of("read", "write"))));
+        ExpressionJwtGrantedAuthoritiesConverter converter = new ExpressionJwtGrantedAuthoritiesConverter(
+                new SpelExpressionParser().parseExpression("['resource_access']['orders']"));
+        converter.setAuthorityPrefix("ORDER_");
+
+        List<String> authorities = authorityNames(converter.convert(jwt));
+
+        assertThat(authorities).containsExactly("ORDER_read", "ORDER_write");
     }
 
     @Test
