@@ -9,6 +9,7 @@ package io_opentelemetry_proto.opentelemetry_proto;
 import com.google.protobuf.ByteString;
 import io.opentelemetry.proto.collector.logs.v1.ExportLogsServiceRequest;
 import io.opentelemetry.proto.collector.metrics.v1.ExportMetricsServiceRequest;
+import io.opentelemetry.proto.collector.profiles.v1development.ExportProfilesServiceRequest;
 import io.opentelemetry.proto.collector.trace.v1.ExportTraceServiceRequest;
 import io.opentelemetry.proto.common.v1.AnyValue;
 import io.opentelemetry.proto.common.v1.InstrumentationScope;
@@ -28,6 +29,12 @@ import io.opentelemetry.proto.metrics.v1.NumberDataPoint;
 import io.opentelemetry.proto.metrics.v1.ResourceMetrics;
 import io.opentelemetry.proto.metrics.v1.ScopeMetrics;
 import io.opentelemetry.proto.metrics.v1.Sum;
+import io.opentelemetry.proto.profiles.v1development.Profile;
+import io.opentelemetry.proto.profiles.v1development.ProfilesDictionary;
+import io.opentelemetry.proto.profiles.v1development.ResourceProfiles;
+import io.opentelemetry.proto.profiles.v1development.Sample;
+import io.opentelemetry.proto.profiles.v1development.ScopeProfiles;
+import io.opentelemetry.proto.profiles.v1development.ValueType;
 import io.opentelemetry.proto.resource.v1.Resource;
 import io.opentelemetry.proto.trace.v1.ResourceSpans;
 import io.opentelemetry.proto.trace.v1.ScopeSpans;
@@ -189,6 +196,49 @@ public class Opentelemetry_protoTest {
         assertThat(recordedPoint.getMax()).isEqualTo(8.7D);
         assertThat(recordedPoint.getExemplars(0).getAsDouble()).isEqualTo(4.2D);
         assertThat(recordedPoint.getExemplars(0).getFilteredAttributes(0).getKey()).isEqualTo("sampled");
+    }
+
+    @Test
+    void profilesExportRetainsDictionaryIndexedSampleData() {
+        ProfilesDictionary dictionary = ProfilesDictionary.newBuilder()
+                .addStringTable("")
+                .addStringTable("cpu")
+                .addStringTable("nanoseconds")
+                .build();
+        ValueType sampleType = ValueType.newBuilder()
+                .setTypeStrindex(1)
+                .setUnitStrindex(2)
+                .build();
+        Profile profile = Profile.newBuilder()
+                .setSampleType(sampleType)
+                .setTimeUnixNano(100L)
+                .setDurationNano(50L)
+                .setProfileId(ByteString.copyFromUtf8("profile-identifier"))
+                .addSamples(Sample.newBuilder()
+                        .setStackIndex(3)
+                        .addValues(17L)
+                        .addTimestampsUnixNano(125L))
+                .build();
+        ExportProfilesServiceRequest request = ExportProfilesServiceRequest.newBuilder()
+                .setDictionary(dictionary)
+                .addResourceProfiles(ResourceProfiles.newBuilder()
+                        .setResource(resource())
+                        .addScopeProfiles(ScopeProfiles.newBuilder()
+                                .setScope(scope())
+                                .addProfiles(profile)))
+                .build();
+
+        Profile exportedProfile = request.getResourceProfiles(0).getScopeProfiles(0).getProfiles(0);
+
+        assertThat(request.hasDictionary()).isTrue();
+        assertThat(request.getDictionary().getStringTableList())
+                .containsExactly("", "cpu", "nanoseconds");
+        assertThat(exportedProfile.getSampleType().getTypeStrindex()).isEqualTo(1);
+        assertThat(exportedProfile.getSampleType().getUnitStrindex()).isEqualTo(2);
+        assertThat(exportedProfile.getProfileId()).isEqualTo(ByteString.copyFromUtf8("profile-identifier"));
+        assertThat(exportedProfile.getSamples(0).getStackIndex()).isEqualTo(3);
+        assertThat(exportedProfile.getSamples(0).getValuesList()).containsExactly(17L);
+        assertThat(exportedProfile.getSamples(0).getTimestampsUnixNanoList()).containsExactly(125L);
     }
 
     @Test
