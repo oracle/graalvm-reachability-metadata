@@ -9,14 +9,18 @@ package org_springframework_security.spring_security_oauth2_jose;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -25,6 +29,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
+import org.springframework.security.oauth2.jwt.DPoPProofContext;
+import org.springframework.security.oauth2.jwt.DPoPProofJwtDecoderFactory;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -92,6 +98,30 @@ public class Spring_security_oauth2_joseTest {
     }
 
     @Test
+    void dpopProofDecoderFactoryValidatesSignedProofBoundToRequest() throws Exception {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(2048);
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
+        JwtEncoder encoder = NimbusJwtEncoder.withKeyPair(publicKey, (RSAPrivateKey) keyPair.getPrivate())
+                .algorithm(SignatureAlgorithm.RS256).build();
+        Instant issuedAt = Instant.now();
+        Jwt proof = encoder.encode(JwtEncoderParameters.from(
+                JwsHeader.with(SignatureAlgorithm.RS256).type("dpop+jwt").jwk(publicRsaJwk(publicKey)).build(),
+                JwtClaimsSet.builder().issuedAt(issuedAt).id(UUID.randomUUID().toString()).claim("htm", "POST")
+                        .claim("htu", "https://resource.example.test/orders").build()));
+        DPoPProofContext context = DPoPProofContext.withDPoPProof(proof.getTokenValue()).method("POST")
+                .targetUri("https://resource.example.test/orders").build();
+
+        Jwt decoded = new DPoPProofJwtDecoderFactory().createDecoder(context).decode(context.getDPoPProof());
+
+        assertThat(decoded.getHeaders()).containsEntry("typ", "dpop+jwt").containsKey("jwk");
+        assertThat(decoded.getId()).isEqualTo(proof.getId());
+        assertThat(decoded.getClaimAsString("htm")).isEqualTo("POST");
+        assertThat(decoded.getClaimAsString("htu")).isEqualTo("https://resource.example.test/orders");
+    }
+
+    @Test
     void rsaKeyPairEncoderAndPublicKeyDecoderRoundTripJwt() throws Exception {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(2048);
@@ -116,6 +146,17 @@ public class Spring_security_oauth2_joseTest {
         return JwtClaimsSet.builder().issuer(ISSUER).subject(subject).audience(List.of("orders-api", "billing-api"))
                 .issuedAt(issuedAt).expiresAt(issuedAt.plusSeconds(300)).id("jwt-" + subject)
                 .claim("roles", List.of("ORDER_READ", "BILLING_READ")).claim("active", true).build();
+    }
+
+    private Map<String, Object> publicRsaJwk(RSAPublicKey publicKey) {
+        return Map.of("kty", "RSA", "n", base64UrlUnsigned(publicKey.getModulus()), "e",
+                base64UrlUnsigned(publicKey.getPublicExponent()));
+    }
+
+    private String base64UrlUnsigned(BigInteger value) {
+        byte[] bytes = value.toByteArray();
+        int offset = bytes.length > 1 && bytes[0] == 0 ? 1 : 0;
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(Arrays.copyOfRange(bytes, offset, bytes.length));
     }
 
     private SecretKey hmacSecretKey() {
