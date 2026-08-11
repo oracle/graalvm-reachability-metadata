@@ -39,6 +39,7 @@ from utility_scripts.task_logs import build_timestamped_task_log_path, display_l
 ALIAS_SPLIT_METRICS_KEY = "library_update_alias_split"
 FOLLOW_UP_TRAILER = "Forge-Unblocks-Issue"
 ALIAS_SWEEP_STAGE = "library-update-alias-sweep"
+LATEST_ONLY_FIELDS: tuple[str, ...] = ("auto-update", "high-priority")
 PROJECT_NUMBER = 30
 STATUS_FIELD_NAME = "Status"
 STATUS_IN_PROGRESS = "In Progress"
@@ -392,6 +393,11 @@ def _apply_alias_split(
         successor_entry["latest"] = True
     else:
         successor_entry.pop("latest", None)
+
+    for entry in (current_entry, successor_entry):
+        if entry.get("latest") is not True:
+            for field in LATEST_ONLY_FIELDS:
+                entry.pop(field, None)
 
     entries.insert(target_index, successor_entry)
     _write_index_entries(repo_path, group, artifact, entries)
