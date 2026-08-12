@@ -38,10 +38,13 @@ public class ProvDSTU4145PublicKeyTest {
         KeyPair keyPair = generateDstu4145KeyPair();
         PublicKey publicKey = keyPair.getPublic();
         PublicKey restoredPublicKey = deserialize(serialize(publicKey));
+        PublicKey reserializedPublicKey = deserialize(serialize(restoredPublicKey));
 
         assertThat(restoredPublicKey.getAlgorithm()).isEqualTo("DSTU4145");
         assertThat(restoredPublicKey.getEncoded()).isEqualTo(publicKey.getEncoded());
+        assertThat(reserializedPublicKey.getEncoded()).isEqualTo(publicKey.getEncoded());
         assertThat(verifiesSignature(keyPair, restoredPublicKey)).isTrue();
+        assertThat(verifiesSignature(keyPair, reserializedPublicKey)).isTrue();
     }
 
     private KeyPair generateDstu4145KeyPair() throws Exception {
@@ -67,6 +70,7 @@ public class ProvDSTU4145PublicKeyTest {
             return (PublicKey) input.readObject();
         }
     }
+
 
     private boolean verifiesSignature(KeyPair keyPair, PublicKey publicKey) throws Exception {
         byte[] message = "serialized DSTU4145 public key".getBytes(StandardCharsets.UTF_8);
