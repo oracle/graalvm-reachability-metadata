@@ -38,10 +38,13 @@ public class ProvECPublicKeyTest {
         KeyPair keyPair = generateEcKeyPair();
         PublicKey publicKey = recreatePublicKey((ECPublicKey) keyPair.getPublic());
         PublicKey restoredPublicKey = deserialize(serialize(publicKey));
+        PublicKey reserializedPublicKey = deserialize(serialize(restoredPublicKey));
 
         assertThat(restoredPublicKey.getAlgorithm()).isEqualTo("EC");
         assertThat(restoredPublicKey.getEncoded()).isEqualTo(publicKey.getEncoded());
+        assertThat(reserializedPublicKey.getEncoded()).isEqualTo(publicKey.getEncoded());
         assertThat(verifySignature(keyPair, restoredPublicKey)).isTrue();
+        assertThat(verifySignature(keyPair, reserializedPublicKey)).isTrue();
     }
 
     private KeyPair generateEcKeyPair() throws Exception {

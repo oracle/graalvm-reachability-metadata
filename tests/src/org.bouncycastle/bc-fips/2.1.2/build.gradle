@@ -15,10 +15,15 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+test {
+    jvmArgs("-Djdk.util.jar.version=9")
+}
+
 graalvmNative {
     binaries {
         test {
             buildArgs("-H:AdditionalSecurityProviders=org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider")
+            buildArgs("-J-Djdk.util.jar.version=9")
             buildArgs("-J-Dorg.bouncycastle.native.cpu_variant=java")
             runtimeArgs("-Dorg.bouncycastle.native.cpu_variant=java")
         }
