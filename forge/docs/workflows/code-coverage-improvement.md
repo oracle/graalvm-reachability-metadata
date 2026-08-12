@@ -117,10 +117,10 @@ much still-uncovered code each one unlocks, and never by identifier order.
 Ranking is advisory navigation; it never changes any method's JaCoCo status.
 
 Ranking decides the **order** of the prompt, never its membership. Every
-uncovered public entry remains a legitimate target, because this phase is scored
-on public methods covered — an entry that reaches no internal code is still an
-uncovered public method worth a test. Selection must therefore fill the prompt
-to its cap whenever that many candidates exist.
+eligible uncovered public entry (§3.1.2) remains a legitimate target, because
+this phase is scored on public methods covered — an entry that reaches no
+internal code is still an uncovered public method worth a test. Selection must
+therefore fill the prompt to its cap whenever that many candidates exist.
 
 The unlock universe is every still-uncovered library-owned method **with a body,
 derived from the library bytecode**, public API entries included. Membership of
@@ -167,6 +167,45 @@ Selection cost weighting — preferring entries that are cheap for an agent to
 construct — is deliberately not part of this contract. Parameter count is a poor
 proxy for construction difficulty, and repeated-attempt state provides an
 empirical signal instead.
+
+#### 3.1.2 Target eligibility by receiver obtainability
+
+Ranking orders candidates; eligibility decides which entries may become
+candidates at all. A public method is only a legitimate prompt target when a
+test can actually invoke it, and the `public` modifier alone does not establish
+that. A public method on a class the test can never obtain an instance of is
+unreachable from any test, no matter how much internal code it statically
+unlocks.
+
+An entry is eligible when one of the following holds:
+
+- it is a public constructor, or a public static method — neither needs a
+  receiver;
+- its declaring type is **obtainable**;
+- it overrides a method declared on an obtainable supertype. The test holds the
+  supertype and dynamic dispatch lands in the implementation, so it never names
+  the declaring class. This case carries the DSL implementation classes, whose
+  interface declarations are abstract and therefore outside the unlock universe
+  entirely — without this rule the only coverable member of such a pair is
+  ineligible while the only eligible one has no body.
+
+A type is obtainable when it has a public constructor, when it is the return
+type of an eligible method (element type, if that return type is an array), or
+when it is a supertype of an obtainable type — holding an instance permits every
+supertype method call on it. The definition is a least fixed point over those
+three rules, computed once per library from the same bytecode the call graph
+comes from.
+
+A type reachable only by an explicit downcast is **not** obtainable. Casting to
+an internal implementation is not realistic public API usage, which the prompt
+requires, and the cast's success is a runtime property no static rule
+establishes. Type erasure is the known limitation of this definition: a generic
+return type erases to its bound, so a type obtainable only as a generic element
+is invisible here and is treated as not obtainable.
+
+Ineligible entries stay in the coverage denominator. They are still library code
+and still execute collaterally when a realistic test exercises the surrounding
+subsystem; what they are not is something an agent can be asked to target.
 
 ### 3.2 Deep implementation coverage
 

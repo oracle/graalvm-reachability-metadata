@@ -137,7 +137,11 @@ states:
       # even when this phase completes on the first measurement.
       inventory_path = Path("runtime/code-coverage/api-inventory/api-inventory.json")
       graph_dir = Path("runtime/code-coverage/graph")
-      if not (graph_dir / "edges.csv").is_file():
+      # `types.csv` is the extractor's last output and its newest one, so its
+      # absence means either no graph or a graph from an extractor that predates
+      # receiver-obtainability analysis (§WF-code-coverage-improvement.3.1.2).
+      # Keying the cache on it rebuilds instead of silently ranking unfiltered.
+      if not (graph_dir / "types.csv").is_file():
           try:
               library_jars = json.load(open(inventory_path))["libraryJars"]
           except Exception as error:

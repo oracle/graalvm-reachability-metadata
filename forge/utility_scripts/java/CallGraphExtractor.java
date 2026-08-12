@@ -32,11 +32,17 @@ import java.util.zip.ZipFile;
 /// Bytecode call-graph extractor for the code coverage improvement workflow
 /// (§WF-code-coverage-improvement.3.1.1, §WF-code-coverage-improvement-architecture.1).
 ///
-/// Reads library jars with the JDK Class-File API and writes two CSV files: one
-/// row per declared method and one row per call edge. Method identities are the
-/// canonical `owner#name(params):ret` form produced by
-/// `utility_scripts/code_coverage_model.py`, so extractor output joins directly
-/// with JaCoCo evidence and the API inventory.
+/// Reads library jars with the JDK Class-File API and writes three CSV files:
+/// one row per declared method, one row per call edge, and one row per declared
+/// type. Method identities are the canonical `owner#name(params):ret` form
+/// produced by `utility_scripts/code_coverage_model.py`, so extractor output
+/// joins directly with JaCoCo evidence and the API inventory.
+///
+/// `types.csv` carries the declared supertypes that receiver-obtainability
+/// analysis needs (§WF-code-coverage-improvement.3.1.2). The hierarchy is
+/// already parsed here for class-hierarchy analysis; writing it out saves the
+/// ranking step a second pass over the jars. The join key both ways is the
+/// owner: everything before `#` in a canonical id is a `types.csv` name.
 ///
 /// Class files are read directly rather than parsed out of `javap` text: raw
 /// descriptors stay exact and `invokedynamic` lambda bodies stay reachable
@@ -51,7 +57,9 @@ import java.util.zip.ZipFile;
 public final class CallGraphExtractor {
 
     /// One declared method: its canonical id and whether it carries a body.
-    private record MethodNode(String id, boolean hasCode, boolean isPublicApi) {
+    /// `isStatic` is what tells eligibility analysis that an entry needs no
+    /// receiver at all (§WF-code-coverage-improvement.3.1.2).
+    private record MethodNode(String id, boolean hasCode, boolean isPublicApi, boolean isStatic) {
     }
 
     /// Declared supertypes of one class, used for hierarchy analysis.
@@ -145,7 +153,8 @@ public final class CallGraphExtractor {
             String id = canonicalId(owner, method.methodName().stringValue(),
                     method.methodTypeSymbol());
             boolean isPublicMethod = isPublicClass && method.flags().has(AccessFlag.PUBLIC);
-            declared.add(new MethodNode(id, method.code().isPresent(), isPublicMethod));
+            declared.add(new MethodNode(id, method.code().isPresent(), isPublicMethod,
+                    method.flags().has(AccessFlag.STATIC)));
             declaredIds.add(id);
         }
         methodsByOwner.put(owner, declared);
@@ -284,9 +293,10 @@ public final class CallGraphExtractor {
     private void write(Path outputDir) throws IOException {
         Files.createDirectories(outputDir);
         List<String> methodRows = new ArrayList<>();
-        methodRows.add("id,hasCode,isPublicApi");
+        methodRows.add("id,hasCode,isPublicApi,isStatic");
         methodsByOwner.values().forEach(declared -> declared.forEach(node -> methodRows.add(
-                quote(node.id()) + "," + node.hasCode() + "," + node.isPublicApi())));
+                quote(node.id()) + "," + node.hasCode() + "," + node.isPublicApi()
+                        + "," + node.isStatic())));
         write(outputDir.resolve("methods.csv"), methodRows);
 
         List<String> edgeRows = new ArrayList<>();
@@ -295,7 +305,19 @@ public final class CallGraphExtractor {
             edgeRows.add(quote(edge.caller()) + "," + quote(edge.callee()));
         }
         write(outputDir.resolve("edges.csv"), edgeRows);
-        System.out.printf("call graph: %d methods, %d edges%n", declaredIds.size(), edges.size());
+
+        // Interfaces are written as one semicolon-joined field: a type name can
+        // never contain a semicolon, so the row stays a single CSV column.
+        List<String> typeRows = new ArrayList<>();
+        typeRows.add("name,isPublic,super,interfaces");
+        new TreeMap<>(classes).forEach((owner, node) -> typeRows.add(
+                quote(owner) + "," + node.isPublic() + ","
+                        + quote(node.superName() == null ? "" : node.superName()) + ","
+                        + quote(String.join(";", node.interfaceNames()))));
+        write(outputDir.resolve("types.csv"), typeRows);
+
+        System.out.printf("call graph: %d methods, %d edges, %d types%n",
+                declaredIds.size(), edges.size(), classes.size());
     }
 
     private static String quote(String value) {
