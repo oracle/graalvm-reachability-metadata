@@ -489,17 +489,33 @@ def rank(
     reach: dict[int, int] = reachable_sets(adjacency, universe_bit, set(candidates))
     selected: list[tuple[int, int]] = select_targets(candidates, reach, limit, ids)
 
-    targets: list[dict] = [
-        {
+    def closures(node: int) -> list[str]:
+        """The lambda bodies the compiler extracted out of this entry.
+
+        The extractor resolves each `invokedynamic` to its bootstrap target, so
+        the enclosing method already points at its own bodies — no name parsing,
+        and therefore no overload ambiguity
+        (§WF-code-coverage-improvement.3.2.1).
+        """
+        owner: str = ids[node].split("#", 1)[0]
+        return sorted(
+            ids[callee] for callee in adjacency[node]
+            if ids[callee].startswith(f"{owner}#lambda$")
+        )
+
+    targets: list[dict] = []
+    for position, (node, unlocks) in enumerate(selected, start=1):
+        bodies: list[str] = closures(node)
+        targets.append({
             "id": ids[node],
             "rank": position,
             "unlocks": unlocks,
             "reachableUncovered": reach[node].bit_count(),
             "targetVia": via[ids[node]],
             "behaviorHint": hints.get(ids[node], ""),
-        }
-        for position, (node, unlocks) in enumerate(selected, start=1)
-    ]
+            "closures": len(bodies),
+            "closuresUnexecuted": sum(1 for body in bodies if body not in covered_ids),
+        })
     return {
         "coordinate": inventory.get("coordinate", ""),
         "summary": {
@@ -547,6 +563,10 @@ def render_prompt(report: dict) -> str:
         "within reach, counting the entry itself. It is static navigation guidance,",
         "not a coverage measurement.",
         "",
+        "`N closures of which M never run` means the method builds lambdas whose",
+        "bodies no test has executed. Calling the method is not enough: drive the",
+        "behavior that invokes those closures.",
+        "",
         "An entry marked `via supertype` is declared on an implementation class you",
         "cannot construct. Reach it the way a user would — hold the public",
         "supertype the API hands you and call the method on that; dynamic dispatch",
@@ -563,7 +583,12 @@ def render_prompt(report: dict) -> str:
             member: str = target["id"].split("#", 1)[1]
             hint: str = f" - {target['behaviorHint']}" if target["behaviorHint"] else ""
             route: str = ", via supertype" if target.get("targetVia") == "override" else ""
-            lines.append(f"- `{member}` (unlocks {target['unlocks']}{route}){hint}")
+            unexecuted: int = target.get("closuresUnexecuted", 0)
+            closures: str = (
+                f", {target['closures']} closures of which {unexecuted} never run"
+                if unexecuted else ""
+            )
+            lines.append(f"- `{member}` (unlocks {target['unlocks']}{route}{closures}){hint}")
         lines.append("")
     return "\n".join(lines) + "\n"
 

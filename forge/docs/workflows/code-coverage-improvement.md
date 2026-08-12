@@ -289,6 +289,48 @@ the workflow may use chunks, but each chunk must persist enough target/exhaust
 state for a later run to continue without redoing already completed, skipped,
 or semantically impossible targets (§GOAL-maximize-library-coverage).
 
+#### 3.2.1 Synthetic method attribution and route honesty
+
+One lambda in source leaves three artifacts in bytecode: the enclosing method a
+person wrote, the body the compiler extracts (`lambda$enclosing$0`), and the
+class the image generator emits to implement the functional interface
+(`Owner$$Lambda/0x…`). Only the first carries a name an agent can write a test
+against.
+
+Compiler-owned methods — extracted lambda bodies and access bridges — are
+therefore never prompt targets. They stay in the deep universe and in the
+coverage denominator, because JaCoCo reports them and JaCoCo is the sole
+coverage authority; dropping them would raise the reported percentage without a
+single new test. Their counts are reported as `deepSyntheticMethods` and
+`deepSyntheticUncovered`, so the exclusion is visible rather than silent.
+
+What those rows carried is attributed to the enclosing method instead: its
+prompt entry states how many closures it owns and how many never execute, which
+tells the agent that entering the method is not sufficient. The enclosing method
+is resolved through the generated class — the caller of its constructor — rather
+than by parsing the body name, which carries the enclosing name without its
+parameter types and so cannot separate overloads. When the enclosing method is a
+public API entry rather than a deep target, the note belongs to the API-cover
+prompt (§3.1.1); when it resolves to nothing, no note is emitted.
+
+Route selection distinguishes two edges that the analysis dump renders alike. A
+**creation** edge runs from the method that captures a closure to that closure's
+body, and is synthesized where the dump links the body only to the generated
+class; it is honest navigation, because calling the enclosing method is what
+brings the body into play. A **dispatch** edge runs from a call on a functional
+interface to every implementation the analysis considers possible; its receiver
+was captured elsewhere and handed in, so the edge says nothing about what its
+caller reaches. Dispatch edges remain in the graph, since removing them would
+cut reachability, but they are not used to build routes. A target whose only
+route was a dispatch edge falls back to a longer honest route, or to none, which
+is where it belongs.
+
+Prompt-facing paths render synthetic nodes as the method that creates them and
+collapse consecutive nodes that render alike; the untranslated path is retained
+in JSON. When a route reaches its target through a closure the enclosing method
+hands to a scheduler or executor, the entry says so: the body then runs on
+another thread, and a test that does not wait for it covers nothing.
+
 ## 4. Workflow
 
 The Rhei template should decompose the workflow into these phases:

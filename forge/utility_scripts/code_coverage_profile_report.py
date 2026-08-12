@@ -77,6 +77,28 @@ FRAMEWORK_TYPE_PREFIXES = (
 
 TEST_TYPE_SUFFIXES = ("IT", "ITCase", "Test", "TestCase", "Tests")
 
+#: Marker in the class name the image generator gives a lambda implementation.
+SYNTHETIC_LAMBDA_CLASS_MARKER = "$$Lambda"
+
+#: Method-name prefixes the compiler owns; no test can name one of these
+#: (§WF-code-coverage-improvement.3.2.1).
+SYNTHETIC_METHOD_PREFIXES = ("lambda$", "access$")
+
+#: Methods that hand a closure to another thread, so its body runs later, on a
+#: thread the test does not control (§WF-code-coverage-improvement.3.2.1).
+HAND_OFF_METHOD_NAMES: frozenset[str] = frozenset({
+    "execute",
+    "invokeAll",
+    "invokeAny",
+    "runAsync",
+    "schedule",
+    "scheduleAtFixedRate",
+    "scheduleWithFixedDelay",
+    "start",
+    "submit",
+    "supplyAsync",
+})
+
 
 class ProfileFormatError(RuntimeError):
     """Raised when report inputs violate the analyzer contract."""
@@ -122,6 +144,10 @@ class CallGraph:
     loose_to_ids: dict[str, list[int]] = field(default_factory=dict)
     adjacency: dict[int, list[dict]] = field(default_factory=dict)
     reverse_adjacency: dict[int, list[dict]] = field(default_factory=dict)
+    #: Synthetic node -> the method whose source captured that closure.
+    creator_of: dict[int, int] = field(default_factory=dict)
+    #: Creating method -> the lambda bodies the compiler extracted from it.
+    closures_of: dict[int, list[int]] = field(default_factory=dict)
 
 
 @dataclass
@@ -323,6 +349,139 @@ def _read_csv_by_id(path: str) -> dict[int, dict]:
         return {int(row["Id"]): row for row in csv.DictReader(csv_file)}
 
 
+def _is_synthetic_lambda_class(owner: str) -> bool:
+    return SYNTHETIC_LAMBDA_CLASS_MARKER in owner
+
+
+def _is_lambda_body(ref: MethodRef) -> bool:
+    return ref.name.startswith("lambda$")
+
+
+def _is_synthetic_method(ref: MethodRef) -> bool:
+    """Whether the compiler, not a person, owns this method name."""
+    return ref.name.startswith(SYNTHETIC_METHOD_PREFIXES)
+
+
+def _creator_by_name(
+        ref: MethodRef,
+        by_owner_name: dict[tuple[str, str], list[int]],
+) -> int | None:
+    """Resolve `lambda$enclosing$0` by name, for bodies with no generated class.
+
+    The body name carries the enclosing method's name without its parameter
+    types, so this answers only when that name identifies exactly one method
+    (§WF-code-coverage-improvement.3.2.1).
+    """
+    parts: list[str] = ref.name.split("$")
+    if len(parts) < 3 or not parts[1]:
+        return None
+    enclosing: str = {"new": "<init>", "static": "<clinit>"}.get(parts[1], parts[1])
+    candidates: list[int] = by_owner_name.get((ref.owner, enclosing), [])
+    return candidates[0] if len(candidates) == 1 else None
+
+
+def _index_synthetic_lambdas(graph: CallGraph) -> None:
+    """Map every synthetic lambda node onto the method that creates it.
+
+    The generated class ties the enclosing method to the extracted body: its
+    constructor is called where the closure is captured, and its interface
+    method calls the body. Both hops are exact, so neither the overload
+    ambiguity of the body name nor the meaningless generated class name reaches
+    a prompt (§WF-code-coverage-improvement.3.2.1).
+    """
+    by_owner: dict[str, list[int]] = {}
+    by_owner_name: dict[tuple[str, str], list[int]] = {}
+    for static_id, ref in graph.methods.items():
+        by_owner_name.setdefault((ref.owner, ref.name), []).append(static_id)
+        if _is_synthetic_lambda_class(ref.owner):
+            by_owner.setdefault(ref.owner, []).append(static_id)
+
+    for _, member_ids in sorted(by_owner.items()):
+        creators: set[int] = set()
+        bodies: set[int] = set()
+        for member_id in member_ids:
+            member: MethodRef = graph.methods[member_id]
+            if member.name == "<init>":
+                creators.update(
+                    edge["caller"]
+                    for edge in graph.reverse_adjacency.get(member_id, [])
+                    if not _is_synthetic_lambda_class(graph.methods[edge["caller"]].owner)
+                )
+            elif member.name != "<clinit>":
+                bodies.update(
+                    edge["callee"]
+                    for edge in graph.adjacency.get(member_id, [])
+                    if _is_lambda_body(graph.methods[edge["callee"]])
+                )
+        # Two capture sites sharing one generated class would make attribution a
+        # guess; leaving them unmapped keeps the raw names instead of a wrong one.
+        if len(creators) != 1:
+            continue
+        creator_id: int = creators.pop()
+        for node_id in (*member_ids, *bodies):
+            graph.creator_of[node_id] = creator_id
+
+    for static_id in sorted(graph.methods):
+        ref = graph.methods[static_id]
+        if static_id in graph.creator_of or not _is_lambda_body(ref):
+            continue
+        creator_id_or_none: int | None = _creator_by_name(ref, by_owner_name)
+        if creator_id_or_none is not None:
+            graph.creator_of[static_id] = creator_id_or_none
+
+    for node_id, creator_id in graph.creator_of.items():
+        if _is_lambda_body(graph.methods[node_id]):
+            graph.closures_of.setdefault(creator_id, []).append(node_id)
+    for body_ids in graph.closures_of.values():
+        body_ids.sort(key=lambda body_id: graph.methods[body_id].canonical_id)
+
+
+def _mark_dispatch_edges(graph: CallGraph, site_edges: dict[int, list[dict]]) -> None:
+    """Mark call sites whose receiver was captured somewhere else.
+
+    When the analysis admits a generated lambda class at a virtual call site,
+    the site invokes a functional interface: the object was captured elsewhere
+    and handed in, so nothing out of that site says what its caller reaches. The
+    whole site is marked, real implementations included — they share the one
+    call site and the one missing fact (§WF-code-coverage-improvement.3.2.1).
+    """
+    for edges in site_edges.values():
+        if any(edge["is_direct"] == "true" for edge in edges):
+            continue
+        if not any(
+                _is_synthetic_lambda_class(graph.methods[edge["callee"]].owner)
+                for edge in edges
+        ):
+            continue
+        for edge in edges:
+            edge["kind"] = "dispatch"
+
+
+def _add_creation_edges(graph: CallGraph) -> None:
+    """Link each capturing method to the bodies the compiler extracted from it.
+
+    The dump links a body only to its generated class, so without this edge the
+    single honest route to a closure body does not exist
+    (§WF-code-coverage-improvement.3.2.1).
+    """
+    for creator_id, body_ids in sorted(graph.closures_of.items()):
+        existing: set[int] = {
+            edge["callee"] for edge in graph.adjacency.get(creator_id, [])
+        }
+        for body_id in body_ids:
+            if body_id in existing:
+                continue
+            edge: dict = {
+                "caller": creator_id,
+                "callee": body_id,
+                "bci": "",
+                "is_direct": "creation",
+                "kind": "creation",
+            }
+            graph.adjacency.setdefault(creator_id, []).append(edge)
+            graph.reverse_adjacency.setdefault(body_id, []).append(edge)
+
+
 def _load_call_graph(reports_dir: str) -> CallGraph:
     """Load the analysis call-tree CSV dump into an id-indexed call graph."""
     methods_path, invokes_path, targets_path = _find_call_tree_files(reports_dir)
@@ -340,8 +499,10 @@ def _load_call_graph(reports_dir: str) -> CallGraph:
         graph.key_to_id.setdefault(ref.canonical_id, method_id)
         graph.loose_to_ids.setdefault(ref.loose_key, []).append(method_id)
 
+    site_edges: dict[int, list[dict]] = {}
     for target_row in target_rows:
-        invoke = invokes_rows.get(int(target_row["InvokeId"]))
+        invoke_id = int(target_row["InvokeId"])
+        invoke = invokes_rows.get(invoke_id)
         if invoke is None:
             continue
         caller_id = int(invoke["MethodId"])
@@ -353,9 +514,16 @@ def _load_call_graph(reports_dir: str) -> CallGraph:
             "callee": callee_id,
             "bci": invoke.get("BytecodeIndexes", ""),
             "is_direct": invoke.get("IsDirect", ""),
+            "kind": "call",
         }
+        site_edges.setdefault(invoke_id, []).append(edge)
         graph.adjacency.setdefault(caller_id, []).append(edge)
         graph.reverse_adjacency.setdefault(callee_id, []).append(edge)
+
+    _index_synthetic_lambdas(graph)
+    _mark_dispatch_edges(graph, site_edges)
+    _add_creation_edges(graph)
+
     for method_ids in graph.loose_to_ids.values():
         method_ids.sort(key=lambda method_id: graph.methods[method_id].canonical_id)
     for edges in graph.adjacency.values():
@@ -517,6 +685,11 @@ def _multi_source_routes(
         if best_keys.get(current) != (distance, seed_rank):
             continue
         for edge in graph.adjacency.get(current, []):
+            # A functional-interface call site names no callee of its own, so
+            # routing through it invents a reachability claim
+            # (§WF-code-coverage-improvement.3.2.1).
+            if edge["kind"] == "dispatch":
+                continue
             callee: int = edge["callee"]
             candidate_key = (distance + 1, seed_rank)
             if callee in best_keys and best_keys[callee] <= candidate_key:
@@ -654,6 +827,7 @@ def _method_evidence(coverage: JacocoMethodCoverage, graph_status: str = "presen
     return {
         "id": coverage.method_ref.canonical_id,
         "status": coverage.status,
+        "synthetic": _is_synthetic_method(coverage.method_ref),
         "graphStatus": graph_status,
         "sourcePath": coverage.source_path,
         "sourceLine": coverage.source_line,
@@ -667,10 +841,64 @@ def _edge_to_json(edge: dict, graph: CallGraph) -> dict:
         "callee": _format_static_id(edge["callee"], graph),
         "bci": edge["bci"],
         "isDirect": edge["is_direct"],
+        "kind": edge["kind"],
     }
 
 
-def _record_to_json(record: NearCallRecord, graph: CallGraph, rank: int) -> dict:
+def _closure_stats(
+        record: NearCallRecord,
+        graph: CallGraph,
+        jacoco_methods: dict[str, JacocoMethodCoverage],
+) -> dict | None:
+    """How many closures this method owns, and how many never execute.
+
+    This is what the excluded synthetic rows carried, moved onto the one name an
+    agent can act on (§WF-code-coverage-improvement.3.2.1). A body JaCoCo never
+    reported counts as not executed, exactly as an unreported method counts as
+    uncovered everywhere else in this phase.
+    """
+    if record.target_id is None:
+        return None
+    body_ids: list[int] = graph.closures_of.get(record.target_id, [])
+    if not body_ids:
+        return None
+    executed: int = sum(
+        1
+        for body_id in body_ids
+        if (coverage := jacoco_methods.get(graph.methods[body_id].canonical_id)) is not None
+        and coverage.covered
+    )
+    return {"total": len(body_ids), "unexecuted": len(body_ids) - executed}
+
+
+def _hand_off_note(record: NearCallRecord, graph: CallGraph) -> str | None:
+    """Name the scheduler or executor a route's closure is handed to, if any."""
+    for edge in record.static_path_edges:
+        if edge["kind"] != "creation":
+            continue
+        for outgoing in graph.adjacency.get(edge["caller"], []):
+            callee: MethodRef = graph.methods[outgoing["callee"]]
+            if callee.name in HAND_OFF_METHOD_NAMES:
+                return f"{_simple_owner(callee.owner)}.{callee.name}"
+    return None
+
+
+def _translated_path(static_path: list[int], graph: CallGraph) -> list[int]:
+    """Replace synthetic nodes by their creator, collapsing repeats."""
+    translated: list[int] = []
+    for static_id in static_path:
+        creator_id: int = graph.creator_of.get(static_id, static_id)
+        if not translated or translated[-1] != creator_id:
+            translated.append(creator_id)
+    return translated
+
+
+def _record_to_json(
+        record: NearCallRecord,
+        graph: CallGraph,
+        rank: int,
+        jacoco_methods: dict[str, JacocoMethodCoverage],
+) -> dict:
     graph_present: bool = record.target_id is not None
     return {
         "id": record.target_ref.canonical_id,
@@ -691,7 +919,17 @@ def _record_to_json(record: NearCallRecord, graph: CallGraph, rank: int) -> dict
         "stepsRemaining": record.distance,
         "sampleCount": record.sample_count,
         "sampleContextId": record.sample.context_id if record.sample is not None else None,
+        "synthetic": _is_synthetic_method(record.target_ref),
+        "closures": _closure_stats(record, graph, jacoco_methods),
+        "handOff": _hand_off_note(record, graph),
         "reachingPath": (
+            [
+                _format_static_id(static_id, graph)
+                for static_id in _translated_path(record.static_path, graph)
+            ]
+            if graph_present else None
+        ),
+        "reachingPathRaw": (
             [_format_static_id(static_id, graph) for static_id in record.static_path]
             if graph_present else None
         ),
@@ -828,20 +1066,37 @@ def correlate(
     }
 
     effective_limit: int = min(max_listed, MAX_LISTED_METHODS)
+    # Compiler-owned methods stay in the universe and the denominator, but no
+    # agent can write a test naming one, and for nearly all of them the
+    # enclosing method is an offered target already
+    # (§WF-code-coverage-improvement.3.2.1).
     actionable_records: list[NearCallRecord] = [
         record
         for record in uncovered_records
-        if record.join_kind != "none" and not record.target_state.terminal
+        if record.join_kind != "none"
+        and not record.target_state.terminal
+        and not _is_synthetic_method(record.target_ref)
     ]
+    synthetic_excluded: int = sum(
+        1
+        for record in uncovered_records
+        if record.join_kind != "none"
+        and not record.target_state.terminal
+        and _is_synthetic_method(record.target_ref)
+    )
     prompt_records: list[NearCallRecord] = sorted(
         actionable_records, key=_prompt_selection_key,
     )[:effective_limit]
     uncovered_json: list[dict] = [
-        _record_to_json(record, graph, mathematical_ranks[record.target_ref.canonical_id])
+        _record_to_json(
+            record, graph, mathematical_ranks[record.target_ref.canonical_id], jacoco_methods
+        )
         for record in uncovered_records
     ]
     prompt_json: list[dict] = [
-        _record_to_json(record, graph, mathematical_ranks[record.target_ref.canonical_id])
+        _record_to_json(
+            record, graph, mathematical_ranks[record.target_ref.canonical_id], jacoco_methods
+        )
         for record in prompt_records
     ]
 
@@ -859,6 +1114,13 @@ def correlate(
             "deepMethods": len(deep_coverage),
             "deepCovered": len(deep_coverage) - len(deep_uncovered),
             "deepUncovered": len(deep_uncovered),
+            "deepSyntheticMethods": sum(
+                1 for coverage in deep_coverage if _is_synthetic_method(coverage.method_ref)
+            ),
+            "deepSyntheticUncovered": sum(
+                1 for coverage in deep_uncovered if _is_synthetic_method(coverage.method_ref)
+            ),
+            "syntheticExcludedFromPrompt": synthetic_excluded,
             "nonLibraryMethodsExcluded": len(foreign_ids),
             "terminalUncovered": sum(
                 1 for record in uncovered_records if record.target_state.terminal
@@ -938,11 +1200,15 @@ def _display_method(ref: MethodRef, qualify_owner: bool) -> str:
 
 
 def _display_path(static_path: list[int], graph: CallGraph, limit: int = 6) -> str:
+    # Generated lambda classes and extracted bodies carry compiler-chosen names;
+    # the agent can only act on the method that creates them
+    # (§WF-code-coverage-improvement.3.2.1).
+    path: list[int] = _translated_path(static_path, graph)
     selected: list[int | None]
-    if len(static_path) <= limit:
-        selected = list(static_path)
+    if len(path) <= limit:
+        selected = list(path)
     else:
-        selected = [*static_path[:2], None, *static_path[-3:]]
+        selected = [*path[:2], None, *path[-3:]]
 
     labels: list[str] = []
     previous_owner: str | None = None
@@ -961,6 +1227,21 @@ def _display_path(static_path: list[int], graph: CallGraph, limit: int = 6) -> s
     return " → ".join(labels)
 
 
+def _prompt_line(record: NearCallRecord, graph: CallGraph, notes: dict[str, dict]) -> str:
+    """One prompt path, with what the excluded synthetic rows used to say."""
+    note: dict = notes.get(record.target_ref.canonical_id, {})
+    suffixes: list[str] = []
+    closures: dict | None = note.get("closures")
+    if closures is not None and closures["unexecuted"]:
+        suffixes.append(
+            f"{closures['total']} closures, {closures['unexecuted']} never executed"
+        )
+    if note.get("handOff"):
+        suffixes.append(f"runs on another thread via `{note['handOff']}` — the test must wait")
+    path: str = f"`{_display_path(record.static_path, graph)}`"
+    return f"{path} — {'; '.join(suffixes)}" if suffixes else path
+
+
 def write_markdown(
         report: dict,
         prompt_records: list[NearCallRecord],
@@ -971,6 +1252,7 @@ def write_markdown(
         md_path: str,
 ) -> None:
     summary: dict = report["summary"]
+    notes: dict[str, dict] = {target["id"]: target for target in report["bulkTargets"]}
     lines: list[str] = [
         f"# Deep coverage paths (iteration {iteration}) — {coordinate}",
         "",
@@ -1027,7 +1309,7 @@ def write_markdown(
         lines.append("")
         lines.append("Uncovered paths:")
         for record in records:
-            lines.append(f"`{_display_path(record.static_path, graph)}`")
+            lines.append(_prompt_line(record, graph, notes))
         lines.append("")
 
     fallback_groups: dict[int, list[NearCallRecord]] = {}
@@ -1050,7 +1332,7 @@ def write_markdown(
         lines.append("")
         lines.append("Uncovered paths:")
         for record in fallback_groups[entry_id]:
-            lines.append(f"`{_display_path(record.static_path, graph)}`")
+            lines.append(_prompt_line(record, graph, notes))
         lines.append("")
     if summary["omittedUncovered"]:
         lines.append(
