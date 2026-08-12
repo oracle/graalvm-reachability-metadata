@@ -11,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PublicKey;
@@ -19,6 +20,7 @@ import java.security.Signature;
 import java.security.spec.ECGenParameterSpec;
 
 import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
+import org.bouncycastle.jcajce.spec.ECGOST3410PublicKeySpec;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -33,12 +35,15 @@ public class ProvECGOST3410PublicKeyTest {
     @Test
     void serializesRestoresAndUsesAnEcGost3410PublicKey() throws Exception {
         KeyPair keyPair = generateEcGost3410KeyPair();
-        PublicKey publicKey = keyPair.getPublic();
+        PublicKey publicKey = recreatePublicKey(keyPair.getPublic());
         PublicKey restoredPublicKey = deserialize(serialize(publicKey));
+        PublicKey reserializedPublicKey = deserialize(serialize(restoredPublicKey));
 
         assertThat(restoredPublicKey.getAlgorithm()).isEqualTo("ECGOST3410");
         assertThat(restoredPublicKey.getEncoded()).isEqualTo(publicKey.getEncoded());
+        assertThat(reserializedPublicKey.getEncoded()).isEqualTo(publicKey.getEncoded());
         assertThat(verifiesSignature(keyPair, restoredPublicKey)).isTrue();
+        assertThat(verifiesSignature(keyPair, reserializedPublicKey)).isTrue();
     }
 
     private KeyPair generateEcGost3410KeyPair() throws Exception {
@@ -46,6 +51,14 @@ public class ProvECGOST3410PublicKeyTest {
             "ECGOST3410", BouncyCastleFipsProvider.PROVIDER_NAME);
         generator.initialize(new ECGenParameterSpec("GostR3410-2001-CryptoPro-A"));
         return generator.generateKeyPair();
+    }
+
+    private PublicKey recreatePublicKey(PublicKey publicKey) throws Exception {
+        KeyFactory keyFactory = KeyFactory.getInstance(
+            "ECGOST3410", BouncyCastleFipsProvider.PROVIDER_NAME);
+        ECGOST3410PublicKeySpec keySpec = keyFactory.getKeySpec(
+            publicKey, ECGOST3410PublicKeySpec.class);
+        return keyFactory.generatePublic(keySpec);
     }
 
     private byte[] serialize(PublicKey publicKey) throws Exception {
