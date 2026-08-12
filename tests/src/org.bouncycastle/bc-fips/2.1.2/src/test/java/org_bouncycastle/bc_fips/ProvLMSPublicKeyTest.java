@@ -13,10 +13,12 @@ import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Security;
 import java.security.Signature;
 
+import org.bouncycastle.jcajce.interfaces.LMSPrivateKey;
 import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
 import org.bouncycastle.jcajce.spec.LMOtsParameters;
 import org.bouncycastle.jcajce.spec.LMSKeyGenParameterSpec;
@@ -35,7 +37,8 @@ public class ProvLMSPublicKeyTest {
     @Test
     void serializesRestoresAndUsesAnLmsPublicKey() throws Exception {
         KeyPair keyPair = generateLmsKeyPair();
-        PublicKey publicKey = keyPair.getPublic();
+        PrivateKey privateKey = keyPair.getPrivate();
+        PublicKey publicKey = ((LMSPrivateKey) privateKey).getPublicKey();
         PublicKey restoredPublicKey = deserialize(serialize(publicKey));
 
         assertThat(restoredPublicKey.getAlgorithm()).isEqualTo("LMS");
