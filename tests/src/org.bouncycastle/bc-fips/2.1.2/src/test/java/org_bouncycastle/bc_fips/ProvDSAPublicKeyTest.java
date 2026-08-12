@@ -11,14 +11,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PublicKey;
 import java.security.Security;
 import java.security.Signature;
-import java.security.interfaces.DSAPublicKey;
-import java.security.spec.DSAPublicKeySpec;
 
 import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
 import org.junit.jupiter.api.BeforeAll;
@@ -35,11 +32,13 @@ public class ProvDSAPublicKeyTest {
     @Test
     void serializesRestoresAndUsesADsaPublicKey() throws Exception {
         KeyPair keyPair = generateDsaKeyPair();
-        PublicKey publicKey = recreatePublicKey((DSAPublicKey) keyPair.getPublic());
+        PublicKey publicKey = keyPair.getPublic();
         PublicKey restoredPublicKey = deserialize(serialize(publicKey));
+        PublicKey restoredUnsharedPublicKey = deserializeUnshared(serializeUnshared(publicKey));
 
         assertThat(restoredPublicKey.getAlgorithm()).isEqualTo("DSA");
         assertThat(restoredPublicKey.getEncoded()).isEqualTo(publicKey.getEncoded());
+        assertThat(restoredUnsharedPublicKey.getEncoded()).isEqualTo(publicKey.getEncoded());
         assertThat(verifySignature(keyPair, restoredPublicKey)).isTrue();
     }
 
@@ -50,14 +49,6 @@ public class ProvDSAPublicKeyTest {
         return generator.generateKeyPair();
     }
 
-    private PublicKey recreatePublicKey(DSAPublicKey publicKey) throws Exception {
-        DSAPublicKeySpec keySpec = new DSAPublicKeySpec(
-            publicKey.getY(), publicKey.getParams().getP(), publicKey.getParams().getQ(),
-            publicKey.getParams().getG());
-        KeyFactory keyFactory = KeyFactory.getInstance("DSA", BouncyCastleFipsProvider.PROVIDER_NAME);
-        return keyFactory.generatePublic(keySpec);
-    }
-
     private byte[] serialize(PublicKey publicKey) throws Exception {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
@@ -66,10 +57,25 @@ public class ProvDSAPublicKeyTest {
         return bytes.toByteArray();
     }
 
+    private byte[] serializeUnshared(PublicKey publicKey) throws Exception {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
+            output.writeUnshared(publicKey);
+        }
+        return bytes.toByteArray();
+    }
+
     private PublicKey deserialize(byte[] serializedPublicKey) throws Exception {
         try (ObjectInputStream input = new ObjectInputStream(
             new ByteArrayInputStream(serializedPublicKey))) {
             return (PublicKey) input.readObject();
+        }
+    }
+
+    private PublicKey deserializeUnshared(byte[] serializedPublicKey) throws Exception {
+        try (ObjectInputStream input = new ObjectInputStream(
+            new ByteArrayInputStream(serializedPublicKey))) {
+            return (PublicKey) input.readUnshared();
         }
     }
 
