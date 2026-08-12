@@ -16,6 +16,9 @@ import org.springframework.boot.security.oauth2.server.resource.autoconfigure.OA
 import org.springframework.boot.security.oauth2.server.resource.autoconfigure.OAuth2ResourceServerProperties;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -51,6 +54,26 @@ public class Spring_boot_security_oauth2_resource_serverTest {
         assertThat(jwt.getAuthoritiesClaimExpressions()).containsExactly("realm_access.roles", "groups");
         assertThat(jwt.getPrincipalClaimName()).isEqualTo("preferred_username");
         assertThat(jwt.readPublicKey()).isEqualTo(publicKey);
+    }
+
+    @Test
+    void autoConfigurationCreatesJwtAuthenticationConverterFromAuthorityProperties() {
+        this.contextRunner
+                .withPropertyValues("spring.security.oauth2.resourceserver.jwt.authority-prefix=ROLE_",
+                        "spring.security.oauth2.resourceserver.jwt.authorities-claim-name=roles",
+                        "spring.security.oauth2.resourceserver.jwt.authorities-claim-delimiter=,")
+                .run((context) -> {
+                    JwtAuthenticationConverter converter = context.getBean(JwtAuthenticationConverter.class);
+                    Jwt jwt = Jwt.withTokenValue("token")
+                            .header("alg", "none")
+                            .claim("sub", "alice")
+                            .claim("roles", "read,write")
+                            .build();
+
+                    assertThat(converter.convert(jwt).getAuthorities())
+                            .extracting(GrantedAuthority::getAuthority)
+                            .contains("ROLE_read", "ROLE_write");
+                });
     }
 
     @Test
