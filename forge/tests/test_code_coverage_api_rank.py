@@ -443,6 +443,51 @@ class SelectTargetTests(unittest.TestCase):
         self.assertEqual(ids[selected[0][0]], "a")
 
 
+class ClosureNoteTests(unittest.TestCase):
+    """A public entry states the closures it builds but never runs.
+
+    The deep phase drops compiler-owned bodies from its prompt, so when the
+    enclosing method is a public entry the note belongs here
+    (§WF-code-coverage-improvement.3.2.1).
+    """
+
+    OWNER = "com/example/Api"
+    ENTRY = "com.example.Api#register():void"
+    RUN_BODY = "com.example.Api#lambda$register$0():void"
+    DEAD_BODY = "com.example.Api#lambda$register$1():void"
+    OTHER = "com.example.Other#lambda$elsewhere$0():void"
+
+    def _report(self, directory: str) -> dict:
+        graph_dir = _graph(
+            os.path.join(directory, "graph"),
+            [(self.ENTRY, True), (self.RUN_BODY, True), (self.DEAD_BODY, True),
+             (self.OTHER, True)],
+            [(self.ENTRY, self.RUN_BODY), (self.ENTRY, self.DEAD_BODY),
+             (self.ENTRY, self.OTHER)],
+        )
+        jacoco = _jacoco(os.path.join(directory, "jacoco.xml"), [
+            (self.OWNER, "lambda$register$0", "()V", True),
+            (self.OWNER, "lambda$register$1", "()V", False),
+        ])
+        inventory = {"coordinate": "g:a:1", "targets": [{"id": self.ENTRY}]}
+        return rank_module.rank(graph_dir, inventory, [jacoco], 10)
+
+    def test_only_the_entry_own_closures_are_counted(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            report = self._report(directory)
+        target = report["targets"][0]
+        self.assertEqual(target["id"], self.ENTRY)
+        # `OTHER` is a lambda body of a different class, so it is not this
+        # entry's closure even though the entry calls it.
+        self.assertEqual(target["closures"], 2)
+        self.assertEqual(target["closuresUnexecuted"], 1)
+
+    def test_prompt_tells_the_agent_the_closure_must_be_driven(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            prompt = rank_module.render_prompt(self._report(directory))
+        self.assertIn("2 closures of which 1 never run", prompt)
+
+
 class LoadGraphTests(unittest.TestCase):
 
     def test_missing_graph_is_reported_clearly(self) -> None:

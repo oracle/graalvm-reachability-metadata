@@ -313,9 +313,9 @@ class DeepCorrelationTest(unittest.TestCase):
                 1: framework, 2: app, 3: bridge, 4: target,
             }.items()},
             adjacency={
-                1: [{"caller": 1, "callee": 4, "bci": "1", "is_direct": "true"}],
-                2: [{"caller": 2, "callee": 3, "bci": "2", "is_direct": "true"}],
-                3: [{"caller": 3, "callee": 4, "bci": "3", "is_direct": "true"}],
+                1: [{"caller": 1, "callee": 4, "bci": "1", "is_direct": "true", "kind": "call"}],
+                2: [{"caller": 2, "callee": 3, "bci": "2", "is_direct": "true", "kind": "call"}],
+                3: [{"caller": 3, "callee": 4, "bci": "3", "is_direct": "true", "kind": "call"}],
             },
         )
         sample = report_module.Sample(
@@ -351,6 +351,7 @@ class DeepCorrelationTest(unittest.TestCase):
                         "callee": index + 2,
                         "bci": str(index),
                         "is_direct": "true",
+                        "kind": "call",
                     }
                     for index in range(len(refs))
                 ]
@@ -513,6 +514,7 @@ class ReportArtifactsTest(unittest.TestCase):
                 "samplingContexts": len(records),
                 "totalSampleCount": len(records),
             },
+            "bulkTargets": [],
             "caveats": [],
         }
         markdown_path = os.path.join(self.output_dir, "all-groups.md")
@@ -782,6 +784,136 @@ class LibraryMethodFilterTest(unittest.TestCase):
                 handle.write("id,hasCode,isPublicApi\n")
                 handle.write(f'"{self.LIB.canonical_id}",true,false\n')
             self.assertEqual(report_module.load_library_methods(path), {self.LIB.canonical_id})
+
+
+class SyntheticLambdaTest(unittest.TestCase):
+    """Lambda attribution and route honesty (§WF-code-coverage-improvement.3.2.1).
+
+    The graph models one closure end to end: `reload` captures it, the generated
+    class carries it, its body calls `persist`, and an unrelated `drain` invokes
+    the functional interface alongside a real implementation.
+    """
+
+    METHODS = [
+        (1, "reload", "com.example.Registry", "empty", "void"),
+        (2, "<init>", "com.example.Registry$$Lambda/0x1", "com.example.Registry", "void"),
+        (3, "run", "com.example.Registry$$Lambda/0x1", "empty", "void"),
+        (4, "lambda$reload$0", "com.example.Registry", "empty", "void"),
+        (5, "drain", "com.example.Worker", "empty", "void"),
+        (6, "run", "com.example.RealTask", "empty", "void"),
+        (7, "init", "com.example.Registry", "empty", "void"),
+        (8, "submit", "com.example.Executor", "java.lang.Runnable", "void"),
+        (9, "persist", "com.example.Registry", "empty", "void"),
+    ]
+    #: `(invoke id, caller, direct, [targets])`.
+    INVOKES = [
+        (1, 7, "true", [1]),
+        (2, 1, "true", [2]),
+        (3, 1, "true", [8]),
+        (4, 3, "true", [4]),
+        (5, 5, "false", [3, 6]),
+        (6, 7, "true", [5]),
+        (7, 4, "true", [9]),
+    ]
+
+    INIT = "com.example.Registry#init():void"
+    RELOAD = "com.example.Registry#reload():void"
+    BODY = "com.example.Registry#lambda$reload$0():void"
+    PERSIST = "com.example.Registry#persist():void"
+    REAL_RUN = "com.example.RealTask#run():void"
+    DRAIN = "com.example.Worker#drain():void"
+
+    def setUp(self) -> None:
+        self.directory = tempfile.mkdtemp(prefix="synthetic-lambda-")
+        self.addCleanup(shutil.rmtree, self.directory)
+        with open(
+                os.path.join(self.directory, "call_tree_methods_demo.csv"),
+                "w", encoding="utf-8",
+        ) as handle:
+            handle.write("Id,Name,Type,Parameters,Return,Display,Flags,IsEntryPoint\n")
+            for static_id, name, owner, params, return_type in self.METHODS:
+                handle.write(f"{static_id},{name},{owner},{params},{return_type},d,,false\n")
+        with open(
+                os.path.join(self.directory, "call_tree_invokes_demo.csv"),
+                "w", encoding="utf-8",
+        ) as handle:
+            handle.write("Id,MethodId,BytecodeIndexes,IsDirect\n")
+            for invoke_id, caller, direct, _ in self.INVOKES:
+                handle.write(f"{invoke_id},{caller},{invoke_id},{direct}\n")
+        with open(
+                os.path.join(self.directory, "call_tree_targets_demo.csv"),
+                "w", encoding="utf-8",
+        ) as handle:
+            handle.write("InvokeId,TargetId\n")
+            for invoke_id, _, _, targets in self.INVOKES:
+                for target in targets:
+                    handle.write(f"{invoke_id},{target}\n")
+
+        self.graph = report_module.load_call_graph(self.directory)
+        covered: set[str] = {self.INIT, self.DRAIN}
+        self.jacoco = {
+            ref.canonical_id: _coverage(ref, covered=ref.canonical_id in covered)
+            for ref in self.graph.methods.values()
+        }
+        self.report, self.records = report_module.correlate(
+            report_module.SampledProfile(),
+            self.graph,
+            {"targets": [{"id": self.INIT, "kind": "method"}]},
+            self.jacoco,
+        )
+        self.paths = {entry["id"]: entry for entry in self.report["uncoveredPaths"]}
+
+    def test_lambda_body_stays_in_the_denominator_but_never_reaches_the_prompt(self) -> None:
+        self.assertIn(self.BODY, {entry["id"] for entry in self.report["deepMethods"]})
+        self.assertNotIn(self.BODY, self.report["promptTargetIds"])
+        self.assertIn(self.RELOAD, self.report["promptTargetIds"])
+        self.assertEqual(self.report["summary"]["deepSyntheticMethods"], 1)
+        self.assertEqual(self.report["summary"]["deepSyntheticUncovered"], 1)
+        self.assertEqual(self.report["summary"]["syntheticExcludedFromPrompt"], 1)
+
+    def test_closure_count_moves_onto_the_creating_method(self) -> None:
+        reload_entry = self.paths[self.RELOAD]
+        self.assertEqual(reload_entry["closures"], {"total": 1, "unexecuted": 1})
+        self.assertIsNone(self.paths[self.PERSIST]["closures"])
+
+    def test_prompt_paths_carry_no_compiler_owned_name(self) -> None:
+        persist = self.paths[self.PERSIST]
+        self.assertEqual(persist["reachingPath"], [self.INIT, self.RELOAD, self.PERSIST])
+        self.assertIn(self.BODY, persist["reachingPathRaw"])
+        rendered = report_module._display_path(
+            [self.graph.key_to_id[method_id] for method_id in persist["reachingPathRaw"]],
+            self.graph,
+        )
+        self.assertNotIn("lambda$", rendered)
+        self.assertNotIn("$$Lambda", rendered)
+
+    def test_route_uses_the_creation_edge_and_reports_the_hand_off(self) -> None:
+        persist = self.paths[self.PERSIST]
+        self.assertEqual(
+            [edge["kind"] for edge in persist["edges"]], ["call", "creation", "call"]
+        )
+        self.assertEqual(persist["handOff"], "Executor.submit")
+
+    def test_dispatch_stays_in_the_graph_but_never_carries_a_route(self) -> None:
+        drain_edges = self.graph.adjacency[self.graph.key_to_id[self.DRAIN]]
+        self.assertEqual({edge["kind"] for edge in drain_edges}, {"dispatch"})
+        self.assertIn(
+            self.graph.key_to_id[self.REAL_RUN],
+            {edge["callee"] for edge in drain_edges},
+        )
+        self.assertEqual(self.paths[self.REAL_RUN]["joinKind"], "none")
+        self.assertNotIn(self.REAL_RUN, self.report["promptTargetIds"])
+
+    def test_markdown_states_the_closure_and_the_thread_hand_off(self) -> None:
+        markdown_path = os.path.join(self.directory, "deep.md")
+        report_module.write_markdown(
+            self.report, self.records, self.graph, "example:library:1", 0, None, markdown_path
+        )
+        with open(markdown_path, encoding="utf-8") as handle:
+            markdown = handle.read()
+        self.assertIn("1 closures, 1 never executed", markdown)
+        self.assertIn("runs on another thread via `Executor.submit`", markdown)
+        self.assertNotIn("lambda$", markdown)
 
 
 if __name__ == "__main__":
