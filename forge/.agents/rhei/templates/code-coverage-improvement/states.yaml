@@ -221,10 +221,13 @@ states:
 
       Rules:
       - Attempt every target listed in the prompt; work across the whole batch.
-      - Edit generated tests only under the tracked extension suite
+      - Add or edit test classes only under the tracked extension suite
         `code-coverage-improvement/src/test/java` inside the coordinate's
         indexed test project (`coverageSuiteRepoRelativePath` in
         conversion.json); never touch the regular `src/test` sources.
+      - Hold one test class per subsystem the suite drives. Add a class when the
+        group of classes you are covering has none, rather than growing a class
+        built for something else.
       - Target meaningful public user-callable behavior with real assertions,
         not superficial coverage hits.
       - Do not weaken metadata-generation tests.
@@ -442,10 +445,13 @@ states:
         never invoke an internal target directly.
       - `Observed:` lines are sampled guidance only; every `Uncovered paths`
         target is uncovered according to exact JaCoCo evidence.
-      - Edit generated tests only under the tracked extension suite
+      - Add or edit test classes only under the tracked extension suite
         `code-coverage-improvement/src/test/java` inside the coordinate's
         indexed test project (`coverageSuiteRepoRelativePath` in
         conversion.json); never touch the regular `src/test` sources.
+      - Hold one test class per subsystem the suite drives. Add a class when the
+        group of classes you are covering has none, rather than growing a class
+        built for something else.
       - Do not weaken metadata-generation tests.
       - Do not write any target state: measurement tracks attempts and target
         rotation deterministically from its own report history.
