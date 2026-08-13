@@ -32,6 +32,7 @@ Common options:
 - `--parallelism N`: run up to `N` issue workflows in parallel. Maximum: 4.
 - `--review-limit N`: process up to `N` PR review tasks per label per cycle.
 - `--random-offset`: start new-library issue scans at a random offset instead of the newest issues first.
+- `--priority {high,priority,normal}`: process only the selected issue priority tier.
 - `--user-requested-only`: fetch only user-requested issue queue items, excluding configured automation and maintainer authors.
 - `--once`: run a single update/work cycle through `do_up_to_date_work.sh` and exit.
 - `--stop`: ask all Forge `do-work` loops for the current user to exit by creating `~/.metadata-forge-stop`.

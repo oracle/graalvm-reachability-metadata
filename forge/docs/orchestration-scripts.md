@@ -42,9 +42,16 @@ result window is therefore capped independently at GitHub's first
 Tier membership comes only from priority labels already present on GitHub;
 queue scanning and claim checks do not add priority labels automatically.
 
+Operators may restrict a queue run to exactly one tier with
+`--priority high`, `--priority priority`, or `--priority normal`. The `high`
+tier requires `high-priority`; the `priority` tier requires `priority` and
+excludes `high-priority`; the `normal` tier excludes both labels. Without this
+option, Forge drains all three tiers in order.
+
 Tiered draining applies to scans that start at offset `0`. A scan started from a
-random offset (§ORCH-forge-orchestration-spec) keeps paging the flat, unfiltered
-label query so that concurrent runners spread across the queue.
+random offset without `--priority` keeps paging the flat, unfiltered label query
+so that concurrent runners spread across the queue. With `--priority`, the
+offset—random or explicit—is relative only to the selected tier.
 
 Orchestration must claim exactly one issue per workflow run, dispatch the
 matching workflow driver, and either hand PR-eligible results to publication

@@ -246,6 +246,9 @@ LABEL_PR_LIBRARY_UPDATE = "library-update-request"
 LABEL_PR_LIBRARY_BULK_UPDATE = "library-bulk-update"
 LABEL_HIGH_PRIORITY = "high-priority"
 LABEL_PRIORITY = "priority"
+PRIORITY_HIGH = "high"
+PRIORITY_NORMAL = "normal"
+PRIORITY_CHOICES: tuple[str, ...] = (PRIORITY_HIGH, LABEL_PRIORITY, PRIORITY_NORMAL)
 LABEL_HUMAN_INTERVENTION = "human-intervention"
 LABEL_HUMAN_INTERVENTION_FIXED = "human-intervention-fixed"
 LABEL_NOT_FOR_NATIVE_IMAGE = "not-for-native-image"
@@ -834,11 +837,21 @@ def count_issues_with_label(
         label: str,
         extra_labels: list[str] | None = None,
         user_requested_only: bool = False,
+        excluded_labels: list[str] | None = None,
 ) -> int:
     """Return GitHub's count of open issues carrying the given label set."""
     if is_fixture_testing_enabled():
-        return require_fixture_github_state().count_open_issues_by_label(label, extra_labels)
-    query = build_issue_search_query(label, extra_labels)
+        return require_fixture_github_state().count_open_issues_by_label(
+            label,
+            extra_labels,
+            excluded_labels,
+            excluded_authors=get_user_requested_issue_excluded_authors(user_requested_only),
+        )
+    query = build_issue_search_query(
+        label,
+        extra_labels,
+        [LABEL_NOT_FOR_NATIVE_IMAGE, *(excluded_labels or [])],
+    )
     return get_issue_search_count(query)
 
 
@@ -1613,10 +1626,21 @@ class IssuePriorityTier:
 # Drained in order; each tier excludes the labels of the tiers above it so that an
 # issue carrying several priority labels is served exactly once, in its highest tier.
 ISSUE_PRIORITY_TIERS: tuple[IssuePriorityTier, ...] = (
-    IssuePriorityTier(LABEL_HIGH_PRIORITY, (LABEL_HIGH_PRIORITY,), ()),
+    IssuePriorityTier(PRIORITY_HIGH, (LABEL_HIGH_PRIORITY,), ()),
     IssuePriorityTier(LABEL_PRIORITY, (LABEL_PRIORITY,), (LABEL_HIGH_PRIORITY,)),
-    IssuePriorityTier("regular", (), (LABEL_HIGH_PRIORITY, LABEL_PRIORITY)),
+    IssuePriorityTier(PRIORITY_NORMAL, (), (LABEL_HIGH_PRIORITY, LABEL_PRIORITY)),
 )
+
+
+ISSUE_PRIORITY_TIERS_BY_NAME: dict[str, IssuePriorityTier] = {
+    tier.name: tier
+    for tier in ISSUE_PRIORITY_TIERS
+}
+
+
+def get_issue_priority_tier(priority: str) -> IssuePriorityTier:
+    """Return the query filters for one CLI priority selector."""
+    return ISSUE_PRIORITY_TIERS_BY_NAME[priority]
 
 
 @dataclass
@@ -7743,17 +7767,22 @@ def format_issue_scan_position(
         offset: int,
         current_offset: int,
         scan_state: IssueQueueScanState,
+        priority: str | None = None,
 ) -> str:
     """Return a concise description of the current issue scan position."""
+    if priority is not None:
+        return f"{priority} tier, offset {current_offset}"
     if offset == 0:
         return scan_state.describe_position()
     return f"offset {current_offset}"
 
 
-def log_issue_scan_start(label: str, offset: int) -> None:
+def log_issue_scan_start(label: str, offset: int, priority: str | None = None) -> None:
     """Log where an issue scan starts."""
-    if offset == 0:
-        position = "draining the high-priority, priority, then regular tiers in turn"
+    if priority is not None:
+        position = f"in the {priority} tier from offset {offset}"
+    elif offset == 0:
+        position = "draining the high, priority, then normal tiers in turn"
     else:
         position = f"from offset {offset}"
     print()
@@ -7766,9 +7795,10 @@ def log_issue_scan_progress(
         offset: int,
         current_offset: int,
         scan_state: IssueQueueScanState,
+        priority: str | None = None,
 ) -> None:
     """Log issue scan progress after another interval of candidates was inspected."""
-    position = format_issue_scan_position(offset, current_offset, scan_state)
+    position = format_issue_scan_position(offset, current_offset, scan_state, priority)
     print()
     log_stage(
         "issue-scan",
@@ -7776,9 +7806,29 @@ def log_issue_scan_progress(
     )
 
 
-def resolve_random_issue_scan_offset(label: str, user_requested_only: bool = False) -> int:
+def resolve_random_issue_scan_offset(
+        label: str,
+        user_requested_only: bool = False,
+        priority: str | None = None,
+) -> int:
     """Choose a random searchable offset for an issue label."""
-    issue_count = count_issues_with_label(label, user_requested_only=user_requested_only)
+    tier: IssuePriorityTier | None = (
+        get_issue_priority_tier(priority)
+        if priority is not None
+        else None
+    )
+    if tier is None:
+        issue_count = count_issues_with_label(
+            label,
+            user_requested_only=user_requested_only,
+        )
+    else:
+        issue_count = count_issues_with_label(
+            label,
+            list(tier.extra_labels),
+            user_requested_only,
+            list(tier.excluded_labels),
+        )
     searchable_count = min(issue_count, GITHUB_SEARCH_MAX_RESULTS)
     if searchable_count <= 0:
         return 0
@@ -7794,6 +7844,7 @@ def process_fixture_issues_for_label(
         keep_tests_without_dynamic_access: bool,
         environment_already_validated: bool = False,
         user_requested_only: bool = False,
+        priority: str | None = None,
 ) -> int:
     """Run the local fixture issues for one label, sequentially, one `run.log` each.
 
@@ -7804,9 +7855,16 @@ def process_fixture_issues_for_label(
     if not environment_already_validated:
         validate_issue_processing_environment()
 
+    tier: IssuePriorityTier | None = (
+        get_issue_priority_tier(priority)
+        if priority is not None
+        else None
+    )
     issues = require_fixture_github_state().list_open_issues_by_label(
         label,
         limit,
+        extra_labels=list(tier.extra_labels) if tier is not None else None,
+        excluded_labels=list(tier.excluded_labels) if tier is not None else None,
         excluded_authors=get_user_requested_issue_excluded_authors(user_requested_only),
     )
     if not issues:
@@ -7848,6 +7906,7 @@ def process_issues_with_label(
         take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
         environment_already_validated: bool = False,
         user_requested_only: bool = False,
+        priority: str | None = None,
 ) -> int:
     """
     Process up to `limit` claimable issues, skipping over unclaimed candidates.
@@ -7872,12 +7931,23 @@ def process_issues_with_label(
     next_scan_progress_log_count = ISSUE_SCAN_PROGRESS_LOG_INTERVAL
     current_offset = offset
     scan_state = IssueQueueScanState()
+    selected_tier: IssuePriorityTier | None = (
+        get_issue_priority_tier(priority)
+        if priority is not None
+        else None
+    )
+    selected_extra_labels: list[str] | None = (
+        list(selected_tier.extra_labels) if selected_tier is not None else None
+    )
+    selected_excluded_labels: list[str] | None = (
+        list(selected_tier.excluded_labels) if selected_tier is not None else None
+    )
     exhausted = False
     unresolved_candidates: list[tuple[dict, CachedIssueClaimSkip | None]] = []
     pending_issues: list[tuple[dict, IssueClaimPreflight | None, CachedIssueClaimSkip | None]] = []
     active_futures: dict[concurrent.futures.Future[bool], ClaimedIssue] = {}
 
-    log_issue_scan_start(label, offset)
+    log_issue_scan_start(label, offset, priority)
 
     executor = concurrent.futures.ThreadPoolExecutor(max_workers=parallelism)
     try:
@@ -7892,7 +7962,7 @@ def process_issues_with_label(
                         pending_issues.extend(resolve_next_issue_claim_candidate_batch(unresolved_candidates))
                     elif not exhausted:
                         fetch_limit = get_issue_scan_batch_size(remaining_limit, available_slots)
-                        if offset == 0:
+                        if priority is None and offset == 0:
                             issues, scan_state = get_prioritized_issues_with_label(
                                 label,
                                 fetch_limit,
@@ -7910,6 +7980,9 @@ def process_issues_with_label(
                                 label,
                                 fetch_limit,
                                 current_offset,
+                                selected_extra_labels,
+                                selected_excluded_labels,
+                                user_requested_only=user_requested_only,
                             )
                             current_offset += len(raw_issues)
                             if not raw_issues:
@@ -7949,6 +8022,7 @@ def process_issues_with_label(
                                 offset,
                                 current_offset,
                                 scan_state,
+                                priority,
                             )
                             next_scan_progress_log_count += ISSUE_SCAN_PROGRESS_LOG_INTERVAL
                         continue
@@ -8046,6 +8120,7 @@ def process_work_queues(
         parallelism_default: int = DEFAULT_PARALLELISM,
         random_offset_override: bool | None = None,
         user_requested_only_override: bool | None = None,
+        priority_override: str | None = None,
 ) -> None:
     """Process all configured issue and review queues in one Python process."""
     queue_configs = get_work_queue_configs_from_environment(work_strategy_name_override, random_offset_override)
@@ -8058,6 +8133,9 @@ def process_work_queues(
     )
     parallelism = get_env_parallelism("FORGE_PARALLELISM", parallelism_default)
     user_requested_only = resolve_user_requested_only(user_requested_only_override)
+    priority_kwargs: dict[str, str] = {}
+    if priority_override is not None:
+        priority_kwargs["priority"] = priority_override
     enabled_issue_queues = [queue_config for queue_config in queue_configs if queue_config.limit > 0]
 
     if is_shutdown_requested():
@@ -8097,6 +8175,7 @@ def process_work_queues(
                 keep_tests_without_dynamic_access,
                 user_requested_only=user_requested_only,
                 environment_already_validated=True,
+                **priority_kwargs,
             )
             continue
 
@@ -8106,6 +8185,7 @@ def process_work_queues(
             issue_scan_offset = resolve_random_issue_scan_offset(
                 queue_config.label,
                 user_requested_only=user_requested_only,
+                **priority_kwargs,
             )
             print()
             log_stage(
@@ -8124,6 +8204,7 @@ def process_work_queues(
             parallelism,
             user_requested_only=user_requested_only,
             environment_already_validated=True,
+            **priority_kwargs,
         )
 
     for review_queue_config in review_queue_configs:
@@ -8234,6 +8315,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Number of issues to skip from the start of the list (default: 0).",
     )
     parser.add_argument(
+        "--priority",
+        choices=PRIORITY_CHOICES,
+        help=(
+            "Process only one issue tier: high, priority, or normal. "
+            "Without this option, all tiers are drained in order."
+        ),
+    )
+    parser.add_argument(
         "--random-offset",
         dest="random_offset",
         action="store_true",
@@ -8286,6 +8375,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             parser.error("--fixture-testing cannot be combined with --random-offset/--no-random-offset")
     if args.random_offset is not None and args.label is None and not args.run_work_queues:
         parser.error("--random-offset/--no-random-offset can only be used with --label or --run-work-queues")
+    if args.priority is not None and args.label is None and not args.run_work_queues:
+        parser.error("--priority can only be used with --label or --run-work-queues")
     if args.random_offset is True and args.offset != 0:
         parser.error("--random-offset cannot be combined with --offset")
     return args
@@ -8417,6 +8508,7 @@ def main() -> None:
                 args.parallelism,
                 random_offset_override=args.random_offset,
                 user_requested_only_override=args.user_requested_only,
+                priority_override=args.priority,
             )
         elif args.review_pr is not None:
             authenticated_user = resolve_authenticated_user()
@@ -8448,6 +8540,7 @@ def main() -> None:
                 args.strategy_name,
                 args.keep_tests_without_dynamic_access,
                 user_requested_only=resolve_user_requested_only(args.user_requested_only),
+                priority=args.priority,
             )
         else:
             authenticated_user = resolve_authenticated_user()
@@ -8456,6 +8549,7 @@ def main() -> None:
             if args.random_offset is True:
                 issue_scan_offset = resolve_random_issue_scan_offset(
                     args.label,
+                    priority=args.priority,
                     user_requested_only=user_requested_only,
                 )
                 print()
@@ -8472,6 +8566,7 @@ def main() -> None:
                 args.parallelism,
                 take_blocked_issues=args.take_blocked_issues,
                 user_requested_only=user_requested_only,
+                priority=args.priority,
             )
         normal_exit = True
     except KeyboardInterrupt:

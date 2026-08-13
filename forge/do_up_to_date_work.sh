@@ -21,6 +21,7 @@ LIBRARY_UPDATE_WORK_STRATEGY_NAME="${FORGE_LIBRARY_UPDATE_STRATEGY_NAME:-}"
 WORK_LABEL="${FORGE_WORK_LABEL:-library-new-request}"
 WORK_LIMIT="${FORGE_WORK_LIMIT:-1}"
 RANDOM_WORK_OFFSET="${FORGE_RANDOM_WORK_OFFSET:-0}"
+PRIORITY_TIER=""
 PARALLELISM="${FORGE_PARALLELISM:-1}"
 REVIEW_LABEL="${FORGE_REVIEW_LABEL:-}"
 REVIEW_LIMIT="${FORGE_REVIEW_LIMIT:-1}"
@@ -101,6 +102,8 @@ Options:
   --no-random-offset
       Start new-library issue scans from the beginning of the issue list. This
       is the default.
+  --priority {high,priority,normal}
+      Process only the selected issue priority tier in every issue queue.
   --parallelism N
       Run up to N issue workflows in parallel. Defaults to FORGE_PARALLELISM,
       then 1. The maximum is 4.
@@ -403,6 +406,9 @@ process_work_queues() {
         "--parallelism"
         "$PARALLELISM"
     )
+    if [[ -n "$PRIORITY_TIER" ]]; then
+        forge_metadata_args+=("--priority" "$PRIORITY_TIER")
+    fi
 
     run_step "Processing configured work queues via forge_metadata." \
         "$PYTHON_BIN" "$SCRIPT_DIR/forge_metadata.py" "${forge_metadata_args[@]}"
@@ -521,6 +527,15 @@ while [[ "$#" -gt 0 ]]; do
             RANDOM_WORK_OFFSET=0
             shift
             ;;
+        --priority)
+            require_option_value "$1" "${2:-}"
+            PRIORITY_TIER="$2"
+            shift 2
+            ;;
+        --priority=*)
+            PRIORITY_TIER="${1#*=}"
+            shift
+            ;;
         --parallelism)
             require_option_value "$1" "${2:-}"
             PARALLELISM="$2"
@@ -621,6 +636,13 @@ require_nonnegative_integer "FORGE_WORK_LIMIT" "$WORK_LIMIT"
 require_nonnegative_integer "FORGE_REVIEW_LIMIT" "$REVIEW_LIMIT"
 require_parallelism "$PARALLELISM"
 require_positive_integer "FORGE_DO_WORK_SLEEP_POLL_SECONDS" "$SLEEP_POLL_SECONDS"
+if [[ -n "$PRIORITY_TIER" \
+        && "$PRIORITY_TIER" != "high" \
+        && "$PRIORITY_TIER" != "priority" \
+        && "$PRIORITY_TIER" != "normal" ]]; then
+    echo "--priority must be high, priority, or normal." >&2
+    exit 1
+fi
 
 if [[ "$RANDOM_WORK_OFFSET" != "0" && "$RANDOM_WORK_OFFSET" != "1" ]]; then
     echo "FORGE_RANDOM_WORK_OFFSET must be 0 or 1." >&2
