@@ -137,6 +137,18 @@ def load_library_methods(path: str) -> set[str]:
     return methods
 
 
+def library_owners(library_methods: set[str] | None) -> set[str] | None:
+    """The declaring types of the library method list, for Definition 10'.
+
+    Jar membership, not package prefix: the library's own test-classifier
+    artifact ships classes in the library's packages
+    (§WF-code-coverage-improvement.3.2).
+    """
+    if library_methods is None:
+        return None
+    return {method_id.split("#", 1)[0] for method_id in library_methods}
+
+
 @dataclass
 class CallGraph:
     methods: dict[int, MethodRef] = field(default_factory=dict)
@@ -148,6 +160,12 @@ class CallGraph:
     creator_of: dict[int, int] = field(default_factory=dict)
     #: Creating method -> the lambda bodies the compiler extracted from it.
     closures_of: dict[int, list[int]] = field(default_factory=dict)
+    #: Call sites marked dispatch because their declared target is foreign.
+    foreign_dispatch_sites: int = 0
+    #: Edges those sites contributed, all of them marked dispatch.
+    foreign_dispatch_edges: int = 0
+    #: Virtual sites the dump gave no declared target for, so left routing.
+    unjudged_dispatch_sites: int = 0
 
 
 @dataclass
@@ -436,23 +454,47 @@ def _index_synthetic_lambdas(graph: CallGraph) -> None:
         body_ids.sort(key=lambda body_id: graph.methods[body_id].canonical_id)
 
 
-def _mark_dispatch_edges(graph: CallGraph, site_edges: dict[int, list[dict]]) -> None:
-    """Mark call sites whose receiver was captured somewhere else.
+def _mark_dispatch_edges(
+        graph: CallGraph,
+        site_edges: dict[int, list[dict]],
+        site_declared: dict[int, int],
+        owners: set[str] | None,
+) -> None:
+    """Mark call sites that do not say which implementation they reach.
 
-    When the analysis admits a generated lambda class at a virtual call site,
-    the site invokes a functional interface: the object was captured elsewhere
-    and handed in, so nothing out of that site says what its caller reaches. The
-    whole site is marked, real implementations included — they share the one
-    call site and the one missing fact (§WF-code-coverage-improvement.3.2.1).
+    A virtual site is marked when either holds. The site admits a generated
+    lambda class, so it invokes a functional interface whose object was captured
+    elsewhere and handed in (§WF-code-coverage-improvement.3.2.1). Or its
+    statically declared target belongs to a foreign type — `Iterator.hasNext`,
+    `Closeable.close`, `Object.equals` — where class-hierarchy analysis answers
+    with every implementation in the image and none of them is what runs.
+
+    The whole site is marked either way, real implementations included: they
+    share the one call site and the one missing fact. A site declaring a library
+    type is left alone, so `ProcessorNode.process` keeps its 34 implementations.
+
+    A dump that carries no declared target for a site leaves the second rule
+    unjudged, and the site keeps its edges rather than losing them all silently.
     """
-    for edges in site_edges.values():
+    for invoke_id, edges in site_edges.items():
         if any(edge["is_direct"] == "true" for edge in edges):
             continue
-        if not any(
-                _is_synthetic_lambda_class(graph.methods[edge["callee"]].owner)
-                for edge in edges
-        ):
+        lambda_site: bool = any(
+            _is_synthetic_lambda_class(graph.methods[edge["callee"]].owner)
+            for edge in edges
+        )
+        foreign_site: bool = False
+        if owners is not None and not lambda_site:
+            declared: MethodRef | None = graph.methods.get(site_declared.get(invoke_id, -1))
+            if declared is None:
+                graph.unjudged_dispatch_sites += 1
+            else:
+                foreign_site = declared.owner not in owners
+        if not lambda_site and not foreign_site:
             continue
+        if foreign_site:
+            graph.foreign_dispatch_sites += 1
+            graph.foreign_dispatch_edges += len(edges)
         for edge in edges:
             edge["kind"] = "dispatch"
 
@@ -482,7 +524,7 @@ def _add_creation_edges(graph: CallGraph) -> None:
             graph.reverse_adjacency.setdefault(body_id, []).append(edge)
 
 
-def _load_call_graph(reports_dir: str) -> CallGraph:
+def _load_call_graph(reports_dir: str, owners: set[str] | None) -> CallGraph:
     """Load the analysis call-tree CSV dump into an id-indexed call graph."""
     methods_path, invokes_path, targets_path = _find_call_tree_files(reports_dir)
     methods_rows = _read_csv_by_id(methods_path)
@@ -500,12 +542,16 @@ def _load_call_graph(reports_dir: str) -> CallGraph:
         graph.loose_to_ids.setdefault(ref.loose_key, []).append(method_id)
 
     site_edges: dict[int, list[dict]] = {}
+    site_declared: dict[int, int] = {}
     for target_row in target_rows:
         invoke_id = int(target_row["InvokeId"])
         invoke = invokes_rows.get(invoke_id)
         if invoke is None:
             continue
         caller_id = int(invoke["MethodId"])
+        declared: str = invoke.get("TargetId", "")
+        if declared:
+            site_declared.setdefault(invoke_id, int(declared))
         callee_id = int(target_row["TargetId"])
         if caller_id not in graph.methods or callee_id not in graph.methods:
             continue
@@ -521,7 +567,7 @@ def _load_call_graph(reports_dir: str) -> CallGraph:
         graph.reverse_adjacency.setdefault(callee_id, []).append(edge)
 
     _index_synthetic_lambdas(graph)
-    _mark_dispatch_edges(graph, site_edges)
+    _mark_dispatch_edges(graph, site_edges, site_declared, owners)
     _add_creation_edges(graph)
 
     for method_ids in graph.loose_to_ids.values():
@@ -540,10 +586,10 @@ def _load_call_graph(reports_dir: str) -> CallGraph:
     return graph
 
 
-def load_call_graph(reports_dir: str) -> CallGraph:
+def load_call_graph(reports_dir: str, owners: set[str] | None = None) -> CallGraph:
     """Load one coherent call-tree triplet, failing closed on bad input."""
     try:
-        return _load_call_graph(reports_dir)
+        return _load_call_graph(reports_dir, owners)
     except (OSError, csv.Error, KeyError, TypeError, ValueError) as error:
         raise ProfileFormatError(f"Cannot load call-tree CSVs from '{reports_dir}'.") from error
 
@@ -1122,6 +1168,8 @@ def correlate(
             ),
             "syntheticExcludedFromPrompt": synthetic_excluded,
             "nonLibraryMethodsExcluded": len(foreign_ids),
+            "foreignDispatchSites": graph.foreign_dispatch_sites,
+            "foreignDispatchEdges": graph.foreign_dispatch_edges,
             "terminalUncovered": sum(
                 1 for record in uncovered_records if record.target_state.terminal
             ),
@@ -1173,8 +1221,15 @@ def correlate(
         ] + ([
             "No library method list was supplied, so the deep universe still counts "
             "every JaCoCo-reported method, including any the library's own "
-            "test-classifier artifact contributes."
-        ] if library_methods is None else []),
+            "test-classifier artifact contributes.",
+            "Without that list, virtual call sites declaring a foreign type still "
+            "route, so a path may rest on an edge class-hierarchy analysis could "
+            "not rule out.",
+        ] if library_methods is None else []) + ([
+            f"{graph.unjudged_dispatch_sites} virtual call sites carry no declared "
+            "target in the call-tree dump; they still route, so a path may rest on "
+            "an edge class-hierarchy analysis could not rule out."
+        ] if graph.unjudged_dispatch_sites else []),
     }
     return report, prompt_records
 
@@ -1455,7 +1510,10 @@ def generate_report(
         raise ProfileFormatError("iteration must be non-negative.")
     if max_listed <= 0:
         raise ProfileFormatError("max_listed must be positive.")
-    graph: CallGraph = load_call_graph(reports_dir)
+    library_methods: set[str] | None = (
+        load_library_methods(library_methods_path) if library_methods_path else None
+    )
+    graph: CallGraph = load_call_graph(reports_dir, library_owners(library_methods))
     profile: SampledProfile = load_sampled_profile(profile_path, graph)
     inventory: dict = _load_json_object(api_inventory_path, "API inventory")
     _require_coordinate(inventory, coordinate, "API inventory")
@@ -1465,9 +1523,6 @@ def generate_report(
     previous: dict | None = _previous_report(output_dir, iteration)
     target_states: dict[str, TargetState] = _previous_target_states(previous)
     target_states.update(load_target_states(target_state_paths, coordinate))
-    library_methods: set[str] | None = (
-        load_library_methods(library_methods_path) if library_methods_path else None
-    )
     report, prompt_records = correlate(
         profile,
         graph,
