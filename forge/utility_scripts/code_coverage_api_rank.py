@@ -11,7 +11,7 @@ code each one unlocks, and render the API-cover prompt
 Selection is a budgeted greedy maximum-coverage pass over a static call graph
 extracted from the library bytecode by `java/CallGraphExtractor.java`. After each
 pick the winner's reachable set is removed from every remaining candidate, so
-delegating overloads collapse to zero marginal value without special-casing.
+delegating overloads sink to their own single bit without special-casing.
 
 The unlock universe is every still-uncovered library method with a body, taken
 from the bytecode rather than from JaCoCo: a JaCoCo report only contains classes
@@ -22,8 +22,10 @@ report counts as uncovered.
 
 Public API entries belong to that universe alongside internal methods, so each
 candidate contributes its own bit and scores at least one. The phase is measured
-on public methods covered, so covering an entry is a gain in itself; an entry
-drops to zero only when an already-selected entry calls it.
+on public methods covered, so covering an entry is a gain in itself, and no
+other pick can take that bit away: being statically reached by a selected entry
+is an over-approximation, while the score is exact execution. Only an entry that
+holds no bit at all — one without a body — can score zero.
 
 Candidacy is filtered before ranking by receiver obtainability
 (§WF-code-coverage-improvement.3.1.2): `public` alone does not make a method
@@ -62,7 +64,7 @@ from utility_scripts.code_coverage_jacoco import (
 from utility_scripts.code_coverage_model import parse_inventory_id
 
 #: Hard cap on prompt targets per pass, matching §WF-code-coverage-improvement.3.1.
-MAX_PROMPT_TARGETS = 200
+MAX_PROMPT_TARGETS = 400
 
 
 class ApiRankError(RuntimeError):
@@ -389,32 +391,47 @@ def select_targets(
         reach: dict[int, int],
         limit: int,
         ids: list[str],
+        universe_bit: dict[int, int],
 ) -> list[tuple[int, int]]:
     """Greedy maximum coverage: repeatedly take the largest marginal unlock.
 
-    Scores only shrink as picks accumulate, so a stale score is an upper bound
-    and a lazy heap can re-score just the current front-runner. Ties break on
-    canonical id, keeping selection deterministic.
+    A candidate's own bit is never subtracted, so no other pick can eliminate it
+    (§WF-code-coverage-improvement.3.1.1). Reaching an entry statically is an
+    over-approximation over class-hierarchy-resolved dispatch, while the phase is
+    scored on exact execution: dropping an entry because a selected one calls it
+    would silently remove an uncovered public method from every future prompt.
+    A delegating overload therefore sinks to its own single bit and ranks last,
+    rather than disappearing.
+
+    Scores only shrink as picks accumulate — the own bit is a constant added to a
+    shrinking set — so a stale score is an upper bound and a lazy heap can
+    re-score just the current front-runner. Ties break on canonical id, keeping
+    selection deterministic.
     """
+    own: dict[int, int] = {node: universe_bit.get(node, 0) for node in candidates}
+
+    def marginal(node: int, unlocked: int) -> int:
+        return ((reach[node] & ~unlocked) | own[node]).bit_count()
+
     heap: list[tuple[int, str, int]] = [
-        (-reach[node].bit_count(), ids[node], node) for node in candidates
+        (-marginal(node, 0), ids[node], node) for node in candidates
     ]
     heapq.heapify(heap)
     unlocked: int = 0
     selected: list[tuple[int, int]] = []
     while heap and len(selected) < limit:
         _, node_id, node = heapq.heappop(heap)
-        exact: int = (reach[node] & ~unlocked).bit_count()
+        exact: int = marginal(node, unlocked)
         if heap and exact < -heap[0][0]:
             # Another candidate's bound still beats this exact score, so this
             # node is not yet known to be the maximum. Re-queue it tightened.
             heapq.heappush(heap, (-exact, node_id, node))
             continue
         if exact == 0:
-            # This node is the maximum and unlocks nothing, so every remaining
-            # candidate is bounded above by zero too. Reached only once the
-            # bodiless entries and the delegation targets of earlier picks are
-            # all that is left, since every other candidate holds its own bit.
+            # The maximum holds no bit of its own and unlocks nothing, so every
+            # remaining candidate is bounded above by zero too. Only bodiless
+            # entries reach this: JaCoCo never reports them, so they cannot be
+            # targets (§WF-code-coverage-improvement.3.1.1).
             break
         unlocked |= reach[node]
         selected.append((node, exact))
@@ -487,7 +504,8 @@ def rank(
 
     candidates: list[int] = sorted(index[method_id] for method_id in via)
     reach: dict[int, int] = reachable_sets(adjacency, universe_bit, set(candidates))
-    selected: list[tuple[int, int]] = select_targets(candidates, reach, limit, ids)
+    selected: list[tuple[int, int]] = select_targets(
+        candidates, reach, limit, ids, universe_bit)
 
     def closures(node: int) -> list[str]:
         """The lambda bodies the compiler extracted out of this entry.

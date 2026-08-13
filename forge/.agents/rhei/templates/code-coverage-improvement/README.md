@@ -35,7 +35,7 @@ and always returns to measurement, so only re-measurement can complete a phase
 — an agent can never claim progress. A phase completes when no actionable
 target remains or its fixed iteration budget of `coverage_iterations` passes
 is spent. Public
-API prompts contain 200 methods the latest exact JaCoCo report marks uncovered,
+API prompts contain 400 methods the latest exact JaCoCo report marks uncovered,
 ordered by how much still-uncovered code each one unlocks over a bytecode call
 graph rather than by identifier (§WF-code-coverage-improvement.3.1.1). Deep
 prompts list at most 200 JaCoCo-uncovered internal methods using compact

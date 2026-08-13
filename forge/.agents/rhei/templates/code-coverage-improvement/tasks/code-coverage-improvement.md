@@ -42,7 +42,7 @@
   - `runtime/code-coverage/issues/inventory.md`
   - `runtime/code-coverage/issues/conversion.md`
   - `runtime/code-coverage/issues/conversion.json`
-  - `runtime/code-coverage/work/code-coverage-convert.md`
+  - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-convert.md`
 
 ### Task code-coverage-prepare: Prepare library
 **State:** prepared
@@ -70,7 +70,7 @@
   - `runtime/code-coverage/prepare/library.json`
   - `runtime/code-coverage/prepare/source-context.md`
   - `runtime/code-coverage/prepare/baseline.md`
-  - `runtime/code-coverage/work/code-coverage-prepare.md`
+  - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-prepare.md`
 
 ### Task code-coverage-api-inventory: Generate API inventory
 **State:** prepared
@@ -94,7 +94,7 @@
 - Artifacts:
   - `runtime/code-coverage/api-inventory/api-inventory.json`
   - `runtime/code-coverage/api-inventory/api-inventory.md`
-  - `runtime/code-coverage/work/code-coverage-api-inventory.md`
+  - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-api-inventory.md`
 
 ### Task code-coverage-api-coverage: API coverage loop
 **State:** api-measure
@@ -108,7 +108,7 @@
     `runtime/code-coverage/graph/` (step 3).
   - `forge/utility_scripts/code_coverage_api_rank.py` — orders the uncovered
     public entries by how much still-uncovered code each unlocks and renders the
-    prompt, filled to its 200-target cap (step 4).
+    prompt, filled to its 400-target cap (step 4).
 - Fixed report location: `runtime/code-coverage/validation/api-cover-report.json`
   (iteration history stays at `api-cover-report-<n>.json`); ranking evidence
   stays at `api-rank-<n>.json`.
@@ -146,7 +146,7 @@
 - Artifacts:
   - `runtime/code-coverage/prepare/native-metadata-prepare.json`
   - `runtime/code-coverage/prepare/native-metadata-prepare.md`
-  - `runtime/code-coverage/work/code-coverage-prepare-native-metadata.md`
+  - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-prepare-native-metadata.md`
 
 ### Task code-coverage-deep-coverage: Deep coverage loop
 **State:** deep-measure
@@ -239,4 +239,4 @@
     otherwise link without auto-closing and describe remaining follow-up.
 - Artifacts:
   - `runtime/code-coverage/publication/pr.md`
-  - `runtime/code-coverage/work/code-coverage-publication.md`
+  - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-publication.md`
