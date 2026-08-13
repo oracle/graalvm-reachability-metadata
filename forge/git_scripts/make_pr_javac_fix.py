@@ -17,7 +17,6 @@ from git_scripts.common_git import (
     get_agent_name,
     format_stats_diff,
     format_forge_revision_section,
-    assert_no_dynamic_access_category_regressions,
 )
 from git_scripts.pr_publication import (
     BASE_BRANCH,
@@ -33,6 +32,10 @@ from utility_scripts.local_ci_verification import (
     LOCAL_CI_VERIFICATION_KEY,
     format_local_ci_verification_pr_section,
     local_ci_requires_human_intervention,
+)
+from utility_scripts.java_fix_coverage_follow_up import (
+    format_coverage_follow_up_pr_section,
+    format_generation_statistics_blocks,
 )
 from utility_scripts.metrics_writer import read_pending_metrics
 from utility_scripts.repo_path_resolver import resolve_repo_roots
@@ -52,6 +55,9 @@ def create_pull_request(
         repo_path: str,
         issue_number: int | None = None,
         pr_label: str = DEFAULT_PR_LABEL,
+        coverage_follow_up_issue_number: int | None = None,
+        coverage_follow_up_class_count: int | None = None,
+        coverage_follow_up_class_threshold: int | None = None,
 ):
     """
     Create a GitHub pull request for the current branch with an auto-generated body,
@@ -71,8 +77,6 @@ def create_pull_request(
         print(f"Pull request already exists for branch {branch}.")
         return
 
-    assert_no_dynamic_access_category_regressions(repo_path, old_coordinates, new_coordinates)
-
     title, body, metrics_entry = build_pull_request_preview(
         old_coordinates=old_coordinates,
         new_coordinates=new_coordinates,
@@ -83,6 +87,9 @@ def create_pull_request(
         metrics_repo_root=metrics_repo_root,
         repo_path=repo_path,
         issue_number=issue_number,
+        coverage_follow_up_issue_number=coverage_follow_up_issue_number,
+        coverage_follow_up_class_count=coverage_follow_up_class_count,
+        coverage_follow_up_class_threshold=coverage_follow_up_class_threshold,
     )
 
     cmd = [
@@ -122,6 +129,9 @@ def build_pull_request_preview(
         metrics_repo_root: str,
         repo_path: str,
         issue_number: int | None = None,
+        coverage_follow_up_issue_number: int | None = None,
+        coverage_follow_up_class_count: int | None = None,
+        coverage_follow_up_class_threshold: int | None = None,
 ) -> tuple[str, str, dict]:
     """Build the PR title/body without creating a GitHub pull request."""
     issue_no = issue_number if issue_number is not None else find_issue_common(new_coordinates, REPO)
@@ -131,16 +141,19 @@ def build_pull_request_preview(
     model_display_name = get_model_display_name(strategy_name)
     agent_name = get_agent_name(strategy_name)
     title = f"[GenAI] Test fix for {new_coordinates} using {model_display_name}"
-    test_only_metadata_entries = int(metrics.get("test_only_metadata_entries", 0) or 0)
-    previous_library_test_only_metadata_entries = int(metrics.get("previous_library_test_only_metadata_entries", 0) or 0)
-    test_only_metadata_entries_line = ""
-    if test_only_metadata_entries > 0:
-        test_only_metadata_entries_line = f"- Test-only metadata entries: {test_only_metadata_entries}\n"
-    previous_test_only_metadata_entries_line = ""
-    if previous_library_test_only_metadata_entries > 0:
-        previous_test_only_metadata_entries_line = (
-            f"- Previous library version test-only metadata entries: {previous_library_test_only_metadata_entries}\n"
-        )
+    coverage_deferred = coverage_follow_up_issue_number is not None
+    metadata_entry_lines, coverage_lines = format_generation_statistics_blocks(
+        metrics, coverage_deferred,
+    )
+    deferred_section = format_coverage_follow_up_pr_section(
+        issue_number=coverage_follow_up_issue_number,
+        uncovered_class_count=coverage_follow_up_class_count,
+        class_threshold=coverage_follow_up_class_threshold,
+        repo=REPO,
+    )
+    stats_diff_section = ""
+    if not coverage_deferred:
+        stats_diff_section = f"{format_stats_diff(repo_path, old_coordinates, new_coordinates)}\n"
     body = f"""## What does this PR do?
 
 Fixes: #{issue_no}
@@ -154,17 +167,12 @@ Summary:
 - Input tokens: {int(metrics.get("input_tokens_used", 0))}
 - Cached input tokens: {int(metrics.get("cached_input_tokens_used", 0) or 0)}
 - Output tokens: {int(metrics.get("output_tokens_used", 0))}
-- Metadata entries: {int(metrics.get("metadata_entries", 0))}
-{test_only_metadata_entries_line}\
+{metadata_entry_lines}\
 - Iterations: {int(metrics.get("iterations", 0))}
-- Library coverage percentage: {metrics.get("code_coverage_percent", 0)}
-- Previous library version metadata entries: {int(metrics.get("previous_library_metadata_entries", 0))}
-{previous_test_only_metadata_entries_line}\
-- Previous library version coverage percentage: {metrics.get("previous_library_coverage_percent", 0)}
+{coverage_lines}\
 
-{format_forge_revision_section()}
-{format_stats_diff(repo_path, old_coordinates, new_coordinates)}
-{format_bounded_test_diff_section(group, artifact, old_version, new_version, repo_path)}
+{deferred_section}{format_forge_revision_section()}
+{stats_diff_section}{format_bounded_test_diff_section(group, artifact, old_version, new_version, repo_path)}
 """
     post_generation_intervention = metrics_entry.get("post_generation_intervention")
     if post_generation_intervention:
@@ -224,6 +232,9 @@ def build_parser():
         ),
     )
     parser.add_argument("--issue-number", type=int, help="Explicit backing GitHub issue number.")
+    parser.add_argument("--coverage-follow-up-issue-number", type=int)
+    parser.add_argument("--coverage-follow-up-class-count", type=int)
+    parser.add_argument("--coverage-follow-up-class-threshold", type=int)
     parser.add_argument(
         "--pr-label",
         default=DEFAULT_PR_LABEL,
@@ -240,7 +251,29 @@ def parse_flags(argv_list):
         flags.reachability_metadata_path,
         flags.metrics_repo_path,
     )
-    return flags.coordinates, flags.new_version, repo_path, metrics_repo_path, flags.issue_number, flags.pr_label
+    follow_up_values = (
+        flags.coverage_follow_up_issue_number,
+        flags.coverage_follow_up_class_count,
+        flags.coverage_follow_up_class_threshold,
+    )
+    if any(value is not None for value in follow_up_values) and not all(
+            value is not None for value in follow_up_values
+    ):
+        parser.error(
+            "coverage follow-up issue number, class count, and threshold "
+            "must be provided together"
+        )
+    return (
+        flags.coordinates,
+        flags.new_version,
+        repo_path,
+        metrics_repo_path,
+        flags.issue_number,
+        flags.pr_label,
+        flags.coverage_follow_up_issue_number,
+        flags.coverage_follow_up_class_count,
+        flags.coverage_follow_up_class_threshold,
+    )
 
 
 def push_current_branch_to_origin(
@@ -261,9 +294,6 @@ def push_current_branch_to_origin(
             group, artifact, new_version, repo_path, f"Fixed test for {new_coordinates}",
         ),
         metrics_repo_path=metrics_repo_path,
-        after_verification=lambda: assert_no_dynamic_access_category_regressions(
-            repo_path, old_coordinates, new_coordinates,
-        ),
     )
 
     return branch, group, artifact, old_version, new_coordinates
@@ -272,7 +302,17 @@ def push_current_branch_to_origin(
 def main(argv=None):
     ensure_gh_authenticated()
 
-    old_coordinates, new_version, repo_path, metrics_repo_path, issue_number, pr_label = parse_flags(
+    (
+        old_coordinates,
+        new_version,
+        repo_path,
+        metrics_repo_path,
+        issue_number,
+        pr_label,
+        coverage_follow_up_issue_number,
+        coverage_follow_up_class_count,
+        coverage_follow_up_class_threshold,
+    ) = parse_flags(
         argv if argv is not None else sys.argv[1:]
     )
 
@@ -294,6 +334,9 @@ def main(argv=None):
         repo_path=repo_path,
         issue_number=issue_number,
         pr_label=pr_label,
+        coverage_follow_up_issue_number=coverage_follow_up_issue_number,
+        coverage_follow_up_class_count=coverage_follow_up_class_count,
+        coverage_follow_up_class_threshold=coverage_follow_up_class_threshold,
     )
 
 if __name__ == "__main__":

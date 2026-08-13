@@ -170,12 +170,27 @@ this functional spec.
   authors locally before claim processing (§ORCH-forge-orchestration-spec).
 - `FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD` configures the class-count threshold
   used by `forge_metadata.py` for `library-new-request` issues and
-  `library-update-request` issues routed to dynamic-access coverage improvement.
+  `library-update-request` issues routed to dynamic-access coverage improvement,
+  and the post-repair exploration decision for `fails-javac-compile` and
+  `fails-java-run` issues.
   The implementation-defined default is `15`.
   If the current dynamic-access report has more uncovered classes than this
-  threshold, Forge uses chunked mode. The value is not passed through as a
-  generic workflow policy; `forge_metadata.py` computes the concrete chunk size
-  for each run.
+  threshold, Forge uses chunked mode for new-library and library-update work.
+  Java-fix reports cannot be generated before their primary repair succeeds, so
+  `forge_metadata.py` passes the threshold to their shared driver; the composite
+  workflow evaluates it immediately after the repair and skips oversized
+  exploration. Publication then opens a new `library-update-request` for the
+  fixed version. That issue enters the ordinary library-update workflow after
+  the repair merges, where the existing dispatcher-owned chunking logic
+  regenerates the report and selects chunks. The skip is decided exactly once:
+  the composite records it on the continuation marker's `explore` phase, and
+  publication reads that phase instead of regenerating a report and deciding
+  again. Publication records the follow-up issue number before PR creation, so
+  retries reuse one issue; if the marker save was interrupted immediately after
+  creation, it recovers that issue from its repair reference. No other Java-fix
+  handoff state is persisted. For ordinary chunked runs, `forge_metadata.py`
+  still computes the concrete chunk size rather than passing a generic workflow
+  policy.
 
 ### 4.4 Repository availability for test and metadata artifacts
 

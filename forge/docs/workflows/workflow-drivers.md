@@ -176,6 +176,8 @@ The selected driver must own its normal setup after the probe; the
 `library-update-request` router must not duplicate javac-fix, java-run-fix,
 native-image-run-fix, or coverage workflow setup logic
 (§WF-improve-library-coverage.2).
+Before preflight and continuation-marker creation, a routed repair selects the
+repair driver's default strategy rather than the library-update strategy.
 
 ### `fails-javac-compile`
 

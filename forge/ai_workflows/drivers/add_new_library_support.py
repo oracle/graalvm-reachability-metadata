@@ -83,6 +83,7 @@ from utility_scripts.workflow_setup import (
 )
 
 DEFAULT_MODEL_NAME = "gpt-5.4"
+DEFAULT_STRATEGY_NAME = "dynamic_access_main_sources_pi_gpt-5.6-terra"
 METRICS_TASK_TYPE = "add_new_library_support"
 
 
@@ -154,7 +155,7 @@ def build_parser():
         "--strategy-name",
         dest="strategy_name",
         metavar="NAME",
-        default="dynamic_access_main_sources_pi_gpt-5.5",
+        default=DEFAULT_STRATEGY_NAME,
         help="select strategy by name from strategies/predefined_strategies.json",
     )
     parser.add_argument(
