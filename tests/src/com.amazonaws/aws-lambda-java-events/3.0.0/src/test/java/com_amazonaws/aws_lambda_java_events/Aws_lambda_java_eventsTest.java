@@ -16,6 +16,7 @@ import com.amazonaws.services.lambda.runtime.events.models.dynamodb.AttributeVal
 import com.amazonaws.services.lambda.runtime.events.models.dynamodb.OperationType;
 import com.amazonaws.services.lambda.runtime.events.models.dynamodb.StreamRecord;
 import com.amazonaws.services.lambda.runtime.events.models.dynamodb.StreamViewType;
+import com.amazonaws.services.lambda.runtime.events.models.s3.S3EventNotification;
 import java.util.List;
 import java.util.Map;
 import org.joda.time.DateTime;
@@ -122,6 +123,31 @@ public class Aws_lambda_java_eventsTest {
         assertThat(retainedRecord.getDynamodb().getOldImage().get("quantity").getN()).isEqualTo("2");
         assertThat(retainedRecord.getDynamodb().getStreamViewType())
                 .isEqualTo(StreamViewType.NEW_AND_OLD_IMAGES.name());
+    }
+
+    @Test
+    void s3EventNotificationDecodesObjectKeysAndRetainsRecordDetails() {
+        S3EventNotification.UserIdentityEntity owner =
+                new S3EventNotification.UserIdentityEntity("bucket-owner");
+        S3EventNotification.S3BucketEntity bucket = new S3EventNotification.S3BucketEntity(
+                "order-uploads", owner, "arn:aws:s3:::order-uploads");
+        S3EventNotification.S3ObjectEntity object = new S3EventNotification.S3ObjectEntity(
+                "orders%2Forder+42.json", 128L, "etag-1", "version-1", "sequencer-1");
+        S3EventNotification.S3Entity s3 = new S3EventNotification.S3Entity("upload-config", bucket, object, "1.0");
+        S3EventNotification.S3EventNotificationRecord record = new S3EventNotification.S3EventNotificationRecord(
+                "us-east-1", "ObjectCreated:Put", "aws:s3", "2020-01-02T03:04:05.000Z", "2.1",
+                new S3EventNotification.RequestParametersEntity("192.0.2.1"),
+                new S3EventNotification.ResponseElementsEntity("id-2", "request-1"), s3,
+                new S3EventNotification.UserIdentityEntity("uploader"));
+        S3EventNotification event = new S3EventNotification(List.of(record));
+
+        S3EventNotification.S3EventNotificationRecord retainedRecord = event.getRecords().get(0);
+        assertThat(retainedRecord.getS3().getBucket().getName()).isEqualTo("order-uploads");
+        assertThat(retainedRecord.getS3().getObject().getUrlDecodedKey()).isEqualTo("orders/order 42.json");
+        assertThat(retainedRecord.getS3().getObject().getSizeAsLong()).isEqualTo(128L);
+        assertThat(retainedRecord.getS3().getObject().getSequencer()).isEqualTo("sequencer-1");
+        assertThat(retainedRecord.getRequestParameters().getSourceIPAddress()).isEqualTo("192.0.2.1");
+        assertThat(retainedRecord.getEventTime()).isEqualTo(DateTime.parse("2020-01-02T03:04:05.000Z"));
     }
 
     @Test
