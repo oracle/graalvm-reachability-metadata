@@ -5349,6 +5349,22 @@ def resolve_workflow_default_strategy_name(
     raise ValueError(f"Unknown library-update route '{library_update_route.selected_driver}'")
 
 
+def resolve_run_strategy_name(
+        claimed_issue: ClaimedIssue,
+        library_update_route: LibraryUpdateRoute | None,
+        strategy_override: str | None,
+) -> str:
+    """Resolve the strategy recorded before preflight and workflow dispatch."""
+    default_strategy_name = resolve_workflow_default_strategy_name(claimed_issue, library_update_route)
+    if (
+            claimed_issue.label == LABEL_LIBRARY_UPDATE
+            and library_update_route is not None
+            and library_update_route.selected_driver != ROUTE_IMPROVE_COVERAGE
+    ):
+        return default_strategy_name
+    return strategy_override or default_strategy_name
+
+
 def invoke_pipeline(
         claimed_issue: ClaimedIssue,
         strategy_name: str | None,
@@ -5379,9 +5395,10 @@ def invoke_pipeline(
                 claimed_issue.issue_coordinates,
             )
 
-    run_strategy_name = strategy_override or resolve_workflow_default_strategy_name(
+    run_strategy_name = resolve_run_strategy_name(
         claimed_issue,
         library_update_route,
+        strategy_override,
     )
     continuation_path = create_or_load_run_continuation_marker(
         claimed_issue,
