@@ -14,7 +14,7 @@ For the authoritative grounding rules and the agent contribution contract, see
 Documents are organized by grund *kind*. A kind groups facts of one type (a
 goal, a functional requirement, an architecture decision, …) and has a fixed
 *home* — a single file or a folder — declared in
-[../.agents/grund.toml](../.agents/grund.toml). An ID always lives in its kind's
+[../grund.toml](../grund.toml). An ID always lives in its kind's
 home, so the prefix tells you which file to open.
 
 | Kind | Home | Holds |
@@ -126,7 +126,7 @@ Always cite the most specific point that supports the claim, and keep inline
 notes short (≤ 1 line preferred, ≤ 100 columns).
 
 Only `§`-prefixed tokens are checked — `[reference] strict = true` in
-[../.agents/grund.toml](../.agents/grund.toml) — so a bare ID-shaped word in
+[../grund.toml](../grund.toml) — so a bare ID-shaped word in
 prose is ignored.
 
 ### Reading a citation
