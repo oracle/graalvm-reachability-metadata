@@ -124,11 +124,17 @@ therefore fill the prompt to its cap whenever that many candidates exist.
 
 The unlock universe is every still-uncovered library-owned method **with a body,
 derived from the library bytecode**, public API entries included. Membership of
-the entries themselves is what guarantees the previous paragraph: each candidate
-holds its own bit and so scores at least one, and a candidate falls to zero only
-when an already-selected entry calls it — which is correct, since testing the
-caller covers it. Methods without a body stay out: JaCoCo can never mark an
-abstract or interface method covered, so it cannot be a target. Deriving the
+the entries themselves is what guarantees the previous paragraph, and it holds
+**against every other pick**: a candidate's own bit is never subtracted by
+another selection, so a body-carrying candidate always scores at least one and
+can never be eliminated. Only a candidate that holds no bit at all can score
+zero. That distinction is the whole contract here — being *reached* by a
+selected entry is a static over-approximation, whereas the score is exact
+execution, so an entry left out because something else statically reaches it is
+an uncovered public method the prompt can no longer ask anyone to call.
+
+Methods without a body are the sole zero: JaCoCo can never mark an abstract or
+interface method covered, so it cannot be a target. Deriving the
 universe from JaCoCo instead would be wrong here: a JaCoCo report contains only classes some test
 loaded, so a JaCoCo-derived universe systematically omits the untouched code
 this phase exists to open up. JaCoCo remains the sole coverage authority — the
@@ -150,10 +156,12 @@ evidence of coverage.
 
 Selection is a budgeted greedy maximum-coverage pass. It repeatedly takes the
 uncovered public entry that unlocks the most universe methods not already
-unlocked by an earlier pick, then removes that entry's reachable set from
-further consideration. Overlap subtraction is what makes redundant overloads
-and delegating wrappers rank near zero without any special-casing: once one
-member of a delegating family is picked, the rest unlock nothing new. Ties break
+unlocked by an earlier pick, plus its own bit, then removes that entry's
+reachable set from further consideration. Overlap subtraction is what orders
+redundant overloads and delegating wrappers last without any special-casing:
+once one member of a delegating family is picked, the rest unlock nothing new
+and fall to their own single bit — last in the order, but still in the prompt,
+because covering the caller is not the same as executing the callee. Ties break
 on canonical id so selection is deterministic.
 
 The call graph is a property of the library, so it is extracted once and cached
@@ -347,7 +355,7 @@ The Rhei template should decompose the workflow into these phases:
    plus exact API-inventory correlation, persists `api-cover-report-<n>` history
    and one fixed-location report, and decides the loop: the phase completes when
    no uncovered public target remains or the fixed budget of
-   `coverage_iterations` (default 6) passes is spent.
+   `coverage_iterations` (default 10) passes is spent.
    When the loop continues, measurement also derives the prompt of at most 200
    exact JaCoCo-uncovered public methods from that report. The cover agent attempts the complete supplied batch through
    normal public API behavior and always returns to measurement. Reachability

@@ -209,10 +209,14 @@ class RankUniverseTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             report = self._rank(directory)
         selected = {target["id"]: target["unlocks"] for target in report["targets"]}
-        # `delegate` reaches itself, `entry` and `helper`; testing it covers all
-        # three, so `entry` has nothing left to add and is not selected again.
+        # `delegate` reaches itself, `entry` and `helper`, so it ranks first.
         self.assertEqual(selected[self.DELEGATE], 3)
-        self.assertNotIn(self.ENTRY, selected)
+        # `entry` keeps its own bit and stays, ranked below `delegate`: static
+        # reach resolves dispatch by class hierarchy, so covering `delegate` is
+        # not evidence that `entry` executed (§WF-code-coverage-improvement.3.1.1).
+        self.assertEqual(selected[self.ENTRY], 1)
+        ranks = {target["id"]: target["rank"] for target in report["targets"]}
+        self.assertLess(ranks[self.DELEGATE], ranks[self.ENTRY])
 
     def test_bodiless_entry_is_never_selected(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -407,19 +411,42 @@ class ReachableSetTests(unittest.TestCase):
 
 class SelectTargetTests(unittest.TestCase):
 
-    def test_overlapping_candidate_loses_all_marginal_value(self) -> None:
+    def test_candidate_reached_by_a_selected_entry_keeps_its_own_bit(self) -> None:
+        # `caller` reaches `callee`, so the old subtraction eliminated `callee`
+        # outright. Static reach is a class-hierarchy over-approximation while
+        # the score is exact execution, so `callee` stays — ranked last, on the
+        # single bit nothing can take from it
+        # (§WF-code-coverage-improvement.3.1.1).
+        ids = ["caller", "callee"]
+        universe_bit = {0: 0b01, 1: 0b10}
+        reach = {0: 0b11, 1: 0b10}
+        selected = rank_module.select_targets([0, 1], reach, 10, ids, universe_bit)
+        self.assertEqual([(ids[node], score) for node, score in selected],
+                         [("caller", 2), ("callee", 1)])
+
+    def test_fully_overlapping_candidates_both_survive_on_their_own_bits(self) -> None:
+        # Two entries into the same internal method: bit 2 is shared, bits 0
+        # and 1 are their own.
         ids = ["a", "b"]
-        # Both candidates reach the same two universe methods.
-        reach = {0: 0b11, 1: 0b11}
-        selected = rank_module.select_targets([0, 1], reach, 10, ids)
-        self.assertEqual(len(selected), 1)
-        self.assertEqual(selected[0], (0, 2))
+        universe_bit = {0: 0b001, 1: 0b010}
+        reach = {0: 0b101, 1: 0b110}
+        selected = rank_module.select_targets([0, 1], reach, 10, ids, universe_bit)
+        self.assertEqual([score for _, score in selected], [2, 1])
+
+    def test_bodiless_candidate_holds_no_bit_and_is_dropped(self) -> None:
+        # An abstract or interface entry has no body, so JaCoCo can never mark
+        # it covered and it is the one candidate that may score zero.
+        ids = ["concrete", "abstract"]
+        universe_bit = {0: 0b1}
+        reach = {0: 0b1, 1: 0}
+        selected = rank_module.select_targets([0, 1], reach, 10, ids, universe_bit)
+        self.assertEqual([ids[node] for node, _ in selected], ["concrete"])
 
     def test_smaller_candidate_is_kept_when_it_adds_new_coverage(self) -> None:
         ids = ["big", "small"]
         # `big` unlocks three, `small` unlocks one that `big` does not.
         reach = {0: 0b0111, 1: 0b1000}
-        selected = rank_module.select_targets([0, 1], reach, 10, ids)
+        selected = rank_module.select_targets([0, 1], reach, 10, ids, {})
         self.assertEqual([entry[1] for entry in selected], [3, 1])
 
     def test_lower_bound_candidate_is_not_dropped_by_a_stale_maximum(self) -> None:
@@ -427,19 +454,19 @@ class SelectTargetTests(unittest.TestCase):
         # `narrow` still adds value. A premature stop would discard `narrow`.
         ids = ["first", "narrow", "wide"]
         reach = {0: 0b0111, 1: 0b1000, 2: 0b0111}
-        selected = rank_module.select_targets([0, 1, 2], reach, 10, ids)
+        selected = rank_module.select_targets([0, 1, 2], reach, 10, ids, {})
         self.assertEqual([ids[entry[0]] for entry in selected], ["first", "narrow"])
 
     def test_limit_caps_the_selection(self) -> None:
         ids = [str(number) for number in range(5)]
         reach = {number: 1 << number for number in range(5)}
-        selected = rank_module.select_targets(list(range(5)), reach, 2, ids)
+        selected = rank_module.select_targets(list(range(5)), reach, 2, ids, {})
         self.assertEqual(len(selected), 2)
 
     def test_ties_break_on_canonical_id_for_determinism(self) -> None:
         ids = ["z", "a"]
         reach = {0: 0b01, 1: 0b10}
-        selected = rank_module.select_targets([0, 1], reach, 1, ids)
+        selected = rank_module.select_targets([0, 1], reach, 1, ids, {})
         self.assertEqual(ids[selected[0][0]], "a")
 
 
@@ -599,9 +626,22 @@ class ExtractorTests(unittest.TestCase):
         self.assertEqual(reach[entry], reach[overload])
         self.assertEqual(reach[entry].bit_count(), 2)
         self.assertEqual(reach[lonely], 0)
-        # The delegating overload must therefore add nothing once entry is taken.
-        selected = rank_module.select_targets([entry, overload, lonely], reach, 10, ids)
-        self.assertEqual(len(selected), 1)
+        # Production puts the entries in the universe too, so the delegating
+        # overload adds no internal reach once `entry` is taken but still holds
+        # its own bit: it ranks last and stays in the prompt, as does `lonely`,
+        # which reaches nothing at all (§WF-code-coverage-improvement.3.1.1).
+        entry_bits = dict(universe_bit)
+        for bit, node in enumerate((entry, overload, lonely), start=len(internal)):
+            entry_bits[node] = 1 << bit
+        reach_with_entries = rank_module.reachable_sets(
+            adjacency, entry_bits, {entry, overload, lonely})
+        selected = rank_module.select_targets(
+            [entry, overload, lonely], reach_with_entries, 10, ids, entry_bits)
+        self.assertEqual({ids[node] for node, _ in selected},
+                         {ids[entry], ids[overload], ids[lonely]})
+        # The caller of the family ranks first; the rest hold one bit each.
+        self.assertEqual(selected[0][0], overload)
+        self.assertEqual([score for _, score in selected[1:]], [1, 1])
 
     def test_lambda_body_is_reachable_through_the_bootstrap_target(self) -> None:
         ids, _, adjacency = rank_module.load_graph(self._graph_dir)
