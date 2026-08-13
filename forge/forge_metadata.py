@@ -775,8 +775,14 @@ def search_issues_with_label(
         limit: int,
         offset: int = 0,
         extra_labels: list[str] | None = None,
+        excluded_labels: list[str] | None = None,
 ) -> list[dict]:
-    """Fetch open issues that carry the given label using GitHub search pagination."""
+    """
+    Fetch open issues that carry the given label using GitHub search pagination.
+
+    `excluded_labels` are excluded on top of the always-excluded
+    `not-for-native-image` label, not instead of it.
+    """
     if limit <= 0:
         return []
     if offset >= GITHUB_SEARCH_MAX_RESULTS:
@@ -786,7 +792,11 @@ def search_issues_with_label(
     per_page = GITHUB_API_MAX_PAGE_SIZE
     page = (offset // per_page) + 1
     page_offset = offset % per_page
-    query = build_issue_search_query(label, extra_labels)
+    query = build_issue_search_query(
+        label,
+        extra_labels,
+        [LABEL_NOT_FOR_NATIVE_IMAGE, *(excluded_labels or [])],
+    )
     items = get_issue_search_page(query, page, per_page)
     return items[page_offset:page_offset + limit]
 
@@ -888,6 +898,7 @@ def get_issues_with_label(
         limit: int,
         offset: int = 0,
         extra_labels: list[str] | None = None,
+        excluded_labels: list[str] | None = None,
         user_requested_only: bool = False,
 ) -> list[dict]:
     """Fetch open issues that carry the given label (and any extra labels)."""
@@ -897,6 +908,7 @@ def get_issues_with_label(
             limit,
             offset,
             extra_labels,
+            excluded_labels,
             excluded_authors=get_user_requested_issue_excluded_authors(user_requested_only),
         )
     return search_issues_with_label(
@@ -904,6 +916,7 @@ def get_issues_with_label(
         limit,
         offset,
         extra_labels,
+        excluded_labels,
     )
 
 
@@ -1747,39 +1760,93 @@ def try_mark_issue_numbers_blocking_many_libraries_as_priority(issue_numbers: li
         )
 
 
+@dataclass(frozen=True)
+class IssuePriorityTier:
+    """One urgency tier of an issue queue, expressed as a GitHub label filter."""
+
+    name: str
+    extra_labels: tuple[str, ...]
+    excluded_labels: tuple[str, ...]
+
+
+# Drained in order; each tier excludes the labels of the tiers above it so that an
+# issue carrying several priority labels is served exactly once, in its highest tier.
+ISSUE_PRIORITY_TIERS: tuple[IssuePriorityTier, ...] = (
+    IssuePriorityTier(LABEL_HIGH_PRIORITY, (LABEL_HIGH_PRIORITY,), ()),
+    IssuePriorityTier(LABEL_PRIORITY, (LABEL_PRIORITY,), (LABEL_HIGH_PRIORITY,)),
+    IssuePriorityTier("regular", (), (LABEL_HIGH_PRIORITY, LABEL_PRIORITY)),
+)
+
+
+@dataclass
+class IssueQueueScanState:
+    """How far a prioritized queue scan has advanced through `ISSUE_PRIORITY_TIERS`."""
+
+    tier_index: int = 0
+    tier_offset: int = 0
+    scanned_count: int = 0
+
+    @property
+    def exhausted(self) -> bool:
+        """Whether every priority tier has been drained."""
+        return self.tier_index >= len(ISSUE_PRIORITY_TIERS)
+
+    @property
+    def current_tier(self) -> IssuePriorityTier:
+        """The tier the scan is currently paging through."""
+        return ISSUE_PRIORITY_TIERS[self.tier_index]
+
+    def advance_within_tier(self, fetched_count: int) -> None:
+        """Record that `fetched_count` issues were fetched from the current tier."""
+        self.tier_offset += fetched_count
+        self.scanned_count += fetched_count
+
+    def advance_to_next_tier(self) -> None:
+        """Move to the next, less urgent tier and restart its pagination."""
+        self.tier_index += 1
+        self.tier_offset = 0
+
+    def describe_position(self) -> str:
+        """Return a concise description of the scan position for progress logs."""
+        if self.exhausted:
+            return "all priority tiers drained"
+        return f"{self.current_tier.name} tier, offset {self.tier_offset}"
+
+
 def get_prioritized_issues_with_label(
         label: str,
         limit: int,
-        priority_offset: int = 0,
-        regular_offset: int = 0,
-        priority_exhausted: bool = False,
+        scan_state: IssueQueueScanState | None = None,
         user_requested_only: bool = False,
-) -> tuple[list[dict], int, int, bool, bool]:
-    """Fetch one issue batch and rank high-priority, priority, then regular issues."""
-    regular_issues = get_issues_with_label(
-        label,
-        limit,
-        regular_offset,
-    )
-    regular_offset += len(regular_issues)
-    filtered_issues = filter_user_requested_issues(regular_issues, user_requested_only)
-    if not is_fixture_testing_enabled():
-        try_mark_issues_blocking_many_libraries_as_priority(filtered_issues)
-    sorted_issues = sorted(
-        filtered_issues,
-        key=issue_priority_rank,
-    )
-    exhausted = len(regular_issues) == 0
-    return sorted_issues, priority_offset, regular_offset, True, exhausted
+) -> tuple[list[dict], IssueQueueScanState]:
+    """
+    Fetch the next issue batch from the most urgent tier that still has issues.
 
-
-def issue_priority_rank(issue: dict) -> int:
-    """Return the queue rank required by §ORCH-forge-orchestration-spec."""
-    if issue_has_label(issue, LABEL_HIGH_PRIORITY):
-        return 0
-    if issue_has_label(issue, LABEL_PRIORITY):
-        return 1
-    return 2
+    Tiers are drained globally rather than ranked inside a batch: every
+    `high-priority` issue is served before any `priority` issue, and every
+    `priority` issue before any unlabeled one (§FS-forge-issue-resolution-goal).
+    An empty result means every tier is exhausted, so callers can stop scanning.
+    """
+    state = scan_state if scan_state is not None else IssueQueueScanState()
+    while not state.exhausted:
+        tier = state.current_tier
+        raw_issues = get_issues_with_label(
+            label,
+            limit,
+            state.tier_offset,
+            list(tier.extra_labels),
+            list(tier.excluded_labels),
+        )
+        if not raw_issues:
+            state.advance_to_next_tier()
+            continue
+        state.advance_within_tier(len(raw_issues))
+        issues = filter_user_requested_issues(raw_issues, user_requested_only)
+        if not is_fixture_testing_enabled():
+            try_mark_issues_blocking_many_libraries_as_priority(issues)
+        if issues:
+            return issues, state
+    return [], state
 
 
 def get_project_item_state(issue_number: int) -> tuple[str | None, str | None]:
@@ -7998,19 +8065,18 @@ def get_issue_scan_batch_size(_remaining_limit: int, _available_slots: int) -> i
 def format_issue_scan_position(
         offset: int,
         current_offset: int,
-        priority_offset: int,
-        regular_offset: int,
+        scan_state: IssueQueueScanState,
 ) -> str:
     """Return a concise description of the current issue scan position."""
     if offset == 0:
-        return f"priority offset {priority_offset}, regular offset {regular_offset}"
+        return scan_state.describe_position()
     return f"offset {current_offset}"
 
 
 def log_issue_scan_start(label: str, offset: int) -> None:
     """Log where an issue scan starts."""
     if offset == 0:
-        position = "from the most recently updated issues with high-priority-first ordering"
+        position = "draining the high-priority, priority, then regular tiers in turn"
     else:
         position = f"from offset {offset}"
     print()
@@ -8022,11 +8088,10 @@ def log_issue_scan_progress(
         scanned_count: int,
         offset: int,
         current_offset: int,
-        priority_offset: int,
-        regular_offset: int,
+        scan_state: IssueQueueScanState,
 ) -> None:
     """Log issue scan progress after another interval of candidates was inspected."""
-    position = format_issue_scan_position(offset, current_offset, priority_offset, regular_offset)
+    position = format_issue_scan_position(offset, current_offset, scan_state)
     print()
     log_stage(
         "issue-scan",
@@ -8129,10 +8194,8 @@ def process_issues_with_label(
     scanned_count = 0
     next_scan_progress_log_count = ISSUE_SCAN_PROGRESS_LOG_INTERVAL
     current_offset = offset
-    priority_offset = 0
-    regular_offset = 0
+    scan_state = IssueQueueScanState()
     exhausted = False
-    priority_exhausted = False
     unresolved_candidates: list[tuple[dict, CachedIssueClaimSkip | None]] = []
     pending_issues: list[tuple[dict, IssueClaimPreflight | None, CachedIssueClaimSkip | None]] = []
     active_futures: dict[concurrent.futures.Future[bool], ClaimedIssue] = {}
@@ -8153,18 +8216,15 @@ def process_issues_with_label(
                     elif not exhausted:
                         fetch_limit = get_issue_scan_batch_size(remaining_limit, available_slots)
                         if offset == 0:
-                            issues, priority_offset, regular_offset, priority_exhausted, exhausted = (
-                                get_prioritized_issues_with_label(
-                                    label,
-                                    fetch_limit,
-                                    priority_offset,
-                                    regular_offset,
-                                    priority_exhausted,
-                                    user_requested_only,
-                                )
+                            issues, scan_state = get_prioritized_issues_with_label(
+                                label,
+                                fetch_limit,
+                                scan_state,
+                                user_requested_only,
                             )
+                            exhausted = scan_state.exhausted
                             if not issues:
-                                if priority_offset == 0 and regular_offset == 0:
+                                if scan_state.scanned_count == 0:
                                     print()
                                     log_stage("issue-scan", f"No open issues found with label '{label}'")
                                 break
@@ -8211,8 +8271,7 @@ def process_issues_with_label(
                                 next_scan_progress_log_count,
                                 offset,
                                 current_offset,
-                                priority_offset,
-                                regular_offset,
+                                scan_state,
                             )
                             next_scan_progress_log_count += ISSUE_SCAN_PROGRESS_LOG_INTERVAL
                         continue
