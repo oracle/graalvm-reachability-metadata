@@ -30,10 +30,19 @@ the contract for that producer is the repository functional spec's
 [Library version update automation](../../docs/functional-spec.md#fs-library-version-update-automation-library-version-update-automation)
 (root-namespace ID `FS-library-version-update-automation`).
 
-Queue scans rank issues within each fetched pipeline batch by label-derived
-urgency: `high-priority` first, `priority` second, and issues with neither label
-last. An issue carrying both priority labels remains in the highest tier, matching
-the repository status classification (§root/FS-repository-status-report.1).
+Queue scans drain a pipeline by label-derived urgency tier rather than ranking
+within a fetched batch: the scan pages through every `high-priority` issue
+first, then every `priority` issue, then issues carrying neither label. Each
+tier is a separate GitHub search that excludes the labels of the tiers above it,
+so an issue carrying both priority labels is served once, in the highest tier,
+matching the repository status classification (§root/FS-repository-status-report.1).
+A tier is left only once its search returns no further results, and its own
+result window is therefore capped independently at GitHub's first
+`GITHUB_SEARCH_MAX_RESULTS` matches.
+
+Tiered draining applies to scans that start at offset `0`. A scan started from a
+random offset (§ORCH-forge-orchestration-spec) keeps paging the flat, unfiltered
+label query so that concurrent runners spread across the queue.
 
 Orchestration must claim exactly one issue per workflow run, dispatch the
 matching workflow driver, and either hand PR-eligible results to publication

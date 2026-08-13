@@ -85,6 +85,15 @@ def _search_issue(
     }
 
 
+def _scan_state(scanned_count: int = 0, exhausted: bool = False) -> forge_metadata.IssueQueueScanState:
+    """Build the scan state a `get_prioritized_issues_with_label` stub would return."""
+    return forge_metadata.IssueQueueScanState(
+        tier_index=len(forge_metadata.ISSUE_PRIORITY_TIERS) if exhausted else 0,
+        tier_offset=0 if exhausted else scanned_count,
+        scanned_count=scanned_count,
+    )
+
+
 def _pull_request(
         number: int,
         label_names: list[str] | None = None,
@@ -834,39 +843,74 @@ class IssueClaimPreflightTests(unittest.TestCase):
         self.assertTrue(forge_metadata.issue_has_label(priority_issue, forge_metadata.LABEL_PRIORITY))
         self.assertFalse(forge_metadata.issue_has_label(regular_issue, forge_metadata.LABEL_PRIORITY))
 
-    def test_prioritized_issue_fetch_orders_high_priority_before_priority_and_regular(self) -> None:
-        regular_issue = _search_issue(1412)
-        priority_issue = _search_issue(1413)
-        high_priority_issue = _search_issue(1414, [forge_metadata.LABEL_HIGH_PRIORITY])
+    def test_prioritized_issue_fetch_drains_each_tier_before_the_next(self) -> None:
+        tier_issues = {
+            (forge_metadata.LABEL_HIGH_PRIORITY,): [
+                _search_issue(1414, [forge_metadata.LABEL_HIGH_PRIORITY]),
+            ],
+            (forge_metadata.LABEL_PRIORITY,): [
+                _search_issue(1413, [forge_metadata.LABEL_PRIORITY]),
+            ],
+            (): [_search_issue(1412)],
+        }
 
+        def fake_get_issues(
+                _label: str,
+                _limit: int,
+                offset: int = 0,
+                extra_labels: list[str] | None = None,
+                _excluded_labels: list[str] | None = None,
+        ) -> list[dict]:
+            return [] if offset else tier_issues[tuple(extra_labels or ())]
+
+        fetched: list[list[int]] = []
+        scan_state = None
         with patch.object(
                 forge_metadata,
                 "get_issues_with_label",
-                return_value=[regular_issue, priority_issue, high_priority_issue],
-        ), \
-                patch.object(
-                    forge_metadata,
-                "get_open_issues_blocked_by_issue_counts",
-                return_value={
-                    1412: 0,
-                    1413: forge_metadata.PRIORITY_BLOCKING_LIBRARY_THRESHOLD,
-                    1414: 0,
-                },
-                ), \
-                patch.object(forge_metadata, "add_issue_label"), \
-                patch("sys.stdout", new_callable=io.StringIO):
-            issues, priority_offset, regular_offset, priority_exhausted, exhausted = (
-                forge_metadata.get_prioritized_issues_with_label(
+                side_effect=fake_get_issues,
+        ) as get_issues, \
+                patch.object(forge_metadata, "try_mark_issues_blocking_many_libraries_as_priority"):
+            for _ in range(4):
+                issues, scan_state = forge_metadata.get_prioritized_issues_with_label(
                     forge_metadata.LABEL_LIBRARY_NEW,
-                    3,
+                    25,
+                    scan_state,
                 )
+                fetched.append([issue["number"] for issue in issues])
+
+        self.assertEqual(fetched, [[1414], [1413], [1412], []])
+        self.assertTrue(scan_state.exhausted)
+        self.assertEqual(
+            [(call.args[2], call.args[3], call.args[4]) for call in get_issues.call_args_list],
+            [
+                (0, [forge_metadata.LABEL_HIGH_PRIORITY], []),
+                (1, [forge_metadata.LABEL_HIGH_PRIORITY], []),
+                (0, [forge_metadata.LABEL_PRIORITY], [forge_metadata.LABEL_HIGH_PRIORITY]),
+                (1, [forge_metadata.LABEL_PRIORITY], [forge_metadata.LABEL_HIGH_PRIORITY]),
+                (0, [], [forge_metadata.LABEL_HIGH_PRIORITY, forge_metadata.LABEL_PRIORITY]),
+                (1, [], [forge_metadata.LABEL_HIGH_PRIORITY, forge_metadata.LABEL_PRIORITY]),
+            ],
+        )
+
+    def test_tier_search_query_keeps_the_not_for_native_image_exclusion(self) -> None:
+        with patch.dict(os.environ, {"FORGE_ISSUE_SEARCH_CACHE": "0"}), \
+                patch.object(forge_metadata, "gh_json", return_value={"items": []}) as gh_json:
+            forge_metadata.search_issues_with_label(
+                forge_metadata.LABEL_LIBRARY_NEW,
+                25,
+                excluded_labels=[forge_metadata.LABEL_HIGH_PRIORITY],
             )
 
-        self.assertEqual([issue["number"] for issue in issues], [1414, 1413, 1412])
-        self.assertEqual(priority_offset, 0)
-        self.assertEqual(regular_offset, 3)
-        self.assertTrue(priority_exhausted)
-        self.assertFalse(exhausted)
+        self.assertEqual(
+            gh_json.call_args.args[5],
+            (
+                f"q=repo:{forge_metadata.REPO} is:issue is:open "
+                f'label:"{forge_metadata.LABEL_LIBRARY_NEW}" '
+                f'-label:"{forge_metadata.LABEL_NOT_FOR_NATIVE_IMAGE}" '
+                f'-label:"{forge_metadata.LABEL_HIGH_PRIORITY}"'
+            ),
+        )
 
     def test_refresh_issue_payload_for_claim_skips_closed_issue(self) -> None:
         issue = _search_issue(1412, [forge_metadata.LABEL_LIBRARY_NEW])
@@ -1170,18 +1214,41 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
         with patch.object(forge_metadata, "get_issues_with_label", return_value=issues) as get_issues, \
                 patch.object(forge_metadata, "try_mark_issues_blocking_many_libraries_as_priority"):
-            filtered, _priority_offset, regular_offset, _priority_exhausted, exhausted = (
-                forge_metadata.get_prioritized_issues_with_label(
-                    forge_metadata.LABEL_LIBRARY_NEW,
-                    25,
-                    user_requested_only=True,
-                )
+            filtered, scan_state = forge_metadata.get_prioritized_issues_with_label(
+                forge_metadata.LABEL_LIBRARY_NEW,
+                25,
+                user_requested_only=True,
             )
 
-        get_issues.assert_called_once_with(forge_metadata.LABEL_LIBRARY_NEW, 25, 0)
+        get_issues.assert_called_once_with(
+            forge_metadata.LABEL_LIBRARY_NEW,
+            25,
+            0,
+            [forge_metadata.LABEL_HIGH_PRIORITY],
+            [],
+        )
         self.assertEqual([issue["number"] for issue in filtered], [2])
-        self.assertEqual(regular_offset, 2)
-        self.assertFalse(exhausted)
+        self.assertEqual(scan_state.tier_offset, 2)
+        self.assertFalse(scan_state.exhausted)
+
+    def test_prioritized_issue_fetch_keeps_scanning_past_a_fully_filtered_batch(self) -> None:
+        batches = [
+            [{"number": 1, "author": {"login": "graalvmbot"}, "labels": []}],
+            [{"number": 2, "author": {"login": "external-user"}, "labels": []}],
+        ]
+
+        with patch.object(forge_metadata, "get_issues_with_label", side_effect=batches) as get_issues, \
+                patch.object(forge_metadata, "try_mark_issues_blocking_many_libraries_as_priority"):
+            filtered, scan_state = forge_metadata.get_prioritized_issues_with_label(
+                forge_metadata.LABEL_LIBRARY_NEW,
+                25,
+                user_requested_only=True,
+            )
+
+        self.assertEqual([issue["number"] for issue in filtered], [2])
+        self.assertEqual(get_issues.call_count, 2)
+        self.assertEqual(scan_state.scanned_count, 2)
+        self.assertFalse(scan_state.exhausted)
 
     def test_random_issue_scan_offset_uses_open_issue_count(self) -> None:
         with patch.object(forge_metadata, "count_issues_with_label", return_value=500), \
@@ -1282,8 +1349,8 @@ class IssueClaimPreflightTests(unittest.TestCase):
                         forge_metadata,
                         "get_prioritized_issues_with_label",
                         side_effect=[
-                            ([skipped_issue], 0, 1, True, False),
-                            ([claimable_issue], 0, 2, True, False),
+                            ([skipped_issue], _scan_state(1)),
+                            ([claimable_issue], _scan_state(2)),
                         ],
                     ) as get_prioritized_issues_with_label, \
                     patch.object(
@@ -1323,17 +1390,13 @@ class IssueClaimPreflightTests(unittest.TestCase):
                 call(
                     forge_metadata.LABEL_LIBRARY_NEW,
                     forge_metadata.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
-                    0,
-                    0,
-                    False,
+                    forge_metadata.IssueQueueScanState(),
                     False,
                 ),
                 call(
                     forge_metadata.LABEL_LIBRARY_NEW,
                     forge_metadata.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
-                    0,
-                    1,
-                    True,
+                    _scan_state(1),
                     False,
                 ),
             ],
@@ -2054,7 +2117,7 @@ class IssueClaimCacheTests(unittest.TestCase):
                         patch.object(
                             forge_metadata,
                             "get_prioritized_issues_with_label",
-                            return_value=([cached_issue, claimable_issue], 0, 2, True, True),
+                            return_value=([cached_issue, claimable_issue], _scan_state(2, exhausted=True)),
                         ), \
                         patch.object(
                             forge_metadata,
@@ -2112,8 +2175,8 @@ class IssueClaimCacheTests(unittest.TestCase):
                         forge_metadata,
                         "get_prioritized_issues_with_label",
                         side_effect=[
-                            ([issue], 0, 1, True, False),
-                            ([], 0, 1, True, True),
+                            ([issue], _scan_state(1)),
+                            ([], _scan_state(1, exhausted=True)),
                         ],
                     ), \
                     patch.object(
@@ -2162,7 +2225,7 @@ class IssueClaimCacheTests(unittest.TestCase):
                     patch.object(
                         forge_metadata,
                         "get_prioritized_issues_with_label",
-                        return_value=(issues, 0, len(issues), True, True),
+                        return_value=(issues, _scan_state(len(issues), exhausted=True)),
                     ), \
                     patch.object(
                         forge_metadata,
@@ -2225,7 +2288,7 @@ class IssueClaimCacheTests(unittest.TestCase):
                     patch.object(
                         forge_metadata,
                         "get_prioritized_issues_with_label",
-                        return_value=(issues, 0, len(issues), True, True),
+                        return_value=(issues, _scan_state(len(issues), exhausted=True)),
                     ), \
                     patch.object(
                         forge_metadata,
