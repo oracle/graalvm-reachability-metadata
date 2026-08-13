@@ -9,8 +9,13 @@ package com_amazonaws.aws_lambda_java_events;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.amazonaws.services.lambda.runtime.events.CloudWatchLogsEvent;
+import com.amazonaws.services.lambda.runtime.events.DynamodbEvent;
 import com.amazonaws.services.lambda.runtime.events.KinesisEvent;
 import com.amazonaws.services.lambda.runtime.events.SNSEvent;
+import com.amazonaws.services.lambda.runtime.events.models.dynamodb.AttributeValue;
+import com.amazonaws.services.lambda.runtime.events.models.dynamodb.OperationType;
+import com.amazonaws.services.lambda.runtime.events.models.dynamodb.StreamRecord;
+import com.amazonaws.services.lambda.runtime.events.models.dynamodb.StreamViewType;
 import java.util.List;
 import java.util.Map;
 import org.joda.time.DateTime;
@@ -87,6 +92,36 @@ public class Aws_lambda_java_eventsTest {
                 .isEqualTo("priority");
         assertThat(event.getRecords().get(0).getSNS().getTimestamp()).isEqualTo(timestamp);
         assertThat(event.clone()).isEqualTo(event).isNotSameAs(event);
+    }
+
+    @Test
+    void dynamodbStreamEventRetainsImagesAndRecordMetadata() {
+        AttributeValue orderId = new AttributeValue().withS("order-42");
+        AttributeValue quantity = new AttributeValue().withN("3");
+        StreamRecord streamRecord = new StreamRecord()
+                .withKeys(Map.of("orderId", orderId))
+                .withSequenceNumber("496080000000000000001")
+                .withSizeBytes(128L)
+                .withStreamViewType(StreamViewType.NEW_AND_OLD_IMAGES);
+        streamRecord.addNewImageEntry("quantity", quantity);
+        streamRecord.addOldImageEntry("quantity", new AttributeValue().withN("2"));
+
+        DynamodbEvent.DynamodbStreamRecord record = new DynamodbEvent.DynamodbStreamRecord();
+        record.setEventID("event-1");
+        record.setEventName(OperationType.MODIFY);
+        record.setEventSource("aws:dynamodb");
+        record.setEventSourceARN("arn:aws:dynamodb:us-east-1:123456789012:table/orders/stream/2020-01-01");
+        record.setDynamodb(streamRecord);
+        DynamodbEvent event = new DynamodbEvent();
+        event.setRecords(List.of(record));
+
+        DynamodbEvent.DynamodbStreamRecord retainedRecord = event.getRecords().get(0);
+        assertThat(retainedRecord.getEventName()).isEqualTo(OperationType.MODIFY.name());
+        assertThat(retainedRecord.getDynamodb().getKeys().get("orderId").getS()).isEqualTo("order-42");
+        assertThat(retainedRecord.getDynamodb().getNewImage().get("quantity").getN()).isEqualTo("3");
+        assertThat(retainedRecord.getDynamodb().getOldImage().get("quantity").getN()).isEqualTo("2");
+        assertThat(retainedRecord.getDynamodb().getStreamViewType())
+                .isEqualTo(StreamViewType.NEW_AND_OLD_IMAGES.name());
     }
 
     @Test
