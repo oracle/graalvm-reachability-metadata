@@ -120,6 +120,9 @@ The `9107` fixture is a publication-continuation smoke test: its marker starts a
 `publication` and points at durable execution metrics plus marker-local PR
 extras, so it verifies `.pending_metrics.json` reconstruction and dry-run PR
 body generation without invoking an agent-backed generation workflow.
+It also carries the `priority` label so a fixture label run with
+`--priority priority` can verify exclusive priority-tier selection without
+starting an agent-backed generation workflow.
 §FS-forge-run-continuation.2
 
 For `library-new-request` fixtures that use an already-supported dynamic-access

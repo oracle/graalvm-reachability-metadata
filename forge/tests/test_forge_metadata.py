@@ -1222,6 +1222,22 @@ class IssueClaimPreflightTests(unittest.TestCase):
             user_requested_only=True,
         )
 
+    def test_random_issue_scan_offset_counts_only_selected_priority_tier(self) -> None:
+        with patch.object(forge_metadata, "count_issues_with_label", return_value=50) as count_issues, \
+                patch.object(forge_metadata.random, "randrange", return_value=12):
+            offset = forge_metadata.resolve_random_issue_scan_offset(
+                forge_metadata.LABEL_LIBRARY_NEW,
+                priority=forge_metadata.PRIORITY_NORMAL,
+            )
+
+        self.assertEqual(offset, 12)
+        count_issues.assert_called_once_with(
+            forge_metadata.LABEL_LIBRARY_NEW,
+            [],
+            False,
+            [forge_metadata.LABEL_HIGH_PRIORITY, forge_metadata.LABEL_PRIORITY],
+        )
+
     def test_fixture_issue_listing_can_exclude_non_user_authors(self) -> None:
         state = FixtureGitHubState([
             FixtureIssue(
@@ -1649,6 +1665,24 @@ class WorkQueueSchedulerTests(unittest.TestCase):
 
         self.assertTrue(random_args.random_offset)
         self.assertFalse(no_random_args.random_offset)
+
+    def test_issue_queue_modes_accept_priority_tiers(self) -> None:
+        for priority in forge_metadata.PRIORITY_CHOICES:
+            with self.subTest(priority=priority):
+                work_queue_args = forge_metadata.parse_args([
+                    "--run-work-queues",
+                    "--priority",
+                    priority,
+                ])
+                label_args = forge_metadata.parse_args([
+                    "--label",
+                    forge_metadata.LABEL_LIBRARY_NEW,
+                    "--priority",
+                    priority,
+                ])
+
+                self.assertEqual(work_queue_args.priority, priority)
+                self.assertEqual(label_args.priority, priority)
 
     def test_issue_queue_modes_accept_user_requested_only_flag(self) -> None:
         work_queue_args = forge_metadata.parse_args(["--run-work-queues", "--user-requested-only"])
@@ -2265,6 +2299,57 @@ class IssueClaimCacheTests(unittest.TestCase):
         self.assertIn("Looked through 100 issue(s) for label 'library-new-request'", output)
         self.assertIn("Looked through 200 issue(s) for label 'library-new-request'", output)
         self.assertNotIn("Looked through 300 issue(s)", output)
+
+    def test_process_loop_fetches_only_selected_priority_tier(self) -> None:
+        priority = forge_metadata.PRIORITY_NORMAL
+        tier = forge_metadata.get_issue_priority_tier(priority)
+        with patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                patch.object(forge_metadata, "get_prioritized_issues_with_label") as prioritized_fetch, \
+                patch.object(forge_metadata, "get_issues_with_label", return_value=[]) as get_issues, \
+                patch("sys.stdout", new_callable=io.StringIO):
+            processed = forge_metadata.process_issues_with_label(
+                forge_metadata.LABEL_LIBRARY_NEW,
+                1,
+                0,
+                "/tmp/reachability",
+                "/tmp/metrics",
+                None,
+                False,
+                "automation-user",
+                1,
+                priority=priority,
+            )
+
+        self.assertEqual(processed, 0)
+        get_issues.assert_called_once_with(
+            forge_metadata.LABEL_LIBRARY_NEW,
+            forge_metadata.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
+            0,
+            list(tier.extra_labels),
+            list(tier.excluded_labels),
+            user_requested_only=False,
+        )
+        prioritized_fetch.assert_not_called()
+
+    def test_priority_choices_map_to_exclusive_label_filters(self) -> None:
+        expected_filters = {
+            forge_metadata.PRIORITY_HIGH: (
+                (forge_metadata.LABEL_HIGH_PRIORITY,),
+                (),
+            ),
+            forge_metadata.LABEL_PRIORITY: (
+                (forge_metadata.LABEL_PRIORITY,),
+                (forge_metadata.LABEL_HIGH_PRIORITY,),
+            ),
+            forge_metadata.PRIORITY_NORMAL: (
+                (),
+                (forge_metadata.LABEL_HIGH_PRIORITY, forge_metadata.LABEL_PRIORITY),
+            ),
+        }
+        for priority, filters in expected_filters.items():
+            with self.subTest(priority=priority):
+                tier = forge_metadata.get_issue_priority_tier(priority)
+                self.assertEqual((tier.extra_labels, tier.excluded_labels), filters)
 
 
 class ProjectItemStatusTests(unittest.TestCase):
