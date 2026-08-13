@@ -1315,6 +1315,20 @@ def write_markdown(
         "Attempt every listed uncovered path in this iteration through public API "
         "behavior; never invoke internal targets directly.",
         "",
+        "## Where the tests go",
+        "",
+        "All of them belong in the dedicated coverage suite, and nowhere else: the "
+        "library's regular test sources are metadata-generation tests and stay "
+        "untouched.",
+        "",
+        "Inside that suite, write one test class per subsystem you drive, not one "
+        "class per run. The targets below cluster into a few subsystems — each "
+        "public entry in the routes drives one of them — and a scenario built for "
+        "its own subsystem, with the setup that subsystem needs, reaches far more "
+        "of it than one appended to a class built for something else. Before "
+        "extending an existing test class, check whether the cluster you are about "
+        "to drive already has one; if not, add a class.",
+        "",
         "## Summary",
         "",
         f"- Public inventory: {summary['inventoryCovered']} covered, "
