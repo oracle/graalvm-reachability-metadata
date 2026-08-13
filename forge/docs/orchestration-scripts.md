@@ -39,6 +39,8 @@ matching the repository status classification (§root/FS-repository-status-repor
 A tier is left only once its search returns no further results, and its own
 result window is therefore capped independently at GitHub's first
 `GITHUB_SEARCH_MAX_RESULTS` matches.
+Tier membership comes only from priority labels already present on GitHub;
+queue scanning and claim checks do not add priority labels automatically.
 
 Tiered draining applies to scans that start at offset `0`. A scan started from a
 random offset (§ORCH-forge-orchestration-spec) keeps paging the flat, unfiltered
