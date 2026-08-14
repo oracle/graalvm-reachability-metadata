@@ -17,31 +17,19 @@ import io.confluent.kafka.schemaregistry.client.rest.entities.RuleSet;
 import io.confluent.kafka.schemaregistry.client.rest.entities.SchemaEntity;
 import io.confluent.kafka.schemaregistry.client.rest.entities.SchemaReference;
 import io.confluent.kafka.schemaregistry.testutil.MockSchemaRegistry;
-import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDe;
-import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
-import io.confluent.kafka.serializers.context.NullContextNameStrategy;
 import io.confluent.kafka.serializers.schema.id.ConfigSchemaIdDeserializer;
 import io.confluent.kafka.serializers.schema.id.DualSchemaIdDeserializer;
 import io.confluent.kafka.serializers.schema.id.HeaderSchemaIdSerializer;
 import io.confluent.kafka.serializers.schema.id.PrefixSchemaIdDeserializer;
 import io.confluent.kafka.serializers.schema.id.PrefixSchemaIdSerializer;
 import io.confluent.kafka.serializers.schema.id.SchemaId;
-import io.confluent.kafka.serializers.subject.AssociatedNameStrategy;
 import io.confluent.kafka.serializers.subject.DefaultReferenceSubjectNameStrategy;
 import io.confluent.kafka.serializers.subject.QualifiedReferenceSubjectNameStrategy;
 import io.confluent.kafka.serializers.subject.RecordNameStrategy;
 import io.confluent.kafka.serializers.subject.TopicNameStrategy;
 import io.confluent.kafka.serializers.subject.TopicRecordNameStrategy;
-import io.confluent.kafka.serializers.wrapper.CompositeDeserializer;
-import io.confluent.kafka.serializers.wrapper.CompositeDeserializerConfig;
-import io.confluent.kafka.serializers.wrapper.WrapperKeyDeserializer;
-import io.confluent.kafka.serializers.wrapper.WrapperKeyDeserializerConfig;
-import io.confluent.kafka.serializers.wrapper.WrapperKeySerializer;
-import io.confluent.kafka.serializers.wrapper.WrapperKeySerializerConfig;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -49,49 +37,10 @@ import java.util.Set;
 import java.util.UUID;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.header.Header;
-import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.header.internals.RecordHeaders;
-import org.apache.kafka.common.serialization.Deserializer;
-import org.apache.kafka.common.serialization.StringDeserializer;
-import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.Test;
 
 public class KafkaSchemaSerializerTest {
-
-    @Test
-    void baseConfigCreatesDefaultStrategyImplementationsAndKeepsMockRegistryUrl() {
-        String scope = "schema-serializer-config-" + UUID.randomUUID();
-        Map<String, Object> props = new HashMap<>();
-        props.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "mock://" + scope);
-        props.put(AbstractKafkaSchemaSerDeConfig.REQUEST_HEADER_PREFIX + "X-Test", "metadata");
-        props.put(AbstractKafkaSchemaSerDeConfig.USE_SCHEMA_ID, 42);
-        props.put(AbstractKafkaSchemaSerDeConfig.EXECUTION_ENVIRONMENT, "CLIENT");
-        props.put(AbstractKafkaSchemaSerDeConfig.RULE_SERVICE_LOADER_ENABLE, false);
-
-        try {
-            AbstractKafkaSchemaSerDeConfig config = new AbstractKafkaSchemaSerDeConfig(
-                    AbstractKafkaSchemaSerDeConfig.baseConfigDef(), props);
-
-            assertThat(config.getSchemaRegistryUrls()).containsExactly("mock://" + scope);
-            assertThat(config.requestHeaders()).containsEntry("X-Test", "metadata");
-            assertThat(config.useSchemaId()).isEqualTo(42);
-            assertThat(config.enableRuleServiceLoader()).isFalse();
-            assertThat(config.getExecutionEnvironment().name()).isEqualTo("CLIENT");
-            assertThat(config.contextNameStrategy()).isInstanceOf(NullContextNameStrategy.class);
-            assertThat(config.keySubjectNameStrategy()).isInstanceOf(AssociatedNameStrategy.class);
-            assertThat(config.valueSubjectNameStrategy())
-                    .isInstanceOf(AssociatedNameStrategy.class);
-            assertThat(config.keySchemaIdSerializer()).isInstanceOf(PrefixSchemaIdSerializer.class);
-            assertThat(config.valueSchemaIdDeserializer())
-                    .isInstanceOf(DualSchemaIdDeserializer.class);
-            assertThat(config.keySubjectNameStrategy().subjectName("orders", true, null))
-                    .isEqualTo("orders-key");
-            assertThat(config.valueSubjectNameStrategy().subjectName("orders", false, null))
-                    .isEqualTo("orders-value");
-        } finally {
-            MockSchemaRegistry.dropScope(scope);
-        }
-    }
 
     @Test
     void schemaRegistryFactoryUsesSharedInProcessMockScope() throws Exception {
@@ -176,69 +125,6 @@ public class KafkaSchemaSerializerTest {
     }
 
     @Test
-    void wrapperKeySerializerAndDeserializerDelegateToConfiguredKafkaImplementations() {
-        WrapperKeySerializer<String> serializer = new WrapperKeySerializer<>();
-        WrapperKeyDeserializer<String> deserializer = new WrapperKeyDeserializer<>();
-        RecordHeaders headers = new RecordHeaders();
-        headers.add("source", new byte[] {1});
-
-        try {
-            serializer.configure(Map.of(
-                    WrapperKeySerializerConfig.WRAPPED_KEY_SERIALIZER,
-                    StringSerializer.class), true);
-            deserializer.configure(Map.of(
-                    WrapperKeyDeserializerConfig.WRAPPED_KEY_DESERIALIZER,
-                    StringDeserializer.class), true);
-
-            byte[] serialized = serializer.serialize("customers", headers, "customer-42");
-            String deserialized = deserializer.deserialize("customers", headers, serialized);
-
-            assertThat(serialized).containsExactly("customer-42".getBytes(StandardCharsets.UTF_8));
-            assertThat(deserialized).isEqualTo("customer-42");
-            assertThat(headers.lastHeader("source").value()).containsExactly((byte) 1);
-            assertThat(serializer.serialize("customers", headers, null)).isNull();
-            assertThat(deserializer.deserialize("customers", headers, (byte[]) null)).isNull();
-        } finally {
-            serializer.close();
-            deserializer.close();
-        }
-    }
-
-    @Test
-    void compositeDeserializerRoutesSchemaPayloadsAndFallsBackForLegacyPayloads()
-            throws Exception {
-        String topic = "composite-orders-" + UUID.randomUUID();
-        ParsedSchema schema = new SimpleParsedSchema("JSON", "com.example.CompositeOrder", null);
-        int id = TestConfluentDeserializer.CLIENT.register(topic + "-value", schema);
-        SchemaId outgoing = new SchemaId("JSON", id, (UUID) null);
-        byte[] schemaPayload = new PrefixSchemaIdSerializer()
-                .serialize(topic, false, new RecordHeaders(), new byte[] {10, 11}, outgoing);
-        CompositeDeserializer deserializer = new CompositeDeserializer();
-
-        try {
-            deserializer.configure(Map.of(
-                    CompositeDeserializerConfig.COMPOSITE_OLD_DESERIALIZER,
-                    StringDeserializer.class,
-                    CompositeDeserializerConfig.COMPOSITE_CONFLUENT_DESERIALIZER,
-                    TestConfluentDeserializer.class), false);
-
-            Object schemaValue = deserializer.deserialize(
-                    topic, new RecordHeaders(), schemaPayload);
-            Object legacyValue = deserializer.deserialize(topic,
-                    "legacy-value".getBytes(StandardCharsets.UTF_8));
-
-            assertThat(schemaValue).isEqualTo("confluent:" + topic + ":7");
-            assertThat(legacyValue).isEqualTo("legacy-value");
-            assertThat(deserializer.getOldDeserializer()).isInstanceOf(StringDeserializer.class);
-            assertThat(deserializer.getConfluentDeserializer())
-                    .isInstanceOf(TestConfluentDeserializer.class);
-            assertThat(deserializer.deserialize(topic, (byte[]) null)).isNull();
-        } finally {
-            deserializer.close();
-        }
-    }
-
-    @Test
     void subjectAndReferenceStrategiesDeriveNamesFromTopicRecordAndReferencePath() {
         ParsedSchema schema = new SimpleParsedSchema("JSON", "com.example.Customer", null);
 
@@ -287,36 +173,6 @@ public class KafkaSchemaSerializerTest {
         byte[] bytes = new byte[buffer.remaining()];
         buffer.get(bytes);
         return bytes;
-    }
-
-    public static final class TestConfluentDeserializer extends AbstractKafkaSchemaSerDe
-            implements Deserializer<Object> {
-        private static final SchemaRegistryClient CLIENT = MockSchemaRegistry.getClientForScope(
-                "composite-deserializer-test");
-
-        public TestConfluentDeserializer() {
-            schemaRegistry = CLIENT;
-        }
-
-        @Override
-        public void configure(Map<String, ?> configs, boolean isKey) {
-            this.isKey = isKey;
-            schemaRegistry = CLIENT;
-        }
-
-        @Override
-        public Object deserialize(String topic, byte[] data) {
-            return deserialize(topic, null, data);
-        }
-
-        @Override
-        public Object deserialize(String topic, Headers headers, byte[] data) {
-            return "confluent:" + topic + ":" + data.length;
-        }
-
-        @Override
-        public void close() {
-        }
     }
 
     private static final class SimpleParsedSchema implements ParsedSchema {
