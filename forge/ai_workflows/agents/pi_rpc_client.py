@@ -85,6 +85,7 @@ class PiRpcClient:
             working_dir: str | None = None,
             timeout: int = 720,
             persistent_instructions: str | None = None,
+            thinking_level: str | None = None,
     ):
         self._pi_command = pi_command
         self._session_dir = os.path.abspath(session_dir) if session_dir else None
@@ -93,6 +94,7 @@ class PiRpcClient:
         self._working_dir = os.path.abspath(working_dir) if working_dir else None
         self._timeout = timeout
         self._persistent_instructions = persistent_instructions
+        self._thinking_level = thinking_level
 
     def run_prompt(
             self,
@@ -229,16 +231,7 @@ class PiRpcClient:
                 stderr_collector.join(timeout=1)
 
     def _start_process(self, command_flags: list[str]):
-        cmd = [self._pi_command, "--mode", "rpc"]
-        if self._session_dir:
-            cmd.extend(["--session-dir", self._session_dir])
-        if self._provider:
-            cmd.extend(["--provider", self._provider])
-        if self._model:
-            cmd.extend(["--model", self._model])
-        if self._persistent_instructions:
-            cmd.extend(["--append-system-prompt", self._persistent_instructions])
-        cmd.extend(command_flags)
+        cmd = self._build_command(command_flags)
 
         try:
             process = subprocess.Popen(
@@ -262,6 +255,22 @@ class PiRpcClient:
         stdout_reader.start()
         stderr_collector.start()
         return process, stdout_reader, stderr_collector
+
+    def _build_command(self, command_flags: list[str]) -> list[str]:
+        """Build the Pi RPC command with explicit backend configuration."""
+        cmd = [self._pi_command, "--mode", "rpc"]
+        if self._session_dir:
+            cmd.extend(["--session-dir", self._session_dir])
+        if self._provider:
+            cmd.extend(["--provider", self._provider])
+        if self._model:
+            cmd.extend(["--model", self._model])
+        if self._thinking_level:
+            cmd.extend(["--thinking", self._thinking_level])
+        if self._persistent_instructions:
+            cmd.extend(["--append-system-prompt", self._persistent_instructions])
+        cmd.extend(command_flags)
+        return cmd
 
     @staticmethod
     def _send_command(

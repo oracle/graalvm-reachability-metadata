@@ -112,25 +112,6 @@
     "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
   },
   {
-    "name": "dynamic_access_main_sources_pi_gpt-5.5",
-    "description": "Same configuration as dynamic_access_main_sources_pi_gpt-5.4, but uses gpt-5.5 instead.",
-    "agent": "pi",
-    "workflow": "dynamic_access_iterative",
-    "model": "gpt-5.5",
-    "prompts": {
-      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
-    },
-    "parameters": {
-      "max-iterations": 3,
-      "max-class-test-iterations": 3,
-      "source-context-types": [
-        "main"
-      ]
-    },
-    "mcps": [],
-    "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
-  },
-  {
     "name": "dynamic_access_main_sources_pi_codex-5.3",
     "description": "Dynamic-access-guided Pi workflow using downloaded main library sources as read-only context.",
     "agent": "pi",
@@ -411,12 +392,12 @@
     "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
   },
   {
-    "name": "javac_iterative_with_coverage_sources_pi_gpt-5.5",
-    "description": "Same configuration as javac_iterative_with_coverage_sources_pi_gpt-5.4, but uses gpt-5.5 instead.",
+    "name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "description": "Same configuration as javac_iterative_with_coverage_sources_pi_gpt-5.4, but uses gpt-5.6-sol instead.",
     "agent": "pi",
     "workflow": "increase_dynamic_access_coverage",
     "primary-workflow": "javac_iterative",
-    "model": "gpt-5.5",
+    "model": "gpt-5.6-sol",
     "prompts": {
       "initial": "prompt_templates/fix-javac/initial-with-sources.md",
       "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
@@ -434,7 +415,7 @@
   },
   {
     "name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-terra",
-    "description": "Same configuration as javac_iterative_with_coverage_sources_pi_gpt-5.5, but uses gpt-5.6-terra instead.",
+    "description": "Same configuration as javac_iterative_with_coverage_sources_pi_gpt-5.6-sol, but uses gpt-5.6-terra instead.",
     "agent": "pi",
     "workflow": "increase_dynamic_access_coverage",
     "primary-workflow": "javac_iterative",
@@ -495,12 +476,12 @@
     "mcps": []
   },
   {
-    "name": "java_run_iterative_with_coverage_sources_pi_gpt-5.5",
+    "name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
     "description": "Composite strategy: runs java_run_iterative to fix runtime failures, then improves dynamic-access coverage.",
     "agent": "pi",
     "workflow": "increase_dynamic_access_coverage",
     "primary-workflow": "java_run_iterative",
-    "model": "gpt-5.5",
+    "model": "gpt-5.6-sol",
     "prompts": {
       "initial": "prompt_templates/fix-java-run/initial-with-sources.md",
       "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
@@ -518,7 +499,7 @@
   },
   {
     "name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-terra",
-    "description": "Same configuration as java_run_iterative_with_coverage_sources_pi_gpt-5.5, but uses gpt-5.6-terra instead.",
+    "description": "Same configuration as java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol, but uses gpt-5.6-terra instead.",
     "agent": "pi",
     "workflow": "increase_dynamic_access_coverage",
     "primary-workflow": "java_run_iterative",
@@ -558,11 +539,11 @@
     "persistent-instructions": "prompt_templates/persistent/basic_iterative_rules.md"
   },
   {
-    "name": "basic_iterative_codex_gpt-5.5",
-    "description": "Basic iterative add-new-library workflow for the Codex agent using gpt-5.5.",
+    "name": "basic_iterative_codex_gpt-5.6-sol",
+    "description": "Basic iterative add-new-library workflow for the Codex agent using gpt-5.6-sol.",
     "agent": "codex",
     "workflow": "basic_iterative",
-    "model": "gpt-5.5",
+    "model": "gpt-5.6-sol",
     "prompts": {
       "initial": "prompt_templates/initial/basic_initial.md",
       "after-successful-iteration": "prompt_templates/after-successful-iteration/codex_after_success.md",
@@ -577,11 +558,11 @@
     "persistent-instructions": "prompt_templates/persistent/basic_iterative_rules.md"
   },
   {
-    "name": "dynamic_access_bulk_pi_gpt-5.5",
+    "name": "dynamic_access_bulk_pi_gpt-5.6-sol",
     "description": "Pi bulk dynamic-access strategy. Unlike the regular dynamic-access strategy, which iterates through uncovered classes and refines coverage class by class, this strategy gives the agent the full dynamic-access report in one prompt and asks it to cover the missing accesses in a single broad pass.",
     "agent": "pi",
     "workflow": "optimistic_dynamic_access",
-    "model": "gpt-5.5",
+    "model": "gpt-5.6-sol",
     "prompts": {
       "optimistic-dynamic-access-iteration": "prompt_templates/dynamic_access/optimistic-dynamic-access-iteration.md"
     },
@@ -596,11 +577,11 @@
     "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
   },
   {
-    "name": "dynamic_access_bulk_codex_gpt-5.5",
+    "name": "dynamic_access_bulk_codex_gpt-5.6-sol",
     "description": "Codex bulk dynamic-access strategy. Unlike the regular dynamic-access strategy, which iterates through uncovered classes and refines coverage class by class, this strategy gives the agent the full dynamic-access report in one prompt and asks it to cover the missing accesses in a single broad pass.",
     "agent": "codex",
     "workflow": "optimistic_dynamic_access",
-    "model": "gpt-5.5",
+    "model": "gpt-5.6-sol",
     "prompts": {
       "optimistic-dynamic-access-iteration": "prompt_templates/dynamic_access/optimistic-dynamic-access-iteration.md"
     },
@@ -615,11 +596,11 @@
     "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
   },
   {
-    "name": "dynamic_access_graphify_bulk_pi_gpt-5.5",
+    "name": "dynamic_access_graphify_bulk_pi_gpt-5.6-sol",
     "description": "Pi graphify-assisted bulk dynamic-access strategy. It first builds graphify context from downloaded source artifacts, then gives the agent the full dynamic-access report in one broad pass. Unlike the regular dynamic-access strategy, it does not run the class-by-class refinement loop.",
     "agent": "pi",
     "workflow": "optimistic_dynamic_access",
-    "model": "gpt-5.5",
+    "model": "gpt-5.6-sol",
     "prompts": {
       "optimistic-dynamic-access-iteration": "prompt_templates/dynamic_access/optimistic-dynamic-access-iteration.md"
     },
@@ -635,11 +616,11 @@
     "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
   },
   {
-    "name": "dynamic_access_graphify_bulk_codex_gpt-5.5",
+    "name": "dynamic_access_graphify_bulk_codex_gpt-5.6-sol",
     "description": "Codex graphify-assisted bulk dynamic-access strategy. It first builds graphify context from downloaded source artifacts, then gives the agent the full dynamic-access report in one broad pass. Unlike the regular dynamic-access strategy, it does not run the class-by-class refinement loop.",
     "agent": "codex",
     "workflow": "optimistic_dynamic_access",
-    "model": "gpt-5.5",
+    "model": "gpt-5.6-sol",
     "prompts": {
       "optimistic-dynamic-access-iteration": "prompt_templates/dynamic_access/optimistic-dynamic-access-iteration.md"
     },
@@ -678,12 +659,12 @@
     "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
   },
   {
-    "name": "optimistic_dynamic_access_iterative_pi_gpt-5.5",
-    "description": "Composite strategy: optimistic bulk DA coverage, then per-class DA refinement using gpt-5.5.",
+    "name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "description": "Composite strategy: optimistic bulk DA coverage, then per-class DA refinement using gpt-5.6-sol.",
     "agent": "pi",
     "workflow": "increase_dynamic_access_coverage",
     "primary-workflow": "optimistic_dynamic_access",
-    "model": "gpt-5.5",
+    "model": "gpt-5.6-sol",
     "prompts": {
       "optimistic-dynamic-access-iteration": "prompt_templates/dynamic_access/optimistic-dynamic-access-iteration.md",
       "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
@@ -724,12 +705,12 @@
     "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
   },
   {
-    "name": "optimistic_dynamic_access_iterative_codex_gpt-5.5",
-    "description": "Composite Codex strategy: optimistic bulk DA coverage, then per-class DA refinement using gpt-5.5.",
+    "name": "optimistic_dynamic_access_iterative_codex_gpt-5.6-sol",
+    "description": "Composite Codex strategy: optimistic bulk DA coverage, then per-class DA refinement using gpt-5.6-sol.",
     "agent": "codex",
     "workflow": "increase_dynamic_access_coverage",
     "primary-workflow": "optimistic_dynamic_access",
-    "model": "gpt-5.5",
+    "model": "gpt-5.6-sol",
     "prompts": {
       "optimistic-dynamic-access-iteration": "prompt_templates/dynamic_access/optimistic-dynamic-access-iteration.md",
       "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
@@ -747,11 +728,11 @@
     "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
   },
   {
-    "name": "basic_iterative_pi_gpt-5.5",
-    "description": "Same configuration as basic_iterative, but uses gpt-5.5 instead.",
+    "name": "basic_iterative_pi_gpt-5.6-sol",
+    "description": "Same configuration as basic_iterative, but uses gpt-5.6-sol instead.",
     "agent": "pi",
     "workflow": "basic_iterative",
-    "model": "gpt-5.5",
+    "model": "gpt-5.6-sol",
     "prompts": {
       "initial": "prompt_templates/initial/basic_initial.md",
       "after-successful-iteration": "prompt_templates/after-successful-iteration/basic_after_success.md",
@@ -766,27 +747,8 @@
     "persistent-instructions": "prompt_templates/persistent/basic_iterative_rules.md"
   },
   {
-    "name": "dynamic_access_main_sources_codex_gpt-5.5",
-    "description": "Dynamic-access-guided Codex workflow using downloaded main library sources as read-only context. Uses gpt-5.5.",
-    "agent": "codex",
-    "workflow": "dynamic_access_iterative",
-    "model": "gpt-5.5",
-    "prompts": {
-      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
-    },
-    "parameters": {
-      "max-iterations": 3,
-      "max-class-test-iterations": 3,
-      "source-context-types": [
-        "main"
-      ]
-    },
-    "mcps": [],
-    "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
-  },
-  {
     "name": "dynamic_access_main_sources_codex_gpt-5.6-sol",
-    "description": "Same configuration as dynamic_access_main_sources_codex_gpt-5.5, but uses gpt-5.6-sol instead.",
+    "description": "Dynamic-access-guided Codex workflow using downloaded main library sources as read-only context with gpt-5.6-sol.",
     "agent": "codex",
     "workflow": "dynamic_access_iterative",
     "model": "gpt-5.6-sol",
@@ -805,7 +767,7 @@
   },
   {
     "name": "dynamic_access_main_sources_codex_gpt-5.6-luna",
-    "description": "Same configuration as dynamic_access_main_sources_codex_gpt-5.5, but uses gpt-5.6-luna instead.",
+    "description": "Same configuration as dynamic_access_main_sources_codex_gpt-5.6-sol, but uses gpt-5.6-luna instead.",
     "agent": "codex",
     "workflow": "dynamic_access_iterative",
     "model": "gpt-5.6-luna",
@@ -824,7 +786,7 @@
   },
   {
     "name": "dynamic_access_main_sources_codex_gpt-5.6-terra",
-    "description": "Same configuration as dynamic_access_main_sources_codex_gpt-5.5, but uses gpt-5.6-terra instead.",
+    "description": "Same configuration as dynamic_access_main_sources_codex_gpt-5.6-sol, but uses gpt-5.6-terra instead.",
     "agent": "codex",
     "workflow": "dynamic_access_iterative",
     "model": "gpt-5.6-terra",
@@ -843,7 +805,7 @@
   },
   {
     "name": "dynamic_access_main_sources_pi_gpt-5.6-sol",
-    "description": "Same configuration as dynamic_access_main_sources_pi_gpt-5.5, but uses gpt-5.6-sol instead.",
+    "description": "Dynamic-access-guided Pi workflow using downloaded main library sources as read-only context with gpt-5.6-sol.",
     "agent": "pi",
     "workflow": "dynamic_access_iterative",
     "model": "gpt-5.6-sol",
@@ -862,7 +824,7 @@
   },
   {
     "name": "dynamic_access_main_sources_pi_gpt-5.6-luna",
-    "description": "Same configuration as dynamic_access_main_sources_pi_gpt-5.5, but uses gpt-5.6-luna instead.",
+    "description": "Same configuration as dynamic_access_main_sources_pi_gpt-5.6-sol, but uses gpt-5.6-luna instead.",
     "agent": "pi",
     "workflow": "dynamic_access_iterative",
     "model": "gpt-5.6-luna",
@@ -881,7 +843,7 @@
   },
   {
     "name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
-    "description": "Same configuration as dynamic_access_main_sources_pi_gpt-5.5, but uses gpt-5.6-terra instead.",
+    "description": "Same configuration as dynamic_access_main_sources_pi_gpt-5.6-sol, but uses gpt-5.6-terra instead.",
     "agent": "pi",
     "workflow": "dynamic_access_iterative",
     "model": "gpt-5.6-terra",
@@ -899,11 +861,26 @@
     "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
   },
   {
-    "name": "dynamic_access_documentation_sources_codex_gpt-5.5",
-    "description": "Dynamic-access-guided Codex workflow using downloaded documentation artifacts as read-only context. Uses gpt-5.5.",
+    "name": "library_preflight_pi_gpt-5.6-sol",
+    "description": "Library preparation preflight using gpt-5.6-sol with medium reasoning.",
+    "agent": "pi",
+    "workflow": "basic_iterative",
+    "model": "gpt-5.6-sol",
+    "thinking-level": "medium",
+    "prompts": {
+      "initial": "prompt_templates/initial/basic_initial.md",
+      "after-successful-iteration": "prompt_templates/after-successful-iteration/basic_after_success.md",
+      "after-failed-iteration": "prompt_templates/after-failed-iteration/basic_after_fail.md"
+    },
+    "parameters": {},
+    "mcps": []
+  },
+  {
+    "name": "dynamic_access_documentation_sources_codex_gpt-5.6-sol",
+    "description": "Dynamic-access-guided Codex workflow using downloaded documentation artifacts as read-only context. Uses gpt-5.6-sol.",
     "agent": "codex",
     "workflow": "dynamic_access_iterative",
-    "model": "gpt-5.5",
+    "model": "gpt-5.6-sol",
     "prompts": {
       "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
     },
@@ -918,11 +895,11 @@
     "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
   },
   {
-    "name": "library_update_pi_gpt-5.5",
+    "name": "library_update_pi_gpt-5.6-sol",
     "description": "Library-update strategy: skips primary workflow, directly runs dynamic-access coverage improvement on existing tests.",
     "agent": "pi",
     "workflow": "increase_dynamic_access_coverage",
-    "model": "gpt-5.5",
+    "model": "gpt-5.6-sol",
     "prompts": {
       "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md",
       "issue-requested-metadata": "prompt_templates/issue_requested_metadata/issue-requested-metadata.md"
@@ -938,11 +915,11 @@
     "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
   },
   {
-    "name": "library_update_dynamic_access_bulk_pi_gpt-5.5",
+    "name": "library_update_dynamic_access_bulk_pi_gpt-5.6-sol",
     "description": "Library-update bulk dynamic-access strategy: runs only the optimistic full-report workflow against existing tests, without per-class refinement.",
     "agent": "pi",
     "workflow": "optimistic_dynamic_access",
-    "model": "gpt-5.5",
+    "model": "gpt-5.6-sol",
     "prompts": {
       "optimistic-dynamic-access-iteration": "prompt_templates/dynamic_access/optimistic-dynamic-access-iteration-update.md"
     },
@@ -958,12 +935,12 @@
     "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
   },
   {
-    "name": "library_update_optimistic_pi_gpt-5.5",
+    "name": "library_update_optimistic_pi_gpt-5.6-sol",
     "description": "Library-update composite strategy: bulk dynamic-access coverage in one broad pass first, then per-class iterative refinement of any stragglers. Mirrors the iterative library-update strategy but starts with a faster bulk pass.",
     "agent": "pi",
     "workflow": "increase_dynamic_access_coverage",
     "primary-workflow": "optimistic_dynamic_access",
-    "model": "gpt-5.5",
+    "model": "gpt-5.6-sol",
     "prompts": {
       "optimistic-dynamic-access-iteration": "prompt_templates/dynamic_access/optimistic-dynamic-access-iteration-update.md",
       "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"

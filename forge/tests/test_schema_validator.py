@@ -17,7 +17,7 @@ class RunMetricsSchemaTests(unittest.TestCase):
             {
                 "timestamp": "2026-05-02T00:00:00Z",
                 "library": "org.example:lib:1.0.0",
-                "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+                "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-sol",
                 "status": "chunk_ready",
                 "metrics": {
                     "input_tokens_used": 0,

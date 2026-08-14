@@ -35,7 +35,6 @@ DEFAULT_OUTPUT_RATE_PER_1M = 12.00
 
 INPUT_TOKEN_RATE_PER_1M_BY_MODEL = {
     "gpt-5.4": 2.50,
-    "gpt-5.5": 5.00,
     "gpt-5.6-sol": 5.00,
     "gpt-5.6-terra": 2.50,
     "gpt-5.6-luna": 1.00,
@@ -43,7 +42,6 @@ INPUT_TOKEN_RATE_PER_1M_BY_MODEL = {
 
 CACHED_INPUT_TOKEN_RATE_PER_1M_BY_MODEL = {
     "gpt-5.4": 0.25,
-    "gpt-5.5": 0.50,
     "gpt-5.6-sol": 0.50,
     "gpt-5.6-terra": 0.25,
     "gpt-5.6-luna": 0.10,
@@ -51,7 +49,6 @@ CACHED_INPUT_TOKEN_RATE_PER_1M_BY_MODEL = {
 
 OUTPUT_TOKEN_RATE_PER_1M_BY_MODEL = {
     "gpt-5.4": 15.00,
-    "gpt-5.5": 30.00,
     "gpt-5.6-sol": 30.00,
     "gpt-5.6-terra": 15.00,
     "gpt-5.6-luna": 6.00,

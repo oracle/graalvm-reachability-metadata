@@ -88,6 +88,12 @@ itself (its resolved artifact, dependencies, usage, and documentation) rather
 than deciding solely from that context. The agent investigates but must not
 modify the repository or apply setup; it returns only the decision.
 
+The preflight uses its own predefined Pi strategy with model `gpt-5.6-sol` and
+medium reasoning, independently of the strategy selected for the dispatched
+workflow. Operators may replace that bundle with
+`FORGE_LIBRARY_PREFLIGHT_STRATEGY_NAME` without changing the generation
+strategy.
+
 The preflight decision exists for library-specific requirements that are hard
 to infer from labels alone, such as optional Maven dependencies, Docker-backed
 services and their required allowed Docker images, or library setup the agent

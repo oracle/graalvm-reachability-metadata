@@ -197,7 +197,7 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
             with open(os.path.join(stats_dir, "execution-metrics.json"), "w", encoding="utf-8") as metrics_file:
                 json.dump({"add_new_library_support:2026-06-18": run_metrics}, metrics_file)
             marker = forge_metadata.ContinuationMarker.create(
-                strategy_name="dynamic_access_main_sources_pi_gpt-5.5",
+                strategy_name="dynamic_access_main_sources_pi_gpt-5.6-sol",
                 issue_number=1412,
                 label=forge_metadata.LABEL_LIBRARY_NEW,
                 coordinate="org.example:lib:1.0.0",
@@ -241,7 +241,7 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
             with open(os.path.join(forge_path, PENDING_METRICS_FILENAME), "w", encoding="utf-8") as pending_file:
                 json.dump(run_metrics, pending_file)
             marker = forge_metadata.ContinuationMarker.create(
-                strategy_name="dynamic_access_main_sources_pi_gpt-5.5",
+                strategy_name="dynamic_access_main_sources_pi_gpt-5.6-sol",
                 issue_number=1412,
                 label=forge_metadata.LABEL_LIBRARY_NEW,
                 coordinate="org.example:lib:1.0.0",
@@ -295,6 +295,30 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
 
 
 class LibraryUpdateIssueTests(unittest.TestCase):
+    def test_library_preflight_uses_dedicated_strategy(self) -> None:
+        claimed_issue = forge_metadata.ClaimedIssue(
+            issue={"number": 1412, "title": "Update org.example:lib:1.0.0"},
+            label=forge_metadata.LABEL_LIBRARY_UPDATE,
+            item_id="item-1",
+            base_reachability_metadata_path="/tmp/reachability",
+            worktree_path="/tmp/reachability-worktree",
+            scratch_metrics_repo_path="/tmp/metrics-worktree",
+            issue_coordinates="org.example:lib:1.0.0",
+            preflight_info_path="/tmp/preflight-info",
+        )
+
+        with patch.object(
+                forge_metadata,
+                "run_preflight_decision",
+                return_value="/tmp/preflight-info/.library_preparation_preflight.json",
+        ) as preflight:
+            forge_metadata.run_library_preparation_preflight(claimed_issue)
+
+        self.assertEqual(
+            preflight.call_args.kwargs["default_strategy_name"],
+            "library_preflight_pi_gpt-5.6-sol",
+        )
+
     def test_issue_lookup_does_not_request_body_for_generic_claiming(self) -> None:
         issue_payload = {
             "number": 1412,
@@ -397,7 +421,7 @@ class LibraryUpdateIssueTests(unittest.TestCase):
                     ),
                 ), \
                 patch.object(forge_metadata, "run_improve_library_coverage_workflow", return_value=0) as workflow:
-            self.assertTrue(forge_metadata.invoke_pipeline(claimed_issue, "library_update_pi_gpt-5.5", False))
+            self.assertTrue(forge_metadata.invoke_pipeline(claimed_issue, "library_update_pi_gpt-5.6-sol", False))
 
         issue_body.assert_called_once_with(1412)
         workflow.assert_called_once()

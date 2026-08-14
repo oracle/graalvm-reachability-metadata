@@ -60,7 +60,7 @@ classes re-appear in the regenerated report.
   "schemaVersion": 1,
   "continueFrom": "publication",
   "preservedBranch": "ai/<login>/human-intervention/issue-9102-library-new-request-com.acme.widget-3f9a2c11",
-  "strategyName": "dynamic_access_main_sources_pi_gpt-5.5",
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.6-sol",
   "issueNumber": 9102,
   "label": "library-new-request",
   "coordinate": "com.acme:widget:1.4.0",
