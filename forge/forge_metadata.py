@@ -158,6 +158,7 @@ from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.java_fix_coverage_follow_up import ensure_coverage_follow_up_issue
 from utility_scripts.library_stats import resolve_stats_file_path
 from utility_scripts.library_preparation_preflight import (
+    DEFAULT_LIBRARY_PREFLIGHT_STRATEGY_NAME,
     LIBRARY_PREPARATION_PREFLIGHT_FILENAME,
     load_library_preparation_preflight,
     run_library_preparation_preflight as run_preflight_decision,
@@ -5017,18 +5018,15 @@ def append_chunked_dynamic_access_workflow_args(
 
 def run_library_preparation_preflight(
         claimed_issue: ClaimedIssue,
-        strategy_name: str | None,
 ) -> str | None:
     """Run and persist the library-specific preparation preflight before workflow dispatch."""
     if claimed_issue.preflight_info_path is None:
         return None
     return run_preflight_decision(
         claimed_issue=claimed_issue,
-        strategy_name=strategy_name,
         issue_body_provider=get_issue_body,
         init_agent=init_workflow_agent,
-        default_strategy_name=DEFAULT_WORK_QUEUE_STRATEGY_NAME,
-        default_model_name=DEFAULT_MODEL_NAME,
+        default_strategy_name=DEFAULT_LIBRARY_PREFLIGHT_STRATEGY_NAME,
     )
 
 
@@ -5422,7 +5420,6 @@ def invoke_pipeline(
     else:
         library_preparation_preflight_path = run_library_preparation_preflight(
             claimed_issue,
-            run_strategy_name,
         )
         record_library_preparation_preflight_in_marker(
             continuation_path,

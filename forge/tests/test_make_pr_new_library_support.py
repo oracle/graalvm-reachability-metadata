@@ -23,9 +23,9 @@ class MakePrNewLibrarySupportTests(unittest.TestCase):
         body = build_pull_request_body(
             issue_no=4527,
             coordinates="software.amazon.awssdk:utils:2.34.0",
-            model_display_name="gpt-5.5",
+            model_display_name="gpt-5.6-sol",
             agent_name="pi",
-            strategy_name="dynamic_access_main_sources_pi_gpt-5.5",
+            strategy_name="dynamic_access_main_sources_pi_gpt-5.6-sol",
             run_status="success",
             metrics={
                 "metadata_entries": 2,
@@ -49,9 +49,9 @@ class MakePrNewLibrarySupportTests(unittest.TestCase):
         body = build_pull_request_body(
             issue_no=3744,
             coordinates="org.osgi:org.osgi.framework:1.8.0",
-            model_display_name="gpt-5.5",
+            model_display_name="gpt-5.6-sol",
             agent_name="pi",
-            strategy_name="dynamic_access_main_sources_pi_gpt-5.5",
+            strategy_name="dynamic_access_main_sources_pi_gpt-5.6-sol",
             run_status="success",
             metrics={
                 "metadata_entries": 2,
@@ -86,9 +86,9 @@ class MakePrNewLibrarySupportTests(unittest.TestCase):
         body = build_pull_request_body(
             issue_no=1,
             coordinates="org.example:demo:1.0.0",
-            model_display_name="gpt-5.5",
+            model_display_name="gpt-5.6-sol",
             agent_name="pi",
-            strategy_name="dynamic_access_main_sources_pi_gpt-5.5",
+            strategy_name="dynamic_access_main_sources_pi_gpt-5.6-sol",
             run_status="success",
             metrics={
                 "metadata_entries": 0,
@@ -202,9 +202,9 @@ class MakePrNewLibrarySupportTests(unittest.TestCase):
             body = build_pull_request_body(
                 issue_no=1,
                 coordinates="org.example:demo:1.0.0",
-                model_display_name="gpt-5.5",
+                model_display_name="gpt-5.6-sol",
                 agent_name="pi",
-                strategy_name="dynamic_access_main_sources_pi_gpt-5.5",
+                strategy_name="dynamic_access_main_sources_pi_gpt-5.6-sol",
                 run_status="success",
                 metrics={
                     "metadata_entries": 3,

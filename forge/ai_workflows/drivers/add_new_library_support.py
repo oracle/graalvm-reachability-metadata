@@ -324,6 +324,7 @@ def init_agent(
         verbose=False,
         model_name=DEFAULT_MODEL_NAME,
         persistent_instructions: str | None = None,
+        thinking_level: str | None = None,
 ):
     """Initialize the agent selected by the predefined strategy bundle.
 
@@ -350,6 +351,7 @@ def init_agent(
         verbose=verbose,
         mcps=strategy.get("mcps", []),
         persistent_instructions=persistent_instructions,
+        thinking_level=thinking_level or strategy.get("thinking-level"),
     )
 
 

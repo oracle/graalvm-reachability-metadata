@@ -63,7 +63,7 @@ runnable fixture is issue `9101`, a `library-new-request` scenario for
 python3 forge_metadata.py \
   --fixture-testing \
   --issue-number 9101 \
-  --strategy-name dynamic_access_main_sources_pi_gpt-5.5 \
+  --strategy-name dynamic_access_main_sources_pi_gpt-5.6-sol \
   --reachability-metadata-path .. \
   --keep-tests-without-dynamic-access
 ```
@@ -225,7 +225,7 @@ continuation_marker:
   schemaVersion: 1
   continueFrom: explore
   preservedBranch: fixture/preserved-work/issue-9101
-  strategyName: dynamic_access_main_sources_pi_gpt-5.5
+  strategyName: dynamic_access_main_sources_pi_gpt-5.6-sol
   issueNumber: 9101
   label: library-new-request
   coordinate: com.google.http-client:google-http-client:1.42.2

@@ -14,7 +14,7 @@ Usage:
     [--reachability-metadata-path /path/to/graalvm-reachability-metadata] \
     [--metrics-repo-path /path/to/metrics-storage] \
     [--docs-path /path/to/docs] \
-    [--strategy-name "library_update_pi_gpt-5.5"] \
+    [--strategy-name "library_update_pi_gpt-5.6-sol"] \
     [-v]
 """
 
@@ -83,8 +83,8 @@ from utility_scripts.workflow_setup import (
 )
 from utility_scripts.worktree_reset import reset_worktree_preserving_paths
 
-DEFAULT_MODEL_NAME = "gpt-5.5"
-DEFAULT_STRATEGY_NAME = "library_update_pi_gpt-5.5"
+DEFAULT_MODEL_NAME = "gpt-5.6-sol"
+DEFAULT_STRATEGY_NAME = "library_update_pi_gpt-5.6-sol"
 METRICS_TASK_TYPE = "improve_library_coverage"
 BASELINE_STATS_FILENAME = ".baseline-stats.json"
 LIBRARY_UPDATE_TARGET_FILENAME = ".library_update_target.json"
@@ -924,6 +924,7 @@ def main(argv=None) -> int:
         verbose=is_verbose,
         mcps=strategy.get("mcps", []),
         persistent_instructions=strategy_obj.persistent_instructions,
+        thinking_level=strategy.get("thinking-level"),
     )
 
     if resume_finalization:

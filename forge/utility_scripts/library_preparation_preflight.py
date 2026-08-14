@@ -22,7 +22,8 @@ NO_LIBRARY_PREPARATION_PREFLIGHT_CONTEXT = (
     "Library preparation preflight did not request additional setup."
 )
 DEFAULT_LIBRARY_PREFLIGHT_STRATEGY_ENV = "FORGE_LIBRARY_PREFLIGHT_STRATEGY_NAME"
-DEFAULT_LIBRARY_PREFLIGHT_MODEL_NAME = "gpt-5.4"
+DEFAULT_LIBRARY_PREFLIGHT_STRATEGY_NAME = "library_preflight_pi_gpt-5.6-sol"
+DEFAULT_LIBRARY_PREFLIGHT_MODEL_NAME = "gpt-5.6-sol"
 LIBRARY_PREFLIGHT_MAX_ISSUE_BODY_CHARS = 8000
 LIBRARY_PREFLIGHT_MAX_TEST_FILES = 40
 LIBRARY_PREFLIGHT_MAX_DETERMINISTIC_SETUP = 8
@@ -435,16 +436,14 @@ def _write_and_log_preflight(claimed_issue: Any, record: dict[str, Any]) -> str:
 
 def run_library_preparation_preflight(
         claimed_issue: Any,
-        strategy_name: str | None,
         issue_body_provider: Callable[[int], str],
         init_agent: Callable[..., Any],
-        default_strategy_name: str,
+        default_strategy_name: str = DEFAULT_LIBRARY_PREFLIGHT_STRATEGY_NAME,
         default_model_name: str = DEFAULT_LIBRARY_PREFLIGHT_MODEL_NAME,
 ) -> str:
     """Run and persist the library-specific preparation preflight before workflow dispatch."""
     selected_strategy_name = (
         os.environ.get(DEFAULT_LIBRARY_PREFLIGHT_STRATEGY_ENV)
-        or strategy_name
         or default_strategy_name
     )
     input_bundle = build_library_preflight_input_bundle(
