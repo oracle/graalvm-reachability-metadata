@@ -31,7 +31,12 @@ import io.confluent.kafka.serializers.subject.QualifiedReferenceSubjectNameStrat
 import io.confluent.kafka.serializers.subject.RecordNameStrategy;
 import io.confluent.kafka.serializers.subject.TopicNameStrategy;
 import io.confluent.kafka.serializers.subject.TopicRecordNameStrategy;
+import io.confluent.kafka.serializers.wrapper.WrapperKeyDeserializer;
+import io.confluent.kafka.serializers.wrapper.WrapperKeyDeserializerConfig;
+import io.confluent.kafka.serializers.wrapper.WrapperKeySerializer;
+import io.confluent.kafka.serializers.wrapper.WrapperKeySerializerConfig;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +47,8 @@ import java.util.UUID;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.internals.RecordHeaders;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.Test;
 
 public class KafkaSchemaSerializerTest {
@@ -161,6 +168,35 @@ public class KafkaSchemaSerializerTest {
         assertThat(schemaId.getGuid()).isEqualTo(guid);
         assertThat(schemaId.getMessageIndexes()).containsExactly(0, 3, 8);
         assertThat(bufferBytes(remaining)).containsExactly(payload);
+    }
+
+    @Test
+    void wrapperKeySerializerAndDeserializerDelegateToConfiguredKafkaImplementations() {
+        WrapperKeySerializer<String> serializer = new WrapperKeySerializer<>();
+        WrapperKeyDeserializer<String> deserializer = new WrapperKeyDeserializer<>();
+        RecordHeaders headers = new RecordHeaders();
+        headers.add("source", new byte[] {1});
+
+        try {
+            serializer.configure(Map.of(
+                    WrapperKeySerializerConfig.WRAPPED_KEY_SERIALIZER,
+                    StringSerializer.class), true);
+            deserializer.configure(Map.of(
+                    WrapperKeyDeserializerConfig.WRAPPED_KEY_DESERIALIZER,
+                    StringDeserializer.class), true);
+
+            byte[] serialized = serializer.serialize("customers", headers, "customer-42");
+            String deserialized = deserializer.deserialize("customers", headers, serialized);
+
+            assertThat(serialized).containsExactly("customer-42".getBytes(StandardCharsets.UTF_8));
+            assertThat(deserialized).isEqualTo("customer-42");
+            assertThat(headers.lastHeader("source").value()).containsExactly((byte) 1);
+            assertThat(serializer.serialize("customers", headers, null)).isNull();
+            assertThat(deserializer.deserialize("customers", headers, (byte[]) null)).isNull();
+        } finally {
+            serializer.close();
+            deserializer.close();
+        }
     }
 
     @Test
