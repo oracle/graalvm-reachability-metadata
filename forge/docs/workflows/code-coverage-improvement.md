@@ -384,12 +384,21 @@ The Rhei template should decompose the workflow into these phases:
    deep reports. No Native Image validation runs at this stage; a nonzero exit
    code names the failed step.
 8. **Publication** — open a PR with source issue, coordinate, coverage suite,
-   baseline/final JaCoCo coverage reported against the total method count of
-   each guidance phase, the completed-target count (individual covered methods
-   are not listed, keeping the body within the GitHub description limit),
-   skipped/exhausted/failed targets with reasons, and validation commands.
-   Sampled PGO evidence stays in the local finalization summary and is not
-   published in the PR body.
+   baseline/final JaCoCo coverage reported against the JaCoCo-reportable method
+   count of each guidance phase, both phases combined into one figure, the
+   completed-target count (individual covered methods are not listed, keeping
+   the body within the GitHub description limit), skipped/exhausted/failed
+   targets with reasons, validation commands, and per-phase token usage read
+   from the Rhei accounting directory. Coverage percentages divide by the
+   methods JaCoCo reports, not by every inventory entry: entries JaCoCo never
+   reports are ones no run can cover, and charging them to the run understates
+   it. The combined figure adds the two phases directly, which is sound because
+   the deep universe holds exactly the library methods the API inventory does
+   not. A phase whose accounting is not yet written is omitted from the token
+   table rather than reported as zero; publication itself is normally omitted,
+   since its own invocations are still running when the body is built. Sampled
+   PGO evidence stays in the local finalization summary and is not published in
+   the PR body.
 
 The pipeline tasks run unreviewed: deterministic helpers, schema-validated
 artifacts, and zero-exit validation gates decide their completion. The

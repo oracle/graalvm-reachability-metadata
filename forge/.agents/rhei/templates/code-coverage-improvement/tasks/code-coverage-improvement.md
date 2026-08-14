@@ -232,9 +232,12 @@
   - Push to the configured fork remote or infer a writable fork remote.
   - Open a pull request against `{{repo}}` base `{{pr_base_branch}}`.
   - Include source issue, coordinate, coverage suite path, separate baseline and
-    final API/deep JaCoCo coverage, coverage deltas, sampled guidance evidence,
-    completed, skipped, exhausted, or failed targets, and validation commands
-    in the PR body.
+    final API/deep JaCoCo coverage, the two phases combined, coverage deltas,
+    sampled guidance evidence, completed, skipped, exhausted, or failed targets,
+    validation commands, and per-phase token usage in the PR body.
+  - The helper writes all of that from `final-metrics.json` and the Rhei
+    accounting directory. Do not hand-write any of those sections: a section an
+    agent types is one the next run silently drops.
   - Use a closing keyword only when the PR fully resolves the source issue;
     otherwise link without auto-closing and describe remaining follow-up.
 - Artifacts:

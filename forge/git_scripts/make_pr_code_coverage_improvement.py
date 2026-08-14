@@ -5,14 +5,16 @@
 
 """Publish schema-validated code coverage improvement evidence.
 
-The PR body reports each guidance phase against its total method count and
-keeps completed targets as a count to stay within the GitHub body limit
+The PR body reports each guidance phase against its JaCoCo-reportable method
+count, the two phases combined, per-phase token usage, and keeps completed
+targets as a count to stay within the GitHub body limit
 (§WF-code-coverage-improvement, §AR-forge-verification-publication-boundary).
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import shutil
 import subprocess
@@ -41,6 +43,18 @@ from utility_scripts.metadata_index import (
 HUMAN_INTERVENTION_LABEL = "human-intervention"
 MAX_COMMIT_SUBJECT_LENGTH = 60
 
+#: Workflow order for the token-usage table; unknown phases sort after these.
+TOKEN_PHASE_ORDER: tuple[str, ...] = (
+    "convert",
+    "prepare",
+    "api-inventory",
+    "api-coverage",
+    "prepare-native-metadata",
+    "deep-coverage",
+    "finalization",
+    "publication",
+)
+
 
 def _signed(value: int | float) -> str:
     return f"{'+' if value > 0 else ''}{value}"
@@ -50,10 +64,22 @@ def _total_percent(covered: int, total: int) -> float:
     return round(100 * covered / total, 2) if total else 0.0
 
 
+def _reportable_total(snapshot: dict[str, Any]) -> int:
+    """The denominator JaCoCo can actually rule on.
+
+    The API inventory carries both `total`, every inventory entry, and
+    `measured`, the entries JaCoCo reports at all. The difference is methods no
+    run can ever cover, so dividing by `total` understates the phase and
+    contradicts the `coveragePercent` the same document records. The deep
+    snapshot has no such split and falls back to `total`.
+    """
+    return snapshot.get("measured", snapshot["total"])
+
+
 def _jacoco_lines(label: str, evidence: dict[str, Any]) -> list[str]:
     baseline: dict[str, Any] = evidence["baseline"]
     final: dict[str, Any] = evidence["final"]
-    total: int = final["total"]
+    total: int = _reportable_total(final)
     baseline_percent: float = _total_percent(baseline["covered"], total)
     final_percent: float = _total_percent(final["covered"], total)
     return [
@@ -64,6 +90,98 @@ def _jacoco_lines(label: str, evidence: dict[str, Any]) -> list[str]:
         f"- Delta: {_signed(round(final_percent - baseline_percent, 2))}pp",
         f"- Remaining uncovered: {total - final['covered']}",
     ]
+
+
+def _combined_lines(api: dict[str, Any], deep: dict[str, Any]) -> list[str]:
+    """API and deep coverage as one number.
+
+    The two universes are disjoint by construction: the deep universe holds
+    exactly the library methods the API inventory does not, so their measured
+    counts and covered counts add without double counting.
+    """
+    total: int = _reportable_total(api["final"]) + _reportable_total(deep["final"])
+    baseline: int = api["baseline"]["covered"] + deep["baseline"]["covered"]
+    final: int = api["final"]["covered"] + deep["final"]["covered"]
+    baseline_percent: float = _total_percent(baseline, total)
+    final_percent: float = _total_percent(final, total)
+    return [
+        "### Both phases combined",
+        "",
+        f"- Baseline: {baseline}/{total} ({baseline_percent}%)",
+        f"- Final: {final}/{total} ({final_percent}%)",
+        f"- Delta: {_signed(round(final_percent - baseline_percent, 2))}pp",
+        f"- Remaining uncovered: {total - final}",
+    ]
+
+
+def _phase_name(file_name: str) -> str:
+    """`<workspace>.code-coverage-<phase>.json` -> `<phase>`."""
+    task: str = file_name.removesuffix(".json").rsplit(".", 1)[-1]
+    return task.removeprefix("code-coverage-")
+
+
+def load_token_usage(accounting_dir: str) -> list[dict[str, Any]]:
+    """One row per workflow phase from Rhei per-task accounting.
+
+    A phase with no accounting file is omitted rather than reported as zero.
+    Publication is normally among them: its own invocations are still running
+    when this body is built, so the table states what is known at that point.
+    """
+    tasks_dir: str = os.path.join(accounting_dir, "tasks")
+    if not os.path.isdir(tasks_dir):
+        return []
+    rows: list[dict[str, Any]] = []
+    for file_name in sorted(os.listdir(tasks_dir)):
+        if not file_name.endswith(".json"):
+            continue
+        try:
+            with open(os.path.join(tasks_dir, file_name), encoding="utf-8") as handle:
+                direct: dict[str, Any] = json.load(handle)["direct"]
+            rows.append({
+                "phase": _phase_name(file_name),
+                "input": direct["input_total"]["value"],
+                "cached": direct["input_cached_read"]["value"],
+                "output": direct["output_total"]["value"],
+            })
+        except (OSError, ValueError, KeyError, TypeError):
+            continue
+    order: dict[str, int] = {name: index for index, name in enumerate(TOKEN_PHASE_ORDER)}
+    rows.sort(key=lambda row: (order.get(row["phase"], len(order)), row["phase"]))
+    return rows
+
+
+def _token_cell(value: Any) -> str:
+    """`n/a` keeps an unmeasured phase from reading as a free one."""
+    return f"{value:,}" if isinstance(value, int) else "n/a"
+
+
+def _token_lines(rows: list[dict[str, Any]]) -> list[str]:
+    if not rows:
+        return []
+    lines: list[str] = [
+        "## Token usage",
+        "",
+        "| Phase | Input | Input (cached) | Output |",
+        "|---|--:|--:|--:|",
+    ]
+    totals: dict[str, int] = {"input": 0, "cached": 0, "output": 0}
+    for row in rows:
+        for key in totals:
+            if isinstance(row[key], int):
+                totals[key] += row[key]
+        lines.append(
+            f"| {row['phase']} | {_token_cell(row['input'])} | "
+            f"{_token_cell(row['cached'])} | {_token_cell(row['output'])} |"
+        )
+    lines.append(
+        f"| **Total** | **{totals['input']:,}** | "
+        f"**{totals['cached']:,}** | **{totals['output']:,}** |"
+    )
+    lines += [
+        "",
+        "Input is uncached input tokens; Input (cached) is cache reads.",
+    ]
+    return lines
 
 
 def _target_lines(targets: list[dict[str, Any]]) -> list[str]:
@@ -88,6 +206,7 @@ def build_pull_request_body(
         coordinate: str,
         issue_number: int | None,
         metrics: dict[str, Any],
+        token_usage: list[dict[str, Any]] | None = None,
 ) -> str:
     """Build a PR body from the final metrics contract."""
     targets: dict[str, list[dict[str, Any]]] = metrics["targets"]
@@ -106,6 +225,7 @@ def build_pull_request_body(
     lines += [""] + _jacoco_lines(
         "PGO guidance phase", metrics["deepJacoco"]
     )
+    lines += [""] + _combined_lines(metrics["apiJacoco"], metrics["deepJacoco"])
     lines += ["", f"## Completed targets ({len(targets['completed'])})"]
     for status in ("skipped", "exhausted", "failed"):
         entries: list[dict[str, Any]] = targets[status]
@@ -114,6 +234,9 @@ def build_pull_request_body(
     lines += ["", "## Validation commands", "", "```console"]
     lines += metrics["validationCommands"]
     lines += ["```", ""]
+    token_lines: list[str] = _token_lines(token_usage or [])
+    if token_lines:
+        lines += token_lines + [""]
     if issue_number:
         keyword: str = "Closes" if metrics.get("resolvesIssue") else "Refs"
         lines.append(f"{keyword} #{issue_number}.")
@@ -182,6 +305,7 @@ def create_pull_request(
         push_remote: str,
         head_owner: str | None,
         base_branch: str,
+        token_usage: list[dict[str, Any]] | None = None,
 ) -> int | None:
     if shutil.which("gh") is None:
         print("gh CLI not found. Skipping PR creation.")
@@ -195,7 +319,7 @@ def create_pull_request(
         "--title",
         f"Improve code coverage for {coordinate}",
         "--body",
-        build_pull_request_body(coordinate, issue_number, metrics),
+        build_pull_request_body(coordinate, issue_number, metrics, token_usage),
         "--base",
         base_branch,
         "--head",
@@ -220,6 +344,7 @@ def publish(
         push_remote: str,
         head_owner: str | None,
         base_branch: str,
+        accounting_dir: str | None = None,
 ) -> int | None:
     group: str
     artifact: str
@@ -256,6 +381,11 @@ def publish(
         coverage_suite_path,
     )
     run_git_transport(["push", push_remote, branch], cwd=repo_path)
+    # Rhei writes accounting beside the workflow runtime, two levels above the
+    # finalization directory it hands this helper.
+    resolved_accounting: str = accounting_dir or os.path.join(
+        finalization_dir, os.pardir, os.pardir, "accounting"
+    )
     return create_pull_request(
         repo_path,
         branch,
@@ -265,6 +395,7 @@ def publish(
         push_remote,
         head_owner,
         base_branch,
+        load_token_usage(resolved_accounting),
     )
 
 
@@ -309,6 +440,11 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument(
         "--base-branch", default=BASE_BRANCH, help="Pull request base branch."
     )
+    parser.add_argument(
+        "--accounting-dir",
+        default=None,
+        help="Rhei accounting directory; defaults beside the workflow runtime.",
+    )
     args: argparse.Namespace = parser.parse_args(argv)
     pr_number: int | None = publish(
         args.repo_path,
@@ -319,6 +455,7 @@ def main(argv: list[str] | None = None) -> None:
         args.push_remote,
         args.head_owner,
         args.base_branch,
+        args.accounting_dir,
     )
     if pr_number:
         print(f"Opened PR #{pr_number} for {args.coordinate}.")
