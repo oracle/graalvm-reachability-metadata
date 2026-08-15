@@ -545,14 +545,12 @@ requested-changes reviews, approve, and merge only after normal merge gates
 pass, including the index validation safeguard for index-changing pull requests
 (§FS-index-validation-safeguard).
 
-Before launching the first full Codex review, Forge must verify that the same
-managed, non-interactive Codex execution environment can run an authenticated,
-read-only GitHub CLI request for the selected pull request. The preflight must
-require evidence that the nested `gh` command itself succeeded; a zero Codex
-exit code without a successful command is insufficient. Forge may cache a
-successful preflight for later review queues in the same process. If the
-preflight fails or times out, Forge must fail the review queue before launching
-the full review and report the durable preflight log and an actionable error.
+Before launching a review agent, Forge must validate GitHub CLI authentication
+in the orchestration process and use Pi's deterministic authentication check for
+the configured review provider and model. Neither preflight may invoke a model.
+The review agent must run in an execution environment that can use the
+authenticated `gh` session without an interactive approval boundary; either
+authentication failure must stop the queue before the agent starts.
 
 Automated review may add or request the `human-intervention` PR label only when
 the applicable label-specific review rules say the result cannot be handled by
