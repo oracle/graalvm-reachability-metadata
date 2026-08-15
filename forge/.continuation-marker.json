@@ -1,0 +1,73 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "org.bouncycastle:bc-fips:2.1.2",
+  "issueNumber": 5950,
+  "label": "library-update-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Register org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider before requesting JCA services and configure Native Image with -H:AdditionalSecurityProviders=org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider. Set -Dorg.bouncycastle.native.cpu_variant=java for native-image generation and native test runtime so BC-FIPS does not extract and load its bundled x86_64 JNI libraries. Use -Djdk.util.jar.version=9 for JVM tests and -J-Djdk.util.jar.version=9 during native-image generation to consistently select the Java 9 multi-release implementation.",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#5950 Support for org.bouncycastle:bc-fips:2.1.2; label=library-update-request; body_chars=301"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "28 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 48825,
+    "issue_label": "library-update-request",
+    "issue_number": 5950,
+    "library": "org.bouncycastle:bc-fips:2.1.2",
+    "model": "gpt-5.6-sol",
+    "output_tokens_used": 1983,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Forcing the java CPU variant validates the JCA provider and reachability metadata but does not cover BC-FIPS native AES/SHA acceleration.",
+      "Successful execution in a native image does not by itself establish that the resulting deployment is within BC-FIPS's certified platform boundary."
+    ],
+    "session_log_path": "/home/vjovanov/g/forge/graalvm-reachability-metadata/forge/logs/org.bouncycastle:bc-fips:2.1.2/library-preparation-preflight/pi-generation-2026-08-15T10-46-04-829278Z.log",
+    "status": "completed",
+    "summary": "The artifact is self-contained and needs no Docker service or additional Maven dependency, but its multi-release provider and bundled JNI acceleration require explicit Native Image configuration."
+  },
+  "libraryUpdateRoute": {
+    "baseline_coordinates": null,
+    "new_version": "2.1.2",
+    "selected_driver": "improve_library_coverage"
+  },
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-5950-library-update-request-org.bouncycastle-bc-fips-2.1.2-6e02495c",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "library_update_pi_gpt-5.6-sol"
+}
