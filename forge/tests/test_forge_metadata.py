@@ -1922,86 +1922,6 @@ class WorkQueueSchedulerTests(unittest.TestCase):
 
 
 class PullRequestReviewSelectionTests(unittest.TestCase):
-    def test_codex_github_preflight_runs_once_and_caches_success(self) -> None:
-        def run_preflight(command: list[str], **kwargs) -> subprocess.CompletedProcess:
-            log_file = kwargs["stdout"]
-            completed_command: dict = {
-                "type": "item.completed",
-                "item": {
-                    "type": "command_execution",
-                    "command": "/usr/bin/zsh -lc 'gh pr view 100 --repo oracle/graalvm-reachability-metadata'",
-                    "aggregated_output": "100\n",
-                    "exit_code": 0,
-                },
-            }
-            log_file.write(json.dumps(completed_command) + "\n")
-            log_file.flush()
-            return subprocess.CompletedProcess(command, 0)
-
-        with tempfile.TemporaryDirectory() as temp_dir:
-            log_path = os.path.join(temp_dir, "preflight.log")
-            forge_metadata._codex_github_preflight_successes.clear()
-            with patch.object(
-                    forge_metadata,
-                    "get_codex_github_preflight_log_path",
-                    return_value=log_path,
-            ), patch.object(
-                    forge_metadata.subprocess,
-                    "run",
-                    side_effect=run_preflight,
-            ) as run, patch.object(
-                    forge_metadata,
-                    "extract_codex_token_usage_summary",
-                    return_value="",
-            ):
-                self.assertTrue(
-                    forge_metadata.preflight_codex_github_access(
-                        100,
-                        temp_dir,
-                        "review-model",
-                    )
-                )
-                self.assertTrue(
-                    forge_metadata.preflight_codex_github_access(
-                        101,
-                        temp_dir,
-                        "review-model",
-                    )
-                )
-
-            self.assertEqual(1, run.call_count)
-            command = run.call_args.args[0]
-            self.assertIn("--dangerously-bypass-approvals-and-sandbox", command)
-            self.assertIn("--ephemeral", command)
-            forge_metadata._codex_github_preflight_successes.clear()
-
-    def test_codex_github_preflight_requires_successful_nested_gh_command(self) -> None:
-        completed_command: dict = {
-            "type": "item.completed",
-            "item": {
-                "type": "command_execution",
-                "command": "/usr/bin/zsh -lc 'gh pr view 100 --repo oracle/graalvm-reachability-metadata'",
-                "aggregated_output": "100\n",
-                "exit_code": 0,
-            },
-        }
-        with tempfile.TemporaryDirectory() as temp_dir:
-            log_path = os.path.join(temp_dir, "preflight.log")
-            with open(log_path, "w", encoding="utf-8") as log_file:
-                log_file.write(json.dumps(completed_command) + "\n")
-
-            self.assertTrue(
-                forge_metadata.codex_github_preflight_command_succeeded(log_path, 100)
-            )
-
-            completed_command["item"]["exit_code"] = 1
-            with open(log_path, "w", encoding="utf-8") as log_file:
-                log_file.write(json.dumps(completed_command) + "\n")
-
-            self.assertFalse(
-                forge_metadata.codex_github_preflight_command_succeeded(log_path, 100)
-            )
-
     def test_bulk_pull_request_list_omits_status_check_rollup(self) -> None:
         with patch.object(forge_metadata, "gh_json", return_value=[]) as gh_json:
             self.assertEqual(
@@ -2040,11 +1960,6 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                     "get_pull_request_status_check_rollup",
                     return_value=_completed_status_check_rollup(),
                 ) as get_status_checks, \
-                patch.object(
-                    forge_metadata,
-                    "preflight_codex_github_access",
-                    return_value=True,
-                ) as preflight_codex_github_access, \
                 patch.object(forge_metadata, "review_pull_request", return_value=True) as review_pull_request, \
                 patch.object(
                     forge_metadata,
@@ -2064,12 +1979,6 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
             call(forge_metadata.LABEL_LIBRARY_NEW, 40),
         ])
         get_status_checks.assert_called_once_with(100)
-        preflight_codex_github_access.assert_called_once_with(
-            100,
-            "/tmp/reachability",
-            "review-model",
-            None,
-        )
         review_pull_request.assert_called_once_with(
             100,
             "/tmp/reachability",
@@ -2078,49 +1987,6 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
             None,
         )
         reconcile_reviewed_pull_request.assert_called_once_with(100, "/tmp/reachability")
-
-    def test_process_pull_requests_stops_before_review_when_codex_github_preflight_fails(self) -> None:
-        eligible_pull_request = _pull_request(100, [forge_metadata.LABEL_LIBRARY_NEW])
-
-        with patch.object(forge_metadata, "get_pull_requests_with_labels", return_value=[]), \
-                patch.object(
-                    forge_metadata,
-                    "get_pull_requests_with_label",
-                    return_value=[eligible_pull_request],
-                ), \
-                patch.object(
-                    forge_metadata,
-                    "get_pull_request_status_check_rollup",
-                    return_value=_completed_status_check_rollup(),
-                ), \
-                patch.object(
-                    forge_metadata,
-                    "preflight_codex_github_access",
-                    return_value=False,
-                ) as preflight_codex_github_access, \
-                patch.object(forge_metadata, "review_pull_request") as review_pull_request, \
-                patch.object(
-                    forge_metadata,
-                    "reconcile_reviewed_pull_request",
-                ) as reconcile_reviewed_pull_request, \
-                self.assertRaises(SystemExit) as raised:
-            forge_metadata.process_pull_requests_with_label(
-                forge_metadata.LABEL_LIBRARY_NEW,
-                1,
-                "/tmp/reachability",
-                "automation-user",
-                "review-model",
-            )
-
-        self.assertEqual(1, raised.exception.code)
-        preflight_codex_github_access.assert_called_once_with(
-            100,
-            "/tmp/reachability",
-            "review-model",
-            None,
-        )
-        review_pull_request.assert_not_called()
-        reconcile_reviewed_pull_request.assert_not_called()
 
 
 class IssueClaimCacheTests(unittest.TestCase):
@@ -3044,6 +2910,101 @@ class InterruptHandlingTests(unittest.TestCase):
 
 
 class PullRequestReviewTests(unittest.TestCase):
+    def test_pi_review_authentication_check_does_not_invoke_model(self) -> None:
+        completed_process = subprocess.CompletedProcess(
+            [],
+            0,
+            stdout='{"status":"ready","provider":"openai-codex","authType":"oauth"}\n',
+            stderr="",
+        )
+        with patch.object(
+                forge_metadata.subprocess,
+                "run",
+                return_value=completed_process,
+        ) as run:
+            self.assertTrue(forge_metadata.check_pi_review_authentication("gpt-5.6-terra"))
+
+        run.assert_called_once_with(
+            [
+                "pi", "auth", "check",
+                "--provider", "openai-codex",
+                "--model", "gpt-5.6-terra",
+                "--json",
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+    def test_review_pull_request_stops_before_pi_when_authentication_is_not_ready(self) -> None:
+        with patch.object(
+                forge_metadata,
+                "check_pi_review_authentication",
+                return_value=False,
+        ), patch.object(
+                forge_metadata,
+                "create_review_workspace",
+        ) as create_review_workspace:
+            self.assertFalse(
+                forge_metadata.review_pull_request(
+                    3513,
+                    "/repo",
+                    "gpt-5.6-terra",
+                )
+            )
+
+        create_review_workspace.assert_not_called()
+
+    def test_review_pull_request_runs_pi_with_authenticated_host_tools(self) -> None:
+        def run_pi(command: list[str], **kwargs) -> subprocess.CompletedProcess:
+            log_file = kwargs["stdout"]
+            log_file.write("Approved the pull request.\n")
+            log_file.flush()
+            return subprocess.CompletedProcess(command, 0)
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            log_path = os.path.join(temp_dir, "pi-review.log")
+            with patch.object(
+                    forge_metadata,
+                    "check_pi_review_authentication",
+                    return_value=True,
+            ) as check_pi_review_authentication, patch.object(
+                    forge_metadata,
+                    "create_review_workspace",
+                    return_value="/review-worktree",
+            ), patch.object(
+                    forge_metadata,
+                    "cleanup_review_workspace",
+            ) as cleanup_review_workspace, patch.object(
+                    forge_metadata,
+                    "get_review_log_path",
+                    return_value=log_path,
+            ), patch.object(
+                    forge_metadata.subprocess,
+                    "run",
+                    side_effect=run_pi,
+            ) as run, patch.object(
+                    forge_metadata,
+                    "print_pull_request_discussion",
+            ):
+                self.assertTrue(
+                    forge_metadata.review_pull_request(
+                        3513,
+                        "/repo",
+                        "gpt-5.6-terra",
+                        "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
+                    )
+                )
+
+        command = run.call_args.args[0]
+        self.assertEqual("pi", command[0])
+        self.assertIn("--no-session", command)
+        self.assertIn("--approve", command)
+        self.assertIn("openai-codex", command)
+        self.assertNotIn("codex", command[:2])
+        check_pi_review_authentication.assert_called_once_with("gpt-5.6-terra")
+        cleanup_review_workspace.assert_called_once_with("/repo", "/review-worktree", 3513)
+
     def test_merge_pull_request_validates_index_candidate_before_merge(self) -> None:
         pr = {
             "number": 3513,
