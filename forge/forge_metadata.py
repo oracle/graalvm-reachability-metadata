@@ -338,9 +338,10 @@ DEFAULT_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD = 15
 
 
 DEFAULT_REVIEW_MODEL = "gpt-5.6-terra"
+PI_REVIEW_PROVIDER = "openai-codex"
 DEFAULT_WORK_QUEUE_STRATEGY_NAME = "dynamic_access_main_sources_pi_gpt-5.6-terra"
 CODEX_REVIEW_TIMEOUT_SECONDS = 1800
-CODEX_GITHUB_PREFLIGHT_TIMEOUT_SECONDS = 120
+PI_REVIEW_TIMEOUT_SECONDS = 1800
 DEFAULT_WORKTREE_BASE_REF = "master"
 DEV_GRAALVM_ENV_VAR = "GRAALVM_HOME"
 POST_GENERATION_GRAALVM_ENV_VAR = "GRAALVM_HOME_25_0"
@@ -352,7 +353,6 @@ SHUTDOWN_SIGNAL_POLL_SECONDS = 5.0
 
 _user_interrupt_requested = threading.Event()
 _user_interrupt_reason = INTERRUPT_REASON_CTRL_C
-_codex_github_preflight_successes: set[tuple[str, str]] = set()
 
 
 @dataclass(frozen=True)
@@ -2685,17 +2685,8 @@ def select_ci_complete_review_pull_requests(
 
 
 def get_review_log_path(pr_number: int, coordinates: str | None = None) -> str:
-    """Return the Codex review log path for the target pull request."""
-    return build_task_log_path("pr-review", coordinates, f"codex_pr_review_{pr_number}.log")
-
-
-def get_codex_github_preflight_log_path(pr_number: int, coordinates: str | None = None) -> str:
-    """Return the Codex GitHub preflight log path for the target pull request."""
-    return build_task_log_path(
-        "pr-review",
-        coordinates,
-        f"codex_github_preflight_{pr_number}.log",
-    )
+    """Return the Pi review log path for the target pull request."""
+    return build_task_log_path("pr-review", coordinates, f"pi_pr_review_{pr_number}.log")
 
 
 def get_pull_request_url(pr_number: int) -> str:
@@ -2724,6 +2715,14 @@ def read_log_tail(log_path: str, max_lines: int = 20) -> str:
         return "\n".join(log_file.read().strip().splitlines()[-max_lines:])
 
 
+def read_log_text(log_path: str) -> str:
+    """Return the complete text from a log file when it exists."""
+    if not os.path.isfile(log_path):
+        return ""
+    with open(log_path, "r", encoding="utf-8") as log_file:
+        return log_file.read().strip()
+
+
 def extract_codex_final_message(log_path: str) -> str:
     """Return the final assistant message from a Codex JSONL log."""
     if not os.path.isfile(log_path):
@@ -2747,39 +2746,6 @@ def extract_codex_final_message(log_path: str) -> str:
     return final_message.strip()
 
 
-def codex_github_preflight_command_succeeded(log_path: str, pr_number: int) -> bool:
-    """Return whether the preflight log proves that nested `gh pr view` succeeded."""
-    if not os.path.isfile(log_path):
-        return False
-
-    expected_command_fragment: str = f"gh pr view {pr_number}"
-    expected_output: str = str(pr_number)
-    with open(log_path, "r", encoding="utf-8") as log_file:
-        for line in log_file:
-            try:
-                payload: object = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-            if not isinstance(payload, dict):
-                continue
-            if payload.get("type") != "item.completed":
-                continue
-            item: object = payload.get("item")
-            if not isinstance(item, dict) or item.get("type") != "command_execution":
-                continue
-            command: object = item.get("command")
-            output: object = item.get("aggregated_output")
-            if (
-                    isinstance(command, str)
-                    and expected_command_fragment in command
-                    and item.get("exit_code") == 0
-                    and isinstance(output, str)
-                    and output.strip() == expected_output
-            ):
-                return True
-    return False
-
-
 def extract_codex_token_usage_summary(log_path: str, model_name: str | None = None) -> str:
     """Return a human-readable Codex token-usage line from a JSONL log, or '' when unavailable.
 
@@ -2797,93 +2763,6 @@ def extract_codex_token_usage_summary(log_path: str, model_name: str | None = No
         f"input={input_tokens} cached_input={cached_input_tokens} output={output_tokens} "
         f"cost=${cost_usd:.4f}"
     )
-
-
-def build_codex_github_preflight_prompt(pr_number: int) -> str:
-    """Build the minimal prompt that validates nested Codex GitHub CLI access."""
-    return (
-        "Verify GitHub CLI access for Forge review automation. "
-        f"Run exactly `gh pr view {pr_number} --repo {REPO} --json number --jq .number` once. "
-        "Do not run any other command, inspect files, or review the pull request. Exit after the command finishes."
-    )
-
-
-def preflight_codex_github_access(
-        pr_number: int,
-        reachability_metadata_path: str,
-        review_model: str,
-        coordinates: str | None = None,
-) -> bool:
-    """Verify managed non-interactive Codex can run the required GitHub CLI command.
-
-    §FS-automated-pr-review
-    """
-    cache_key: tuple[str, str] = (os.path.abspath(reachability_metadata_path), review_model)
-    if cache_key in _codex_github_preflight_successes:
-        return True
-
-    prompt: str = build_codex_github_preflight_prompt(pr_number)
-    cmd: list[str] = [
-        "codex", "exec",
-        "--dangerously-bypass-approvals-and-sandbox",
-        "--ephemeral",
-        "--json",
-        "-c", 'reasoning.effort="low"',
-        "-m", review_model,
-        prompt,
-    ]
-    log_path: str = get_codex_github_preflight_log_path(pr_number, coordinates)
-    log_path_display: str = display_log_path(log_path)
-    print(f"\n[Checking nested Codex GitHub access before reviewing PR #{pr_number}.]")
-    print(f"[Codex GitHub preflight log: {log_path_display}]")
-    try:
-        with open(log_path, "w", encoding="utf-8") as log_file:
-            result: subprocess.CompletedProcess = subprocess.run(
-                cmd,
-                cwd=reachability_metadata_path,
-                stdout=log_file,
-                stderr=subprocess.STDOUT,
-                text=True,
-                timeout=CODEX_GITHUB_PREFLIGHT_TIMEOUT_SECONDS,
-                check=False,
-            )
-    except subprocess.TimeoutExpired:
-        print(
-            (
-                f"ERROR: Codex GitHub preflight timed out after "
-                f"{CODEX_GITHUB_PREFLIGHT_TIMEOUT_SECONDS} seconds for PR #{pr_number}. "
-                f"See {log_path_display}."
-            ),
-            file=sys.stderr,
-        )
-        return False
-    except OSError as exc:
-        print(
-            f"ERROR: Codex GitHub preflight could not start for PR #{pr_number}: {exc}",
-            file=sys.stderr,
-        )
-        return False
-
-    token_usage: str = extract_codex_token_usage_summary(log_path, review_model)
-    if token_usage:
-        print(f"[Codex GitHub preflight token usage for PR #{pr_number}: {token_usage}]")
-    if result.returncode == 0 and codex_github_preflight_command_succeeded(log_path, pr_number):
-        _codex_github_preflight_successes.add(cache_key)
-        print(f"[Nested Codex GitHub access is available for PR #{pr_number}.]")
-        return True
-
-    output_tail: str = read_log_tail(log_path)
-    print(
-        (
-            f"ERROR: Codex GitHub preflight failed for PR #{pr_number}. The managed non-interactive "
-            "Codex environment could not complete the required authenticated `gh pr view` command. "
-            "Check Codex managed sandbox, network, and approval requirements before retrying. "
-            f"Log: {log_path_display}."
-            + (f"\n{output_tail}" if output_tail else "")
-        ),
-        file=sys.stderr,
-    )
-    return False
 
 
 def get_pull_request_discussion(pr_number: int) -> dict:
@@ -2955,6 +2834,56 @@ def print_pull_request_discussion(pr_number: int) -> None:
         print("  Review details: none")
 
 
+def check_pi_review_authentication(review_model: str) -> bool:
+    """Check Pi review authentication without invoking a model.
+
+    §FS-automated-pr-review
+    """
+    cmd: list[str] = [
+        "pi", "auth", "check",
+        "--provider", PI_REVIEW_PROVIDER,
+        "--model", review_model,
+        "--json",
+    ]
+    try:
+        result: subprocess.CompletedProcess = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except OSError as exc:
+        print(f"ERROR: Pi review authentication check could not start: {exc}", file=sys.stderr)
+        return False
+
+    try:
+        payload: object = json.loads(result.stdout)
+    except json.JSONDecodeError:
+        payload = None
+    if (
+            result.returncode == 0
+            and isinstance(payload, dict)
+            and payload.get("status") == "ready"
+            and payload.get("provider") == PI_REVIEW_PROVIDER
+    ):
+        return True
+
+    details: str = "\n".join(
+        output.strip()
+        for output in (result.stderr, result.stdout)
+        if output.strip()
+    )
+    print(
+        (
+            f"ERROR: Pi review authentication is not ready for provider '{PI_REVIEW_PROVIDER}' "
+            f"and model '{review_model}'."
+            + (f"\n{details}" if details else "")
+        ),
+        file=sys.stderr,
+    )
+    return False
+
+
 def review_pull_request(
         pr_number: int,
         reachability_metadata_path: str,
@@ -2962,24 +2891,30 @@ def review_pull_request(
         pr_url: str | None = None,
         coordinates: str | None = None,
 ) -> bool:
-    """Run a Codex review for the specified pull request number in the target repository."""
+    """Run a Pi review for the specified pull request number in the target repository.
+
+    §FS-automated-pr-review
+    """
+    if not check_pi_review_authentication(review_model):
+        return False
     if pr_url is None:
         pr_url = get_pull_request_url(pr_number)
     review_worktree_path = create_review_workspace(reachability_metadata_path, pr_number)
     prompt = build_review_prompt(pr_number)
     cmd = [
-        "codex", "exec",
-        "--dangerously-bypass-approvals-and-sandbox",
-        "--json",
-        "-c", 'reasoning.effort="medium"',
-        "-m", review_model,
+        "pi", "-p",
+        "--no-session",
+        "--approve",
+        "--provider", PI_REVIEW_PROVIDER,
+        "--model", review_model,
+        "--thinking", "medium",
         prompt,
     ]
     log_path = get_review_log_path(pr_number, coordinates)
     log_path_display = display_log_path(log_path)
-    print(f"\n[Reviewing PR #{pr_number} with Codex in an isolated worktree and submitting the review to GitHub.]")
+    print(f"\n[Reviewing PR #{pr_number} with Pi in an isolated worktree and submitting the review to GitHub.]")
     print(f"[PR link: {pr_url}]")
-    print(f"[Codex review log: {log_path_display}]")
+    print(f"[Pi review log: {log_path_display}]")
     try:
         with open(log_path, "w", encoding="utf-8") as log_file:
             result = subprocess.run(
@@ -2988,13 +2923,13 @@ def review_pull_request(
                 stdout=log_file,
                 stderr=subprocess.STDOUT,
                 text=True,
-                timeout=CODEX_REVIEW_TIMEOUT_SECONDS,
+                timeout=PI_REVIEW_TIMEOUT_SECONDS,
                 check=False,
             )
     except subprocess.TimeoutExpired:
         print(
             (
-                f"ERROR: Codex PR review timed out after {CODEX_REVIEW_TIMEOUT_SECONDS} seconds "
+                f"ERROR: Pi PR review timed out after {PI_REVIEW_TIMEOUT_SECONDS} seconds "
                 f"for PR #{pr_number}. See {log_path_display}."
             ),
             file=sys.stderr,
@@ -3003,18 +2938,12 @@ def review_pull_request(
         return False
 
     try:
-        final_findings = extract_codex_final_message(log_path)
-        token_usage = extract_codex_token_usage_summary(log_path, review_model)
-        token_usage_line = (
-            f"[Codex review token usage for PR #{pr_number}: {token_usage}]"
-            if token_usage
-            else f"[Codex review token usage for PR #{pr_number}: unavailable in {log_path_display}]"
-        )
+        final_findings = read_log_text(log_path)
         if result.returncode != 0:
             output_tail = read_log_tail(log_path)
             print(
                 (
-                    f"ERROR: Codex PR review failed for PR #{pr_number} with exit code {result.returncode}. "
+                    f"ERROR: Pi PR review failed for PR #{pr_number} with exit code {result.returncode}. "
                     f"PR: {pr_url}. Log: {log_path_display}."
                     + (f"\n{output_tail}" if output_tail else "")
                 ),
@@ -3022,7 +2951,6 @@ def review_pull_request(
             )
             if final_findings:
                 print(f"[Final findings for PR #{pr_number}]\n{final_findings}")
-            print(token_usage_line)
             return False
 
         print(f"[Finished review for PR #{pr_number}: {pr_url}]")
@@ -3030,7 +2958,6 @@ def review_pull_request(
             print(f"[Final findings for PR #{pr_number}]\n{final_findings}")
         else:
             print(f"[Final findings for PR #{pr_number}: unavailable in {log_path_display}]")
-        print(token_usage_line)
         print_pull_request_discussion(pr_number)
         return True
     finally:
@@ -3038,7 +2965,7 @@ def review_pull_request(
 
 
 def build_review_prompt(pr_number: int) -> str:
-    """Build the Codex prompt for an isolated pull-request review."""
+    """Build the Pi prompt for an isolated pull-request review."""
     return (
         f"Review pull request #{pr_number} in the current GitHub repository. "
         f"Submit the review directly on GitHub for exactly PR #{pr_number}. "
@@ -3199,27 +3126,6 @@ def process_pull_requests_with_label(
             f"authored by {authenticated_user}.]"
         )
         return
-
-    if filtered_pull_requests:
-        preflight_pull_request: dict = filtered_pull_requests[0]
-        preflight_pr_number: int = preflight_pull_request["number"]
-        preflight_pr_title: str = (
-            preflight_pull_request.get("title")
-            if isinstance(preflight_pull_request.get("title"), str)
-            else ""
-        )
-        preflight_coordinates: str | None = extract_maven_coordinates(preflight_pr_title)
-        if not preflight_codex_github_access(
-                preflight_pr_number,
-                reachability_metadata_path,
-                review_model,
-                preflight_coordinates,
-        ):
-            print(
-                f"ERROR: Pull request review queue stopped before reviewing PR #{preflight_pr_number}.",
-                file=sys.stderr,
-            )
-            sys.exit(1)
 
     for pull_request in filtered_pull_requests:
         pr_number = pull_request["number"]
@@ -5874,7 +5780,6 @@ def run_pull_request_review_loop(
             return
         if period_seconds is not None:
             print(f"\n[Starting review iteration {iteration}.]")
-        _codex_github_preflight_successes.clear()
         process_pull_requests_with_label(
             label,
             limit,
@@ -8579,7 +8484,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     mode.add_argument(
         "--review-pr",
         metavar="LABEL",
-        help="Review open pull requests with the given GitHub label using Codex.",
+        help="Review open pull requests with the given GitHub label using Pi.",
     )
     mode.add_argument(
         "--run-work-queues",
@@ -8618,7 +8523,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--review-model",
         default=DEFAULT_REVIEW_MODEL,
-        help=f"Codex model used for `--review-pr` runs (default: {DEFAULT_REVIEW_MODEL}).",
+        help=f"Pi model used for `--review-pr` runs (default: {DEFAULT_REVIEW_MODEL}).",
     )
     parser.add_argument(
         "--period",
