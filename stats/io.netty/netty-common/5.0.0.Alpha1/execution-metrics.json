@@ -1,0 +1,143 @@
+{
+  "fix_javac_fail:2026-08-06": {
+    "timestamp": "2026-08-06T16:09:25.820761Z",
+    "library": "io.netty:netty-common:5.0.0.Alpha1",
+    "starting_commit": "e83255570f9e50b444c7e8e021fa26a01623cfcb",
+    "ending_commit": "1d65a13d987405c4590de94d739e7845ded61940",
+    "previous_library": "io.netty:netty-common:4.1.115.Final",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "5.0.0.Alpha1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.933333,
+            "coveredCalls": 28,
+            "totalCalls": 30
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.935484,
+        "coveredCalls": 29,
+        "totalCalls": 31
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4458,
+          "missed": 30296,
+          "ratio": 0.128273,
+          "total": 34754
+        },
+        "line": {
+          "covered": 1096,
+          "missed": 6493,
+          "ratio": 0.14442,
+          "total": 7589
+        },
+        "method": {
+          "covered": 254,
+          "missed": 1100,
+          "ratio": 0.187592,
+          "total": 1354
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "4.1.115.Final",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.309524,
+            "coveredCalls": 13,
+            "totalCalls": 42
+          },
+          "resources": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 0.270833,
+        "coveredCalls": 13,
+        "totalCalls": 48
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 8546,
+          "missed": 43669,
+          "ratio": 0.163669,
+          "total": 52215
+        },
+        "line": {
+          "covered": 2180,
+          "missed": 10153,
+          "ratio": 0.176762,
+          "total": 12333
+        },
+        "method": {
+          "covered": 676,
+          "missed": 2539,
+          "ratio": 0.210264,
+          "total": 3215
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9160,
+      "issue_label": "fails-javac-compile",
+      "library": "io.netty:netty-common:5.0.0.Alpha1",
+      "summary": "io.netty:netty-common:5.0.0.Alpha1 is a standalone Netty utilities artifact; meaningful coverage is reachable from its own public/common APIs without Docker, extra Maven dependencies, or required environment/system properties.",
+      "deterministic_setup": [],
+      "agent_guidance": "No required environment or system-property setup. Keep generated tests scoped to netty-common APIs such as Version, AttributeKey/DefaultAttributeMap, ResourceLeakDetector, Recycler, ReferenceCounted, timers, promises/executors, and internal utility paths only when they compile on Netty 5. Avoid reusing old tests that import netty-codec-http, netty-transport, or Netty 4 handler APIs.",
+      "risks": [
+        "The existing 4.1.115.Final test uses broader Netty HTTP/transport APIs and fails because Netty 5 changed those APIs; adding more Netty modules would likely expand scope rather than fix netty-common coverage.",
+        "Optional POM dependencies such as javassist and logging backends enable optional paths only; they are not required for a meaningful baseline."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9160 [Automation] javac compile fails for io.netty:netty-common:5.0.0.Alpha1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "8 existing test file path(s) included"
+        }
+      ],
+      "current_library": "io.netty:netty-common:4.1.115.Final",
+      "new_version": "5.0.0.Alpha1",
+      "model": "gpt-5.5",
+      "input_tokens_used": 33175,
+      "output_tokens_used": 2457,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/jovan/Work/graalvm-reachability-metadata/forge/logs/io.netty:netty-common:5.0.0.Alpha1/library-preparation-preflight/pi-generation-2026-08-06T13-54-39-703154Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 279522,
+      "cached_input_tokens_used": 3156992,
+      "output_tokens_used": 31811,
+      "iterations": 12,
+      "cost_usd": 3.9304,
+      "tested_library_loc": 1096,
+      "metadata_entries": 28,
+      "test_only_metadata_entries": 4,
+      "previous_library_metadata_entries": 1185,
+      "previous_library_test_only_metadata_entries": 2,
+      "code_coverage_percent": 14.44,
+      "previous_library_coverage_percent": 17.68
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.netty/netty-common/5.0.0.Alpha1/reachability-metadata.json"
+    }
+  }
+}
