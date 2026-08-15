@@ -19,9 +19,9 @@ Forge currently has three registered dynamic-access workflow engines:
 
 | Registered workflow | Role | Strategy examples |
 | --- | --- | --- |
-| `dynamic_access_iterative` | Per-class dynamic-access generation or refinement. It selects one uncovered class at a time, prompts with that class's remaining call sites, verifies coverage deltas, and commits resolved or partially resolved class progress (§WF-dynamic-access-iterative-strategy). | `dynamic_access_*`, `library_update_pi_gpt-5.5` |
-| `optimistic_dynamic_access` | Bulk dynamic-access generation or refinement. It gives the agent the full dynamic-access report and asks for a broad coverage pass, then verifies tests, regenerates the report, commits the attempt, and runs the native-test verification gate (§WF-dynamic-access-bulk-strategy). | `dynamic_access_bulk_*`, `dynamic_access_graphify_bulk_*`, `library_update_dynamic_access_bulk_pi_gpt-5.5` |
-| `increase_dynamic_access_coverage` | Composite coverage workflow. It optionally runs a configured primary workflow first, then runs the iterative dynamic-access phase against any remaining uncovered call sites (§WF-dynamic-access-composite-strategy). | `optimistic_dynamic_access_iterative_*`, `library_update_optimistic_pi_gpt-5.5`, Java-fix composite strategies |
+| `dynamic_access_iterative` | Per-class dynamic-access generation or refinement. It selects one uncovered class at a time, prompts with that class's remaining call sites, verifies coverage deltas, and commits resolved or partially resolved class progress (§WF-dynamic-access-iterative-strategy). | `dynamic_access_*`, `library_update_pi_gpt-5.6-sol` |
+| `optimistic_dynamic_access` | Bulk dynamic-access generation or refinement. It gives the agent the full dynamic-access report and asks for a broad coverage pass, then verifies tests, regenerates the report, commits the attempt, and runs the native-test verification gate (§WF-dynamic-access-bulk-strategy). | `dynamic_access_bulk_*`, `dynamic_access_graphify_bulk_*`, `library_update_dynamic_access_bulk_pi_gpt-5.6-sol` |
+| `increase_dynamic_access_coverage` | Composite coverage workflow. It optionally runs a configured primary workflow first, then runs the iterative dynamic-access phase against any remaining uncovered call sites (§WF-dynamic-access-composite-strategy). | `optimistic_dynamic_access_iterative_*`, `library_update_optimistic_pi_gpt-5.6-sol`, Java-fix composite strategies |
 
 All three engines are selected by predefined strategy bundles. The strategy
 bundle chooses the engine, agent, model, prompt templates, source-context
@@ -283,7 +283,7 @@ flowchart TD
     Phase2 --> P2[See section 6.2]
 ```
 
-The fallback strategy is `basic_iterative_pi_gpt-5.5` (constant
+The fallback strategy is `basic_iterative_pi_gpt-5.6-sol` (constant
 `FALLBACK_STRATEGY_NAME` in `dynamic_access_iterative_strategy.py`). The
 fallback runs only when no usable dynamic-access guidance exists at the
 **start** of the run; once Phase 2 begins, a missing report mid-run is a hard

@@ -32,6 +32,7 @@ class PiAgent(Agent):
             library: str | None = None,
             task_type: str = "session",
             persistent_instructions: str | None = None,
+            thinking_level: str | None = None,
             **_,
     ):
         self._model_name = model_name
@@ -41,6 +42,7 @@ class PiAgent(Agent):
         self._working_dir = os.path.abspath(working_dir)
         self._timeout = timeout
         self._persistent_instructions = persistent_instructions
+        self._thinking_level = thinking_level
         self._session_path: str | None = None
         self._total_tokens_sent = 0
         self._cached_input_tokens_used = 0
@@ -59,6 +61,7 @@ class PiAgent(Agent):
             working_dir=self._working_dir,
             timeout=self._timeout,
             persistent_instructions=self._persistent_instructions,
+            thinking_level=self._thinking_level,
         )
 
     @property
@@ -162,6 +165,7 @@ class PiAgent(Agent):
             working_dir=self._working_dir,
             timeout=self._timeout,
             persistent_instructions=self._persistent_instructions,
+            thinking_level=self._thinking_level,
         )
 
     def run_test_command(self, test_cmd: str) -> str:
@@ -211,6 +215,7 @@ class PiAgent(Agent):
             library=self._library,
             task_type=self._task_type,
             persistent_instructions=self._persistent_instructions,
+            thinking_level=self._thinking_level,
         )
         child._rpc_client = self._rpc_client
         return child

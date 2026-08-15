@@ -423,6 +423,7 @@ def init_agent(
         verbose=verbose,
         mcps=strategy.get("mcps", []),
         persistent_instructions=persistent_instructions,
+        thinking_level=strategy.get("thinking-level"),
     )
 
 

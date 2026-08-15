@@ -21,8 +21,9 @@ This architecture is split into the normative configuration contract
 
 Each predefined strategy is a named configuration bundle, not a standalone
 behavior contract. The bundle selects one registered workflow engine, one agent
-backend, one model, prompt templates, workflow parameters, optional MCPs, and
-optional persistent instructions. Workflow drivers and orchestration select these bundles by name
+backend, one model, an optional reasoning level, prompt templates, workflow
+parameters, optional MCPs, and optional persistent instructions. Workflow
+drivers and orchestration select these bundles by name
 with `--strategy-name`; the behavior they execute remains defined by the
 selected workflow contract (§WF-forge-workflow-system), while the selected
 backend must satisfy the agent API specified in §AR-agent-api.
@@ -33,6 +34,8 @@ Each entry in `strategies/predefined_strategies.json` must provide:
 - `agent` — registered agent name (`codex`, `pi`).
 - `workflow` — registered workflow engine name.
 - `model` — agent-visible model identifier.
+- `thinking-level` — optional agent reasoning level (`off`, `minimal`, `low`,
+  `medium`, `high`, `xhigh`, or `max`) for backends that support it.
 - `prompts` — map of prompt-key → template path. Required keys depend on the
   workflow (e.g., `dynamic_access_iterative` requires
   `dynamic-access-iteration`).
@@ -83,8 +86,9 @@ flowchart LR
 ## STRAT-predefined-strategy-fields: Strategy bundle fields
 
 Every bundle has the same architectural shape: `name` is the externally
-selected key; `workflow` selects a registered workflow engine; `agent` and
-`model` select the editor backend and model; `prompts` maps workflow prompt
+selected key; `workflow` selects a registered workflow engine; `agent`,
+`model`, and optional `thinking-level` select the editor backend, model, and
+reasoning level; `prompts` maps workflow prompt
 keys to template files; `parameters` supplies workflow limits and source
 context choices; `mcps` enables optional MCP servers; and
 `persistent-instructions` adds durable agent rules when present. Post-generation
@@ -104,9 +108,9 @@ The currently configured workflows are `basic_iterative`,
 The exact active bundle list lives in `forge/strategies/predefined_strategies.json`;
 this document keeps one representative example to show the architecture shape
 defined in §STRAT-forge-predefined-strategy-contract without duplicating the
-configuration file. `library_update_dynamic_access_bulk_pi_gpt-5.5` selects the
+configuration file. `library_update_dynamic_access_bulk_pi_gpt-5.6-sol` selects the
 `optimistic_dynamic_access` workflow (§WF-improve-library-coverage), the `pi`
-agent, model `gpt-5.5`, main-source read-only context, the
+agent, model `gpt-5.6-sol`, main-source read-only context, the
 `optimistic-dynamic-access-iteration` prompt, and parameters for optimistic
 iterations, test retries, source-context materialization, and the native-test
 verification retry budget (§WF-native-test-verification-callers).
@@ -133,7 +137,7 @@ bundles set `max-iterations`, `max-class-test-iterations`, and
 `source-context-types`. Optimistic dynamic-access bundles set
 `max-optimistic-iterations`, `max-test-iterations`, and `source-context-types`;
 Graphify variants also set `graphify-context`, and
-`library_update_dynamic_access_bulk_pi_gpt-5.5` also sets
+`library_update_dynamic_access_bulk_pi_gpt-5.6-sol` also sets
 `max-native-test-verification-iterations`, used by
 §WF-native-test-verification-callers. Composite coverage bundles combine the
 primary workflow's limits with dynamic-access limits so the selected primary

@@ -48,7 +48,7 @@ The workflow must preserve the existing implementation shape:
    source context, resolve the test-source layout, and initialize the agent
    with only the target test sources and `build.gradle` editable.
 5. **Strategy execution** — run the configured strategy (default:
-   `library_update_pi_gpt-5.5`), which uses
+   `library_update_pi_gpt-5.6-sol`), which uses
    `IncreaseDynamicAccessCoverageStrategy` in coverage-only mode (no primary
    workflow) (§WF-dynamic-access-composite-strategy).
 6. **Finalization** — on success, finalize the iteration after local

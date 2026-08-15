@@ -54,8 +54,8 @@ from utility_scripts.workflow_setup import (
     validate_repo_paths,
 )
 
-DEFAULT_MODEL_NAME = "gpt-5.5"
-DEFAULT_STRATEGY_NAME = "library_update_pi_gpt-5.5"
+DEFAULT_MODEL_NAME = "gpt-5.6-sol"
+DEFAULT_STRATEGY_NAME = "library_update_pi_gpt-5.6-sol"
 METRICS_TASK_TYPE = "fix_ni_run"
 
 
@@ -334,6 +334,7 @@ def build_strategy_and_agent(
         verbose=False,
         mcps=strategy.get("mcps", []),
         persistent_instructions=strategy_obj.persistent_instructions,
+        thinking_level=strategy.get("thinking-level"),
     )
     return strategy_obj, agent, model_name, test_source_layout.source_root
 
