@@ -1,0 +1,220 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.jctools:jctools-core:4.0.3
+Command: `/home/vjovanov/g/forge/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9253-910a0e12/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 20 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :compileTestJava UP-TO-DATE
+> Task :processTestResources NO-SOURCE
+> Task :testClasses UP-TO-DATE
+> Task :test UP-TO-DATE
+> Task :generateTestResourcesConfigFile UP-TO-DATE
+> Task :nativeTestCompile UP-TO-DATE
+
+> Task :nativeTest FAILED
+[junit-platform-native] WARNING: -djunit.platform.listeners.uid.tracking.output.dir not specified, trying to find test-ids on default Gradle/Maven locations. As this is a fallback mode, it could take a while. This should only happen if you are running tests executable manually and you didn't pass uid output directory with -djunit.platform.listeners.uid.tracking.output.dir=<path>.
+[junit-platform-native] WARNING: Using test-ids from default Gradle project location:/home/vjovanov/g/forge/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9253-910a0e12/tests/src/org.jctools/jctools-core/4.0.3/build/test-results/test/testlist
+[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/vjovanov/g/forge/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9253-910a0e12/tests/src/org.jctools/jctools-core/4.0.3/build/test-results/test/testlist] and its subfolders.
+JUnit Platform on Native Image - report
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+----------------------------------------
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.jctools.util.UnsafeAccess (file:/home/vjovanov/g/forge/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9253-910a0e12/tests/src/org.jctools/jctools-core/4.0.3/build/native/nativeTestCompile/org.jctools.jctools-core_tests-tests)
+WARNING: Please consider reporting this to the maintainers of class org.jctools.util.UnsafeAccess
+
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+org_jctools.jctools_core.JCToolsCoreTest > testSpscUnboundedArrayQueue() SUCCESSFUL
+
+org_jctools.jctools_core.NonBlockingHashMapAnonymous2Test > keySetConvertsEntriesToTypedArray() FAILED
+
+org_jctools.jctools_core.NonBlockingHashMapLongTest > serializationRoundTripPreservesPrimitiveLongEntries() FAILED
+
+org_jctools.jctools_core.NonBlockingHashMapTest > serializationRoundTripPreservesEntries() FAILED
+
+org_jctools.jctools_core.NonBlockingIdentityHashMapTest > serializationRoundTripPreservesIdentityEntries() FAILED
+
+org_jctools.jctools_core.UnsafeAccessTest > linkedQueueTransfersElementsInOrder() FAILED
+
+
+Failures (5):
+  JUnit Jupiter:NonBlockingHashMapAnonymous2Test:keySetConvertsEntriesToTypedArray()
+    MethodSource [className = 'org_jctools.jctools_core.NonBlockingHashMapAnonymous2Test', methodName = 'keySetConvertsEntriesToTypedArray', methodParameterTypes = '']
+    => java.lang.ExceptionInInitializerError
+       org_jctools.jctools_core.NonBlockingHashMapAnonymous2Test.keySetConvertsEntriesToTypedArray(NonBlockingHashMapAnonymous2Test.java:18)
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.SubstrateMethodAccessor.invoke(SubstrateMethodAccessor.java:118)
+       java.base@25.0.4/java.lang.reflect.Method.invoke(Method.java:565)
+       org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+       org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+       [...]
+     Caused by: java.lang.RuntimeException: java.lang.NoSuchFieldException: _kvs
+       org.jctools.util.UnsafeAccess.fieldOffset(UnsafeAccess.java:111)
+       org.jctools.maps.NonBlockingHashMap.<clinit>(NonBlockingHashMap.java:103)
+       [...]
+     Caused by: java.lang.NoSuchFieldException: _kvs
+       java.base@25.0.4/java.lang.Class.checkField(DynamicHub.java:1636)
+       java.base@25.0.4/java.lang.Class.getDeclaredField(DynamicHub.java:1811)
+       org.jctools.util.UnsafeAccess.fieldOffset(UnsafeAccess.java:107)
+       [...]
+  JUnit Jupiter:NonBlockingHashMapLongTest:serializationRoundTripPreservesPrimitiveLongEntries()
+    MethodSource [className = 'org_jctools.jctools_core.NonBlockingHashMapLongTest', methodName = 'serializationRoundTripPreservesPrimitiveLongEntries', methodParameterTypes = '']
+    => java.lang.ExceptionInInitializerError
+       org_jctools.jctools_core.NonBlockingHashMapLongTest.serializationRoundTripPreservesPrimitiveLongEntries(NonBlockingHashMapLongTest.java:23)
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.SubstrateMethodAccessor.invoke(SubstrateMethodAccessor.java:118)
+       java.base@25.0.4/java.lang.reflect.Method.invoke(Method.java:565)
+       org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+       org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+       [...]
+     Caused by: java.lang.RuntimeException: java.lang.NoSuchFieldException: _chm
+       org.jctools.util.UnsafeAccess.fieldOffset(UnsafeAccess.java:111)
+       org.jctools.maps.NonBlockingHashMapLong.<clinit>(NonBlockingHashMapLong.java:119)
+       [...]
+     Caused by: java.lang.NoSuchFieldException: _chm
+       java.base@25.0.4/java.lang.Class.checkField(DynamicHub.java:1636)
+       java.base@25.0.4/java.lang.Class.getDeclaredField(DynamicHub.java:1811)
+       org.jctools.util.UnsafeAccess.fieldOffset(UnsafeAccess.java:107)
+       [...]
+  JUnit Jupiter:NonBlockingHashMapTest:serializationRoundTripPreservesEntries()
+    MethodSource [className = 'org_jctools.jctools_core.NonBlockingHashMapTest', methodName = 'serializationRoundTripPreservesEntries', methodParameterTypes = '']
+    => java.lang.NoClassDefFoundError: Could not initialize class org.jctools.maps.NonBlockingHashMap
+       org_jctools.jctools_core.NonBlockingHashMapTest.serializationRoundTripPreservesEntries(NonBlockingHashMapTest.java:23)
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.SubstrateMethodAccessor.invoke(SubstrateMethodAccessor.java:118)
+       java.base@25.0.4/java.lang.reflect.Method.invoke(Method.java:565)
+       org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+       org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+       org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+       org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+       java.base@25.0.4/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+       java.base@25.0.4/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+       java.base@25.0.4/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+       [...]
+  JUnit Jupiter:NonBlockingIdentityHashMapTest:serializationRoundTripPreservesIdentityEntries()
+    MethodSource [className = 'org_jctools.jctools_core.NonBlockingIdentityHashMapTest', methodName = 'serializationRoundTripPreservesIdentityEntries', methodParameterTypes = '']
+    => java.lang.ExceptionInInitializerError
+       org_jctools.jctools_core.NonBlockingIdentityHashMapTest.serializationRoundTripPreservesIdentityEntries(NonBlockingIdentityHashMapTest.java:23)
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.SubstrateMethodAccessor.invoke(SubstrateMethodAccessor.java:118)
+       java.base@25.0.4/java.lang.reflect.Method.invoke(Method.java:565)
+       org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+       org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+       [...]
+     Caused by: java.lang.RuntimeException: java.lang.NoSuchFieldException: _kvs
+       org.jctools.util.UnsafeAccess.fieldOffset(UnsafeAccess.java:111)
+       org.jctools.maps.NonBlockingIdentityHashMap.<clinit>(NonBlockingIdentityHashMap.java:105)
+       [...]
+     Caused by: java.lang.NoSuchFieldException: _kvs
+       java.base@25.0.4/java.lang.Class.checkField(DynamicHub.java:1636)
+       java.base@25.0.4/java.lang.Class.getDeclaredField(DynamicHub.java:1811)
+       org.jctools.util.UnsafeAccess.fieldOffset(UnsafeAccess.java:107)
+       [...]
+  JUnit Jupiter:UnsafeAccessTest:linkedQueueTransfersElementsInOrder()
+    MethodSource [className = 'org_jctools.jctools_core.UnsafeAccessTest', methodName = 'linkedQueueTransfersElementsInOrder', methodParameterTypes = '']
+    => java.lang.ExceptionInInitializerError
+       org_jctools.jctools_core.UnsafeAccessTest.linkedQueueTransfersElementsInOrder(UnsafeAccessTest.java:18)
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.SubstrateMethodAccessor.invoke(SubstrateMethodAccessor.java:118)
+       java.base@25.0.4/java.lang.reflect.Method.invoke(Method.java:565)
+       org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+       org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+       [...]
+     Caused by: java.lang.RuntimeException: java.lang.NoSuchFieldException: producerNode
+       org.jctools.util.UnsafeAccess.fieldOffset(UnsafeAccess.java:111)
+       org.jctools.queues.BaseLinkedQueueProducerNodeRef.<clinit>(BaseLinkedQueue.java:47)
+       [...]
+     Caused by: java.lang.NoSuchFieldException: producerNode
+       java.base@25.0.4/java.lang.Class.checkField(DynamicHub.java:1636)
+       java.base@25.0.4/java.lang.Class.getDeclaredField(DynamicHub.java:1811)
+       org.jctools.util.UnsafeAccess.fieldOffset(UnsafeAccess.java:107)
+       [...]
+
+Test run finished after 3 ms
+[         8 containers found      ]
+[         0 containers skipped    ]
+[         8 containers started    ]
+[         0 containers aborted    ]
+[         8 containers successful ]
+[         0 containers failed     ]
+[         6 tests found           ]
+[         0 tests skipped         ]
+[         6 tests started         ]
+[         0 tests aborted         ]
+[         1 tests successful      ]
+[         5 tests failed          ]
+
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':nativeTest'.
+> Process 'command '/home/vjovanov/g/forge/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9253-910a0e12/tests/src/org.jctools/jctools-core/4.0.3/build/native/nativeTestCompile/org.jctools.jctools-core_tests-tests'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 3s
+
+[Incubating] Problems report is available at: file:///home/vjovanov/g/forge/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9253-910a0e12/tests/src/org.jctools/jctools-core/4.0.3/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+18 actionable tasks: 2 executed, 16 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/vjovanov/g/forge/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9253-910a0e12/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.jctools:jctools-core:4.0.3 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 4s
+9 actionable tasks: 1 executed, 8 up-to-date

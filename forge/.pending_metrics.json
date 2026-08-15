@@ -1,0 +1,55 @@
+{
+  "timestamp": "2026-08-15T18:38:19.782744Z",
+  "library": "org.jctools:jctools-core:4.0.3",
+  "starting_commit": "ec9eab1a89e7ea8553d9a1f13cee8708b1ff90c2",
+  "ending_commit": "ec9eab1a89e7ea8553d9a1f13cee8708b1ff90c2",
+  "strategy_name": "library_update_pi_gpt-5.6-sol",
+  "agent": "pi",
+  "model": "gpt-5.6-sol",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "no_action",
+    "issue_number": 9253,
+    "issue_label": "library-update-request",
+    "library": "org.jctools:jctools-core:4.0.3",
+    "summary": "JCTools Core is a standalone in-process queue library; version 4.0.3 has no runtime Maven dependencies, external services, or required configuration.",
+    "deterministic_setup": [],
+    "agent_guidance": "Exercise org.jctools.queues.MpscLinkedQueue directly with offer/poll operations so BaseLinkedQueue and LinkedQueueNode initialization reaches the reported reflective field lookups. No environment variables or system properties are required.",
+    "risks": [
+      "Reusing only the existing SpscUnboundedArrayQueue coverage may not reach producerNode, consumerNode, and next.",
+      "The default queue implementations use sun.misc.Unsafe through the JDK's jdk.unsupported module; Native Image verification remains authoritative."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9253 Add reachability metadata for org.jctools:jctools-core:4.0.3; label=library-update-request; body_chars=1454"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "7 existing test file path(s) included"
+      }
+    ],
+    "model": "gpt-5.6-sol",
+    "input_tokens_used": 31198,
+    "output_tokens_used": 1532,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "session_log_path": "/home/vjovanov/g/forge/graalvm-reachability-metadata/forge/logs/org.jctools:jctools-core:4.0.3/library-preparation-preflight/pi-generation-2026-08-15T18-13-00-824085Z.log"
+  },
+  "metrics": {
+    "input_tokens_used": 314004,
+    "cached_input_tokens_used": 1451008,
+    "output_tokens_used": 21668,
+    "iterations": 8,
+    "cost_usd": 2.9455,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}
