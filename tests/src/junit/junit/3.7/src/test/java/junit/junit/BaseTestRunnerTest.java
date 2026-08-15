@@ -9,12 +9,18 @@ package junit.junit;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
+import junit.runner.Version;
 import junit.textui.TestRunner;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BaseTestRunnerTest {
+    @Test
+    void usesRequestedJUnitRelease() {
+        assertThat(Version.id()).isEqualTo("3.7");
+    }
+
     @Test
     void loadsAndRunsSuiteMethod() {
         SuiteTestCase.runCount = 0;
@@ -37,10 +43,14 @@ public class BaseTestRunnerTest {
     }
 
     public static class SuiteTestCase extends TestCase {
+        private static int runCount;
+
+        public SuiteTestCase(String name) {
+            super(name);
+        }
+
         public void testRuns() {
             runCount++;
         }
-
-        private static int runCount;
     }
 }

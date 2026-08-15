@@ -18,28 +18,14 @@ public class TestSuiteTest {
     void createsAndRunsTestCaseWithStringConstructor() {
         StringConstructorTestCase.runCount = 0;
 
-        TestCase test = (TestCase) TestSuite.createTest(StringConstructorTestCase.class, "testRuns");
+        TestSuite suite = new TestSuite(StringConstructorTestCase.class);
         TestResult result = new TestResult();
-        test.run(result);
+        suite.run(result);
 
-        assertThat(test).isInstanceOf(StringConstructorTestCase.class);
-        assertThat(test.getName()).isEqualTo("testRuns");
+        assertThat(suite.countTestCases()).isEqualTo(1);
+        assertThat(suite.testAt(0)).isInstanceOf(StringConstructorTestCase.class);
+        assertThat(((TestCase) suite.testAt(0)).getName()).isEqualTo("testRuns");
         assertThat(StringConstructorTestCase.runCount).isEqualTo(1);
-        assertThat(result.errorCount()).isZero();
-        assertThat(result.failureCount()).isZero();
-    }
-
-    @Test
-    void createsAndRunsTestCaseWithDefaultConstructor() {
-        DefaultConstructorTestCase.runCount = 0;
-
-        TestCase test = (TestCase) TestSuite.createTest(DefaultConstructorTestCase.class, "testRuns");
-        TestResult result = new TestResult();
-        test.run(result);
-
-        assertThat(test).isInstanceOf(DefaultConstructorTestCase.class);
-        assertThat(test.getName()).isEqualTo("testRuns");
-        assertThat(DefaultConstructorTestCase.runCount).isEqualTo(1);
         assertThat(result.errorCount()).isZero();
         assertThat(result.failureCount()).isZero();
     }
@@ -49,17 +35,6 @@ public class TestSuiteTest {
 
         public StringConstructorTestCase(String name) {
             super(name);
-        }
-
-        public void testRuns() {
-            runCount++;
-        }
-    }
-
-    public static class DefaultConstructorTestCase extends TestCase {
-        private static int runCount;
-
-        public DefaultConstructorTestCase() {
         }
 
         public void testRuns() {
