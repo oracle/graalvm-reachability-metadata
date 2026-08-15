@@ -340,6 +340,7 @@ DEFAULT_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD = 15
 DEFAULT_REVIEW_MODEL = "gpt-5.6-terra"
 DEFAULT_WORK_QUEUE_STRATEGY_NAME = "dynamic_access_main_sources_pi_gpt-5.6-terra"
 CODEX_REVIEW_TIMEOUT_SECONDS = 1800
+CODEX_GITHUB_PREFLIGHT_TIMEOUT_SECONDS = 120
 DEFAULT_WORKTREE_BASE_REF = "master"
 DEV_GRAALVM_ENV_VAR = "GRAALVM_HOME"
 POST_GENERATION_GRAALVM_ENV_VAR = "GRAALVM_HOME_25_0"
@@ -351,6 +352,7 @@ SHUTDOWN_SIGNAL_POLL_SECONDS = 5.0
 
 _user_interrupt_requested = threading.Event()
 _user_interrupt_reason = INTERRUPT_REASON_CTRL_C
+_codex_github_preflight_successes: set[tuple[str, str]] = set()
 
 
 @dataclass(frozen=True)
@@ -2687,6 +2689,15 @@ def get_review_log_path(pr_number: int, coordinates: str | None = None) -> str:
     return build_task_log_path("pr-review", coordinates, f"codex_pr_review_{pr_number}.log")
 
 
+def get_codex_github_preflight_log_path(pr_number: int, coordinates: str | None = None) -> str:
+    """Return the Codex GitHub preflight log path for the target pull request."""
+    return build_task_log_path(
+        "pr-review",
+        coordinates,
+        f"codex_github_preflight_{pr_number}.log",
+    )
+
+
 def get_pull_request_url(pr_number: int) -> str:
     """Resolve the GitHub URL for the target pull request."""
     pull_request = gh_json(
@@ -2736,6 +2747,39 @@ def extract_codex_final_message(log_path: str) -> str:
     return final_message.strip()
 
 
+def codex_github_preflight_command_succeeded(log_path: str, pr_number: int) -> bool:
+    """Return whether the preflight log proves that nested `gh pr view` succeeded."""
+    if not os.path.isfile(log_path):
+        return False
+
+    expected_command_fragment: str = f"gh pr view {pr_number}"
+    expected_output: str = str(pr_number)
+    with open(log_path, "r", encoding="utf-8") as log_file:
+        for line in log_file:
+            try:
+                payload: object = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if not isinstance(payload, dict):
+                continue
+            if payload.get("type") != "item.completed":
+                continue
+            item: object = payload.get("item")
+            if not isinstance(item, dict) or item.get("type") != "command_execution":
+                continue
+            command: object = item.get("command")
+            output: object = item.get("aggregated_output")
+            if (
+                    isinstance(command, str)
+                    and expected_command_fragment in command
+                    and item.get("exit_code") == 0
+                    and isinstance(output, str)
+                    and output.strip() == expected_output
+            ):
+                return True
+    return False
+
+
 def extract_codex_token_usage_summary(log_path: str, model_name: str | None = None) -> str:
     """Return a human-readable Codex token-usage line from a JSONL log, or '' when unavailable.
 
@@ -2753,6 +2797,93 @@ def extract_codex_token_usage_summary(log_path: str, model_name: str | None = No
         f"input={input_tokens} cached_input={cached_input_tokens} output={output_tokens} "
         f"cost=${cost_usd:.4f}"
     )
+
+
+def build_codex_github_preflight_prompt(pr_number: int) -> str:
+    """Build the minimal prompt that validates nested Codex GitHub CLI access."""
+    return (
+        "Verify GitHub CLI access for Forge review automation. "
+        f"Run exactly `gh pr view {pr_number} --repo {REPO} --json number --jq .number` once. "
+        "Do not run any other command, inspect files, or review the pull request. Exit after the command finishes."
+    )
+
+
+def preflight_codex_github_access(
+        pr_number: int,
+        reachability_metadata_path: str,
+        review_model: str,
+        coordinates: str | None = None,
+) -> bool:
+    """Verify managed non-interactive Codex can run the required GitHub CLI command.
+
+    §FS-automated-pr-review
+    """
+    cache_key: tuple[str, str] = (os.path.abspath(reachability_metadata_path), review_model)
+    if cache_key in _codex_github_preflight_successes:
+        return True
+
+    prompt: str = build_codex_github_preflight_prompt(pr_number)
+    cmd: list[str] = [
+        "codex", "exec",
+        "--dangerously-bypass-approvals-and-sandbox",
+        "--ephemeral",
+        "--json",
+        "-c", 'reasoning.effort="low"',
+        "-m", review_model,
+        prompt,
+    ]
+    log_path: str = get_codex_github_preflight_log_path(pr_number, coordinates)
+    log_path_display: str = display_log_path(log_path)
+    print(f"\n[Checking nested Codex GitHub access before reviewing PR #{pr_number}.]")
+    print(f"[Codex GitHub preflight log: {log_path_display}]")
+    try:
+        with open(log_path, "w", encoding="utf-8") as log_file:
+            result: subprocess.CompletedProcess = subprocess.run(
+                cmd,
+                cwd=reachability_metadata_path,
+                stdout=log_file,
+                stderr=subprocess.STDOUT,
+                text=True,
+                timeout=CODEX_GITHUB_PREFLIGHT_TIMEOUT_SECONDS,
+                check=False,
+            )
+    except subprocess.TimeoutExpired:
+        print(
+            (
+                f"ERROR: Codex GitHub preflight timed out after "
+                f"{CODEX_GITHUB_PREFLIGHT_TIMEOUT_SECONDS} seconds for PR #{pr_number}. "
+                f"See {log_path_display}."
+            ),
+            file=sys.stderr,
+        )
+        return False
+    except OSError as exc:
+        print(
+            f"ERROR: Codex GitHub preflight could not start for PR #{pr_number}: {exc}",
+            file=sys.stderr,
+        )
+        return False
+
+    token_usage: str = extract_codex_token_usage_summary(log_path, review_model)
+    if token_usage:
+        print(f"[Codex GitHub preflight token usage for PR #{pr_number}: {token_usage}]")
+    if result.returncode == 0 and codex_github_preflight_command_succeeded(log_path, pr_number):
+        _codex_github_preflight_successes.add(cache_key)
+        print(f"[Nested Codex GitHub access is available for PR #{pr_number}.]")
+        return True
+
+    output_tail: str = read_log_tail(log_path)
+    print(
+        (
+            f"ERROR: Codex GitHub preflight failed for PR #{pr_number}. The managed non-interactive "
+            "Codex environment could not complete the required authenticated `gh pr view` command. "
+            "Check Codex managed sandbox, network, and approval requirements before retrying. "
+            f"Log: {log_path_display}."
+            + (f"\n{output_tail}" if output_tail else "")
+        ),
+        file=sys.stderr,
+    )
+    return False
 
 
 def get_pull_request_discussion(pr_number: int) -> dict:
@@ -3068,6 +3199,27 @@ def process_pull_requests_with_label(
             f"authored by {authenticated_user}.]"
         )
         return
+
+    if filtered_pull_requests:
+        preflight_pull_request: dict = filtered_pull_requests[0]
+        preflight_pr_number: int = preflight_pull_request["number"]
+        preflight_pr_title: str = (
+            preflight_pull_request.get("title")
+            if isinstance(preflight_pull_request.get("title"), str)
+            else ""
+        )
+        preflight_coordinates: str | None = extract_maven_coordinates(preflight_pr_title)
+        if not preflight_codex_github_access(
+                preflight_pr_number,
+                reachability_metadata_path,
+                review_model,
+                preflight_coordinates,
+        ):
+            print(
+                f"ERROR: Pull request review queue stopped before reviewing PR #{preflight_pr_number}.",
+                file=sys.stderr,
+            )
+            sys.exit(1)
 
     for pull_request in filtered_pull_requests:
         pr_number = pull_request["number"]
@@ -5722,6 +5874,7 @@ def run_pull_request_review_loop(
             return
         if period_seconds is not None:
             print(f"\n[Starting review iteration {iteration}.]")
+        _codex_github_preflight_successes.clear()
         process_pull_requests_with_label(
             label,
             limit,

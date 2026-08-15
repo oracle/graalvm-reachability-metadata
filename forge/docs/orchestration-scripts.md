@@ -181,10 +181,15 @@ worktree created from a freshly fetched base ref, with the PR checked out in
 detached HEAD. Review is performed by Codex (`codex exec`), which is expected to
 apply the label-specific review skill, read the authoritative diff with
 `gh pr diff`, and submit either an approval or a requested-changes review
-directly on GitHub. The review must not write files or re-checkout. The run is
-logged durably (§FS-durable-generation-logs) and the worktree is cleaned up
-afterward; a review timeout or non-zero Codex exit is a review failure, not an
-approval.
+directly on GitHub. Before the first full review, orchestration runs a minimal
+Codex preflight under the same managed non-interactive configuration and checks
+that its nested `gh pr view` command completed successfully. A successful
+preflight may be reused by later review queues in the same process. A failed or
+timed-out preflight stops the queue before the full review starts and points to
+its durable log (§FS-automated-pr-review). The review must not write files or
+re-checkout. The run is logged durably (§FS-durable-generation-logs) and the
+worktree is cleaned up afterward; a review timeout or non-zero Codex exit is a
+review failure, not an approval.
 
 **Scheduling and shutdown.** With `--period`, the review loop repeats after each
 interval; without it, it runs once. The loop checks the do-work stop markers
