@@ -9,6 +9,26 @@ owns branch selection, self-update, work limits, review limits, stop-file
 handling, sleep timing, and re-execing the latest worker script before the
 next cycle.
 
+Before the first self-update or queue operation in each worker process,
+`do_up_to_date_work.sh` invokes the shared deterministic startup preflight from
+`utility_scripts/startup_preflight.py`. The preflight derives its required
+capabilities from the enabled issue and review queue limits, prints the exact
+tool, environment, filesystem, network, GitHub, Docker, and agent requirements,
+and exits before work on any failed required check
+(§FS-forge-startup-preflight). Keeping the checks in a Python utility makes them
+unit-testable and reusable while the shell loop retains ownership of when the
+gate runs.
+
+The 25.0.x validation lane is pinned in `graalvm-versions.json`; update that
+file deliberately when Forge should move to a newer 25.0.x release. The main
+and EA lanes are resolved from their upstream latest-release records for every
+issue-work startup. Run the same gate without starting work from `forge/`:
+
+```bash
+python3 utility_scripts/startup_preflight.py --forge-dir . \
+  --python-bin python3 --review-model gpt-5.6-terra
+```
+
 The loop does not own issue semantics. It converts command-line flags and
 environment variables into one bounded worker cycle, then delegates queue
 selection and workflow routing to the orchestration layer described in
