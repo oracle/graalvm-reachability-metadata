@@ -133,6 +133,49 @@ metadata-relevant coverage from broader behavior coverage.
   their monitored branch between queue operations and during sleep, then exit
   without claiming additional work.
 
+### FS-forge-startup-preflight: Deterministic worker startup preflight
+
+§GOAL-shorten-issue-to-shipped-metadata
+
+Before `do_up_to_date_work.sh` performs a self-update, queries queue state,
+claims an issue, creates a review worktree, or invokes an agent, it must run a
+deterministic startup preflight for every capability required by the enabled
+issue and review queues. The preflight must not invoke a model or mutate GitHub.
+It must validate the selected Python interpreter, required local executables,
+GitHub CLI authentication and repository/project permissions, agent
+authentication, GraalVM environment paths, Docker availability, network
+reachability, and write access to every local state root used by Forge, Gradle,
+Pi, and Codex.
+
+For issue work, executable presence alone is insufficient. `GRAALVM_HOME` must
+match the latest published GraalVM GA release, `GRAALVM_HOME_LATEST_EA` must
+match the newest published Oracle GraalVM EA build, and
+`GRAALVM_HOME_25_0` must match the repository-pinned 25.0.x release in
+`graalvm-versions.json`. Every selected distribution must also contain the
+reachability-metadata schema required by the checked-out repository. The
+operator updates the pinned 25.0.x value deliberately; GA and EA freshness are
+resolved from their authoritative release metadata on every preflight.
+
+The preflight must always print an operator-facing requirements report. Each
+entry must name the capability, whether it is required for the active queue
+configuration, the exact executable, environment variable, path, host, or
+permission being checked, and a concrete remediation when the check fails.
+GitHub reporting must distinguish read access from the mutation permissions
+needed to assign and label issues, update project 30, push generated branches,
+submit PR reviews, and merge eligible PRs. Agent reporting must distinguish
+authentication from unattended command approval and host filesystem/network
+access.
+All messages must be concise and actionable: command output is reduced to the
+relevant fact, current and required values are shown explicitly, and every
+failure has exactly one concrete `Fix:` instruction.
+
+Any failed required check must stop the worker with a non-zero exit before the
+first work cycle. Disabled-queue capabilities may be reported as not required
+but must not fail startup. Stop, resume, help, and cache-maintenance commands do
+not start work and therefore do not run the startup preflight. Because the
+worker re-execs itself between cycles, each new worker process reruns the gate
+before doing more work.
+
 ### 4.2 CLI inputs (common to all workflow drivers)
 
 - `--coordinates <group:artifact:version>` — required.
@@ -542,6 +585,13 @@ follow-up has been completed; review automation may then dismiss stale
 requested-changes reviews, approve, and merge only after normal merge gates
 pass, including the index validation safeguard for index-changing pull requests
 (§FS-index-validation-safeguard).
+
+Before launching a review agent, Forge must validate GitHub CLI authentication
+in the orchestration process and use Pi's deterministic authentication check for
+the configured review provider and model. Neither preflight may invoke a model.
+The review agent must run in an execution environment that can use the
+authenticated `gh` session without an interactive approval boundary; either
+authentication failure must stop the queue before the agent starts.
 
 Automated review may add or request the `human-intervention` PR label only when
 the applicable label-specific review rules say the result cannot be handled by

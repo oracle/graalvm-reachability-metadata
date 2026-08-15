@@ -2910,6 +2910,101 @@ class InterruptHandlingTests(unittest.TestCase):
 
 
 class PullRequestReviewTests(unittest.TestCase):
+    def test_pi_review_authentication_check_does_not_invoke_model(self) -> None:
+        completed_process = subprocess.CompletedProcess(
+            [],
+            0,
+            stdout='{"status":"ready","provider":"openai-codex","authType":"oauth"}\n',
+            stderr="",
+        )
+        with patch.object(
+                forge_metadata.subprocess,
+                "run",
+                return_value=completed_process,
+        ) as run:
+            self.assertTrue(forge_metadata.check_pi_review_authentication("gpt-5.6-terra"))
+
+        run.assert_called_once_with(
+            [
+                "pi", "auth", "check",
+                "--provider", "openai-codex",
+                "--model", "gpt-5.6-terra",
+                "--json",
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+    def test_review_pull_request_stops_before_pi_when_authentication_is_not_ready(self) -> None:
+        with patch.object(
+                forge_metadata,
+                "check_pi_review_authentication",
+                return_value=False,
+        ), patch.object(
+                forge_metadata,
+                "create_review_workspace",
+        ) as create_review_workspace:
+            self.assertFalse(
+                forge_metadata.review_pull_request(
+                    3513,
+                    "/repo",
+                    "gpt-5.6-terra",
+                )
+            )
+
+        create_review_workspace.assert_not_called()
+
+    def test_review_pull_request_runs_pi_with_authenticated_host_tools(self) -> None:
+        def run_pi(command: list[str], **kwargs) -> subprocess.CompletedProcess:
+            log_file = kwargs["stdout"]
+            log_file.write("Approved the pull request.\n")
+            log_file.flush()
+            return subprocess.CompletedProcess(command, 0)
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            log_path = os.path.join(temp_dir, "pi-review.log")
+            with patch.object(
+                    forge_metadata,
+                    "check_pi_review_authentication",
+                    return_value=True,
+            ) as check_pi_review_authentication, patch.object(
+                    forge_metadata,
+                    "create_review_workspace",
+                    return_value="/review-worktree",
+            ), patch.object(
+                    forge_metadata,
+                    "cleanup_review_workspace",
+            ) as cleanup_review_workspace, patch.object(
+                    forge_metadata,
+                    "get_review_log_path",
+                    return_value=log_path,
+            ), patch.object(
+                    forge_metadata.subprocess,
+                    "run",
+                    side_effect=run_pi,
+            ) as run, patch.object(
+                    forge_metadata,
+                    "print_pull_request_discussion",
+            ):
+                self.assertTrue(
+                    forge_metadata.review_pull_request(
+                        3513,
+                        "/repo",
+                        "gpt-5.6-terra",
+                        "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
+                    )
+                )
+
+        command = run.call_args.args[0]
+        self.assertEqual("pi", command[0])
+        self.assertIn("--no-session", command)
+        self.assertIn("--approve", command)
+        self.assertIn("openai-codex", command)
+        self.assertNotIn("codex", command[:2])
+        check_pi_review_authentication.assert_called_once_with("gpt-5.6-terra")
+        cleanup_review_workspace.assert_called_once_with("/repo", "/review-worktree", 3513)
+
     def test_merge_pull_request_validates_index_candidate_before_merge(self) -> None:
         pr = {
             "number": 3513,

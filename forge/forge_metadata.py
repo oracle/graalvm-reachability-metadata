@@ -339,8 +339,10 @@ DEFAULT_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD = 15
 
 
 DEFAULT_REVIEW_MODEL = "gpt-5.6-terra"
+PI_REVIEW_PROVIDER = "openai-codex"
 DEFAULT_WORK_QUEUE_STRATEGY_NAME = "dynamic_access_main_sources_pi_gpt-5.6-terra"
 CODEX_REVIEW_TIMEOUT_SECONDS = 1800
+PI_REVIEW_TIMEOUT_SECONDS = 1800
 DEFAULT_WORKTREE_BASE_REF = "master"
 DEV_GRAALVM_ENV_VAR = "GRAALVM_HOME"
 POST_GENERATION_GRAALVM_ENV_VAR = "GRAALVM_HOME_25_0"
@@ -2684,8 +2686,8 @@ def select_ci_complete_review_pull_requests(
 
 
 def get_review_log_path(pr_number: int, coordinates: str | None = None) -> str:
-    """Return the Codex review log path for the target pull request."""
-    return build_task_log_path("pr-review", coordinates, f"codex_pr_review_{pr_number}.log")
+    """Return the Pi review log path for the target pull request."""
+    return build_task_log_path("pr-review", coordinates, f"pi_pr_review_{pr_number}.log")
 
 
 def get_pull_request_url(pr_number: int) -> str:
@@ -2712,6 +2714,14 @@ def read_log_tail(log_path: str, max_lines: int = 20) -> str:
         return ""
     with open(log_path, "r", encoding="utf-8") as log_file:
         return "\n".join(log_file.read().strip().splitlines()[-max_lines:])
+
+
+def read_log_text(log_path: str) -> str:
+    """Return the complete text from a log file when it exists."""
+    if not os.path.isfile(log_path):
+        return ""
+    with open(log_path, "r", encoding="utf-8") as log_file:
+        return log_file.read().strip()
 
 
 def extract_codex_final_message(log_path: str) -> str:
@@ -2825,6 +2835,56 @@ def print_pull_request_discussion(pr_number: int) -> None:
         print("  Review details: none")
 
 
+def check_pi_review_authentication(review_model: str) -> bool:
+    """Check Pi review authentication without invoking a model.
+
+    §FS-automated-pr-review
+    """
+    cmd: list[str] = [
+        "pi", "auth", "check",
+        "--provider", PI_REVIEW_PROVIDER,
+        "--model", review_model,
+        "--json",
+    ]
+    try:
+        result: subprocess.CompletedProcess = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except OSError as exc:
+        print(f"ERROR: Pi review authentication check could not start: {exc}", file=sys.stderr)
+        return False
+
+    try:
+        payload: object = json.loads(result.stdout)
+    except json.JSONDecodeError:
+        payload = None
+    if (
+            result.returncode == 0
+            and isinstance(payload, dict)
+            and payload.get("status") == "ready"
+            and payload.get("provider") == PI_REVIEW_PROVIDER
+    ):
+        return True
+
+    details: str = "\n".join(
+        output.strip()
+        for output in (result.stderr, result.stdout)
+        if output.strip()
+    )
+    print(
+        (
+            f"ERROR: Pi review authentication is not ready for provider '{PI_REVIEW_PROVIDER}' "
+            f"and model '{review_model}'."
+            + (f"\n{details}" if details else "")
+        ),
+        file=sys.stderr,
+    )
+    return False
+
+
 def review_pull_request(
         pr_number: int,
         reachability_metadata_path: str,
@@ -2832,24 +2892,30 @@ def review_pull_request(
         pr_url: str | None = None,
         coordinates: str | None = None,
 ) -> bool:
-    """Run a Codex review for the specified pull request number in the target repository."""
+    """Run a Pi review for the specified pull request number in the target repository.
+
+    §FS-automated-pr-review
+    """
+    if not check_pi_review_authentication(review_model):
+        return False
     if pr_url is None:
         pr_url = get_pull_request_url(pr_number)
     review_worktree_path = create_review_workspace(reachability_metadata_path, pr_number)
     prompt = build_review_prompt(pr_number)
     cmd = [
-        "codex", "exec",
-        "--dangerously-bypass-approvals-and-sandbox",
-        "--json",
-        "-c", 'reasoning.effort="medium"',
-        "-m", review_model,
+        "pi", "-p",
+        "--no-session",
+        "--approve",
+        "--provider", PI_REVIEW_PROVIDER,
+        "--model", review_model,
+        "--thinking", "medium",
         prompt,
     ]
     log_path = get_review_log_path(pr_number, coordinates)
     log_path_display = display_log_path(log_path)
-    print(f"\n[Reviewing PR #{pr_number} with Codex in an isolated worktree and submitting the review to GitHub.]")
+    print(f"\n[Reviewing PR #{pr_number} with Pi in an isolated worktree and submitting the review to GitHub.]")
     print(f"[PR link: {pr_url}]")
-    print(f"[Codex review log: {log_path_display}]")
+    print(f"[Pi review log: {log_path_display}]")
     try:
         with open(log_path, "w", encoding="utf-8") as log_file:
             result = subprocess.run(
@@ -2858,13 +2924,13 @@ def review_pull_request(
                 stdout=log_file,
                 stderr=subprocess.STDOUT,
                 text=True,
-                timeout=CODEX_REVIEW_TIMEOUT_SECONDS,
+                timeout=PI_REVIEW_TIMEOUT_SECONDS,
                 check=False,
             )
     except subprocess.TimeoutExpired:
         print(
             (
-                f"ERROR: Codex PR review timed out after {CODEX_REVIEW_TIMEOUT_SECONDS} seconds "
+                f"ERROR: Pi PR review timed out after {PI_REVIEW_TIMEOUT_SECONDS} seconds "
                 f"for PR #{pr_number}. See {log_path_display}."
             ),
             file=sys.stderr,
@@ -2873,18 +2939,12 @@ def review_pull_request(
         return False
 
     try:
-        final_findings = extract_codex_final_message(log_path)
-        token_usage = extract_codex_token_usage_summary(log_path, review_model)
-        token_usage_line = (
-            f"[Codex review token usage for PR #{pr_number}: {token_usage}]"
-            if token_usage
-            else f"[Codex review token usage for PR #{pr_number}: unavailable in {log_path_display}]"
-        )
+        final_findings = read_log_text(log_path)
         if result.returncode != 0:
             output_tail = read_log_tail(log_path)
             print(
                 (
-                    f"ERROR: Codex PR review failed for PR #{pr_number} with exit code {result.returncode}. "
+                    f"ERROR: Pi PR review failed for PR #{pr_number} with exit code {result.returncode}. "
                     f"PR: {pr_url}. Log: {log_path_display}."
                     + (f"\n{output_tail}" if output_tail else "")
                 ),
@@ -2892,7 +2952,6 @@ def review_pull_request(
             )
             if final_findings:
                 print(f"[Final findings for PR #{pr_number}]\n{final_findings}")
-            print(token_usage_line)
             return False
 
         print(f"[Finished review for PR #{pr_number}: {pr_url}]")
@@ -2900,7 +2959,6 @@ def review_pull_request(
             print(f"[Final findings for PR #{pr_number}]\n{final_findings}")
         else:
             print(f"[Final findings for PR #{pr_number}: unavailable in {log_path_display}]")
-        print(token_usage_line)
         print_pull_request_discussion(pr_number)
         return True
     finally:
@@ -2908,7 +2966,7 @@ def review_pull_request(
 
 
 def build_review_prompt(pr_number: int) -> str:
-    """Build the Codex prompt for an isolated pull-request review."""
+    """Build the Pi prompt for an isolated pull-request review."""
     return (
         f"Review pull request #{pr_number} in the current GitHub repository. "
         f"Submit the review directly on GitHub for exactly PR #{pr_number}. "
@@ -8423,7 +8481,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     mode.add_argument(
         "--review-pr",
         metavar="LABEL",
-        help="Review open pull requests with the given GitHub label using Codex.",
+        help="Review open pull requests with the given GitHub label using Pi.",
     )
     mode.add_argument(
         "--run-work-queues",
@@ -8462,7 +8520,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--review-model",
         default=DEFAULT_REVIEW_MODEL,
-        help=f"Codex model used for `--review-pr` runs (default: {DEFAULT_REVIEW_MODEL}).",
+        help=f"Pi model used for `--review-pr` runs (default: {DEFAULT_REVIEW_MODEL}).",
     )
     parser.add_argument(
         "--period",

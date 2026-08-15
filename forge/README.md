@@ -18,6 +18,17 @@ parsing, self-updates, queue processing, sleeping, and re-execing the latest
 script before the next cycle.
 §DW-do-work-loop
 
+Before self-update or queue processing, every worker process prints and runs a
+deterministic startup preflight for the tools, environment variables,
+filesystem and network permissions, GitHub repository/project access, Docker,
+and agent authentication required by its enabled queues. A failed required
+check exits before Forge claims or reviews anything.
+§FS-forge-startup-preflight
+
+The 25.0.x validation lane is pinned in `graalvm-versions.json`; update that
+file when Forge should move to a newer 25.0.x release. The main and EA lanes are
+checked against the latest published GA and EA release metadata at startup.
+
 ```console
 ./do-work.sh [options] [forge-branch]
 ```
@@ -79,7 +90,10 @@ Required local tools depend on the work queue being processed:
 - `gh` for issue, PR, and review automation.
 - `pi` for Pi-agent strategies and automated style recovery.
 - `codex` for Codex-agent strategies and metadata fixups.
-- GraalVM available through `GRAALVM_HOME` or `JAVA_HOME`.
+- For issue work, set `GRAALVM_HOME`, `GRAALVM_HOME_25_0`, and
+  `GRAALVM_HOME_LATEST_EA` to the exact versions printed by startup preflight.
+  Each distribution must include Native Image and the reachability-metadata
+  schema. Review-only work needs only `JAVA_HOME` pointing to JDK 25.
 §STRAT-forge-predefined-strategy-contract
 
 Local Forge automation must run without `sudo`. Local CI verification fails
