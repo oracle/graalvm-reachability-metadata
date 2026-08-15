@@ -25,7 +25,7 @@ PRIORITY_TIER=""
 PARALLELISM="${FORGE_PARALLELISM:-1}"
 REVIEW_LABEL="${FORGE_REVIEW_LABEL:-}"
 REVIEW_LIMIT="${FORGE_REVIEW_LIMIT:-1}"
-REVIEW_MODEL="${FORGE_REVIEW_MODEL:-gpt-5.4}"
+REVIEW_MODEL="${FORGE_REVIEW_MODEL:-gpt-5.6-terra}"
 USER_REQUESTED_ONLY="${FORGE_USER_REQUESTED_ISSUES_ONLY:-0}"
 WORK_STRATEGY_NAME="${FORGE_STRATEGY_NAME:-dynamic_access_main_sources_pi_gpt-5.5}"
 GITHUB_RATE_LIMIT_EXIT_CODE=75
@@ -414,6 +414,22 @@ process_work_queues() {
         "$PYTHON_BIN" "$SCRIPT_DIR/forge_metadata.py" "${forge_metadata_args[@]}"
 }
 
+run_startup_preflight() {
+    local preflight_script="$SCRIPT_DIR/utility_scripts/startup_preflight.py"
+
+    if ! command -v "$PYTHON_BIN" >/dev/null 2>&1; then
+        echo "ERROR: Forge startup preflight requires PYTHON_BIN='$PYTHON_BIN' to resolve to an executable." >&2
+        echo "Fix: install Python 3 or export PYTHON_BIN=/absolute/path/to/python3." >&2
+        return 1
+    fi
+
+    log "Running deterministic Forge startup preflight before any work starts."
+    "$PYTHON_BIN" "$preflight_script" \
+        --forge-dir "$SCRIPT_DIR" \
+        --python-bin "$PYTHON_BIN" \
+        --review-model "$REVIEW_MODEL"
+}
+
 run_cycle() {
     local iteration="${DO_UP_TO_DATE_WORK_ITERATION:-0}"
 
@@ -656,6 +672,7 @@ fi
 
 export_work_configuration
 exit_if_stop_requested
+run_startup_preflight
 run_cycle
 
 if [[ "$RUN_ONCE" == "1" ]]; then
