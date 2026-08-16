@@ -12,7 +12,12 @@ import java.util.Map;
 import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
+import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
 import io.confluent.kafka.serializers.context.NullContextNameStrategy;
+import io.confluent.kafka.serializers.context.strategy.ContextNameStrategy;
+import io.confluent.kafka.serializers.protobuf.KafkaProtobufSerializerConfig;
+import io.confluent.kafka.serializers.subject.strategy.ReferenceSubjectNameStrategy;
+import io.confluent.kafka.serializers.subject.strategy.SubjectNameStrategy;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
@@ -26,8 +31,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 /// in-memory {@code mock://} Schema Registry, so the test needs no live Kafka or
 /// Schema Registry service. The Avro round trip reaches {@code AbstractKafkaSchemaSerDe},
 /// {@code AbstractKafkaSchemaSerDeConfig}, and the {@code schema.id} serializers and
-/// deserializers, while the parameterized cases reflectively load every subject- and
-/// context-name strategy exactly as the config does at runtime, which is what the
+/// deserializers. Every subject-, reference-subject- and context-name strategy is loaded
+/// the only way Confluent loads them, by naming the class in configuration and letting
+/// the serde config instantiate it reflectively, which is what the conditional
 /// reachability metadata for this artifact must cover.
 class KafkaSchemaSerializerTest {
 
@@ -53,10 +59,15 @@ class KafkaSchemaSerializerTest {
         return record;
     }
 
+    private static Map<String, Object> configWithRegistryScope(String scope) {
+        Map<String, Object> config = new HashMap<>();
+        config.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "mock://" + scope);
+        return config;
+    }
+
     @Test
     void roundTripThroughMockSchemaRegistry() {
-        Map<String, Object> config = new HashMap<>();
-        config.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "mock://round-trip");
+        Map<String, Object> config = configWithRegistryScope("round-trip");
         config.put(AbstractKafkaSchemaSerDeConfig.CONTEXT_NAME_STRATEGY, NullContextNameStrategy.class.getName());
 
         try (KafkaAvroSerializer serializer = new KafkaAvroSerializer();
@@ -79,8 +90,7 @@ class KafkaSchemaSerializerTest {
             "io.confluent.kafka.serializers.subject.RecordNameStrategy",
             "io.confluent.kafka.serializers.subject.TopicRecordNameStrategy"})
     void serializesWithEachSubjectNameStrategy(String strategyClass) {
-        Map<String, Object> config = new HashMap<>();
-        config.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, "mock://subject-strategies");
+        Map<String, Object> config = configWithRegistryScope("subject-strategies");
         config.put(AbstractKafkaSchemaSerDeConfig.VALUE_SUBJECT_NAME_STRATEGY, strategyClass);
 
         try (KafkaAvroSerializer serializer = new KafkaAvroSerializer()) {
@@ -90,20 +100,55 @@ class KafkaSchemaSerializerTest {
         }
     }
 
+    /// {@code AssociatedNameStrategy} needs a Schema Registry that serves associated
+    /// subjects, so it is covered here through the same configuration-driven load the
+    /// serializers perform instead of through a serialization round trip.
     @ParameterizedTest
     @ValueSource(strings = {
             "io.confluent.kafka.serializers.subject.TopicNameStrategy",
             "io.confluent.kafka.serializers.subject.RecordNameStrategy",
             "io.confluent.kafka.serializers.subject.TopicRecordNameStrategy",
+            "io.confluent.kafka.serializers.subject.AssociatedNameStrategy"})
+    void configurationLoadsSubjectNameStrategy(String strategyClass) {
+        Map<String, Object> config = configWithRegistryScope("subject-strategy-config");
+        config.put(AbstractKafkaSchemaSerDeConfig.KEY_SUBJECT_NAME_STRATEGY, strategyClass);
+        config.put(AbstractKafkaSchemaSerDeConfig.VALUE_SUBJECT_NAME_STRATEGY, strategyClass);
+
+        KafkaAvroSerializerConfig serdeConfig = new KafkaAvroSerializerConfig(config);
+        SubjectNameStrategy keyStrategy = serdeConfig.keySubjectNameStrategy();
+        SubjectNameStrategy valueStrategy = serdeConfig.valueSubjectNameStrategy();
+
+        assertThat(keyStrategy.getClass().getName()).isEqualTo(strategyClass);
+        assertThat(valueStrategy.getClass().getName()).isEqualTo(strategyClass);
+    }
+
+    @Test
+    void configurationLoadsContextNameStrategy() {
+        String strategyClass = NullContextNameStrategy.class.getName();
+        Map<String, Object> config = configWithRegistryScope("context-strategy-config");
+        config.put(AbstractKafkaSchemaSerDeConfig.CONTEXT_NAME_STRATEGY, strategyClass);
+
+        ContextNameStrategy strategy = new KafkaAvroSerializerConfig(config).contextNameStrategy();
+
+        assertThat(strategy.getClass().getName()).isEqualTo(strategyClass);
+        assertThat(strategy.contextName(TOPIC)).isNull();
+    }
+
+    /// The reference-subject-name strategies are configured by the serdes that resolve
+    /// schema references, so {@code KafkaProtobufSerializerConfig} is the public entry
+    /// point that loads them; it extends {@code AbstractKafkaSchemaSerDeConfig} like the
+    /// Avro config does.
+    @ParameterizedTest
+    @ValueSource(strings = {
             "io.confluent.kafka.serializers.subject.DefaultReferenceSubjectNameStrategy",
-            "io.confluent.kafka.serializers.subject.QualifiedReferenceSubjectNameStrategy",
-            "io.confluent.kafka.serializers.subject.AssociatedNameStrategy",
-            "io.confluent.kafka.serializers.context.NullContextNameStrategy"})
-    void strategyTypesAreReflectivelyInstantiable(String strategyClass) throws Exception {
-        // Confluent loads these strategies reflectively from configuration via their
-        // public no-arg constructor; the same path must work under native image.
-        Class<?> type = Class.forName(strategyClass);
-        Object instance = type.getDeclaredConstructor().newInstance();
-        assertThat(instance).isNotNull();
+            "io.confluent.kafka.serializers.subject.QualifiedReferenceSubjectNameStrategy"})
+    void configurationLoadsReferenceSubjectNameStrategy(String strategyClass) {
+        Map<String, Object> config = configWithRegistryScope("reference-strategy-config");
+        config.put(KafkaProtobufSerializerConfig.REFERENCE_SUBJECT_NAME_STRATEGY_CONFIG, strategyClass);
+
+        ReferenceSubjectNameStrategy strategy =
+                new KafkaProtobufSerializerConfig(config).referenceSubjectNameStrategyInstance();
+
+        assertThat(strategy.getClass().getName()).isEqualTo(strategyClass);
     }
 }
