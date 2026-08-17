@@ -62,6 +62,8 @@ def _default_phases() -> dict[str, dict[str, Any]]:
             "status": STATUS_PENDING,
             "isPushed": False,
             "branch": None,
+            "publicationId": None,
+            "publicationTimestamp": None,
             "coverageFollowUpIssueNumber": None,
         },
     }
@@ -308,6 +310,25 @@ class ContinuationMarker:
         """Record the branch that publication should use."""
         self._phase(PHASE_PUBLICATION)["branch"] = branch_name
         self.recompute_continue_from()
+
+    def record_publication_identity(self, publication_id: str, branch_name: str, timestamp: str) -> None:
+        """Persist the stable Actions publication identity before the push."""
+        self._phase(PHASE_PUBLICATION).update({
+            "publicationId": publication_id,
+            "publicationTimestamp": timestamp,
+            "branch": branch_name,
+        })
+        self.recompute_continue_from()
+
+    def publication_id(self) -> str | None:
+        """Return the stable Actions publication identity, when assigned."""
+        publication_id = self._phase(PHASE_PUBLICATION).get("publicationId")
+        return str(publication_id) if publication_id else None
+
+    def publication_timestamp(self) -> str | None:
+        """Return the timestamp fixed when publication identity was assigned."""
+        timestamp = self._phase(PHASE_PUBLICATION).get("publicationTimestamp")
+        return str(timestamp) if timestamp else None
 
     def record_publication_pushed(self, branch_name: str) -> None:
         """Record that publication pushed the PR branch."""

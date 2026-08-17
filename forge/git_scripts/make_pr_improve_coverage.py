@@ -6,15 +6,11 @@
 import argparse
 import json
 import os
-import shutil
-import subprocess
 import sys
 
 from git_scripts.common_git import (
     ensure_gh_authenticated,
-    gh,
     parse_coordinate_parts,
-    get_origin_owner,
     stage_and_commit as stage_and_commit_common,
     find_issue_for_coordinates as find_issue_common,
     get_model_display_name,
@@ -22,16 +18,13 @@ from git_scripts.common_git import (
     load_library_stats,
     format_stats_before_after,
     format_forge_revision_section,
-    run_git_transport,
 )
 from git_scripts.pr_publication import (
     BASE_BRANCH,
     REPO,
-    REVIEWERS,
-    bound_pr_body,
-    parse_pr_number,
     publish_branch,
 )
+from git_scripts.publication_descriptor import descriptor_input_from_pending_metrics
 from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
 from utility_scripts.metrics_writer import (
@@ -45,13 +38,10 @@ from utility_scripts.dynamic_access_exhaust_report import (
 )
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 from utility_scripts.local_ci_verification import (
-    HUMAN_INTERVENTION_LABEL,
     LOCAL_CI_VERIFICATION_KEY,
     format_local_ci_verification_pr_section,
-    local_ci_requires_human_intervention,
 )
 from utility_scripts.library_update_alias_split import (
-    ensure_alias_split_follow_up_issue,
     format_alias_split_pr_section,
     load_alias_split_metrics,
     maybe_split_library_update_tested_versions,
@@ -289,66 +279,6 @@ def stage_and_commit(
     return candidate_paths
 
 
-def create_pull_request(
-        branch: str, coordinates: str, metrics_repo_root: str, repo_path: str,
-        group: str, artifact: str, version: str,
-        baseline_snapshot: dict | None = None,
-        issue_number: int | None = None,
-        chunked_dynamic_access: bool = False,
-        chunk_final: bool = True,
-) -> int | None:
-    """Create a GitHub pull request for the current branch."""
-    if shutil.which("gh") is None:
-        print("gh CLI not found. Skipping PR creation.")
-        return
-
-    origin_owner = get_origin_owner(cwd=repo_path)
-
-    view = gh("pr", "view", "--repo", REPO, "--head", f"{origin_owner}:{branch}", check=False)
-    if view.returncode == 0:
-        print(f"Pull request already exists for branch {branch}.")
-        return
-
-    ensure_alias_split_follow_up_issue(
-        metrics_repo_path=metrics_repo_root,
-        current_issue_number=issue_number,
-        repo=REPO,
-    )
-
-    title, body, matched = build_pull_request_preview(
-        coordinates=coordinates,
-        metrics_repo_root=metrics_repo_root,
-        repo_path=repo_path,
-        group=group,
-        artifact=artifact,
-        version=version,
-        baseline_snapshot=baseline_snapshot,
-        issue_number=issue_number,
-        chunked_dynamic_access=chunked_dynamic_access,
-        chunk_final=chunk_final,
-    )
-
-    cmd = [
-        "gh", "pr", "create",
-        "--repo", REPO,
-        "--title", title,
-        "--body", bound_pr_body(body),
-        "--base", BASE_BRANCH,
-        "--head", f"{origin_owner}:{branch}",
-        "--label", "GenAI",
-        "--label", "library-update-request",
-    ]
-    if chunked_dynamic_access:
-        cmd.extend(["--label", "chunked-dynamic-access"])
-    if local_ci_requires_human_intervention(matched.get(LOCAL_CI_VERIFICATION_KEY)):
-        cmd.extend(["--label", HUMAN_INTERVENTION_LABEL])
-    if REVIEWERS:
-        for r in REVIEWERS:
-            cmd.extend(["--reviewer", r])
-    result = gh(*cmd[1:])
-    return parse_pr_number(result.stdout)
-
-
 def build_pull_request_preview(
         coordinates: str,
         metrics_repo_root: str,
@@ -485,6 +415,8 @@ def push_current_branch_to_origin(
         coordinates: str,
         repo_path: str,
         metrics_repo_path: str | None = None,
+        issue_number: int | None = None,
+        baseline_snapshot: dict | None = None,
         chunked_dynamic_access: bool = False,
         chunk_final: bool = True,
 ) -> str:
@@ -512,12 +444,67 @@ def push_current_branch_to_origin(
             metrics_repo_path=metrics_repo_path,
         )
 
+    def descriptor_input():
+        if issue_number is None or metrics_repo_path is None:
+            raise ValueError("Publication requires an issue number and metrics path")
+        exhaust_report = load_dynamic_access_exhaust_report(repo_path, coordinates)
+        alias_split = load_alias_split_metrics(metrics_repo_path)
+        follow_ups = []
+        if alias_split is not None:
+            follow_ups.append({
+                "type": "tested_version_split",
+                "coordinate": str(alias_split["successor_coordinates"]),
+                "tested_version": str(alias_split["failed_version"]),
+                "reason": f"JVM compatibility first failed at {alias_split['failed_version']}",
+            })
+        render = {
+            "baseline_stats": baseline_snapshot.get("stats") if baseline_snapshot else None,
+            "library_stats": load_library_stats(repo_path, coordinates),
+            "baseline_metadata_entries": (
+                baseline_snapshot.get("metadata_entries") if baseline_snapshot else None
+            ),
+            "current_metadata_entries": count_metadata_entries(
+                repo_path, group, artifact, library_version,
+            ),
+            "baseline_test_only_entries": (
+                baseline_snapshot.get("test_only_metadata_entries") if baseline_snapshot else None
+            ),
+            "current_test_only_entries": count_test_only_metadata_entries(
+                repo_path, group, artifact, library_version,
+            ),
+            "library_update_target": load_library_update_target_sidecar(metrics_repo_path),
+            "dynamic_access": None if exhaust_report is None else exhaust_report.to_dict(),
+            "alias_split": alias_split,
+        }
+        return descriptor_input_from_pending_metrics(
+            metrics_repo_path=metrics_repo_path,
+            issue_number=issue_number,
+            task_type="library-update-request",
+            template_type="library-update-request",
+            chunked_dynamic_access=chunked_dynamic_access,
+            chunk_final=chunk_final or not chunked_dynamic_access,
+            follow_ups=follow_ups,
+            render=render,
+        )
+
+    def record_chunk_identity(publication_id: str, branch: str) -> None:
+        if not chunked_dynamic_access or chunk_final:
+            return
+        report_path = find_dynamic_access_exhaust_report_path(repo_path, coordinates)
+        if report_path is None:
+            raise ValueError("Chunked publication requires an exhaust report")
+        report = DynamicAccessExhaustReport.load(report_path)
+        report.record_publication_identity(publication_id, branch)
+        report.save(report_path)
+
     new_branch, _ = publish_branch(
         repo_path=repo_path,
         branch_suffix=branch_suffix,
         coordinates=coordinates,
         stage=stage,
         metrics_repo_path=metrics_repo_path,
+        descriptor_input=descriptor_input,
+        before_stage=record_chunk_identity,
         before_verification=before_verification,
     )
 
@@ -569,32 +556,16 @@ def main(argv=None) -> None:
 
     group, artifact, version = parse_coordinate_parts(coordinates)
     baseline_snapshot = load_and_remove_baseline_snapshot(repo_path, group, artifact, version)
-    branch = push_current_branch_to_origin(
+    if issue_number is None:
+        issue_number = find_issue_common(coordinates, REPO)
+    push_current_branch_to_origin(
         coordinates=coordinates,
         repo_path=repo_path,
         metrics_repo_path=metrics_repo_path,
+        issue_number=issue_number,
+        baseline_snapshot=baseline_snapshot,
         chunked_dynamic_access=chunked_dynamic_access,
         chunk_final=chunk_final,
-    )
-    pr_number = create_pull_request(
-        branch,
-        coordinates,
-        metrics_repo_path,
-        repo_path,
-        group,
-        artifact,
-        version,
-        baseline_snapshot,
-        issue_number=issue_number,
-        chunked_dynamic_access=chunked_dynamic_access,
-        chunk_final=chunk_final or not chunked_dynamic_access,
-    )
-    update_dynamic_access_exhaust_report_after_publish(
-        coordinates,
-        repo_path,
-        branch,
-        pr_number,
-        chunked_dynamic_access,
     )
 
 

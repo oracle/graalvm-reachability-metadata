@@ -38,7 +38,7 @@ A run is an ordered sequence of phases. Continuation classifies each phase by it
 | `fix` | continuous | Continue from the preserved branch at the recorded `iteration`. |
 | `explore` | continuous | Rerun the phase; the regenerated dynamic-access report self-prunes to uncovered classes, and the recorded `exhaustedClasses` keep already-abandoned classes from being retried. |
 | `finalization` | discrete | If entered but not completed, redo from the preserved branch. |
-| `publication` | discrete (remote) | If `isPushed`, the branch already landed on the recorded `branch` and resume finishes publication from there; otherwise run the full publication pipeline (§GIT-shared-publication-pipeline). |
+| `publication` | discrete (remote) | If `isPushed`, the exact descriptor branch already landed and local publication is complete; report it without another mutation. Otherwise reuse the recorded publication identity and run local finalization (§GIT-shared-publication-pipeline). |
 
 The unifying invariant: **the preserved branch HEAD is the cursor.** The
 committed tree is the source of truth for where a phase got to, so the marker
@@ -82,7 +82,8 @@ classes re-appear in the regenerated report.
                       "chunkClassCount": 15, "chunkProcessedClassCount": 4 },
     "finalization": { "status": "completed" },
     "publication":  { "status": "pending",   "isPushed": false,
-                      "branch": "ai/<login>/add-lib-support-com.acme-widget-1.4.0" }
+                      "publicationId": "9102-library-new-request-20260618T144456Z",
+                      "branch": "ai/<login>/add-lib-support-com.acme-widget-1.4.0-9102-20260618t144456z" }
   }
 }
 ```
@@ -115,8 +116,9 @@ because the marker never enters a successful run's publication staging
   can skip the preflight agent while still passing the original advisory setup
   context back to the workflow driver.
 - `publicationMetrics` records the committed per-library execution-metrics
-  entry (`library` plus `timestamp`) and only the local-only PR fields needed to
-  reconstruct `.pending_metrics.json` during publication resume. Durable metrics
+  entry (`library` plus `timestamp`) and only the local-only descriptor fields
+  needed to reconstruct `.pending_metrics.json` during publication resume.
+  Durable metrics
   remain the source for normal cost, token, coverage, and status evidence
   (§FS-forge-run-metrics); the marker carries local extras such as
   `post_generation_intervention`, `local_ci_verification`, and
@@ -133,8 +135,8 @@ because the marker never enters a successful run's publication staging
   chunk budget already spent by a failed run, so resume continues the same
   chunk instead of starting a full new threshold-sized chunk.
 - `publication.isPushed` is stored rather than derived so a stale remote branch
-  from an earlier aborted attempt cannot be mistaken for this run's push;
-  `publication.branch` is stored so resume targets the original branch namespace
+  cannot be mistaken for this run's exact push; `publication.branch` and
+  `publication.publicationId` preserve the unique descriptor identity and branch
   regardless of which identity runs the resume.
 
 ## 3. Resume flow
@@ -160,21 +162,18 @@ removes the `resumable` label, releases the issue claim, and does not post a
 second human-intervention analysis because the first failed-run report remains
 the maintainer-facing diagnostic (§FS-human-intervention-policy).
 
-Publication resume hinges on the push: the branch is read from the marker
-and `isPushed` records whether the branch is already pushed, so a resumed run only
-does the PR making. Opening the pull request is the workflow's
-completion — a marker only exists for a run that failed before that point, so
-continuation never reaches a state with the pull request already open.
-In publication resume mode, Forge creates a clearance commit before it publishes
-the PR branch. The clearance commit deletes resume helper artifacts from the
-branch: the continuation marker and human-intervention logs. Pending metrics are
-a local PR-publication input, so they must remain readable until PR creation
-finishes even when the cleanup removes them from the branch index.
-If that transient pending file is missing in a later publication resume, Forge
-reconstructs it from the durable execution-metrics entry referenced by
-`publicationMetrics` and overlays the marker's `extras`. A publication marker
-without `publicationMetrics` is incomplete: Forge does not guess from the latest
-durable execution-metrics entry because that would lose local-only PR fields.
+Publication resume hinges on the single push. The marker supplies the stable
+publication ID and branch. When `isPushed` is false, Forge clears resume-only
+artifacts, reconstructs any missing pending metrics, writes the descriptor,
+commits, and pushes. When `isPushed` is true, the exact local handoff is already
+complete; Forge does not create a PR or push another bookkeeping commit.
+
+Pending metrics remain readable until descriptor creation. If the transient
+file is missing, Forge reconstructs it from the durable execution-metrics entry
+referenced by `publicationMetrics` and overlays marker extras. A publication
+marker without those inputs is incomplete: Forge does not guess from the latest
+metrics entry. Actions publication proceeds independently from the pushed
+descriptor and its failures remain preserved for manual inspection.
 
 ## 4. Relationship to human intervention
 
@@ -192,16 +191,13 @@ generated tree (including those unstaged changes) to the preserved branch, so th
 branch is never silently dropped. The marker rides that same preserved branch,
 giving a later automated run — or the maintainer — a precise place to continue.
 
-Because publication runs only after the workflow has already produced a
-PR-eligible result, a publication failure carries a *successful* workflow status
-and therefore no generation-analysis candidate. Forge still labels the issue
-`human-intervention` and `resumable` when the preserved branch carries a
-continuation marker whose authoritative `continueFrom` is `publication`, rather
-than treating the successful workflow status as a non-failure and reverting the
-issue to `Todo` with the marker orphaned. Markers for earlier phases do not
-trigger this publication-specific fallback. The `resumable` label is the
-precondition resume discovery requires (§3). A repeated failure in the same
-resumed phase only removes
-`resumable`; it leaves the earlier `human-intervention` signal and comment in
-place instead of adding another report. External or transient failures take no
-issue action and write no marker, exactly as today.
+Because local finalization runs only after a PR-eligible workflow result, a
+failure before the verified push carries a successful workflow status but no
+generation-analysis candidate. Forge still preserves and marks that local
+failure as resumable rather than orphaning the marker. A repeated failure in the
+same resumed phase removes `resumable` without adding another analysis. External
+or transient local failures retain their existing no-action policy.
+
+A Branch Ready or Actions publisher failure occurs after local completion and is
+not converted into Forge failure handling: it leaves the branch, assignment,
+labels, and `In Progress` project state untouched for manual inspection.

@@ -6,15 +6,11 @@
 import argparse
 import json
 import os
-import shutil
-import subprocess
 import sys
 from dataclasses import dataclass
 
 from git_scripts.common_git import (
     ensure_gh_authenticated,
-    gh,
-    get_origin_owner,
     parse_coordinate_parts,
     find_issue_for_coordinates as find_issue_common,
     get_model_display_name,
@@ -22,17 +18,14 @@ from git_scripts.common_git import (
     load_library_stats,
     format_stats_section,
     format_forge_revision_section,
-    run_git_transport,
 )
 from git_scripts.pr_publication import (
     BASE_BRANCH,
     REPO,
-    REVIEWERS,
-    bound_pr_body,
-    parse_pr_number,
     publish_branch,
     stage_library_version_paths,
 )
+from git_scripts.publication_descriptor import descriptor_input_from_pending_metrics
 from utility_scripts.metrics_writer import (
     collect_new_library_support_quality_issues,
     read_pending_metrics,
@@ -43,10 +36,8 @@ from utility_scripts.dynamic_access_exhaust_report import (
 )
 from utility_scripts.dynamic_access_report import DynamicAccessCallSite, load_dynamic_access_coverage_report
 from utility_scripts.local_ci_verification import (
-    HUMAN_INTERVENTION_LABEL,
     LOCAL_CI_VERIFICATION_KEY,
     format_local_ci_verification_pr_section,
-    local_ci_requires_human_intervention,
 )
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 from utility_scripts.test_quality_checks import (
@@ -366,63 +357,6 @@ def format_chunked_dynamic_access_summary(
     )
 
 
-def create_pull_request(
-        branch,
-        coordinates,
-        metrics_repo_root,
-        repo_path,
-        issue_number=None,
-        chunked_dynamic_access: bool = False,
-        chunk_final: bool = True,
-):
-    """Create a GitHub pull request for the current branch and matching issue.
-
-    Links the PR to its issue per §GIT-issue-linking and applies the
-    workflow PR label, reviewer list, and
-    human-intervention visibility.
-    """
-    if shutil.which("gh") is None:
-        print("gh CLI not found. Skipping PR creation.")
-        return
-
-    origin_owner = get_origin_owner(cwd=repo_path)
-
-    view = gh("pr", "view", "--repo", REPO, "--head", f"{origin_owner}:{branch}", check=False)
-
-    if view.returncode == 0:
-        print(f"Pull request already exists for branch {branch}.")
-        return
-
-    title, body, matched = build_pull_request_preview(
-        coordinates=coordinates,
-        metrics_repo_root=metrics_repo_root,
-        repo_path=repo_path,
-        issue_number=issue_number,
-        chunked_dynamic_access=chunked_dynamic_access,
-        chunk_final=chunk_final,
-    )
-
-    cmd = [
-        "gh", "pr", "create",
-        "--repo", REPO,
-        "--title", title,
-        "--body", bound_pr_body(body),
-        "--base", BASE_BRANCH,
-        "--head", f"{origin_owner}:{branch}",
-        "--label", "GenAI",
-        "--label", "library-new-request",
-    ]
-    if chunked_dynamic_access:
-        cmd.extend(["--label", "chunked-dynamic-access"])
-    if local_ci_requires_human_intervention(matched.get(LOCAL_CI_VERIFICATION_KEY)):
-        cmd.extend(["--label", HUMAN_INTERVENTION_LABEL])
-    if REVIEWERS:
-        for r in REVIEWERS:
-            cmd.extend(["--reviewer", r])
-    result = gh(*cmd[1:])
-    return parse_pr_number(result.stdout)
-
-
 def build_pull_request_preview(
         coordinates: str,
         metrics_repo_root: str,
@@ -564,6 +498,7 @@ def push_current_branch_to_origin(
         coordinates,
         repo_path,
         metrics_repo_path=None,
+        issue_number: int | None = None,
         chunked_dynamic_access: bool = False,
         chunk_final: bool = True,
 ):
@@ -590,12 +525,48 @@ def push_current_branch_to_origin(
             group, artifact, library_version, repo_path, f"Add support for {coordinates}",
         )
 
+
+    def descriptor_input():
+        if issue_number is None:
+            raise ValueError("Publication requires an explicit issue number")
+        exhaust_report = load_dynamic_access_exhaust_report(repo_path, coordinates)
+        evidence = load_dynamic_access_metadata_evidence(repo_path, coordinates)
+        render = {
+            "library_stats": load_library_stats(repo_path, coordinates),
+            "dynamic_access": None if exhaust_report is None else exhaust_report.to_dict(),
+            "dynamic_access_evidence": None if evidence is None else {
+                "covered_call_sites": evidence.covered_call_sites,
+                "metadata_rules": evidence.metadata_rules,
+            },
+        }
+        return descriptor_input_from_pending_metrics(
+            metrics_repo_path=metrics_repo_path,
+            issue_number=issue_number,
+            task_type="library-new-request",
+            template_type="library-new-request",
+            chunked_dynamic_access=chunked_dynamic_access,
+            chunk_final=chunk_final or not chunked_dynamic_access,
+            render=render,
+        )
+
+    def record_chunk_identity(publication_id: str, branch: str) -> None:
+        if not chunked_dynamic_access or chunk_final:
+            return
+        report_path = find_dynamic_access_exhaust_report_path(repo_path, coordinates)
+        if report_path is None:
+            raise ValueError("Chunked publication requires an exhaust report")
+        report = DynamicAccessExhaustReport.load(report_path)
+        report.record_publication_identity(publication_id, branch)
+        report.save(report_path)
+
     new_branch, _ = publish_branch(
         repo_path=repo_path,
         branch_suffix=branch_suffix,
         coordinates=coordinates,
         stage=stage,
         metrics_repo_path=metrics_repo_path,
+        descriptor_input=descriptor_input,
+        before_stage=record_chunk_identity,
     )
 
     return new_branch
@@ -675,29 +646,16 @@ def main(argv=None):
     ensure_gh_authenticated()
     validate_run_quality(coordinates, metrics_repo_path, repo_path)
     validate_no_scaffold_placeholders(coordinates, repo_path)
+    if issue_number is None:
+        issue_number = find_issue_common(coordinates, REPO)
 
-    branch = push_current_branch_to_origin(
+    push_current_branch_to_origin(
         coordinates=coordinates,
         repo_path=repo_path,
         metrics_repo_path=metrics_repo_path,
-        chunked_dynamic_access=chunked_dynamic_access,
-        chunk_final=chunk_final,
-    )
-    pr_number = create_pull_request(
-        branch,
-        coordinates,
-        metrics_repo_path,
-        repo_path,
         issue_number=issue_number,
         chunked_dynamic_access=chunked_dynamic_access,
-        chunk_final=chunk_final or not chunked_dynamic_access,
-    )
-    update_dynamic_access_exhaust_report_after_publish(
-        coordinates,
-        repo_path,
-        branch,
-        pr_number,
-        chunked_dynamic_access,
+        chunk_final=chunk_final,
     )
 
 

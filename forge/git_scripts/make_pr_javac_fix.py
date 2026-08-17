@@ -4,14 +4,11 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 import argparse
-import shutil
 import sys
 
 from git_scripts.common_git import (
     ensure_gh_authenticated,
-    gh,
     parse_coordinate_parts,
-    get_origin_owner,
     find_issue_for_coordinates as find_issue_common,
     get_model_display_name,
     get_agent_name,
@@ -21,17 +18,14 @@ from git_scripts.common_git import (
 from git_scripts.pr_publication import (
     BASE_BRANCH,
     REPO,
-    REVIEWERS,
-    bound_pr_body,
     format_bounded_test_diff_section,
     publish_branch,
     stage_library_version_paths,
 )
+from git_scripts.publication_descriptor import descriptor_input_from_pending_metrics
 from utility_scripts.local_ci_verification import (
-    HUMAN_INTERVENTION_LABEL,
     LOCAL_CI_VERIFICATION_KEY,
     format_local_ci_verification_pr_section,
-    local_ci_requires_human_intervention,
 )
 from utility_scripts.java_fix_coverage_follow_up import (
     format_coverage_follow_up_pr_section,
@@ -41,82 +35,6 @@ from utility_scripts.metrics_writer import read_pending_metrics
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 
 DEFAULT_PR_LABEL = "fixes-javac-fail"
-
-
-def create_pull_request(
-        branch: str,
-        old_coordinates: str,
-        new_coordinates: str,
-        group: str,
-        artifact: str,
-        old_version: str,
-        new_version: str,
-        metrics_repo_root: str,
-        repo_path: str,
-        issue_number: int | None = None,
-        pr_label: str = DEFAULT_PR_LABEL,
-        coverage_follow_up_issue_number: int | None = None,
-        coverage_follow_up_class_count: int | None = None,
-        coverage_follow_up_class_threshold: int | None = None,
-):
-    """
-    Create a GitHub pull request for the current branch with an auto-generated body,
-    linking to the matching issue and embedding a diff of test changes.
-    """
-    if shutil.which("gh") is None:
-        print("gh CLI not found. Skipping PR creation.")
-        return
-
-    # Use the fork owner from the 'origin' remote for PR head ref
-    origin_owner = get_origin_owner(cwd=repo_path)
-
-    # If a PR already exists for this branch, do nothing
-    view = gh("pr", "view", "--repo", REPO, "--head", f"{origin_owner}:{branch}", check=False)
-
-    if view.returncode == 0:
-        print(f"Pull request already exists for branch {branch}.")
-        return
-
-    title, body, metrics_entry = build_pull_request_preview(
-        old_coordinates=old_coordinates,
-        new_coordinates=new_coordinates,
-        group=group,
-        artifact=artifact,
-        old_version=old_version,
-        new_version=new_version,
-        metrics_repo_root=metrics_repo_root,
-        repo_path=repo_path,
-        issue_number=issue_number,
-        coverage_follow_up_issue_number=coverage_follow_up_issue_number,
-        coverage_follow_up_class_count=coverage_follow_up_class_count,
-        coverage_follow_up_class_threshold=coverage_follow_up_class_threshold,
-    )
-
-    cmd = [
-        "gh",
-        "pr",
-        "create",
-        "--repo",
-        REPO,
-        "--title",
-        title,
-        "--body",
-        bound_pr_body(body),
-        "--base",
-        BASE_BRANCH,
-        "--head",
-        f"{origin_owner}:{branch}",
-        "--label",
-        pr_label,
-        "--label",
-        "GenAI",
-    ]
-    if local_ci_requires_human_intervention(metrics_entry.get(LOCAL_CI_VERIFICATION_KEY)):
-        cmd.extend(["--label", HUMAN_INTERVENTION_LABEL])
-    if REVIEWERS:
-        for reviewer in REVIEWERS:
-            cmd.extend(["--reviewer", reviewer])
-    gh(*cmd[1:])
 
 
 def build_pull_request_preview(
@@ -252,7 +170,6 @@ def parse_flags(argv_list):
         flags.metrics_repo_path,
     )
     follow_up_values = (
-        flags.coverage_follow_up_issue_number,
         flags.coverage_follow_up_class_count,
         flags.coverage_follow_up_class_threshold,
     )
@@ -260,8 +177,7 @@ def parse_flags(argv_list):
             value is not None for value in follow_up_values
     ):
         parser.error(
-            "coverage follow-up issue number, class count, and threshold "
-            "must be provided together"
+            "coverage follow-up class count and threshold must be provided together"
         )
     return (
         flags.coordinates,
@@ -281,10 +197,32 @@ def push_current_branch_to_origin(
         new_version: str,
         repo_path: str,
         metrics_repo_path: str | None = None,
+        issue_number: int | None = None,
+        pr_label: str = DEFAULT_PR_LABEL,
+        coverage_follow_up_class_count: int | None = None,
+        coverage_follow_up_class_threshold: int | None = None,
 ):
     """Create a feature branch, stage and commit changes, and push to the remote."""
     group, artifact, old_version = parse_coordinate_parts(old_coordinates)
     new_coordinates = f"{group}:{artifact}:{new_version}"
+    if issue_number is None or metrics_repo_path is None:
+        raise ValueError("Publication requires an issue number and metrics path")
+    follow_ups: list[dict] = []
+    if coverage_follow_up_class_count is not None and coverage_follow_up_class_threshold is not None:
+        follow_ups.append({
+            "type": "deferred_dynamic_access_coverage",
+            "coordinate": new_coordinates,
+            "uncovered_class_count": coverage_follow_up_class_count,
+            "class_threshold": coverage_follow_up_class_threshold,
+        })
+    descriptor_input = descriptor_input_from_pending_metrics(
+        metrics_repo_path=metrics_repo_path,
+        issue_number=issue_number,
+        task_type=pr_label,
+        template_type=DEFAULT_PR_LABEL,
+        previous_coordinates=old_coordinates,
+        follow_ups=follow_ups,
+    )
 
     branch, _ = publish_branch(
         repo_path=repo_path,
@@ -294,8 +232,8 @@ def push_current_branch_to_origin(
             group, artifact, new_version, repo_path, f"Fixed test for {new_coordinates}",
         ),
         metrics_repo_path=metrics_repo_path,
+        descriptor_input=descriptor_input,
     )
-
     return branch, group, artifact, old_version, new_coordinates
 
 
@@ -316,25 +254,17 @@ def main(argv=None):
         argv if argv is not None else sys.argv[1:]
     )
 
-    branch, group, artifact, old_version, new_coordinates = push_current_branch_to_origin(
+    group, artifact, _old_version = parse_coordinate_parts(old_coordinates)
+    new_coordinates = f"{group}:{artifact}:{new_version}"
+    if issue_number is None:
+        issue_number = find_issue_common(new_coordinates, REPO)
+    push_current_branch_to_origin(
         old_coordinates=old_coordinates,
         new_version=new_version,
         repo_path=repo_path,
         metrics_repo_path=metrics_repo_path,
-    )
-    create_pull_request(
-        branch=branch,
-        old_coordinates=old_coordinates,
-        new_coordinates=new_coordinates,
-        group=group,
-        artifact=artifact,
-        old_version=old_version,
-        new_version=new_version,
-        metrics_repo_root=metrics_repo_path,
-        repo_path=repo_path,
         issue_number=issue_number,
         pr_label=pr_label,
-        coverage_follow_up_issue_number=coverage_follow_up_issue_number,
         coverage_follow_up_class_count=coverage_follow_up_class_count,
         coverage_follow_up_class_threshold=coverage_follow_up_class_threshold,
     )

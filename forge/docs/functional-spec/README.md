@@ -17,8 +17,10 @@ can grow faster than maintainers can investigate each request by hand
 code-generation agents with the reachability repo's own build, test,
 metadata-generation, and reporting pipelines to generate or repair the library
 tests and GraalVM reachability metadata the issue needs. A successful run
-produces a locally verified pull request with metrics and enough context for
-maintainer review; review and repository CI remain the final merge boundary.
+produces a verified `ai/**` branch with metrics and a durable publication
+descriptor. Trusted GitHub Actions publisher code from the default branch then
+creates the bot-authored pull request with enough context for maintainer review;
+review and repository CI remain the final merge boundary.
 This shortens the path described in §GOAL-shorten-issue-to-shipped-metadata.
 
 A supported issue starts from a work label such as `library-new-request`,
@@ -99,7 +101,10 @@ metadata-relevant coverage from broader behavior coverage.
 | --- | --- |
 | **Reachability metadata** | JSON describing reflection, JNI, resource, serialization, and proxy access for a library, consumed by GraalVM `native-image`. |
 | **Reachability repo** | Local checkout or worktree of `oracle/graalvm-reachability-metadata`. The build and metadata-generation Gradle tasks run inside it. The parent checkout of `forge/` is used by default. |
-| **Forge metrics directory** | The `forge/` subdirectory of the reachability checkout, used as the transient staging area for a run's in-flight metrics (`.pending_metrics.json`) until the PR step reads them. Durable per-library run metrics persist to `stats/<group>/<artifact>/<version>/execution-metrics.json` (§FS-forge-run-metrics). |
+| **Forge metrics directory** | The `forge/` subdirectory of the reachability checkout, used as the transient staging area for a run's in-flight metrics (`.pending_metrics.json`) until local finalization writes the publication descriptor. Durable per-library run metrics persist to `stats/<group>/<artifact>/<version>/execution-metrics.json` (§FS-forge-run-metrics). |
+| **Forge publication descriptor** | Versioned, schema-validated JSON committed at `stats/<group>/<artifact>/<version>/forge-publication.json`. It is the durable, branch-controlled data handoff from locally verified Forge generation to the trusted Actions publisher (§GIT-publication-descriptor). |
+| **Forge publication ID** | A run-unique identity derived before the publication commit and recorded in the descriptor. Chunked runs also record it and the unique head branch in their exhaust report so a later run can resolve the preceding PR without committing a GitHub-assigned PR number after publication (§GIT-chunked-linking). |
+| **Forge Actions publisher** | Default-branch code triggered through a successful unprivileged Branch Ready run. It treats the feature branch as data, revalidates the exact head SHA and descriptor, renders the PR, and performs publication-related GitHub mutations with a short-lived GitHub App token (§GIT-actions-publication). |
 | **Coordinate** | Maven coordinate of the target library, formatted `group:artifact:version`. |
 | **Agent** | LLM-driven code editor (Codex or Pi) registered through [ai_workflows/agents/](../../ai_workflows/agents/). Each implements `send_prompt`, `run_test_command`, and `clear_context`; the concrete API and Pi adapter are documented by §AR-agent-api. |
 | **Workflow driver** | Deterministic script in the `drivers/` subdirectory of [ai_workflows/](../../ai_workflows/) that prepares the working environment, directories, branch/context, strategy bundle, workflow engine, agent, and metrics for one claimed unit of work. The driver runs Forge plumbing; Codex or another LLM agent should not decide that setup during a generated run. Specified by §WF-forge-workflow-drivers. |
@@ -109,7 +114,7 @@ metadata-relevant coverage from broader behavior coverage.
 | **Human intervention** | A maintainer follow-up signal applied through the `human-intervention` issue or PR label when Forge has evidence that generated work, repository automation, or library execution semantics require human judgment. It is distinct from post-generation intervention, which is an automated recovery step. The policy is defined in §FS-human-intervention-policy. |
 | **Dynamic access** | Reflection, JNI, resource access, serialization, or proxy use that GraalVM `native-image` cannot determine statically. |
 | **Dynamic-access report** | JSON written by Gradle task `generateDynamicAccessCoverageReport` to `tests/src/<group>/<artifact>/<version>/build/reports/dynamic-access/dynamic-access-coverage.json`, listing classes and per-class call sites that require dynamic-access metadata, marked covered/uncovered. |
-| **Dynamic-access exhaust report** | Durable coordinate-scoped JSON state for chunked dynamic-access work. It records the coordinate, issue number, class threshold, completed/skipped/exhausted/failed classes, and the latest published chunk PR/commit. It is stored in a stable location derived from the target test suite (for example under `tests/src/<group>/<artifact>/<version>/`) so orchestration scripts can find it from the coordinate alone. It does not predefine all chunks; each resume regenerates the current dynamic-access report and filters out processed classes. Specified by §WF-dynamic-access-exhaust-report. |
+| **Dynamic-access exhaust report** | Durable coordinate-scoped JSON state for chunked dynamic-access work. It records the coordinate, issue number, class threshold, completed/skipped/exhausted/failed classes, and latest publication ID/branch. It is stored with the target test suite so orchestration can find it from the coordinate. It does not predefine chunks; each resume regenerates the report and filters processed classes. Legacy PR-number/commit fields remain readable during migration. Specified by §WF-dynamic-access-exhaust-report. |
 | **Chunked dynamic-access workflow** | Dynamic-access generation mode for oversized `library-new-request` issues and `library-update-request` issues routed to dynamic-access coverage improvement. `forge_metadata.py` owns the class threshold decision and passes the current chunk size to the workflow. The workflow processes at most that many uncovered classes, publishes that chunk, then resumes after the chunk PR merges. PR linking rules are in §WF-chunked-dynamic-access-pr-linking. |
 | **Source context** | Read-only files supplied to the agent. Types: `main` (library source), `test` (upstream tests), `documentation` (Javadoc). Selected by the strategy parameter `source-context-types`. |
 | **Library update target** | The metadata and test directories selected for a `library-update-request` coordinate (§WF-improve-library-coverage.3). Resolution records the requested coordinate, match type (`tested-version`, `metadata-version`, `default-for`, or `new-version`), matched index entry, resolved metadata version, resolved test version, and edit directories. |
@@ -234,8 +239,10 @@ this functional spec.
   full `native-image --version` output into Codex instructions, run Codex with
   `GRAALVM_HOME` and `JAVA_HOME` pinned to that same distribution, and fail
   instead of reproducing or verifying with a different GraalVM installation.
-- `gh` CLI authenticated against the reachability repo is required for any
-  script in `git_scripts/`.
+- An authenticated `gh` CLI remains required for local issue orchestration,
+  branch ownership lookup, and operations that push the verified branch. The
+  local process does not receive the Forge publisher App credentials and does
+  not create pull requests or publication follow-up issues.
 - `FORGE_PARALLELISM` controls how many issue workflows the top-level worker
   may run concurrently. Valid values are `1` through `4`; the default is `1`.
 - `FORGE_DO_WORK_STOP_FILE` overrides the shared stop marker path used by
@@ -254,16 +261,16 @@ this functional spec.
   Java-fix reports cannot be generated before their primary repair succeeds, so
   `forge_metadata.py` passes the threshold to their shared driver; the composite
   workflow evaluates it immediately after the repair and skips oversized
-  exploration. Publication then opens a new `library-update-request` for the
-  fixed version. That issue enters the ordinary library-update workflow after
-  the repair merges, where the existing dispatcher-owned chunking logic
-  regenerates the report and selects chunks. The skip is decided exactly once:
-  the composite records it on the continuation marker's `explore` phase, and
-  publication reads that phase instead of regenerating a report and deciding
-  again. Publication records the follow-up issue number before PR creation, so
-  retries reuse one issue; if the marker save was interrupted immediately after
-  creation, it recovers that issue from its repair reference. No other Java-fix
-  handoff state is persisted. For ordinary chunked runs, `forge_metadata.py`
+  exploration. Local finalization records typed follow-up facts in the
+  descriptor. The Actions publisher creates or reuses a new
+  `library-update-request` for the fixed version and parks it until the repair
+  merges. That issue then enters the ordinary library-update workflow, where
+  dispatcher-owned chunking regenerates the report and selects chunks. The skip
+  is decided exactly once: the composite records it on the continuation marker's
+  `explore` phase, and descriptor creation reads that phase instead of
+  regenerating a report. Retries of one publication ID reuse one follow-up issue;
+  local state does not persist its GitHub-assigned number. For ordinary chunked
+  runs, `forge_metadata.py`
   still computes the concrete chunk size rather than passing a generic workflow
   policy.
 
@@ -299,8 +306,16 @@ this functional spec.
   where `<suffix>` is workflow-specific and encodes the coordinate (e.g.
   `add-lib-support-<group>-<artifact>-<version>` for new-library support,
   `improve-coverage-…`, `fix-javac-…`, `fix-java-run-…`,
-  `fix-native-image-run-…`, `not-for-native-image-…`).
-- **Pull request** (only when invoked through `git_scripts/make_pr_*.py`).
+  `fix-native-image-run-…`, `not-for-native-image-…`). Publication branches are
+  unique per publication ID and are pushed directly to
+  `oracle/graalvm-reachability-metadata` so the repository's `push` workflow can
+  observe them.
+- **Publication descriptor** retained after merge at
+  `stats/<group>/<artifact>/<version>/forge-publication.json`; later
+  publications for the same coordinate replace the current file while Git
+  history retains earlier provenance.
+- **Pull request** created asynchronously by the trusted Forge Actions
+  publisher after Branch Ready accepts the exact pushed SHA.
 
 ### FS-forge-run-metrics: Per-run metrics record
 §GOAL-minimize-generation-cost
@@ -310,7 +325,8 @@ Every run must persist a per-library metrics record to
 coverage, and status evidence stays attached to the library version it describes
 (§GOAL-maximize-library-coverage). During a run, in-flight metrics are staged
 transiently in the Forge metrics directory as `.pending_metrics.json` and
-consumed by the PR step; they are not a durable output. Benchmark-mode runs
+consumed while constructing the durable publication descriptor; they are not a
+durable output. Benchmark-mode runs
 instead record durable, schema-validated metrics under
 `benchmarks/benchmark_results/` (§BENCH-forge-generation-benchmarking.4).
 Run metrics may identify the generated metadata artifact, but must not record a
@@ -358,8 +374,9 @@ must be replaced by no-sudo local gates or omitted from local execution. A
 command that would require `sudo` is a local verification failure, not an
 interactive prompt.
 
-Forge must record the local verification commands and their outcomes in the run
-metrics and PR description. A task must not open a PR, mark a project item
+Forge must record local verification commands and outcomes in run metrics and
+the publication descriptor so the trusted renderer includes them in the PR
+description. A task must not push a publication descriptor, mark a project item
 `Done`, return `RUN_STATUS_SUCCESS`, return `SUCCESS_WITH_INTERVENTION_STATUS`,
 or return `RUN_STATUS_CHUNK_READY` until both tiers have passed. If Forge cannot
 complete either tier, the workflow must return `RUN_STATUS_FAILURE` and preserve
@@ -681,6 +698,11 @@ continue, per §FS-human-intervention-policy. A PR labeled
 `human-intervention-fixed` is the explicit maintainer signal that manual
 follow-up has been completed; review automation may then dismiss stale
 requested-changes reviews, approve, and merge only after normal merge gates
+
+Bot authorship does not disqualify the maintainer recorded as the descriptor's
+`producer` from reviewing the PR. Review eligibility continues to exclude only
+the authenticated review worker when that same account is the GitHub PR author;
+it does not treat descriptor provenance as authorship.
 pass, including the index validation safeguard for index-changing pull requests
 (§FS-index-validation-safeguard).
 
@@ -779,6 +801,14 @@ resumed run (§FS-forge-run-continuation.2).
 Chunk PRs use `Refs: #<issue>` until the final chunk. Only the final chunk PR
 may use `Fixes: #<issue>` and move the issue to `Done`. Non-final chunk PRs
 must commit enough exhaust-report state for the next run to skip classes already
+
+Before the single verified push, every chunk also records its publication ID
+and unique publication branch in the exhaust report. The publisher repeats the
+ID in a machine-readable PR-body trailer. A later chunk loads the merged report,
+resolves the preceding PR by the exact head branch, verifies the matching
+publication ID and merged state, and checks that the merge commit is an ancestor
+of its new base. Forge must not create a second post-publication commit merely
+to store a GitHub-assigned PR number.
 completed, skipped, exhausted, or failed in earlier chunks
 (§WF-chunked-dynamic-access-pr-linking).
 

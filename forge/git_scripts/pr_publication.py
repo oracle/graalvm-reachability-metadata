@@ -11,15 +11,23 @@ import shutil
 import subprocess
 import tempfile
 from collections.abc import Callable
+from dataclasses import replace
 
 from git_scripts.common_git import (
     build_ai_branch_name,
     delete_remote_branch_if_exists,
-    get_configured_reviewers,
+    find_remote_for_github_repo,
+    get_authenticated_login,
     git_files_under,
     is_java_fix_test_module_file,
     run_git_transport,
     stage_and_commit as stage_and_commit_common,
+)
+from git_scripts.publication_descriptor import (
+    PublicationDescriptorInput,
+    build_publication_branch,
+    build_publication_id,
+    write_publication_descriptor,
 )
 from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.local_ci_verification import (
@@ -38,7 +46,6 @@ from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME
 
 REPO: str = "oracle/graalvm-reachability-metadata"
 BASE_BRANCH: str = "master"
-REVIEWERS: list[str] = get_configured_reviewers()
 LIBRARY_UPDATE_TARGET_FILENAME: str = ".library_update_target.json"
 PRESERVATION_ONLY_PATHS: set[str] = {
     f"forge/{CONTINUATION_MARKER_FILENAME}",
@@ -89,6 +96,22 @@ def _record_publication_branch(
     if active_marker is None:
         return
     active_marker.record_publication_branch(branch)
+    active_marker.save(marker_path)
+
+
+def _record_publication_identity(
+        repo_path: str,
+        publication_id: str,
+        branch: str,
+        timestamp: str,
+        marker: ContinuationMarker | None = None,
+) -> None:
+    """Persist the stable publication identity before any branch push."""
+    marker_path = continuation_marker_path(repo_path)
+    active_marker = marker or load_continuation_marker(marker_path)
+    if active_marker is None:
+        return
+    active_marker.record_publication_identity(publication_id, branch, timestamp)
     active_marker.save(marker_path)
 
 
@@ -168,6 +191,8 @@ def publish_branch(
         metrics_repo_path: str | None = None,
         before_rebase: Callable[[], None] | None = None,
         before_verification: Callable[[str], None] | None = None,
+        descriptor_input: PublicationDescriptorInput | Callable[[], PublicationDescriptorInput] | None = None,
+        before_stage: Callable[[str, str], None] | None = None,
 ) -> tuple[str, LocalCIVerificationResult]:
     """Create, stage, rebase, verify, and push the publication branch.
 
@@ -187,17 +212,45 @@ def publish_branch(
             final_commit=commit,
         )
 
+    publication_remote = find_remote_for_github_repo(REPO, cwd=repo_path)
     base_ref = fetch_pr_base_ref(repo_path, REPO, BASE_BRANCH)
+    resolved_descriptor_input = descriptor_input() if callable(descriptor_input) else descriptor_input
+    publication_timestamp = None if resume_marker is None else resume_marker.publication_timestamp()
+    if resolved_descriptor_input is not None and publication_timestamp is not None:
+        resolved_descriptor_input = replace(resolved_descriptor_input, timestamp=publication_timestamp)
     branch = None if resume_marker is None else resume_marker.publication_branch()
-    if branch is None:
+    publication_id = None if resume_marker is None else resume_marker.publication_id()
+    if resolved_descriptor_input is not None:
+        expected_publication_id = build_publication_id(
+            resolved_descriptor_input.issue_number,
+            resolved_descriptor_input.timestamp,
+            coordinates,
+            resolved_descriptor_input.task_type,
+        )
+        if publication_id is not None and publication_id != expected_publication_id:
+            raise ValueError("Continuation publication ID does not match durable run inputs")
+        publication_id = expected_publication_id
+        producer = get_authenticated_login(cwd=repo_path)
+        expected_branch = build_publication_branch(producer, branch_suffix, publication_id)
+        if branch is not None and branch != expected_branch:
+            raise ValueError("Continuation publication branch does not match durable run inputs")
+        branch = expected_branch
+        _record_publication_identity(
+            repo_path, publication_id, branch, resolved_descriptor_input.timestamp, resume_marker,
+        )
+    elif branch is None:
         branch = build_ai_branch_name(branch_suffix, cwd=repo_path)
     _record_publication_branch(repo_path, branch, resume_marker)
-    delete_remote_branch_if_exists(branch, cwd=repo_path)
+    delete_remote_branch_if_exists(branch, remote=publication_remote, cwd=repo_path)
     if resume_marker is None:
         subprocess.run(["git", "switch", "-C", branch], check=True, cwd=repo_path)
         _remove_preservation_only_files(repo_path)
     else:
         _prepare_unpushed_publication_resume_branch(repo_path, branch, resume_marker)
+    if before_stage is not None:
+        if publication_id is None:
+            raise ValueError("Publication identity callback requires a descriptor")
+        before_stage(publication_id, branch)
     stage()
     if before_rebase is not None:
         before_rebase()
@@ -212,7 +265,39 @@ def publish_branch(
         base_commit=base_ref,
         metrics_repo_path=metrics_repo_path,
     )
-    run_git_transport(["push", "origin", branch], cwd=repo_path)
+    if resolved_descriptor_input is not None:
+        if publication_id is None:
+            raise ValueError("Publication descriptor requires a publication ID")
+        final_descriptor_input = descriptor_input() if callable(descriptor_input) else resolved_descriptor_input
+        if final_descriptor_input.timestamp != resolved_descriptor_input.timestamp:
+            final_descriptor_input = replace(
+                final_descriptor_input, timestamp=resolved_descriptor_input.timestamp,
+            )
+        final_publication_id = build_publication_id(
+            final_descriptor_input.issue_number,
+            final_descriptor_input.timestamp,
+            coordinates,
+            final_descriptor_input.task_type,
+        )
+        if final_publication_id != publication_id:
+            raise ValueError("Publication descriptor identity changed during finalization")
+        descriptor_path = write_publication_descriptor(
+            repo_path=repo_path,
+            coordinates=coordinates,
+            producer=get_authenticated_login(cwd=repo_path),
+            branch=branch,
+            publication_id=publication_id,
+            base_commit=base_ref,
+            descriptor_input=final_descriptor_input,
+            local_ci_verification=local_ci_verification,
+        )
+        descriptor_relative_path = os.path.relpath(descriptor_path, repo_path)
+        stage_and_commit_common(
+            [descriptor_relative_path],
+            "Add Forge publication descriptor",
+            cwd=repo_path,
+        )
+    run_git_transport(["push", publication_remote, branch], cwd=repo_path)
     _record_publication_pushed(repo_path, branch, resume_marker)
     return branch, local_ci_verification
 
@@ -238,12 +323,6 @@ def stage_library_version_paths(
     ]
     candidate_paths = [path for path in candidate_paths if os.path.exists(os.path.join(repo_path, path))]
     stage_and_commit_common(candidate_paths, commit_message, cwd=repo_path)
-
-
-def parse_pr_number(output: str) -> int | None:
-    """Extract a PR number from gh pr create output."""
-    match = re.search(r"/pull/(\d+)", output)
-    return int(match.group(1)) if match else None
 
 
 def _copy_git_files_under(repo_path: str, source_dir: str, destination_dir: str) -> None:

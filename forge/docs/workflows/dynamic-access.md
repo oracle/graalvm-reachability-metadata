@@ -562,28 +562,30 @@ whether to invoke the normal workflow or the chunked workflow:
    class owns all of its dynamic-access call sites; call sites inside one class
    must not be split across chunks.
 8. After the chunk passes local CI-equivalent verification
-   (§FS-local-ci-equivalent-verification), the git publication script opens a
-   chunk PR using the linking contract in
+   (§FS-local-ci-equivalent-verification), local finalization records the chunk
+   publication identity and pushes the descriptor branch. The trusted Actions
+   publisher opens the chunk PR using the linking contract in
    §WF-chunked-dynamic-access-pr-linking.
 9. The issue project status controls continuation: `Todo` means Forge may claim
    the next chunk, `In Progress` means the current chunk is active. A non-final
    chunk PR with failed CI is no longer an active chunk after Forge exhausts
    available reruns; Forge releases the issue back to `Todo` and marks that PR
    for human follow-up. No separate ready/in-progress chunk labels are required.
-10. Before resuming, Forge verifies that the latest recorded chunk PR commit is
-    present in the base branch (§WF-dynamic-access-exhaust-report).
+10. Before resuming, Forge resolves the latest recorded publication branch,
+    verifies that its uniquely identified PR merged, and checks that GitHub's
+    merge commit is present in the base (§WF-dynamic-access-exhaust-report).
 
 #### WF-chunked-dynamic-access-pr-linking: Chunk PR linking
 
-After a chunk passes local CI-equivalent verification, PR creation must link the
-chunk to the issue without completing it unless the chunk is final. Chunk PRs
-carry the `chunked-dynamic-access` label. Non-final chunk PRs use
-`Refs: #<issue>` and commit the exhaust-report state required for the next run
-to skip classes already completed, skipped, exhausted, or failed. Only the final
-chunk PR may use `Fixes: #<issue>` and move the issue to `Done`. If a non-final
-chunk PR has failed CI and no eligible failed GitHub Actions job remains to
-rerun, Forge releases the linked issue back to `Todo` so a replacement chunk can
-be generated.
+After a chunk passes local verification, its descriptor must link the resulting
+PR to the issue without completing it unless the chunk is final. The trusted
+publisher applies `chunked-dynamic-access`. Non-final chunk PRs use
+`Refs: #<issue>` and carry the merged exhaust state required for the next run to
+skip completed, skipped, exhausted, or failed classes. Only the final chunk PR
+may use `Fixes: #<issue>` and move the issue to `Done`. If a non-final chunk PR
+has failed CI and no eligible failed GitHub Actions job remains to rerun, Forge
+releases the linked issue back to `Todo` so a replacement chunk can be
+generated.
 
 #### WF-dynamic-access-exhaust-report: Dynamic-access exhaust report
 
@@ -593,7 +595,9 @@ reprocessing classes and to resume safely:
 - coordinate and issue number
 - class threshold and the current chunk count
 - completed/skipped/exhausted/failed class names
-- latest chunk PR number and commit
+- latest chunk publication ID and unique head branch
+- legacy latest PR number and commit fields only for reading reports created
+  before the Actions publisher migration
 
 Each terminal class transition (completed, skipped, exhausted, or failed)
 commits the updated exhaust report and advances `latest_class_checkpoint` past

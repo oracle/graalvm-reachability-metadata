@@ -7,30 +7,25 @@
 
 import argparse
 import os
-import shutil
+from datetime import datetime, timezone
 
 from git_scripts.common_git import (
     ensure_gh_authenticated,
     find_issue_for_coordinates,
     format_forge_revision_section,
-    get_origin_owner,
-    gh,
     parse_coordinate_parts,
     stage_and_commit,
 )
 from git_scripts.pr_publication import (
     BASE_BRANCH,
     REPO,
-    REVIEWERS,
-    bound_pr_body,
     publish_branch,
 )
+from git_scripts.publication_descriptor import PublicationDescriptorInput
 from utility_scripts.metadata_index import get_not_for_native_image_marker
 from utility_scripts.local_ci_verification import (
-    HUMAN_INTERVENTION_LABEL,
     LocalCIVerificationResult,
     format_local_ci_verification_pr_section,
-    local_ci_requires_human_intervention,
 )
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 
@@ -56,9 +51,26 @@ def push_marker_branch(
         coordinates: str,
         repo_path: str,
         metrics_repo_path: str | None = None,
+        issue_number: int | None = None,
 ) -> tuple[str, LocalCIVerificationResult]:
     """Create, commit, rebase, and push the marker branch."""
     group, artifact, _version = parse_coordinate_parts(coordinates)
+    if issue_number is None:
+        raise ValueError("Publication requires an explicit issue number")
+    marker = get_not_for_native_image_marker(repo_path, group, artifact)
+    if marker is None:
+        raise ValueError(f"Missing not-for-native-image marker for {group}:{artifact}")
+    descriptor_input = PublicationDescriptorInput(
+        issue_number=issue_number,
+        task_type="not-for-native-image",
+        template_type="not-for-native-image",
+        status="success",
+        timestamp=datetime.now(timezone.utc).isoformat(),
+        render={
+            "reason": str(marker.get("reason") or ""),
+            "replacement": marker.get("replacement"),
+        },
+    )
     return publish_branch(
         repo_path=repo_path,
         branch_suffix=f"not-for-native-image-{group}-{artifact}",
@@ -69,50 +81,8 @@ def push_marker_branch(
             cwd=repo_path,
         ),
         metrics_repo_path=metrics_repo_path,
+        descriptor_input=descriptor_input,
     )
-
-
-def create_pull_request(
-        branch: str,
-        coordinates: str,
-        repo_path: str,
-        local_ci_verification: LocalCIVerificationResult | None = None,
-        issue_number: int | None = None,
-) -> None:
-    """Create the marker PR."""
-    if shutil.which("gh") is None:
-        print("gh CLI not found. Skipping PR creation.")
-        return
-
-    origin_owner = get_origin_owner(cwd=repo_path)
-    view = gh("pr", "view", "--repo", REPO, "--head", f"{origin_owner}:{branch}", check=False)
-    if view.returncode == 0:
-        print(f"Pull request already exists for branch {branch}.")
-        return
-
-    title, body, local_ci_metrics = build_pull_request_preview(
-        coordinates=coordinates,
-        repo_path=repo_path,
-        local_ci_verification=local_ci_verification,
-        issue_number=issue_number,
-    )
-
-    cmd = [
-        "gh", "pr", "create",
-        "--repo", REPO,
-        "--title", title,
-        "--body", bound_pr_body(body),
-        "--base", BASE_BRANCH,
-        "--head", f"{origin_owner}:{branch}",
-        "--label", "GenAI",
-        "--label", "library-new-request",
-        "--label", "not-for-native-image",
-    ]
-    if local_ci_requires_human_intervention(local_ci_metrics):
-        cmd.extend(["--label", HUMAN_INTERVENTION_LABEL])
-    for reviewer in REVIEWERS:
-        cmd.extend(["--reviewer", reviewer])
-    gh(*cmd[1:])
 
 
 def build_pull_request_preview(
@@ -155,8 +125,12 @@ def main(argv=None) -> None:
         args.metrics_repo_path,
     )
     ensure_gh_authenticated()
-    branch, local_ci_verification = push_marker_branch(args.coordinates, repo_path, metrics_repo_path)
-    create_pull_request(branch, args.coordinates, repo_path, local_ci_verification, args.issue_number)
+    issue_number = args.issue_number
+    if issue_number is None:
+        issue_number = find_issue_for_coordinates(args.coordinates, REPO)
+    push_marker_branch(
+        args.coordinates, repo_path, metrics_repo_path, issue_number,
+    )
 
 
 if __name__ == "__main__":

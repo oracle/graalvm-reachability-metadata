@@ -39,10 +39,13 @@ and invokes `forge_metadata.py` for one work cycle, as described in
 §DW-do-work-loop. The dispatcher owns GitHub queue scanning, issue claiming,
 worktree creation, workflow routing, review queues, project status updates, and
 cleanup; its behavior and implementation are specified in
-§ORCH-forge-orchestration-spec. PR publication is delegated to the
-git-scripts component (§GIT-forge-publication) after the dispatcher
-observes a PR-eligible status; the dispatched workflows themselves are defined
-separately, in §WF-forge-workflow-system and §WF-forge-workflow-architecture.
+§ORCH-forge-orchestration-spec. After the dispatcher observes a PR-eligible
+status, the git-scripts component (§GIT-forge-publication) finalizes and pushes
+one verified branch and descriptor. Repository Actions then hand the exact SHA
+to trusted default-branch publisher code (§GIT-actions-publication), which owns
+PR creation and publication-related GitHub mutations. The dispatched workflows
+are defined separately, in §WF-forge-workflow-system and
+§WF-forge-workflow-architecture.
 
 The dispatcher routes issue work by issue labels, not by PR labels:
 
@@ -69,15 +72,19 @@ flowchart LR
     GitHub[("GitHub issues / PRs / project")]
     Worktree[("isolated reachability worktree")]
     Entry["workflow driver"]
-    PR["git_scripts/make_pr_*.py"]
+    Branch["local branch finalizer"]
+    Ready["Forge Branch Ready"]
+    Publisher["trusted Actions publisher"]
 
     Wrapper --> Worker --> Dispatcher
     Dispatcher -->|scan + claim label| GitHub
     Dispatcher -->|create| Worktree
     Dispatcher -->|invoke| Entry
     Entry -->|status + metrics| Dispatcher
-    Dispatcher -->|PR-eligible status| PR
-    PR --> GitHub
+    Dispatcher -->|PR-eligible status| Branch
+    Branch -->|verified SHA + descriptor| Ready
+    Ready -->|successful workflow_run| Publisher
+    Publisher -->|bot PR + follow-up issues| GitHub
     Dispatcher -->|failure / review bookkeeping| GitHub
 ```
 
@@ -139,20 +146,28 @@ documented in §AR-agent-api, and the
 strategy bundles that bind these pieces live in the strategy registry
 (§STRAT-forge-predefined-strategy-contract, §STRAT-workflow-strategy-registry).
 
-## AR-forge-verification-publication-boundary: Git scripts publish verified work
+## AR-forge-verification-publication-boundary: Local verification hands data to trusted publication
 
 Forge separates generation from publication. A workflow may edit tests,
-metadata, index files, stats, metrics, and logs while it runs, but PR creation
-is delegated to `git_scripts/make_pr_*.py` only after the dispatcher observes a
-PR-eligible status, as required by §FS-local-ci-equivalent-verification and
-§GIT-forge-publication. The publication script
-stages the expected paths, writes a commit message with metrics context, opens
-the pull request, applies the workflow-specific PR label, and links the result
-back to the issue.
+metadata, index files, stats, metrics, and logs while it runs. After the
+dispatcher observes a PR-eligible status, local branch finalization stages only
+expected paths, rebases, runs the pre-publication gate, writes the durable
+descriptor, commits once, and pushes the unique `ai/**` branch. It does not
+render or create a PR and never receives publisher credentials
+(§GIT-shared-publication-pipeline, §GIT-publication-descriptor).
+
+The unprivileged Branch Ready workflow observes the push without secrets and
+validates the branch as data. Only its successful completion triggers the
+privileged workflow. That workflow loads publisher code and templates from the
+default branch, obtains a short-lived GitHub App token, revalidates the exact
+head SHA and all trust inputs, and performs PR and publication follow-up
+mutations (§GIT-actions-publication). This two-stage shape prevents feature
+branch code from running with publisher credentials.
 
 This boundary is especially important for chunked dynamic-access work. A
-non-final chunk publishes a reviewable PR that references the issue and carries
-the exhaust-report state needed by the next run, as specified in
+non-final chunk records a publication identity known before the commit,
+publishes a reviewable PR that references the issue, and carries the
+exhaust-report state needed by the next run, as specified in
 §WF-dynamic-access-exhaust-report. The final chunk is the only one allowed to
 close the issue. The publication layer must preserve that issue linking
 contract instead of treating every successful chunk as a completed issue
@@ -160,9 +175,11 @@ contract instead of treating every successful chunk as a completed issue
 
 Shared repository edits are allowed only when local verification proves they
 are necessary, and they must be surfaced in metrics and PR text for maintainer
-review. Publication is therefore not a blind `git add .`; it is the point where
-workflow-specific expected paths, labels, metrics, and human-intervention flags
-become visible to reviewers.
+review. Local finalization is therefore not a blind `git add .`; the descriptor
+records the verified evidence. The trusted publisher derives workflow-specific
+templates, labels, reviewers, and human-intervention visibility from that
+validated evidence rather than accepting arbitrary GitHub instructions from the
+branch.
 
 ## AR-forge-extension-points: New behavior plugs into one boundary at a time
 
@@ -170,8 +187,8 @@ Forge extension points are intentionally narrow:
 
 - Add an issue queue by adding a label route in `forge_metadata.py` (see
   §ORCH-forge-orchestration-spec), a workflow driver under `ai_workflows/drivers/`, and
-  a matching git script under `git_scripts/` (see
-  §GIT-forge-publication).
+  a matching local staging route and trusted publisher template mapping (see
+  §GIT-forge-publication and §GIT-actions-publication).
 - Add a workflow engine by subclassing the current `WorkflowStrategy` base
   class, registering it, documenting the workflow behavior, and adding
   predefined strategy entries that select it.

@@ -155,7 +155,6 @@ from utility_scripts.continuation_marker import (
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
 from utility_scripts.fixture_github import FixtureGitHubState, load_fixture_github_state
 from utility_scripts.gradle_environment import gradle_command_environment
-from utility_scripts.java_fix_coverage_follow_up import ensure_coverage_follow_up_issue
 from utility_scripts.library_stats import resolve_stats_file_path
 from utility_scripts.library_preparation_preflight import (
     DEFAULT_LIBRARY_PREFLIGHT_STRATEGY_NAME,
@@ -6074,18 +6073,74 @@ def resolve_chunked_dynamic_access_exhaust_report(
 
 def verify_chunked_dynamic_access_previous_pr_merged(exhaust_report: DynamicAccessExhaustReport) -> None:
     """Fail fast when continuation is requested before the previous PR merged."""
-    if exhaust_report.latest_chunk_pull_request is None:
+    has_publication_identity = (
+        exhaust_report.latest_chunk_publication_id is not None
+        or exhaust_report.latest_chunk_branch is not None
+    )
+    if not has_publication_identity and exhaust_report.latest_chunk_pull_request is None:
         return
     if is_fixture_testing_enabled():
+        previous_publication = (
+            exhaust_report.latest_chunk_publication_id
+            or f"PR #{exhaust_report.latest_chunk_pull_request}"
+        )
         log_stage(
             "chunked-dynamic-access",
-            (
-                f"Fixture mode: treating previous chunk PR "
-                f"#{exhaust_report.latest_chunk_pull_request} as merged."
-            ),
+            f"Fixture mode: treating previous chunk publication {previous_publication} as merged.",
         )
         return
+    payload = resolve_chunked_dynamic_access_previous_pr(exhaust_report)
+    if payload.get("state") != "MERGED":
+        raise RuntimeError(
+            f"Chunked dynamic-access issue #{exhaust_report.issue_number} cannot continue "
+            f"before PR #{payload.get('number')} is merged "
+            f"(state={payload.get('state')})."
+        )
+
+
+def resolve_chunked_dynamic_access_previous_pr(
+        exhaust_report: DynamicAccessExhaustReport,
+) -> dict[str, Any]:
+    """Resolve the previous chunk PR by publication identity or legacy number."""
+    publication_id = exhaust_report.latest_chunk_publication_id
+    branch = exhaust_report.latest_chunk_branch
+    if publication_id is not None or branch is not None:
+        if publication_id is None or branch is None:
+            raise RuntimeError(
+                "Chunked dynamic-access publication identity requires both ID and branch"
+            )
+        result = gh(
+            "pr",
+            "list",
+            "--repo",
+            REPO,
+            "--head",
+            branch,
+            "--state",
+            "all",
+            "--limit",
+            "100",
+            "--json",
+            "number,state,body,mergeCommit",
+            check=True,
+        )
+        payload = json.loads(result.stdout)
+        trailer = f"Forge-Publication-ID: {publication_id}"
+        matches = [
+            pull_request
+            for pull_request in payload
+            if trailer in str(pull_request.get("body") or "").splitlines()
+        ]
+        if len(matches) != 1:
+            raise RuntimeError(
+                f"Expected one PR for branch {branch!r} and publication {publication_id!r}; "
+                f"found {len(matches)}"
+            )
+        return matches[0]
+
     previous_pr = exhaust_report.latest_chunk_pull_request
+    if previous_pr is None:
+        raise RuntimeError("Chunked dynamic-access report has no previous publication identity")
     result = gh(
         "pr",
         "view",
@@ -6093,17 +6148,10 @@ def verify_chunked_dynamic_access_previous_pr_merged(exhaust_report: DynamicAcce
         "--repo",
         REPO,
         "--json",
-        "state",
+        "number,state,body,mergeCommit",
         check=True,
     )
-    payload = json.loads(result.stdout)
-    if payload.get("state") != "MERGED":
-        raise RuntimeError(
-            f"Chunked dynamic-access issue #{exhaust_report.issue_number} cannot continue "
-            f"before PR #{previous_pr} is merged "
-            f"(state={payload.get('state')})."
-        )
-
+    return dict(json.loads(result.stdout))
 
 def verify_chunked_dynamic_access_base_contains_published_commit(
         exhaust_report: DynamicAccessExhaustReport,
@@ -6130,25 +6178,18 @@ def resolve_chunked_dynamic_access_published_base_commit(
     """Return the commit that should be present on the continuation base."""
     if is_fixture_testing_enabled():
         return exhaust_report.latest_chunk_commit
-    if exhaust_report.latest_chunk_pull_request is not None:
-        previous_pr = exhaust_report.latest_chunk_pull_request
-        result = gh(
-            "pr",
-            "view",
-            str(previous_pr),
-            "--repo",
-            REPO,
-            "--json",
-            "mergeCommit",
-            check=True,
-        )
-        payload = json.loads(result.stdout)
+    has_previous_publication = (
+        exhaust_report.latest_chunk_publication_id is not None
+        or exhaust_report.latest_chunk_branch is not None
+        or exhaust_report.latest_chunk_pull_request is not None
+    )
+    if has_previous_publication:
+        payload = resolve_chunked_dynamic_access_previous_pr(exhaust_report)
         merge_commit = payload.get("mergeCommit") or {}
         oid = merge_commit.get("oid")
         if oid:
             return str(oid)
     return exhaust_report.latest_chunk_commit
-
 
 def maybe_handle_not_for_native_image_issue(issue: dict, base_reachability_metadata_path: str) -> bool:
     """Apply terminal labels and comment when the repository already has a marker for the artifact."""
@@ -6612,15 +6653,10 @@ def build_publication_handoff(
     )
     chunked_dynamic_access_final = None
     coverage_follow_up_args: list[str] = []
-    if coverage_follow_up_issue_number is not None:
-        if (
-                coverage_follow_up_class_count is None
-                or coverage_follow_up_class_threshold is None
-        ):
-            raise ValueError("Coverage follow-up count and threshold are required")
+    if coverage_follow_up_class_count is not None or coverage_follow_up_class_threshold is not None:
+        if coverage_follow_up_class_count is None or coverage_follow_up_class_threshold is None:
+            raise ValueError("Both coverage follow-up count and threshold are required")
         coverage_follow_up_args = [
-            "--coverage-follow-up-issue-number",
-            str(coverage_follow_up_issue_number),
             "--coverage-follow-up-class-count",
             str(coverage_follow_up_class_count),
             "--coverage-follow-up-class-threshold",
@@ -7037,11 +7073,11 @@ def apply_chunked_dynamic_access_completion_follow_up(claimed_issue: ClaimedIssu
 def prepare_java_fix_coverage_follow_up(
         claimed_issue: ClaimedIssue,
 ) -> tuple[int, int, int] | None:
-    """Open a fixed-version coverage issue when post-repair exploration was oversized.
+    """Return typed follow-up facts when post-repair exploration was oversized.
 
     The composite strategy already made this decision against the report it had
     when the repair finished, so publication reads that recorded decision instead
-    of regenerating a report and deciding a second time.
+    of regenerating a report or mutating GitHub locally.
     §WF-java-fail-fix-workflow.3
     """
     is_java_fix_issue = claimed_issue.label in {LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL}
@@ -7059,42 +7095,7 @@ def prepare_java_fix_coverage_follow_up(
     if deferred_coverage is None:
         return None
     uncovered_class_count, threshold = deferred_coverage
-    existing_issue_number = marker.coverage_follow_up_issue_number()
-    marker_path = continuation_marker_path(claimed_issue.worktree_path)
-
-    if is_fixture_testing_enabled():
-        issue_number = existing_issue_number
-        if issue_number is None:
-            issue_number = FIXTURE_COVERAGE_FOLLOW_UP_ISSUE_OFFSET + int(
-                claimed_issue.issue["number"]
-            )
-            save_phase_update(
-                marker_path,
-                lambda current_marker: current_marker.record_coverage_follow_up_issue(
-                    issue_number
-                ),
-            )
-        log_stage(
-            "coverage-follow-up",
-            f"Fixture mode: using simulated library-update issue #{issue_number}.",
-        )
-        return issue_number, uncovered_class_count, threshold
-
-    issue_number = ensure_coverage_follow_up_issue(
-        coordinate=claimed_issue.issue_coordinates,
-        repair_issue_number=int(claimed_issue.issue["number"]),
-        uncovered_class_count=uncovered_class_count,
-        class_threshold=threshold,
-        repo=REPO,
-        existing_issue_number=existing_issue_number,
-        record_issue_number=lambda resolved_issue_number: save_phase_update(
-            marker_path,
-            lambda current_marker: current_marker.record_coverage_follow_up_issue(
-                resolved_issue_number
-            ),
-        ),
-    )
-    return issue_number, uncovered_class_count, threshold
+    return None, uncovered_class_count, threshold
 
 
 def finalize_successful_issue(

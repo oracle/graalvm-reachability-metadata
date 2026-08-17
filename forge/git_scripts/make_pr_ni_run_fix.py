@@ -11,9 +11,7 @@ import sys
 
 from git_scripts.common_git import (
     ensure_gh_authenticated,
-    gh,
     parse_coordinate_parts,
-    get_origin_owner,
     stage_and_commit as stage_and_commit_common,
     find_issue_for_coordinates as find_issue_common,
     format_stats_diff,
@@ -24,11 +22,10 @@ from git_scripts.common_git import (
 from git_scripts.pr_publication import (
     BASE_BRANCH,
     REPO,
-    REVIEWERS,
-    bound_pr_body,
     format_bounded_test_diff_section,
     publish_branch,
 )
+from git_scripts.publication_descriptor import descriptor_input_from_pending_metrics
 from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.metrics_writer import (
     count_metadata_entries,
@@ -38,7 +35,6 @@ from utility_scripts.metrics_writer import (
 )
 from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.local_ci_verification import (
-    HUMAN_INTERVENTION_LABEL,
     LocalCIVerificationResult,
     format_local_ci_verification_pr_section,
 )
@@ -134,53 +130,6 @@ def assert_no_tracked_worktree_changes(repo_path: str) -> None:
         "Stage these paths in make_pr_ni_run_fix.py or discard them before finalization:\n"
         f"{status_output}"
     )
-
-
-def create_pull_request(
-        branch: str,
-        old_coordinates: str,
-        new_coordinates: str,
-        group: str,
-        artifact: str,
-        repo_path: str,
-        local_ci_verification: LocalCIVerificationResult | None = None,
-        issue_number: int | None = None,
-        metrics_repo_path: str | None = None,
-        pr_label: str = DEFAULT_PR_LABEL,
-):
-    """Create a GitHub pull request for the current branch."""
-    origin_owner = get_origin_owner(cwd=repo_path)
-
-    # If a PR already exists for this branch, do nothing
-    view = gh("pr", "view", "--repo", REPO, "--head", branch, check=False)
-    if view.returncode == 0:
-        print(f"Pull request already exists for branch {branch}.")
-        return
-
-    title, body, local_ci_human_intervention, severe_metadata_drop = build_pull_request_preview(
-        old_coordinates=old_coordinates,
-        new_coordinates=new_coordinates,
-        group=group,
-        artifact=artifact,
-        repo_path=repo_path,
-        local_ci_verification=local_ci_verification,
-        issue_number=issue_number,
-        metrics_repo_path=metrics_repo_path,
-    )
-    cmd = [
-        "gh", "pr", "create",
-        "--repo", REPO,
-        "--title", title,
-        "--body", bound_pr_body(body),
-        "--base", BASE_BRANCH,
-        "--head", f"{origin_owner}:{branch}",
-        "--label", pr_label,
-    ]
-    if severe_metadata_drop or local_ci_human_intervention:
-        cmd.extend(["--label", HUMAN_INTERVENTION_LABEL])
-    for r in REVIEWERS:
-        cmd.extend(["--reviewer", r])
-    gh(*cmd[1:])
 
 
 def build_forge_metrics_summary_section(metrics_repo_path: str | None) -> str:
@@ -355,6 +304,8 @@ def push_current_branch_to_origin(
         new_version: str,
         repo_path: str,
         metrics_repo_path: str | None = None,
+        issue_number: int | None = None,
+        pr_label: str = DEFAULT_PR_LABEL,
 ):
     """
     Switch to the feature branch, stage and commit changes,
@@ -362,6 +313,33 @@ def push_current_branch_to_origin(
     """
     group, artifact, old_version = parse_coordinate_parts(old_coordinates)
     new_coordinates = f"{group}:{artifact}:{new_version}"
+    if issue_number is None or metrics_repo_path is None:
+        raise ValueError("Publication requires an issue number and metrics path")
+    previous_coverage, _ = collect_version_coverage_metrics(
+        repo_path, group, artifact, old_version,
+    )
+    new_coverage, _ = collect_version_coverage_metrics(
+        repo_path, group, artifact, new_version,
+    )
+    descriptor_input = descriptor_input_from_pending_metrics(
+        metrics_repo_path=metrics_repo_path,
+        issue_number=issue_number,
+        task_type=pr_label,
+        template_type=DEFAULT_PR_LABEL,
+        previous_coordinates=old_coordinates,
+        render={
+            "baseline_metadata_entries": count_metadata_entries(repo_path, group, artifact, old_version),
+            "current_metadata_entries": count_metadata_entries(repo_path, group, artifact, new_version),
+            "baseline_test_only_entries": count_test_only_metadata_entries(
+                repo_path, group, artifact, old_version,
+            ),
+            "current_test_only_entries": count_test_only_metadata_entries(
+                repo_path, group, artifact, new_version,
+            ),
+            "baseline_stats": {"coverage_percent": previous_coverage},
+            "library_stats": {"coverage_percent": new_coverage},
+        },
+    )
 
     def stage() -> None:
         # Exploration splits the seed's shared entry into a version-specific one, so
@@ -384,6 +362,7 @@ def push_current_branch_to_origin(
         stage=stage,
         metrics_repo_path=metrics_repo_path,
         before_rebase=lambda: assert_no_tracked_worktree_changes(repo_path),
+        descriptor_input=descriptor_input,
     )
 
     return branch, group, artifact, new_coordinates, local_ci_verification
@@ -396,22 +375,16 @@ def main(argv=None):
         argv if argv is not None else sys.argv[1:]
     )
 
-    branch, group, artifact, new_coordinates, local_ci_verification = push_current_branch_to_origin(
+    group, artifact, _old_version = parse_coordinate_parts(old_coordinates)
+    new_coordinates = f"{group}:{artifact}:{new_version}"
+    if issue_number is None:
+        issue_number = find_issue_common(new_coordinates, REPO)
+    push_current_branch_to_origin(
         old_coordinates=old_coordinates,
         new_version=new_version,
         repo_path=repo_path,
         metrics_repo_path=metrics_repo_path,
-    )
-    create_pull_request(
-        branch=branch,
-        old_coordinates=old_coordinates,
-        new_coordinates=new_coordinates,
-        group=group,
-        artifact=artifact,
-        repo_path=repo_path,
-        local_ci_verification=local_ci_verification,
         issue_number=issue_number,
-        metrics_repo_path=metrics_repo_path,
         pr_label=pr_label,
     )
 

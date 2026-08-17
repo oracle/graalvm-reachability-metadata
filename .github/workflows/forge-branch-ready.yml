@@ -1,0 +1,57 @@
+name: Forge Branch Ready
+
+on:
+  push:
+    branches:
+      - "ai/**"
+
+permissions:
+  contents: read
+  issues: read
+
+jobs:
+  validate:
+    name: Validate exact Forge branch SHA
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out trusted publisher
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: master
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Fetch publication SHA as data
+        env:
+          HEAD_SHA: ${{ github.sha }}
+          HEAD_BRANCH: ${{ github.ref_name }}
+        run: >-
+          git fetch --no-tags origin "$HEAD_SHA"
+          "+refs/heads/$HEAD_BRANCH:refs/remotes/origin/$HEAD_BRANCH"
+
+      - name: Install publisher schema validator
+        run: python3 -m pip install --disable-pip-version-check jsonschema==4.25.1
+
+      - name: Validate publication descriptor and diff
+        env:
+          HEAD_SHA: ${{ github.sha }}
+          HEAD_BRANCH: ${{ github.ref_name }}
+          HEAD_ACTOR: ${{ github.actor }}
+          HEAD_REPOSITORY: ${{ github.repository }}
+          AUTHORIZED_PUSHERS: ${{ vars.FORGE_AUTHORIZED_PUSHERS }}
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 .github/scripts/forge_pr_publisher/publisher.py validate
+          --sha "$HEAD_SHA"
+          --branch "$HEAD_BRANCH"
+          --actor "$HEAD_ACTOR"
+          --repository "$HEAD_REPOSITORY"
+          --authorized-pushers "$AUTHORIZED_PUSHERS"
+
+      - name: Upload trusted publication preview
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: forge-publication-${{ github.run_id }}
+          path: publication.md
+          if-no-files-found: error
+          retention-days: 14
