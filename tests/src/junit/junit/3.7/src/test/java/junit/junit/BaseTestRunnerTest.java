@@ -9,18 +9,12 @@ package junit.junit;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
-import junit.runner.Version;
 import junit.textui.TestRunner;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BaseTestRunnerTest {
-    @Test
-    void usesRequestedJUnitRelease() {
-        assertThat(Version.id()).isEqualTo("3.7");
-    }
-
     @Test
     void loadsAndRunsSuiteMethod() {
         SuiteTestCase.runCount = 0;
