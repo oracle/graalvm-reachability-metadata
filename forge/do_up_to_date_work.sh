@@ -27,6 +27,7 @@ REVIEW_LABEL="${FORGE_REVIEW_LABEL:-}"
 REVIEW_LIMIT="${FORGE_REVIEW_LIMIT:-1}"
 REVIEW_MODEL="${FORGE_REVIEW_MODEL:-gpt-5.6-terra}"
 USER_REQUESTED_ONLY="${FORGE_USER_REQUESTED_ISSUES_ONLY:-0}"
+GRAALVM_VERSION_CHECK="${FORGE_GRAALVM_VERSION_CHECK:-strict}"
 WORK_STRATEGY_NAME="${FORGE_STRATEGY_NAME:-dynamic_access_main_sources_pi_gpt-5.6-sol}"
 GITHUB_RATE_LIMIT_EXIT_CODE=75
 MAX_PARALLELISM=4
@@ -116,6 +117,12 @@ Options:
       Fetch only user-requested issue queue items by excluding configured
       automation and maintainer issue authors. Defaults to
       FORGE_USER_REQUESTED_ISSUES_ONLY, then 0.
+  --graalvm-version-check {strict,warn,off}
+      How host validation treats a GraalVM version mismatch: strict stops the
+      worker, warn reports it, off skips the version match. Native Image and the
+      reachability-metadata schema stay mandatory in every mode, so a locally
+      built Graal can be used with warn or off. Defaults to
+      FORGE_GRAALVM_VERSION_CHECK, then strict.
 
 Environment:
   DO_WORK_SLEEP_SECONDS
@@ -144,6 +151,9 @@ Environment:
   FORGE_LIBRARY_REVIEW_LIMIT, FORGE_JAVAC_REVIEW_LIMIT, FORGE_JAVA_RUN_REVIEW_LIMIT,
   FORGE_NI_RUN_REVIEW_LIMIT, FORGE_BULK_UPDATE_REVIEW_LIMIT
       Override FORGE_REVIEW_LIMIT for one default review queue.
+  FORGE_GRAALVM_VERSION_CHECK
+      Default --graalvm-version-check mode: strict, warn, or off. Defaults to
+      strict.
 
 Examples:
   $0
@@ -151,6 +161,7 @@ Examples:
   $0 --javac-limit 3 --new-limit 1
   $0 --user-requested-only --new-limit 1
   $0 --once --branch master
+  $0 --once --graalvm-version-check warn
   $0 --clear-issue-caches
   DO_WORK_SLEEP_SECONDS=60 $0 origin/main
 EOF
@@ -392,6 +403,7 @@ export_work_configuration() {
     export FORGE_REVIEW_LIMIT="$REVIEW_LIMIT"
     export FORGE_REVIEW_MODEL="$REVIEW_MODEL"
     export FORGE_USER_REQUESTED_ISSUES_ONLY="$USER_REQUESTED_ONLY"
+    export FORGE_GRAALVM_VERSION_CHECK="$GRAALVM_VERSION_CHECK"
 
     if [[ -n "$REVIEW_LABEL" ]]; then
         export FORGE_REVIEW_LABEL="$REVIEW_LABEL"
@@ -414,20 +426,21 @@ process_work_queues() {
         "$PYTHON_BIN" "$SCRIPT_DIR/forge_metadata.py" "${forge_metadata_args[@]}"
 }
 
-run_startup_preflight() {
-    local preflight_script="$SCRIPT_DIR/utility_scripts/startup_preflight.py"
+run_host_requirements() {
+    local host_requirements_script="$SCRIPT_DIR/utility_scripts/host_requirements.py"
 
     if ! command -v "$PYTHON_BIN" >/dev/null 2>&1; then
-        echo "ERROR: Forge startup preflight requires PYTHON_BIN='$PYTHON_BIN' to resolve to an executable." >&2
+        echo "ERROR: Forge host requirements need PYTHON_BIN='$PYTHON_BIN' to resolve to an executable." >&2
         echo "Fix: install Python 3 or export PYTHON_BIN=/absolute/path/to/python3." >&2
         return 1
     fi
 
-    log "Running deterministic Forge startup preflight before any work starts."
-    "$PYTHON_BIN" "$preflight_script" \
+    log "Validating Forge host requirements before any work starts."
+    "$PYTHON_BIN" "$host_requirements_script" \
         --forge-dir "$SCRIPT_DIR" \
         --python-bin "$PYTHON_BIN" \
-        --review-model "$REVIEW_MODEL"
+        --review-model "$REVIEW_MODEL" \
+        --graalvm-version-check "$GRAALVM_VERSION_CHECK"
 }
 
 run_cycle() {
@@ -574,6 +587,15 @@ while [[ "$#" -gt 0 ]]; do
             USER_REQUESTED_ONLY=1
             shift
             ;;
+        --graalvm-version-check)
+            require_option_value "$1" "${2:-}"
+            GRAALVM_VERSION_CHECK="$2"
+            shift 2
+            ;;
+        --graalvm-version-check=*)
+            GRAALVM_VERSION_CHECK="${1#*=}"
+            shift
+            ;;
         --)
             shift
             if [[ "$#" -gt 1 || -n "$BRANCH_ARG" ]]; then
@@ -670,9 +692,16 @@ if [[ "$USER_REQUESTED_ONLY" != "0" && "$USER_REQUESTED_ONLY" != "1" ]]; then
     exit 1
 fi
 
+if [[ "$GRAALVM_VERSION_CHECK" != "strict" \
+        && "$GRAALVM_VERSION_CHECK" != "warn" \
+        && "$GRAALVM_VERSION_CHECK" != "off" ]]; then
+    echo "--graalvm-version-check must be strict, warn, or off." >&2
+    exit 1
+fi
+
 export_work_configuration
 exit_if_stop_requested
-run_startup_preflight
+run_host_requirements
 run_cycle
 
 if [[ "$RUN_ONCE" == "1" ]]; then
