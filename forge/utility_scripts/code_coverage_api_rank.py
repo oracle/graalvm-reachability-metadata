@@ -64,7 +64,7 @@ from utility_scripts.code_coverage_jacoco import (
 from utility_scripts.code_coverage_model import parse_inventory_id
 
 #: Hard cap on prompt targets per pass, matching §WF-code-coverage-improvement.3.1.
-MAX_PROMPT_TARGETS = 200
+MAX_PROMPT_TARGETS = 400
 
 
 class ApiRankError(RuntimeError):

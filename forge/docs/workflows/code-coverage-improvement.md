@@ -100,7 +100,11 @@ inventory with JVM JaCoCo method coverage. Overloads must remain distinct, and
 an absent or ambiguous correlation must not inherit another method's status.
 
 Each API-cover prompt contains only public API methods that the latest JaCoCo
-report marks uncovered, at most 200 per pass. The agent must work across the
+report marks uncovered, at most 400 per pass. The cap is 400 rather than 200
+because consumption tracks the supply of feasible targets: raising it moved a
+measured run from +950 to +1082 covered methods and shifted the gain from
+collateral coverage to targets the prompt actually named, with hits
+concentrated in ranks 201-400. The agent must work across the
 whole supplied batch through realistic public API usage and assertions, without
 superficial coverage-only invocation. The phase runs for a fixed budget of
 `coverage_iterations` passes and stops early when no public target remains
