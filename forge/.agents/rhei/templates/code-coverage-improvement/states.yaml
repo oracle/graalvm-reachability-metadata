@@ -62,7 +62,7 @@ states:
 
       Artifact paths in this task, including the one below, are relative to the
       Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{work_subdir}}/code-coverage-{{issue_number}}`
+      `index.rhei.md`, which is `{{workspace_path}}`
       from your working directory. Resolve every artifact path against that
       directory. Do not prefix it with the workspace directory name alone, and
       do not guess a prefix from your working directory.
@@ -240,10 +240,18 @@ states:
       - Do not weaken metadata-generation tests.
       - Do not measure or claim coverage yourself: deterministic re-measurement
         runs right after this state and decides the loop.
+      - Compile and run tests only from inside the issue worktree
+        (`worktreePath` in conversion.json), and always scope the build to this
+        coordinate:
+        `./gradlew compileTestJava -Pcoordinates=<coordinate> -PincludeCodeCoverageSuite=true`
+        and the same form for `javaTest`. A Gradle invocation without
+        `-Pcoordinates` configures every library in the repository, takes hours,
+        and never compiles this suite; do not pass `--no-daemon`, which pays
+        that cost again on every call.
 
       Artifact paths in this task, including the one below, are relative to the
       Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{work_subdir}}/code-coverage-{{issue_number}}`
+      `index.rhei.md`, which is `{{workspace_path}}`
       from your working directory. Resolve every artifact path against that
       directory. Do not prefix it with the workspace directory name alone, and
       do not guess a prefix from your working directory.
@@ -287,7 +295,7 @@ states:
 
       Artifact paths in this task, including the one below, are relative to the
       Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{work_subdir}}/code-coverage-{{issue_number}}`
+      `index.rhei.md`, which is `{{workspace_path}}`
       from your working directory. Resolve every artifact path against that
       directory. Do not prefix it with the workspace directory name alone, and
       do not guess a prefix from your working directory.
@@ -479,10 +487,18 @@ states:
         rotation deterministically from its own report history.
       - Do not measure or claim coverage yourself: deterministic re-measurement
         runs right after this state and decides the loop.
+      - Compile and run tests only from inside the issue worktree
+        (`worktreePath` in conversion.json), and always scope the build to this
+        coordinate:
+        `./gradlew compileTestJava -Pcoordinates=<coordinate> -PincludeCodeCoverageSuite=true`
+        and the same form for `javaTest`. A Gradle invocation without
+        `-Pcoordinates` configures every library in the repository, takes hours,
+        and never compiles this suite; do not pass `--no-daemon`, which pays
+        that cost again on every call.
 
       Artifact paths in this task, including the one below, are relative to the
       Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{work_subdir}}/code-coverage-{{issue_number}}`
+      `index.rhei.md`, which is `{{workspace_path}}`
       from your working directory. Resolve every artifact path against that
       directory. Do not prefix it with the workspace directory name alone, and
       do not guess a prefix from your working directory.
@@ -524,7 +540,7 @@ states:
 
       Artifact paths in this task, including the one below, are relative to the
       Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{work_subdir}}/code-coverage-{{issue_number}}`
+      `index.rhei.md`, which is `{{workspace_path}}`
       from your working directory. Resolve every artifact path against that
       directory. Do not prefix it with the workspace directory name alone, and
       do not guess a prefix from your working directory.
@@ -713,7 +729,7 @@ states:
 
       Artifact paths in this task, including the one below, are relative to the
       Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{work_subdir}}/code-coverage-{{issue_number}}`
+      `index.rhei.md`, which is `{{workspace_path}}`
       from your working directory. Resolve every artifact path against that
       directory. Do not prefix it with the workspace directory name alone, and
       do not guess a prefix from your working directory.

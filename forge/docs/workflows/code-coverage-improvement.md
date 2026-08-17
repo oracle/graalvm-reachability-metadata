@@ -52,7 +52,19 @@ directory name makes the two disagree: the agent is told one path and the
 output-existence check reads another, and the task stalls in a non-terminal
 state after an agent that exited zero. Runs that must not collide — a second
 model, agent, or pass budget on one library — separate themselves by parent
-directory and by `branch_suffix`, never by renaming the workspace.
+directory and by `branch_suffix`, never by renaming the workspace. A workspace
+under a parent directory must also set `workspace_path`, since the cover states
+tell the agent where to resolve artifacts from and that path is no longer
+derivable from `work_subdir` alone.
+
+Cover states name the Gradle invocation rather than leaving the agent to infer
+it: compiling and testing happen inside the issue worktree, scoped with
+`-Pcoordinates=<coordinate> -PincludeCodeCoverageSuite=true`. An unscoped
+invocation configures every library in the repository, so it runs for hours and
+still never compiles the suite under measurement; `--no-daemon` pays that
+configuration cost again on every call. Naming the command is harness usage, not
+coverage guidance — it says nothing about what to cover — so an arm that needs
+it stays comparable to one that inferred the same form on its own.
 
 The tests produced by this workflow must be a separate test suite from the
 tests used to generate or validate reachability metadata. Code coverage tests

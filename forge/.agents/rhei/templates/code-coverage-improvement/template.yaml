@@ -80,6 +80,15 @@ inputs:
     default: master
     validate: "^[A-Za-z0-9_./-]+$"
 
+  - name: workspace_path
+    description: >-
+      Path from the agent's working directory to this workspace, the directory
+      holding states.yaml and index.rhei.md. Agents resolve every artifact path
+      against it, so it must match where the workspace was instantiated. Default
+      assumes the workspace sits directly under the work subdirectory.
+    type: string
+    default: "{{work_subdir}}/code-coverage-{{issue_number}}"
+
   - name: branch_suffix
     description: >-
       Run discriminator appended to the pull request head branch. Empty keeps the
