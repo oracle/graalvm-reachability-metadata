@@ -236,24 +236,30 @@ def metrics_json_repo_relative_path(
     )
 
 
-def resolve_repo_roots(
-        explicit_reachability_path: str | None,
-        explicit_metrics_repo_path: str | None,
-):
-    """Resolve root paths for the target reachability repository and metrics storage."""
-    # graalvm-reachability-metadata repo root
+def resolve_reachability_repo_root(explicit_reachability_path: str | None) -> str:
+    """Resolve and validate the reachability repository a run operates on."""
     print("[Resolving graalvm-reachability-metadata root path...]")
     if explicit_reachability_path:
         resolved_reachability_root = explicit_reachability_path
     else:
         resolved_reachability_root = resolve_parent_reachability_repo()
     require_complete_reachability_repo(resolved_reachability_root)
+    return resolved_reachability_root
 
-    # metrics root
+
+def resolve_metrics_repo_root(reachability_root: str, explicit_metrics_repo_path: str | None) -> str:
+    """Resolve the Forge metrics root used alongside a resolved reachability repository."""
     print("[Resolving Forge metrics root path...]")
     if explicit_metrics_repo_path:
-        resolved_metrics_root = ensure_in_repo_metrics_root(explicit_metrics_repo_path)
-    else:
-        resolved_metrics_root = resolve_in_repo_metrics_root(resolved_reachability_root)
+        return ensure_in_repo_metrics_root(explicit_metrics_repo_path)
+    return resolve_in_repo_metrics_root(reachability_root)
 
+
+def resolve_repo_roots(
+        explicit_reachability_path: str | None,
+        explicit_metrics_repo_path: str | None,
+):
+    """Resolve root paths for the target reachability repository and metrics storage."""
+    resolved_reachability_root = resolve_reachability_repo_root(explicit_reachability_path)
+    resolved_metrics_root = resolve_metrics_repo_root(resolved_reachability_root, explicit_metrics_repo_path)
     return resolved_reachability_root, resolved_metrics_root

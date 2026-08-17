@@ -159,6 +159,17 @@ requirement itself has exactly one definition, so the repeated GraalVM
 environment checks performed before issue work resolve to the same rule the gate
 enforces.
 
+The gate validates two sets of paths for what each of them owns. Forge-owned
+paths — the Forge checkout, its `local_repositories`, the pinned GraalVM
+configuration, and the self-update remote — always resolve from the checkout
+that contains Forge. Repository-owned paths — the Gradle wrapper, the Git
+metadata that generated branches are written into, and the origin remote those
+branches are pushed to — resolve from the repository the run selected, which
+`--reachability-metadata-path` can move to a different checkout. The selected
+repository is therefore resolved before the gate runs, so a run against another
+checkout can neither pass on a broken target nor be rejected because an
+unrelated parent checkout is broken.
+
 For issue work, executable presence alone is insufficient. Every selected
 distribution must provide Native Image and contain the reachability-metadata
 schema required by the checked-out repository, and each lane must match its
