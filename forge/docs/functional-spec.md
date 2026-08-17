@@ -508,7 +508,14 @@ isolated Gradle user home keep bootstrap from failing in the first place:
   download deterministically, after a full connect timeout. The file is linked
   rather than copied so host credentials are not duplicated into a shared
   temporary directory. An explicit Gradle user home chosen by an operator is
-  taken as given and left alone.
+  taken as given and left alone. Inheritance is deliberately wholesale rather
+  than filtered to proxy keys: a Forge run should behave the way `./gradlew`
+  behaves for a developer on that host, and filtering would mean writing a copy,
+  which is exactly what would duplicate a host proxy password into a shared
+  temporary directory. The accepted cost is precedence — a Gradle user home
+  `gradle.properties` outranks the repository's own, so a host that sets keys
+  like `org.gradle.java.home` overrides repository intent for Forge runs. Hosts
+  are expected to keep that file to host concerns such as proxy configuration.
 - **One cache per checkout.** Forge keys the Gradle user home on the checkout's
   common git directory, so every linked issue worktree of one checkout shares a
   single plugin and dependency cache and resolves the root build's plugins once
