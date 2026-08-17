@@ -163,6 +163,7 @@ def maybe_split_library_update_tested_versions(
             os.path.join("metadata", group, artifact, "index.json"),
             os.path.join("metadata", group, artifact, split["successor_metadata_version"]),
             os.path.join("tests", "src", group, artifact, split["successor_metadata_version"]),
+            os.path.join("stats", group, artifact, split["successor_metadata_version"]),
         ],
         f"Split tested-version aliases for {coordinates}",
         cwd=repo_path,
@@ -401,6 +402,21 @@ def _apply_alias_split(
 
     entries.insert(target_index, successor_entry)
     _write_index_entries(repo_path, group, artifact, entries)
+    successor_coordinates = f"{group}:{artifact}:{failed_version}"
+    log_stage(
+        "generate-library-stats",
+        f"Running generateLibraryStats for split successor {successor_coordinates}",
+    )
+    subprocess.run(
+        [
+            "./gradlew",
+            "generateLibraryStats",
+            f"-Pcoordinates={successor_coordinates}",
+        ],
+        cwd=repo_path,
+        env=gradle_command_environment(repo_path),
+        check=True,
+    )
 
     return {
         "requested_coordinates": requested_coordinates,

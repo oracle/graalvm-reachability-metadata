@@ -384,7 +384,9 @@ version — using that entry's `metadata-version` and `test-version` when presen
 into `metadata/<group>/<artifact>/<failing-version>` and
 `tests/src/<group>/<artifact>/<failing-version>`. The PR then ships the new
 generated progress for the passing prefix and keeps baseline support for the
-successor range.
+successor range. Forge regenerates library stats for the failing version after
+creating the successor entry and publishes them under
+`stats/<group>/<artifact>/<failing-version>`.
 
 **Follow-up issue.** On every split, Forge also opens a `library-update-request`
 issue for the successor metadata version and holds it in `In Progress` so the
