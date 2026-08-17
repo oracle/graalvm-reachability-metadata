@@ -398,7 +398,14 @@ The Rhei template should decompose the workflow into these phases:
    table rather than reported as zero; publication itself is normally omitted,
    since its own invocations are still running when the body is built. Sampled
    PGO evidence stays in the local finalization summary and is not published in
-   the PR body.
+   the PR body. The head branch is
+   `ai/<login>/code-coverage-<artifact>-<version>`, extended with the
+   configured `branch_suffix` when one is set. Publication force-replaces the
+   remote head branch, so two runs of the same coordinate that share a branch
+   name delete each other's pull request head: a run that must coexist with an
+   earlier one — a different model, agent, or pass budget measured against the
+   same library — sets the suffix so each run owns its own branch and each pull
+   request survives the next run.
 
 The pipeline tasks run unreviewed: deterministic helpers, schema-validated
 artifacts, and zero-exit validation gates decide their completion. The

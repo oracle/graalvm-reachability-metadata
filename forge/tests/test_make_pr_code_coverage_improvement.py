@@ -259,6 +259,64 @@ class PublisherTests(unittest.TestCase):
         self.assertNotIn(requested_metadata_dir, staged_paths)
         self.assertEqual(stage_and_commit.call_args.kwargs["cwd"], repo_path)
 
+    def _publish_with_branch_suffix(self, branch_suffix: str | None) -> str:
+        """Return the head branch suffix `publish` asked `build_ai_branch_name` for."""
+        with tempfile.TemporaryDirectory(prefix="coverage-publish-") as repo_path:
+            finalization = os.path.join(repo_path, "finalization")
+            os.makedirs(finalization)
+            with open(
+                    os.path.join(finalization, "final-metrics.json"),
+                    "w",
+                    encoding="utf-8",
+            ) as metrics_file:
+                json.dump(self._metrics(), metrics_file)
+            coverage_suite = self._metrics()["coverageSuitePath"]
+            os.makedirs(os.path.join(repo_path, coverage_suite))
+
+            with patch.object(
+                    module, "build_ai_branch_name", return_value="ai/kimeta/b"
+            ) as build_branch, \
+                    patch.object(module, "delete_remote_branch_if_exists"), \
+                    patch.object(module.subprocess, "run"), \
+                    patch.object(module, "stage_coverage_paths"), \
+                    patch.object(module, "run_git_transport"), \
+                    patch.object(module, "load_token_usage", return_value=[]), \
+                    patch.object(module, "create_pull_request", return_value=42):
+                module.publish(
+                    repo_path,
+                    "com.example:demo:1.0.0",
+                    8380,
+                    finalization,
+                    coverage_suite,
+                    "kimeta",
+                    "kimeta",
+                    "master",
+                    None,
+                    branch_suffix,
+                )
+
+        return build_branch.call_args.args[0]
+
+    def test_branch_keeps_the_plain_coordinate_without_a_suffix(self) -> None:
+        self.assertEqual(
+            self._publish_with_branch_suffix(None), "code-coverage-demo-1.0.0"
+        )
+        self.assertEqual(
+            self._publish_with_branch_suffix(""), "code-coverage-demo-1.0.0"
+        )
+
+    def test_branch_suffix_discriminates_coexisting_runs(self) -> None:
+        # Publication force-replaces the remote head branch, so a second run on
+        # the same coordinate must not resolve to the first run's branch.
+        self.assertEqual(
+            self._publish_with_branch_suffix("luna"),
+            "code-coverage-demo-1.0.0-luna",
+        )
+        self.assertNotEqual(
+            self._publish_with_branch_suffix("luna"),
+            self._publish_with_branch_suffix("sol"),
+        )
+
     def test_links_without_autoclose_by_default(self) -> None:
         body = module.build_pull_request_body(
             "com.example:demo:1.0.0", 8380, self._metrics()

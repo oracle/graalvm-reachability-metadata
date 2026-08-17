@@ -80,6 +80,15 @@ inputs:
     default: master
     validate: "^[A-Za-z0-9_./-]+$"
 
+  - name: branch_suffix
+    description: >-
+      Run discriminator appended to the pull request head branch. Empty keeps the
+      plain coordinate branch. Set it when this run must coexist with an earlier
+      pull request for the same coordinate, since publication force-replaces the
+      remote head branch.
+    type: string
+    default: ""
+
   - name: worker_agent
     description: Agent used for execution and fix states.
     type: string

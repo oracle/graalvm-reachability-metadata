@@ -345,6 +345,7 @@ def publish(
         head_owner: str | None,
         base_branch: str,
         accounting_dir: str | None = None,
+        branch_suffix: str | None = None,
 ) -> int | None:
     group: str
     artifact: str
@@ -368,8 +369,12 @@ def publish(
         )
         raise SystemExit(1)
 
+    # Publication force-replaces the remote head branch, so runs that must
+    # coexist on the same coordinate discriminate their branch
+    # (§WF-code-coverage-improvement.4).
+    suffix: str = f"-{branch_suffix}" if branch_suffix else ""
     branch: str = build_ai_branch_name(
-        f"code-coverage-{artifact}-{version}", cwd=repo_path
+        f"code-coverage-{artifact}-{version}{suffix}", cwd=repo_path
     )
     delete_remote_branch_if_exists(branch, remote=push_remote, cwd=repo_path)
     subprocess.run(["git", "switch", "-C", branch], check=True, cwd=repo_path)
@@ -445,6 +450,16 @@ def main(argv: list[str] | None = None) -> None:
         default=None,
         help="Rhei accounting directory; defaults beside the workflow runtime.",
     )
+    parser.add_argument(
+        "--branch-suffix",
+        default=None,
+        help=(
+            "Run discriminator appended to the head branch name. Required when "
+            "this run must coexist with an earlier pull request for the same "
+            "coordinate, since publication force-replaces the remote head "
+            "branch."
+        ),
+    )
     args: argparse.Namespace = parser.parse_args(argv)
     pr_number: int | None = publish(
         args.repo_path,
@@ -456,6 +471,7 @@ def main(argv: list[str] | None = None) -> None:
         args.head_owner,
         args.base_branch,
         args.accounting_dir,
+        args.branch_suffix,
     )
     if pr_number:
         print(f"Opened PR #{pr_number} for {args.coordinate}.")
