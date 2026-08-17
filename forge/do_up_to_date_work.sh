@@ -184,6 +184,7 @@ require_positive_integer() {
 
     if ! [[ "$value" =~ ^[0-9]+$ ]] || [[ "$value" -lt 1 ]]; then
         echo "${name} must be a positive integer." >&2
+        echo "Fix: set ${name} to an integer of 1 or more." >&2
         exit 1
     fi
 }
@@ -194,6 +195,7 @@ require_nonnegative_integer() {
 
     if ! [[ "$value" =~ ^[0-9]+$ ]]; then
         echo "${name} must be a non-negative integer." >&2
+        echo "Fix: set ${name} to a non-negative integer." >&2
         exit 1
     fi
 }
@@ -460,6 +462,13 @@ run_cycle() {
         return 0
     fi
 
+    # The gate runs after the rate-limit skip so an exhausted API postpones the cycle instead
+    # of killing the loop, and before self-update or any queue work.
+    if ! run_host_requirements; then
+        log "Forge host requirements failed; stopping before any work."
+        exit 1
+    fi
+
     if (( iteration % CLEAN_LOCAL_REPOSITORIES_EVERY == 0 )); then
         cleanup_local_repositories
     fi
@@ -696,12 +705,12 @@ if [[ "$GRAALVM_VERSION_CHECK" != "strict" \
         && "$GRAALVM_VERSION_CHECK" != "warn" \
         && "$GRAALVM_VERSION_CHECK" != "off" ]]; then
     echo "--graalvm-version-check must be strict, warn, or off." >&2
+    echo "Fix: pass --graalvm-version-check strict, warn, or off (or set FORGE_GRAALVM_VERSION_CHECK)." >&2
     exit 1
 fi
 
 export_work_configuration
 exit_if_stop_requested
-run_host_requirements
 run_cycle
 
 if [[ "$RUN_ONCE" == "1" ]]; then

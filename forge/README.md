@@ -18,11 +18,15 @@ parsing, self-updates, queue processing, sleeping, and re-execing the latest
 script before the next cycle.
 §DW-do-work-loop
 
-Before self-update or queue processing, and again at the start of every
+At the start of every worker cycle — after the GitHub rate-limit check and
+before self-update or queue processing — and again at the start of every
 work-starting `forge_metadata.py` invocation, Forge prints and validates the
 deterministic host requirements for the tools, environment variables, filesystem
 and network permissions, GitHub repository/project access, Docker, and agent
-authentication its mode needs. A failed required check exits before Forge claims
+authentication its mode needs. Review capability means an authenticated Pi
+provider that offers the configured review model plus project-local trust
+(`pi --approve`), which is what loads the repository's review skills in the
+throwaway review worktree. A failed required check exits before Forge claims
 or reviews anything; a `--review-pr` run is never asked for a GraalVM.
 §FS-forge-host-requirements
 

@@ -154,10 +154,13 @@ follow the invoked mode rather than the configured queue limits: a `--review-pr`
 run requires review capabilities only and must not demand a GraalVM
 installation, an issue run requires issue capabilities, a `--run-work-queues`
 run requires whatever its enabled queue limits select, and a fixture-testing run
-requires no live GitHub access because it mutates no GitHub state. The
-requirement itself has exactly one definition, so the repeated GraalVM
-environment checks performed before issue work resolve to the same rule the gate
-enforces.
+requires neither live GitHub access nor PR-review capabilities because it
+mutates no GitHub state and reviews no pull request: its GitHub CLI, GitHub API,
+git transport, and Pi review checks are all reported as not required. A
+`--run-work-queues` run is validated against the review model those queues
+actually use, which the environment can override. The requirement itself has
+exactly one definition, so the repeated GraalVM environment checks performed
+before issue work resolve to the same rule the gate enforces.
 
 The gate validates two sets of paths for what each of them owns. Forge-owned
 paths — the Forge checkout, its `local_repositories`, the pinned GraalVM
@@ -168,7 +171,15 @@ branches are pushed to — resolve from the repository the run selected, which
 `--reachability-metadata-path` can move to a different checkout. The selected
 repository is therefore resolved before the gate runs, so a run against another
 checkout can neither pass on a broken target nor be rejected because an
-unrelated parent checkout is broken.
+unrelated parent checkout is broken. Each repository-owned check must exercise
+what work really uses: the Gradle wrapper is probed under the same Gradle state
+root and shared wrapper-distribution cache Forge's own Gradle runs use, the git
+metadata probed for writability is the directory the checkout really writes refs
+and objects into even when it is a linked worktree, the branch each remote is
+asked for is the one that checkout needs — the monitored branch for the Forge
+self-update remote and the base ref for the selected repository — and the push
+target is the GitHub repository that checkout's `origin` points to, not a fork
+inferred from the authenticated account.
 
 For issue work, executable presence alone is insufficient. Every selected
 distribution must provide Native Image and contain the reachability-metadata
@@ -178,7 +189,14 @@ required release: `GRAALVM_HOME` the latest published GraalVM GA release,
 `GRAALVM_HOME_25_0` the repository-pinned 25.0.x release in
 `graalvm-versions.json`. The operator updates the pinned 25.0.x value
 deliberately; GA and EA freshness are resolved from their authoritative release
-metadata on every run.
+metadata on every run that requires live GitHub access. A run that requires none
+performs no upstream lookup at all: its `latest GraalVM GA` and `latest Oracle
+GraalVM EA` results, and the `GRAALVM_HOME` and `GRAALVM_HOME_LATEST_EA` version
+comparisons that depend on them, are reported as not required, while the pinned
+`GRAALVM_HOME_25_0` comparison and every installation, Native Image, and schema
+check stay mandatory. Every lane is matched on the GraalVM product version
+rather than the JDK release it embeds, because distinct GraalVM builds report
+the same JDK release and would otherwise satisfy each other's lane.
 
 Only the version match is configurable, through `--graalvm-version-check`:
 `strict` (the default) stops the run on a mismatch, `warn` reports the mismatch
@@ -193,18 +211,27 @@ must name the capability, whether it is required for the invoked mode, the exact
 executable, environment variable, path, host, or permission being checked, and a
 concrete remediation when the check fails. GitHub reporting must distinguish
 read access from the mutation permissions needed to assign and label issues,
-update project 30, push generated branches, submit PR reviews, and merge
-eligible PRs. Agent reporting must distinguish authentication from unattended
-command approval and host filesystem/network access.
+update project 30, push generated branches to the selected repository's
+`origin`, submit PR reviews, and merge eligible PRs. Agent reporting must
+distinguish provider authentication, availability of the configured review
+model, the project-local trust that loads the repository's review skills,
+unattended Codex command permissions, and host filesystem/network access.
 All messages must be concise and actionable: command output is reduced to the
 relevant fact, current and required values are shown explicitly, and every
 failure has exactly one concrete `Fix:` instruction.
 
 Any failed required check must stop the run with a non-zero exit before the
-first work cycle. Capabilities the invoked mode does not need may be reported as
-not required, and version mismatches reported under `warn` must not fail
-startup. Stop, resume, help, and cache-maintenance commands do not start work
-and therefore do not run the gate. Because the worker re-execs itself between
+work it guards. In the worker loop the gate therefore runs at the start of each
+cycle, after the GitHub rate-limit check that postpones an exhausted cycle and
+before the self-update and any queue work, so an exhausted API limit skips one
+cycle instead of terminating the loop while a genuine host failure still stops
+it. Invalid gate configuration — a non-integer queue limit or an unknown
+version-check mode — must stop the run the same way from every entry point, with
+one error line and one `Fix:` line instead of a traceback; an empty value means
+unset. Capabilities the invoked mode does not need may be reported as not
+required, and version mismatches reported under `warn` must not fail startup.
+Stop, resume, help, and cache-maintenance commands do not start work and
+therefore do not run the gate. Because the worker re-execs itself between
 cycles, each new worker process revalidates the host before doing more work.
 
 ### 4.2 CLI inputs (common to all workflow drivers)
@@ -618,11 +645,16 @@ pass, including the index validation safeguard for index-changing pull requests
 (§FS-index-validation-safeguard).
 
 Before launching a review agent, Forge must validate GitHub CLI authentication
-in the orchestration process and use Pi's deterministic authentication check for
-the configured review provider and model. Neither check may invoke a model.
-The review agent must run in an execution environment that can use the
-authenticated `gh` session without an interactive approval boundary; either
-authentication failure must stop the queue before the agent starts.
+in the orchestration process, use Pi's deterministic authentication check for
+the configured review provider, and prove that the provider offers the
+configured review model. Pi's authentication check accepts but does not validate
+the model, so model availability must be proven separately by listing the
+provider's models. No check may invoke a model. The review agent must run in an
+execution environment that can use the authenticated `gh` session without an
+interactive approval boundary, and it must be started with project-local trust
+(`pi --approve`) so the repository's review skills are loaded inside the
+throwaway review worktree; any of these failures must stop the queue before the
+agent starts.
 
 Automated review may add or request the `human-intervention` PR label only when
 the applicable label-specific review rules say the result cannot be handled by

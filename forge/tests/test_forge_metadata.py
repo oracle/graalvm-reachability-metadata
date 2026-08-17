@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stderr
 from unittest.mock import call, patch
 
 import forge_metadata
@@ -2777,6 +2778,63 @@ class EnvironmentValidationTests(unittest.TestCase):
         self.assertEqual([(forge_metadata.FORGE_DIR, "/other/repo")], checked_paths)
         self.assertEqual("/other/repo", process_issue.call_args.args[1])
 
+    def test_fixture_work_queue_runs_do_not_require_pi_review_capabilities(self) -> None:
+        args = forge_metadata.parse_args(["--fixture-testing", "--run-work-queues"])
+
+        with patch.dict(os.environ, {"FORGE_REVIEW_LIMIT": "1"}, clear=True):
+            requirements = forge_metadata.resolve_host_requirement_queues(args)
+
+        self.assertFalse(requirements.review_work)
+        self.assertFalse(requirements.github_work)
+
+    def test_work_queue_gate_validates_the_review_model_the_queues_use(self) -> None:
+        args = forge_metadata.parse_args(["--run-work-queues"])
+
+        with patch.dict(os.environ, {"FORGE_REVIEW_MODEL": "gpt-5.7-mercury"}, clear=True):
+            queue_model = forge_metadata.resolve_host_requirement_review_model(args)
+            review_pr_model = forge_metadata.resolve_host_requirement_review_model(
+                forge_metadata.parse_args(["--review-pr", "library-new-request"])
+            )
+
+        self.assertEqual("gpt-5.7-mercury", queue_model)
+        self.assertEqual(host_requirements.DEFAULT_REVIEW_MODEL, review_pr_model)
+
+    def test_invalid_queue_configuration_stops_with_one_actionable_fix(self) -> None:
+        args = forge_metadata.parse_args(["--run-work-queues"])
+        stderr = io.StringIO()
+
+        with patch.dict(os.environ, {"FORGE_JAVAC_WORK_LIMIT": "invalid"}, clear=True), \
+                patch.object(forge_metadata, "ensure_host_requirements") as ensure, \
+                redirect_stderr(stderr), self.assertRaises(SystemExit) as stopped:
+            forge_metadata.require_host_requirements(args, "/repo")
+
+        self.assertEqual(1, stopped.exception.code)
+        ensure.assert_not_called()
+        self.assertIn("FORGE_JAVAC_WORK_LIMIT must be a non-negative integer", stderr.getvalue())
+        self.assertEqual(1, stderr.getvalue().count("Fix:"))
+
+    def test_invalid_version_check_mode_stops_with_one_actionable_fix(self) -> None:
+        args = forge_metadata.parse_args(["--issue-number", "9101"])
+        stderr = io.StringIO()
+
+        with patch.dict(os.environ, {"FORGE_GRAALVM_VERSION_CHECK": "lenient"}, clear=True), \
+                patch.object(forge_metadata, "ensure_host_requirements") as ensure, \
+                redirect_stderr(stderr), self.assertRaises(SystemExit) as stopped:
+            forge_metadata.require_host_requirements(args, "/repo")
+
+        self.assertEqual(1, stopped.exception.code)
+        ensure.assert_not_called()
+        self.assertIn("FORGE_GRAALVM_VERSION_CHECK must be one of", stderr.getvalue())
+        self.assertEqual(1, stderr.getvalue().count("Fix:"))
+
+    def test_empty_queue_limit_is_unset_for_the_gate_and_the_queues_alike(self) -> None:
+        args = forge_metadata.parse_args(["--run-work-queues"])
+
+        with patch.dict(os.environ, {"FORGE_JAVAC_WORK_LIMIT": ""}, clear=True):
+            requirements = forge_metadata.resolve_host_requirement_queues(args)
+
+        self.assertTrue(requirements.issue_work)
+
     def test_cache_maintenance_does_not_validate_host_requirements(self) -> None:
         with patch.object(forge_metadata, "ensure_host_requirements") as ensure, \
                 patch.object(forge_metadata, "clear_issue_caches") as clear_issue_caches, \
@@ -3004,27 +3062,53 @@ class InterruptHandlingTests(unittest.TestCase):
         resolve_authenticated_user.assert_not_called()
 
 
+def _pi_review_probe(command: list[str], *_args, **_kwargs) -> subprocess.CompletedProcess:
+    """Answer `pi auth check` and `pi --list-models` without invoking the real CLI."""
+    if "--list-models" in command:
+        return subprocess.CompletedProcess(
+            command,
+            0,
+            "provider      model          context  max-out  thinking  images\n"
+            f"openai-codex  {command[-1]}  272K     128K     yes       yes\n",
+            "",
+        )
+    return subprocess.CompletedProcess(
+        command,
+        0,
+        '{"status":"ready","provider":"openai-codex","authType":"oauth"}\n',
+        "",
+    )
+
+
 class PullRequestReviewTests(unittest.TestCase):
     def test_pi_review_authentication_check_does_not_invoke_model(self) -> None:
-        completed_process = subprocess.CompletedProcess(
-            [],
-            0,
-            stdout='{"status":"ready","provider":"openai-codex","authType":"oauth"}\n',
-            stderr="",
-        )
         with patch.object(host_requirements, "resolve_executable", return_value="/usr/bin/pi"), \
-                patch.object(host_requirements, "run_command", return_value=completed_process) as run:
+                patch.object(host_requirements, "run_command", side_effect=_pi_review_probe) as run:
             self.assertTrue(forge_metadata.check_pi_review_authentication("gpt-5.6-terra"))
 
         self.assertEqual(
             [
-                "pi", "auth", "check",
-                "--provider", "openai-codex",
-                "--model", "gpt-5.6-terra",
-                "--json",
+                ["pi", "auth", "check", "--provider", "openai-codex", "--model", "gpt-5.6-terra", "--json"],
+                ["pi", "--list-models", "gpt-5.6-terra"],
             ],
-            run.call_args.args[0],
+            [invocation.args[0] for invocation in run.call_args_list],
         )
+
+    def test_review_stops_before_pi_when_the_provider_does_not_offer_the_model(self) -> None:
+        def missing_model(command: list[str], *_args, **_kwargs) -> subprocess.CompletedProcess:
+            if "--list-models" in command:
+                return subprocess.CompletedProcess(command, 0, 'No models matching "ghost-model"\n', "")
+            return _pi_review_probe(command)
+
+        stderr = io.StringIO()
+        with patch.object(host_requirements, "resolve_executable", return_value="/usr/bin/pi"), \
+                patch.object(host_requirements, "run_command", side_effect=missing_model), \
+                patch.object(forge_metadata, "create_review_workspace") as create_review_workspace, \
+                redirect_stderr(stderr):
+            self.assertFalse(forge_metadata.review_pull_request(3513, "/repo", "ghost-model"))
+
+        create_review_workspace.assert_not_called()
+        self.assertIn("does not offer review model 'ghost-model'", stderr.getvalue())
 
     def test_review_pull_request_stops_before_pi_when_authentication_is_not_ready(self) -> None:
         with patch.object(

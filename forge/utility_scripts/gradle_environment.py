@@ -9,6 +9,8 @@ import hashlib
 import os
 import tempfile
 
+from utility_scripts.host_requirements import check_graalvm_installation
+
 FORGE_GRADLE_USER_HOME_ENV = "FORGE_GRADLE_USER_HOME"
 FORGE_GRADLE_DISTRIBUTIONS_HOME_ENV = "FORGE_GRADLE_DISTRIBUTIONS_HOME"
 _GRADLE_USER_HOME_ROOT = "metadata-forge-gradle"
@@ -34,19 +36,17 @@ def gradle_command_environment(repo_path: str, base_env: dict[str, str] | None =
 
 
 def _align_graalvm_java_home(env: dict[str, str]) -> None:
-    graalvm_home = env.get("GRAALVM_HOME")
-    java_home = env.get("JAVA_HOME")
-    if graalvm_home and _has_native_image(graalvm_home):
-        env["GRAALVM_HOME"] = graalvm_home
-        env["JAVA_HOME"] = graalvm_home
-        return
-    if java_home and _has_native_image(java_home):
-        env["GRAALVM_HOME"] = java_home
-        env["JAVA_HOME"] = java_home
+    """Point both variables at the first Forge-usable GraalVM the environment names.
 
-
-def _has_native_image(home: str) -> bool:
-    return os.path.isfile(os.path.join(home, "bin", "native-image"))
+    `check_graalvm_installation` is the single definition of a usable distribution
+    (§FS-forge-host-requirements).
+    """
+    for variable in ("GRAALVM_HOME", "JAVA_HOME"):
+        home = env.get(variable)
+        if home and not check_graalvm_installation(home):
+            env["GRAALVM_HOME"] = home
+            env["JAVA_HOME"] = home
+            return
 
 
 def _resolve_gradle_user_home(repo_path: str, override: str | None) -> str:

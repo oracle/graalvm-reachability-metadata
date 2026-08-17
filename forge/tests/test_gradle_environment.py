@@ -6,6 +6,7 @@
 import os
 import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 from utility_scripts.gradle_environment import (
@@ -14,6 +15,19 @@ from utility_scripts.gradle_environment import (
     gradle_command_environment,
     gradle_user_home_for_repo,
 )
+from utility_scripts.host_requirements import GRAALVM_SCHEMA_PATH
+
+
+def _make_forge_usable_graalvm(path: str) -> None:
+    """Create a GraalVM home that satisfies `check_graalvm_installation`."""
+    os.makedirs(os.path.join(path, "bin"), exist_ok=True)
+    for executable in ("java", "native-image"):
+        executable_path = Path(path, "bin", executable)
+        executable_path.write_text("#!/usr/bin/env sh\n", encoding="utf-8")
+        executable_path.chmod(0o755)
+    schema_path = Path(path, GRAALVM_SCHEMA_PATH)
+    schema_path.parent.mkdir(parents=True, exist_ok=True)
+    schema_path.write_text("{}\n", encoding="utf-8")
 
 
 class GradleEnvironmentTests(unittest.TestCase):
@@ -80,10 +94,7 @@ class GradleEnvironmentTests(unittest.TestCase):
 
     def test_graalvm_home_with_native_image_drives_java_home(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as graalvm_home:
-            os.makedirs(os.path.join(graalvm_home, "bin"))
-            native_image_path = os.path.join(graalvm_home, "bin", "native-image")
-            with open(native_image_path, "w", encoding="utf-8"):
-                pass
+            _make_forge_usable_graalvm(graalvm_home)
 
             with patch.dict(os.environ, {}, clear=True):
                 env = gradle_command_environment(
@@ -99,16 +110,33 @@ class GradleEnvironmentTests(unittest.TestCase):
 
     def test_java_home_with_native_image_backfills_graalvm_home(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as java_home:
-            os.makedirs(os.path.join(java_home, "bin"))
-            native_image_path = os.path.join(java_home, "bin", "native-image")
-            with open(native_image_path, "w", encoding="utf-8"):
-                pass
+            _make_forge_usable_graalvm(java_home)
 
             with patch.dict(os.environ, {}, clear=True):
                 env = gradle_command_environment(repo_path, {"JAVA_HOME": java_home})
 
             self.assertEqual(env["GRAALVM_HOME"], java_home)
             self.assertEqual(env["JAVA_HOME"], java_home)
+
+    def test_graalvm_home_without_the_repository_schema_is_not_usable(self) -> None:
+        """A distribution missing the reachability-metadata schema must not win alignment."""
+        with tempfile.TemporaryDirectory() as repo_path, \
+                tempfile.TemporaryDirectory() as incomplete_home, \
+                tempfile.TemporaryDirectory() as usable_home:
+            os.makedirs(os.path.join(incomplete_home, "bin"))
+            native_image_path = Path(incomplete_home, "bin", "native-image")
+            native_image_path.write_text("#!/usr/bin/env sh\n", encoding="utf-8")
+            native_image_path.chmod(0o755)
+            _make_forge_usable_graalvm(usable_home)
+
+            with patch.dict(os.environ, {}, clear=True):
+                env = gradle_command_environment(
+                    repo_path,
+                    {"GRAALVM_HOME": incomplete_home, "JAVA_HOME": usable_home},
+                )
+
+            self.assertEqual(env["GRAALVM_HOME"], usable_home)
+            self.assertEqual(env["JAVA_HOME"], usable_home)
 
 
 if __name__ == "__main__":

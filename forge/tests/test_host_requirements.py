@@ -9,16 +9,18 @@ import os
 import subprocess
 import tempfile
 import unittest
-from contextlib import contextmanager, redirect_stderr, redirect_stdout
+from contextlib import ExitStack, contextmanager, redirect_stderr, redirect_stdout
 from pathlib import Path
 from typing import Iterator
 from unittest.mock import Mock, patch
 
+from utility_scripts.gradle_environment import gradle_user_home_for_repo
 from utility_scripts.host_requirements import (
     GRAALVM_SCHEMA_PATH,
     HostRequirements,
     QueueRequirements,
     check_graalvm_installation,
+    check_pi_model_available,
     codex_doctor_provider_status,
     codex_unattended_policy_status,
     graalvm_ea_version_matches,
@@ -28,12 +30,19 @@ from utility_scripts.host_requirements import (
     parse_graalvm_runtime_version,
     parse_gradle_version,
     parse_grype_version,
-    parse_native_image_version,
     pi_approve_supported,
+    pi_model_listed,
     probe_proxied_host,
+    resolve_git_metadata_dir,
     resolve_graalvm_version_check,
     resolve_https_proxy,
     resolve_queue_requirements,
+)
+
+PI_LIST_MODELS_OUTPUT = (
+    "provider      model                           context  max-out  thinking  images\n"
+    "openai-codex  gpt-5.6-terra                   272K     128K     yes       yes   \n"
+    "openrouter    openai/gpt-5.6-terra            1.1M     128K     yes       yes   \n"
 )
 
 
@@ -53,6 +62,80 @@ def _graalvm_home(native_image: bool = True, schema: bool = True) -> Iterator[st
         yield temp_dir
 
 
+def _codex_bundle_cache(contents: str) -> dict:
+    """Build the nested `cloud-config-bundle-cache.json` payload Codex actually writes."""
+    return {
+        "signature": "signature",
+        "signed_payload": {
+            "version": 1,
+            "bundle": {
+                "config_toml": {},
+                "requirements_toml": {
+                    "enterprise_managed": [{
+                        "id": "8a9cace4-0b4b-4c93-a8d5-b33253d2d6e4",
+                        "name": "Codex Developers",
+                        "contents": contents,
+                    }],
+                },
+            },
+        },
+    }
+
+
+def _fake_pi_command(command: list[str], *_args, **_kwargs) -> subprocess.CompletedProcess:
+    """Answer the deterministic Pi probes without invoking the real CLI."""
+    if "--list-models" in command:
+        return subprocess.CompletedProcess(command, 0, PI_LIST_MODELS_OUTPUT, "")
+    if "--help" in command:
+        return subprocess.CompletedProcess(
+            command,
+            0,
+            "  --approve, -a                  Trust project-local files for this run\n",
+            "",
+        )
+    return subprocess.CompletedProcess(
+        command,
+        0,
+        '{"status":"ready","provider":"openai-codex","authType":"oauth"}\n',
+        "",
+    )
+
+
+def _fake_git_and_gradle_command(command: list[str], *_args, **_kwargs) -> subprocess.CompletedProcess:
+    """Answer the git and Gradle probes of a plain checkout without running either tool."""
+    if "rev-parse" in command:
+        return subprocess.CompletedProcess(command, 0, ".git\n", "")
+    if "remote" in command:
+        return subprocess.CompletedProcess(command, 0, "git@github.com:acme/repo.git\n", "")
+    if "ls-remote" in command:
+        return subprocess.CompletedProcess(command, 0, "0123456789abcdef\trefs/heads/branch\n", "")
+    return subprocess.CompletedProcess(command, 0, "Gradle 8.14\n", "")
+
+
+def _github_permission_response(push_slug: str | None, push_permission: str | None) -> str:
+    """Build the GraphQL permission payload, with the push target when its origin resolved."""
+    data: dict = {
+        "viewer": {"login": "automation-user"},
+        "repository": {
+            "nameWithOwner": "oracle/graalvm-reachability-metadata",
+            "viewerPermission": "MAINTAIN",
+        },
+        "organization": {"projectV2": {"title": "Reachability Metadata", "viewerCanUpdate": True}},
+    }
+    if push_slug is not None:
+        data["pushTarget"] = {"nameWithOwner": push_slug, "viewerPermission": push_permission}
+    return json.dumps({"data": data})
+
+
+def _codex_policy_status(bundle: dict) -> tuple[bool, str]:
+    """Evaluate a Codex config bundle cache written to a throwaway `CODEX_HOME`."""
+    with tempfile.TemporaryDirectory() as codex_home:
+        bundle_path = os.path.join(codex_home, "cloud-config-bundle-cache.json")
+        with open(bundle_path, "w", encoding="utf-8") as bundle_file:
+            json.dump(bundle, bundle_file)
+        return codex_unattended_policy_status(codex_home)
+
+
 class HostRequirementsTests(unittest.TestCase):
     def test_invalid_queue_limit_prints_one_actionable_fix(self) -> None:
         stdout = io.StringIO()
@@ -65,6 +148,14 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertEqual("", stdout.getvalue())
         self.assertIn("FORGE_WORK_LIMIT must be a non-negative integer", stderr.getvalue())
         self.assertEqual(1, stderr.getvalue().count("Fix:"))
+
+    def test_empty_queue_limits_mean_unset_instead_of_invalid(self) -> None:
+        environment = {name: "" for name in ("FORGE_JAVAC_WORK_LIMIT", "FORGE_REVIEW_LIMIT")}
+
+        requirements = resolve_queue_requirements(environment)
+
+        self.assertTrue(requirements.issue_work)
+        self.assertTrue(requirements.review_work)
 
     def test_queue_requirements_follow_effective_limits(self) -> None:
         environment = {
@@ -126,7 +217,6 @@ class HostRequirementsTests(unittest.TestCase):
             "(build 25.0.4+7-jvmci-25.2-b20)\n"
         )
 
-        self.assertEqual("25.0.4", parse_native_image_version(native_output))
         self.assertEqual("25.2.4+7.1", parse_graalvm_runtime_version(native_output))
         self.assertEqual(
             ("25.3", "25.0.4.1", 2),
@@ -149,15 +239,84 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertEqual("9.1.0", parse_gradle_version("\nWelcome to Gradle 9.1.0!\n\nGradle 9.1.0\n"))
 
     @patch("utility_scripts.host_requirements.run_command")
-    def test_pi_approve_support_is_checked_from_help(self, command: Mock) -> None:
+    def test_pi_project_local_trust_support_is_checked_from_help(self, command: Mock) -> None:
         command.return_value = subprocess.CompletedProcess(
             ["pi", "--help"],
             0,
-            "Usage: pi [options]\n  --approve  Approve all tool calls\n",
+            "Usage: pi [options]\n"
+            "  --approve, -a                  Trust project-local files for this run\n"
+            "  --no-approve, -na              Ignore project-local files for this run\n",
             "",
         )
 
         self.assertTrue(pi_approve_supported({}))
+
+    @patch("utility_scripts.host_requirements.resolve_executable", return_value="/usr/bin/pi")
+    @patch("utility_scripts.host_requirements.run_command")
+    def test_review_model_availability_is_listed_not_inferred_from_authentication(
+            self,
+            command: Mock,
+            _resolve: Mock,
+    ) -> None:
+        command.return_value = subprocess.CompletedProcess(
+            ["pi", "--list-models", "gpt-5.6-terra"],
+            0,
+            PI_LIST_MODELS_OUTPUT,
+            "",
+        )
+
+        available, detail = check_pi_model_available("gpt-5.6-terra", {})
+
+        self.assertEqual(["pi", "--list-models", "gpt-5.6-terra"], command.call_args.args[0])
+        self.assertTrue(available)
+        self.assertIn("model=gpt-5.6-terra", detail)
+
+    @patch("utility_scripts.host_requirements.resolve_executable", return_value="/usr/bin/pi")
+    @patch("utility_scripts.host_requirements.run_command")
+    def test_unknown_review_model_fails_even_when_authentication_is_ready(
+            self,
+            command: Mock,
+            _resolve: Mock,
+    ) -> None:
+        command.return_value = subprocess.CompletedProcess(
+            ["pi", "--list-models", "definitely-not-a-model-xyz"],
+            0,
+            'No models matching "definitely-not-a-model-xyz"\n',
+            "",
+        )
+
+        available, detail = check_pi_model_available("definitely-not-a-model-xyz", {})
+
+        self.assertFalse(available)
+        self.assertIn("No models matching", detail)
+
+    def test_review_model_matches_every_documented_pi_model_pattern(self) -> None:
+        # `pi --model` accepts "provider/id" and an optional ":<thinking>" suffix.
+        self.assertTrue(pi_model_listed(PI_LIST_MODELS_OUTPUT, "gpt-5.6-terra"))
+        self.assertTrue(pi_model_listed(PI_LIST_MODELS_OUTPUT, "openai-codex/gpt-5.6-terra"))
+        self.assertTrue(pi_model_listed(PI_LIST_MODELS_OUTPUT, "gpt-5.6-terra:high"))
+        self.assertTrue(pi_model_listed(PI_LIST_MODELS_OUTPUT, "openai-codex/gpt-5.6-terra:xhigh"))
+        self.assertFalse(pi_model_listed(PI_LIST_MODELS_OUTPUT, "definitely-not-a-model-xyz"))
+        # Another provider's row must never satisfy the Forge provider.
+        self.assertFalse(pi_model_listed(PI_LIST_MODELS_OUTPUT, "openai/gpt-5.6-terra"))
+
+    @patch("utility_scripts.host_requirements.resolve_executable", return_value="/usr/bin/pi")
+    @patch("utility_scripts.host_requirements.run_command", side_effect=_fake_pi_command)
+    def test_review_model_is_only_required_by_review_work(self, _command: Mock, _resolve: Mock) -> None:
+        issue_only = HostRequirements(
+            "/repo/forge",
+            "python3",
+            "gpt-5.6-terra",
+            {},
+            requirements=QueueRequirements(issue_work=True, review_work=False),
+        )
+
+        issue_only._check_pi()
+
+        result_by_name = {result.name: result for result in issue_only.results}
+        self.assertEqual("SKIP", result_by_name["Pi review model"].status)
+        self.assertEqual("SKIP", result_by_name["Pi project-local trust"].status)
+        self.assertEqual("PASS", result_by_name["Pi authentication"].status)
 
     def test_pinned_graalvm_25_version_is_recorded_in_repository(self) -> None:
         forge_dir = Path(__file__).resolve().parents[1]
@@ -239,6 +398,55 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertFalse(mismatched_version.blocks_work)
         self.assertTrue(host_requirements.results[2].blocks_work)
 
+    @patch("utility_scripts.host_requirements.run_command")
+    def test_pinned_lane_compares_the_graalvm_product_version_not_the_jdk_release(self, command: Mock) -> None:
+        # Both builds report `native-image 25.0.4`; only the product version separates them.
+        command.return_value = subprocess.CompletedProcess(
+            ["native-image", "--version"],
+            0,
+            "native-image 25.0.4 2026-07-21\n"
+            "GraalVM Runtime Environment GraalVM CE 25.2.4+7.1 (build 25.0.4+7-jvmci-25.2-b20)\n",
+            "",
+        )
+        with _graalvm_home() as graalvm_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                "gpt-5.6-terra",
+                {"GRAALVM_HOME_25_0": graalvm_home},
+                graalvm_version_check="strict",
+            )
+
+            host_requirements._check_graalvm_home("GRAALVM_HOME_25_0", True, "25.0.4")
+
+        latest_ga_build = host_requirements.results[-1]
+        self.assertEqual("FAIL", latest_ga_build.status)
+        self.assertIn("installed=25.2.4+7.1", latest_ga_build.detail)
+        self.assertIn("required=25.0.4", latest_ga_build.detail)
+
+    @patch("utility_scripts.host_requirements.run_command")
+    def test_pinned_lane_accepts_the_pinned_oracle_graalvm_build(self, command: Mock) -> None:
+        command.return_value = subprocess.CompletedProcess(
+            ["native-image", "--version"],
+            0,
+            "native-image 25.0.4 2026-07-21\n"
+            "GraalVM Runtime Environment Oracle GraalVM 25.0.4+7.1 (build 25.0.4+7-LTS-jvmci-b01)\n",
+            "",
+        )
+        with _graalvm_home() as graalvm_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                "gpt-5.6-terra",
+                {"GRAALVM_HOME_25_0": graalvm_home},
+                graalvm_version_check="strict",
+            )
+
+            host_requirements._check_graalvm_home("GRAALVM_HOME_25_0", True, "25.0.4")
+
+        self.assertEqual("PASS", host_requirements.results[-1].status)
+        self.assertIn("installed=25.0.4+7.1", host_requirements.results[-1].detail)
+
     def test_disabled_version_check_skips_version_resolution_and_comparison(self) -> None:
         with _graalvm_home() as graalvm_home:
             host_requirements = HostRequirements(
@@ -278,27 +486,42 @@ class HostRequirementsTests(unittest.TestCase):
         )
 
     def test_codex_managed_policy_rejects_unattended_recovery(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            bundle_path = os.path.join(temp_dir, "cloud-config-bundle-cache.json")
-            with open(bundle_path, "w", encoding="utf-8") as bundle_file:
-                json.dump({
-                    "requirements_toml": {
-                        "enterprise_managed": [{
-                            "name": "Codex Developers",
-                            "contents": (
-                                'allowed_approval_policies = ["on-request", "untrusted"]\n'
-                                'allowed_sandbox_modes = ["read-only", "workspace-write"]\n'
-                            ),
-                        }],
-                    },
-                }, bundle_file)
-
-            passed, detail = codex_unattended_policy_status(temp_dir)
+        # Codex writes the managed requirements under `signed_payload.bundle`.
+        passed, detail = _codex_policy_status(_codex_bundle_cache(
+            'allowed_approval_policies = ["on-request", "untrusted"]\n'
+            'allowed_sandbox_modes = ["read-only", "workspace-write"]\n'
+        ))
 
         self.assertFalse(passed)
         self.assertIn("Codex Developers", detail)
         self.assertIn("`never` is disallowed", detail)
         self.assertIn("`danger-full-access` is disallowed", detail)
+
+    def test_codex_managed_policy_accepts_unattended_recovery(self) -> None:
+        passed, detail = _codex_policy_status(_codex_bundle_cache(
+            'allowed_approval_policies = ["never", "on-request"]\n'
+            'allowed_sandbox_modes = ["danger-full-access", "workspace-write"]\n'
+        ))
+
+        self.assertTrue(passed)
+        self.assertIn("Codex Developers", detail)
+        self.assertIn("compatible with unattended recovery", detail)
+
+    def test_codex_managed_policy_reads_the_flat_requirements_shape(self) -> None:
+        contents = (
+            'allowed_approval_policies = ["on-request"]\n'
+            'allowed_sandbox_modes = ["workspace-write"]\n'
+        )
+        flat_bundle = {
+            "requirements_toml": {
+                "enterprise_managed": [{"name": "Codex Developers", "contents": contents}],
+            },
+        }
+
+        passed, detail = _codex_policy_status(flat_bundle)
+
+        self.assertFalse(passed)
+        self.assertIn("`never` is disallowed", detail)
 
     def test_github_permission_results_name_each_required_mutation_boundary(self) -> None:
         environment = {
@@ -306,34 +529,85 @@ class HostRequirementsTests(unittest.TestCase):
             "FORGE_REVIEW_LIMIT": "1",
         }
         host_requirements = HostRequirements("/repo/forge", "python3", "gpt-5.6-terra", environment)
-        response = json.dumps({
-            "data": {
-                "viewer": {
-                    "login": "automation-user",
-                    "repository": {
-                        "nameWithOwner": "automation-user/graalvm-reachability-metadata",
-                        "viewerPermission": "ADMIN",
-                    },
-                },
-                "repository": {
-                    "nameWithOwner": "oracle/graalvm-reachability-metadata",
-                    "viewerPermission": "MAINTAIN",
-                },
-                "organization": {
-                    "projectV2": {
-                        "title": "Reachability Metadata",
-                        "viewerCanUpdate": True,
-                    },
-                },
-            },
-        })
 
-        host_requirements._record_github_permissions(response)
+        host_requirements._record_github_permissions(
+            _github_permission_response("oracle/graalvm-reachability-metadata", "MAINTAIN"),
+            "oracle/graalvm-reachability-metadata",
+            "git@github.com:oracle/graalvm-reachability-metadata.git",
+        )
 
         result_by_name = {result.name: result for result in host_requirements.results}
         self.assertTrue(result_by_name["oracle repository mutations"].passed)
         self.assertTrue(result_by_name["oracle project 30 updates"].passed)
-        self.assertTrue(result_by_name["generated-branch push target"].passed)
+        push_target = result_by_name["generated-branch push target"]
+        self.assertTrue(push_target.passed)
+        self.assertIn("repository=oracle/graalvm-reachability-metadata", push_target.detail)
+
+    def test_generated_branch_push_target_is_the_selected_repository_origin(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            "gpt-5.6-terra",
+            {},
+            requirements=QueueRequirements(issue_work=True, review_work=False),
+        )
+
+        host_requirements._record_github_permissions(
+            _github_permission_response("acme/graalvm-reachability-metadata", "WRITE"),
+            "acme/graalvm-reachability-metadata",
+            "git@github.com:acme/graalvm-reachability-metadata.git",
+        )
+
+        push_target = {result.name: result for result in host_requirements.results}["generated-branch push target"]
+        self.assertTrue(push_target.passed)
+        self.assertIn("repository=acme/graalvm-reachability-metadata", push_target.detail)
+        self.assertIn("acme/graalvm-reachability-metadata", push_target.remediation)
+
+    def test_push_target_check_resolves_the_origin_of_the_selected_repository(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            "gpt-5.6-terra",
+            {},
+            requirements=QueueRequirements(issue_work=True, review_work=False),
+            repo_dir="/selected/repo",
+        )
+
+        with patch("utility_scripts.host_requirements.run_command") as command:
+            command.return_value = subprocess.CompletedProcess(
+                ["git"],
+                0,
+                "https://github.com/acme/graalvm-reachability-metadata.git\n",
+                "",
+            )
+            push_slug, push_remote = host_requirements._resolve_push_target()
+
+        self.assertEqual(
+            ["git", "-C", "/selected/repo", "remote", "get-url", "origin"],
+            command.call_args.args[0],
+        )
+        self.assertEqual("acme/graalvm-reachability-metadata", push_slug)
+        self.assertEqual("https://github.com/acme/graalvm-reachability-metadata.git", push_remote)
+
+    def test_non_github_origin_fails_the_push_target_with_one_fix(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            "gpt-5.6-terra",
+            {},
+            requirements=QueueRequirements(issue_work=True, review_work=False),
+        )
+
+        host_requirements._record_github_permissions(
+            _github_permission_response(None, None),
+            None,
+            "/srv/mirrors/graalvm-reachability-metadata.git",
+        )
+
+        push_target = {result.name: result for result in host_requirements.results}["generated-branch push target"]
+        self.assertEqual("FAIL", push_target.status)
+        self.assertIn("is not a GitHub remote", push_target.detail)
+        self.assertIn("`origin`", push_target.remediation)
 
     def test_required_failure_stops_before_work_and_prints_remediation(self) -> None:
         environment = {
@@ -375,6 +649,86 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertIn("No work was started", stdout.getvalue())
         self.assertEqual("", stderr.getvalue())
 
+    def _run_with_only(self, host_requirements: HostRequirements, *kept: str) -> tuple[bool, str]:
+        """Run the gate with every check but the named ones stubbed out."""
+        stubbed = [
+            name for name in (
+                "_check_tools",
+                "_check_environment",
+                "_check_write_permissions",
+                "_check_network",
+                "_check_github",
+                "_check_pi",
+                "_check_codex",
+                "_check_docker",
+            )
+            if name not in kept
+        ]
+        stdout = io.StringIO()
+        with ExitStack() as stack:
+            for name in stubbed:
+                stack.enter_context(patch.object(host_requirements, name))
+            stack.enter_context(redirect_stdout(stdout))
+            passed = host_requirements.run()
+        return passed, stdout.getvalue()
+
+    def test_disabled_version_check_queries_no_upstream_release(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            "gpt-5.6-terra",
+            {},
+            requirements=QueueRequirements(issue_work=True, review_work=False),
+            graalvm_version_check="off",
+        )
+
+        with patch("utility_scripts.host_requirements.run_command") as command:
+            passed, _output = self._run_with_only(host_requirements)
+
+        command.assert_not_called()
+        self.assertTrue(passed)
+
+    def test_runs_without_live_github_skip_upstream_version_lookups(self) -> None:
+        forge_dir = str(Path(__file__).resolve().parents[1])
+        with _graalvm_home() as graalvm_home:
+            host_requirements = HostRequirements(
+                forge_dir,
+                "python3",
+                "gpt-5.6-terra",
+                {variable: graalvm_home for variable in (
+                    "GRAALVM_HOME",
+                    "GRAALVM_HOME_25_0",
+                    "GRAALVM_HOME_LATEST_EA",
+                )},
+                requirements=QueueRequirements(issue_work=True, review_work=False, github_work=False),
+                graalvm_version_check="strict",
+            )
+
+            with patch("utility_scripts.host_requirements.run_command") as command:
+                command.return_value = subprocess.CompletedProcess(
+                    ["native-image", "--version"],
+                    0,
+                    "native-image 25.0.4 2026-07-21\n"
+                    "GraalVM Runtime Environment Oracle GraalVM 25.0.4+7.1 (build 25.0.4+7-LTS-jvmci-b01)\n",
+                    "",
+                )
+                passed, _output = self._run_with_only(host_requirements, "_check_environment")
+
+        issued = [call.args[0] for call in command.call_args_list]
+        self.assertEqual([], [entry for entry in issued if entry[:2] == ["gh", "api"]])
+        result_by_name = {result.name: result for result in host_requirements.results}
+        self.assertEqual("SKIP", result_by_name["latest GraalVM GA"].status)
+        self.assertEqual("SKIP", result_by_name["latest Oracle GraalVM EA"].status)
+        self.assertIn("live GitHub access", result_by_name["latest GraalVM GA"].detail)
+        self.assertEqual("SKIP", result_by_name["GRAALVM_HOME version"].status)
+        self.assertEqual("SKIP", result_by_name["GRAALVM_HOME_LATEST_EA version"].status)
+        # The locally pinned lane and every installation check stay mandatory.
+        self.assertEqual("PASS", result_by_name["pinned GraalVM 25.0.x"].status)
+        self.assertEqual("PASS", result_by_name["GRAALVM_HOME_25_0 version"].status)
+        self.assertEqual("PASS", result_by_name["GRAALVM_HOME"].status)
+        self.assertEqual("INFO", result_by_name["JAVA_HOME alignment"].status)
+        self.assertTrue(passed)
+
     @patch("utility_scripts.host_requirements.resolve_executable", return_value="/usr/bin/docker")
     @patch("utility_scripts.host_requirements.run_command")
     def test_docker_daemon_check_does_not_require_docker_specific_template_fields(
@@ -392,7 +746,8 @@ class HostRequirementsTests(unittest.TestCase):
 
         host_requirements._check_docker()
 
-        command.assert_called_once_with(["docker", "info"], host_requirements.environment)
+        self.assertEqual(["docker", "info"], command.call_args.args[0])
+        self.assertGreaterEqual(command.call_args.kwargs["timeout"], 60)
         self.assertTrue(host_requirements.results[-1].passed)
 
     def test_runs_without_live_github_skip_github_permissions_and_api_hosts(self) -> None:
@@ -402,17 +757,21 @@ class HostRequirementsTests(unittest.TestCase):
             "gpt-5.6-terra",
             {},
             requirements=QueueRequirements(issue_work=True, review_work=False, github_work=False),
+            repo_dir="/selected/repo",
         )
 
         with patch("utility_scripts.host_requirements.probe_tcp_host", return_value=(True, "reachable")), \
-                patch.object(host_requirements, "_check_git_remote_access"):
+                patch("utility_scripts.host_requirements.run_command") as command:
             host_requirements._check_github()
             host_requirements._check_network()
 
+        command.assert_not_called()
         result_by_name = {result.name: result for result in host_requirements.results}
         self.assertEqual("SKIP", result_by_name["authentication and permissions"].status)
         self.assertEqual("SKIP", result_by_name["github.com"].status)
         self.assertEqual("SKIP", result_by_name["api.github.com"].status)
+        self.assertEqual("SKIP", result_by_name["Forge git self-update"].status)
+        self.assertEqual("SKIP", result_by_name["Selected repository git remote"].status)
         self.assertEqual("PASS", result_by_name["chatgpt.com"].status)
 
     def test_selected_repository_paths_are_checked_instead_of_the_forge_parent_checkout(self) -> None:
@@ -423,19 +782,28 @@ class HostRequirementsTests(unittest.TestCase):
                 "/parent/forge",
                 "python3",
                 "gpt-5.6-terra",
-                {},
+                {"FORGE_MONITORED_BRANCH": "origin/forge/experiment"},
                 requirements=QueueRequirements(issue_work=True, review_work=False),
                 repo_dir=target_repo,
             )
 
-            with patch("utility_scripts.host_requirements.run_command") as command:
-                command.return_value = subprocess.CompletedProcess(["gradlew"], 0, "Gradle 8.14\n", "")
+            with patch("utility_scripts.host_requirements.run_command") as command, \
+                    patch.dict(os.environ, {}, clear=True):
+                command.side_effect = _fake_git_and_gradle_command
                 host_requirements._check_gradle_wrapper(True)
+                gradle_probe_environment = command.call_args.args[1]
                 host_requirements._check_write_permissions()
                 host_requirements._check_git_remote_access()
+                expected_gradle_home = gradle_user_home_for_repo(target_repo)
+                ls_remote_commands = [
+                    call.args[0] for call in command.call_args_list if "ls-remote" in call.args[0]
+                ]
 
         result_by_name = {result.name: result for result in host_requirements.results}
         self.assertIn(str(gradlew), result_by_name["Gradle wrapper"].detail)
+        # The probe must exercise the per-repo Gradle home real Forge work uses.
+        self.assertEqual(expected_gradle_home, gradle_probe_environment["GRADLE_USER_HOME"])
+        self.assertIn(expected_gradle_home, result_by_name["Gradle wrapper"].detail)
         self.assertIn("/parent/.git", result_by_name["Forge git metadata"].detail)
         self.assertIn(
             os.path.join(target_repo, ".git"),
@@ -444,6 +812,32 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertTrue(result_by_name["Selected repository git metadata"].required)
         self.assertIn(f"checkout={target_repo}", result_by_name["Selected repository git remote"].detail)
         self.assertIn("checkout=/parent/forge", result_by_name["Forge git self-update"].detail)
+        # Each checkout is asked for the branch it actually needs.
+        self.assertEqual(
+            ["refs/heads/forge/experiment", "refs/heads/master"],
+            [remote_command[-1] for remote_command in ls_remote_commands],
+        )
+
+    def test_git_metadata_probe_follows_a_linked_worktree_to_the_real_git_directory(self) -> None:
+        with patch("utility_scripts.host_requirements.run_command") as command:
+            command.return_value = subprocess.CompletedProcess(["git"], 0, ".git\n", "")
+            plain = resolve_git_metadata_dir("/checkout/main", {})
+
+            # A linked worktree reports the main checkout's git directory, relative or absolute.
+            command.return_value = subprocess.CompletedProcess(["git"], 0, "../../.git\n", "")
+            relative = resolve_git_metadata_dir("/checkout/main/.worktrees/review", {})
+
+            command.return_value = subprocess.CompletedProcess(["git"], 0, "/checkout/main/.git\n", "")
+            absolute = resolve_git_metadata_dir("/elsewhere/review", {})
+
+            command.return_value = subprocess.CompletedProcess(["git"], 128, "", "not a git repository\n")
+            fallback = resolve_git_metadata_dir("/checkout/plain", {})
+
+        self.assertEqual(["git", "-C", "/checkout/plain", "rev-parse", "--git-common-dir"], command.call_args.args[0])
+        self.assertEqual("/checkout/main/.git", plain)
+        self.assertEqual("/checkout/main/.git", relative)
+        self.assertEqual("/checkout/main/.git", absolute)
+        self.assertEqual("/checkout/plain/.git", fallback)
 
     def test_selected_repository_checks_collapse_when_forge_owns_the_checkout(self) -> None:
         host_requirements = HostRequirements(
@@ -455,7 +849,7 @@ class HostRequirementsTests(unittest.TestCase):
         )
 
         with patch("utility_scripts.host_requirements.run_command") as command:
-            command.return_value = subprocess.CompletedProcess(["git"], 0, "origin\n", "")
+            command.side_effect = _fake_git_and_gradle_command
             host_requirements._check_write_permissions()
             host_requirements._check_git_remote_access()
 
@@ -465,10 +859,16 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertIn("checkout that contains Forge", result_by_name["Selected repository git remote"].detail)
 
     def test_network_probes_follow_the_configured_proxy(self) -> None:
-        proxied = {"https_proxy": "http://10.0.0.1:80", "no_proxy": "localhost,.internal.example"}
+        proxied = {
+            "https_proxy": "http://10.0.0.1:80",
+            "no_proxy": "localhost,.internal.example,*.wildcard.example,ported.example:443",
+        }
 
         self.assertEqual(("10.0.0.1", 80), resolve_https_proxy(proxied, "github.com"))
         self.assertIsNone(resolve_https_proxy(proxied, "build.internal.example"))
+        self.assertIsNone(resolve_https_proxy(proxied, "build.wildcard.example"))
+        self.assertIsNone(resolve_https_proxy(proxied, "wildcard.example"))
+        self.assertIsNone(resolve_https_proxy(proxied, "ported.example"))
         self.assertIsNone(resolve_https_proxy({}, "github.com"))
         self.assertEqual(("proxy.example", 80), resolve_https_proxy({"HTTPS_PROXY": "proxy.example"}, "github.com"))
 
@@ -502,10 +902,18 @@ class HostRequirementsTests(unittest.TestCase):
     def test_worker_validates_host_requirements_before_first_cycle(self) -> None:
         worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"
         worker = worker_path.read_text(encoding="utf-8")
-        startup = worker.rindex("\nrun_host_requirements\n")
-        first_cycle = worker.rindex("\nrun_cycle\n")
+        cycle = worker[worker.index("\nrun_cycle() {"):]
 
-        self.assertLess(startup, first_cycle)
+        gate = cycle.index("if ! run_host_requirements; then")
+        rate_limits = cycle.index("if ! display_github_rate_limits; then")
+
+        # An exhausted GitHub API limit must skip the cycle instead of failing the gate,
+        # and the gate must still stop the worker before self-update or queue work.
+        self.assertLess(rate_limits, gate)
+        self.assertLess(gate, cycle.index("update_metadata_forge"))
+        self.assertLess(gate, cycle.index("process_work_queues"))
+        # The gate no longer runs at top level, where a rate-limit failure would kill the loop.
+        self.assertNotIn("\nrun_host_requirements\n", worker)
 
 
 if __name__ == "__main__":

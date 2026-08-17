@@ -93,7 +93,6 @@ from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
 )
-from ai_workflows.agents.codex_agent import extract_codex_token_usage
 from git_scripts.common_git import (
     GITHUB_TRANSIENT_RETRY_ATTEMPTS,
     GitHubError,
@@ -174,7 +173,6 @@ from utility_scripts.metadata_index import (
 )
 from utility_scripts.metrics_writer import (
     PENDING_METRICS_FILENAME,
-    calc_model_session_cost,
     load_execution_metrics_for_timestamp,
     read_pending_metrics,
     write_pending_metrics,
@@ -205,7 +203,9 @@ from utility_scripts.host_requirements import (
     PI_PROVIDER,
     QueueRequirements,
     check_pi_authentication,
+    check_pi_model_available,
     ensure_host_requirements,
+    print_host_requirement_configuration_error,
     require_issue_graalvm_homes,
     resolve_graalvm_version_check,
     resolve_queue_requirements,
@@ -353,9 +353,8 @@ RESUMABLE_LABEL_DESCRIPTION = "Issue has preserved automation work that Forge ca
 DEFAULT_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD = 15
 
 
-PI_REVIEW_PROVIDER = PI_PROVIDER
 DEFAULT_WORK_QUEUE_STRATEGY_NAME = "dynamic_access_main_sources_pi_gpt-5.6-terra"
-CODEX_REVIEW_TIMEOUT_SECONDS = 1800
+CODEX_FAILURE_ANALYSIS_TIMEOUT_SECONDS = 1800
 PI_REVIEW_TIMEOUT_SECONDS = 1800
 DEFAULT_WORKTREE_BASE_REF = "master"
 # The GraalVM lanes are named once in `host_requirements`, in this order.
@@ -2763,25 +2762,6 @@ def extract_codex_final_message(log_path: str) -> str:
     return final_message.strip()
 
 
-def extract_codex_token_usage_summary(log_path: str, model_name: str | None = None) -> str:
-    """Return a human-readable Codex token-usage line from a JSONL log, or '' when unavailable.
-
-    Includes the session cost derived from `model_name`'s per-token rates.
-    """
-    if not os.path.isfile(log_path):
-        return ""
-    with open(log_path, "r", encoding="utf-8") as log_file:
-        usage = extract_codex_token_usage(log_file.read())
-    if usage is None:
-        return ""
-    input_tokens, cached_input_tokens, output_tokens = usage
-    cost_usd = calc_model_session_cost(model_name, input_tokens, cached_input_tokens, output_tokens)
-    return (
-        f"input={input_tokens} cached_input={cached_input_tokens} output={output_tokens} "
-        f"cost=${cost_usd:.4f}"
-    )
-
-
 def get_pull_request_discussion(pr_number: int) -> dict:
     """Fetch issue comments and submitted reviews for the target pull request."""
     return gh_json(
@@ -2852,20 +2832,31 @@ def print_pull_request_discussion(pr_number: int) -> None:
 
 
 def check_pi_review_authentication(review_model: str) -> bool:
-    """Check Pi review authentication with the shared deterministic host check.
+    """Check Pi review credentials and review-model availability without invoking a model.
 
-    §FS-automated-pr-review
+    `pi auth check` ignores `--model`, so the model is proven separately
+    (§FS-automated-pr-review).
     """
     ready, detail = check_pi_authentication(review_model)
     if not ready:
         print(
             (
-                f"ERROR: Pi review authentication is not ready for provider '{PI_REVIEW_PROVIDER}' "
+                f"ERROR: Pi review authentication is not ready for provider '{PI_PROVIDER}' "
                 f"and model '{review_model}'.\n{detail}"
             ),
             file=sys.stderr,
         )
-    return ready
+        return False
+    available, model_detail = check_pi_model_available(review_model)
+    if not available:
+        print(
+            (
+                f"ERROR: Pi provider '{PI_PROVIDER}' does not offer review model "
+                f"'{review_model}'.\n{model_detail}"
+            ),
+            file=sys.stderr,
+        )
+    return available
 
 
 def review_pull_request(
@@ -2889,7 +2880,7 @@ def review_pull_request(
         "pi", "-p",
         "--no-session",
         "--approve",
-        "--provider", PI_REVIEW_PROVIDER,
+        "--provider", PI_PROVIDER,
         "--model", review_model,
         "--thinking", "medium",
         prompt,
@@ -3753,13 +3744,13 @@ def run_codex_failed_generation_analysis(
                 stdout=log_file,
                 stderr=subprocess.STDOUT,
                 text=True,
-                timeout=CODEX_REVIEW_TIMEOUT_SECONDS,
+                timeout=CODEX_FAILURE_ANALYSIS_TIMEOUT_SECONDS,
                 check=False,
             )
     except subprocess.TimeoutExpired:
         print(
             (
-                f"ERROR: Codex failure analysis timed out after {CODEX_REVIEW_TIMEOUT_SECONDS} seconds "
+                f"ERROR: Codex failure analysis timed out after {CODEX_FAILURE_ANALYSIS_TIMEOUT_SECONDS} seconds "
                 f"for issue #{claimed_issue.issue['number']}. See {log_path_display}."
             ),
             file=sys.stderr,
@@ -8691,10 +8682,23 @@ def resolve_host_requirement_queues(args: argparse.Namespace) -> QueueRequiremen
         enabled_queues = resolve_queue_requirements(os.environ)
         return QueueRequirements(
             issue_work=enabled_queues.issue_work,
-            review_work=enabled_queues.review_work,
+            # `process_work_queues` clears the review queues for fixture runs, so no review
+            # capability is needed even when the review limits allow one.
+            review_work=enabled_queues.review_work and not args.fixture_testing,
             github_work=github_work,
         )
     return QueueRequirements(issue_work=True, review_work=False, github_work=github_work)
+
+
+def resolve_host_requirement_review_model(args: argparse.Namespace) -> str:
+    """Return the review model the invoked mode actually reviews with.
+
+    Work queues read `FORGE_REVIEW_MODEL` instead of `--review-model`, so the gate must
+    validate that model (§FS-forge-host-requirements).
+    """
+    if args.run_work_queues:
+        return os.environ.get("FORGE_REVIEW_MODEL", args.review_model)
+    return args.review_model
 
 
 def require_host_requirements(args: argparse.Namespace, reachability_metadata_path: str) -> None:
@@ -8704,11 +8708,17 @@ def require_host_requirements(args: argparse.Namespace, reachability_metadata_pa
     checkout this run selected, which `--reachability-metadata-path` can move away from
     the checkout that contains Forge (§FS-forge-host-requirements).
     """
+    try:
+        requirements = resolve_host_requirement_queues(args)
+        graalvm_version_check = resolve_graalvm_version_check(args.graalvm_version_check)
+    except ValueError as exc:
+        print_host_requirement_configuration_error(exc)
+        sys.exit(1)
     ensure_host_requirements(
         FORGE_DIR,
-        review_model=args.review_model,
-        requirements=resolve_host_requirement_queues(args),
-        graalvm_version_check=resolve_graalvm_version_check(args.graalvm_version_check),
+        review_model=resolve_host_requirement_review_model(args),
+        requirements=requirements,
+        graalvm_version_check=graalvm_version_check,
         repo_dir=reachability_metadata_path,
     )
 

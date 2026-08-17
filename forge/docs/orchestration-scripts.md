@@ -184,13 +184,16 @@ gates proceed (§FS-automated-pr-review).
 
 **Isolated review run.** Before selecting review work, orchestration validates
 the parent process's GitHub CLI authentication. Before launching Pi, it runs
-`pi auth check` for the configured provider and review model. Both checks are
-deterministic and do not invoke a model (§FS-automated-pr-review). Each selected
-PR is reviewed in a throwaway detached worktree created from a freshly fetched
-base ref, with the PR checked out in detached HEAD. Review is performed by Pi
-(`pi -p --no-session`), which is expected to apply the label-specific review
-skill, read the authoritative diff with `gh pr diff`, and submit either an
-approval or a requested-changes review directly on GitHub. The review must not
+`pi auth check` for the configured provider and, because that check ignores
+`--model`, `pi --list-models <review model>` to prove the provider offers the
+model. Both checks are deterministic and do not invoke a model
+(§FS-automated-pr-review). Each selected PR is reviewed in a throwaway detached
+worktree created from a freshly fetched base ref, with the PR checked out in
+detached HEAD. Review is performed by Pi (`pi -p --no-session --approve`, where
+`--approve` trusts project-local files so the repository's `.pi/skills` review
+skills load in the worktree), which is expected to apply the label-specific
+review skill, read the authoritative diff with `gh pr diff`, and submit either
+an approval or a requested-changes review directly on GitHub. The review must not
 write files or re-checkout. The run is logged durably
 (§FS-durable-generation-logs) and the worktree is cleaned up afterward; a
 review timeout or non-zero Pi exit is a review failure, not an approval.

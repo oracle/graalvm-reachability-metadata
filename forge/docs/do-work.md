@@ -9,13 +9,15 @@ owns branch selection, self-update, work limits, review limits, stop-file
 handling, sleep timing, and re-execing the latest worker script before the
 next cycle.
 
-Before the first self-update or queue operation in each worker process,
-`do_up_to_date_work.sh` validates the host requirements defined in
-`utility_scripts/host_requirements.py`. It derives the required capabilities
-from the enabled issue and review queue limits, prints the exact tool,
-environment, filesystem, network, GitHub, Docker, and agent requirements, and
-exits before work on any failed required check (§FS-forge-host-requirements).
-The shell gate is deliberately early — it stops a misconfigured worker before it
+At the start of each cycle, `do_up_to_date_work.sh` validates the host
+requirements defined in `utility_scripts/host_requirements.py`. It derives the
+required capabilities from the enabled issue and review queue limits, prints the
+exact tool, environment, filesystem, network, GitHub, Docker, and agent
+requirements, and exits before work on any failed required check
+(§FS-forge-host-requirements).
+The shell gate runs after the GitHub rate-limit check that postpones an
+exhausted cycle and before the self-update and any queue work — an exhausted API
+limit skips one cycle, while a misconfigured host stops the worker before it
 self-updates or re-execs — and it is not the only one: `forge_metadata.py`
 revalidates from the freshly updated checkout at the start of every
 work-starting invocation, using the capabilities its invoked mode actually needs.

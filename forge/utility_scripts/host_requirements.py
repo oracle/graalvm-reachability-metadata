@@ -22,11 +22,21 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping, Sequence
 
+if __package__ in (None, ""):
+    # `do_up_to_date_work.sh` runs this file as a script, so `forge/` is not on `sys.path`
+    # yet and the lazy `utility_scripts.*` imports below would fail.
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 
 REPOSITORY_OWNER = "oracle"
 REPOSITORY_NAME = "graalvm-reachability-metadata"
+# The base ref every selected reachability-metadata checkout is worked from; mirrors
+# `forge_metadata.DEFAULT_WORKTREE_BASE_REF` without importing the control plane.
+REPOSITORY_BASE_BRANCH = "master"
 PROJECT_NUMBER = 30
 PI_PROVIDER = "openai-codex"
+# `pi --model` accepts `provider/id` with an optional `:<thinking>` suffix.
+PI_THINKING_LEVELS = ("off", "minimal", "low", "medium", "high", "xhigh", "max")
 REQUIRED_GRYPE_VERSION = "0.104.0"
 DEFAULT_REVIEW_MODEL = "gpt-5.6-terra"
 GRAALVM_VERSION_CONFIG = "graalvm-versions.json"
@@ -63,6 +73,16 @@ NETWORK_HOSTS_ISSUE_WORK = (
     "registry-1.docker.io",
     "auth.docker.io",
 )
+# The first probe on a cold host downloads the Gradle distribution into the shared wrapper cache.
+GRADLE_PROBE_TIMEOUT_SECONDS = 600
+# Cold JVM startup, a git transport handshake, and `docker info` all exceed a short budget.
+SLOW_PROBE_TIMEOUT_SECONDS = 60
+NO_LIVE_GITHUB_DETAIL = "this run mutates no GitHub state, so no live GitHub access is required"
+NO_UPSTREAM_LOOKUP_DETAIL = (
+    "upstream release lookup needs live GitHub access, which this run does not require"
+)
+# Only the pinned lane is resolved locally; the other two require an upstream release lookup.
+UPSTREAM_GRAALVM_ENV_VARS = ("GRAALVM_HOME", "GRAALVM_HOME_LATEST_EA")
 
 
 @dataclass(frozen=True)
@@ -197,14 +217,19 @@ class HostRequirements:
                 github_operations.extend(("assign/label/comment issues", "push generated branches"))
             if self.requirements.review_work:
                 github_operations.extend(("submit reviews", "merge eligible PRs"))
-            print(f"  - GitHub operations: {', '.join(github_operations)}")
+            if github_operations:
+                print(f"  - GitHub operations: {', '.join(github_operations)}")
         else:
             print("  - GitHub: no live GitHub access is required by this run")
         print("  - Network: outbound access to every host and port listed in the checks below")
         proxy_url = self.environment.get("https_proxy") or self.environment.get("HTTPS_PROXY")
         if proxy_url:
             print(f"  - Network route: HTTPS reachability is checked through the configured proxy {proxy_url}")
-        print("  - Pi reviews: authenticated provider plus unattended tool approval (`pi --approve`)")
+        if self.requirements.any_work:
+            print(
+                "  - Pi: authenticated provider offering the review model, plus project-local trust "
+                "(`pi --approve`) so the repository's `.pi/skills` review skills load in the review worktree"
+            )
         if self.requirements.issue_work:
             print("  - Codex recovery: approval=never, sandbox=danger-full-access, worktree write, provider network")
             print("  - Docker: access to the Docker daemon and configured image registries")
@@ -219,12 +244,19 @@ class HostRequirements:
         print(f"  - FORGE_REVIEW_MODEL={self.review_model}")
         print(f"  - GraalVM version match: {self._version_check_description()}")
 
+    def _skips_upstream_version(self, variable: str) -> bool:
+        """Return whether a lane's required release cannot be resolved without live GitHub."""
+        return variable in UPSTREAM_GRAALVM_ENV_VARS and not self.requirements.github_work
+
     def _required_graalvm_description(self, variable: str) -> str:
         """Describe the distribution one GraalVM lane must point to."""
+        unversioned = "any GraalVM with Native Image and the reachability-metadata schema"
         if self.graalvm_version_check == "off":
-            return "any GraalVM with Native Image and the reachability-metadata schema"
+            return unversioned
         if variable == "GRAALVM_HOME_25_0":
             return f"GraalVM {self.graalvm_versions.pinned_25 or '<invalid repo pin>'}"
+        if self._skips_upstream_version(variable):
+            return unversioned
         if variable == "GRAALVM_HOME_LATEST_EA":
             return f"Oracle GraalVM {self.graalvm_versions.latest_ea or '<unresolved latest EA>'}"
         return f"GraalVM {self.graalvm_versions.latest_ga or '<unresolved latest GA>'}"
@@ -305,12 +337,26 @@ class HostRequirements:
                 f"Restore the executable repository wrapper and run `chmod +x {gradlew}`.",
             )
             return
-        gradle_environment = dict(self.environment)
-        gradle_environment["GRADLE_USER_HOME"] = resolve_gradle_state_root(self.environment)
+        # Lazy import: `gradle_environment` imports this module, and the probe must use the same
+        # Gradle state root and shared wrapper-distribution cache Forge's own Gradle runs use.
+        from utility_scripts.gradle_environment import gradle_command_environment
+
+        try:
+            probe_environment = gradle_command_environment(self.repo_dir, self.environment)
+        except OSError as exc:
+            self._add(
+                "tool",
+                "Gradle wrapper",
+                True,
+                False,
+                f"path={gradlew}; the isolated Gradle state could not be prepared: {exc}",
+                f"Grant the current user write access to `{resolve_gradle_state_root(self.environment)}`.",
+            )
+            return
         result = run_command(
             [gradlew, "--version", "--no-daemon"],
-            gradle_environment,
-            timeout=120,
+            probe_environment,
+            timeout=GRADLE_PROBE_TIMEOUT_SECONDS,
         )
         installed_version = parse_gradle_version(f"{result.stdout}\n{result.stderr}")
         self._add(
@@ -318,9 +364,12 @@ class HostRequirements:
             "Gradle wrapper",
             True,
             result.returncode == 0,
-            f"path={gradlew}; version={installed_version or '<unresolved>'}",
+            f"path={gradlew}; version={installed_version or '<unresolved>'}; "
+            f"GRADLE_USER_HOME={probe_environment['GRADLE_USER_HOME']} under Gradle state root "
+            f"{resolve_gradle_state_root(self.environment)} with the shared wrapper-distribution cache",
             "Allow wrapper execution, Gradle-state writes, and services.gradle.org access; then run "
-            f"`{gradlew} --version --no-daemon` successfully.",
+            f"`{gradlew} --version --no-daemon` successfully. The first run on a cold host downloads "
+            f"the Gradle distribution and may take several minutes.",
         )
 
     def _check_tool(
@@ -380,7 +429,8 @@ class HostRequirements:
                 if java_home
                 else f"unset; Forge will align it to GRAALVM_HOME={graalvm_home or '<unset>'}"
             )
-            self._add("environment", "JAVA_HOME alignment", True, True, detail)
+            # Forge aligns JAVA_HOME to the selected GraalVM itself, so this is reported, not enforced.
+            self._add("environment", "JAVA_HOME alignment", True, None, detail)
         elif self.requirements.review_work:
             self._check_review_java_home()
 
@@ -420,7 +470,12 @@ class HostRequirements:
         )
 
     def _resolve_graalvm_versions(self) -> GraalVMVersions:
+        """Resolve every lane's required release; the GA and EA lanes need live GitHub access."""
         pinned_25 = self._read_pinned_graalvm_25_version()
+        if not self.requirements.github_work:
+            for name in ("latest GraalVM GA", "latest Oracle GraalVM EA"):
+                self._add("version", name, False, None, NO_UPSTREAM_LOOKUP_DETAIL)
+            return GraalVMVersions(None, pinned_25, None)
         latest_ga = self._read_latest_graalvm_ga_version()
         latest_ea = self._read_latest_graalvm_ea_version()
         return GraalVMVersions(latest_ga, pinned_25, latest_ea)
@@ -544,7 +599,11 @@ class HostRequirements:
             expected_version: str | None,
             early_access: bool,
     ) -> None:
-        """Compare one installed GraalVM lane against the version required for it."""
+        """Compare one installed GraalVM lane against the version required for it.
+
+        Every lane is compared on the GraalVM product version, not the JDK release: two
+        different GraalVM builds can report the same `native-image <jdk>` line.
+        """
         if self.graalvm_version_check == "off":
             self._add(
                 "version",
@@ -554,19 +613,21 @@ class HostRequirements:
                 f"path={value}; version match disabled by `--graalvm-version-check off`",
             )
             return
+        if self._skips_upstream_version(variable):
+            self._add("version", f"{variable} version", False, None, f"path={value}; {NO_UPSTREAM_LOOKUP_DETAIL}")
+            return
         native_version_result = run_command(
             [os.path.join(value, "bin", "native-image"), "--version"],
             self.environment,
+            timeout=SLOW_PROBE_TIMEOUT_SECONDS,
         )
         native_version_output = f"{native_version_result.stdout}\n{native_version_result.stderr}"
         installed_graalvm_version = parse_graalvm_runtime_version(native_version_output)
-        if variable == "GRAALVM_HOME_25_0":
-            installed_display = parse_native_image_version(native_version_output) or "<unresolved>"
-            version_matches = expected_version is not None and installed_display == expected_version
-        elif early_access:
+        if early_access:
             java_result = run_command(
                 [os.path.join(value, "bin", "java"), "-XshowSettings:properties", "-version"],
                 self.environment,
+                timeout=SLOW_PROBE_TIMEOUT_SECONDS,
             )
             java_runtime = parse_java_runtime_version(f"{java_result.stdout}\n{java_result.stderr}")
             version_matches = expected_version is not None and graalvm_ea_version_matches(
@@ -608,10 +669,12 @@ class HostRequirements:
         any_work = self.requirements.any_work
         paths: list[tuple[str, str, bool, str]] = [
             ("Forge checkout", self.forge_dir, True, ""),
-            ("Forge git metadata", os.path.join(self.forge_repo_dir, ".git"), True, ""),
+            ("Forge git metadata", resolve_git_metadata_dir(self.forge_repo_dir, self.environment), True, ""),
             (
                 "Selected repository git metadata",
-                os.path.join(self.repo_dir, ".git"),
+                resolve_git_metadata_dir(self.repo_dir, self.environment)
+                if self.separate_repository
+                else os.path.join(self.repo_dir, ".git"),
                 self.separate_repository,
                 f"{self.repo_dir} is the checkout that contains Forge; covered by the Forge git metadata check",
             ),
@@ -671,21 +734,40 @@ class HostRequirements:
             )
 
     def _check_git_remote_access(self) -> None:
-        self._check_git_remote("Forge git self-update", self.forge_dir, True, "")
+        """Check the git transport both checkouts need, unless this run touches no remote."""
+        github_work = self.requirements.github_work
+        monitored_branch = self.environment.get("FORGE_MONITORED_BRANCH", "origin/master")
+        self._check_git_remote(
+            "Forge git self-update",
+            self.forge_dir,
+            monitored_branch.removeprefix("origin/"),
+            github_work,
+            NO_LIVE_GITHUB_DETAIL,
+        )
+        # Generated branches always start from the selected repository's base ref, never
+        # from the branch Forge self-updates itself against.
         self._check_git_remote(
             "Selected repository git remote",
             self.repo_dir,
-            self.separate_repository,
-            f"{self.repo_dir} is the checkout that contains Forge; covered by the Forge self-update check",
+            REPOSITORY_BASE_BRANCH,
+            github_work and self.separate_repository,
+            NO_LIVE_GITHUB_DETAIL
+            if not github_work
+            else f"{self.repo_dir} is the checkout that contains Forge; covered by the Forge self-update check",
         )
 
-    def _check_git_remote(self, name: str, checkout: str, required: bool, skip_detail: str) -> None:
-        """Check that one checkout reaches the monitored branch through its own origin remote."""
+    def _check_git_remote(
+            self,
+            name: str,
+            checkout: str,
+            branch: str,
+            required: bool,
+            skip_detail: str,
+    ) -> None:
+        """Check that one checkout reaches the branch it needs through its own origin remote."""
         if not required:
             self._add("network", name, False, None, skip_detail)
             return
-        monitored_branch = self.environment.get("FORGE_MONITORED_BRANCH", "origin/master")
-        branch = monitored_branch.removeprefix("origin/")
         remote_result = run_command(
             ["git", "-C", checkout, "remote", "get-url", "origin"],
             self.environment,
@@ -697,6 +779,7 @@ class HostRequirements:
                 "ls-remote", "--exit-code", "origin", f"refs/heads/{branch}",
             ],
             self.environment,
+            timeout=SLOW_PROBE_TIMEOUT_SECONDS,
         )
         self._add(
             "network",
@@ -710,13 +793,15 @@ class HostRequirements:
         )
 
     def _check_github(self) -> None:
-        required = self.requirements.github_work
-        if not required or resolve_executable("gh") is None:
+        if not self.requirements.github_work:
+            self._add("github", "authentication and permissions", False, None, NO_LIVE_GITHUB_DETAIL)
+            return
+        if resolve_executable("gh") is None:
             self._add(
                 "github",
                 "authentication and permissions",
-                required,
-                None if not required else False,
+                True,
+                False,
                 "GitHub checks require the gh CLI",
                 "Install `gh`, put it on PATH, and run `gh auth login -h github.com`.",
             )
@@ -742,28 +827,18 @@ class HostRequirements:
             )
             return
 
-        query = """
-query($owner: String!, $name: String!, $project: Int!) {
-  viewer {
-    login
-    repository(name: $name) { nameWithOwner viewerPermission }
-  }
-  repository(owner: $owner, name: $name) { nameWithOwner viewerPermission }
-  organization(login: $owner) {
-    projectV2(number: $project) { id title viewerCanUpdate }
-  }
-}
-""".strip()
-        permission_result = run_command(
-            [
-                "gh", "api", "graphql",
-                "-f", f"query={query}",
-                "-F", f"owner={REPOSITORY_OWNER}",
-                "-F", f"name={REPOSITORY_NAME}",
-                "-F", f"project={PROJECT_NUMBER}",
-            ],
-            self.environment,
-        )
+        push_slug, push_remote = self._resolve_push_target()
+        command = [
+            "gh", "api", "graphql",
+            "-f", f"query={build_github_permission_query(push_slug)}",
+            "-F", f"owner={REPOSITORY_OWNER}",
+            "-F", f"name={REPOSITORY_NAME}",
+            "-F", f"project={PROJECT_NUMBER}",
+        ]
+        if push_slug is not None:
+            push_owner, push_name = push_slug.split("/", maxsplit=1)
+            command.extend(("-F", f"pushOwner={push_owner}", "-F", f"pushName={push_name}"))
+        permission_result = run_command(command, self.environment)
         if permission_result.returncode != 0:
             self._add(
                 "github",
@@ -774,9 +849,22 @@ query($owner: String!, $name: String!, $project: Int!) {
                 "Allow api.github.com and grant repository plus organization-project access to the active gh account.",
             )
             return
-        self._record_github_permissions(permission_result.stdout)
+        self._record_github_permissions(permission_result.stdout, push_slug, push_remote)
 
-    def _record_github_permissions(self, output: str) -> None:
+    def _resolve_push_target(self) -> tuple[str | None, str]:
+        """Return the `owner/name` and URL of the origin generated branches are pushed to.
+
+        Forge publishes with `git push origin` from the selected repository, so the head
+        repository is that checkout's origin — never the viewer's personal fork.
+        """
+        result = run_command(
+            ["git", "-C", self.repo_dir, "remote", "get-url", "origin"],
+            self.environment,
+        )
+        remote_url = first_output_line(result) if result.returncode == 0 else ""
+        return parse_github_repo_slug(remote_url), remote_url
+
+    def _record_github_permissions(self, output: str, push_slug: str | None, push_remote: str) -> None:
         try:
             payload = json.loads(output)
             data = payload["data"]
@@ -819,23 +907,43 @@ query($owner: String!, $name: String!, $project: Int!) {
             f"Grant the active account write access to oracle GitHub project {PROJECT_NUMBER}.",
         )
 
-        fork = viewer.get("repository")
-        fork_permission = str((fork or {}).get("viewerPermission") or "NONE")
+        self._record_push_target(login, push_slug, push_remote, data.get("pushTarget"))
+
+    def _record_push_target(
+            self,
+            login: str,
+            push_slug: str | None,
+            push_remote: str,
+            push_repository: object,
+    ) -> None:
+        """Report write access to the origin repository generated branches are pushed to."""
+        required = self.requirements.issue_work
+        if push_slug is None:
+            self._add(
+                "github",
+                "generated-branch push target",
+                required,
+                False if required else None,
+                f"checkout={self.repo_dir}, origin={push_remote or '<unset>'} is not a GitHub remote",
+                f"Configure a GitHub `origin` remote in `{self.repo_dir}`; Forge publishes generated "
+                "branches with `git push origin`.",
+            )
+            return
+        repository = push_repository if isinstance(push_repository, dict) else {}
+        permission = str(repository.get("viewerPermission") or "NONE")
         self._add(
             "github",
             "generated-branch push target",
-            self.requirements.issue_work,
-            fork_permission in WRITE_REPOSITORY_PERMISSIONS if self.requirements.issue_work else None,
-            (
-                f"repository={(fork or {}).get('nameWithOwner') or f'{login}/{REPOSITORY_NAME}'}, "
-                f"permission={fork_permission}"
-            ),
-            f"Create `{login}/{REPOSITORY_NAME}` and grant the active account write access to push generated branches.",
+            required,
+            permission in WRITE_REPOSITORY_PERMISSIONS if required else None,
+            f"account={login}, repository={repository.get('nameWithOwner') or push_slug}, "
+            f"origin={push_remote}, permission={permission}",
+            f"Grant the active account WRITE, MAINTAIN, or ADMIN on `{push_slug}`, the `origin` of "
+            f"`{self.repo_dir}` that Forge pushes generated branches to.",
         )
 
     def _check_pi(self) -> None:
-        required = self.requirements.any_work
-        if not required:
+        if not self.requirements.any_work:
             self._add("agent", "Pi authentication", False, None, "not required by this run")
         else:
             ready, detail = check_pi_authentication(self.review_model, self.environment)
@@ -846,15 +954,32 @@ query($owner: String!, $name: String!, $project: Int!) {
                 ready,
                 detail,
                 f"Install `pi`, then run `pi` and `/login {PI_PROVIDER}`; `pi auth check --provider "
-                f"{PI_PROVIDER} --model {self.review_model} --json` must report status=ready.",
+                f"{PI_PROVIDER} --json` must report status=ready.",
             )
+        # `pi auth check` ignores `--model`, so only PR reviews need the model proven to exist.
+        review_work = self.requirements.review_work
+        available, model_detail = (
+            check_pi_model_available(self.review_model, self.environment)
+            if review_work
+            else (None, "not required by this run")
+        )
         self._add(
             "agent",
-            "Pi review command approval",
-            self.requirements.review_work,
-            pi_approve_supported(self.environment) if self.requirements.review_work else None,
-            "required command option: `pi --approve`",
-            "Upgrade Pi to a version whose `pi --help` lists `--approve`.",
+            "Pi review model",
+            review_work,
+            available,
+            model_detail,
+            f"Set `FORGE_REVIEW_MODEL` to a model that `pi --list-models` lists for provider "
+            f"{PI_PROVIDER}; `<model>`, `{PI_PROVIDER}/<model>`, and `<model>:<thinking>` are accepted.",
+        )
+        self._add(
+            "agent",
+            "Pi project-local trust",
+            review_work,
+            pi_approve_supported(self.environment) if review_work else None,
+            "required command option: `pi --approve` (trust project-local files)",
+            "Upgrade Pi to a version whose `pi --help` lists `--approve`; without it the repository's "
+            "`.pi/skills` review skills are ignored in the throwaway review worktree.",
         )
 
     def _check_codex(self) -> None:
@@ -904,7 +1029,7 @@ query($owner: String!, $name: String!, $project: Int!) {
         if resolve_executable("docker") is None:
             self._add("docker", "daemon access", True, False, "Docker CLI is unavailable", "Install Docker.")
             return
-        result = run_command(["docker", "info"], self.environment)
+        result = run_command(["docker", "info"], self.environment, timeout=SLOW_PROBE_TIMEOUT_SECONDS)
         detail = "docker info succeeded" if result.returncode == 0 else (
             first_output_line(result) or f"docker info exited {result.returncode}"
         )
@@ -933,6 +1058,33 @@ query($owner: String!, $name: String!, $project: Int!) {
             print(f"[forge-host] PASS with {len(warnings)} warning(s); work may start.")
         else:
             print("[forge-host] PASS: all required host checks succeeded; work may start.")
+
+
+def parse_github_repo_slug(remote_url: str) -> str | None:
+    """Return the `owner/name` of a GitHub remote URL, or None when it is not a GitHub remote."""
+    # Lazy import: `git_scripts` pulls in workflow helpers this gate does not otherwise need.
+    from git_scripts.common_git import parse_github_repo_slug as parse_slug
+
+    return parse_slug(remote_url or "")
+
+
+def build_github_permission_query(push_slug: str | None) -> str:
+    """Build the permission query, adding the push-target repository when its origin resolves."""
+    push_variables = ", $pushOwner: String!, $pushName: String!" if push_slug else ""
+    push_selection = (
+        "\n  pushTarget: repository(owner: $pushOwner, name: $pushName) { nameWithOwner viewerPermission }"
+        if push_slug
+        else ""
+    )
+    return f"""
+query($owner: String!, $name: String!, $project: Int!{push_variables}) {{
+  viewer {{ login }}
+  repository(owner: $owner, name: $name) {{ nameWithOwner viewerPermission }}{push_selection}
+  organization(login: $owner) {{
+    projectV2(number: $project) {{ id title viewerCanUpdate }}
+  }}
+}}
+""".strip()
 
 
 def check_graalvm_installation(graalvm_home: str) -> list[str]:
@@ -1077,9 +1229,12 @@ def resolve_queue_requirements(environment: Mapping[str, str]) -> QueueRequireme
 
 
 def read_nonnegative_limit(environment: Mapping[str, str], name: str, default: int) -> int:
-    """Read a non-negative queue limit, raising a clear configuration error."""
+    """Read a non-negative queue limit, raising a clear configuration error.
+
+    An empty value means unset, matching `forge_metadata.get_env_non_negative_int`.
+    """
     raw_value = environment.get(name)
-    if raw_value is None:
+    if raw_value is None or raw_value == "":
         return default
     try:
         value = int(raw_value)
@@ -1088,6 +1243,20 @@ def read_nonnegative_limit(environment: Mapping[str, str], name: str, default: i
     if value < 0:
         raise ValueError(f"{name} must be a non-negative integer, got {raw_value!r}")
     return value
+
+
+def print_host_requirement_configuration_error(exc: ValueError) -> None:
+    """Print the single actionable message for invalid host-requirement configuration.
+
+    Shared by both gate entry points so a bad limit or version-check mode never reaches
+    the operator as a traceback (§FS-forge-host-requirements).
+    """
+    print(f"ERROR: Forge host requirement configuration is invalid: {exc}", file=sys.stderr)
+    print(
+        "Fix: set every FORGE_*_LIMIT value to a non-negative integer and "
+        f"{GRAALVM_VERSION_CHECK_ENV_VAR} to {', '.join(GRAALVM_VERSION_CHECK_MODES)}.",
+        file=sys.stderr,
+    )
 
 
 def resolve_executable(command: str) -> str | None:
@@ -1100,7 +1269,7 @@ def resolve_executable(command: str) -> str | None:
 def run_command(
         command: Sequence[str],
         environment: Mapping[str, str],
-        timeout: int = 20,
+        timeout: int = SLOW_PROBE_TIMEOUT_SECONDS,
 ) -> subprocess.CompletedProcess[str]:
     """Run one deterministic probe command without a shell or interactive prompt."""
     command_environment = dict(environment)
@@ -1133,12 +1302,6 @@ def java_version_major(version_line: str) -> int | None:
         if major_text.isdigit():
             return int(major_text)
     return None
-
-
-def parse_native_image_version(output: str) -> str | None:
-    """Extract the JDK release from `native-image --version`."""
-    match = re.search(r"^native-image\s+(\S+)", output, flags=re.MULTILINE)
-    return match.group(1) if match else None
 
 
 def parse_graalvm_runtime_version(output: str) -> str | None:
@@ -1174,9 +1337,10 @@ def check_pi_authentication(
         review_model: str,
         environment: Mapping[str, str] | None = None,
 ) -> tuple[bool, str]:
-    """Check Pi authentication for the Forge provider and model without invoking a model.
+    """Check Pi authentication for the Forge provider without invoking a model.
 
-    §FS-forge-host-requirements
+    Provider credentials only: `pi auth check` does not validate `--model`, which
+    `check_pi_model_available` proves separately (§FS-forge-host-requirements).
     """
     values = os.environ if environment is None else environment
     if resolve_executable("pi") is None:
@@ -1209,8 +1373,50 @@ def check_pi_authentication(
     return ready, f"{detail}; {failure}" if failure else detail
 
 
+def check_pi_model_available(
+        review_model: str,
+        environment: Mapping[str, str] | None = None,
+) -> tuple[bool, str]:
+    """Check that the Forge Pi provider offers the configured review model.
+
+    `pi auth check` accepts and ignores `--model`, so model availability is proven with
+    `pi --list-models`, which lists models without invoking one (§FS-forge-host-requirements).
+    """
+    values = os.environ if environment is None else environment
+    if resolve_executable("pi") is None:
+        return False, f"`pi` was not found on PATH; provider={PI_PROVIDER}, model={review_model}"
+    result = run_command(["pi", "--list-models", review_model], values)
+    available = result.returncode == 0 and pi_model_listed(result.stdout, review_model)
+    detail = f"provider={PI_PROVIDER}, model={review_model}, available={available}"
+    if available:
+        return True, detail
+    failure = first_output_line(result) or "`pi --list-models` returned no output"
+    return False, f"{detail}; {failure}"
+
+
+def normalize_pi_model(review_model: str) -> str:
+    """Reduce a `pi --model` pattern to the catalogue id `pi --list-models` prints."""
+    model = review_model.removeprefix(f"{PI_PROVIDER}/")
+    name, separator, thinking = model.rpartition(":")
+    return name if separator and thinking in PI_THINKING_LEVELS else model
+
+
+def pi_model_listed(output: str, review_model: str) -> bool:
+    """Return whether `pi --list-models` output has a row for the Forge provider and model.
+
+    `--model` accepts `provider/id` and an optional `:<thinking>` suffix, so the configured
+    value is matched raw and normalized (§FS-forge-host-requirements).
+    """
+    accepted = {review_model, normalize_pi_model(review_model)}
+    for line in output.splitlines():
+        fields = line.split()
+        if len(fields) >= 2 and fields[0] == PI_PROVIDER and fields[1] in accepted:
+            return True
+    return False
+
+
 def pi_approve_supported(environment: Mapping[str, str]) -> bool:
-    """Return whether the installed Pi CLI supports unattended tool approval."""
+    """Return whether the installed Pi CLI can trust project-local files (`pi --approve`)."""
     result = run_command(["pi", "--help"], environment)
     return result.returncode == 0 and re.search(r"(?:^|\s)--approve(?:\s|,|$)", result.stdout) is not None
 
@@ -1255,6 +1461,19 @@ def graalvm_ea_version_matches(
     return graal_matches and runtime_matches
 
 
+def resolve_git_metadata_dir(checkout: str, environment: Mapping[str, str]) -> str:
+    """Return the git directory a checkout writes generated branches, refs, and objects into.
+
+    In a linked `git worktree` the checkout's `.git` is a file pointing elsewhere, so the
+    real directory is asked for instead of assumed (§FS-forge-host-requirements).
+    """
+    result = run_command(["git", "-C", checkout, "rev-parse", "--git-common-dir"], environment)
+    common_dir = first_output_line(result) if result.returncode == 0 else ""
+    if not common_dir:
+        return os.path.join(checkout, ".git")
+    return os.path.abspath(os.path.join(checkout, common_dir))
+
+
 def nearest_existing_directory(path: str) -> str:
     """Return the nearest existing directory at or above path."""
     candidate = Path(path).expanduser().absolute()
@@ -1282,10 +1501,13 @@ def probe_write_access(path: str) -> tuple[bool, str]:
 def host_bypasses_proxy(environment: Mapping[str, str], host: str) -> bool:
     """Return whether `no_proxy` sends this host straight out instead of through a proxy."""
     no_proxy = environment.get("no_proxy") or environment.get("NO_PROXY") or ""
-    target = host.lower()
-    for entry in (part.strip().lower().lstrip(".") for part in no_proxy.split(",")):
+    target = host.lower().split(":", maxsplit=1)[0]
+    for raw_entry in no_proxy.split(","):
+        entry = raw_entry.strip().lower()
         if entry == "*":
             return True
+        # `*.example.com`, `.example.com`, and `example.com:443` all name the same suffix.
+        entry = entry.lstrip("*").lstrip(".").split(":", maxsplit=1)[0]
         if entry and (target == entry or target.endswith(f".{entry}")):
             return True
     return False
@@ -1379,6 +1601,24 @@ def codex_doctor_provider_status(output: str) -> tuple[bool, str]:
     return status == "ok", f"status={status}, {summary}"
 
 
+def managed_codex_requirement_entries(bundle: object) -> list[object]:
+    """Return the enterprise-managed requirement entries of a Codex config bundle cache.
+
+    Codex nests them under `signed_payload.bundle.requirements_toml`; the flat
+    `requirements_toml` shape is accepted as a fallback.
+    """
+    if not isinstance(bundle, dict):
+        return []
+    signed_payload = bundle.get("signed_payload")
+    nested = signed_payload.get("bundle") if isinstance(signed_payload, dict) else None
+    for container in (nested, bundle):
+        requirements = container.get("requirements_toml") if isinstance(container, dict) else None
+        entries = requirements.get("enterprise_managed") if isinstance(requirements, dict) else None
+        if isinstance(entries, list):
+            return entries
+    return []
+
+
 def codex_unattended_policy_status(codex_home: str) -> tuple[bool, str]:
     """Detect cached enterprise requirements incompatible with Forge Codex exec."""
     bundle_path = os.path.join(codex_home, "cloud-config-bundle-cache.json")
@@ -1387,9 +1627,9 @@ def codex_unattended_policy_status(codex_home: str) -> tuple[bool, str]:
     try:
         with open(bundle_path, "rb") as bundle_file:
             bundle = json.load(bundle_file)
-        requirement_entries = bundle.get("requirements_toml", {}).get("enterprise_managed", [])
-    except (OSError, json.JSONDecodeError, AttributeError):
+    except (OSError, json.JSONDecodeError):
         return False, f"could not read managed Codex requirements from {bundle_path}"
+    requirement_entries = managed_codex_requirement_entries(bundle)
 
     conflicts: list[str] = []
     policies: list[str] = []
@@ -1457,12 +1697,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             repo_dir=args.reachability_metadata_path,
         )
     except ValueError as exc:
-        print(f"ERROR: Forge host requirement configuration is invalid: {exc}", file=sys.stderr)
-        print(
-            "Fix: set every FORGE_*_LIMIT value to a non-negative integer and "
-            f"{GRAALVM_VERSION_CHECK_ENV_VAR} to {', '.join(GRAALVM_VERSION_CHECK_MODES)}.",
-            file=sys.stderr,
-        )
+        print_host_requirement_configuration_error(exc)
         return 1
     return 0 if host_requirements.run() else 1
 

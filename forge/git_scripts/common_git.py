@@ -15,7 +15,7 @@ from utility_scripts.library_stats import load_library_stats_entry
 from utility_scripts.strategy_loader import load_strategy_by_name
 
 
-def _parse_github_repo_slug(remote_url: str) -> str | None:
+def parse_github_repo_slug(remote_url: str) -> str | None:
     """Extract an ``owner/repo`` slug from a GitHub remote URL."""
     url = (remote_url or "").strip()
     if not url:
@@ -681,7 +681,7 @@ def resolve_github_repo_slug(repo_path: str | None = None, explicit_repo: str | 
 
     for remote_name in ("upstream", "origin"):
         remote_url = get_remote_url(remote_name, cwd=repo_path)
-        repo_slug = _parse_github_repo_slug(remote_url or "")
+        repo_slug = parse_github_repo_slug(remote_url or "")
         if repo_slug is not None:
             return repo_slug
 
@@ -701,7 +701,7 @@ def get_origin_owner(cwd=None):
     ``resolve_github_repo_slug`` when you need the upstream target repository.
     """
     remote_url = get_remote_url("origin", cwd=cwd)
-    repo_slug = _parse_github_repo_slug(remote_url or "")
+    repo_slug = parse_github_repo_slug(remote_url or "")
     if repo_slug is None:
         print(
             "ERROR: Could not resolve the `origin` GitHub repository. "

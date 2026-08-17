@@ -29,6 +29,7 @@ _FORGE_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(_FORGE_ROOT))
 
 from utility_scripts import native_test_verification as ntv  # noqa: E402
+from utility_scripts.host_requirements import GRAALVM_SCHEMA_PATH  # noqa: E402
 
 
 class ParseBinaryExitCodeTests(unittest.TestCase):
@@ -1055,8 +1056,7 @@ class GateRoutingTests(unittest.TestCase):
     def test_routes_to_codex_with_same_graalvm_home_as_gate_commands(self) -> None:
         graalvm_home = tempfile.mkdtemp(prefix="gate-graalvm-")
         self.addCleanup(_rmtree, graalvm_home)
-        Path(graalvm_home, "bin").mkdir()
-        Path(graalvm_home, "bin", "native-image").write_text("", encoding="utf-8")
+        _make_forge_usable_graalvm(graalvm_home)
         fake, _calls = self._fake_run_factory([1])
         with patch.dict(os.environ, {"GRAALVM_HOME": graalvm_home, "JAVA_HOME": "/plain-jdk"}, clear=True), patch(
                 "utility_scripts.native_test_verification.subprocess.run",
@@ -1106,6 +1106,18 @@ def _command_property(command: str, property_name: str) -> str:
 def _rmtree(path: str) -> None:
     import shutil
     shutil.rmtree(path, ignore_errors=True)
+
+
+def _make_forge_usable_graalvm(path: str) -> None:
+    """Create a GraalVM home that satisfies `check_graalvm_installation`."""
+    os.makedirs(os.path.join(path, "bin"), exist_ok=True)
+    for executable in ("java", "native-image"):
+        executable_path = Path(path, "bin", executable)
+        executable_path.write_text("#!/usr/bin/env sh\n", encoding="utf-8")
+        executable_path.chmod(0o755)
+    schema_path = Path(path, GRAALVM_SCHEMA_PATH)
+    schema_path.parent.mkdir(parents=True, exist_ok=True)
+    schema_path.write_text("{}\n", encoding="utf-8")
 
 
 def _make_complete_reachability_repo(path: str) -> None:
