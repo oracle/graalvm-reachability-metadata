@@ -5486,7 +5486,7 @@ def invoke_pipeline(
         )
     rc = invocation.runner(invocation.argv)
     if is_interrupt_exit_code(rc):
-        mark_user_interrupt_requested()
+        preserve_user_interrupt_reason()
         raise KeyboardInterrupt
     if rc != 0:
         print(

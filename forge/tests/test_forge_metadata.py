@@ -2898,6 +2898,37 @@ class InterruptHandlingTests(unittest.TestCase):
         post_issue_comment.assert_not_called()
         add_issue_label.assert_not_called()
 
+    def test_no_unwind_path_relabels_a_recorded_bootstrap_stop_as_ctrl_c(self) -> None:
+        """A concurrent worker observing the interrupt must not reset the reason.
+
+        With parallelism > 1 one issue can record the bootstrap stop while another
+        worker unwinds through a generic interrupt handler; the main loop would then
+        revert the remaining claims, and exit, under the wrong reason.
+        """
+        claimed_issue = _claimed_issue()
+        forge_metadata.mark_user_interrupt_requested(forge_metadata.INTERRUPT_REASON_GRADLE_BOOTSTRAP)
+
+        with patch.object(forge_metadata, "run_add_new_library_support_workflow", return_value=130), \
+                patch.object(forge_metadata, "require_claimed_issue_worktree"), \
+                patch.object(forge_metadata, "run_library_preparation_preflight", return_value=None), \
+                patch.object(forge_metadata, "prepare_dynamic_access_chunking", return_value=None), \
+                patch.object(forge_metadata, "create_or_load_run_continuation_marker", return_value=None), \
+                patch.object(forge_metadata, "load_continuation_marker", return_value=None), \
+                patch.object(forge_metadata, "record_library_update_route_in_marker"):
+            with self.assertRaises(KeyboardInterrupt):
+                forge_metadata.invoke_pipeline(claimed_issue, None, False)
+
+        self.assertTrue(forge_metadata.is_gradle_bootstrap_interrupt())
+
+    def test_ctrl_c_is_still_recorded_when_no_reason_was_set(self) -> None:
+        forge_metadata.preserve_user_interrupt_reason()
+
+        self.assertTrue(forge_metadata.is_user_interrupt_requested())
+        self.assertEqual(
+            forge_metadata.get_user_interrupt_reason(),
+            forge_metadata.INTERRUPT_REASON_CTRL_C,
+        )
+
     def test_gradle_bootstrap_failure_is_classified_as_external(self) -> None:
         failure = forge_metadata.GradleBootstrapFailure("org.example:lib:1.0.0", "/tmp/discover.log")
 
