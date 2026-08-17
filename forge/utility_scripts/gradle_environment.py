@@ -174,7 +174,13 @@ def _resolve_host_gradle_home(gradle_user_home: str, env: dict[str, str]) -> str
 
 
 def _is_within(path: str, root: str) -> bool:
-    return os.path.commonpath([os.path.realpath(path), os.path.realpath(root)]) == os.path.realpath(root)
+    resolved_root = os.path.realpath(root)
+    try:
+        return os.path.commonpath([os.path.realpath(path), resolved_root]) == resolved_root
+    except ValueError:
+        # Windows raises when the two paths live on different drives, which is
+        # itself proof that `path` is not under `root`.
+        return False
 
 
 def _share_gradle_wrapper_distributions(gradle_user_home: str, override: str | None) -> None:

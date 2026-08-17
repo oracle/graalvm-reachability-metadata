@@ -197,6 +197,18 @@ class GradleEnvironmentTests(unittest.TestCase):
             linked_properties = os.path.join(inner_env["GRADLE_USER_HOME"], "gradle.properties")
             self.assertEqual(os.path.realpath(linked_properties), os.path.realpath(host_properties))
 
+    def test_host_home_on_an_unrelated_volume_is_not_rejected(self) -> None:
+        """`commonpath` raises across Windows drives; that must not escape."""
+        with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as inherited_home:
+            host_properties = _write_gradle_properties(inherited_home)
+
+            with patch.dict(os.environ, {}, clear=True), \
+                    patch.object(os.path, "commonpath", side_effect=ValueError("different drives")):
+                env = gradle_command_environment(repo_path, {"GRADLE_USER_HOME": inherited_home})
+
+            linked_properties = os.path.join(env["GRADLE_USER_HOME"], "gradle.properties")
+            self.assertEqual(os.path.realpath(linked_properties), os.path.realpath(host_properties))
+
     def test_explicit_gradle_home_override_skips_host_properties_sharing(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path, \
                 tempfile.TemporaryDirectory() as host_home, \
