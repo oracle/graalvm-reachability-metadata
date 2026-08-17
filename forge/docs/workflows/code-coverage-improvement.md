@@ -57,6 +57,15 @@ under a parent directory must also set `workspace_path`, since the cover states
 tell the agent where to resolve artifacts from and that path is no longer
 derivable from `work_subdir` alone.
 
+Restart a run by re-instantiating the workspace, never with `rhei reset`. Reset
+rewrites every task to the state machine's single initial state, `prepared`,
+while this workflow's measured tasks declare their own entry states —
+`api-measure`, `deep-measure`, `reviewed-prepared`. A reset workspace therefore
+runs both coverage loops as one generic pipeline pass each: an agent is spawned,
+the task reaches `completed`, and no measurement program ever runs. The run
+produces no JaCoCo report, no ranked prompt, and no coverage figure, yet reports
+every task terminal — and publication will happily open a pull request for it.
+
 Cover states name the Gradle invocation rather than leaving the agent to infer
 it: compiling and testing happen inside the issue worktree, scoped with
 `-Pcoordinates=<coordinate> -PincludeCodeCoverageSuite=true`. An unscoped
