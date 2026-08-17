@@ -131,7 +131,10 @@ models, and iteration limits remain configuration data in
 ## STRAT-predefined-strategy-parameter-families: Parameter families
 
 The basic iterative bundles set `max-test-iterations`,
-`max-failed-generations`, and `max-successful-generations`. Java-fix bundles
+`max-failed-generations`, and `max-successful-generations`; they may also set
+`max-native-test-verification-iterations` for their terminal gate
+(§WF-native-test-verification-callers), which otherwise takes the shared
+default. Java-fix bundles
 set `max-test-iterations` and `source-context-types`. Per-class dynamic-access
 bundles set `max-iterations`, `max-class-test-iterations`, and
 `source-context-types`. Optimistic dynamic-access bundles set

@@ -9,10 +9,16 @@ import subprocess
 from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
 from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
 from utility_scripts.metadata_index import resolve_test_version
+from utility_scripts.native_test_verification import (
+    STATUS_FAILED as NATIVE_TEST_GATE_FAILED,
+    global_output_dir,
+    verify_native_test_passes,
+)
 from utility_scripts.stage_logger import log_stage
 
 
 BASIC_ITERATIVE_PERSISTENT_INSTRUCTIONS_PATH = "prompt_templates/persistent/basic_iterative_rules.md"
+DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS = 40
 
 
 """
@@ -97,6 +103,10 @@ class BasicIterativeStrategy(WorkflowStrategy):
         self.max_test_iterations = self.parameters["max-test-iterations"]
         self.max_failed_generations = self.parameters["max-failed-generations"]
         self.max_successful_generations = self.parameters["max-successful-generations"]
+        self.max_native_test_verification_iterations = self._parameter_int(
+            "max-native-test-verification-iterations",
+            DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS,
+        )
         self.reachability_repo_path = self.context["reachability_repo_path"]
         self.group, self.artifact, self.version = self.library.split(":")
         self.test_version = str(
@@ -242,6 +252,16 @@ class BasicIterativeStrategy(WorkflowStrategy):
             )
             return RUN_STATUS_FAILURE, global_iterations, unittest_number
 
+        # The loop above accepts a failing nativeTest as progress, so the gate is what
+        # validates native-image behavior and traces misses this workflow cannot see —
+        # including transitive-dependency metadata (§WF-basic-iterative).
+        if not self._run_native_test_verification_gate():
+            save_phase_update(
+                self.continuation_marker_path,
+                lambda marker: marker.mark_phase_pending(PHASE_FIX, iteration=global_iterations),
+            )
+            return RUN_STATUS_FAILURE, global_iterations, unittest_number
+
         save_phase_update(
             self.continuation_marker_path,
             lambda marker: (
@@ -250,3 +270,30 @@ class BasicIterativeStrategy(WorkflowStrategy):
             ),
         )
         return RUN_STATUS_SUCCESS, global_iterations, unittest_number
+
+    def _run_native_test_verification_gate(self) -> bool:
+        """Terminal gate: verify nativeTest passes; FAILED aborts the workflow."""
+        output_dir = global_output_dir(
+            self.reachability_repo_path, self.group, self.artifact, self.test_version,
+        )
+        self._print_message(
+            f"native-test gate: starting output_dir={output_dir} "
+            f"budget={self.max_native_test_verification_iterations}"
+        )
+        result = verify_native_test_passes(
+            reachability_repo_path=self.reachability_repo_path,
+            coordinate=self.library,
+            output_dir=output_dir,
+            max_iterations=self.max_native_test_verification_iterations,
+        )
+        if result.status == NATIVE_TEST_GATE_FAILED:
+            log_path = result.last_native_test_log_path or "(none)"
+            self._print_message(
+                f"native-test gate FAILED after {result.iterations_used} cycles "
+                f"(last log: {log_path})"
+            )
+            return False
+        self._print_message(
+            f"native-test gate {result.status} after {result.iterations_used} cycles"
+        )
+        return True

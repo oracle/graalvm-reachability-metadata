@@ -486,10 +486,11 @@ intervention.
 | --- | --- | --- |
 | `dynamic_access_iterative` per-class loop | After every class with a coverage gain (Resolved or PartialCommit) (§WF-dynamic-access-workflow) | `tests/src/<group>/<artifact>/<version>/build/natively-collected/<class-key>/` |
 | `fix_java_run_fail` native-mode path | After the agent's final edit, as the success gate (§WF-java-fail-fix-workflow) | `tests/src/<group>/<artifact>/<version>/build/natively-collected/_global_/` |
+| `basic_iterative` loop | After the loop commits at least one test suite, as the terminal gate (§WF-basic-iterative) | `tests/src/<group>/<artifact>/<version>/build/natively-collected/_global_/` |
 
-The dynamic-access caller invokes the gate per class; the fix-native-run
-caller invokes it once per workflow run. Both treat `FAILED` as a hard
-workflow failure.
+The dynamic-access caller invokes the gate per class; the fix-native-run and
+basic iterative callers invoke it once per workflow run. All treat `FAILED` as
+a hard workflow failure.
 
 ## 9. Acceptance Criteria
 
