@@ -2738,7 +2738,8 @@ class EnvironmentValidationTests(unittest.TestCase):
     def test_every_work_starting_invocation_validates_host_requirements(self) -> None:
         with patch.object(forge_metadata, "ensure_host_requirements") as ensure, \
                 patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
-                patch.object(forge_metadata, "resolve_repo_roots", return_value=("/repo", "/metrics")), \
+                patch.object(forge_metadata, "resolve_reachability_repo_root", return_value="/repo"), \
+                patch.object(forge_metadata, "resolve_metrics_repo_root", return_value="/metrics"), \
                 patch.object(forge_metadata, "run_pull_request_review_loop") as review_loop, \
                 patch.object(sys, "argv", ["forge_metadata.py", "--review-pr", "library-new-request"]):
             forge_metadata.main()
@@ -2749,6 +2750,32 @@ class EnvironmentValidationTests(unittest.TestCase):
             ensure.call_args.kwargs["requirements"],
         )
         review_loop.assert_called_once()
+
+    def test_host_requirements_check_the_selected_repository_not_the_forge_parent(self) -> None:
+        checked_paths: list[tuple[str, str]] = []
+
+        def record_gate(forge_dir: str, **kwargs: object) -> None:
+            checked_paths.append((forge_dir, str(kwargs["repo_dir"])))
+
+        with patch.object(forge_metadata, "ensure_host_requirements", side_effect=record_gate), \
+                patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
+                patch.object(
+                    forge_metadata,
+                    "resolve_reachability_repo_root",
+                    return_value="/other/repo",
+                ) as resolve_repo, \
+                patch.object(forge_metadata, "resolve_metrics_repo_root", return_value="/other/repo/forge"), \
+                patch.object(forge_metadata, "process_single_issue") as process_issue, \
+                patch.object(sys, "argv", [
+                    "forge_metadata.py",
+                    "--issue-number", "1412",
+                    "--reachability-metadata-path", "/other/repo",
+                ]):
+            forge_metadata.main()
+
+        resolve_repo.assert_called_once_with("/other/repo")
+        self.assertEqual([(forge_metadata.FORGE_DIR, "/other/repo")], checked_paths)
+        self.assertEqual("/other/repo", process_issue.call_args.args[1])
 
     def test_cache_maintenance_does_not_validate_host_requirements(self) -> None:
         with patch.object(forge_metadata, "ensure_host_requirements") as ensure, \

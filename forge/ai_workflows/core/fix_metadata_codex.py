@@ -9,6 +9,7 @@ import subprocess
 import sys
 
 from utility_scripts.task_logs import build_task_log_path, display_log_path
+from utility_scripts.host_requirements import check_graalvm_installation
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.gradle_environment import gradle_command_environment
 
@@ -34,10 +35,11 @@ def run_codex_metadata_fix(
     log_path_display = display_log_path(log_path)
     codex_env = _codex_environment(reachability_metadata_path, graalvm_home, base_env)
     required_graalvm_home = codex_env.get("GRAALVM_HOME")
-    if not required_graalvm_home or not _has_native_image(required_graalvm_home):
+    problems = check_graalvm_installation(required_graalvm_home) if required_graalvm_home else ["GRAALVM_HOME is unset"]
+    if problems:
         print(
             "ERROR: Codex metadata fix requires the exact GraalVM home from the failed run, "
-            "but no GraalVM distribution with bin/native-image could be resolved.",
+            f"but that home cannot run Forge work: {'; '.join(problems)}.",
             file=sys.stderr,
         )
         return (1, log_path, False)
@@ -105,10 +107,6 @@ def _codex_environment(
         env["GRAALVM_HOME"] = graalvm_home
         env["JAVA_HOME"] = graalvm_home
     return gradle_command_environment(reachability_metadata_path, env)
-
-
-def _has_native_image(graalvm_home: str) -> bool:
-    return os.path.isfile(os.path.join(graalvm_home, "bin", "native-image"))
 
 
 def _native_image_version(graalvm_home: str, env: dict[str, str]) -> str:

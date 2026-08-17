@@ -184,7 +184,8 @@ from utility_scripts.repo_path_resolver import (
     get_forge_subdir_name,
     get_repo_root,
     require_complete_reachability_repo,
-    resolve_repo_roots,
+    resolve_metrics_repo_root,
+    resolve_reachability_repo_root,
 )
 from utility_scripts.stage_logger import log_failure_banner, log_stage, log_success_banner
 from utility_scripts.shutdown_signal import get_active_shutdown_signal_path, is_shutdown_requested
@@ -8696,16 +8697,19 @@ def resolve_host_requirement_queues(args: argparse.Namespace) -> QueueRequiremen
     return QueueRequirements(issue_work=True, review_work=False, github_work=github_work)
 
 
-def require_host_requirements(args: argparse.Namespace) -> None:
+def require_host_requirements(args: argparse.Namespace, reachability_metadata_path: str) -> None:
     """Stop before any work when this host cannot run the invoked Forge mode.
 
-    §FS-forge-host-requirements
+    Forge paths are checked against `FORGE_DIR` and the repository paths against the
+    checkout this run selected, which `--reachability-metadata-path` can move away from
+    the checkout that contains Forge (§FS-forge-host-requirements).
     """
     ensure_host_requirements(
         FORGE_DIR,
         review_model=args.review_model,
         requirements=resolve_host_requirement_queues(args),
         graalvm_version_check=resolve_graalvm_version_check(args.graalvm_version_check),
+        repo_dir=reachability_metadata_path,
     )
 
 
@@ -8738,13 +8742,12 @@ def main() -> None:
         if args.clear_issue_caches:
             clear_issue_caches()
             return
-        require_host_requirements(args)
+        # The gate must check the repository this run actually operates on, so it is resolved first.
+        reachability_metadata_path = resolve_reachability_repo_root(args.reachability_metadata_path)
+        require_host_requirements(args, reachability_metadata_path)
         if args.strategy_name:
             require_strategy_by_name(args.strategy_name)
-        reachability_metadata_path, metrics_repo_path = resolve_repo_roots(
-            args.reachability_metadata_path,
-            None,
-        )
+        metrics_repo_path = resolve_metrics_repo_root(reachability_metadata_path, None)
 
         if not PROJECT_NUMBER:
             print("ERROR: GITHUB_PROJECT_NUMBER env var is not set.", file=sys.stderr)

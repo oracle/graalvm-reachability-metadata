@@ -131,9 +131,13 @@ class HostRequirements:
             environment: Mapping[str, str] | None = None,
             requirements: QueueRequirements | None = None,
             graalvm_version_check: str | None = None,
+            repo_dir: str | None = None,
     ) -> None:
         self.forge_dir = os.path.abspath(forge_dir)
-        self.repo_dir = os.path.dirname(self.forge_dir)
+        self.forge_repo_dir = os.path.dirname(self.forge_dir)
+        # The repository a run operates on can be a different checkout than the one that
+        # contains Forge, so each set of paths is checked for what it actually owns.
+        self.repo_dir = os.path.abspath(repo_dir) if repo_dir else self.forge_repo_dir
         self.python_bin = python_bin
         self.review_model = review_model
         self.environment = dict(os.environ if environment is None else environment)
@@ -150,6 +154,11 @@ class HostRequirements:
     def version_check_advisory(self) -> bool:
         """Return whether GraalVM version mismatches only warn instead of stopping work."""
         return self.graalvm_version_check == "warn"
+
+    @property
+    def separate_repository(self) -> bool:
+        """Return whether this run operates on a checkout other than the one holding Forge."""
+        return os.path.realpath(self.repo_dir) != os.path.realpath(self.forge_repo_dir)
 
     def run(self) -> bool:
         """Run all selected checks, print the report, and return whether they passed."""
@@ -172,8 +181,14 @@ class HostRequirements:
         review_text = "enabled" if self.requirements.review_work else "disabled"
         print("[forge-host] Deterministic host requirements")
         print(f"[forge-host] Queues: issue work={issue_text}, PR review={review_text}")
+        print(f"[forge-host] Forge checkout: {self.forge_dir}")
+        print(f"[forge-host] Selected repository: {self.repo_dir}")
         print("[forge-host] Required host permissions:")
-        print(f"  - Filesystem write: {self.repo_dir}, {self.forge_dir}/local_repositories, temporary Gradle state")
+        write_targets = [self.forge_dir, os.path.join(self.forge_repo_dir, ".git")]
+        if self.separate_repository:
+            write_targets.append(os.path.join(self.repo_dir, ".git"))
+        write_targets.append(os.path.join(self.forge_dir, "local_repositories"))
+        print(f"  - Filesystem write: {', '.join(write_targets)}, temporary Gradle state")
         if self.requirements.github_work:
             print("  - GitHub repository: Contents=write, Issues=write, Pull requests=write")
             print(f"  - GitHub project: Projects=write for oracle project {PROJECT_NUMBER}")
@@ -591,17 +606,23 @@ class HostRequirements:
 
     def _check_write_permissions(self) -> None:
         any_work = self.requirements.any_work
-        paths: list[tuple[str, str, bool]] = [
-            ("Forge checkout", self.forge_dir, True),
-            ("Git metadata", os.path.join(self.repo_dir, ".git"), True),
-            ("Forge local repositories", os.path.join(self.forge_dir, "local_repositories"), any_work),
-            ("Gradle state", resolve_gradle_state_root(self.environment), any_work),
-            ("Pi state", resolve_pi_state_root(self.environment), any_work),
-            ("Codex state", resolve_codex_state_root(self.environment), self.requirements.issue_work),
+        paths: list[tuple[str, str, bool, str]] = [
+            ("Forge checkout", self.forge_dir, True, ""),
+            ("Forge git metadata", os.path.join(self.forge_repo_dir, ".git"), True, ""),
+            (
+                "Selected repository git metadata",
+                os.path.join(self.repo_dir, ".git"),
+                self.separate_repository,
+                f"{self.repo_dir} is the checkout that contains Forge; covered by the Forge git metadata check",
+            ),
+            ("Forge local repositories", os.path.join(self.forge_dir, "local_repositories"), any_work, ""),
+            ("Gradle state", resolve_gradle_state_root(self.environment), any_work, ""),
+            ("Pi state", resolve_pi_state_root(self.environment), any_work, ""),
+            ("Codex state", resolve_codex_state_root(self.environment), self.requirements.issue_work, ""),
         ]
-        for name, path, required in paths:
+        for name, path, required, skip_detail in paths:
             if not required:
-                self._add("filesystem", name, False, None, f"{path} is not required by this run")
+                self._add("filesystem", name, False, None, skip_detail or f"{path} is not required by this run")
                 continue
             passed, detail = probe_write_access(path)
             self._add(
@@ -650,27 +671,42 @@ class HostRequirements:
             )
 
     def _check_git_remote_access(self) -> None:
+        self._check_git_remote("Forge git self-update", self.forge_dir, True, "")
+        self._check_git_remote(
+            "Selected repository git remote",
+            self.repo_dir,
+            self.separate_repository,
+            f"{self.repo_dir} is the checkout that contains Forge; covered by the Forge self-update check",
+        )
+
+    def _check_git_remote(self, name: str, checkout: str, required: bool, skip_detail: str) -> None:
+        """Check that one checkout reaches the monitored branch through its own origin remote."""
+        if not required:
+            self._add("network", name, False, None, skip_detail)
+            return
         monitored_branch = self.environment.get("FORGE_MONITORED_BRANCH", "origin/master")
         branch = monitored_branch.removeprefix("origin/")
         remote_result = run_command(
-            ["git", "-C", self.forge_dir, "remote", "get-url", "origin"],
+            ["git", "-C", checkout, "remote", "get-url", "origin"],
             self.environment,
         )
         remote_url = first_output_line(remote_result) or "origin"
         result = run_command(
             [
-                "git", "-C", self.forge_dir,
+                "git", "-C", checkout,
                 "ls-remote", "--exit-code", "origin", f"refs/heads/{branch}",
             ],
             self.environment,
         )
         self._add(
             "network",
-            "Forge git self-update",
+            name,
             True,
             result.returncode == 0,
-            f"remote={remote_url}, branch={branch}, status={'reachable' if result.returncode == 0 else 'unreachable'}",
-            f"Grant git transport access to `{remote_url}` and ensure branch `{branch}` exists on origin.",
+            f"checkout={checkout}, remote={remote_url}, branch={branch}, "
+            f"status={'reachable' if result.returncode == 0 else 'unreachable'}",
+            f"Grant git transport access to `{remote_url}` from `{checkout}` and ensure branch "
+            f"`{branch}` exists on origin.",
         )
 
     def _check_github(self) -> None:
@@ -979,10 +1015,12 @@ def verify_host_requirements(
         requirements: QueueRequirements | None = None,
         graalvm_version_check: str | None = None,
         environment: Mapping[str, str] | None = None,
+        repo_dir: str | None = None,
 ) -> bool:
     """Run every host requirement selected by this run and report whether work may start.
 
-    §FS-forge-host-requirements
+    `repo_dir` is the reachability-metadata checkout the run operates on; it defaults to the
+    checkout that contains `forge_dir` (§FS-forge-host-requirements).
     """
     host_requirements = HostRequirements(
         forge_dir,
@@ -991,6 +1029,7 @@ def verify_host_requirements(
         environment,
         requirements,
         graalvm_version_check,
+        repo_dir,
     )
     return host_requirements.run()
 
@@ -1002,6 +1041,7 @@ def ensure_host_requirements(
         requirements: QueueRequirements | None = None,
         graalvm_version_check: str | None = None,
         environment: Mapping[str, str] | None = None,
+        repo_dir: str | None = None,
 ) -> None:
     """Stop the process with a non-zero exit when a required host capability is missing.
 
@@ -1014,6 +1054,7 @@ def ensure_host_requirements(
         requirements,
         graalvm_version_check,
         environment,
+        repo_dir,
     )
     if not passed:
         sys.exit(1)
@@ -1380,6 +1421,14 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     """Parse host-requirements CLI arguments."""
     parser = argparse.ArgumentParser(description="Validate Forge host requirements before work starts.")
     parser.add_argument("--forge-dir", required=True, help="Absolute or relative path to the Forge directory.")
+    parser.add_argument(
+        "--reachability-metadata-path",
+        default=None,
+        help=(
+            "Reachability-metadata checkout this run operates on. Defaults to the checkout that "
+            "contains --forge-dir."
+        ),
+    )
     parser.add_argument("--python-bin", default=sys.executable, help="Python interpreter selected by do-work.")
     parser.add_argument("--review-model", default=DEFAULT_REVIEW_MODEL, help="Pi model used for PR reviews.")
     parser.add_argument(
@@ -1405,6 +1454,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             args.python_bin,
             args.review_model,
             graalvm_version_check=resolve_graalvm_version_check(args.graalvm_version_check),
+            repo_dir=args.reachability_metadata_path,
         )
     except ValueError as exc:
         print(f"ERROR: Forge host requirement configuration is invalid: {exc}", file=sys.stderr)

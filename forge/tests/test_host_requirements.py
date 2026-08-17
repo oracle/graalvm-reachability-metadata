@@ -415,6 +415,55 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertEqual("SKIP", result_by_name["api.github.com"].status)
         self.assertEqual("PASS", result_by_name["chatgpt.com"].status)
 
+    def test_selected_repository_paths_are_checked_instead_of_the_forge_parent_checkout(self) -> None:
+        with tempfile.TemporaryDirectory() as target_repo:
+            gradlew = Path(target_repo) / "gradlew"
+            gradlew.touch(mode=0o755)
+            host_requirements = HostRequirements(
+                "/parent/forge",
+                "python3",
+                "gpt-5.6-terra",
+                {},
+                requirements=QueueRequirements(issue_work=True, review_work=False),
+                repo_dir=target_repo,
+            )
+
+            with patch("utility_scripts.host_requirements.run_command") as command:
+                command.return_value = subprocess.CompletedProcess(["gradlew"], 0, "Gradle 8.14\n", "")
+                host_requirements._check_gradle_wrapper(True)
+                host_requirements._check_write_permissions()
+                host_requirements._check_git_remote_access()
+
+        result_by_name = {result.name: result for result in host_requirements.results}
+        self.assertIn(str(gradlew), result_by_name["Gradle wrapper"].detail)
+        self.assertIn("/parent/.git", result_by_name["Forge git metadata"].detail)
+        self.assertIn(
+            os.path.join(target_repo, ".git"),
+            result_by_name["Selected repository git metadata"].detail,
+        )
+        self.assertTrue(result_by_name["Selected repository git metadata"].required)
+        self.assertIn(f"checkout={target_repo}", result_by_name["Selected repository git remote"].detail)
+        self.assertIn("checkout=/parent/forge", result_by_name["Forge git self-update"].detail)
+
+    def test_selected_repository_checks_collapse_when_forge_owns_the_checkout(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            "gpt-5.6-terra",
+            {},
+            requirements=QueueRequirements(issue_work=False, review_work=True),
+        )
+
+        with patch("utility_scripts.host_requirements.run_command") as command:
+            command.return_value = subprocess.CompletedProcess(["git"], 0, "origin\n", "")
+            host_requirements._check_write_permissions()
+            host_requirements._check_git_remote_access()
+
+        result_by_name = {result.name: result for result in host_requirements.results}
+        self.assertEqual("SKIP", result_by_name["Selected repository git metadata"].status)
+        self.assertEqual("SKIP", result_by_name["Selected repository git remote"].status)
+        self.assertIn("checkout that contains Forge", result_by_name["Selected repository git remote"].detail)
+
     def test_network_probes_follow_the_configured_proxy(self) -> None:
         proxied = {"https_proxy": "http://10.0.0.1:80", "no_proxy": "localhost,.internal.example"}
 

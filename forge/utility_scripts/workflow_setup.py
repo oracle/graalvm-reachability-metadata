@@ -7,9 +7,12 @@ import os
 import subprocess
 import sys
 
-from ai_workflows.core.fix_metadata_codex import run_codex_metadata_fix
 from utility_scripts.gradle_environment import gradle_command_environment
-from utility_scripts.host_requirements import require_graalvm_home_env
+from utility_scripts.host_requirements import (
+    GRAALVM_SCHEMA_PATH,
+    check_graalvm_installation,
+    require_graalvm_home_env,
+)
 from utility_scripts.library_finalization import run_library_finalization
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo, resolve_repo_roots
 from utility_scripts.stage_logger import log_stage
@@ -41,45 +44,39 @@ def resolve_workflow_repo_paths(
     return resolved_reachability_repo, resolved_metrics_dir, resolved_metrics_repo
 
 
-def resolve_graalvm_java_home():
+def resolve_graalvm_java_home() -> str:
     """
-    Resolve GRAALV_HOME/JAVA_HOME from environment variables.
+    Align GRAALVM_HOME and JAVA_HOME on the first Forge-usable GraalVM in the environment.
     Logic:
-    - If GRAALVM_HOME is set and contains bin/native-image, use it for both GRAALVM_HOME and JAVA_HOME.
-    - Else, if JAVA_HOME is set and contains bin/native-image, use it for both GRAALVM_HOME and JAVA_HOME.
+    - Take GRAALVM_HOME, then JAVA_HOME, and keep the first that satisfies
+      `check_graalvm_installation` — the single Forge-usable GraalVM rule
+      (§FS-forge-host-requirements) — for both variables.
     - Require GRAALVM_HOME_25_0 for the post-generation GraalVM 25 validation lane.
-    - Otherwise, print an error and exit(1).
+    - Otherwise, print why each candidate was rejected and exit(1).
     """
-
-    def has_native_image(home: str):
-        native_image_path = os.path.join(home, "bin", "native-image")
-        return os.path.isfile(native_image_path)
-
-    graalvm_home_env = os.environ.get("GRAALVM_HOME")
-    if graalvm_home_env and has_native_image(graalvm_home_env):
-        os.environ["GRAALVM_HOME"] = graalvm_home_env
-        os.environ["JAVA_HOME"] = graalvm_home_env
+    rejected: list[str] = []
+    for variable in ("GRAALVM_HOME", "JAVA_HOME"):
+        home = os.environ.get(variable)
+        if not home:
+            continue
+        problems = check_graalvm_installation(home)
+        if problems:
+            rejected.append(f"  {variable}={home}: {'; '.join(problems)}")
+            continue
+        os.environ["GRAALVM_HOME"] = home
+        os.environ["JAVA_HOME"] = home
         require_graalvm_home_env("GRAALVM_HOME_25_0")
-        return graalvm_home_env
+        return home
 
-    java_home_env = os.environ.get("JAVA_HOME")
-    if java_home_env and has_native_image(java_home_env):
-        os.environ["GRAALVM_HOME"] = java_home_env
-        os.environ["JAVA_HOME"] = java_home_env
-        require_graalvm_home_env("GRAALVM_HOME_25_0")
-        return java_home_env
-
+    print("ERROR: Unable to locate a GraalVM that can run Forge work in GRAALVM_HOME or JAVA_HOME.", file=sys.stderr)
+    for rejection in rejected:
+        print(rejection, file=sys.stderr)
     print(
-        "ERROR: Unable to locate a GraalVM Java home with native-image. "
-        "Please set GRAALVM_HOME or JAVA_HOME to a GraalVM distribution where bin/native-image exists."
+        "Fix: export `GRAALVM_HOME=/absolute/path/to/a/graalvm` that provides Native Image and "
+        f"{GRAALVM_SCHEMA_PATH}.",
+        file=sys.stderr,
     )
     sys.exit(1)
-
-
-def has_native_image(home: str) -> bool:
-    """Return True when the provided GraalVM home contains native-image."""
-    native_image_path = os.path.join(home, "bin", "native-image")
-    return os.path.isfile(native_image_path)
 
 
 def build_graalvm_environment(graalvm_home: str, base_env: dict[str, str] | None = None) -> dict[str, str]:
@@ -137,6 +134,9 @@ def run_metadata_fix_until_tests_pass(
         print(result.stdout)
         if attempt == max_attempts:
             break
+
+        # Imported here because `ai_workflows.core` imports this module while initializing.
+        from ai_workflows.core.fix_metadata_codex import run_codex_metadata_fix
 
         log_stage("metadata-fix", f"Running Codex metadata fix for {library} after {graalvm_env_var_name} failure")
         codex_rc, _codex_log_path, codex_timed_out = run_codex_metadata_fix(
