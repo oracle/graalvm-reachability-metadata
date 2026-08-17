@@ -41,7 +41,7 @@ public class ClientPropertiesTest {
                 CONTAINER_NAME,
                 "-p",
                 "5672:5672",
-                "rabbitmq:4.1",
+                "rabbitmq:4.3",
                 "sh",
                 "-c",
                 "rabbitmq-plugins enable --offline rabbitmq_amqp1_0 && rabbitmq-server")
