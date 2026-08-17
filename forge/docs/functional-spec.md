@@ -425,8 +425,10 @@ CI-equivalent verification (compile, test, native-test, and finalization gates),
 which includes the rare case of an agent timeout. A workflow failure is
 **external** — and must not get the label — only when it surfaces as a typed
 exception from the dependency boundary Forge itself crosses: GitHub (`gh`: rate
-limits and 5xx/network) as `GitHubError` / `GitHubRateLimitExceeded`, and remote
-git operations (push/pull/fetch/clone/ls-remote) as `GitTransportError`. Maven
+limits and 5xx/network) as `GitHubError` / `GitHubRateLimitExceeded`, remote
+git operations (push/pull/fetch/clone/ls-remote) as `GitTransportError`, and a
+Gradle build that never left configuration as `GradleBootstrapFailure`
+(§FS-shared-infrastructure-bootstrap-failure). Maven
 Central and Docker registry failures have no such boundary — Gradle owns them
 inside `./gradlew test` and they reach Forge only as an opaque CI-check `rc != 0`,
 indistinguishable from a real test failure once the in-workflow retries have run —
@@ -434,7 +436,8 @@ so they are not special-cased and fall through to the safe logical default. When
 failure is external, Forge takes no issue action: it applies no
 `human-intervention` label and posts no comment, and silently releases the issue
 claim (status back to `Todo`, assignees cleared) so the issue is retried later.
-Rate limits additionally stop the current run for retry after reset.
+Rate limits and shared bootstrap failures additionally stop the current run for
+a later retry.
 
 The label can appear on issues or pull requests. On an issue, it means Forge
 could not safely produce a PR-ready result and posted enough diagnostics for a
@@ -455,6 +458,61 @@ automated intervention changed the working tree and the local CI-equivalent
 verification still passed. That status should not by itself add the
 `human-intervention` label unless the result also meets one of the policy cases
 above.
+
+### FS-shared-infrastructure-bootstrap-failure: Shared infrastructure bootstrap failure
+
+A Gradle invocation that fails while configuring the root build has not reached
+any library-specific work yet, so its failure says nothing about the claimed
+library. Forge must not charge such a failure to whichever issue happened to be
+in flight: doing so turns one host-wide outage into as many `human-intervention`
+items as there are queued issues, which is the opposite of draining the queue
+(§GOAL-improve-automation-first).
+
+Artifact metadata discovery is the first Gradle invocation of a new-library run
+and therefore where shared bootstrap breakage surfaces. Forge runs it with
+`--no-daemon` and records one structured entry per attempt — attempt name, exit
+code, rendered command, and full output — in the discovery log, so an operator
+can separate a bootstrap outage from a library failure without rerunning.
+
+Forge recognizes two bootstrap failure shapes. Both are decidable from the Gradle
+output alone precisely because the build never left configuration:
+
+- The root build's Spotless plugin cannot be resolved from Maven Local or the
+  Gradle plugin repositories.
+- The Gradle wrapper distribution download fails or times out.
+
+Either shape is retried exactly once, after a short delay, with
+`--stacktrace --info --refresh-dependencies`, so a stale or partial cache entry
+is refetched and the second attempt leaves a diagnosable log. A succeeding retry
+makes the run continue normally, with nothing recorded about the outage beyond
+the attempt log.
+
+When the retry also fails on a bootstrap shape, Forge raises
+`GradleBootstrapFailure`, a typed external failure
+(§FS-human-intervention-policy): the issue claim goes back to `Todo` with
+assignees cleared, no `human-intervention` label or comment is applied, and no
+failed work is preserved. Because the cause is host-wide rather than per-issue,
+Forge also stops the current run rather than claiming the next issue, reverting
+every still-active claim first, and exits with a dedicated status so the do-work
+loop reports the outage and retries after its normal sleep (§DW-do-work-loop) —
+the same shape as a rate-limit stop.
+
+Detection and retry are the safety net, not the fix. Two properties of the
+isolated Gradle user home keep bootstrap from failing in the first place:
+
+- **Host configuration is inherited.** Isolating Gradle *state* must not discard
+  host Gradle *configuration*. Forge links the host `gradle.properties` into the
+  isolated home, because on a host that reaches Maven Central and the Gradle
+  plugin repository only through an HTTP proxy, that file carries the proxy
+  settings — and an isolated home without it fails every plugin and distribution
+  download deterministically, after a full connect timeout. The file is linked
+  rather than copied so host credentials are not duplicated into a shared
+  temporary directory. An explicit Gradle user home chosen by an operator is
+  taken as given and left alone.
+- **One cache per checkout.** Forge keys the Gradle user home on the checkout's
+  common git directory, so every linked issue worktree of one checkout shares a
+  single plugin and dependency cache and resolves the root build's plugins once
+  per checkout instead of once per issue.
 
 ### FS-human-intervention-resolution: Human intervention resolution
 

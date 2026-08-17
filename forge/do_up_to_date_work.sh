@@ -29,6 +29,7 @@ REVIEW_MODEL="${FORGE_REVIEW_MODEL:-gpt-5.4}"
 USER_REQUESTED_ONLY="${FORGE_USER_REQUESTED_ISSUES_ONLY:-0}"
 WORK_STRATEGY_NAME="${FORGE_STRATEGY_NAME:-dynamic_access_main_sources_pi_gpt-5.6-sol}"
 GITHUB_RATE_LIMIT_EXIT_CODE=75
+GRADLE_BOOTSTRAP_EXIT_CODE=76
 MAX_PARALLELISM=4
 RUN_ONCE=0
 REQUEST_STOP=0
@@ -368,6 +369,13 @@ run_step() {
 
     if [[ "$status" -eq "$GITHUB_RATE_LIMIT_EXIT_CODE" ]]; then
         log "Skipping remaining work because the GitHub API limit is exhausted."
+        return 0
+    fi
+
+    # §FS-shared-infrastructure-bootstrap-failure: a shared Gradle bootstrap outage
+    # is host-wide, so skip the rest of this cycle and retry after the normal sleep.
+    if [[ "$status" -eq "$GRADLE_BOOTSTRAP_EXIT_CODE" ]]; then
+        log "Skipping remaining work because the shared Gradle bootstrap failed; retrying after sleep."
         return 0
     fi
 

@@ -186,6 +186,7 @@ from utility_scripts.repo_path_resolver import (
     require_complete_reachability_repo,
     resolve_repo_roots,
 )
+from utility_scripts.source_context import GradleBootstrapFailure
 from utility_scripts.stage_logger import log_failure_banner, log_stage, log_success_banner
 from utility_scripts.shutdown_signal import get_active_shutdown_signal_path, is_shutdown_requested
 from utility_scripts.strategy_loader import load_strategy_by_name, require_strategy_by_name
@@ -221,6 +222,7 @@ ISSUE_SEARCH_CACHE_FILENAME = "issue-search-cache-v2.json"
 ISSUE_SEARCH_CACHE_LOCK_FILENAME = "issue-search-cache-v1.lock"
 DEFAULT_ISSUE_SEARCH_CACHE_TTL_SECONDS = 10 * 60
 GITHUB_RATE_LIMIT_EXIT_CODE = 75
+GRADLE_BOOTSTRAP_EXIT_CODE = 76
 FIXTURE_E2E_LOG_DIRNAME = "fixture-e2e-logs"
 FIXTURE_RUN_LOG_FILENAME = "run.log"
 FIXTURE_PUBLICATION_FILENAME = "publication.md"
@@ -321,7 +323,8 @@ PUBLICATION_METRICS_EXTRA_KEYS: tuple[str, ...] = (
 # A workflow failure is logical (driver/core/CI-check) and gets `human-intervention`
 # by default. The only exception is an external dependency failure, which surfaces
 # as a typed exception at the Python boundary that issues it: GitHub (`gh`) as
-# `GitHubError` / `GitHubRateLimitExceeded`, and remote git as `GitTransportError`.
+# `GitHubError` / `GitHubRateLimitExceeded`, remote git as `GitTransportError`, and
+# a Gradle build that never left configuration as `GradleBootstrapFailure`.
 # Maven Central and Docker registry failures have no such boundary (Gradle owns
 # them inside `./gradlew test`); they fall through to the safe logical default.
 # §FS-human-intervention-policy
@@ -348,6 +351,7 @@ LATEST_EA_GRAALVM_ENV_VAR = "GRAALVM_HOME_LATEST_EA"
 INTERRUPT_EXIT_CODES = {130, -int(signal.SIGINT)}
 INTERRUPT_REASON_CTRL_C = "Ctrl+C interrupt"
 INTERRUPT_REASON_SHUTDOWN = "shutdown request"
+INTERRUPT_REASON_GRADLE_BOOTSTRAP = "Gradle bootstrap infrastructure failure"
 SHUTDOWN_SIGNAL_POLL_SECONDS = 5.0
 
 _user_interrupt_requested = threading.Event()
@@ -545,6 +549,17 @@ def mark_user_interrupt_requested(reason: str = INTERRUPT_REASON_CTRL_C) -> None
     _user_interrupt_requested.set()
 
 
+def preserve_user_interrupt_reason(reason: str = INTERRUPT_REASON_CTRL_C) -> None:
+    """Mark the run as unwinding without overwriting an already recorded reason.
+
+    Unwinding passes several handlers, and the first one to fire knows why the
+    run is stopping; later ones must not relabel a shared bootstrap stop as a
+    Ctrl+C (§FS-shared-infrastructure-bootstrap-failure).
+    """
+    if not is_user_interrupt_requested():
+        mark_user_interrupt_requested(reason)
+
+
 def clear_user_interrupt_requested() -> None:
     """Clear the shutdown marker before starting a new top-level run."""
     global _user_interrupt_reason
@@ -566,6 +581,11 @@ def get_user_interrupt_reason() -> str:
 def is_shutdown_request_interrupt() -> bool:
     """Return True when the current run is stopping because of the shared marker."""
     return is_user_interrupt_requested() and get_user_interrupt_reason() == INTERRUPT_REASON_SHUTDOWN
+
+
+def is_gradle_bootstrap_interrupt() -> bool:
+    """Return True when the run is stopping on a shared Gradle bootstrap outage."""
+    return is_user_interrupt_requested() and get_user_interrupt_reason() == INTERRUPT_REASON_GRADLE_BOOTSTRAP
 
 
 def mark_shutdown_requested() -> None:
@@ -3303,15 +3323,17 @@ def _load_dynamic_access_snapshot_from_report(claimed_issue: ClaimedIssue) -> Dy
 def is_external_failure_exception(exc: BaseException | None) -> bool:
     """Return True when a workflow exception is an external dependency failure.
 
-    GitHub (rate-limit or transient) and git transport surface as typed exceptions
-    (`GitHubError` / `GitTransportError`). An external failure releases the issue
-    claim for retry without `human-intervention`, while any other exception
-    (including agent timeouts) is logical. The cause/context chain is walked so a
-    wrapped external error is still recognized. §FS-human-intervention-policy
+    GitHub (rate-limit or transient), git transport, and shared Gradle bootstrap
+    outages surface as typed exceptions (`GitHubError` / `GitTransportError` /
+    `GradleBootstrapFailure`). An external failure releases the issue claim for
+    retry without `human-intervention`, while any other exception (including agent
+    timeouts) is logical. The cause/context chain is walked so a wrapped external
+    error is still recognized.
+    §FS-human-intervention-policy, §FS-shared-infrastructure-bootstrap-failure
     """
     error: BaseException | None = exc
     while error is not None:
-        if isinstance(error, (GitHubError, GitTransportError)):
+        if isinstance(error, (GitHubError, GitTransportError, GradleBootstrapFailure)):
             return True
         error = error.__cause__ or error.__context__
     return False
@@ -6324,8 +6346,10 @@ def run_claimed_issue(
             strategy_name,
             keep_tests_without_dynamic_access,
         )
+    except GradleBootstrapFailure:
+        raise
     except KeyboardInterrupt:
-        mark_user_interrupt_requested()
+        preserve_user_interrupt_reason()
         raise
     except Exception as exc:
         if is_user_interrupt_requested():
@@ -7208,7 +7232,7 @@ def handle_completed_run(run_result: WorkflowRunResult) -> bool:
         )
         return True
     except KeyboardInterrupt:
-        mark_user_interrupt_requested()
+        preserve_user_interrupt_reason()
         raise
     except Exception as exc:
         print(
@@ -7259,11 +7283,27 @@ def process_claimed_issue_lifecycle(
                 file=sys.stderr,
             )
         return handled
+    except GradleBootstrapFailure as exc:
+        if not lifecycle_completed:
+            mark_user_interrupt_requested(INTERRUPT_REASON_GRADLE_BOOTSTRAP)
+            revert_claimed_issue(claimed_issue, INTERRUPT_REASON_GRADLE_BOOTSTRAP)
+            log_failure_banner(
+                format_issue_result_message(
+                    claimed_issue,
+                    (
+                        "Run stopped on a shared Gradle bootstrap failure; the issue claim was "
+                        "reverted without failed-work preservation or human-intervention follow-up."
+                    ),
+                ),
+                file=sys.stderr,
+            )
+            raise KeyboardInterrupt from exc
+        raise
     except BaseException as exc:
         if not lifecycle_completed:
             if is_interrupt_exception(exc) or is_user_interrupt_requested():
-                mark_user_interrupt_requested()
-                revert_claimed_issue(claimed_issue, "Ctrl+C interrupt")
+                preserve_user_interrupt_reason()
+                revert_claimed_issue(claimed_issue, get_user_interrupt_reason())
                 raise
             else:
                 try:
@@ -7284,8 +7324,8 @@ def process_claimed_issue_lifecycle(
                         file=sys.stderr,
                     )
                 except KeyboardInterrupt:
-                    mark_user_interrupt_requested()
-                    revert_claimed_issue(claimed_issue, "Ctrl+C interrupt")
+                    preserve_user_interrupt_reason()
+                    revert_claimed_issue(claimed_issue, get_user_interrupt_reason())
                     raise
                 return False
         raise
@@ -8254,12 +8294,12 @@ def process_issues_with_label(
         if is_shutdown_requested():
             mark_shutdown_requested()
         else:
-            mark_user_interrupt_requested()
+            preserve_user_interrupt_reason()
         interrupt_reason = get_user_interrupt_reason()
         interrupt_message = (
             f"Shutdown requested via {describe_active_shutdown_signal_path()}"
             if interrupt_reason == INTERRUPT_REASON_SHUTDOWN
-            else "Ctrl+C received"
+            else f"{interrupt_reason} detected"
         )
         print(
             f"\n[{interrupt_message}. Reverting all active claimed issues before exit.]",
@@ -8743,13 +8783,19 @@ def main() -> None:
         if is_shutdown_requested():
             mark_shutdown_requested()
         else:
-            mark_user_interrupt_requested()
+            preserve_user_interrupt_reason()
         if is_shutdown_request_interrupt():
             print(
                 f"\nRun stopped because the Forge stop marker exists at {describe_active_shutdown_signal_path()}.",
                 file=sys.stderr,
             )
             sys.exit(0)
+        if is_gradle_bootstrap_interrupt():
+            log_failure_banner(
+                "Shared Gradle bootstrap failed after retry. Stop current run and retry later.",
+                file=sys.stderr,
+            )
+            sys.exit(GRADLE_BOOTSTRAP_EXIT_CODE)
         print("\nERROR: Run interrupted by Ctrl+C.", file=sys.stderr)
         sys.exit(130)
     except GitHubRateLimitExceeded as exc:

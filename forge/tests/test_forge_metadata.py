@@ -3,6 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+import dataclasses
 import io
 import json
 import os
@@ -147,6 +148,11 @@ def _claimed_issue(label: str = forge_metadata.LABEL_LIBRARY_NEW) -> forge_metad
         scratch_metrics_repo_path="/tmp/metrics-worktree",
         issue_coordinates="org.example:lib:1.0.0",
     )
+
+
+def _claimed_issue_in(base_path: str, label: str = forge_metadata.LABEL_LIBRARY_NEW) -> forge_metadata.ClaimedIssue:
+    """Build a claimed issue whose base checkout path exists on disk."""
+    return dataclasses.replace(_claimed_issue(label), base_reachability_metadata_path=base_path)
 
 
 def _dynamic_access_report(class_names: list[str]) -> DynamicAccessCoverageReport:
@@ -2767,9 +2773,11 @@ class FailedRunFollowUpTests(unittest.TestCase):
 class InterruptHandlingTests(unittest.TestCase):
     def setUp(self) -> None:
         forge_metadata.clear_user_interrupt_requested()
+        self._original_cwd = os.getcwd()
 
     def tearDown(self) -> None:
         forge_metadata.clear_user_interrupt_requested()
+        os.chdir(self._original_cwd)
 
     def test_interrupt_return_code_from_workflow_raises_keyboard_interrupt(self) -> None:
         claimed_issue = _claimed_issue()
@@ -2786,28 +2794,29 @@ class InterruptHandlingTests(unittest.TestCase):
         require_graalvm_home.assert_not_called()
 
     def test_interrupted_failed_workflow_skips_human_intervention_handling(self) -> None:
-        claimed_issue = _claimed_issue()
+        with tempfile.TemporaryDirectory() as repo_path:
+            claimed_issue = _claimed_issue_in(repo_path)
 
-        def interrupted_run(*_args):
-            forge_metadata.mark_user_interrupt_requested()
-            return forge_metadata.WorkflowRunResult(
-                claimed_issue=claimed_issue,
-                success=False,
-                started_at=123.0,
-            )
-
-        with patch.object(forge_metadata, "run_claimed_issue", side_effect=interrupted_run), \
-                patch.object(forge_metadata, "handle_completed_run") as handle_completed_run, \
-                patch.object(forge_metadata, "handle_failed_claimed_issue") as handle_failed_claimed_issue, \
-                patch.object(forge_metadata, "revert_claimed_issue") as revert_claimed_issue, \
-                patch.object(forge_metadata, "cleanup_issue_workspace") as cleanup_issue_workspace:
-            with self.assertRaises(KeyboardInterrupt):
-                forge_metadata.process_claimed_issue_lifecycle(
-                    claimed_issue,
-                    strategy_name=None,
-                    keep_tests_without_dynamic_access=False,
-                    canonical_metrics_repo_path="/tmp/metrics",
+            def interrupted_run(*_args):
+                forge_metadata.mark_user_interrupt_requested()
+                return forge_metadata.WorkflowRunResult(
+                    claimed_issue=claimed_issue,
+                    success=False,
+                    started_at=123.0,
                 )
+
+            with patch.object(forge_metadata, "run_claimed_issue", side_effect=interrupted_run), \
+                    patch.object(forge_metadata, "handle_completed_run") as handle_completed_run, \
+                    patch.object(forge_metadata, "handle_failed_claimed_issue") as handle_failed_claimed_issue, \
+                    patch.object(forge_metadata, "revert_claimed_issue") as revert_claimed_issue, \
+                    patch.object(forge_metadata, "cleanup_issue_workspace") as cleanup_issue_workspace:
+                with self.assertRaises(KeyboardInterrupt):
+                    forge_metadata.process_claimed_issue_lifecycle(
+                        claimed_issue,
+                        strategy_name=None,
+                        keep_tests_without_dynamic_access=False,
+                        canonical_metrics_repo_path="/tmp/metrics",
+                    )
 
         handle_completed_run.assert_not_called()
         handle_failed_claimed_issue.assert_not_called()
@@ -2815,18 +2824,19 @@ class InterruptHandlingTests(unittest.TestCase):
         cleanup_issue_workspace.assert_called_once_with(claimed_issue, "/tmp/metrics")
 
     def test_unhandled_system_exit_is_failed_issue_not_queue_stopper(self) -> None:
-        claimed_issue = _claimed_issue()
+        with tempfile.TemporaryDirectory() as repo_path:
+            claimed_issue = _claimed_issue_in(repo_path)
 
-        with patch.object(forge_metadata, "run_claimed_issue", side_effect=SystemExit(1)), \
-                patch.object(forge_metadata, "handle_completed_run") as handle_completed_run, \
-                patch.object(forge_metadata, "handle_failed_claimed_issue") as handle_failed_claimed_issue, \
-                patch.object(forge_metadata, "cleanup_issue_workspace") as cleanup_issue_workspace:
-            handled = forge_metadata.process_claimed_issue_lifecycle(
-                claimed_issue,
-                strategy_name=None,
-                keep_tests_without_dynamic_access=False,
-                canonical_metrics_repo_path="/tmp/metrics",
-            )
+            with patch.object(forge_metadata, "run_claimed_issue", side_effect=SystemExit(1)), \
+                    patch.object(forge_metadata, "handle_completed_run") as handle_completed_run, \
+                    patch.object(forge_metadata, "handle_failed_claimed_issue") as handle_failed_claimed_issue, \
+                    patch.object(forge_metadata, "cleanup_issue_workspace") as cleanup_issue_workspace:
+                handled = forge_metadata.process_claimed_issue_lifecycle(
+                    claimed_issue,
+                    strategy_name=None,
+                    keep_tests_without_dynamic_access=False,
+                    canonical_metrics_repo_path="/tmp/metrics",
+                )
 
         self.assertFalse(handled)
         handle_completed_run.assert_not_called()
@@ -2887,6 +2897,109 @@ class InterruptHandlingTests(unittest.TestCase):
 
         post_issue_comment.assert_not_called()
         add_issue_label.assert_not_called()
+
+    def test_gradle_bootstrap_failure_is_classified_as_external(self) -> None:
+        failure = forge_metadata.GradleBootstrapFailure("org.example:lib:1.0.0", "/tmp/discover.log")
+
+        wrapped = RuntimeError("wrapped")
+        wrapped.__cause__ = failure
+
+        self.assertTrue(forge_metadata.is_external_failure_exception(failure))
+        self.assertTrue(forge_metadata.is_external_failure_exception(wrapped))
+
+    def test_preserved_interrupt_reason_survives_later_generic_handlers(self) -> None:
+        forge_metadata.mark_user_interrupt_requested(forge_metadata.INTERRUPT_REASON_GRADLE_BOOTSTRAP)
+        forge_metadata.preserve_user_interrupt_reason()
+
+        self.assertTrue(forge_metadata.is_gradle_bootstrap_interrupt())
+        self.assertEqual(
+            forge_metadata.get_user_interrupt_reason(),
+            forge_metadata.INTERRUPT_REASON_GRADLE_BOOTSTRAP,
+        )
+
+    def test_gradle_bootstrap_failure_reverts_claim_without_human_intervention_follow_up(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path:
+            claimed_issue = _claimed_issue_in(repo_path)
+            failure = forge_metadata.GradleBootstrapFailure(claimed_issue.issue_coordinates, "/tmp/discover.log")
+
+            with patch.object(forge_metadata, "run_claimed_issue", side_effect=failure), \
+                    patch.object(forge_metadata, "handle_completed_run") as handle_completed_run, \
+                    patch.object(forge_metadata, "handle_failed_claimed_issue") as handle_failed_claimed_issue, \
+                    patch.object(forge_metadata, "revert_claimed_issue") as revert_claimed_issue, \
+                    patch.object(forge_metadata, "cleanup_issue_workspace") as cleanup_issue_workspace:
+                with self.assertRaises(KeyboardInterrupt):
+                    forge_metadata.process_claimed_issue_lifecycle(
+                        claimed_issue,
+                        strategy_name=None,
+                        keep_tests_without_dynamic_access=False,
+                        canonical_metrics_repo_path="/tmp/metrics",
+                    )
+
+        self.assertEqual(
+            forge_metadata.get_user_interrupt_reason(),
+            forge_metadata.INTERRUPT_REASON_GRADLE_BOOTSTRAP,
+        )
+        handle_completed_run.assert_not_called()
+        handle_failed_claimed_issue.assert_not_called()
+        revert_claimed_issue.assert_called_once_with(
+            claimed_issue,
+            forge_metadata.INTERRUPT_REASON_GRADLE_BOOTSTRAP,
+        )
+        cleanup_issue_workspace.assert_called_once_with(claimed_issue, "/tmp/metrics")
+
+    def test_gradle_bootstrap_failure_stops_the_issue_queue(self) -> None:
+        issues = [
+            {
+                "number": issue_number,
+                "title": f"Add support for org.example:lib{issue_number}:1.0.0",
+                "labels": [],
+                "assignees": [],
+            }
+            for issue_number in range(1, 4)
+        ]
+
+        with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as lock_root:
+            claimed_issue = _claimed_issue_in(repo_path)
+            failure = forge_metadata.GradleBootstrapFailure(claimed_issue.issue_coordinates, "/tmp/discover.log")
+
+            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+                    patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                    patch.object(
+                        forge_metadata,
+                        "get_prioritized_issues_with_label",
+                        return_value=(issues, _scan_state(len(issues), exhausted=True)),
+                    ), \
+                    patch.object(forge_metadata, "get_issue_claim_preflights_or_empty"), \
+                    patch.object(
+                        forge_metadata,
+                        "claim_issue_for_processing",
+                        return_value=claimed_issue,
+                    ) as claim_issue_for_processing, \
+                    patch.object(forge_metadata, "run_claimed_issue", side_effect=failure), \
+                    patch.object(forge_metadata, "handle_completed_run") as handle_completed_run, \
+                    patch.object(forge_metadata, "handle_failed_claimed_issue") as handle_failed_claimed_issue, \
+                    patch.object(forge_metadata, "revert_claimed_issue"), \
+                    patch.object(forge_metadata, "cleanup_issue_workspace"):
+                with self.assertRaises(KeyboardInterrupt):
+                    forge_metadata.process_issues_with_label(
+                        forge_metadata.LABEL_LIBRARY_NEW,
+                        len(issues),
+                        0,
+                        "/tmp/reachability",
+                        "/tmp/metrics",
+                        None,
+                        False,
+                        "automation-user",
+                        1,
+                    )
+
+        claim_issue_for_processing.assert_called_once()
+        handle_completed_run.assert_not_called()
+        handle_failed_claimed_issue.assert_not_called()
+        self.assertEqual(
+            forge_metadata.get_user_interrupt_reason(),
+            forge_metadata.INTERRUPT_REASON_GRADLE_BOOTSTRAP,
+        )
 
     def test_process_issues_with_label_skips_queue_when_shutdown_requested(self) -> None:
         with patch.object(forge_metadata, "is_shutdown_requested", return_value=True), \
