@@ -42,7 +42,7 @@
   - `runtime/code-coverage/issues/inventory.md`
   - `runtime/code-coverage/issues/conversion.md`
   - `runtime/code-coverage/issues/conversion.json`
-  - `runtime/code-coverage/work/<task-id>.code-coverage-convert.md`
+  - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-convert.md`
 
 ### Task code-coverage-prepare: Prepare library
 **State:** prepared
@@ -70,7 +70,7 @@
   - `runtime/code-coverage/prepare/library.json`
   - `runtime/code-coverage/prepare/source-context.md`
   - `runtime/code-coverage/prepare/baseline.md`
-  - `runtime/code-coverage/work/<task-id>.code-coverage-prepare.md`
+  - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-prepare.md`
 
 ### Task code-coverage-api-inventory: Generate API inventory
 **State:** prepared
@@ -94,7 +94,7 @@
 - Artifacts:
   - `runtime/code-coverage/api-inventory/api-inventory.json`
   - `runtime/code-coverage/api-inventory/api-inventory.md`
-  - `runtime/code-coverage/work/<task-id>.code-coverage-api-inventory.md`
+  - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-api-inventory.md`
 
 ### Task code-coverage-api-coverage: API coverage loop
 **State:** api-measure
@@ -146,7 +146,7 @@
 - Artifacts:
   - `runtime/code-coverage/prepare/native-metadata-prepare.json`
   - `runtime/code-coverage/prepare/native-metadata-prepare.md`
-  - `runtime/code-coverage/work/<task-id>.code-coverage-prepare-native-metadata.md`
+  - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-prepare-native-metadata.md`
 
 ### Task code-coverage-deep-coverage: Deep coverage loop
 **State:** deep-measure
@@ -247,4 +247,4 @@
     otherwise link without auto-closing and describe remaining follow-up.
 - Artifacts:
   - `runtime/code-coverage/publication/pr.md`
-  - `runtime/code-coverage/work/<task-id>.code-coverage-publication.md`
+  - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-publication.md`

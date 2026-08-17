@@ -44,6 +44,16 @@ from `origin/master`. Measurement resolves this workflow's own helpers from the
 issue worktree, so basing it on a commit that predates them fails the
 measurement steps outright rather than degrading gracefully.
 
+The instantiated workspace directory must be named
+`code-coverage-<issue_number>`. Rhei qualifies `{task_id}` with the workspace
+directory name, so that name decides where every task's output is expected,
+while the task bodies name those artifacts from `issue_number`. Any other
+directory name makes the two disagree: the agent is told one path and the
+output-existence check reads another, and the task stalls in a non-terminal
+state after an agent that exited zero. Runs that must not collide — a second
+model, agent, or pass budget on one library — separate themselves by parent
+directory and by `branch_suffix`, never by renaming the workspace.
+
 The tests produced by this workflow must be a separate test suite from the
 tests used to generate or validate reachability metadata. Code coverage tests
 exist to exercise the whole practical library API; metadata-generation tests
