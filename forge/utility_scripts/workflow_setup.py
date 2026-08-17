@@ -9,6 +9,7 @@ import sys
 
 from ai_workflows.core.fix_metadata_codex import run_codex_metadata_fix
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.host_requirements import require_graalvm_home_env
 from utility_scripts.library_finalization import run_library_finalization
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo, resolve_repo_roots
 from utility_scripts.stage_logger import log_stage
@@ -79,22 +80,6 @@ def has_native_image(home: str) -> bool:
     """Return True when the provided GraalVM home contains native-image."""
     native_image_path = os.path.join(home, "bin", "native-image")
     return os.path.isfile(native_image_path)
-
-
-def require_graalvm_home_env(env_var_name: str) -> str:
-    """Require a GraalVM home environment variable that contains native-image."""
-    graalvm_home = os.environ.get(env_var_name)
-    if not graalvm_home:
-        print(f"ERROR: Required environment variable '{env_var_name}' is not set.", file=sys.stderr)
-        sys.exit(1)
-    if not has_native_image(graalvm_home):
-        print(
-            f"ERROR: Environment variable '{env_var_name}' must point to a GraalVM distribution "
-            f"where {os.path.join('bin', 'native-image')} exists.",
-            file=sys.stderr,
-        )
-        sys.exit(1)
-    return graalvm_home
 
 
 def build_graalvm_environment(graalvm_home: str, base_env: dict[str, str] | None = None) -> dict[str, str]:

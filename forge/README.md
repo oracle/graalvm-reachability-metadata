@@ -18,16 +18,19 @@ parsing, self-updates, queue processing, sleeping, and re-execing the latest
 script before the next cycle.
 §DW-do-work-loop
 
-Before self-update or queue processing, every worker process prints and runs a
-deterministic startup preflight for the tools, environment variables,
-filesystem and network permissions, GitHub repository/project access, Docker,
-and agent authentication required by its enabled queues. A failed required
-check exits before Forge claims or reviews anything.
-§FS-forge-startup-preflight
+Before self-update or queue processing, and again at the start of every
+work-starting `forge_metadata.py` invocation, Forge prints and validates the
+deterministic host requirements for the tools, environment variables, filesystem
+and network permissions, GitHub repository/project access, Docker, and agent
+authentication its mode needs. A failed required check exits before Forge claims
+or reviews anything; a `--review-pr` run is never asked for a GraalVM.
+§FS-forge-host-requirements
 
 The 25.0.x validation lane is pinned in `graalvm-versions.json`; update that
 file when Forge should move to a newer 25.0.x release. The main and EA lanes are
-checked against the latest published GA and EA release metadata at startup.
+checked against the latest published GA and EA release metadata at startup. Pass
+`--graalvm-version-check warn` or `off` to run against a locally built Graal;
+Native Image and the reachability-metadata schema remain mandatory.
 
 ```console
 ./do-work.sh [options] [forge-branch]
@@ -45,6 +48,7 @@ Common options:
 - `--random-offset`: start new-library issue scans at a random offset instead of the newest issues first.
 - `--priority {high,priority,normal}`: process only the selected issue priority tier.
 - `--user-requested-only`: fetch only user-requested issue queue items, excluding configured automation and maintainer authors.
+- `--graalvm-version-check {strict,warn,off}`: how a GraalVM version mismatch is treated. Default: `strict`.
 - `--once`: run a single update/work cycle through `do_up_to_date_work.sh` and exit.
 - `--stop`: ask all Forge `do-work` loops for the current user to exit by creating `~/.metadata-forge-stop`.
 - `--stop --branch BRANCH`: ask only loops monitoring `BRANCH` to exit, using a branch-scoped marker such as `~/.metadata-forge-stop.master`.
@@ -91,9 +95,10 @@ Required local tools depend on the work queue being processed:
 - `pi` for Pi-agent strategies and automated style recovery.
 - `codex` for Codex-agent strategies and metadata fixups.
 - For issue work, set `GRAALVM_HOME`, `GRAALVM_HOME_25_0`, and
-  `GRAALVM_HOME_LATEST_EA` to the exact versions printed by startup preflight.
-  Each distribution must include Native Image and the reachability-metadata
-  schema. Review-only work needs only `JAVA_HOME` pointing to JDK 25.
+  `GRAALVM_HOME_LATEST_EA` to the exact versions printed by the host-requirement
+  report. Each distribution must include Native Image and the
+  reachability-metadata schema. Review-only work needs only `JAVA_HOME` pointing
+  to JDK 25.
 §STRAT-forge-predefined-strategy-contract
 
 Local Forge automation must run without `sudo`. Local CI verification fails

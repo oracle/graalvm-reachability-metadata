@@ -3,7 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Validate every host capability required by an enabled Forge worker queue."""
+"""Validate every host capability the invoked Forge mode or enabled queue requires."""
 
 from __future__ import annotations
 
@@ -17,6 +17,7 @@ import subprocess
 import sys
 import tempfile
 import tomllib
+import urllib.parse
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping, Sequence
@@ -27,12 +28,17 @@ REPOSITORY_NAME = "graalvm-reachability-metadata"
 PROJECT_NUMBER = 30
 PI_PROVIDER = "openai-codex"
 REQUIRED_GRYPE_VERSION = "0.104.0"
+DEFAULT_REVIEW_MODEL = "gpt-5.6-terra"
 GRAALVM_VERSION_CONFIG = "graalvm-versions.json"
 GRAALVM_GA_RELEASE_ENDPOINT = "repos/graalvm/graalvm-ce-builds/releases/latest"
 GRAALVM_EA_RELEASE_ENDPOINT = (
     "repos/graalvm/oracle-graalvm-ea-builds/contents/versions/latest-ea.json"
 )
 GRAALVM_SCHEMA_PATH = "lib/svm/schemas/reachability-metadata-schema.json"
+ISSUE_GRAALVM_ENV_VARS = ("GRAALVM_HOME", "GRAALVM_HOME_25_0", "GRAALVM_HOME_LATEST_EA")
+GRAALVM_VERSION_CHECK_MODES = ("strict", "warn", "off")
+DEFAULT_GRAALVM_VERSION_CHECK = "strict"
+GRAALVM_VERSION_CHECK_ENV_VAR = "FORGE_GRAALVM_VERSION_CHECK"
 WRITE_REPOSITORY_PERMISSIONS = {"WRITE", "MAINTAIN", "ADMIN"}
 ISSUE_LIMIT_ENV_VARS = (
     "FORGE_JAVAC_WORK_LIMIT",
@@ -49,7 +55,8 @@ REVIEW_LIMIT_ENV_VARS = (
     "FORGE_LIBRARY_UPDATE_REVIEW_LIMIT",
     "FORGE_BULK_UPDATE_REVIEW_LIMIT",
 )
-NETWORK_HOSTS_WORK = ("github.com", "api.github.com", "chatgpt.com", "services.gradle.org")
+NETWORK_HOSTS_GITHUB = ("github.com", "api.github.com")
+NETWORK_HOSTS_WORK = ("chatgpt.com", "services.gradle.org")
 NETWORK_HOSTS_ISSUE_WORK = (
     "repo.maven.apache.org",
     "plugins.gradle.org",
@@ -60,15 +67,21 @@ NETWORK_HOSTS_ISSUE_WORK = (
 
 @dataclass(frozen=True)
 class QueueRequirements:
-    """Capabilities selected by the effective worker queue limits."""
+    """Capabilities selected by the invoked Forge mode or the effective queue limits."""
 
     issue_work: bool
     review_work: bool
+    github_work: bool = True
+
+    @property
+    def any_work(self) -> bool:
+        """Return whether this run starts issue or review work."""
+        return self.issue_work or self.review_work
 
 
 @dataclass(frozen=True)
 class CheckResult:
-    """One deterministic startup requirement result."""
+    """One deterministic host requirement result."""
 
     category: str
     name: str
@@ -76,6 +89,7 @@ class CheckResult:
     passed: bool | None
     detail: str
     remediation: str = ""
+    advisory: bool = False
 
     @property
     def status(self) -> str:
@@ -84,7 +98,14 @@ class CheckResult:
             return "SKIP"
         if self.passed is None:
             return "INFO"
-        return "PASS" if self.passed else "FAIL"
+        if self.passed:
+            return "PASS"
+        return "WARN" if self.advisory else "FAIL"
+
+    @property
+    def blocks_work(self) -> bool:
+        """Return whether this result must stop the worker before any work starts."""
+        return self.required and self.passed is False and not self.advisory
 
 
 @dataclass(frozen=True)
@@ -96,10 +117,10 @@ class GraalVMVersions:
     latest_ea: str | None
 
 
-class StartupPreflight:
-    """Collect and print Forge startup requirements without invoking a model.
+class HostRequirements:
+    """Collect and print Forge host requirements without invoking a model.
 
-    §FS-forge-startup-preflight
+    §FS-forge-host-requirements
     """
 
     def __init__(
@@ -108,19 +129,31 @@ class StartupPreflight:
             python_bin: str,
             review_model: str,
             environment: Mapping[str, str] | None = None,
+            requirements: QueueRequirements | None = None,
+            graalvm_version_check: str | None = None,
     ) -> None:
         self.forge_dir = os.path.abspath(forge_dir)
         self.repo_dir = os.path.dirname(self.forge_dir)
         self.python_bin = python_bin
         self.review_model = review_model
         self.environment = dict(os.environ if environment is None else environment)
-        self.requirements = resolve_queue_requirements(self.environment)
+        self.requirements = (
+            resolve_queue_requirements(self.environment)
+            if requirements is None
+            else requirements
+        )
+        self.graalvm_version_check = resolve_graalvm_version_check(graalvm_version_check, self.environment)
         self.graalvm_versions = GraalVMVersions(None, None, None)
         self.results: list[CheckResult] = []
 
+    @property
+    def version_check_advisory(self) -> bool:
+        """Return whether GraalVM version mismatches only warn instead of stopping work."""
+        return self.graalvm_version_check == "warn"
+
     def run(self) -> bool:
         """Run all selected checks, print the report, and return whether they passed."""
-        if self.requirements.issue_work:
+        if self.requirements.issue_work and self.graalvm_version_check != "off":
             self.graalvm_versions = self._resolve_graalvm_versions()
         self._print_manifest()
         self._check_tools()
@@ -132,44 +165,62 @@ class StartupPreflight:
         self._check_codex()
         self._check_docker()
         self._print_results()
-        return not any(
-            result.required and result.passed is False
-            for result in self.results
-        )
+        return not any(result.blocks_work for result in self.results)
 
     def _print_manifest(self) -> None:
         issue_text = "enabled" if self.requirements.issue_work else "disabled"
         review_text = "enabled" if self.requirements.review_work else "disabled"
-        print("[forge-preflight] Deterministic startup requirements")
-        print(f"[forge-preflight] Queues: issue work={issue_text}, PR review={review_text}")
-        print("[forge-preflight] Required host permissions:")
+        print("[forge-host] Deterministic host requirements")
+        print(f"[forge-host] Queues: issue work={issue_text}, PR review={review_text}")
+        print("[forge-host] Required host permissions:")
         print(f"  - Filesystem write: {self.repo_dir}, {self.forge_dir}/local_repositories, temporary Gradle state")
-        print("  - GitHub repository: Contents=write, Issues=write, Pull requests=write")
-        print(f"  - GitHub project: Projects=write for oracle project {PROJECT_NUMBER}")
-        github_operations: list[str] = []
-        if self.requirements.issue_work:
-            github_operations.extend(("assign/label/comment issues", "push generated branches"))
-        if self.requirements.review_work:
-            github_operations.extend(("submit reviews", "merge eligible PRs"))
-        print(f"  - GitHub operations: {', '.join(github_operations)}")
+        if self.requirements.github_work:
+            print("  - GitHub repository: Contents=write, Issues=write, Pull requests=write")
+            print(f"  - GitHub project: Projects=write for oracle project {PROJECT_NUMBER}")
+            github_operations: list[str] = []
+            if self.requirements.issue_work:
+                github_operations.extend(("assign/label/comment issues", "push generated branches"))
+            if self.requirements.review_work:
+                github_operations.extend(("submit reviews", "merge eligible PRs"))
+            print(f"  - GitHub operations: {', '.join(github_operations)}")
+        else:
+            print("  - GitHub: no live GitHub access is required by this run")
         print("  - Network: outbound access to every host and port listed in the checks below")
+        proxy_url = self.environment.get("https_proxy") or self.environment.get("HTTPS_PROXY")
+        if proxy_url:
+            print(f"  - Network route: HTTPS reachability is checked through the configured proxy {proxy_url}")
         print("  - Pi reviews: authenticated provider plus unattended tool approval (`pi --approve`)")
         if self.requirements.issue_work:
             print("  - Codex recovery: approval=never, sandbox=danger-full-access, worktree write, provider network")
             print("  - Docker: access to the Docker daemon and configured image registries")
-        print("[forge-preflight] Required environment:")
+        print("[forge-host] Required environment:")
         if self.requirements.issue_work:
-            print(f"  - GRAALVM_HOME=GraalVM {self.graalvm_versions.latest_ga or '<unresolved latest GA>'}")
-            print(f"  - GRAALVM_HOME_25_0=GraalVM {self.graalvm_versions.pinned_25 or '<invalid repo pin>'}")
-            print(
-                "  - GRAALVM_HOME_LATEST_EA=Oracle GraalVM "
-                f"{self.graalvm_versions.latest_ea or '<unresolved latest EA>'}"
-            )
+            for variable in ISSUE_GRAALVM_ENV_VARS:
+                print(f"  - {variable}={self._required_graalvm_description(variable)}")
             print(f"  - Every GraalVM must contain {GRAALVM_SCHEMA_PATH}")
             print("  - JAVA_HOME is aligned to GRAALVM_HOME by Forge; explicit matching value is recommended")
         elif self.requirements.review_work:
             print("  - JAVA_HOME=<JDK 25 with executable bin/java> (GRAALVM_HOME is not required for review-only work)")
         print(f"  - FORGE_REVIEW_MODEL={self.review_model}")
+        print(f"  - GraalVM version match: {self._version_check_description()}")
+
+    def _required_graalvm_description(self, variable: str) -> str:
+        """Describe the distribution one GraalVM lane must point to."""
+        if self.graalvm_version_check == "off":
+            return "any GraalVM with Native Image and the reachability-metadata schema"
+        if variable == "GRAALVM_HOME_25_0":
+            return f"GraalVM {self.graalvm_versions.pinned_25 or '<invalid repo pin>'}"
+        if variable == "GRAALVM_HOME_LATEST_EA":
+            return f"Oracle GraalVM {self.graalvm_versions.latest_ea or '<unresolved latest EA>'}"
+        return f"GraalVM {self.graalvm_versions.latest_ga or '<unresolved latest GA>'}"
+
+    def _version_check_description(self) -> str:
+        """Describe the effect of the selected GraalVM version-check mode."""
+        if self.graalvm_version_check == "off":
+            return "off — version match is not evaluated; Native Image and schema stay mandatory"
+        if self.graalvm_version_check == "warn":
+            return "warn — version mismatches report WARN and do not stop work"
+        return "strict — a version mismatch stops the worker"
 
     def _add(
             self,
@@ -179,15 +230,16 @@ class StartupPreflight:
             passed: bool | None,
             detail: str,
             remediation: str = "",
+            advisory: bool = False,
     ) -> None:
-        self.results.append(CheckResult(category, name, required, passed, detail, remediation))
+        self.results.append(CheckResult(category, name, required, passed, detail, remediation, advisory))
 
     def _check_tools(self) -> None:
-        any_work = self.requirements.issue_work or self.requirements.review_work
+        any_work = self.requirements.any_work
         tool_specs: tuple[tuple[str, str, bool, tuple[str, ...]], ...] = (
             ("Python", self.python_bin, True, ("--version",)),
             ("git", "git", True, ("--version",)),
-            ("GitHub CLI", "gh", any_work, ("--version",)),
+            ("GitHub CLI", "gh", self.requirements.github_work, ("--version",)),
             ("Pi", "pi", any_work, ("--version",)),
             ("Codex", "codex", self.requirements.issue_work, ("--version",)),
             ("Docker CLI", "docker", self.requirements.issue_work, ("--version",)),
@@ -202,7 +254,7 @@ class StartupPreflight:
         required = self.requirements.issue_work
         resolved = resolve_executable("grype")
         if not required:
-            self._add("tool", "grype", False, None, resolved or "not required by disabled issue queues")
+            self._add("tool", "grype", False, None, resolved or "not required by this run")
             return
         if resolved is None:
             self._add(
@@ -265,7 +317,7 @@ class StartupPreflight:
     ) -> None:
         resolved = resolve_executable(command)
         if not required:
-            self._add("tool", name, False, None, resolved or f"{command} is not required by disabled queues")
+            self._add("tool", name, False, None, resolved or f"{command} is not required by this run")
             return
         if resolved is None:
             self._add(
@@ -305,7 +357,6 @@ class StartupPreflight:
             self.graalvm_versions.latest_ea,
             early_access=True,
         )
-
         if self.requirements.issue_work:
             java_home = self.environment.get("JAVA_HOME")
             graalvm_home = self.environment.get("GRAALVM_HOME")
@@ -375,6 +426,7 @@ class StartupPreflight:
             valid,
             f"required={version or '<invalid>'}; source={config_path}",
             f"Set `GRAALVM_HOME_25_0` to a valid 25.0.x version in `{config_path}`.",
+            advisory=self.version_check_advisory,
         )
         return version if valid else None
 
@@ -394,6 +446,7 @@ class StartupPreflight:
             passed,
             f"required={version or '<unresolved>'}; source=graalvm/graalvm-ce-builds latest release",
             "Allow `gh api repos/graalvm/graalvm-ce-builds/releases/latest` and retry.",
+            advisory=self.version_check_advisory,
         )
         return version if passed else None
 
@@ -421,6 +474,7 @@ class StartupPreflight:
                 "source=graalvm/oracle-graalvm-ea-builds latest-ea.json"
             ),
             "Allow the latest-ea.json `gh api` query and retry.",
+            advisory=self.version_check_advisory,
         )
         return version if passed else None
 
@@ -431,9 +485,10 @@ class StartupPreflight:
             expected_version: str | None,
             early_access: bool = False,
     ) -> None:
+        """Check one GraalVM lane: installation is mandatory, the version match follows the mode."""
         value = self.environment.get(variable)
         if not required:
-            self._add("environment", variable, False, None, value or "not required by disabled issue queues")
+            self._add("environment", variable, False, None, value or "not required by this run")
             return
         if not value:
             self._add(
@@ -441,44 +496,65 @@ class StartupPreflight:
                 variable,
                 True,
                 False,
-                f"current=<unset>; required=GraalVM {expected_version or '<unresolved>'}",
-                f"Install GraalVM `{expected_version or 'required version'}` with Native Image and schema, "
-                f"then export `{variable}=/absolute/path/to/that/distribution`.",
+                f"current=<unset>; required={self._required_graalvm_description(variable)}",
+                f"Install {self._required_graalvm_description(variable)} with Native Image and "
+                f"{GRAALVM_SCHEMA_PATH}, then export `{variable}=/absolute/path/to/that/distribution`.",
             )
             return
-        java = os.path.join(value, "bin", "java")
-        native_image = os.path.join(value, "bin", "native-image")
-        valid = all(os.path.isfile(path) and os.access(path, os.X_OK) for path in (java, native_image))
-        if not valid:
+        problems = check_graalvm_installation(value)
+        if problems:
             self._add(
                 "environment",
                 variable,
                 True,
                 False,
-                (
-                    f"path={value}; installed=invalid; required={expected_version or '<unresolved>'}; "
-                    "bin/java or bin/native-image is missing"
-                ),
-                f"Install GraalVM `{expected_version or 'required version'}` with Native Image and schema, "
-                f"then point `{variable}` to it.",
+                f"path={value}; {'; '.join(problems)}",
+                f"Install {self._required_graalvm_description(variable)} with Native Image and "
+                f"{GRAALVM_SCHEMA_PATH}, then point `{variable}` to it.",
             )
             return
-        native_version_result = run_command([native_image, "--version"], self.environment)
+        self._add(
+            "environment",
+            variable,
+            True,
+            True,
+            f"path={value}; native-image and {GRAALVM_SCHEMA_PATH} are present",
+        )
+        self._check_graalvm_version(variable, value, expected_version, early_access)
+
+    def _check_graalvm_version(
+            self,
+            variable: str,
+            value: str,
+            expected_version: str | None,
+            early_access: bool,
+    ) -> None:
+        """Compare one installed GraalVM lane against the version required for it."""
+        if self.graalvm_version_check == "off":
+            self._add(
+                "version",
+                f"{variable} version",
+                False,
+                None,
+                f"path={value}; version match disabled by `--graalvm-version-check off`",
+            )
+            return
+        native_version_result = run_command(
+            [os.path.join(value, "bin", "native-image"), "--version"],
+            self.environment,
+        )
         native_version_output = f"{native_version_result.stdout}\n{native_version_result.stderr}"
-        installed_native_version = parse_native_image_version(native_version_output)
         installed_graalvm_version = parse_graalvm_runtime_version(native_version_output)
-        schema_path = os.path.join(value, GRAALVM_SCHEMA_PATH)
-        schema_present = os.path.isfile(schema_path)
         if variable == "GRAALVM_HOME_25_0":
-            version_matches = expected_version is not None and installed_native_version == expected_version
-            installed_display = installed_native_version or "<unresolved>"
-        else:
-            version_matches = graalvm_ga_version_matches(expected_version, installed_graalvm_version)
-            installed_display = installed_graalvm_version or "<unresolved>"
-        if early_access and expected_version is not None:
-            java_result = run_command([java, "-XshowSettings:properties", "-version"], self.environment)
+            installed_display = parse_native_image_version(native_version_output) or "<unresolved>"
+            version_matches = expected_version is not None and installed_display == expected_version
+        elif early_access:
+            java_result = run_command(
+                [os.path.join(value, "bin", "java"), "-XshowSettings:properties", "-version"],
+                self.environment,
+            )
             java_runtime = parse_java_runtime_version(f"{java_result.stdout}\n{java_result.stderr}")
-            version_matches = graalvm_ea_version_matches(
+            version_matches = expected_version is not None and graalvm_ea_version_matches(
                 expected_version,
                 installed_graalvm_version,
                 java_runtime,
@@ -487,26 +563,34 @@ class StartupPreflight:
                 f"graalvm={installed_graalvm_version or '<unresolved>'}, "
                 f"java.runtime.version={java_runtime or '<unresolved>'}"
             )
-        passed = (
-            native_version_result.returncode == 0
-            and version_matches
-            and schema_present
-        )
+        else:
+            version_matches = graalvm_ga_version_matches(expected_version, installed_graalvm_version)
+            installed_display = installed_graalvm_version or "<unresolved>"
         self._add(
-            "environment",
-            variable,
+            "version",
+            f"{variable} version",
             True,
-            passed,
-            (
-                f"path={value}; installed={installed_display}; required={expected_version or '<unresolved>'}; "
-                f"schema={'present' if schema_present else 'missing'}"
-            ),
-            f"Install GraalVM `{expected_version or 'required version'}` with Native Image and schema, "
-            f"then point `{variable}` to it.",
+            native_version_result.returncode == 0 and version_matches,
+            f"path={value}; installed={installed_display}; required={expected_version or '<unresolved>'}",
+            self._version_remediation(variable),
+            advisory=self.version_check_advisory,
+        )
+
+    def _version_remediation(self, variable: str) -> str:
+        """Return the one actionable instruction for a mismatched GraalVM lane."""
+        required = self._required_graalvm_description(variable)
+        if self.version_check_advisory:
+            return (
+                f"Point `{variable}` at {required} before trusting results from this host; "
+                "`--graalvm-version-check warn` allowed the mismatch."
+            )
+        return (
+            f"Point `{variable}` at {required}, or rerun with `--graalvm-version-check warn` "
+            "to work with a locally built GraalVM."
         )
 
     def _check_write_permissions(self) -> None:
-        any_work = self.requirements.issue_work or self.requirements.review_work
+        any_work = self.requirements.any_work
         paths: list[tuple[str, str, bool]] = [
             ("Forge checkout", self.forge_dir, True),
             ("Git metadata", os.path.join(self.repo_dir, ".git"), True),
@@ -517,7 +601,7 @@ class StartupPreflight:
         ]
         for name, path, required in paths:
             if not required:
-                self._add("filesystem", name, False, None, f"{path} is not required by disabled queues")
+                self._add("filesystem", name, False, None, f"{path} is not required by this run")
                 continue
             passed, detail = probe_write_access(path)
             self._add(
@@ -530,22 +614,30 @@ class StartupPreflight:
             )
 
     def _check_network(self) -> None:
-        any_work = self.requirements.issue_work or self.requirements.review_work
         self._check_git_remote_access()
-        hosts: list[tuple[str, bool]] = [(host, any_work) for host in NETWORK_HOSTS_WORK]
+        hosts: list[tuple[str, bool]] = [
+            (host, self.requirements.github_work) for host in NETWORK_HOSTS_GITHUB
+        ]
+        hosts.extend((host, self.requirements.any_work) for host in NETWORK_HOSTS_WORK)
         hosts.extend((host, self.requirements.issue_work) for host in NETWORK_HOSTS_ISSUE_WORK)
         for host, required in hosts:
             if not required:
-                self._add("network", host, False, None, "not required by disabled queues")
+                self._add("network", host, False, None, "not required by this run")
                 continue
-            passed, detail = probe_tcp_host(host, 443)
+            passed, detail = probe_tcp_host(host, 443, environment=self.environment)
+            proxy = resolve_https_proxy(self.environment, host)
             self._add(
                 "network",
                 host,
                 True,
                 passed,
                 detail,
-                f"Allow DNS and outbound TCP 443 access to `{host}` in the host firewall or sandbox policy.",
+                (
+                    f"Allow the configured proxy {proxy[0]}:{proxy[1]} to reach `{host}:443`, "
+                    "or unset the proxy for it."
+                    if proxy
+                    else f"Allow DNS and outbound TCP 443 access to `{host}` in the host firewall or sandbox policy."
+                ),
             )
         if self.requirements.issue_work:
             self._add(
@@ -582,7 +674,7 @@ class StartupPreflight:
         )
 
     def _check_github(self) -> None:
-        required = self.requirements.issue_work or self.requirements.review_work
+        required = self.requirements.github_work
         if not required or resolve_executable("gh") is None:
             self._add(
                 "github",
@@ -706,47 +798,20 @@ query($owner: String!, $name: String!, $project: Int!) {
         )
 
     def _check_pi(self) -> None:
-        required = self.requirements.issue_work or self.requirements.review_work
-        if not required or resolve_executable("pi") is None:
+        required = self.requirements.any_work
+        if not required:
+            self._add("agent", "Pi authentication", False, None, "not required by this run")
+        else:
+            ready, detail = check_pi_authentication(self.review_model, self.environment)
             self._add(
                 "agent",
                 "Pi authentication",
-                required,
-                None if not required else False,
-                "Pi is unavailable",
-                "Install `pi`, put it on PATH, then run `pi` and `/login openai-codex`.",
+                True,
+                ready,
+                detail,
+                f"Install `pi`, then run `pi` and `/login {PI_PROVIDER}`; `pi auth check --provider "
+                f"{PI_PROVIDER} --model {self.review_model} --json` must report status=ready.",
             )
-            return
-        result = run_command(
-            [
-                "pi", "auth", "check",
-                "--provider", PI_PROVIDER,
-                "--model", self.review_model,
-                "--json",
-            ],
-            self.environment,
-        )
-        try:
-            payload = json.loads(result.stdout)
-        except json.JSONDecodeError:
-            payload = {}
-        ready = (
-            result.returncode == 0
-            and payload.get("status") == "ready"
-            and payload.get("provider") == PI_PROVIDER
-        )
-        self._add(
-            "agent",
-            "Pi authentication",
-            True,
-            ready,
-            (
-                f"provider={payload.get('provider') or PI_PROVIDER}, model={self.review_model}, "
-                f"status={payload.get('status') or 'invalid'}"
-            ),
-            f"Start `pi`, run `/login {PI_PROVIDER}`, then rerun `pi auth check --provider {PI_PROVIDER} "
-            f"--model {self.review_model} --json`.",
-        )
         self._add(
             "agent",
             "Pi review command approval",
@@ -758,7 +823,7 @@ query($owner: String!, $name: String!, $project: Int!) {
 
     def _check_codex(self) -> None:
         if not self.requirements.issue_work:
-            self._add("agent", "Codex recovery", False, None, "not required by disabled issue queues")
+            self._add("agent", "Codex recovery", False, None, "not required by this run")
             return
         if resolve_executable("codex") is None:
             self._add("agent", "Codex recovery", True, False, "Codex is unavailable", "Install and authenticate Codex.")
@@ -798,7 +863,7 @@ query($owner: String!, $name: String!, $project: Int!) {
 
     def _check_docker(self) -> None:
         if not self.requirements.issue_work:
-            self._add("docker", "daemon access", False, None, "not required by disabled issue queues")
+            self._add("docker", "daemon access", False, None, "not required by this run")
             return
         if resolve_executable("docker") is None:
             self._add("docker", "daemon access", True, False, "Docker CLI is unavailable", "Install Docker.")
@@ -817,17 +882,141 @@ query($owner: String!, $name: String!, $project: Int!) {
         )
 
     def _print_results(self) -> None:
-        print("[forge-preflight] Check results:")
+        print("[forge-host] Check results:")
         for result in self.results:
             print(f"  [{result.status}] {result.category}: {result.name} — {result.detail}")
             if result.required and result.passed is False and result.remediation:
                 print(f"         Fix: {result.remediation}")
-        failures = [result for result in self.results if result.required and result.passed is False]
+        failures = [result for result in self.results if result.blocks_work]
+        warnings = [result for result in self.results if result.status == "WARN"]
         if failures:
             sys.stdout.flush()
             print(f"ERROR: {len(failures)} required check(s) failed. No work was started.")
+            return
+        if warnings:
+            print(f"[forge-host] PASS with {len(warnings)} warning(s); work may start.")
         else:
-            print("[forge-preflight] PASS: all required startup checks succeeded; work may start.")
+            print("[forge-host] PASS: all required host checks succeeded; work may start.")
+
+
+def check_graalvm_installation(graalvm_home: str) -> list[str]:
+    """Return the reasons a GraalVM home cannot run Forge work; empty when it can.
+
+    This is the single definition of a Forge-usable GraalVM distribution: it must
+    run Java and Native Image and carry the reachability-metadata schema that the
+    repository validates generated metadata against (§FS-forge-host-requirements).
+    """
+    problems: list[str] = []
+    for executable in ("java", "native-image"):
+        path = os.path.join(graalvm_home, "bin", executable)
+        if not os.path.isfile(path) or not os.access(path, os.X_OK):
+            problems.append(f"{os.path.join('bin', executable)} is missing or not executable")
+    if not os.path.isfile(os.path.join(graalvm_home, GRAALVM_SCHEMA_PATH)):
+        problems.append(f"{GRAALVM_SCHEMA_PATH} is missing")
+    return problems
+
+
+def require_graalvm_home_env(variable: str, environment: Mapping[str, str] | None = None) -> str:
+    """Require one GraalVM home variable to point at a Forge-usable distribution.
+
+    §FS-forge-host-requirements
+    """
+    values = os.environ if environment is None else environment
+    graalvm_home = values.get(variable)
+    if not graalvm_home:
+        print(f"ERROR: Required environment variable '{variable}' is not set.", file=sys.stderr)
+        print(
+            f"Fix: export `{variable}=/absolute/path/to/a/graalvm` that provides Native Image and "
+            f"{GRAALVM_SCHEMA_PATH}.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    problems = check_graalvm_installation(graalvm_home)
+    if problems:
+        print(
+            f"ERROR: Environment variable '{variable}' points to '{graalvm_home}', "
+            f"which cannot run Forge work: {'; '.join(problems)}.",
+            file=sys.stderr,
+        )
+        print(
+            f"Fix: point `{variable}` at a GraalVM distribution that provides Native Image and "
+            f"{GRAALVM_SCHEMA_PATH}.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    return graalvm_home
+
+
+def require_issue_graalvm_homes(environment: Mapping[str, str] | None = None) -> None:
+    """Require every GraalVM lane used by Forge issue work.
+
+    §FS-forge-host-requirements
+    """
+    for variable in ISSUE_GRAALVM_ENV_VARS:
+        require_graalvm_home_env(variable, environment)
+
+
+def resolve_graalvm_version_check(
+        requested: str | None = None,
+        environment: Mapping[str, str] | None = None,
+) -> str:
+    """Resolve the GraalVM version-check mode from an explicit value or the environment."""
+    values = os.environ if environment is None else environment
+    mode = (requested or values.get(GRAALVM_VERSION_CHECK_ENV_VAR) or DEFAULT_GRAALVM_VERSION_CHECK)
+    mode = mode.strip().lower()
+    if mode not in GRAALVM_VERSION_CHECK_MODES:
+        raise ValueError(
+            f"{GRAALVM_VERSION_CHECK_ENV_VAR} must be one of "
+            f"{', '.join(GRAALVM_VERSION_CHECK_MODES)}, got {mode!r}"
+        )
+    return mode
+
+
+def verify_host_requirements(
+        forge_dir: str,
+        python_bin: str | None = None,
+        review_model: str = DEFAULT_REVIEW_MODEL,
+        requirements: QueueRequirements | None = None,
+        graalvm_version_check: str | None = None,
+        environment: Mapping[str, str] | None = None,
+) -> bool:
+    """Run every host requirement selected by this run and report whether work may start.
+
+    §FS-forge-host-requirements
+    """
+    host_requirements = HostRequirements(
+        forge_dir,
+        python_bin or sys.executable,
+        review_model,
+        environment,
+        requirements,
+        graalvm_version_check,
+    )
+    return host_requirements.run()
+
+
+def ensure_host_requirements(
+        forge_dir: str,
+        python_bin: str | None = None,
+        review_model: str = DEFAULT_REVIEW_MODEL,
+        requirements: QueueRequirements | None = None,
+        graalvm_version_check: str | None = None,
+        environment: Mapping[str, str] | None = None,
+) -> None:
+    """Stop the process with a non-zero exit when a required host capability is missing.
+
+    §FS-forge-host-requirements
+    """
+    passed = verify_host_requirements(
+        forge_dir,
+        python_bin,
+        review_model,
+        requirements,
+        graalvm_version_check,
+        environment,
+    )
+    if not passed:
+        sys.exit(1)
 
 
 def resolve_queue_requirements(environment: Mapping[str, str]) -> QueueRequirements:
@@ -872,7 +1061,7 @@ def run_command(
         environment: Mapping[str, str],
         timeout: int = 20,
 ) -> subprocess.CompletedProcess[str]:
-    """Run a deterministic preflight command without a shell or interactive prompt."""
+    """Run one deterministic probe command without a shell or interactive prompt."""
     command_environment = dict(environment)
     command_environment["GH_PROMPT_DISABLED"] = "1"
     command_environment["GH_PAGER"] = ""
@@ -940,6 +1129,45 @@ def parse_gradle_version(output: str) -> str | None:
     return match.group(1) if match else None
 
 
+def check_pi_authentication(
+        review_model: str,
+        environment: Mapping[str, str] | None = None,
+) -> tuple[bool, str]:
+    """Check Pi authentication for the Forge provider and model without invoking a model.
+
+    §FS-forge-host-requirements
+    """
+    values = os.environ if environment is None else environment
+    if resolve_executable("pi") is None:
+        return False, f"`pi` was not found on PATH; provider={PI_PROVIDER}, model={review_model}"
+    result = run_command(
+        [
+            "pi", "auth", "check",
+            "--provider", PI_PROVIDER,
+            "--model", review_model,
+            "--json",
+        ],
+        values,
+    )
+    try:
+        payload = json.loads(result.stdout)
+    except json.JSONDecodeError:
+        payload = {}
+    if not isinstance(payload, dict):
+        payload = {}
+    ready = (
+        result.returncode == 0
+        and payload.get("status") == "ready"
+        and payload.get("provider") == PI_PROVIDER
+    )
+    detail = (
+        f"provider={payload.get('provider') or PI_PROVIDER}, model={review_model}, "
+        f"status={payload.get('status') or 'invalid'}"
+    )
+    failure = "" if ready else first_output_line(result)
+    return ready, f"{detail}; {failure}" if failure else detail
+
+
 def pi_approve_supported(environment: Mapping[str, str]) -> bool:
     """Return whether the installed Pi CLI supports unattended tool approval."""
     result = run_command(["pi", "--help"], environment)
@@ -1003,20 +1231,75 @@ def probe_write_access(path: str) -> tuple[bool, str]:
     expanded = os.path.abspath(os.path.expanduser(path))
     probe_dir = nearest_existing_directory(expanded)
     try:
-        with tempfile.NamedTemporaryFile(prefix=".forge-preflight-", dir=probe_dir, delete=True):
+        with tempfile.NamedTemporaryFile(prefix=".forge-host-", dir=probe_dir, delete=True):
             pass
     except OSError as exc:
         return False, f"target={expanded}, probe={probe_dir}, error={exc}"
     return True, f"target={expanded}, write probe passed in {probe_dir}"
 
 
-def probe_tcp_host(host: str, port: int, timeout: float = 5.0) -> tuple[bool, str]:
-    """Test DNS and outbound TCP access without downloading an artifact."""
+def host_bypasses_proxy(environment: Mapping[str, str], host: str) -> bool:
+    """Return whether `no_proxy` sends this host straight out instead of through a proxy."""
+    no_proxy = environment.get("no_proxy") or environment.get("NO_PROXY") or ""
+    target = host.lower()
+    for entry in (part.strip().lower().lstrip(".") for part in no_proxy.split(",")):
+        if entry == "*":
+            return True
+        if entry and (target == entry or target.endswith(f".{entry}")):
+            return True
+    return False
+
+
+def resolve_https_proxy(environment: Mapping[str, str], host: str) -> tuple[str, int] | None:
+    """Return the proxy that must carry HTTPS traffic to a host, or None for a direct route."""
+    proxy_url = environment.get("https_proxy") or environment.get("HTTPS_PROXY")
+    if not proxy_url or host_bypasses_proxy(environment, host):
+        return None
+    parsed = urllib.parse.urlparse(proxy_url if "://" in proxy_url else f"http://{proxy_url}")
+    if not parsed.hostname:
+        return None
+    return parsed.hostname, parsed.port or 80
+
+
+def probe_tcp_host(
+        host: str,
+        port: int,
+        timeout: float = 5.0,
+        environment: Mapping[str, str] | None = None,
+) -> tuple[bool, str]:
+    """Test outbound access the way Forge's tools use it: directly, or through the configured proxy."""
+    values = os.environ if environment is None else environment
+    proxy = resolve_https_proxy(values, host)
+    if proxy is None:
+        try:
+            with socket.create_connection((host, port), timeout=timeout):
+                return True, f"tcp://{host}:{port} reachable"
+        except OSError as exc:
+            return False, f"tcp://{host}:{port} unreachable: {exc}"
+    return probe_proxied_host(host, port, proxy, timeout)
+
+
+def probe_proxied_host(
+        host: str,
+        port: int,
+        proxy: tuple[str, int],
+        timeout: float = 5.0,
+) -> tuple[bool, str]:
+    """Ask the configured proxy to open a tunnel, proving both hops without transferring data."""
+    proxy_host, proxy_port = proxy
+    route = f"tcp://{host}:{port} via proxy {proxy_host}:{proxy_port}"
+    request = f"CONNECT {host}:{port} HTTP/1.1\r\nHost: {host}:{port}\r\n\r\n".encode()
     try:
-        with socket.create_connection((host, port), timeout=timeout):
-            return True, f"tcp://{host}:{port} reachable"
+        with socket.create_connection((proxy_host, proxy_port), timeout=timeout) as connection:
+            connection.sendall(request)
+            status_line = connection.recv(512).decode("latin-1", "replace").splitlines()
     except OSError as exc:
-        return False, f"tcp://{host}:{port} unreachable: {exc}"
+        return False, f"{route} unreachable: {exc}"
+    status = status_line[0].strip() if status_line else ""
+    fields = status.split()
+    if len(fields) > 1 and fields[1] == "200":
+        return True, f"{route} reachable"
+    return False, f"{route} refused: {status or 'proxy closed the connection'}"
 
 
 def resolve_gradle_state_root(environment: Mapping[str, str]) -> str:
@@ -1094,24 +1377,44 @@ def codex_unattended_policy_status(codex_home: str) -> tuple[bool, str]:
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
-    """Parse startup-preflight CLI arguments."""
+    """Parse host-requirements CLI arguments."""
     parser = argparse.ArgumentParser(description="Validate Forge host requirements before work starts.")
     parser.add_argument("--forge-dir", required=True, help="Absolute or relative path to the Forge directory.")
     parser.add_argument("--python-bin", default=sys.executable, help="Python interpreter selected by do-work.")
-    parser.add_argument("--review-model", default="gpt-5.6-terra", help="Pi model used for PR reviews.")
+    parser.add_argument("--review-model", default=DEFAULT_REVIEW_MODEL, help="Pi model used for PR reviews.")
+    parser.add_argument(
+        "--graalvm-version-check",
+        choices=GRAALVM_VERSION_CHECK_MODES,
+        default=None,
+        help=(
+            "How to treat a GraalVM version mismatch: `strict` stops the worker, `warn` reports it, "
+            "`off` skips the version match. Native Image and the reachability-metadata schema stay "
+            f"mandatory in every mode. Defaults to {GRAALVM_VERSION_CHECK_ENV_VAR}, "
+            f"then {DEFAULT_GRAALVM_VERSION_CHECK}."
+        ),
+    )
     return parser.parse_args(argv)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    """Run the preflight CLI."""
+    """Run the host-requirements CLI."""
     args = parse_args(argv)
     try:
-        preflight = StartupPreflight(args.forge_dir, args.python_bin, args.review_model)
+        host_requirements = HostRequirements(
+            args.forge_dir,
+            args.python_bin,
+            args.review_model,
+            graalvm_version_check=resolve_graalvm_version_check(args.graalvm_version_check),
+        )
     except ValueError as exc:
-        print(f"ERROR: Forge startup preflight configuration is invalid: {exc}", file=sys.stderr)
-        print("Fix: set every FORGE_*_LIMIT value to a non-negative integer.", file=sys.stderr)
+        print(f"ERROR: Forge host requirement configuration is invalid: {exc}", file=sys.stderr)
+        print(
+            "Fix: set every FORGE_*_LIMIT value to a non-negative integer and "
+            f"{GRAALVM_VERSION_CHECK_ENV_VAR} to {', '.join(GRAALVM_VERSION_CHECK_MODES)}.",
+            file=sys.stderr,
+        )
         return 1
-    return 0 if preflight.run() else 1
+    return 0 if host_requirements.run() else 1
 
 
 if __name__ == "__main__":

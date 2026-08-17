@@ -7,12 +7,14 @@ import io
 import json
 import os
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import call, patch
 
 import forge_metadata
 from git_scripts import common_git
+from utility_scripts import host_requirements
 from utility_scripts.continuation_marker import (
     PHASE_EXPLORE,
     PHASE_FINALIZATION,
@@ -2682,14 +2684,80 @@ class IssueSearchCacheTests(unittest.TestCase):
 
 class EnvironmentValidationTests(unittest.TestCase):
     def test_issue_processing_requires_dev_and_ci_graalvm_homes(self) -> None:
-        with patch.object(forge_metadata, "require_graalvm_home_env") as require_graalvm_home:
+        with patch.object(forge_metadata, "require_issue_graalvm_homes") as require_graalvm_homes:
             forge_metadata.validate_issue_processing_environment()
 
-        require_graalvm_home.assert_has_calls([
-            call(forge_metadata.DEV_GRAALVM_ENV_VAR),
-            call(forge_metadata.POST_GENERATION_GRAALVM_ENV_VAR),
-            call(forge_metadata.LATEST_EA_GRAALVM_ENV_VAR),
-        ])
+        require_graalvm_homes.assert_called_once_with()
+        self.assertEqual(
+            (
+                forge_metadata.DEV_GRAALVM_ENV_VAR,
+                forge_metadata.POST_GENERATION_GRAALVM_ENV_VAR,
+                forge_metadata.LATEST_EA_GRAALVM_ENV_VAR,
+            ),
+            host_requirements.ISSUE_GRAALVM_ENV_VARS,
+        )
+
+    def test_review_only_runs_do_not_require_graalvm(self) -> None:
+        args = forge_metadata.parse_args(["--review-pr", "library-new-request"])
+
+        requirements = forge_metadata.resolve_host_requirement_queues(args)
+
+        self.assertFalse(requirements.issue_work)
+        self.assertTrue(requirements.review_work)
+        self.assertTrue(requirements.github_work)
+
+    def test_issue_runs_require_graalvm_without_review_capabilities(self) -> None:
+        args = forge_metadata.parse_args(["--issue-number", "9101"])
+
+        requirements = forge_metadata.resolve_host_requirement_queues(args)
+
+        self.assertTrue(requirements.issue_work)
+        self.assertFalse(requirements.review_work)
+
+    def test_fixture_runs_do_not_require_live_github_access(self) -> None:
+        args = forge_metadata.parse_args(["--fixture-testing", "--issue-number", "9101"])
+
+        requirements = forge_metadata.resolve_host_requirement_queues(args)
+
+        self.assertTrue(requirements.issue_work)
+        self.assertFalse(requirements.github_work)
+
+    def test_work_queue_runs_derive_capabilities_from_enabled_queue_limits(self) -> None:
+        args = forge_metadata.parse_args(["--run-work-queues"])
+        disabled_issue_queues = {
+            name: "0"
+            for name in host_requirements.ISSUE_LIMIT_ENV_VARS
+        }
+
+        with patch.dict(os.environ, {**disabled_issue_queues, "FORGE_REVIEW_LIMIT": "1"}, clear=True):
+            requirements = forge_metadata.resolve_host_requirement_queues(args)
+
+        self.assertFalse(requirements.issue_work)
+        self.assertTrue(requirements.review_work)
+
+    def test_every_work_starting_invocation_validates_host_requirements(self) -> None:
+        with patch.object(forge_metadata, "ensure_host_requirements") as ensure, \
+                patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
+                patch.object(forge_metadata, "resolve_repo_roots", return_value=("/repo", "/metrics")), \
+                patch.object(forge_metadata, "run_pull_request_review_loop") as review_loop, \
+                patch.object(sys, "argv", ["forge_metadata.py", "--review-pr", "library-new-request"]):
+            forge_metadata.main()
+
+        ensure.assert_called_once()
+        self.assertEqual(
+            host_requirements.QueueRequirements(issue_work=False, review_work=True, github_work=True),
+            ensure.call_args.kwargs["requirements"],
+        )
+        review_loop.assert_called_once()
+
+    def test_cache_maintenance_does_not_validate_host_requirements(self) -> None:
+        with patch.object(forge_metadata, "ensure_host_requirements") as ensure, \
+                patch.object(forge_metadata, "clear_issue_caches") as clear_issue_caches, \
+                patch.object(sys, "argv", ["forge_metadata.py", "--clear-issue-caches"]):
+            forge_metadata.main()
+
+        clear_issue_caches.assert_called_once()
+        ensure.assert_not_called()
 
 
 class FailedRunFollowUpTests(unittest.TestCase):
@@ -2778,12 +2846,12 @@ class InterruptHandlingTests(unittest.TestCase):
                 patch.object(forge_metadata, "require_claimed_issue_worktree"), \
                 patch.object(forge_metadata, "run_library_preparation_preflight", return_value=None), \
                 patch.object(forge_metadata, "prepare_dynamic_access_chunking", return_value=None), \
-                patch.object(forge_metadata, "require_graalvm_home_env") as require_graalvm_home:
+                patch.object(forge_metadata, "require_issue_graalvm_homes") as require_graalvm_homes:
             with self.assertRaises(KeyboardInterrupt):
                 forge_metadata.invoke_pipeline(claimed_issue, None, False)
 
         self.assertTrue(forge_metadata.is_user_interrupt_requested())
-        require_graalvm_home.assert_not_called()
+        require_graalvm_homes.assert_not_called()
 
     def test_interrupted_failed_workflow_skips_human_intervention_handling(self) -> None:
         claimed_issue = _claimed_issue()
@@ -2917,23 +2985,18 @@ class PullRequestReviewTests(unittest.TestCase):
             stdout='{"status":"ready","provider":"openai-codex","authType":"oauth"}\n',
             stderr="",
         )
-        with patch.object(
-                forge_metadata.subprocess,
-                "run",
-                return_value=completed_process,
-        ) as run:
+        with patch.object(host_requirements, "resolve_executable", return_value="/usr/bin/pi"), \
+                patch.object(host_requirements, "run_command", return_value=completed_process) as run:
             self.assertTrue(forge_metadata.check_pi_review_authentication("gpt-5.6-terra"))
 
-        run.assert_called_once_with(
+        self.assertEqual(
             [
                 "pi", "auth", "check",
                 "--provider", "openai-codex",
                 "--model", "gpt-5.6-terra",
                 "--json",
             ],
-            capture_output=True,
-            text=True,
-            check=False,
+            run.call_args.args[0],
         )
 
     def test_review_pull_request_stops_before_pi_when_authentication_is_not_ready(self) -> None:

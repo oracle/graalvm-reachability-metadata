@@ -195,7 +195,21 @@ from utility_scripts.task_logs import (
     resolve_logs_root,
     sanitize_library_log_segment,
 )
-from utility_scripts.workflow_setup import list_all_files, require_graalvm_home_env
+from utility_scripts.host_requirements import (
+    DEFAULT_GRAALVM_VERSION_CHECK,
+    DEFAULT_REVIEW_MODEL,
+    GRAALVM_VERSION_CHECK_ENV_VAR,
+    GRAALVM_VERSION_CHECK_MODES,
+    ISSUE_GRAALVM_ENV_VARS,
+    PI_PROVIDER,
+    QueueRequirements,
+    check_pi_authentication,
+    ensure_host_requirements,
+    require_issue_graalvm_homes,
+    resolve_graalvm_version_check,
+    resolve_queue_requirements,
+)
+from utility_scripts.workflow_setup import list_all_files
 
 try:
     import fcntl
@@ -338,15 +352,14 @@ RESUMABLE_LABEL_DESCRIPTION = "Issue has preserved automation work that Forge ca
 DEFAULT_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD = 15
 
 
-DEFAULT_REVIEW_MODEL = "gpt-5.6-terra"
-PI_REVIEW_PROVIDER = "openai-codex"
+PI_REVIEW_PROVIDER = PI_PROVIDER
 DEFAULT_WORK_QUEUE_STRATEGY_NAME = "dynamic_access_main_sources_pi_gpt-5.6-terra"
 CODEX_REVIEW_TIMEOUT_SECONDS = 1800
 PI_REVIEW_TIMEOUT_SECONDS = 1800
 DEFAULT_WORKTREE_BASE_REF = "master"
-DEV_GRAALVM_ENV_VAR = "GRAALVM_HOME"
-POST_GENERATION_GRAALVM_ENV_VAR = "GRAALVM_HOME_25_0"
-LATEST_EA_GRAALVM_ENV_VAR = "GRAALVM_HOME_LATEST_EA"
+# The GraalVM lanes are named once in `host_requirements`, in this order.
+DEV_GRAALVM_ENV_VAR, POST_GENERATION_GRAALVM_ENV_VAR, LATEST_EA_GRAALVM_ENV_VAR = ISSUE_GRAALVM_ENV_VARS
+FORGE_DIR = os.path.dirname(os.path.abspath(__file__))
 INTERRUPT_EXIT_CODES = {130, -int(signal.SIGINT)}
 INTERRUPT_REASON_CTRL_C = "Ctrl+C interrupt"
 INTERRUPT_REASON_SHUTDOWN = "shutdown request"
@@ -607,10 +620,12 @@ def _handle_sigint(_signum, _frame) -> None:
 
 
 def validate_issue_processing_environment() -> None:
-    """Validate environment required before issue processing can start."""
-    require_graalvm_home_env(DEV_GRAALVM_ENV_VAR)
-    require_graalvm_home_env(POST_GENERATION_GRAALVM_ENV_VAR)
-    require_graalvm_home_env(LATEST_EA_GRAALVM_ENV_VAR)
+    """Validate the GraalVM environment required before issue processing can start.
+
+    The requirement itself is defined once in `utility_scripts/host_requirements.py`
+    and is also enforced by the startup gate (§FS-forge-host-requirements).
+    """
+    require_issue_graalvm_homes()
 
 
 def gh(
@@ -2836,53 +2851,20 @@ def print_pull_request_discussion(pr_number: int) -> None:
 
 
 def check_pi_review_authentication(review_model: str) -> bool:
-    """Check Pi review authentication without invoking a model.
+    """Check Pi review authentication with the shared deterministic host check.
 
     §FS-automated-pr-review
     """
-    cmd: list[str] = [
-        "pi", "auth", "check",
-        "--provider", PI_REVIEW_PROVIDER,
-        "--model", review_model,
-        "--json",
-    ]
-    try:
-        result: subprocess.CompletedProcess = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            check=False,
+    ready, detail = check_pi_authentication(review_model)
+    if not ready:
+        print(
+            (
+                f"ERROR: Pi review authentication is not ready for provider '{PI_REVIEW_PROVIDER}' "
+                f"and model '{review_model}'.\n{detail}"
+            ),
+            file=sys.stderr,
         )
-    except OSError as exc:
-        print(f"ERROR: Pi review authentication check could not start: {exc}", file=sys.stderr)
-        return False
-
-    try:
-        payload: object = json.loads(result.stdout)
-    except json.JSONDecodeError:
-        payload = None
-    if (
-            result.returncode == 0
-            and isinstance(payload, dict)
-            and payload.get("status") == "ready"
-            and payload.get("provider") == PI_REVIEW_PROVIDER
-    ):
-        return True
-
-    details: str = "\n".join(
-        output.strip()
-        for output in (result.stderr, result.stdout)
-        if output.strip()
-    )
-    print(
-        (
-            f"ERROR: Pi review authentication is not ready for provider '{PI_REVIEW_PROVIDER}' "
-            f"and model '{review_model}'."
-            + (f"\n{details}" if details else "")
-        ),
-        file=sys.stderr,
-    )
-    return False
+    return ready
 
 
 def review_pull_request(
@@ -8523,6 +8505,17 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help=f"Pi model used for `--review-pr` runs (default: {DEFAULT_REVIEW_MODEL}).",
     )
     parser.add_argument(
+        "--graalvm-version-check",
+        choices=GRAALVM_VERSION_CHECK_MODES,
+        default=None,
+        help=(
+            "How the startup host-requirement gate treats a GraalVM version mismatch: `strict` stops "
+            "the run, `warn` reports it, `off` skips the version match. Native Image and the "
+            "reachability-metadata schema stay mandatory in every mode. Defaults to "
+            f"{GRAALVM_VERSION_CHECK_ENV_VAR}, then {DEFAULT_GRAALVM_VERSION_CHECK}."
+        ),
+    )
+    parser.add_argument(
         "--period",
         type=validate_review_period,
         help=(
@@ -8685,6 +8678,37 @@ def process_single_issue(
     )
 
 
+def resolve_host_requirement_queues(args: argparse.Namespace) -> QueueRequirements:
+    """Select the capabilities the invoked Forge mode needs, not the ones its queue limits allow.
+
+    §FS-forge-host-requirements
+    """
+    github_work = not args.fixture_testing
+    if args.review_pr is not None:
+        return QueueRequirements(issue_work=False, review_work=True, github_work=github_work)
+    if args.run_work_queues:
+        enabled_queues = resolve_queue_requirements(os.environ)
+        return QueueRequirements(
+            issue_work=enabled_queues.issue_work,
+            review_work=enabled_queues.review_work,
+            github_work=github_work,
+        )
+    return QueueRequirements(issue_work=True, review_work=False, github_work=github_work)
+
+
+def require_host_requirements(args: argparse.Namespace) -> None:
+    """Stop before any work when this host cannot run the invoked Forge mode.
+
+    §FS-forge-host-requirements
+    """
+    ensure_host_requirements(
+        FORGE_DIR,
+        review_model=args.review_model,
+        requirements=resolve_host_requirement_queues(args),
+        graalvm_version_check=resolve_graalvm_version_check(args.graalvm_version_check),
+    )
+
+
 def main() -> None:
     clear_user_interrupt_requested()
     previous_sigint_handler = signal.getsignal(signal.SIGINT)
@@ -8714,10 +8738,9 @@ def main() -> None:
         if args.clear_issue_caches:
             clear_issue_caches()
             return
+        require_host_requirements(args)
         if args.strategy_name:
             require_strategy_by_name(args.strategy_name)
-        if args.review_pr is None and not args.run_work_queues:
-            validate_issue_processing_environment()
         reachability_metadata_path, metrics_repo_path = resolve_repo_roots(
             args.reachability_metadata_path,
             None,
