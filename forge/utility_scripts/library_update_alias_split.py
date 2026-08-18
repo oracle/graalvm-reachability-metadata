@@ -445,9 +445,3 @@ def _format_version_list(value: Any) -> str:
     if not isinstance(value, list):
         return "`none`"
     return ", ".join(f"`{version}`" for version in value) or "`none`"
-
-
-def _format_issue_version_lines(value: Any) -> str:
-    if not isinstance(value, list):
-        return "- none"
-    return "\n".join(f"- `{version}`" for version in value) or "- none"

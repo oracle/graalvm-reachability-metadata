@@ -511,37 +511,6 @@ def push_current_branch_to_origin(
     return new_branch
 
 
-def update_dynamic_access_exhaust_report_after_publish(
-        coordinates: str,
-        repo_path: str,
-        branch: str,
-        pr_number: int | None,
-        chunked_dynamic_access: bool,
-) -> None:
-    """Record the published chunk PR/commit in the coordinate-local exhaust report."""
-    if not chunked_dynamic_access:
-        return
-    report_path = find_dynamic_access_exhaust_report_path(repo_path, coordinates)
-    if report_path is None:
-        return
-    report = DynamicAccessExhaustReport.load(report_path)
-    commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_path, text=True).strip()
-    report.record_published_chunk(commit, pr_number)
-    report.save(report_path)
-
-    relative_report_path = os.path.relpath(report_path, repo_path)
-    subprocess.run(["git", "add", "--", relative_report_path], cwd=repo_path, check=True)
-    diff_result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=repo_path, check=False)
-    if diff_result.returncode == 0:
-        return
-    subprocess.run(
-        ["git", "commit", "-m", f"Record chunked dynamic-access publication for {coordinates}"],
-        cwd=repo_path,
-        check=True,
-    )
-    run_git_transport(["push", "origin", f"HEAD:{branch}"], cwd=repo_path)
-
-
 def main(argv=None) -> None:
     (
         coordinates,

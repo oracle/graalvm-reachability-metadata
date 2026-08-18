@@ -6,7 +6,6 @@
 """Shared branch-publication pipeline for the make_pr_* publishers (§GIT-shared-publication-pipeline)."""
 
 import os
-import re
 import shutil
 import subprocess
 import tempfile
