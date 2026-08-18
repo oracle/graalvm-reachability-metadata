@@ -14,6 +14,9 @@ import subprocess
 from typing import Any
 
 from git_scripts.common_git import (
+    get_issue_project_item_status,
+    gh,
+    gh_json,
     parse_coordinate_parts,
     stage_and_commit as stage_and_commit_common,
 )
