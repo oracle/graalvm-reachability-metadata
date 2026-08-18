@@ -157,9 +157,10 @@ finalizer writes the descriptor and pushes the verified branch; orchestration
 then reports the branch and publication ID as the successful local outcome
 without invoking a workflow-specific PR creator.
 
-Publication-related follow-up issues for deferred coverage or tested-version
-splits are descriptor facts, not local GitHub mutations; the trusted Actions
-publisher resolves them (§GIT-actions-publication). A later Branch Ready failure
+Follow-up issues for deferred coverage or tested-version splits are created
+locally before the verified push and handed to the trusted Actions publisher as
+typed descriptor facts carrying their issue numbers
+(§GIT-publication-descriptor). A later Branch Ready failure
 does not cause local failure handling: the pushed branch remains preserved and
 the claimed issue remains `In Progress` and assigned for manual inspection.
 Failed generation or local finalization still preserves diagnostics

@@ -261,16 +261,16 @@ this functional spec.
   Java-fix reports cannot be generated before their primary repair succeeds, so
   `forge_metadata.py` passes the threshold to their shared driver; the composite
   workflow evaluates it immediately after the repair and skips oversized
-  exploration. Local finalization records typed follow-up facts in the
-  descriptor. The Actions publisher creates or reuses a new
-  `library-update-request` for the fixed version and parks it until the repair
-  merges. That issue then enters the ordinary library-update workflow, where
-  dispatcher-owned chunking regenerates the report and selects chunks. The skip
-  is decided exactly once: the composite records it on the continuation marker's
-  `explore` phase, and descriptor creation reads that phase instead of
-  regenerating a report. Retries of one publication ID reuse one follow-up issue;
-  local state does not persist its GitHub-assigned number. For ordinary chunked
-  runs, `forge_metadata.py`
+  exploration. Before the verified push, Forge creates or reuses a new
+  `library-update-request` for the fixed version, parks it until the repair
+  merges, and records the issue number as a typed follow-up fact in the
+  descriptor; the Actions publisher only references it. That issue then enters
+  the ordinary library-update workflow, where dispatcher-owned chunking
+  regenerates the report and selects chunks. The skip is decided exactly once:
+  the composite records it on the continuation marker's `explore` phase, and
+  descriptor creation reads that phase instead of regenerating a report. The
+  marker also records the created issue number, so retries of one publication
+  ID reuse one follow-up issue. For ordinary chunked runs, `forge_metadata.py`
   still computes the concrete chunk size rather than passing a generic workflow
   policy.
 
@@ -698,13 +698,13 @@ continue, per §FS-human-intervention-policy. A PR labeled
 `human-intervention-fixed` is the explicit maintainer signal that manual
 follow-up has been completed; review automation may then dismiss stale
 requested-changes reviews, approve, and merge only after normal merge gates
+pass, including the index validation safeguard for index-changing pull requests
+(§FS-index-validation-safeguard).
 
 Bot authorship does not disqualify the maintainer recorded as the descriptor's
 `producer` from reviewing the PR. Review eligibility continues to exclude only
 the authenticated review worker when that same account is the GitHub PR author;
 it does not treat descriptor provenance as authorship.
-pass, including the index validation safeguard for index-changing pull requests
-(§FS-index-validation-safeguard).
 
 Before launching a review agent, Forge must validate GitHub CLI authentication
 in the orchestration process and use Pi's deterministic authentication check for
@@ -801,6 +801,8 @@ resumed run (§FS-forge-run-continuation.2).
 Chunk PRs use `Refs: #<issue>` until the final chunk. Only the final chunk PR
 may use `Fixes: #<issue>` and move the issue to `Done`. Non-final chunk PRs
 must commit enough exhaust-report state for the next run to skip classes already
+completed, skipped, exhausted, or failed in earlier chunks
+(§WF-chunked-dynamic-access-pr-linking).
 
 Before the single verified push, every chunk also records its publication ID
 and unique publication branch in the exhaust report. The publisher repeats the
@@ -809,8 +811,6 @@ resolves the preceding PR by the exact head branch, verifies the matching
 publication ID and merged state, and checks that the merge commit is an ancestor
 of its new base. Forge must not create a second post-publication commit merely
 to store a GitHub-assigned PR number.
-completed, skipped, exhausted, or failed in earlier chunks
-(§WF-chunked-dynamic-access-pr-linking).
 
 ## FS-forge-workflow-spec-catalog: Workflow specifications
 

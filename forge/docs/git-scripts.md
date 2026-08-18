@@ -56,6 +56,7 @@ expected paths; the not-for-native-image route
 `metadata/<group>/<artifact>/index.json`, its stats publication path, and the
 descriptor. Shared repository edits are allowed only when local verification
 (§FS-local-ci-equivalent-verification) proved them necessary, and those paths
+must be listed in descriptor verification evidence for maintainer review.
 
 ## GIT-publication-descriptor: Durable publication descriptor
 
@@ -100,9 +101,9 @@ login that owns the `ai/<producer>/...` branch.
 `Forge Branch Ready` runs on pushes to upstream `ai/**` branches with read-only
 repository permissions and no secrets. It treats the head tree as data, requires
 one schema-valid descriptor, checks the branch namespace and descriptor/branch
-identity, and validates changed paths against the task-specific allow-list. It
-must not execute scripts, actions, build files, or other code from the feature
-branch and must not create or modify GitHub resources.
+identity, and requires that exactly one descriptor changed in the publication
+diff. It must not execute scripts, actions, build files, or other code from the
+feature branch and must not create or modify GitHub resources.
 
 A Branch Ready failure leaves the branch, issue assignment, labels, and project
 status unchanged. Its job summary and logs must identify the exact SHA and each
@@ -128,8 +129,9 @@ Before mutation the publisher must verify all of the following:
 - the coordinates, descriptor path, and publication identity agree, and the
   descriptor carries the fields the selected template renders.
 
-The publisher does not re-check the changed-path scope, the execution metrics,
-or the local verification evidence. Local CI already gated that work
+Neither workflow re-checks the workflow-specific changed-path scope, the
+execution metrics, or the local verification evidence. Expected-path staging
+(§GIT-expected-paths) and local CI already gated that work
 (§FS-local-ci-equivalent-verification), and re-deriving it from branch-supplied
 data proves nothing the branch could not also assert.
 
@@ -153,7 +155,6 @@ and uploads the title/body evidence without creating GitHub resources; only
 head branch and publication ID, an open or merged PR is a successful no-op. A
 closed, unmerged PR or ambiguous match fails for manual inspection. Any
 publisher failure preserves the pushed branch and claimed issue state.
-must be listed in descriptor verification evidence for maintainer review.
 
 ## GIT-pr-body: Pull request body contents
 
@@ -259,12 +260,12 @@ human-visible `Refs: #<follow-up-issue>` line and a machine-readable
 the trailer, not casual issue references, to release the follow-up issue after
 the PR merges.
 
-Deferred Java-fix coverage and tested-version splits do not create follow-up
-issues locally. Their typed descriptor facts are resolved by the trusted
-publisher, which searches for an existing matching issue before creating one,
-applies `library-update-request`, and parks the project item in `In Progress`.
-It then renders the resolved number into `Refs:` and
-`Forge-Unblocks-Issue:`. Retrying publication must reuse the same issue.
+Deferred Java-fix coverage and tested-version splits create their follow-up
+issues locally, before the verified push: Forge searches for an existing
+matching issue before creating one, applies `library-update-request`, parks the
+project item in `In Progress`, and records the resulting number in the typed
+descriptor fact. The trusted publisher only renders that number into `Refs:`
+and `Forge-Unblocks-Issue:`. Retrying publication must reuse the same issue.
 
 ## GIT-chunked-linking: Chunked dynamic-access PR linking
 

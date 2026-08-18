@@ -132,19 +132,20 @@ Required behavior — shared by both modes:
 8. Finalize: generate metadata, validate tests, collect stats, and commit.
 9. Publication reads the recorded `explore` skip rather than regenerating a
    report and re-deciding, so the run's single decision is the one the PR
-   describes. For a skipped oversized exploration the local descriptor records
-   typed follow-up facts: fixed coordinate, repair issue, uncovered class count,
-   and threshold. The trusted Actions publisher uses those facts to create a new
-   `library-update-request`, park it in `In Progress`, and link it from the repair
-   PR. It must not reuse an unrelated older matching issue, while every retry of
-   the same publication ID reuses the issue that publication created. The PR
-   closes the repair issue, states that exploration was skipped, links the new
-   issue, and carries `Forge-Unblocks-Issue: #<issue>` so merge follow-up moves
-   the new issue to `Todo`. Chunk selection then runs through the existing
-   library-update workflow against the repaired version on the default branch.
-   The follow-up title names the fixed coordinate and its body is one brief
-   sentence explaining the class-count deferral. Java-fix metrics and
-   continuation markers persist no GitHub-assigned publication issue number.
+   describes. For a skipped oversized exploration Forge creates a new
+   `library-update-request` locally before the verified push, parks it in
+   `In Progress`, and records the typed follow-up fact — fixed coordinate,
+   repair issue, uncovered class count, threshold, and the created issue
+   number — in the descriptor; the trusted Actions publisher only links it from
+   the repair PR. Forge must not reuse an unrelated older matching issue, while
+   every retry of the same publication reuses the issue this same repair already
+   opened, recovered from the continuation marker or by its exact repair
+   reference. The PR closes the repair issue, states that exploration was
+   skipped, links the new issue, and carries `Forge-Unblocks-Issue: #<issue>` so
+   merge follow-up moves the new issue to `Todo`. Chunk selection then runs
+   through the existing library-update workflow against the repaired version on
+   the default branch. The follow-up title names the fixed coordinate and its
+   body is one brief sentence explaining the class-count deferral.
 10. Publication never blocks on a dynamic-access category losing full coverage
     between the previous and the repaired version. A repair that trades coverage
     is a review question, not a reason to discard a successful run, and after a
@@ -181,8 +182,8 @@ Successful runs produce:
   `tests/src/<group>/<artifact>/<newVersion>/`.
 - Updated metadata, index, and stats artifacts for the new version.
 - Improved dynamic-access coverage from the inline composite phase
-  (§WF-improve-library-coverage), or typed descriptor facts for the trusted
-  publisher to open a fixed-version `library-update-request` when oversized
+  (§WF-improve-library-coverage), or a locally opened fixed-version
+  `library-update-request` recorded as a typed descriptor fact when oversized
   exploration was skipped.
 - Durable logs for the initial Gradle run, each agent turn, the coverage phase,
   and finalization (§FS-durable-generation-logs).
