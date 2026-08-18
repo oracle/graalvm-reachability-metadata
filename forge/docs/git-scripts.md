@@ -9,10 +9,11 @@ the direct push to the upstream `ai/**` branch
 
 After an unprivileged Branch Ready workflow accepts that exact SHA, publisher
 code and templates loaded from the default branch own the GitHub half
-(§GIT-actions-publication): trusted rendering, follow-up issue creation, labels,
-reviewers, issue links, idempotent PR creation, and publication reporting. The
-feature branch supplies data only; neither it nor the local Forge process
-selects arbitrary GitHub mutations or receives the publisher App credentials.
+(§GIT-actions-publication): trusted rendering, labels, reviewers, idempotent PR
+creation, and publication reporting. Publication opens the pull request and
+nothing else; every issue and project mutation stays local, where Forge already
+owns the claimed issue. The feature branch supplies data only; neither it nor
+the local Forge process receives the publisher App credentials.
 Chunked dynamic-access runs identify each part before the push
 (§GIT-chunked-linking). Local finalization runs after workflow generation and
 the verification required by §FS-local-ci-equivalent-verification, never during
@@ -78,7 +79,8 @@ The descriptor contains data, never GitHub instructions:
   post-generation intervention, and Forge revision evidence;
 - typed flags for chunking, final-chunk state, and human-intervention evidence;
 - typed follow-up facts for deferred dynamic-access coverage or a tested-version
-  split, from which the publisher idempotently creates or reuses an issue.
+  split, each carrying the number of the issue Forge already opened locally, so
+  the publisher only references it.
 
 The descriptor cannot contain labels, reviewer names, template paths, token
 permissions, arbitrary commands, or a requested publication mode. The schema
@@ -121,25 +123,29 @@ Before mutation the publisher must verify all of the following:
   is the exact object being read;
 - the triggering actor equals the descriptor producer and is listed in the
   trusted comma-separated repository variable `FORGE_AUTHORIZED_PUSHERS`;
-- the base commit and changed-path set are valid for the task, exactly one
-  descriptor is present, and no workflow, publisher, schema, or other
-  out-of-scope path is supplied by the branch;
-- the task/template combination, issue, coordinates, status, verification,
-  modifiers, metrics references, and publication identity agree.
+- the base commit is an ancestor of the head SHA and of the trusted base branch,
+  and exactly one descriptor changed in the publication diff;
+- the coordinates, descriptor path, and publication identity agree, and the
+  descriptor carries the fields the selected template renders.
+
+The publisher does not re-check the changed-path scope, the execution metrics,
+or the local verification evidence. Local CI already gated that work
+(§FS-local-ci-equivalent-verification), and re-deriving it from branch-supplied
+data proves nothing the branch could not also assert.
 
 The workflow creates a short-lived token from
 `FORGE_PUBLISHER_APP_ID` and `FORGE_PUBLISHER_PRIVATE_KEY`. The App is granted
-only the repository pull-request, issue, and content-read permissions plus the
-organization Projects permission required to create and park publication
-follow-up issues. Reviewer requests come only from the trusted comma-separated
+only the repository pull-request and content-read permissions needed to open and
+label the pull request. Reviewer requests come only from the trusted comma-separated
 repository variable `FORGE_PR_REVIEWERS`. The producer remains eligible to
 review the bot-authored PR.
 
-The publisher creates or reuses any typed follow-up issue before rendering the
-PR, applies only the fixed primary label and trusted modifiers (`GenAI`,
-`chunked-dynamic-access`, and `human-intervention`), requests configured
-reviewers, and records the PR URL in the job summary. Follow-up creation and
-project parking are idempotent, so a retry reuses the same issue.
+The publisher renders the PR, applies only the fixed primary label and trusted
+modifiers (`GenAI`, `chunked-dynamic-access`, and `human-intervention`),
+requests configured reviewers, and records the PR URL in the job summary. It
+references follow-up issues by the number the descriptor carries; creation and
+project parking already happened locally, keyed off durable run state so a
+retried run reuses the same issue.
 
 `FORGE_PR_PUBLISH_MODE` controls rollout. A missing value or `shadow` renders
 and uploads the title/body evidence without creating GitHub resources; only
@@ -207,7 +213,7 @@ threshold, then links the new fixed-version `library-update-request`. The body
 retains `Fixes: #<repair-issue>`, adds `Refs: #<coverage-issue>`, and includes
 `Forge-Unblocks-Issue: #<coverage-issue>` so orchestration releases the parked
 coverage issue only after the repair PR merges (§WF-java-fail-fix-workflow).
-The generated follow-up issue keeps the coordinate in its title and uses one
+The locally generated follow-up issue keeps the coordinate in its title and uses one
 brief sentence stating that it was opened while resolving the repair issue
 because the dynamic-access class count exceeded the threshold.
 

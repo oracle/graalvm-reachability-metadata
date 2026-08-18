@@ -84,7 +84,7 @@ flowchart LR
     Dispatcher -->|PR-eligible status| Branch
     Branch -->|verified SHA + descriptor| Ready
     Ready -->|successful workflow_run| Publisher
-    Publisher -->|bot PR + follow-up issues| GitHub
+    Publisher -->|bot pull request| GitHub
     Dispatcher -->|failure / review bookkeeping| GitHub
 ```
 
