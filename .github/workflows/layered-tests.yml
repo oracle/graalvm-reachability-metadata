@@ -1,0 +1,173 @@
+# Weekly full sweep and manual test for the cached layered Native Image lane. §CI-layered-tests.
+name: "Layered tests"
+
+on:
+  schedule:
+    - cron: "30 0 * * 0"
+  workflow_dispatch:
+    inputs:
+      lane:
+        description: "Layered tests to run"
+        required: true
+        type: choice
+        options:
+          - "Shared Layered Tests"
+          - "Dedicated Layered Tests"
+          - "All Layered Tests"
+        default: "All Layered Tests"
+      ref:
+        description: "Branch, tag, or SHA to test"
+        required: true
+        default: "master"
+      coordinates:
+        description: "Coordinates to test"
+        required: true
+        default: "all"
+      java-version:
+        description: "GraalVM Java version"
+        required: true
+        default: "latest-ea"
+      native-image-mode:
+        description: "Native Image mode from ci.json"
+        required: true
+        default: "current-defaults"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "workflow = ${{ github.workflow }}, lane = ${{ inputs.lane || 'All Layered Tests' }}, ref = ${{ inputs.ref || github.event.repository.default_branch }}, coordinates = ${{ inputs.coordinates || 'all' }}, java = ${{ inputs.java-version || 'latest-ea' }}, mode = ${{ inputs.native-image-mode || 'current-defaults' }}"
+  cancel-in-progress: true
+
+jobs:
+  prepare-shards:
+    name: "Prepare layered test shards"
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+
+    steps:
+      - name: "Create coordinate matrix"
+        id: matrix
+        env:
+          COORDINATES: ${{ inputs.coordinates || 'all' }}
+          LAYER_SELECTION: ${{ inputs.lane || 'All Layered Tests' }}
+        run: |
+          matrix="$(jq -cn \
+            --arg coordinates "${COORDINATES}" \
+            --arg selection "${LAYER_SELECTION}" '
+            [
+              {
+                selection: "Shared Layered Tests",
+                shards: 16,
+                name: "Shared",
+                task: "testSharedLayer",
+                failureReport: "shared-layer-test-failures.txt",
+                exclusions: "tests/tck-build-logic/src/main/resources/shared-layered-test-exclusions.txt",
+                deleteDedicatedLayer: "false"
+              },
+              {
+                selection: "Dedicated Layered Tests",
+                shards: 64,
+                name: "Dedicated",
+                task: "testDedicatedLayer",
+                failureReport: "dedicated-layer-test-failures.txt",
+                exclusions: "tests/tck-build-logic/src/main/resources/dedicated-layer-test-exclusions.txt",
+                deleteDedicatedLayer: "true"
+              }
+            ]
+            | if $selection == "All Layered Tests" then . else map(select(.selection == $selection)) end
+            | {
+                include: [
+                  .[] as $lane
+                  | if $coordinates == "all" then
+                      range(1; $lane.shards + 1) as $shard
+                      | {coordinates: "\($shard)/\($lane.shards)", lane: $lane}
+                    else
+                      {coordinates: $coordinates, lane: $lane}
+                    end
+                ]
+              }')"
+          echo "matrix=${matrix}" >> "${GITHUB_OUTPUT}"
+
+  layered-tests:
+    name: "${{ matrix.lane.name }} layer tests for ${{ matrix.coordinates }} on ${{ inputs.ref || github.event.repository.default_branch }}"
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 360
+    needs: prepare-shards
+    strategy:
+      fail-fast: false
+      max-parallel: 64
+      matrix: ${{ fromJson(needs.prepare-shards.outputs.matrix) }}
+    env:
+      GVM_TCK_NATIVE_IMAGE_MODE: ${{ inputs.native-image-mode || 'current-defaults' }}
+
+    steps:
+      - name: "Checkout test ref"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: ${{ inputs.ref || github.event.repository.default_branch }}
+
+      - name: "Setup latest native-build-tools snapshot"
+        uses: ./.github/actions/setup-native-build-tools
+
+      - name: "Download GraalVM for layered metadata testing"
+        uses: graalvm/setup-graalvm@60c26726de13f8b90771df4bc1641a52a3159994 # v1
+        with:
+          distribution: "graalvm"
+          java-version: ${{ inputs.java-version || 'latest-ea' }}
+          set-java-home: "true"
+          native-image-job-reports: "true"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "Setup Native Image base layer"
+        if: matrix.lane.name == 'Shared'
+        uses: ./.github/actions/setup-native-image-base-layer
+
+      - name: "Pull allowed docker images"
+        run: |
+          ./gradlew pullAllowedDockerImages -Pcoordinates="${{ matrix.coordinates }}"
+
+      - name: "Check metadata files content"
+        run: |
+          ./gradlew checkMetadataFiles -Pcoordinates="${{ matrix.coordinates }}"
+
+      - name: "Run layered tests"
+        env:
+          LAYER_NAME: ${{ matrix.lane.name }}
+          LAYER_TASK: ${{ matrix.lane.task }}
+          FAILURE_REPORT_NAME: ${{ matrix.lane.failureReport }}
+          EXCLUDED_COORDINATES_FILE: ${{ matrix.lane.exclusions }}
+          DELETE_DEDICATED_LAYER: ${{ matrix.lane.deleteDedicatedLayer }}
+          GVM_TCK_DEDICATED_LAYER_ROOT: ${{ runner.temp }}/native-image-dedicated-layers
+        run: |
+          failure_report="${RUNNER_TEMP}/${FAILURE_REPORT_NAME}"
+          set +e
+          ./gradlew "${LAYER_TASK}" \
+            -Pcoordinates="${{ matrix.coordinates }}" \
+            -Ptck.excludedCoordinatesFile="${EXCLUDED_COORDINATES_FILE}" \
+            -Ptck.layered.continueOnCoordinateFailure=true \
+            -Ptck.layered.coordinateFailureReport="${failure_report}" \
+            -Ptck.layered.deleteDedicatedLayerAfterTest="${DELETE_DEDICATED_LAYER}" \
+            --stacktrace
+          result=$?
+          set -e
+
+          if [[ -s "${failure_report}" ]]; then
+            failure_count="$(wc -l < "${failure_report}" | tr -d ' ')"
+            {
+              echo "### ${LAYER_NAME} layer test failures"
+              echo
+              echo "Failing libraries: ${failure_count}"
+              echo
+              while IFS= read -r coordinates; do
+                echo "- \`${coordinates}\`"
+              done < "${failure_report}"
+            } >> "${GITHUB_STEP_SUMMARY}"
+
+            echo "${LAYER_NAME} layer test failures (${failure_count}):"
+            sed 's/^/ - /' "${failure_report}"
+          fi
+
+          exit "${result}"

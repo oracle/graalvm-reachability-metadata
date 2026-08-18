@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -225,17 +226,60 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
 
         boolean dynamicAccessAvailable = generateReportsForCoordinate(coordinates);
         if (dynamicAccessAvailable) {
+            Path originsOutput = maybeCollectAgentOrigins(coordinates, libraryJars);
             return LibraryStatsSupport.buildVersionStats(
                     coordinates,
                     libraryJars,
                     getDynamicAccessDir(coordinates),
-                    getJacocoReport(coordinates)
+                    getJacocoReport(coordinates),
+                    LibraryStatsSupport.parseAgentOrigins(originsOutput, getDynamicAccessDir(coordinates))
             );
         }
         return LibraryStatsSupport.buildVersionStatsWithoutDynamicAccess(
                 coordinates,
                 getJacocoReport(coordinates)
         );
+    }
+
+    /// §TCK-test-harness.8: agent-origin fallback for coordinates whose dynamic-access frames carry
+    /// no line numbers. Returns null (today's behaviour) unless line-based matching is impossible;
+    /// otherwise runs the JVM-only `javaTest` lane under `native-image-agent` and returns its
+    /// configuration-origin directory. `javaTest` avoids re-running and clobbering the native
+    /// dynamic-access reports. Failed or missing origins degrade gracefully to today's behaviour.
+    protected Path maybeCollectAgentOrigins(String coordinates, List<Path> libraryJars) {
+        if (!LibraryStatsSupport.lineMatchingImpossible(getDynamicAccessDir(coordinates), libraryJars)) {
+            return null;
+        }
+        Path originsOutput = tckExtension.getTestDir(coordinates)
+                .resolve("build")
+                .resolve("reports")
+                .resolve("dynamic-access")
+                .resolve("agent-origins");
+        Path originsFile = originsOutput.resolve("reachability-metadata-origins.txt");
+        getLogger().lifecycle(
+                "Dynamic-access frames for {} carry no line numbers; collecting native-image-agent origins.",
+                coordinates
+        );
+        try {
+            Files.createDirectories(originsOutput);
+            Files.deleteIfExists(originsFile);
+        } catch (IOException e) {
+            getLogger().warn("Could not prepare agent-origin output for {}: {}", coordinates, e.getMessage());
+            return null;
+        }
+        CommandResult origins = runGradle(
+                List.of("javaTest", "-Pcoordinates=" + coordinates, "-PdynamicAccessOriginsOutput=" + originsOutput),
+                true
+        );
+        if (origins.exitCode() != 0 || !Files.isRegularFile(originsFile)) {
+            getLogger().warn(
+                    "Agent-origin collection for {} failed (exit code {}); falling back to line-based coverage only.",
+                    coordinates,
+                    origins.exitCode()
+            );
+            return null;
+        }
+        return originsOutput;
     }
 
     protected void validateCommittedStatsFiles() {

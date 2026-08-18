@@ -35,8 +35,9 @@ branch namespace, stale remote-branch deletion, workflow-specific staging,
 fork-aware base fetch and rebase, local CI-equivalent verification
 (§FS-local-ci-equivalent-verification), and the final push. Publishers
 contribute only their workflow-specific parts — the staging policy
-(§GIT-expected-paths), optional pre-rebase and post-verification assertions,
-and the PR title/body/label construction (§GIT-pr-body, §GIT-issue-linking) —
+(§GIT-expected-paths), optional pre-rebase, pre-verification, and
+post-verification assertions, and the PR title/body/label construction
+(§GIT-pr-body, §GIT-issue-linking) —
 so there is exactly one code path for how a verified diff becomes a pushed
 branch. Publication bookkeeping needed by several publishers (PR-number
 parsing and the old-vs-new test diff embedded in PR bodies) lives in the same
@@ -74,6 +75,12 @@ parameters its workflow's metrics actually produce. The subsections below state
 that per-publisher subset; publishers whose workflows share a body shape are
 grouped together.
 
+PR bodies must remain publishable through GitHub. The shared publication helper
+therefore bounds optional generated detail below GitHub's body limit while
+preserving the issue link, summary, metrics, intervention record, and local CI
+evidence. Version-to-version test comparisons include a diff stat and a bounded
+excerpt; reviewers use the PR's **Files changed** tab for the complete diff.
+
 ### New library support and coverage improvement
 
 Publishers: `make_pr_new_library_support.py` (`library-new-request`) and
@@ -94,11 +101,33 @@ single-PR run and `Refs:` for non-final chunked dynamic-access chunks
 
 Publishers: `make_pr_javac_fix.py` (`fixes-javac-fail`) and
 `make_pr_java_run_fix.py` (`fixes-java-run-fail`). They share one body shape:
-the agent generation metrics above, a stats comparison for the bumped version,
-and a unified diff between the previous version's and the new version's test
-sources so reviewers can see exactly what the fix changed. The two differ only
-in workflow identity (compilation vs. runtime wording), the metrics file, and
-the PR label (§WF-java-fail-fix-workflow).
+the agent generation metrics, a stats comparison for the bumped version, and a
+bounded test-source comparison so reviewers can see what the fix changed without
+preventing PR creation. The two differ only in workflow identity (compilation
+vs. runtime wording), the metrics file, and the PR label
+(§WF-java-fail-fix-workflow).
+
+When post-repair dynamic-access exploration is skipped because the report
+exceeds the configured class threshold, the body reports only what that run
+actually did: the strategy, agent, model, token, and iteration summary, then a
+deferred-exploration section, Forge revision details, and the test-source
+comparison. Metadata-entry counts, coverage percentages, and the stats
+comparison are omitted, because they would describe coverage work the run never
+attempted and invite reading a deliberate deferral as a regression. Runs that do
+explore keep the full body unchanged.
+
+The deferred-exploration section shows the uncovered class count and configured
+threshold, then links the new fixed-version `library-update-request`. The body
+retains `Fixes: #<repair-issue>`, adds `Refs: #<coverage-issue>`, and includes
+`Forge-Unblocks-Issue: #<coverage-issue>` so orchestration releases the parked
+coverage issue only after the repair PR merges (§WF-java-fail-fix-workflow).
+The generated follow-up issue keeps the coordinate in its title and uses one
+brief sentence stating that it was opened while resolving the repair issue
+because the dynamic-access class count exceeded the threshold.
+
+Neither publisher blocks on a dynamic-access category regression between the
+previous and repaired version; coverage trade-offs are settled in review
+(§WF-java-fail-fix-workflow).
 
 ### Native-image run-fix
 
@@ -135,6 +164,12 @@ references, review text, metrics summaries, and human-intervention visibility.
 It must apply the PR label that corresponds to the successful workflow result,
 not the issue queue label when those differ. A single-PR workflow links the PR
 to its claimed issue with `Fixes: #<issue>`, so merging the PR closes the issue.
+When a library-update publication splits tested versions according to
+§FS-library-update-tested-version-split, the PR body must also include a
+human-visible `Refs: #<follow-up-issue>` line and a machine-readable
+`Forge-Unblocks-Issue: #<follow-up-issue>` trailer. Forge automation must use
+the trailer, not casual issue references, to release the follow-up issue after
+the PR merges.
 
 ## GIT-chunked-linking: Chunked dynamic-access PR linking
 

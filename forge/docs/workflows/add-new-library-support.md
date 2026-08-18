@@ -22,8 +22,9 @@ Generation is the dynamic-access workflow; this spec does not restate it. The
 driver instantiates a dynamic-access strategy to exercise the coordinate's
 dynamic-access call sites and produce the reachability metadata
 (§WF-dynamic-access-workflow). The driver's default strategy is
-`dynamic_access_main_sources_pi_gpt-5.5`, matching the work-queue default in
-the control plane; `--strategy-name` selects another predefined bundle. Oversized issues run in chunked mode and resume
+`dynamic_access_main_sources_pi_gpt-5.6-terra`, matching the work-queue
+default in the control plane; `--strategy-name` selects another predefined
+bundle. Oversized issues run in chunked mode and resume
 across chunk PRs (§WF-dynamic-access-exhaust-report). After the coverage phase,
 native-image behavior is validated through native metadata tracing
 (§WF-native-metadata-tracing), gated by the native test verification gate
@@ -35,7 +36,7 @@ native-image behavior is validated through native metadata tracing
 the agent to write tests, runs `./gradlew test`, and repairs failures, with no
 dynamic-access report to guide class selection. Its retry budget comes from the
 basic iterative strategy bundles (§STRAT-predefined-strategy-parameter-families),
-and `basic_iterative_pi_gpt-5.5` is the bundle the dynamic-access workflow
+and `basic_iterative_pi_gpt-5.6-sol` is the bundle the dynamic-access workflow
 falls back to.
 
 It is not a separate issue queue. It is the narrow fallback the dynamic-access

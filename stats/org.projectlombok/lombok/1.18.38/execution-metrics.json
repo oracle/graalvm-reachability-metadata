@@ -1,0 +1,98 @@
+{
+  "add_new_library_support:2026-07-08": {
+    "timestamp": "2026-07-08T21:20:15.662992Z",
+    "library": "org.projectlombok:lombok:1.18.38",
+    "starting_commit": "91548721a516581d0355bcbe659d2e437abbd611",
+    "ending_commit": "ce1cf5ff28a1652c1d03940ac4228159c52559af",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "1.18.38",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.333333,
+            "coveredCalls": 6,
+            "totalCalls": 18
+          },
+          "resources": {
+            "coverageRatio": 0.333333,
+            "coveredCalls": 2,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 0.333333,
+        "coveredCalls": 8,
+        "totalCalls": 24
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 701,
+          "missed": 7075,
+          "ratio": 0.090149,
+          "total": 7776
+        },
+        "line": {
+          "covered": 126,
+          "missed": 1207,
+          "ratio": 0.094524,
+          "total": 1333
+        },
+        "method": {
+          "covered": 21,
+          "missed": 293,
+          "ratio": 0.066879,
+          "total": 314
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 7771,
+      "issue_label": "library-new-request",
+      "library": "org.projectlombok:lombok:1.18.38",
+      "summary": "Lombok is a self-contained annotation processor with no external Maven dependencies or Docker needs, but meaningful native coverage usually requires javac/ServiceLoader setup beyond the default scaffold.",
+      "deterministic_setup": [],
+      "agent_guidance": "Exercise Lombok via ServiceLoader and/or javax.tools.JavaCompiler. Native tests may need runtime system properties java.home=${JAVA_HOME} and java.class.path set to the test runtime classpath. JavaCompiler-based native coverage may also need native-image build args -H:+AllowJRTFileSystem and -H:IncludeResourceBundles=com.sun.tools.javac.resources.compiler,com.sun.tools.javac.resources.javac. If only verifying processor bootstrap, tests can temporarily set lombok.disable=true around javac invocation.",
+      "risks": [
+        "If generated tests rely on Lombok annotations in test source compilation, Gradle normally requires Lombok on the test annotation processor path, not just testImplementation.",
+        "Javac-based tests are sensitive to JAVA_HOME and native-image access to JDK resources."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#7771 Support for org.projectlombok:lombok:1.18.38; label=library-new-request; body_chars=52"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.5",
+      "input_tokens_used": 23631,
+      "output_tokens_used": 2151,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.projectlombok:lombok:1.18.38/library-preparation-preflight/pi-generation-2026-07-08T20-01-50-327040Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 229986,
+      "cached_input_tokens_used": 3430400,
+      "output_tokens_used": 37888,
+      "iterations": 7,
+      "cost_usd": 4.0017,
+      "generated_loc": 35,
+      "tested_library_loc": 126,
+      "metadata_entries": 9,
+      "test_only_metadata_entries": 6,
+      "code_coverage_percent": 9.45
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.projectlombok/lombok/1.18.38/reachability-metadata.json"
+    }
+  }
+}

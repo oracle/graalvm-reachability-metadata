@@ -64,5 +64,102 @@
       "test_file": "tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/src/test/java/tomcat/TomcatTests.java",
       "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/reachability-metadata.json"
     }
+  },
+  "improve_library_coverage:2026-06-22": {
+    "timestamp": "2026-06-22T22:18:01.900250Z",
+    "library": "org.apache.tomcat.embed:tomcat-embed-core:11.0.18",
+    "starting_commit": "ff02b80648c605f2de2a04206fe73e4365729f77",
+    "ending_commit": "b03ad2d18fbce4a24b70ac1b76547cdebcb051d6",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "11.0.18",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.57289,
+            "coveredCalls": 224,
+            "totalCalls": 391
+          },
+          "resources": {
+            "coverageRatio": 0.634146,
+            "coveredCalls": 26,
+            "totalCalls": 41
+          }
+        },
+        "coverageRatio": 0.578704,
+        "coveredCalls": 250,
+        "totalCalls": 432
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 63988,
+          "missed": 281534,
+          "ratio": 0.185192,
+          "total": 345522
+        },
+        "line": {
+          "covered": 15641,
+          "missed": 65657,
+          "ratio": 0.192391,
+          "total": 81298
+        },
+        "method": {
+          "covered": 2937,
+          "missed": 9836,
+          "ratio": 0.229938,
+          "total": 12773
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "action": "no_action",
+      "agent_guidance": "",
+      "applied_setup": [],
+      "deterministic_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8328 Update existing library: org.apache.tomcat.embed:tomcat-embed-core:11.0.18; label=library-update-request; body_chars=2556"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "12 existing test file path(s) included"
+        }
+      ],
+      "input_tokens_used": 54059,
+      "issue_label": "library-update-request",
+      "issue_number": 8328,
+      "library": "org.apache.tomcat.embed:tomcat-embed-core:11.0.18",
+      "model": "oca/gpt-5.5",
+      "output_tokens_used": 3640,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "risks": [
+        "Optional Tomcat areas such as JSP/Jasper, WebSocket, APR/native SSL, clustering, or external persistence would need additional artifacts or native libraries, but they are not needed for the reported Connector.getProperty/setProperty coverage path.",
+        "Tests should avoid fixed ports and external services; use local embedded Tomcat/Connector APIs and clean lifecycle shutdown, with Gradle/native-image verification remaining authoritative."
+      ],
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.apache.tomcat.embed:tomcat-embed-core:11.0.18/library-preparation-preflight/pi-generation-2026-06-22T12-10-29-258589Z.log",
+      "status": "completed",
+      "summary": "No extra setup is required: tomcat-embed-core 11.0.18 resolves with only tomcat-annotations-api as a compile dependency, bundles the servlet/security APIs needed for direct embedded-core usage, and the reported Connector/AbstractProtocol introspection path is reachable with the library itself."
+    },
+    "metrics": {
+      "input_tokens_used": 1140600,
+      "cached_input_tokens_used": 12026368,
+      "output_tokens_used": 125404,
+      "iterations": 21,
+      "cost_usd": 9.7753,
+      "generated_loc": 2258,
+      "tested_library_loc": 15641,
+      "metadata_entries": 1966,
+      "test_only_metadata_entries": 251,
+      "code_coverage_percent": 19.24
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/src/test/java/tomcat/NamingContextListenerTest.java",
+      "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/reachability-metadata.json"
+    }
   }
 }

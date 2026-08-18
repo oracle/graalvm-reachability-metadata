@@ -19,9 +19,9 @@ class MakePrImproveCoverageTests(unittest.TestCase):
         body = build_pull_request_body(
             issue_no=1412,
             coordinates="org.example:demo:1.0.1",
-            model_display_name="gpt-5.5",
+            model_display_name="gpt-5.6-sol",
             agent_name="pi",
-            strategy_name="library_update_pi_gpt-5.5",
+            strategy_name="library_update_pi_gpt-5.6-sol",
             metrics={},
             library_update_target={
                 "requested_coordinate": "org.example:demo:1.0.1",

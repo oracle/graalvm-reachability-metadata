@@ -27,8 +27,31 @@ the repository's scheduled library version compatibility automation, which tests
 newer upstream versions, records the passing ones in a `library-bulk-update` PR,
 and files one labeled tracking issue per failing `(library, version)` pair —
 the contract for that producer is the repository functional spec's
-[Library version update automation](../../docs/functional-spec.md#fs-library-version-update-automation-library-version-update-automation)
+[Library version update automation](../../docs/functional-spec/README.md#fs-library-version-update-automation-library-version-update-automation)
 (root-namespace ID `FS-library-version-update-automation`).
+
+Queue scans drain a pipeline by label-derived urgency tier rather than ranking
+within a fetched batch: the scan pages through every `high-priority` issue
+first, then every `priority` issue, then issues carrying neither label. Each
+tier is a separate GitHub search that excludes the labels of the tiers above it,
+so an issue carrying both priority labels is served once, in the highest tier,
+matching the repository status classification (§root/FS-repository-status-report.1).
+A tier is left only once its search returns no further results, and its own
+result window is therefore capped independently at GitHub's first
+`GITHUB_SEARCH_MAX_RESULTS` matches.
+Tier membership comes only from priority labels already present on GitHub;
+queue scanning and claim checks do not add priority labels automatically.
+
+Operators may restrict a queue run to exactly one tier with
+`--priority high`, `--priority priority`, or `--priority normal`. The `high`
+tier requires `high-priority`; the `priority` tier requires `priority` and
+excludes `high-priority`; the `normal` tier excludes both labels. Without this
+option, Forge drains all three tiers in order.
+
+Tiered draining applies to scans that start at offset `0`. A scan started from a
+random offset without `--priority` keeps paging the flat, unfiltered label query
+so that concurrent runners spread across the queue. With `--priority`, the
+offset—random or explicit—is relative only to the selected tier.
 
 Orchestration must claim exactly one issue per workflow run, dispatch the
 matching workflow driver, and either hand PR-eligible results to publication
@@ -64,6 +87,12 @@ generated test scaffold. Orchestration gives the agent a small starting context
 itself (its resolved artifact, dependencies, usage, and documentation) rather
 than deciding solely from that context. The agent investigates but must not
 modify the repository or apply setup; it returns only the decision.
+
+The preflight uses its own predefined Pi strategy with model `gpt-5.6-sol` and
+medium reasoning, independently of the strategy selected for the dispatched
+workflow. Operators may replace that bundle with
+`FORGE_LIBRARY_PREFLIGHT_STRATEGY_NAME` without changing the generation
+strategy.
 
 The preflight decision exists for library-specific requirements that are hard
 to infer from labels alone, such as optional Maven dependencies, Docker-backed
@@ -153,15 +182,18 @@ skipped until a maintainer marks them `human-intervention-fixed`, at which point
 orchestration may dismiss stale requested-changes reviews and let normal merge
 gates proceed (§FS-automated-pr-review).
 
-**Isolated review run.** Each selected PR is reviewed in a throwaway detached
-worktree created from a freshly fetched base ref, with the PR checked out in
-detached HEAD. Review is performed by Codex (`codex exec`), which is expected to
-apply the label-specific review skill, read the authoritative diff with
-`gh pr diff`, and submit either an approval or a requested-changes review
-directly on GitHub. The review must not write files or re-checkout. The run is
-logged durably (§FS-durable-generation-logs) and the worktree is cleaned up
-afterward; a review timeout or non-zero Codex exit is a review failure, not an
-approval.
+**Isolated review run.** Before selecting review work, orchestration validates
+the parent process's GitHub CLI authentication. Before launching Pi, it runs
+`pi auth check` for the configured provider and review model. Both checks are
+deterministic and do not invoke a model (§FS-automated-pr-review). Each selected
+PR is reviewed in a throwaway detached worktree created from a freshly fetched
+base ref, with the PR checked out in detached HEAD. Review is performed by Pi
+(`pi -p --no-session`), which is expected to apply the label-specific review
+skill, read the authoritative diff with `gh pr diff`, and submit either an
+approval or a requested-changes review directly on GitHub. The review must not
+write files or re-checkout. The run is logged durably
+(§FS-durable-generation-logs) and the worktree is cleaned up afterward; a
+review timeout or non-zero Pi exit is a review failure, not an approval.
 
 **Scheduling and shutdown.** With `--period`, the review loop repeats after each
 interval; without it, it runs once. The loop checks the do-work stop markers

@@ -9,10 +9,11 @@ import subprocess
 import sys
 
 from utility_scripts.task_logs import build_task_log_path, display_log_path
+from utility_scripts.host_requirements import check_graalvm_installation
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.gradle_environment import gradle_command_environment
 
-CODEX_MODEL_NAME = "oca/gpt-5.4"
+CODEX_MODEL_NAME = "gpt-5.6-terra"
 CODEX_TIMEOUT_SECONDS = 1200
 
 
@@ -34,10 +35,11 @@ def run_codex_metadata_fix(
     log_path_display = display_log_path(log_path)
     codex_env = _codex_environment(reachability_metadata_path, graalvm_home, base_env)
     required_graalvm_home = codex_env.get("GRAALVM_HOME")
-    if not required_graalvm_home or not _has_native_image(required_graalvm_home):
+    problems = check_graalvm_installation(required_graalvm_home) if required_graalvm_home else ["GRAALVM_HOME is unset"]
+    if problems:
         print(
             "ERROR: Codex metadata fix requires the exact GraalVM home from the failed run, "
-            "but no GraalVM distribution with bin/native-image could be resolved.",
+            f"but that home cannot run Forge work: {'; '.join(problems)}.",
             file=sys.stderr,
         )
         return (1, log_path, False)
@@ -107,10 +109,6 @@ def _codex_environment(
     return gradle_command_environment(reachability_metadata_path, env)
 
 
-def _has_native_image(graalvm_home: str) -> bool:
-    return os.path.isfile(os.path.join(graalvm_home, "bin", "native-image"))
-
-
 def _native_image_version(graalvm_home: str, env: dict[str, str]) -> str:
     native_image = os.path.join(graalvm_home, "bin", "native-image")
     try:
@@ -138,5 +136,11 @@ def _codex_graalvm_instructions(graalvm_home: str, graalvm_version: str) -> str:
         "unless it resolves to this same distribution.\n"
         "Before verifying, check `native-image --version` and ensure it matches this required version:\n"
         f"{graalvm_version}\n"
-        "If this GraalVM distribution is unavailable, fail instead of reproducing or verifying with another version."
+        "If this GraalVM distribution is unavailable, fail instead of reproducing or verifying with another version.\n\n"
+        "Reachability metadata condition rule: if GraalVM reports that metadata for an access was found "
+        "but is inactive because runtime conditions were not satisfied, treat the existing condition as "
+        "too late for that access. Read the access stack and move or duplicate the matching metadata entry "
+        "under the narrowest library type that is reached before the reflective, resource, proxy, "
+        "serialization, or JNI access occurs. Do not reuse an unsatisfied condition merely because it is "
+        "related to the same library feature."
     )

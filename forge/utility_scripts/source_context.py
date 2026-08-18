@@ -14,10 +14,12 @@ starts.
 
 import json
 import os
+import shlex
 import shutil
 import subprocess
 import sys
 import tarfile
+import time
 import urllib.parse
 import urllib.request
 import zipfile
@@ -57,6 +59,39 @@ TEST_FILE_EXTENSIONS_BY_LANGUAGE = {
     "scala": (".scala",),
 }
 DEFAULT_TEST_FILE_EXTENSIONS = TEST_FILE_EXTENSIONS_BY_LANGUAGE[DEFAULT_TEST_LANGUAGE]
+GRADLE_BOOTSTRAP_RETRY_DELAY_SECONDS = 5
+# A wrapper failure is only ever reported alongside the distribution URL it was
+# fetching, so that URL is the narrowing guard and the markers below only have to
+# separate a failed fetch from a successful one.
+GRADLE_DISTRIBUTION_URL_MARKER = "services.gradle.org/distributions/gradle-"
+GRADLE_WRAPPER_DOWNLOAD_FAILURE_MARKERS = (
+    "org.gradle.wrapper.install",
+    "could not install gradle distribution",
+    "sockettimeoutexception",
+    "unknownhostexception",
+    "read timed out",
+    "connect timed out",
+    "connection timed out",
+    "connection reset",
+    "connection refused",
+)
+
+
+class GradleBootstrapFailure(RuntimeError):
+    """Raised when shared Gradle bootstrap infrastructure prevents discovery.
+
+    A configuration-time Gradle failure is host-wide, not a property of the
+    claimed library, so the control plane releases the claim without
+    `human-intervention` and stops the run
+    (§FS-shared-infrastructure-bootstrap-failure).
+    """
+
+    def __init__(self, coordinate: str, log_path: str):
+        self.coordinate = coordinate
+        self.log_path = log_path
+        super().__init__(
+            f"Gradle bootstrap failed for {coordinate}. See {display_log_path(log_path)} for details."
+        )
 
 
 @dataclass(frozen=True)
@@ -185,39 +220,159 @@ def populate_artifact_urls(reachability_repo_path: str, coordinate: str, agent_c
     log_stage("populate-artifact-urls", f"Artifact URLs populated for {coordinate}")
 
 
+def source_context_urls_available(
+        reachability_repo_path: str,
+        coordinate: str,
+        source_context_types: list[str],
+) -> bool:
+    """Return True when all requested source-context URL fields are already present."""
+    if not source_context_types:
+        return True
+    index_entry = load_index_entry(reachability_repo_path, coordinate)
+    _, _, requested_version = _coordinate_parts(coordinate)
+    for source_type in source_context_types:
+        field_name = SOURCE_CONTEXT_FIELD_BY_TYPE[source_type]
+        url = render_url_template(normalize_url_value(index_entry.get(field_name)), requested_version)
+        if url is None:
+            return False
+    return True
+
+
 def discover_artifact_metadata(
         reachability_repo_path: str,
         coordinate: str,
         agent_command: str = DEFAULT_POPULATE_AGENT_COMMAND,
 ) -> None:
+    """Discover artifact metadata, separating bootstrap outages from library failures.
+
+    This is the first Gradle invocation of a new-library run, so a shared
+    bootstrap outage surfaces here. It is retried once with a dependency refresh
+    and, if still failing, reported as `GradleBootstrapFailure` rather than as
+    this library's failure (§FS-shared-infrastructure-bootstrap-failure).
+    """
     require_complete_reachability_repo(reachability_repo_path)
     log_path = build_task_log_path("discover-artifact-metadata", coordinate, "discover_artifact_metadata.log")
     log_path_display = display_log_path(log_path)
     log_stage("discover-artifact-metadata", f"Discovering artifact metadata for {coordinate}; output: {log_path_display}")
-    command = [
-        "./gradlew",
-        "discoverArtifactMetadata",
-        f"--coordinates={coordinate}",
-        f"--agent-command={agent_command}",
-    ]
-    result = subprocess.run(
-        command,
-        cwd=reachability_repo_path,
-        env=gradle_command_environment(reachability_repo_path),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
-    )
-    with open(log_path, "w", encoding="utf-8") as log_file:
-        log_file.write(result.stdout)
+    command = _discover_artifact_metadata_command(coordinate, agent_command)
+    command_env = gradle_command_environment(reachability_repo_path)
+    result = _run_gradle_discovery_command(command, reachability_repo_path, command_env)
+    attempt_logs = [_format_gradle_attempt_log("initial", command, result)]
+    _write_gradle_attempt_logs(log_path, attempt_logs)
+
+    if result.returncode != 0 and _is_gradle_bootstrap_failure(result.stdout):
+        retry_command = _discover_artifact_metadata_command(coordinate, agent_command, diagnostics=True)
+        log_stage(
+            "discover-artifact-metadata",
+            (
+                f"Gradle bootstrap failed for {coordinate}; retrying once with "
+                "dependency refresh and diagnostic logging"
+            ),
+        )
+        time.sleep(GRADLE_BOOTSTRAP_RETRY_DELAY_SECONDS)
+        result = _run_gradle_discovery_command(retry_command, reachability_repo_path, command_env)
+        attempt_logs.append(_format_gradle_attempt_log("diagnostic-retry", retry_command, result))
+        _write_gradle_attempt_logs(log_path, attempt_logs)
+
     if result.returncode != 0:
+        if _is_gradle_bootstrap_failure(result.stdout):
+            print(
+                f"ERROR: Gradle bootstrap failed for {coordinate}. See {log_path_display} for details.",
+                file=sys.stderr,
+            )
+            raise GradleBootstrapFailure(coordinate, log_path)
         print(
             f"ERROR: discoverArtifactMetadata failed for {coordinate}. See {log_path_display} for details.",
             file=sys.stderr,
         )
         raise SystemExit(1)
     log_stage("discover-artifact-metadata", f"Artifact metadata discovered for {coordinate}")
+
+
+def _discover_artifact_metadata_command(
+        coordinate: str,
+        agent_command: str,
+        diagnostics: bool = False,
+) -> list[str]:
+    command = ["./gradlew", "--no-daemon"]
+    if diagnostics:
+        command.extend(["--stacktrace", "--info", "--refresh-dependencies"])
+    command.extend([
+        "discoverArtifactMetadata",
+        f"--coordinates={coordinate}",
+        f"--agent-command={agent_command}",
+    ])
+    return command
+
+
+def _run_gradle_discovery_command(
+        command: list[str],
+        reachability_repo_path: str,
+        command_env: dict[str, str],
+) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        command,
+        cwd=reachability_repo_path,
+        env=command_env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=False,
+    )
+
+
+def _format_gradle_attempt_log(
+        attempt_name: str,
+        command: list[str],
+        result: subprocess.CompletedProcess[str],
+) -> str:
+    rendered_command = " ".join(shlex.quote(part) for part in command)
+    output = result.stdout or ""
+    if output and not output.endswith("\n"):
+        output += "\n"
+    return (
+        f"[forge] Gradle discovery attempt: {attempt_name}\n"
+        f"[forge] Exit code: {result.returncode}\n"
+        f"$ {rendered_command}\n\n"
+        f"{output}"
+    )
+
+
+def _write_gradle_attempt_logs(log_path: str, attempt_logs: list[str]) -> None:
+    with open(log_path, "w", encoding="utf-8") as log_file:
+        log_file.write("\n\n".join(attempt_logs))
+
+
+def _is_gradle_bootstrap_failure(output: str | None) -> bool:
+    """Return True when Gradle failed before leaving root-build configuration."""
+    return _is_spotless_plugin_bootstrap_failure(output) or _is_gradle_wrapper_download_failure(output)
+
+
+def _is_spotless_plugin_bootstrap_failure(output: str | None) -> bool:
+    if not output:
+        return False
+    normalized = output.lower()
+    return (
+        "com.diffplug.spotless" in normalized
+        and (
+            "could not resolve plugin artifact" in normalized
+            or "plugin [id: 'com.diffplug.spotless'" in normalized
+        )
+        and (
+            "was not found" in normalized
+            or "gradle central plugin repository" in normalized
+            or "plugin repositories" in normalized
+        )
+    )
+
+
+def _is_gradle_wrapper_download_failure(output: str | None) -> bool:
+    if not output:
+        return False
+    normalized = output.lower()
+    if GRADLE_DISTRIBUTION_URL_MARKER not in normalized:
+        return False
+    return any(marker in normalized for marker in GRADLE_WRAPPER_DOWNLOAD_FAILURE_MARKERS)
 
 
 def prepare_source_contexts(

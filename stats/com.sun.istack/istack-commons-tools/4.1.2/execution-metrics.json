@@ -1,0 +1,108 @@
+{
+  "add_new_library_support:2026-06-27": {
+    "timestamp": "2026-06-27T21:02:38.344850Z",
+    "library": "com.sun.istack:istack-commons-tools:4.1.2",
+    "starting_commit": "bb719a13ef2875fcad7afc567e123a417ba33a1a",
+    "ending_commit": "6a2ee4ff71d0b2538313fe748e2f4d376840a65a",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "4.1.2",
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 3,
+        "totalCalls": 3
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 99,
+          "missed": 1019,
+          "ratio": 0.088551,
+          "total": 1118
+        },
+        "line": {
+          "covered": 23,
+          "missed": 259,
+          "ratio": 0.08156,
+          "total": 282
+        },
+        "method": {
+          "covered": 6,
+          "missed": 47,
+          "ratio": 0.113208,
+          "total": 53
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 3272,
+      "issue_label": "library-new-request",
+      "library": "com.sun.istack:istack-commons-tools:4.1.2",
+      "summary": "The artifact is mostly standalone, but one exported public class, com.sun.istack.tools.ProtectedTask, directly extends and uses Apache Ant APIs while org.apache.ant:ant is declared optional in the POM, so normal transitive resolution will not add it and meaningful coverage of that class needs an explicit test dependency.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.apache.ant:ant:1.10.13",
+          "scope": "testImplementation",
+          "reason": "istack-commons-tools 4.1.2 declares org.apache.ant:ant as an optional dependency, but its public ProtectedTask API extends org.apache.tools.ant.Task and implements DynamicConfigurator; tests that subclass or execute ProtectedTask need these Ant classes on the test classpath."
+        }
+      ],
+      "agent_guidance": "No Docker image or external service is indicated. For DefaultAuthenticator coverage, create temporary auth files and set/clear http.proxyUser/http.proxyPassword or proxyUser/proxyPassword inside the test if exercising proxy branches, restoring global Authenticator state with reset/cleanup. For ProtectedTask coverage, use a minimal in-test subclass and dummy task/classloader setup rather than invoking external Ant builds.",
+      "risks": [
+        "ProtectedTask manipulates the thread context ClassLoader and closes Closeable classloaders, so tests should isolate and restore global/thread state carefully.",
+        "DefaultAuthenticator installs a JVM-global default Authenticator; missing cleanup can make tests order-dependent.",
+        "Native Image verification remains authoritative for any dynamic classloading or Authenticator behavior."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.apache.ant:ant:1.10.13",
+          "result": "applied",
+          "target": "tests/src/com.sun.istack/istack-commons-tools/4.1.2/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#3272 Support for com.sun.istack:istack-commons-tools:4.1.2; label=library-new-request; body_chars=110"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 46406,
+      "output_tokens_used": 3120,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/com.sun.istack:istack-commons-tools:4.1.2/library-preparation-preflight/pi-generation-2026-06-27T20-46-30-790869Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 57862,
+      "cached_input_tokens_used": 273408,
+      "output_tokens_used": 9392,
+      "iterations": 1,
+      "cost_usd": 0.4185,
+      "generated_loc": 103,
+      "tested_library_loc": 23,
+      "metadata_entries": 0,
+      "code_coverage_percent": 8.16
+    },
+    "artifacts": {
+      "test_file": "tests/src/com.sun.istack/istack-commons-tools/4.1.2/src/test/java/com_sun_istack/istack_commons_tools/ParallelWorldClassLoaderTest.java",
+      "metadata_file": "metadata/com.sun.istack/istack-commons-tools/4.1.2/reachability-metadata.json"
+    }
+  }
+}

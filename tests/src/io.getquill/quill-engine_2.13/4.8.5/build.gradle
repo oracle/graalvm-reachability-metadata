@@ -10,17 +10,19 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+int testJvmVersion = tck.testJvmVersion.get()
+String scala2Version = tck.scala2Version.get()
 
 dependencies {
     testImplementation "io.getquill:quill-engine_2.13:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
-    testImplementation 'org.scala-lang:scala-library:2.13.16'
-    testImplementation 'org.scala-lang:scala-compiler:2.13.16'
+    testImplementation "org.scala-lang:scala-library:$scala2Version"
+    testImplementation "org.scala-lang:scala-compiler:$scala2Version"
 }
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(testJvmVersion)
     }
 }
 

@@ -6,12 +6,23 @@
 from dataclasses import dataclass
 import os
 import re
-import subprocess
 
 
 SCAFFOLD_PLACEHOLDER_TEXT = "This is just a placeholder, implement your test"
 TEST_SOURCE_EXTENSIONS = (".java", ".kt", ".scala", ".groovy")
-TEST_ANNOTATION_PATTERN = re.compile(r"(?m)^\s*@Test\b")
+TEST_ANNOTATION_PATTERN = re.compile(r"(?m)^\s*@(?:org\.junit\.jupiter\.api\.)?Test\b")
+SCAFFOLD_TEST_ANNOTATION_PATTERN = re.compile(r"^\s*@(?:org\.junit\.jupiter\.api\.)?Test\b")
+SCAFFOLD_TEST_DECLARATION_PATTERN = re.compile(
+    r"^\s*(?:public\s+|protected\s+|private\s+)?void\s+test\s*\(\s*\)"
+    r"(?:\s+throws\s+[\w.]+(?:\s*,\s*[\w.]+)*)?\s*\{"
+    r"|^\s*fun\s+test\s*\(\s*\)\s*\{"
+    r"|^\s*def\s+test\s*\(\s*\)\s*:\s*Unit\s*=\s*\{"
+)
+SCAFFOLD_PRINT_STATEMENT_PATTERN = re.compile(
+    r"^\s*System\.out\.println\(\"" + re.escape(SCAFFOLD_PLACEHOLDER_TEXT) + r"\"\);?\s*$"
+    r"|^\s*println\(\"" + re.escape(SCAFFOLD_PLACEHOLDER_TEXT) + r"\"\)\s*$"
+    r"|^\s*println\s+\"" + re.escape(SCAFFOLD_PLACEHOLDER_TEXT) + r"\"\s*$"
+)
 TEST_BLOCK_ANNOTATION_PATTERN = re.compile(
     r"(?m)^\s*@(?:Test|ParameterizedTest|RepeatedTest|TestFactory|TestTemplate)\b"
 )
@@ -73,17 +84,17 @@ def cleanup_scaffold_placeholder_tests(
         repo_path: str,
         scaffold_commit_hash: str,
 ) -> ScaffoldPlaceholderCleanupResult:
-    """Remove scaffold placeholder test files that do not contain additional tests."""
+    """Remove scaffold placeholder test files or blocks and report any placeholders left."""
     if not os.path.isdir(test_source_root):
         return ScaffoldPlaceholderCleanupResult([], [])
 
-    scaffold_test_files = _find_scaffold_test_files(test_source_root, repo_path, scaffold_commit_hash)
-    placeholder_files = [
-        file_path for file_path in scaffold_test_files
-        if _file_contains_placeholder(file_path)
-    ]
+    del repo_path, scaffold_commit_hash
+
+    placeholder_occurrences = find_scaffold_placeholder_occurrences(test_source_root)
     scaffold_files = [
-        file_path for file_path in placeholder_files
+        file_path for file_path in sorted({
+            occurrence.file_path for occurrence in placeholder_occurrences
+        })
         if _contains_only_scaffold_placeholder_test(file_path)
     ]
 
@@ -93,6 +104,12 @@ def cleanup_scaffold_placeholder_tests(
         removed_files.append(file_path)
 
     removed_file_set = set(removed_files)
+    for file_path in sorted({
+        occurrence.file_path for occurrence in placeholder_occurrences
+        if occurrence.file_path not in removed_file_set
+    }):
+        _remove_scaffold_placeholder_test_blocks(file_path)
+
     remaining_placeholders = [
         occurrence for occurrence in find_scaffold_placeholder_occurrences(test_source_root)
         if occurrence.file_path not in removed_file_set
@@ -109,7 +126,7 @@ def format_placeholder_occurrence(occurrence: PlaceholderOccurrence, repo_path: 
 
 
 def find_scaffold_placeholder_occurrences(test_source_root: str) -> list[PlaceholderOccurrence]:
-    """Return all scaffold placeholder text occurrences in generated test sources."""
+    """Return all scaffold-shaped placeholder test occurrences in generated test sources."""
     if not os.path.isdir(test_source_root):
         return []
 
@@ -147,53 +164,17 @@ def format_generated_test_validity_issue(
     return f"{display_path}:{issue.line_number}: {issue.reason}: {issue.evidence}"
 
 
-def _find_scaffold_test_files(test_source_root: str, repo_path: str, scaffold_commit_hash: str) -> list[str]:
-    relative_source_root = os.path.relpath(test_source_root, repo_path)
-    result = subprocess.run(
-        [
-            "git",
-            "diff-tree",
-            "--root",
-            "--no-commit-id",
-            "--name-only",
-            "--diff-filter=A",
-            "-r",
-            scaffold_commit_hash,
-            "--",
-            relative_source_root,
-        ],
-        cwd=repo_path,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,
-        text=True,
-        check=False,
-    )
-    if result.returncode != 0:
-        return []
-    return [
-        os.path.join(repo_path, relative_path)
-        for relative_path in result.stdout.splitlines()
-        if relative_path.endswith(TEST_SOURCE_EXTENSIONS)
-    ]
-
-
-def _file_contains_placeholder(file_path: str) -> bool:
-    try:
-        with open(file_path, "r", encoding="utf-8") as source_file:
-            return SCAFFOLD_PLACEHOLDER_TEXT in source_file.read()
-    except OSError:
-        return False
-
-
 def _placeholder_occurrences(file_path: str) -> list[PlaceholderOccurrence]:
     occurrences: list[PlaceholderOccurrence] = []
     try:
         with open(file_path, "r", encoding="utf-8") as source_file:
-            for line_number, line in enumerate(source_file, start=1):
-                if SCAFFOLD_PLACEHOLDER_TEXT in line:
-                    occurrences.append(PlaceholderOccurrence(file_path, line_number))
+            lines = source_file.readlines()
     except OSError:
         return []
+    for start_index, end_index in _scaffold_placeholder_test_block_ranges(lines):
+        for line_number, line in enumerate(lines[start_index:end_index], start=start_index + 1):
+            if SCAFFOLD_PLACEHOLDER_TEXT in line:
+                occurrences.append(PlaceholderOccurrence(file_path, line_number))
     return occurrences
 
 
@@ -203,10 +184,78 @@ def _contains_only_scaffold_placeholder_test(file_path: str) -> bool:
             source = source_file.read()
     except OSError:
         return False
+    lines = source.splitlines(keepends=True)
     return (
-        SCAFFOLD_PLACEHOLDER_TEXT in source
+        len(_scaffold_placeholder_test_block_ranges(lines)) == 1
         and len(TEST_ANNOTATION_PATTERN.findall(source)) == 1
     )
+
+
+def _remove_scaffold_placeholder_test_blocks(file_path: str) -> None:
+    try:
+        with open(file_path, "r", encoding="utf-8") as source_file:
+            lines = source_file.readlines()
+    except OSError:
+        return
+
+    ranges = _scaffold_placeholder_test_block_ranges(lines)
+    if not ranges:
+        return
+
+    cleaned_lines: list[str] = []
+    cursor = 0
+    for start_index, end_index in ranges:
+        cleaned_lines.extend(lines[cursor:start_index])
+        cursor = end_index
+    cleaned_lines.extend(lines[cursor:])
+
+    try:
+        with open(file_path, "w", encoding="utf-8") as output_file:
+            output_file.writelines(cleaned_lines)
+    except OSError:
+        return
+
+
+def _scaffold_placeholder_test_block_ranges(lines: list[str]) -> list[tuple[int, int]]:
+    ranges: list[tuple[int, int]] = []
+    for annotation_index, line in enumerate(lines):
+        if SCAFFOLD_TEST_ANNOTATION_PATTERN.search(line) is None:
+            continue
+        end_index = _braced_test_block_end_index(lines, annotation_index)
+        if end_index is None:
+            continue
+        if _is_scaffold_placeholder_test_block(lines[annotation_index:end_index]):
+            ranges.append((annotation_index, end_index))
+    return ranges
+
+
+def _is_scaffold_placeholder_test_block(block_lines: list[str]) -> bool:
+    significant_lines = [
+        line.strip() for line in block_lines
+        if line.strip()
+    ]
+    return (
+        len(significant_lines) == 4
+        and SCAFFOLD_TEST_ANNOTATION_PATTERN.search(significant_lines[0]) is not None
+        and SCAFFOLD_TEST_DECLARATION_PATTERN.search(significant_lines[1]) is not None
+        and SCAFFOLD_PRINT_STATEMENT_PATTERN.search(significant_lines[2]) is not None
+        and significant_lines[3] == "}"
+    )
+
+
+def _braced_test_block_end_index(lines: list[str], annotation_index: int) -> int | None:
+    depth = 0
+    opened = False
+    for index in range(annotation_index, len(lines)):
+        for character in lines[index]:
+            if character == "{":
+                depth += 1
+                opened = True
+            elif character == "}" and opened:
+                depth -= 1
+                if depth == 0:
+                    return index + 1
+    return None
 
 
 def _collect_file_generated_test_validity_issues(file_path: str) -> list[GeneratedTestValidityIssue]:

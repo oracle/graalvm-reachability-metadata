@@ -25,6 +25,12 @@ from ai_workflows.core.workflow_strategy import (
 )
 from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated
 from utility_scripts import metrics_writer
+from utility_scripts.continuation_marker import (
+    PHASE_FINALIZATION,
+    PHASE_SETUP,
+    load_continuation_marker,
+    save_phase_update,
+)
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_preparation_preflight import (
     prepare_library_preparation_preflight,
@@ -47,13 +53,13 @@ from utility_scripts.workflow_setup import (
 )
 from utility_scripts.worktree_reset import reset_worktree_to_commit
 
-DEFAULT_MODEL_NAME = "oca/gpt5"
+DEFAULT_MODEL_NAME = "gpt5"
 ADD_LIBRARY_METADATA_INDEX_TASK = "addLibraryMetadataIndexJson"
 ADD_LIBRARY_AS_LATEST_METADATA_INDEX_TASK = "addLibraryAsLatestMetadataIndexJson"
 
 # Default strategy names per mode
-DEFAULT_JAVAC_STRATEGY = "javac_iterative_with_coverage_sources_pi_gpt-5.5"
-DEFAULT_JAVA_RUN_STRATEGY = "java_run_iterative_with_coverage_sources_pi_gpt-5.5"
+DEFAULT_JAVAC_STRATEGY = "javac_iterative_with_coverage_sources_pi_gpt-5.6-terra"
+DEFAULT_JAVA_RUN_STRATEGY = "java_run_iterative_with_coverage_sources_pi_gpt-5.6-terra"
 
 
 class JavaFailWorkflowConfig:
@@ -142,6 +148,20 @@ def build_parser(config: JavaFailWorkflowConfig):
         "--library-preparation-preflight-path",
         help="Path to the dispatcher-created library preparation preflight JSON record.",
     )
+    parser.add_argument(
+        "--continuation-marker-path",
+        help="Path to the Forge run-continuation marker for this issue run.",
+    )
+    parser.add_argument(
+        "--dynamic-access-class-threshold",
+        type=int,
+        default=0,
+        help=(
+            "Skip post-repair dynamic-access exploration when the uncovered class count "
+            "exceeds this value. "
+            "A value of 0 disables the check."
+        ),
+    )
     parser.add_argument("-v", "--verbose", action="store_true", help="enable verbose mode for the configured agent")
     return parser
 
@@ -170,6 +190,8 @@ def parse_flags(config: JavaFailWorkflowConfig, argv_list):
         flags.reachability_metadata_path,
         flags.metrics_repo_path,
         flags.library_preparation_preflight_path,
+        flags.continuation_marker_path,
+        flags.dynamic_access_class_threshold,
     )
 
 
@@ -401,6 +423,7 @@ def init_agent(
         verbose=verbose,
         mcps=strategy.get("mcps", []),
         persistent_instructions=persistent_instructions,
+        thinking_level=strategy.get("thinking-level"),
     )
 
 
@@ -432,9 +455,15 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         explicit_repo_path,
         explicit_metrics_repo_path,
         library_preparation_preflight_path,
+        continuation_marker_path,
+        dynamic_access_class_threshold,
     ) = parse_flags(config, argv if argv is not None else sys.argv[1:])
 
     strategy = require_strategy_by_name(strategy_name)
+    continuation_marker = load_continuation_marker(continuation_marker_path)
+    resume_from = None if continuation_marker is None else continuation_marker.continue_from
+    resume_existing_tree = resume_from in {"fix", "explore", PHASE_FINALIZATION, "publication"}
+    resume_finalization = resume_from == PHASE_FINALIZATION
     reachability_repo_path, metrics_repo_dir, metrics_repo_root = resolve_workflow_repo_paths(
         explicit_repo_path,
         explicit_metrics_repo_path,
@@ -447,6 +476,14 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
             reachability_repo_path,
         )
     )
+    if not resume_existing_tree:
+        save_phase_update(
+            continuation_marker_path,
+            lambda marker: (
+                marker.mark_phase_running(PHASE_SETUP),
+                marker.mark_setup_preflight_done(),
+            ),
+        )
     ensure_gh_authenticated()
     resolve_graalvm_java_home()
     validate_repo_paths(reachability_repo_path, metrics_repo_dir)
@@ -470,12 +507,21 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
     tests_dir_preexisted = os.path.exists(tests_dir)
     metadata_dir_preexisted = os.path.exists(metadata_dir)
 
-    copy_and_prepare_project_dir(group, artifact, old_library_version, updated_library_version)
-    update_metadata_index_json(config, group, artifact, updated_library_version)
-    create_versioned_metadata_dir(reachability_repo_path, group, artifact, updated_library_version)
-    commit_checkpoint = create_project_prep_checkpoint(config, group, artifact, updated_library_version)
+    if not resume_existing_tree:
+        copy_and_prepare_project_dir(group, artifact, old_library_version, updated_library_version)
+        update_metadata_index_json(config, group, artifact, updated_library_version)
+        create_versioned_metadata_dir(reachability_repo_path, group, artifact, updated_library_version)
+        commit_checkpoint = create_project_prep_checkpoint(config, group, artifact, updated_library_version)
+        save_phase_update(
+            continuation_marker_path,
+            lambda marker: marker.mark_setup_done(),
+        )
+    else:
+        log_stage("continuation", f"Resuming {group}:{artifact}:{updated_library_version} from phase {resume_from}")
+        commit_checkpoint = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     updated_library = f"{group}:{artifact}:{updated_library_version}"
-    populate_artifact_urls(reachability_repo_path, updated_library)
+    if not resume_existing_tree:
+        populate_artifact_urls(reachability_repo_path, updated_library)
 
     source_context_types = normalize_source_context_types(strategy.get("parameters", {}).get("source-context-types"))
     prepared_source_context = prepare_source_contexts(
@@ -515,6 +561,8 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         test_language_display_name=test_source_layout.display_language,
         test_source_dir_name=test_source_layout.source_dir_name,
         library_preparation_preflight_context=library_preparation_preflight_context,
+        continuation_marker_path=continuation_marker_path,
+        dynamic_access_class_threshold=dynamic_access_class_threshold,
     )
 
     model_name = strategy.get("model") or DEFAULT_MODEL_NAME
@@ -532,9 +580,13 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         persistent_instructions=strategy_obj.persistent_instructions,
     )
 
-    workflow_status, iterations = strategy_obj.run(
-        agent=agent,
-    )
+    if resume_finalization:
+        workflow_status = RUN_STATUS_SUCCESS
+        iterations = 0
+    else:
+        workflow_status, iterations = strategy_obj.run(
+            agent=agent,
+        )
 
     last_passing_candidate_commit = None
     if workflow_status == RUN_STATUS_SUCCESS:
@@ -587,7 +639,6 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
             agent=agent,
             model_name=model_name,
             global_iterations=iterations,
-            tests_root=test_source_layout.source_root,
             strategy_name=strategy_name,
             status=workflow_status,
             starting_commit=commit_checkpoint,

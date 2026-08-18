@@ -1,11 +1,14 @@
-### Task scanner: Scan and track human-intervention {{source}}
+### Task scanner: Scan and group human-intervention {{source}}
 **State:** sleep
 
-One recurring task that scans, groups, then opens tracking issues in sequence.
-On each pass it backs off, scans the open `{{source}}` in `{{repo}}` labeled
-`human-intervention` (skipping items already handled, recorded in
-`runtime/scan/seen.txt`), and writes a report at `runtime/scan/groups.md`
-explaining the system issue behind each group. The opener step runs only after
-the scan finishes: it reads that one report and opens a GitHub tracking issue
-per group, reusing any similar issue that is already open instead of creating a
-duplicate. It never mutates the source `{{source}}` items.
+One recurring task that scans open `{{source}}` in `{{repo}}` labeled
+`human-intervention`, skipping items already recorded in
+`runtime/scan/seen.txt`. On each scan pass it groups common causes, writes an
+aggregate report at `runtime/scan/groups.md`, writes one strict group file per
+kept group under `runtime/scan/groups/`, and generates one investigation task
+per group with at least `{{min_group_size}}` contributing items.
+
+The scanner does not open GitHub issues. Generated group tasks search the
+current codebase for a still-current system problem and cancel themselves when a
+group is stale, already fixed, one-off, library-specific, or unsupported by
+current repository evidence.

@@ -4,8 +4,9 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 import unittest
+from unittest.mock import Mock, patch
 
-from ai_workflows.drivers.add_new_library_support import _should_create_failure_run_metrics
+from ai_workflows.drivers.add_new_library_support import _should_create_failure_run_metrics, init_agent
 from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_CHUNK_READY,
     RUN_STATUS_FAILURE,
@@ -15,6 +16,19 @@ from ai_workflows.core.workflow_strategy import (
 
 
 class AddNewLibrarySupportTests(unittest.TestCase):
+    def test_init_agent_forwards_strategy_thinking_level(self) -> None:
+        agent_class = Mock(return_value=object())
+        strategy = {
+            "agent": "pi",
+            "model": "gpt-5.6-sol",
+            "thinking-level": "medium",
+        }
+
+        with patch("ai_workflows.drivers.add_new_library_support.Agent.get_class", return_value=agent_class):
+            init_agent(strategy, "/tmp/worktree", [], [], model_name="gpt-5.6-sol")
+
+        self.assertEqual(agent_class.call_args.kwargs["thinking_level"], "medium")
+
     def test_failure_after_generated_tests_uses_failure_metrics(self) -> None:
         self.assertTrue(_should_create_failure_run_metrics(RUN_STATUS_FAILURE, 1, False))
 

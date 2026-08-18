@@ -77,7 +77,8 @@ python3 ai_workflows/drivers/fix_javac_fail.py \
 ```
 
 Options:
-- `--strategy-name NAME` select a predefined workflow strategy from `strategies/predefined_strategies.json`. Defaults to `javac_iterative_with_coverage_sources_pi_gpt-5.5`.
+- `--strategy-name NAME` select a predefined workflow strategy from `strategies/predefined_strategies.json`. Defaults to `javac_iterative_with_coverage_sources_pi_gpt-5.6-terra`.
+- `--dynamic-access-class-threshold N` skips oversized post-repair exploration; publication opens a fixed-version `library-update-request`, whose normal workflow owns chunking. `0` disables the check for direct CLI use. Issue-driven Forge runs supply `FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD` automatically.
 - `-v`, `--verbose` enable verbose agent output.
 
 Notes:
@@ -122,7 +123,7 @@ python3 ai_workflows/drivers/add_new_library_support.py \
 ```
 
 Options:
-- `--strategy-name NAME` select a predefined workflow strategy from `strategies/predefined_strategies.json`. Defaults to `dynamic_access_main_sources_pi_gpt-5.5` (Pi agent).
+- `--strategy-name NAME` select a predefined workflow strategy from `strategies/predefined_strategies.json`. Defaults to `dynamic_access_main_sources_pi_gpt-5.6-terra` (Pi agent).
 - `--keep-tests-without-dynamic-access` keeps generated tests for dynamic-access workflows even if no dynamic-access call sites are covered.
 - `-v`, `--verbose` enable verbose agent output.
 
@@ -268,7 +269,7 @@ These are invoked automatically by workflow drivers, but can be run standalone f
 
 ### Agent session logs
 
-Agents are registered via `Agent.register(...)` and selected per-strategy through the `agent` field in `strategies/predefined_strategies.json`; see [docs/agent.md](docs/agent.md) for the agent API and Pi adapter architecture. Supported agents:
+Agents are registered via `Agent.register(...)` and selected per-strategy through the `agent` field in `strategies/predefined_strategies.json`; see [docs/architecture/agent.md](docs/architecture/agent.md) for the agent API and Pi adapter architecture. Supported agents:
 
 - `pi` — default for the shipped strategies. Driven through `pi --mode rpc` by `PiAgent` (`ai_workflows/agents/pi_agent.py`). Per-turn transcripts are written to `logs/pi-<action>-<library>-<timestamp>.log` in this repository (see `utility_scripts/pi_logs.py`). Pi session files are stored under Pi's default session directory (`--session-dir` may override it via `PiRpcClient`). Select with strategy entries whose `agent` is `"pi"`; set `"provider": "openrouter"` to route through OpenRouter.
 - `codex` — driven through `codex` by `CodexAgent`. Codex threads act as durable session identities.
@@ -294,7 +295,6 @@ that persistent layer was configured without printing the instruction text.
       library_version="1.2.3",
       agent=None,  # Agent implementation exposing token counters
       global_iterations=3,
-      tests_root="/abs/path/to/tests/root",
       strategy_name="basic_iterative",
       status="success",
   )
@@ -358,7 +358,7 @@ If you want to run an existing workflow with a different model or tuned paramete
   "description": "Iterative strategy with higher iteration limits",
   "agent": "pi",
   "workflow": "basic_iterative",
-  "model": "oca/gpt-5.4",
+  "model": "gpt-5.4",
   "prompts": {
     "initial": "prompt_templates/initial/basic_initial.md",
     "after-successful-iteration": "prompt_templates/after-successful-iteration/basic_after_success.md",

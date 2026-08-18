@@ -1,0 +1,415 @@
+# Weekly and on-demand sweep of the JVM test lane against Crema (Native Image run-time class
+# loading), to find where Crema cannot yet run real library test suites. Bug-finding, not a metadata
+# gate: it never blocks a release. §CI-test-all-metadata-crema; §TCK-test-harness.3.1.
+name: "Test all metadata on the Crema JVM"
+
+on:
+  # Saturday, clear of the Sunday sweep (§CI-test-all-metadata) and the Monday
+  # release, so the three never compete for runners.
+  schedule:
+    - cron: "0 2 * * 6"
+  workflow_dispatch:
+    inputs:
+      coordinates:
+        description: "Coordinate filter (group:artifact:version, k/n, or all). Leave empty to fan out over 'batches' shards."
+        required: false
+        default: ""
+      batches:
+        description: "Number of shards when 'coordinates' is empty."
+        required: false
+        default: "85"
+      vm:
+        description: "Which VM to run the JVM test lane on."
+        required: false
+        default: "crema"
+        type: choice
+        options:
+          - crema
+          - hotspot
+          - both
+      java-version:
+        description: "GraalVM version to build Crema from. Must ship the jvm-library macro."
+        required: false
+        default: "latest-ea"
+      disable-assertions:
+        description: "Clear Gradle's default -ea, which Crema rejects at VM startup. On by default, because with -ea every coordinate fails before any test runs. Set false to confirm that blocker is still present."
+        required: false
+        default: "true"
+        type: choice
+        options:
+          - "true"
+          - "false"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "workflow = ${{ github.workflow }}, ref = ${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    name: "📋 Build the sweep matrix"
+    # The weekly run is only meaningful on the canonical repository; forks may still dispatch it by
+    # hand. On a schedule event the `inputs` context is empty, so every input needs its default
+    # restated below or the cron run would resolve to an empty matrix.
+    if: github.event_name != 'schedule' || github.repository == 'oracle/graalvm-reachability-metadata'
+    runs-on: "ubuntu-22.04"
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: "🕸️ Populate matrix"
+        id: set-matrix
+        env:
+          INPUT_COORDINATES: ${{ inputs.coordinates }}
+          INPUT_BATCHES: ${{ inputs.batches || '85' }}
+          INPUT_VM: ${{ inputs.vm || 'crema' }}
+        run: |
+          set -euo pipefail
+
+          # The JDK is pinned by this workflow (Crema is built from one specific GraalVM), so the
+          # ci.json JDK/OS cross product deliberately does not apply here.
+          case "$INPUT_VM" in
+            crema|hotspot) VMS="[\"$INPUT_VM\"]" ;;
+            both)          VMS='["crema","hotspot"]' ;;
+            *) echo "::error::Unknown vm '$INPUT_VM'"; exit 1 ;;
+          esac
+
+          if [[ -n "$INPUT_COORDINATES" ]]; then
+            COORDS="$(jq -nc --arg c "$INPUT_COORDINATES" '[$c]')"
+          else
+            if ! [[ "$INPUT_BATCHES" =~ ^[0-9]+$ ]] || [[ "$INPUT_BATCHES" -le 0 ]]; then
+              echo "::error::'batches' must be a positive integer, got '$INPUT_BATCHES'"
+              exit 1
+            fi
+            COORDS="$(jq -nc --argjson n "$INPUT_BATCHES" '[range(1; $n + 1) | "\(.)/\($n)"]')"
+          fi
+
+          MATRIX="$(jq -nc --argjson coords "$COORDS" --argjson vms "$VMS" \
+            '{include: [$coords[] as $c | $vms[] as $v | {coordinates: $c, vm: $v}]}')"
+          echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
+          echo "$MATRIX" | jq .
+
+  # Built once and shared with every shard: the macro build takes ~10 minutes and produces the same
+  # library each time, so building per shard would spend hours of runner time on identical work.
+  # One JDK serves both lanes — the action leaves jvm.cfg.hotspot-default in the tree beside the
+  # Crema-default jvm.cfg, so a shard selects its VM by choosing between them.
+  build-jdk:
+    name: "🏗️ Build the Crema JDK"
+    if: github.event_name != 'schedule' || github.repository == 'oracle/graalvm-reachability-metadata'
+    runs-on: "ubuntu-22.04"
+    timeout-minutes: 60
+    outputs:
+      jdk-dir: ${{ steps.package.outputs.jdk-dir }}
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+
+      # Every shard resolves the identical build-logic classpath, so without a shared cache the
+      # sweep makes that same burst of Maven Central requests 85 times over and draws HTTP 429.
+      # Resolving it once here and restoring it per shard removes the amplification outright, which
+      # is the cause; the retry in the sweep job only covers the residue.
+      #
+      # This must precede the Crema build: that step makes `-svm` the JDK's default VM, and Gradle
+      # cannot run on Crema.
+      - name: "🔧 Setup the JDK that runs Gradle"
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
+        with:
+          distribution: 'graalvm'
+          java-version: '25'
+
+      - name: "📦 Cache Gradle modules"
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: |
+            ~/.gradle/caches/modules-2
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-crema-gradle-${{ hashFiles('gradle/libs.versions.toml', 'gradle/wrapper/gradle-wrapper.properties', 'tests/tck-build-logic/**/*.gradle', 'tests/tck-build-logic/build.gradle') }}
+
+      - name: "🔥 Warm the dependency cache"
+        run: |
+          set -euo pipefail
+          # Configuring the root build compiles tck-build-logic, which resolves exactly the
+          # classpath whose 429s failed shards 21 and 72.
+          ./gradlew help --quiet
+
+      - name: "🏗️ Build the Crema JDK"
+        id: crema
+        uses: ./.github/actions/setup-crema-jdk
+        with:
+          java-version: ${{ inputs.java-version || 'latest-ea' }}
+          default-vm: "svm"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "📦 Package the JDK for the shards"
+        id: package
+        env:
+          CREMA_HOME: ${{ steps.crema.outputs.crema-home }}
+        run: |
+          set -euo pipefail
+
+          # Debug info and sources are build by-products that nothing needs at run time, and they
+          # are over a third of the tree.
+          rm -rf "$CREMA_HOME/lib/svm/libjvm.so.debug" "$CREMA_HOME/lib/svm/sources"
+
+          tar -C "$(dirname "$CREMA_HOME")" -czf crema-jdk.tar.gz "$(basename "$CREMA_HOME")"
+          echo "jdk-dir=$(basename "$CREMA_HOME")" >> "$GITHUB_OUTPUT"
+          ls -lh crema-jdk.tar.gz
+
+      - name: "📦 Upload the Crema JDK"
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: "crema-jdk"
+          path: crema-jdk.tar.gz
+          retention-days: 1
+          if-no-files-found: error
+
+  sweep:
+    name: "🧪 ${{ matrix.coordinates }} on ${{ matrix.vm }}"
+    runs-on: "ubuntu-22.04"
+    timeout-minutes: 330
+    needs: [prepare, build-jdk]
+    permissions:
+      contents: read
+    env:
+      LOG_LINES: "300"
+      COORDINATE_TIMEOUT: "30m"
+    strategy:
+      fail-fast: false
+      # Capped below the account's concurrent-job ceiling: the 429s came from the width of the
+      # fan-out, and a weekly sweep can afford wall clock more than it can afford lost shards.
+      max-parallel: 10
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+
+      # Shards resolving Maven Central concurrently draw HTTP 429, which fails a shard during
+      # dependency resolution and loses every coordinate in it. Gradle retries such failures on two
+      # independent layers, both defaulting to 3 attempts and a 1s backoff that doubles — too
+      # impatient for a rate limit that wants seconds.
+      #
+      # These must live in GRADLE_USER_HOME/gradle.properties, not GRADLE_OPTS: GRADLE_OPTS
+      # configures the Gradle *client* JVM, while resolution runs in the daemon, which does not
+      # inherit those properties (measured — the settings had no effect and no retry ever logged).
+      # The user-home file also reaches the per-coordinate builds, which are separate Gradle builds
+      # rooted in their own directories and never read the repository root's gradle.properties.
+      - name: "🔧 Configure Gradle dependency-resolution backoff"
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.gradle"
+          cat >> "$HOME/.gradle/gradle.properties" <<'PROPERTIES'
+          systemProp.org.gradle.internal.network.retry.max.attempts=5
+          systemProp.org.gradle.internal.network.retry.initial.backOff=2000
+          systemProp.org.gradle.internal.repository.max.tentatives=3
+          systemProp.org.gradle.internal.repository.initial.backoff=3000
+          PROPERTIES
+          cat "$HOME/.gradle/gradle.properties"
+
+      # Restore-only: the build-jdk job populated and saved this cache, and 85 shards each trying to
+      # save an identical copy would be pure waste.
+      - name: "📦 Restore Gradle modules"
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: |
+            ~/.gradle/caches/modules-2
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-crema-gradle-${{ hashFiles('gradle/libs.versions.toml', 'gradle/wrapper/gradle-wrapper.properties', 'tests/tck-build-logic/**/*.gradle', 'tests/tck-build-logic/build.gradle') }}
+
+      - name: "🛠️ Setup latest native-build-tools snapshot"
+        uses: ./.github/actions/setup-native-build-tools
+
+      - name: "📥 Download the Crema JDK"
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: "crema-jdk"
+
+      - name: "🔧 Unpack the Crema JDK and select the VM"
+        id: crema
+        env:
+          JDK_DIR: ${{ needs.build-jdk.outputs.jdk-dir }}
+          MATRIX_VM: ${{ matrix.vm }}
+        run: |
+          set -euo pipefail
+
+          mkdir -p "$RUNNER_TEMP/crema"
+          tar -C "$RUNNER_TEMP/crema" -xzf crema-jdk.tar.gz
+          CREMA_HOME="$RUNNER_TEMP/crema/$JDK_DIR"
+
+          # The shared JDK is built Crema-default; the baseline lane swaps in the stock config that
+          # the action preserved, so both lanes run byte-identical trees apart from this one file.
+          if [[ "$MATRIX_VM" == "hotspot" ]]; then
+            cp "$CREMA_HOME/lib/jvm.cfg.hotspot-default" "$CREMA_HOME/lib/jvm.cfg"
+          fi
+
+          # Re-assert the VM identity here rather than trusting the build job: an unpack or config
+          # mistake would otherwise let a shard measure the wrong VM and report a clean pass.
+          VERSION_OUTPUT="$("$CREMA_HOME/bin/java" -version 2>&1)"
+          echo "$VERSION_OUTPUT"
+          if [[ "$MATRIX_VM" == "crema" ]]; then
+            if ! grep -q "Substrate" <<< "$VERSION_OUTPUT"; then
+              echo "::error::Crema lane is not running the Substrate VM."
+              exit 1
+            fi
+          else
+            if grep -q "Substrate" <<< "$VERSION_OUTPUT"; then
+              echo "::error::Baseline lane is running the Substrate VM."
+              exit 1
+            fi
+          fi
+
+          echo "crema-home=$CREMA_HOME" >> "$GITHUB_OUTPUT"
+
+      # Gradle itself cannot run on Crema — it fails with AbstractMethodError during launcher
+      # startup — so the daemon stays on a stock JDK and only the forked test workers use Crema.
+      - name: "🔧 Setup the JDK that runs Gradle"
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
+        with:
+          distribution: 'graalvm'
+          java-version: '25'
+
+      - name: "🧪 Run '${{ matrix.coordinates }}' JVM tests on ${{ matrix.vm }}"
+        id: run-tests
+        env:
+          # §TCK-test-harness.3.1 — selects the test workers' interpreter, adds no flag.
+          GVM_TCK_TEST_JAVA_HOME: ${{ steps.crema.outputs.crema-home }}
+          GVM_TCK_TEST_DISABLE_ASSERTIONS: ${{ inputs.disable-assertions || 'true' }}
+          MATRIX_COORDINATES: ${{ matrix.coordinates }}
+          MATRIX_VM: ${{ matrix.vm }}
+        run: |
+          set -euo pipefail
+
+          mkdir -p crema-results failure-logs
+          : > crema-results/failures.ndjson
+
+          RUNNER_LOG_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          record_failure() {
+            local coordinates="$1"
+            local failure_type="$2"
+            local failed_command="$3"
+            local log_file="$4"
+
+            tail -n "${LOG_LINES}" "$log_file" > crema-results/log-tail.txt
+            jq -c -n \
+              --arg name "${coordinates%:*}" \
+              --arg vm "$MATRIX_VM" \
+              --arg jdk "${{ inputs.java-version || 'latest-ea' }}" \
+              --arg runnerLogUrl "$RUNNER_LOG_URL" \
+              --arg failureType "$failure_type" \
+              --arg failedVersion "${coordinates##*:}" \
+              --arg failedCommand "$failed_command" \
+              --arg logLines "$LOG_LINES" \
+              --rawfile logTail crema-results/log-tail.txt \
+              '{
+                name: $name,
+                vm: $vm,
+                version: $jdk,
+                runnerLogUrl: $runnerLogUrl,
+                failure: {
+                  failureType: $failureType,
+                  failedVersion: $failedVersion,
+                  failedCommand: $failedCommand,
+                  logLines: $logLines,
+                  logTail: $logTail
+                }
+              }' >> crema-results/failures.ndjson
+          }
+
+          # Both observed 429s killed a shard here, in setup, before a single coordinate ran, costing
+          # every library in the shard. Waiting in minutes suits a rate limiter far better than
+          # Gradle's own seconds-scale backoff. Deliberately not applied to the per-coordinate tests
+          # below: a genuine Crema failure must fail once and fast, not three times slowly.
+          retry_setup() {
+            local attempt
+            for attempt in 1 2 3; do
+              if "$@"; then
+                return 0
+              fi
+              if [[ $attempt -lt 3 ]]; then
+                echo "::warning::Setup command failed (attempt $attempt/3); retrying in $((attempt * 60))s: $*"
+                sleep $((attempt * 60))
+              fi
+            done
+            echo "::error::Setup command failed after 3 attempts: $*"
+            return 1
+          }
+
+          # Resolve the shard to concrete coordinates so failures can be attributed per library.
+          MATCHING_MATRIX_OUTPUT_FILE="$(mktemp)"
+          GITHUB_OUTPUT="$MATCHING_MATRIX_OUTPUT_FILE" retry_setup ./gradlew generateMatrixMatchingCoordinates -Pcoordinates="$MATRIX_COORDINATES"
+          sed -n 's/^matrix=//p' "$MATCHING_MATRIX_OUTPUT_FILE" | jq -r '.coordinates[]' | sort > crema-results/batch-coordinates.txt
+          if [[ ! -s crema-results/batch-coordinates.txt ]]; then
+            echo "::error::No coordinates were resolved for $MATRIX_COORDINATES"
+            exit 1
+          fi
+
+          # Stays non-fatal, but retried: a rate-limited pull would otherwise leave the shard's tests
+          # to fail later on missing images, which reads as a Crema failure.
+          pull_images() {
+            ./gradlew pullAllowedDockerImages -Pcoordinates="$MATRIX_COORDINATES" 2>&1 | tee -a crema-results/pull-batch.log
+            return "${PIPESTATUS[0]}"
+          }
+          retry_setup pull_images || true
+          bash ./.github/workflows/scripts/disable-docker.sh
+
+          # Per coordinate rather than per batch: one library aborting the shard would otherwise hide
+          # every library behind it, and attribution is the entire point of this sweep.
+          # -PskipJacoco=true because Crema ignores -javaagent, which would publish empty coverage.
+          while IFS= read -r coordinates; do
+            safe_coordinates="$(printf '%s' "$coordinates" | tr '/:' '--')"
+            test_log="failure-logs/javaTest-$safe_coordinates.log"
+            test_command="./gradlew javaTest -Pcoordinates=\"$coordinates\" -PskipJacoco=true"
+
+            # Bounded per coordinate: a Crema fatal error can leave the test worker wedged with
+            # Gradle waiting on it forever, which otherwise consumes the entire job and silently
+            # discards every coordinate queued behind it (observed on
+            # org.apache.httpcomponents:httpclient:4.5.14). A hang is a finding, so it must be
+            # attributable to one library rather than swallowing a whole shard.
+            set +e
+            timeout --signal=KILL "${COORDINATE_TIMEOUT}" \
+              ./gradlew javaTest -Pcoordinates="$coordinates" -PskipJacoco=true 2>&1 | tee "$test_log"
+            test_result="${PIPESTATUS[0]}"
+            set -e
+
+            if [[ "$test_result" -eq 137 || "$test_result" -eq 124 ]]; then
+              echo "::warning::$coordinates exceeded ${COORDINATE_TIMEOUT} and was killed"
+              record_failure "$coordinates" "javaTest timeout" "$test_command" "$test_log"
+            elif [[ "$test_result" -ne 0 ]]; then
+              record_failure "$coordinates" "javaTest" "$test_command" "$test_log"
+            else
+              rm -f "$test_log"
+            fi
+          done < crema-results/batch-coordinates.txt
+
+          jq -s '{ failures: . }' crema-results/failures.ndjson > crema-results/result.json
+          FAILURE_COUNT="$(jq '.failures | length' crema-results/result.json)"
+          TOTAL_COUNT="$(wc -l < crema-results/batch-coordinates.txt)"
+
+          {
+            echo "### ${MATRIX_COORDINATES} on ${MATRIX_VM}"
+            echo ""
+            echo "${FAILURE_COUNT} of ${TOTAL_COUNT} coordinates failed."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [[ "$FAILURE_COUNT" -gt 0 ]]; then
+            jq -r '.failures[] | "- \(.name):\(.failure.failedVersion)"' crema-results/result.json >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      # Always uploaded: this workflow's output is the failure list itself, so a shard with failures
+      # must still publish its artifact rather than being treated as a broken job.
+      - name: "📦 Upload results"
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: "crema-results-${{ matrix.vm }}-${{ strategy.job-index }}"
+          path: |
+            crema-results/
+            failure-logs/
+          retention-days: 14
+          if-no-files-found: warn

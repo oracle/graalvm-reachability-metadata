@@ -83,6 +83,8 @@ class FixtureIssue:
     project_status: str
     blockers: list[int]
     comments: list[FixtureComment]
+    continuation_marker: JsonObject | None
+    worktree_files: dict[str, str]
     fixture_path: str
     url: str
 
@@ -130,6 +132,10 @@ class FixtureIssue:
             "comments": [comment.to_json() for comment in self.comments],
             "fixture_path": self.fixture_path,
         }
+        if self.continuation_marker is not None:
+            payload["continuation_marker"] = dict(self.continuation_marker)
+        if self.worktree_files:
+            payload["worktree_files"] = dict(self.worktree_files)
         return payload
 
 
@@ -314,6 +320,8 @@ class FixtureGitHubState:
             _log_fixture_setup(
                 f"Fixture issue #{issue.number}: no issue-specific workspace cleanup requested."
             )
+        self._prepare_worktree_files(issue, worktree_path)
+        self._prepare_continuation_marker(issue, worktree_path)
 
     def _iter_open_issues(self) -> list[FixtureIssue]:
         return [
@@ -451,6 +459,37 @@ class FixtureGitHubState:
             f"Index={_repo_relative_path(index_json_path, worktree_path)}, "
             f"version paths={_format_cleaned_path_summary(cleaned_paths)}."
         )
+
+    def _prepare_continuation_marker(self, issue: FixtureIssue, worktree_path: str) -> None:
+        """Write the fixture-provided run-continuation marker into the worktree."""
+        if issue.continuation_marker is None:
+            return
+        marker_path = os.path.join(worktree_path, "forge", ".continuation-marker.json")
+        os.makedirs(os.path.dirname(marker_path), exist_ok=True)
+        with open(marker_path, "w", encoding="utf-8") as marker_file:
+            json.dump(issue.continuation_marker, marker_file, indent=2, sort_keys=True)
+            marker_file.write("\n")
+        _log_fixture_setup(
+            f"Fixture issue #{issue.number}: wrote continuation marker "
+            f"{_repo_relative_path(marker_path, worktree_path)}."
+        )
+
+    def _prepare_worktree_files(self, issue: FixtureIssue, worktree_path: str) -> None:
+        """Write fixture-declared files into the isolated issue worktree."""
+        for relative_path, content in issue.worktree_files.items():
+            normalized_path = os.path.normpath(relative_path)
+            if os.path.isabs(normalized_path) or normalized_path == ".." or normalized_path.startswith("../"):
+                raise FixtureValidationError(
+                    f"Fixture issue #{issue.number}: invalid worktree file path: {relative_path}"
+                )
+            target_path = os.path.join(worktree_path, normalized_path)
+            os.makedirs(os.path.dirname(target_path), exist_ok=True)
+            with open(target_path, "w", encoding="utf-8") as worktree_file:
+                worktree_file.write(content)
+            _log_fixture_setup(
+                f"Fixture issue #{issue.number}: wrote worktree file "
+                f"{_repo_relative_path(target_path, worktree_path)}."
+            )
 
 
 def load_fixture_github_state(fixture_paths: list[str] | None = None) -> FixtureGitHubState:
@@ -623,6 +662,10 @@ def normalize_fixture_issue(raw_issue: JsonObject, fixture_path: str) -> Fixture
     project_number, project_item_id, project_status = _normalize_project(issue, context)
     blockers = _normalize_blockers(issue, context)
     comments = _normalize_comments(_optional_list(issue, "comments", context, default=[]), context)
+    continuation_marker = _optional_mapping(issue, "continuation_marker", context)
+    if continuation_marker is None:
+        continuation_marker = _optional_mapping(issue, "continuationMarker", context)
+    worktree_files = _normalize_worktree_files(issue, context)
     url = _optional_str(issue, "url", context, default=f"fixture://fixture_github_issues/{number}")
     return FixtureIssue(
         number=number,
@@ -637,6 +680,8 @@ def normalize_fixture_issue(raw_issue: JsonObject, fixture_path: str) -> Fixture
         project_status=project_status,
         blockers=blockers,
         comments=comments,
+        continuation_marker=continuation_marker,
+        worktree_files=worktree_files,
         fixture_path=os.path.abspath(fixture_path),
         url=url,
     )
@@ -734,6 +779,33 @@ def _normalize_comments(raw_comments: list[Any], context: str) -> list[FixtureCo
     return comments
 
 
+def _normalize_worktree_files(issue: JsonObject, context: str) -> dict[str, str]:
+    raw_files = _optional_mapping(issue, "worktree_files", context)
+    if raw_files is None:
+        raw_files = _optional_mapping(issue, "worktreeFiles", context)
+    if raw_files is None:
+        return {}
+    files: dict[str, str] = {}
+    for raw_path, raw_content in raw_files.items():
+        if not isinstance(raw_path, str) or not raw_path:
+            raise FixtureValidationError(f"{context}: worktree file paths must be non-empty strings")
+        normalized_path = _normalize_worktree_file_path(raw_path, context)
+        if isinstance(raw_content, str):
+            content = raw_content
+        else:
+            content = json.dumps(raw_content, indent=2, sort_keys=True)
+            content += "\n"
+        files[normalized_path] = content
+    return files
+
+
+def _normalize_worktree_file_path(path: str, context: str) -> str:
+    normalized_path = os.path.normpath(path)
+    if os.path.isabs(normalized_path) or normalized_path == ".." or normalized_path.startswith("../"):
+        raise FixtureValidationError(f"{context}: invalid worktree file path: {path}")
+    return normalized_path
+
+
 def _issue_has_all_labels(issue: FixtureIssue, labels: list[str]) -> bool:
     return all(label in issue.labels for label in labels)
 
@@ -805,6 +877,15 @@ def _optional_list(mapping: JsonObject, key: str, context: str, default: list[An
     if not isinstance(value, list):
         raise FixtureValidationError(f"{context}: `{key}` must be a list")
     return value
+
+
+def _optional_mapping(mapping: JsonObject, key: str, context: str) -> JsonObject | None:
+    value = mapping.get(key)
+    if value is None:
+        return None
+    if not isinstance(value, dict):
+        raise FixtureValidationError(f"{context}: `{key}` must be an object")
+    return dict(value)
 
 
 def _is_int(value: Any) -> bool:

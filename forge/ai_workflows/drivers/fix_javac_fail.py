@@ -10,7 +10,7 @@ Usage:
   python3 ai_workflows/drivers/fix_javac_fail.py \
     --coordinates group:artifact:oldVersion \
     --new-version newVersion \
-    [--strategy-name "javac_iterative_with_coverage_sources_pi_gpt-5.5"] \
+    [--strategy-name "javac_iterative_with_coverage_sources_pi_gpt-5.6-terra"] \
     [--reachability-metadata-path /path/to/graalvm-reachability-metadata] \
     [--metrics-repo-path /path/to/metrics-storage] \
     [--docs-path /path/to/docs] \

@@ -1,0 +1,134 @@
+{
+  "fix_ni_run:2026-06-10": {
+    "timestamp": "2026-06-10T01:58:55.084096Z",
+    "library": "org.apache.commons:commons-lang3:3.19.0",
+    "starting_commit": "22602cf74238714272ecec2021356bedf56c7061",
+    "ending_commit": "9cba7c8066218e09f1ec23a90ab9154632319924",
+    "previous_library": "org.apache.commons:commons-lang3:3.11",
+    "strategy_name": "library_update_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "3.19.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 68,
+            "totalCalls": 68
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 68,
+        "totalCalls": 68
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5658,
+          "missed": 70310,
+          "ratio": 0.074479,
+          "total": 75968
+        },
+        "line": {
+          "covered": 1382,
+          "missed": 14771,
+          "ratio": 0.085557,
+          "total": 16153
+        },
+        "method": {
+          "covered": 367,
+          "missed": 4257,
+          "ratio": 0.079369,
+          "total": 4624
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "3.11",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.947368,
+            "coveredCalls": 72,
+            "totalCalls": 76
+          }
+        },
+        "coverageRatio": 0.947368,
+        "coveredCalls": 72,
+        "totalCalls": 76
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5525,
+          "missed": 67804,
+          "ratio": 0.075345,
+          "total": 73329
+        },
+        "line": {
+          "covered": 1387,
+          "missed": 14504,
+          "ratio": 0.087282,
+          "total": 15891
+        },
+        "method": {
+          "covered": 300,
+          "missed": 3426,
+          "ratio": 0.080515,
+          "total": 3726
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 2100,
+      "issue_label": "fails-native-image-run",
+      "library": "org.apache.commons:commons-lang3:3.19.0",
+      "summary": "Apache Commons Lang 3.19.0 is a pure Java utility library; the resolved artifact has no compile/runtime dependencies, only upstream test-scope dependencies, and normal usage does not require services, containers, environment variables, or system properties.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Some APIs exercise reflection, serialization, proxies, class loading, and system-property readers, so generated tests should avoid assertions tied to a specific host OS/JDK value unless they only assert stable invariants.",
+        "Upstream tests use additional test-only libraries such as JUnit Pioneer, EasyMock, Commons Text, JMH, and JSR305, but these are not required product dependencies for meaningful generated coverage."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#2100 [Automation] native-image run fails for org.apache.commons:commons-lang3:3.19.0; label=fails-native-image-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "24 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.apache.commons:commons-lang3:3.11",
+      "new_version": "3.19.0",
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 22736,
+      "output_tokens_used": 2510,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.apache.commons:commons-lang3:3.19.0/library-preparation-preflight/pi-generation-2026-06-10T00-45-51-924157Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 56693,
+      "cached_input_tokens_used": 493056,
+      "output_tokens_used": 7063,
+      "iterations": 2,
+      "cost_usd": 0.4584,
+      "tested_library_loc": 1382,
+      "metadata_entries": 46,
+      "test_only_metadata_entries": 139,
+      "previous_library_metadata_entries": 41,
+      "previous_library_test_only_metadata_entries": 76,
+      "code_coverage_percent": 8.56,
+      "previous_library_coverage_percent": 8.73
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.apache.commons/commons-lang3/3.19.0/src/test/java/org_apache_commons/commons_lang3/EventListenerSupportTest.java",
+      "metadata_file": "metadata/org.apache.commons/commons-lang3/3.19.0/reachability-metadata.json"
+    }
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T13:40:10.849503Z",
+    "library": "org.glassfish.jersey.containers:jersey-container-servlet-core:2.34",
+    "starting_commit": "6d05205278f7dc14af443038de67efaf8a733795",
+    "ending_commit": "b666b1de2467eb98fc3946f0acf9206a30d74638",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "2.34",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 2,
+        "totalCalls": 2
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 56,
+          "missed": 2682,
+          "ratio": 0.020453,
+          "total": 2738
+        },
+        "line": {
+          "covered": 10,
+          "missed": 608,
+          "ratio": 0.016181,
+          "total": 618
+        },
+        "method": {
+          "covered": 6,
+          "missed": 169,
+          "ratio": 0.034286,
+          "total": 175
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 3148,
+      "issue_label": "library-new-request",
+      "library": "org.glassfish.jersey.containers:jersey-container-servlet-core:2.34",
+      "summary": "Meaningful servlet/Jersey runtime coverage needs the servlet API that the artifact declares as provided, plus Jersey's HK2 injection provider for ResourceConfig/ApplicationHandler initialization.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "jakarta.servlet:jakarta.servlet-api:4.0.3",
+          "scope": "testImplementation",
+          "reason": "The artifact's public API uses javax.servlet types and ServletContainer extends HttpServlet/implements Filter, but the servlet API is declared provided and is not pulled onto the generated test classpath."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.glassfish.jersey.inject:jersey-hk2:2.34",
+          "scope": "testImplementation",
+          "reason": "Jersey 2.x server/runtime initialization requires an InjectionManager provider; without jersey-hk2, ResourceConfig/ApplicationHandler-based coverage fails with InjectionManagerFactory not found."
+        }
+      ],
+      "agent_guidance": "Prefer a small in-process servlet/Jersey test: create a simple @Path resource with ResourceConfig and exercise ServletContainer/WebComponent behavior using minimal ServletConfig/ServletContext/request/response stubs or proxies. No external servlet container or Docker image is required. Use Servlet API 4.x javax.servlet types, not Servlet 5/6 jakarta.servlet package types.",
+      "risks": [
+        "Jersey 2.34 uses jakarta.* artifact coordinates but still exposes javax.* package names; choosing a newer Servlet 5/6 API would be incompatible.",
+        "Full request/response servlet tests may require careful lightweight servlet mocks or proxies; local Gradle and native-image verification remain authoritative."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "jakarta.servlet:jakarta.servlet-api:4.0.3",
+          "result": "applied",
+          "target": "tests/src/org.glassfish.jersey.containers/jersey-container-servlet-core/2.34/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.glassfish.jersey.inject:jersey-hk2:2.34",
+          "result": "applied",
+          "target": "tests/src/org.glassfish.jersey.containers/jersey-container-servlet-core/2.34/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#3148 Support for org.glassfish.jersey.containers:jersey-container-servlet-core:2.34; label=library-new-request; body_chars=135"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 67353,
+      "output_tokens_used": 6651,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.glassfish.jersey.containers:jersey-container-servlet-core:2.34/library-preparation-preflight/pi-generation-2026-06-28T13-25-00-127062Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 79454,
+      "cached_input_tokens_used": 535552,
+      "output_tokens_used": 5893,
+      "iterations": 2,
+      "cost_usd": 0.4446,
+      "generated_loc": 49,
+      "tested_library_loc": 10,
+      "metadata_entries": 2,
+      "code_coverage_percent": 1.62
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.glassfish.jersey.containers/jersey-container-servlet-core/2.34/src/test/java/org_glassfish_jersey_containers/jersey_container_servlet_core/LocalizationMessagesInnerBundleSupplierTest.java",
+      "metadata_file": "metadata/org.glassfish.jersey.containers/jersey-container-servlet-core/2.34/reachability-metadata.json"
+    }
+  }
+}

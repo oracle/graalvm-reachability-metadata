@@ -21,13 +21,16 @@ LIBRARY_UPDATE_WORK_STRATEGY_NAME="${FORGE_LIBRARY_UPDATE_STRATEGY_NAME:-}"
 WORK_LABEL="${FORGE_WORK_LABEL:-library-new-request}"
 WORK_LIMIT="${FORGE_WORK_LIMIT:-1}"
 RANDOM_WORK_OFFSET="${FORGE_RANDOM_WORK_OFFSET:-0}"
+PRIORITY_TIER=""
 PARALLELISM="${FORGE_PARALLELISM:-1}"
 REVIEW_LABEL="${FORGE_REVIEW_LABEL:-}"
 REVIEW_LIMIT="${FORGE_REVIEW_LIMIT:-1}"
-REVIEW_MODEL="${FORGE_REVIEW_MODEL:-gpt-5.4}"
+REVIEW_MODEL="${FORGE_REVIEW_MODEL:-gpt-5.6-terra}"
 USER_REQUESTED_ONLY="${FORGE_USER_REQUESTED_ISSUES_ONLY:-0}"
-WORK_STRATEGY_NAME="${FORGE_STRATEGY_NAME:-dynamic_access_main_sources_pi_gpt-5.5}"
+GRAALVM_VERSION_CHECK="${FORGE_GRAALVM_VERSION_CHECK:-strict}"
+WORK_STRATEGY_NAME="${FORGE_STRATEGY_NAME:-dynamic_access_main_sources_pi_gpt-5.6-sol}"
 GITHUB_RATE_LIMIT_EXIT_CODE=75
+GRADLE_BOOTSTRAP_EXIT_CODE=76
 MAX_PARALLELISM=4
 RUN_ONCE=0
 REQUEST_STOP=0
@@ -101,6 +104,8 @@ Options:
   --no-random-offset
       Start new-library issue scans from the beginning of the issue list. This
       is the default.
+  --priority {high,priority,normal}
+      Process only the selected issue priority tier in every issue queue.
   --parallelism N
       Run up to N issue workflows in parallel. Defaults to FORGE_PARALLELISM,
       then 1. The maximum is 4.
@@ -113,6 +118,12 @@ Options:
       Fetch only user-requested issue queue items by excluding configured
       automation and maintainer issue authors. Defaults to
       FORGE_USER_REQUESTED_ISSUES_ONLY, then 0.
+  --graalvm-version-check {strict,warn,off}
+      How host validation treats a GraalVM version mismatch: strict stops the
+      worker, warn reports it, off skips the version match. Native Image and the
+      reachability-metadata schema stay mandatory in every mode, so a locally
+      built Graal can be used with warn or off. Defaults to
+      FORGE_GRAALVM_VERSION_CHECK, then strict.
 
 Environment:
   DO_WORK_SLEEP_SECONDS
@@ -141,6 +152,9 @@ Environment:
   FORGE_LIBRARY_REVIEW_LIMIT, FORGE_JAVAC_REVIEW_LIMIT, FORGE_JAVA_RUN_REVIEW_LIMIT,
   FORGE_NI_RUN_REVIEW_LIMIT, FORGE_BULK_UPDATE_REVIEW_LIMIT
       Override FORGE_REVIEW_LIMIT for one default review queue.
+  FORGE_GRAALVM_VERSION_CHECK
+      Default --graalvm-version-check mode: strict, warn, or off. Defaults to
+      strict.
 
 Examples:
   $0
@@ -148,6 +162,7 @@ Examples:
   $0 --javac-limit 3 --new-limit 1
   $0 --user-requested-only --new-limit 1
   $0 --once --branch master
+  $0 --once --graalvm-version-check warn
   $0 --clear-issue-caches
   DO_WORK_SLEEP_SECONDS=60 $0 origin/main
 EOF
@@ -368,6 +383,13 @@ run_step() {
         return 0
     fi
 
+    # §FS-shared-infrastructure-bootstrap-failure: a shared Gradle bootstrap outage
+    # is host-wide, so skip the rest of this cycle and retry after the normal sleep.
+    if [[ "$status" -eq "$GRADLE_BOOTSTRAP_EXIT_CODE" ]]; then
+        log "Skipping remaining work because the shared Gradle bootstrap failed; retrying after sleep."
+        return 0
+    fi
+
     return "$status"
 }
 
@@ -389,6 +411,7 @@ export_work_configuration() {
     export FORGE_REVIEW_LIMIT="$REVIEW_LIMIT"
     export FORGE_REVIEW_MODEL="$REVIEW_MODEL"
     export FORGE_USER_REQUESTED_ISSUES_ONLY="$USER_REQUESTED_ONLY"
+    export FORGE_GRAALVM_VERSION_CHECK="$GRAALVM_VERSION_CHECK"
 
     if [[ -n "$REVIEW_LABEL" ]]; then
         export FORGE_REVIEW_LABEL="$REVIEW_LABEL"
@@ -403,9 +426,29 @@ process_work_queues() {
         "--parallelism"
         "$PARALLELISM"
     )
+    if [[ -n "$PRIORITY_TIER" ]]; then
+        forge_metadata_args+=("--priority" "$PRIORITY_TIER")
+    fi
 
     run_step "Processing configured work queues via forge_metadata." \
         "$PYTHON_BIN" "$SCRIPT_DIR/forge_metadata.py" "${forge_metadata_args[@]}"
+}
+
+run_host_requirements() {
+    local host_requirements_script="$SCRIPT_DIR/utility_scripts/host_requirements.py"
+
+    if ! command -v "$PYTHON_BIN" >/dev/null 2>&1; then
+        echo "ERROR: Forge host requirements need PYTHON_BIN='$PYTHON_BIN' to resolve to an executable." >&2
+        echo "Fix: install Python 3 or export PYTHON_BIN=/absolute/path/to/python3." >&2
+        return 1
+    fi
+
+    log "Validating Forge host requirements before any work starts."
+    "$PYTHON_BIN" "$host_requirements_script" \
+        --forge-dir "$SCRIPT_DIR" \
+        --python-bin "$PYTHON_BIN" \
+        --review-model "$REVIEW_MODEL" \
+        --graalvm-version-check "$GRAALVM_VERSION_CHECK"
 }
 
 run_cycle() {
@@ -521,6 +564,15 @@ while [[ "$#" -gt 0 ]]; do
             RANDOM_WORK_OFFSET=0
             shift
             ;;
+        --priority)
+            require_option_value "$1" "${2:-}"
+            PRIORITY_TIER="$2"
+            shift 2
+            ;;
+        --priority=*)
+            PRIORITY_TIER="${1#*=}"
+            shift
+            ;;
         --parallelism)
             require_option_value "$1" "${2:-}"
             PARALLELISM="$2"
@@ -541,6 +593,15 @@ while [[ "$#" -gt 0 ]]; do
             ;;
         --user-requested-only)
             USER_REQUESTED_ONLY=1
+            shift
+            ;;
+        --graalvm-version-check)
+            require_option_value "$1" "${2:-}"
+            GRAALVM_VERSION_CHECK="$2"
+            shift 2
+            ;;
+        --graalvm-version-check=*)
+            GRAALVM_VERSION_CHECK="${1#*=}"
             shift
             ;;
         --)
@@ -621,6 +682,13 @@ require_nonnegative_integer "FORGE_WORK_LIMIT" "$WORK_LIMIT"
 require_nonnegative_integer "FORGE_REVIEW_LIMIT" "$REVIEW_LIMIT"
 require_parallelism "$PARALLELISM"
 require_positive_integer "FORGE_DO_WORK_SLEEP_POLL_SECONDS" "$SLEEP_POLL_SECONDS"
+if [[ -n "$PRIORITY_TIER" \
+        && "$PRIORITY_TIER" != "high" \
+        && "$PRIORITY_TIER" != "priority" \
+        && "$PRIORITY_TIER" != "normal" ]]; then
+    echo "--priority must be high, priority, or normal." >&2
+    exit 1
+fi
 
 if [[ "$RANDOM_WORK_OFFSET" != "0" && "$RANDOM_WORK_OFFSET" != "1" ]]; then
     echo "FORGE_RANDOM_WORK_OFFSET must be 0 or 1." >&2
@@ -632,8 +700,16 @@ if [[ "$USER_REQUESTED_ONLY" != "0" && "$USER_REQUESTED_ONLY" != "1" ]]; then
     exit 1
 fi
 
+if [[ "$GRAALVM_VERSION_CHECK" != "strict" \
+        && "$GRAALVM_VERSION_CHECK" != "warn" \
+        && "$GRAALVM_VERSION_CHECK" != "off" ]]; then
+    echo "--graalvm-version-check must be strict, warn, or off." >&2
+    exit 1
+fi
+
 export_work_configuration
 exit_if_stop_requested
+run_host_requirements
 run_cycle
 
 if [[ "$RUN_ONCE" == "1" ]]; then

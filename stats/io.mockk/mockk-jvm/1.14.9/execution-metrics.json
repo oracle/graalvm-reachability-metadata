@@ -1,0 +1,93 @@
+{
+  "add_new_library_support:2026-06-25": {
+    "timestamp": "2026-06-25T17:21:14.988960Z",
+    "library": "io.mockk:mockk-jvm:1.14.9",
+    "starting_commit": "8105c5482eedd1b0426a9376e7f934b7fabac4fb",
+    "ending_commit": "edea6d8220a8a96e8e5e96369c8c89a7f42e355a",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "1.14.9",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.5625,
+            "coveredCalls": 9,
+            "totalCalls": 16
+          }
+        },
+        "coverageRatio": 0.5625,
+        "coveredCalls": 9,
+        "totalCalls": 16
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1399,
+          "missed": 17265,
+          "ratio": 0.074957,
+          "total": 18664
+        },
+        "line": {
+          "covered": 313,
+          "missed": 2989,
+          "ratio": 0.094791,
+          "total": 3302
+        },
+        "method": {
+          "covered": 66,
+          "missed": 960,
+          "ratio": 0.064327,
+          "total": 1026
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 5315,
+      "issue_label": "library-new-request",
+      "library": "io.mockk:mockk-jvm:1.14.9",
+      "summary": "MockK JVM is self-contained for normal JVM/Kotlin usage: the resolved artifact brings its MockK modules, Kotlin stdlib/reflect, coroutines runtime, Byte Buddy, Byte Buddy agent, and Objenesis transitively. The public documentation only requires adding MockK as a test dependency, and a simple Kotlin MockK smoke test can reach meaningful mocking behavior without extra dependencies, Docker, or system properties.",
+      "deterministic_setup": [],
+      "agent_guidance": "No extra environment variable or system property is indicated. Meaningful tests should be written in Kotlin and can define local interfaces/classes to mock; avoid assuming an external service is needed.",
+      "risks": [
+        "MockK relies on Byte Buddy/Objenesis and Java-agent-style instrumentation for some capabilities, so native-image execution may expose limitations; local Gradle and Native Image verification should remain authoritative."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#5315 Support for io.mockk:mockk-jvm:1.14.9; label=library-new-request; body_chars=276"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 78266,
+      "output_tokens_used": 5348,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/io.mockk:mockk-jvm:1.14.9/library-preparation-preflight/pi-generation-2026-06-25T15-53-04-705580Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 753524,
+      "cached_input_tokens_used": 6783488,
+      "output_tokens_used": 63316,
+      "iterations": 13,
+      "cost_usd": 5.2912,
+      "generated_loc": 388,
+      "tested_library_loc": 313,
+      "metadata_entries": 58,
+      "test_only_metadata_entries": 26,
+      "code_coverage_percent": 9.48
+    },
+    "artifacts": {
+      "test_file": "tests/src/io.mockk/mockk-jvm/1.14.9/src/test/kotlin/io_mockk/mockk_jvm/JvmMockFactoryHelperInnerFindBackingFieldAnonymous2Anonymous1Anonymous2Test.kt",
+      "metadata_file": "metadata/io.mockk/mockk-jvm/1.14.9/reachability-metadata.json"
+    }
+  }
+}

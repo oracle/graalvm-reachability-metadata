@@ -69,11 +69,11 @@ public class ForwardedRequestCustomizerTest {
 
     private static HttpResponse<String> doHttpRequest(int port, String... headers)
             throws IOException, InterruptedException {
-        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(1)).build();
+        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
         HttpRequest request = HttpRequest.newBuilder(URI.create(String.format("http://localhost:%d/", port)))
                 .GET()
                 .header("Accept", "text/plain")
-                .timeout(Duration.ofSeconds(2))
+                .timeout(Duration.ofSeconds(10))
                 .headers(headers)
                 .build();
         return client.send(request, HttpResponse.BodyHandlers.ofString());

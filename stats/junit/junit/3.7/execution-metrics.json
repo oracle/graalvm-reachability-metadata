@@ -1,0 +1,188 @@
+{
+  "add_new_library_support:2026-07-29": {
+    "timestamp": "2026-07-29T11:21:28.606585Z",
+    "library": "junit:junit:3.7",
+    "starting_commit": "b04e971fe9d33328d78a1fa9cf7a5b6cc726147d",
+    "ending_commit": "ba456b2119759a1b2334724297fbf73ac1ae6123",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
+    "agent": "pi",
+    "model": "gpt-5.6-terra",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "3.7",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.542857,
+            "coveredCalls": 38,
+            "totalCalls": 70
+          }
+        },
+        "coverageRatio": 0.542857,
+        "coveredCalls": 38,
+        "totalCalls": 70
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5339,
+          "missed": 16157,
+          "ratio": 0.248372,
+          "total": 21496
+        },
+        "line": {
+          "covered": 1240,
+          "missed": 3651,
+          "ratio": 0.253527,
+          "total": 4891
+        },
+        "method": {
+          "covered": 469,
+          "missed": 1161,
+          "ratio": 0.28773,
+          "total": 1630
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 995,
+      "issue_label": "library-new-request",
+      "library": "junit:junit:3.7",
+      "summary": "JUnit 3.7 is a self-contained artifact with no Maven dependencies; its core TestCase/TestSuite/TestResult APIs can be exercised directly by the normal JUnit-based scaffold.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Avoid exercising the legacy AWT/Swing UI runners in headless Native Image tests; they are not needed for meaningful core-framework coverage."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#995 Support for junit:junit:3.7; label=library-new-request; body_chars=453"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-terra",
+      "input_tokens_used": 57529,
+      "output_tokens_used": 1631,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/junit:junit:3.7/library-preparation-preflight/pi-generation-2026-07-29T10-32-36-493640Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 195441,
+      "cached_input_tokens_used": 1267712,
+      "output_tokens_used": 19132,
+      "iterations": 7,
+      "cost_usd": 1.0925,
+      "generated_loc": 325,
+      "tested_library_loc": 1240,
+      "metadata_entries": 1,
+      "test_only_metadata_entries": 44,
+      "code_coverage_percent": 25.35
+    },
+    "artifacts": {
+      "metadata_file": "metadata/junit/junit/3.7/reachability-metadata.json"
+    }
+  },
+  "add_new_library_support:2026-08-15": {
+    "timestamp": "2026-08-15T13:17:05.913750Z",
+    "library": "junit:junit:3.7",
+    "starting_commit": "218291a91c108b7dd964a4b1a4d26b0fd7530e49",
+    "ending_commit": "b68a053527358e331d1e611ddea7c507cc2a48eb",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "3.7",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.307692,
+            "coveredCalls": 8,
+            "totalCalls": 26
+          },
+          "resources": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 0.25,
+        "coveredCalls": 8,
+        "totalCalls": 32
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 482,
+          "missed": 8154,
+          "ratio": 0.055813,
+          "total": 8636
+        },
+        "line": {
+          "covered": 136,
+          "missed": 2021,
+          "ratio": 0.063051,
+          "total": 2157
+        },
+        "method": {
+          "covered": 44,
+          "missed": 418,
+          "ratio": 0.095238,
+          "total": 462
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 995,
+      "issue_label": "library-new-request",
+      "library": "junit:junit:3.7",
+      "summary": "JUnit 3.7 has no external dependencies, services, or configuration, but the normal scaffold currently resolves junit:junit to 4.13.2 through the JUnit Vintage engine, preventing meaningful 3.7 coverage.",
+      "deterministic_setup": [],
+      "agent_guidance": "Ensure the test runtime resolves junit:junit strictly to 3.7. Use Jupiter tests that invoke JUnit 3 APIs directly rather than relying on Vintage discovery, and assert junit.runner.Version.id() is \"3.7\".",
+      "risks": [
+        "Without strict version resolution, tests silently exercise JUnit 4.13.2 instead of the requested 3.7 artifact.",
+        "JUnit Vintage officially supports JUnit 3.8 and later and introduces a newer junit:junit dependency."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#995 Support for junit:junit:3.7; label=library-new-request; body_chars=453"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "13 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-sol",
+      "input_tokens_used": 35024,
+      "output_tokens_used": 3173,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/g/forge/graalvm-reachability-metadata/forge/logs/junit:junit:3.7/library-preparation-preflight/pi-generation-2026-08-15T13-00-56-799987Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 141381,
+      "cached_input_tokens_used": 1026048,
+      "output_tokens_used": 10609,
+      "iterations": 4,
+      "cost_usd": 1.5382,
+      "generated_loc": 82,
+      "tested_library_loc": 136,
+      "metadata_entries": 1,
+      "test_only_metadata_entries": 44,
+      "code_coverage_percent": 6.31
+    },
+    "artifacts": {
+      "metadata_file": "metadata/junit/junit/3.7/reachability-metadata.json"
+    }
+  }
+}

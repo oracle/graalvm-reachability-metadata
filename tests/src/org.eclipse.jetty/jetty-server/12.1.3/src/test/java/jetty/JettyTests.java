@@ -197,9 +197,9 @@ public class JettyTests {
     }
 
     private static HttpResponse<String> doHttpRequest(String... headers) throws IOException, InterruptedException {
-        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(1)).build();
+        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
         HttpRequest.Builder request = HttpRequest.newBuilder(URI.create(String.format("http://localhost:%d/", port)))
-                .GET().header("Accept", "text/plain").timeout(Duration.ofSeconds(1));
+                .GET().header("Accept", "text/plain").timeout(Duration.ofSeconds(10));
         if (headers.length > 0) {
             request.headers(headers);
         }

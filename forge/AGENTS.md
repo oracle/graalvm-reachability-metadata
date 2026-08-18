@@ -8,8 +8,8 @@ Purpose: ensure safe, focused, and reviewable changes.
 
 Agents MUST read and strictly adhere to the following before making any changes:
 
-- [Functional Spec](docs/functional-spec.md) — what the system must do.
-- [Architecture](docs/architecture.md) — how the system is structured.
+- [Functional Spec](docs/functional-spec/README.md) — what the system must do.
+- [Architecture](docs/architecture/README.md) — how the system is structured.
 
 ## Do
 - Read README.md and DEVELOPING.md before acting.
@@ -60,9 +60,10 @@ Agents MUST read and strictly adhere to the following before making any changes:
 - Summarize each open question briefly and concretely so a reviewer can understand the decision point without re-reading the whole conversation.
 - If there are no open questions or user-requested notes for reviewers, omit the section instead of adding an empty heading.
 
-## Grounding with grund (v2)
+<!-- BEGIN GRUND MANAGED BLOCK -->
+## Grounding with grund (v7)
 
-This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]` (`KIND ∈ {GRUND, GOAL, AR, FS, DW, STRAT, ORCH, GIT, WF, E2E, BENCH, ROADMAP}`), cited with the marker `§` — e.g. `FS-user-login.3.1` (the `FS-user-login` here is a shape illustration, not a real ID in this repo). Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `.agents/grund.toml`, so only `§`-prefixed citations are checked.
+This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]` (`KIND ∈ {GRUND, GOAL, AR, FS, DW, STRAT, ORCH, GIT, WF, E2E, BENCH, ROADMAP}`), cited with the marker `§` — e.g. `<§>FS-user-login.3.1` (the `FS-user-login` here is a shape illustration, not a real ID in this repo, hence the `<§>` escape). Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `grund.toml`, so only `§`-prefixed citations are checked.
 
 ### Grounding from a citation
 
@@ -79,13 +80,14 @@ A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and 
 
 - [GRUND](docs/grund.md): Why: Forge motivation
 - [GOAL](docs/goals.md): Where: Forge direction and outcomes
-- [AR](docs): Forge architecture and technical structure
-- [FS](docs): Forge functional behavior and requirements
+- [AR](docs/architecture): Forge architecture and technical structure
+- [FS](docs/functional-spec): Forge functional behavior and requirements
 - [DW](docs/do-work.md): Forge do-work loop architecture
 - [STRAT](docs/strategies.md): Forge strategy configuration architecture
 - [ORCH](docs/orchestration-scripts.md): Forge orchestration scripts behavior and architecture
 - [GIT](docs/git-scripts.md): Forge git scripts publication behavior and architecture
 - [WF](docs/workflows): Forge workflow specifications and operating rules
+- [E2E](docs/e2e.md): Forge end-to-end test specifications
 - [BENCH](docs/benchmarking.md): Forge benchmark specifications
 - [ROADMAP](docs/roadmap.md): Forge implementation roadmap
 
@@ -93,7 +95,7 @@ A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and 
 
 A namespace is a project boundary, not a docs folder. The current project is the local namespace: cite its IDs as `§<ID>`.
 
-Create or use a separate namespace when work introduces an independently checked app, package, service, or subproject. Give that project its own `.agents/grund.toml`, add it to the workspace root's `[workspace] members`, run `grund init` there, and set a stable `project_name`.
+Create or use a separate namespace when work introduces an independently checked app, package, service, or subproject. Give that project its own `grund.toml`, add it to the workspace root's `[workspace] members`, run `grund init` there, and set a stable `project_name`.
 
 Do not create a namespace for a regular module or component that still belongs to this project. Cite across namespaces as `§alias/<ID>` and run `grund check` from the workspace root.
 
@@ -101,8 +103,8 @@ Do not create a namespace for a regular module or component that still belongs t
 
 Cross-project citations use §alias/<ID>.
 
-- `forge` → [AGENTS.md](AGENTS.md)
-- `root` → [../AGENTS.md](../AGENTS.md)
+- [`forge`](AGENTS.md): Automation subproject that turns labeled issues into reviewed metadata pull requests
+- [`root`](../AGENTS.md): Repository for shared GraalVM reachability metadata, tests, and release infrastructure
 
 ### Declarations and citations
 
@@ -112,6 +114,27 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 
 - **Spec first.** For behavior or design changes, write or update the most-specific spec point before code.
 - **Cite as you write.** Place `§<ID>` at the point a claim or behavior is made — on the doc-comment for a whole behavior, inline beside the clause it enforces.
+- **Marker = live citation.** A `§`-prefixed token resolves and is checked wherever it appears — including inside Markdown backticks. To mention an ID without citing it, write `<§><ID>`, omit the marker, or use a fenced code block.
 - **Inline citation style.** Inline notes: ≤ 1 line preferred, hard cap 3 lines; ≤ 100 columns.
 - **Always cite the most-specific point.**
-- **Citations climb to reasons (grund.md).** Goals cite reasons, specs cite goals; architecture cites specs; code and executable tests cite specs.
+
+### Citation directions
+
+- **GOAL** must cite GRUND or GOAL.
+- **AR** must cite FS or GOAL.
+- **FS** must cite GOAL or FS.
+- **DW** must cite FS or AR.
+- **STRAT** should cite FS or AR or GOAL.
+- **ORCH** must cite FS or AR or STRAT.
+- **GIT** should cite FS or AR.
+- **WF** should cite FS or STRAT or ORCH or GIT.
+- **E2E** must cite FS or WF or ORCH.
+- **BENCH** must cite FS or AR or GOAL.
+- **ROADMAP** should cite GOAL or FS or AR.
+- **code** (any file outside a kind home) must cite FS or AR or DW or STRAT or ORCH or GIT or WF.
+Unlisted kinds and pairs are fine.
+
+### Clickable citations
+
+On repository web surfaces, link `§<ID>` to the PR branch in PR bodies, the reviewed commit in reviews, an exact commit for permalinks, and the default branch otherwise; fall back to plain when unsure.
+<!-- END GRUND MANAGED BLOCK -->

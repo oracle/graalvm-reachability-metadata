@@ -1,0 +1,108 @@
+{
+  "add_new_library_support:2026-06-26": {
+    "timestamp": "2026-06-26T20:10:12.446678Z",
+    "library": "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations-support:2.28.1-alpha",
+    "starting_commit": "2e12664a300edead0e9897c75584775a5d0ba6a8",
+    "ending_commit": "4af75bbd37f5d7c350b8b45134e637e4e134e60d",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "2.28.1-alpha",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 2,
+        "totalCalls": 2
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 24,
+          "missed": 1469,
+          "ratio": 0.016075,
+          "total": 1493
+        },
+        "line": {
+          "covered": 7,
+          "missed": 349,
+          "ratio": 0.019663,
+          "total": 356
+        },
+        "method": {
+          "covered": 3,
+          "missed": 121,
+          "ratio": 0.024194,
+          "total": 124
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8520,
+      "issue_label": "library-new-request",
+      "library": "io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations-support:2.28.1-alpha",
+      "summary": "Meaningful tests of the public support APIs need a direct compile-time dependency on opentelemetry-instrumentation-api because the target artifact publishes it only as a runtime dependency while public classes expose Instrumenter and AttributesExtractor types.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.opentelemetry.instrumentation:opentelemetry-instrumentation-api:2.28.1",
+          "scope": "testImplementation",
+          "reason": "opentelemetry-instrumentation-annotations-support public APIs include MethodSpanAttributesExtractor, which implements AttributesExtractor, and AsyncOperationEndSupport, which accepts Instrumenter. The resolved artifact's Gradle apiElements do not put opentelemetry-instrumentation-api on the test com\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "No Docker image, environment variable, or system property is indicated. Tests can exercise the library directly with custom test annotations/methods, SpanAttributesExtractor/MethodSpanAttributesExtractor parameter binding, AnnotationReflectionHelper, and CompletableFuture/CompletionStage async end support; a real OpenTelemetry collector or javaagent setup is not needed.",
+      "risks": [
+        "If generated tests only touch APIs that do not mention Instrumenter or AttributesExtractor, they may compile without the added dependency, but that would miss important public API coverage for this artifact.",
+        "Upstream tests use Mockito and OpenTelemetry SDK test helpers for convenience, but those are not required setup for the library itself."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.opentelemetry.instrumentation:opentelemetry-instrumentation-api:2.28.1",
+          "result": "applied",
+          "target": "tests/src/io.opentelemetry.instrumentation/opentelemetry-instrumentation-annotations-support/2.28.1-alpha/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8520 Support for io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations-support:2.28.1-alpha; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 46029,
+      "output_tokens_used": 6804,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations-support:2.28.1-alpha/library-preparation-preflight/pi-generation-2026-06-26T19-59-51-672311Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 50780,
+      "cached_input_tokens_used": 269312,
+      "output_tokens_used": 5388,
+      "iterations": 1,
+      "cost_usd": 0.2963,
+      "generated_loc": 65,
+      "tested_library_loc": 7,
+      "metadata_entries": 5,
+      "test_only_metadata_entries": 1,
+      "code_coverage_percent": 1.97
+    },
+    "artifacts": {
+      "test_file": "tests/src/io.opentelemetry.instrumentation/opentelemetry-instrumentation-annotations-support/2.28.1-alpha/src/test/java/io_opentelemetry_instrumentation/opentelemetry_instrumentation_annotations_support/AnnotationReflectionHelperTest.java",
+      "metadata_file": "metadata/io.opentelemetry.instrumentation/opentelemetry-instrumentation-annotations-support/2.28.1-alpha/reachability-metadata.json"
+    }
+  }
+}

@@ -19,9 +19,9 @@ Forge currently has three registered dynamic-access workflow engines:
 
 | Registered workflow | Role | Strategy examples |
 | --- | --- | --- |
-| `dynamic_access_iterative` | Per-class dynamic-access generation or refinement. It selects one uncovered class at a time, prompts with that class's remaining call sites, verifies coverage deltas, and commits resolved or partially resolved class progress (§WF-dynamic-access-iterative-strategy). | `dynamic_access_*`, `library_update_pi_gpt-5.5` |
-| `optimistic_dynamic_access` | Bulk dynamic-access generation or refinement. It gives the agent the full dynamic-access report and asks for a broad coverage pass, then verifies tests, regenerates the report, commits the attempt, and runs the native-test verification gate (§WF-dynamic-access-bulk-strategy). | `dynamic_access_bulk_*`, `dynamic_access_graphify_bulk_*`, `library_update_dynamic_access_bulk_pi_gpt-5.5` |
-| `increase_dynamic_access_coverage` | Composite coverage workflow. It optionally runs a configured primary workflow first, then runs the iterative dynamic-access phase against any remaining uncovered call sites (§WF-dynamic-access-composite-strategy). | `optimistic_dynamic_access_iterative_*`, `library_update_optimistic_pi_gpt-5.5`, Java-fix composite strategies |
+| `dynamic_access_iterative` | Per-class dynamic-access generation or refinement. It selects one uncovered class at a time, prompts with that class's remaining call sites, verifies coverage deltas, and commits resolved or partially resolved class progress (§WF-dynamic-access-iterative-strategy). | `dynamic_access_*`, `library_update_pi_gpt-5.6-sol` |
+| `optimistic_dynamic_access` | Bulk dynamic-access generation or refinement. It gives the agent the full dynamic-access report and asks for a broad coverage pass, then verifies tests, regenerates the report, commits the attempt, and runs the native-test verification gate (§WF-dynamic-access-bulk-strategy). | `dynamic_access_bulk_*`, `dynamic_access_graphify_bulk_*`, `library_update_dynamic_access_bulk_pi_gpt-5.6-sol` |
+| `increase_dynamic_access_coverage` | Composite coverage workflow. It optionally runs a configured primary workflow first, then runs the iterative dynamic-access phase against any remaining uncovered call sites (§WF-dynamic-access-composite-strategy). | `optimistic_dynamic_access_iterative_*`, `library_update_optimistic_pi_gpt-5.6-sol`, Java-fix composite strategies |
 
 All three engines are selected by predefined strategy bundles. The strategy
 bundle chooses the engine, agent, model, prompt templates, source-context
@@ -108,10 +108,15 @@ Dynamic-access workflows must fail when any of these conditions occur:
 5. Chunked mode reaches a chunk boundary but cannot pass the local
    CI-equivalent verification required for a reviewable chunk PR.
 
-Failures return `RUN_STATUS_FAILURE` and the driver resets the feature
-branch to the scaffold checkpoint. A composite workflow with a primary workflow
-preserves and returns the primary workflow failure instead of starting the
-dynamic-access coverage phase.
+Failures return `RUN_STATUS_FAILURE`. After iterative exploration has started,
+the engine resets the feature branch to the latest committed class checkpoint,
+or to the scaffold checkpoint when no class has been committed. The latest class
+commit is used because it is the last coherent checkpoint from which exploration
+can resume: it preserves accepted class progress and the corresponding
+exploration information while discarding the failing class's uncommitted work.
+Bulk exploration retains its scaffold checkpoint behavior. A composite workflow
+with a primary workflow preserves and returns the primary workflow failure
+instead of starting the dynamic-access coverage phase.
 
 ## 2. Inputs
 
@@ -128,7 +133,7 @@ driver may thread through.
 | Reachability repo path | `--reachability-metadata-path` (default: parent checkout of `forge/`) |
 | Strategy bundle | `--strategy-name <name>`, selecting one dynamic-access bundle |
 | Source-context types | strategy parameter `source-context-types`; downloaded into the agent's read-only context (§4) |
-| Native-test verification budget | strategy parameter `max-native-test-verification-iterations` (default 100) |
+| Native-test verification budget | strategy parameter `max-native-test-verification-iterations` (default 40) |
 
 ### 2.2 Iterative engine (`dynamic_access_iterative`)
 
@@ -192,8 +197,9 @@ The following preconditions are established by `add_new_library_support.main`
 5. `prepare_source_contexts(...)` has downloaded and extracted the artifacts
    declared by the strategy's `source-context-types`. Their files become the
    agent's read-only context.
-6. Scaffold commit recorded as `checkpoint_commit_hash`. Failure recovery
-   uses `git reset --hard <checkpoint_commit_hash>`.
+6. Scaffold commit recorded as `checkpoint_commit_hash`. It is the initial
+   failure-recovery checkpoint; iterative exploration advances recovery to each
+   committed class checkpoint.
 
 ## 5. State Model
 
@@ -209,6 +215,11 @@ State held for one strategy `run(...)` invocation, independent of chunking:
   again within the run.
 - `class_checkpoint` — git SHA captured before each class attempt; used to roll
   back a failed class iteration without losing previously committed classes.
+- `latest_class_checkpoint` — newest git SHA returned after committing resolved
+  or partial class progress, advanced again when a passing native-test gate
+  commits verified test fixes and durable metadata (§6.4) and when a terminal
+  class transition commits the chunk exhaust report; initialized to the scaffold
+  checkpoint and used by whole-phase failure recovery.
 - `prompt_iterations` — total agent prompts sent (returned to the caller as
   `global_iterations`).
 - `successful_classes` — count of classes that contributed at least one newly
@@ -229,7 +240,9 @@ runs never populate them (§WF-dynamic-access-exhaust-report):
 - `chunk_class_count` — maximum number of newly selected dynamic-access classes
   this chunk may process. `forge_metadata.py` computes it from the global class
   threshold and the number of unexhausted classes remaining. A class is never
-  split across chunks.
+  split across chunks. Failed-run continuation also records how many classes in
+  the active chunk already reached a terminal state, so the resumed invocation
+  receives only the remaining budget for that same chunk.
 
 ## 6. Workflow
 
@@ -270,7 +283,7 @@ flowchart TD
     Phase2 --> P2[See section 6.2]
 ```
 
-The fallback strategy is `basic_iterative_pi_gpt-5.5` (constant
+The fallback strategy is `basic_iterative_pi_gpt-5.6-sol` (constant
 `FALLBACK_STRATEGY_NAME` in `dynamic_access_iterative_strategy.py`). The
 fallback runs only when no usable dynamic-access guidance exists at the
 **start** of the run; once Phase 2 begins, a missing report mid-run is a hard
@@ -394,8 +407,9 @@ fields with the full dynamic-access report.
 
 A missing or unparsable `dynamic-access-coverage.json` after the initial
 phase is a hard failure: the workflow engine returns `RUN_STATUS_FAILURE` with
-the prompt-iteration count, and the workflow driver resets the branch to
-`checkpoint_commit_hash`.
+the prompt-iteration count, and the workflow engine resets the branch to the
+latest committed class checkpoint, falling back to `checkpoint_commit_hash`
+when no class has been committed.
 
 ### 6.4 Per-class native-test verification gate
 
@@ -439,7 +453,11 @@ Effects within this workflow:
    merged trace output is written to `<output_dir>/trace`. Only after the
    gate passes are existing durable metadata, staged agent metadata, and
    staged trace metadata merged into the durable
-   `metadata/<group>/<artifact>/<version>/` directory.
+   `metadata/<group>/<artifact>/<version>/` directory. A passing gate then
+   commits the coordinate's test sources (including any fixes the gate's
+   verification cycles applied) and the merged durable metadata, and advances
+   `latest_class_checkpoint` past both commits, so whole-phase failure
+   recovery never separates verified tests from the metadata they require.
 2. The dynamic-access coverage report is regenerated **after** the gate so
    that any call sites covered by JVM-agent, traced, or Codex-supplied metadata are
    reflected in the next class's prompt delta.
@@ -447,9 +465,10 @@ Effects within this workflow:
    (§WF-native-test-verification-gate).
    Native Image must always work; partial dynamic-access coverage with a
    broken `nativeTest` is not an acceptable terminal state. The entry
-   script resets the feature branch to `checkpoint_commit_hash`, records
-   the gate's `last_native_test_log_path` and `intervention_records` in
-   the run metrics, and exits non-zero.
+   script records the gate's `last_native_test_log_path` and
+   `intervention_records` in the run metrics, resets to the latest committed
+   class checkpoint (or the scaffold checkpoint before the first class commit),
+   and exits non-zero.
 4. Metadata remains cumulative across chunks. The gate's final durable merge
    includes any existing durable metadata from prior merged chunk PRs and the
    staged metadata generated for the current chunk.
@@ -469,7 +488,7 @@ flowchart TD
 
     PhaseOK --> Final[Workflow engine returns RUN_STATUS_SUCCESS]
     KeepOK --> Final
-    PhaseFail --> Reset[git reset --hard checkpoint_commit_hash]
+    PhaseFail --> Reset[git reset --hard latest_class_checkpoint]
     Reset --> FinalFail[Workflow engine returns RUN_STATUS_FAILURE]
 
     Final --> EntryFinalize[add_new_library_support.main]
@@ -519,7 +538,9 @@ whether to invoke the normal workflow or the chunked workflow:
 
 1. Claim the issue normally and keep the project item in `In Progress`.
 2. Run setup far enough to generate or refresh the dynamic-access report for
-   the target coordinate.
+   the target coordinate. For new-library issues, this setup first applies the
+   Native Image eligibility gate and stops before scaffold when the artifact is
+   marked `not-for-native-image` (§WF-forge-workflow-drivers).
 3. If the number of uncovered classes is within the configured threshold, invoke
    the normal orchestration script without chunk flags.
 4. If the uncovered class count is greater than the threshold, add the
@@ -533,7 +554,10 @@ whether to invoke the normal workflow or the chunked workflow:
 6. The workflow loads the exhaust report from the coordinate-derived persistent
    location, regenerates the current dynamic-access report from the checked-out
    base, and selects the next uncovered classes not present in the exhaust
-   report (§WF-dynamic-access-exhaust-report).
+   report (§WF-dynamic-access-exhaust-report). If this is a failed-run resume
+   with a continuation marker but no coordinate-local exhaust report, the
+   dispatcher uses `explore.exhaustedClasses` from the marker as the processed
+   class set for that resumed invocation (§FS-forge-run-continuation.2).
 7. The workflow processes at most the current chunk class count. Each selected
    class owns all of its dynamic-access call sites; call sites inside one class
    must not be split across chunks.
@@ -542,8 +566,10 @@ whether to invoke the normal workflow or the chunked workflow:
    chunk PR using the linking contract in
    §WF-chunked-dynamic-access-pr-linking.
 9. The issue project status controls continuation: `Todo` means Forge may claim
-   the next chunk, `In Progress` means the current chunk is active. No separate
-   ready/in-progress chunk labels are required.
+   the next chunk, `In Progress` means the current chunk is active. A non-final
+   chunk PR with failed CI is no longer an active chunk after Forge exhausts
+   available reruns; Forge releases the issue back to `Todo` and marks that PR
+   for human follow-up. No separate ready/in-progress chunk labels are required.
 10. Before resuming, Forge verifies that the latest recorded chunk PR commit is
     present in the base branch (§WF-dynamic-access-exhaust-report).
 
@@ -554,7 +580,10 @@ chunk to the issue without completing it unless the chunk is final. Chunk PRs
 carry the `chunked-dynamic-access` label. Non-final chunk PRs use
 `Refs: #<issue>` and commit the exhaust-report state required for the next run
 to skip classes already completed, skipped, exhausted, or failed. Only the final
-chunk PR may use `Fixes: #<issue>` and move the issue to `Done`.
+chunk PR may use `Fixes: #<issue>` and move the issue to `Done`. If a non-final
+chunk PR has failed CI and no eligible failed GitHub Actions job remains to
+rerun, Forge releases the linked issue back to `Todo` so a replacement chunk can
+be generated.
 
 #### WF-dynamic-access-exhaust-report: Dynamic-access exhaust report
 
@@ -566,11 +595,19 @@ reprocessing classes and to resume safely:
 - completed/skipped/exhausted/failed class names
 - latest chunk PR number and commit
 
+Each terminal class transition (completed, skipped, exhausted, or failed)
+commits the updated exhaust report and advances `latest_class_checkpoint` past
+that commit, so a later whole-phase failure reset (§WF-dynamic-access-fallback-and-failure)
+preserves the recorded chunk state instead of resurrecting an already-processed
+class.
+
 It does not store a precomputed chunk manifest. Every resume regenerates the
 dynamic-access report and filters out classes recorded in the exhaust report.
 The exhaust report path is not passed as an explicit resume-state argument. It
 is derived from the coordinate and stored persistently with the library test
 suite so that each merged chunk carries the state needed by the next run.
+Failed-run continuation can resume without this file when the preserved
+continuation marker already records the processed dynamic-access classes.
 Global repository stats remain authoritative: `generateLibraryStats` reports
 dynamic-access coverage against the full current dynamic-access surface, while
 the chunk PR body may additionally report how many classes were processed in
@@ -628,7 +665,11 @@ support iff **all** requirements for its selected engine hold at exit:
    `RUN_STATUS_CHUNK_READY` only after local CI-equivalent verification passed
    (§FS-local-ci-equivalent-verification).
 8. The scaffold-placeholder quality gate
-   (`cleanup_scaffold_placeholder_tests`) leaves no remaining placeholders.
+   (`cleanup_scaffold_placeholder_tests`) deletes pure scaffold placeholder test
+   files and removes scaffold-shaped placeholder test blocks from mixed generated
+   test files regardless of whether they were added by the current resume
+   checkpoint, then leaves no remaining scaffold-shaped placeholders in
+   generated test sources.
 9. The generated-test validity gate (`collect_generated_test_validity_issues`)
    found no generated test that codifies a known version-specific broken-behavior
    path (for example asserting an exception the issue describes as a defect);
@@ -636,5 +677,7 @@ support iff **all** requirements for its selected engine hold at exit:
    behavior were correct.
 10. The metrics record validates against the active schema.
 
-Any deviation produces `RUN_STATUS_FAILURE` and a feature branch reset to the
-scaffold checkpoint.
+Any deviation produces `RUN_STATUS_FAILURE`. Iterative exploration resets to
+the latest committed class checkpoint, or to the scaffold checkpoint if no
+class progress was committed; other dynamic-access engines retain their
+specified recovery behavior.

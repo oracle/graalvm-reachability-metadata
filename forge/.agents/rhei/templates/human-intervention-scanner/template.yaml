@@ -1,6 +1,6 @@
 name: human-intervention-scanner
-version: 1.1.0
-description: One recurring task scans human-intervention GitHub PRs or issues, groups them by root cause into a report, and then opens one tracking issue per group.
+version: 2.0.0
+description: Scan human-intervention GitHub PRs or issues, group common causes, investigate current repository system causes per group, and open tracking issues only when current codebase evidence supports them.
 
 inputs:
   - name: repo
@@ -19,6 +19,12 @@ inputs:
     description: Maximum open items inspected in one scan pass.
     type: number
     default: 20
+    validate: "[1-9][0-9]*"
+
+  - name: min_group_size
+    description: Minimum number of source items required before a group gets an investigation task.
+    type: number
+    default: 2
     validate: "[1-9][0-9]*"
 
   - name: base_sleep
@@ -45,11 +51,16 @@ inputs:
     default: rhei
 
   - name: scanner_agent
-    description: Execution target for the scan state that fetches items, clusters them into root-cause groups, and writes the report.
+    description: Execution target for the scan state that fetches items, clusters common causes, writes group files, and generates investigation tasks.
+    type: string
+    default: codex[yolo]:openai:gpt-5.5
+
+  - name: investigator_agent
+    description: Execution target for generated group tasks that search the current codebase for a still-current system problem.
     type: string
     default: codex[yolo]:openai:gpt-5.5
 
   - name: opener_agent
-    description: Execution target for the open state that reads the report and files one tracking issue per group.
+    description: Execution target for the open state that creates or reuses a GitHub issue only after investigation wrote an issue body.
     type: string
     default: codex[yolo]:openai:gpt-5.5

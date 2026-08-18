@@ -232,9 +232,9 @@ class Play_functional_3Test {
         Codec(input => f1(codec.parse(input)), value => codec.print(f2(value)))
     }
 
-    val readerExtractor: VariantExtractor[Reader] = VariantExtractor.functor(readerFunctor)
-    val printerExtractor: VariantExtractor[Printer] = VariantExtractor.contravariantFunctor(printerContravariant)
-    val codecExtractor: VariantExtractor[Codec] = VariantExtractor.invariantFunctor(codecInvariant)
+    val readerExtractor: VariantExtractor[Reader] = VariantExtractor.functor(using readerFunctor)
+    val printerExtractor: VariantExtractor[Printer] = VariantExtractor.contravariantFunctor(using printerContravariant)
+    val codecExtractor: VariantExtractor[Codec] = VariantExtractor.invariantFunctor(using codecInvariant)
 
     val readerResult: String = readerExtractor match {
       case FunctorExtractor(functor) =>

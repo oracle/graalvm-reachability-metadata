@@ -175,7 +175,7 @@ jobs:
             await github.rest.issues.createComment({ owner, repo, issue_number, body });
             await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
 
-      - name: "Check if library/version is already supported by the repository"
+      - name: "Check whether the request is already covered by the repository"
         if: ${{ steps.classify.outputs.should_triage == 'true' && steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' }}
         id: support
         env:
@@ -188,10 +188,15 @@ jobs:
           STATUS=$?
           set -e
           echo "$OUTPUT"
-          if grep -qF "is supported" <<<"$OUTPUT"; then
+          if grep -q '^STATUS=supported$' <<<"$OUTPUT"; then
             echo "supported=true" >> "$GITHUB_OUTPUT"
           else
             echo "supported=false" >> "$GITHUB_OUTPUT"
+          fi
+          if grep -q '^STATUS=not-for-native-image$' <<<"$OUTPUT"; then
+            echo "not_for_native_image=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "not_for_native_image=false" >> "$GITHUB_OUTPUT"
           fi
           echo "exit_code=$STATUS" >> "$GITHUB_OUTPUT"
 
@@ -215,8 +220,154 @@ jobs:
             await github.rest.issues.createComment({ owner, repo, issue_number, body });
             await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
 
+      - name: "Close issue - artifact is already marked not-for-native-image"
+        if: ${{ steps.classify.outputs.should_triage == 'true' && steps.support.outputs.not_for_native_image == 'true' }}
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        env:
+          COORDS: ${{ steps.extract.outputs.coords }}
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = context.issue.number;
+            const coords = process.env.COORDS || "";
+            const body = [
+              `Automated triage: The requested artifact (${coords}) is already recorded by the GraalVM Reachability Metadata repository as \`not-for-native-image\`.`,
+              "",
+              "Closing this issue because the repository already tracks that this artifact is intentionally not a native-image metadata target.",
+              "If you believe this classification is wrong, please reopen the issue with additional details.",
+              "Note: Reopening will not re-run automation; maintainers will review manually."
+            ].join("\n");
+            await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
+
+      # Closed-world search over the repositories the test builds configure: a miss proves
+      # absence from those repositories only, never that the artifact does not exist, so
+      # only a definite 404 from every one of them closes an issue. §CI-triage-new-issues
+      - name: "Check whether the artifact resolves from a configured repository"
+        if: ${{ steps.classify.outputs.should_triage == 'true' && steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' && steps.support.outputs.supported != 'true' && steps.support.outputs.not_for_native_image != 'true' }}
+        id: resolvable
+        env:
+          COORDS: ${{ steps.extract.outputs.coords }}
+        run: |
+          set -Eeuo pipefail
+
+          # Keep in sync with the repositories block in
+          # tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck.gradle
+          # (mavenLocal() is intentionally omitted; it is always empty on a CI runner).
+          REPOSITORIES=(
+            "https://repo.maven.apache.org/maven2"
+            "https://packages.confluent.io/maven"
+          )
+
+          GROUP="${COORDS%%:*}"
+          REST="${COORDS#*:}"
+          ARTIFACT="${REST%%:*}"
+          VERSION="${REST##*:}"
+          GROUP_PATH="${GROUP//.//}"
+
+          # Returns the HTTP status, or 000 when the request never completed.
+          probe() {
+            curl --silent --show-error --location \
+                 --head --fail-early \
+                 --max-time 20 --retry 2 --retry-connrefused \
+                 --output /dev/null --write-out '%{http_code}' \
+                 "$1" 2>/dev/null || true
+          }
+
+          # Every outcome below rests on proof: a definite 404 from every repository to
+          # claim absence, a 200 to claim existence. A 5xx, a 401/403, or a transport
+          # failure proves neither, so the issue continues through triage uncommented.
+          version_absent="true"
+          artifact_absent="true"
+          artifact_found="false"
+
+          for BASE in "${REPOSITORIES[@]}"; do
+            POM_URL="${BASE}/${GROUP_PATH}/${ARTIFACT}/${VERSION}/${ARTIFACT}-${VERSION}.pom"
+            METADATA_URL="${BASE}/${GROUP_PATH}/${ARTIFACT}/maven-metadata.xml"
+
+            POM_STATUS="$(probe "$POM_URL")"
+            echo "  ${POM_STATUS}  ${POM_URL}"
+            if [[ "$POM_STATUS" != "404" ]]; then
+              # Resolved, or unproven; either way there is nothing left to establish.
+              version_absent="false"
+              break
+            fi
+
+            METADATA_STATUS="$(probe "$METADATA_URL")"
+            echo "  ${METADATA_STATUS}  ${METADATA_URL}"
+            if [[ "$METADATA_STATUS" == "200" ]]; then
+              artifact_found="true"
+            elif [[ "$METADATA_STATUS" != "404" ]]; then
+              artifact_absent="false"
+            fi
+          done
+
+          if [[ "$version_absent" != "true" ]]; then
+            echo "Nothing proven about $COORDS; continuing triage."
+            echo "outcome=none" >> "$GITHUB_OUTPUT"
+          elif [[ "$artifact_found" == "true" ]]; then
+            echo "$GROUP:$ARTIFACT exists but version $VERSION was not found."
+            echo "outcome=version-missing" >> "$GITHUB_OUTPUT"
+          elif [[ "$artifact_absent" == "true" ]]; then
+            echo "$COORDS was not found in any configured repository."
+            echo "outcome=unresolvable" >> "$GITHUB_OUTPUT"
+          else
+            echo "Nothing proven about $GROUP:$ARTIFACT; continuing triage."
+            echo "outcome=none" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: "Close issue - artifact version not found in a configured repository"
+        if: ${{ steps.resolvable.outputs.outcome == 'version-missing' }}
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        env:
+          COORDS: ${{ steps.extract.outputs.coords }}
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = context.issue.number;
+            const coords = process.env.COORDS || "";
+            const [group, artifact, version] = coords.split(":");
+            const body = [
+              `Automated triage: \`${group}:${artifact}\` was found, but version \`${version}\` is not published to any repository this project builds against (Maven Central, Confluent).`,
+              "",
+              "This usually means the version in the issue title has a typo, or it has not been released yet.",
+              "",
+              `Please open a new request with a published version of \`${group}:${artifact}\` in the title.`,
+              "",
+              "If these coordinates are valid and this triage is wrong, please reply here and we will take another look."
+            ].join("\n");
+            await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
+
+      - name: "Close issue - artifact is not available in any configured repository"
+        if: ${{ steps.resolvable.outputs.outcome == 'unresolvable' }}
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        env:
+          COORDS: ${{ steps.extract.outputs.coords }}
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = context.issue.number;
+            const coords = process.env.COORDS || "";
+            const body = [
+              `Automated triage: \`${coords}\` could not be resolved from any repository this project builds against (Maven Central, Confluent).`,
+              "",
+              "Metadata in this repository is always shipped together with a test that resolves the library and runs in CI on every change. When we cannot download the artifact, we cannot build that test, and we cannot re-verify the metadata as new versions are released, so we are unable to support the coordinates as requested.",
+              "",
+              "**If this artifact is published to a public repository we do not yet configure**, please reply with the repository URL and we will consider adding it.",
+              "",
+              "**If this artifact is private or internal**, we cannot access it, but you can generate the metadata yourself: run your application with the tracing agent and place the generated configuration in your application's `META-INF/native-image` directory. See https://www.graalvm.org/latest/reference-manual/native-image/metadata/AutomaticMetadataCollection/",
+              "",
+              "**If your native image fails inside a public library** that this private artifact depends on, please open a request for that library's coordinates and include the error, which we can act on."
+            ].join("\n");
+            await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
+
       - name: "Mark issue eligible for dependency graph expansion"
-        if: ${{ steps.classify.outputs.should_triage == 'true' && steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' && steps.support.outputs.supported != 'true' }}
+        if: ${{ steps.classify.outputs.should_triage == 'true' && steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' && steps.support.outputs.supported != 'true' && steps.support.outputs.not_for_native_image != 'true' && steps.resolvable.outputs.outcome != 'unresolvable' && steps.resolvable.outputs.outcome != 'version-missing' }}
         id: expand
         run: |
           set -Eeuo pipefail

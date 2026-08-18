@@ -19,6 +19,7 @@ _FORGE_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(_FORGE_ROOT))
 
 from ai_workflows.core.fix_metadata_codex import run_codex_metadata_fix  # noqa: E402
+from utility_scripts.host_requirements import GRAALVM_SCHEMA_PATH  # noqa: E402
 
 
 class FixMetadataCodexTests(unittest.TestCase):
@@ -28,8 +29,7 @@ class FixMetadataCodexTests(unittest.TestCase):
         _make_complete_reachability_repo(self.repo)
         self.graalvm_home = tempfile.mkdtemp(prefix="graalvm-")
         self.addCleanup(shutil.rmtree, self.graalvm_home, ignore_errors=True)
-        os.makedirs(os.path.join(self.graalvm_home, "bin"))
-        Path(self.graalvm_home, "bin", "native-image").write_text("#!/usr/bin/env sh\n", encoding="utf-8")
+        _make_forge_usable_graalvm(self.graalvm_home)
 
     def test_pins_codex_environment_and_instructions_to_resolved_graalvm(self) -> None:
         calls: list[tuple[list[str], dict]] = []
@@ -69,8 +69,7 @@ class FixMetadataCodexTests(unittest.TestCase):
     def test_explicit_graalvm_home_overrides_base_environment_for_codex(self) -> None:
         inherited_graalvm = tempfile.mkdtemp(prefix="inherited-graalvm-")
         self.addCleanup(shutil.rmtree, inherited_graalvm, ignore_errors=True)
-        os.makedirs(os.path.join(inherited_graalvm, "bin"))
-        Path(inherited_graalvm, "bin", "native-image").write_text("", encoding="utf-8")
+        _make_forge_usable_graalvm(inherited_graalvm)
         calls: list[tuple[list[str], dict]] = []
 
         def fake_run(cmd, **kwargs):  # type: ignore[no-untyped-def]
@@ -101,6 +100,18 @@ def _developer_instructions_from(cmd: list[str]) -> str:
         if part == "-c" and cmd[index + 1].startswith("developer_instructions="):
             return json.loads(cmd[index + 1].split("=", 1)[1])
     raise AssertionError(f"developer_instructions not found in command: {cmd}")
+
+
+def _make_forge_usable_graalvm(path: str) -> None:
+    """Create a GraalVM home that satisfies `check_graalvm_installation`."""
+    os.makedirs(os.path.join(path, "bin"), exist_ok=True)
+    for executable in ("java", "native-image"):
+        executable_path = Path(path, "bin", executable)
+        executable_path.write_text("#!/usr/bin/env sh\n", encoding="utf-8")
+        executable_path.chmod(0o755)
+    schema_path = Path(path, GRAALVM_SCHEMA_PATH)
+    schema_path.parent.mkdir(parents=True, exist_ok=True)
+    schema_path.write_text("{}\n", encoding="utf-8")
 
 
 def _make_complete_reachability_repo(path: str) -> None:

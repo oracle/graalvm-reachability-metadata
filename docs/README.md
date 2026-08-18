@@ -24,15 +24,15 @@ it owns its own motivation, goals, spec, and architecture under
 
 Documents are organized by grund *kind*. A kind groups facts of one type and has
 a fixed *home* — a single file or a folder — declared in
-[../.agents/grund.toml](../.agents/grund.toml). An ID always lives in its kind's
+[../grund.toml](../grund.toml). An ID always lives in its kind's
 home, so the prefix tells you which file to open.
 
 | Kind | Home | Holds |
 | --- | --- | --- |
 | `GRUND` | [grund.md](grund.md) | Why the repository exists — the motivation everything climbs back to. |
 | `GOAL` | [goals.md](goals.md) | Where the repository is headed — measurable outcome goals. |
-| `FS` | [functional-spec.md](functional-spec.md) | What the system must do — behavior, requirements, and how it is used. |
-| `AR` | [architecture.md](architecture.md), [build-infra.md](build-infra.md) | How the repository is structured and how the build is wired. |
+| `FS` | [functional-spec/README.md](functional-spec/README.md) | What the system must do — behavior, requirements, and how it is used. |
+| `AR` | [architecture/README.md](architecture/README.md), [architecture/build-infra.md](architecture/build-infra.md) | How the repository is structured and how the build is wired. |
 | `TCK` | [tck.md](tck.md) | The Gradle test harness task groups. |
 | `E2E` | [e2e.md](e2e.md) | The infrastructure end-to-end tests (`testInfra`/`testAllInfra`). |
 | `CI` | [ci.md](ci.md) | Recurring CI workflows, composite actions, and shared scripts. |
@@ -48,9 +48,10 @@ all of its IDs in that one file.
 
 - [grund.md](grund.md) — `GRUND-repository-motivation`: why this repository exists.
 - [goals.md](goals.md) — the outcome goals: tested metadata, broad version coverage, fresh releases, and no regressions.
-- [functional-spec.md](functional-spec.md) — `FS-repository-functional-spec`: the system's behavior, requirements, the native-build-tools interface contract, library-version compatibility automation, and how each audience uses the repository.
-- [architecture.md](architecture.md) — `AR-repository-architecture`: the component map and high-level implementation overview.
-- [build-infra.md](build-infra.md) — `AR-build-infrastructure`: the two-layer Gradle build, convention plugins, and scaffolding.
+- [functional-spec/README.md](functional-spec/README.md) — `FS-repository-functional-spec`: the system's behavior, requirements, the native-build-tools interface contract, library-version compatibility automation, and how each audience uses the repository.
+- [functional-spec/repository-status.md](functional-spec/repository-status.md) — `FS-repository-status-report`: issue progress measurements and their HTML/JSON representations.
+- [architecture/README.md](architecture/README.md) — `AR-repository-architecture`: the component map and high-level implementation overview.
+- [architecture/build-infra.md](architecture/build-infra.md) — `AR-build-infrastructure`: the two-layer Gradle build, convention plugins, and scaffolding.
 - [tck.md](tck.md) — `TCK-test-harness`: the harness task groups.
 - [e2e.md](e2e.md) — `E2E-infrastructure-tests`: `testInfra` and `testAllInfra`.
 - [ci.md](ci.md) — `CI-repository-ci` and one citable declaration per workflow, action, and script.
@@ -119,7 +120,7 @@ Always cite the most specific point that supports the claim, and keep inline
 notes short (≤ 1 line preferred, ≤ 100 columns).
 
 Only `§`-prefixed tokens are checked — `[reference] strict = true` in
-[../.agents/grund.toml](../.agents/grund.toml) — so a bare ID-shaped word in
+[../grund.toml](../grund.toml) — so a bare ID-shaped word in
 prose is ignored.
 
 ### Reading a citation

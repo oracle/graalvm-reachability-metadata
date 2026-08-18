@@ -1,0 +1,35 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+boolean dynamicAccessReportRequested = gradle.startParameter.taskNames.any { String taskName ->
+    taskName == "generateDynamicAccessReport" || taskName.endsWith(":generateDynamicAccessReport")
+}
+
+dependencies {
+    testImplementation("org.mongodb.morphia:morphia:$libraryVersion") {
+        exclude group: 'cglib'
+    }
+    if (dynamicAccessReportRequested) {
+        testRuntimeOnly 'cglib:cglib-nodep:3.3.0'
+    }
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

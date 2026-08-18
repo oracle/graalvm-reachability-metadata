@@ -1,0 +1,55 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org.graalvm.internal.tck.harness.tasks;
+
+import java.io.File;
+import java.util.List;
+import java.util.Objects;
+
+import org.graalvm.internal.tck.utils.BaseLayerUtils;
+
+/**
+ * Task that runs native tests with the shared Native Image base layer.
+ * <p>
+ * Implements §TCK-test-harness.3 — the LayerUse test lane.
+ */
+@SuppressWarnings("unused")
+public abstract class SharedLayerTestInvocationTask extends TestInvocationTask {
+    private static final String CONTINUE_ON_COORDINATE_FAILURE_PROPERTY = "tck.layered.continueOnCoordinateFailure";
+    private static final String COORDINATE_FAILURE_REPORT_PROPERTY = "tck.layered.coordinateFailureReport";
+
+    @Override
+    public List<String> commandFor(String coordinates) {
+        List<String> command = super.commandFor(coordinates);
+        command.add("-Ptck.baseLayerFile=" + baseLayerFileFor(coordinates).getAbsolutePath());
+        return command;
+    }
+
+    protected File baseLayerFileFor(String coordinates) {
+        return BaseLayerUtils.resolveBaseLayerFile(getProject());
+    }
+
+    @Override
+    protected String errorMessageFor(String coordinates, int exitCode) {
+        return "Shared layer test for " + coordinates + " failed with exit code " + exitCode + ".";
+    }
+
+    @Override
+    protected boolean continueOnCoordinateFailure() {
+        Object continueOnFailure = getProject().findProperty(CONTINUE_ON_COORDINATE_FAILURE_PROPERTY);
+        return Boolean.parseBoolean(Objects.toString(continueOnFailure, "false"));
+    }
+
+    @Override
+    protected File coordinateFailureReportFile() {
+        Object reportPath = getProject().findProperty(COORDINATE_FAILURE_REPORT_PROPERTY);
+        if (reportPath == null) {
+            return null;
+        }
+        return getProject().file(reportPath.toString());
+    }
+}

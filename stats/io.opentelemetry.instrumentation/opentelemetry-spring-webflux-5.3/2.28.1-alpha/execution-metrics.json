@@ -1,0 +1,119 @@
+{
+  "add_new_library_support:2026-06-26": {
+    "timestamp": "2026-06-26T14:50:52.245717Z",
+    "library": "io.opentelemetry.instrumentation:opentelemetry-spring-webflux-5.3:2.28.1-alpha",
+    "starting_commit": "5062d9810aa70f80eb8d3324ec5b9b03cc5a2f96",
+    "ending_commit": "58030b872178ec18280df0d5bd077ae8f1b3690a",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "2.28.1-alpha",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 349,
+          "missed": 784,
+          "ratio": 0.308032,
+          "total": 1133
+        },
+        "line": {
+          "covered": 109,
+          "missed": 238,
+          "ratio": 0.314121,
+          "total": 347
+        },
+        "method": {
+          "covered": 37,
+          "missed": 73,
+          "ratio": 0.336364,
+          "total": 110
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8545,
+      "issue_label": "library-new-request",
+      "library": "io.opentelemetry.instrumentation:opentelemetry-spring-webflux-5.3:2.28.1-alpha",
+      "summary": "The artifact's published dependencies are only OpenTelemetry/Reactor instrumentation APIs, while its documented and bytecode-level use requires a Spring WebFlux 5.3 application library on the test classpath.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-webflux:5.3.39",
+          "scope": "testImplementation",
+          "reason": "The library instruments Spring WebFlux WebClient/WebFilter types but does not transitively bring Spring WebFlux; the upstream README says this artifact should already be present in the application."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-test:5.3.39",
+          "scope": "testImplementation",
+          "reason": "Provides in-process mock reactive server request/exchange utilities so server WebFilter behavior can be exercised without a real server or Docker service."
+        }
+      ],
+      "agent_guidance": "No Docker image, environment variable, or system property is required. Prefer in-process WebClient filter and WebFilter coverage; do not require the OpenTelemetry Java agent.",
+      "risks": [
+        "Keep Spring dependencies on the 5.3.x line because this artifact is specifically the Spring WebFlux 5.3 instrumentation.",
+        "Local Gradle and Native Image verification remain authoritative for whether additional test-only helpers are needed."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-webflux:5.3.39",
+          "result": "applied",
+          "target": "tests/src/io.opentelemetry.instrumentation/opentelemetry-spring-webflux-5.3/2.28.1-alpha/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-test:5.3.39",
+          "result": "applied",
+          "target": "tests/src/io.opentelemetry.instrumentation/opentelemetry-spring-webflux-5.3/2.28.1-alpha/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8545 Support for io.opentelemetry.instrumentation:opentelemetry-spring-webflux-5.3:2.28.1-alpha; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 80568,
+      "output_tokens_used": 8442,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/io.opentelemetry.instrumentation:opentelemetry-spring-webflux-5.3:2.28.1-alpha/library-preparation-preflight/pi-generation-2026-06-26T14-34-55-917823Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 176417,
+      "cached_input_tokens_used": 1455616,
+      "output_tokens_used": 15880,
+      "iterations": 2,
+      "cost_usd": 1.2042,
+      "generated_loc": 88,
+      "tested_library_loc": 109,
+      "metadata_entries": 15,
+      "code_coverage_percent": 31.41
+    },
+    "artifacts": {
+      "test_file": "tests/src/io.opentelemetry.instrumentation/opentelemetry-spring-webflux-5.3/2.28.1-alpha/src/test/java/io_opentelemetry_instrumentation/opentelemetry_spring_webflux_5_3/HeaderUtilTest.java",
+      "metadata_file": "metadata/io.opentelemetry.instrumentation/opentelemetry-spring-webflux-5.3/2.28.1-alpha/reachability-metadata.json"
+    }
+  }
+}

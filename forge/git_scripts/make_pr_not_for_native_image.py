@@ -22,6 +22,7 @@ from git_scripts.pr_publication import (
     BASE_BRANCH,
     REPO,
     REVIEWERS,
+    bound_pr_body,
     publish_branch,
 )
 from utility_scripts.metadata_index import get_not_for_native_image_marker
@@ -100,7 +101,7 @@ def create_pull_request(
         "gh", "pr", "create",
         "--repo", REPO,
         "--title", title,
-        "--body", body,
+        "--body", bound_pr_body(body),
         "--base", BASE_BRANCH,
         "--head", f"{origin_owner}:{branch}",
         "--label", "GenAI",

@@ -22,7 +22,7 @@ class Unroll_annotation_3Test {
   }
 
   @Test
-  def methodAnnotationsPreserveDefaultAndNamedArgumentSemantics(): Unit = {
+  def methodParameterAnnotationsPreserveDefaultAndNamedArgumentSemantics(): Unit = {
     val formatter: AnnotatedFormatter = AnnotatedFormatter("item")
 
     assertEquals("item:3:active", formatter.render())
@@ -33,7 +33,7 @@ class Unroll_annotation_3Test {
   }
 
   @Test
-  def classAndConstructorAnnotationsPreservePublicConstruction(): Unit = {
+  def publicConstructionAndMethodDefaultsRemainUsable(): Unit = {
     val defaultGreeter: AnnotatedGreeter = new AnnotatedGreeter()
     val excitedGreeter: AnnotatedGreeter = new AnnotatedGreeter(greeting = "Welcome", punctuation = "!!!")
 
@@ -44,7 +44,7 @@ class Unroll_annotation_3Test {
   }
 
   @Test
-  def secondaryConstructorAnnotationPreservesDefaultedConstruction(): Unit = {
+  def secondaryConstructorPreservesDefaultedConstruction(): Unit = {
     val defaultTask: AnnotatedTask = new AnnotatedTask("index")
     val sizedTask: AnnotatedTask = new AnnotatedTask("batch", itemCount = 8)
     val priorityTask: AnnotatedTask = new AnnotatedTask("deploy", priority = true)
@@ -57,7 +57,7 @@ class Unroll_annotation_3Test {
   }
 
   @Test
-  def caseClassAnnotationPreservesCompanionCopyAndProductBehavior(): Unit = {
+  def caseClassPreservesCompanionCopyAndProductBehavior(): Unit = {
     val defaultOrder: AnnotatedOrder = AnnotatedOrder()
     val rushOrder: AnnotatedOrder = defaultOrder.copy(quantity = 4, expedited = true)
 
@@ -81,9 +81,9 @@ class Unroll_annotation_3Test {
   }
 
   @Test
-  def abstractMethodParameterAnnotationPreservesTraitDefaultsAndDispatch(): Unit = {
-    val prefixed: AnnotatedRouteFormatter = PrefixedRouteFormatter("api")
-    val versioned: AnnotatedRouteFormatter = PrefixedRouteFormatter("v2")
+  def finalMethodParameterAnnotationPreservesDefaultsAndNamedArguments(): Unit = {
+    val prefixed: PrefixedRouteFormatter = PrefixedRouteFormatter("api")
+    val versioned: PrefixedRouteFormatter = PrefixedRouteFormatter("v2")
 
     assertEquals("api:https:/orders:200:json", prefixed.route("/orders"))
     assertEquals("api:https:/orders:404:json", prefixed.route("/orders", status = 404))
@@ -94,22 +94,18 @@ class Unroll_annotation_3Test {
 }
 
 final class AnnotatedFormatter(private val defaultLabel: String) {
-  @unroll
-  def render(label: String = defaultLabel, count: Int = 3, enabled: Boolean = true): String = {
+  def render(label: String = defaultLabel, @unroll count: Int = 3, enabled: Boolean = true): String = {
     val state: String = if enabled then "active" else "archived"
 
     s"$label:$count:$state"
   }
 }
 
-@unroll
-final class AnnotatedGreeter @unroll (val greeting: String = "Hello", val punctuation: String = "!") {
-  @unroll
-  def greet(name: String = "world"): String = s"$greeting, $name$punctuation"
+final class AnnotatedGreeter(val greeting: String = "Hello", val punctuation: String = "!") {
+  def greet(@unroll name: String = "world"): String = s"$greeting, $name$punctuation"
 }
 
 final class AnnotatedTask(val name: String, val itemCount: Int, val category: String) {
-  @unroll
   def this(name: String, itemCount: Int = 1, priority: Boolean = false) = {
     this(name, itemCount, if priority then "priority" else "normal")
   }
@@ -117,28 +113,21 @@ final class AnnotatedTask(val name: String, val itemCount: Int, val category: St
   def description: String = s"$name:$itemCount:$category"
 }
 
-@unroll
 final case class AnnotatedOrder(product: String = "notebook", quantity: Int = 1, expedited: Boolean = false) {
-  @unroll
-  def summary(unit: String = product, amount: Int = quantity): String = {
+  def summary(unit: String = product, @unroll amount: Int = quantity): String = {
     val shipping: String = if expedited then "expedited" else "standard"
 
     s"$unit x $amount ($shipping)"
   }
 }
 
-@unroll
 final case class AnnotatedBox[A](value: A, label: String = "value") {
-  @unroll
-  def describe(render: A => String, label: String = this.label): String = s"$label=${render(value)}"
+  def describe(render: A => String, @unroll label: String = this.label): String = s"$label=${render(value)}"
 }
 
-trait AnnotatedRouteFormatter {
+final case class PrefixedRouteFormatter(prefix: String) {
   def route(path: String, status: Int = 200, @unroll secure: Boolean = true, suffix: String = "json"): String
-}
-
-final case class PrefixedRouteFormatter(prefix: String) extends AnnotatedRouteFormatter {
-  override def route(path: String, status: Int, secure: Boolean, suffix: String): String = {
+  = {
     val scheme: String = if secure then "https" else "http"
 
     s"$prefix:$scheme:$path:$status:$suffix"

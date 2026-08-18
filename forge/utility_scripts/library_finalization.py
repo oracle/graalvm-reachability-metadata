@@ -19,10 +19,13 @@ from utility_scripts.native_image_config_policy import (
 )
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
+from utility_scripts.task_logs import build_timestamped_task_log_path, display_log_path
 from utility_scripts.test_quality_checks import (
     collect_generated_test_validity_issues,
     format_generated_test_validity_issue,
 )
+
+CODEX_CHECK_METADATA_TIMEOUT_SECONDS = 1200
 
 
 def _run_gradle_command_with_output(repo_path: str, command: list[str]) -> subprocess.CompletedProcess[str]:
@@ -44,6 +47,45 @@ def _run_gradle_command(repo_path: str, command: list[str]) -> bool:
     result = _run_gradle_command_with_output(repo_path, command)
     if result.returncode != 0:
         print(result.stdout)
+        return False
+    return True
+
+
+def _run_codex_check_metadata_fix(repo_path: str, library: str) -> bool:
+    """Ask Codex to repair an unresolved metadata validation failure."""
+    log_path = build_timestamped_task_log_path("metadata-fix", library, "check-metadata-codex")
+    prompt = (
+        f"Fix the checkMetadataFiles failure for {library}. "
+        f"Reproduce it with ./gradlew checkMetadataFiles -Pcoordinates={library}, "
+        "make the minimal fix, and rerun the command until it passes."
+    )
+    print(f"[Codex running... Output: {display_log_path(log_path)}]")
+    try:
+        with open(log_path, "w", encoding="utf-8") as log_file:
+            result = subprocess.run(
+                [
+                    "codex",
+                    "exec",
+                    "--dangerously-bypass-approvals-and-sandbox",
+                    "-m",
+                    "gpt-5.6-terra",
+                    prompt,
+                ],
+                cwd=repo_path,
+                stdout=log_file,
+                stderr=subprocess.STDOUT,
+                timeout=CODEX_CHECK_METADATA_TIMEOUT_SECONDS,
+                check=False,
+            )
+    except subprocess.TimeoutExpired:
+        print(
+            f"ERROR: Codex metadata fix timed out after {CODEX_CHECK_METADATA_TIMEOUT_SECONDS} "
+            f"seconds for {library}.",
+            file=sys.stderr,
+        )
+        return False
+    if result.returncode != 0:
+        print(f"ERROR: Codex metadata fix failed for {library}.", file=sys.stderr)
         return False
     return True
 
@@ -207,7 +249,10 @@ def run_library_finalization(
         model_name: str | None = None,
         base_commit: str | None = None,
 ) -> bool:
-    """Run the shared end-of-workflow finalization steps for one library."""
+    """Run the shared end-of-workflow finalization steps for one library.
+
+    §WF-forge-workflow-drivers.3
+    """
     del log_prefix
     log_stage("split-test-only-metadata", f"Running splitTestOnlyMetadata for {library}")
     if not _run_gradle_command(repo_path, ["./gradlew", "splitTestOnlyMetadata", f"-Pcoordinates={library}"]):
@@ -230,7 +275,21 @@ def run_library_finalization(
         library_version=library_version,
         log_stage_name="check-metadata-files",
     ):
-        return False
+        for attempt in range(1, 4):
+            log_stage("check-metadata-files", f"Running Codex metadata fix attempt {attempt}/3 for {library}")
+            if not _run_codex_check_metadata_fix(repo_path, library):
+                continue
+            if _run_check_metadata_files_with_allowed_packages_fix(
+                repo_path=repo_path,
+                library=library,
+                group=group,
+                artifact=artifact,
+                library_version=library_version,
+                log_stage_name="check-metadata-files",
+            ):
+                break
+        else:
+            return False
     log_stage("style-checks", f"Running style checks for {library}")
     if not run_style_fix_and_checks(repo_path, library, model_name=model_name):
         return False

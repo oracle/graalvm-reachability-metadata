@@ -1,0 +1,94 @@
+{
+  "add_new_library_support:2026-06-26": {
+    "timestamp": "2026-06-26T16:33:47.669105Z",
+    "library": "io.opentelemetry:opentelemetry-sdk-extension-incubator:1.62.0-alpha",
+    "starting_commit": "ddac65b968c31005b6eb87d9a4314c49dc03be7e",
+    "ending_commit": "3eeb6e74a65fa32d4f4c5ed8f803df999fab4779",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "1.62.0-alpha",
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 618,
+          "missed": 2319,
+          "ratio": 0.210419,
+          "total": 2937
+        },
+        "line": {
+          "covered": 196,
+          "missed": 512,
+          "ratio": 0.276836,
+          "total": 708
+        },
+        "method": {
+          "covered": 54,
+          "missed": 133,
+          "ratio": 0.28877,
+          "total": 187
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8538,
+      "issue_label": "library-new-request",
+      "library": "io.opentelemetry:opentelemetry-sdk-extension-incubator:1.62.0-alpha",
+      "summary": "The artifact exposes direct SDK extension APIs for samplers, span/log processors, service-instance resource provider, and YAML metric view configuration. Its required runtime dependencies are declared transitively, and meaningful tests do not require Docker, an extra Maven dependency, or mandatory environment/system properties.",
+      "deterministic_setup": [],
+      "agent_guidance": "No special environment or system properties are required. Tests can exercise direct APIs such as composable samplers, span processors, EventToSpanEventBridge, ServiceInstanceIdResourceProvider, and ViewConfig with an in-memory or test-resource YAML InputStream.",
+      "risks": [
+        "The deprecated autoconfigure-based view-config path is optional; testing that path would require autoconfigure usage and setting otel.experimental.metrics.view.config, but this is not necessary for meaningful coverage.",
+        "This is an alpha/incubator artifact with deprecated view configuration APIs, so generated tests should avoid depending on behavior that is only available through removed or relocated declarative-config modules."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8538 Support for io.opentelemetry:opentelemetry-sdk-extension-incubator:1.62.0-alpha; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 37578,
+      "output_tokens_used": 2538,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/io.opentelemetry:opentelemetry-sdk-extension-incubator:1.62.0-alpha/library-preparation-preflight/pi-generation-2026-06-26T16-16-44-969184Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 100091,
+      "cached_input_tokens_used": 1051136,
+      "output_tokens_used": 10876,
+      "iterations": 2,
+      "cost_usd": 0.8519,
+      "generated_loc": 205,
+      "tested_library_loc": 196,
+      "metadata_entries": 0,
+      "test_only_metadata_entries": 1,
+      "code_coverage_percent": 27.68
+    },
+    "artifacts": {
+      "test_file": "tests/src/io.opentelemetry/opentelemetry-sdk-extension-incubator/1.62.0-alpha/src/test/java/io_opentelemetry/opentelemetry_sdk_extension_incubator/ViewConfigCustomizerTest.java",
+      "metadata_file": "metadata/io.opentelemetry/opentelemetry-sdk-extension-incubator/1.62.0-alpha/reachability-metadata.json"
+    }
+  }
+}

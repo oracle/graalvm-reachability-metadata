@@ -1,38 +1,34 @@
 # State machine diagram
 # ---------------------
 #
-#   One task loops through three states; the opener runs only after a scan:
+#   scanner task:
+#     sleep [initial, program] -> queue-check [program]
+#       |                         | exit 75
+#       |                         v
+#       +<---------------------- scan [agent]
+#                                 | scan visitCount >= visits
+#                                 v
+#                               completed
+#       queue-check exits 0 when the queue is drained        -> completed
+#       queue-check exits 69 when the GitHub query fails     -> failed
+#       queue-check exits 75 when unscanned work exists      -> scan
 #
-#     sleep [initial, program, visits={{max_scans}}]
-#       | exit 75 and visitCount < visits
-#       v
-#     scan [agent] -- writes the root-cause report --> open
-#       ^                                                |
-#       |                                                v
-#       +--------------------- sleep <----------- open [agent]
+#   generated group tasks:
+#     pending [program] -> investigate [agent, prompt_template]
+#       -> issue-dispatch [program]
+#          | no current system issue / stale / one-off       -> cancelled
+#          | current system issue with issue body prepared   -> open [agent] -> completed
 #
-#       sleep exits 0 when the queue is drained          --> completed
-#       sleep exits 75 and visitCount >= visits at cap    --> completed
-#       sleep exits 69 when the GitHub query fails         --> failed
-#         (auth/network/rate-limit; distinct from 75 so a failed fetch never
-#          masquerades as work available and is never scanned)
-#
-#   The scanner only investigates and reports; the opener only files tracking
-#   issues. Each agent state has its own instructions. The single hand-off
-#   artifact is the report:
-#     runtime/scan/groups.md   root-cause report (one section per group)
-#   Scanner-internal state (not consumed by the opener):
-#     runtime/scan/seen.txt    source-item numbers already scanned
-#   Deduplication of tracking issues is done against open GitHub issues.
-#
-#   Any non-final state can transition to cancelled.
+#   The scanner only fetches and groups source items. The investigation state is
+#   the evidence gate: it must find a current codebase/system cause before the
+#   opener is allowed to create or reuse a GitHub issue.
 
 name: human-intervention-scanner
-version: 1.3.0
+version: 2.0.0
 
 states:
   sleep:
-    description: Backoff, then decide whether more unscanned human-intervention items remain.
+    description: Back off before checking the selected human-intervention queue.
     initial: true
     visits: {{max_scans}}
     program: |
@@ -56,6 +52,12 @@ states:
       if [ "$delay" -gt 0 ]; then
         sleep "$delay"
       fi
+    program_timeout: 999h
+
+  queue-check:
+    description: Check whether unscanned human-intervention items exist before spending an agent run.
+    program: |
+      set -eu
 
       mkdir -p runtime/scan
       touch runtime/scan/seen.txt
@@ -108,99 +110,200 @@ states:
       fi
 
       exit 0
-    program_timeout: 999h
+    program_timeout: 10m
 
   scan:
-    description: Investigate why items earned the human-intervention label, cluster by root cause, and write the report.
+    description: Fetch human-intervention items, group common causes, and generate one investigation task per group.
     visits: {{max_scans}}
     target: "{{scanner_agent}}"
     instructions: |
       You are the human-intervention scanner for `{{repo}}`. This is the scan
-      phase: investigate and report only. You MUST NOT open, comment on, close,
-      label, or otherwise touch any GitHub issue or PR.
+      phase: fetch and group only. You MUST NOT open, comment on, close, label,
+      or otherwise touch any GitHub issue or PR.
 
       You are on scan pass {visit_count} of {visits}. Work from the Rhei
-      workspace root. GitHub is the source of truth for `{{repo}}`. Source queue:
-      {{source}}; queue label: human-intervention.
+      workspace root. GitHub is the source of truth for `{{repo}}`. Source
+      queue: {{source}}; queue label: human-intervention.
 
       Read `runtime/scan/seen.txt` if it exists. Fetch at most {{scan_limit}}
-      open, not-yet-seen items carrying human-intervention.
+      open, not-yet-seen items carrying `human-intervention`.
 
-      Find WHY each item got the human-intervention label — do not guess from the
-      title. The reason lives in:
-        - source: prs    -> read the PR's comments, its REVIEWS, and its PR
-                            description (body) together. The automated reviewer
-                            states why the result could not be handled normally
-                            (for example, dynamic-access coverage stayed too low)
-                            in the requested-changes review, and the body/labels
-                            give context. A human-intervention PR often has zero
-                            issue comments, so do not rely on the comment thread
-                            alone — fetch the reviews too
-                            (`gh pr view --json comments,reviews,body`).
-        - source: issues -> the issue's comment AND the log link it references.
-                            Open the log to see the failing phase and error
-                            (javac compile, java run, native-image run, ...).
+      Find WHY each item got the human-intervention label. Do not guess from the
+      title:
+        - source: prs    -> read the PR's body, comments, and reviews together.
+                            A human-intervention PR often has zero comments, so
+                            fetch reviews too:
+                            `gh pr view --json comments,reviews,body`.
+        - source: issues -> read the issue body, comments, and linked log. Open
+                            the log to identify the failing phase and error.
 
-      Cluster items that share the same underlying system cause into a group. A
-      group is simply the set of items with one root cause — it has no slug or
-      fixed name. Keep groups concrete, not catch-all buckets.
+      Cluster items by common observed cause. Keep groups concrete. Do not make a
+      group for every item. A group is investigation-worthy only when it has at
+      least {{min_group_size}} contributing items. Singletons or smaller groups
+      belong in the aggregate report as dropped/insufficient-support groups and
+      must not get generated investigation tasks.
 
-      Write the report at `runtime/scan/groups.md` — one `## <short root-cause
-      title>` section per group, updating an existing section instead of
-      duplicating it:
-        - System issue / root cause: the underlying problem, taken from the
-          comments + reviews + body (PRs) or the comment + log (issues),
-          explained well enough to act on.
-        - Contributing items: numbers and URLs
-        - Evidence: the comment/review/body text or log excerpt proving the cause
+      For every kept group:
+        1. Pick a stable slug, prefixed with `group-`, for example
+           `group-native-image-tests-bypass-runtime-path`.
+        2. Write `runtime/scan/groups/<slug>.md`.
+        3. Write one generated Rhei task file under `tasks/` using the next free
+           numeric prefix, for example `tasks/02-<slug>.md`.
+
+      Every group file must use this exact high-level shape:
+
+          ---
+          group_slug: <slug>
+          group_title: <short title>
+          source: {{source}}
+          repo: {{repo}}
+          item_count: <number>
+          common_problems:
+            - <shared observed problem across the group>
+          problematic_items:
+            - kind: pr|issue
+              number: <number>
+              url: <url>
+              title: <title>
+              problem: <direct reason from review/body/comment/log>
+              evidence: <short supporting excerpt or paraphrase>
+          ---
+
+          # <short title>
+
+          ## Common Cause Hypothesis
+
+          <why these items appear related>
+
+          ## Evidence Notes
+
+          <additional evidence needed by the investigator>
+
+      The YAML frontmatter is the structured input for the later investigator:
+      `problematic_items` names the affected items, and `common_problems`
+      records the shared observed problems. Do not rely on regex-only prose. The
+      Markdown body provides narrative context.
+
+      Every generated group task must use this shape:
+
+          ### Task <slug>: Investigate <short title>
+          **State:** pending
+
+          - Group file: `runtime/scan/groups/<slug>.md`
+          - Source queue: {{source}}
+          - Purpose: decide whether this grouped human-intervention cause points
+            to a current system problem in the repository.
+          - Required work:
+            - Read the group file.
+            - Search the current codebase for a current system cause.
+            - If there is no current system cause, if the problem is stale, if
+              it was already fixed by current prompts/code, if it is a one-off
+              PR bug, or if it is library-specific, write findings and do not
+              open an issue.
+            - If there is a current system cause, write findings plus an issue
+              body that names the files and how the system should be fixed.
+          - Output artifact: `runtime/scan/findings/<slug>.md`
+
+      Also update `runtime/scan/groups.md` as the aggregate report. It must list:
+        - every kept group and its group file path
+        - every dropped group/item and why it did not meet `min_group_size`
+        - the generated task file for every kept group
 
       Append every fetched item number to `runtime/scan/seen.txt`, one per line,
-      only after it appears in the report. Never mutate the source {{source}}
-      items.
+      after it appears either in a kept group file or in the dropped section of
+      the aggregate report. Never mutate the source {{source}} items.
     outputs:
       - name: report
         path: runtime/scan/groups.md
-        description: Root-cause report, one section per group. The only opener input.
+        description: Aggregate grouping report plus generated investigation task index.
       - name: seen
         path: runtime/scan/seen.txt
-        description: Item numbers already scanned, one per line (scanner-internal).
+        description: Item numbers already scanned, one per line.
+
+  pending:
+    description: Generated group task is queued and ready for investigation.
+    concurrent: true
+    program: "true"
+
+  investigate:
+    description: Search the current codebase for a current system cause behind one grouped problem.
+    concurrent: true
+    target: "{{investigator_agent}}"
+    prompt_template:
+      name: investigate-system-problem
+      values:
+        repo: "{{repo}}"
+        source: "{{source}}"
+        group_file: "{plan_path}/runtime/scan/groups/{task_id}.md"
+        findings_path: "{output.findings.path}"
+        issue_body_path: "{plan_path}/runtime/scan/issues/{task_id}.md"
+    outputs:
+      - name: findings
+        path: runtime/scan/findings/{task_id}.md
+        description: Investigation decision and evidence for one grouped cause.
+
+  issue-dispatch:
+    description: Route a group based on whether investigation found a current system issue.
+    concurrent: true
+    inputs:
+      - name: findings
+        path: runtime/scan/findings/{task_id}.md
+    program: |
+      set -eu
+      findings_file="$RHEI_INPUT_FINDINGS_PATH"
+      if grep -qiE '^Decision:[[:space:]]*open-issue[[:space:]]*$' "$findings_file"; then
+        issue_body="{plan_path}/runtime/scan/issues/{task_id}.md"
+        if [ ! -s "$issue_body" ]; then
+          printf 'Decision is open-issue, but %s is missing or empty\n' "$issue_body" >&2
+          exit 2
+        fi
+        exit 75
+      fi
+      if grep -qiE '^Decision:[[:space:]]*(no-system-issue|stale|one-off|library-specific|already-fixed)[[:space:]]*$' "$findings_file"; then
+        exit 78
+      fi
+      printf 'findings must contain exactly one Decision line: open-issue, no-system-issue, stale, one-off, library-specific, or already-fixed\n' >&2
+      exit 2
 
   open:
-    description: Open one tracking issue per group in the report, reusing any similar issue that is already open.
-    visits: {{max_scans}}
+    description: Create or reuse a GitHub issue only for an investigation-proven current system issue.
+    concurrent: true
     target: "{{opener_agent}}"
     inputs:
-      - name: report
-        path: runtime/scan/groups.md
+      - name: findings
+        path: runtime/scan/findings/{task_id}.md
+      - name: issue-body
+        path: runtime/scan/issues/{task_id}.md
     instructions: |
-      You are the human-intervention issue opener for `{{repo}}`. This is the
-      open phase: file tracking issues only. You read the scanner's report; you
-      MUST NOT touch the source {{source}} items — no labels, comments, fixes,
+      You are the human-intervention system-issue opener for `{{repo}}`.
+      This state only runs after investigation found a current system problem.
+      You MUST NOT touch source {{source}} items — no labels, comments, fixes,
       closes, or merges on them.
 
-      Work from the Rhei workspace root. GitHub is the source of truth for
-      `{{repo}}`. Source queue: {{source}}.
+      Work from the Rhei workspace root.
 
-      Read only `runtime/scan/groups.md` — the scanner's root-cause report. For
-      each root-cause section:
-        1. Check for an existing tracker first: search OPEN issues in `{{repo}}`
-           by the root cause, the symptom, and the contributing item numbers.
-        2. If a similar tracking issue exists, do NOT open a duplicate — comment
-           any newly contributing items onto it and record its URL.
-        3. Otherwise open exactly one GitHub issue. YOU choose a clear, specific
-           title that names the root cause. The body must include the system
-           issue / root cause from the report, the source queue ({{source}}),
-           every contributing item number and URL, the evidence, and a note that
-           it was generated by the human-intervention-scanner Rhei template.
-           Apply every comma-separated label in {{issue_labels}}.
+      Read:
+        - findings: `{input.findings.path}`
+        - prepared issue body: `{input.issue-body.path}`
 
-      Write `runtime/openers/{visit_count}.md` with one line per group: the issue
-      title, the created or reused issue URL, items linked, labels applied, and
-      any follow-up.
+      The prepared issue body is authoritative. Do not invent a broader issue.
+      Before creating an issue, search open issues in `{{repo}}` by the
+      system-cause title, affected files, and key symptoms from the prepared body.
+
+      If a similar open tracker exists, reuse it and write the reused URL to
+      `{output.opener.path}`. Do not create a duplicate.
+
+      If no similar open tracker exists, create exactly one GitHub issue in
+      `{{repo}}` using the prepared issue body. Apply every comma-separated label
+      in {{issue_labels}}.
+
+      Write `{output.opener.path}` with one line containing:
+      title, created/reused issue URL, labels applied, group task id, and any
+      follow-up. Do not comment on source {{source}} items.
     outputs:
       - name: opener
-        path: runtime/openers/{visit_count}.md
-        description: Tracking-issue results for one opener pass.
+        path: runtime/openers/{task_id}.md
+        description: Created or reused GitHub issue result for one group.
 
   completed:
     description: Work is complete.
@@ -211,39 +314,61 @@ states:
     final: true
 
   cancelled:
-    description: Work was cancelled.
+    description: No current system issue was found, or work was cancelled.
     final: true
 
 transitions:
   - from: sleep
+    to: queue-check
+    exit_code: 0
+    description: Backoff elapsed; check whether the selected queue has unscanned work.
+
+  - from: queue-check
     to: scan
     exit_code: 75
-    condition: visitCount < visits
-    description: Backoff elapsed and at least one unscanned human-intervention item remains.
+    description: At least one unscanned human-intervention item remains.
 
-  - from: sleep
+  - from: queue-check
     to: completed
     exit_code: 0
     description: The selected queue has no unscanned human-intervention items.
 
-  - from: sleep
-    to: completed
-    exit_code: 75
-    condition: visitCount >= visits
-    description: The scanner reached the configured scan cap.
-
-  - from: sleep
+  - from: queue-check
     to: failed
     exit_code: 69
     description: The GitHub PR/issue query failed; do not scan on unknown queue state.
 
   - from: scan
+    to: sleep
+    condition: visitCount < visits
+    description: Groups and generated investigation tasks are written; continue the scan loop.
+
+  - from: scan
+    to: completed
+    condition: visitCount >= visits
+    description: Groups and generated investigation tasks are written; scanner reached the configured scan cap.
+
+  - from: pending
+    to: investigate
+    description: Claim one generated group for investigation.
+
+  - from: investigate
+    to: issue-dispatch
+    description: Investigation wrote findings.
+
+  - from: issue-dispatch
     to: open
-    description: Report written; open tracking issues for its groups.
+    exit_code: 75
+    description: Current system issue found and issue body prepared.
+
+  - from: issue-dispatch
+    to: cancelled
+    exit_code: 78
+    description: No current system issue should be opened for this group.
 
   - from: open
-    to: sleep
-    description: This pass's groups were filed or reused; back off before the next scan.
+    to: completed
+    description: Tracking issue was created or reused.
 
   - from: "*"
     to: cancelled

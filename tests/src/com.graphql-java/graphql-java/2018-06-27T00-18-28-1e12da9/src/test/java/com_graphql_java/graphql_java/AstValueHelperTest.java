@@ -16,7 +16,7 @@ import graphql.language.ObjectValue;
 import graphql.language.StringValue;
 import graphql.language.Value;
 import graphql.schema.GraphQLInputObjectType;
-import graphql.starwars.Human;
+import com_graphql_java.graphql_java.starwars.Human;
 import org.junit.jupiter.api.Test;
 
 import static graphql.Scalars.GraphQLLong;

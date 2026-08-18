@@ -14,15 +14,15 @@ For the authoritative grounding rules and the agent contribution contract, see
 Documents are organized by grund *kind*. A kind groups facts of one type (a
 goal, a functional requirement, an architecture decision, …) and has a fixed
 *home* — a single file or a folder — declared in
-[../.agents/grund.toml](../.agents/grund.toml). An ID always lives in its kind's
+[../grund.toml](../grund.toml). An ID always lives in its kind's
 home, so the prefix tells you which file to open.
 
 | Kind | Home | Holds |
 | --- | --- | --- |
 | `GRUND` | [grund.md](grund.md) | Why Forge exists — the motivation everything else climbs back to. |
 | `GOAL` | [goals.md](goals.md) | Where Forge is headed — direction and measurable outcomes. |
-| `FS` | [functional-spec.md](functional-spec.md) | What Forge must do — contributor-facing functional behavior. |
-| `AR` | [architecture.md](architecture.md), [agent.md](agent.md) | How Forge is structured — boundaries, components, extension points. |
+| `FS` | [functional-spec/README.md](functional-spec/README.md) | What Forge must do — contributor-facing functional behavior. |
+| `AR` | [architecture/README.md](architecture/README.md), [architecture/agent.md](architecture/agent.md) | How Forge is structured — boundaries, components, extension points. |
 | `DW` | [do-work.md](do-work.md) | The unattended do-work loop architecture. |
 | `STRAT` | [strategies.md](strategies.md) | Predefined strategy configuration architecture. |
 | `ORCH` | [orchestration-scripts.md](orchestration-scripts.md) | Orchestration script behavior and architecture. |
@@ -40,9 +40,10 @@ its IDs in that one file.
 
 - [grund.md](grund.md) — `GRUND-forge-motivation`: why Forge exists.
 - [goals.md](goals.md) — `GOAL-forge-direction` and the outcome goals beneath it.
-- [functional-spec.md](functional-spec.md) — `FS-forge-functional-spec`: top-level functional spec and the workflow-spec catalog.
-- [architecture.md](architecture.md) — `AR-forge-architecture`: control plane, workflow boundaries, and extension points.
-- [agent.md](agent.md) — `AR-agent-api`: the agent API and its Pi implementation.
+- [functional-spec/README.md](functional-spec/README.md) — `FS-forge-functional-spec`: top-level functional spec and the workflow-spec catalog.
+- [functional-spec/continuation.md](functional-spec/continuation.md) — `FS-forge-run-continuation`: resuming a failed run at the phase that failed, and the continuation marker contract.
+- [architecture/README.md](architecture/README.md) — `AR-forge-architecture`: control plane, workflow boundaries, and extension points.
+- [architecture/agent.md](architecture/agent.md) — `AR-agent-api`: the agent API and its Pi implementation.
 - [do-work.md](do-work.md) — `DW-do-work-loop`: the long-running worker loop.
 - [strategies.md](strategies.md) — `STRAT-workflow-strategy-registry`: strategy registry, contract, and fields.
 - [orchestration-scripts.md](orchestration-scripts.md) — `ORCH-forge-orchestration-spec`.
@@ -125,7 +126,7 @@ Always cite the most specific point that supports the claim, and keep inline
 notes short (≤ 1 line preferred, ≤ 100 columns).
 
 Only `§`-prefixed tokens are checked — `[reference] strict = true` in
-[../.agents/grund.toml](../.agents/grund.toml) — so a bare ID-shaped word in
+[../grund.toml](../grund.toml) — so a bare ID-shaped word in
 prose is ignored.
 
 ### Reading a citation

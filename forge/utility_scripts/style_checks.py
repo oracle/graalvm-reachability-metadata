@@ -11,7 +11,7 @@ from utility_scripts.pi_logs import build_pi_log_path
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.task_logs import display_log_path
 
-DEFAULT_PI_MODEL_NAME = "oca/gpt-5.4"
+DEFAULT_PI_MODEL_NAME = "gpt-5.4"
 DEFAULT_PI_TIMEOUT_SECONDS = 600
 MAX_CHECKSTYLE_OUTPUT_CHARS = 12000
 MAX_TEST_OUTPUT_CHARS = 12000

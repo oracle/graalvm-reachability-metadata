@@ -188,7 +188,7 @@ class ExampleTest {
             self.assertFalse(os.path.exists(placeholder_file))
             self.assertEqual(result.remaining_placeholders, [])
 
-    def test_reports_placeholder_when_scaffold_file_changed_but_placeholder_remains(self) -> None:
+    def test_removes_placeholder_block_when_scaffold_file_also_has_real_test(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
             self._init_git_repo(tmp_dir)
             placeholder_file = os.path.join(tmp_dir, "MixedTest.kt")
@@ -221,9 +221,13 @@ class MixedTest {{
 
             self.assertEqual(result.removed_files, [])
             self.assertTrue(os.path.exists(placeholder_file))
-            self.assertEqual(len(result.remaining_placeholders), 1)
+            self.assertEqual(result.remaining_placeholders, [])
+            with open(placeholder_file, "r", encoding="utf-8") as source_file:
+                source = source_file.read()
+            self.assertNotIn(SCAFFOLD_PLACEHOLDER_TEXT, source)
+            self.assertIn("fun realTest()", source)
 
-    def test_removes_placeholder_when_only_test_method_is_renamed(self) -> None:
+    def test_ignores_placeholder_when_only_test_method_is_renamed(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
             self._init_git_repo(tmp_dir)
             placeholder_file = os.path.join(tmp_dir, "ExampleTest.java")
@@ -261,8 +265,8 @@ class ExampleTest {
 
             result = cleanup_scaffold_placeholder_tests(tmp_dir, tmp_dir, scaffold_commit)
 
-            self.assertEqual(result.removed_files, [placeholder_file])
-            self.assertFalse(os.path.exists(placeholder_file))
+            self.assertEqual(result.removed_files, [])
+            self.assertTrue(os.path.exists(placeholder_file))
             self.assertEqual(result.remaining_placeholders, [])
 
     def test_reports_version_specific_broken_behavior_exception_target(self) -> None:
@@ -317,7 +321,7 @@ class ParserTest {
 
             self.assertEqual(issues, [])
 
-    def test_reports_placeholder_copied_after_scaffold_commit(self) -> None:
+    def test_ignores_non_scaffold_placeholder_copied_after_scaffold_commit(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
             self._init_git_repo(tmp_dir)
             scaffold_file = os.path.join(tmp_dir, "ExampleTest.java")
@@ -357,9 +361,9 @@ class CopiedTest {
             result = cleanup_scaffold_placeholder_tests(tmp_dir, tmp_dir, scaffold_commit)
 
             self.assertEqual(result.removed_files, [scaffold_file])
+            self.assertTrue(os.path.exists(copied_file))
             self.assertFalse(os.path.exists(scaffold_file))
-            self.assertEqual(len(result.remaining_placeholders), 1)
-            self.assertEqual(result.remaining_placeholders[0].file_path, copied_file)
+            self.assertEqual(result.remaining_placeholders, [])
 
     def test_finds_placeholders_without_scaffold_commit_context(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
@@ -379,8 +383,7 @@ class ExampleTest {
 
             occurrences = find_scaffold_placeholder_occurrences(tmp_dir)
 
-            self.assertEqual(len(occurrences), 1)
-            self.assertEqual(occurrences[0].file_path, placeholder_file)
+            self.assertEqual(occurrences, [])
 
     @staticmethod
     def _write_file(file_path: str, content: str) -> None:

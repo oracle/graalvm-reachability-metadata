@@ -1,0 +1,120 @@
+{
+  "add_new_library_support:2026-06-26": {
+    "timestamp": "2026-06-26T16:41:16.223382Z",
+    "library": "io.opentelemetry.instrumentation:opentelemetry-mongo-3.1:2.28.1-alpha",
+    "starting_commit": "a83e3164f0f442de1063a0d0bc00c0ff75dee196",
+    "ending_commit": "3d9fd1cb528b781ff210b791a54ccf22d8de7276",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "2.28.1-alpha",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 11,
+            "totalCalls": 11
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 11,
+        "totalCalls": 11
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 725,
+          "missed": 196,
+          "ratio": 0.787188,
+          "total": 921
+        },
+        "line": {
+          "covered": 175,
+          "missed": 52,
+          "ratio": 0.770925,
+          "total": 227
+        },
+        "method": {
+          "covered": 44,
+          "missed": 10,
+          "ratio": 0.814815,
+          "total": 54
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8530,
+      "issue_label": "library-new-request",
+      "library": "io.opentelemetry.instrumentation:opentelemetry-mongo-3.1:2.28.1-alpha",
+      "summary": "The artifact is only the OpenTelemetry MongoDB instrumentation wrapper; its public API and normal use require the MongoDB Java driver, which is not a transitive dependency. Normal end-to-end listener coverage also needs a MongoDB server.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.mongodb:mongo-java-driver:3.1.0",
+          "scope": "testImplementation",
+          "reason": "The instrumentation module is built against MongoDB Java driver 3.1 APIs such as com.mongodb.event.CommandListener and MongoClientOptions, but its published POM/Gradle metadata does not bring the driver transitively."
+        },
+        {
+          "kind": "docker_image",
+          "image": "mongo:4.2",
+          "slug": "mongo",
+          "reason": "The upstream OpenTelemetry Mongo 3.1 instrumentation tests exercise real MongoClient command listener callbacks against a MongoDB container, and documentation shows the listener attached to a client connecting to a MongoDB endpoint."
+        }
+      ],
+      "agent_guidance": "Use the MongoDB 3.x client API: build MongoClientOptions, add MongoTelemetry.create(...).createCommandListener(), and point the client at the prepared test server host/port. For focused unit coverage without relying on every database operation, CommandStartedEvent/CommandSucceededEvent/CommandFailedEvent can also be constructed directly to exercise the listener path. Only set -Dotel.semconv-stability.opt-in=database if the tests intentionally assert the stable database semantic-convention attributes.",
+      "risks": [
+        "The upstream tests use an older MongoDB server tag; local Docker/native-image verification remains authoritative for image availability and vulnerability policy.",
+        "Using a newer MongoDB driver artifact instead of the 3.1-era driver may shift APIs and instrumentation behavior away from the module's minimum supported surface."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.mongodb:mongo-java-driver:3.1.0",
+          "result": "applied",
+          "target": "tests/src/io.opentelemetry.instrumentation/opentelemetry-mongo-3.1/2.28.1-alpha/build.gradle"
+        },
+        {
+          "kind": "docker_image",
+          "image": "mongo:4.2",
+          "slug": "mongo",
+          "result": "applied",
+          "target": "tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-mongo"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8530 Support for io.opentelemetry.instrumentation:opentelemetry-mongo-3.1:2.28.1-alpha; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 43724,
+      "output_tokens_used": 4834,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/io.opentelemetry.instrumentation:opentelemetry-mongo-3.1:2.28.1-alpha/library-preparation-preflight/pi-generation-2026-06-26T16-22-41-948621Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 129655,
+      "cached_input_tokens_used": 2164736,
+      "output_tokens_used": 17448,
+      "iterations": 2,
+      "cost_usd": 1.6058,
+      "generated_loc": 129,
+      "tested_library_loc": 175,
+      "metadata_entries": 18,
+      "code_coverage_percent": 77.09
+    },
+    "artifacts": {
+      "test_file": "tests/src/io.opentelemetry.instrumentation/opentelemetry-mongo-3.1/2.28.1-alpha/src/test/java/io_opentelemetry_instrumentation/opentelemetry_mongo_3_1/MongoDbAttributesGetterTest.java",
+      "metadata_file": "metadata/io.opentelemetry.instrumentation/opentelemetry-mongo-3.1/2.28.1-alpha/reachability-metadata.json"
+    }
+  }
+}

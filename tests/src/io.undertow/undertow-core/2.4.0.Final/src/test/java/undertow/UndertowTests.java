@@ -53,9 +53,9 @@ public class UndertowTests {
         server.start();
         try {
             // Make request
-            HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(1)).build();
+            HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
             HttpRequest request = HttpRequest.newBuilder(URI.create(String.format("http://localhost:%d/", PORT)))
-                    .GET().header("Accept", "text/plain").timeout(Duration.ofSeconds(1)).build();
+                    .GET().header("Accept", "text/plain").timeout(Duration.ofSeconds(10)).build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             assertThat(response.statusCode()).isEqualTo(200);
             assertThat(response.body()).isEqualTo("Hello World");

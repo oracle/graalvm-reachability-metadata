@@ -11,7 +11,7 @@ import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class MockitoTest {
+public class MockitoTest {
     @Test
     void test() {
         MyService myService = Mockito.mock(MyService.class);

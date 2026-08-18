@@ -1,0 +1,99 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T12:12:48.472631Z",
+    "library": "co.elastic.clients:elasticsearch-java:9.0.3",
+    "starting_commit": "1992ff1d3d294770d47f37fb5aec2b06d01e0796",
+    "ending_commit": "21a1f88b5e83a432bac1d1423be5a9984705a9a3",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "9.0.3",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 16,
+            "totalCalls": 16
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 17,
+        "totalCalls": 17
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1771,
+          "missed": 723577,
+          "ratio": 0.002442,
+          "total": 725348
+        },
+        "line": {
+          "covered": 488,
+          "missed": 175329,
+          "ratio": 0.002776,
+          "total": 175817
+        },
+        "method": {
+          "covered": 131,
+          "missed": 67759,
+          "ratio": 0.00193,
+          "total": 67890
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 4506,
+      "issue_label": "library-new-request",
+      "library": "co.elastic.clients:elasticsearch-java:9.0.3",
+      "summary": "No concrete extra setup is required: the resolved artifact already brings its HTTP transport stack plus Parsson and Jackson runtime dependencies, and meaningful client-side coverage can exercise builders, endpoint metadata, and JSON serialization without a live Elasticsearch server.",
+      "deterministic_setup": [],
+      "agent_guidance": "No environment variables or system properties are required. Prefer tests that use request/response builders, JsonpUtils/JacksonJsonpMapper serialization, and optionally a fake ElasticsearchTransport rather than requiring a live cluster. Avoid JsonbJsonpMapper unless deliberately adding a JSON-B provider such as Yasson.",
+      "risks": [
+        "End-to-end CRUD/search calls would require a running Elasticsearch service and security/bootstrap configuration, but that is not necessary for meaningful generated scaffold coverage.",
+        "The public JSON-B mapper path is present in the artifact but its provider is not transitively available; using the default Jackson mapper avoids that optional dependency."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#4506 Support for co.elastic.clients:elasticsearch-java:9.0.3; label=library-new-request; body_chars=112"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 53372,
+      "output_tokens_used": 6935,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/co.elastic.clients:elasticsearch-java:9.0.3/library-preparation-preflight/pi-generation-2026-06-28T11-21-14-447213Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 201901,
+      "cached_input_tokens_used": 1751040,
+      "output_tokens_used": 17241,
+      "iterations": 5,
+      "cost_usd": 1.3927,
+      "generated_loc": 179,
+      "tested_library_loc": 488,
+      "metadata_entries": 19,
+      "test_only_metadata_entries": 1,
+      "code_coverage_percent": 0.28
+    },
+    "artifacts": {
+      "test_file": "tests/src/co.elastic.clients/elasticsearch-java/9.0.3/src/test/java/co_elastic_clients/elasticsearch_java/LanguageRuntimeVersionsTest.java",
+      "metadata_file": "metadata/co.elastic.clients/elasticsearch-java/9.0.3/reachability-metadata.json"
+    }
+  }
+}

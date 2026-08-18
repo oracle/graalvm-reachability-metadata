@@ -25,7 +25,8 @@ from git_scripts.pr_publication import (
     BASE_BRANCH,
     REPO,
     REVIEWERS,
-    generate_diff_text,
+    bound_pr_body,
+    format_bounded_test_diff_section,
     publish_branch,
 )
 from utility_scripts.metadata_index import resolve_test_version
@@ -170,7 +171,7 @@ def create_pull_request(
         "gh", "pr", "create",
         "--repo", REPO,
         "--title", title,
-        "--body", body,
+        "--body", bound_pr_body(body),
         "--base", BASE_BRANCH,
         "--head", f"{origin_owner}:{branch}",
         "--label", pr_label,
@@ -220,12 +221,7 @@ def build_test_comparison_section(group: str, artifact: str, old_version: str, n
     new_test_dir = os.path.join(repo_path, "tests", "src", group, artifact, new_version)
     if not os.path.isdir(new_test_dir):
         return ""
-    return (
-        "\n\n**Comparison between existing test version and AI-Generated update**\n\n"
-        "```diff\n"
-        f"{generate_diff_text(group, artifact, old_version, new_version, repo_path)}\n"
-        "```"
-    )
+    return format_bounded_test_diff_section(group, artifact, old_version, new_version, repo_path)
 
 
 def build_pull_request_preview(

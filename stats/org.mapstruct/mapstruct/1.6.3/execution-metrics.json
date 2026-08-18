@@ -1,0 +1,108 @@
+{
+  "add_new_library_support:2026-06-26": {
+    "timestamp": "2026-06-26T17:30:40.980663Z",
+    "library": "org.mapstruct:mapstruct:1.6.3",
+    "starting_commit": "07e70cd4b8e6277eea34d76adae9c0eae05a2827",
+    "ending_commit": "6195d2117c132b3868013fae31d70bebedfee4ca",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "1.6.3",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 4,
+        "totalCalls": 4
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 113,
+          "missed": 417,
+          "ratio": 0.213208,
+          "total": 530
+        },
+        "line": {
+          "covered": 23,
+          "missed": 63,
+          "ratio": 0.267442,
+          "total": 86
+        },
+        "method": {
+          "covered": 7,
+          "missed": 12,
+          "ratio": 0.368421,
+          "total": 19
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8459,
+      "issue_label": "library-new-request",
+      "library": "org.mapstruct:mapstruct:1.6.3",
+      "summary": "MapStruct's main artifact contains the annotations and factory, but normal meaningful use requires its separate annotation processor to generate mapper implementations.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.mapstruct:mapstruct-processor:1.6.3",
+          "scope": "testImplementation",
+          "reason": "MapStruct documentation lists org.mapstruct:mapstruct-processor as the artifact that generates mapper implementations; the resolved org.mapstruct:mapstruct artifact has no processor service and mainly contains annotations plus org.mapstruct.factory.Mappers."
+        }
+      ],
+      "agent_guidance": "No Docker image, environment variable, or system property is indicated. Tests should define real @Mapper interfaces and domain classes, compile generated mapper implementations, and invoke actual mappings. Prefer testing generated mapper behavior rather than only checking annotation presence. If Gradle does not discover processors from the added test classpath, local verification may require putting the processor on the test annotation-processor path.",
+      "risks": [
+        "MapStruct usage is compile-time-generation centered, so scaffold-only runtime tests can look valid while providing little meaningful coverage.",
+        "Using Mappers.getMapper(...) loads generated implementation classes reflectively; native-image failures may involve application/test-generated classes rather than only MapStruct library classes."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.mapstruct:mapstruct-processor:1.6.3",
+          "result": "applied",
+          "target": "tests/src/org.mapstruct/mapstruct/1.6.3/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8459 Support for org.mapstruct:mapstruct:1.6.3; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 28125,
+      "output_tokens_used": 3071,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.mapstruct:mapstruct:1.6.3/library-preparation-preflight/pi-generation-2026-06-26T17-18-19-634855Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 42301,
+      "cached_input_tokens_used": 315904,
+      "output_tokens_used": 6927,
+      "iterations": 2,
+      "cost_usd": 0.3658,
+      "generated_loc": 84,
+      "tested_library_loc": 23,
+      "metadata_entries": 1,
+      "test_only_metadata_entries": 2,
+      "code_coverage_percent": 26.74
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.mapstruct/mapstruct/1.6.3/src/test/java/org_mapstruct/mapstruct/MappersTest.java",
+      "metadata_file": "metadata/org.mapstruct/mapstruct/1.6.3/reachability-metadata.json"
+    }
+  }
+}

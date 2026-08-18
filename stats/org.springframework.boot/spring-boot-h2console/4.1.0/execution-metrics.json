@@ -1,0 +1,125 @@
+{
+  "add_new_library_support:2026-06-27": {
+    "timestamp": "2026-06-27T00:08:44.993874Z",
+    "library": "org.springframework.boot:spring-boot-h2console:4.1.0",
+    "starting_commit": "316c42d9c6606490a1232f8af2ba8443131377f1",
+    "ending_commit": "00decffd0e52ed1bbf1cb592b912826e7496acfb",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "4.1.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 218,
+          "missed": 5,
+          "ratio": 0.977578,
+          "total": 223
+        },
+        "line": {
+          "covered": 60,
+          "missed": 2,
+          "ratio": 0.967742,
+          "total": 62
+        },
+        "method": {
+          "covered": 24,
+          "missed": 0,
+          "ratio": 1.0,
+          "total": 24
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8405,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.boot:spring-boot-h2console:4.1.0",
+      "summary": "The artifact is a Spring Boot servlet auto-configuration module; meaningful coverage requires Spring Boot auto-configuration/test support and a servlet web context beyond the target artifact's normal transitive dependencies.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.1.0",
+          "scope": "testImplementation",
+          "reason": "spring-boot-h2console declares Spring Boot auto-configuration types as optional; tests need them to exercise H2ConsoleAutoConfiguration through AutoConfigurations and its conditional annotations."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-test:4.1.0",
+          "scope": "testImplementation",
+          "reason": "Spring Boot's own tests use WebApplicationContextRunner/ApplicationContextRunner to exercise this auto-configuration without starting a real server."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-web:7.0.8",
+          "scope": "testImplementation",
+          "reason": "A servlet web application context is required for @ConditionalOnWebApplication(type = SERVLET); WebApplicationContextRunner needs Spring Web servlet context types."
+        }
+      ],
+      "agent_guidance": "Use a servlet web application context and set `spring.h2.console.enabled=true` in test properties to activate the console, since it is disabled by default unless devtools is present. Cover path and settings properties such as `spring.h2.console.path`, `spring.h2.console.settings.trace`, `web-allow-others`, and `web-admin-password`; avoid starting a real embedded server unless local verification shows it is necessary.",
+      "risks": [
+        "The H2 console is development-only and disabled by default, so tests that do not enable it may produce scaffold-level coverage only.",
+        "If tests choose to start an embedded servlet container instead of using a context runner, they may need additional server dependencies such as Tomcat and should use a random port."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.1.0",
+          "result": "applied",
+          "target": "tests/src/org.springframework.boot/spring-boot-h2console/4.1.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-test:4.1.0",
+          "result": "applied",
+          "target": "tests/src/org.springframework.boot/spring-boot-h2console/4.1.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-web:7.0.8",
+          "result": "applied",
+          "target": "tests/src/org.springframework.boot/spring-boot-h2console/4.1.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8405 Support for org.springframework.boot:spring-boot-h2console:4.1.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 61162,
+      "output_tokens_used": 6801,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/org.springframework.boot:spring-boot-h2console:4.1.0/library-preparation-preflight/pi-generation-2026-06-26T23-46-19-840996Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 231730,
+      "cached_input_tokens_used": 2036224,
+      "output_tokens_used": 20598,
+      "iterations": 5,
+      "cost_usd": 1.636,
+      "generated_loc": 188,
+      "tested_library_loc": 60,
+      "metadata_entries": 44,
+      "code_coverage_percent": 96.77
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.springframework.boot/spring-boot-h2console/4.1.0/src/test/java/org_springframework_boot/spring_boot_h2console/Spring_boot_h2consoleTest.java",
+      "metadata_file": "metadata/org.springframework.boot/spring-boot-h2console/4.1.0/reachability-metadata.json"
+    }
+  }
+}

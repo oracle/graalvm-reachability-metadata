@@ -40,55 +40,25 @@ class LibraryUpdateRoute:
     """Persisted route selected for a `library-update-request` issue."""
 
     selected_driver: str
-    requested_coordinates: str
     baseline_coordinates: str | None
     new_version: str
-    reason: str
-    match_type: str
-    compile_exit_code: int | None = None
-    java_test_exit_code: int | None = None
-    native_test_exit_code: int | None = None
-    compile_log_path: str | None = None
-    java_test_log_path: str | None = None
-    native_test_log_path: str | None = None
 
     def to_json(self) -> dict[str, Any]:
         return {
             "selected_driver": self.selected_driver,
-            "requested_coordinates": self.requested_coordinates,
             "baseline_coordinates": self.baseline_coordinates,
             "new_version": self.new_version,
-            "reason": self.reason,
-            "match_type": self.match_type,
-            "compile_exit_code": self.compile_exit_code,
-            "java_test_exit_code": self.java_test_exit_code,
-            "native_test_exit_code": self.native_test_exit_code,
-            "compile_log_path": self.compile_log_path,
-            "java_test_log_path": self.java_test_log_path,
-            "native_test_log_path": self.native_test_log_path,
         }
 
     @classmethod
     def from_json(cls, payload: dict[str, Any]) -> "LibraryUpdateRoute":
         selected_driver = _required_str(payload, "selected_driver")
-        requested_coordinates = _required_str(payload, "requested_coordinates")
         new_version = _required_str(payload, "new_version")
-        reason = _required_str(payload, "reason")
-        match_type = _required_str(payload, "match_type")
         baseline_coordinates = _optional_str(payload, "baseline_coordinates")
         return cls(
             selected_driver=selected_driver,
-            requested_coordinates=requested_coordinates,
             baseline_coordinates=baseline_coordinates,
             new_version=new_version,
-            reason=reason,
-            match_type=match_type,
-            compile_exit_code=_optional_int(payload, "compile_exit_code"),
-            java_test_exit_code=_optional_int(payload, "java_test_exit_code"),
-            native_test_exit_code=_optional_int(payload, "native_test_exit_code"),
-            compile_log_path=_optional_str(payload, "compile_log_path"),
-            java_test_log_path=_optional_str(payload, "java_test_log_path"),
-            native_test_log_path=_optional_str(payload, "native_test_log_path"),
         )
 
 
@@ -149,7 +119,7 @@ def route_sidecar_path(metrics_repo_root: str) -> str:
 
 
 def write_library_update_route(metrics_repo_root: str, route: LibraryUpdateRoute) -> str:
-    """Persist the selected route for publication handoff and diagnostics."""
+    """Persist the selected route for publication handoff."""
     os.makedirs(metrics_repo_root, exist_ok=True)
     path = route_sidecar_path(metrics_repo_root)
     with open(path, "w", encoding="utf-8") as route_file:
@@ -183,11 +153,12 @@ def select_library_update_route(repo_path: str, metrics_repo_root: str, coordina
     if target.match_type != MATCH_NEW_VERSION or os.path.isdir(target.test_dir):
         route = LibraryUpdateRoute(
             selected_driver=ROUTE_IMPROVE_COVERAGE,
-            requested_coordinates=coordinates,
             baseline_coordinates=None,
             new_version=requested_version,
-            reason=f"requested version is already covered by {target.match_type} target",
-            match_type=target.match_type,
+        )
+        log_stage(
+            "library-update-router",
+            f"Selected {route.selected_driver} for {coordinates}.",
         )
         write_library_update_route(metrics_repo_root, route)
         return route
@@ -212,59 +183,32 @@ def select_library_update_route(repo_path: str, metrics_repo_root: str, coordina
     if compile_result.exit_code != 0:
         route = LibraryUpdateRoute(
             selected_driver=ROUTE_FIX_JAVAC,
-            requested_coordinates=coordinates,
             baseline_coordinates=baseline_coordinates,
             new_version=requested_version,
-            reason="compatibility probe failed during Java compilation",
-            match_type=target.match_type,
-            compile_exit_code=compile_result.exit_code,
-            compile_log_path=compile_result.log_path,
         )
     elif java_test_result is not None and java_test_result.exit_code != 0:
         route = LibraryUpdateRoute(
             selected_driver=ROUTE_FIX_JAVA_RUN,
-            requested_coordinates=coordinates,
             baseline_coordinates=baseline_coordinates,
             new_version=requested_version,
-            reason="compatibility probe compiled but failed JVM tests",
-            match_type=target.match_type,
-            compile_exit_code=compile_result.exit_code,
-            java_test_exit_code=java_test_result.exit_code,
-            compile_log_path=compile_result.log_path,
-            java_test_log_path=java_test_result.log_path,
         )
     elif native_test_result is not None and native_test_result.exit_code != 0:
         route = LibraryUpdateRoute(
             selected_driver=ROUTE_FIX_NI_RUN,
-            requested_coordinates=coordinates,
             baseline_coordinates=baseline_coordinates,
             new_version=requested_version,
-            reason="compatibility probe compiled and passed JVM tests but failed native-image tests",
-            match_type=target.match_type,
-            compile_exit_code=compile_result.exit_code,
-            java_test_exit_code=java_test_result.exit_code if java_test_result is not None else None,
-            native_test_exit_code=native_test_result.exit_code,
-            compile_log_path=compile_result.log_path,
-            java_test_log_path=java_test_result.log_path if java_test_result is not None else None,
-            native_test_log_path=native_test_result.log_path,
         )
     else:
         route = LibraryUpdateRoute(
             selected_driver=ROUTE_IMPROVE_COVERAGE,
-            requested_coordinates=coordinates,
             baseline_coordinates=baseline_coordinates,
             new_version=requested_version,
-            reason="compatibility probe passed Java compilation and JVM tests",
-            match_type=target.match_type,
-            compile_exit_code=compile_result.exit_code,
-            java_test_exit_code=None if java_test_result is None else java_test_result.exit_code,
-            native_test_exit_code=None if native_test_result is None else native_test_result.exit_code,
-            compile_log_path=compile_result.log_path,
-            java_test_log_path=None if java_test_result is None else java_test_result.log_path,
-            native_test_log_path=None if native_test_result is None else native_test_result.log_path,
         )
     write_library_update_route(metrics_repo_root, route)
-    log_stage("library-update-router", f"Selected {route.selected_driver} for {coordinates}: {route.reason}")
+    log_stage(
+        "library-update-router",
+        f"Selected {route.selected_driver} for {coordinates}.",
+    )
     return route
 
 
@@ -407,13 +351,4 @@ def _optional_str(payload: dict[str, Any], key: str) -> str | None:
         return None
     if not isinstance(value, str):
         raise ValueError(f"ERROR: Library-update route field `{key}` must be a string when present.")
-    return value
-
-
-def _optional_int(payload: dict[str, Any], key: str) -> int | None:
-    value = payload.get(key)
-    if value is None:
-        return None
-    if not isinstance(value, int):
-        raise ValueError(f"ERROR: Library-update route field `{key}` must be an integer when present.")
     return value

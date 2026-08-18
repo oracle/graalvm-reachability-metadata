@@ -71,7 +71,9 @@ Preparation:
 - Resolve the dynamic-access exhaust report when the issue is chunked.
 - Decide Native Image eligibility before generation (see below). If the
   artifact is not a Native Image target, write the marker and stop without
-  scaffolding, generating tests, or generating metadata.
+  scaffolding, generating tests, or generating metadata. Dispatcher-owned
+  dynamic-access pre-scans for chunking apply the same gate before scaffold
+  (§WF-dynamic-access-exhaust-report).
 - Run Gradle scaffold for the coordinate.
 - Populate artifact URLs and materialize configured source context.
 - Resolve the generated test-source layout.
@@ -86,8 +88,9 @@ Preparation:
 #### Native Image eligibility (not-for-native-image)
 
 Not every requested artifact is a JVM library that GraalVM `native-image`
-consumes. Before scaffolding, the `library-new-request` driver decides whether
-the `group:artifact` is a Native Image metadata target:
+consumes. Before scaffolding, the `library-new-request` driver and any
+dispatcher-owned new-library pre-scan decide whether the `group:artifact` is a
+Native Image metadata target:
 
 1. If `metadata/<group>/<artifact>/index.json` already marks the artifact
    `not-for-native-image`, the driver stops immediately — the artifact is
@@ -96,11 +99,12 @@ the `group:artifact` is a Native Image metadata target:
    conservative eligibility check that classifies the coordinate from three
    signals: a Gradle discovery file that already flags the artifact; coordinate
    naming conventions (Scala.js, Android/AndroidX, Kotlin Native/Wasm, and
-   Kotlin/JS artifacts); and Maven inspection (POM packaging of `aar`/`klib`, or
-   a published JAR that contains no JVM class files — for example Scala.js IR or
-   Kotlin Native metadata only). When a likely JVM replacement coordinate is
-   obvious (for example a platform-suffixed artifact, or a Netty `*-classes`
-   dependency), the check records it as replacement guidance.
+   Kotlin/JS artifacts); and Maven inspection (POM packaging of `aar`/`klib`,
+   POM-only artifacts with no published JAR, or a published JAR that contains no
+   JVM class files — for example Scala.js IR or Kotlin Native metadata only).
+   When a likely JVM replacement coordinate is obvious (for example a
+   platform-suffixed artifact, or a Netty `*-classes` dependency), the check
+   records it as replacement guidance.
 3. When the artifact is found ineligible, the driver writes a marker-only
    `metadata/<group>/<artifact>/index.json` recording `not-for-native-image:
    true`, the reason, and any replacement guidance, then returns success without
@@ -172,6 +176,8 @@ The selected driver must own its normal setup after the probe; the
 `library-update-request` router must not duplicate javac-fix, java-run-fix,
 native-image-run-fix, or coverage workflow setup logic
 (§WF-improve-library-coverage.2).
+Before preflight and continuation-marker creation, a routed repair selects the
+repair driver's default strategy rather than the library-update strategy.
 
 ### `fails-javac-compile`
 
@@ -237,6 +243,20 @@ status merge: a chunk-ready run stays `RUN_STATUS_CHUNK_READY` when
 finalization succeeds, otherwise the finalization status becomes the run
 status. Drivers must not call the private finalization internals and must not
 re-implement the status merge at their call sites.
+
+The iteration commit stages the whole `metadata/` tree, not just the target
+coordinate's `metadata/<group>/<artifact>/<metadata-version>` directory and
+`index.json`. Metadata generation traces through the target's transitive
+dependencies, so a run can produce entries that belong to a dependency's
+artifact; staging the artifact-scoped paths alone would drop them, and the next
+checkpoint reset would delete them. Test sources and stats stay scoped to the
+target coordinate.
+
+Per-coordinate finalization repairs missing `allowed-packages`
+deterministically. If `checkMetadataFiles` still fails, Forge runs up to three
+Codex metadata fix and validation attempts before failing the run. Each Codex
+invocation is limited to 20 minutes, and its combined output is written to a
+printed coordinate-scoped metadata-fix log path (§FS-durable-generation-logs).
 
 Run metrics flow through the shared writer
 (`metrics_writer.write_workflow_run_metrics`): it appends the run entry to the

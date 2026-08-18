@@ -12,6 +12,7 @@ from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_SUCCESS,
     WorkflowStrategy,
 )
+from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
 from utility_scripts.dynamic_access_report import (
     DynamicAccessCoverageReport,
     compute_class_delta,
@@ -30,8 +31,8 @@ from utility_scripts.stage_logger import log_stage
 from utility_scripts.strategy_loader import load_strategy_by_name
 
 
-FALLBACK_STRATEGY_NAME = "basic_iterative_pi_gpt-5.5"
-DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS = 100
+FALLBACK_STRATEGY_NAME = "basic_iterative_pi_gpt-5.6-sol"
+DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS = 40
 DEFAULT_NATIVE_TEST_VERIFICATION_BATCH_SIZE = 5
 
 
@@ -84,6 +85,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         )
         self.chunk_class_count = int(self.context.get("chunk_class_count") or 0)
         self._last_phase_status = RUN_STATUS_SUCCESS
+        self._latest_class_checkpoint: str | None = None
         self.dynamic_access_report_path = os.path.join(
             self.reachability_repo_path,
             "tests",
@@ -104,6 +106,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         available; once the class loop begins, report loss and gate failure are
         hard workflow failures, per §WF-dynamic-access-fallback-and-failure.
         """
+        self._latest_class_checkpoint = checkpoint_commit_hash
         initial_report = self._generate_dynamic_access_report()
         if self._should_fallback_to_basic_flow(initial_report):
             self._print_dynamic_access_message(
@@ -120,7 +123,8 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         if self._last_phase_status == RUN_STATUS_CHUNK_READY:
             return RUN_STATUS_CHUNK_READY, global_iterations, 1
         if not phase_ok:
-            subprocess.run(["git", "reset", "--hard", checkpoint_commit_hash], check=False)
+            recovery_checkpoint = self._latest_class_checkpoint or checkpoint_commit_hash
+            subprocess.run(["git", "reset", "--hard", recovery_checkpoint], check=False)
             return RUN_STATUS_FAILURE, global_iterations, 0
 
         return RUN_STATUS_SUCCESS, global_iterations, 1
@@ -220,9 +224,21 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         if current_report is None:
             current_report = self._generate_dynamic_access_report()
         if self._should_fallback_to_basic_flow(current_report):
+            save_phase_update(
+                self.continuation_marker_path,
+                lambda marker: marker.mark_phase_skipped(PHASE_EXPLORE),
+            )
             return True, 0
+        save_phase_update(
+            self.continuation_marker_path,
+            lambda marker: (
+                marker.mark_phase_skipped_if_pending(PHASE_FIX),
+                marker.record_chunk_progress(self.chunk_class_count, 0),
+                marker.mark_phase_running(PHASE_EXPLORE),
+            ),
+        )
 
-        exhausted_classes: set[str] = set()
+        exhausted_classes: set[str] = self._continuation_exhausted_classes()
         if self.dynamic_access_exhaust_report is not None:
             exhausted_classes.update(self.dynamic_access_exhaust_report.processed_classes())
         previous_report = None
@@ -280,6 +296,11 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             active_class = current_report.next_uncovered_class(exhausted_classes)
             if active_class is None:
                 if not flush_native_test_batch("end-of-classes"):
+                    self._mark_continuation_explore_pending(
+                        prompt_iterations,
+                        exhausted_classes,
+                        len(terminal_classes_this_part),
+                    )
                     return False, prompt_iterations
                 if (
                         successful_classes == 0
@@ -288,7 +309,24 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         and self._library_test_change_signature() != initial_test_change_signature
                 ):
                     self._print_dynamic_access_message("Coverage not improved. Keeping generated tests by request.")
+                    self._mark_continuation_explore_completed(
+                        prompt_iterations,
+                        exhausted_classes,
+                        len(terminal_classes_this_part),
+                    )
                     return True, prompt_iterations
+                if successful_classes > 0:
+                    self._mark_continuation_explore_completed(
+                        prompt_iterations,
+                        exhausted_classes,
+                        len(terminal_classes_this_part),
+                    )
+                else:
+                    self._mark_continuation_explore_pending(
+                        prompt_iterations,
+                        exhausted_classes,
+                        len(terminal_classes_this_part),
+                    )
                 return successful_classes > 0, prompt_iterations
 
             class_name = active_class.class_name
@@ -344,6 +382,10 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                 agent.send_prompt(dynamic_prompt)
                 self._print_dynamic_access_detail("agent: complete", indent_level=2)
                 prompt_iterations += 1
+                save_phase_update(
+                    self.continuation_marker_path,
+                    lambda marker: marker.record_iteration(PHASE_EXPLORE, prompt_iterations),
+                )
                 class_attempts += 1
 
                 reached_native_test = False
@@ -412,6 +454,11 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         indent_level=2,
                         class_name=class_name,
                     )
+                    self._mark_continuation_explore_pending(
+                        prompt_iterations,
+                        exhausted_classes,
+                        len(terminal_classes_this_part),
+                    )
                     return False, prompt_iterations
                 record_indirectly_completed_classes(class_name)
 
@@ -419,7 +466,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                 if updated_class is None:
                     if current_report.covered_calls > previous_report.covered_calls:
                         self._print_dynamic_access_detail("result: resolved", indent_level=2)
-                        self._commit_test_sources(
+                        self._latest_class_checkpoint = self._commit_test_sources(
                             f"Dynamic-access coverage for {class_name} "
                             f"({current_report.covered_calls}/{current_report.total_calls})"
                         )
@@ -447,7 +494,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     break
                 if updated_class.uncovered_calls == 0:
                     self._print_dynamic_access_detail("result: resolved", indent_level=2)
-                    self._commit_test_sources(
+                    self._latest_class_checkpoint = self._commit_test_sources(
                         f"Dynamic-access coverage for {class_name} "
                         f"({current_report.covered_calls}/{current_report.total_calls})"
                     )
@@ -476,14 +523,12 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         ),
                         indent_level=2,
                     )
-                    self._commit_test_sources(
+                    class_checkpoint = self._commit_test_sources(
                         f"Partial dynamic-access coverage for {class_name} "
                         f"({updated_class.covered_calls}/{updated_class.total_calls})"
                     )
+                    self._latest_class_checkpoint = class_checkpoint
                     class_committed = True
-                    class_checkpoint = subprocess.check_output(
-                        ["git", "rev-parse", "HEAD"], text=True,
-                    ).strip()
                     if not self._queue_native_test_verification_step(
                             pending_native_test_classes,
                             class_name,
@@ -515,6 +560,11 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     indent_level=1,
                     class_name=class_name,
                 )
+                self._mark_continuation_explore_pending(
+                    prompt_iterations,
+                    exhausted_classes,
+                    len(terminal_classes_this_part),
+                )
                 return False, prompt_iterations
             if class_failed:
                 self._print_dynamic_access_detail(
@@ -542,6 +592,11 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         terminal_classes_this_part,
                 ):
                     if not flush_native_test_batch("chunked-dynamic-access-boundary"):
+                        self._mark_continuation_explore_pending(
+                            prompt_iterations,
+                            exhausted_classes,
+                            len(terminal_classes_this_part),
+                        )
                         return False, prompt_iterations
                     self._last_phase_status = RUN_STATUS_CHUNK_READY
                     self._print_dynamic_access_message(
@@ -550,6 +605,11 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         )
                     )
                     self._save_dynamic_access_exhaust_report()
+                    self._mark_continuation_explore_completed(
+                        prompt_iterations,
+                        exhausted_classes,
+                        len(terminal_classes_this_part),
+                    )
                     return True, prompt_iterations
                 continue
             updated_class = current_report.get_class(class_name)
@@ -587,6 +647,11 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     terminal_classes_this_part,
             ):
                 if not flush_native_test_batch("chunked-dynamic-access-boundary"):
+                    self._mark_continuation_explore_pending(
+                        prompt_iterations,
+                        exhausted_classes,
+                        len(terminal_classes_this_part),
+                    )
                     return False, prompt_iterations
                 self._last_phase_status = RUN_STATUS_CHUNK_READY
                 self._print_dynamic_access_message(
@@ -595,7 +660,58 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     )
                 )
                 self._save_dynamic_access_exhaust_report()
+                self._mark_continuation_explore_completed(
+                    prompt_iterations,
+                    exhausted_classes,
+                    len(terminal_classes_this_part),
+                )
                 return True, prompt_iterations
+
+    def _mark_continuation_explore_completed(
+            self,
+            iteration: int,
+            exhausted_classes: set[str],
+            chunk_processed_class_count: int | None = None,
+    ) -> None:
+        """Persist successful dynamic-access phase completion."""
+        save_phase_update(
+            self.continuation_marker_path,
+            lambda marker: (
+                marker.record_exhausted_classes(sorted(exhausted_classes)),
+                marker.record_chunk_progress(self.chunk_class_count, chunk_processed_class_count),
+                marker.mark_phase_completed(PHASE_EXPLORE, iteration=iteration),
+            ),
+        )
+
+    def _mark_continuation_explore_pending(
+            self,
+            iteration: int,
+            exhausted_classes: set[str],
+            chunk_processed_class_count: int | None = None,
+    ) -> None:
+        """Persist an incomplete dynamic-access phase."""
+        save_phase_update(
+            self.continuation_marker_path,
+            lambda marker: (
+                marker.record_exhausted_classes(sorted(exhausted_classes)),
+                marker.record_chunk_progress(self.chunk_class_count, chunk_processed_class_count),
+                marker.mark_phase_pending(PHASE_EXPLORE, iteration=iteration),
+            ),
+        )
+
+    def _continuation_exhausted_classes(self) -> set[str]:
+        """Return EXPLORE classes that continuation must not retry."""
+        if self.continuation_marker is None:
+            return set()
+        explore_phase: dict[str, object] = self.continuation_marker.phases.get(PHASE_EXPLORE, {})
+        exhausted_classes: object = explore_phase.get("exhaustedClasses", [])
+        if not isinstance(exhausted_classes, list):
+            return set()
+        return {
+            class_name
+            for class_name in exhausted_classes
+            if isinstance(class_name, str) and class_name
+        }
 
     def _queue_native_test_verification_step(
             self,
@@ -690,7 +806,10 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             f"native-test gate {result.status} for {class_name} after {result.iterations_used} cycles",
             indent_level=2,
         )
-        self._commit_library_metadata(f"Native metadata for {class_name}")
+        self._commit_test_sources(f"Native-test gate fixes for {class_name}")
+        self._latest_class_checkpoint = self._commit_library_metadata(
+            f"Native metadata for {class_name}"
+        )
         return True
 
     def _refresh_report_after_gate(self, class_name: str):
@@ -738,6 +857,15 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         self._run_exhaust_report_git_command(
             ["git", "commit", "-m", message, "--", self.dynamic_access_exhaust_report_path]
         )
+        # The exhaust-report commit records terminal class state above the last
+        # test/metadata commit, so advance the whole-phase recovery checkpoint
+        # past it too; otherwise a later reset drops the completed-class marker
+        # while keeping its tests, per §WF-dynamic-access-fallback-and-failure.
+        self._latest_class_checkpoint = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=self.reachability_repo_path,
+            text=True,
+        ).strip()
 
     def _run_exhaust_report_git_command(self, command: list[str]) -> None:
         result = subprocess.run(
@@ -881,7 +1009,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         )
         return "\n".join([tracked_diff.stdout, "--untracked--", untracked_files.stdout])
 
-    def _commit_test_sources(self, message: str) -> None:
+    def _commit_test_sources(self, message: str) -> str:
         """Stage and commit test sources so the next class has a clean checkpoint."""
         tests_dir = os.path.join(
             self.reachability_repo_path, "tests", "src",
@@ -899,9 +1027,19 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             cwd=self.reachability_repo_path,
             capture_output=True, check=False,
         )
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=self.reachability_repo_path,
+            text=True,
+        ).strip()
 
-    def _commit_library_metadata(self, message: str) -> None:
-        """Stage and commit durable library metadata created by the class gate."""
+    def _commit_library_metadata(self, message: str) -> str:
+        """Stage and commit durable library metadata created by the class gate.
+
+        Returns the resulting `HEAD` SHA so a passing gate can advance the
+        whole-phase recovery checkpoint past the verified test and metadata
+        commits, per §WF-dynamic-access-fallback-and-failure.
+        """
         metadata_version = resolve_metadata_version(
             self.reachability_repo_path,
             self.group,
@@ -923,13 +1061,17 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             cwd=self.reachability_repo_path,
             capture_output=True, check=False,
         ).returncode
-        if diff_rc == 0:
-            return
-        subprocess.run(
-            ["git", "commit", "-m", message, "--", metadata_dir],
+        if diff_rc != 0:
+            subprocess.run(
+                ["git", "commit", "-m", message, "--", metadata_dir],
+                cwd=self.reachability_repo_path,
+                capture_output=True, check=False,
+            )
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
             cwd=self.reachability_repo_path,
-            capture_output=True, check=False,
-        )
+            text=True,
+        ).strip()
 
     def _generate_dynamic_access_report(self, indent_level: int = 0):
         """Generate and load the dynamic-access report used as strategy guidance.

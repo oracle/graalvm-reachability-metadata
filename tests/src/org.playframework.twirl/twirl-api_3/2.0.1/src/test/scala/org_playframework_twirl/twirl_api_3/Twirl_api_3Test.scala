@@ -104,14 +104,14 @@ class Twirl_api_3Test {
     assertEquals("", template._display_(scala.runtime.BoxedUnit.UNIT).body)
     assertEquals("<b>safe</b>", template._display_(HtmlFormat.raw("<b>safe</b>")).body)
 
-    assertEquals("optional &amp; escaped", template._display_(Some("optional & escaped"))(htmlClassTag).body)
-    assertEquals("", template._display_(None)(htmlClassTag).body)
-    assertEquals("java &lt;optional&gt;", template._display_(Optional.of("java <optional>"))(htmlClassTag).body)
-    assertEquals("", template._display_(Optional.empty[String]())(htmlClassTag).body)
+    assertEquals("optional &amp; escaped", template._display_(Some("optional & escaped"))(using htmlClassTag).body)
+    assertEquals("", template._display_(None)(using htmlClassTag).body)
+    assertEquals("java &lt;optional&gt;", template._display_(Optional.of("java <optional>"))(using htmlClassTag).body)
+    assertEquals("", template._display_(Optional.empty[String]())(using htmlClassTag).body)
 
-    assertEquals("a&amp;<b>b</b>c&lt;", template._display_(Seq("a&", HtmlFormat.raw("<b>b</b>"), "c<"))(htmlClassTag).body)
-    assertEquals("x&lt;y&gt;", template._display_(Array("x<", "y>"))(htmlClassTag).body)
-    assertEquals("j&lt;<em>safe</em>", template._display_(java.util.Arrays.asList[Any]("j<", HtmlFormat.raw("<em>safe</em>")))(htmlClassTag).body)
+    assertEquals("a&amp;<b>b</b>c&lt;", template._display_(Seq("a&", HtmlFormat.raw("<b>b</b>"), "c<"))(using htmlClassTag).body)
+    assertEquals("x&lt;y&gt;", template._display_(Array("x<", "y>"))(using htmlClassTag).body)
+    assertEquals("j&lt;<em>safe</em>", template._display_(java.util.Arrays.asList[Any]("j<", HtmlFormat.raw("<em>safe</em>")))(using htmlClassTag).body)
 
     val copied: BaseScalaTemplate[Html, Format[Html]] = template.copy(HtmlFormat)
     assertEquals(template, copied)
@@ -161,7 +161,7 @@ class Twirl_api_3Test {
       StringContext("Hello ", " and ", "!").interpolate[Markdown](
         Seq("A_B *C*", trustedText),
         MarkdownFormat
-      )(summon[ClassTag[Markdown]])
+      )(using summon[ClassTag[Markdown]])
 
     assertEquals("Hello A\\_B \\*C\\* and **trusted**!", renderedText.body)
   }

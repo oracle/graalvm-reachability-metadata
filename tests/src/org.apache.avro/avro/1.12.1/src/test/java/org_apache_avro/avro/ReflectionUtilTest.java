@@ -44,6 +44,18 @@ public class ReflectionUtilTest {
         }
     }
 
+    public static class ConstructedWithString {
+        private final String value;
+
+        public ConstructedWithString(String value) {
+            this.value = value;
+        }
+
+        public String value() {
+            return value;
+        }
+    }
+
     public static class PrivateStringConstructor {
         private PrivateStringConstructor(String value) {
         }
