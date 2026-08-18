@@ -708,18 +708,6 @@ Provider<List<String>> pgoBuildArgs = providers.provider {
     return buildArgs
 }
 
-Provider<List<String>> codeCoverageSuiteBuildArgs = providers.provider {
-    List<String> buildArgs = []
-    File suiteMetadataDir = new File(codeCoverageSuiteDir, "metadata")
-    if (includeCodeCoverageSuite && suiteMetadataDir.isDirectory()) {
-        // Supplemental configs the extension suite needs beyond the shipped
-        // metadata; each entry is a promotion candidate for metadata/
-        // (§forge/WF-code-coverage-improvement.3.1).
-        buildArgs.add("-H:ConfigurationFileDirectories=${suiteMetadataDir.absolutePath}")
-    }
-    return buildArgs
-}
-
 tasks.named("nativeTestCompile", BuildNativeImageTask).configure { BuildNativeImageTask task ->
     if (dedicatedLayer) {
         task.dependsOn(tasks.named("nativeLibDedicatedCompile"))
@@ -1050,7 +1038,6 @@ graalvmNative {
                         "-H:-UnlockExperimentalVMOptions"
                 ])
             }
-            buildArgs.addAll(codeCoverageSuiteBuildArgs)
             if (generateDynamicAccessReport) {
                 buildArgs.addAll(providers.provider {
                     DynamicAccessUtils.buildArgsForClasspathEntries(resolveTestedLibraryJars())

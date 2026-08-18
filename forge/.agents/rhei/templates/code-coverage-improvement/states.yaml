@@ -589,7 +589,45 @@ states:
       except Exception as error:
           fail(1, f"conversion.json missing or invalid: {error}")
 
-      # Step 2: checkstyle over the coordinate's subprojects, including the
+      # Step 2: separate test-only metadata from shipped metadata, then validate
+      # what remains. The extension suite contributes to the same two
+      # reachability-metadata.json files as every other test, and the split is by
+      # the entry's own type, never by hand
+      # (§WF-code-coverage-improvement.2, §root/METADATA-suite.2, §root/TCK-test-harness.5).
+      for metadata_task in ("splitTestOnlyMetadata", "checkMetadataFiles"):
+          metadata_command = [
+              f"{worktree_path}/gradlew",
+              metadata_task,
+              f"-Pcoordinates={coordinate}",
+              "--stacktrace",
+          ]
+          try:
+              if subprocess.run(metadata_command, cwd=worktree_path).returncode != 0:
+                  fail(2, f"{metadata_task} failed")
+          except OSError as error:
+              fail(2, f"{metadata_task} could not run: {error}")
+
+      # A tracing-agent run during metadata preparation can leave legacy split
+      # configs behind; this repository loads none of them
+      # (§root/METADATA-suite.1).
+      sys.path.insert(0, work_path)
+      try:
+          from utility_scripts.native_image_config_policy import (
+              find_legacy_test_native_image_config_files_for_coordinate,
+              find_uncommitted_legacy_test_native_image_config_files_for_coordinate,
+              format_legacy_test_native_image_config_error,
+          )
+          legacy_paths = sorted(
+              set(find_legacy_test_native_image_config_files_for_coordinate(worktree_path, coordinate))
+              | set(find_uncommitted_legacy_test_native_image_config_files_for_coordinate(worktree_path, coordinate))
+          )
+      except Exception as error:
+          fail(2, f"legacy config policy check could not run: {error}")
+      if legacy_paths:
+          print(format_legacy_test_native_image_config_error(legacy_paths), file=sys.stderr)
+          fail(2, "legacy Native Image config files found under the test project")
+
+      # Step 3: checkstyle over the coordinate's subprojects, including the
       # tracked coverage suite source set.
       checkstyle_command = [
           f"{worktree_path}/gradlew",
@@ -599,11 +637,11 @@ states:
       ]
       try:
           if subprocess.run(checkstyle_command, cwd=worktree_path).returncode != 0:
-              fail(2, "checkstyle failed")
+              fail(3, "checkstyle failed")
       except OSError as error:
-          fail(2, f"checkstyle could not run: {error}")
+          fail(3, f"checkstyle could not run: {error}")
 
-      # Step 3: regular JVM tests plus the tracked extension suite.
+      # Step 4: regular JVM tests plus the tracked extension suite.
       # Finalization runs no Native Image validation at this stage.
       jvm_commands = [
           [
@@ -617,11 +655,11 @@ states:
       for jvm_command in jvm_commands:
           try:
               if subprocess.run(jvm_command, cwd=worktree_path).returncode != 0:
-                  fail(3, f"JVM tests failed: {jvm_command[1]}")
+                  fail(4, f"JVM tests failed: {jvm_command[1]}")
           except OSError as error:
-              fail(3, f"JVM tests could not run: {error}")
+              fail(4, f"JVM tests could not run: {error}")
 
-      # Step 4: finalize separate API/deep JaCoCo metrics and guidance-only PGO
+      # Step 5: finalize separate API/deep JaCoCo metrics and guidance-only PGO
       # evidence from the recorded reports and target state.
       def report_bounds(directory: str, stem: str) -> tuple:
           reports = sorted(
@@ -629,7 +667,7 @@ states:
               key=lambda p: int(p.stem.rsplit("-", 1)[1]),
           )
           if not reports:
-              fail(4, f"no {stem} reports under {directory}")
+              fail(5, f"no {stem} reports under {directory}")
           return reports[0], reports[-1]
 
       api_baseline, api_final = report_bounds("runtime/code-coverage/validation", "api-cover-report")
@@ -652,9 +690,9 @@ states:
       finalize_env = dict(os.environ, PYTHONPATH=work_path)
       try:
           if subprocess.run(finalize_command, env=finalize_env).returncode != 0:
-              fail(4, "code_coverage_finalize.py failed")
+              fail(5, "code_coverage_finalize.py failed")
       except OSError as error:
-          fail(4, f"code_coverage_finalize.py could not run: {error}")
+          fail(5, f"code_coverage_finalize.py could not run: {error}")
       PY
     program_timeout: 90m
     inputs:
@@ -714,11 +752,21 @@ states:
       state log names the failed step or verification check:
       - step 1: `runtime/code-coverage/issues/conversion.json` is missing or
         invalid - repair it from the conversion task evidence.
-      - step 2: checkstyle failed - fix the style violations in the generated
+      - step 2: `splitTestOnlyMetadata`, `checkMetadataFiles`, or the legacy
+        config policy check failed. Never hand-move entries between the shipped
+        and test-only files - that is what the split task decides. If the
+        failure names legacy split-config files (`jni-config.json`,
+        `reflect-config.json`, `resource-config.json`,
+        `serialization-config.json`, `proxy-config.json`,
+        `predefined-classes-config.json`), convert what they justify into the
+        single-file `reachability-metadata.json` format, delete them, and re-run;
+        this repository loads no other format. If `checkMetadataFiles` rejects an
+        entry, fix the entry or its `allowed-packages`, never the check.
+      - step 3: checkstyle failed - fix the style violations in the generated
         coverage tests; do not suppress or weaken the checkstyle rules.
-      - step 3: JVM tests failed - fix the generated coverage tests in the
+      - step 4: JVM tests failed - fix the generated coverage tests in the
         issue worktree; do not weaken or delete meaningful assertions.
-      - step 4: `code_coverage_finalize.py` failed - repair the report or
+      - step 5: `code_coverage_finalize.py` failed - repair the report or
         target-state artifacts it rejected; never edit its output by hand.
       - verification: finalization artifacts are missing, empty, or
         schema-invalid - repair the inputs and let the program regenerate them.

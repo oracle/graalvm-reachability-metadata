@@ -513,6 +513,49 @@ class MetricsPathTests(unittest.TestCase):
                 ],
             )
 
+    def test_native_image_config_policy_covers_extension_suites_outside_test_resources(self) -> None:
+        """Extension suites are siblings of `src/`, so anchoring on META-INF let them through."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            metadata_dir = os.path.join(temp_dir, "metadata", "org.example", "demo")
+            suite_metadata_dir = os.path.join(
+                temp_dir,
+                "tests",
+                "src",
+                "org.example",
+                "demo",
+                "1.0.0",
+                "code-coverage-improvement",
+                "metadata",
+            )
+            os.makedirs(metadata_dir)
+            os.makedirs(suite_metadata_dir)
+            with open(os.path.join(metadata_dir, "index.json"), "w", encoding="utf-8") as file:
+                json.dump(
+                    [
+                        {
+                            "metadata-version": "1.0.0",
+                            "test-version": "1.0.0",
+                            "tested-versions": ["1.0.1"],
+                        }
+                    ],
+                    file,
+                )
+            with open(os.path.join(suite_metadata_dir, "jni-config.json"), "w", encoding="utf-8") as file:
+                json.dump([], file)
+
+            suite_path = (
+                "tests/src/org.example/demo/1.0.0/code-coverage-improvement/metadata/jni-config.json"
+            )
+            self.assertTrue(is_legacy_test_native_image_config_path(suite_path))
+            self.assertEqual(
+                find_legacy_test_native_image_config_files_for_coordinate(temp_dir, "org.example:demo:1.0.1"),
+                [suite_path],
+            )
+            # `reachability-metadata.json` is the supported format, so it stays.
+            self.assertFalse(is_legacy_test_native_image_config_path(
+                "tests/src/org.example/demo/1.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json"
+            ))
+
     def test_create_run_metrics_includes_test_only_metadata_entries_only_when_positive(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             tests_root = os.path.join(

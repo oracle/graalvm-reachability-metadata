@@ -138,6 +138,14 @@
   - Read the resolved coordinate and absolute suite root from the conversion
     and preparation artifacts.
   - Generate metadata with `./gradlew generateMetadata -Pcoordinates=<resolved coordinate> -PincludeCodeCoverageSuite=true`.
+  - Metadata lands in the coordinate's existing `reachability-metadata.json`
+    files and nowhere else. The coverage suite has no metadata directory of its
+    own, and the legacy split-config files a tracing agent may emit
+    (`jni-config.json`, `reflect-config.json`, `resource-config.json`,
+    `serialization-config.json`, `proxy-config.json`) are input to convert, not
+    output to commit — this repository loads none of them
+    (§root/METADATA-suite.1, §WF-code-coverage-improvement.2). Do not split shipped
+    from test-only entries by hand: finalization runs `splitTestOnlyMetadata`.
   - Run `./gradlew nativeTest -Pcoordinates=<resolved coordinate> -PincludeCodeCoverageSuite=true`; if it fails, repair
     metadata with the Codex `fix-missing-reachability-metadata` skill and re-run,
     up to the helper's fix budget.
@@ -192,13 +200,24 @@
 - Program steps:
   1. Read `runtime/code-coverage/issues/conversion.json` for the resolved
      coordinate, worktree, work path, and coverage suite paths.
-  2. Run checkstyle over the coordinate's subprojects, including the tracked
+  2. Separate test-only metadata from shipped metadata and validate what
+     remains:
+     `./gradlew splitTestOnlyMetadata -Pcoordinates=<resolved coordinate> --stacktrace`
+     then
+     `./gradlew checkMetadataFiles -Pcoordinates=<resolved coordinate> --stacktrace`,
+     followed by the legacy config policy check from
+     `forge/utility_scripts/native_image_config_policy.py` over the coordinate's
+     test project. The extension suite contributes to the same two
+     `reachability-metadata.json` files as every other test and owns no metadata
+     directory of its own; the split is by the entry's own type, never by hand
+     (§WF-code-coverage-improvement.2, §root/METADATA-suite.2, §root/TCK-test-harness.5).
+  3. Run checkstyle over the coordinate's subprojects, including the tracked
      coverage suite source set:
      `./gradlew checkstyle -Pcoordinates=<resolved coordinate> --stacktrace`.
-  3. Run the regular JVM tests and the tracked extension suite:
+  4. Run the regular JVM tests and the tracked extension suite:
      `./gradlew javaTest -Pcoordinates=<resolved coordinate> --stacktrace` and
      `./gradlew codeCoverageTest -Pcoordinates=<resolved coordinate> --stacktrace`.
-  4. Invoke `forge/utility_scripts/code_coverage_finalize.py` with the resolved
+  5. Invoke `forge/utility_scripts/code_coverage_finalize.py` with the resolved
      `--coordinate`, repository-relative `--coverage-suite-path`, the API
      baseline/final reports (`api-cover-report-0.json` and the highest-iteration report),
      the deep baseline/final reports (`discovery-report-0.json` and the

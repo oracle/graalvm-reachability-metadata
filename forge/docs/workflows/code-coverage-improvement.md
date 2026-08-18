@@ -91,10 +91,22 @@ generated code coverage tests must not be placed in the metadata-generation
 suite, and the regular `src/test` sources are read-only for this workflow.
 
 The suite root must contain `src/test/java` and may contain
-`src/test/resources`, a `suite.json` recording the true coordinate being
-improved, and a `metadata/` directory with supplemental native-image configs
-the extension suite needs beyond the shipped metadata (each entry is a
-promotion candidate for `metadata/`). The build maps the suite to a dedicated
+`src/test/resources` and a `suite.json` recording the true coordinate being
+improved. It must not carry a metadata directory of its own. Reachability
+metadata has exactly two homes in this repository, and the extension suite
+contributes to the same two as every other test: entries a consumer needs go
+to `metadata/<group>/<artifact>/<version>/reachability-metadata.json`, and
+entries that exist only for the tests go to the test project's
+`src/test/resources/META-INF/native-image/reachability-metadata.json`
+(§root/METADATA-suite.2, §root/FS-repository-functional-spec.5.1). The single-file
+`reachability-metadata.json` format is the only one `native-image` loads here;
+the legacy split-config files — `reflect-config.json`, `jni-config.json`,
+`resource-config.json`, `serialization-config.json`, `proxy-config.json` — are
+never used in this repository (§root/METADATA-suite.1), so a native-image tracing
+agent run that emits them has produced input to convert, not output to commit.
+Which of the two homes an entry belongs to is not decided by hand: finalization
+runs `splitTestOnlyMetadata` and the split is by the entry's own type
+(§4). The build maps the suite to a dedicated
 `codeCoverage` source set with its own `codeCoverageTest` JVM task and a
 combined `jacocoCodeCoverageReport`; `jacocoTestReport` stays the
 regular-suite baseline. Native lanes opt in with
@@ -412,12 +424,20 @@ The Rhei template should decompose the workflow into these phases:
    it writes no target state — measurement tracks attempts and rotation
    deterministically from its own report history.
 7. **Finalization** — a deterministic step program: read the machine-readable
-   conversion record, run checkstyle over the coordinate's subprojects
-   (including the tracked coverage suite), run the regular JVM tests
-   (`javaTest`) and the tracked extension suite (`codeCoverageTest`), and
-   persist final metrics from the baseline and highest-iteration JaCoCo and
-   deep reports. No Native Image validation runs at this stage; a nonzero exit
-   code names the failed step.
+   conversion record; run `splitTestOnlyMetadata` and then `checkMetadataFiles`;
+   run checkstyle over the coordinate's subprojects (including the tracked
+   coverage suite); run the regular JVM tests (`javaTest`) and the tracked
+   extension suite (`codeCoverageTest`); and persist final metrics from the
+   baseline and highest-iteration JaCoCo and deep reports. The split is the same
+   step the dynamic-access workflows run at their own finalization
+   (§WF-improve-library-coverage), and for the same reason: metadata the
+   extension suite needed only for its own helper types must not reach a
+   consumer, and deciding that by hand is exactly what the task automates
+   (§root/METADATA-suite.2, §root/TCK-test-harness.5). The step also fails the run when a
+   legacy split-config file survives anywhere under the coordinate's test tree,
+   which is how a tracing-agent artifact left behind by metadata preparation is
+   caught before publication rather than in review (§2). No Native Image
+   validation runs at this stage; a nonzero exit code names the failed step.
 8. **Publication** — open a PR with source issue, coordinate, coverage suite,
    baseline/final JaCoCo coverage reported against the JaCoCo-reportable method
    count of each guidance phase, both phases combined into one figure, and
