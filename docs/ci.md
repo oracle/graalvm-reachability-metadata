@@ -80,6 +80,21 @@ Triggers on PRs touching `metadata/library-and-framework-list.json` or its
 schema. Validates and sorts the master supported-library list against its schema
 (§METADATA-suite).
 
+### CI-grund-check: Validate grund citations
+
+Triggers on PRs touching either project's scanned roots — `docs/`, `skills/`,
+the workflows and composite actions, the top-level Markdown, or a `grund.toml`.
+Installs a pinned `grund` release and runs `grund check` once from the
+repository root, which is the only scope where the workspace alias table
+resolves `§forge/<ID>`, so the run covers both namespaces. It fails on a
+citation that no longer resolves, on an `AGENTS.md` managed block that has
+drifted from its `grund.toml`, and on a `must`-level citation direction that is
+not met (§FS-repository-functional-spec.5.6).
+
+The `grund` version is pinned in the workflow rather than floating: a newer
+release can render a newer managed block, which would fail every PR until
+someone re-runs `grund init`. Bump the version and its checksum together.
+
 ### CI-checkstyle: Checkstyle
 
 Triggers on PRs that change code (excluding `docs/**`, `**.md`, and the framework

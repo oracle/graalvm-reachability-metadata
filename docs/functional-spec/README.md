@@ -237,7 +237,7 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 
 ### 5.3 CI gates
 
-- **PR gates.** Every PR is gated on the relevant subset of: `checkstyle`, `spotlessCheck`, `validateIndexFiles`, `checkMetadataFiles`, `validateLibraryStats`, `library-and-framework-list-validation`, and the appropriate `test-*` workflow.
+- **PR gates.** Every PR is gated on the relevant subset of: `checkstyle`, `spotlessCheck`, `validateIndexFiles`, `checkMetadataFiles`, `validateLibraryStats`, `library-and-framework-list-validation`, `grund check`, and the appropriate `test-*` workflow.
 - **Docker isolation.** Docker images used in tests are pre-pulled from `allowed-docker-images`, after which the runner disables Docker networking for deterministic, isolated test runs.
 - **Release style gate.** The release workflow runs `spotlessCheck` before packaging.
 - **Spring AOT scope.** The Spring AOT smoke matrix runs only when `metadata/` changes affect a Spring AOT project.
@@ -254,6 +254,18 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 
 Forge's requirements are specified in [forge/docs/functional-spec/README.md](../../forge/docs/functional-spec/README.md).
 §forge/FS-forge-functional-spec
+
+### 5.6 Documentation grounding
+
+- **Resolvable citations.** Every `§<ID>` citation in a scanned file must resolve
+  to a declared ID, in this namespace or in a workspace member's.
+- **Current agent instructions.** The managed block in each `AGENTS.md` must be
+  what `grund init` renders from that project's `grund.toml`, so the rules an
+  agent reads are the rules that are checked.
+- **Held citation directions.** The directions declared `must` in `[citations]`
+  hold; the ones declared `should` are a worklist rather than a gate.
+
+These are enforced on every PR that touches a scanned path (§CI-grund-check).
 
 ## 6. Operational Guarantees
 
