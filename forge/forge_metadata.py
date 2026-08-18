@@ -6653,10 +6653,12 @@ def build_publication_handoff(
     )
     chunked_dynamic_access_final = None
     coverage_follow_up_args: list[str] = []
-    if coverage_follow_up_class_count is not None or coverage_follow_up_class_threshold is not None:
+    if coverage_follow_up_issue_number is not None:
         if coverage_follow_up_class_count is None or coverage_follow_up_class_threshold is None:
-            raise ValueError("Both coverage follow-up count and threshold are required")
+            raise ValueError("Coverage follow-up count and threshold are required")
         coverage_follow_up_args = [
+            "--coverage-follow-up-issue-number",
+            str(coverage_follow_up_issue_number),
             "--coverage-follow-up-class-count",
             str(coverage_follow_up_class_count),
             "--coverage-follow-up-class-threshold",
