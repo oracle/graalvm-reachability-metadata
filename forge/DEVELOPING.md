@@ -269,7 +269,7 @@ These are invoked automatically by workflow drivers, but can be run standalone f
 
 ### Agent session logs
 
-Agents are registered via `Agent.register(...)` and selected per-strategy through the `agent` field in `strategies/predefined_strategies.json`; see [docs/agent.md](docs/agent.md) for the agent API and Pi adapter architecture. Supported agents:
+Agents are registered via `Agent.register(...)` and selected per-strategy through the `agent` field in `strategies/predefined_strategies.json`; see [docs/architecture/agent.md](docs/architecture/agent.md) for the agent API and Pi adapter architecture. Supported agents:
 
 - `pi` — default for the shipped strategies. Driven through `pi --mode rpc` by `PiAgent` (`ai_workflows/agents/pi_agent.py`). Per-turn transcripts are written to `logs/pi-<action>-<library>-<timestamp>.log` in this repository (see `utility_scripts/pi_logs.py`). Pi session files are stored under Pi's default session directory (`--session-dir` may override it via `PiRpcClient`). Select with strategy entries whose `agent` is `"pi"`; set `"provider": "openrouter"` to route through OpenRouter.
 - `codex` — driven through `codex` by `CodexAgent`. Codex threads act as durable session identities.
