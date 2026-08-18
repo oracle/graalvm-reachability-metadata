@@ -103,8 +103,8 @@ Do not create a namespace for a regular module or component that still belongs t
 
 Cross-project citations use §alias/<ID>.
 
-- [`forge`](AGENTS.md)
-- [`root`](../AGENTS.md)
+- [`forge`](AGENTS.md): Automation subproject that turns labeled issues into reviewed metadata pull requests
+- [`root`](../AGENTS.md): Repository for shared GraalVM reachability metadata, tests, and release infrastructure
 
 ### Declarations and citations
 
@@ -120,7 +120,19 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 
 ### Citation directions
 
-Specs cite goals, architecture cites specs, code and executable tests cite the specs they realize.
+- **GOAL** must cite GRUND or GOAL.
+- **AR** must cite FS or GOAL.
+- **FS** must cite GOAL or FS.
+- **DW** must cite FS or AR.
+- **STRAT** should cite FS or AR or GOAL.
+- **ORCH** must cite FS or AR or STRAT.
+- **GIT** should cite FS or AR.
+- **WF** should cite FS or STRAT or ORCH or GIT.
+- **E2E** must cite FS or WF or ORCH.
+- **BENCH** must cite FS or AR or GOAL.
+- **ROADMAP** should cite GOAL or FS or AR.
+- **code** (any file outside a kind home) must cite FS or AR or DW or STRAT or ORCH or GIT or WF.
+Unlisted kinds and pairs are fine.
 
 ### Clickable citations
 
