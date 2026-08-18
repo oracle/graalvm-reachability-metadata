@@ -6,8 +6,9 @@
 """Publish schema-validated code coverage improvement evidence.
 
 The PR body reports each guidance phase against its JaCoCo-reportable method
-count, the two phases combined, per-phase token usage, and keeps completed
-targets as a count to stay within the GitHub body limit
+count, the two phases combined, and per-phase token usage. Per-target rosters
+and validation commands stay in the finalization artifacts, which is where a
+reviewer reads them from
 (§WF-code-coverage-improvement, §AR-forge-verification-publication-boundary).
 """
 
@@ -184,24 +185,6 @@ def _token_lines(rows: list[dict[str, Any]]) -> list[str]:
     return lines
 
 
-def _target_lines(targets: list[dict[str, Any]]) -> list[str]:
-    if not targets:
-        return ["_None recorded._"]
-    lines: list[str] = []
-    for target in targets:
-        line: str = f"- [{target['phase']}] `{target['id']}`"
-        if "attemptCount" in target:
-            last_iteration: int | None = target["lastAttemptedIteration"]
-            last: str = str(last_iteration) if last_iteration is not None else "none"
-            line += (
-                f" — attempts: {target['attemptCount']}, "
-                f"last attempted iteration: {last}"
-            )
-        line += f" — {target['reason']}"
-        lines.append(line)
-    return lines
-
-
 def build_pull_request_body(
         coordinate: str,
         issue_number: int | None,
@@ -209,7 +192,6 @@ def build_pull_request_body(
         token_usage: list[dict[str, Any]] | None = None,
 ) -> str:
     """Build a PR body from the final metrics contract."""
-    targets: dict[str, list[dict[str, Any]]] = metrics["targets"]
     lines: list[str] = [
         "## Code coverage improvement",
         "",
@@ -226,14 +208,7 @@ def build_pull_request_body(
         "PGO guidance phase", metrics["deepJacoco"]
     )
     lines += [""] + _combined_lines(metrics["apiJacoco"], metrics["deepJacoco"])
-    lines += ["", f"## Completed targets ({len(targets['completed'])})"]
-    for status in ("skipped", "exhausted", "failed"):
-        entries: list[dict[str, Any]] = targets[status]
-        lines += ["", f"## {status.title()} targets ({len(entries)})", ""]
-        lines += _target_lines(entries)
-    lines += ["", "## Validation commands", "", "```console"]
-    lines += metrics["validationCommands"]
-    lines += ["```", ""]
+    lines += [""]
     token_lines: list[str] = _token_lines(token_usage or [])
     if token_lines:
         lines += token_lines + [""]

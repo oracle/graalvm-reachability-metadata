@@ -117,12 +117,22 @@ class PublisherTests(unittest.TestCase):
         self.assertNotIn("Sampled PGO", body)
         self.assertNotIn("84 samples", body)
 
-        self.assertIn("## Completed targets (1)", body)
-        self.assertNotIn("example.Greeter#greet():java.lang.String", body)
-        self.assertIn("No public route.", body)
-        self.assertIn("## Failed targets (1)", body)
         self.assertIn("Needs human intervention: yes", body)
-        self.assertIn("attempts: 4, last attempted iteration: 5", body)
+
+    def test_body_omits_target_rosters_and_validation_commands(self) -> None:
+        """Counts restate the coverage figures; the commands carry local paths."""
+        body = module.build_pull_request_body(
+            "com.example:demo:1.0.0", 8380, self._metrics()
+        )
+
+        for heading in ("Completed", "Skipped", "Exhausted", "Failed"):
+            self.assertNotIn(f"## {heading} targets", body)
+        self.assertNotIn("_None recorded._", body)
+        self.assertNotIn("## Validation commands", body)
+        self.assertNotIn("./gradlew test -Pcoordinates=com.example:demo:1.0.0", body)
+        self.assertNotIn("example.Greeter#greet():java.lang.String", body)
+        self.assertNotIn("No public route.", body)
+        self.assertNotIn("attempts: 4, last attempted iteration: 5", body)
 
     def test_body_combines_both_phases(self) -> None:
         body = module.build_pull_request_body(

@@ -420,11 +420,13 @@ The Rhei template should decompose the workflow into these phases:
    code names the failed step.
 8. **Publication** — open a PR with source issue, coordinate, coverage suite,
    baseline/final JaCoCo coverage reported against the JaCoCo-reportable method
-   count of each guidance phase, both phases combined into one figure, the
-   completed-target count (individual covered methods are not listed, keeping
-   the body within the GitHub description limit), skipped/exhausted/failed
-   targets with reasons, validation commands, and per-phase token usage read
-   from the Rhei accounting directory. Coverage percentages divide by the
+   count of each guidance phase, both phases combined into one figure, and
+   per-phase token usage read from the Rhei accounting directory. The body
+   carries no per-target roster and no validation commands: the target counts
+   restate what the coverage figures already say, and the commands embed the
+   run's own absolute worktree paths, which no reader of the PR can execute.
+   Both stay in the finalization artifacts, which is where a reviewer who wants
+   per-target detail reads it. Coverage percentages divide by the
    methods JaCoCo reports, not by every inventory entry: entries JaCoCo never
    reports are ones no run can cover, and charging them to the run understates
    it. The combined figure adds the two phases directly, which is sound because
