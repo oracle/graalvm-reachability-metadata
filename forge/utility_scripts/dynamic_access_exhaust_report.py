@@ -171,11 +171,6 @@ class DynamicAccessExhaustReport:
         self.class_threshold = int(class_threshold)
         self.current_chunk_class_count = int(current_chunk_class_count)
 
-    def record_published_chunk(self, commit: str, pr_number: int | None) -> None:
-        """Record the latest published chunk PR and commit."""
-        self.latest_chunk_commit = commit
-        self.latest_chunk_pull_request = pr_number
-
     def record_publication_identity(self, publication_id: str, branch: str) -> None:
         """Record the chunk identity that will be resolved after Actions publication."""
         self.latest_chunk_publication_id = publication_id

@@ -1534,7 +1534,8 @@ class SingleIssueProcessingTests(unittest.TestCase):
             coordinate="org.example:lib:1.0.0",
             issue_number=1412,
         )
-        report_state.record_published_chunk("head-commit", 4242)
+        report_state.latest_chunk_commit = "head-commit"
+        report_state.latest_chunk_pull_request = 4242
 
         with patch.object(
                 forge_metadata,
