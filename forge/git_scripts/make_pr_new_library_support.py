@@ -13,11 +13,7 @@ from git_scripts.common_git import (
     ensure_gh_authenticated,
     parse_coordinate_parts,
     find_issue_for_coordinates as find_issue_common,
-    get_model_display_name,
-    get_agent_name,
     load_library_stats,
-    format_stats_section,
-    format_forge_revision_section,
 )
 from git_scripts.pr_publication import (
     BASE_BRANCH,
@@ -35,10 +31,6 @@ from utility_scripts.dynamic_access_exhaust_report import (
     find_dynamic_access_exhaust_report_path,
 )
 from utility_scripts.dynamic_access_report import DynamicAccessCallSite, load_dynamic_access_coverage_report
-from utility_scripts.local_ci_verification import (
-    LOCAL_CI_VERIFICATION_KEY,
-    format_local_ci_verification_pr_section,
-)
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 from utility_scripts.test_quality_checks import (
     collect_generated_test_validity_issues,
@@ -55,59 +47,6 @@ DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_MAX_ITEMS = 8
 class DynamicAccessMetadataEvidence:
     covered_call_sites: list[str]
     metadata_rules: list[str]
-
-
-def _extract_covered_dynamic_access_calls(library_stats: dict | None) -> int | None:
-    """Return the total covered dynamic-access call count from library stats."""
-    if not isinstance(library_stats, dict):
-        return None
-
-    dynamic_access = library_stats.get("dynamicAccess")
-    if not isinstance(dynamic_access, dict):
-        return None
-
-    covered_calls = dynamic_access.get("coveredCalls")
-    if not isinstance(covered_calls, int):
-        return None
-    return covered_calls
-
-
-def format_dynamic_access_metadata_entry_note(
-        metadata_entries: int,
-        library_stats: dict | None,
-        evidence: DynamicAccessMetadataEvidence | None = None,
-) -> str:
-    """Explain large dynamic-access/metadata-entry count differences in generated PR bodies."""
-    covered_calls = _extract_covered_dynamic_access_calls(library_stats)
-    if covered_calls is None:
-        return ""
-    if metadata_entries > 0 and covered_calls < metadata_entries * DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_RATIO:
-        return ""
-    if metadata_entries <= 0 and covered_calls <= 0:
-        return ""
-
-    lines = [
-        "",
-        "### Metadata/dynamic-access evidence",
-        "",
-        f"- Covered dynamic-access calls: {covered_calls}",
-        f"- Metadata entries: {metadata_entries}",
-        "- These counts are different dimensions: covered dynamic-access calls count observed call sites, "
-        "while metadata entries count generated reachability-config items. Depending on the access type, "
-        "a single metadata rule can cover multiple observed call sites, or no shipped rule may be required "
-        "when the covered access does not target fixed library-owned metadata.",
-    ]
-    if evidence and evidence.covered_call_sites:
-        lines.append("- Covered call sites:")
-        lines.extend(f"  - {call_site}" for call_site in evidence.covered_call_sites)
-    if evidence and evidence.metadata_rules:
-        lines.append("- Generated metadata rules:")
-        lines.extend(f"  - {metadata_rule}" for metadata_rule in evidence.metadata_rules)
-    lines.append(
-        "- Use the call-site and metadata-rule lists together to review whether the observed dynamic-access "
-        "paths are explained by the generated reachability metadata."
-    )
-    return "\n".join(lines) + "\n"
 
 
 def load_dynamic_access_metadata_evidence(repo_path: str, coordinates: str) -> DynamicAccessMetadataEvidence | None:
@@ -255,87 +194,6 @@ def _limit_evidence_items(items: list[str]) -> list[str]:
     ]
 
 
-def build_pull_request_body(
-        issue_no,
-        coordinates,
-        model_display_name,
-        agent_name,
-        strategy_name,
-        run_status,
-        metrics,
-        library_stats=None,
-        post_generation_intervention=None,
-        chunked_dynamic_access: bool = False,
-        chunk_final: bool = True,
-        dynamic_access_exhaust_report: DynamicAccessExhaustReport | None = None,
-        local_ci_verification=None,
-        dynamic_access_evidence: DynamicAccessMetadataEvidence | None = None,
-):
-    """Build the PR body with metrics, strategy name, stats, and issue linkage.
-
-    Chunked dynamic-access runs use ``Refs`` until the final chunk may close the
-    backing issue (§WF-chunked-dynamic-access-pr-linking), following the chunked
-    linking contract (§GIT-chunked-linking); the body records the run's tracked
-    parameters (§GIT-pr-body) so verification and intervention context stay
-    visible to reviewers.
-    """
-    input_tokens_used = metrics.get("input_tokens_used", 0)
-    output_tokens_used = metrics.get("output_tokens_used", 0)
-    cached_input_tokens_used = metrics.get("cached_input_tokens_used", 0)
-    entries_found = int(metrics.get("metadata_entries", 0) or 0)
-    test_only_metadata_entries = int(metrics.get("test_only_metadata_entries", 0) or 0)
-    iterations = metrics.get("iterations", 0)
-    code_coverage_percent = metrics.get("code_coverage_percent", 0)
-    generated_loc = metrics.get("generated_loc", 0)
-    tested_library_loc = metrics.get("tested_library_loc", 0)
-    test_only_metadata_entries_line = ""
-    if test_only_metadata_entries > 0:
-        test_only_metadata_entries_line = f"- Test-only metadata entries: {test_only_metadata_entries}\n"
-
-    issue_reference = f"Fixes: #{issue_no}"
-    if chunked_dynamic_access and not chunk_final:
-        issue_reference = f"Refs: #{issue_no}"
-    chunk_line = format_chunked_dynamic_access_summary(
-        chunked_dynamic_access,
-        dynamic_access_exhaust_report,
-    )
-
-    body = f"""
-## What does this PR do?
-
-{issue_reference}
-
-This PR introduces tests and metadata for {coordinates}, enabling support for this library.
-
-Summary:
-{chunk_line}\
-- Strategy: {strategy_name}
-- Agent: {agent_name}
-- Model: {model_display_name}
-- Input tokens: {input_tokens_used}
-- Cached input tokens: {cached_input_tokens_used}
-- Output tokens: {output_tokens_used}
-- Metadata entries: {entries_found}
-{test_only_metadata_entries_line}\
-- Iterations: {iterations}
-- Library coverage percentage: {code_coverage_percent}
-- Generated lines of code: {generated_loc}
-- Tested library lines of code: {tested_library_loc}
-"""
-    body += format_dynamic_access_metadata_entry_note(entries_found, library_stats, dynamic_access_evidence)
-    body += "\n" + format_forge_revision_section() + "\n"
-    if library_stats:
-        body += "\n" + format_stats_section(library_stats) + "\n"
-    if post_generation_intervention:
-        body += "\n### Post-Generation Intervention\n\n"
-        body += f"- Stage: `{post_generation_intervention.get('stage', 'unknown')}`\n\n"
-        body += f"- Intervention file: `{post_generation_intervention.get('intervention_file', 'unknown')}`\n\n"
-        body += str(post_generation_intervention.get("analysis_markdown", "")).strip() + "\n"
-    body += format_local_ci_verification_pr_section(local_ci_verification)
-
-    return body
-
-
 def format_chunked_dynamic_access_summary(
         chunked_dynamic_access: bool,
         exhaust_report: DynamicAccessExhaustReport | None,
@@ -355,43 +213,6 @@ def format_chunked_dynamic_access_summary(
         f"exhausted={len(exhaust_report.exhausted_classes)}, "
         f"failed={len(exhaust_report.failed_classes)}\n"
     )
-
-
-def build_pull_request_preview(
-        coordinates: str,
-        metrics_repo_root: str,
-        repo_path: str,
-        issue_number: int | None = None,
-        chunked_dynamic_access: bool = False,
-        chunk_final: bool = True,
-) -> tuple[str, str, dict]:
-    """Build the PR title/body without creating a GitHub pull request."""
-    issue_no = issue_number if issue_number is not None else find_issue_common(coordinates, REPO)
-    matched = read_pending_metrics(metrics_repo_root)
-    metrics = matched.get("metrics", {})
-    strategy_name = matched.get("strategy_name", "")
-    model_display_name = get_model_display_name(strategy_name)
-    agent_name = get_agent_name(strategy_name)
-    title = f"[GenAI] Add support for {coordinates} using {model_display_name}"
-    if chunked_dynamic_access and not chunk_final:
-        title = f"{title} (chunked dynamic-access)"
-    body = build_pull_request_body(
-        issue_no=issue_no,
-        coordinates=coordinates,
-        model_display_name=model_display_name,
-        agent_name=agent_name,
-        strategy_name=strategy_name,
-        run_status=str(matched.get("status") or "unknown"),
-        metrics=metrics,
-        library_stats=load_library_stats(repo_path, coordinates),
-        post_generation_intervention=matched.get("post_generation_intervention"),
-        local_ci_verification=matched.get(LOCAL_CI_VERIFICATION_KEY),
-        chunked_dynamic_access=chunked_dynamic_access,
-        chunk_final=chunk_final,
-        dynamic_access_exhaust_report=load_dynamic_access_exhaust_report(repo_path, coordinates),
-        dynamic_access_evidence=load_dynamic_access_metadata_evidence(repo_path, coordinates),
-    )
-    return title, body, matched
 
 
 def load_dynamic_access_exhaust_report(

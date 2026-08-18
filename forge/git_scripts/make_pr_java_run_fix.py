@@ -10,98 +10,18 @@ from git_scripts.common_git import (
     ensure_gh_authenticated,
     parse_coordinate_parts,
     find_issue_for_coordinates as find_issue_common,
-    get_model_display_name,
-    get_agent_name,
-    format_stats_diff,
-    format_forge_revision_section,
 )
 from git_scripts.pr_publication import (
     BASE_BRANCH,
     REPO,
-    format_bounded_test_diff_section,
     publish_branch,
     stage_library_version_paths,
 )
 from git_scripts.publication_descriptor import descriptor_input_from_pending_metrics
-from utility_scripts.local_ci_verification import (
-    LOCAL_CI_VERIFICATION_KEY,
-    format_local_ci_verification_pr_section,
-)
-from utility_scripts.java_fix_coverage_follow_up import (
-    format_coverage_follow_up_pr_section,
-    format_generation_statistics_blocks,
-)
 from utility_scripts.metrics_writer import read_pending_metrics
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 
 DEFAULT_PR_LABEL = "fixes-java-run-fail"
-
-
-def build_pull_request_preview(
-        old_coordinates: str,
-        new_coordinates: str,
-        group: str,
-        artifact: str,
-        old_version: str,
-        new_version: str,
-        metrics_repo_root: str,
-        repo_path: str,
-        issue_number: int | None = None,
-        coverage_follow_up_issue_number: int | None = None,
-        coverage_follow_up_class_count: int | None = None,
-        coverage_follow_up_class_threshold: int | None = None,
-) -> tuple[str, str, dict]:
-    """Build the PR title/body without creating a GitHub pull request."""
-    issue_no = issue_number if issue_number is not None else find_issue_common(new_coordinates, REPO)
-    metrics_entry = read_pending_metrics(metrics_repo_root)
-    metrics = metrics_entry.get("metrics", {})
-    strategy_name = metrics_entry.get("strategy_name", "")
-    model_display_name = get_model_display_name(strategy_name)
-    agent_name = get_agent_name(strategy_name)
-    title = f"[GenAI] Test fix for {new_coordinates} using {model_display_name}"
-    coverage_deferred = coverage_follow_up_issue_number is not None
-    metadata_entry_lines, coverage_lines = format_generation_statistics_blocks(
-        metrics, coverage_deferred,
-    )
-    deferred_section = format_coverage_follow_up_pr_section(
-        issue_number=coverage_follow_up_issue_number,
-        uncovered_class_count=coverage_follow_up_class_count,
-        class_threshold=coverage_follow_up_class_threshold,
-        repo=REPO,
-    )
-    stats_diff_section = ""
-    if not coverage_deferred:
-        stats_diff_section = f"{format_stats_diff(repo_path, old_coordinates, new_coordinates)}\n"
-    body = f"""## What does this PR do?
-
-Fixes: #{issue_no}
-
-This PR provides test fixes and new metadata for {new_coordinates}, addressing runtime java test failures caused by changes in the updated library version.
-
-Summary:
-- Strategy: {strategy_name}
-- Agent: {agent_name}
-- Model: {model_display_name}
-- Input tokens: {int(metrics.get("input_tokens_used", 0))}
-- Cached input tokens: {int(metrics.get("cached_input_tokens_used", 0) or 0)}
-- Output tokens: {int(metrics.get("output_tokens_used", 0))}
-{metadata_entry_lines}\
-- Iterations: {int(metrics.get("iterations", 0))}
-{coverage_lines}\
-
-{deferred_section}{format_forge_revision_section()}
-{stats_diff_section}{format_bounded_test_diff_section(group, artifact, old_version, new_version, repo_path)}
-"""
-    post_generation_intervention = metrics_entry.get("post_generation_intervention")
-    if post_generation_intervention:
-        body += (
-            "\n### Post-Generation Intervention\n\n"
-            f"- Stage: `{post_generation_intervention.get('stage', 'unknown')}`\n\n"
-            f"- Intervention file: `{post_generation_intervention.get('intervention_file', 'unknown')}`\n\n"
-            f"{str(post_generation_intervention.get('analysis_markdown', '')).strip()}\n"
-        )
-    body += format_local_ci_verification_pr_section(metrics_entry.get(LOCAL_CI_VERIFICATION_KEY))
-    return title, body, metrics_entry
 
 
 def build_parser():

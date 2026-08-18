@@ -114,28 +114,21 @@ from git_scripts.common_git import (
     run_github_with_retries,
 )
 from git_scripts.make_pr_javac_fix import (
-    build_pull_request_preview as build_javac_fix_pull_request_preview,
     main as run_make_pr_javac_fix,
 )
 from git_scripts.make_pr_java_run_fix import (
-    build_pull_request_preview as build_java_run_fix_pull_request_preview,
     main as run_make_pr_java_run_fix,
 )
 from git_scripts.make_pr_new_library_support import (
-    build_pull_request_preview as build_new_library_pull_request_preview,
     main as run_make_pr_new_library_support,
 )
 from git_scripts.make_pr_not_for_native_image import (
-    build_pull_request_preview as build_not_for_native_image_pull_request_preview,
     main as run_make_pr_not_for_native_image,
 )
 from git_scripts.make_pr_ni_run_fix import (
-    build_pull_request_preview as build_ni_run_fix_pull_request_preview,
     main as run_make_pr_ni_run_fix,
 )
 from git_scripts.make_pr_improve_coverage import (
-    build_pull_request_preview as build_improve_coverage_pull_request_preview,
-    load_baseline_snapshot,
     main as run_make_pr_improve_coverage,
 )
 from utility_scripts.dynamic_access_exhaust_report import (
@@ -6875,149 +6868,6 @@ def build_publication_handoff(
     )
 
 
-def _publication_new_coordinates(handoff: PublicationHandoff) -> str | None:
-    if handoff.coordinates:
-        return handoff.coordinates
-    if not handoff.current_coordinates or not handoff.new_version:
-        return None
-    group, artifact, _version = metadata_coordinate_parts(handoff.current_coordinates)
-    return f"{group}:{artifact}:{handoff.new_version}"
-
-
-def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[str, str]:
-    """Build fixture publication text with the same builders used by live PR creation.
-
-    §GIT-pr-preview-builders
-    """
-    new_coordinates = _publication_new_coordinates(handoff)
-    publication_kind = handoff.publication_kind or handoff.result_label
-    if handoff.not_for_native_image and new_coordinates:
-        title, body, _local_ci_metrics = build_not_for_native_image_pull_request_preview(
-            coordinates=new_coordinates,
-            repo_path=handoff.worktree_path,
-            issue_number=handoff.issue_number,
-        )
-        return title, body
-
-    if publication_kind == LABEL_LIBRARY_NEW and new_coordinates:
-        title, body, _matched = build_new_library_pull_request_preview(
-            coordinates=new_coordinates,
-            metrics_repo_root=handoff.scratch_metrics_path,
-            repo_path=handoff.worktree_path,
-            issue_number=handoff.issue_number,
-            chunked_dynamic_access=handoff.dynamic_access_exhaust_report_path is not None,
-            chunk_final=handoff.chunked_dynamic_access_final is not False,
-        )
-        return title, body
-
-    if publication_kind == LABEL_PR_LIBRARY_UPDATE and new_coordinates:
-        group, artifact, version = metadata_coordinate_parts(new_coordinates)
-        title, body, _matched = build_improve_coverage_pull_request_preview(
-            coordinates=new_coordinates,
-            metrics_repo_root=handoff.scratch_metrics_path,
-            repo_path=handoff.worktree_path,
-            group=group,
-            artifact=artifact,
-            version=version,
-            baseline_snapshot=load_baseline_snapshot(handoff.worktree_path, group, artifact, version),
-            issue_number=handoff.issue_number,
-            chunked_dynamic_access=handoff.dynamic_access_exhaust_report_path is not None,
-            chunk_final=handoff.chunked_dynamic_access_final is not False,
-        )
-        return title, body
-
-    if handoff.current_coordinates and new_coordinates:
-        group, artifact, old_version = metadata_coordinate_parts(handoff.current_coordinates)
-        _new_group, _new_artifact, new_version = metadata_coordinate_parts(new_coordinates)
-        if publication_kind == LABEL_PR_JAVAC_FIX:
-            title, body, _metrics_entry = build_javac_fix_pull_request_preview(
-                old_coordinates=handoff.current_coordinates,
-                new_coordinates=new_coordinates,
-                group=group,
-                artifact=artifact,
-                old_version=old_version,
-                new_version=new_version,
-                metrics_repo_root=handoff.scratch_metrics_path,
-                repo_path=handoff.worktree_path,
-                issue_number=handoff.issue_number,
-                coverage_follow_up_issue_number=handoff.coverage_follow_up_issue_number,
-                coverage_follow_up_class_count=handoff.coverage_follow_up_class_count,
-                coverage_follow_up_class_threshold=handoff.coverage_follow_up_class_threshold,
-            )
-            return title, body
-        if publication_kind == LABEL_PR_JAVA_RUN_FIX:
-            title, body, _metrics_entry = build_java_run_fix_pull_request_preview(
-                old_coordinates=handoff.current_coordinates,
-                new_coordinates=new_coordinates,
-                group=group,
-                artifact=artifact,
-                old_version=old_version,
-                new_version=new_version,
-                metrics_repo_root=handoff.scratch_metrics_path,
-                repo_path=handoff.worktree_path,
-                issue_number=handoff.issue_number,
-                coverage_follow_up_issue_number=handoff.coverage_follow_up_issue_number,
-                coverage_follow_up_class_count=handoff.coverage_follow_up_class_count,
-                coverage_follow_up_class_threshold=handoff.coverage_follow_up_class_threshold,
-            )
-            return title, body
-        if publication_kind == LABEL_PR_NI_RUN_FIX:
-            title, body, _local_ci_human_intervention, _severe_metadata_drop = (
-                build_ni_run_fix_pull_request_preview(
-                    old_coordinates=handoff.current_coordinates,
-                    new_coordinates=new_coordinates,
-                    group=group,
-                    artifact=artifact,
-                    repo_path=handoff.worktree_path,
-                    issue_number=handoff.issue_number,
-                )
-            )
-            return title, body
-
-    raise ValueError(
-        f"Cannot build fixture publication preview for issue #{handoff.issue_number} "
-        f"with label {handoff.issue_label!r}."
-    )
-
-
-def build_fixture_publication_markdown(handoff: PublicationHandoff) -> str:
-    """Build the Markdown publication handoff artifact for fixture dry-runs."""
-    command = ["python3", handoff.script_name, *handoff.argv]
-    title, body = _build_fixture_pull_request_preview(handoff)
-
-    return "\n".join([
-        "# Fixture Publication Handoff",
-        "",
-        "Fixture mode did not open a pull request. This file records the PR publication handoff that would run.",
-        "",
-        "## Dry-Run Command",
-        "",
-        "```bash",
-        " ".join(shlex.quote(argument) for argument in command),
-        "```",
-        "",
-        "## Pull Request Title",
-        "",
-        title,
-        "",
-        "## Pull Request Body",
-        "",
-        body,
-        "",
-    ])
-
-
-def write_fixture_publication_handoff(handoff: PublicationHandoff) -> str:
-    """Write the PR title/body handoff into the active fixture artifact directory."""
-    publication_path = os.path.join(
-        get_fixture_issue_artifact_dir(handoff.issue_number),
-        FIXTURE_PUBLICATION_FILENAME,
-    )
-    with open(publication_path, "w", encoding="utf-8") as publication_file:
-        publication_file.write(build_fixture_publication_markdown(handoff))
-    return publication_path
-
-
 def preserve_fixture_preflight_evidence(claimed_issue: ClaimedIssue) -> None:
     """Copy fixture metrics/preflight files before scratch worktree cleanup."""
     issue_number = int(claimed_issue.issue["number"])
@@ -7152,14 +7002,13 @@ def finalize_successful_issue(
     coverage_follow_up = prepare_java_fix_coverage_follow_up(claimed_issue)
     coverage_follow_up_args = coverage_follow_up or (None, None, None)
     if is_fixture_testing_enabled():
-        handoff = build_publication_handoff(claimed_issue, *coverage_follow_up_args)
-        publication_path = write_fixture_publication_handoff(handoff)
         preserve_fixture_preflight_evidence(claimed_issue)
         log_stage(
             "publication",
             (
-                f"Fixture mode: dry-run publication handoff for issue #{handoff.issue_number} "
-                f"to {handoff.script_name}. PR title/body written to {publication_path}."
+                f"Fixture mode: skipping publication for issue "
+                f"#{claimed_issue.issue['number']}; publication is exercised against GitHub, "
+                "not by the hermetic fixture run."
             ),
         )
         return

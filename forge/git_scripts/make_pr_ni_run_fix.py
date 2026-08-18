@@ -4,7 +4,6 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 import argparse
-import json
 import os
 import subprocess
 import sys
@@ -14,10 +13,6 @@ from git_scripts.common_git import (
     parse_coordinate_parts,
     stage_and_commit as stage_and_commit_common,
     find_issue_for_coordinates as find_issue_common,
-    format_stats_diff,
-    format_forge_revision_section,
-    get_model_display_name,
-    get_agent_name,
 )
 from git_scripts.pr_publication import (
     BASE_BRANCH,
@@ -31,13 +26,8 @@ from utility_scripts.metrics_writer import (
     count_metadata_entries,
     count_test_only_metadata_entries,
     collect_version_coverage_metrics,
-    read_pending_metrics,
 )
 from utility_scripts.library_stats import stats_artifact_dir
-from utility_scripts.local_ci_verification import (
-    LocalCIVerificationResult,
-    format_local_ci_verification_pr_section,
-)
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 
 SEVERE_METADATA_DROP_RATIO = 0.25
@@ -48,27 +38,6 @@ DEFAULT_PR_LABEL = "fixes-native-image-run-fail"
 def is_severe_metadata_drop(previous_entries: int, new_entries: int) -> bool:
     """Return true when a native-image-run fix drops most prior metadata entries."""
     return previous_entries > 0 and new_entries < previous_entries * SEVERE_METADATA_DROP_RATIO
-
-
-def format_severe_metadata_drop_pr_section(
-        old_coordinates: str,
-        new_coordinates: str,
-        previous_entries: int,
-        new_entries: int,
-) -> str:
-    """Format a PR warning for severe unexplained metadata drops."""
-    retained_ratio = new_entries / previous_entries if previous_entries else 0
-    retained_percent = retained_ratio * 100
-    return (
-        "\n\n### Human Intervention: Severe Metadata Drop\n\n"
-        "Forge detected a severe drop in reachability metadata entries for this "
-        "Native Image run fix. This PR needs human review unless the branch includes "
-        "concrete proof that the new library version no longer needs the removed "
-        "registrations.\n\n"
-        f"- Previous metadata entries (`{old_coordinates}`): {previous_entries}\n"
-        f"- New metadata entries (`{new_coordinates}`): {new_entries}\n"
-        f"- Retained metadata entries: {retained_percent:.2f}%"
-    )
 
 
 def stage_and_commit(
@@ -132,34 +101,6 @@ def assert_no_tracked_worktree_changes(repo_path: str) -> None:
     )
 
 
-def build_forge_metrics_summary_section(metrics_repo_path: str | None) -> str:
-    """Format the strategy/agent/token summary from pending run metrics, when available."""
-    if not metrics_repo_path:
-        return ""
-    try:
-        metrics_entry = read_pending_metrics(metrics_repo_path)
-    except (json.JSONDecodeError, TypeError, FileNotFoundError, OSError):
-        return ""
-    if not isinstance(metrics_entry, dict):
-        return ""
-    metrics = metrics_entry.get("metrics", {})
-    if not isinstance(metrics, dict):
-        metrics = {}
-    strategy_name = metrics_entry.get("strategy_name", "")
-    if not strategy_name and not metrics:
-        return ""
-    return (
-        "\n"
-        f"- Strategy: {strategy_name}\n"
-        f"- Agent: {get_agent_name(strategy_name)}\n"
-        f"- Model: {get_model_display_name(strategy_name)}\n"
-        f"- Input tokens: {int(metrics.get('input_tokens_used', 0) or 0)}\n"
-        f"- Cached input tokens: {int(metrics.get('cached_input_tokens_used', 0) or 0)}\n"
-        f"- Output tokens: {int(metrics.get('output_tokens_used', 0) or 0)}\n"
-        f"- Iterations: {int(metrics.get('iterations', 0) or 0)}"
-    )
-
-
 def build_test_comparison_section(group: str, artifact: str, old_version: str, new_version: str, repo_path: str) -> str:
     """Format an old-vs-new test diff when exploration produced a version-specific suite.
 
@@ -171,72 +112,6 @@ def build_test_comparison_section(group: str, artifact: str, old_version: str, n
     if not os.path.isdir(new_test_dir):
         return ""
     return format_bounded_test_diff_section(group, artifact, old_version, new_version, repo_path)
-
-
-def build_pull_request_preview(
-        old_coordinates: str,
-        new_coordinates: str,
-        group: str,
-        artifact: str,
-        repo_path: str,
-        local_ci_verification: LocalCIVerificationResult | None = None,
-        issue_number: int | None = None,
-        metrics_repo_path: str | None = None,
-) -> tuple[str, str, bool, bool]:
-    """Build the PR title/body without creating a GitHub pull request."""
-    issue_no = issue_number if issue_number is not None else find_issue_common(new_coordinates, REPO)
-    _, _, old_version = parse_coordinate_parts(old_coordinates)
-    _, _, new_version = parse_coordinate_parts(new_coordinates)
-    new_entries = count_metadata_entries(repo_path, group, artifact, new_version)
-    previous_entries = count_metadata_entries(repo_path, group, artifact, old_version)
-    new_test_entries = count_test_only_metadata_entries(repo_path, group, artifact, new_version)
-    previous_test_entries = count_test_only_metadata_entries(repo_path, group, artifact, old_version)
-    previous_coverage, _ = collect_version_coverage_metrics(repo_path, group, artifact, old_version)
-    new_coverage, _ = collect_version_coverage_metrics(repo_path, group, artifact, new_version)
-    severe_metadata_drop = is_severe_metadata_drop(previous_entries, new_entries)
-    previous_test_entries_line = ""
-    if previous_test_entries > 0:
-        previous_test_entries_line = (
-            f"- Test-only metadata entries (previous `{old_coordinates}`): {previous_test_entries}\n"
-        )
-    new_test_entries_line = ""
-    if new_test_entries > 0:
-        new_test_entries_line = f"- Test-only metadata entries (new `{new_coordinates}`): {new_test_entries}\n"
-    metrics_section = (
-        f"\n\nSummary:\n"
-        f"- Metadata entries (previous `{old_coordinates}`): {previous_entries}\n"
-        f"{previous_test_entries_line}"
-        f"- Metadata entries (new `{new_coordinates}`): {new_entries}\n"
-        f"{new_test_entries_line}"
-        f"- Library coverage (previous): {previous_coverage:.2f}%\n"
-        f"- Library coverage (new): {new_coverage:.2f}%"
-    )
-    title = f"[Automation] Generated metadata for {new_coordinates}"
-    body = (
-        f"## What does this PR do?\n\n"
-        f"Fixes: {REPO}#{issue_no}\n\n"
-        f"This PR provides new metadata needed for the {new_coordinates}, "
-        f"addressing Native Image run failures caused by changes in the updated library version."
-        f"{metrics_section}"
-        f"{build_forge_metrics_summary_section(metrics_repo_path)}"
-        f"\n\n{format_forge_revision_section()}"
-        f"{format_stats_diff(repo_path, old_coordinates, new_coordinates)}"
-        f"{build_test_comparison_section(group, artifact, old_version, new_version, repo_path)}"
-    )
-    if severe_metadata_drop:
-        body += format_severe_metadata_drop_pr_section(
-            old_coordinates,
-            new_coordinates,
-            previous_entries,
-            new_entries,
-        )
-    if local_ci_verification is not None:
-        body += format_local_ci_verification_pr_section(local_ci_verification.to_metrics())
-    local_ci_human_intervention = (
-        local_ci_verification is not None and local_ci_verification.human_intervention_required
-    )
-    return title, body, local_ci_human_intervention, severe_metadata_drop
-
 
 
 def build_parser():

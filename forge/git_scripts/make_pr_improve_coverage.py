@@ -13,11 +13,7 @@ from git_scripts.common_git import (
     parse_coordinate_parts,
     stage_and_commit as stage_and_commit_common,
     find_issue_for_coordinates as find_issue_common,
-    get_model_display_name,
-    get_agent_name,
     load_library_stats,
-    format_stats_before_after,
-    format_forge_revision_section,
 )
 from git_scripts.pr_publication import (
     BASE_BRANCH,
@@ -30,143 +26,19 @@ from utility_scripts.metadata_index import resolve_metadata_version, resolve_tes
 from utility_scripts.metrics_writer import (
     count_metadata_entries,
     count_test_only_metadata_entries,
-    read_pending_metrics,
 )
 from utility_scripts.dynamic_access_exhaust_report import (
     DynamicAccessExhaustReport,
     find_dynamic_access_exhaust_report_path,
 )
 from utility_scripts.repo_path_resolver import resolve_repo_roots
-from utility_scripts.local_ci_verification import (
-    LOCAL_CI_VERIFICATION_KEY,
-    format_local_ci_verification_pr_section,
-)
 from utility_scripts.library_update_alias_split import (
     ensure_alias_split_follow_up_issue,
-    format_alias_split_pr_section,
-    load_alias_split_metrics,
     maybe_split_library_update_tested_versions,
 )
 
 BASELINE_STATS_FILENAME = ".baseline-stats.json"
 LIBRARY_UPDATE_TARGET_FILENAME = ".library_update_target.json"
-
-
-def build_pull_request_body(
-        issue_no: int | str,
-        coordinates: str,
-        model_display_name: str,
-        agent_name: str,
-        strategy_name: str,
-        metrics: dict,
-        baseline_stats=None,
-        library_stats=None,
-        baseline_metadata_entries: int | None = None,
-        current_metadata_entries: int | None = None,
-        baseline_test_only_entries: int | None = None,
-        current_test_only_entries: int | None = None,
-        post_generation_intervention: dict | None = None,
-        library_update_target: dict | None = None,
-        chunked_dynamic_access: bool = False,
-        chunk_final: bool = True,
-        dynamic_access_exhaust_report: DynamicAccessExhaustReport | None = None,
-        local_ci_verification: dict | None = None,
-        alias_split: dict | None = None,
-) -> str:
-    """Build the PR body with metrics and optional stats."""
-    input_tokens_used = metrics.get("input_tokens_used", 0)
-    output_tokens_used = metrics.get("output_tokens_used", 0)
-    cached_input_tokens_used = metrics.get("cached_input_tokens_used", 0)
-    iterations = metrics.get("iterations", 0)
-    code_coverage_percent = metrics.get("code_coverage_percent", 0)
-    generated_loc = metrics.get("generated_loc", 0)
-    tested_library_loc = metrics.get("tested_library_loc", 0)
-
-    metadata_comparison_lines = ""
-    if baseline_metadata_entries is not None and current_metadata_entries is not None:
-        metadata_comparison_lines += (
-            f"- Metadata entries (before): {baseline_metadata_entries}\n"
-            f"- Metadata entries (after): {current_metadata_entries}\n"
-        )
-        if baseline_test_only_entries or current_test_only_entries:
-            metadata_comparison_lines += (
-                f"- Test-only metadata entries (before): {baseline_test_only_entries or 0}\n"
-                f"- Test-only metadata entries (after): {current_test_only_entries or 0}\n"
-            )
-
-    update_target_lines = ""
-    if isinstance(library_update_target, dict):
-        update_target_lines = (
-            f"- Requested coordinate: `{library_update_target.get('requested_coordinate') or coordinates}`\n"
-            f"- Match type: `{library_update_target.get('match_type') or 'unknown'}`\n"
-            f"- Matched metadata version: `{library_update_target.get('matched_metadata_version') or 'none'}`\n"
-            f"- Matched test version: `{library_update_target.get('matched_test_version') or 'none'}`\n"
-            f"- Resolved metadata version: `{library_update_target.get('resolved_metadata_version') or 'unknown'}`\n"
-            f"- Resolved test version: `{library_update_target.get('resolved_test_version') or 'unknown'}`\n"
-        )
-    validation_status = "not recorded"
-    if isinstance(local_ci_verification, dict):
-        validation_status = str(local_ci_verification.get("status") or "unknown")
-    validation_coordinates = [coordinates]
-    if isinstance(library_update_target, dict):
-        coordinate_parts = coordinates.split(":")
-        resolved_metadata_version = library_update_target.get("resolved_metadata_version")
-        if (
-                len(coordinate_parts) == 3
-                and isinstance(resolved_metadata_version, str)
-                and resolved_metadata_version
-                and resolved_metadata_version != coordinate_parts[2]
-        ):
-            validation_coordinates.append(
-                f"{coordinate_parts[0]}:{coordinate_parts[1]}:{resolved_metadata_version}"
-            )
-    validation_commands = ", ".join(
-        f"`./gradlew test -Pcoordinates={coordinate}`" for coordinate in validation_coordinates
-    )
-
-    issue_reference = f"Fixes: #{issue_no}"
-    if chunked_dynamic_access and not chunk_final:
-        issue_reference = f"Refs: #{issue_no}"
-    chunk_line = format_chunked_dynamic_access_summary(
-        chunked_dynamic_access,
-        dynamic_access_exhaust_report,
-    )
-
-    body = f"""
-## What does this PR do?
-
-{issue_reference}
-
-This PR improves dynamic-access coverage for {coordinates} by generating additional tests.
-
-Summary:
-{chunk_line}\
-- Validation commands: {validation_commands}
-- Validation result: `{validation_status}`
-{update_target_lines}\
-- Strategy: {strategy_name}
-- Agent: {agent_name}
-- Model: {model_display_name}
-- Input tokens: {input_tokens_used}
-- Cached input tokens: {cached_input_tokens_used}
-- Output tokens: {output_tokens_used}
-{metadata_comparison_lines}\
-- Iterations: {iterations}
-- Library coverage percentage: {code_coverage_percent}
-- Generated lines of code: {generated_loc}
-- Tested library lines of code: {tested_library_loc}
-"""
-    body += "\n" + format_forge_revision_section() + "\n"
-    if baseline_stats or library_stats:
-        body += "\n" + format_stats_before_after(baseline_stats, library_stats, coordinates)
-    if post_generation_intervention:
-        body += "\n### Post-Generation Intervention\n\n"
-        body += f"- Stage: `{post_generation_intervention.get('stage', 'unknown')}`\n\n"
-        body += f"- Intervention file: `{post_generation_intervention.get('intervention_file', 'unknown')}`\n\n"
-        body += str(post_generation_intervention.get("analysis_markdown", "")).strip() + "\n"
-    body += format_alias_split_pr_section(alias_split)
-    body += format_local_ci_verification_pr_section(local_ci_verification)
-    return body
 
 
 def format_chunked_dynamic_access_summary(
@@ -278,52 +150,6 @@ def stage_and_commit(
     commit_message = f"Improve coverage for {coordinates}"
     stage_and_commit_common(candidate_paths, commit_message, cwd=repo_path)
     return candidate_paths
-
-
-def build_pull_request_preview(
-        coordinates: str,
-        metrics_repo_root: str,
-        repo_path: str,
-        group: str,
-        artifact: str,
-        version: str,
-        baseline_snapshot: dict | None = None,
-        issue_number: int | None = None,
-        chunked_dynamic_access: bool = False,
-        chunk_final: bool = True,
-) -> tuple[str, str, dict]:
-    """Build the PR title/body without creating a GitHub pull request."""
-    issue_no = issue_number if issue_number is not None else find_issue_common(coordinates, REPO)
-    matched = read_pending_metrics(metrics_repo_root)
-    metrics = matched.get("metrics", {})
-    strategy_name = matched.get("strategy_name", "")
-    model_display_name = get_model_display_name(strategy_name)
-    agent_name = get_agent_name(strategy_name)
-    title = f"[GenAI] Improve coverage for {coordinates} using {model_display_name}"
-    if chunked_dynamic_access and not chunk_final:
-        title = f"{title} (chunked dynamic-access)"
-    body = build_pull_request_body(
-        issue_no=issue_no,
-        coordinates=coordinates,
-        model_display_name=model_display_name,
-        agent_name=agent_name,
-        strategy_name=strategy_name,
-        metrics=metrics,
-        baseline_stats=baseline_snapshot.get("stats") if baseline_snapshot else None,
-        library_stats=load_library_stats(repo_path, coordinates),
-        baseline_metadata_entries=baseline_snapshot.get("metadata_entries") if baseline_snapshot else None,
-        current_metadata_entries=count_metadata_entries(repo_path, group, artifact, version),
-        baseline_test_only_entries=baseline_snapshot.get("test_only_metadata_entries") if baseline_snapshot else None,
-        current_test_only_entries=count_test_only_metadata_entries(repo_path, group, artifact, version),
-        post_generation_intervention=matched.get("post_generation_intervention"),
-        library_update_target=load_library_update_target_sidecar(metrics_repo_root),
-        local_ci_verification=matched.get(LOCAL_CI_VERIFICATION_KEY),
-        alias_split=load_alias_split_metrics(metrics_repo_root),
-        chunked_dynamic_access=chunked_dynamic_access,
-        chunk_final=chunk_final,
-        dynamic_access_exhaust_report=load_dynamic_access_exhaust_report(repo_path, coordinates),
-    )
-    return title, body, matched
 
 
 def load_dynamic_access_exhaust_report(

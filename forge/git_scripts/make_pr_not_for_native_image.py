@@ -12,12 +12,10 @@ from datetime import datetime, timezone
 from git_scripts.common_git import (
     ensure_gh_authenticated,
     find_issue_for_coordinates,
-    format_forge_revision_section,
     parse_coordinate_parts,
     stage_and_commit,
 )
 from git_scripts.pr_publication import (
-    BASE_BRANCH,
     REPO,
     publish_branch,
 )
@@ -25,7 +23,6 @@ from git_scripts.publication_descriptor import PublicationDescriptorInput
 from utility_scripts.metadata_index import get_not_for_native_image_marker
 from utility_scripts.local_ci_verification import (
     LocalCIVerificationResult,
-    format_local_ci_verification_pr_section,
 )
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 
@@ -83,38 +80,6 @@ def push_marker_branch(
         metrics_repo_path=metrics_repo_path,
         descriptor_input=descriptor_input,
     )
-
-
-def build_pull_request_preview(
-        coordinates: str,
-        repo_path: str,
-        local_ci_verification: LocalCIVerificationResult | None = None,
-        issue_number: int | None = None,
-) -> tuple[str, str, dict | None]:
-    """Build the PR title/body without creating a GitHub pull request."""
-    group, artifact, _version = parse_coordinate_parts(coordinates)
-    marker = get_not_for_native_image_marker(repo_path, group, artifact)
-    if marker is None:
-        raise ValueError(f"Missing not-for-native-image marker for {group}:{artifact}")
-    issue_no = issue_number if issue_number is not None else find_issue_for_coordinates(coordinates, REPO)
-    title = f"[GenAI] Mark {group}:{artifact} as not for Native Image"
-    body = f"""
-## What does this PR do?
-
-Fixes: #{issue_no}
-
-This PR records `{group}:{artifact}` as `not-for-native-image`, so automation and downstream tools know this artifact is intentionally not a GraalVM Native Image reachability metadata target.
-
-Reason:
-- {marker.get("reason")}
-"""
-    replacement = marker.get("replacement")
-    if replacement:
-        body += f"\nReplacement guidance:\n- {replacement}\n"
-    body += "\n" + format_forge_revision_section()
-    local_ci_metrics = None if local_ci_verification is None else local_ci_verification.to_metrics()
-    body += format_local_ci_verification_pr_section(local_ci_metrics)
-    return title, body, local_ci_metrics
 
 
 def main(argv=None) -> None:

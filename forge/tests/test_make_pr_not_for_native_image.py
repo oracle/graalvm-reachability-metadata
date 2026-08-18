@@ -75,36 +75,3 @@ class MakePrNotForNativeImageTests(unittest.TestCase):
         self.assertIs(local_ci_verification, result)
         self.assertEqual(events, ["rebase", "local-ci", "push"])
 
-    def test_pull_request_preview_includes_local_ci_section(self) -> None:
-        """Body text is built locally; labels are applied by the trusted publisher."""
-        local_ci_verification = LocalCIVerificationResult(
-            status="success",
-            base_commit="FETCH_HEAD",
-            repo_fix_paths=["build.gradle"],
-            human_intervention_required=True,
-        )
-
-        with patch.object(
-                    make_pr_not_for_native_image,
-                    "get_not_for_native_image_marker",
-                    return_value={"reason": "native-image does not apply"},
-                ), \
-                patch.object(make_pr_not_for_native_image, "find_issue_for_coordinates") as find_issue, \
-                patch.object(
-                    make_pr_not_for_native_image,
-                    "format_forge_revision_section",
-                    return_value="Forge revision",
-                ):
-            title, body, local_ci_metrics = make_pr_not_for_native_image.build_pull_request_preview(
-                "org.example:demo:1.0.0",
-                "/repo",
-                local_ci_verification,
-                issue_number=1234,
-            )
-
-        find_issue.assert_not_called()
-        self.assertEqual(title, "[GenAI] Mark org.example:demo as not for Native Image")
-        self.assertIn("Fixes: #1234", body)
-        self.assertIn("Local CI Verification", body)
-        self.assertIn("Repository-level fix paths", body)
-        self.assertTrue(local_ci_metrics["human_intervention_required"])

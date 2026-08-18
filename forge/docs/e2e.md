@@ -4,7 +4,7 @@ Forge end-to-end testing validates the whole issue-processing path, not only a
 workflow engine (§WF-forge-workflow-system) or workflow driver. It exercises
 orchestration alongside the workflow layer (§ORCH-forge-orchestration-spec) and
 is expensive: it creates worktrees, runs agents, runs Gradle, writes metrics,
-and reaches issue/PR publication handoff. Agents run hermetic fixture E2E when
+and reaches the publication boundary. Agents run hermetic fixture E2E when
 required by [AGENTS.md](../../AGENTS.md), while live GitHub E2E requires an
 explicit user request.
 
@@ -40,17 +40,21 @@ cleanup stay on the same modular path as normal issue processing:
 - Isolated worktree and metrics path setup.
 - Dispatch to the matching workflow driver.
 - Workflow engine execution through the configured strategy.
-- Local verification, metrics writing, and dry-run publication handoff.
+- Local verification and metrics writing. Publication is out of scope: it runs
+  against GitHub, so the hermetic run stops at the publication boundary.
 
-Fixture GitHub mode implies dry-run publication. It must record the issue,
-label and any explicit strategy override, isolated worktree setup, fixture
-masking, workflow driver invocation, workflow result, dry-run publication or
+Fixture GitHub mode stops before publication. It must record the issue, label
+and any explicit strategy override, isolated worktree setup, fixture masking,
+workflow driver invocation, workflow result, the skipped-publication or
 preservation handoff, and cleanup in local run output. It must not fork a
 second implementation of orchestration or workflow behavior: fixture-only code
-may replace issue fetch/state with local fixture data and replace publish/push
-side effects with local artifacts, but the workflow drivers and git-script PR
-body builders remain the source of truth. It does not assign real issues,
-change real project items, push branches, or open pull requests.
+may replace issue fetch/state with local fixture data and replace push side
+effects with local artifacts, but the workflow drivers remain the source of
+truth. Publication is deliberately not re-implemented for fixtures — the PR
+body has a single renderer, in the trusted publisher
+(§GIT-actions-publication), and a hermetic run cannot exercise it. It does not
+assign real issues, change real project items, push branches, or open pull
+requests.
 `--strategy-name` is optional in fixture mode just as it is for normal
 single-issue processing; when omitted, Forge routes the issue without passing a
 strategy override and lets the selected workflow driver apply its default.
@@ -288,8 +292,8 @@ Live GitHub E2E must use the real control-plane responsibilities:
 - Isolated worktree and metrics path setup.
 - Dispatch to the matching workflow driver.
 - Workflow engine execution through the configured strategy.
-- Local verification, metrics writing, and publication handoff when the run is
-  PR-eligible.
+- Local verification and metrics writing; in live mode, descriptor creation and
+  the verified branch push when the run is PR-eligible.
 
 ## 5. Step Verification
 

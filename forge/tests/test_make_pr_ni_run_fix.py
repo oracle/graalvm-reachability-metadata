@@ -20,39 +20,6 @@ class SevereMetadataDropGuardrailTests(unittest.TestCase):
         self.assertFalse(make_pr_ni_run_fix.is_severe_metadata_drop(100, 26))
         self.assertFalse(make_pr_ni_run_fix.is_severe_metadata_drop(0, 0))
 
-    def test_pull_request_preview_reports_severe_metadata_drop(self) -> None:
-        """The drop is described in the locally built body and flagged for the publisher."""
-        with patch.object(make_pr_ni_run_fix, "find_issue_common", return_value=5181), \
-                patch.object(make_pr_ni_run_fix, "count_metadata_entries", side_effect=[0, 34]), \
-                patch.object(make_pr_ni_run_fix, "count_test_only_metadata_entries", return_value=0), \
-                patch.object(
-                    make_pr_ni_run_fix,
-                    "collect_version_coverage_metrics",
-                    return_value=(0.0, None),
-                ), \
-                patch.object(make_pr_ni_run_fix, "format_stats_diff", return_value=""), \
-                patch.object(
-                    make_pr_ni_run_fix,
-                    "format_forge_revision_section",
-                    return_value="Forge revision\n",
-                ):
-            _title, body, _human_intervention, severe_metadata_drop = (
-                make_pr_ni_run_fix.build_pull_request_preview(
-                    old_coordinates="org.example:demo:1.0.0",
-                    new_coordinates="org.example:demo:2.0.0",
-                    group="org.example",
-                    artifact="demo",
-                    repo_path="/repo",
-                )
-            )
-
-        self.assertTrue(severe_metadata_drop)
-        self.assertIn("Severe Metadata Drop", body)
-        self.assertIn("Previous metadata entries (`org.example:demo:1.0.0`): 34", body)
-        self.assertIn("New metadata entries (`org.example:demo:2.0.0`): 0", body)
-        self.assertIn("Retained metadata entries: 0.00%", body)
-
-
 class NativeImageRunFinalizationTests(unittest.TestCase):
     def test_build_test_comparison_section_returns_bounded_markdown_section(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path:
