@@ -8,8 +8,8 @@ Purpose: ensure safe, focused, and reviewable changes.
 
 Agents MUST read and strictly adhere to the following before making any changes:
 
-- [Functional Spec](docs/functional-spec.md) — what the system must do.
-- [Architecture](docs/architecture.md) — how the system is structured.
+- [Functional Spec](docs/functional-spec/README.md) — what the system must do.
+- [Architecture](docs/architecture/README.md) — how the system is structured.
 
 ## Do
 - Read README.md and DEVELOPING.md before acting.
@@ -80,16 +80,16 @@ A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and 
 
 - [GRUND](docs/grund.md): Why: Forge motivation
 - [GOAL](docs/goals.md): Where: Forge direction and outcomes
-- [AR](docs): Forge architecture and technical structure
-- [FS](docs): Forge functional behavior and requirements
-- [DW](docs): Forge do-work loop architecture
-- [STRAT](docs): Forge strategy configuration architecture
-- [ORCH](docs): Forge orchestration scripts behavior and architecture
-- [GIT](docs): Forge git scripts publication behavior and architecture
+- [AR](docs/architecture): Forge architecture and technical structure
+- [FS](docs/functional-spec): Forge functional behavior and requirements
+- [DW](docs/do-work.md): Forge do-work loop architecture
+- [STRAT](docs/strategies.md): Forge strategy configuration architecture
+- [ORCH](docs/orchestration-scripts.md): Forge orchestration scripts behavior and architecture
+- [GIT](docs/git-scripts.md): Forge git scripts publication behavior and architecture
 - [WF](docs/workflows): Forge workflow specifications and operating rules
-- [E2E](docs): Forge end-to-end test specifications
-- [BENCH](docs): Forge benchmark specifications
-- [ROADMAP](docs): Forge implementation roadmap
+- [E2E](docs/e2e.md): Forge end-to-end test specifications
+- [BENCH](docs/benchmarking.md): Forge benchmark specifications
+- [ROADMAP](docs/roadmap.md): Forge implementation roadmap
 
 ### Project namespaces
 

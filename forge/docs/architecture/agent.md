@@ -9,7 +9,7 @@ strategy (§STRAT-forge-predefined-strategy-contract).
 
 ## 1. Agent API
 
-[`ai_workflows/agents/agent.py`](../ai_workflows/agents/agent.py) defines the
+[`ai_workflows/agents/agent.py`](../../ai_workflows/agents/agent.py) defines the
 `Agent` base class and registry. Concrete backends register with
 `@Agent.register("<name>")`, and strategy loading resolves the configured
 backend by the strategy's `agent` field (see
@@ -35,8 +35,8 @@ of changing workflow drivers or workflow engines.
 
 ## 2. Pi Implementation
 
-[`PiAgent`](../ai_workflows/agents/pi_agent.py) registers the `pi` backend and
-drives Pi through [`PiRpcClient`](../ai_workflows/agents/pi_rpc_client.py), a
+[`PiAgent`](../../ai_workflows/agents/pi_agent.py) registers the `pi` backend and
+drives Pi through [`PiRpcClient`](../../ai_workflows/agents/pi_rpc_client.py), a
 thin subprocess wrapper around `pi --mode rpc`. The client starts Pi in the
 workflow working directory, applies optional `--provider`, `--model`,
 `--session-dir`, and persistent system-prompt flags, sends prompt JSON over
@@ -65,7 +65,7 @@ session path and token baselines so the next prompt starts as an independent Pi
 session.
 
 `PiAgent.run_test_command` delegates Gradle execution to the
-[shared test runner](../utility_scripts/gradle_test_runner.py) instead of
+[shared test runner](../../utility_scripts/gradle_test_runner.py) instead of
 asking Pi to choose shell behavior. That preserves the architecture: the
 workflow engine chooses the gate (§WF-forge-workflow-engine), deterministic
 utilities run it, and the agent receives diagnostics for the next edit cycle,
@@ -85,7 +85,7 @@ Pi's RPC mode fits that goal operationally:
 
 - strategy data can select Pi without changing workflow code;
 - per-turn session stats feed the same token and cost metrics written by the
-  [metrics utilities](../utility_scripts/metrics_writer.py);
+  [metrics utilities](../../utility_scripts/metrics_writer.py);
 - `clear_context` makes cheap independent runs explicit;
 - logs preserve enough evidence for maintainers or later Forge runs without
 replaying a large conversation;

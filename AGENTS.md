@@ -106,8 +106,8 @@ A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and 
 
 - [GRUND](docs/grund.md): Why: repository motivation
 - [GOAL](docs/goals.md): Where: repository direction and outcomes
-- [FS](docs): Repository functional behavior and contributor-facing requirements
-- [AR](docs): Repository architecture and build infrastructure
+- [FS](docs/functional-spec): Repository functional behavior and contributor-facing requirements
+- [AR](docs/architecture): Repository architecture and build infrastructure
 - [TCK](docs/tck.md): Test harness (TCK): task groups
 - [E2E](docs/e2e.md): Infrastructure end-to-end tests (testInfra/testAllInfra)
 - [CI](docs/ci.md): Recurring CI workflows and composite actions
@@ -181,3 +181,8 @@ is the only place the workspace alias table is in scope.
 - **Do not over-nest simple components.** If a component only needs one
   architecture explanation and has no separate behavioral contract, keep it as a
   single architecture declaration/file rather than creating a subdirectory.
+- **Every kind has its own home.** No two kinds may share a `file` or `folder`
+  in `grund.toml`. A kind with one home file is declared as `file`, a kind that
+  spreads across several files as `folder`. The generated project map links each
+  kind to its home, so a shared home makes the map useless — the prefix must
+  tell you which file or folder to open.

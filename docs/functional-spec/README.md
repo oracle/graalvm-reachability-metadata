@@ -17,10 +17,10 @@ Reachability metadata describes reflection, JNI, resource access, serialization,
 
 | User | Goal | How they interact |
 | --- | --- | --- |
-| **Application developer** using GraalVM Native Image | Build a native image of an application that depends on third-party libraries without writing reachability metadata by hand; check whether a given library is supported; request support for a missing library. | Consumes metadata indirectly — the GraalVM Gradle/Maven plugin downloads it from this repository at build time. Checks support via `curl … check-library-support.sh \| bash -s "<group>:<artifact>:<version>"` or by browsing [the libraries-and-frameworks page](https://www.graalvm.org/native-image/libraries-and-frameworks/). Requests a new library by filing a [`01_support_new_library`](../.github/ISSUE_TEMPLATE/01_support_new_library.yml) issue, or updates an existing one via [`02_update_existing_library`](../.github/ISSUE_TEMPLATE/02_update_existing_library.yml). |
+| **Application developer** using GraalVM Native Image | Build a native image of an application that depends on third-party libraries without writing reachability metadata by hand; check whether a given library is supported; request support for a missing library. | Consumes metadata indirectly — the GraalVM Gradle/Maven plugin downloads it from this repository at build time. Checks support via `curl … check-library-support.sh \| bash -s "<group>:<artifact>:<version>"` or by browsing [the libraries-and-frameworks page](https://www.graalvm.org/native-image/libraries-and-frameworks/). Requests a new library by filing a [`01_support_new_library`](../../.github/ISSUE_TEMPLATE/01_support_new_library.yml) issue, or updates an existing one via [`02_update_existing_library`](../../.github/ISSUE_TEMPLATE/02_update_existing_library.yml). |
 | **Community contributor** | Add support for a missing library or update an existing entry to a newer library version. | Files a "library-new-request" or "update existing library" issue; the automation picks it up, optionally guided by custom instructions the contributor supplies. |
-| **Reviewer / Maintainer** of this repo | Sign off on PRs after automated review has enforced licensing, security, and metadata quality rules. | Agents run the review skills under [skills/](../skills/) (e.g. `review-library-new-request`, `review-fixes-javac-fail`, `review-fixes-java-run-fail`, `review-fixes-native-image-run-fail`, `review-library-bulk-update`, `close-new-library-support-pr`) against the [REVIEWING.md](REVIEWING.md) checklist; CI runs the same gates. The reviewer does the final human check before merge. |
-| **Repository automation (Forge)** | Generate or repair metadata using LLM-driven pipelines. | Per coordinate, the toolkit can: (1) **add support for a new library** — generate a JUnit / Kotlin / Scala test suite, scaffold metadata, and iterate until JVM-mode tests pass and dynamic-access is collected ([`add_new_library_support.py`](../forge/ai_workflows/drivers/add_new_library_support.py)); (2) **fix a Java compilation (`javac`) failure** raised by a library version bump ([`fix_javac_fail.py`](../forge/ai_workflows/drivers/fix_javac_fail.py)); (3) **fix a JVM-mode (`javaTest`) runtime failure** raised by a version bump ([`fix_java_run_fail.py`](../forge/ai_workflows/drivers/fix_java_run_fail.py)); (4) **fix a `native-image` runtime failure** raised by a version bump ([`fix_ni_run.py`](../forge/ai_workflows/drivers/fix_ni_run.py)); (5) **improve dynamic-access coverage** of already-supported libraries by targeting uncovered call sites; (6) **post-generation repair** of the metadata produced by a previous run ([`fix_post_generation_pi.py`](../forge/ai_workflows/core/fix_post_generation_pi.py), [`fix_metadata_codex.py`](../forge/ai_workflows/core/fix_metadata_codex.py)). Each task runs Gradle tasks against a worktree of this repo, appends a schema-validated metrics record, and — when invoked through [`forge/git_scripts/make_pr_*.py`](../forge/git_scripts/) — opens a PR for human review. See [forge/docs/functional-spec.md](../forge/docs/functional-spec.md). |
+| **Reviewer / Maintainer** of this repo | Sign off on PRs after automated review has enforced licensing, security, and metadata quality rules. | Agents run the review skills under [skills/](../../skills/) (e.g. `review-library-new-request`, `review-fixes-javac-fail`, `review-fixes-java-run-fail`, `review-fixes-native-image-run-fail`, `review-library-bulk-update`, `close-new-library-support-pr`) against the [REVIEWING.md](../REVIEWING.md) checklist; CI runs the same gates. The reviewer does the final human check before merge. |
+| **Repository automation (Forge)** | Generate or repair metadata using LLM-driven pipelines. | Per coordinate, the toolkit can: (1) **add support for a new library** — generate a JUnit / Kotlin / Scala test suite, scaffold metadata, and iterate until JVM-mode tests pass and dynamic-access is collected ([`add_new_library_support.py`](../../forge/ai_workflows/drivers/add_new_library_support.py)); (2) **fix a Java compilation (`javac`) failure** raised by a library version bump ([`fix_javac_fail.py`](../../forge/ai_workflows/drivers/fix_javac_fail.py)); (3) **fix a JVM-mode (`javaTest`) runtime failure** raised by a version bump ([`fix_java_run_fail.py`](../../forge/ai_workflows/drivers/fix_java_run_fail.py)); (4) **fix a `native-image` runtime failure** raised by a version bump ([`fix_ni_run.py`](../../forge/ai_workflows/drivers/fix_ni_run.py)); (5) **improve dynamic-access coverage** of already-supported libraries by targeting uncovered call sites; (6) **post-generation repair** of the metadata produced by a previous run ([`fix_post_generation_pi.py`](../../forge/ai_workflows/core/fix_post_generation_pi.py), [`fix_metadata_codex.py`](../../forge/ai_workflows/core/fix_metadata_codex.py)). Each task runs Gradle tasks against a worktree of this repo, appends a schema-validated metrics record, and — when invoked through [`forge/git_scripts/make_pr_*.py`](../../forge/git_scripts/) — opens a PR for human review. See [forge/docs/functional-spec/README.md](../../forge/docs/functional-spec/README.md). |
 
 ## 3. Hard Constraints
 
@@ -58,12 +58,12 @@ A Gradle-based TCK that, given a library coordinate `group:artifact:version`, ru
 - Compilation, JVM-mode tests (`javaTest`), and native-image tests (`nativeTest`).
 - Coverage collection (JaCoCo) and dynamic-access reporting per coordinate.
 
-The harness uses a single coordinates filter `-Pcoordinates=` accepting `all`, `group:artifact`, `group:artifact:version`, or shard `k/n`. It also exposes authoring helpers (`generateMetadata`, `splitTestOnlyMetadata`, `fixTestNativeImageRun`, `addTestedVersion`, `fetchExistingLibrariesWithNewerVersions`), reporting tasks (`jacocoTestReport`, `generateDynamicAccessCoverageReport`, `generateLibraryStats`, `analyzeExternalLibraryDynamicAccess`, `listTopCoordinatesByMetric`, `generateTopCoordinatesByMetricMatrix`), and the `package` release task. Its task groups and the Gradle harness that delegates `-Pcoordinates=` to per-coordinate sub-builds are specified in §TCK-test-harness; the test sources it drives in §TESTS-suite. The full task reference lives in [DEVELOPING.md](DEVELOPING.md).
+The harness uses a single coordinates filter `-Pcoordinates=` accepting `all`, `group:artifact`, `group:artifact:version`, or shard `k/n`. It also exposes authoring helpers (`generateMetadata`, `splitTestOnlyMetadata`, `fixTestNativeImageRun`, `addTestedVersion`, `fetchExistingLibrariesWithNewerVersions`), reporting tasks (`jacocoTestReport`, `generateDynamicAccessCoverageReport`, `generateLibraryStats`, `analyzeExternalLibraryDynamicAccess`, `listTopCoordinatesByMetric`, `generateTopCoordinatesByMetricMatrix`), and the `package` release task. Its task groups and the Gradle harness that delegates `-Pcoordinates=` to per-coordinate sub-builds are specified in §TCK-test-harness; the test sources it drives in §TESTS-suite. The full task reference lives in [DEVELOPING.md](../DEVELOPING.md).
 
 ### 4.3 Continuous integration
 §CI-repository-ci
 
-GitHub Actions, configured by [`ci.json`](../ci.json) as the single source of truth for OS/JDK matrix, run the workflows enumerated in [ci.md](ci.md):
+GitHub Actions, configured by [`ci.json`](../../ci.json) as the single source of truth for OS/JDK matrix, run the workflows enumerated in [ci.md](../ci.md):
 - PR-scoped: changed-metadata, changed-infrastructure, new-library-version, Spring AOT smoke, library-stats validation, library-and-framework-list validation, checkstyle.
 - Schedule-driven: full metadata sweep every three days to prevent incomplete or breaking metadata from shipping in releases, opted-in new-library-version compatibility (daily), Docker image vulnerability scans, scheduled release every Monday, scheduled coverage publication.
 - Event-driven snapshot publication: every push to `master` may refresh the floating `SNAPSHOT` release when metadata changed since the previous `SNAPSHOT` tag.
@@ -84,10 +84,10 @@ The `create-snapshot-release` workflow refreshes a floating `SNAPSHOT` GitHub Re
   table row must link the tested versions to the artifact's
   `metadata/<group>/<artifact>/index.json` file and the dynamic-access coverage
   value to the artifact's `stats/<group>/<artifact>/` directory.
-- `latest/metrics-over-time.svg` and `latest/metrics-over-time-dark.svg` — light and dark historical charts referenced from [COVERAGE.md](../COVERAGE.md).
+- `latest/metrics-over-time.svg` and `latest/metrics-over-time-dark.svg` — light and dark historical charts referenced from [COVERAGE.md](../../COVERAGE.md).
 - `history/history.json` — append-only history.
 
-CI must keep the root [COVERAGE.md](../COVERAGE.md) on the source branch in
+CI must keep the root [COVERAGE.md](../../COVERAGE.md) on the source branch in
 sync with the generated coverage table through the bulk-update PRs created by
 `verify-new-library-version-compatibility.yml`. The same `COVERAGE.md` and the
 badge, graph, and history artifacts are published to the `stats/coverage` branch.
@@ -101,7 +101,7 @@ The `forge/` toolkit composes LLM agents (Aider, Codex, Pi) with deterministic G
 3. **Fix native-image runtime failures** raised by a library version bump.
 4. **Improve coverage** of already-supported libraries by targeting uncovered dynamic-access call sites.
 
-Each Forge run records per-library metrics under `stats/<group>/<artifact>/<version>/execution-metrics.json` and, when invoked through `git_scripts/make_pr_*.py`, opens a PR ready for human review. See [forge/README.md](../forge/README.md) and [forge/docs/functional-spec.md](../forge/docs/functional-spec.md).
+Each Forge run records per-library metrics under `stats/<group>/<artifact>/<version>/execution-metrics.json` and, when invoked through `git_scripts/make_pr_*.py`, opens a PR ready for human review. See [forge/README.md](../../forge/README.md) and [forge/docs/functional-spec/README.md](../../forge/docs/functional-spec/README.md).
 
 #### GitHub label contract
 
@@ -174,13 +174,13 @@ schemas/                                                 # vendored JSON schemas
 
 Plugin-relevant content is `<groupId>/<artifactId>/index.json` and the per-version `reachability-metadata.json` files; the plugin discovers libraries by directory walk. `library-and-framework-list.json` and `schemas/` are present for downstream tooling (the libraries-and-frameworks page and offline validators) and are not consumed by native-build-tools at native-image time.
 
-**2. `<groupId>/<artifactId>/index.json`** — one per supported artifact, schema [metadata-library-index-schema-v2.3.0.json](../metadata/schemas/metadata-library-index-schema-v2.3.0.json). It is a JSON **array** of entries. Metadata entries require `metadata-version`, `tested-versions`, and `allowed-packages`, with optional `default-for` (Java regex), `latest: true`, `override: true`, `requires: ["<group>:<artifact>", …]`, `test-version`, `skipped-versions`, `language`, `auto-update: true`, `high-priority: true`, and the four URL fields. `auto-update` is a repository-automation opt-in allowed only on the unique `latest: true` entry; omission disables automated upstream-version compatibility checks for the artifact. `high-priority` is likewise allowed only on that entry and makes failed compatibility updates highest-priority Forge work. Plugin-relevant fields are the first six.
+**2. `<groupId>/<artifactId>/index.json`** — one per supported artifact, schema [metadata-library-index-schema-v2.3.0.json](../../metadata/schemas/metadata-library-index-schema-v2.3.0.json). It is a JSON **array** of entries. Metadata entries require `metadata-version`, `tested-versions`, and `allowed-packages`, with optional `default-for` (Java regex), `latest: true`, `override: true`, `requires: ["<group>:<artifact>", …]`, `test-version`, `skipped-versions`, `language`, `auto-update: true`, `high-priority: true`, and the four URL fields. `auto-update` is a repository-automation opt-in allowed only on the unique `latest: true` entry; omission disables automated upstream-version compatibility checks for the artifact. `high-priority` is likewise allowed only on that entry and makes failed compatibility updates highest-priority Forge work. Plugin-relevant fields are the first six.
 
 Alternatively, the array can hold a single `not-for-native-image: true` entry with a required `reason` and an optional `replacement`, and no other fields. This marks an artifact that is intentionally not a native-image metadata target — a Scala.js artifact, a pure test framework, or a coordinate superseded by another — so the absence of any `metadata-version` directory is a recorded decision rather than missing support. native-build-tools loads no metadata for such a coordinate; the `reason`/`replacement` are surfaced to humans and the libraries-and-frameworks page.
 
 The schema follows semver. **Minor- and patch-version bumps** (e.g., `v2.1.0` → `v2.1.1` or `v2.1.x` → `v2.2.0`) are guaranteed backward-compatible with native-build-tools: minor bumps add new optional fields or non-plugin index formats used by the website, the test harness, or future tooling (`requires`, `test-version`, `skipped-versions`, `language`, `source-code-url`, `test-code-url`, `documentation-url`, `repository-url`, `not-for-native-image`, `auto-update`, `high-priority`); patch bumps refine validation of those same auxiliary fields and formats. The plugin reads only the six fields enumerated above, so an older native-build-tools release continues to resolve metadata correctly against any newer minor or patch version of the schema. A **major-version bump** (e.g., `v2.x` → `v3.0.0`) is reserved for changes that native-build-tools itself must adopt; it is shipped in lockstep with a plugin release rather than absorbed silently by older plugins.
 
-**3. `<groupId>/<artifactId>/<metadata-version>/reachability-metadata.json`** — the only file the plugin loads at native-image time. Schema [reachability-metadata-schema-v1.2.0.json](../metadata/schemas/reachability-metadata-schema-v1.2.0.json) (a vendored copy of the upstream GraalVM schema), with top-level keys `reflection`, `jni`, `resources`, `bundles`, `serialization`, and `foreignCalls`. Every entry's `condition` carries exactly one key, `typeReached`, so the plugin can rely on conditional registration; `typeReached` is the schema's only condition form. The legacy split-config layout (`reflect-config.json`, `jni-config.json`, …) is no longer present.
+**3. `<groupId>/<artifactId>/<metadata-version>/reachability-metadata.json`** — the only file the plugin loads at native-image time. Schema [reachability-metadata-schema-v1.2.0.json](../../metadata/schemas/reachability-metadata-schema-v1.2.0.json) (a vendored copy of the upstream GraalVM schema), with top-level keys `reflection`, `jni`, `resources`, `bundles`, `serialization`, and `foreignCalls`. Every entry's `condition` carries exactly one key, `typeReached`, so the plugin can rely on conditional registration; `typeReached` is the schema's only condition form. The legacy split-config layout (`reflect-config.json`, `jni-config.json`, …) is no longer present.
 
 **4. Version-selection algorithm.** Given an application dependency `g:a:v`, native-build-tools loads the `index.json` array of `g/a/` and applies a primary lookup, picking the first entry that matches in this order:
 
@@ -252,7 +252,7 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 
 ### 5.5 Forge
 
-Forge's requirements are specified in [forge/docs/functional-spec.md](../forge/docs/functional-spec.md).
+Forge's requirements are specified in [forge/docs/functional-spec/README.md](../../forge/docs/functional-spec/README.md).
 §forge/FS-forge-functional-spec
 
 ## 6. Operational Guarantees
@@ -310,7 +310,7 @@ every dependency in your build and passes it to `native-image` (§4.7). Concrete
   tested-version support when present, and it also reports when the artifact is
   already recorded as `not-for-native-image`.
 - **Request a missing library.** File a
-  [`01_support_new_library`](../.github/ISSUE_TEMPLATE/01_support_new_library.yml)
+  [`01_support_new_library`](../../.github/ISSUE_TEMPLATE/01_support_new_library.yml)
   issue, or `02_update_existing_library` to extend an existing entry.
   native-build-tools can open these issues for you via
   `listLibrariesMissingMetadata -PcreateIssues=true`.
@@ -334,14 +334,14 @@ same additivity constraints (§3), test requirements (§5.2), metadata rules
 verification is coordinate-scoped:
 `./gradlew pullAllowedDockerImages checkMetadataFiles test -Pcoordinates=<group:artifact:version>`.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the full walkthrough,
-[DEVELOPING.md](DEVELOPING.md) for the complete task reference, and the Forge
+See [CONTRIBUTING.md](../CONTRIBUTING.md) for the full walkthrough,
+[DEVELOPING.md](../DEVELOPING.md) for the complete task reference, and the Forge
 entry points in §8.4.
 
 ### 8.3 Reviewer / maintainer — sign off
 
-Reviewers run the agent skills under [../skills/](../skills/) against the
-[REVIEWING.md](REVIEWING.md) checklist before the final human approval. CI
+Reviewers run the agent skills under [../skills/](../../skills/) against the
+[REVIEWING.md](../REVIEWING.md) checklist before the final human approval. CI
 enforces the same gates, so review is a judgment layer on top of automated
 checks, not a substitute for them.
 
@@ -361,7 +361,7 @@ in §5.3.
 
 The repository must keep its tested-version coverage current as upstream
 libraries release new versions, without a human watching Maven Central. The
-[`verify-new-library-version-compatibility`](../.github/workflows/verify-new-library-version-compatibility.yml)
+[`verify-new-library-version-compatibility`](../../.github/workflows/verify-new-library-version-compatibility.yml)
 GitHub Actions workflow owns this loop. It runs on a schedule (daily)
 and on manual `workflow_dispatch`, and performs its mutating steps only on the
 canonical `oracle/graalvm-reachability-metadata` repository. Each run discovers
@@ -396,7 +396,7 @@ candidates remain, the run creates a timestamped working branch
 
 A matrix job expands every candidate library across the configured GraalVM
 JDK/OS combinations and native-image modes (`ci.json`). For each cell,
-[`run-consecutive-tests.sh`](../.github/workflows/scripts/run-consecutive-tests.sh)
+[`run-consecutive-tests.sh`](../../.github/workflows/scripts/run-consecutive-tests.sh)
 walks the candidate versions in ascending order and runs the full `test` lane
 per version. On failure it bisects the failing stage in order —
 `compileTestJava` (javac), `javaTest` (JVM run), `nativeTestCompile`
@@ -451,14 +451,14 @@ a full release of a base version is now handled, older pre-release issues
 
 ## References
 
-- [README.md](../README.md) — quick lookup, contributing entry points.
-- [CONTRIBUTING.md](CONTRIBUTING.md) — how to add or update metadata.
-- [REVIEWING.md](REVIEWING.md) — reviewer checklist (licensing, security, metadata quality).
-- [DEVELOPING.md](DEVELOPING.md) — Gradle task reference for development.
-- [ci.md](ci.md) — recurring CI workflows and composite actions (§CI-repository-ci).
-- [tck.md](tck.md) — test harness task groups and Gradle harness (§TCK-test-harness).
-- [metadata.md](metadata.md), [tests.md](tests.md) — the metadata and tests suites (§METADATA-suite, §TESTS-suite).
-- [CollectingMetadata.md](CollectingMetadata.md) — using the Native Image Agent to collect metadata.
-- [SECURITY.md](SECURITY.md) — vulnerability disclosure.
-- [forge/README.md](../forge/README.md) — Forge user manual.
-- [forge/docs/functional-spec.md](../forge/docs/functional-spec.md) — Forge functional requirements and workflow contracts.
+- [README.md](../../README.md) — quick lookup, contributing entry points.
+- [CONTRIBUTING.md](../CONTRIBUTING.md) — how to add or update metadata.
+- [REVIEWING.md](../REVIEWING.md) — reviewer checklist (licensing, security, metadata quality).
+- [DEVELOPING.md](../DEVELOPING.md) — Gradle task reference for development.
+- [ci.md](../ci.md) — recurring CI workflows and composite actions (§CI-repository-ci).
+- [tck.md](../tck.md) — test harness task groups and Gradle harness (§TCK-test-harness).
+- [metadata.md](../metadata.md), [tests.md](../tests.md) — the metadata and tests suites (§METADATA-suite, §TESTS-suite).
+- [CollectingMetadata.md](../CollectingMetadata.md) — using the Native Image Agent to collect metadata.
+- [SECURITY.md](../SECURITY.md) — vulnerability disclosure.
+- [forge/README.md](../../forge/README.md) — Forge user manual.
+- [forge/docs/functional-spec/README.md](../../forge/docs/functional-spec/README.md) — Forge functional requirements and workflow contracts.
