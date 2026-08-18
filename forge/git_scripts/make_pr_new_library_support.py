@@ -194,27 +194,6 @@ def _limit_evidence_items(items: list[str]) -> list[str]:
     ]
 
 
-def format_chunked_dynamic_access_summary(
-        chunked_dynamic_access: bool,
-        exhaust_report: DynamicAccessExhaustReport | None,
-) -> str:
-    """Return compact PR body lines for a chunked dynamic-access run."""
-    if not chunked_dynamic_access:
-        return ""
-    if exhaust_report is None:
-        return "- Chunked dynamic-access: yes\n"
-    return (
-        "- Chunked dynamic-access: yes\n"
-        f"- Chunk class threshold: {exhaust_report.class_threshold or 'unknown'}\n"
-        f"- Current chunk class count: {exhaust_report.current_chunk_class_count or 'unknown'}\n"
-        "- Processed dynamic-access classes: "
-        f"completed={len(exhaust_report.completed_classes)}, "
-        f"skipped={len(exhaust_report.skipped_classes)}, "
-        f"exhausted={len(exhaust_report.exhausted_classes)}, "
-        f"failed={len(exhaust_report.failed_classes)}\n"
-    )
-
-
 def load_dynamic_access_exhaust_report(
         repo_path: str,
         coordinates: str,

@@ -41,27 +41,6 @@ BASELINE_STATS_FILENAME = ".baseline-stats.json"
 LIBRARY_UPDATE_TARGET_FILENAME = ".library_update_target.json"
 
 
-def format_chunked_dynamic_access_summary(
-        chunked_dynamic_access: bool,
-        exhaust_report: DynamicAccessExhaustReport | None,
-) -> str:
-    """Return compact PR body lines for a chunked dynamic-access run."""
-    if not chunked_dynamic_access:
-        return ""
-    if exhaust_report is None:
-        return "- Chunked dynamic-access: yes\n"
-    return (
-        "- Chunked dynamic-access: yes\n"
-        f"- Chunk class threshold: {exhaust_report.class_threshold or 'unknown'}\n"
-        f"- Current chunk class count: {exhaust_report.current_chunk_class_count or 'unknown'}\n"
-        "- Processed dynamic-access classes: "
-        f"completed={len(exhaust_report.completed_classes)}, "
-        f"skipped={len(exhaust_report.skipped_classes)}, "
-        f"exhausted={len(exhaust_report.exhausted_classes)}, "
-        f"failed={len(exhaust_report.failed_classes)}\n"
-    )
-
-
 def baseline_snapshot_path(repo_path: str, group: str, artifact: str, version: str) -> str:
     """Return the baseline snapshot path written by improve_library_coverage.py."""
     test_version = resolve_test_version(repo_path, group, artifact, version)

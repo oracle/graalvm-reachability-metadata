@@ -47,11 +47,6 @@ STATUS_FIELD_NAME = "Status"
 STATUS_IN_PROGRESS = "In Progress"
 
 
-def format_follow_up_trailer(issue_number: int) -> str:
-    """Return the machine-readable follow-up issue trailer used by merge follow-up."""
-    return f"{FOLLOW_UP_TRAILER}: #{issue_number}"
-
-
 def extract_follow_up_issue_numbers(body: str | None) -> list[int]:
     """Return follow-up issues from PR text trailers, ignoring casual references."""
     if not isinstance(body, str):
@@ -171,30 +166,6 @@ def maybe_split_library_update_tested_versions(
         cwd=repo_path,
     )
     return split
-
-
-def format_alias_split_pr_section(split: dict[str, Any] | None) -> str:
-    """Return PR body text for a tested-version alias split."""
-    if not isinstance(split, dict):
-        return ""
-    issue_number = split.get("follow_up_issue_number")
-    issue_lines = ""
-    if isinstance(issue_number, int):
-        issue_lines = (
-            f"Refs: #{issue_number}\n"
-            f"{format_follow_up_trailer(issue_number)}\n"
-        )
-    return (
-        "\n### Tested-Version Alias Split\n\n"
-        f"- First failing JVM alias: `{split.get('failed_version')}`\n"
-        f"- Generated prefix retained on `{split.get('current_metadata_version')}`: "
-        f"{_format_version_list(split.get('passing_versions'))}\n"
-        f"- Baseline successor entry: `{split.get('successor_metadata_version')}` with "
-        f"{_format_version_list(split.get('successor_versions'))}\n"
-        f"- Baseline metadata copied from: `{split.get('original_metadata_version')}`\n"
-        f"- Baseline tests copied from: `{split.get('original_test_version')}`\n"
-        f"{issue_lines}"
-    )
 
 
 def _entry_tested_versions(entry: dict[str, Any]) -> list[str]:
@@ -447,12 +418,6 @@ def _write_index_entries(repo_path: str, group: str, artifact: str, entries: lis
         # raw UTF-8) so a split only diffs the entries it changes.
         json.dump(entries, index_file, indent=2, separators=(",", " : "), ensure_ascii=False)
         index_file.write("\n")
-
-
-def _format_version_list(value: Any) -> str:
-    if not isinstance(value, list):
-        return "`none`"
-    return ", ".join(f"`{version}`" for version in value) or "`none`"
 
 
 def ensure_alias_split_follow_up_issue(
