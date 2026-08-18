@@ -60,9 +60,10 @@ Agents MUST read and strictly adhere to the following before making any changes:
 - Summarize each open question briefly and concretely so a reviewer can understand the decision point without re-reading the whole conversation.
 - If there are no open questions or user-requested notes for reviewers, omit the section instead of adding an empty heading.
 
-## Grounding with grund (v2)
+<!-- BEGIN GRUND MANAGED BLOCK -->
+## Grounding with grund (v7)
 
-This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]` (`KIND ∈ {GRUND, GOAL, AR, FS, DW, STRAT, ORCH, GIT, WF, E2E, BENCH, ROADMAP}`), cited with the marker `§` — e.g. `FS-user-login.3.1` (the `FS-user-login` here is a shape illustration, not a real ID in this repo). Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `grund.toml`, so only `§`-prefixed citations are checked.
+This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]` (`KIND ∈ {GRUND, GOAL, AR, FS, DW, STRAT, ORCH, GIT, WF, E2E, BENCH, ROADMAP}`), cited with the marker `§` — e.g. `<§>FS-user-login.3.1` (the `FS-user-login` here is a shape illustration, not a real ID in this repo, hence the `<§>` escape). Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `grund.toml`, so only `§`-prefixed citations are checked.
 
 ### Grounding from a citation
 
@@ -81,13 +82,14 @@ A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and 
 - [GOAL](docs/goals.md): Where: Forge direction and outcomes
 - [AR](docs): Forge architecture and technical structure
 - [FS](docs): Forge functional behavior and requirements
-- [DW](docs/do-work.md): Forge do-work loop architecture
-- [STRAT](docs/strategies.md): Forge strategy configuration architecture
-- [ORCH](docs/orchestration-scripts.md): Forge orchestration scripts behavior and architecture
-- [GIT](docs/git-scripts.md): Forge git scripts publication behavior and architecture
+- [DW](docs): Forge do-work loop architecture
+- [STRAT](docs): Forge strategy configuration architecture
+- [ORCH](docs): Forge orchestration scripts behavior and architecture
+- [GIT](docs): Forge git scripts publication behavior and architecture
 - [WF](docs/workflows): Forge workflow specifications and operating rules
-- [BENCH](docs/benchmarking.md): Forge benchmark specifications
-- [ROADMAP](docs/roadmap.md): Forge implementation roadmap
+- [E2E](docs): Forge end-to-end test specifications
+- [BENCH](docs): Forge benchmark specifications
+- [ROADMAP](docs): Forge implementation roadmap
 
 ### Project namespaces
 
@@ -101,8 +103,8 @@ Do not create a namespace for a regular module or component that still belongs t
 
 Cross-project citations use §alias/<ID>.
 
-- `forge` → [AGENTS.md](AGENTS.md)
-- `root` → [../AGENTS.md](../AGENTS.md)
+- [`forge`](AGENTS.md)
+- [`root`](../AGENTS.md)
 
 ### Declarations and citations
 
@@ -112,6 +114,15 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 
 - **Spec first.** For behavior or design changes, write or update the most-specific spec point before code.
 - **Cite as you write.** Place `§<ID>` at the point a claim or behavior is made — on the doc-comment for a whole behavior, inline beside the clause it enforces.
+- **Marker = live citation.** A `§`-prefixed token resolves and is checked wherever it appears — including inside Markdown backticks. To mention an ID without citing it, write `<§><ID>`, omit the marker, or use a fenced code block.
 - **Inline citation style.** Inline notes: ≤ 1 line preferred, hard cap 3 lines; ≤ 100 columns.
 - **Always cite the most-specific point.**
-- **Citations climb to reasons (grund.md).** Goals cite reasons, specs cite goals; architecture cites specs; code and executable tests cite specs.
+
+### Citation directions
+
+Specs cite goals, architecture cites specs, code and executable tests cite the specs they realize.
+
+### Clickable citations
+
+On repository web surfaces, link `§<ID>` to the PR branch in PR bodies, the reviewed commit in reviews, an exact commit for permalinks, and the default branch otherwise; fall back to plain when unsure.
+<!-- END GRUND MANAGED BLOCK -->
