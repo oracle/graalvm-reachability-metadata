@@ -151,7 +151,8 @@ strategy bundles that bind these pieces live in the strategy registry
 Forge separates generation from publication. A workflow may edit tests,
 metadata, index files, stats, metrics, and logs while it runs. After the
 dispatcher observes a PR-eligible status, local branch finalization stages only
-expected paths, rebases, runs the pre-publication gate, writes the durable
+expected paths, rebases, runs the pre-publication gate required by
+§FS-local-ci-equivalent-verification, writes the durable
 descriptor, commits once, and pushes the unique `ai/**` branch. It does not
 render or create a PR and never receives publisher credentials
 (§GIT-shared-publication-pipeline, §GIT-publication-descriptor).
