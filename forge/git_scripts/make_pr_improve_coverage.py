@@ -42,6 +42,7 @@ from utility_scripts.local_ci_verification import (
     format_local_ci_verification_pr_section,
 )
 from utility_scripts.library_update_alias_split import (
+    ensure_alias_split_follow_up_issue,
     format_alias_split_pr_section,
     load_alias_split_metrics,
     maybe_split_library_update_tested_versions,
@@ -448,13 +449,18 @@ def push_current_branch_to_origin(
         if issue_number is None or metrics_repo_path is None:
             raise ValueError("Publication requires an issue number and metrics path")
         exhaust_report = load_dynamic_access_exhaust_report(repo_path, coordinates)
-        alias_split = load_alias_split_metrics(metrics_repo_path)
+        alias_split = ensure_alias_split_follow_up_issue(
+            metrics_repo_path=metrics_repo_path,
+            current_issue_number=issue_number,
+            repo=REPO,
+        )
         follow_ups = []
         if alias_split is not None:
             follow_ups.append({
                 "type": "tested_version_split",
                 "coordinate": str(alias_split["successor_coordinates"]),
                 "tested_version": str(alias_split["failed_version"]),
+                "issue_number": int(alias_split["follow_up_issue_number"]),
                 "reason": f"JVM compatibility first failed at {alias_split['failed_version']}",
             })
         render = {

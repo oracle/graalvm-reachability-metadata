@@ -23,18 +23,9 @@ from jsonschema import Draft202012Validator, FormatChecker
 
 REPOSITORY = "oracle/graalvm-reachability-metadata"
 BASE_BRANCH = "master"
-PROJECT_NUMBER = 30
 MAX_BODY_CHARS = 60_000
 MAX_TEST_DIFF_CHARS = 12_000
 SEVERE_METADATA_DROP_RATIO = 0.25
-ISSUE_ROUTE_LABELS = {
-    "library-new-request": "library-new-request",
-    "library-update-request": "library-update-request",
-    "fixes-javac-fail": "fails-javac-compile",
-    "fixes-java-run-fail": "fails-java-run",
-    "fixes-native-image-run-fail": "fails-native-image-run",
-    "not-for-native-image": "library-new-request",
-}
 ROUTE_LABELS = {
     "library-new-request": ["GenAI", "library-new-request"],
     "library-update-request": ["GenAI", "library-update-request"],
@@ -179,7 +170,6 @@ def validate_publication(
         raise ValueError("Descriptor publication ID does not match its durable run inputs")
 
     _validate_render_inputs(descriptor)
-    _validate_issue(descriptor, repository)
     return ValidatedPublication(descriptor, descriptor_path, head_sha)
 
 
@@ -218,30 +208,6 @@ def _validate_render_inputs(descriptor: dict[str, Any]) -> None:
             raise ValueError("Not-for-native-image publication requires a reason")
 
 
-def _validate_issue(descriptor: dict[str, Any], repository: str) -> None:
-    issue_number = int(descriptor["issue_number"])
-    issue = gh_json("api", f"repos/{repository}/issues/{issue_number}")
-    if not isinstance(issue, dict) or issue.get("pull_request"):
-        raise ValueError(f"Descriptor issue #{issue_number} is not a repository issue")
-    if issue.get("state") != "open":
-        raise ValueError(f"Descriptor issue #{issue_number} is not open")
-    coordinates = descriptor["library"]["coordinates"]
-    issue_text = f"{issue.get('title') or ''}\n{issue.get('body') or ''}"
-    if coordinates not in issue_text:
-        raise ValueError(
-            f"Descriptor coordinates {coordinates!r} do not match issue #{issue_number}"
-        )
-    labels = {
-        str(label.get("name"))
-        for label in issue.get("labels") or []
-        if isinstance(label, dict) and label.get("name")
-    }
-    expected_label = ISSUE_ROUTE_LABELS[descriptor["task_type"]]
-    if expected_label not in labels:
-        raise ValueError(
-            f"Descriptor issue #{issue_number} does not carry expected label {expected_label!r}"
-        )
-
 def _path_changed(head_sha: str, path: str) -> bool:
     result = subprocess.run(
         ["git", "diff-tree", "--no-commit-id", "--name-only", "-r", head_sha, "--", path],
@@ -261,11 +227,9 @@ def _path_changed(head_sha: str, path: str) -> bool:
 
 def render_publication(
         descriptor: dict[str, Any],
-        follow_up_numbers: dict[str, int] | None = None,
         validated: ValidatedPublication | None = None,
 ) -> tuple[str, str]:
     """Render trusted title and body text from validated descriptor data."""
-    follow_up_numbers = follow_up_numbers or {}
     library = descriptor["library"]
     coordinates = library["coordinates"]
     template = descriptor["template_type"]
@@ -331,7 +295,7 @@ def render_publication(
         body += _render_native_image_summary(descriptor)
         body += _render_test_comparison(validated)
 
-    body += _render_follow_ups(descriptor, follow_up_numbers)
+    body += _render_follow_ups(descriptor)
     body += _render_intervention(descriptor)
     body += _render_local_ci(descriptor["local_ci_verification"])
     forge = descriptor["forge"]
@@ -532,14 +496,13 @@ def _bound_body(body: str) -> str:
     head_chars = MAX_BODY_CHARS - 2200
     return body[:head_chars].rstrip() + "\n\nGenerated detail was truncated.\n\n" + body[-2000:]
 
-def _render_follow_ups(descriptor: dict[str, Any], numbers: dict[str, int]) -> str:
+def _render_follow_ups(descriptor: dict[str, Any]) -> str:
+    """Reference the follow-up issues Forge already opened locally (§GIT-publication-descriptor)."""
     sections: list[str] = []
     for follow_up in descriptor["follow_ups"]:
         follow_type = follow_up["type"]
-        issue_number = numbers.get(follow_type)
-        issue_lines = ""
-        if issue_number is not None:
-            issue_lines = f"\nRefs: #{issue_number}\nForge-Unblocks-Issue: #{issue_number}\n"
+        issue_number = follow_up["issue_number"]
+        issue_lines = f"\nRefs: #{issue_number}\nForge-Unblocks-Issue: #{issue_number}\n"
         if follow_type == "deferred_dynamic_access_coverage":
             sections.append(
                 "\n### Deferred Dynamic-Access Exploration\n\n"
@@ -591,140 +554,6 @@ def _render_local_ci(verification: dict[str, Any]) -> str:
             lines.append(f"  - `{repo_path}`")
     return "\n".join(lines) + "\n"
 
-def ensure_follow_ups(descriptor: dict[str, Any], repository: str) -> dict[str, int]:
-    """Create or recover typed follow-up issues before PR rendering."""
-    numbers: dict[str, int] = {}
-    for follow_up in descriptor["follow_ups"]:
-        follow_type = follow_up["type"]
-        marker = f"Forge-Follow-Up: {descriptor['publication_id']}:{follow_type}"
-        query = f'repo:{repository} in:body "{marker}"'
-        result = gh_json("api", "search/issues", "--method", "GET", "-f", f"q={query}")
-        matches = [
-            item for item in (result.get("items") or [])
-            if isinstance(item, dict)
-            and not item.get("pull_request")
-            and marker in str(item.get("body") or "").splitlines()
-        ]
-        if len(matches) > 1:
-            raise RuntimeError(f"Ambiguous follow-up issue for {marker}")
-        if matches:
-            if matches[0].get("state") != "open":
-                raise RuntimeError(f"Matching follow-up issue for {marker} is not open")
-            issue_number = int(matches[0]["number"])
-        else:
-            title, body = _follow_up_issue_text(descriptor, follow_up, marker)
-            created = gh_json(
-                "api", f"repos/{repository}/issues", "--method", "POST",
-                "-f", f"title={title}", "-f", f"body={body}",
-                "-f", "labels[]=library-update-request",
-            )
-            issue_number = int(created["number"])
-        _ensure_project_status(repository, issue_number, "In Progress")
-        numbers[follow_type] = issue_number
-    return numbers
-
-
-def _follow_up_issue_text(
-        descriptor: dict[str, Any],
-        follow_up: dict[str, Any],
-        marker: str,
-) -> tuple[str, str]:
-    coordinate = follow_up["coordinate"]
-    if follow_up["type"] == "deferred_dynamic_access_coverage":
-        title = f"Improve coverage for {coordinate}"
-        body = (
-            f"This issue was opened by Forge while resolving #{descriptor['issue_number']} because "
-            f"dynamic-access generation found {follow_up['uncovered_class_count']} classes to cover for "
-            f"`{coordinate}`, above the configured threshold of {follow_up['class_threshold']}.\n\n{marker}\n"
-        )
-    else:
-        title = f"Update existing library: {coordinate}"
-        body = (
-            f"This issue tracks the tested-version successor split for `{coordinate}` while resolving "
-            f"#{descriptor['issue_number']}. {follow_up.get('reason') or ''}\n\n{marker}\n"
-        )
-    return title, body
-
-
-def _ensure_project_status(repository: str, issue_number: int, status: str) -> None:
-    owner, repo_name = repository.split("/", 1)
-    project_query = """
-    query($owner: String!, $number: Int!) {
-      organization(login: $owner) {
-        projectV2(number: $number) {
-          id
-          fields(first: 50) {
-            nodes { ... on ProjectV2SingleSelectField { id name options { id name } } }
-          }
-        }
-      }
-    }
-    """
-    data = gh_json(
-        "api", "graphql", "-f", f"query={project_query}",
-        "-F", f"owner={owner}", "-F", f"number={PROJECT_NUMBER}",
-    )
-    project = data["data"]["organization"]["projectV2"]
-    status_field = next(
-        field for field in project["fields"]["nodes"]
-        if field and field.get("name") == "Status"
-    )
-    option_id = next(
-        option["id"] for option in status_field["options"] if option["name"] == status
-    )
-
-    item_query = """
-    query($owner: String!, $repo: String!, $number: Int!) {
-      repository(owner: $owner, name: $repo) {
-        issue(number: $number) {
-          id
-          projectItems(first: 50) { nodes { id project { id } } }
-        }
-      }
-    }
-    """
-    item_data = gh_json(
-        "api", "graphql", "-f", f"query={item_query}",
-        "-F", f"owner={owner}", "-F", f"repo={repo_name}", "-F", f"number={issue_number}",
-    )
-    issue = item_data["data"]["repository"]["issue"]
-    matching_items = [
-        node
-        for node in issue["projectItems"]["nodes"]
-        if node["project"]["id"] == project["id"]
-    ]
-    if len(matching_items) > 1:
-        raise RuntimeError(f"Issue #{issue_number} has duplicate project items")
-    if matching_items:
-        item_id = matching_items[0]["id"]
-    else:
-        add_mutation = """
-        mutation($project: ID!, $content: ID!) {
-          addProjectV2ItemById(input: {projectId: $project, contentId: $content}) {
-            item { id }
-          }
-        }
-        """
-        added = gh_json(
-            "api", "graphql", "-f", f"query={add_mutation}",
-            "-f", f"project={project['id']}", "-f", f"content={issue['id']}",
-        )
-        item_id = added["data"]["addProjectV2ItemById"]["item"]["id"]
-
-    update_mutation = """
-    mutation($project: ID!, $item: ID!, $field: ID!, $option: String!) {
-      updateProjectV2ItemFieldValue(input: {
-        projectId: $project, itemId: $item, fieldId: $field,
-        value: {singleSelectOptionId: $option}
-      }) { projectV2Item { id } }
-    }
-    """
-    gh_json(
-        "api", "graphql", "-f", f"query={update_mutation}",
-        "-f", f"project={project['id']}", "-f", f"item={item_id}",
-        "-f", f"field={status_field['id']}", "-f", f"option={option_id}",
-    )
-
 def publish(
         validated: ValidatedPublication,
         mode: str,
@@ -733,8 +562,7 @@ def publish(
     descriptor = validated.descriptor
     if mode not in {"shadow", "live"}:
         raise ValueError("FORGE_PR_PUBLISH_MODE must be 'shadow' or 'live'")
-    follow_up_numbers = ensure_follow_ups(descriptor, REPOSITORY) if mode == "live" else {}
-    title, body = render_publication(descriptor, follow_up_numbers, validated)
+    title, body = render_publication(descriptor, validated)
     if mode == "shadow":
         return title, body, None
 

@@ -163,6 +163,7 @@ from utility_scripts.library_preparation_preflight import (
     run_library_preparation_preflight as run_preflight_decision,
     write_library_preparation_preflight,
 )
+from utility_scripts.java_fix_coverage_follow_up import ensure_coverage_follow_up_issue
 from utility_scripts.library_update_alias_split import extract_follow_up_issue_numbers
 from utility_scripts.metadata_index import (
     coordinate_parts as metadata_coordinate_parts,
@@ -6131,9 +6132,15 @@ def resolve_chunked_dynamic_access_previous_pr(
             for pull_request in payload
             if trailer in str(pull_request.get("body") or "").splitlines()
         ]
-        if len(matches) != 1:
+        if not matches:
             raise RuntimeError(
-                f"Expected one PR for branch {branch!r} and publication {publication_id!r}; "
+                f"No PR yet for branch {branch!r} and publication {publication_id!r}. "
+                "The branch is pushed but trusted publication has not opened its PR; "
+                "retry once the Forge Open PR workflow has run."
+            )
+        if len(matches) > 1:
+            raise RuntimeError(
+                f"Ambiguous PRs for branch {branch!r} and publication {publication_id!r}; "
                 f"found {len(matches)}"
             )
         return matches[0]
@@ -7073,11 +7080,11 @@ def apply_chunked_dynamic_access_completion_follow_up(claimed_issue: ClaimedIssu
 def prepare_java_fix_coverage_follow_up(
         claimed_issue: ClaimedIssue,
 ) -> tuple[int, int, int] | None:
-    """Return typed follow-up facts when post-repair exploration was oversized.
+    """Open a fixed-version coverage issue when post-repair exploration was oversized.
 
     The composite strategy already made this decision against the report it had
     when the repair finished, so publication reads that recorded decision instead
-    of regenerating a report or mutating GitHub locally.
+    of regenerating a report and deciding a second time.
     §WF-java-fail-fix-workflow.3
     """
     is_java_fix_issue = claimed_issue.label in {LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL}
@@ -7095,7 +7102,42 @@ def prepare_java_fix_coverage_follow_up(
     if deferred_coverage is None:
         return None
     uncovered_class_count, threshold = deferred_coverage
-    return None, uncovered_class_count, threshold
+    existing_issue_number = marker.coverage_follow_up_issue_number()
+    marker_path = continuation_marker_path(claimed_issue.worktree_path)
+
+    if is_fixture_testing_enabled():
+        issue_number = existing_issue_number
+        if issue_number is None:
+            issue_number = FIXTURE_COVERAGE_FOLLOW_UP_ISSUE_OFFSET + int(
+                claimed_issue.issue["number"]
+            )
+            save_phase_update(
+                marker_path,
+                lambda current_marker: current_marker.record_coverage_follow_up_issue(
+                    issue_number
+                ),
+            )
+        log_stage(
+            "coverage-follow-up",
+            f"Fixture mode: using simulated library-update issue #{issue_number}.",
+        )
+        return issue_number, uncovered_class_count, threshold
+
+    issue_number = ensure_coverage_follow_up_issue(
+        coordinate=claimed_issue.issue_coordinates,
+        repair_issue_number=int(claimed_issue.issue["number"]),
+        uncovered_class_count=uncovered_class_count,
+        class_threshold=threshold,
+        repo=REPO,
+        existing_issue_number=existing_issue_number,
+        record_issue_number=lambda resolved_issue_number: save_phase_update(
+            marker_path,
+            lambda current_marker: current_marker.record_coverage_follow_up_issue(
+                resolved_issue_number
+            ),
+        ),
+    )
+    return issue_number, uncovered_class_count, threshold
 
 
 def finalize_successful_issue(

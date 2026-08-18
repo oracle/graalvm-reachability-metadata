@@ -182,6 +182,7 @@ def push_current_branch_to_origin(
         metrics_repo_path: str | None = None,
         issue_number: int | None = None,
         pr_label: str = DEFAULT_PR_LABEL,
+        coverage_follow_up_issue_number: int | None = None,
         coverage_follow_up_class_count: int | None = None,
         coverage_follow_up_class_threshold: int | None = None,
 ):
@@ -192,11 +193,14 @@ def push_current_branch_to_origin(
         raise ValueError("Publication requires an issue number and metrics path")
     follow_ups: list[dict] = []
     if coverage_follow_up_class_count is not None and coverage_follow_up_class_threshold is not None:
+        if coverage_follow_up_issue_number is None:
+            raise ValueError("Deferred coverage follow-up requires a locally created issue number")
         follow_ups.append({
             "type": "deferred_dynamic_access_coverage",
             "coordinate": new_coordinates,
             "uncovered_class_count": coverage_follow_up_class_count,
             "class_threshold": coverage_follow_up_class_threshold,
+            "issue_number": coverage_follow_up_issue_number,
         })
     descriptor_input = descriptor_input_from_pending_metrics(
         metrics_repo_path=metrics_repo_path,
@@ -248,6 +252,7 @@ def main(argv=None):
         metrics_repo_path=metrics_repo_path,
         issue_number=issue_number,
         pr_label=pr_label,
+        coverage_follow_up_issue_number=coverage_follow_up_issue_number,
         coverage_follow_up_class_count=coverage_follow_up_class_count,
         coverage_follow_up_class_threshold=coverage_follow_up_class_threshold,
     )
