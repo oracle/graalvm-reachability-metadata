@@ -9,7 +9,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from git_scripts.make_pr_new_library_support import (
+from git_scripts.publish_new_library_support import (
     DynamicAccessMetadataEvidence,
     load_dynamic_access_metadata_evidence,
     validate_no_scaffold_placeholders,
@@ -17,7 +17,7 @@ from git_scripts.make_pr_new_library_support import (
 )
 
 
-class MakePrNewLibrarySupportTests(unittest.TestCase):
+class PublishNewLibrarySupportTests(unittest.TestCase):
     def test_load_dynamic_access_metadata_evidence_reads_report_and_metadata_rule(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path:
             report_dir = os.path.join(

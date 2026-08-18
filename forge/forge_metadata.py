@@ -113,23 +113,23 @@ from git_scripts.common_git import (
     run_github_json_with_retries,
     run_github_with_retries,
 )
-from git_scripts.make_pr_javac_fix import (
-    main as run_make_pr_javac_fix,
+from git_scripts.publish_javac_fix import (
+    main as run_publish_javac_fix,
 )
-from git_scripts.make_pr_java_run_fix import (
-    main as run_make_pr_java_run_fix,
+from git_scripts.publish_java_run_fix import (
+    main as run_publish_java_run_fix,
 )
-from git_scripts.make_pr_new_library_support import (
-    main as run_make_pr_new_library_support,
+from git_scripts.publish_new_library_support import (
+    main as run_publish_new_library_support,
 )
-from git_scripts.make_pr_not_for_native_image import (
-    main as run_make_pr_not_for_native_image,
+from git_scripts.publish_not_for_native_image import (
+    main as run_publish_not_for_native_image,
 )
-from git_scripts.make_pr_ni_run_fix import (
-    main as run_make_pr_ni_run_fix,
+from git_scripts.publish_ni_run_fix import (
+    main as run_publish_ni_run_fix,
 )
-from git_scripts.make_pr_improve_coverage import (
-    main as run_make_pr_improve_coverage,
+from git_scripts.publish_improve_coverage import (
+    main as run_publish_improve_coverage,
 )
 from utility_scripts.dynamic_access_exhaust_report import (
     DynamicAccessExhaustReport,
@@ -6683,9 +6683,9 @@ def build_publication_handoff(
         group, artifact, _version = metadata_coordinate_parts(claimed_issue.issue_coordinates)
         not_for_native_image = is_not_for_native_image(claimed_issue.worktree_path, group, artifact)
         if not_for_native_image:
-            script_name = "git_scripts/make_pr_not_for_native_image.py"
-            runner_name = "run_make_pr_not_for_native_image"
-            runner = run_make_pr_not_for_native_image
+            script_name = "git_scripts/publish_not_for_native_image.py"
+            runner_name = "run_publish_not_for_native_image"
+            runner = run_publish_not_for_native_image
             result_label = LABEL_NOT_FOR_NATIVE_IMAGE
             argv = [
                 "--coordinates", claimed_issue.issue_coordinates,
@@ -6694,9 +6694,9 @@ def build_publication_handoff(
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
             ]
         else:
-            script_name = "git_scripts/make_pr_new_library_support.py"
-            runner_name = "run_make_pr_new_library_support"
-            runner = run_make_pr_new_library_support
+            script_name = "git_scripts/publish_new_library_support.py"
+            runner_name = "run_publish_new_library_support"
+            runner = run_publish_new_library_support
             result_label = LABEL_LIBRARY_NEW
             argv = [
                 "--coordinates", claimed_issue.issue_coordinates,
@@ -6706,9 +6706,9 @@ def build_publication_handoff(
                 *chunked_dynamic_access_args,
             ]
     elif claimed_issue.label == LABEL_JAVAC_FAIL:
-        script_name = "git_scripts/make_pr_javac_fix.py"
-        runner_name = "run_make_pr_javac_fix"
-        runner = run_make_pr_javac_fix
+        script_name = "git_scripts/publish_javac_fix.py"
+        runner_name = "run_publish_javac_fix"
+        runner = run_publish_javac_fix
         result_label = LABEL_PR_JAVAC_FIX
         current_coordinates = _require_publication_value(
             claimed_issue.current_coordinates,
@@ -6726,9 +6726,9 @@ def build_publication_handoff(
             *coverage_follow_up_args,
         ]
     elif claimed_issue.label == LABEL_JAVA_RUN_FAIL:
-        script_name = "git_scripts/make_pr_java_run_fix.py"
-        runner_name = "run_make_pr_java_run_fix"
-        runner = run_make_pr_java_run_fix
+        script_name = "git_scripts/publish_java_run_fix.py"
+        runner_name = "run_publish_java_run_fix"
+        runner = run_publish_java_run_fix
         result_label = LABEL_PR_JAVA_RUN_FIX
         current_coordinates = _require_publication_value(
             claimed_issue.current_coordinates,
@@ -6746,9 +6746,9 @@ def build_publication_handoff(
             *coverage_follow_up_args,
         ]
     elif claimed_issue.label == LABEL_NI_RUN_FAIL:
-        script_name = "git_scripts/make_pr_ni_run_fix.py"
-        runner_name = "run_make_pr_ni_run_fix"
-        runner = run_make_pr_ni_run_fix
+        script_name = "git_scripts/publish_ni_run_fix.py"
+        runner_name = "run_publish_ni_run_fix"
+        runner = run_publish_ni_run_fix
         result_label = LABEL_PR_NI_RUN_FIX
         current_coordinates = _require_publication_value(
             claimed_issue.current_coordinates,
@@ -6766,9 +6766,9 @@ def build_publication_handoff(
         ]
     elif claimed_issue.label == LABEL_LIBRARY_UPDATE:
         if library_update_route is not None and library_update_route.selected_driver == ROUTE_FIX_JAVAC:
-            script_name = "git_scripts/make_pr_javac_fix.py"
-            runner_name = "run_make_pr_javac_fix"
-            runner = run_make_pr_javac_fix
+            script_name = "git_scripts/publish_javac_fix.py"
+            runner_name = "run_publish_javac_fix"
+            runner = run_publish_javac_fix
             result_label = LABEL_PR_LIBRARY_UPDATE
             publication_kind = LABEL_PR_JAVAC_FIX
             current_coordinates = _require_publication_value(
@@ -6788,9 +6788,9 @@ def build_publication_handoff(
                 *coverage_follow_up_args,
             ]
         elif library_update_route is not None and library_update_route.selected_driver == ROUTE_FIX_JAVA_RUN:
-            script_name = "git_scripts/make_pr_java_run_fix.py"
-            runner_name = "run_make_pr_java_run_fix"
-            runner = run_make_pr_java_run_fix
+            script_name = "git_scripts/publish_java_run_fix.py"
+            runner_name = "run_publish_java_run_fix"
+            runner = run_publish_java_run_fix
             result_label = LABEL_PR_LIBRARY_UPDATE
             publication_kind = LABEL_PR_JAVA_RUN_FIX
             current_coordinates = _require_publication_value(
@@ -6810,9 +6810,9 @@ def build_publication_handoff(
                 *coverage_follow_up_args,
             ]
         elif library_update_route is not None and library_update_route.selected_driver == ROUTE_FIX_NI_RUN:
-            script_name = "git_scripts/make_pr_ni_run_fix.py"
-            runner_name = "run_make_pr_ni_run_fix"
-            runner = run_make_pr_ni_run_fix
+            script_name = "git_scripts/publish_ni_run_fix.py"
+            runner_name = "run_publish_ni_run_fix"
+            runner = run_publish_ni_run_fix
             result_label = LABEL_PR_LIBRARY_UPDATE
             publication_kind = LABEL_PR_NI_RUN_FIX
             current_coordinates = _require_publication_value(
@@ -6831,9 +6831,9 @@ def build_publication_handoff(
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
             ]
         else:
-            script_name = "git_scripts/make_pr_improve_coverage.py"
-            runner_name = "run_make_pr_improve_coverage"
-            runner = run_make_pr_improve_coverage
+            script_name = "git_scripts/publish_improve_coverage.py"
+            runner_name = "run_publish_improve_coverage"
+            runner = run_publish_improve_coverage
             result_label = LABEL_PR_LIBRARY_UPDATE
             argv = [
                 "--coordinates", claimed_issue.issue_coordinates,

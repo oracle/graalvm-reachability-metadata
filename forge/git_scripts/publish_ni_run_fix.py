@@ -14,7 +14,7 @@ from git_scripts.common_git import (
     stage_and_commit as stage_and_commit_common,
     find_issue_for_coordinates as find_issue_common,
 )
-from git_scripts.pr_publication import (
+from git_scripts.branch_publication import (
     BASE_BRANCH,
     REPO,
     format_bounded_test_diff_section,
@@ -96,7 +96,7 @@ def assert_no_tracked_worktree_changes(repo_path: str) -> None:
 
     raise RuntimeError(
         "Native-image-run PR finalization left tracked worktree changes before rebase. "
-        "Stage these paths in make_pr_ni_run_fix.py or discard them before finalization:\n"
+        "Stage these paths in publish_ni_run_fix.py or discard them before finalization:\n"
         f"{status_output}"
     )
 
@@ -116,14 +116,15 @@ def build_test_comparison_section(group: str, artifact: str, old_version: str, n
 
 def build_parser():
     parser = argparse.ArgumentParser(
-        prog="make_pr_ni_run_fix.py",
+        prog="publish_ni_run_fix.py",
         description=(
-            f"Create and push a feature branch with Native Image run fixes and open a GitHub Pull Request "
-            f"on your fork against base branch '{BASE_BRANCH}'.\n\n"
+            f"Create and push a verified feature branch with Native Image run fixes and its publication "
+            f"descriptor to '{REPO}'; trusted GitHub Actions open the pull request against "
+            f"base branch '{BASE_BRANCH}'.\n\n"
         ),
         epilog=(
             "Example:\n"
-            "  python3 git_scripts/make_pr_ni_run_fix.py \\\n"
+            "  python3 git_scripts/publish_ni_run_fix.py \\\n"
             "      --coordinates com.example:lib:1.2.3 \\\n"
             "      --new-version 1.2.4 \\\n"
             "      --reachability-metadata-path /path/to/graalvm-reachability-metadata\n\n"

@@ -11,7 +11,7 @@ from git_scripts.common_git import (
     parse_coordinate_parts,
     find_issue_for_coordinates as find_issue_common,
 )
-from git_scripts.pr_publication import (
+from git_scripts.branch_publication import (
     BASE_BRANCH,
     REPO,
     publish_branch,
@@ -26,14 +26,15 @@ DEFAULT_PR_LABEL = "fixes-javac-fail"
 
 def build_parser():
     parser = argparse.ArgumentParser(
-        prog="make_pr_javac_fix.py",
+        prog="publish_javac_fix.py",
         description=(
-            f"Create and push a feature branch with javac fixes and open a GitHub Pull Request to '{REPO}' "
-            f"against base branch '{BASE_BRANCH}'. Metrics are loaded from fix_javac_fail JSON output.\n\n"
+            f"Create and push a verified feature branch with javac fixes and its publication descriptor "
+            f"to '{REPO}'; trusted GitHub Actions open the pull request against base branch "
+            f"'{BASE_BRANCH}'. Metrics are loaded from fix_javac_fail JSON output.\n\n"
         ),
         epilog=(
             "Example:\n"
-            "  python3 git_scripts/make_pr_javac_fix.py \\\n"
+            "  python3 git_scripts/publish_javac_fix.py \\\n"
             "      --coordinates com.example:lib:1.2.3 \\\n"
             "      --new-version 1.2.4 \\\n"
             "      --reachability-metadata-path /path/to/graalvm-reachability-metadata \\\n"

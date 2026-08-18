@@ -15,7 +15,7 @@ from git_scripts.common_git import (
     find_issue_for_coordinates as find_issue_common,
     load_library_stats,
 )
-from git_scripts.pr_publication import (
+from git_scripts.branch_publication import (
     BASE_BRANCH,
     REPO,
     publish_branch,
@@ -222,14 +222,15 @@ def remove_dynamic_access_exhaust_report_for_final_chunk(
 
 def build_parser():
     parser = argparse.ArgumentParser(
-        prog="make_pr_new_library_support.py",
+        prog="publish_new_library_support.py",
         description=(
-            f"Create and push a feature branch with new library support and open a GitHub Pull Request to '{REPO}' "
-            f"against base branch '{BASE_BRANCH}'.\n\n"
+            f"Create and push a verified feature branch with new library support and its publication "
+            f"descriptor to '{REPO}'; trusted GitHub Actions open the pull request against "
+            f"base branch '{BASE_BRANCH}'.\n\n"
         ),
         epilog=(
             "Example:\n"
-            "  python3 git_scripts/make_pr_new_library_support.py \\\n"
+            "  python3 git_scripts/publish_new_library_support.py \\\n"
             "      --coordinates com.example:lib:1.2.3 \\\n"
             "      --reachability-metadata-path /path/to/graalvm-reachability-metadata\\\n"
             "      --metrics-repo-path /path/to/metrics_repo_root\n\n"

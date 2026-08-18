@@ -11,7 +11,7 @@ from git_scripts.common_git import (
     parse_coordinate_parts,
     find_issue_for_coordinates as find_issue_common,
 )
-from git_scripts.pr_publication import (
+from git_scripts.branch_publication import (
     BASE_BRANCH,
     REPO,
     publish_branch,
@@ -26,10 +26,11 @@ DEFAULT_PR_LABEL = "fixes-java-run-fail"
 
 def build_parser():
     parser = argparse.ArgumentParser(
-        prog="make_pr_java_run_fix.py",
+        prog="publish_java_run_fix.py",
         description=(
-            f"Create and push a feature branch with java-run fixes and open a GitHub Pull Request to '{REPO}' "
-            f"against base branch '{BASE_BRANCH}'. Metrics are loaded from fix_java_run_fail JSON output.\n\n"
+            f"Create and push a verified feature branch with java-run fixes and its publication descriptor "
+            f"to '{REPO}'; trusted GitHub Actions open the pull request against base branch "
+            f"'{BASE_BRANCH}'. Metrics are loaded from fix_java_run_fail JSON output.\n\n"
         ),
         formatter_class=argparse.RawTextHelpFormatter,
     )

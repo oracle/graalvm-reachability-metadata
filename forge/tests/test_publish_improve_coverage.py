@@ -8,12 +8,12 @@ import os
 import tempfile
 import unittest
 
-from git_scripts.make_pr_improve_coverage import (
+from git_scripts.publish_improve_coverage import (
     load_library_update_target_sidecar,
 )
 
 
-class MakePrImproveCoverageTests(unittest.TestCase):
+class PublishImproveCoverageTests(unittest.TestCase):
     def test_load_library_update_target_sidecar_reads_pr_only_details(self) -> None:
         with tempfile.TemporaryDirectory() as metrics_root:
             sidecar_path = os.path.join(metrics_root, ".library_update_target.json")

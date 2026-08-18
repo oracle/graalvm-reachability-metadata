@@ -9,16 +9,16 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from git_scripts import make_pr_ni_run_fix
+from git_scripts import publish_ni_run_fix
 
 
 class SevereMetadataDropGuardrailTests(unittest.TestCase):
     def test_is_severe_metadata_drop_requires_existing_baseline_and_below_threshold(self) -> None:
-        self.assertTrue(make_pr_ni_run_fix.is_severe_metadata_drop(34, 0))
-        self.assertTrue(make_pr_ni_run_fix.is_severe_metadata_drop(100, 24))
-        self.assertFalse(make_pr_ni_run_fix.is_severe_metadata_drop(100, 25))
-        self.assertFalse(make_pr_ni_run_fix.is_severe_metadata_drop(100, 26))
-        self.assertFalse(make_pr_ni_run_fix.is_severe_metadata_drop(0, 0))
+        self.assertTrue(publish_ni_run_fix.is_severe_metadata_drop(34, 0))
+        self.assertTrue(publish_ni_run_fix.is_severe_metadata_drop(100, 24))
+        self.assertFalse(publish_ni_run_fix.is_severe_metadata_drop(100, 25))
+        self.assertFalse(publish_ni_run_fix.is_severe_metadata_drop(100, 26))
+        self.assertFalse(publish_ni_run_fix.is_severe_metadata_drop(0, 0))
 
 class NativeImageRunFinalizationTests(unittest.TestCase):
     def test_build_test_comparison_section_returns_bounded_markdown_section(self) -> None:
@@ -38,11 +38,11 @@ class NativeImageRunFinalizationTests(unittest.TestCase):
             )
 
             with patch.object(
-                    make_pr_ni_run_fix,
+                    publish_ni_run_fix,
                     "format_bounded_test_diff_section",
                     return_value=bounded_section,
             ):
-                comparison_section = make_pr_ni_run_fix.build_test_comparison_section(
+                comparison_section = publish_ni_run_fix.build_test_comparison_section(
                     "org.example", "demo", "1.0.0", "2.0.0", repo_path,
                 )
 
@@ -61,13 +61,13 @@ class NativeImageRunFinalizationTests(unittest.TestCase):
             for test_source_dir_name in ("java", "kotlin", "groovy", "scala"):
                 os.makedirs(os.path.join(test_version_dir, "src", "test", test_source_dir_name))
 
-            with patch.object(make_pr_ni_run_fix, "stage_and_commit_common") as stage_and_commit, \
+            with patch.object(publish_ni_run_fix, "stage_and_commit_common") as stage_and_commit, \
                     patch.object(
-                        make_pr_ni_run_fix,
+                        publish_ni_run_fix,
                         "stats_artifact_dir",
                         return_value=os.path.join(repo_path, "stats", "org.example", "demo"),
                     ):
-                make_pr_ni_run_fix.stage_and_commit(
+                publish_ni_run_fix.stage_and_commit(
                     group="org.example",
                     artifact="demo",
                     test_version="1.0.0",
@@ -109,13 +109,13 @@ class NativeImageRunFinalizationTests(unittest.TestCase):
             )
             os.makedirs(native_image_metadata_dir)
 
-            with patch.object(make_pr_ni_run_fix, "stage_and_commit_common") as stage_and_commit, \
+            with patch.object(publish_ni_run_fix, "stage_and_commit_common") as stage_and_commit, \
                     patch.object(
-                        make_pr_ni_run_fix,
+                        publish_ni_run_fix,
                         "stats_artifact_dir",
                         return_value=os.path.join(repo_path, "stats", "org.example", "demo"),
                     ):
-                make_pr_ni_run_fix.stage_and_commit(
+                publish_ni_run_fix.stage_and_commit(
                     group="org.example",
                     artifact="demo",
                     test_version="1.0.0",
@@ -157,7 +157,7 @@ class NativeImageRunFinalizationTests(unittest.TestCase):
                 file.write("after\n")
 
             with self.assertRaisesRegex(RuntimeError, "tracked.txt"):
-                make_pr_ni_run_fix.assert_no_tracked_worktree_changes(repo_path)
+                publish_ni_run_fix.assert_no_tracked_worktree_changes(repo_path)
 
 
 if __name__ == "__main__":

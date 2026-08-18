@@ -15,7 +15,7 @@ from git_scripts.common_git import (
     parse_coordinate_parts,
     stage_and_commit,
 )
-from git_scripts.pr_publication import (
+from git_scripts.branch_publication import (
     REPO,
     publish_branch,
 )
@@ -30,7 +30,7 @@ from utility_scripts.repo_path_resolver import resolve_repo_roots
 def build_parser() -> argparse.ArgumentParser:
     """Build CLI parser."""
     parser = argparse.ArgumentParser(
-        prog="make_pr_not_for_native_image.py",
+        prog="publish_not_for_native_image.py",
         description="Create a PR that adds a not-for-native-image marker index.",
     )
     parser.add_argument("--coordinates", required=True, help="Coordinates in group:artifact:version form")

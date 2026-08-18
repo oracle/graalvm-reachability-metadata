@@ -15,7 +15,7 @@ from git_scripts.common_git import (
     find_issue_for_coordinates as find_issue_common,
     load_library_stats,
 )
-from git_scripts.pr_publication import (
+from git_scripts.branch_publication import (
     BASE_BRANCH,
     REPO,
     publish_branch,
@@ -159,10 +159,11 @@ def remove_dynamic_access_exhaust_report_for_final_chunk(
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="make_pr_improve_coverage.py",
+        prog="publish_improve_coverage.py",
         description=(
-            f"Create and push a feature branch with coverage improvements and open a GitHub Pull Request "
-            f"to '{REPO}' against base branch '{BASE_BRANCH}'."
+            f"Create and push a verified feature branch with coverage improvements and its publication "
+            f"descriptor to '{REPO}'; trusted GitHub Actions open the pull request against "
+            f"base branch '{BASE_BRANCH}'."
         ),
         formatter_class=argparse.RawTextHelpFormatter,
     )

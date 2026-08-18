@@ -9,7 +9,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from git_scripts import pr_publication
+from git_scripts import branch_publication
 from utility_scripts.continuation_marker import CONTINUATION_MARKER_FILENAME
 from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME
 
@@ -26,32 +26,32 @@ def _git(repo_path: str, *args: str) -> str:
     return result.stdout
 
 
-class PrPublicationTests(unittest.TestCase):
+class BranchPublicationTests(unittest.TestCase):
     def test_format_bounded_test_diff_section_truncates_large_diff(self) -> None:
-        diff_text = "Q" * (pr_publication.MAX_INLINE_TEST_DIFF_CHARS + 1)
+        diff_text = "Q" * (branch_publication.MAX_INLINE_TEST_DIFF_CHARS + 1)
         with patch.object(
-                pr_publication,
+                branch_publication,
                 "_generate_test_diff_outputs",
                 return_value=(diff_text, " 1 file changed, 1 insertion(+)")
         ):
-            section = pr_publication.format_bounded_test_diff_section(
+            section = branch_publication.format_bounded_test_diff_section(
                 "org.example", "demo", "1.0.0", "2.0.0", "/repo",
             )
 
         self.assertIn("1 file changed", section)
         self.assertIn("Files changed", section)
         self.assertNotIn(diff_text, section)
-        self.assertEqual(section.count("Q"), pr_publication.MAX_INLINE_TEST_DIFF_CHARS)
+        self.assertEqual(section.count("Q"), branch_publication.MAX_INLINE_TEST_DIFF_CHARS)
 
     def test_bound_pr_body_keeps_body_below_github_limit(self) -> None:
         oversized_body = (
-            "x" * (pr_publication.MAX_PR_BODY_CHARS + 100)
+            "x" * (branch_publication.MAX_PR_BODY_CHARS + 100)
             + "\n\n## Local CI Verification\n\nPassed"
         )
 
-        bounded_body = pr_publication.bound_pr_body(oversized_body)
+        bounded_body = branch_publication.bound_pr_body(oversized_body)
 
-        self.assertLessEqual(len(bounded_body), pr_publication.MAX_PR_BODY_CHARS)
+        self.assertLessEqual(len(bounded_body), branch_publication.MAX_PR_BODY_CHARS)
         self.assertIn("GitHub's size limit", bounded_body)
         self.assertIn("Local CI Verification", bounded_body)
 
@@ -81,7 +81,7 @@ class PrPublicationTests(unittest.TestCase):
                 "forge/human-intervention-logs/run.log",
             )
 
-            pr_publication._remove_preservation_only_files(repo_path)
+            branch_publication._remove_preservation_only_files(repo_path)
 
             self.assertTrue(os.path.isfile(pending_path))
             with open(pending_path, "r", encoding="utf-8") as pending_file:

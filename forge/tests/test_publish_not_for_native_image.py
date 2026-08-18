@@ -7,11 +7,11 @@ import subprocess
 import unittest
 from unittest.mock import patch
 
-from git_scripts import make_pr_not_for_native_image, pr_publication
+from git_scripts import publish_not_for_native_image, branch_publication
 from utility_scripts.local_ci_verification import LocalCIVerificationResult
 
 
-class MakePrNotForNativeImageTests(unittest.TestCase):
+class PublishNotForNativeImageTests(unittest.TestCase):
     def test_push_marker_branch_runs_local_ci_before_push(self) -> None:
         result = LocalCIVerificationResult(status="success", base_commit="FETCH_HEAD")
         events: list[str] = []
@@ -39,29 +39,29 @@ class MakePrNotForNativeImageTests(unittest.TestCase):
             return result
 
         with patch.object(
-                    make_pr_not_for_native_image,
+                    publish_not_for_native_image,
                     "get_not_for_native_image_marker",
                     return_value={"reason": "native-image does not apply"},
                 ), \
-                patch.object(pr_publication, "find_remote_for_github_repo", return_value="origin"), \
-                patch.object(pr_publication, "get_authenticated_login", return_value="octocat"), \
+                patch.object(branch_publication, "find_remote_for_github_repo", return_value="origin"), \
+                patch.object(branch_publication, "get_authenticated_login", return_value="octocat"), \
                 patch.object(
-                    pr_publication,
+                    branch_publication,
                     "write_publication_descriptor",
                     return_value="/repo/stats/org.example/demo/1.0.0/forge-publication.json",
                 ), \
-                patch.object(pr_publication, "stage_and_commit_common"), \
-                patch.object(pr_publication, "delete_remote_branch_if_exists"), \
-                patch.object(make_pr_not_for_native_image, "stage_and_commit"), \
-                patch.object(pr_publication, "fetch_pr_base_ref", return_value="FETCH_HEAD"), \
+                patch.object(branch_publication, "stage_and_commit_common"), \
+                patch.object(branch_publication, "delete_remote_branch_if_exists"), \
+                patch.object(publish_not_for_native_image, "stage_and_commit"), \
+                patch.object(branch_publication, "fetch_pr_base_ref", return_value="FETCH_HEAD"), \
                 patch.object(
-                    pr_publication,
+                    branch_publication,
                     "run_local_ci_verification",
                     side_effect=fake_run_local_ci_verification,
                 ), \
-                patch.object(pr_publication, "run_git_transport", side_effect=fake_run_git_transport), \
-                patch.object(pr_publication.subprocess, "run", side_effect=fake_subprocess_run):
-            branch, local_ci_verification = make_pr_not_for_native_image.push_marker_branch(
+                patch.object(branch_publication, "run_git_transport", side_effect=fake_run_git_transport), \
+                patch.object(branch_publication.subprocess, "run", side_effect=fake_subprocess_run):
+            branch, local_ci_verification = publish_not_for_native_image.push_marker_branch(
                 "org.example:demo:1.0.0",
                 "/repo",
                 "/metrics",
