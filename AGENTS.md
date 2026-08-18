@@ -127,8 +127,8 @@ Do not create a namespace for a regular module or component that still belongs t
 
 Cross-project citations use §alias/<ID>.
 
-- [`forge`](forge/AGENTS.md)
-- [`root`](AGENTS.md)
+- [`forge`](forge/AGENTS.md): Automation subproject that turns labeled issues into reviewed metadata pull requests
+- [`root`](AGENTS.md): Repository for shared GraalVM reachability metadata, tests, and release infrastructure
 
 ### Declarations and citations
 
@@ -144,7 +144,17 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 
 ### Citation directions
 
-Specs cite goals, architecture cites specs, code and executable tests cite the specs they realize.
+- **GOAL** must cite GRUND.
+- **FS** should cite GOAL or FS.
+- **AR** must cite FS or GOAL.
+- **TCK** must cite FS or AR or GOAL.
+- **E2E** must cite FS or TCK or AR.
+- **CI** should cite FS or TCK or METADATA or TESTS or E2E or GOAL.
+- **METADATA** must cite FS or GOAL.
+- **TESTS** must cite FS or METADATA or GOAL.
+- **SKILL** must cite FS or CI or METADATA or TESTS.
+- **code** (any file outside a kind home) must cite FS or AR or TCK or E2E or CI or METADATA or TESTS.
+Unlisted kinds and pairs are fine.
 
 ### Clickable citations
 
@@ -169,8 +179,6 @@ is the only place the workspace alias table is in scope.
 
 ### Additional rules
 
-- **Goals cite reasons.** On top of the citation directions above, a goal cites
-  the motivation it serves in `docs/grund.md`.
 - **Grund and goals are namespace-local top-level docs.** Repository motivation
   and direction live in `docs/grund.md` and `docs/goals.md`; Forge motivation and
   direction live in `forge/docs/grund.md` and `forge/docs/goals.md`.

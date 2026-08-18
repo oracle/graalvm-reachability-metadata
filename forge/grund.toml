@@ -1,5 +1,6 @@
 grund_config_version = 1
 project_name = "forge"
+project_description = "Automation subproject that turns labeled issues into reviewed metadata pull requests"
 
 [reference]
 marker = "§"
@@ -95,3 +96,42 @@ relative_paths = true
 [fmt.cross_refs]
 enabled = false
 anchor_format = "github" # github | gitlab | mkdocs | pandoc | none
+
+[citations]
+default = "may"
+
+[citations.GOAL]
+must = ["GRUND|GOAL"]
+
+[citations.FS]
+must = ["GOAL|FS"]
+
+[citations.AR]
+must = ["FS|GOAL"]
+
+[citations.DW]
+must = ["FS|AR"]
+
+[citations.STRAT]
+should = ["FS|AR|GOAL"]
+
+[citations.ORCH]
+must = ["FS|AR|STRAT"]
+
+[citations.GIT]
+should = ["FS|AR"]
+
+[citations.WF]
+should = ["FS|STRAT|ORCH|GIT"]
+
+[citations.E2E]
+must = ["FS|WF|ORCH"]
+
+[citations.BENCH]
+must = ["FS|AR|GOAL"]
+
+[citations.ROADMAP]
+should = ["GOAL|FS|AR"]
+
+[citations.code]
+must = ["FS|AR|DW|STRAT|ORCH|GIT|WF"]
