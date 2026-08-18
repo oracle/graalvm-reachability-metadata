@@ -102,7 +102,7 @@ class BasicIterativeNativeTestGateTests(unittest.TestCase):
         strategy = _basic_strategy()
 
         with patch(
-            "ai_workflows.core.basic_iterative_strategy.verify_native_test_passes",
+            "ai_workflows.core.workflow_strategy.verify_native_test_passes",
             return_value=_gate_result(STATUS_PASSED),
         ) as verify:
             status, _, unittest_number = strategy.run(_FakeAgent(), "checkpoint-sha")
@@ -117,7 +117,7 @@ class BasicIterativeNativeTestGateTests(unittest.TestCase):
         strategy = _basic_strategy()
 
         with patch(
-            "ai_workflows.core.basic_iterative_strategy.verify_native_test_passes",
+            "ai_workflows.core.workflow_strategy.verify_native_test_passes",
             return_value=_gate_result(STATUS_PASSED),
         ) as verify:
             strategy.run(_FakeAgent(), "checkpoint-sha")
@@ -128,7 +128,7 @@ class BasicIterativeNativeTestGateTests(unittest.TestCase):
         strategy = _basic_strategy(**{"max-native-test-verification-iterations": 7})
 
         with patch(
-            "ai_workflows.core.basic_iterative_strategy.verify_native_test_passes",
+            "ai_workflows.core.workflow_strategy.verify_native_test_passes",
             return_value=_gate_result(STATUS_PASSED),
         ) as verify:
             strategy.run(_FakeAgent(), "checkpoint-sha")
@@ -139,7 +139,7 @@ class BasicIterativeNativeTestGateTests(unittest.TestCase):
         strategy = _basic_strategy()
 
         with patch(
-            "ai_workflows.core.basic_iterative_strategy.verify_native_test_passes",
+            "ai_workflows.core.workflow_strategy.verify_native_test_passes",
             return_value=_gate_result(STATUS_FAILED),
         ):
             status, _, _ = strategy.run(_FakeAgent(), "checkpoint-sha")
@@ -151,7 +151,7 @@ class BasicIterativeNativeTestGateTests(unittest.TestCase):
         agent = _FakeAgent(test_output="> Task :compileTestJava FAILED\n")
 
         with patch(
-            "ai_workflows.core.basic_iterative_strategy.verify_native_test_passes",
+            "ai_workflows.core.workflow_strategy.verify_native_test_passes",
         ) as verify:
             with patch("subprocess.run"):
                 status, _, unittest_number = strategy.run(agent, "checkpoint-sha")
@@ -222,7 +222,7 @@ class DynamicAccessFallbackNativeTestGateTests(unittest.TestCase):
             "ai_workflows.core.dynamic_access_iterative_strategy.load_strategy_by_name",
             return_value=fallback_obj,
         ), patch(
-            "ai_workflows.core.basic_iterative_strategy.verify_native_test_passes",
+            "ai_workflows.core.workflow_strategy.verify_native_test_passes",
             return_value=_gate_result(STATUS_PASSED),
         ) as verify:
             status, _, _ = strategy.run(_FakeAgent(), "checkpoint-sha")

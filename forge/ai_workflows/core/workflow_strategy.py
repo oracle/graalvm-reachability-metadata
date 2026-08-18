@@ -35,6 +35,12 @@ from utility_scripts.metadata_index import (
     resolve_metadata_version,
     resolve_test_version,
 )
+from utility_scripts.native_test_verification import (
+    DEFAULT_MAX_ITERATIONS,
+    NativeTestVerificationResult,
+    STATUS_FAILED as NATIVE_TEST_GATE_FAILED,
+    verify_native_test_passes,
+)
 from utility_scripts.issue_requested_metadata import NO_REPORTER_METADATA_CONTEXT
 from utility_scripts.library_preparation_preflight import NO_LIBRARY_PREPARATION_PREFLIGHT_CONTEXT
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
@@ -130,6 +136,10 @@ class WorkflowStrategy(ABC):
             raise ValueError("Strategy is missing required field: model")
         self.prompts = self.strategy_obj.get("prompts", {})
         self.parameters = self.strategy_obj.get("parameters", {})
+        self.max_native_test_verification_iterations: int = self._parameter_int(
+            "max-native-test-verification-iterations",
+            DEFAULT_MAX_ITERATIONS,
+        )
         self.persistent_instructions = load_persistent_instructions(self.strategy_obj, **self.context)
         self.post_generation_intervention: dict | None = None
         self.continuation_marker_path: str | None = self.context.get("continuation_marker_path")
@@ -153,6 +163,34 @@ class WorkflowStrategy(ABC):
         if not isinstance(value, int) or value < 0:
             raise ValueError(f"Strategy parameter '{name}' must be a non-negative integer")
         return value
+
+    def _verify_native_test_gate(self, output_dir: str, label: str | None = None) -> bool:
+        """Run the shared native-test gate (§WF-native-test-verification-gate)."""
+        label_suffix: str = f" for {label}" if label else ""
+        log_stage(
+            "native-test-verify",
+            f"native-test gate: starting{label_suffix} output_dir={output_dir} "
+            f"budget={self.max_native_test_verification_iterations}",
+        )
+        result: NativeTestVerificationResult = verify_native_test_passes(
+            reachability_repo_path=self.context["reachability_repo_path"],
+            coordinate=self.context["library"],
+            output_dir=output_dir,
+            max_iterations=self.max_native_test_verification_iterations,
+        )
+        if result.status == NATIVE_TEST_GATE_FAILED:
+            log_path: str = result.last_native_test_log_path or "(none)"
+            log_stage(
+                "native-test-verify",
+                f"native-test gate FAILED{label_suffix} after {result.iterations_used} cycles "
+                f"(last log: {log_path})",
+            )
+            return False
+        log_stage(
+            "native-test-verify",
+            f"native-test gate {result.status}{label_suffix} after {result.iterations_used} cycles",
+        )
+        return True
 
     def _load_prompt(self, key: str) -> str:
         """Load and render a prompt template by key, substituting context values."""

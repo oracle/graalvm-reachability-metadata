@@ -5,14 +5,7 @@
 
 from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
 from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
-from utility_scripts.native_test_verification import (
-    STATUS_FAILED as NATIVE_TEST_GATE_FAILED,
-    global_output_dir,
-    verify_native_test_passes,
-)
-
-
-DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS = 40
+from utility_scripts.native_test_verification import global_output_dir
 
 
 """
@@ -70,10 +63,6 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
         self.group, self.artifact, self.version = self.library.split(":")
         self.package = self.group
         self.max_test_iterations = self.parameters["max-test-iterations"]
-        self.max_native_test_verification_iterations = self._parameter_int(
-            "max-native-test-verification-iterations",
-            DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS,
-        )
 
     @property
     def _log_prefix(self) -> str:
@@ -157,7 +146,9 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
             self._print_detail("agent: complete", indent_level=2)
 
         if workflow_status == RUN_STATUS_SUCCESS and self.fix_mode == JAVA_FIX_MODE_JAVA_RUN:
-            if not self._run_native_test_verification_gate():
+            if not self._verify_native_test_gate(global_output_dir(
+                self.reachability_repo_path, self.group, self.artifact, self.version,
+            )):
                 workflow_status = RUN_STATUS_FAILURE
 
         agent.clear_context()
@@ -175,34 +166,6 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
                 lambda marker: marker.mark_phase_pending(PHASE_FIX, iteration=global_iterations),
             )
         return workflow_status, global_iterations
-
-    def _run_native_test_verification_gate(self) -> bool:
-        """Terminal gate: verify nativeTest passes; FAILED aborts the workflow."""
-        output_dir = global_output_dir(
-            self.reachability_repo_path, self.group, self.artifact, self.version,
-        )
-        self._print_message(
-            f"native-test gate: starting output_dir={output_dir} "
-            f"budget={self.max_native_test_verification_iterations}"
-        )
-        result = verify_native_test_passes(
-            reachability_repo_path=self.reachability_repo_path,
-            coordinate=self.library,
-            output_dir=output_dir,
-            max_iterations=self.max_native_test_verification_iterations,
-        )
-        if result.status == NATIVE_TEST_GATE_FAILED:
-            log_path = result.last_native_test_log_path or "(none)"
-            self._print_message(
-                f"native-test gate FAILED after {result.iterations_used} cycles "
-                f"(last log: {log_path})"
-            )
-            return False
-        self._print_message(
-            f"native-test gate {result.status} after {result.iterations_used} cycles"
-        )
-        return True
-
 
 @WorkflowStrategy.register("javac_iterative")
 class JavacIterativeStrategy(_JavaTestFixIterativeBase):
