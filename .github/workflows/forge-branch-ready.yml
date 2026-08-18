@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: read
-  issues: read
 
 jobs:
   validate:
@@ -39,7 +38,6 @@ jobs:
           HEAD_ACTOR: ${{ github.actor }}
           HEAD_REPOSITORY: ${{ github.repository }}
           AUTHORIZED_PUSHERS: ${{ vars.FORGE_AUTHORIZED_PUSHERS }}
-          GH_TOKEN: ${{ github.token }}
         run: >-
           python3 .github/scripts/forge_pr_publisher/publisher.py validate
           --sha "$HEAD_SHA"
