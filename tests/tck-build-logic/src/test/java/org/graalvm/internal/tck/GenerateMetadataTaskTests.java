@@ -147,6 +147,25 @@ class GenerateMetadataTaskTests {
     }
 
     @Test
+    void runForwardsCoverageSuiteInclusionToAgentTest() throws IOException {
+        Coordinates coordinates = Coordinates.parse("com.example:demo:1.0.0");
+        Project project = createProject();
+        prepareTestProject(coordinates, "plugins { id 'java' }\n");
+        project.getExtensions().getExtraProperties().set(
+                "includeCodeCoverageSuite", "true"
+        );
+        TestGenerateMetadataTask task = registerGenerateMetadataTask(
+                project, "generateMetadata", coordinates
+        );
+
+        task.run();
+
+        assertThat(readGradlewInvocations()).contains(
+                "-Pagent -PincludeCodeCoverageSuite=true test"
+        );
+    }
+
+    @Test
     void runRejectsMixedFromJarAndExplicitPackages() throws IOException {
         Coordinates coordinates = Coordinates.parse("org.postgresql:postgresql:42.7.3");
         Project project = createProject();
