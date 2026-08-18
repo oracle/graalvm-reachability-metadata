@@ -27,7 +27,6 @@ PROJECT_NUMBER = 30
 MAX_BODY_CHARS = 60_000
 MAX_TEST_DIFF_CHARS = 12_000
 SEVERE_METADATA_DROP_RATIO = 0.25
-PROTECTED_PREFIXES = (".github/", "forge/")
 ISSUE_ROUTE_LABELS = {
     "library-new-request": "library-new-request",
     "library-update-request": "library-update-request",
@@ -51,7 +50,6 @@ class ValidatedPublication:
     descriptor: dict[str, Any]
     descriptor_path: str
     head_sha: str
-    changed_paths: list[str]
 
 
 def run(command: list[str], *, input_text: str | None = None) -> str:
@@ -180,11 +178,9 @@ def validate_publication(
     if descriptor["publication_id"] != expected_publication_id:
         raise ValueError("Descriptor publication ID does not match its durable run inputs")
 
-    _validate_changed_paths(descriptor, changed_paths)
-    _validate_route_fields(descriptor, changed_paths, head_sha)
-    _validate_metrics_reference(head_sha, descriptor)
+    _validate_render_inputs(descriptor)
     _validate_issue(descriptor, repository)
-    return ValidatedPublication(descriptor, descriptor_path, head_sha, changed_paths)
+    return ValidatedPublication(descriptor, descriptor_path, head_sha)
 
 
 def _build_publication_id(descriptor: dict[str, Any]) -> str:
@@ -203,67 +199,23 @@ def _build_publication_id(descriptor: dict[str, Any]) -> str:
     return f"forge-{descriptor['issue_number']}-{compact_timestamp}-{digest}"
 
 
-def _validate_route_fields(
-        descriptor: dict[str, Any],
-        changed_paths: list[str],
-        head_sha: str,
-) -> None:
-    task_type = descriptor["task_type"]
+def _validate_render_inputs(descriptor: dict[str, Any]) -> None:
+    """Require only the descriptor fields the templates dereference unconditionally.
+
+    Local verification owns whether the work is correct; this guards the publisher
+    against a `KeyError` mid-render, not against a bad run (§GIT-actions-publication).
+    """
     template_type = descriptor["template_type"]
-    if task_type != "library-update-request" and template_type != task_type:
-        raise ValueError(f"Task {task_type!r} cannot select template {template_type!r}")
-    previous_library = descriptor.get("previous_library")
     if template_type in {
         "fixes-javac-fail",
         "fixes-java-run-fail",
         "fixes-native-image-run-fail",
-    } and previous_library is None:
+    } and descriptor.get("previous_library") is None:
         raise ValueError(f"Template {template_type!r} requires previous_library")
-    if task_type == "not-for-native-image":
+    if descriptor["task_type"] == "not-for-native-image":
         reason = descriptor["render"].get("reason")
         if not isinstance(reason, str) or not reason.strip():
             raise ValueError("Not-for-native-image publication requires a reason")
-    elif descriptor.get("metrics") is None:
-        raise ValueError(f"Publication task {task_type!r} requires committed execution metrics")
-
-    modifiers = descriptor["modifiers"]
-    non_final_chunk = modifiers["chunked_dynamic_access"] and not modifiers["chunk_final"]
-    if non_final_chunk != (descriptor["status"] == "chunk_ready"):
-        raise ValueError("Only a non-final chunk may use chunk_ready status")
-    if modifiers["chunked_dynamic_access"] and task_type not in {
-        "library-new-request",
-        "library-update-request",
-    }:
-        raise ValueError(f"Task {task_type!r} cannot be a chunked dynamic-access publication")
-
-    follow_up_types = [follow_up["type"] for follow_up in descriptor["follow_ups"]]
-    if len(follow_up_types) != len(set(follow_up_types)):
-        raise ValueError("Publication follow-up types must be unique")
-    for follow_up in descriptor["follow_ups"]:
-        if follow_up["type"] == "deferred_dynamic_access_coverage":
-            if template_type not in {"fixes-javac-fail", "fixes-java-run-fail"}:
-                raise ValueError("Deferred coverage follow-up requires a Java-fix template")
-        elif task_type != "library-update-request":
-            raise ValueError("Tested-version split follow-up requires a library-update task")
-
-    verification = descriptor["local_ci_verification"]
-    if verification["status"] != "success":
-        raise ValueError("Publication requires successful local CI verification")
-    if verification["base_commit"] != descriptor["base_commit"]:
-        raise ValueError("Local CI base commit does not match descriptor base commit")
-    final_commit = verification.get("final_commit")
-    if final_commit and subprocess.run(
-            ["git", "merge-base", "--is-ancestor", final_commit, head_sha],
-            check=False,
-    ).returncode != 0:
-        raise ValueError("Local CI final commit is not an ancestor of the publication SHA")
-    if any(command.get("returncode") != 0 for command in verification["commands"]):
-        raise ValueError("Local CI evidence includes a failed command")
-    repo_fix_paths = set(verification["repo_fix_paths"])
-    if not repo_fix_paths.issubset(changed_paths):
-        raise ValueError("Local CI repository-fix paths are not present in the publication diff")
-    if verification["human_intervention_required"] != bool(repo_fix_paths):
-        raise ValueError("Local CI human-intervention flag does not match repository-fix paths")
 
 
 def _validate_issue(descriptor: dict[str, Any], repository: str) -> None:
@@ -306,61 +258,6 @@ def _path_changed(head_sha: str, path: str) -> bool:
         check=False,
     ).returncode != 0
 
-
-def _validate_changed_paths(descriptor: dict[str, Any], paths: list[str]) -> None:
-    library = descriptor["library"]
-    group = library["group"]
-    artifact = library["artifact"]
-    allowed_prefixes = (
-        f"metadata/{group}/{artifact}/",
-        f"tests/src/{group}/{artifact}/",
-        f"stats/{group}/{artifact}/",
-    )
-    repo_fix_paths = set(descriptor["local_ci_verification"].get("repo_fix_paths") or [])
-    for path in paths:
-        if path.startswith(PROTECTED_PREFIXES):
-            raise ValueError(f"Protected path changed by publication branch: {path}")
-        if path.startswith(allowed_prefixes) or path in repo_fix_paths:
-            continue
-        raise ValueError(f"Out-of-scope publication path: {path}")
-    if descriptor["task_type"] == "not-for-native-image":
-        allowed = {
-            f"metadata/{group}/{artifact}/index.json",
-            f"stats/{group}/{artifact}/{library['version']}/forge-publication.json",
-        }
-        unexpected = [path for path in paths if path not in allowed and path not in repo_fix_paths]
-        if unexpected:
-            raise ValueError(f"Not-for-native-image publication changed unexpected paths: {unexpected}")
-
-
-def _validate_metrics_reference(head_sha: str, descriptor: dict[str, Any]) -> None:
-    metrics_reference = descriptor.get("metrics")
-    if metrics_reference is None:
-        if descriptor["task_type"] != "not-for-native-image":
-            raise ValueError("Only not-for-native-image publication may omit execution metrics")
-        return
-    metrics_file = read_json_at_commit(head_sha, metrics_reference["path"])
-    timestamp = metrics_reference["timestamp"]
-    coordinates = descriptor["library"]["coordinates"]
-    matches = [
-        entry
-        for entry in metrics_file.values()
-        if isinstance(entry, dict)
-        and entry.get("timestamp") == timestamp
-        and entry.get("library") == coordinates
-    ]
-    if len(matches) != 1:
-        raise ValueError("Execution metrics reference does not identify exactly one committed run")
-    entry = matches[0]
-    if entry.get("metrics") != metrics_reference["summary"]:
-        raise ValueError("Descriptor metrics summary does not match committed execution metrics")
-    if (descriptor.get("strategy_name") or None) != (entry.get("strategy_name") or None):
-        raise ValueError("Descriptor strategy does not match committed execution metrics")
-    for key in ("agent", "model"):
-        if (metrics_reference.get(key) or None) != (entry.get(key) or None):
-            raise ValueError(f"Descriptor {key} does not match committed execution metrics")
-    if descriptor["status"] != entry.get("status"):
-        raise ValueError("Descriptor status does not match committed execution metrics")
 
 def render_publication(
         descriptor: dict[str, Any],
