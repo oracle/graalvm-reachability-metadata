@@ -10,8 +10,16 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+configurations.configureEach {
+    exclude group: "org.junit.vintage", module: "junit-vintage-engine"
+}
+
 dependencies {
-    testImplementation "junit:junit:$libraryVersion"
+    testImplementation("junit:junit:$libraryVersion") {
+        version {
+            strictly libraryVersion
+        }
+    }
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 

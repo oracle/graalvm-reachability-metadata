@@ -37,10 +37,14 @@ public class BaseTestRunnerTest {
     }
 
     public static class SuiteTestCase extends TestCase {
+        private static int runCount;
+
+        public SuiteTestCase(String name) {
+            super(name);
+        }
+
         public void testRuns() {
             runCount++;
         }
-
-        private static int runCount;
     }
 }
