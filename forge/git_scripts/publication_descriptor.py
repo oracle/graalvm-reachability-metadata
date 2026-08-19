@@ -182,7 +182,6 @@ def write_publication_descriptor(
         "library": _library_payload(group, artifact, version),
         "task_type": descriptor_input.task_type,
         "template_type": descriptor_input.template_type,
-        "status": descriptor_input.status,
         "metrics": _metrics_payload(repo_path, coordinates, descriptor_input.run_metrics),
         "local_ci_verification": _local_ci_payload(repo_path, local_ci_verification),
         "forge": {

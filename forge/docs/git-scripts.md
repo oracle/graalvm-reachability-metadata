@@ -75,7 +75,7 @@ The descriptor contains data, never GitHub instructions:
 - `task_type`, which selects the trusted primary label, and `template_type`,
   which selects a compatible trusted renderer when a library-update request was
   repaired through a Java or Native Image route;
-- workflow status, strategy name when applicable, committed execution-metrics
+- strategy name when applicable, committed execution-metrics
   reference and publication metrics, local verification evidence, optional
   post-generation intervention, and Forge revision evidence;
 - typed flags for chunking, final-chunk state, and human-intervention evidence;
