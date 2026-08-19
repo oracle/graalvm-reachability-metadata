@@ -9,6 +9,7 @@ import subprocess
 from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
 from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
 from utility_scripts.metadata_index import resolve_test_version
+from utility_scripts.native_test_verification import global_output_dir
 from utility_scripts.stage_logger import log_stage
 
 
@@ -236,6 +237,18 @@ class BasicIterativeStrategy(WorkflowStrategy):
             subprocess.run(["git", "reset", "--hard", checkpoint_commit_hash], check=False)
 
         if unittest_number == 0:
+            save_phase_update(
+                self.continuation_marker_path,
+                lambda marker: marker.mark_phase_pending(PHASE_FIX, iteration=global_iterations),
+            )
+            return RUN_STATUS_FAILURE, global_iterations, unittest_number
+
+        # The loop above accepts a failing nativeTest as progress, so the gate is what
+        # validates native-image behavior and traces misses this workflow cannot see —
+        # including transitive-dependency metadata (§WF-basic-iterative).
+        if not self._verify_native_test_gate(global_output_dir(
+            self.reachability_repo_path, self.group, self.artifact, self.test_version,
+        )):
             save_phase_update(
                 self.continuation_marker_path,
                 lambda marker: marker.mark_phase_pending(PHASE_FIX, iteration=global_iterations),

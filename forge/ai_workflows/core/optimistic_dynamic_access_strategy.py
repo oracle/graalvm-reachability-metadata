@@ -10,17 +10,12 @@ from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_S
 from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
 from utility_scripts.dynamic_access_report import format_full_report, load_dynamic_access_coverage_report
 from utility_scripts.metadata_index import resolve_test_version
-from utility_scripts.native_test_verification import (
-    STATUS_FAILED as NATIVE_TEST_GATE_FAILED,
-    global_output_dir,
-    verify_native_test_passes,
-)
+from utility_scripts.native_test_verification import global_output_dir
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.strategy_loader import load_strategy_by_name
 
 
 FALLBACK_STRATEGY_NAME = "basic_iterative_pi_gpt-5.6-sol"
-DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS = 40
 
 
 @WorkflowStrategy.register("optimistic_dynamic_access")
@@ -44,10 +39,6 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
         )
         self.max_optimistic_iterations = self.parameters["max-optimistic-iterations"]
         self.max_test_iterations = self.parameters["max-test-iterations"]
-        self.max_native_test_verification_iterations = self._parameter_int(
-            "max-native-test-verification-iterations",
-            DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS,
-        )
         self._last_dynamic_access_report_issue = "not_run"
         self.dynamic_access_report_path = os.path.join(
             self.reachability_repo_path,
@@ -176,7 +167,9 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
             checkpoint = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
             successful_iterations += 1
 
-            if not self._run_native_test_verification_gate():
+            if not self._verify_native_test_gate(global_output_dir(
+                self.reachability_repo_path, self.group, self.artifact, self.test_version,
+            )):
                 self._print_failure_analysis(
                     "native_test_verification_gate_failed",
                     issue="nativeTest_did_not_pass_within_verification_budget",
@@ -202,35 +195,6 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
             lambda marker: marker.mark_phase_pending(PHASE_EXPLORE, iteration=prompt_iterations),
         )
         return RUN_STATUS_FAILURE, prompt_iterations, 0
-
-    def _run_native_test_verification_gate(self) -> bool:
-        """Run the bulk native-test verification gate; return True if PASSED."""
-        output_dir = global_output_dir(
-            self.reachability_repo_path, self.group, self.artifact, self.test_version,
-        )
-        self._print_detail(
-            f"native-test gate: starting output_dir={output_dir} "
-            f"budget={self.max_native_test_verification_iterations}",
-            indent_level=2,
-        )
-        result = verify_native_test_passes(
-            reachability_repo_path=self.reachability_repo_path,
-            coordinate=self.library,
-            output_dir=output_dir,
-            max_iterations=self.max_native_test_verification_iterations,
-        )
-        if result.status == NATIVE_TEST_GATE_FAILED:
-            log_path = result.last_native_test_log_path or "(none)"
-            self._print_message(
-                f"native-test gate FAILED after {result.iterations_used} cycles "
-                f"(last log: {log_path})"
-            )
-            return False
-        self._print_detail(
-            f"native-test gate {result.status} after {result.iterations_used} cycles",
-            indent_level=2,
-        )
-        return True
 
     def _run_basic_iterative_fallback(self, agent, **kwargs):
         """Instantiate a BasicIterativeStrategy and delegate to it."""

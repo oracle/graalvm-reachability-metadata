@@ -96,6 +96,11 @@ or the report has zero dynamic-access calls. Once a dynamic-access phase has
 started from a usable report, losing the report is a workflow failure, not a
 fallback condition.
 
+Falling back does not skip native-image validation. The basic iterative
+workflow runs its own terminal native test verification gate
+(§WF-basic-iterative), so a fallback run still reaches native metadata tracing
+for metadata the dynamic-access report could not have named.
+
 Dynamic-access workflows must fail when any of these conditions occur:
 
 1. A required native-test verification gate returns `FAILED`.

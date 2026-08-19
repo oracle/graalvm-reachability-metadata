@@ -22,17 +22,12 @@ from utility_scripts.dynamic_access_report import (
 from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport
 from utility_scripts.issue_requested_metadata import has_issue_requested_metadata_context
 from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
-from utility_scripts.native_test_verification import (
-    STATUS_FAILED as NATIVE_TEST_GATE_FAILED,
-    per_class_output_dir,
-    verify_native_test_passes,
-)
+from utility_scripts.native_test_verification import per_class_output_dir
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.strategy_loader import load_strategy_by_name
 
 
 FALLBACK_STRATEGY_NAME = "basic_iterative_pi_gpt-5.6-sol"
-DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS = 40
 DEFAULT_NATIVE_TEST_VERIFICATION_BATCH_SIZE = 5
 
 
@@ -67,10 +62,6 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         self.package = self.group
         self.max_class_iterations = self.parameters["max-iterations"]
         self.max_class_test_iterations = self.parameters["max-class-test-iterations"]
-        self.max_native_test_verification_iterations = self._parameter_int(
-            "max-native-test-verification-iterations",
-            DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS,
-        )
         self.native_test_verification_batch_size = self._parameter_int(
             "native-test-verification-batch-size",
             DEFAULT_NATIVE_TEST_VERIFICATION_BATCH_SIZE,
@@ -784,28 +775,8 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         output_dir = per_class_output_dir(
             self.reachability_repo_path, self.group, self.artifact, self.test_version, class_name,
         )
-        self._print_dynamic_access_detail(
-            f"native-test gate: starting class={class_name} output_dir={output_dir} "
-            f"budget={self.max_native_test_verification_iterations}",
-            indent_level=2,
-        )
-        result = verify_native_test_passes(
-            reachability_repo_path=self.reachability_repo_path,
-            coordinate=self.library,
-            output_dir=output_dir,
-            max_iterations=self.max_native_test_verification_iterations,
-        )
-        if result.status == NATIVE_TEST_GATE_FAILED:
-            log_path = result.last_native_test_log_path or "(none)"
-            self._print_dynamic_access_message(
-                f"native-test gate FAILED for {class_name} after {result.iterations_used} cycles "
-                f"(last log: {log_path})"
-            )
+        if not self._verify_native_test_gate(output_dir, label=class_name):
             return False
-        self._print_dynamic_access_detail(
-            f"native-test gate {result.status} for {class_name} after {result.iterations_used} cycles",
-            indent_level=2,
-        )
         self._commit_test_sources(f"Native-test gate fixes for {class_name}")
         self._latest_class_checkpoint = self._commit_library_metadata(
             f"Native metadata for {class_name}"

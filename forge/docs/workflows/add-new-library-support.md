@@ -44,3 +44,14 @@ workflow delegates to only when no usable dynamic-access report exists at the
 start of a run — the report task fails, the report is missing or unparsable,
 reporting is disabled, or the report has zero dynamic-access calls
 (§WF-dynamic-access-fallback-and-failure).
+
+Once the loop has produced at least one committed test suite, the run ends with
+the native test verification gate (§WF-native-test-verification-gate). The loop
+accepts a failing `nativeTest` as progress, so the gate is what actually
+validates native-image behavior and what starts native metadata tracing
+(§WF-native-metadata-tracing) for misses this workflow cannot see — including
+metadata required only by the library's transitive dependencies, which no
+dynamic-access report for the requested artifact would ever list. The gate runs
+once per run against the global output directory and honors the same
+`max-native-test-verification-iterations` budget as every other caller
+(§WF-native-test-verification-callers); `FAILED` is a workflow failure.
