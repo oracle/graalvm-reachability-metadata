@@ -122,8 +122,8 @@ Before mutation the publisher must verify all of the following:
 - the head repository is `oracle/graalvm-reachability-metadata`, the head branch
   is the descriptor branch under `ai/<producer>/`, and the workflow-run head SHA
   is the exact object being read;
-- the triggering actor equals the descriptor producer and is listed in the
-  trusted comma-separated repository variable `FORGE_AUTHORIZED_PUSHERS`;
+- the triggering actor equals the descriptor producer, which the branch
+  namespace `ai/<producer>/` must also name;
 - the base commit is an ancestor of the head SHA and of the trusted base branch,
   and exactly one descriptor changed in the publication diff;
 - the coordinates, descriptor path, and publication identity agree, and the
@@ -135,12 +135,20 @@ execution metrics, or the local verification evidence. Expected-path staging
 (§FS-local-ci-equivalent-verification), and re-deriving it from branch-supplied
 data proves nothing the branch could not also assert.
 
-The workflow creates a short-lived token from
-`FORGE_PUBLISHER_APP_ID` and `FORGE_PUBLISHER_PRIVATE_KEY`. The App is granted
-only the repository pull-request and content-read permissions needed to open and
-label the pull request. Reviewer requests come only from the trusted comma-separated
-repository variable `FORGE_PR_REVIEWERS`. The producer remains eligible to
-review the bot-authored PR.
+The workflow publishes as the `graalvmbot` machine account, using the
+`GRAALBOT_PR_TOKEN` secret that already authors the compatibility-sweep pull
+requests. The token reaches the publisher step only in `live` mode, so a shadow
+run renders evidence without a publication credential in its environment.
+Reviewer requests come only from the trusted comma-separated repository variable
+`FORGE_PR_REVIEWERS`. The producer remains eligible to review the bot-authored
+PR.
+
+No pusher allowlist gates publication. A `push` event fires only on the upstream
+repository, so the trigger population is already the set of accounts with write
+access, each of which can open a pull request directly. The gate that remains is
+structural: the descriptor producer must equal the pushing actor and must own the
+`ai/<producer>/` branch namespace, so a publication cannot be attributed to
+someone who did not push it.
 
 The publisher renders the PR, applies only the fixed primary label and trusted
 modifiers (`GenAI`, `chunked-dynamic-access`, and `human-intervention`),

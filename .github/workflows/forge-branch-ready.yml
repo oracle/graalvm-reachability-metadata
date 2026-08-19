@@ -37,14 +37,12 @@ jobs:
           HEAD_BRANCH: ${{ github.ref_name }}
           HEAD_ACTOR: ${{ github.actor }}
           HEAD_REPOSITORY: ${{ github.repository }}
-          AUTHORIZED_PUSHERS: ${{ vars.FORGE_AUTHORIZED_PUSHERS }}
         run: >-
           python3 .github/scripts/forge_pr_publisher/publisher.py validate
           --sha "$HEAD_SHA"
           --branch "$HEAD_BRANCH"
           --actor "$HEAD_ACTOR"
           --repository "$HEAD_REPOSITORY"
-          --authorized-pushers "$AUTHORIZED_PUSHERS"
 
       - name: Upload trusted publication preview
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

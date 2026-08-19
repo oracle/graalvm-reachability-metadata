@@ -87,7 +87,6 @@ def validate_publication(
         branch: str,
         actor: str,
         repository: str,
-        authorized_pushers: str,
 ) -> ValidatedPublication:
     """Validate a feature tree as inert data (§GIT-actions-publication)."""
     if repository != REPOSITORY:
@@ -147,9 +146,6 @@ def validate_publication(
     producer = str(descriptor["producer"])
     if actor != producer:
         raise ValueError(f"Triggering actor {actor!r} does not match descriptor producer {producer!r}")
-    authorized = {value.strip() for value in authorized_pushers.split(",") if value.strip()}
-    if actor not in authorized:
-        raise ValueError(f"Triggering actor {actor!r} is not in FORGE_AUTHORIZED_PUSHERS")
     if branch != descriptor["branch"] or not branch.startswith(f"ai/{producer}/"):
         raise ValueError("Event branch does not match the descriptor producer branch")
     if not branch.endswith(f"-{descriptor['publication_id']}"):
@@ -658,7 +654,6 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--branch", required=True)
     parser.add_argument("--actor", required=True)
     parser.add_argument("--repository", required=True)
-    parser.add_argument("--authorized-pushers", required=True)
     parser.add_argument("--mode", default="shadow")
     parser.add_argument("--reviewers", default="")
     return parser
@@ -672,7 +667,6 @@ def main() -> int:
             branch=args.branch,
             actor=args.actor,
             repository=args.repository,
-            authorized_pushers=args.authorized_pushers,
         )
         if args.command == "publish":
             title, body, pr_url = publish(validated, args.mode, args.reviewers)
