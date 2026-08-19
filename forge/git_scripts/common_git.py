@@ -693,6 +693,28 @@ def resolve_github_repo_slug(repo_path: str | None = None, explicit_repo: str | 
     raise SystemExit(1)
 
 
+def find_remote_for_github_repo(repo: str, cwd: str | None = None) -> str:
+    """Return the local remote that points at the requested GitHub repository."""
+    result = subprocess.run(
+        ["git", "remote"],
+        capture_output=True,
+        text=True,
+        check=True,
+        cwd=cwd,
+    )
+    remote_names = result.stdout.splitlines()
+    ordered_names = [
+        *[name for name in ("origin", "upstream") if name in remote_names],
+        *[name for name in remote_names if name not in {"origin", "upstream"}],
+    ]
+    for remote_name in ordered_names:
+        remote_url = get_remote_url(remote_name, cwd=cwd)
+        remote_repo = _parse_github_repo_slug(remote_url or "")
+        if remote_repo is not None and remote_repo.lower() == repo.lower():
+            return remote_name
+    raise RuntimeError(f"No Git remote points at required upstream repository {repo}")
+
+
 def get_origin_owner(cwd=None):
     """Extract the repository owner from the ``origin`` remote URL.
 
@@ -710,14 +732,6 @@ def get_origin_owner(cwd=None):
         )
         raise SystemExit(1)
     return repo_slug.split("/", 1)[0]
-
-
-def get_configured_reviewers() -> list[str]:
-    """Return PR reviewers configured via ``METADATA_FORGE_PR_REVIEWERS``."""
-    raw_value = os.environ.get("METADATA_FORGE_PR_REVIEWERS", "")
-    if not raw_value.strip():
-        return []
-    return [reviewer.strip() for reviewer in raw_value.split(",") if reviewer.strip()]
 
 
 def git_files_under(repo_path: str, directory: str) -> list[str]:

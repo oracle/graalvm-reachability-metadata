@@ -109,7 +109,8 @@ Native Image metadata target:
    `metadata/<group>/<artifact>/index.json` recording `not-for-native-image:
    true`, the reason, and any replacement guidance, then returns success without
    generating tests or reachability metadata. Orchestration then routes the
-   marker to the dedicated publisher (§GIT-not-for-native-image-publication),
+   marker through local finalization to the trusted `not-for-native-image`
+   template (§GIT-not-for-native-image-publication),
    and a pre-claim check on already-marked `group:artifact` lets orchestration
    close such issues with an explanatory comment instead of dispatching a run.
 

@@ -291,7 +291,7 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
                 patch.object(forge_metadata, "_load_pending_run_metrics", return_value={"status": "success"}), \
                 patch.object(forge_metadata, "metadata_coordinate_parts", return_value=("org.example", "lib", "1.0.0")), \
                 patch.object(forge_metadata, "is_not_for_native_image", return_value=True), \
-                patch.object(forge_metadata, "run_make_pr_not_for_native_image") as make_pr:
+                patch.object(forge_metadata, "run_publish_not_for_native_image") as make_pr:
             forge_metadata.finalize_successful_issue(claimed_issue)
 
         make_pr.assert_called_once_with([
@@ -1534,7 +1534,8 @@ class SingleIssueProcessingTests(unittest.TestCase):
             coordinate="org.example:lib:1.0.0",
             issue_number=1412,
         )
-        report_state.record_published_chunk("head-commit", 4242)
+        report_state.latest_chunk_commit = "head-commit"
+        report_state.latest_chunk_pull_request = 4242
 
         with patch.object(
                 forge_metadata,

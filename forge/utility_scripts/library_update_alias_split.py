@@ -40,14 +40,11 @@ ALIAS_SPLIT_METRICS_KEY = "library_update_alias_split"
 FOLLOW_UP_TRAILER = "Forge-Unblocks-Issue"
 ALIAS_SWEEP_STAGE = "library-update-alias-sweep"
 LATEST_ONLY_FIELDS: tuple[str, ...] = ("auto-update", "high-priority")
+
+
 PROJECT_NUMBER = 30
 STATUS_FIELD_NAME = "Status"
 STATUS_IN_PROGRESS = "In Progress"
-
-
-def format_follow_up_trailer(issue_number: int) -> str:
-    """Return the machine-readable follow-up issue trailer used by merge follow-up."""
-    return f"{FOLLOW_UP_TRAILER}: #{issue_number}"
 
 
 def extract_follow_up_issue_numbers(body: str | None) -> list[int]:
@@ -73,7 +70,7 @@ def load_alias_split_metrics(metrics_repo_path: str | None) -> dict[str, Any] | 
 
 
 def write_alias_split_metrics(metrics_repo_path: str | None, split: dict[str, Any]) -> None:
-    """Persist split metadata so PR publication can reference the follow-up issue."""
+    """Persist split metadata for the typed publication follow-up descriptor."""
     if metrics_repo_path is None:
         raise RuntimeError("Cannot persist library-update alias split without a metrics repository path.")
     pending_path = os.path.join(metrics_repo_path, PENDING_METRICS_FILENAME)
@@ -169,61 +166,6 @@ def maybe_split_library_update_tested_versions(
         cwd=repo_path,
     )
     return split
-
-
-def ensure_alias_split_follow_up_issue(
-        *,
-        metrics_repo_path: str | None,
-        current_issue_number: int | None,
-        repo: str,
-) -> dict[str, Any] | None:
-    """Create and park the successor library-update issue after local CI passes.
-
-    The issue is kept `In Progress` until the current PR merges, preventing the
-    normal work queue from claiming the successor too early.
-    §FS-library-update-tested-version-split
-    """
-    split = load_alias_split_metrics(metrics_repo_path)
-    if split is None:
-        return None
-    existing_issue = split.get("follow_up_issue_number")
-    if isinstance(existing_issue, int):
-        return split
-
-    coordinates = str(split["successor_coordinates"])
-    issue_number = _find_existing_open_issue_number(repo, coordinates)
-    if issue_number is None:
-        issue_number = _create_follow_up_issue(repo, split, current_issue_number)
-    ensure_issue_project_status(repo, PROJECT_NUMBER, issue_number, STATUS_IN_PROGRESS)
-
-    updated_split = dict(split)
-    updated_split["follow_up_issue_number"] = issue_number
-    write_alias_split_metrics(metrics_repo_path, updated_split)
-    return updated_split
-
-
-def format_alias_split_pr_section(split: dict[str, Any] | None) -> str:
-    """Return PR body text for a tested-version alias split."""
-    if not isinstance(split, dict):
-        return ""
-    issue_number = split.get("follow_up_issue_number")
-    issue_lines = ""
-    if isinstance(issue_number, int):
-        issue_lines = (
-            f"Refs: #{issue_number}\n"
-            f"{format_follow_up_trailer(issue_number)}\n"
-        )
-    return (
-        "\n### Tested-Version Alias Split\n\n"
-        f"- First failing JVM alias: `{split.get('failed_version')}`\n"
-        f"- Generated prefix retained on `{split.get('current_metadata_version')}`: "
-        f"{_format_version_list(split.get('passing_versions'))}\n"
-        f"- Baseline successor entry: `{split.get('successor_metadata_version')}` with "
-        f"{_format_version_list(split.get('successor_versions'))}\n"
-        f"- Baseline metadata copied from: `{split.get('original_metadata_version')}`\n"
-        f"- Baseline tests copied from: `{split.get('original_test_version')}`\n"
-        f"{issue_lines}"
-    )
 
 
 def _entry_tested_versions(entry: dict[str, Any]) -> list[str]:
@@ -478,6 +420,36 @@ def _write_index_entries(repo_path: str, group: str, artifact: str, entries: lis
         index_file.write("\n")
 
 
+def ensure_alias_split_follow_up_issue(
+        *,
+        metrics_repo_path: str | None,
+        current_issue_number: int | None,
+        repo: str,
+) -> dict[str, Any] | None:
+    """Create and park the successor library-update issue after local CI passes.
+
+    The issue is kept `In Progress` until the current PR merges, preventing the
+    normal work queue from claiming the successor too early.
+    §FS-library-update-tested-version-split
+    """
+    split = load_alias_split_metrics(metrics_repo_path)
+    if split is None:
+        return None
+    existing_issue = split.get("follow_up_issue_number")
+    if isinstance(existing_issue, int):
+        return split
+
+    coordinates = str(split["successor_coordinates"])
+    issue_number = _find_existing_open_issue_number(repo, coordinates)
+    if issue_number is None:
+        issue_number = _create_follow_up_issue(repo, split, current_issue_number)
+    ensure_issue_project_status(repo, PROJECT_NUMBER, issue_number, STATUS_IN_PROGRESS)
+
+    updated_split = dict(split)
+    updated_split["follow_up_issue_number"] = issue_number
+    write_alias_split_metrics(metrics_repo_path, updated_split)
+    return updated_split
+
 def _find_existing_open_issue_number(repo: str, coordinates: str) -> int | None:
     issues = gh_json(
         "issue",
@@ -502,7 +474,6 @@ def _find_existing_open_issue_number(repo: str, coordinates: str) -> int | None:
         if coordinates in text and isinstance(issue.get("number"), int):
             return int(issue["number"])
     return None
-
 
 def _create_follow_up_issue(repo: str, split: dict[str, Any], current_issue_number: int | None) -> int:
     coordinates = str(split["successor_coordinates"])
@@ -536,7 +507,6 @@ and copies baseline support for this successor range.
         raise RuntimeError(f"Could not parse created follow-up issue number from: {result.stdout.strip()}")
     return int(match.group(1))
 
-
 def ensure_issue_project_status(repo: str, project_number: int, issue_number: int, status: str) -> None:
     item_id, current_status = get_issue_project_item_status(
         repo,
@@ -552,7 +522,6 @@ def ensure_issue_project_status(repo: str, project_number: int, issue_number: in
         item_id = _add_issue_to_project(project_id, issue_id)
     if current_status != status:
         _set_project_item_status(project_id, item_id, field_id, option_ids[status])
-
 
 def _project_status_field_info(repo: str, project_number: int) -> tuple[str, str, dict[str, str]]:
     owner, _ = repo.split("/")
@@ -596,7 +565,6 @@ def _project_status_field_info(repo: str, project_number: int) -> tuple[str, str
         return str(project["id"]), str(field["id"]), options
     raise RuntimeError(f"Missing project status field {STATUS_FIELD_NAME!r}")
 
-
 def _issue_node_id(repo: str, issue_number: int) -> str:
     data = gh_json(
         "issue",
@@ -611,7 +579,6 @@ def _issue_node_id(repo: str, issue_number: int) -> str:
     if not isinstance(issue_id, str) or not issue_id:
         raise RuntimeError(f"Missing GitHub node id for issue #{issue_number}")
     return issue_id
-
 
 def _add_issue_to_project(project_id: str, issue_id: str) -> str:
     mutation = """
@@ -643,7 +610,6 @@ def _add_issue_to_project(project_id: str, issue_id: str) -> str:
         raise RuntimeError("Missing project item id after adding follow-up issue")
     return item_id
 
-
 def _set_project_item_status(project_id: str, item_id: str, field_id: str, option_id: str) -> None:
     mutation = """
     mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
@@ -673,13 +639,6 @@ def _set_project_item_status(project_id: str, item_id: str, field_id: str, optio
         "-f",
         f"optionId={option_id}",
     )
-
-
-def _format_version_list(value: Any) -> str:
-    if not isinstance(value, list):
-        return "`none`"
-    return ", ".join(f"`{version}`" for version in value) or "`none`"
-
 
 def _format_issue_version_lines(value: Any) -> str:
     if not isinstance(value, list):

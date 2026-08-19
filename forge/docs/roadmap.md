@@ -59,14 +59,14 @@ mutating live GitHub state. Fixture runs do not simulate live GitHub claiming,
 assignee races, blocker checks, or project-board transitions; they construct the
 same `ClaimedIssue` boundary that live claiming produces, then exercise issue
 lookup, label routing, isolated worktree and metrics setup, workflow dispatch,
-workflow execution, local verification, metrics writing, and dry-run publication
-handoff (§ORCH-forge-orchestration-spec).
+workflow execution, local verification, and metrics writing, stopping at the
+publication boundary (§ORCH-forge-orchestration-spec).
 
 Acceptance should be based on boundary evidence, not only process exit code.
 The fixture run artifacts must make the fixture mode, issue number or queue
 label, strategy, command, routed driver, workflow engine, logs, metrics
 (§E2E-forge-workflow-testing.5), generated artifacts, and any suspicious
-behavior reviewable from `run.log` and dry-run publication artifacts
+behavior reviewable from `run.log` and the recorded run artifacts
 (§E2E-forge-workflow-testing.9).
 
 # ROADMAP-forge-library-preflight: Library-specific preparation preflight

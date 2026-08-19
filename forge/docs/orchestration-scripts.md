@@ -151,10 +151,21 @@ must keep the collected evidence and failure reason visible in metrics rather
 than silently omitting the preflight record.
 
 Orchestration scripts must not let a failed workflow silently disappear.
-Successful or chunk-ready runs (§WF-chunked-dynamic-access-pr-linking) proceed to
-the git-scripts publication component; failed runs preserve diagnostics
-(§FS-local-ci-equivalent-verification), restore claim state as appropriate, and
-leave enough context for human follow-up.
+Successful or chunk-ready runs (§WF-chunked-dynamic-access-pr-linking) build one
+typed publication handoff and invoke the shared local branch finalizer. That
+finalizer writes the descriptor and pushes the verified branch; orchestration
+then reports the branch and publication ID as the successful local outcome
+without invoking a workflow-specific PR creator.
+
+Follow-up issues for deferred coverage or tested-version splits are created
+locally before the verified push and handed to the trusted Actions publisher as
+typed descriptor facts carrying their issue numbers
+(§GIT-publication-descriptor). A later Branch Ready failure
+does not cause local failure handling: the pushed branch remains preserved and
+the claimed issue remains `In Progress` and assigned for manual inspection.
+Failed generation or local finalization still preserves diagnostics
+(§FS-local-ci-equivalent-verification), restores claim state as appropriate, and
+leaves enough context for human follow-up.
 
 ## 2. Pull Request Review Queues
 

@@ -113,30 +113,23 @@ from git_scripts.common_git import (
     run_github_json_with_retries,
     run_github_with_retries,
 )
-from git_scripts.make_pr_javac_fix import (
-    build_pull_request_preview as build_javac_fix_pull_request_preview,
-    main as run_make_pr_javac_fix,
+from git_scripts.publish_javac_fix import (
+    main as run_publish_javac_fix,
 )
-from git_scripts.make_pr_java_run_fix import (
-    build_pull_request_preview as build_java_run_fix_pull_request_preview,
-    main as run_make_pr_java_run_fix,
+from git_scripts.publish_java_run_fix import (
+    main as run_publish_java_run_fix,
 )
-from git_scripts.make_pr_new_library_support import (
-    build_pull_request_preview as build_new_library_pull_request_preview,
-    main as run_make_pr_new_library_support,
+from git_scripts.publish_new_library_support import (
+    main as run_publish_new_library_support,
 )
-from git_scripts.make_pr_not_for_native_image import (
-    build_pull_request_preview as build_not_for_native_image_pull_request_preview,
-    main as run_make_pr_not_for_native_image,
+from git_scripts.publish_not_for_native_image import (
+    main as run_publish_not_for_native_image,
 )
-from git_scripts.make_pr_ni_run_fix import (
-    build_pull_request_preview as build_ni_run_fix_pull_request_preview,
-    main as run_make_pr_ni_run_fix,
+from git_scripts.publish_ni_run_fix import (
+    main as run_publish_ni_run_fix,
 )
-from git_scripts.make_pr_improve_coverage import (
-    build_pull_request_preview as build_improve_coverage_pull_request_preview,
-    load_baseline_snapshot,
-    main as run_make_pr_improve_coverage,
+from git_scripts.publish_improve_coverage import (
+    main as run_publish_improve_coverage,
 )
 from utility_scripts.dynamic_access_exhaust_report import (
     DynamicAccessExhaustReport,
@@ -155,7 +148,6 @@ from utility_scripts.continuation_marker import (
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
 from utility_scripts.fixture_github import FixtureGitHubState, load_fixture_github_state
 from utility_scripts.gradle_environment import gradle_command_environment
-from utility_scripts.java_fix_coverage_follow_up import ensure_coverage_follow_up_issue
 from utility_scripts.library_stats import resolve_stats_file_path
 from utility_scripts.library_preparation_preflight import (
     DEFAULT_LIBRARY_PREFLIGHT_STRATEGY_NAME,
@@ -164,6 +156,7 @@ from utility_scripts.library_preparation_preflight import (
     run_library_preparation_preflight as run_preflight_decision,
     write_library_preparation_preflight,
 )
+from utility_scripts.java_fix_coverage_follow_up import ensure_coverage_follow_up_issue
 from utility_scripts.library_update_alias_split import extract_follow_up_issue_numbers
 from utility_scripts.metadata_index import (
     coordinate_parts as metadata_coordinate_parts,
@@ -6074,18 +6067,80 @@ def resolve_chunked_dynamic_access_exhaust_report(
 
 def verify_chunked_dynamic_access_previous_pr_merged(exhaust_report: DynamicAccessExhaustReport) -> None:
     """Fail fast when continuation is requested before the previous PR merged."""
-    if exhaust_report.latest_chunk_pull_request is None:
+    has_publication_identity = (
+        exhaust_report.latest_chunk_publication_id is not None
+        or exhaust_report.latest_chunk_branch is not None
+    )
+    if not has_publication_identity and exhaust_report.latest_chunk_pull_request is None:
         return
     if is_fixture_testing_enabled():
+        previous_publication = (
+            exhaust_report.latest_chunk_publication_id
+            or f"PR #{exhaust_report.latest_chunk_pull_request}"
+        )
         log_stage(
             "chunked-dynamic-access",
-            (
-                f"Fixture mode: treating previous chunk PR "
-                f"#{exhaust_report.latest_chunk_pull_request} as merged."
-            ),
+            f"Fixture mode: treating previous chunk publication {previous_publication} as merged.",
         )
         return
+    payload = resolve_chunked_dynamic_access_previous_pr(exhaust_report)
+    if payload.get("state") != "MERGED":
+        raise RuntimeError(
+            f"Chunked dynamic-access issue #{exhaust_report.issue_number} cannot continue "
+            f"before PR #{payload.get('number')} is merged "
+            f"(state={payload.get('state')})."
+        )
+
+
+def resolve_chunked_dynamic_access_previous_pr(
+        exhaust_report: DynamicAccessExhaustReport,
+) -> dict[str, Any]:
+    """Resolve the previous chunk PR by publication identity or legacy number."""
+    publication_id = exhaust_report.latest_chunk_publication_id
+    branch = exhaust_report.latest_chunk_branch
+    if publication_id is not None or branch is not None:
+        if publication_id is None or branch is None:
+            raise RuntimeError(
+                "Chunked dynamic-access publication identity requires both ID and branch"
+            )
+        result = gh(
+            "pr",
+            "list",
+            "--repo",
+            REPO,
+            "--head",
+            branch,
+            "--state",
+            "all",
+            "--limit",
+            "100",
+            "--json",
+            "number,state,body,mergeCommit",
+            check=True,
+        )
+        payload = json.loads(result.stdout)
+        trailer = f"Forge-Publication-ID: {publication_id}"
+        matches = [
+            pull_request
+            for pull_request in payload
+            if trailer in str(pull_request.get("body") or "").splitlines()
+        ]
+        if not matches:
+            raise RuntimeError(
+                f"No PR yet for branch {branch!r} and publication {publication_id!r}. "
+                "The branch is pushed but trusted publication has not opened its PR; "
+                "retry once the Forge Open PR workflow has run."
+            )
+        if len(matches) > 1:
+            raise RuntimeError(
+                f"Ambiguous PRs for branch {branch!r} and publication {publication_id!r}; "
+                f"found {len(matches)}"
+            )
+        return matches[0]
+
     previous_pr = exhaust_report.latest_chunk_pull_request
+    if previous_pr is None:
+        raise RuntimeError("Chunked dynamic-access report has no previous publication identity")
     result = gh(
         "pr",
         "view",
@@ -6093,17 +6148,10 @@ def verify_chunked_dynamic_access_previous_pr_merged(exhaust_report: DynamicAcce
         "--repo",
         REPO,
         "--json",
-        "state",
+        "number,state,body,mergeCommit",
         check=True,
     )
-    payload = json.loads(result.stdout)
-    if payload.get("state") != "MERGED":
-        raise RuntimeError(
-            f"Chunked dynamic-access issue #{exhaust_report.issue_number} cannot continue "
-            f"before PR #{previous_pr} is merged "
-            f"(state={payload.get('state')})."
-        )
-
+    return dict(json.loads(result.stdout))
 
 def verify_chunked_dynamic_access_base_contains_published_commit(
         exhaust_report: DynamicAccessExhaustReport,
@@ -6130,25 +6178,18 @@ def resolve_chunked_dynamic_access_published_base_commit(
     """Return the commit that should be present on the continuation base."""
     if is_fixture_testing_enabled():
         return exhaust_report.latest_chunk_commit
-    if exhaust_report.latest_chunk_pull_request is not None:
-        previous_pr = exhaust_report.latest_chunk_pull_request
-        result = gh(
-            "pr",
-            "view",
-            str(previous_pr),
-            "--repo",
-            REPO,
-            "--json",
-            "mergeCommit",
-            check=True,
-        )
-        payload = json.loads(result.stdout)
+    has_previous_publication = (
+        exhaust_report.latest_chunk_publication_id is not None
+        or exhaust_report.latest_chunk_branch is not None
+        or exhaust_report.latest_chunk_pull_request is not None
+    )
+    if has_previous_publication:
+        payload = resolve_chunked_dynamic_access_previous_pr(exhaust_report)
         merge_commit = payload.get("mergeCommit") or {}
         oid = merge_commit.get("oid")
         if oid:
             return str(oid)
     return exhaust_report.latest_chunk_commit
-
 
 def maybe_handle_not_for_native_image_issue(issue: dict, base_reachability_metadata_path: str) -> bool:
     """Apply terminal labels and comment when the repository already has a marker for the artifact."""
@@ -6613,10 +6654,7 @@ def build_publication_handoff(
     chunked_dynamic_access_final = None
     coverage_follow_up_args: list[str] = []
     if coverage_follow_up_issue_number is not None:
-        if (
-                coverage_follow_up_class_count is None
-                or coverage_follow_up_class_threshold is None
-        ):
+        if coverage_follow_up_class_count is None or coverage_follow_up_class_threshold is None:
             raise ValueError("Coverage follow-up count and threshold are required")
         coverage_follow_up_args = [
             "--coverage-follow-up-issue-number",
@@ -6645,9 +6683,9 @@ def build_publication_handoff(
         group, artifact, _version = metadata_coordinate_parts(claimed_issue.issue_coordinates)
         not_for_native_image = is_not_for_native_image(claimed_issue.worktree_path, group, artifact)
         if not_for_native_image:
-            script_name = "git_scripts/make_pr_not_for_native_image.py"
-            runner_name = "run_make_pr_not_for_native_image"
-            runner = run_make_pr_not_for_native_image
+            script_name = "git_scripts/publish_not_for_native_image.py"
+            runner_name = "run_publish_not_for_native_image"
+            runner = run_publish_not_for_native_image
             result_label = LABEL_NOT_FOR_NATIVE_IMAGE
             argv = [
                 "--coordinates", claimed_issue.issue_coordinates,
@@ -6656,9 +6694,9 @@ def build_publication_handoff(
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
             ]
         else:
-            script_name = "git_scripts/make_pr_new_library_support.py"
-            runner_name = "run_make_pr_new_library_support"
-            runner = run_make_pr_new_library_support
+            script_name = "git_scripts/publish_new_library_support.py"
+            runner_name = "run_publish_new_library_support"
+            runner = run_publish_new_library_support
             result_label = LABEL_LIBRARY_NEW
             argv = [
                 "--coordinates", claimed_issue.issue_coordinates,
@@ -6668,9 +6706,9 @@ def build_publication_handoff(
                 *chunked_dynamic_access_args,
             ]
     elif claimed_issue.label == LABEL_JAVAC_FAIL:
-        script_name = "git_scripts/make_pr_javac_fix.py"
-        runner_name = "run_make_pr_javac_fix"
-        runner = run_make_pr_javac_fix
+        script_name = "git_scripts/publish_javac_fix.py"
+        runner_name = "run_publish_javac_fix"
+        runner = run_publish_javac_fix
         result_label = LABEL_PR_JAVAC_FIX
         current_coordinates = _require_publication_value(
             claimed_issue.current_coordinates,
@@ -6688,9 +6726,9 @@ def build_publication_handoff(
             *coverage_follow_up_args,
         ]
     elif claimed_issue.label == LABEL_JAVA_RUN_FAIL:
-        script_name = "git_scripts/make_pr_java_run_fix.py"
-        runner_name = "run_make_pr_java_run_fix"
-        runner = run_make_pr_java_run_fix
+        script_name = "git_scripts/publish_java_run_fix.py"
+        runner_name = "run_publish_java_run_fix"
+        runner = run_publish_java_run_fix
         result_label = LABEL_PR_JAVA_RUN_FIX
         current_coordinates = _require_publication_value(
             claimed_issue.current_coordinates,
@@ -6708,9 +6746,9 @@ def build_publication_handoff(
             *coverage_follow_up_args,
         ]
     elif claimed_issue.label == LABEL_NI_RUN_FAIL:
-        script_name = "git_scripts/make_pr_ni_run_fix.py"
-        runner_name = "run_make_pr_ni_run_fix"
-        runner = run_make_pr_ni_run_fix
+        script_name = "git_scripts/publish_ni_run_fix.py"
+        runner_name = "run_publish_ni_run_fix"
+        runner = run_publish_ni_run_fix
         result_label = LABEL_PR_NI_RUN_FIX
         current_coordinates = _require_publication_value(
             claimed_issue.current_coordinates,
@@ -6728,9 +6766,9 @@ def build_publication_handoff(
         ]
     elif claimed_issue.label == LABEL_LIBRARY_UPDATE:
         if library_update_route is not None and library_update_route.selected_driver == ROUTE_FIX_JAVAC:
-            script_name = "git_scripts/make_pr_javac_fix.py"
-            runner_name = "run_make_pr_javac_fix"
-            runner = run_make_pr_javac_fix
+            script_name = "git_scripts/publish_javac_fix.py"
+            runner_name = "run_publish_javac_fix"
+            runner = run_publish_javac_fix
             result_label = LABEL_PR_LIBRARY_UPDATE
             publication_kind = LABEL_PR_JAVAC_FIX
             current_coordinates = _require_publication_value(
@@ -6750,9 +6788,9 @@ def build_publication_handoff(
                 *coverage_follow_up_args,
             ]
         elif library_update_route is not None and library_update_route.selected_driver == ROUTE_FIX_JAVA_RUN:
-            script_name = "git_scripts/make_pr_java_run_fix.py"
-            runner_name = "run_make_pr_java_run_fix"
-            runner = run_make_pr_java_run_fix
+            script_name = "git_scripts/publish_java_run_fix.py"
+            runner_name = "run_publish_java_run_fix"
+            runner = run_publish_java_run_fix
             result_label = LABEL_PR_LIBRARY_UPDATE
             publication_kind = LABEL_PR_JAVA_RUN_FIX
             current_coordinates = _require_publication_value(
@@ -6772,9 +6810,9 @@ def build_publication_handoff(
                 *coverage_follow_up_args,
             ]
         elif library_update_route is not None and library_update_route.selected_driver == ROUTE_FIX_NI_RUN:
-            script_name = "git_scripts/make_pr_ni_run_fix.py"
-            runner_name = "run_make_pr_ni_run_fix"
-            runner = run_make_pr_ni_run_fix
+            script_name = "git_scripts/publish_ni_run_fix.py"
+            runner_name = "run_publish_ni_run_fix"
+            runner = run_publish_ni_run_fix
             result_label = LABEL_PR_LIBRARY_UPDATE
             publication_kind = LABEL_PR_NI_RUN_FIX
             current_coordinates = _require_publication_value(
@@ -6793,9 +6831,9 @@ def build_publication_handoff(
                 "--metrics-repo-path", claimed_issue.scratch_metrics_repo_path,
             ]
         else:
-            script_name = "git_scripts/make_pr_improve_coverage.py"
-            runner_name = "run_make_pr_improve_coverage"
-            runner = run_make_pr_improve_coverage
+            script_name = "git_scripts/publish_improve_coverage.py"
+            runner_name = "run_publish_improve_coverage"
+            runner = run_publish_improve_coverage
             result_label = LABEL_PR_LIBRARY_UPDATE
             argv = [
                 "--coordinates", claimed_issue.issue_coordinates,
@@ -6830,149 +6868,6 @@ def build_publication_handoff(
         coverage_follow_up_class_count=coverage_follow_up_class_count,
         coverage_follow_up_class_threshold=coverage_follow_up_class_threshold,
     )
-
-
-def _publication_new_coordinates(handoff: PublicationHandoff) -> str | None:
-    if handoff.coordinates:
-        return handoff.coordinates
-    if not handoff.current_coordinates or not handoff.new_version:
-        return None
-    group, artifact, _version = metadata_coordinate_parts(handoff.current_coordinates)
-    return f"{group}:{artifact}:{handoff.new_version}"
-
-
-def _build_fixture_pull_request_preview(handoff: PublicationHandoff) -> tuple[str, str]:
-    """Build fixture publication text with the same builders used by live PR creation.
-
-    §GIT-pr-preview-builders
-    """
-    new_coordinates = _publication_new_coordinates(handoff)
-    publication_kind = handoff.publication_kind or handoff.result_label
-    if handoff.not_for_native_image and new_coordinates:
-        title, body, _local_ci_metrics = build_not_for_native_image_pull_request_preview(
-            coordinates=new_coordinates,
-            repo_path=handoff.worktree_path,
-            issue_number=handoff.issue_number,
-        )
-        return title, body
-
-    if publication_kind == LABEL_LIBRARY_NEW and new_coordinates:
-        title, body, _matched = build_new_library_pull_request_preview(
-            coordinates=new_coordinates,
-            metrics_repo_root=handoff.scratch_metrics_path,
-            repo_path=handoff.worktree_path,
-            issue_number=handoff.issue_number,
-            chunked_dynamic_access=handoff.dynamic_access_exhaust_report_path is not None,
-            chunk_final=handoff.chunked_dynamic_access_final is not False,
-        )
-        return title, body
-
-    if publication_kind == LABEL_PR_LIBRARY_UPDATE and new_coordinates:
-        group, artifact, version = metadata_coordinate_parts(new_coordinates)
-        title, body, _matched = build_improve_coverage_pull_request_preview(
-            coordinates=new_coordinates,
-            metrics_repo_root=handoff.scratch_metrics_path,
-            repo_path=handoff.worktree_path,
-            group=group,
-            artifact=artifact,
-            version=version,
-            baseline_snapshot=load_baseline_snapshot(handoff.worktree_path, group, artifact, version),
-            issue_number=handoff.issue_number,
-            chunked_dynamic_access=handoff.dynamic_access_exhaust_report_path is not None,
-            chunk_final=handoff.chunked_dynamic_access_final is not False,
-        )
-        return title, body
-
-    if handoff.current_coordinates and new_coordinates:
-        group, artifact, old_version = metadata_coordinate_parts(handoff.current_coordinates)
-        _new_group, _new_artifact, new_version = metadata_coordinate_parts(new_coordinates)
-        if publication_kind == LABEL_PR_JAVAC_FIX:
-            title, body, _metrics_entry = build_javac_fix_pull_request_preview(
-                old_coordinates=handoff.current_coordinates,
-                new_coordinates=new_coordinates,
-                group=group,
-                artifact=artifact,
-                old_version=old_version,
-                new_version=new_version,
-                metrics_repo_root=handoff.scratch_metrics_path,
-                repo_path=handoff.worktree_path,
-                issue_number=handoff.issue_number,
-                coverage_follow_up_issue_number=handoff.coverage_follow_up_issue_number,
-                coverage_follow_up_class_count=handoff.coverage_follow_up_class_count,
-                coverage_follow_up_class_threshold=handoff.coverage_follow_up_class_threshold,
-            )
-            return title, body
-        if publication_kind == LABEL_PR_JAVA_RUN_FIX:
-            title, body, _metrics_entry = build_java_run_fix_pull_request_preview(
-                old_coordinates=handoff.current_coordinates,
-                new_coordinates=new_coordinates,
-                group=group,
-                artifact=artifact,
-                old_version=old_version,
-                new_version=new_version,
-                metrics_repo_root=handoff.scratch_metrics_path,
-                repo_path=handoff.worktree_path,
-                issue_number=handoff.issue_number,
-                coverage_follow_up_issue_number=handoff.coverage_follow_up_issue_number,
-                coverage_follow_up_class_count=handoff.coverage_follow_up_class_count,
-                coverage_follow_up_class_threshold=handoff.coverage_follow_up_class_threshold,
-            )
-            return title, body
-        if publication_kind == LABEL_PR_NI_RUN_FIX:
-            title, body, _local_ci_human_intervention, _severe_metadata_drop = (
-                build_ni_run_fix_pull_request_preview(
-                    old_coordinates=handoff.current_coordinates,
-                    new_coordinates=new_coordinates,
-                    group=group,
-                    artifact=artifact,
-                    repo_path=handoff.worktree_path,
-                    issue_number=handoff.issue_number,
-                )
-            )
-            return title, body
-
-    raise ValueError(
-        f"Cannot build fixture publication preview for issue #{handoff.issue_number} "
-        f"with label {handoff.issue_label!r}."
-    )
-
-
-def build_fixture_publication_markdown(handoff: PublicationHandoff) -> str:
-    """Build the Markdown publication handoff artifact for fixture dry-runs."""
-    command = ["python3", handoff.script_name, *handoff.argv]
-    title, body = _build_fixture_pull_request_preview(handoff)
-
-    return "\n".join([
-        "# Fixture Publication Handoff",
-        "",
-        "Fixture mode did not open a pull request. This file records the PR publication handoff that would run.",
-        "",
-        "## Dry-Run Command",
-        "",
-        "```bash",
-        " ".join(shlex.quote(argument) for argument in command),
-        "```",
-        "",
-        "## Pull Request Title",
-        "",
-        title,
-        "",
-        "## Pull Request Body",
-        "",
-        body,
-        "",
-    ])
-
-
-def write_fixture_publication_handoff(handoff: PublicationHandoff) -> str:
-    """Write the PR title/body handoff into the active fixture artifact directory."""
-    publication_path = os.path.join(
-        get_fixture_issue_artifact_dir(handoff.issue_number),
-        FIXTURE_PUBLICATION_FILENAME,
-    )
-    with open(publication_path, "w", encoding="utf-8") as publication_file:
-        publication_file.write(build_fixture_publication_markdown(handoff))
-    return publication_path
 
 
 def preserve_fixture_preflight_evidence(claimed_issue: ClaimedIssue) -> None:
@@ -7109,14 +7004,13 @@ def finalize_successful_issue(
     coverage_follow_up = prepare_java_fix_coverage_follow_up(claimed_issue)
     coverage_follow_up_args = coverage_follow_up or (None, None, None)
     if is_fixture_testing_enabled():
-        handoff = build_publication_handoff(claimed_issue, *coverage_follow_up_args)
-        publication_path = write_fixture_publication_handoff(handoff)
         preserve_fixture_preflight_evidence(claimed_issue)
         log_stage(
             "publication",
             (
-                f"Fixture mode: dry-run publication handoff for issue #{handoff.issue_number} "
-                f"to {handoff.script_name}. PR title/body written to {publication_path}."
+                f"Fixture mode: skipping publication for issue "
+                f"#{claimed_issue.issue['number']}; publication is exercised against GitHub, "
+                "not by the hermetic fixture run."
             ),
         )
         return

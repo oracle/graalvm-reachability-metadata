@@ -40,7 +40,8 @@ The workflow must preserve the existing implementation shape:
 1. **Setup** — resolve repository paths, create a feature branch, and
    resolve the existing test directory for the requested version.
 2. **Baseline snapshot** — save the current stats to `.baseline-stats.json`
-   so the git publication script can produce a before/after comparison.
+   so local finalization can record the before/after inputs in the publication
+   descriptor for the trusted renderer.
 3. **Checkpoint** — commit the current test directory, metadata index, and
    `.baseline-stats.json` so failure handling can distinguish pre-existing
    state from generated changes and resume from preserved branches.
@@ -96,13 +97,14 @@ coverage starts:
 - `ai_workflows/drivers/improve_library_coverage.py` when the requested version is
   already compatible with the latest supported test suite.
 
-### PR creation
+### Publication
 
-`git_scripts/make_pr_improve_coverage.py` reads the baseline snapshot,
-loads the current on-disk stats, and formats a before/after comparison in
-the PR body. The baseline file is removed before staging the final PR commit,
-so it is present in resumable checkpoints but absent from the published tree
-(§GIT-forge-publication).
+Local finalization reads the baseline snapshot and records the before/after
+comparison inputs in the publication descriptor before removing the transient
+snapshot. The trusted `library-update-request` renderer reads that descriptor
+and the exact committed tree to format the PR body. The baseline file remains
+available in resumable checkpoints but is absent from the published tree
+(§GIT-forge-publication, §GIT-publication-descriptor).
 
 ### Pipeline label
 

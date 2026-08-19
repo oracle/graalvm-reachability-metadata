@@ -1,0 +1,79 @@
+name: Forge Open PR
+
+on:
+  workflow_run:
+    workflows:
+      - Forge Branch Ready
+    types:
+      - completed
+
+permissions:
+  contents: read
+
+concurrency:
+  group: forge-open-pr-${{ github.event.workflow_run.head_sha }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish validated Forge branch
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out trusted publisher
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: master
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Fetch triggering publication SHA as data
+        env:
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+        run: >-
+          git fetch --no-tags origin "$HEAD_SHA"
+          "+refs/heads/$HEAD_BRANCH:refs/remotes/origin/$HEAD_BRANCH"
+
+      - name: Install publisher schema validator
+        run: python3 -m pip install --disable-pip-version-check jsonschema==4.25.1
+
+      - name: Create short-lived publisher App token
+        if: ${{ vars.FORGE_PR_PUBLISH_MODE == 'live' }}
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ vars.FORGE_PUBLISHER_APP_ID }}
+          private-key: ${{ secrets.FORGE_PUBLISHER_PRIVATE_KEY }}
+          owner: oracle
+          repositories: graalvm-reachability-metadata
+          permission-contents: read
+          permission-pull-requests: write
+
+      - name: Revalidate and publish exact SHA
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token || github.token }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          HEAD_ACTOR: ${{ github.event.workflow_run.actor.login }}
+          HEAD_REPOSITORY: ${{ github.event.workflow_run.head_repository.full_name }}
+          AUTHORIZED_PUSHERS: ${{ vars.FORGE_AUTHORIZED_PUSHERS }}
+          PUBLISH_MODE: ${{ vars.FORGE_PR_PUBLISH_MODE || 'shadow' }}
+          PR_REVIEWERS: ${{ vars.FORGE_PR_REVIEWERS }}
+        run: >-
+          python3 .github/scripts/forge_pr_publisher/publisher.py publish
+          --sha "$HEAD_SHA"
+          --branch "$HEAD_BRANCH"
+          --actor "$HEAD_ACTOR"
+          --repository "$HEAD_REPOSITORY"
+          --authorized-pushers "$AUTHORIZED_PUSHERS"
+          --mode "$PUBLISH_MODE"
+          --reviewers "$PR_REVIEWERS"
+
+      - name: Upload trusted publication evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: forge-publisher-${{ github.event.workflow_run.id }}
+          path: publication.md
+          if-no-files-found: error
+          retention-days: 30

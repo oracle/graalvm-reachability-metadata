@@ -132,23 +132,20 @@ Required behavior — shared by both modes:
 8. Finalize: generate metadata, validate tests, collect stats, and commit.
 9. Publication reads the recorded `explore` skip rather than regenerating a
    report and re-deciding, so the run's single decision is the one the PR
-   describes. For a skipped oversized exploration it opens a new
-   `library-update-request` issue, parks it in `In Progress`, and links it from
-   the repair PR. It must not reuse an older matching library-update issue,
-   though a retried publication reuses the issue this same repair already
-   opened. The continuation marker's `publication` phase records that issue
-   number before PR creation, so later publication attempts reuse it directly.
-   If issue creation succeeded immediately before the marker save was
-   interrupted, publication recovers the issue by its exact repair reference
-   and records it. The PR closes the repair issue, states that exploration was
-   skipped, links the new issue, and carries `Forge-Unblocks-Issue: #<issue>` so merge
-   follow-up moves the new issue to `Todo`. Chunk selection then runs through the
-   existing library-update workflow against the repaired version on the default
-   branch. The issue title names the fixed coordinate and its body is one brief
-   sentence: it was opened while resolving the repair issue because the uncovered
-   class count exceeded the configured threshold. Beyond the `explore` decision
-   and publication issue number, Java-fix metrics and continuation markers
-   persist no separate handoff state.
+   describes. For a skipped oversized exploration Forge creates a new
+   `library-update-request` locally before the verified push, parks it in
+   `In Progress`, and records the typed follow-up fact — fixed coordinate,
+   repair issue, uncovered class count, threshold, and the created issue
+   number — in the descriptor; the trusted Actions publisher only links it from
+   the repair PR. Forge must not reuse an unrelated older matching issue, while
+   every retry of the same publication reuses the issue this same repair already
+   opened, recovered from the continuation marker or by its exact repair
+   reference. The PR closes the repair issue, states that exploration was
+   skipped, links the new issue, and carries `Forge-Unblocks-Issue: #<issue>` so
+   merge follow-up moves the new issue to `Todo`. Chunk selection then runs
+   through the existing library-update workflow against the repaired version on
+   the default branch. The follow-up title names the fixed coordinate and its
+   body is one brief sentence explaining the class-count deferral.
 10. Publication never blocks on a dynamic-access category losing full coverage
     between the previous and the repaired version. A repair that trades coverage
     is a review question, not a reason to discard a successful run, and after a
@@ -185,24 +182,22 @@ Successful runs produce:
   `tests/src/<group>/<artifact>/<newVersion>/`.
 - Updated metadata, index, and stats artifacts for the new version.
 - Improved dynamic-access coverage from the inline composite phase
-  (§WF-improve-library-coverage), or a newly opened fixed-version
-  `library-update-request` when oversized exploration was skipped.
+  (§WF-improve-library-coverage), or a locally opened fixed-version
+  `library-update-request` recorded as a typed descriptor fact when oversized
+  exploration was skipped.
 - Durable logs for the initial Gradle run, each agent turn, the coverage phase,
   and finalization (§FS-durable-generation-logs).
 - Run metrics written to `fix_javac_fail.json` or `fix_java_run_fail.json`;
   `utility_scripts/metrics_writer.py` builds the java-run output via
   `create_java_run_fix_run_metrics_output_json`, reusing the javac construction
   because the output contract is identical.
-- A PR-eligible result published by the mode's git script
-  (§GIT-forge-publication): `git_scripts/make_pr_javac_fix.py` with the
-  `fixes-javac-fail` label, or `git_scripts/make_pr_java_run_fix.py` with the
-  `fixes-java-run-fail` label. The java-run script stages the versioned tests,
-  metadata index, metadata version directory, and stats; creates branch
-  `ai/<gh-login>/fix-java-run-<group>-<artifact>-<newVersion>`; includes
-  the compact strategy/agent/model/token/iteration summary and an old-vs-new
-  test diff, without library-generation or coverage-stat comparisons; and commits
-  successful run metrics to
-  `stats/<group>/<artifact>/<version>/execution-metrics.json`.
+- A PR-eligible descriptor and unique branch finalized locally under
+  §GIT-forge-publication. The descriptor selects the trusted
+  `fixes-javac-fail` or `fixes-java-run-fail` template, records the compact
+  strategy/agent/model/token/iteration summary and old-vs-new comparison inputs,
+  and accompanies successful run metrics at
+  `stats/<group>/<artifact>/<version>/execution-metrics.json`. The Actions
+  publisher renders and opens the bot-authored PR.
   When exploration was deferred, its section follows the compact summary and
   states the uncovered-class count and threshold, links the newly opened
   `library-update-request`, and carries the merge-unblock trailer required to release that issue
@@ -288,5 +283,5 @@ entry point and the do-work loop (§ORCH-forge-orchestration-spec,
 - `--label fails-java-run` invokes `fix_java_fails.py --java-run`.
 - `fails-java-run` is included in the recognized pipeline label set and
   `--label` choices.
-- Successful `fails-java-run` issues finalize with
-  `git_scripts/make_pr_java_run_fix.py`.
+- Successful `fails-java-run` issues finalize with the shared local descriptor
+  and branch publication route selecting the `fixes-java-run-fail` template.

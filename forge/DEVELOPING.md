@@ -133,13 +133,13 @@ Notes:
 
 ### Open a PR with the fixes
 
-Script: git_scripts/make_pr_javac_fix.py
+Script: git_scripts/publish_javac_fix.py
 
 Description: Push changes to your fork/branch and open a PR against oracle/graalvm-reachability-metadata.
 
 Usage:
 ```bash
-python3 git_scripts/make_pr_javac_fix.py \
+python3 git_scripts/publish_javac_fix.py \
   --coordinates <group:artifact:old_version> \
   --new-version <new_version> \
   [--reachability-metadata-path /path/to/graalvm-reachability-metadata] \
@@ -148,7 +148,7 @@ python3 git_scripts/make_pr_javac_fix.py \
 
 Example:
 ```bash
-python3 git_scripts/make_pr_javac_fix.py \
+python3 git_scripts/publish_javac_fix.py \
   --coordinates org.postgresql:postgresql:42.7.3 \
   --new-version 42.7.4 \
   --reachability-metadata-path /path/to/graalvm-reachability-metadata \
@@ -161,13 +161,13 @@ Requirements:
 
 ### Open a PR for new library support
 
-Script: git_scripts/make_pr_new_library_support.py
+Script: git_scripts/publish_new_library_support.py
 
 Description: Push changes that add support for a new library and open a PR against oracle/graalvm-reachability-metadata.
 
 Usage:
 ```bash
-python3 git_scripts/make_pr_new_library_support.py \
+python3 git_scripts/publish_new_library_support.py \
   --coordinates <group:artifact:version> \
   [--reachability-metadata-path /path/to/graalvm-reachability-metadata] \
   [--metrics-repo-root /path/to/metrics_repo_root]
@@ -175,7 +175,7 @@ python3 git_scripts/make_pr_new_library_support.py \
 
 Example:
 ```bash
-python3 git_scripts/make_pr_new_library_support.py \
+python3 git_scripts/publish_new_library_support.py \
   --coordinates org.example:lib:1.2.3 \
   --reachability-metadata-path /path/to/graalvm-reachability-metadata \
   --metrics-repo-root /path/to/metrics_repo_root
@@ -189,7 +189,7 @@ Requirements:
 
 Script: complete_pipelines/fix_javac_create_pr.py
 
-Description: Attempts to run the fix workflow and, if successful, opens a PR automatically. This pipeline is experimental; prefer the explicit two-step flow above for reliability.
+Description: Attempts to run the fix workflow and, if successful, pushes the verified publication branch automatically; trusted GitHub Actions then open the PR. This pipeline is experimental; prefer the explicit two-step flow above for reliability.
 
 Usage:
 ```bash
@@ -207,7 +207,7 @@ python3 complete_pipelines/fix_javac_create_pr.py \
 
 Script: complete_pipelines/add_new_library_support_create_pr.py
 
-Description: Runs the add-new-library workflow and, if it exits successfully, opens a PR automatically. This pipeline is experimental; prefer the explicit two-step flow above for reliability.
+Description: Runs the add-new-library workflow and, if it exits successfully, pushes the verified publication branch automatically; trusted GitHub Actions then open the PR. This pipeline is experimental; prefer the explicit two-step flow above for reliability.
 
 Usage:
 ```bash
@@ -488,9 +488,9 @@ see `docs/workflows/dynamic-access.md`.
 - Add support for a new library:
   `python3 ai_workflows/drivers/add_new_library_support.py --coordinates <group:artifact:version> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-path <metrics-repo>] [--docs-path <docs>]`
 - Open PR with metrics:
-  `python3 git_scripts/make_pr_javac_fix.py --coordinates <group:artifact:old> --new-version <newVersion> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-path <metrics-repo-root>]`
+  `python3 git_scripts/publish_javac_fix.py --coordinates <group:artifact:old> --new-version <newVersion> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-path <metrics-repo-root>]`
 - Open PR for new library support:
-  `python3 git_scripts/make_pr_new_library_support.py --coordinates <group:artifact:version> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-root <metrics-repo-root>]`
+  `python3 git_scripts/publish_new_library_support.py --coordinates <group:artifact:version> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-root <metrics-repo-root>]`
 - Complete javac fix pipeline:
   `python3 complete_pipelines/fix_javac_create_pr.py --coordinates <group:artifact:old> --new-version <newVersion> [--reachability-metadata-path <reach-meta-repo>] [--metrics-repo-path <metrics-repo>] [--docs-path <docs>] [--strategy-name NAME]`
 - Complete add-new-library pipeline:

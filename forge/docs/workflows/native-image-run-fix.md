@@ -119,7 +119,7 @@ Required behavior:
    status decides PR eligibility (§GIT-forge-publication).
 9. Write run metrics (previous-vs-new shape) to
    `stats/<group>/<artifact>/<metadataVersion>/execution-metrics.json` and the
-   pending-metrics sidecar consumed by the PR step.
+   pending sidecar consumed during publication-descriptor construction.
 
 ## 4. Outputs
 
