@@ -23,13 +23,17 @@ public class UnsafeAccessTest {
     }
 
     @Test
-    void mpscLinkedQueueOffersAndPollsElements() {
+    void mpscLinkedQueueMaintainsFifoOrderAcrossLinkedNodes() {
         MpscLinkedQueue<String> queue = new MpscLinkedQueue<>();
 
+        assertThat(queue.isEmpty()).isTrue();
         assertThat(queue.offer("first")).isTrue();
         assertThat(queue.offer("second")).isTrue();
+        assertThat(queue.size()).isEqualTo(2);
+        assertThat(queue.peek()).isEqualTo("first");
         assertThat(queue.poll()).isEqualTo("first");
         assertThat(queue.poll()).isEqualTo("second");
         assertThat(queue.poll()).isNull();
+        assertThat(queue.isEmpty()).isTrue();
     }
 }
