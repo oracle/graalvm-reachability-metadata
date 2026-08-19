@@ -6,12 +6,13 @@
  */
 package org_jctools.jctools_core;
 
+import org.jctools.queues.MpscLinkedQueue;
 import org.jctools.queues.SpscUnboundedArrayQueue;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class JCToolsCoreTest {
+public class UnsafeAccessTest {
 
     @Test
     void testSpscUnboundedArrayQueue() {
@@ -19,5 +20,16 @@ class JCToolsCoreTest {
         assertThat(queue.poll()).isNull();
         queue.offer("test message");
         assertThat(queue.poll()).isEqualTo("test message");
+    }
+
+    @Test
+    void mpscLinkedQueueOffersAndPollsElements() {
+        MpscLinkedQueue<String> queue = new MpscLinkedQueue<>();
+
+        assertThat(queue.offer("first")).isTrue();
+        assertThat(queue.offer("second")).isTrue();
+        assertThat(queue.poll()).isEqualTo("first");
+        assertThat(queue.poll()).isEqualTo("second");
+        assertThat(queue.poll()).isNull();
     }
 }
