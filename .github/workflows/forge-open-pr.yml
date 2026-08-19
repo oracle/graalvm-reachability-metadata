@@ -38,26 +38,15 @@ jobs:
       - name: Install publisher schema validator
         run: python3 -m pip install --disable-pip-version-check jsonschema==4.25.1
 
-      - name: Create short-lived publisher App token
-        if: ${{ vars.FORGE_PR_PUBLISH_MODE == 'live' }}
-        id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
-        with:
-          app-id: ${{ vars.FORGE_PUBLISHER_APP_ID }}
-          private-key: ${{ secrets.FORGE_PUBLISHER_PRIVATE_KEY }}
-          owner: oracle
-          repositories: graalvm-reachability-metadata
-          permission-contents: read
-          permission-pull-requests: write
-
       - name: Revalidate and publish exact SHA
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token || github.token }}
+          # Publication runs as the graalvmbot machine account, the same identity
+          # the compatibility sweep already publishes with (§GIT-actions-publication).
+          GH_TOKEN: ${{ vars.FORGE_PR_PUBLISH_MODE == 'live' && secrets.GRAALBOT_PR_TOKEN || github.token }}
           HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
           HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
           HEAD_ACTOR: ${{ github.event.workflow_run.actor.login }}
           HEAD_REPOSITORY: ${{ github.event.workflow_run.head_repository.full_name }}
-          AUTHORIZED_PUSHERS: ${{ vars.FORGE_AUTHORIZED_PUSHERS }}
           PUBLISH_MODE: ${{ vars.FORGE_PR_PUBLISH_MODE || 'shadow' }}
           PR_REVIEWERS: ${{ vars.FORGE_PR_REVIEWERS }}
         run: >-
@@ -66,7 +55,6 @@ jobs:
           --branch "$HEAD_BRANCH"
           --actor "$HEAD_ACTOR"
           --repository "$HEAD_REPOSITORY"
-          --authorized-pushers "$AUTHORIZED_PUSHERS"
           --mode "$PUBLISH_MODE"
           --reviewers "$PR_REVIEWERS"
 
