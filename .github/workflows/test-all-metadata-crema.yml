@@ -31,15 +31,6 @@ on:
         description: "GraalVM version to build Crema from. Must ship the jvm-library macro."
         required: false
         default: "latest-ea"
-      disable-assertions:
-        description: "Clear Gradle's default -ea, which Crema rejects at VM startup. On by default, because with -ea every coordinate fails before any test runs. Set false to confirm that blocker is still present."
-        required: false
-        default: "true"
-        type: choice
-        options:
-          - "true"
-          - "false"
-
 permissions:
   contents: read
 
@@ -278,7 +269,6 @@ jobs:
         env:
           # §TCK-test-harness.3.1 — selects the test workers' interpreter, adds no flag.
           GVM_TCK_TEST_JAVA_HOME: ${{ steps.crema.outputs.crema-home }}
-          GVM_TCK_TEST_DISABLE_ASSERTIONS: ${{ inputs.disable-assertions || 'true' }}
           MATRIX_COORDINATES: ${{ matrix.coordinates }}
           MATRIX_VM: ${{ matrix.vm }}
         run: |

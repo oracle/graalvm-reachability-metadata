@@ -831,8 +831,6 @@ tasks.register("mergeNativeTraceMetadata", Exec) { Exec task ->
 // §TCK-test-harness.3.1: run the forked JVM test workers on a JDK that need not be able to host
 // Gradle. Selects an interpreter only — JVM arguments are left exactly as they would be otherwise.
 String testJavaHome = System.getenv("GVM_TCK_TEST_JAVA_HOME")
-// §TCK-test-harness.3.1: opt-in escape hatch for a JDK that rejects Gradle's default `-ea`.
-boolean disableTestAssertions = Boolean.parseBoolean(System.getenv("GVM_TCK_TEST_DISABLE_ASSERTIONS"))
 
 tasks.register("nativeTestPGOSampling") { task ->
     task.inputs.property("pgoSamplingPeriodMicros", pgoSamplingPeriodMicros)
@@ -880,9 +878,6 @@ tasks.withType(Test).configureEach { Test testTask ->
         // a configured javaLauncher and an executable, and the Kotlin/Scala coordinates pin one.
         testTask.javaLauncher.unset()
         testTask.executable = new File(new File(testJavaHome, "bin"), "java").absolutePath
-    }
-    if (disableTestAssertions) {
-        testTask.enableAssertions = false
     }
     systemProperty "junit.jupiter.execution.timeout.default", "${maxJUnitTestTimeoutSeconds} s"
     systemProperty "junit.jupiter.execution.timeout.mode", "enabled"
