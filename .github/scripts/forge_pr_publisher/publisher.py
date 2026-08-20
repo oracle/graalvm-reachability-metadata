@@ -26,6 +26,7 @@ BASE_BRANCH = "master"
 MAX_BODY_CHARS = 60_000
 MAX_TEST_DIFF_CHARS = 12_000
 SEVERE_METADATA_DROP_RATIO = 0.25
+DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_RATIO = 1.75
 ROUTE_LABELS = {
     "library-new-request": ["GenAI", "library-new-request"],
     "library-update-request": ["GenAI", "library-update-request"],
@@ -225,85 +226,343 @@ def render_publication(
         descriptor: dict[str, Any],
         validated: ValidatedPublication | None = None,
 ) -> tuple[str, str]:
-    """Render trusted title and body text from validated descriptor data."""
-    library = descriptor["library"]
-    coordinates = library["coordinates"]
-    template = descriptor["template_type"]
-    model = _model_display_name(descriptor)
-    if template == "library-new-request":
-        title = f"[GenAI] Add support for {coordinates} using {model}"
-        summary = f"This PR introduces tests and metadata for {coordinates}, enabling support for this library."
-    elif template == "library-update-request":
-        title = f"[GenAI] Improve coverage for {coordinates} using {model}"
-        summary = f"This PR improves dynamic-access coverage for {coordinates} by generating additional tests."
-    elif template == "fixes-javac-fail":
-        title = f"[GenAI] Test fix for {coordinates} using {model}"
-        summary = (
-            f"This PR provides test fixes and new metadata for {coordinates}, addressing "
-            "Java compilation failures caused by changes in the updated library version."
-        )
-    elif template == "fixes-java-run-fail":
-        title = f"[GenAI] Test fix for {coordinates} using {model}"
-        summary = (
-            f"This PR provides test fixes and new metadata for {coordinates}, addressing "
-            "Java runtime failures caused by changes in the updated library version."
-        )
-    elif template == "fixes-native-image-run-fail":
-        title = f"[Automation] Generated metadata for {coordinates}"
-        summary = (
-            f"This PR provides metadata needed for {coordinates}, addressing Native Image "
-            "runtime failures caused by changes in the updated library version."
-        )
-    else:
-        title = f"[GenAI] Mark {library['group']}:{library['artifact']} as not for Native Image"
-        reason = descriptor["render"]["reason"]
-        summary = (
-            f"This PR records `{library['group']}:{library['artifact']}` as "
-            "`not-for-native-image`, so automation and downstream tools know it is "
-            "intentionally not a reachability-metadata target.\n\n"
-            f"Reason:\n- {reason}"
-        )
-        replacement = descriptor["render"].get("replacement")
-        if replacement:
-            summary += f"\n\nReplacement guidance:\n- {replacement}"
+    """Render the pre-Actions PR body shape from validated descriptor data (§forge/GIT-pr-body).
 
-    issue_reference = f"Fixes: #{descriptor['issue_number']}"
+    Publication moved into Actions but the rendered body did not change with it: every
+    template below reproduces the layout its local builder produced, so reviewers read the
+    same sections in the same order as before the handoff.
+    """
+    template = descriptor["template_type"]
+    builder = _TEMPLATE_BUILDERS.get(template)
+    if builder is None:
+        raise ValueError(f"Unsupported template type: {template}")
+    title, body = builder(descriptor, validated)
+    body += f"\nForge-Publication-ID: {descriptor['publication_id']}\n"
+    return title, _bound_body(body)
+
+
+def _issue_reference(descriptor: dict[str, Any]) -> str:
+    """Chunked runs keep the issue open until the final chunk (§forge/GIT-chunked-linking)."""
     modifiers = descriptor["modifiers"]
     if modifiers["chunked_dynamic_access"] and not modifiers["chunk_final"]:
-        issue_reference = f"Refs: #{descriptor['issue_number']}"
-        title += " (chunked dynamic-access)"
+        return f"Refs: #{descriptor['issue_number']}"
+    return f"Fixes: #{descriptor['issue_number']}"
 
-    body = f"## What does this PR do?\n\n{issue_reference}\n\n{summary}\n"
-    if template in {"library-new-request", "library-update-request"}:
-        body += _render_generation_summary(descriptor, include_coverage=True)
-        body += _render_chunk_summary(descriptor)
-        body += _render_route_evidence(descriptor)
-    elif template in {"fixes-javac-fail", "fixes-java-run-fail"}:
-        coverage_deferred = any(
-            follow_up["type"] == "deferred_dynamic_access_coverage"
-            for follow_up in descriptor["follow_ups"]
+
+def _chunked_title_suffix(descriptor: dict[str, Any]) -> str:
+    modifiers = descriptor["modifiers"]
+    if modifiers["chunked_dynamic_access"] and not modifiers["chunk_final"]:
+        return " (chunked dynamic-access)"
+    return ""
+
+
+def _render_library_update_request(
+        descriptor: dict[str, Any],
+        validated: ValidatedPublication | None,
+) -> tuple[str, str]:
+    coordinates = descriptor["library"]["coordinates"]
+    render = descriptor["render"]
+    metrics = _summary_metrics(descriptor)
+    title = f"[GenAI] Improve coverage for {coordinates} using {_model_display_name(descriptor)}"
+    title += _chunked_title_suffix(descriptor)
+
+    metadata_comparison_lines = ""
+    before_entries = render.get("baseline_metadata_entries")
+    after_entries = render.get("current_metadata_entries")
+    if before_entries is not None and after_entries is not None:
+        metadata_comparison_lines += (
+            f"- Metadata entries (before): {before_entries}\n"
+            f"- Metadata entries (after): {after_entries}\n"
         )
-        body += _render_generation_summary(descriptor, include_coverage=not coverage_deferred)
-        if not coverage_deferred:
-            body += _render_route_evidence(descriptor)
-        body += _render_test_comparison(validated)
-    elif template == "fixes-native-image-run-fail":
-        body += _render_native_image_summary(descriptor)
-        body += _render_test_comparison(validated)
+        before_test = render.get("baseline_test_only_entries")
+        after_test = render.get("current_test_only_entries")
+        if before_test or after_test:
+            metadata_comparison_lines += (
+                f"- Test-only metadata entries (before): {before_test or 0}\n"
+                f"- Test-only metadata entries (after): {after_test or 0}\n"
+            )
 
-    body += _render_follow_ups(descriptor)
-    body += _render_intervention(descriptor)
-    body += _render_local_ci(descriptor["local_ci_verification"])
-    forge = descriptor["forge"]
-    body += (
-        "\n### Forge\n\n"
-        f"- Forge monitored branch: `{forge['monitored_branch']}`\n"
-        f"- Forge branch: `{forge['branch']}`\n"
-        f"- Forge commit hash: `{forge['commit']}`\n"
-        f"- Publication SHA: `{validated.head_sha if validated else 'validated at publish time'}`\n"
-        f"\nForge-Publication-ID: {descriptor['publication_id']}\n"
+    update_target = render.get("library_update_target")
+    update_target_lines = ""
+    if isinstance(update_target, dict):
+        update_target_lines = (
+            f"- Requested coordinate: `{update_target.get('requested_coordinate') or coordinates}`\n"
+            f"- Match type: `{update_target.get('match_type') or 'unknown'}`\n"
+            f"- Matched metadata version: `{update_target.get('matched_metadata_version') or 'none'}`\n"
+            f"- Matched test version: `{update_target.get('matched_test_version') or 'none'}`\n"
+            f"- Resolved metadata version: `{update_target.get('resolved_metadata_version') or 'unknown'}`\n"
+            f"- Resolved test version: `{update_target.get('resolved_test_version') or 'unknown'}`\n"
+        )
+
+    verification = descriptor["local_ci_verification"]
+    validation_status = str(verification.get("status") or "unknown")
+    validation_coordinates = [coordinates]
+    if isinstance(update_target, dict):
+        parts = coordinates.split(":")
+        resolved = update_target.get("resolved_metadata_version")
+        if len(parts) == 3 and isinstance(resolved, str) and resolved and resolved != parts[2]:
+            validation_coordinates.append(f"{parts[0]}:{parts[1]}:{resolved}")
+    validation_commands = ", ".join(
+        f"`./gradlew test -Pcoordinates={coordinate}`" for coordinate in validation_coordinates
     )
-    return title, _bound_body(body)
+
+    body = f"""
+## What does this PR do?
+
+{_issue_reference(descriptor)}
+
+This PR improves dynamic-access coverage for {coordinates} by generating additional tests.
+
+Summary:
+{_format_chunked_dynamic_access_summary(descriptor)}\
+- Validation commands: {validation_commands}
+- Validation result: `{validation_status}`
+{update_target_lines}\
+- Strategy: {descriptor.get('strategy_name', '')}
+- Agent: {_agent_name(descriptor)}
+- Model: {_model_display_name(descriptor)}
+- Input tokens: {metrics.get('input_tokens_used', 0)}
+- Cached input tokens: {metrics.get('cached_input_tokens_used', 0)}
+- Output tokens: {metrics.get('output_tokens_used', 0)}
+{metadata_comparison_lines}\
+- Iterations: {metrics.get('iterations', 0)}
+- Library coverage percentage: {metrics.get('code_coverage_percent', 0)}
+- Generated lines of code: {metrics.get('generated_loc', 0)}
+- Tested library lines of code: {metrics.get('tested_library_loc', 0)}
+"""
+    body += "\n" + _format_forge_revision_section(descriptor) + "\n"
+    baseline_stats = render.get("baseline_stats")
+    library_stats = render.get("library_stats")
+    if baseline_stats or library_stats:
+        body += "\n" + _format_stats_before_after(baseline_stats, library_stats, coordinates)
+    body += _format_post_generation_intervention(descriptor)
+    body += _format_alias_split_section(render.get("alias_split"))
+    body += _format_local_ci_verification_section(verification)
+    return title, body
+
+
+def _render_library_new_request(
+        descriptor: dict[str, Any],
+        validated: ValidatedPublication | None,
+) -> tuple[str, str]:
+    coordinates = descriptor["library"]["coordinates"]
+    render = descriptor["render"]
+    metrics = _summary_metrics(descriptor)
+    title = f"[GenAI] Add support for {coordinates} using {_model_display_name(descriptor)}"
+    title += _chunked_title_suffix(descriptor)
+
+    entries_found = int(metrics.get("metadata_entries", 0) or 0)
+    test_only_entries = int(metrics.get("test_only_metadata_entries", 0) or 0)
+    test_only_metadata_entries_line = ""
+    if test_only_entries > 0:
+        test_only_metadata_entries_line = f"- Test-only metadata entries: {test_only_entries}\n"
+
+    body = f"""
+## What does this PR do?
+
+{_issue_reference(descriptor)}
+
+This PR introduces tests and metadata for {coordinates}, enabling support for this library.
+
+Summary:
+{_format_chunked_dynamic_access_summary(descriptor)}\
+- Strategy: {descriptor.get('strategy_name', '')}
+- Agent: {_agent_name(descriptor)}
+- Model: {_model_display_name(descriptor)}
+- Input tokens: {metrics.get('input_tokens_used', 0)}
+- Cached input tokens: {metrics.get('cached_input_tokens_used', 0)}
+- Output tokens: {metrics.get('output_tokens_used', 0)}
+- Metadata entries: {entries_found}
+{test_only_metadata_entries_line}\
+- Iterations: {metrics.get('iterations', 0)}
+- Library coverage percentage: {metrics.get('code_coverage_percent', 0)}
+- Generated lines of code: {metrics.get('generated_loc', 0)}
+- Tested library lines of code: {metrics.get('tested_library_loc', 0)}
+"""
+    library_stats = render.get("library_stats")
+    body += _format_dynamic_access_metadata_entry_note(
+        entries_found, library_stats, render.get("dynamic_access_evidence"),
+    )
+    body += "\n" + _format_forge_revision_section(descriptor) + "\n"
+    if library_stats:
+        body += "\n" + _format_stats_section(library_stats) + "\n"
+    body += _format_post_generation_intervention(descriptor)
+    body += _format_local_ci_verification_section(descriptor["local_ci_verification"])
+    return title, body
+
+
+def _render_java_fix(
+        descriptor: dict[str, Any],
+        validated: ValidatedPublication | None,
+        *,
+        failure_description: str,
+) -> tuple[str, str]:
+    coordinates = descriptor["library"]["coordinates"]
+    previous = descriptor.get("previous_library") or {}
+    previous_coordinates = previous.get("coordinates")
+    metrics = _summary_metrics(descriptor)
+    title = f"[GenAI] Test fix for {coordinates} using {_model_display_name(descriptor)}"
+
+    coverage_deferred = any(
+        follow_up["type"] == "deferred_dynamic_access_coverage"
+        for follow_up in descriptor["follow_ups"]
+    )
+    metadata_entry_lines, coverage_lines = _format_generation_statistics_blocks(
+        metrics, coverage_deferred,
+    )
+
+    deferred_section = _format_deferred_dynamic_access_section(descriptor)
+    stats_diff_section = ""
+    if not coverage_deferred and previous_coordinates:
+        stats_diff = _format_stats_diff(validated, previous_coordinates, coordinates)
+        if stats_diff:
+            stats_diff_section = f"{stats_diff}\n"
+
+    body = f"""## What does this PR do?
+
+{_issue_reference(descriptor)}
+
+This PR provides test fixes and new metadata for {coordinates}, addressing {failure_description} caused by changes in the updated library version.
+
+Summary:
+- Strategy: {descriptor.get('strategy_name', '')}
+- Agent: {_agent_name(descriptor)}
+- Model: {_model_display_name(descriptor)}
+- Input tokens: {int(metrics.get('input_tokens_used', 0) or 0)}
+- Cached input tokens: {int(metrics.get('cached_input_tokens_used', 0) or 0)}
+- Output tokens: {int(metrics.get('output_tokens_used', 0) or 0)}
+{metadata_entry_lines}\
+- Iterations: {int(metrics.get('iterations', 0) or 0)}
+{coverage_lines}\
+
+{deferred_section}{_format_forge_revision_section(descriptor)}
+{stats_diff_section}{_format_bounded_test_diff_section(validated)}
+"""
+    body += _format_post_generation_intervention(descriptor)
+    body += _format_local_ci_verification_section(descriptor["local_ci_verification"])
+    return title, body
+
+
+def _render_javac_fix(
+        descriptor: dict[str, Any],
+        validated: ValidatedPublication | None,
+) -> tuple[str, str]:
+    return _render_java_fix(
+        descriptor, validated, failure_description="compile java failures",
+    )
+
+
+def _render_java_run_fix(
+        descriptor: dict[str, Any],
+        validated: ValidatedPublication | None,
+) -> tuple[str, str]:
+    return _render_java_fix(
+        descriptor, validated, failure_description="runtime java test failures",
+    )
+
+
+def _render_native_image_run_fix(
+        descriptor: dict[str, Any],
+        validated: ValidatedPublication | None,
+) -> tuple[str, str]:
+    coordinates = descriptor["library"]["coordinates"]
+    previous_coordinates = (descriptor.get("previous_library") or {}).get("coordinates")
+    render = descriptor["render"]
+    title = f"[Automation] Generated metadata for {coordinates}"
+
+    previous_entries = int(render.get("baseline_metadata_entries") or 0)
+    current_entries = int(render.get("current_metadata_entries") or 0)
+    previous_test_entries = int(render.get("baseline_test_only_entries") or 0)
+    current_test_entries = int(render.get("current_test_only_entries") or 0)
+    previous_test_entries_line = ""
+    if previous_test_entries:
+        previous_test_entries_line = (
+            f"- Test-only metadata entries (previous `{previous_coordinates}`): {previous_test_entries}\n"
+        )
+    current_test_entries_line = ""
+    if current_test_entries:
+        current_test_entries_line = (
+            f"- Test-only metadata entries (new `{coordinates}`): {current_test_entries}\n"
+        )
+    previous_coverage = float((render.get("baseline_stats") or {}).get("coverage_percent", 0) or 0)
+    current_coverage = float((render.get("library_stats") or {}).get("coverage_percent", 0) or 0)
+
+    metrics_section = (
+        "\n\nSummary:\n"
+        f"- Metadata entries (previous `{previous_coordinates}`): {previous_entries}\n"
+        f"{previous_test_entries_line}"
+        f"- Metadata entries (new `{coordinates}`): {current_entries}\n"
+        f"{current_test_entries_line}"
+        f"- Library coverage (previous): {previous_coverage:.2f}%\n"
+        f"- Library coverage (new): {current_coverage:.2f}%"
+    )
+    body = (
+        "## What does this PR do?\n\n"
+        f"Fixes: {REPOSITORY}#{descriptor['issue_number']}\n\n"
+        f"This PR provides new metadata needed for the {coordinates}, "
+        "addressing Native Image run failures caused by changes in the updated library version."
+        f"{metrics_section}"
+        f"{_format_forge_metrics_summary_section(descriptor)}"
+        f"\n\n{_format_forge_revision_section(descriptor)}"
+        f"{_format_stats_diff(validated, previous_coordinates, coordinates)}"
+        f"{_format_bounded_test_diff_section(validated)}"
+    )
+    if _has_severe_metadata_drop(descriptor):
+        retained_percent = current_entries / previous_entries * 100 if previous_entries else 0
+        body += (
+            "\n\n### Human Intervention: Severe Metadata Drop\n\n"
+            "Forge detected a severe drop in reachability metadata entries for this "
+            "Native Image run fix. This PR needs human review unless the branch includes "
+            "concrete proof that the new library version no longer needs the removed "
+            "registrations.\n\n"
+            f"- Previous metadata entries (`{previous_coordinates}`): {previous_entries}\n"
+            f"- New metadata entries (`{coordinates}`): {current_entries}\n"
+            f"- Retained metadata entries: {retained_percent:.2f}%"
+        )
+    body += _format_local_ci_verification_section(descriptor["local_ci_verification"])
+    return title, body
+
+
+def _render_not_for_native_image(
+        descriptor: dict[str, Any],
+        validated: ValidatedPublication | None,
+) -> tuple[str, str]:
+    library = descriptor["library"]
+    group = library["group"]
+    artifact = library["artifact"]
+    render = descriptor["render"]
+    title = f"[GenAI] Mark {group}:{artifact} as not for Native Image"
+    body = f"""
+## What does this PR do?
+
+Fixes: #{descriptor['issue_number']}
+
+This PR records `{group}:{artifact}` as `not-for-native-image`, so automation and downstream tools know this artifact is intentionally not a GraalVM Native Image reachability metadata target.
+
+Reason:
+- {render.get('reason')}
+"""
+    replacement = render.get("replacement")
+    if replacement:
+        body += f"\nReplacement guidance:\n- {replacement}\n"
+    body += "\n" + _format_forge_revision_section(descriptor)
+    body += _format_local_ci_verification_section(descriptor["local_ci_verification"])
+    return title, body
+
+
+_TEMPLATE_BUILDERS = {
+    "library-update-request": _render_library_update_request,
+    "library-new-request": _render_library_new_request,
+    "fixes-javac-fail": _render_javac_fix,
+    "fixes-java-run-fail": _render_java_run_fix,
+    "fixes-native-image-run-fail": _render_native_image_run_fix,
+    "not-for-native-image": _render_not_for_native_image,
+}
+
+
+def _summary_metrics(descriptor: dict[str, Any]) -> dict[str, Any]:
+    reference = descriptor.get("metrics") or {}
+    return reference.get("summary") or {}
 
 
 def _model_display_name(descriptor: dict[str, Any]) -> str:
@@ -312,158 +571,419 @@ def _model_display_name(descriptor: dict[str, Any]) -> str:
     return str(value).rsplit("/", 1)[-1]
 
 
-def _render_generation_summary(
-        descriptor: dict[str, Any],
-        *,
-        include_coverage: bool,
-) -> str:
-    reference = descriptor.get("metrics") or {}
-    metrics = reference.get("summary") or {}
-    lines = ["\nSummary:"]
-    if descriptor.get("strategy_name"):
-        lines.append(f"- Strategy: {descriptor['strategy_name']}")
-    if reference.get("agent"):
-        lines.append(f"- Agent: {reference['agent']}")
-    if reference.get("model"):
-        lines.append(f"- Model: {_model_display_name(descriptor)}")
-    fields = [
-        ("input_tokens_used", "Input tokens"),
-        ("cached_input_tokens_used", "Cached input tokens"),
-        ("output_tokens_used", "Output tokens"),
-        ("iterations", "Iterations"),
-    ]
-    if include_coverage:
-        fields.extend([
-            ("metadata_entries", "Metadata entries"),
-            ("test_only_metadata_entries", "Test-only metadata entries"),
-            ("code_coverage_percent", "Library coverage percentage"),
-            ("generated_loc", "Generated lines of code"),
-            ("tested_library_loc", "Tested library lines of code"),
-            ("previous_library_metadata_entries", "Previous library version metadata entries"),
-            (
-                "previous_library_test_only_metadata_entries",
-                "Previous library version test-only metadata entries",
-            ),
-            (
-                "previous_library_coverage_percent",
-                "Previous library version coverage percentage",
-            ),
-        ])
-    for key, label in fields:
-        if key in metrics:
-            lines.append(f"- {label}: {metrics[key]}")
-    return "\n" + "\n".join(lines) + "\n"
+def _agent_name(descriptor: dict[str, Any]) -> str:
+    metrics_reference = descriptor.get("metrics") or {}
+    return str(metrics_reference.get("agent") or "")
 
 
-def _render_chunk_summary(descriptor: dict[str, Any]) -> str:
+def _format_forge_revision_section(descriptor: dict[str, Any]) -> str:
+    forge = descriptor["forge"]
+    return (
+        "### Forge\n\n"
+        f"- Forge monitored branch: `{forge['monitored_branch']}`\n"
+        f"- Forge branch: `{forge['branch']}`\n"
+        f"- Forge commit hash: `{forge['commit']}`\n"
+    )
+
+
+def _format_chunked_dynamic_access_summary(descriptor: dict[str, Any]) -> str:
     if not descriptor["modifiers"]["chunked_dynamic_access"]:
         return ""
-    report = descriptor["render"].get("dynamic_access") or {}
-    completed = len(report.get("completedClasses") or [])
-    skipped = len(report.get("skippedClasses") or [])
-    exhausted = len(report.get("exhaustedClasses") or [])
-    failed = len(report.get("failedClasses") or [])
+    report = descriptor["render"].get("dynamic_access")
+    if not isinstance(report, dict) or not report:
+        return "- Chunked dynamic-access: yes\n"
     return (
-        "\n### Chunked Dynamic Access\n\n"
+        "- Chunked dynamic-access: yes\n"
         f"- Chunk class threshold: {report.get('classThreshold') or 'unknown'}\n"
         f"- Current chunk class count: {report.get('currentChunkClassCount') or 'unknown'}\n"
-        f"- Processed classes: completed={completed}, skipped={skipped}, "
-        f"exhausted={exhausted}, failed={failed}\n"
+        "- Processed dynamic-access classes: "
+        f"completed={len(report.get('completedClasses') or [])}, "
+        f"skipped={len(report.get('skippedClasses') or [])}, "
+        f"exhausted={len(report.get('exhaustedClasses') or [])}, "
+        f"failed={len(report.get('failedClasses') or [])}\n"
     )
 
 
-def _render_route_evidence(descriptor: dict[str, Any]) -> str:
-    render = descriptor["render"]
-    lines: list[str] = []
-    before_entries = render.get("baseline_metadata_entries")
-    after_entries = render.get("current_metadata_entries")
-    if before_entries is not None or after_entries is not None:
-        lines.extend([
-            "\n### Metadata Comparison\n",
-            f"- Metadata entries before: {before_entries if before_entries is not None else 'unknown'}",
-            f"- Metadata entries after: {after_entries if after_entries is not None else 'unknown'}",
-        ])
-        before_test = render.get("baseline_test_only_entries")
-        after_test = render.get("current_test_only_entries")
-        if before_test is not None or after_test is not None:
-            lines.extend([
-                f"- Test-only metadata entries before: {before_test or 0}",
-                f"- Test-only metadata entries after: {after_test or 0}",
-            ])
-
-    update_target = render.get("library_update_target")
-    if isinstance(update_target, dict):
-        lines.extend([
-            "\n### Library Update Target\n",
-            f"- Requested coordinate: `{update_target.get('requested_coordinate') or descriptor['library']['coordinates']}`",
-            f"- Match type: `{update_target.get('match_type') or 'unknown'}`",
-            f"- Matched metadata version: `{update_target.get('matched_metadata_version') or 'none'}`",
-            f"- Matched test version: `{update_target.get('matched_test_version') or 'none'}`",
-            f"- Resolved metadata version: `{update_target.get('resolved_metadata_version') or 'unknown'}`",
-            f"- Resolved test version: `{update_target.get('resolved_test_version') or 'unknown'}`",
-        ])
-
-    stats = {"before": render.get("baseline_stats"), "after": render.get("library_stats")}
-    if stats["before"] is not None or stats["after"] is not None:
-        lines.append("\n### Library Statistics\n")
-        lines.append("```json")
-        lines.append(json.dumps(stats, indent=2, sort_keys=True, ensure_ascii=False)[:8000])
-        lines.append("```")
-
-    evidence = render.get("dynamic_access_evidence")
-    if isinstance(evidence, dict):
-        call_sites = evidence.get("covered_call_sites") or []
-        metadata_rules = evidence.get("metadata_rules") or []
-        if call_sites or metadata_rules:
-            lines.append("\n### Dynamic-Access Evidence\n")
-            for call_site in call_sites[:20]:
-                lines.append(f"- Covered call site: {call_site}")
-            for rule in metadata_rules[:20]:
-                lines.append(f"- Metadata rule: {rule}")
-    return "\n".join(lines) + ("\n" if lines else "")
-
-
-def _render_native_image_summary(descriptor: dict[str, Any]) -> str:
-    render = descriptor["render"]
-    previous = descriptor["previous_library"]["coordinates"]
-    current = descriptor["library"]["coordinates"]
-    previous_entries = int(render.get("baseline_metadata_entries") or 0)
-    current_entries = int(render.get("current_metadata_entries") or 0)
-    previous_test_entries = int(render.get("baseline_test_only_entries") or 0)
-    current_test_entries = int(render.get("current_test_only_entries") or 0)
-    previous_coverage = (render.get("baseline_stats") or {}).get("coverage_percent", 0)
-    current_coverage = (render.get("library_stats") or {}).get("coverage_percent", 0)
-    body = (
-        "\nSummary:\n"
-        f"- Metadata entries (previous `{previous}`): {previous_entries}\n"
-        f"- Metadata entries (new `{current}`): {current_entries}\n"
-        f"- Test-only metadata entries (previous): {previous_test_entries}\n"
-        f"- Test-only metadata entries (new): {current_test_entries}\n"
-        f"- Library coverage (previous): {float(previous_coverage):.2f}%\n"
-        f"- Library coverage (new): {float(current_coverage):.2f}%\n"
+def _format_post_generation_intervention(descriptor: dict[str, Any]) -> str:
+    intervention = descriptor.get("post_generation_intervention")
+    if not intervention:
+        return ""
+    return (
+        "\n### Post-Generation Intervention\n\n"
+        f"- Stage: `{intervention.get('stage', 'unknown')}`\n\n"
+        f"- Intervention file: `{intervention.get('intervention_file', 'unknown')}`\n\n"
+        f"{str(intervention.get('analysis_markdown', '')).strip()}\n"
     )
-    if _has_severe_metadata_drop(descriptor):
-        retained = current_entries / previous_entries * 100 if previous_entries else 0
-        body += (
-            "\n### Human Intervention: Severe Metadata Drop\n\n"
-            "Forge detected a severe drop in reachability metadata entries.\n\n"
-            f"- Previous metadata entries (`{previous}`): {previous_entries}\n"
-            f"- New metadata entries (`{current}`): {current_entries}\n"
-            f"- Retained metadata entries: {retained:.2f}%\n"
+
+
+def _format_deferred_dynamic_access_section(descriptor: dict[str, Any]) -> str:
+    for follow_up in descriptor["follow_ups"]:
+        if follow_up["type"] != "deferred_dynamic_access_coverage":
+            continue
+        issue_number = follow_up["issue_number"]
+        issue_url = f"https://github.com/{REPOSITORY}/issues/{issue_number}"
+        return (
+            "### Deferred Dynamic-Access Exploration\n\n"
+            "Exploration was skipped after the repair succeeded because the "
+            f"dynamic-access report contained **{follow_up['uncovered_class_count']} uncovered "
+            f"classes**, above the configured threshold of **{follow_up['class_threshold']}**.\n\n"
+            "Coverage work will continue in the newly opened "
+            f"[library-update-request #{issue_number}]({issue_url}).\n\n"
+            f"Refs: #{issue_number}\n"
+            f"{_format_follow_up_trailer(issue_number)}\n\n"
         )
+    return ""
+
+
+def _format_generation_statistics_blocks(
+        metrics: dict[str, Any],
+        coverage_deferred: bool,
+) -> tuple[str, str]:
+    """Deferred runs only repaired the build, so entry and coverage counts stay out."""
+    if coverage_deferred:
+        return "", ""
+
+    metadata_entry_lines = f"- Metadata entries: {int(metrics.get('metadata_entries', 0) or 0)}\n"
+    test_only_entries = int(metrics.get("test_only_metadata_entries", 0) or 0)
+    if test_only_entries > 0:
+        metadata_entry_lines += f"- Test-only metadata entries: {test_only_entries}\n"
+
+    coverage_lines = f"- Library coverage percentage: {metrics.get('code_coverage_percent', 0)}\n"
+    coverage_lines += (
+        "- Previous library version metadata entries: "
+        f"{int(metrics.get('previous_library_metadata_entries', 0) or 0)}\n"
+    )
+    previous_test_only_entries = int(metrics.get("previous_library_test_only_metadata_entries", 0) or 0)
+    if previous_test_only_entries > 0:
+        coverage_lines += (
+            f"- Previous library version test-only metadata entries: {previous_test_only_entries}\n"
+        )
+    coverage_lines += (
+        "- Previous library version coverage percentage: "
+        f"{metrics.get('previous_library_coverage_percent', 0)}\n"
+    )
+    return metadata_entry_lines, coverage_lines
+
+
+def _format_follow_up_trailer(issue_number: int) -> str:
+    """Machine-readable trailer that merge follow-up parses back out of the body."""
+    return f"Forge-Unblocks-Issue: #{issue_number}"
+
+
+def _format_alias_split_section(split: dict[str, Any] | None) -> str:
+    if not isinstance(split, dict):
+        return ""
+    issue_number = split.get("follow_up_issue_number")
+    issue_lines = ""
+    if isinstance(issue_number, int):
+        issue_lines = (
+            f"Refs: #{issue_number}\n"
+            f"{_format_follow_up_trailer(issue_number)}\n"
+        )
+    return (
+        "\n### Tested-Version Alias Split\n\n"
+        f"- First failing JVM alias: `{split.get('failed_version')}`\n"
+        f"- Generated prefix retained on `{split.get('current_metadata_version')}`: "
+        f"{_format_version_list(split.get('passing_versions'))}\n"
+        f"- Baseline successor entry: `{split.get('successor_metadata_version')}` with "
+        f"{_format_version_list(split.get('successor_versions'))}\n"
+        f"- Baseline metadata copied from: `{split.get('original_metadata_version')}`\n"
+        f"- Baseline tests copied from: `{split.get('original_test_version')}`\n"
+        f"{issue_lines}"
+    )
+
+
+def _format_version_list(value: Any) -> str:
+    if not isinstance(value, list) or not value:
+        return "none"
+    return ", ".join(f"`{item}`" for item in value)
+
+
+def _format_local_ci_verification_section(verification: dict[str, Any] | None) -> str:
+    if not isinstance(verification, dict):
+        return ""
+    commands = verification.get("commands")
+    command_count = len(commands) if isinstance(commands, list) else 0
+    fixups = verification.get("fixups")
+    fixup_count = len(fixups) if isinstance(fixups, list) else 0
+    repo_fix_paths = verification.get("repo_fix_paths")
+    repo_fix_list = repo_fix_paths if isinstance(repo_fix_paths, list) else []
+    body = (
+        "\n### Local CI Verification\n\n"
+        f"- Status: `{verification.get('status', 'unknown')}`\n"
+        f"- Commands run: {command_count}\n"
+        f"- Fixup attempts: {fixup_count}\n"
+    )
+    if verification.get("human_intervention_required"):
+        body += "- Human intervention: required because repository-level files changed during verification.\n"
+    if repo_fix_list:
+        body += "- Repository-level fix paths:\n"
+        body += "".join(f"  - `{path}`\n" for path in repo_fix_list[:20])
     return body
 
 
-def _has_severe_metadata_drop(descriptor: dict[str, Any]) -> bool:
-    if descriptor["template_type"] != "fixes-native-image-run-fail":
-        return False
-    render = descriptor["render"]
-    previous_entries = int(render.get("baseline_metadata_entries") or 0)
-    current_entries = int(render.get("current_metadata_entries") or 0)
-    return previous_entries > 0 and current_entries < previous_entries * SEVERE_METADATA_DROP_RATIO
+def _format_dynamic_access_entry(stats: dict[str, Any]) -> str:
+    return "{covered}/{total} covered calls ({ratio:.2f}%)".format(
+        covered=stats["coveredCalls"],
+        total=stats["totalCalls"],
+        ratio=stats["coverageRatio"] * 100,
+    )
 
 
-def _render_test_comparison(validated: ValidatedPublication | None) -> str:
+def _is_dynamic_access_stats_entry(stats: Any) -> bool:
+    return isinstance(stats, dict) and all(
+        key in stats for key in ("coveredCalls", "totalCalls", "coverageRatio")
+    )
+
+
+def _format_coverage_entry(entry: Any) -> str:
+    if entry == "N/A":
+        return "N/A"
+    return "{covered}/{total} ({ratio:.2f}%)".format(
+        covered=entry["covered"],
+        total=entry["total"],
+        ratio=entry["ratio"] * 100,
+    )
+
+
+def _format_dynamic_access_section(dynamic_access_stats: Any) -> str:
+    if not _is_dynamic_access_stats_entry(dynamic_access_stats):
+        return ""
+    lines = [
+        "Dynamic access coverage:",
+        f"- Overall: {_format_dynamic_access_entry(dynamic_access_stats)}",
+    ]
+    breakdown = dynamic_access_stats.get("breakdown", {})
+    for category in sorted(breakdown):
+        if not _is_dynamic_access_stats_entry(breakdown[category]):
+            continue
+        display_name = category[0].upper() + category[1:]
+        lines.append(f"- {display_name}: {_format_dynamic_access_entry(breakdown[category])}")
+    return "\n".join(lines)
+
+
+def _format_library_coverage_section(library_coverage: dict[str, Any]) -> str:
+    lines = ["Library coverage:"]
+    for metric in ("instruction", "line", "method"):
+        entry = library_coverage.get(metric)
+        if entry != "N/A" and not isinstance(entry, dict):
+            continue
+        display_name = metric[0].upper() + metric[1:]
+        lines.append(f"- {display_name}: {_format_coverage_entry(entry)}")
+    return "\n".join(lines)
+
+
+def _format_stats_section(version_stats: dict[str, Any]) -> str:
+    sections = []
+    dynamic_access = version_stats.get("dynamicAccess")
+    if dynamic_access:
+        dynamic_access_section = _format_dynamic_access_section(dynamic_access)
+        if dynamic_access_section:
+            sections.append(dynamic_access_section)
+    library_coverage = version_stats.get("libraryCoverage")
+    if library_coverage:
+        sections.append(_format_library_coverage_section(library_coverage))
+    if not sections:
+        return ""
+    return (
+        "Stats from `stats/<groupId>/<artifactId>/<metadata-version>/stats.json`:\n\n"
+        + "\n\n".join(sections)
+    )
+
+
+def _format_comparison_pair(
+        old_label: str,
+        new_label: str,
+        old_entry: Any,
+        new_entry: Any,
+        formatter,
+) -> list[str]:
+    return [
+        f"- {old_label}: {formatter(old_entry) if old_entry else 'N/A'}",
+        f"- {new_label}: {formatter(new_entry) if new_entry else 'N/A'}",
+    ]
+
+
+def _format_stats_comparison(
+        before_stats: dict[str, Any] | None,
+        after_stats: dict[str, Any] | None,
+        before_label: str,
+        after_label: str,
+        heading: str,
+) -> str:
+    lines = ["", heading, ""]
+
+    before_da = before_stats.get("dynamicAccess") if before_stats else None
+    after_da = after_stats.get("dynamicAccess") if after_stats else None
+    if before_da or after_da:
+        lines.append("#### Dynamic access coverage")
+        lines.append("")
+        lines.extend(_format_comparison_pair(
+            before_label, after_label, before_da, after_da, _format_dynamic_access_entry,
+        ))
+
+        all_categories: set[str] = set()
+        if before_da:
+            all_categories.update(before_da.get("breakdown", {}).keys())
+        if after_da:
+            all_categories.update(after_da.get("breakdown", {}).keys())
+        for category in sorted(all_categories):
+            display_name = category[0].upper() + category[1:]
+            before_category = before_da.get("breakdown", {}).get(category) if before_da else None
+            after_category = after_da.get("breakdown", {}).get(category) if after_da else None
+            lines.append("")
+            lines.append(f"**{display_name}:**")
+            lines.extend(_format_comparison_pair(
+                before_label, after_label, before_category, after_category, _format_dynamic_access_entry,
+            ))
+        lines.append("")
+
+    before_coverage = before_stats.get("libraryCoverage") if before_stats else None
+    after_coverage = after_stats.get("libraryCoverage") if after_stats else None
+    if before_coverage or after_coverage:
+        lines.append("#### Library coverage")
+        lines.append("")
+        for metric in ("instruction", "line", "method"):
+            display_name = metric[0].upper() + metric[1:]
+            before_entry = before_coverage.get(metric) if before_coverage else None
+            after_entry = after_coverage.get(metric) if after_coverage else None
+            before_entry = before_entry if isinstance(before_entry, dict) or before_entry == "N/A" else None
+            after_entry = after_entry if isinstance(after_entry, dict) or after_entry == "N/A" else None
+            if before_entry or after_entry:
+                lines.append(f"**{display_name}:**")
+                lines.extend(_format_comparison_pair(
+                    before_label, after_label, before_entry, after_entry, _format_coverage_entry,
+                ))
+                lines.append("")
+
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def _format_stats_before_after(
+        before_stats: dict[str, Any] | None,
+        after_stats: dict[str, Any] | None,
+        coordinates: str,
+) -> str:
+    if before_stats is None and after_stats is None:
+        return ""
+    if before_stats == after_stats:
+        return (
+            "\n### Stats comparison (before vs after)\n\n"
+            f"No change in stats for `{coordinates}`.\n"
+        )
+    return _format_stats_comparison(
+        before_stats,
+        after_stats,
+        f"Before ({coordinates})",
+        f"After ({coordinates})",
+        f"### Stats comparison for `{coordinates}`",
+    )
+
+
+def _format_stats_diff(
+        validated: ValidatedPublication | None,
+        old_coordinates: str | None,
+        new_coordinates: str,
+) -> str:
+    """Compare two versions' shipped stats, read from the publication tree as data."""
+    if validated is None or not old_coordinates:
+        return ""
+    old_stats = _load_stats_at_head(validated, old_coordinates)
+    new_stats = _load_stats_at_head(validated, new_coordinates)
+    if old_stats is None and new_stats is None:
+        return ""
+    heading = "### Stats from `stats/<groupId>/<artifactId>/<metadata-version>/stats.json`"
+    if old_stats == new_stats:
+        return (
+            f"\n{heading}\n\n"
+            f"Same entry for both `{old_coordinates}` and `{new_coordinates}`.\n"
+        )
+    return _format_stats_comparison(
+        old_stats, new_stats, old_coordinates, new_coordinates, heading,
+    )
+
+
+def _load_stats_at_head(
+        validated: ValidatedPublication,
+        coordinates: str,
+) -> dict[str, Any] | None:
+    group, artifact, version = coordinates.split(":")
+    path = f"stats/{group}/{artifact}/{version}/stats.json"
+    try:
+        return read_json_at_commit(validated.head_sha, path)
+    except (RuntimeError, TypeError, json.JSONDecodeError):
+        return None
+
+
+def _format_dynamic_access_metadata_entry_note(
+        metadata_entries: int,
+        library_stats: dict[str, Any] | None,
+        evidence: dict[str, Any] | None,
+) -> str:
+    covered_calls = _extract_covered_dynamic_access_calls(library_stats)
+    if covered_calls is None:
+        return ""
+    if metadata_entries > 0 and covered_calls < metadata_entries * DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_RATIO:
+        return ""
+    if metadata_entries <= 0 and covered_calls <= 0:
+        return ""
+
+    lines = [
+        "",
+        "### Metadata/dynamic-access evidence",
+        "",
+        f"- Covered dynamic-access calls: {covered_calls}",
+        f"- Metadata entries: {metadata_entries}",
+        "- These counts are different dimensions: covered dynamic-access calls count observed call sites, "
+        "while metadata entries count generated reachability-config items. Depending on the access type, "
+        "a single metadata rule can cover multiple observed call sites, or no shipped rule may be required "
+        "when the covered access does not target fixed library-owned metadata.",
+    ]
+    call_sites = (evidence or {}).get("covered_call_sites") or []
+    metadata_rules = (evidence or {}).get("metadata_rules") or []
+    if call_sites:
+        lines.append("- Covered call sites:")
+        lines.extend(f"  - {call_site}" for call_site in call_sites)
+    if metadata_rules:
+        lines.append("- Generated metadata rules:")
+        lines.extend(f"  - {metadata_rule}" for metadata_rule in metadata_rules)
+    lines.append(
+        "- Use the call-site and metadata-rule lists together to review whether the observed dynamic-access "
+        "paths are explained by the generated reachability metadata."
+    )
+    return "\n".join(lines) + "\n"
+
+
+def _extract_covered_dynamic_access_calls(library_stats: dict[str, Any] | None) -> int | None:
+    if not isinstance(library_stats, dict):
+        return None
+    dynamic_access = library_stats.get("dynamicAccess")
+    if not isinstance(dynamic_access, dict):
+        return None
+    covered_calls = dynamic_access.get("coveredCalls")
+    if not isinstance(covered_calls, int):
+        return None
+    return covered_calls
+
+
+def _format_forge_metrics_summary_section(descriptor: dict[str, Any]) -> str:
+    metrics = _summary_metrics(descriptor)
+    strategy_name = descriptor.get("strategy_name", "")
+    if not strategy_name and not metrics:
+        return ""
+    return (
+        "\n"
+        f"- Strategy: {strategy_name}\n"
+        f"- Agent: {_agent_name(descriptor)}\n"
+        f"- Model: {_model_display_name(descriptor)}\n"
+        f"- Input tokens: {int(metrics.get('input_tokens_used', 0) or 0)}\n"
+        f"- Cached input tokens: {int(metrics.get('cached_input_tokens_used', 0) or 0)}\n"
+        f"- Output tokens: {int(metrics.get('output_tokens_used', 0) or 0)}\n"
+        f"- Iterations: {int(metrics.get('iterations', 0) or 0)}"
+    )
+
+
+def _format_bounded_test_diff_section(validated: ValidatedPublication | None) -> str:
     if validated is None:
         return ""
     descriptor = validated.descriptor
@@ -486,69 +1006,21 @@ def _render_test_comparison(validated: ValidatedPublication | None) -> str:
     )
 
 
+def _has_severe_metadata_drop(descriptor: dict[str, Any]) -> bool:
+    if descriptor["template_type"] != "fixes-native-image-run-fail":
+        return False
+    render = descriptor["render"]
+    previous_entries = int(render.get("baseline_metadata_entries") or 0)
+    current_entries = int(render.get("current_metadata_entries") or 0)
+    return previous_entries > 0 and current_entries < previous_entries * SEVERE_METADATA_DROP_RATIO
+
+
 def _bound_body(body: str) -> str:
     if len(body) <= MAX_BODY_CHARS:
         return body
     head_chars = MAX_BODY_CHARS - 2200
     return body[:head_chars].rstrip() + "\n\nGenerated detail was truncated.\n\n" + body[-2000:]
 
-def _render_follow_ups(descriptor: dict[str, Any]) -> str:
-    """Reference the follow-up issues Forge already opened locally (§GIT-publication-descriptor)."""
-    sections: list[str] = []
-    for follow_up in descriptor["follow_ups"]:
-        follow_type = follow_up["type"]
-        issue_number = follow_up["issue_number"]
-        issue_lines = f"\nRefs: #{issue_number}\nForge-Unblocks-Issue: #{issue_number}\n"
-        if follow_type == "deferred_dynamic_access_coverage":
-            sections.append(
-                "\n### Deferred Dynamic-Access Exploration\n\n"
-                f"Exploration was deferred for `{follow_up['coordinate']}` because "
-                f"{follow_up['uncovered_class_count']} uncovered classes exceeded the "
-                f"threshold of {follow_up['class_threshold']}.\n{issue_lines}"
-            )
-        else:
-            sections.append(
-                "\n### Tested-Version Alias Split\n\n"
-                f"A successor update is required for `{follow_up['coordinate']}` starting at "
-                f"tested version `{follow_up['tested_version']}`.\n{issue_lines}"
-            )
-    return "".join(sections)
-
-
-def _render_intervention(descriptor: dict[str, Any]) -> str:
-    intervention = descriptor.get("post_generation_intervention")
-    if not intervention:
-        return ""
-    return (
-        "\n### Post-Generation Intervention\n\n"
-        f"- Stage: `{intervention['stage']}`\n"
-        f"- Intervention file: `{intervention['intervention_file']}`\n\n"
-        f"{intervention['analysis_markdown'].strip()}\n"
-    )
-
-
-def _render_local_ci(verification: dict[str, Any]) -> str:
-    lines = [
-        "\n### Local CI Verification\n",
-        f"- Status: `{verification['status']}`",
-        f"- Base commit: `{verification['base_commit']}`",
-        f"- Final verified commit: `{verification.get('final_commit') or 'not recorded'}`",
-        f"- Fixup attempts: {len(verification['fixups'])}",
-    ]
-    commands = verification["commands"]
-    if commands:
-        lines.append("- Commands:")
-        for command in commands:
-            rendered_command = " ".join(str(value) for value in command["command"])
-            lines.append(
-                f"  - `{command['gate']}`: `{rendered_command}` "
-                f"(exit {command['returncode']})"
-            )
-    if verification["repo_fix_paths"]:
-        lines.append("- Repository-level fix paths requiring human review:")
-        for repo_path in verification["repo_fix_paths"][:20]:
-            lines.append(f"  - `{repo_path}`")
-    return "\n".join(lines) + "\n"
 
 def publish(
         validated: ValidatedPublication,
