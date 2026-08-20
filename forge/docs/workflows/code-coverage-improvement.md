@@ -52,7 +52,8 @@ directory name makes the two disagree: the agent is told one path and the
 output-existence check reads another, and the task stalls in a non-terminal
 state after an agent that exited zero. Runs that must not collide — a second
 model, agent, or pass budget on one library — separate themselves by parent
-directory and by `branch_suffix`, never by renaming the workspace. A workspace
+directory, and their published branches by the model the head branch already
+names and by `branch_suffix`, never by renaming the workspace. A workspace
 under a parent directory must also set `workspace_path`, since the cover states
 tell the agent where to resolve artifacts from and that path is no longer
 derivable from `work_subdir` alone.
@@ -456,13 +457,17 @@ The Rhei template should decompose the workflow into these phases:
    since its own invocations are still running when the body is built. Sampled
    PGO evidence stays in the local finalization summary and is not published in
    the PR body. The head branch is
-   `ai/<login>/code-coverage-<artifact>-<version>`, extended with the
-   configured `branch_suffix` when one is set. Publication force-replaces the
-   remote head branch, so two runs of the same coordinate that share a branch
-   name delete each other's pull request head: a run that must coexist with an
-   earlier one — a different model, agent, or pass budget measured against the
-   same library — sets the suffix so each run owns its own branch and each pull
-   request survives the next run.
+   `ai/<login>/code-coverage-<artifact>-<version>-<model>`, extended with the
+   configured `branch_suffix` when one is set. The model segment is the model of
+   the run's `worker_agent` target — the trailing component of
+   `<agent>[<mode>]:<provider>/<model>` — so a coordinate measured on two models
+   publishes two branches without any operator action, and the branch names what
+   generated the pull request it carries. Publication force-replaces the remote
+   head branch, so two runs of the same coordinate that share a branch name
+   delete each other's pull request head: a run that must coexist with an
+   earlier one on the same model — another agent or pass budget measured against
+   the same library — sets the suffix so each run owns its own branch and each
+   pull request survives the next run.
 
 The pipeline tasks run unreviewed: deterministic helpers, schema-validated
 artifacts, and zero-exit validation gates decide their completion. The
@@ -617,6 +622,18 @@ engine:
   supplied schema-valid state files remain accepted at finalization.
 - **Workflow engine** — owns prompt/command cycles, retries, target selection,
   JaCoCo progress comparison, path refresh, and terminal status.
+- **Worker target** — the single `worker_agent` input drives every agent state,
+  defaulting to `pi[high]:openai-codex/gpt-5.6-luna`. Rhei's target grammar
+  carries the reasoning level in the mode bracket, not in the model string: a
+  model written as `<model>:<thinking>` is parsed as a provider/model pair and
+  silently resolves to a different model. The template therefore bundles a `pi`
+  agent profile in its `settings.json` whose `high` and `xhigh` modes add
+  `--thinking`, and publication reads the model back out of the same target to
+  name the head branch (§WF-code-coverage-improvement.4). That profile replaces
+  Rhei's built-in one outright rather than extending it, so it restates the
+  `session` block as well: without it Rhei passes no `--session-dir`, cannot
+  read back the agent's native transcript, and silently captures no per-state
+  snapshot for a workflow whose every agent state is otherwise snapshotted.
 - **Publication handoff** — publishes only PR-eligible runs after local
   CI-equivalent verification passes (§AR-forge-verification-publication-boundary).
   Implemented in `forge/git_scripts/make_pr_code_coverage_improvement.py`, which

@@ -99,9 +99,13 @@ inputs:
     default: ""
 
   - name: worker_agent
-    description: Agent used for execution and fix states.
+    description: >-
+      Rhei target used for execution and fix states, as
+      <agent>[<mode>]:<provider>/<model>. Its model names the publication head
+      branch, and its mode selects the reasoning level from the agent profile in
+      this template's settings.json.
     type: string
-    default: pi:openai-codex/gpt-5.6-sol
+    default: pi[high]:openai-codex/gpt-5.6-luna
 
   - name: fix_passes
     description: Maximum automated fix passes when finalization verification fails.

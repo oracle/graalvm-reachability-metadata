@@ -269,7 +269,11 @@ class PublisherTests(unittest.TestCase):
         self.assertNotIn(requested_metadata_dir, staged_paths)
         self.assertEqual(stage_and_commit.call_args.kwargs["cwd"], repo_path)
 
-    def _publish_with_branch_suffix(self, branch_suffix: str | None) -> str:
+    def _publish_branch(
+            self,
+            branch_suffix: str | None = None,
+            worker_agent: str = "pi[high]:openai-codex/gpt-5.6-luna",
+    ) -> str:
         """Return the head branch suffix `publish` asked `build_ai_branch_name` for."""
         with tempfile.TemporaryDirectory(prefix="coverage-publish-") as repo_path:
             finalization = os.path.join(repo_path, "finalization")
@@ -295,6 +299,7 @@ class PublisherTests(unittest.TestCase):
                 module.publish(
                     repo_path,
                     "com.example:demo:1.0.0",
+                    worker_agent,
                     8380,
                     finalization,
                     coverage_suite,
@@ -307,25 +312,52 @@ class PublisherTests(unittest.TestCase):
 
         return build_branch.call_args.args[0]
 
-    def test_branch_keeps_the_plain_coordinate_without_a_suffix(self) -> None:
+    def test_branch_names_the_generating_model_without_a_suffix(self) -> None:
         self.assertEqual(
-            self._publish_with_branch_suffix(None), "code-coverage-demo-1.0.0"
+            self._publish_branch(None), "code-coverage-demo-1.0.0-gpt-5.6-luna"
         )
         self.assertEqual(
-            self._publish_with_branch_suffix(""), "code-coverage-demo-1.0.0"
+            self._publish_branch(""), "code-coverage-demo-1.0.0-gpt-5.6-luna"
+        )
+
+    def test_branch_model_separates_runs_of_one_coordinate(self) -> None:
+        # Publication force-replaces the remote head branch, so measuring one
+        # coordinate on a second model must not resolve to the first branch.
+        self.assertEqual(
+            self._publish_branch(worker_agent="pi:openai-codex/gpt-5.6-sol"),
+            "code-coverage-demo-1.0.0-gpt-5.6-sol",
+        )
+        self.assertNotEqual(
+            self._publish_branch(worker_agent="pi:openai-codex/gpt-5.6-sol"),
+            self._publish_branch(
+                worker_agent="pi[high]:openai-codex/gpt-5.6-luna"
+            ),
         )
 
     def test_branch_suffix_discriminates_coexisting_runs(self) -> None:
-        # Publication force-replaces the remote head branch, so a second run on
-        # the same coordinate must not resolve to the first run's branch.
+        # Two runs on one model still share the model segment, so the suffix
+        # remains the discriminator that keeps both pull request heads alive.
         self.assertEqual(
-            self._publish_with_branch_suffix("luna"),
-            "code-coverage-demo-1.0.0-luna",
+            self._publish_branch("cap400"),
+            "code-coverage-demo-1.0.0-gpt-5.6-luna-cap400",
         )
         self.assertNotEqual(
-            self._publish_with_branch_suffix("luna"),
-            self._publish_with_branch_suffix("sol"),
+            self._publish_branch("cap400"), self._publish_branch("cap200")
         )
+
+    def test_model_slug_reads_the_model_out_of_a_rhei_target(self) -> None:
+        self.assertEqual(
+            module.model_slug("pi[high]:openai-codex/gpt-5.6-luna"),
+            "gpt-5.6-luna",
+        )
+        self.assertEqual(
+            module.model_slug("codex[xhigh]:openai:gpt-5.5"), "gpt-5.5"
+        )
+        self.assertEqual(module.model_slug("gpt-5.6-sol"), "gpt-5.6-sol")
+
+    def test_model_slug_rejects_a_target_without_a_model(self) -> None:
+        with self.assertRaises(SystemExit):
+            module.model_slug("pi[high]:openai-codex/")
 
     def test_links_without_autoclose_by_default(self) -> None:
         body = module.build_pull_request_body(
