@@ -78,23 +78,19 @@ selected by `--issue-number`, a `--label` queue, or `--run-work-queues`. Issues
 claimed by the same run share one `<run-timestamp>`, so a queue run that
 processes several issues leaves sibling `issue-<number>/<run-timestamp>/`
 directories rather than a separate queue-scoped directory. Each issue directory
-contains `run.log`, a complete merged stdout/stderr log scoped to that issue, and
-`publication.md` when the issue reaches dry-run PR publication. Fixture issue
-processing is sequential — a queue or label run processes its matching fixture
-issues one at a time — so each `run.log` stays scoped to its issue without
-interleaving.
-`publication.md` must be built from the same git-script PR title/body builder
-that live publication uses (§GIT-pr-preview-builders). Fixture mode does not
-write a separate JSON E2E report, mutate live GitHub state, or simulate GitHub
-claim/project-board races. §E2E-forge-workflow-testing.2 §E2E-forge-workflow-testing.9
+contains `run.log`, a complete merged stdout/stderr log scoped to that issue.
+Fixture issue processing is sequential — a queue or label run processes its
+matching fixture issues one at a time — so each `run.log` stays scoped to its
+issue without interleaving. Fixture mode does not write a separate JSON E2E
+report, mutate live GitHub state, or simulate GitHub claim/project-board
+races. §E2E-forge-workflow-testing.2 §E2E-forge-workflow-testing.9
 
 The fixture run is a hard failure when the selected fixture issue cannot be
 loaded/resolved, or when the workflow lifecycle exits incoherently. Routing,
 masking, worktree setup, driver invocation, handoff, and cleanup must be logged
 for agent or human inspection, but they are not a separate side-effect oracle.
 After every fixture run, a human or agent must inspect the generated run
-artifacts, especially `run.log` and any `publication.md`, before treating the
-E2E result as accepted.
+artifacts, especially `run.log`, before treating the E2E result as accepted.
 
 The primary fixture scenario is the new/update library dynamic-access path:
 
@@ -114,16 +110,14 @@ target. §E2E-forge-workflow-testing.5
 
 The `9108` Java-fix publication-continuation fixture covers oversized
 post-repair dynamic access: its marker records a skipped `explore` phase with 16
-uncovered classes against a threshold of 15. Publication reuses that recorded
-decision rather than regenerating a report, and produces a dry-run repair PR body
-that states the skip, omits metadata-entry and coverage statistics, and links a
-newly simulated `library-update-request`. Fixture mode must not create a live
+uncovered classes against a threshold of 15, and the run reuses that recorded
+decision rather than regenerating a report. Fixture mode must not create a live
 issue or depend on Java-fix handoff state beyond the marker phase.
 
 The `9107` fixture is a publication-continuation smoke test: its marker starts at
 `publication` and points at durable execution metrics plus marker-local PR
-extras, so it verifies `.pending_metrics.json` reconstruction and dry-run PR
-body generation without invoking an agent-backed generation workflow.
+extras, so it verifies `.pending_metrics.json` reconstruction without invoking
+an agent-backed generation workflow.
 It also carries the `priority` label so a fixture label run with
 `--priority priority` can verify exclusive priority-tier selection without
 starting an agent-backed generation workflow.
@@ -391,6 +385,6 @@ When the E2E test finishes, report:
 - The routed driver and workflow engine.
 - The observed result at each boundary in §5.
 - Links or paths to the fixture artifact directory, `run.log`, metrics,
-  generated tests, metadata, and `publication.md` or preserved branch.
+  generated tests, metadata, and the preserved branch.
 - Any suspicious behavior, residual risk, or reason the result should not be
   trusted.
