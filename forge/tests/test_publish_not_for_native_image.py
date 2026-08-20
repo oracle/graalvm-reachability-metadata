@@ -8,6 +8,7 @@ import unittest
 from unittest.mock import patch
 
 from git_scripts import publish_not_for_native_image, branch_publication
+from git_scripts.local_branch_review import LocalBranchReviewOutcome
 from utility_scripts.local_ci_verification import LocalCIVerificationResult
 
 
@@ -38,6 +39,17 @@ class PublishNotForNativeImageTests(unittest.TestCase):
             self.assertEqual(kwargs["base_commit"], "FETCH_HEAD")
             return result
 
+        def fake_run_local_branch_review(**kwargs):
+            events.append("local-review")
+            self.assertEqual(kwargs["task_type"], "not-for-native-image")
+            self.assertIs(kwargs["local_ci_verification"], result)
+            return LocalBranchReviewOutcome(
+                is_approved=True,
+                review_comment="No blocking issues.",
+                model="test-model",
+                local_ci_verification=result,
+            )
+
         with patch.object(
                     publish_not_for_native_image,
                     "get_not_for_native_image_marker",
@@ -59,6 +71,11 @@ class PublishNotForNativeImageTests(unittest.TestCase):
                     "run_local_ci_verification",
                     side_effect=fake_run_local_ci_verification,
                 ), \
+                patch.object(
+                    branch_publication,
+                    "run_local_branch_review",
+                    side_effect=fake_run_local_branch_review,
+                ), \
                 patch.object(branch_publication, "run_git_transport", side_effect=fake_run_git_transport), \
                 patch.object(branch_publication.subprocess, "run", side_effect=fake_subprocess_run):
             branch, local_ci_verification = publish_not_for_native_image.push_marker_branch(
@@ -73,5 +90,5 @@ class PublishNotForNativeImageTests(unittest.TestCase):
             branch,
         )
         self.assertIs(local_ci_verification, result)
-        self.assertEqual(events, ["rebase", "local-ci", "push"])
+        self.assertEqual(events, ["rebase", "local-ci", "local-review", "push"])
 

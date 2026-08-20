@@ -165,6 +165,7 @@ def write_publication_descriptor(
         base_commit: str,
         descriptor_input: PublicationDescriptorInput,
         local_ci_verification: LocalCIVerificationResult,
+        local_review: dict[str, Any] | None = None,
 ) -> str:
     """Write and validate the descriptor that Actions will treat as data."""
     if descriptor_input.status not in ELIGIBLE_STATUSES:
@@ -197,6 +198,10 @@ def write_publication_descriptor(
         "follow_ups": copy.deepcopy(descriptor_input.follow_ups),
         "render": copy.deepcopy(descriptor_input.render),
     }
+    if local_review is not None:
+        # Optional so a publication resumed from a marker written before the
+        # review phase existed still validates. §FS-local-branch-review
+        descriptor["local_review"] = copy.deepcopy(local_review)
     if descriptor_input.previous_coordinates:
         previous_group, previous_artifact, previous_version = parse_coordinate_parts(
             descriptor_input.previous_coordinates,

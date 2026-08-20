@@ -35,8 +35,17 @@ contribute only their expected paths, commit wording, and bounded hooks needed
 before rebase or verification. The pipeline creates a publication ID and unique
 `ai/<producer>/<suffix>-<publication-id>` branch, stages expected paths, rebases
 onto a fresh upstream `master`, runs the pre-publication verification gate,
-writes and validates the descriptor, commits any resulting changes, and pushes
-the final HEAD directly to `oracle/graalvm-reachability-metadata`.
+reviews the verified branch in isolation (§FS-local-branch-review), writes and
+validates the descriptor, commits any resulting changes, and pushes the final
+HEAD directly to `oracle/graalvm-reachability-metadata`.
+
+The review phase sits between the gate and the descriptor because it needs the
+resolved descriptor input as evidence and its verdict must reach the descriptor
+the publisher reads. A non-approval may trigger one bounded repair, which re-runs
+the gate over the repaired tree; if that re-run fails, the pipeline restores the
+verified pre-repair commit and publishes it. Any non-approval also appends an
+entry to `forge/FINDINGS.md`, which is committed before the descriptor commit so
+the descriptor commit remains the branch tip the trusted publisher requires.
 
 The descriptor and every file used by the publisher must be in that final
 commit. Local Forge must neither run `gh pr create` nor make a second
@@ -49,7 +58,8 @@ finalization completes without waiting for Actions to create the PR.
 Each local publication route must encode workflow-specific staging policy
 instead of a generic `git add .`, staging only generated tests, metadata
 directories, metadata index entries, stats, execution metrics, the publication
-descriptor, and workflow-specific resumable state. New-library support,
+descriptor, `forge/FINDINGS.md` when the pre-push review recorded a finding
+(§FS-local-branch-review), and workflow-specific resumable state. New-library support,
 Java-fix, native-run-fix, and coverage-improvement routes each define their
 expected paths; the not-for-native-image route
 (§GIT-not-for-native-image-publication) stages the marker
@@ -79,6 +89,11 @@ The descriptor contains data, never GitHub instructions:
   reference and publication metrics, local verification evidence, optional
   post-generation intervention, and Forge revision evidence;
 - typed flags for chunking, final-chunk state, and human-intervention evidence;
+- the optional pre-push review verdict of §FS-local-branch-review, carrying the
+  approval state, the reviewing model, the review comment, and — when a repair
+  ran — the original finding and what the repair changed. The object is optional
+  so a publication resumed from a marker written before the phase existed still
+  validates;
 - typed follow-up facts for deferred dynamic-access coverage or a tested-version
   split, each carrying the number of the issue Forge already opened locally, so
   the publisher only references it.

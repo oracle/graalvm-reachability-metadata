@@ -142,6 +142,44 @@
         }
       }
     },
+    "local_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "is_approved",
+        "review_comment",
+        "model"
+      ],
+      "properties": {
+        "is_approved": {
+          "type": "boolean"
+        },
+        "review_comment": {
+          "type": "string",
+          "maxLength": 30000
+        },
+        "model": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "original_finding": {
+          "type": "string",
+          "maxLength": 30000
+        },
+        "repair_summary": {
+          "type": "string",
+          "maxLength": 30000
+        },
+        "repair_changed_paths": {
+          "type": "array",
+          "maxItems": 200,
+          "items": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      }
+    },
     "forge": {
       "type": "object",
       "additionalProperties": false,

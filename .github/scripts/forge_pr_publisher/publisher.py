@@ -294,6 +294,7 @@ def render_publication(
     body += _render_follow_ups(descriptor)
     body += _render_intervention(descriptor)
     body += _render_local_ci(descriptor["local_ci_verification"])
+    body += _render_local_review(descriptor)
     forge = descriptor["forge"]
     body += (
         "\n### Forge\n\n"
@@ -527,6 +528,37 @@ def _render_intervention(descriptor: dict[str, Any]) -> str:
     )
 
 
+def _local_review_blocked(descriptor: dict[str, Any]) -> bool:
+    """Return True when the pre-push review did not end approved (§forge/FS-local-branch-review)."""
+    review = descriptor.get("local_review")
+    return isinstance(review, dict) and not review["is_approved"]
+
+
+def _render_local_review(descriptor: dict[str, Any]) -> str:
+    """Render the pre-push review verdict, which triage reads before the descriptor."""
+    review = descriptor.get("local_review")
+    if not review:
+        return ""
+    lines = [
+        "\n### Pre-Push Branch Review\n",
+        f"- Verdict: {'approved' if review['is_approved'] else 'changes requested'}",
+        f"- Reviewing model: `{review['model']}`",
+        "",
+        review["review_comment"].strip(),
+    ]
+    original_finding = review.get("original_finding")
+    if original_finding:
+        lines.extend(["", "**Original finding**", "", original_finding.strip()])
+    repair_summary = review.get("repair_summary")
+    if repair_summary:
+        lines.extend(["", f"**Repair**: {repair_summary.strip()}"])
+    changed_paths = review.get("repair_changed_paths") or []
+    if changed_paths:
+        lines.extend(["", "Paths the repair changed:"])
+        lines.extend(f"- `{changed_path}`" for changed_path in changed_paths[:20])
+    return "\n".join(lines) + "\n"
+
+
 def _render_local_ci(verification: dict[str, Any]) -> str:
     lines = [
         "\n### Local CI Verification\n",
@@ -604,7 +636,11 @@ def _ensure_pull_request_metadata(
     modifiers = descriptor["modifiers"]
     if modifiers["chunked_dynamic_access"]:
         labels.append("chunked-dynamic-access")
-    if modifiers["human_intervention"] or _has_severe_metadata_drop(descriptor):
+    if (
+            modifiers["human_intervention"]
+            or _has_severe_metadata_drop(descriptor)
+            or _local_review_blocked(descriptor)
+    ):
         labels.append("human-intervention")
     run(
         [

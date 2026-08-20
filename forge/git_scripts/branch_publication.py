@@ -22,6 +22,7 @@ from git_scripts.common_git import (
     run_git_transport,
     stage_and_commit as stage_and_commit_common,
 )
+from git_scripts.local_branch_review import run_local_branch_review
 from git_scripts.publication_descriptor import (
     PublicationDescriptorInput,
     build_publication_branch,
@@ -280,6 +281,19 @@ def publish_branch(
         )
         if final_publication_id != publication_id:
             raise ValueError("Publication descriptor identity changed during finalization")
+        # The one slot for the pre-push review: the descriptor input has resolved,
+        # so the review can read the render statistics, and the descriptor is not
+        # written yet, so the verdict still reaches it. §FS-local-branch-review
+        review_outcome = run_local_branch_review(
+            repo_path=repo_path,
+            coordinates=coordinates,
+            base_commit=base_ref,
+            task_type=final_descriptor_input.task_type,
+            local_ci_verification=local_ci_verification,
+            descriptor_input=final_descriptor_input,
+            metrics_repo_path=metrics_repo_path,
+        )
+        local_ci_verification = review_outcome.local_ci_verification
         descriptor_path = write_publication_descriptor(
             repo_path=repo_path,
             coordinates=coordinates,
@@ -289,6 +303,7 @@ def publish_branch(
             base_commit=base_ref,
             descriptor_input=final_descriptor_input,
             local_ci_verification=local_ci_verification,
+            local_review=review_outcome.to_descriptor_payload(),
         )
         descriptor_relative_path = os.path.relpath(descriptor_path, repo_path)
         stage_and_commit_common(
