@@ -15,6 +15,7 @@ from typing import Iterator
 from unittest.mock import Mock, patch
 
 from utility_scripts.host_requirements import (
+    COVERAGE_REQUIREMENTS,
     GRAALVM_SCHEMA_PATH,
     HostRequirements,
     QueueRequirements,
@@ -238,6 +239,71 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertEqual("WARN", mismatched_version.status)
         self.assertFalse(mismatched_version.blocks_work)
         self.assertTrue(host_requirements.results[2].blocks_work)
+
+    def test_coverage_lane_resolves_one_graalvm_from_graalvm_home_at_jdk_25_or_newer(self) -> None:
+        with _graalvm_home() as graalvm_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                "gpt-5.6-terra",
+                {"GRAALVM_HOME": graalvm_home},
+                requirements=COVERAGE_REQUIREMENTS,
+            )
+
+            with patch("utility_scripts.host_requirements.run_command") as command:
+                command.return_value = subprocess.CompletedProcess(
+                    ["java", "-version"], 0, "", 'openjdk version "26.0.1" 2026-10-20\n'
+                )
+                host_requirements._check_environment()
+
+        selected, = host_requirements.results
+        self.assertEqual("GRAALVM_HOME", selected.name)
+        self.assertEqual("PASS", selected.status)
+
+    def test_coverage_lane_falls_back_to_java_home_and_rejects_pre_25(self) -> None:
+        with _graalvm_home() as graalvm_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                "gpt-5.6-terra",
+                {"JAVA_HOME": graalvm_home},
+                requirements=COVERAGE_REQUIREMENTS,
+            )
+
+            with patch("utility_scripts.host_requirements.run_command") as command:
+                command.return_value = subprocess.CompletedProcess(
+                    ["java", "-version"], 0, "", 'openjdk version "21.0.5" 2024-10-15\n'
+                )
+                host_requirements._check_environment()
+
+        selected, = host_requirements.results
+        self.assertEqual("JAVA_HOME", selected.name)
+        self.assertTrue(selected.blocks_work)
+        self.assertIn("JDK 25 or newer", selected.remediation)
+
+    def test_coverage_lane_keeps_native_image_mandatory_and_demands_no_issue_lanes(self) -> None:
+        with _graalvm_home(native_image=False) as graalvm_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                "gpt-5.6-terra",
+                {"GRAALVM_HOME": graalvm_home},
+                requirements=COVERAGE_REQUIREMENTS,
+            )
+            host_requirements._check_environment()
+
+        selected, = host_requirements.results
+        self.assertTrue(selected.blocks_work)
+        self.assertIn("bin/native-image is missing", selected.detail)
+        self.assertNotIn(
+            "GRAALVM_HOME_25_0", [result.name for result in host_requirements.results]
+        )
+
+    def test_coverage_lane_selects_the_build_toolchain(self) -> None:
+        self.assertTrue(COVERAGE_REQUIREMENTS.build_work)
+        self.assertTrue(COVERAGE_REQUIREMENTS.any_work)
+        self.assertFalse(COVERAGE_REQUIREMENTS.issue_work)
+        self.assertTrue(COVERAGE_REQUIREMENTS.github_work)
 
     def test_disabled_version_check_skips_version_resolution_and_comparison(self) -> None:
         with _graalvm_home() as graalvm_home:

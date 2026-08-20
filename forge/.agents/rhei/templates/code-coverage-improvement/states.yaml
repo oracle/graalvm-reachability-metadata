@@ -31,9 +31,87 @@ name: code-coverage-improvement
 version: 1.0.0
 
 states:
+  requirement-test-prepared:
+    description: Requirement test is generated and ready for execution.
+    initial: true
+    concurrent: true
+    program: "true"
+
+  requirement-test-execute:
+    description: Verify host requirements and the issue coordinate before any work starts.
+    concurrent: true
+    program: |
+      # Step 1: deterministic host capabilities for the coverage lane
+      # (§FS-forge-host-requirements). The gate prints one report with a `Fix:`
+      # line per failed check, so it runs every check instead of stopping early.
+      python3 "{{repo_checkout}}/{{work_subdir}}/utility_scripts/host_requirements.py" \
+        --forge-dir "{{repo_checkout}}/{{work_subdir}}" \
+        --reachability-metadata-path "{{repo_checkout}}" \
+        --mode coverage || exit 1
+
+      # Step 2: the coordinate named in the issue title must have its own test
+      # project. The coverage suite is committed into that directory and CI
+      # compiles it against that version, so a coordinate without one would be
+      # written and measured against a library the merge gate never builds
+      # (§WF-code-coverage-improvement.2).
+      python3 - <<'PY' || exit 2
+      import json
+      import os
+      import re
+      import subprocess
+      import sys
+
+      repo = "{{repo}}"
+      issue_number = "{{issue_number}}"
+      repo_checkout = "{{repo_checkout}}"
+      override = "{{coordinate}}".strip()
+
+      if override:
+          coordinate = override
+          source = "the configured coordinate override"
+      else:
+          try:
+              title = json.loads(subprocess.run(
+                  ["gh", "issue", "view", issue_number, "--repo", repo, "--json", "title"],
+                  capture_output=True, text=True, check=True,
+              ).stdout)["title"]
+          except (subprocess.CalledProcessError, ValueError, KeyError) as error:
+              print(f"cannot read the title of {repo}#{issue_number}: {error}", file=sys.stderr)
+              sys.exit(1)
+          matches = re.findall(r"[\w.\-]+:[\w.\-]+:[\w.\-]+", title)
+          if len(matches) != 1:
+              print(
+                  f"the title of {repo}#{issue_number} names {len(matches)} coordinates, "
+                  f"expected exactly one: {title!r}",
+                  file=sys.stderr,
+              )
+              sys.exit(1)
+          coordinate = matches[0]
+          source = f"the title of {repo}#{issue_number}"
+
+      group, artifact, version = coordinate.split(":")
+      test_project = os.path.join(repo_checkout, "tests", "src", group, artifact, version)
+      if os.path.isdir(test_project):
+          print(f"{coordinate} has its test project at tests/src/{group}/{artifact}/{version}.")
+          sys.exit(0)
+
+      available = sorted(
+          entry for entry in os.listdir(os.path.join(repo_checkout, "tests", "src", group, artifact))
+          if os.path.isdir(os.path.join(repo_checkout, "tests", "src", group, artifact, entry))
+      ) if os.path.isdir(os.path.join(repo_checkout, "tests", "src", group, artifact)) else []
+      print(f"{coordinate}, from {source}, has no test project.", file=sys.stderr)
+      print(f"Expected directory: tests/src/{group}/{artifact}/{version}", file=sys.stderr)
+      print(
+          f"Fix: retitle the issue to name a version with its own test project"
+          + (f" ({', '.join(available)})." if available else " for this artifact."),
+          file=sys.stderr,
+      )
+      sys.exit(1)
+      PY
+    program_timeout: 10m
+
   prepared:
     description: Pipeline task is generated and ready for execution.
-    initial: true
     concurrent: true
     program: "true"
 
@@ -814,6 +892,18 @@ states:
     final: true
 
 transitions:
+  - from: requirement-test-prepared
+    to: requirement-test-execute
+    description: Requirement test enters execution.
+
+  # Exit 1 (host requirements) and exit 2 (no test project for the coordinate) are
+  # deliberately unrouted: neither is repairable by an agent, so rhei stops the run
+  # with its own error and names the log instead of parking the task in a gating state.
+  - from: requirement-test-execute
+    to: completed
+    exit_code: 0
+    description: Host requirements and the issue coordinate are valid.
+
   - from: prepared
     to: execute
     description: Pipeline task enters execution.

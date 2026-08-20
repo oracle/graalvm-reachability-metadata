@@ -72,11 +72,32 @@ class QueueRequirements:
     issue_work: bool
     review_work: bool
     github_work: bool = True
+    coverage_work: bool = False
 
     @property
     def any_work(self) -> bool:
-        """Return whether this run starts issue or review work."""
-        return self.issue_work or self.review_work
+        """Return whether this run starts issue, coverage, or review work."""
+        return self.issue_work or self.coverage_work or self.review_work
+
+    @property
+    def build_work(self) -> bool:
+        """Return whether this run builds and tests libraries locally.
+
+        Issue work and coverage work select the same build capabilities; they differ
+        only in how GraalVM is resolved (§FS-forge-host-requirements).
+        """
+        return self.issue_work or self.coverage_work
+
+
+#: Capabilities the code-coverage-improvement workflow needs: the build toolchain and a
+#: GitHub account that can publish its pull request, but no issue-queue GraalVM lanes
+#: (§FS-forge-host-requirements, §WF-code-coverage-improvement).
+COVERAGE_REQUIREMENTS = QueueRequirements(
+    issue_work=False,
+    review_work=False,
+    github_work=True,
+    coverage_work=True,
+)
 
 
 @dataclass(frozen=True)
@@ -179,8 +200,12 @@ class HostRequirements:
     def _print_manifest(self) -> None:
         issue_text = "enabled" if self.requirements.issue_work else "disabled"
         review_text = "enabled" if self.requirements.review_work else "disabled"
+        coverage_text = "enabled" if self.requirements.coverage_work else "disabled"
         print("[forge-host] Deterministic host requirements")
-        print(f"[forge-host] Queues: issue work={issue_text}, PR review={review_text}")
+        print(
+            f"[forge-host] Queues: issue work={issue_text}, coverage work={coverage_text}, "
+            f"PR review={review_text}"
+        )
         print(f"[forge-host] Forge checkout: {self.forge_dir}")
         print(f"[forge-host] Selected repository: {self.repo_dir}")
         print("[forge-host] Required host permissions:")
@@ -193,7 +218,7 @@ class HostRequirements:
             print("  - GitHub repository: Contents=write, Issues=write, Pull requests=write")
             print(f"  - GitHub project: Projects=write for oracle project {PROJECT_NUMBER}")
             github_operations: list[str] = []
-            if self.requirements.issue_work:
+            if self.requirements.build_work:
                 github_operations.extend(("assign/label/comment issues", "push generated branches"))
             if self.requirements.review_work:
                 github_operations.extend(("submit reviews", "merge eligible PRs"))
@@ -205,7 +230,7 @@ class HostRequirements:
         if proxy_url:
             print(f"  - Network route: HTTPS reachability is checked through the configured proxy {proxy_url}")
         print("  - Pi reviews: authenticated provider plus unattended tool approval (`pi --approve`)")
-        if self.requirements.issue_work:
+        if self.requirements.build_work:
             print("  - Codex recovery: approval=never, sandbox=danger-full-access, worktree write, provider network")
             print("  - Docker: access to the Docker daemon and configured image registries")
         print("[forge-host] Required environment:")
@@ -214,10 +239,14 @@ class HostRequirements:
                 print(f"  - {variable}={self._required_graalvm_description(variable)}")
             print(f"  - Every GraalVM must contain {GRAALVM_SCHEMA_PATH}")
             print("  - JAVA_HOME is aligned to GRAALVM_HOME by Forge; explicit matching value is recommended")
+        elif self.requirements.coverage_work:
+            print("  - GRAALVM_HOME (then JAVA_HOME)=<GraalVM JDK 25 or newer with Native Image>")
+            print(f"  - The selected GraalVM must contain {GRAALVM_SCHEMA_PATH}")
         elif self.requirements.review_work:
             print("  - JAVA_HOME=<JDK 25 with executable bin/java> (GRAALVM_HOME is not required for review-only work)")
         print(f"  - FORGE_REVIEW_MODEL={self.review_model}")
-        print(f"  - GraalVM version match: {self._version_check_description()}")
+        if self.requirements.issue_work:
+            print(f"  - GraalVM version match: {self._version_check_description()}")
 
     def _required_graalvm_description(self, variable: str) -> str:
         """Describe the distribution one GraalVM lane must point to."""
@@ -256,8 +285,8 @@ class HostRequirements:
             ("git", "git", True, ("--version",)),
             ("GitHub CLI", "gh", self.requirements.github_work, ("--version",)),
             ("Pi", "pi", any_work, ("--version",)),
-            ("Codex", "codex", self.requirements.issue_work, ("--version",)),
-            ("Docker CLI", "docker", self.requirements.issue_work, ("--version",)),
+            ("Codex", "codex", self.requirements.build_work, ("--version",)),
+            ("Docker CLI", "docker", self.requirements.build_work, ("--version",)),
         )
         for name, command, required, version_args in tool_specs:
             self._check_tool(name, command, required, version_args)
@@ -356,6 +385,9 @@ class HostRequirements:
         )
 
     def _check_environment(self) -> None:
+        if self.requirements.coverage_work and not self.requirements.issue_work:
+            self._check_coverage_graalvm_home()
+            return
         self._check_graalvm_home(
             "GRAALVM_HOME",
             self.requirements.issue_work,
@@ -383,6 +415,50 @@ class HostRequirements:
             self._add("environment", "JAVA_HOME alignment", True, True, detail)
         elif self.requirements.review_work:
             self._check_review_java_home()
+
+    def _check_coverage_graalvm_home(self) -> None:
+        """Require one Forge-usable GraalVM of JDK 25 or newer for coverage work.
+
+        Coverage work builds native images, so Native Image and the reachability-metadata
+        schema stay mandatory; only the pinned GA/EA lane matching is dropped
+        (§FS-forge-host-requirements).
+        """
+        for variable in ("GRAALVM_HOME", "JAVA_HOME"):
+            home = self.environment.get(variable)
+            if not home:
+                continue
+            problems = check_graalvm_installation(home)
+            if problems:
+                self._add(
+                    "environment",
+                    variable,
+                    True,
+                    False,
+                    f"{variable}={home}: {'; '.join(problems)}",
+                    f"Point `{variable}` to a GraalVM that provides Native Image and {GRAALVM_SCHEMA_PATH}.",
+                )
+                return
+            version = run_command([os.path.join(home, "bin", "java"), "-version"], self.environment)
+            version_line = first_output_line(version) or "java version unavailable"
+            major = java_version_major(version_line) if version.returncode == 0 else None
+            self._add(
+                "environment",
+                variable,
+                True,
+                major is not None and major >= 25,
+                f"{variable}={home} ({version_line})",
+                f"Point `{variable}` to a GraalVM of JDK 25 or newer; coverage work requires 25+.",
+            )
+            return
+        self._add(
+            "environment",
+            "GRAALVM_HOME",
+            True,
+            False,
+            "neither GRAALVM_HOME nor JAVA_HOME is set",
+            "Export `GRAALVM_HOME=/absolute/path/to/a/graalvm` of JDK 25 or newer that provides "
+            f"Native Image and {GRAALVM_SCHEMA_PATH}.",
+        )
 
     def _check_review_java_home(self) -> None:
         java_home = self.environment.get("JAVA_HOME")
@@ -618,7 +694,7 @@ class HostRequirements:
             ("Forge local repositories", os.path.join(self.forge_dir, "local_repositories"), any_work, ""),
             ("Gradle state", resolve_gradle_state_root(self.environment), any_work, ""),
             ("Pi state", resolve_pi_state_root(self.environment), any_work, ""),
-            ("Codex state", resolve_codex_state_root(self.environment), self.requirements.issue_work, ""),
+            ("Codex state", resolve_codex_state_root(self.environment), self.requirements.build_work, ""),
         ]
         for name, path, required, skip_detail in paths:
             if not required:
@@ -640,7 +716,7 @@ class HostRequirements:
             (host, self.requirements.github_work) for host in NETWORK_HOSTS_GITHUB
         ]
         hosts.extend((host, self.requirements.any_work) for host in NETWORK_HOSTS_WORK)
-        hosts.extend((host, self.requirements.issue_work) for host in NETWORK_HOSTS_ISSUE_WORK)
+        hosts.extend((host, self.requirements.build_work) for host in NETWORK_HOSTS_ISSUE_WORK)
         for host, required in hosts:
             if not required:
                 self._add("network", host, False, None, "not required by this run")
@@ -824,8 +900,8 @@ query($owner: String!, $name: String!, $project: Int!) {
         self._add(
             "github",
             "generated-branch push target",
-            self.requirements.issue_work,
-            fork_permission in WRITE_REPOSITORY_PERMISSIONS if self.requirements.issue_work else None,
+            self.requirements.build_work,
+            fork_permission in WRITE_REPOSITORY_PERMISSIONS if self.requirements.build_work else None,
             (
                 f"repository={(fork or {}).get('nameWithOwner') or f'{login}/{REPOSITORY_NAME}'}, "
                 f"permission={fork_permission}"
@@ -858,7 +934,7 @@ query($owner: String!, $name: String!, $project: Int!) {
         )
 
     def _check_codex(self) -> None:
-        if not self.requirements.issue_work:
+        if not self.requirements.build_work:
             self._add("agent", "Codex recovery", False, None, "not required by this run")
             return
         if resolve_executable("codex") is None:
@@ -898,7 +974,7 @@ query($owner: String!, $name: String!, $project: Int!) {
         )
 
     def _check_docker(self) -> None:
-        if not self.requirements.issue_work:
+        if not self.requirements.build_work:
             self._add("docker", "daemon access", False, None, "not required by this run")
             return
         if resolve_executable("docker") is None:
@@ -1429,6 +1505,16 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
             "contains --forge-dir."
         ),
     )
+    parser.add_argument(
+        "--mode",
+        choices=("queues", "coverage"),
+        default="queues",
+        help=(
+            "Which capabilities to require. `queues` (the default) derives them from the effective "
+            "queue limits; `coverage` selects the code-coverage-improvement lane, which needs the "
+            "build toolchain but resolves GraalVM from GRAALVM_HOME/JAVA_HOME at JDK 25 or newer."
+        ),
+    )
     parser.add_argument("--python-bin", default=sys.executable, help="Python interpreter selected by do-work.")
     parser.add_argument("--review-model", default=DEFAULT_REVIEW_MODEL, help="Pi model used for PR reviews.")
     parser.add_argument(
@@ -1453,6 +1539,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             args.forge_dir,
             args.python_bin,
             args.review_model,
+            requirements=COVERAGE_REQUIREMENTS if args.mode == "coverage" else None,
             graalvm_version_check=resolve_graalvm_version_check(args.graalvm_version_check),
             repo_dir=args.reachability_metadata_path,
         )

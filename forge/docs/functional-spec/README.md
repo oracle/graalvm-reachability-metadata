@@ -170,6 +170,17 @@ requirement itself has exactly one definition, so the repeated GraalVM
 environment checks performed before issue work resolve to the same rule the gate
 enforces.
 
+The gate is also invoked outside `forge_metadata.py`, by workflows that build
+and test libraries without going through issue dispatch. Coverage work is such a
+mode: it selects the same build capabilities as issue work — Codex, Docker, the
+Gradle wrapper, the library and registry hosts, and the Codex state root — but
+resolves GraalVM from `GRAALVM_HOME`, then `JAVA_HOME`, requiring one Forge-usable
+distribution of JDK 25 or newer instead of the three pinned issue lanes. Coverage
+work builds native images, so Native Image and the reachability-metadata schema
+remain mandatory; only the pinned-release matching is dropped, because the mode
+does not produce the GA/EA comparison lanes those releases exist for
+(§WF-code-coverage-improvement).
+
 The gate validates two sets of paths for what each of them owns. Forge-owned
 paths — the Forge checkout, its `local_repositories`, the pinned GraalVM
 configuration, and the self-update remote — always resolve from the checkout

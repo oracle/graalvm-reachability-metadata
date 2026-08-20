@@ -1,5 +1,38 @@
+### Task code-coverage-requirement-test: Verify host requirements
+**State:** requirement-test-prepared
+
+- Source issue: `https://github.com/{{repo}}/issues/{{issue_number}}`
+- Coordinate override: `{{coordinate}}`
+- Helper script: `forge/utility_scripts/host_requirements.py`
+- Purpose: refuse to start a run the host cannot finish, before any agent is
+  invoked or any worktree is created (§FS-forge-host-requirements).
+- Execution: this task is a deterministic program (the `requirement-test-execute`
+  state), not an agent checklist.
+- Program steps:
+  1. Run the host-requirements gate in its coverage mode:
+     `host_requirements.py --forge-dir <work path> --reachability-metadata-path
+     <repo checkout> --mode coverage`. The coverage lane needs the same build
+     capabilities as issue work — Codex, Docker, the Gradle wrapper, the library
+     and registry hosts, GitHub permissions to publish the pull request — but
+     resolves GraalVM from `GRAALVM_HOME`, then `JAVA_HOME`, requiring one
+     Forge-usable distribution of JDK 25 or newer rather than the three pinned
+     issue lanes. The gate runs every check and prints one report with a `Fix:`
+     line per failure.
+  2. Resolve the coordinate from `{{coordinate}}` when it is set, otherwise from
+     the issue title, and require `tests/src/<group>/<artifact>/<version>` to
+     exist. The check is literal: the coverage suite is committed into that
+     directory and CI compiles it there, so a coordinate whose version has no
+     test project would be written and measured against a library the merge gate
+     never builds. An issue naming a tested version other than the test project's
+     own version is retitled, not resolved silently.
+- Failure handling: neither failure is repairable by an agent, so no exit code
+  except 0 is routed. Rhei stops the run with its own error and names the state
+  log, which holds the gate report and the coordinate diagnosis.
+- Artifacts: none; the state log is the record.
+
 ### Task code-coverage-convert: Convert issue {{issue_number}}
 **State:** prepared
+**Prior:** Task code-coverage-requirement-test
 
 - Source issue: `https://github.com/{{repo}}/issues/{{issue_number}}`
 - Repository: `{{repo}}`
