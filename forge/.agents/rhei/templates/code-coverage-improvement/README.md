@@ -14,16 +14,17 @@ rhei instantiate code-coverage-improvement \
   --output code-coverage-1234
 ```
 
-The rendered workspace contains eight tasks:
+The rendered workspace contains nine tasks:
 
-1. Convert the issue and create or reuse the per-issue worktree.
-2. Prepare the already-supported library and dedicated coverage suite.
-3. Generate API inventory artifacts.
-4. The API coverage loop: `api-measure -> api-cover -> api-measure`.
-5. Prepare native metadata once (generate plus Codex repair) for the PGO builds.
-6. The deep coverage loop: `deep-measure -> deep-cover -> deep-measure`.
-7. Finalize validation and metrics deterministically.
-8. Publish a pull request with separate JaCoCo and sampled-path evidence.
+1. Verify the coverage lane's host requirements deterministically.
+2. Convert the issue and create or reuse the per-issue worktree.
+3. Validate and prepare the already-supported library and coverage suite.
+4. Generate API inventory artifacts.
+5. The API coverage loop: `api-measure -> api-cover -> api-measure`.
+6. Prepare native metadata once (generate plus Codex repair) for the PGO builds.
+7. The deep coverage loop: `deep-measure -> deep-cover -> deep-measure`.
+8. Finalize validation and metrics deterministically.
+9. Publish a pull request with separate JaCoCo and sampled-path evidence.
 
 The coverage loops live in the state machine, not in unrolled tasks.
 Measurement (JaCoCo report generation and correlation; for the deep loop also

@@ -38,21 +38,30 @@ states:
     program: "true"
 
   requirement-test-execute:
-    description: Verify host requirements and the issue coordinate before any work starts.
+    description: Verify host requirements before any work starts.
     concurrent: true
     program: |
-      # Step 1: deterministic host capabilities for the coverage lane
+      # Deterministic host capabilities for the coverage lane
       # (§FS-forge-host-requirements). The gate prints one report with a `Fix:`
       # line per failed check, so it runs every check instead of stopping early.
       python3 "{{repo_checkout}}/{{work_subdir}}/utility_scripts/host_requirements.py" \
         --forge-dir "{{repo_checkout}}/{{work_subdir}}" \
         --reachability-metadata-path "{{repo_checkout}}" \
         --mode coverage || exit 1
+    program_timeout: 10m
 
-      # Step 2: the coordinate named in the issue title must have its own test
-      # project. The coverage suite is committed into that directory and CI
-      # compiles it against that version, so a coordinate without one would be
-      # written and measured against a library the merge gate never builds
+  prepared:
+    description: Pipeline task is generated and ready for execution.
+    concurrent: true
+    program: "true"
+
+  prepare-test-project:
+    description: Verify the coordinate has its own test project before preparing the library.
+    concurrent: true
+    program: |
+      # The coverage suite is committed into the coordinate's own test project
+      # and CI compiles it against that version. Reject an issue that names a
+      # tested version backed only by another test project
       # (§WF-code-coverage-improvement.2).
       python3 - <<'PY' || exit 2
       import json
@@ -109,11 +118,6 @@ states:
       sys.exit(1)
       PY
     program_timeout: 10m
-
-  prepared:
-    description: Pipeline task is generated and ready for execution.
-    concurrent: true
-    program: "true"
 
   execute:
     description: Execute one code coverage pipeline phase.
@@ -896,13 +900,19 @@ transitions:
     to: requirement-test-execute
     description: Requirement test enters execution.
 
-  # Exit 1 (host requirements) and exit 2 (no test project for the coordinate) are
-  # deliberately unrouted: neither is repairable by an agent, so rhei stops the run
-  # with its own error and names the log instead of parking the task in a gating state.
+  # A host failure is deliberately unrouted, so rhei stops the run with its own
+  # error and names the log instead of parking the task in a gating state.
   - from: requirement-test-execute
     to: completed
     exit_code: 0
-    description: Host requirements and the issue coordinate are valid.
+    description: Host requirements are valid.
+
+  # A missing exact-version test project is not repairable by the preparation
+  # agent, so exit 2 is deliberately unrouted.
+  - from: prepare-test-project
+    to: execute
+    exit_code: 0
+    description: The coordinate has its own test project; prepare the library.
 
   - from: prepared
     to: execute

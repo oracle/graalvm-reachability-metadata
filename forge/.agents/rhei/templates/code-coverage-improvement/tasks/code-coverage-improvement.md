@@ -1,33 +1,23 @@
 ### Task code-coverage-requirement-test: Verify host requirements
 **State:** requirement-test-prepared
 
-- Source issue: `https://github.com/{{repo}}/issues/{{issue_number}}`
-- Coordinate override: `{{coordinate}}`
 - Helper script: `forge/utility_scripts/host_requirements.py`
 - Purpose: refuse to start a run the host cannot finish, before any agent is
   invoked or any worktree is created (§FS-forge-host-requirements).
 - Execution: this task is a deterministic program (the `requirement-test-execute`
   state), not an agent checklist.
-- Program steps:
-  1. Run the host-requirements gate in its coverage mode:
-     `host_requirements.py --forge-dir <work path> --reachability-metadata-path
-     <repo checkout> --mode coverage`. The coverage lane needs the same build
-     capabilities as issue work — Codex, Docker, the Gradle wrapper, the library
-     and registry hosts, GitHub permissions to publish the pull request — but
-     takes GraalVM from `GRAALVM_HOME`, or from `JAVA_HOME` when that is unset,
-     requiring one Forge-usable distribution of JDK 25 or newer rather than the
-     three pinned issue lanes. The gate runs every check and prints one report with a `Fix:`
-     line per failure.
-  2. Resolve the coordinate from `{{coordinate}}` when it is set, otherwise from
-     the issue title, and require `tests/src/<group>/<artifact>/<version>` to
-     exist. The check is literal: the coverage suite is committed into that
-     directory and CI compiles it there, so a coordinate whose version has no
-     test project would be written and measured against a library the merge gate
-     never builds. An issue naming a tested version other than the test project's
-     own version is retitled, not resolved silently.
-- Failure handling: neither failure is repairable by an agent, so no exit code
-  except 0 is routed. Rhei stops the run with its own error and names the state
-  log, which holds the gate report and the coordinate diagnosis.
+- Program: run the host-requirements gate in its coverage mode:
+  `host_requirements.py --forge-dir <work path> --reachability-metadata-path
+  <repo checkout> --mode coverage`. The coverage lane needs the same build
+  capabilities as issue work — Codex, Docker, the Gradle wrapper, the library
+  and registry hosts, GitHub permissions to publish the pull request — but
+  takes GraalVM from `GRAALVM_HOME`, or from `JAVA_HOME` when that is unset,
+  requiring one Forge-usable distribution of JDK 25 or newer rather than the
+  three pinned issue lanes. The gate runs every check and prints one report with
+  a `Fix:` line per failure.
+- Failure handling: a failure is not repairable by an agent, so only exit 0 is
+  routed. Rhei stops the run with its own error and names the state log holding
+  the gate report.
 - Artifacts: none; the state log is the record.
 
 ### Task code-coverage-convert: Convert issue {{issue_number}}
@@ -49,10 +39,7 @@
   - Fetch the issue with `gh issue view {{issue_number}} --repo {{repo}}`.
   - Verify that it carries `{{issue_label}}`.
   - If `{{coordinate}}` is non-empty, use it as the coordinate; otherwise parse
-    exactly one `group:artifact:version` coordinate from the issue title. The
-    title is the same source, with the same exactly-one rule, that Task
-    code-coverage-requirement-test validated, so conversion can never resolve a
-    coordinate the gate did not admit.
+    exactly one `group:artifact:version` coordinate from the issue title.
   - If `{{project_owner}}` and `{{project_number}}` are non-empty, verify the
     issue's Project item is in `{{todo_status}}`, then move it to
     `{{in_progress_status}}` only after the worktree and conversion artifacts
@@ -81,24 +68,36 @@
   - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-convert.md`
 
 ### Task code-coverage-prepare: Prepare library
-**State:** prepared
+**State:** prepare-test-project
 **Prior:** Task code-coverage-convert
 
+- Source issue: `https://github.com/{{repo}}/issues/{{issue_number}}`
+- Coordinate override: `{{coordinate}}`
 - Source artifact: `runtime/code-coverage/issues/conversion.md`
 - Helper preference: reuse Forge path and source-context helpers before adding
   task-specific setup logic.
-- Purpose: resolve the target coordinate, confirm it is already represented in
-  the reachability repository, and create or verify the dedicated code coverage
-  test suite.
+- Purpose: require the coordinate's own test project, then create or verify the
+  dedicated code coverage test suite and prepare its context.
+- Execution: the deterministic `prepare-test-project` state validates the test
+  project before the task enters the agent-backed `execute` state.
+- Program:
+  - Resolve the coordinate from `{{coordinate}}` when it is set, otherwise from
+    the issue title, and require `tests/src/<group>/<artifact>/<version>` to
+    exist in the source checkout.
+  - Keep the check literal: the coverage suite is written into that directory
+    and CI compiles it against that version. An issue naming a tested version
+    backed only by another indexed test project must be retitled to name its
+    own test-project version.
+- Failure handling: a missing exact-version test project is not repairable by the
+  preparation agent, so only exit 0 enters `execute`. Rhei stops the task with
+  its own error and leaves the coordinate diagnosis in the state log.
 - Required work:
-  - Resolve `group`, `artifact`, and `version` from the conversion artifact.
-  - Confirm the library has an existing metadata or test entry in the source
-    checkout.
-  - Resolve the existing metadata-generation test location.
+  - Read the coordinate and canonical coverage-suite paths from the conversion
+    artifact.
   - Create or verify the tracked extension suite at
-    `code-coverage-improvement/` inside the resolved test project, including
-    `src/test/java` and optional `src/test/resources` below that suite root,
-    plus a `suite.json` recording the true `coordinates` being improved.
+    `coverageSuiteAbsolutePath`, including `src/test/java` and optional
+    `src/test/resources` below that suite root, plus a `suite.json` recording
+    the true `coordinates` being improved.
   - Prepare source context for main sources, upstream tests, and documentation
     when available.
   - Record baseline facts without mutating metadata-generation tests.
