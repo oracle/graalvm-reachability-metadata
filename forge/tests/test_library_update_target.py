@@ -27,8 +27,13 @@ from utility_scripts.metadata_index import (
 )
 
 
-def _write_index(repo_path: str, entries: list[dict]) -> str:
-    index_dir = os.path.join(repo_path, "metadata", "org.example", "demo")
+def _write_index(
+        repo_path: str,
+        entries: list[dict],
+        group: str = "org.example",
+        artifact: str = "demo",
+) -> str:
+    index_dir = os.path.join(repo_path, "metadata", group, artifact)
     os.makedirs(index_dir, exist_ok=True)
     index_path = os.path.join(index_dir, "index.json")
     with open(index_path, "w", encoding="utf-8") as file:
@@ -190,6 +195,51 @@ class LibraryUpdateTargetTests(unittest.TestCase):
             self.assertEqual(baseline.metadata_version, "1.0.0")
             self.assertEqual(baseline.match_type, MATCH_TESTED_VERSION)
             self.assertIn("exact tested-version ownership", baseline.reason)
+
+    def test_test_version_alias_does_not_claim_compatibility_for_metadata_entry(self) -> None:
+        with tempfile.TemporaryDirectory() as repo:
+            _write_index(repo, [
+                {
+                    "latest": True,
+                    "metadata-version": "4.2.1.Final",
+                    "test-version": "4.1.74.Final",
+                    "tested-versions": ["4.2.1.Final"],
+                },
+                {
+                    "metadata-version": "4.1.74.Final",
+                    "tested-versions": ["4.1.74.Final"],
+                },
+            ], group="io.netty", artifact="netty-codec-memcache")
+            for version in ["4.2.1.Final", "4.1.74.Final"]:
+                _write_file(os.path.join(
+                    repo,
+                    "metadata",
+                    "io.netty",
+                    "netty-codec-memcache",
+                    version,
+                    "reachability-metadata.json",
+                ))
+            _write_file(os.path.join(
+                repo,
+                "tests",
+                "src",
+                "io.netty",
+                "netty-codec-memcache",
+                "4.1.74.Final",
+                "build.gradle",
+            ))
+
+            baseline = require_version_backfill_baseline(
+                repo,
+                "io.netty",
+                "netty-codec-memcache",
+                "4.1.75.Final",
+            )
+
+            self.assertEqual(baseline.metadata_version, "4.1.74.Final")
+            self.assertEqual(baseline.test_version, "4.1.74.Final")
+            self.assertEqual(baseline.supported_version, "4.1.74.Final")
+            self.assertEqual(baseline.match_type, "same-major-minor")
 
     def test_issue_requested_metadata_context_includes_mandatory_test_coverage(self) -> None:
         context = format_issue_requested_metadata_context(

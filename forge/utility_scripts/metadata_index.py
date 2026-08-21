@@ -255,7 +255,7 @@ def resolve_version_backfill_baseline(
                 or not _entry_has_usable_support(repo_path, group, artifact, entry)
         ):
             continue
-        for supported_version in _entry_supported_versions(entry):
+        for supported_version in _entry_declared_supported_versions(entry):
             parsed_version = _parse_metadata_version(supported_version)
             if parsed_version is None:
                 continue
@@ -357,9 +357,10 @@ def _entry_has_usable_support(
     return os.path.isdir(metadata_dir) and os.path.isdir(test_dir)
 
 
-def _entry_supported_versions(entry: dict[str, Any]) -> list[str]:
+def _entry_declared_supported_versions(entry: dict[str, Any]) -> list[str]:
+    """Return library releases owned by an entry, excluding test-dir aliases."""
     versions: list[str] = []
-    for version in [entry.get("metadata-version"), entry.get("test-version"), *_tested_versions(entry)]:
+    for version in [entry.get("metadata-version"), *_tested_versions(entry)]:
         if isinstance(version, str) and version and version not in versions:
             versions.append(version)
     return versions

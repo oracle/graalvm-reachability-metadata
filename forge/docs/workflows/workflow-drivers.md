@@ -162,6 +162,9 @@ Preparation:
   prior supported version on the same major/minor line, then the nearest
   following version on that line, and only then repeat that ordering within
   the same major version.
+- Treat `test-version` only as the directory alias used to locate a reusable
+  test suite. It does not declare library-version support and must not
+  contribute a compatibility candidate or version-line ownership.
 - Derive version lines from the leading numeric Maven components, including
   conventional `v`- or `r`-prefixed numeric releases. Recognized prerelease
   qualifiers retain their explicit ordering; other valid Maven suffixes such as
