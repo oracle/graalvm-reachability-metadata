@@ -53,10 +53,10 @@ output-existence check reads another, and the task stalls in a non-terminal
 state after an agent that exited zero. Runs that must not collide — a second
 model, agent, or pass budget on one library — separate themselves by parent
 directory, and their published branches by the model the head branch already
-names and by the publication ID it carries, never by renaming the workspace. A workspace
-under a parent directory must also set `workspace_path`, since the cover states
-tell the agent where to resolve artifacts from and that path is no longer
-derivable from `work_subdir` alone.
+names and by the publication ID it carries, never by renaming the workspace. A
+workspace under a parent directory must also set `workspace_path`, since the
+cover states tell the agent where to resolve artifacts from and that path is no
+longer derivable from `work_subdir` alone.
 
 Restart a run by re-instantiating the workspace, never with `rhei reset`. Reset
 rewrites every task to the state machine's single initial state, `prepared`,
@@ -453,8 +453,10 @@ The Rhei template should decompose the workflow into these phases:
 
    The descriptor carries the render inputs and only those: coordinate, coverage
    suite path, baseline and final JaCoCo coverage for each guidance phase, the
-   human-intervention flag, the issue-resolution flag, the generating model, and
-   per-phase token usage read from the Rhei accounting directory. Per-target
+   human-intervention flag, the generating model, and per-phase token usage read
+   from the Rhei accounting directory. The body links its issue with `Fixes:`,
+   never conditionally: one run publishes one pull request, so merging it closes
+   the issue that claimed the coordinate (§GIT-issue-linking). Per-target
    rosters, sampled PGO evidence, and the validation command list stay in the
    finalization artifacts: the target counts restate what the coverage figures
    already say, and the commands embed the run's own absolute worktree paths,

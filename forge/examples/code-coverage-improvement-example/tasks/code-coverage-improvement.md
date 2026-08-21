@@ -230,7 +230,7 @@
     (§GIT-actions-publication).
   - The descriptor carries the coordinate, coverage suite path, separate
     baseline and final API/deep JaCoCo coverage, the human-intervention flag,
-    the issue-resolution flag, the generating model, and per-phase token usage.
+    the generating model, and per-phase token usage.
     The trusted renderer writes every section of the body from it. Do not
     hand-write a pull request body: a section an agent types is one no run
     publishes.
