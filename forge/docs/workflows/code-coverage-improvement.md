@@ -32,8 +32,11 @@ produced a passing test suite, but its own work product is broader API coverage
 for a library that is already represented locally.
 
 The initial automation entry point should be a Rhei workspace template for one
-GitHub issue labeled `code-coverage-improvement`. The issue body must identify one
-Maven coordinate in `group:artifact:version` form. Template conversion resolves
+GitHub issue labeled `code-coverage-improvement`. The issue title must name
+exactly one Maven coordinate in `group:artifact:version` form. The host
+requirement test and template conversion both read the coordinate from the
+title under that same rule, so the coordinate a run is admitted for is always
+the coordinate it works on. Template conversion resolves
 that coordinate, verifies that the library is already represented locally,
 creates or reuses a per-issue worktree, and generates bounded Rhei tasks for
 preparation, inventory, coverage generation, validation, discovery, finalization,
