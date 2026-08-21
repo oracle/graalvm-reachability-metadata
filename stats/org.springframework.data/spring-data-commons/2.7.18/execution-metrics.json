@@ -1,0 +1,108 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T20:24:07.267464Z",
+    "library": "org.springframework.data:spring-data-commons:2.7.18",
+    "starting_commit": "1bb7f1a00ee02dab8d4d405756f07f445fd360af",
+    "ending_commit": "6d2d0c2398b39e7968f66a5ce8e94d96280e2143",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "2.7.18",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.578947,
+            "coveredCalls": 22,
+            "totalCalls": 38
+          }
+        },
+        "coverageRatio": 0.578947,
+        "coveredCalls": 22,
+        "totalCalls": 38
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 10483,
+          "missed": 55850,
+          "ratio": 0.158036,
+          "total": 66333
+        },
+        "line": {
+          "covered": 2264,
+          "missed": 11657,
+          "ratio": 0.162632,
+          "total": 13921
+        },
+        "method": {
+          "covered": 662,
+          "missed": 3799,
+          "ratio": 0.148397,
+          "total": 4461
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 2813,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.data:spring-data-commons:2.7.18",
+      "summary": "Spring Data Commons 2.7.18 can cover some domain/mapping APIs with only its normal transitive dependencies, but meaningful core features such as repository/projection proxy infrastructure depend on Spring AOP/context classes that are not pulled in by the artifact's non-optional dependencies.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-context:5.3.31",
+          "scope": "testImplementation",
+          "reason": "Spring Data Commons 2.7.18 declares Spring context support as optional, but normal repository/projection/auditing infrastructure uses Spring context/AOP classes; adding spring-context brings the aligned Spring Framework 5.3.31 context, AOP, and expression dependencies needed for meaningful in-memory\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "No Docker service or environment/system property setup appears necessary. Prefer in-memory coverage of Spring Data Commons abstractions such as domain paging/sorting, mapping metadata, projections, and repository support rather than adding a store-specific Spring Data module or database.",
+      "risks": [
+        "Spring Data Commons is a shared abstraction library; store-backed repository behavior is normally exercised through modules such as JPA, JDBC, MongoDB, or Redis, but adding one would broaden the issue beyond the requested artifact.",
+        "The artifact has many optional integrations, including Jackson, Reactor, Web, Querydsl, Kotlin, and XML/JAXB; do not add these unless local Gradle or Native Image verification shows the generated tests concretely require them."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-context:5.3.31",
+          "result": "applied",
+          "target": "tests/src/org.springframework.data/spring-data-commons/2.7.18/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#2813 Support for org.springframework.data:spring-data-commons:2.7.18; label=library-new-request; body_chars=120"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 51918,
+      "output_tokens_used": 3762,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.springframework.data:spring-data-commons:2.7.18/library-preparation-preflight/pi-generation-2026-06-28T18-54-52-581004Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 678415,
+      "cached_input_tokens_used": 5943296,
+      "output_tokens_used": 55224,
+      "iterations": 15,
+      "cost_usd": 4.6283,
+      "generated_loc": 366,
+      "tested_library_loc": 2264,
+      "metadata_entries": 42,
+      "test_only_metadata_entries": 1,
+      "code_coverage_percent": 16.26
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.springframework.data/spring-data-commons/2.7.18/src/test/java/org_springframework_data/spring_data_commons/FunctionTest.java",
+      "metadata_file": "metadata/org.springframework.data/spring-data-commons/2.7.18/reachability-metadata.json"
+    }
+  }
+}
