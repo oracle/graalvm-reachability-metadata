@@ -147,15 +147,6 @@ case. Because the selected JDK is used unmodified, a failure under it is a
 property of that JDK and not of the harness, which is what makes the resulting
 run usable as a bug report.
 
-`GVM_TCK_TEST_DISABLE_ASSERTIONS=true` is the one exception, and it is opt-in and
-off by default. Gradle enables assertions on every test worker, so a JDK that
-rejects `-ea` outright fails all workers at VM startup and the run yields a
-single finding repeated once per coordinate instead of a survey. Setting this
-clears Gradle's `enableAssertions` so the sweep can reach the failures behind
-that one. It changes what the tests check: assertions no longer fire, so a test
-that verifies via `assert` passes vacuously. A run with this set is a
-bug-discovery run, never evidence that a library is supported.
-
 ## 4. Native-image metadata tracing
 
 Helpers for collecting metadata with the native-image tracing agent (see also
