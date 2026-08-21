@@ -64,22 +64,6 @@ inputs:
     type: string
     default: In Progress
 
-  - name: pr_push_remote
-    description: Writable fork remote used by the publication task. Empty means infer from git remotes.
-    type: string
-    default: ""
-
-  - name: pr_head_owner
-    description: GitHub owner for the pull request head branch. Empty means infer from pr_push_remote.
-    type: string
-    default: ""
-
-  - name: pr_base_branch
-    description: Pull request base branch.
-    type: string
-    default: master
-    validate: "^[A-Za-z0-9_./-]+$"
-
   - name: workspace_path
     description: >-
       Path from the agent's working directory to this workspace, the directory
@@ -91,10 +75,10 @@ inputs:
 
   - name: branch_suffix
     description: >-
-      Run discriminator appended to the pull request head branch. Empty keeps the
-      plain coordinate branch. Set it when this run must coexist with an earlier
-      pull request for the same coordinate, since publication force-replaces the
-      remote head branch.
+      Readable run label appended to the publication head branch, before the
+      publication ID. Empty keeps the plain coordinate-and-model branch. The
+      publication ID already keeps two runs of one coordinate and model apart, so
+      this only says which run a branch belongs to.
     type: string
     default: ""
 
@@ -102,8 +86,8 @@ inputs:
     description: >-
       Rhei target used for execution and fix states, as
       <agent>[<mode>]:<provider>/<model>. Its model names the publication head
-      branch, and its mode selects the reasoning level from the agent profile in
-      this template's settings.json.
+      branch and the rendered pull request title, and its mode selects the
+      reasoning level from the agent profile in this template's settings.json.
     type: string
     default: pi[high]:openai-codex/gpt-5.6-luna
 

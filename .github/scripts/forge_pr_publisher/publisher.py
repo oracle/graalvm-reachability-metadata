@@ -34,6 +34,7 @@ ROUTE_LABELS = {
     "fixes-java-run-fail": ["GenAI", "fixes-java-run-fail"],
     "fixes-native-image-run-fail": ["fixes-native-image-run-fail"],
     "not-for-native-image": ["GenAI", "library-new-request", "not-for-native-image"],
+    "code-coverage-improvement": ["GenAI", "code-coverage-improvement", "rhei"],
 }
 
 
@@ -203,6 +204,26 @@ def _validate_render_inputs(descriptor: dict[str, Any]) -> None:
         reason = descriptor["render"].get("reason")
         if not isinstance(reason, str) or not reason.strip():
             raise ValueError("Not-for-native-image publication requires a reason")
+    if template_type == "code-coverage-improvement":
+        _validate_code_coverage_render(descriptor["render"])
+
+
+def _validate_code_coverage_render(render: dict[str, Any]) -> None:
+    """Require the finalized coverage evidence the coverage template reads."""
+    metrics = render.get("code_coverage")
+    if not isinstance(metrics, dict):
+        raise ValueError("Code coverage publication requires render.code_coverage")
+    for key in ("coverageSuitePath", "needsHumanIntervention", "apiJacoco", "deepJacoco"):
+        if key not in metrics:
+            raise ValueError(f"Code coverage evidence is missing {key!r}")
+    for key in ("apiJacoco", "deepJacoco"):
+        evidence = metrics[key]
+        if not isinstance(evidence, dict) or not {"baseline", "final"} <= evidence.keys():
+            raise ValueError(f"Code coverage evidence {key!r} needs baseline and final")
+        for phase in ("baseline", "final"):
+            snapshot = evidence[phase]
+            if not isinstance(snapshot, dict) or not {"total", "covered"} <= snapshot.keys():
+                raise ValueError(f"Code coverage {key!r} {phase} needs total and covered")
 
 
 def _path_changed(head_sha: str, path: str) -> bool:
@@ -550,6 +571,144 @@ Reason:
     return title, body
 
 
+def _signed(value: int | float) -> str:
+    return f"{'+' if value > 0 else ''}{value}"
+
+
+def _coverage_percent(covered: int, total: int) -> float:
+    return round(100 * covered / total, 2) if total else 0.0
+
+
+def _reportable_total(snapshot: dict[str, Any]) -> int:
+    """The denominator JaCoCo can actually rule on.
+
+    The API inventory carries both `total`, every inventory entry, and
+    `measured`, the entries JaCoCo reports at all. The difference is methods no
+    run can ever cover, so dividing by `total` understates the phase and
+    contradicts the `coveragePercent` the same document records. The deep
+    snapshot has no such split and falls back to `total`.
+    """
+    return int(snapshot.get("measured", snapshot["total"]))
+
+
+def _coverage_phase_lines(label: str, evidence: dict[str, Any]) -> list[str]:
+    baseline = evidence["baseline"]
+    final = evidence["final"]
+    total = _reportable_total(final)
+    baseline_percent = _coverage_percent(int(baseline["covered"]), total)
+    final_percent = _coverage_percent(int(final["covered"]), total)
+    return [
+        f"### {label}",
+        "",
+        f"- Baseline: {baseline['covered']}/{total} ({baseline_percent}%)",
+        f"- Final: {final['covered']}/{total} ({final_percent}%)",
+        f"- Delta: {_signed(round(final_percent - baseline_percent, 2))}pp",
+        f"- Remaining uncovered: {total - int(final['covered'])}",
+    ]
+
+
+def _coverage_combined_lines(api: dict[str, Any], deep: dict[str, Any]) -> list[str]:
+    """API and deep coverage as one number.
+
+    The two universes are disjoint by construction: the deep universe holds
+    exactly the library methods the API inventory does not, so their measured
+    counts and covered counts add without double counting.
+    """
+    total = _reportable_total(api["final"]) + _reportable_total(deep["final"])
+    baseline = int(api["baseline"]["covered"]) + int(deep["baseline"]["covered"])
+    final = int(api["final"]["covered"]) + int(deep["final"]["covered"])
+    baseline_percent = _coverage_percent(baseline, total)
+    final_percent = _coverage_percent(final, total)
+    return [
+        "### Both phases combined",
+        "",
+        f"- Baseline: {baseline}/{total} ({baseline_percent}%)",
+        f"- Final: {final}/{total} ({final_percent}%)",
+        f"- Delta: {_signed(round(final_percent - baseline_percent, 2))}pp",
+        f"- Remaining uncovered: {total - final}",
+    ]
+
+
+def _token_cell(value: Any) -> str:
+    """`n/a` keeps an unmeasured phase from reading as a free one."""
+    return f"{value:,}" if isinstance(value, int) else "n/a"
+
+
+def _coverage_token_lines(rows: list[dict[str, Any]]) -> list[str]:
+    if not rows:
+        return []
+    lines = [
+        "## Token usage",
+        "",
+        "| Phase | Input | Input (cached) | Output |",
+        "|---|--:|--:|--:|",
+    ]
+    totals = {"input": 0, "cached": 0, "output": 0}
+    for row in rows:
+        for key in totals:
+            value = row.get(key)
+            if isinstance(value, int):
+                totals[key] += value
+        lines.append(
+            f"| {row['phase']} | {_token_cell(row.get('input'))} | "
+            f"{_token_cell(row.get('cached'))} | {_token_cell(row.get('output'))} |"
+        )
+    lines.append(
+        f"| **Total** | **{totals['input']:,}** | "
+        f"**{totals['cached']:,}** | **{totals['output']:,}** |"
+    )
+    lines += ["", "Input is uncached input tokens; Input (cached) is cache reads."]
+    return lines
+
+
+def _render_code_coverage_improvement(
+        descriptor: dict[str, Any],
+        validated: ValidatedPublication | None,
+) -> tuple[str, str]:
+    """Render the JaCoCo evidence the coverage workflow finalized.
+
+    The descriptor carries the schema-validated `final-metrics.json` and the
+    per-phase token accounting; this renderer only reports them, exactly as the
+    local helper did before publication moved into Actions (§forge/WF-code-coverage-improvement.4).
+    """
+    coordinates = descriptor["library"]["coordinates"]
+    render = descriptor["render"]
+    metrics = render["code_coverage"]
+    model = render.get("worker_model") or _model_display_name(descriptor)
+    title = f"[GenAI] Improve code coverage for {coordinates} using {model}"
+
+    issue_number = descriptor["issue_number"]
+    keyword = "Fixes" if metrics.get("resolvesIssue") else "Refs"
+    lines = [
+        "## Code coverage improvement",
+        "",
+        f"{keyword}: #{issue_number}",
+        "",
+        f"- Coordinate: `{coordinates}`",
+        f"- Coverage suite path: `{metrics['coverageSuitePath']}`",
+        f"- Model: {model}",
+        f"- Needs human intervention: {'yes' if metrics['needsHumanIntervention'] else 'no'}",
+        "",
+        "## JaCoCo coverage",
+        "",
+    ]
+    lines += _coverage_phase_lines("Simple Jacoco guidance phase", metrics["apiJacoco"])
+    lines += [""] + _coverage_phase_lines("PGO guidance phase", metrics["deepJacoco"])
+    lines += [""] + _coverage_combined_lines(metrics["apiJacoco"], metrics["deepJacoco"])
+    lines += [""]
+    token_lines = _coverage_token_lines(render.get("token_usage") or [])
+    if token_lines:
+        lines += token_lines + [""]
+
+    # No Forge revision block: this workflow is driven by a Rhei template rather
+    # than a Forge strategy revision, and the publication ID trailer plus the
+    # model in the head branch already identify the run that produced the body.
+    body = "\n".join(lines)
+    body += _format_post_generation_intervention(descriptor)
+    body += _format_local_ci_verification_section(descriptor["local_ci_verification"])
+    return title, body
+
+
 _TEMPLATE_BUILDERS = {
     "library-update-request": _render_library_update_request,
     "library-new-request": _render_library_new_request,
@@ -557,6 +716,7 @@ _TEMPLATE_BUILDERS = {
     "fixes-java-run-fail": _render_java_run_fix,
     "fixes-native-image-run-fail": _render_native_image_run_fix,
     "not-for-native-image": _render_not_for_native_image,
+    "code-coverage-improvement": _render_code_coverage_improvement,
 }
 
 

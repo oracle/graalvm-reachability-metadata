@@ -234,40 +234,45 @@
   - `runtime/code-coverage/finalization/final-summary.md`
   - `runtime/code-coverage/finalization/final-metrics.json`
 
-### Task code-coverage-publication: Publish pull request
+### Task code-coverage-publication: Publish the verified branch
 **State:** prepared
 **Prior:** Task code-coverage-finalization
 
-- Helper script: `forge/git_scripts/make_pr_code_coverage_improvement.py`
-- PR push remote: `{{pr_push_remote}}`
-- PR head owner: `{{pr_head_owner}}`
-- PR base branch: `{{pr_base_branch}}`
+- Helper script: `forge/git_scripts/publish_code_coverage_improvement.py`
 - Worker agent: `{{worker_agent}}`
 - Branch suffix: `{{branch_suffix}}`
-- Purpose: publish the verified code coverage improvement as a pull request.
+- Purpose: push the verified code coverage improvement as a publication branch
+  that trusted GitHub Actions turn into a pull request. This task does not open
+  the pull request and must never call `gh pr create`
+  (§AR-forge-verification-publication-boundary).
 - Required work:
   - Read `runtime/code-coverage/finalization/final-summary.md` and
     `runtime/code-coverage/finalization/final-metrics.json`.
   - Confirm the issue worktree branch is the expected issue branch.
-  - Create a focused commit if verified changes are uncommitted.
-  - Push to the configured fork remote or infer a writable fork remote.
-  - Pass `--worker-agent {{worker_agent}}`. The helper names the head branch
-    after that target's model, so a run of this coordinate on another model
-    owns a different branch.
-  - Pass `--branch-suffix {{branch_suffix}}` when that value is non-empty. The
-    helper force-replaces the remote head branch, so omitting a configured
-    suffix deletes the head branch of an earlier run's pull request for this
-    same coordinate and model, and takes its place.
-  - Open a pull request against `{{repo}}` base `{{pr_base_branch}}`.
-  - Include source issue, coordinate, coverage suite path, separate baseline and
-    final API/deep JaCoCo coverage, the two phases combined, coverage deltas,
-    sampled guidance evidence, completed, skipped, exhausted, or failed targets,
-    validation commands, and per-phase token usage in the PR body.
-  - The helper writes all of that from `final-metrics.json` and the Rhei
-    accounting directory. Do not hand-write any of those sections: a section an
-    agent types is one the next run silently drops.
-  - Use a closing keyword only when the PR fully resolves the source issue;
-    otherwise link without auto-closing and describe remaining follow-up.
+  - Leave verified changes uncommitted or committed; the helper stages the
+    coverage suite and touched metadata itself and commits them.
+  - Run the helper with `--repo-path`, `--coordinate`, `--issue-number`,
+    `--finalization-dir`, `--coverage-suite-path`, and
+    `--worker-agent {{worker_agent}}`. The helper names the head branch after
+    that target's model, so a run of this coordinate on another model owns a
+    different branch.
+  - Pass `--branch-suffix {{branch_suffix}}` when that value is non-empty. It
+    only labels which run a branch belongs to; the publication ID the helper
+    appends already keeps two runs of one coordinate and model apart.
+  - The helper rebases onto upstream `master`, runs the pre-publication
+    verification gate, writes
+    `stats/<group>/<artifact>/<version>/forge-publication.json`, and pushes the
+    `ai/<login>/...` branch to `{{repo}}`. Pushing that branch is the whole
+    task: `Forge Branch Ready` validates the exact commit as data, and only its
+    success lets `Forge Open PR` render the body and open the pull request
+    (§GIT-actions-publication).
+  - The descriptor carries the coordinate, coverage suite path, separate
+    baseline and final API/deep JaCoCo coverage, the human-intervention flag,
+    the issue-resolution flag, the generating model, and per-phase token usage.
+    The trusted renderer writes every section of the body from it. Do not
+    hand-write a pull request body: a section an agent types is one no run
+    publishes.
+  - Report the pushed branch name in the work artifact.
 - Artifacts:
-  - `runtime/code-coverage/publication/pr.md`
+  - `runtime/code-coverage/publication/branch.md`
   - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-publication.md`

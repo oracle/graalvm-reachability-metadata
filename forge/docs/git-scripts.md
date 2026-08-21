@@ -50,8 +50,10 @@ Each local publication route must encode workflow-specific staging policy
 instead of a generic `git add .`, staging only generated tests, metadata
 directories, metadata index entries, stats, execution metrics, the publication
 descriptor, and workflow-specific resumable state. New-library support,
-Java-fix, native-run-fix, and coverage-improvement routes each define their
-expected paths; the not-for-native-image route
+Java-fix, native-run-fix, dynamic-access coverage-improvement, and JaCoCo
+code-coverage-improvement routes each define their expected paths. The
+code-coverage route stages the dedicated coverage suite, the coordinate's test
+directory, and the metadata that suite justified; the not-for-native-image route
 (§GIT-not-for-native-image-publication) stages the marker
 `metadata/<group>/<artifact>/index.json`, its stats publication path, and the
 descriptor. Shared repository edits are allowed only when local verification
@@ -171,7 +173,8 @@ parameters in the PR body so maintainers can review the result without rerunning
 Forge. Common contents are the issue reference (§GIT-issue-linking), a
 human-readable summary, Forge branch/revision evidence, publication ID trailer,
 any post-generation intervention, and local verification commands and outcomes
-(§FS-local-ci-equivalent-verification). On top of that common base, each trusted
+(§FS-local-ci-equivalent-verification), except where a subsection below states
+that its template omits one of them. On top of that common base, each trusted
 template records only the subset of tracked parameters its workflow actually
 produces. The subsections below state that per-template subset; routes whose
 workflows share a body shape are grouped together.
@@ -246,6 +249,31 @@ The trusted `not-for-native-image` template follows
 No generation happened, so the body has no generation metrics. It states why the
 artifact is not a Native Image target, includes any replacement guidance, the
 `Fixes:` issue reference, and the local CI-equivalent verification section.
+
+### Code coverage improvement
+
+The trusted `code-coverage-improvement` template represents the JaCoCo workflow
+in §WF-code-coverage-improvement, which measures method coverage rather than
+dynamic-access metadata, so it shares no body shape with the routes above. It
+reports the coordinate, the dedicated coverage suite path, the generating model,
+the human-intervention flag, baseline and final coverage for each guidance phase
+and for both phases combined, and a per-phase token-usage table. Coverage is
+reported against the methods JaCoCo reports, not against every inventory entry,
+because entries JaCoCo never reports are ones no run can cover. The title names
+the coordinate and the model, matching the head branch. The body links with
+`Fixes:` only when the run's finalized metrics claim it resolved the issue, and
+`Refs:` otherwise: one coordinate normally takes several runs to finish.
+
+The body omits the Forge branch/revision block the other templates carry: this
+workflow is driven by a Rhei template rather than a Forge strategy revision, so
+that block names nothing that produced the run. The publication ID trailer and
+the model in the head branch identify it instead. The descriptor still records
+the Forge revision, so the evidence survives even though the body drops it.
+
+Per-target rosters, sampled PGO evidence, and the validation command list are
+deliberately absent. The counts restate what the coverage figures already say,
+and the commands embed the run's own absolute worktree paths, which no reader of
+the PR can execute; both stay in the finalization artifacts.
 
 ## GIT-pr-preview-builders: Reusable title and body builders
 
