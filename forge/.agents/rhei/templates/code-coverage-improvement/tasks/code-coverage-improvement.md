@@ -16,7 +16,10 @@
   - Fetch the issue with `gh issue view {{issue_number}} --repo {{repo}}`.
   - Verify that it carries `{{issue_label}}`.
   - If `{{coordinate}}` is non-empty, use it as the coordinate; otherwise parse
-    exactly one `group:artifact:version` coordinate from the issue body.
+    exactly one `group:artifact:version` coordinate from the issue title. The
+    title is the same source, with the same exactly-one rule, that Task
+    code-coverage-requirement-test validated, so conversion can never resolve a
+    coordinate the gate did not admit.
   - If `{{project_owner}}` and `{{project_number}}` are non-empty, verify the
     issue's Project item is in `{{todo_status}}`, then move it to
     `{{in_progress_status}}` only after the worktree and conversion artifacts
