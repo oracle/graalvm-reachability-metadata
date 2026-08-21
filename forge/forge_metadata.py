@@ -162,6 +162,7 @@ from utility_scripts.metadata_index import (
     coordinate_parts as metadata_coordinate_parts,
     get_not_for_native_image_marker,
     is_not_for_native_image,
+    require_version_backfill_baseline,
     resolve_metadata_version,
     resolve_test_dir,
 )
@@ -3229,35 +3230,6 @@ def extract_maven_coordinates(title: str) -> Optional[str]:
     return None
 
 
-def load_current_metadata_version(
-        reachability_metadata_path: str,
-        group: str,
-        artifact: str,
-) -> Optional[str]:
-    """Load the current metadata version from the latest index.json entry."""
-    index_json_path = os.path.join(
-        reachability_metadata_path,
-        "metadata",
-        group,
-        artifact,
-        "index.json",
-    )
-    index_json_path_display = _repo_relative_path(index_json_path, reachability_metadata_path)
-    if not os.path.isfile(index_json_path):
-        print(f"ERROR: Missing metadata index file: {index_json_path_display}", file=sys.stderr)
-        return None
-
-    with open(index_json_path, "r", encoding="utf-8") as index_file:
-        index_entries = json.load(index_file)
-
-    for entry in index_entries:
-        if entry.get("latest") is True:
-            return entry.get("test-version") or entry.get("metadata-version")
-
-    print(f"ERROR: No latest entry found in metadata index: {index_json_path_display}", file=sys.stderr)
-    return None
-
-
 def get_cached_field_info() -> tuple[str, str, dict[str, str]]:
     global project_node_id, field_id, option_ids
     if field_id is None:
@@ -6014,15 +5986,22 @@ def build_claim_metadata(
         return None
 
     group, artifact, new_version = coordinate_parts
-    current_version = load_current_metadata_version(
-        base_reachability_metadata_path,
-        group,
-        artifact,
-    )
-    if current_version is None:
+    try:
+        baseline = require_version_backfill_baseline(
+            base_reachability_metadata_path,
+            group,
+            artifact,
+            new_version,
+        )
+    except RuntimeError as error:
+        print(str(error), file=sys.stderr)
         return None
 
-    current_coordinates = f"{group}:{artifact}:{current_version}"
+    current_coordinates = f"{group}:{artifact}:{baseline.test_version}"
+    log_stage(
+        "version-backfill-baseline",
+        f"Selected {current_coordinates} for {issue_coordinates}; reason: {baseline.reason}",
+    )
     return issue_coordinates, current_coordinates, new_version
 
 
