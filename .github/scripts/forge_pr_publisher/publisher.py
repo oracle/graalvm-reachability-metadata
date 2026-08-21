@@ -677,12 +677,12 @@ def _render_code_coverage_improvement(
     model = render.get("worker_model") or _model_display_name(descriptor)
     title = f"[GenAI] Improve code coverage for {coordinates} using {model}"
 
-    issue_number = descriptor["issue_number"]
-    keyword = "Fixes" if metrics.get("resolvesIssue") else "Refs"
+    # Always closing: the route has no chunked mode, so every published run is
+    # the run that finishes its issue (§forge/GIT-issue-linking).
     lines = [
         "## Code coverage improvement",
         "",
-        f"{keyword}: #{issue_number}",
+        f"Fixes: #{descriptor['issue_number']}",
         "",
         f"- Coordinate: `{coordinates}`",
         f"- Coverage suite path: `{metrics['coverageSuitePath']}`",

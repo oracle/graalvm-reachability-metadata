@@ -261,8 +261,9 @@ and for both phases combined, and a per-phase token-usage table. Coverage is
 reported against the methods JaCoCo reports, not against every inventory entry,
 because entries JaCoCo never reports are ones no run can cover. The title names
 the coordinate and the model, matching the head branch. The body links with
-`Fixes:` only when the run's finalized metrics claim it resolved the issue, and
-`Refs:` otherwise: one coordinate normally takes several runs to finish.
+`Fixes:`, like every other route: the coverage route has no chunked mode, so
+each published run is a single-PR workflow whose merge closes its issue
+(§GIT-issue-linking).
 
 The body omits the Forge branch/revision block the other templates carry: this
 workflow is driven by a Rhei template rather than a Forge strategy revision, so
