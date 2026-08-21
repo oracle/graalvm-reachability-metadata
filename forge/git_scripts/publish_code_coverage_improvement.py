@@ -47,7 +47,6 @@ COVERAGE_RENDER_KEYS: tuple[str, ...] = (
     "apiJacoco",
     "deepJacoco",
     "needsHumanIntervention",
-    "resolvesIssue",
 )
 
 #: Workflow order for the token-usage table; unknown phases sort after these.

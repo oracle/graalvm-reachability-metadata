@@ -163,18 +163,13 @@ class CoveragePublisherTemplateTests(unittest.TestCase):
 
         self.assertNotIn("## Token usage", body)
 
-    def test_body_links_the_issue_without_closing_it_by_default(self) -> None:
+    def test_body_closes_the_issue(self) -> None:
+        # A coverage run is a single-PR workflow, so merging its PR closes the
+        # issue it claimed (§GIT-issue-linking).
         _, body = publisher.render_publication(_descriptor())
 
-        self.assertIn("Refs: #8380", body)
-        self.assertNotIn("Fixes: #8380", body)
-
-    def test_body_closes_the_issue_when_the_run_resolves_it(self) -> None:
-        evidence = _coverage_evidence(resolvesIssue=True)
-
-        _, body = publisher.render_publication(_descriptor(code_coverage=evidence))
-
         self.assertIn("Fixes: #8380", body)
+        self.assertNotIn("Refs: #8380", body)
 
     def test_body_reports_human_intervention_and_local_verification(self) -> None:
         evidence = _coverage_evidence(needsHumanIntervention=True)
