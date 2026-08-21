@@ -91,8 +91,9 @@ This item of §ROADMAP-forge-implementation implements the missing
 requested-version path for `library-update-request`
 (§WF-improve-library-coverage.2).
 When the artifact is already supported but the requested version has no test
-suite, Forge must resolve the latest supported test version, prepare that
-suite against the requested version, run a compatibility probe, and dispatch
+suite, Forge must resolve a usable same-major baseline with the shared version-
+backfill resolver, prepare that suite against the requested version, run a
+compatibility probe, and dispatch
 the rest of the work to the owning driver (§WF-forge-workflow-drivers.2).
 
 The router must dispatch compilation failures to the javac-fix driver
