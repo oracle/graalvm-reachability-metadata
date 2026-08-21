@@ -53,7 +53,7 @@ output-existence check reads another, and the task stalls in a non-terminal
 state after an agent that exited zero. Runs that must not collide — a second
 model, agent, or pass budget on one library — separate themselves by parent
 directory, and their published branches by the model the head branch already
-names and by `branch_suffix`, never by renaming the workspace. A workspace
+names and by the publication ID it carries, never by renaming the workspace. A workspace
 under a parent directory must also set `workspace_path`, since the cover states
 tell the agent where to resolve artifacts from and that path is no longer
 derivable from `work_subdir` alone.
@@ -439,35 +439,48 @@ The Rhei template should decompose the workflow into these phases:
    which is how a tracing-agent artifact left behind by metadata preparation is
    caught before publication rather than in review (§2). No Native Image
    validation runs at this stage; a nonzero exit code names the failed step.
-8. **Publication** — open a PR with source issue, coordinate, coverage suite,
-   baseline/final JaCoCo coverage reported against the JaCoCo-reportable method
-   count of each guidance phase, both phases combined into one figure, and
-   per-phase token usage read from the Rhei accounting directory. The body
-   carries no per-target roster and no validation commands: the target counts
-   restate what the coverage figures already say, and the commands embed the
-   run's own absolute worktree paths, which no reader of the PR can execute.
-   Both stay in the finalization artifacts, which is where a reviewer who wants
-   per-target detail reads it. Coverage percentages divide by the
-   methods JaCoCo reports, not by every inventory entry: entries JaCoCo never
-   reports are ones no run can cover, and charging them to the run understates
-   it. The combined figure adds the two phases directly, which is sound because
-   the deep universe holds exactly the library methods the API inventory does
-   not. A phase whose accounting is not yet written is omitted from the token
-   table rather than reported as zero; publication itself is normally omitted,
-   since its own invocations are still running when the body is built. Sampled
-   PGO evidence stays in the local finalization summary and is not published in
-   the PR body. The head branch is
-   `ai/<login>/code-coverage-<artifact>-<version>-<model>`, extended with the
-   configured `branch_suffix` when one is set. The model segment is the model of
-   the run's `worker_agent` target — the trailing component of
-   `<agent>[<mode>]:<provider>/<model>` — so a coordinate measured on two models
-   publishes two branches without any operator action, and the branch names what
-   generated the pull request it carries. Publication force-replaces the remote
-   head branch, so two runs of the same coordinate that share a branch name
-   delete each other's pull request head: a run that must coexist with an
-   earlier one on the same model — another agent or pass budget measured against
-   the same library — sets the suffix so each run owns its own branch and each
-   pull request survives the next run.
+8. **Publication** — push the verified branch and let trusted GitHub Actions
+   open the pull request. Local publication stages the coverage suite and the
+   metadata it justified, rebases onto upstream `master`, runs the
+   pre-publication verification gate, writes
+   `stats/<group>/<artifact>/<version>/forge-publication.json`, and pushes
+   `ai/<login>/...` — nothing else. `Forge Branch Ready` then validates that
+   exact commit as data, and only its success lets `Forge Open PR` render the
+   body and open the PR as the machine account, with the fixed `GenAI` and
+   `code-coverage-improvement` labels and the configured reviewers
+   (§GIT-actions-publication). The workflow keeps no PR-creation credential and
+   opens nothing itself (§AR-forge-verification-publication-boundary).
+
+   The descriptor carries the render inputs and only those: coordinate, coverage
+   suite path, baseline and final JaCoCo coverage for each guidance phase, the
+   human-intervention flag, the issue-resolution flag, the generating model, and
+   per-phase token usage read from the Rhei accounting directory. Per-target
+   rosters, sampled PGO evidence, and the validation command list stay in the
+   finalization artifacts: the target counts restate what the coverage figures
+   already say, and the commands embed the run's own absolute worktree paths,
+   which no reader of the PR can execute. A reviewer who wants per-target detail
+   reads it from the run.
+
+   The trusted renderer reports coverage against the methods JaCoCo reports, not
+   against every inventory entry: entries JaCoCo never reports are ones no run
+   can cover, and charging them to the run understates it. The combined figure
+   adds the two phases directly, which is sound because the deep universe holds
+   exactly the library methods the API inventory does not. A phase whose
+   accounting is not yet written is omitted from the token table rather than
+   reported as zero; publication itself is normally omitted, since its own
+   invocations are still running when the descriptor is written.
+
+   The head branch is
+   `ai/<login>/code-coverage-<artifact>-<version>-<model>[-<suffix>]-<publication-id>`.
+   The model segment is the model of the run's `worker_agent` target — the
+   trailing component of `<agent>[<mode>]:<provider>/<model>` — so a coordinate
+   measured on two models publishes two branches without any operator action,
+   and the branch names what generated the pull request it carries. The
+   publication ID is derived from the issue, the finalized run's `generatedAt`
+   timestamp, the coordinate, and the task type, so it separates two runs that
+   share a model while a retried publication of one run rebuilds the same branch
+   and reuses its pull request. `branch_suffix` no longer keeps runs apart; it
+   only labels which run a branch belongs to.
 
 The pipeline tasks run unreviewed: deterministic helpers, schema-validated
 artifacts, and zero-exit validation gates decide their completion. The
@@ -636,8 +649,14 @@ engine:
   snapshot for a workflow whose every agent state is otherwise snapshotted.
 - **Publication handoff** — publishes only PR-eligible runs after local
   CI-equivalent verification passes (§AR-forge-verification-publication-boundary).
-  Implemented in `forge/git_scripts/make_pr_code_coverage_improvement.py`, which
-  renders the PR body from the phase-9 finalization metrics.
+  Implemented in `forge/git_scripts/publish_code_coverage_improvement.py`, which
+  contributes this route's expected paths and descriptor to the shared branch
+  publication pipeline (§GIT-shared-publication-pipeline); the trusted
+  `code-coverage-improvement` template in
+  `.github/scripts/forge_pr_publisher/publisher.py` renders the body from the
+  descriptor. The descriptor's timestamp is `generatedAt` in the finalization
+  metrics rather than the wall clock, which is what makes a retried publication
+  reuse one branch and one pull request instead of opening a second.
 
 ## 2. Workflow State
 
