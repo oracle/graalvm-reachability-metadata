@@ -18,6 +18,7 @@ MATCH_TESTED_VERSION = "tested-version"
 MATCH_METADATA_VERSION = "metadata-version"
 MATCH_DEFAULT_FOR = "default-for"
 MATCH_NEW_VERSION = "new-version"
+ParsedMetadataVersion: TypeAlias = tuple[tuple[int, ...], tuple[int, int]]
 
 
 @dataclass(frozen=True)
@@ -32,14 +33,36 @@ class LibraryUpdateTarget:
     test_dir: str
 
 
+@dataclass(frozen=True)
+class VersionBackfillBaseline:
+    """Usable test and metadata support selected for a version backfill."""
+
+    entry: dict[str, Any]
+    metadata_version: str
+    test_version: str
+    supported_version: str
+    match_type: str
+    reason: str
+
+
+@dataclass(frozen=True)
+class _BaselineCandidate:
+    entry: dict[str, Any]
+    supported_version: str
+    parsed_version: ParsedMetadataVersion
+
+
 _RELEASE_QUALIFIER = "release"
 _VERSION_PATTERN = re.compile(
     r"^(\d+(?:\.\d+)*)(?:\.(?:Final|RELEASE))?"
     r"(?:[-.](alpha\d*|beta\d*|rc\d*|cr\d*|m\d+|ea\d*|b\d+|\d+|preview)(?:[-.](.*))?)?$",
     re.IGNORECASE,
 )
+_MAVEN_NUMERIC_VERSION_PATTERN = re.compile(
+    r"^([vr]?)(\d+(?:\.\d+)*)(?:[A-Za-z._+\-][A-Za-z0-9._+\-]*)?$",
+    re.IGNORECASE,
+)
 _QUALIFIER_PATTERN = re.compile(r"^(alpha|beta|rc|cr|m|ea|b|preview)(\d*)$", re.IGNORECASE)
-ParsedMetadataVersion: TypeAlias = tuple[tuple[int, ...], tuple[int, int]]
 _QUALIFIER_RANK = {
     "alpha": 10,
     "beta": 20,
@@ -50,6 +73,7 @@ _QUALIFIER_RANK = {
     "cr": 50,
     "b": 60,
     "number": 70,
+    "variant": 90,
     _RELEASE_QUALIFIER: 100,
 }
 
@@ -196,6 +220,200 @@ def resolve_library_update_target(
     )
 
 
+def resolve_version_backfill_baseline(
+        repo_path: str,
+        group: str,
+        artifact: str,
+        requested_version: str,
+) -> VersionBackfillBaseline | None:
+    """Resolve one usable same-major baseline for deterministic version backfill.
+
+    Exact index ownership takes precedence over version ordering. Non-exact
+    selection never crosses a major-version boundary. §WF-forge-workflow-drivers.2
+    """
+    target = resolve_library_update_target(repo_path, group, artifact, requested_version)
+    if target.match_type != MATCH_NEW_VERSION and target.matched_entry is not None:
+        if not _entry_has_usable_support(repo_path, group, artifact, target.matched_entry):
+            return None
+        return _version_backfill_baseline(
+            target.matched_entry,
+            requested_version,
+            target.match_type,
+            f"exact {target.match_type} ownership of {requested_version}",
+        )
+
+    requested_parsed = _parse_metadata_version(requested_version)
+    if requested_parsed is None:
+        return None
+
+    entries = load_index_entries(repo_path, group, artifact) or []
+    candidates: list[_BaselineCandidate] = []
+    for entry in entries:
+        if (
+                not isinstance(entry, dict)
+                or is_not_for_native_image_entry(entry)
+                or not _entry_has_usable_support(repo_path, group, artifact, entry)
+        ):
+            continue
+        for supported_version in _entry_supported_versions(entry):
+            parsed_version = _parse_metadata_version(supported_version)
+            if parsed_version is None:
+                continue
+            candidates.append(_BaselineCandidate(
+                entry=entry,
+                supported_version=supported_version,
+                parsed_version=parsed_version,
+            ))
+
+    requested_numbers = requested_parsed[0]
+    same_major_minor = [
+        candidate for candidate in candidates
+        if _same_version_line(candidate.parsed_version[0], requested_numbers, 2)
+    ]
+    selected = _select_ordered_baseline_candidate(same_major_minor, requested_version)
+    if selected is not None:
+        ordering = _baseline_ordering_reason(selected.supported_version, requested_version)
+        return _version_backfill_baseline(
+            selected.entry,
+            selected.supported_version,
+            "same-major-minor",
+            f"{ordering} same major/minor supported version {selected.supported_version}",
+        )
+
+    same_major = [
+        candidate for candidate in candidates
+        if _same_version_line(candidate.parsed_version[0], requested_numbers, 1)
+    ]
+    selected = _select_ordered_baseline_candidate(same_major, requested_version)
+    if selected is not None:
+        ordering = _baseline_ordering_reason(selected.supported_version, requested_version)
+        return _version_backfill_baseline(
+            selected.entry,
+            selected.supported_version,
+            "same-major",
+            f"{ordering} same-major supported version {selected.supported_version}",
+        )
+    return None
+
+
+def require_version_backfill_baseline(
+        repo_path: str,
+        group: str,
+        artifact: str,
+        requested_version: str,
+) -> VersionBackfillBaseline:
+    """Resolve a compatible baseline or raise an actionable routing error."""
+    baseline = resolve_version_backfill_baseline(
+        repo_path,
+        group,
+        artifact,
+        requested_version,
+    )
+    if baseline is not None:
+        return baseline
+
+    coordinate = f"{group}:{artifact}:{requested_version}"
+    index_display = os.path.relpath(index_path(repo_path, group, artifact), repo_path)
+    raise RuntimeError(
+        "ERROR: Cannot resolve a compatible version-backfill baseline for "
+        f"{coordinate} from {index_display}. Expected a usable exact owner or "
+        "a supported test suite in the same major version; each baseline must "
+        "have both metadata and test directories. A cross-major `latest` entry "
+        "is not a compatible baseline. Restore a compatible test suite or "
+        "route the issue for human intervention."
+    )
+
+
+def _version_backfill_baseline(
+        entry: dict[str, Any],
+        supported_version: str,
+        match_type: str,
+        reason: str,
+) -> VersionBackfillBaseline:
+    metadata_version = _entry_metadata_version(entry, supported_version)
+    test_version = _entry_test_version(entry, metadata_version)
+    return VersionBackfillBaseline(
+        entry=entry,
+        metadata_version=metadata_version,
+        test_version=test_version,
+        supported_version=supported_version,
+        match_type=match_type,
+        reason=reason,
+    )
+
+
+def _entry_has_usable_support(
+        repo_path: str,
+        group: str,
+        artifact: str,
+        entry: dict[str, Any],
+) -> bool:
+    metadata_version = _entry_metadata_version(entry, "")
+    if not metadata_version:
+        return False
+    test_version = _entry_test_version(entry, metadata_version)
+    metadata_dir = os.path.join(repo_path, "metadata", group, artifact, metadata_version)
+    test_dir = os.path.join(repo_path, "tests", "src", group, artifact, test_version)
+    return os.path.isdir(metadata_dir) and os.path.isdir(test_dir)
+
+
+def _entry_supported_versions(entry: dict[str, Any]) -> list[str]:
+    versions: list[str] = []
+    for version in [entry.get("metadata-version"), entry.get("test-version"), *_tested_versions(entry)]:
+        if isinstance(version, str) and version and version not in versions:
+            versions.append(version)
+    return versions
+
+
+def _same_version_line(
+        candidate_numbers: tuple[int, ...],
+        requested_numbers: tuple[int, ...],
+        component_count: int,
+) -> bool:
+    if len(candidate_numbers) < component_count or len(requested_numbers) < component_count:
+        return False
+    return candidate_numbers[:component_count] == requested_numbers[:component_count]
+
+
+def _select_ordered_baseline_candidate(
+        candidates: list[_BaselineCandidate],
+        requested_version: str,
+) -> _BaselineCandidate | None:
+    if not candidates:
+        return None
+    prior_candidates = [
+        candidate for candidate in candidates
+        if (_compare_parseable_metadata_versions(candidate.supported_version, requested_version) or 0) <= 0
+    ]
+    if prior_candidates:
+        selected = prior_candidates[0]
+        for candidate in prior_candidates[1:]:
+            comparison = _compare_parseable_metadata_versions(
+                candidate.supported_version,
+                selected.supported_version,
+            )
+            if comparison is not None and comparison > 0:
+                selected = candidate
+        return selected
+
+    selected = candidates[0]
+    for candidate in candidates[1:]:
+        comparison = _compare_parseable_metadata_versions(
+            candidate.supported_version,
+            selected.supported_version,
+        )
+        if comparison is not None and comparison < 0:
+            selected = candidate
+    return selected
+
+
+def _baseline_ordering_reason(supported_version: str, requested_version: str) -> str:
+    comparison = _compare_parseable_metadata_versions(supported_version, requested_version)
+    if comparison is not None and comparison <= 0:
+        return "nearest prior"
+    return "nearest following"
+
+
 def latest_metadata_version(repo_path: str, group: str, artifact: str) -> str | None:
     """Return the metadata-version of the single latest entry, if one exists."""
     entries = load_index_entries(repo_path, group, artifact)
@@ -253,9 +471,13 @@ def _compare_parseable_metadata_versions(first_version: str, second_version: str
 
 
 def _parse_metadata_version(version: str) -> ParsedMetadataVersion | None:
+    """Parse known qualifiers or retain the numeric line of a Maven variant.
+
+    §WF-forge-workflow-drivers.2
+    """
     match = _VERSION_PATTERN.match(version)
     if not match:
-        return None
+        return _parse_maven_numeric_version_fallback(version)
 
     base = tuple(int(part) for part in match.group(1).split("."))
     qualifier_token = match.group(2)
@@ -265,12 +487,12 @@ def _parse_metadata_version(version: str) -> ParsedMetadataVersion | None:
 
     if qualifier_token.isdigit():
         if qualifier_tail and any(not part.isdigit() for part in re.split(r"[-.]", qualifier_tail)):
-            return None
+            return _parse_maven_numeric_version_fallback(version)
         return base, (_QUALIFIER_RANK["number"], int(qualifier_token))
 
     qualifier_match = _QUALIFIER_PATTERN.match(qualifier_token)
     if not qualifier_match:
-        return None
+        return _parse_maven_numeric_version_fallback(version)
 
     qualifier = qualifier_match.group(1).lower()
     qualifier_number = qualifier_match.group(2)
@@ -279,6 +501,17 @@ def _parse_metadata_version(version: str) -> ParsedMetadataVersion | None:
         if first_tail_part.isdigit():
             qualifier_number = first_tail_part
     return base, (_QUALIFIER_RANK[qualifier], int(qualifier_number or "0"))
+
+
+def _parse_maven_numeric_version_fallback(version: str) -> ParsedMetadataVersion | None:
+    """Retain a Maven variant's complete leading numeric version line."""
+    match = _MAVEN_NUMERIC_VERSION_PATTERN.match(version)
+    if not match:
+        return None
+    base = tuple(int(part) for part in match.group(2).split("."))
+    if match.group(1):
+        base = (0, *base)
+    return base, (_QUALIFIER_RANK["variant"], 0)
 
 
 def _compare_version_numbers(first: tuple[int, ...], second: tuple[int, ...]) -> int:
