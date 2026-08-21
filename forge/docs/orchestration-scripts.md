@@ -210,3 +210,31 @@ review timeout or non-zero Pi exit is a review failure, not an approval.
 interval; without it, it runs once. The loop checks the do-work stop markers
 (§DW-do-work-loop) between iterations and during sleep and exits without
 starting another review when a stop marker is present.
+
+## 3. Pipeline Label Selection and Per-Cycle Exclusivity
+
+An issue may temporarily carry several recognized pipeline labels, but Forge
+must select exactly one route. Pipeline precedence is deterministic and does
+not depend on GitHub API label order or which queues operators enabled:
+
+1. `fails-javac-compile`
+2. `fails-java-run`
+3. `fails-native-image-run`
+4. `library-update-request`
+5. `library-new-request`
+
+The failure queues precede the general update and new-library queues because
+they identify the specific compatibility stage that must be repaired. Earlier
+compatibility stages precede later stages because later stages cannot be
+meaningfully repaired until earlier ones pass. Queue scans and explicit
+single-issue runs log every multi-label selection, including all recognized
+labels and the selected highest-precedence label.
+
+One `process_work_queues` invocation gives each issue at most one claimed
+workflow lifecycle. The dispatcher records an issue number as soon as a queue
+starts its authoritative claim or fixture-preparation attempt and passes that
+cycle-local attempted set through every later issue queue. Later queues skip the
+issue even if claiming, preparation, or the workflow failed and normal failure
+handling returned its project item to `Todo` and cleared its assignees. The
+attempted set is not persisted, so a later worker cycle may process the issue
+after operators correct its labels or the underlying failure.

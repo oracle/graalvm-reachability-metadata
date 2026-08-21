@@ -162,6 +162,7 @@ from utility_scripts.metadata_index import (
     coordinate_parts as metadata_coordinate_parts,
     get_not_for_native_image_marker,
     is_not_for_native_image,
+    require_version_backfill_baseline,
     resolve_metadata_version,
     resolve_test_dir,
 )
@@ -713,7 +714,81 @@ def format_github_exception_details(exc: Exception) -> str:
     return repr(exc)
 
 
-PIPELINE_LABELS = {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE, LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL, LABEL_NI_RUN_FAIL}
+PIPELINE_LABEL_PRECEDENCE: tuple[str, ...] = (
+    LABEL_JAVAC_FAIL,
+    LABEL_JAVA_RUN_FAIL,
+    LABEL_NI_RUN_FAIL,
+    LABEL_LIBRARY_UPDATE,
+    LABEL_LIBRARY_NEW,
+)
+PIPELINE_LABELS: frozenset[str] = frozenset(PIPELINE_LABEL_PRECEDENCE)
+
+
+def get_issue_pipeline_labels(issue: dict) -> tuple[str, ...]:
+    """Return recognized issue labels in deterministic pipeline precedence order."""
+    label_names: set[str] = {
+        label["name"]
+        for label in issue.get("labels", [])
+        if isinstance(label, dict) and isinstance(label.get("name"), str)
+    }
+    return tuple(label for label in PIPELINE_LABEL_PRECEDENCE if label in label_names)
+
+
+def select_issue_pipeline_label(issue: dict) -> str | None:
+    """Select one recognized pipeline label according to §ORCH-forge-orchestration-spec.3."""
+    pipeline_labels = get_issue_pipeline_labels(issue)
+    return pipeline_labels[0] if pipeline_labels else None
+
+
+def log_multi_pipeline_label_selection(issue: dict, selected_label: str) -> None:
+    """Report deterministic routing when an issue carries several pipeline labels."""
+    pipeline_labels = get_issue_pipeline_labels(issue)
+    if len(pipeline_labels) <= 1:
+        return
+    log_stage(
+        "issue-routing",
+        (
+            f"Issue #{issue['number']} has multiple pipeline labels {list(pipeline_labels)}; "
+            f"selected '{selected_label}' by precedence."
+        ),
+    )
+
+
+def issue_is_eligible_for_pipeline_queue(
+        issue: dict,
+        queue_label: str,
+        attempted_issue_numbers: set[int],
+) -> bool:
+    """Return whether this queue owns the issue during the current work cycle.
+
+    §ORCH-forge-orchestration-spec.3
+    """
+    issue_number = issue.get("number")
+    if not isinstance(issue_number, int):
+        return False
+    if issue_number in attempted_issue_numbers:
+        log_stage(
+            "issue-routing",
+            f"Skipping issue #{issue_number}: it was already claimed or attempted in this work cycle.",
+        )
+        return False
+
+    selected_label = select_issue_pipeline_label(issue)
+    if selected_label is None:
+        # Search results are selected by `queue_label`; the authoritative label
+        # payload is refreshed again immediately before claim.
+        return True
+    log_multi_pipeline_label_selection(issue, selected_label)
+    if selected_label != queue_label:
+        log_stage(
+            "issue-routing",
+            (
+                f"Skipping issue #{issue_number} from queue '{queue_label}': "
+                f"pipeline precedence selects '{selected_label}'."
+            ),
+        )
+        return False
+    return True
 
 
 def get_issue_by_number(issue_number: int) -> tuple[dict, str]:
@@ -727,10 +802,10 @@ def get_issue_by_number(issue_number: int) -> tuple[dict, str]:
             "--repo", REPO,
             "--json", "number,title,url,labels,assignees",
         )
-    for label in data.get("labels", []):
-        label_name = label.get("name") if isinstance(label, dict) else None
-        if label_name in PIPELINE_LABELS:
-            return data, label_name
+    selected_label = select_issue_pipeline_label(data)
+    if selected_label is not None:
+        log_multi_pipeline_label_selection(data, selected_label)
+        return data, selected_label
     found_labels = [l.get("name", "?") for l in data.get("labels", []) if isinstance(l, dict)]
     print(
         f"ERROR: Issue #{issue_number} has no recognized pipeline label. "
@@ -3226,35 +3301,6 @@ def extract_maven_coordinates(title: str) -> Optional[str]:
     coordinate_parts = extract_coordinate_parts(title)
     if coordinate_parts:
         return ":".join(coordinate_parts)
-    return None
-
-
-def load_current_metadata_version(
-        reachability_metadata_path: str,
-        group: str,
-        artifact: str,
-) -> Optional[str]:
-    """Load the current metadata version from the latest index.json entry."""
-    index_json_path = os.path.join(
-        reachability_metadata_path,
-        "metadata",
-        group,
-        artifact,
-        "index.json",
-    )
-    index_json_path_display = _repo_relative_path(index_json_path, reachability_metadata_path)
-    if not os.path.isfile(index_json_path):
-        print(f"ERROR: Missing metadata index file: {index_json_path_display}", file=sys.stderr)
-        return None
-
-    with open(index_json_path, "r", encoding="utf-8") as index_file:
-        index_entries = json.load(index_file)
-
-    for entry in index_entries:
-        if entry.get("latest") is True:
-            return entry.get("test-version") or entry.get("metadata-version")
-
-    print(f"ERROR: No latest entry found in metadata index: {index_json_path_display}", file=sys.stderr)
     return None
 
 
@@ -6014,15 +6060,22 @@ def build_claim_metadata(
         return None
 
     group, artifact, new_version = coordinate_parts
-    current_version = load_current_metadata_version(
-        base_reachability_metadata_path,
-        group,
-        artifact,
-    )
-    if current_version is None:
+    try:
+        baseline = require_version_backfill_baseline(
+            base_reachability_metadata_path,
+            group,
+            artifact,
+            new_version,
+        )
+    except RuntimeError as error:
+        print(str(error), file=sys.stderr)
         return None
 
-    current_coordinates = f"{group}:{artifact}:{current_version}"
+    current_coordinates = f"{group}:{artifact}:{baseline.test_version}"
+    log_stage(
+        "version-backfill-baseline",
+        f"Selected {current_coordinates} for {issue_coordinates}; reason: {baseline.reason}",
+    )
     return issue_coordinates, current_coordinates, new_version
 
 
@@ -6241,9 +6294,23 @@ def claim_issue_for_processing(
     Claiming, assignment validation, and worktree creation are orchestration
     responsibilities, not strategy logic (§AR-forge-control-plane). Chunked
     dynamic-access continuation derives its exhaust report from the coordinate
-    in the checked-out repository (§WF-dynamic-access-exhaust-report).
+    in the checked-out repository (§WF-dynamic-access-exhaust-report). The
+    refreshed issue must still select this queue by §ORCH-forge-orchestration-spec.3.
     """
     if not refresh_issue_payload_for_claim(issue, label, authenticated_user):
+        return None
+
+    selected_label = select_issue_pipeline_label(issue)
+    if selected_label != label:
+        if selected_label is not None:
+            log_multi_pipeline_label_selection(issue, selected_label)
+        log_stage(
+            "issue-routing",
+            (
+                f"Skipping issue #{issue['number']} from queue '{label}' after refreshing labels: "
+                f"pipeline precedence selects '{selected_label}'."
+            ),
+        )
         return None
 
     if maybe_handle_not_for_native_image_issue(issue, base_reachability_metadata_path):
@@ -7990,6 +8057,7 @@ def process_fixture_issues_for_label(
         environment_already_validated: bool = False,
         user_requested_only: bool = False,
         priority: str | None = None,
+        attempted_issue_numbers: set[int] | None = None,
 ) -> int:
     """Run the local fixture issues for one label, sequentially, one `run.log` each.
 
@@ -8005,9 +8073,10 @@ def process_fixture_issues_for_label(
         if priority is not None
         else None
     )
-    issues = require_fixture_github_state().list_open_issues_by_label(
+    fixture_state = require_fixture_github_state()
+    issues = fixture_state.list_open_issues_by_label(
         label,
-        limit,
+        len(fixture_state.issue_numbers),
         extra_labels=list(tier.extra_labels) if tier is not None else None,
         excluded_labels=list(tier.excluded_labels) if tier is not None else None,
         excluded_authors=get_user_requested_issue_excluded_authors(user_requested_only),
@@ -8017,9 +8086,15 @@ def process_fixture_issues_for_label(
         log_stage("issue-scan", f"No open fixture issues found with label '{label}'")
         return 0
 
+    cycle_attempts = attempted_issue_numbers if attempted_issue_numbers is not None else set()
     processed_count = 0
     for issue in issues:
+        if processed_count >= limit:
+            break
+        if not issue_is_eligible_for_pipeline_queue(issue, label, cycle_attempts):
+            continue
         with fixture_issue_run_log(issue["number"]):
+            cycle_attempts.add(issue["number"])
             claimed_issue = build_fixture_claimed_issue(
                 issue,
                 label,
@@ -8052,6 +8127,7 @@ def process_issues_with_label(
         environment_already_validated: bool = False,
         user_requested_only: bool = False,
         priority: str | None = None,
+        attempted_issue_numbers: set[int] | None = None,
 ) -> int:
     """
     Process up to `limit` claimable issues, skipping over unclaimed candidates.
@@ -8071,6 +8147,7 @@ def process_issues_with_label(
 
     authenticated_user = resolve_authenticated_user(authenticated_user)
 
+    cycle_attempts = attempted_issue_numbers if attempted_issue_numbers is not None else set()
     processed_count = 0
     scanned_count = 0
     next_scan_progress_log_count = ISSUE_SCAN_PROGRESS_LOG_INTERVAL
@@ -8140,6 +8217,26 @@ def process_issues_with_label(
                             if not issues:
                                 continue
 
+                        scanned_count += len(issues)
+                        while scanned_count >= next_scan_progress_log_count:
+                            log_issue_scan_progress(
+                                label,
+                                next_scan_progress_log_count,
+                                offset,
+                                current_offset,
+                                scan_state,
+                                priority,
+                            )
+                            next_scan_progress_log_count += ISSUE_SCAN_PROGRESS_LOG_INTERVAL
+
+                        issues = [
+                            issue
+                            for issue in issues
+                            if issue_is_eligible_for_pipeline_queue(issue, label, cycle_attempts)
+                        ]
+                        if not issues:
+                            continue
+
                         payload_cache_observations = [
                             observation
                             for observation in (
@@ -8159,17 +8256,6 @@ def process_issues_with_label(
                             (issue, cached_skips.get(issue["number"]))
                             for issue in issues
                         )
-                        scanned_count += len(issues)
-                        while scanned_count >= next_scan_progress_log_count:
-                            log_issue_scan_progress(
-                                label,
-                                next_scan_progress_log_count,
-                                offset,
-                                current_offset,
-                                scan_state,
-                                priority,
-                            )
-                            next_scan_progress_log_count += ISSUE_SCAN_PROGRESS_LOG_INTERVAL
                         continue
                     else:
                         break
@@ -8189,6 +8275,7 @@ def process_issues_with_label(
                     claim_kwargs: dict[str, bool] = {}
                     if take_blocked_issues != DEFAULT_TAKE_BLOCKED_ISSUES:
                         claim_kwargs["take_blocked_issues"] = take_blocked_issues
+                    cycle_attempts.add(issue["number"])
                     claimed_issue = claim_issue_for_processing(
                         issue,
                         label,
@@ -8268,7 +8355,10 @@ def process_work_queues(
         priority_override: str | None = None,
         take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
 ) -> None:
-    """Process all configured issue and review queues in one Python process."""
+    """Process each issue at most once across all queues in one work cycle.
+
+    §ORCH-forge-orchestration-spec.3
+    """
     queue_configs = get_work_queue_configs_from_environment(work_strategy_name_override, random_offset_override)
     review_queue_configs = [] if is_fixture_testing_enabled() else get_review_queue_configs_from_environment()
     validate_work_queue_strategies(queue_configs)
@@ -8286,6 +8376,7 @@ def process_work_queues(
     if take_blocked_issues != DEFAULT_TAKE_BLOCKED_ISSUES:
         claim_kwargs["take_blocked_issues"] = take_blocked_issues
     enabled_issue_queues = [queue_config for queue_config in queue_configs if queue_config.limit > 0]
+    attempted_issue_numbers: set[int] = set()
 
     if is_shutdown_requested():
         log_stage(
@@ -8324,6 +8415,7 @@ def process_work_queues(
                 keep_tests_without_dynamic_access,
                 user_requested_only=user_requested_only,
                 environment_already_validated=True,
+                attempted_issue_numbers=attempted_issue_numbers,
                 **priority_kwargs,
             )
             continue
@@ -8353,6 +8445,7 @@ def process_work_queues(
             parallelism,
             user_requested_only=user_requested_only,
             environment_already_validated=True,
+            attempted_issue_numbers=attempted_issue_numbers,
             **priority_kwargs,
             **claim_kwargs,
         )
