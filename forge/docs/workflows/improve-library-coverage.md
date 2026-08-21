@@ -65,14 +65,20 @@ This case applies when the repository already supports the requested
 `group:artifact` artifact, but the requested `version` does not yet have a test
 suite in the repository.
 
-Forge must first resolve the latest supported test version for the artifact and
-probe the requested version with that latest test suite. The probe determines
+Forge must first resolve a usable version-compatible test baseline for the
+artifact with the shared version-backfill resolver and probe the requested
+version with that suite. Exact index ownership wins; otherwise Forge prefers
+the nearest prior version on the same major/minor line, then a following
+version on that line, and only then candidates within the same major. Forge
+must not use a cross-major baseline merely because it is marked `latest`; if no
+compatible baseline exists, routing fails with an actionable error
+(§WF-forge-workflow-drivers.2). The probe determines
 which driver owns the rest of the work:
 
-1. **Latest-suite preparation** — copy or otherwise prepare the latest
-   supported test suite so it runs against the requested version, preserving the
-   previous version as the baseline.
-2. **Compatibility probe** — run the requested version with the latest test
+1. **Baseline-suite preparation** — copy or otherwise prepare the selected
+   supported test suite so it runs against the requested version, preserving
+   the selected version as the baseline and logging why it was selected.
+2. **Compatibility probe** — run the requested version with the selected test
    suite before selecting the repair or coverage path.
 3. **Javac failure** — if the probe fails at Java compilation, dispatch the
    javac-fix driver for the previous version and requested version. That
@@ -83,7 +89,7 @@ which driver owns the rest of the work:
    strategy. That driver owns runtime repair and the composite coverage
    phase (§WF-java-fail-fix-workflow).
 5. **Compatible version** — if compilation and JVM tests both pass, the
-   requested version is compatible with the latest test suite. Forge should add
+   requested version is compatible with the selected test suite. Forge should add
    or select the requested version's test project and run the regular
    improve-coverage workflow for that requested version
    (§WF-improve-library-coverage.1).
@@ -95,7 +101,7 @@ coverage starts:
 - `ai_workflows/drivers/fix_javac_fail.py` for compilation failures.
 - `ai_workflows/drivers/fix_java_run_fail.py` for JVM runtime failures.
 - `ai_workflows/drivers/improve_library_coverage.py` when the requested version is
-  already compatible with the latest supported test suite.
+  already compatible with the selected baseline test suite.
 
 ### Publication
 

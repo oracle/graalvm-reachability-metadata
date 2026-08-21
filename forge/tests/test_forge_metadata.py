@@ -3,6 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+import contextlib
 import dataclasses
 import io
 import json
@@ -342,6 +343,35 @@ class LibraryUpdateIssueTests(unittest.TestCase):
         self.assertNotIn("body", issue)
         self.assertNotIn("body", gh_json.call_args.args[-1])
 
+    def test_issue_lookup_uses_pipeline_precedence_instead_of_api_label_order(self) -> None:
+        lower_precedence_labels = list(reversed(forge_metadata.PIPELINE_LABEL_PRECEDENCE))
+        issue_payload = {
+            "number": 9408,
+            "title": "Multi-labeled issue",
+            "labels": [{"name": label} for label in lower_precedence_labels],
+            "assignees": [],
+        }
+
+        with patch.object(forge_metadata, "gh_json", return_value=issue_payload), \
+                patch.object(forge_metadata, "log_stage") as log_stage:
+            _issue, label = forge_metadata.get_issue_by_number(9408)
+
+        self.assertEqual(label, forge_metadata.LABEL_JAVAC_FAIL)
+        self.assertIn("selected 'fails-javac-compile' by precedence", log_stage.call_args.args[1])
+
+    def test_pipeline_precedence_selects_each_label_over_every_lower_label(self) -> None:
+        for index, expected_label in enumerate(forge_metadata.PIPELINE_LABEL_PRECEDENCE):
+            labels = list(reversed(forge_metadata.PIPELINE_LABEL_PRECEDENCE[index:]))
+            issue = {
+                "number": 9408,
+                "labels": [{"name": label} for label in labels],
+            }
+            with self.subTest(expected_label=expected_label):
+                self.assertEqual(
+                    forge_metadata.select_issue_pipeline_label(issue),
+                    expected_label,
+                )
+
     def test_claim_payload_does_not_request_body_for_generic_claiming(self) -> None:
         issue_payload = {
             "number": 1412,
@@ -382,6 +412,49 @@ class LibraryUpdateIssueTests(unittest.TestCase):
 
         self.assertEqual(claim_metadata, ("org.example:title-lib:1.2.3", None, None))
 
+    def test_direct_repair_uses_same_line_netty_backfill_instead_of_latest(self) -> None:
+        with tempfile.TemporaryDirectory() as repo:
+            group = "io.netty"
+            artifact = "netty-common"
+            index_dir = os.path.join(repo, "metadata", group, artifact)
+            os.makedirs(index_dir, exist_ok=True)
+            with open(os.path.join(index_dir, "index.json"), "w", encoding="utf-8") as index_file:
+                json.dump([
+                    {
+                        "metadata-version": "4.1.115.Final",
+                        "tested-versions": ["4.1.115.Final", "4.1.130.Final"],
+                    },
+                    {
+                        "latest": True,
+                        "metadata-version": "5.0.0.Alpha1",
+                        "tested-versions": ["5.0.0.Alpha1"],
+                    },
+                ], index_file)
+            for version in ["4.1.115.Final", "5.0.0.Alpha1"]:
+                os.makedirs(os.path.join(repo, "metadata", group, artifact, version), exist_ok=True)
+                os.makedirs(os.path.join(repo, "tests", "src", group, artifact, version), exist_ok=True)
+            issue = {
+                "number": 9408,
+                "title": "Fails native image run io.netty:netty-common:4.1.132.Final",
+            }
+
+            with patch.object(forge_metadata, "log_stage") as stage_log:
+                claim_metadata = forge_metadata.build_claim_metadata(
+                    issue,
+                    forge_metadata.LABEL_NI_RUN_FAIL,
+                    repo,
+                )
+
+            self.assertEqual(
+                claim_metadata,
+                (
+                    "io.netty:netty-common:4.1.132.Final",
+                    "io.netty:netty-common:4.1.115.Final",
+                    "4.1.132.Final",
+                ),
+            )
+            self.assertIn("nearest prior same major/minor", stage_log.call_args.args[1])
+
     def test_extract_issue_requested_metadata_context_keeps_full_issue_body(self) -> None:
         body = """
         The reporter may describe the missing metadata in arbitrary prose.
@@ -421,11 +494,8 @@ class LibraryUpdateIssueTests(unittest.TestCase):
                     "select_library_update_route",
                     return_value=forge_metadata.LibraryUpdateRoute(
                         selected_driver=forge_metadata.ROUTE_IMPROVE_COVERAGE,
-                        requested_coordinates="org.example:lib:1.0.0",
                         baseline_coordinates=None,
                         new_version="1.0.0",
-                        reason="test route",
-                        match_type="tested-version",
                     ),
                 ), \
                 patch.object(forge_metadata, "run_improve_library_coverage_workflow", return_value=0) as workflow:
@@ -1422,6 +1492,37 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
 
 class SingleIssueProcessingTests(unittest.TestCase):
+    def test_claim_rechecks_pipeline_precedence_after_label_refresh(self) -> None:
+        issue = {
+            "number": 9408,
+            "title": "Multi-labeled issue",
+            "labels": [{"name": forge_metadata.LABEL_LIBRARY_UPDATE}],
+            "assignees": [],
+        }
+
+        def refresh_labels(refreshed_issue: dict, *_args: object) -> bool:
+            refreshed_issue["labels"] = [
+                {"name": forge_metadata.LABEL_LIBRARY_UPDATE},
+                {"name": forge_metadata.LABEL_NI_RUN_FAIL},
+            ]
+            return True
+
+        with patch.object(
+                forge_metadata,
+                "refresh_issue_payload_for_claim",
+                side_effect=refresh_labels,
+        ), patch.object(forge_metadata, "build_claim_metadata") as build_claim_metadata:
+            claimed_issue = forge_metadata.claim_issue_for_processing(
+                issue,
+                forge_metadata.LABEL_LIBRARY_UPDATE,
+                "/tmp/reachability",
+                "/tmp/metrics",
+                "automation-user",
+            )
+
+        self.assertIsNone(claimed_issue)
+        build_claim_metadata.assert_not_called()
+
     def test_append_chunked_dynamic_access_workflow_args_passes_issue_context_for_first_run(self) -> None:
         claimed_issue = _claimed_issue()
         pipeline_argv = ["--coordinates", claimed_issue.issue_coordinates]
@@ -1802,6 +1903,7 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             forge_metadata.DEFAULT_PARALLELISM,
             user_requested_only=False,
             environment_already_validated=True,
+            attempted_issue_numbers=set(),
         )
         process_reviews.assert_not_called()
 
@@ -1848,6 +1950,7 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             forge_metadata.DEFAULT_PARALLELISM,
             user_requested_only=False,
             environment_already_validated=True,
+            attempted_issue_numbers=set(),
         )
         process_reviews.assert_not_called()
 
@@ -1891,6 +1994,7 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             forge_metadata.DEFAULT_PARALLELISM,
             user_requested_only=True,
             environment_already_validated=True,
+            attempted_issue_numbers=set(),
         )
 
     def test_process_work_queues_forwards_take_blocked_issues_override(self) -> None:
@@ -1926,8 +2030,209 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             forge_metadata.DEFAULT_PARALLELISM,
             user_requested_only=False,
             environment_already_validated=True,
+            attempted_issue_numbers=set(),
             take_blocked_issues=True,
         )
+
+    def test_process_work_queues_shares_attempted_issues_across_issue_queues(self) -> None:
+        env = {
+            "FORGE_JAVAC_WORK_LIMIT": "1",
+            "FORGE_JAVA_RUN_WORK_LIMIT": "1",
+            "FORGE_NI_RUN_WORK_LIMIT": "0",
+            "FORGE_LIBRARY_UPDATE_WORK_LIMIT": "0",
+            "FORGE_WORK_LIMIT": "0",
+            "FORGE_REVIEW_LIMIT": "0",
+        }
+        observed_attempt_sets: list[set[int]] = []
+
+        def process_queue(*_args: object, **kwargs: object) -> int:
+            attempted_issue_numbers = kwargs["attempted_issue_numbers"]
+            self.assertIsInstance(attempted_issue_numbers, set)
+            observed_attempt_sets.append(attempted_issue_numbers)
+            attempted_issue_numbers.add(9408)
+            return 1
+
+        with patch.dict(os.environ, env, clear=True), \
+                patch.object(forge_metadata, "validate_work_queue_strategies"), \
+                patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                patch.object(forge_metadata, "process_issues_with_label", side_effect=process_queue):
+            forge_metadata.process_work_queues(
+                "/tmp/reachability",
+                "/tmp/metrics",
+                "automation-user",
+            )
+
+        self.assertEqual(len(observed_attempt_sets), 2)
+        self.assertIs(observed_attempt_sets[0], observed_attempt_sets[1])
+        self.assertEqual(observed_attempt_sets[1], {9408})
+
+    def test_issue_9408_fixture_runs_only_native_image_queue_after_failure(self) -> None:
+        fixture_path = os.path.join(
+            os.path.dirname(forge_metadata.__file__),
+            "fixture_github_issues",
+            "multi-labeled-issue-9408.yaml",
+        )
+        fixture_state = forge_metadata.load_fixture_github_state([fixture_path])
+        env = {
+            "FORGE_JAVAC_WORK_LIMIT": "0",
+            "FORGE_JAVA_RUN_WORK_LIMIT": "0",
+            "FORGE_NI_RUN_WORK_LIMIT": "1",
+            "FORGE_LIBRARY_UPDATE_WORK_LIMIT": "1",
+            "FORGE_WORK_LIMIT": "0",
+            "FORGE_REVIEW_LIMIT": "0",
+        }
+
+        def build_claimed_issue(issue: dict, label: str, *_args: object) -> forge_metadata.ClaimedIssue:
+            return dataclasses.replace(_claimed_issue(label), issue=issue)
+
+        with patch.dict(os.environ, env, clear=True), \
+                patch.object(forge_metadata, "fixture_github_state", fixture_state), \
+                patch.object(forge_metadata, "validate_work_queue_strategies"), \
+                patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                patch.object(
+                    forge_metadata,
+                    "fixture_issue_run_log",
+                    return_value=contextlib.nullcontext(),
+                ), \
+                patch.object(
+                    forge_metadata,
+                    "build_fixture_claimed_issue",
+                    side_effect=build_claimed_issue,
+                ) as build_fixture_claimed_issue, \
+                patch.object(
+                    forge_metadata,
+                    "process_claimed_issue_lifecycle",
+                    return_value=False,
+                ) as process_lifecycle, \
+                patch.object(forge_metadata, "log_stage") as log_stage:
+            forge_metadata.process_work_queues(
+                "/tmp/reachability",
+                "/tmp/metrics",
+                "automation-user",
+            )
+
+        build_fixture_claimed_issue.assert_called_once()
+        self.assertEqual(
+            build_fixture_claimed_issue.call_args.args[1],
+            forge_metadata.LABEL_NI_RUN_FAIL,
+        )
+        process_lifecycle.assert_called_once()
+        routing_messages = [
+            args[1]
+            for args, _kwargs in log_stage.call_args_list
+            if args and args[0] == "issue-routing"
+        ]
+        self.assertTrue(any(
+            "selected 'fails-native-image-run' by precedence" in message
+            for message in routing_messages
+        ))
+        self.assertTrue(any("already claimed or attempted" in message for message in routing_messages))
+
+    def test_lower_precedence_queue_skips_multi_labeled_issue_before_claim(self) -> None:
+        issue = {
+            "number": 9408,
+            "title": "Multi-labeled issue",
+            "labels": [
+                {"name": forge_metadata.LABEL_LIBRARY_UPDATE},
+                {"name": forge_metadata.LABEL_NI_RUN_FAIL},
+            ],
+            "assignees": [],
+        }
+
+        with patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                patch.object(
+                    forge_metadata,
+                    "get_prioritized_issues_with_label",
+                    side_effect=[
+                        ([issue], _scan_state(1)),
+                        ([], _scan_state(1, exhausted=True)),
+                    ],
+                ), \
+                patch.object(forge_metadata, "claim_issue_for_processing") as claim_issue:
+            processed = forge_metadata.process_issues_with_label(
+                forge_metadata.LABEL_LIBRARY_UPDATE,
+                1,
+                0,
+                "/tmp/reachability",
+                "/tmp/metrics",
+                None,
+                False,
+                "automation-user",
+                1,
+            )
+
+        self.assertEqual(processed, 0)
+        claim_issue.assert_not_called()
+
+    def test_attempted_issue_is_skipped_before_claim(self) -> None:
+        issue = {
+            "number": 9408,
+            "title": "Native-image failure",
+            "labels": [{"name": forge_metadata.LABEL_NI_RUN_FAIL}],
+            "assignees": [],
+        }
+
+        with patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                patch.object(
+                    forge_metadata,
+                    "get_prioritized_issues_with_label",
+                    side_effect=[
+                        ([issue], _scan_state(1)),
+                        ([], _scan_state(1, exhausted=True)),
+                    ],
+                ), \
+                patch.object(forge_metadata, "claim_issue_for_processing") as claim_issue:
+            processed = forge_metadata.process_issues_with_label(
+                forge_metadata.LABEL_NI_RUN_FAIL,
+                1,
+                0,
+                "/tmp/reachability",
+                "/tmp/metrics",
+                None,
+                False,
+                "automation-user",
+                1,
+                attempted_issue_numbers={9408},
+            )
+
+        self.assertEqual(processed, 0)
+        claim_issue.assert_not_called()
+
+    def test_failed_claim_attempt_excludes_issue_from_later_queues(self) -> None:
+        issue = {
+            "number": 9408,
+            "title": "Native-image failure",
+            "labels": [{"name": forge_metadata.LABEL_NI_RUN_FAIL}],
+            "assignees": [],
+        }
+        attempted_issue_numbers: set[int] = set()
+
+        with patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                patch.object(
+                    forge_metadata,
+                    "get_prioritized_issues_with_label",
+                    side_effect=[
+                        ([issue], _scan_state(1)),
+                        ([], _scan_state(1, exhausted=True)),
+                    ],
+                ), \
+                patch.object(forge_metadata, "get_cached_issue_claim_skips", return_value={}), \
+                patch.object(forge_metadata, "claim_issue_for_processing", return_value=None):
+            processed = forge_metadata.process_issues_with_label(
+                forge_metadata.LABEL_NI_RUN_FAIL,
+                1,
+                0,
+                "/tmp/reachability",
+                "/tmp/metrics",
+                None,
+                False,
+                "automation-user",
+                1,
+                attempted_issue_numbers=attempted_issue_numbers,
+            )
+
+        self.assertEqual(processed, 0)
+        self.assertEqual(attempted_issue_numbers, {9408})
 
     def test_process_work_queues_resolves_auth_for_review_only_queue(self) -> None:
         env = {
