@@ -174,8 +174,10 @@ The gate is also invoked outside `forge_metadata.py`, by workflows that build
 and test libraries without going through issue dispatch. Coverage work is such a
 mode: it selects the same build capabilities as issue work — Codex, Docker, the
 Gradle wrapper, the library and registry hosts, and the Codex state root — but
-resolves GraalVM from `GRAALVM_HOME`, then `JAVA_HOME`, requiring one Forge-usable
-distribution of JDK 25 or newer instead of the three pinned issue lanes. Coverage
+takes GraalVM from `GRAALVM_HOME`, which takes the value of `JAVA_HOME` when it is
+unset, and requires one Forge-usable distribution of JDK 25 or newer instead of the
+three pinned issue lanes. The fallback is an assignment rather than a second lane, so
+the report names one variable whichever of the two the host exported. Coverage
 work builds native images, so Native Image and the reachability-metadata schema
 remain mandatory; only the pinned-release matching is dropped, because the mode
 does not produce the GA/EA comparison lanes those releases exist for

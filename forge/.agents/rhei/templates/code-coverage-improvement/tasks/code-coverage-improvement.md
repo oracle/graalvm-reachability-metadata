@@ -14,9 +14,9 @@
      <repo checkout> --mode coverage`. The coverage lane needs the same build
      capabilities as issue work — Codex, Docker, the Gradle wrapper, the library
      and registry hosts, GitHub permissions to publish the pull request — but
-     resolves GraalVM from `GRAALVM_HOME`, then `JAVA_HOME`, requiring one
-     Forge-usable distribution of JDK 25 or newer rather than the three pinned
-     issue lanes. The gate runs every check and prints one report with a `Fix:`
+     takes GraalVM from `GRAALVM_HOME`, or from `JAVA_HOME` when that is unset,
+     requiring one Forge-usable distribution of JDK 25 or newer rather than the
+     three pinned issue lanes. The gate runs every check and prints one report with a `Fix:`
      line per failure.
   2. Resolve the coordinate from `{{coordinate}}` when it is set, otherwise from
      the issue title, and require `tests/src/<group>/<artifact>/<version>` to

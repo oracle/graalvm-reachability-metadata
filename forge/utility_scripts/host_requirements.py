@@ -240,7 +240,7 @@ class HostRequirements:
             print(f"  - Every GraalVM must contain {GRAALVM_SCHEMA_PATH}")
             print("  - JAVA_HOME is aligned to GRAALVM_HOME by Forge; explicit matching value is recommended")
         elif self.requirements.coverage_work:
-            print("  - GRAALVM_HOME (then JAVA_HOME)=<GraalVM JDK 25 or newer with Native Image>")
+            print("  - GRAALVM_HOME=<GraalVM JDK 25 or newer with Native Image>; unset takes the value of JAVA_HOME")
             print(f"  - The selected GraalVM must contain {GRAALVM_SCHEMA_PATH}")
         elif self.requirements.review_work:
             print("  - JAVA_HOME=<JDK 25 with executable bin/java> (GRAALVM_HOME is not required for review-only work)")
@@ -419,45 +419,52 @@ class HostRequirements:
     def _check_coverage_graalvm_home(self) -> None:
         """Require one Forge-usable GraalVM of JDK 25 or newer for coverage work.
 
-        Coverage work builds native images, so Native Image and the reachability-metadata
-        schema stay mandatory; only the pinned GA/EA lane matching is dropped
-        (§FS-forge-host-requirements).
+        `GRAALVM_HOME` names the distribution, and when it is unset it takes the value
+        of `JAVA_HOME`, so a host that exports only `JAVA_HOME` resolves the same lane
+        under the same name instead of a second one. Coverage work builds native images,
+        so Native Image and the reachability-metadata schema stay mandatory; only the
+        pinned GA/EA lane matching is dropped (§FS-forge-host-requirements).
         """
-        for variable in ("GRAALVM_HOME", "JAVA_HOME"):
-            home = self.environment.get(variable)
-            if not home:
-                continue
-            problems = check_graalvm_installation(home)
-            if problems:
-                self._add(
-                    "environment",
-                    variable,
-                    True,
-                    False,
-                    f"{variable}={home}: {'; '.join(problems)}",
-                    f"Point `{variable}` to a GraalVM that provides Native Image and {GRAALVM_SCHEMA_PATH}.",
-                )
-                return
-            version = run_command([os.path.join(home, "bin", "java"), "-version"], self.environment)
-            version_line = first_output_line(version) or "java version unavailable"
-            major = java_version_major(version_line) if version.returncode == 0 else None
+        home = self.environment.get("GRAALVM_HOME")
+        source = ""
+        if not home:
+            home = self.environment.get("JAVA_HOME")
+            source = " (from JAVA_HOME)"
+        if not home:
             self._add(
                 "environment",
-                variable,
+                "GRAALVM_HOME",
                 True,
-                major is not None and major >= 25,
-                f"{variable}={home} ({version_line})",
-                f"Point `{variable}` to a GraalVM of JDK 25 or newer; coverage work requires 25+.",
+                False,
+                "neither GRAALVM_HOME nor JAVA_HOME is set",
+                "Export `GRAALVM_HOME=/absolute/path/to/a/graalvm` of JDK 25 or newer that provides "
+                f"Native Image and {GRAALVM_SCHEMA_PATH}.",
             )
             return
+        # The fallback is an assignment, not a second lane: every later check and the
+        # `java -version` probe below must see the same distribution the report names.
+        self.environment["GRAALVM_HOME"] = home
+        problems = check_graalvm_installation(home)
+        if problems:
+            self._add(
+                "environment",
+                "GRAALVM_HOME",
+                True,
+                False,
+                f"GRAALVM_HOME={home}{source}: {'; '.join(problems)}",
+                f"Point `GRAALVM_HOME` to a GraalVM that provides Native Image and {GRAALVM_SCHEMA_PATH}.",
+            )
+            return
+        version = run_command([os.path.join(home, "bin", "java"), "-version"], self.environment)
+        version_line = first_output_line(version) or "java version unavailable"
+        major = java_version_major(version_line) if version.returncode == 0 else None
         self._add(
             "environment",
             "GRAALVM_HOME",
             True,
-            False,
-            "neither GRAALVM_HOME nor JAVA_HOME is set",
-            "Export `GRAALVM_HOME=/absolute/path/to/a/graalvm` of JDK 25 or newer that provides "
-            f"Native Image and {GRAALVM_SCHEMA_PATH}.",
+            major is not None and major >= 25,
+            f"GRAALVM_HOME={home}{source} ({version_line})",
+            "Point `GRAALVM_HOME` to a GraalVM of JDK 25 or newer; coverage work requires 25+.",
         )
 
     def _check_review_java_home(self) -> None:
@@ -1512,7 +1519,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         help=(
             "Which capabilities to require. `queues` (the default) derives them from the effective "
             "queue limits; `coverage` selects the code-coverage-improvement lane, which needs the "
-            "build toolchain but resolves GraalVM from GRAALVM_HOME/JAVA_HOME at JDK 25 or newer."
+            "build toolchain but takes GraalVM from GRAALVM_HOME, or from JAVA_HOME when that is "
+            "unset, at JDK 25 or newer."
         ),
     )
     parser.add_argument("--python-bin", default=sys.executable, help="Python interpreter selected by do-work.")

@@ -260,7 +260,50 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertEqual("GRAALVM_HOME", selected.name)
         self.assertEqual("PASS", selected.status)
 
-    def test_coverage_lane_falls_back_to_java_home_and_rejects_pre_25(self) -> None:
+    def test_unset_coverage_graalvm_home_takes_the_value_of_java_home(self) -> None:
+        with _graalvm_home() as graalvm_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                "gpt-5.6-terra",
+                {"JAVA_HOME": graalvm_home},
+                requirements=COVERAGE_REQUIREMENTS,
+            )
+
+            with patch("utility_scripts.host_requirements.run_command") as command:
+                command.return_value = subprocess.CompletedProcess(
+                    ["java", "-version"], 0, "", 'openjdk version "26.0.1" 2026-10-20\n'
+                )
+                host_requirements._check_environment()
+
+        selected, = host_requirements.results
+        self.assertEqual("GRAALVM_HOME", selected.name)
+        self.assertEqual("PASS", selected.status)
+        self.assertIn("from JAVA_HOME", selected.detail)
+        self.assertEqual(graalvm_home, host_requirements.environment["GRAALVM_HOME"])
+
+    def test_set_coverage_graalvm_home_wins_over_java_home(self) -> None:
+        with _graalvm_home() as graalvm_home, _graalvm_home() as java_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                "gpt-5.6-terra",
+                {"GRAALVM_HOME": graalvm_home, "JAVA_HOME": java_home},
+                requirements=COVERAGE_REQUIREMENTS,
+            )
+
+            with patch("utility_scripts.host_requirements.run_command") as command:
+                command.return_value = subprocess.CompletedProcess(
+                    ["java", "-version"], 0, "", 'openjdk version "26.0.1" 2026-10-20\n'
+                )
+                host_requirements._check_environment()
+
+        selected, = host_requirements.results
+        self.assertEqual("GRAALVM_HOME", selected.name)
+        self.assertIn(graalvm_home, selected.detail)
+        self.assertNotIn("from JAVA_HOME", selected.detail)
+
+    def test_coverage_lane_rejects_a_graalvm_older_than_25(self) -> None:
         with _graalvm_home() as graalvm_home:
             host_requirements = HostRequirements(
                 "/repo/forge",
@@ -277,11 +320,25 @@ class HostRequirementsTests(unittest.TestCase):
                 host_requirements._check_environment()
 
         selected, = host_requirements.results
-        self.assertEqual("JAVA_HOME", selected.name)
+        self.assertEqual("GRAALVM_HOME", selected.name)
         self.assertTrue(selected.blocks_work)
         self.assertIn("JDK 25 or newer", selected.remediation)
 
-    def test_coverage_lane_keeps_native_image_mandatory_and_demands_no_issue_lanes(self) -> None:
+    def test_coverage_lane_stops_when_neither_graalvm_home_nor_java_home_is_set(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            "gpt-5.6-terra",
+            {},
+            requirements=COVERAGE_REQUIREMENTS,
+        )
+        host_requirements._check_environment()
+
+        selected, = host_requirements.results
+        self.assertEqual("GRAALVM_HOME", selected.name)
+        self.assertTrue(selected.blocks_work)
+
+    def test_coverage_lane_keeps_native_image_mandatory(self) -> None:
         with _graalvm_home(native_image=False) as graalvm_home:
             host_requirements = HostRequirements(
                 "/repo/forge",
@@ -293,11 +350,9 @@ class HostRequirementsTests(unittest.TestCase):
             host_requirements._check_environment()
 
         selected, = host_requirements.results
+        self.assertEqual("GRAALVM_HOME", selected.name)
         self.assertTrue(selected.blocks_work)
         self.assertIn("bin/native-image is missing", selected.detail)
-        self.assertNotIn(
-            "GRAALVM_HOME_25_0", [result.name for result in host_requirements.results]
-        )
 
     def test_coverage_lane_selects_the_build_toolchain(self) -> None:
         self.assertTrue(COVERAGE_REQUIREMENTS.build_work)
