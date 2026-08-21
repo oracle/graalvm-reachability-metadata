@@ -36,9 +36,6 @@ result.
 | Project number | `{{project_number}}` |
 | TODO status | `{{todo_status}}` |
 | In-progress status | `{{in_progress_status}}` |
-| PR push remote | `{{pr_push_remote}}` |
-| PR head owner | `{{pr_head_owner}}` |
-| PR base branch | `{{pr_base_branch}}` |
 
 ## Verification
 
