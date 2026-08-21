@@ -128,7 +128,17 @@ class CoveragePublisherTemplateTests(unittest.TestCase):
         """One universe of 30: 10 reportable API entries plus 20 deep methods."""
         _, body = publisher.render_publication(_descriptor())
 
-        self.assertIn("the 30 library methods JaCoCo can rule on", body)
+        # The lead paragraph is wrapped, so it reads as text rather than as one
+        # line of it.
+        paragraph = body.split("## JaCoCo coverage\n\n", 1)[1].split("\n\n", 1)[0]
+        self.assertGreater(len(paragraph.splitlines()), 1)
+        self.assertLessEqual(
+            max(len(line) for line in paragraph.splitlines()),
+            publisher.BODY_TEXT_WIDTH,
+        )
+        self.assertIn(
+            "the 30 library methods JaCoCo can rule on", " ".join(paragraph.split())
+        )
         self.assertIn("| Run start | 9/30 | 30.0% |", body)
         self.assertIn("| After Simple Jacoco guidance phase | 16/30 | 53.33% |", body)
         self.assertIn("| After PGO guidance phase (final) | 21/30 | 70.0% |", body)

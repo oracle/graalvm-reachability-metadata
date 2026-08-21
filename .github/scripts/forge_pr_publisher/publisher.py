@@ -15,6 +15,7 @@ import os
 import re
 import subprocess
 import sys
+import textwrap
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -622,6 +623,9 @@ def _signed(value: int | float) -> str:
     return f"{'+' if value > 0 else ''}{value}"
 
 
+#: Column width prose paragraphs in a rendered body wrap at.
+BODY_TEXT_WIDTH = 80
+
 #: Checkpoint name -> the row label a reader sees.
 CHECKPOINT_LABELS: dict[str, str] = {
     "runStart": "Run start",
@@ -652,12 +656,17 @@ def _coverage_universe_lines(run: dict[str, Any]) -> list[str]:
     deep_universe = int(run["deepUniverse"])
     checkpoints: list[dict[str, Any]] = run["checkpoints"]
     lines = [
-        f"Every figure divides by the same denominator: the {universe} library "
-        f"methods JaCoCo can rule on, made up of {api_universe} public API "
-        f"methods and {deep_universe} internal methods, which are disjoint "
-        "by construction. Each checkpoint is counted over that one frozen set of "
-        "method ids from a single JaCoCo report, so every phase starts where the "
-        "previous phase ended.",
+        # Wrapped, so that editing this sentence later shows as a sentence-sized
+        # diff rather than one rewritten 300-column line.
+        textwrap.fill(
+            f"Every figure divides by the same denominator: the {universe} library "
+            f"methods JaCoCo can rule on, made up of {api_universe} public API "
+            f"methods and {deep_universe} internal methods, which are disjoint "
+            "by construction. Each checkpoint is counted over that one frozen set of "
+            "method ids from a single JaCoCo report, so every phase starts where the "
+            "previous phase ended.",
+            BODY_TEXT_WIDTH,
+        ),
         "",
         "| Checkpoint | Covered | Share |",
         "|---|--:|--:|",
