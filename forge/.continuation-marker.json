@@ -1,0 +1,72 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "io.netty:netty-common:4.1.132.Final",
+  "issueNumber": 9408,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "Exercise io.netty.util.Recycler.get() with the default io.netty.recycler.blocking=false behavior; setting it to true bypasses the shaded JCTools queue and would miss the reported failure.",
+    "applied_setup": [],
+    "current_library": "io.netty:netty-common:5.0.0.Alpha1",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9408 Update existing library: io.netty:netty-common:4.1.132.Final; label=fails-native-image-run; body_chars=4906"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "18 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 46252,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 9408,
+    "library": "io.netty:netty-common:4.1.132.Final",
+    "model": "gpt-5.6-sol",
+    "new_version": "4.1.132.Final",
+    "output_tokens_used": 1768,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Reusing only the Netty 5 test coverage may not exercise the Netty 4.1 Recycler/JCTools path."
+    ],
+    "session_log_path": "/home/vjovanov/g/forge/graalvm-reachability-metadata/forge/logs/io.netty:netty-common:4.1.132.Final/library-preparation-preflight/pi-generation-2026-08-21T17-49-07-146732Z.log",
+    "status": "completed",
+    "summary": "netty-common is directly testable: it shades JCTools into its own JAR, and Recycler.get() reaches the failing queue initialization without external services or additional dependencies."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "4.1.132.Final",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-9408-fails-native-image-run-io.netty-netty-common-4.1.132.Final-bb5d220e",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "library_update_pi_gpt-5.6-sol"
+}
