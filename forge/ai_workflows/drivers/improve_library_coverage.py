@@ -26,7 +26,7 @@ import re
 import shutil
 import subprocess
 import sys
-from typing import Any, Callable
+from typing import Any
 
 if __package__ in (None, ""):
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -64,6 +64,7 @@ from utility_scripts.metadata_index import (
     is_newer_than_latest_metadata_version,
     load_index_entries,
     resolve_library_update_target,
+    resolve_version_backfill_baseline,
 )
 from utility_scripts.metrics_writer import count_metadata_entries, count_test_only_metadata_entries, create_failure_run_metrics_output
 from utility_scripts.source_context import (
@@ -228,81 +229,8 @@ def _version_is_at_or_after(version: str, requested_version: str) -> bool:
     return _padded_version_numbers(version) >= _padded_version_numbers(requested_version)
 
 
-def _is_supported_index_entry(entry: dict[str, Any]) -> bool:
-    metadata_version = entry.get("metadata-version")
-    return isinstance(metadata_version, str) and bool(metadata_version)
-
-
 def _entry_test_version(entry: dict[str, Any]) -> str:
     return str(entry.get("test-version") or entry.get("metadata-version"))
-
-
-def _usable_clone_entry(repo_path: str, group: str, artifact: str, entry: dict[str, Any]) -> bool:
-    metadata_version = str(entry.get("metadata-version") or "")
-    if not metadata_version:
-        return False
-    test_version = _entry_test_version(entry)
-    metadata_dir = os.path.join(repo_path, "metadata", group, artifact, metadata_version)
-    test_dir = os.path.join(repo_path, "tests", "src", group, artifact, test_version)
-    return os.path.isdir(metadata_dir) and os.path.isdir(test_dir)
-
-
-def _closest_entry(
-        entries: list[dict[str, Any]],
-        requested_version: str,
-        predicate: Callable[[tuple[int, ...]], bool],
-) -> dict[str, Any] | None:
-    candidates = [entry for entry in entries if predicate(_padded_version_numbers(str(entry["metadata-version"])))]
-    if not candidates:
-        return None
-    requested_numbers = _padded_version_numbers(requested_version)
-
-    def rank(entry: dict[str, Any]) -> tuple[tuple[int, ...], tuple[int, ...]]:
-        candidate_numbers = _padded_version_numbers(str(entry["metadata-version"]))
-        distance = tuple(abs(candidate - requested) for candidate, requested in zip(candidate_numbers, requested_numbers))
-        descending_candidate = tuple(-part for part in candidate_numbers)
-        return distance, descending_candidate
-
-    return min(candidates, key=rank)
-
-
-def select_clone_baseline_entry(
-        repo_path: str,
-        group: str,
-        artifact: str,
-        requested_version: str,
-) -> dict[str, Any] | None:
-    """Select the closest compatible existing support to clone for a new version."""
-    entries = load_index_entries(repo_path, group, artifact) or []
-    usable_entries = [
-        entry for entry in entries
-        if isinstance(entry, dict) and _is_supported_index_entry(entry)
-        and _usable_clone_entry(repo_path, group, artifact, entry)
-    ]
-    if not usable_entries:
-        return None
-
-    requested_numbers = _padded_version_numbers(requested_version)
-    same_major_minor = _closest_entry(
-        usable_entries,
-        requested_version,
-        lambda numbers: numbers[:2] == requested_numbers[:2],
-    )
-    if same_major_minor is not None:
-        return same_major_minor
-
-    same_major = _closest_entry(
-        usable_entries,
-        requested_version,
-        lambda numbers: numbers[:1] == requested_numbers[:1],
-    )
-    if same_major is not None:
-        return same_major
-
-    latest_entries = [entry for entry in usable_entries if entry.get("latest") is True]
-    if latest_entries:
-        return latest_entries[0]
-    return None
 
 
 def _copytree_replace(destination: str, source: str) -> None:
@@ -611,16 +539,18 @@ def prepare_library_update_target(
     if target.match_type != MATCH_NEW_VERSION:
         return target
 
-    baseline_entry = select_clone_baseline_entry(repo_path, group, artifact, requested_version)
-    if baseline_entry is not None:
-        clone_library_update_support(repo_path, group, artifact, requested_version, baseline_entry)
+    baseline = resolve_version_backfill_baseline(repo_path, group, artifact, requested_version)
+    if baseline is not None:
+        clone_library_update_support(repo_path, group, artifact, requested_version, baseline.entry)
         log_stage(
             "library-update-target",
-            "Cloned support for {group}:{artifact}:{requested_version} from metadata-version {metadata_version}".format(
+            "Cloned support for {group}:{artifact}:{requested_version} from {baseline_coordinates}; "
+            "reason: {reason}".format(
                 group=group,
                 artifact=artifact,
                 requested_version=requested_version,
-                metadata_version=baseline_entry.get("metadata-version"),
+                baseline_coordinates=f"{group}:{artifact}:{baseline.test_version}",
+                reason=baseline.reason,
             ),
         )
     else:
