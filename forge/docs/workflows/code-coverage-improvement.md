@@ -32,12 +32,15 @@ produced a passing test suite, but its own work product is broader API coverage
 for a library that is already represented locally.
 
 The initial automation entry point should be a Rhei workspace template for one
-GitHub issue labeled `code-coverage-improvement`. The issue body must identify one
-Maven coordinate in `group:artifact:version` form. Template conversion resolves
-that coordinate, verifies that the library is already represented locally,
-creates or reuses a per-issue worktree, and generates bounded Rhei tasks for
-preparation, inventory, coverage generation, validation, discovery, finalization,
-and publication.
+GitHub issue labeled `code-coverage-improvement`. The issue title must name
+exactly one Maven coordinate in `group:artifact:version` form. Template
+conversion reads that coordinate, validates the issue, and creates or reuses a
+per-issue worktree. Preparation then deterministically requires the coordinate
+to have its own literal `tests/src/<group>/<artifact>/<version>` test project
+before an agent prepares the library. A tested version that only resolves to a
+different indexed test project is rejected and the issue must be retitled to
+name a version with its own project. Host requirement validation remains
+limited to host capabilities (§FS-forge-host-requirements).
 
 That worktree's branch is created from the HEAD of the source checkout, never
 from `origin/master`. Measurement resolves this workflow's own helpers from the
@@ -391,14 +394,17 @@ another thread, and a test that does not wait for it covers nothing.
 
 The Rhei template should decompose the workflow into these phases:
 
-1. **Convert issue** — fetch one `code-coverage-improvement` issue, parse the
+1. **Host requirements** — deterministically verify the host capabilities the
+   coverage lane needs before an agent is invoked or a worktree is created.
+2. **Convert issue** — fetch one `code-coverage-improvement` issue, parse the
    coordinate, create or reuse the worktree, and record conversion rationale.
-2. **Prepare library** — resolve the coordinate, confirm existing repository
-   support, create or verify the code coverage suite, prepare source context,
-   and record baseline facts.
-3. **Generate API inventory** — deterministically write compact JSON and
+3. **Prepare library** — deterministically require the coordinate's literal
+   test project, then create or verify the code coverage suite, prepare source
+   context, and record baseline facts. A missing literal project stops the task
+   before its agent runs.
+4. **Generate API inventory** — deterministically write compact JSON and
    Markdown reports for public user-callable API targets.
-4. **API coverage loop** — one task cycling deterministic measurement and an
+5. **API coverage loop** — one task cycling deterministic measurement and an
    agent cover pass. Measurement runs JVM JaCoCo
    plus exact API-inventory correlation, persists `api-cover-report-<n>` history
    and one fixed-location report, and decides the loop: the phase completes when
@@ -408,11 +414,11 @@ The Rhei template should decompose the workflow into these phases:
    exact JaCoCo-uncovered public methods from that report. The cover agent attempts the complete supplied batch through
    normal public API behavior and always returns to measurement. Reachability
    metadata and Native Image are intentionally out of scope in this phase.
-5. **Prepare native metadata** — run once after the API loop and before
+6. **Prepare native metadata** — run once after the API loop and before
    deep discovery: generate reachability metadata and repair it with the Codex
    `fix-missing-reachability-metadata` skill until a Native Image test passes.
    Route unresolved metadata or Native Image failures to human intervention.
-6. **Deep coverage loop** — the same measure/cover cycle for internal
+7. **Deep coverage loop** — the same measure/cover cycle for internal
    methods. Measurement runs JaCoCo over the library-owned method set, builds
    and runs native tests with PGO sampling, loads one coherent analysis
    call-tree CSV triplet, excludes public API inventory entries, ranks exact
@@ -424,7 +430,7 @@ The Rhei template should decompose the workflow into these phases:
    internal methods through public behavior, and always returns to measurement;
    it writes no target state — measurement tracks attempts and rotation
    deterministically from its own report history.
-7. **Finalization** — a deterministic step program: read the machine-readable
+8. **Finalization** — a deterministic step program: read the machine-readable
    conversion record; run `splitTestOnlyMetadata` and then `checkMetadataFiles`;
    run checkstyle over the coordinate's subprojects (including the tracked
    coverage suite); run the regular JVM tests (`javaTest`) and the tracked
@@ -439,7 +445,7 @@ The Rhei template should decompose the workflow into these phases:
    which is how a tracing-agent artifact left behind by metadata preparation is
    caught before publication rather than in review (§2). No Native Image
    validation runs at this stage; a nonzero exit code names the failed step.
-8. **Publication** — open a PR with source issue, coordinate, coverage suite,
+9. **Publication** — open a PR with source issue, coordinate, coverage suite,
    baseline/final JaCoCo coverage reported against the JaCoCo-reportable method
    count of each guidance phase, both phases combined into one figure, and
    per-phase token usage read from the Rhei accounting directory. The body
