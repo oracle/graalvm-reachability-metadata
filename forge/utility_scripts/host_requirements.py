@@ -219,7 +219,10 @@ class HostRequirements:
             print(f"  - GitHub project: Projects=write for oracle project {PROJECT_NUMBER}")
             github_operations: list[str] = []
             if self.requirements.build_work:
-                github_operations.extend(("assign/label/comment issues", "push generated branches"))
+                github_operations.extend((
+                    "assign/label/comment issues",
+                    f"push generated branches to {REPOSITORY_OWNER}/{REPOSITORY_NAME}",
+                ))
             if self.requirements.review_work:
                 github_operations.extend(("submit reviews", "merge eligible PRs"))
             print(f"  - GitHub operations: {', '.join(github_operations)}")
@@ -829,7 +832,6 @@ class HostRequirements:
 query($owner: String!, $name: String!, $project: Int!) {
   viewer {
     login
-    repository(name: $name) { nameWithOwner viewerPermission }
   }
   repository(owner: $owner, name: $name) { nameWithOwner viewerPermission }
   organization(login: $owner) {
@@ -902,18 +904,17 @@ query($owner: String!, $name: String!, $project: Int!) {
             f"Grant the active account write access to oracle GitHub project {PROJECT_NUMBER}.",
         )
 
-        fork = viewer.get("repository")
-        fork_permission = str((fork or {}).get("viewerPermission") or "NONE")
+        # Every publication route pushes its `ai/**` branch to the upstream repository
+        # and lets trusted Actions open the pull request from there, so the account's
+        # own fork is not a push target for any lane (§GIT-actions-publication).
         self._add(
             "github",
             "generated-branch push target",
             self.requirements.build_work,
-            fork_permission in WRITE_REPOSITORY_PERMISSIONS if self.requirements.build_work else None,
-            (
-                f"repository={(fork or {}).get('nameWithOwner') or f'{login}/{REPOSITORY_NAME}'}, "
-                f"permission={fork_permission}"
-            ),
-            f"Create `{login}/{REPOSITORY_NAME}` and grant the active account write access to push generated branches.",
+            target_permission in WRITE_REPOSITORY_PERMISSIONS if self.requirements.build_work else None,
+            f"repository={REPOSITORY_OWNER}/{REPOSITORY_NAME}, permission={target_permission}",
+            f"Grant the active account write access to `{REPOSITORY_OWNER}/{REPOSITORY_NAME}` "
+            "to push generated branches.",
         )
 
     def _check_pi(self) -> None:

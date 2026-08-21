@@ -431,10 +431,6 @@ class HostRequirementsTests(unittest.TestCase):
             "data": {
                 "viewer": {
                     "login": "automation-user",
-                    "repository": {
-                        "nameWithOwner": "automation-user/graalvm-reachability-metadata",
-                        "viewerPermission": "ADMIN",
-                    },
                 },
                 "repository": {
                     "nameWithOwner": "oracle/graalvm-reachability-metadata",
@@ -454,7 +450,10 @@ class HostRequirementsTests(unittest.TestCase):
         result_by_name = {result.name: result for result in host_requirements.results}
         self.assertTrue(result_by_name["oracle repository mutations"].passed)
         self.assertTrue(result_by_name["oracle project 30 updates"].passed)
-        self.assertTrue(result_by_name["generated-branch push target"].passed)
+        # The account owns no fork here: branches are pushed to the upstream repository.
+        push_target = result_by_name["generated-branch push target"]
+        self.assertTrue(push_target.passed)
+        self.assertIn("oracle/graalvm-reachability-metadata", push_target.detail)
 
     def test_required_failure_stops_before_work_and_prints_remediation(self) -> None:
         environment = {
