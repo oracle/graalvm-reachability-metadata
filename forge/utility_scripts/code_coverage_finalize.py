@@ -238,12 +238,15 @@ def _universe_ids(
 ) -> tuple[list[str], list[str]]:
     """The complete method set every ratio in this run divides by.
 
-    Frozen once, from the run's own inventory and deep rosters, and never
-    recomputed per phase. Inventory entries JaCoCo does not report at all are
-    dropped: no run can cover them, so charging them to a denominator understates
-    every figure that divides by it. The two rosters must not overlap, since the
-    deep roster is by construction the library methods the inventory does not
-    hold, and an overlap would double count (§WF-code-coverage-improvement.4.1).
+    The run-start report defines the universe: both rosters are cut down to the
+    methods it reports, and every later checkpoint must then still report all of
+    them, which is where a universe that moved mid-run is caught. Methods JaCoCo
+    does not report at all are dropped rather than charged to a denominator no
+    run can cover them against, and the same rule applies to both rosters so
+    that an unreported method is not silently dropped on one side and a hard
+    error on the other. The two rosters must not overlap, since the deep roster
+    is by construction the library methods the inventory does not hold, and an
+    overlap would double count (§WF-code-coverage-improvement.4.1).
     """
     inventory_ids: list[str] = list(
         _coverage_statuses(
@@ -270,6 +273,7 @@ def _universe_ids(
     api_ids: list[str] = [
         method_id for method_id in inventory_ids if method_id in run_start
     ]
+    deep_ids = [method_id for method_id in deep_ids if method_id in run_start]
     if not api_ids and not deep_ids:
         raise FinalizationError("The coverage universe is empty.")
     return api_ids, deep_ids
@@ -285,7 +289,9 @@ def _checkpoint(
 
     One report, one routine, both universes. Assembling a checkpoint from
     summary fields that separate phases computed for themselves is what lets two
-    different instants of the run be presented as if they were comparable.
+    different instants of the run be presented as if they were comparable. The
+    universe is cut from the run-start report, so a method missing here means a
+    later report stopped covering ground the first one held.
     """
     coverage: dict[str, Any] = load_jacoco_method_coverage([jacoco_path])
     missing: list[str] = [

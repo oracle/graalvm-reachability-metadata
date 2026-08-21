@@ -215,6 +215,28 @@ class FinalizerTests(unittest.TestCase):
         self.assertIn("the universe moved", str(raised.exception))
         self.assertIn("example.Api#m9():void", str(raised.exception))
 
+    def test_run_start_report_defines_both_rosters(self) -> None:
+        """A method the run never reports is dropped on either side, not fatal.
+
+        The deep roster gets the same treatment as the inventory: charging an
+        unreportable method to the denominator understates every figure, and
+        aborting on one roster while quietly dropping from the other would make
+        the same condition fatal or free depending on which side it landed on.
+        """
+        run_start = module.load_jacoco_method_coverage(
+            [self._write_xml("narrow.xml", _jacoco(1, 1, 2, 2))]
+        )
+
+        api_ids, deep_ids = module._universe_ids(
+            _api(["covered", "uncovered", "not-reported"]),
+            _deep(["covered", "uncovered", "uncovered"], 12),
+            run_start,
+        )
+
+        self.assertEqual(len(api_ids), 2)
+        self.assertEqual(len(deep_ids), 2)
+        self.assertNotIn("example.Internal#m2():void", deep_ids)
+
     def test_finalizes_without_target_state_files(self) -> None:
         metrics = self._run(include_target_state=False)
 
