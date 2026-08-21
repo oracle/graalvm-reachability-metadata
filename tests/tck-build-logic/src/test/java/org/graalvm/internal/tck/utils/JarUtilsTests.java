@@ -25,6 +25,15 @@ class JarUtilsTests {
     Path tempDir;
 
     @Test
+    void unclassifiedMainJarExcludesClassifiedAndNonJarArtifacts() {
+        assertThat(JarUtils.isUnclassifiedMainJar("jar", null)).isTrue();
+        assertThat(JarUtils.isUnclassifiedMainJar("jar", "")).isTrue();
+        assertThat(JarUtils.isUnclassifiedMainJar("jar", "test")).isFalse();
+        assertThat(JarUtils.isUnclassifiedMainJar("jar", "sources")).isFalse();
+        assertThat(JarUtils.isUnclassifiedMainJar("pom", null)).isFalse();
+    }
+
+    @Test
     void loadClassNamesSkipsModuleInfoAndReadsMultiReleaseEntries() throws IOException {
         Path jar = createLibraryJar(tempDir.resolve("library.jar"), List.of(
                 "module-info.class",

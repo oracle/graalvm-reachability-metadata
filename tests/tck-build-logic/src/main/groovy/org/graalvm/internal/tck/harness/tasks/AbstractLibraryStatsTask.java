@@ -129,7 +129,7 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
     }
 
     protected boolean generateReportsForCoordinate(String coordinates) {
-        CommandResult jacoco = runGradle(List.of("jacocoTestReport", "-Pcoordinates=" + coordinates), true);
+        CommandResult jacoco = runGradle(List.of("jacocoCodeCoverageReport", "-Pcoordinates=" + coordinates), true);
         if (jacoco.exitCode() != 0) {
             throw new GradleException("JaCoCo report generation failed for " + coordinates + ":\n" + jacoco.stderr());
         }
@@ -186,8 +186,8 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
                 .resolve("build")
                 .resolve("reports")
                 .resolve("jacoco")
-                .resolve("test")
-                .resolve("jacocoTestReport.xml");
+                .resolve("jacocoCodeCoverageReport")
+                .resolve("jacocoCodeCoverageReport.xml");
     }
 
     protected Path getDynamicAccessDir(String coordinates) {

@@ -424,13 +424,18 @@ The Rhei template should decompose the workflow into these phases:
    internal methods through public behavior, and always returns to measurement;
    it writes no target state — measurement tracks attempts and rotation
    deterministically from its own report history.
-7. **Finalization** — a deterministic step program: read the machine-readable
-   conversion record; run `splitTestOnlyMetadata` and then `checkMetadataFiles`;
-   run checkstyle over the coordinate's subprojects (including the tracked
-   coverage suite); run the regular JVM tests (`javaTest`) and the tracked
-   extension suite (`codeCoverageTest`); and persist final metrics from the
-   baseline and highest-iteration JaCoCo and deep reports. The split is the same
-   step the dynamic-access workflows run at their own finalization
+7. **Finalization and stats** — a deterministic step program: read the
+   machine-readable conversion record; run `splitTestOnlyMetadata` and then
+   `checkMetadataFiles`; run checkstyle over the coordinate's subprojects
+   (including the tracked coverage suite); run the regular JVM tests (`javaTest`)
+   and the tracked extension suite (`codeCoverageTest`); regenerate the
+   coordinate's committed library stats from the combined main-JAR-only JaCoCo
+   report; and persist final metrics from the baseline and highest-iteration
+   JaCoCo and deep reports. The stats update makes the repository coverage
+   dashboard reflect the tests this workflow adds without counting classified
+   artifacts such as an upstream test JAR in the denominator
+   (§root/TCK-test-harness.8). The metadata split is the same step the
+   dynamic-access workflows run at their own finalization
    (§WF-improve-library-coverage), and for the same reason: metadata the
    extension suite needed only for its own helper types must not reach a
    consumer, and deciding that by hand is exactly what the task automates
@@ -454,8 +459,9 @@ The Rhei template should decompose the workflow into these phases:
    The descriptor carries the render inputs and only those: coordinate, coverage
    suite path, the whole-run coverage checkpoints and phase gains, the per-phase
    JaCoCo records, the human-intervention flag, the generating model, and
-   per-phase token usage read from the Rhei accounting directory. The body links its issue with `Fixes:`,
-   never conditionally: one run publishes one pull request, so merging it closes
+   per-phase token usage read from the Rhei accounting directory. The body links
+   its issue with `Fixes:`, never conditionally: one run publishes one pull
+   request, so merging it closes
    the issue that claimed the coordinate (§GIT-issue-linking). Per-target
    rosters, sampled PGO evidence, and the validation command list stay in the
    finalization artifacts: the target counts restate what the coverage figures
