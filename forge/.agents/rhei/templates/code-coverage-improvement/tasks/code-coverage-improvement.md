@@ -242,6 +242,7 @@
 - PR push remote: `{{pr_push_remote}}`
 - PR head owner: `{{pr_head_owner}}`
 - PR base branch: `{{pr_base_branch}}`
+- Worker agent: `{{worker_agent}}`
 - Branch suffix: `{{branch_suffix}}`
 - Purpose: publish the verified code coverage improvement as a pull request.
 - Required work:
@@ -250,10 +251,13 @@
   - Confirm the issue worktree branch is the expected issue branch.
   - Create a focused commit if verified changes are uncommitted.
   - Push to the configured fork remote or infer a writable fork remote.
+  - Pass `--worker-agent {{worker_agent}}`. The helper names the head branch
+    after that target's model, so a run of this coordinate on another model
+    owns a different branch.
   - Pass `--branch-suffix {{branch_suffix}}` when that value is non-empty. The
     helper force-replaces the remote head branch, so omitting a configured
     suffix deletes the head branch of an earlier run's pull request for this
-    same coordinate and takes its place.
+    same coordinate and model, and takes its place.
   - Open a pull request against `{{repo}}` base `{{pr_base_branch}}`.
   - Include source issue, coordinate, coverage suite path, separate baseline and
     final API/deep JaCoCo coverage, the two phases combined, coverage deltas,

@@ -17,21 +17,21 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
 from typing import Any
 
+from git_scripts.branch_publication import BASE_BRANCH, REPO
 from git_scripts.common_git import (
     build_ai_branch_name,
     delete_remote_branch_if_exists,
     gh,
-    get_configured_reviewers,
     get_origin_owner,
     run_git_transport,
     stage_and_commit,
 )
-from git_scripts.pr_publication import BASE_BRANCH, REPO, parse_pr_number
 from utility_scripts.code_coverage_finalize import (
     FinalizationError,
     load_validated_final_metrics,
@@ -42,6 +42,7 @@ from utility_scripts.metadata_index import (
 )
 
 HUMAN_INTERVENTION_LABEL = "human-intervention"
+REVIEWERS_ENV = "METADATA_FORGE_PR_REVIEWERS"
 MAX_COMMIT_SUBJECT_LENGTH = 60
 
 #: Workflow order for the token-usage table; unknown phases sort after these.
@@ -310,9 +311,45 @@ def create_pull_request(
     return parse_pr_number(result.stdout)
 
 
+def model_slug(worker_agent: str) -> str:
+    """Return the branch segment naming the model a Rhei target generates with.
+
+    A Rhei target reads `<agent>[<mode>]:<provider>/<model>`, and only the model
+    identifies what produced the run (§WF-code-coverage-improvement.4).
+    """
+    target: str = worker_agent.split(":", 1)[-1]
+    model: str = re.split(r"[/:]", target)[-1]
+    slug: str = re.sub(r"[^A-Za-z0-9._-]+", "-", model).strip("-.")
+    if not slug:
+        print(
+            f"ERROR: worker agent '{worker_agent}' names no model.",
+            file=sys.stderr,
+        )
+        raise SystemExit(1)
+    return slug
+
+
+def parse_pr_number(output: str) -> int | None:
+    """Extract a PR number from `gh pr create` output."""
+    match: re.Match[str] | None = re.search(r"/pull/(\d+)", output)
+    return int(match.group(1)) if match else None
+
+
+def get_configured_reviewers() -> list[str]:
+    """Return PR reviewers configured via ``METADATA_FORGE_PR_REVIEWERS``.
+
+    This workflow still opens its own pull request, so it keeps the reviewer
+    lookup that publication through GitHub Actions took over for every other
+    template (§AR-forge-verification-publication-boundary).
+    """
+    raw_value: str = os.environ.get(REVIEWERS_ENV, "")
+    return [reviewer.strip() for reviewer in raw_value.split(",") if reviewer.strip()]
+
+
 def publish(
         repo_path: str,
         coordinate: str,
+        worker_agent: str,
         issue_number: int | None,
         finalization_dir: str,
         coverage_suite_path: str,
@@ -344,12 +381,14 @@ def publish(
         )
         raise SystemExit(1)
 
-    # Publication force-replaces the remote head branch, so runs that must
-    # coexist on the same coordinate discriminate their branch
-    # (§WF-code-coverage-improvement.4).
+    # Publication force-replaces the remote head branch. The branch names the
+    # model that generated the run, so runs of one coordinate on different
+    # models never collide, and `branch_suffix` discriminates the runs that
+    # still share a model (§WF-code-coverage-improvement.4).
+    model: str = model_slug(worker_agent)
     suffix: str = f"-{branch_suffix}" if branch_suffix else ""
     branch: str = build_ai_branch_name(
-        f"code-coverage-{artifact}-{version}{suffix}", cwd=repo_path
+        f"code-coverage-{artifact}-{version}-{model}{suffix}", cwd=repo_path
     )
     delete_remote_branch_if_exists(branch, remote=push_remote, cwd=repo_path)
     subprocess.run(["git", "switch", "-C", branch], check=True, cwd=repo_path)
@@ -386,6 +425,7 @@ def main(argv: list[str] | None = None) -> None:
             "Example:\n"
             "  python3 git_scripts/make_pr_code_coverage_improvement.py "
             "--repo-path <worktree> --coordinate group:artifact:version "
+            "--worker-agent pi[high]:openai-codex/gpt-5.6-luna "
             "--issue-number 8380 "
             "--finalization-dir runtime/code-coverage/finalization "
             "--coverage-suite-path tests/src/group/artifact/version/code-coverage-improvement"
@@ -410,6 +450,15 @@ def main(argv: list[str] | None = None) -> None:
         "--coverage-suite-path",
         required=True,
         help="Repository-relative dedicated coverage suite path.",
+    )
+    parser.add_argument(
+        "--worker-agent",
+        required=True,
+        help=(
+            "Rhei target the run generated with, as "
+            "<agent>[<mode>]:<provider>/<model>. Its model names the head "
+            "branch, so each model owns its own branch for a coordinate."
+        ),
     )
     parser.add_argument(
         "--push-remote", default="origin", help="Writable fork remote."
@@ -439,6 +488,7 @@ def main(argv: list[str] | None = None) -> None:
     pr_number: int | None = publish(
         args.repo_path,
         args.coordinate,
+        args.worker_agent,
         args.issue_number,
         args.finalization_dir,
         args.coverage_suite_path,
