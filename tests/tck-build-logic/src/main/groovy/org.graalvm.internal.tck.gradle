@@ -243,7 +243,8 @@ boolean nativeTestTaskRequested = !informationalTaskRequested &&
 // decides coverage.
 boolean nativeTestPGOSamplingTaskRequested = !informationalTaskRequested &&
         (isTaskRequested("nativeTestPGOSampling") || isTaskRequested("runNativeTestPGO"))
-// Native Image requires a sampling period of at least 100 microseconds.
+// Keep the sampling-period property for invocation compatibility. Recent
+// Native Image versions choose the sampling period themselves.
 String pgoSamplingPeriodMicros = providers.gradleProperty("pgoSamplingPeriodMicros").getOrElse("100")
 
 Closure<String> requiredGradleProperty = { String propertyName ->
@@ -698,9 +699,10 @@ Provider<List<String>> pgoBuildArgs = providers.provider {
         // execution already runs; absence never proves non-execution (JaCoCo is
         // the coverage metric). PrintAnalysisCallTreeType=CSV dumps
         // reports/call_tree_{methods,invokes,targets}_*.csv as the static call graph.
+        // The sampling-period option was removed from current Native Image builds;
+        // passing it makes the PGO image fail before analysis starts.
         buildArgs.add("--pgo-sampling")
         buildArgs.add("-H:+UnlockExperimentalVMOptions")
-        buildArgs.add("-H:PGOSamplingPeriodMicros=${pgoSamplingPeriodMicros}")
         buildArgs.add("-H:+PrintAnalysisCallTree")
         buildArgs.add("-H:PrintAnalysisCallTreeType=CSV")
         buildArgs.add("-H:-UnlockExperimentalVMOptions")
