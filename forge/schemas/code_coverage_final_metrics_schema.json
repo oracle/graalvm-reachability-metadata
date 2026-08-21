@@ -8,6 +8,7 @@
     "generatedAt",
     "coordinate",
     "coverageSuitePath",
+    "runCoverage",
     "apiJacoco",
     "deepJacoco",
     "pgoGuidance",
@@ -16,7 +17,7 @@
     "needsHumanIntervention"
   ],
   "properties": {
-    "schemaVersion": {"const": "1.0.0"},
+    "schemaVersion": {"const": "1.1.0"},
     "generatedAt": {
       "type": "string",
       "format": "date-time"
@@ -26,6 +27,7 @@
       "pattern": "^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.+-]+$"
     },
     "coverageSuitePath": {"type": "string", "minLength": 1},
+    "runCoverage": {"$ref": "#/$defs/runCoverage"},
     "apiJacoco": {"$ref": "#/$defs/apiEvidence"},
     "deepJacoco": {"$ref": "#/$defs/deepEvidence"},
     "pgoGuidance": {"$ref": "#/$defs/pgoGuidance"},
@@ -57,6 +59,65 @@
     }
   ],
   "$defs": {
+    "runCoverage": {
+      "description": "Whole-run coverage on one denominator: the complete count of library methods JaCoCo can rule on. Every checkpoint is counted over that one frozen method-id set from a single JaCoCo report, so each phase begins where the previous phase ended.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "universe",
+        "apiUniverse",
+        "deepUniverse",
+        "checkpoints",
+        "phases"
+      ],
+      "properties": {
+        "universe": {"type": "integer", "minimum": 0},
+        "apiUniverse": {"type": "integer", "minimum": 0},
+        "deepUniverse": {"type": "integer", "minimum": 0},
+        "checkpoints": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {"$ref": "#/$defs/runCheckpoint"}
+        },
+        "phases": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {"$ref": "#/$defs/runPhaseGain"}
+        }
+      }
+    },
+    "runCheckpoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "apiCovered",
+        "deepCovered",
+        "covered",
+        "uncovered",
+        "coveragePercent"
+      ],
+      "properties": {
+        "name": {"enum": ["runStart", "afterApiPhase", "final"]},
+        "apiCovered": {"type": "integer", "minimum": 0},
+        "deepCovered": {"type": "integer", "minimum": 0},
+        "covered": {"type": "integer", "minimum": 0},
+        "uncovered": {"type": "integer", "minimum": 0},
+        "coveragePercent": {"type": "number", "minimum": 0, "maximum": 100}
+      }
+    },
+    "runPhaseGain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "covered", "coveragePercentagePoints"],
+      "properties": {
+        "name": {"enum": ["api", "deep"]},
+        "covered": {"type": "integer"},
+        "coveragePercentagePoints": {"type": "number"}
+      }
+    },
     "apiSnapshot": {
       "type": "object",
       "additionalProperties": false,

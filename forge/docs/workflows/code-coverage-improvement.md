@@ -452,9 +452,9 @@ The Rhei template should decompose the workflow into these phases:
    opens nothing itself (§AR-forge-verification-publication-boundary).
 
    The descriptor carries the render inputs and only those: coordinate, coverage
-   suite path, baseline and final JaCoCo coverage for each guidance phase, the
-   human-intervention flag, the generating model, and per-phase token usage read
-   from the Rhei accounting directory. The body links its issue with `Fixes:`,
+   suite path, the whole-run coverage checkpoints and phase gains, the per-phase
+   JaCoCo records, the human-intervention flag, the generating model, and
+   per-phase token usage read from the Rhei accounting directory. The body links its issue with `Fixes:`,
    never conditionally: one run publishes one pull request, so merging it closes
    the issue that claimed the coordinate (§GIT-issue-linking). Per-target
    rosters, sampled PGO evidence, and the validation command list stay in the
@@ -463,14 +463,15 @@ The Rhei template should decompose the workflow into these phases:
    which no reader of the PR can execute. A reviewer who wants per-target detail
    reads it from the run.
 
-   The trusted renderer reports coverage against the methods JaCoCo reports, not
-   against every inventory entry: entries JaCoCo never reports are ones no run
-   can cover, and charging them to the run understates it. The combined figure
-   adds the two phases directly, which is sound because the deep universe holds
-   exactly the library methods the API inventory does not. A phase whose
-   accounting is not yet written is omitted from the token table rather than
-   reported as zero; publication itself is normally omitted, since its own
-   invocations are still running when the descriptor is written.
+   The trusted renderer presents the run as sequential checkpoints under the
+   coverage accounting rule below (§4.1), never as two phases on their own
+   scales: it divides every figure by the one frozen universe finalization
+   recorded, so a phase's gain is the distance from the checkpoint the previous
+   phase ended on. It computes no denominator of its own — the counting happens
+   once, where the JaCoCo reports are, and the renderer reads the result. A
+   phase whose accounting is not yet written is omitted from the token table
+   rather than reported as zero; publication itself is normally omitted, since
+   its own invocations are still running when the descriptor is written.
 
    The head branch is
    `ai/<login>/code-coverage-<artifact>-<version>-<model>[-<suffix>]-<publication-id>`.
@@ -483,6 +484,38 @@ The Rhei template should decompose the workflow into these phases:
    share a model while a retried publication of one run rebuilds the same branch
    and reuses its pull request. `branch_suffix` no longer keeps runs apart; it
    only labels which run a branch belongs to.
+
+
+### 4.1 Coverage accounting
+
+Every count and every ratio the workflow publishes obeys three rules. They exist
+because violating them silently understates a run: an earlier revision reported
+each phase against its own roster and took the two phases' snapshots at
+different points in the run, which both inflated the baseline and discarded the
+public API methods the deep phase covered after the API phase's last report.
+
+1. **One universe, frozen once.** The denominator is the complete set of library
+   method **ids** JaCoCo can rule on: the API inventory's reportable entries plus
+   the deep roster, which are disjoint by construction because the deep roster is
+   exactly the library methods the inventory does not hold. It is resolved once,
+   from the run's own rosters, and never recomputed per phase. Inventory entries
+   JaCoCo does not report are excluded — no run can cover them, so charging them
+   to a denominator understates every figure that divides by it.
+2. **One report per checkpoint, one routine.** A checkpoint counts both universes
+   from a single JaCoCo report by looking up the frozen ids. Summary fields that
+   separate phases computed for themselves are never added together: they belong
+   to different instants of the run, and combining them presents two different
+   instants as one figure. The API/deep boundary is therefore read from the deep
+   phase's own first report, not from the API phase's last one.
+3. **A missing id is an error, not a zero.** If a frozen id is absent from a later
+   report the universe moved, and finalization fails rather than quietly
+   reporting against a smaller denominator.
+
+Each phase's gain is then the distance between consecutive checkpoints, the
+phase gains sum to the run's gain, and no separate combined figure is needed.
+The per-phase `apiJacoco` and `deepJacoco` blocks remain in the finalization
+artifacts, since each phase's own guidance is ranked against its own roster;
+they are phase records, not run figures.
 
 The pipeline tasks run unreviewed: deterministic helpers, schema-validated
 artifacts, and zero-exit validation gates decide their completion. The

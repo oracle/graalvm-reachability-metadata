@@ -51,6 +51,7 @@ def _coverage_evidence(**overrides: Any) -> dict[str, Any]:
         for key in (
             "coordinate",
             "coverageSuitePath",
+            "runCoverage",
             "apiJacoco",
             "deepJacoco",
             "needsHumanIntervention",
@@ -123,28 +124,33 @@ class CoveragePublisherTemplateTests(unittest.TestCase):
             title, "[GenAI] Improve code coverage for com.example:demo:1.0.0 using gpt-5.6-luna"
         )
 
-    def test_body_reports_phase_totals(self) -> None:
+    def test_body_reports_every_checkpoint_on_one_denominator(self) -> None:
+        """One universe of 30: 10 reportable API entries plus 20 deep methods."""
         _, body = publisher.render_publication(_descriptor())
 
-        self.assertIn("### Simple Jacoco guidance phase", body)
-        # `measured`, not `total`: the 6 not-reported entries are methods JaCoCo
-        # can never rule on, so counting them against the run understates it.
-        self.assertIn("Baseline: 4/10 (40.0%)", body)
-        self.assertIn("Final: 8/10 (80.0%)", body)
-        self.assertIn("Delta: +40.0pp", body)
-        self.assertIn("Remaining uncovered: 2", body)
-        self.assertIn("### PGO guidance phase", body)
-        self.assertIn("Final: 12/20 (60.0%)", body)
+        self.assertIn("the 30 library methods JaCoCo can rule on", body)
+        self.assertIn("| Run start | 9/30 | 30.0% |", body)
+        self.assertIn("| After Simple Jacoco guidance phase | 16/30 | 53.33% |", body)
+        self.assertIn("| After PGO guidance phase (final) | 21/30 | 70.0% |", body)
         self.assertNotIn("Sampled PGO", body)
 
-    def test_body_combines_both_phases(self) -> None:
+    def test_body_reports_phase_gains_that_sum_to_the_run(self) -> None:
+        """Each gain is the distance from the previous checkpoint, so they add up."""
         _, body = publisher.render_publication(_descriptor())
 
-        # Disjoint universes, so 10 measured API + 20 deep methods add up.
-        self.assertIn("### Both phases combined", body)
-        self.assertIn("Baseline: 9/30 (30.0%)", body)
-        self.assertIn("Final: 20/30 (66.67%)", body)
-        self.assertIn("Delta: +36.67pp", body)
+        self.assertIn("- Simple Jacoco guidance phase: +7 methods, +23.33pp", body)
+        self.assertIn("- PGO guidance phase: +5 methods, +16.67pp", body)
+        self.assertIn("- Run total: +12 methods, +40.0pp", body)
+        self.assertIn("- Remaining uncovered: 9 of 30", body)
+        self.assertNotIn("Both phases combined", body)
+
+    def test_body_credits_the_deep_phase_with_the_api_methods_it_covered(self) -> None:
+        """The old accounting stopped counting API coverage at the phase boundary."""
+        _, body = publisher.render_publication(_descriptor())
+
+        # 8 API methods at the boundary, 9 at the end: the deep phase covered one.
+        self.assertIn("| Public API | 4/10 | 9/10 | 1 |", body)
+        self.assertIn("| Internal | 5/20 | 12/20 | 8 |", body)
 
     def test_body_reports_token_usage_in_the_order_the_descriptor_carries(self) -> None:
         usage = [
@@ -199,6 +205,22 @@ class CoveragePublisherTemplateTests(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             publisher._validate_render_inputs(descriptor)
+
+    def test_render_validation_rejects_missing_run_coverage(self) -> None:
+        """Without the frozen universe the body has no denominator to render."""
+        evidence = _coverage_evidence()
+        evidence.pop("runCoverage")
+
+        with self.assertRaises(ValueError):
+            publisher._validate_render_inputs(_descriptor(code_coverage=evidence))
+
+    def test_render_validation_rejects_a_truncated_checkpoint_list(self) -> None:
+        evidence = _coverage_evidence()
+        evidence["runCoverage"] = dict(evidence["runCoverage"])
+        evidence["runCoverage"]["checkpoints"] = evidence["runCoverage"]["checkpoints"][:2]
+
+        with self.assertRaises(ValueError):
+            publisher._validate_render_inputs(_descriptor(code_coverage=evidence))
 
     def test_render_validation_rejects_a_half_built_phase(self) -> None:
         evidence = _coverage_evidence()

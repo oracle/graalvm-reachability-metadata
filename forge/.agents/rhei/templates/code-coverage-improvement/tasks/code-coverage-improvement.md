@@ -250,7 +250,8 @@
     `runtime/code-coverage/finalization/final-metrics.json`.
   - Confirm the issue worktree branch is the expected issue branch.
   - Leave verified changes uncommitted or committed; the helper stages the
-    coverage suite and touched metadata itself and commits them.
+    coverage suite, touched metadata, and the regenerated coverage stats itself
+    and commits them.
   - Run the helper with `--repo-path`, `--coordinate`, `--issue-number`,
     `--finalization-dir`, `--coverage-suite-path`, and
     `--worker-agent {{worker_agent}}`. The helper names the head branch after
@@ -266,9 +267,10 @@
     task: `Forge Branch Ready` validates the exact commit as data, and only its
     success lets `Forge Open PR` render the body and open the pull request
     (§GIT-actions-publication).
-  - The descriptor carries the coordinate, coverage suite path, separate
-    baseline and final API/deep JaCoCo coverage, the human-intervention flag,
-    the generating model, and per-phase token usage.
+  - The descriptor carries the coordinate, coverage suite path, the whole-run
+    coverage checkpoints and phase gains on one shared denominator (§4.1), the
+    per-phase JaCoCo records, the human-intervention flag, the generating model,
+    and per-phase token usage.
     The trusted renderer writes every section of the body from it. Do not
     hand-write a pull request body: a section an agent types is one no run
     publishes.
