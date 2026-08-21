@@ -212,7 +212,7 @@ These emit the GitHub Actions matrices the workflows consume, all driven by
 | `generateDynamicAccessCoverageReport`, `analyzeExternalLibraryDynamicAccess` | Dynamic-access coverage reporting (§FS-repository-functional-spec.4.5). |
 | `nativeTestPGOSampling` | Build coordinate native tests with sampled PGO and the analysis call-tree CSV dump for Forge deep-coverage navigation (§forge/WF-code-coverage-improvement.3.2). |
 | `runNativeTestPGO` | Run the sampling image and write its sampled `.iprof` to the required absolute `pgoProfilePath`. |
-| `generateLibraryStats`, `listTopCoordinatesByMetric`, `generateTopCoordinatesByMetricMatrix`, `generateReadmeBadgeSummary`, `generateDependencyGraph` | Produce and query the stats mirror, README badge inputs, and dependency graphs that feed the coverage dashboard (§CI-publish-scheduled-coverage). |
+| `generateLibraryStats`, `listTopCoordinatesByMetric`, `generateTopCoordinatesByMetricMatrix`, `generateReadmeBadgeSummary`, `generateDependencyGraph` | Produce and query the stats mirror, README badge inputs, and dependency graphs that feed the coverage dashboard (§CI-publish-scheduled-coverage). Library coverage analyzes only the coordinate's unclassified main JAR and includes both the regular and tracked extension suites. |
 | `package` | Zip the `metadata/` directory into the release artifact consumed by native-build-tools (§FS-repository-functional-spec.4). |
 
 Dynamic-access coverage normally marks a call site covered when its stack frame
@@ -243,6 +243,13 @@ and sampled-PGO root tasks forward that property to the coordinate project.
 This keeps broad coverage tests separate from metadata-generation tests while
 reusing the coordinate's dependencies and build configuration
 (§forge/WF-code-coverage-improvement.3.1).
+
+JaCoCo coverage reports analyze only the coordinate's unclassified main JAR;
+classified artifacts such as upstream test JARs stay on the execution classpath
+but never contribute classes to the coverage denominator. `generateLibraryStats`
+uses the combined `jacocoCodeCoverageReport`, so newly added regular tests and
+tracked code-coverage extension tests are reflected in the committed
+`libraryCoverage` line, instruction, and method statistics.
 
 `nativeTestPGOSampling` builds with `--pgo-sampling`, a positive
 `-H:PGOSamplingPeriodMicros=<micros>`, `-H:+PrintAnalysisCallTree`, and

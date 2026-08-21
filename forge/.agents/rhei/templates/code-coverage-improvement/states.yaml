@@ -659,19 +659,42 @@ states:
           except OSError as error:
               fail(4, f"JVM tests could not run: {error}")
 
-      # Step 5: finalize separate API/deep JaCoCo metrics and guidance-only PGO
+      # Step 5: persist coverage from the newly written tests. The stats task
+      # consumes the combined report, whose denominator is only the coordinate's
+      # unclassified main JAR (§root/TCK-test-harness.8).
+      stats_command = [
+          f"{worktree_path}/gradlew",
+          "generateLibraryStats",
+          f"-Pcoordinates={coordinate}",
+          "--stacktrace",
+      ]
+      try:
+          if subprocess.run(stats_command, cwd=worktree_path).returncode != 0:
+              fail(5, "generateLibraryStats failed")
+      except OSError as error:
+          fail(5, f"generateLibraryStats could not run: {error}")
+
+      # Step 6: finalize separate API/deep JaCoCo metrics and guidance-only PGO
       # evidence from the recorded reports and target state.
-      def report_bounds(directory: str, stem: str) -> tuple:
+      def report_bounds(directory: str, stem: str, suffix: str = ".json") -> tuple:
           reports = sorted(
-              Path(directory).glob(f"{stem}-[0-9]*.json"),
+              Path(directory).glob(f"{stem}-[0-9]*{suffix}"),
               key=lambda p: int(p.stem.rsplit("-", 1)[1]),
           )
           if not reports:
-              fail(5, f"no {stem} reports under {directory}")
+              fail(6, f"no {stem} reports under {directory}")
           return reports[0], reports[-1]
 
       api_baseline, api_final = report_bounds("runtime/code-coverage/validation", "api-cover-report")
       deep_baseline, deep_final = report_bounds("runtime/code-coverage/discovery", "discovery-report")
+      # Whole-run checkpoints. The API/deep boundary is read from the deep
+      # phase's own first report so both universes are counted from one instant:
+      # pairing it with the API phase's last report would put two different
+      # instants of the run on one scale.
+      jacoco_run_start, _ = report_bounds("runtime/code-coverage/validation", "jacoco", ".xml")
+      jacoco_after_api, jacoco_final = report_bounds(
+          "runtime/code-coverage/discovery", "jacoco-deep", ".xml"
+      )
       finalize_command = [
           sys.executable,
           f"{work_path}/utility_scripts/code_coverage_finalize.py",
@@ -681,18 +704,21 @@ states:
           "--api-final", str(api_final),
           "--deep-baseline", str(deep_baseline),
           "--deep-final", str(deep_final),
+          "--jacoco-run-start", str(jacoco_run_start),
+          "--jacoco-after-api", str(jacoco_after_api),
+          "--jacoco-final", str(jacoco_final),
           "--output-dir", "runtime/code-coverage/finalization",
       ]
-      for validation_command in [checkstyle_command] + jvm_commands:
+      for validation_command in [checkstyle_command] + jvm_commands + [stats_command]:
           finalize_command += ["--validation-command", " ".join(validation_command)]
       for target_state in sorted(Path("runtime/code-coverage/targets").glob("*.json")):
           finalize_command += ["--target-state", str(target_state)]
       finalize_env = dict(os.environ, PYTHONPATH=work_path)
       try:
           if subprocess.run(finalize_command, env=finalize_env).returncode != 0:
-              fail(5, "code_coverage_finalize.py failed")
+              fail(6, "code_coverage_finalize.py failed")
       except OSError as error:
-          fail(5, f"code_coverage_finalize.py could not run: {error}")
+          fail(6, f"code_coverage_finalize.py could not run: {error}")
       PY
     program_timeout: 90m
     inputs:
@@ -766,7 +792,9 @@ states:
         coverage tests; do not suppress or weaken the checkstyle rules.
       - step 4: JVM tests failed - fix the generated coverage tests in the
         issue worktree; do not weaken or delete meaningful assertions.
-      - step 5: `code_coverage_finalize.py` failed - repair the report or
+      - step 5: `generateLibraryStats` failed - repair the coverage report or
+        stats input; do not hand-edit `stats.json`.
+      - step 6: `code_coverage_finalize.py` failed - repair the report or
         target-state artifacts it rejected; never edit its output by hand.
       - verification: finalization artifacts are missing, empty, or
         schema-invalid - repair the inputs and let the program regenerate them.

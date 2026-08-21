@@ -55,6 +55,29 @@ def _deep(statuses: list[str], samples: int) -> dict:
     }
 
 
+def _jacoco(api_covered: int, deep_covered: int, api_total: int, deep_total: int) -> str:
+    """A JaCoCo XML naming the same ids the API and deep rosters use.
+
+    The first `api_covered` / `deep_covered` methods of each class carry a
+    covered METHOD counter; the rest are reported but uncovered.
+    """
+    def methods(prefix: str, total: int, covered: int) -> str:
+        return "".join(
+            f'<method name="m{index}" desc="()V" line="{index + 1}">'
+            f'<counter type="METHOD" missed="{0 if index < covered else 1}" '
+            f'covered="{1 if index < covered else 0}"/></method>'
+            for index in range(total)
+        )
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?><report name="demo">'
+        f'<package name="example"><class name="example/Api" sourcefilename="Api.java">'
+        f'{methods("Api", api_total, api_covered)}</class>'
+        f'<class name="example/Internal" sourcefilename="Internal.java">'
+        f'{methods("Internal", deep_total, deep_covered)}</class>'
+        "</package></report>"
+    )
+
+
 class FinalizerTests(unittest.TestCase):
 
     def setUp(self) -> None:
@@ -65,6 +88,12 @@ class FinalizerTests(unittest.TestCase):
         path = os.path.join(self.directory.name, name)
         with open(path, "w", encoding="utf-8") as output:
             json.dump(value, output)
+        return path
+
+    def _write_xml(self, name: str, value: str) -> str:
+        path = os.path.join(self.directory.name, name)
+        with open(path, "w", encoding="utf-8") as output:
+            output.write(value)
         return path
 
     def _run(self, include_target_state: bool = True) -> dict:
@@ -125,6 +154,16 @@ class FinalizerTests(unittest.TestCase):
                 ],
             },
         )
+        # Three checkpoints of one run: 1/9 -> 4/9 -> 6/9 of the frozen universe
+        # of 4 API plus 5 deep methods.
+        checkpoints = tuple(
+            self._write_xml(f"jacoco-{name}.xml", _jacoco(api, deep, 4, 5))
+            for name, api, deep in (
+                ("run-start", 1, 0),
+                ("after-api", 3, 1),
+                ("final", 3, 3),
+            )
+        )
         return module.finalize_coverage(
             coordinate=COORDINATE,
             coverage_suite_path="tests/src/com.example/demo/1.0.0/code-coverage-improvement",
@@ -132,10 +171,71 @@ class FinalizerTests(unittest.TestCase):
             api_final_path=final_api,
             deep_baseline_path=baseline_deep,
             deep_final_path=final_deep,
+            jacoco_paths=checkpoints,
             target_state_paths=[state] if include_target_state else [],
             validation_commands=["./gradlew test -Pcoordinates=com.example:demo:1.0.0"],
             output_dir=os.path.join(self.directory.name, "output"),
         )
+
+    def test_run_coverage_is_one_denominator_and_sequential_checkpoints(self) -> None:
+        """Each phase begins at the checkpoint the previous phase ended on."""
+        run = self._run()["runCoverage"]
+
+        self.assertEqual(run["universe"], 9)
+        self.assertEqual((run["apiUniverse"], run["deepUniverse"]), (4, 5))
+        self.assertEqual(
+            [(point["name"], point["covered"]) for point in run["checkpoints"]],
+            [("runStart", 1), ("afterApiPhase", 4), ("final", 6)],
+        )
+        # Every share divides by the same 9, so the phase gains sum to the run's.
+        self.assertEqual(
+            [point["coveragePercent"] for point in run["checkpoints"]],
+            [11.11, 44.44, 66.67],
+        )
+        self.assertEqual(
+            [(phase["name"], phase["covered"]) for phase in run["phases"]],
+            [("api", 3), ("deep", 2)],
+        )
+        gains = sum(phase["coveragePercentagePoints"] for phase in run["phases"])
+        first, last = run["checkpoints"][0], run["checkpoints"][-1]
+        self.assertAlmostEqual(
+            gains, last["coveragePercent"] - first["coveragePercent"], places=2
+        )
+
+    def test_run_coverage_rejects_a_universe_that_moved(self) -> None:
+        """A frozen id missing from a later report is an error, not a zero."""
+        with self.assertRaises(module.FinalizationError) as raised:
+            module._checkpoint(
+                "final",
+                self._write_xml("short.xml", _jacoco(1, 1, 2, 2)),
+                ["example.Api#m0():void", "example.Api#m9():void"],
+                [],
+            )
+
+        self.assertIn("the universe moved", str(raised.exception))
+        self.assertIn("example.Api#m9():void", str(raised.exception))
+
+    def test_run_start_report_defines_both_rosters(self) -> None:
+        """A method the run never reports is dropped on either side, not fatal.
+
+        The deep roster gets the same treatment as the inventory: charging an
+        unreportable method to the denominator understates every figure, and
+        aborting on one roster while quietly dropping from the other would make
+        the same condition fatal or free depending on which side it landed on.
+        """
+        run_start = module.load_jacoco_method_coverage(
+            [self._write_xml("narrow.xml", _jacoco(1, 1, 2, 2))]
+        )
+
+        api_ids, deep_ids = module._universe_ids(
+            _api(["covered", "uncovered", "not-reported"]),
+            _deep(["covered", "uncovered", "uncovered"], 12),
+            run_start,
+        )
+
+        self.assertEqual(len(api_ids), 2)
+        self.assertEqual(len(deep_ids), 2)
+        self.assertNotIn("example.Internal#m2():void", deep_ids)
 
     def test_finalizes_without_target_state_files(self) -> None:
         metrics = self._run(include_target_state=False)
@@ -184,7 +284,7 @@ class FinalizerTests(unittest.TestCase):
         loaded = module.load_validated_final_metrics(
             os.path.join(output, "final-metrics.json")
         )
-        self.assertEqual(loaded["schemaVersion"], "1.0.0")
+        self.assertEqual(loaded["schemaVersion"], "1.1.0")
         with open(
                 os.path.join(output, "final-summary.md"),
                 encoding="utf-8",

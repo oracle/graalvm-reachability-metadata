@@ -22,8 +22,14 @@ from typing import Any
 from jsonschema import Draft202012Validator
 
 from utility_scripts.code_coverage_model import parse_inventory_id
+from utility_scripts.code_coverage_jacoco import load_jacoco_method_coverage
 
-SCHEMA_VERSION = "1.0.0"
+SCHEMA_VERSION = "1.1.0"
+
+#: Run checkpoints, in run order. Each is one JaCoCo report, and each phase
+#: begins at the checkpoint the previous phase ended on
+#: (§WF-code-coverage-improvement.4.1).
+CHECKPOINT_NAMES: tuple[str, ...] = ("runStart", "afterApiPhase", "final")
 SCHEMA_FILE = "code_coverage_final_metrics_schema.json"
 TARGET_STATE_SCHEMA_FILE = "code_coverage_target_state_schema.json"
 COORDINATE_PATTERN = re.compile(
@@ -222,6 +228,140 @@ def _deep_snapshot(
         "covered": covered,
         "uncovered": uncovered,
         "coveragePercent": _percent(covered, total),
+    }
+
+
+def _universe_ids(
+        api_baseline_report: dict[str, Any],
+        deep_baseline_report: dict[str, Any],
+        run_start: dict[str, Any],
+) -> tuple[list[str], list[str]]:
+    """The complete method set every ratio in this run divides by.
+
+    The run-start report defines the universe: both rosters are cut down to the
+    methods it reports, and every later checkpoint must then still report all of
+    them, which is where a universe that moved mid-run is caught. Methods JaCoCo
+    does not report at all are dropped rather than charged to a denominator no
+    run can cover them against, and the same rule applies to both rosters so
+    that an unreported method is not silently dropped on one side and a hard
+    error on the other. The two rosters must not overlap, since the deep roster
+    is by construction the library methods the inventory does not hold, and an
+    overlap would double count (§WF-code-coverage-improvement.4.1).
+    """
+    inventory_ids: list[str] = list(
+        _coverage_statuses(
+            api_baseline_report,
+            "targets",
+            "API baseline",
+            frozenset({"covered", "uncovered", "not-reported"}),
+        )
+    )
+    deep_ids: list[str] = list(
+        _coverage_statuses(
+            deep_baseline_report,
+            "deepMethods",
+            "Deep baseline",
+            frozenset({"covered", "uncovered"}),
+        )
+    )
+    overlap: set[str] = set(inventory_ids) & set(deep_ids)
+    if overlap:
+        raise FinalizationError(
+            f"The API and deep rosters share {len(overlap)} method ids; "
+            f"the coverage universes must be disjoint."
+        )
+    api_ids: list[str] = [
+        method_id for method_id in inventory_ids if method_id in run_start
+    ]
+    deep_ids = [method_id for method_id in deep_ids if method_id in run_start]
+    if not api_ids and not deep_ids:
+        raise FinalizationError("The coverage universe is empty.")
+    return api_ids, deep_ids
+
+
+def _checkpoint(
+        name: str,
+        jacoco_path: str,
+        api_ids: list[str],
+        deep_ids: list[str],
+) -> dict[str, Any]:
+    """Count one instant of the run over the frozen universe.
+
+    One report, one routine, both universes. Assembling a checkpoint from
+    summary fields that separate phases computed for themselves is what lets two
+    different instants of the run be presented as if they were comparable. The
+    universe is cut from the run-start report, so a method missing here means a
+    later report stopped covering ground the first one held.
+    """
+    coverage: dict[str, Any] = load_jacoco_method_coverage([jacoco_path])
+    missing: list[str] = [
+        method_id
+        for method_id in api_ids + deep_ids
+        if method_id not in coverage
+    ]
+    if missing:
+        raise FinalizationError(
+            f"Checkpoint '{name}' ({jacoco_path}) does not report "
+            f"{len(missing)} of the frozen universe's methods, so the universe "
+            f"moved during the run; first is '{missing[0]}'."
+        )
+    api_covered: int = sum(1 for i in api_ids if coverage[i].covered)
+    deep_covered: int = sum(1 for i in deep_ids if coverage[i].covered)
+    universe: int = len(api_ids) + len(deep_ids)
+    return {
+        "name": name,
+        "apiCovered": api_covered,
+        "deepCovered": deep_covered,
+        "covered": api_covered + deep_covered,
+        "uncovered": universe - api_covered - deep_covered,
+        "coveragePercent": _percent(api_covered + deep_covered, universe),
+    }
+
+
+def _run_coverage(
+        api_baseline_report: dict[str, Any],
+        deep_baseline_report: dict[str, Any],
+        jacoco_paths: tuple[str, str, str],
+) -> dict[str, Any]:
+    """Whole-run coverage: one denominator, one routine, sequential checkpoints.
+
+    The per-phase blocks record each phase against its own roster, which is what
+    a phase's own guidance is ranked on. This block is the run as a reader sees
+    it: every checkpoint a share of the same complete method count, so a phase's
+    gain is the distance from the previous checkpoint and the phase gains sum to
+    the run's gain (§WF-code-coverage-improvement.4.1).
+    """
+    run_start_coverage: dict[str, Any] = load_jacoco_method_coverage(
+        [jacoco_paths[0]]
+    )
+    api_ids: list[str]
+    deep_ids: list[str]
+    api_ids, deep_ids = _universe_ids(
+        api_baseline_report, deep_baseline_report, run_start_coverage
+    )
+    checkpoints: list[dict[str, Any]] = [
+        _checkpoint(name, path, api_ids, deep_ids)
+        for name, path in zip(CHECKPOINT_NAMES, jacoco_paths)
+    ]
+    phases: list[dict[str, Any]] = [
+        {
+            "name": phase_name,
+            "covered": later["covered"] - earlier["covered"],
+            "coveragePercentagePoints": round(
+                later["coveragePercent"] - earlier["coveragePercent"], 2
+            ),
+        }
+        for phase_name, earlier, later in (
+            ("api", checkpoints[0], checkpoints[1]),
+            ("deep", checkpoints[1], checkpoints[2]),
+        )
+    ]
+    return {
+        "universe": len(api_ids) + len(deep_ids),
+        "apiUniverse": len(api_ids),
+        "deepUniverse": len(deep_ids),
+        "checkpoints": checkpoints,
+        "phases": phases,
     }
 
 
@@ -574,6 +714,7 @@ def finalize_coverage(
         api_final_path: str,
         deep_baseline_path: str,
         deep_final_path: str,
+        jacoco_paths: tuple[str, str, str],
         target_state_paths: list[str],
         validation_commands: list[str],
         output_dir: str,
@@ -612,6 +753,9 @@ def finalize_coverage(
         "generatedAt": _generated_at(),
         "coordinate": coordinate,
         "coverageSuitePath": _suite_path(coverage_suite_path),
+        "runCoverage": _run_coverage(
+            api_baseline_report, deep_baseline_report, jacoco_paths
+        ),
         "apiJacoco": {
             "baseline": api_baseline,
             "final": api_final,
@@ -660,6 +804,9 @@ def build_parser() -> argparse.ArgumentParser:
             "--api-final api-cover-report-5.json "
             "--deep-baseline discovery-report-0.json "
             "--deep-final discovery-report-5.json "
+            "--jacoco-run-start validation/jacoco-0.xml "
+            "--jacoco-after-api discovery/jacoco-deep-0.xml "
+            "--jacoco-final discovery/jacoco-deep-5.xml "
             "--target-state targets.json "
             "--validation-command './gradlew test -Pcoordinates=group:artifact:version' "
             "--output-dir runtime/code-coverage/finalization"
@@ -676,6 +823,25 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--api-final", required=True, help="API final JSON.")
     parser.add_argument("--deep-baseline", required=True, help="Deep baseline JSON.")
     parser.add_argument("--deep-final", required=True, help="Deep final JSON.")
+    parser.add_argument(
+        "--jacoco-run-start",
+        required=True,
+        help="JaCoCo XML for the run's first checkpoint, before any phase ran.",
+    )
+    parser.add_argument(
+        "--jacoco-after-api",
+        required=True,
+        help=(
+            "JaCoCo XML for the API/deep phase boundary. This is the deep "
+            "phase's own first report, so both universes are counted from one "
+            "instant rather than from two phases' separate snapshots."
+        ),
+    )
+    parser.add_argument(
+        "--jacoco-final",
+        required=True,
+        help="JaCoCo XML for the run's last checkpoint.",
+    )
     parser.add_argument(
         "--target-state",
         action="append",
@@ -708,6 +874,7 @@ def main() -> int:
             args.api_final,
             args.deep_baseline,
             args.deep_final,
+            (args.jacoco_run_start, args.jacoco_after_api, args.jacoco_final),
             args.target_state_paths,
             args.validation_commands,
             args.output_dir,

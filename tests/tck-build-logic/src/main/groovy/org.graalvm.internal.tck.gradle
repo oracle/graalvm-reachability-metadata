@@ -8,10 +8,12 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.graalvm.internal.tck.utils.DynamicAccessUtils
 import org.graalvm.internal.tck.utils.BaseLayerUtils
+import org.graalvm.internal.tck.utils.JarUtils
 import org.graalvm.internal.tck.utils.NativeImageConfigUtils
 
 import org.graalvm.buildtools.gradle.tasks.BuildNativeImageTask
 import org.graalvm.buildtools.gradle.tasks.NativeRunTask
+import org.gradle.api.artifacts.ResolvedArtifact
 import org.gradle.api.file.Directory
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.PathSensitivity
@@ -371,31 +373,27 @@ dependencies {
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 }
 
-Closure<List<File>> resolveTestedLibraryJars = {
+Closure<List<ResolvedArtifact>> resolveTestedLibraryArtifacts = {
     String targetGroup = ""
     String targetArtifact = ""
     String targetVersion = ""
-    def coordsParts = (libraryGAV ?: "").split(":")
+    String[] coordsParts = (libraryGAV ?: "").split(":")
     if (coordsParts.length >= 3) {
         targetGroup = coordsParts[0]
         targetArtifact = coordsParts[1]
         targetVersion = coordsParts[2]
     }
 
-    def artifacts = configurations.testRuntimeClasspath.resolvedConfiguration.resolvedArtifacts
-    Set<File> matched = new LinkedHashSet<>(artifacts.findAll { artifact ->
+    Set<ResolvedArtifact> artifacts = configurations.testRuntimeClasspath.resolvedConfiguration.resolvedArtifacts
+    Set<ResolvedArtifact> matched = new LinkedHashSet<>(artifacts.findAll { ResolvedArtifact artifact ->
         (artifact.moduleVersion.id.group == targetGroup) && (artifact.moduleVersion.id.name == targetArtifact)
-    }.collect { artifact ->
-        artifact.file
     })
 
     if (matched.isEmpty()) {
         // Fallback for relocated or substituted modules: the requested G:A coordinates may resolve
         // to a different group in published metadata, so no resolved artifact carries the original group.
-        matched.addAll(artifacts.findAll { artifact ->
+        matched.addAll(artifacts.findAll { ResolvedArtifact artifact ->
             (artifact.moduleVersion.id.name == targetArtifact) && (artifact.moduleVersion.id.version == targetVersion)
-        }.collect { artifact ->
-            artifact.file
         })
     }
 
@@ -403,7 +401,24 @@ Closure<List<File>> resolveTestedLibraryJars = {
         throw new GradleException("No eligible artifacts found on the classpath for ${libraryGAV}.\nPlease verify that the provided artifact exists.")
     }
 
-    return matched.toList().sort { File file -> file.absolutePath }
+    return matched.toList().sort { ResolvedArtifact artifact -> artifact.file.absolutePath }
+}
+
+Closure<List<File>> resolveTestedLibraryJars = {
+    return resolveTestedLibraryArtifacts().collect { ResolvedArtifact artifact -> artifact.file }
+}
+
+Closure<List<File>> resolveTestedLibraryMainJars = {
+    List<ResolvedArtifact> mainArtifacts = resolveTestedLibraryArtifacts().findAll { ResolvedArtifact artifact ->
+        JarUtils.isUnclassifiedMainJar(artifact.extension, artifact.classifier)
+    }
+    if (mainArtifacts.isEmpty()) {
+        throw new GradleException(
+                "No unclassified main JAR found on the classpath for ${libraryGAV}.\n" +
+                        "Please verify that the coordinate publishes a main JAR."
+        )
+    }
+    return mainArtifacts.collect { ResolvedArtifact artifact -> artifact.file }
 }
 
 Closure<List<File>> resolveJUnitRuntimeJars = {
@@ -937,8 +952,8 @@ tasks.withType(org.gradle.testing.jacoco.tasks.JacocoReport).configureEach { r -
         csv.required = false
     }
 
-    // Collect resolved dependency artifacts from the test runtime classpath
-    def matched = resolveTestedLibraryJars()
+    // Classified artifacts remain executable dependencies but never enter the coverage denominator.
+    List<File> matched = resolveTestedLibraryMainJars()
 
     // Produce one deterministic directory of .class files that represents exactly what the JVM would load at runtime for a given library jar, without duplicates
     int runtimeMajor = (JavaVersion.current().majorVersion as int)

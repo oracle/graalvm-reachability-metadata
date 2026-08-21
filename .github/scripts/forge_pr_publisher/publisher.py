@@ -15,6 +15,7 @@ import os
 import re
 import subprocess
 import sys
+import textwrap
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -213,9 +214,16 @@ def _validate_code_coverage_render(render: dict[str, Any]) -> None:
     metrics = render.get("code_coverage")
     if not isinstance(metrics, dict):
         raise ValueError("Code coverage publication requires render.code_coverage")
-    for key in ("coverageSuitePath", "needsHumanIntervention", "apiJacoco", "deepJacoco"):
+    for key in (
+        "coverageSuitePath",
+        "needsHumanIntervention",
+        "runCoverage",
+        "apiJacoco",
+        "deepJacoco",
+    ):
         if key not in metrics:
             raise ValueError(f"Code coverage evidence is missing {key!r}")
+    _validate_run_coverage(metrics["runCoverage"])
     for key in ("apiJacoco", "deepJacoco"):
         evidence = metrics[key]
         if not isinstance(evidence, dict) or not {"baseline", "final"} <= evidence.keys():
@@ -224,6 +232,46 @@ def _validate_code_coverage_render(render: dict[str, Any]) -> None:
             snapshot = evidence[phase]
             if not isinstance(snapshot, dict) or not {"total", "covered"} <= snapshot.keys():
                 raise ValueError(f"Code coverage {key!r} {phase} needs total and covered")
+
+
+def _validate_run_coverage(run: Any) -> None:
+    """The whole-run block the body renders every figure from.
+
+    The renderer divides nothing itself, so a descriptor missing a checkpoint or
+    a universe count cannot be rendered against a fallback denominator — it is
+    rejected here instead (§forge/WF-code-coverage-improvement.4.1).
+    """
+    if not isinstance(run, dict):
+        raise ValueError("Code coverage runCoverage must be an object")
+    for key in ("universe", "apiUniverse", "deepUniverse"):
+        if not isinstance(run.get(key), int):
+            raise ValueError(f"Code coverage runCoverage needs an integer {key!r}")
+    checkpoints = run.get("checkpoints")
+    if not isinstance(checkpoints, list) or len(checkpoints) != len(CHECKPOINT_LABELS):
+        raise ValueError(
+            f"Code coverage runCoverage needs {len(CHECKPOINT_LABELS)} checkpoints"
+        )
+    for point in checkpoints:
+        if not isinstance(point, dict) or point.get("name") not in CHECKPOINT_LABELS:
+            raise ValueError("Code coverage checkpoint names an unknown instant")
+        missing = {
+            "apiCovered", "deepCovered", "covered", "uncovered", "coveragePercent",
+        } - point.keys()
+        if missing:
+            raise ValueError(
+                f"Code coverage checkpoint {point['name']!r} is missing {sorted(missing)}"
+            )
+    phases = run.get("phases")
+    if not isinstance(phases, list) or len(phases) != len(PHASE_LABELS):
+        raise ValueError(f"Code coverage runCoverage needs {len(PHASE_LABELS)} phases")
+    for phase in phases:
+        if not isinstance(phase, dict) or phase.get("name") not in PHASE_LABELS:
+            raise ValueError("Code coverage phase gain names an unknown phase")
+        if not {"covered", "coveragePercentagePoints"} <= phase.keys():
+            raise ValueError(
+                f"Code coverage phase {phase['name']!r} needs covered and "
+                "coveragePercentagePoints"
+            )
 
 
 def _path_changed(head_sha: str, path: str) -> bool:
@@ -575,58 +623,84 @@ def _signed(value: int | float) -> str:
     return f"{'+' if value > 0 else ''}{value}"
 
 
-def _coverage_percent(covered: int, total: int) -> float:
-    return round(100 * covered / total, 2) if total else 0.0
+#: Column width prose paragraphs in a rendered body wrap at.
+BODY_TEXT_WIDTH = 80
+
+#: Checkpoint name -> the row label a reader sees.
+CHECKPOINT_LABELS: dict[str, str] = {
+    "runStart": "Run start",
+    "afterApiPhase": "After Simple Jacoco guidance phase",
+    "final": "After PGO guidance phase (final)",
+}
+
+#: Phase name -> the row label a reader sees.
+PHASE_LABELS: dict[str, str] = {
+    "api": "Simple Jacoco guidance phase",
+    "deep": "PGO guidance phase",
+}
 
 
-def _reportable_total(snapshot: dict[str, Any]) -> int:
-    """The denominator JaCoCo can actually rule on.
+def _coverage_universe_lines(run: dict[str, Any]) -> list[str]:
+    """The run as one timeline on one denominator.
 
-    The API inventory carries both `total`, every inventory entry, and
-    `measured`, the entries JaCoCo reports at all. The difference is methods no
-    run can ever cover, so dividing by `total` understates the phase and
-    contradicts the `coveragePercent` the same document records. The deep
-    snapshot has no such split and falls back to `total`.
+    Finalization froze the universe and counted every checkpoint over it, so this
+    renderer computes no denominator of its own: it reports the counting that
+    already happened where the JaCoCo reports are. Each phase's gain is the
+    distance from the checkpoint the previous phase ended on, and the phase gains
+    sum to the run's gain. Reporting each phase against its own roster instead
+    put two different instants of the run on two different scales
+    (§forge/WF-code-coverage-improvement.4.1).
     """
-    return int(snapshot.get("measured", snapshot["total"]))
-
-
-def _coverage_phase_lines(label: str, evidence: dict[str, Any]) -> list[str]:
-    baseline = evidence["baseline"]
-    final = evidence["final"]
-    total = _reportable_total(final)
-    baseline_percent = _coverage_percent(int(baseline["covered"]), total)
-    final_percent = _coverage_percent(int(final["covered"]), total)
-    return [
-        f"### {label}",
+    universe = int(run["universe"])
+    api_universe = int(run["apiUniverse"])
+    deep_universe = int(run["deepUniverse"])
+    checkpoints: list[dict[str, Any]] = run["checkpoints"]
+    lines = [
+        # Wrapped, so that editing this sentence later shows as a sentence-sized
+        # diff rather than one rewritten 300-column line.
+        textwrap.fill(
+            f"Every figure divides by the same denominator: the {universe} library "
+            f"methods JaCoCo can rule on, made up of {api_universe} public API "
+            f"methods and {deep_universe} internal methods, which are disjoint "
+            "by construction. Each checkpoint is counted over that one frozen set of "
+            "method ids from a single JaCoCo report, so every phase starts where the "
+            "previous phase ended.",
+            BODY_TEXT_WIDTH,
+        ),
         "",
-        f"- Baseline: {baseline['covered']}/{total} ({baseline_percent}%)",
-        f"- Final: {final['covered']}/{total} ({final_percent}%)",
-        f"- Delta: {_signed(round(final_percent - baseline_percent, 2))}pp",
-        f"- Remaining uncovered: {total - int(final['covered'])}",
+        "| Checkpoint | Covered | Share |",
+        "|---|--:|--:|",
     ]
-
-
-def _coverage_combined_lines(api: dict[str, Any], deep: dict[str, Any]) -> list[str]:
-    """API and deep coverage as one number.
-
-    The two universes are disjoint by construction: the deep universe holds
-    exactly the library methods the API inventory does not, so their measured
-    counts and covered counts add without double counting.
-    """
-    total = _reportable_total(api["final"]) + _reportable_total(deep["final"])
-    baseline = int(api["baseline"]["covered"]) + int(deep["baseline"]["covered"])
-    final = int(api["final"]["covered"]) + int(deep["final"]["covered"])
-    baseline_percent = _coverage_percent(baseline, total)
-    final_percent = _coverage_percent(final, total)
-    return [
-        "### Both phases combined",
+    lines += [
+        f"| {CHECKPOINT_LABELS[point['name']]} | {point['covered']}/{universe} "
+        f"| {point['coveragePercent']}% |"
+        for point in checkpoints
+    ]
+    lines.append("")
+    lines += [
+        f"- {PHASE_LABELS[phase['name']]}: {_signed(phase['covered'])} methods, "
+        f"{_signed(phase['coveragePercentagePoints'])}pp"
+        for phase in run["phases"]
+    ]
+    first = checkpoints[0]
+    last = checkpoints[-1]
+    lines += [
+        f"- Run total: {_signed(int(last['covered']) - int(first['covered']))} methods, "
+        f"{_signed(round(last['coveragePercent'] - first['coveragePercent'], 2))}pp",
+        f"- Remaining uncovered: {last['uncovered']} of {universe}",
         "",
-        f"- Baseline: {baseline}/{total} ({baseline_percent}%)",
-        f"- Final: {final}/{total} ({final_percent}%)",
-        f"- Delta: {_signed(round(final_percent - baseline_percent, 2))}pp",
-        f"- Remaining uncovered: {total - final}",
+        "Where the coverage and the remaining headroom sit:",
+        "",
+        "| Method universe | Run start | Final | Still uncovered |",
+        "|---|--:|--:|--:|",
+        f"| Public API | {first['apiCovered']}/{api_universe} | "
+        f"{last['apiCovered']}/{api_universe} | "
+        f"{api_universe - int(last['apiCovered'])} |",
+        f"| Internal | {first['deepCovered']}/{deep_universe} | "
+        f"{last['deepCovered']}/{deep_universe} | "
+        f"{deep_universe - int(last['deepCovered'])} |",
     ]
+    return lines
 
 
 def _token_cell(value: Any) -> str:
@@ -692,9 +766,7 @@ def _render_code_coverage_improvement(
         "## JaCoCo coverage",
         "",
     ]
-    lines += _coverage_phase_lines("Simple Jacoco guidance phase", metrics["apiJacoco"])
-    lines += [""] + _coverage_phase_lines("PGO guidance phase", metrics["deepJacoco"])
-    lines += [""] + _coverage_combined_lines(metrics["apiJacoco"], metrics["deepJacoco"])
+    lines += _coverage_universe_lines(metrics["runCoverage"])
     lines += [""]
     token_lines = _coverage_token_lines(render.get("token_usage") or [])
     if token_lines:

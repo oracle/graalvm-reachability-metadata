@@ -37,13 +37,16 @@ from utility_scripts.repo_path_resolver import resolve_repo_roots
 TASK_TYPE = "code-coverage-improvement"
 MAX_COMMIT_SUBJECT_LENGTH = 60
 
-#: The finalized evidence the trusted coverage template renders. Everything else
-#: `final-metrics.json` records — per-target rosters, sampled PGO guidance, the
-#: validation command list — stays in the finalization artifacts a reviewer reads
-#: from the run, so the committed descriptor holds render inputs and nothing else.
+#: The finalized evidence the trusted coverage template renders. `runCoverage`
+#: is the whole-run accounting the body is built from; the per-phase blocks ride
+#: along as each phase's own guidance record (§WF-code-coverage-improvement.4.1).
+#: Everything else `final-metrics.json` records — per-target rosters, sampled PGO
+#: guidance, the validation command list — stays in the finalization artifacts a
+#: reviewer reads from the run, so the descriptor holds render inputs and nothing else.
 COVERAGE_RENDER_KEYS: tuple[str, ...] = (
     "coordinate",
     "coverageSuitePath",
+    "runCoverage",
     "apiJacoco",
     "deepJacoco",
     "needsHumanIntervention",
@@ -142,10 +145,13 @@ def stage_coverage_paths(
         version: str,
         coverage_suite_path: str,
 ) -> None:
-    """Stage the code coverage suite and any touched metadata, then commit.
+    """Stage the code coverage suite, touched metadata, and stats, then commit.
 
     The coverage route's expected paths (§GIT-expected-paths): the dedicated
-    suite, the coordinate's test directory, and the metadata the suite justified.
+    suite, the coordinate's test directory, the metadata the suite justified, and
+    the coverage stats finalization regenerated from the combined main-JAR-only
+    JaCoCo report. Leaving the stats unstaged publishes tests whose effect the
+    repository's own coverage record never shows (§root/TCK-test-harness.8).
     """
     test_dir: str = os.path.relpath(
         resolve_test_dir(repo_path, group, artifact, version),
@@ -162,6 +168,7 @@ def stage_coverage_paths(
         test_dir,
         os.path.join("metadata", group, artifact, "index.json"),
         os.path.join("metadata", group, artifact, metadata_version),
+        os.path.join("stats", group, artifact, metadata_version, "stats.json"),
     ]
     existing: list[str] = [
         path for path in candidates if os.path.exists(os.path.join(repo_path, path))

@@ -123,6 +123,65 @@ class CoveragePublicationTests(unittest.TestCase):
         self.assertNotIn(requested_metadata_dir, staged_paths)
         self.assertEqual(stage_and_commit.call_args.kwargs["cwd"], repo_path)
 
+    def test_stages_the_regenerated_coverage_stats(self) -> None:
+        """Finalization rewrites `stats.json`; the commit must carry it."""
+        with tempfile.TemporaryDirectory(prefix="coverage-stats-") as repo_path:
+            group = "com.example"
+            artifact = "demo"
+            requested_version = "1.1.0"
+            metadata_version = "1.0.0"
+            index_dir = os.path.join(repo_path, "metadata", group, artifact)
+            os.makedirs(index_dir)
+            with open(
+                    os.path.join(index_dir, "index.json"),
+                    "w",
+                    encoding="utf-8",
+            ) as index_file:
+                json.dump(
+                    [{
+                        "metadata-version": metadata_version,
+                        "test-version": "shared-tests",
+                        "tested-versions": [requested_version],
+                    }],
+                    index_file,
+                )
+            stats_path = os.path.join(
+                "stats", group, artifact, metadata_version, "stats.json"
+            )
+            os.makedirs(os.path.dirname(os.path.join(repo_path, stats_path)))
+            with open(
+                    os.path.join(repo_path, stats_path), "w", encoding="utf-8"
+            ) as stats_file:
+                json.dump({}, stats_file)
+            coverage_suite = os.path.join(
+                "tests",
+                "src",
+                group,
+                artifact,
+                "shared-tests",
+                "code-coverage-improvement",
+            )
+            os.makedirs(os.path.join(repo_path, coverage_suite))
+
+            with patch.object(module, "stage_and_commit") as stage_and_commit:
+                module.stage_coverage_paths(
+                    repo_path,
+                    group,
+                    artifact,
+                    requested_version,
+                    coverage_suite,
+                )
+
+        staged_paths, _ = stage_and_commit.call_args.args
+        # The stats mirror is keyed by metadata version, like the metadata itself.
+        self.assertIn(stats_path, staged_paths)
+        self.assertNotIn(
+            os.path.join(
+                "stats", group, artifact, requested_version, "stats.json"
+            ),
+            staged_paths,
+        )
+
     def _publish(
             self,
             branch_suffix: str | None = None,

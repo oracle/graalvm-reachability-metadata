@@ -191,12 +191,14 @@
 - Final API report: highest-iteration `runtime/code-coverage/validation/api-cover-report-<n>.json`
 - Final deep report: highest-iteration `runtime/code-coverage/discovery/discovery-report-<n>.json`
 - Helper script: `forge/utility_scripts/code_coverage_finalize.py`
-- Purpose: gate publication on deterministic post-loop validation and
-  summarize separate JaCoCo results and sampled-path guidance.
+- Purpose: gate publication on deterministic post-loop validation, update the
+  committed library coverage stats, and summarize JaCoCo and sampled-path
+  guidance.
 - Execution: this task is a deterministic program (the `reviewed-execute`
   state), not an agent checklist. A nonzero exit code is the number of the
   failed step and routes to `finalize-fix`. Finalization runs no Native Image
-  validation at this stage.
+  validation of the coverage tests; the stats step (5) does build a native image,
+  because the dynamic-access half of `stats.json` is only observable from one.
 - Program steps:
   1. Read `runtime/code-coverage/issues/conversion.json` for the resolved
      coordinate, worktree, work path, and coverage suite paths.
@@ -217,14 +219,21 @@
   4. Run the regular JVM tests and the tracked extension suite:
      `./gradlew javaTest -Pcoordinates=<resolved coordinate> --stacktrace` and
      `./gradlew codeCoverageTest -Pcoordinates=<resolved coordinate> --stacktrace`.
-  5. Invoke `forge/utility_scripts/code_coverage_finalize.py` with the resolved
+  5. Regenerate committed coverage statistics from the combined main-JAR-only
+     report by running `./gradlew generateLibraryStats -Pcoordinates=<resolved coordinate> --stacktrace`
+     (§root/TCK-test-harness.8). The task re-runs the coverage report and builds
+     the dynamic-access native image, so this is the step that dominates the
+     program's wall clock; a failed native build degrades `dynamicAccess` to
+     `N/A` rather than failing the step.
+  6. Invoke `forge/utility_scripts/code_coverage_finalize.py` with the resolved
      `--coordinate`, repository-relative `--coverage-suite-path`, the API
      baseline/final reports (`api-cover-report-0.json` and the highest-iteration report),
      the deep baseline/final reports (`discovery-report-0.json` and the
      highest-iteration report), any externally provided
      `runtime/code-coverage/targets/*.json` as repeated `--target-state`
      arguments (the workflow itself no longer produces them), the exact
-     checkstyle and JVM test commands as repeated `--validation-command`s, and
+     checkstyle, JVM test, and stats commands as repeated
+     `--validation-command`s, and
      `--output-dir runtime/code-coverage/finalization`.
 - Verification: the `finalize-verify` program then schema-validates
   `final-metrics.json` (`code_coverage_final_metrics` alias) and requires
@@ -250,7 +259,8 @@
     `runtime/code-coverage/finalization/final-metrics.json`.
   - Confirm the issue worktree branch is the expected issue branch.
   - Leave verified changes uncommitted or committed; the helper stages the
-    coverage suite and touched metadata itself and commits them.
+    coverage suite, touched metadata, and the regenerated coverage stats itself
+    and commits them.
   - Run the helper with `--repo-path`, `--coordinate`, `--issue-number`,
     `--finalization-dir`, `--coverage-suite-path`, and
     `--worker-agent {{worker_agent}}`. The helper names the head branch after
@@ -266,9 +276,10 @@
     task: `Forge Branch Ready` validates the exact commit as data, and only its
     success lets `Forge Open PR` render the body and open the pull request
     (§GIT-actions-publication).
-  - The descriptor carries the coordinate, coverage suite path, separate
-    baseline and final API/deep JaCoCo coverage, the human-intervention flag,
-    the generating model, and per-phase token usage.
+  - The descriptor carries the coordinate, coverage suite path, the whole-run
+    coverage checkpoints and phase gains on one shared denominator (§4.1), the
+    per-phase JaCoCo records, the human-intervention flag, the generating model,
+    and per-phase token usage.
     The trusted renderer writes every section of the body from it. Do not
     hand-write a pull request body: a section an agent types is one no run
     publishes.
