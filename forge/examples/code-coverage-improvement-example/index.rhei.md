@@ -34,9 +34,6 @@ is followed by a fresh JaCoCo result.
 | Project number | `30` |
 | TODO status | `Todo` |
 | In-progress status | `In Progress` |
-| PR push remote | `` |
-| PR head owner | `` |
-| PR base branch | `master` |
 
 ## Verification
 

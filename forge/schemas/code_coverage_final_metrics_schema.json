@@ -5,6 +5,7 @@
   "additionalProperties": false,
   "required": [
     "schemaVersion",
+    "generatedAt",
     "coordinate",
     "coverageSuitePath",
     "apiJacoco",
@@ -16,6 +17,10 @@
   ],
   "properties": {
     "schemaVersion": {"const": "1.0.0"},
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
     "coordinate": {
       "type": "string",
       "pattern": "^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.+-]+$"
@@ -30,7 +35,6 @@
       "minItems": 1,
       "items": {"type": "string", "minLength": 1}
     },
-    "resolvesIssue": {"type": "boolean"},
     "needsHumanIntervention": {"type": "boolean"}
   },
   "allOf": [

@@ -196,28 +196,45 @@
   - `runtime/code-coverage/finalization/final-summary.md`
   - `runtime/code-coverage/finalization/final-metrics.json`
 
-### Task code-coverage-publication: Publish pull request
+### Task code-coverage-publication: Publish the verified branch
 **State:** prepared
 **Prior:** Task code-coverage-finalization
 
-- Helper script: `forge/git_scripts/make_pr_code_coverage_improvement.py`
-- PR push remote: ``
-- PR head owner: ``
-- PR base branch: `master`
-- Purpose: publish the verified code coverage improvement as a pull request.
+- Helper script: `forge/git_scripts/publish_code_coverage_improvement.py`
+- Worker agent: `pi[high]:openai-codex/gpt-5.6-luna`
+- Branch suffix: ``
+- Purpose: push the verified code coverage improvement as a publication branch
+  that trusted GitHub Actions turn into a pull request. This task does not open
+  the pull request and must never call `gh pr create`
+  (§AR-forge-verification-publication-boundary).
 - Required work:
   - Read `runtime/code-coverage/finalization/final-summary.md` and
     `runtime/code-coverage/finalization/final-metrics.json`.
   - Confirm the issue worktree branch is the expected issue branch.
-  - Create a focused commit if verified changes are uncommitted.
-  - Push to the configured fork remote or infer a writable fork remote.
-  - Open a pull request against `oracle/graalvm-reachability-metadata` base `master`.
-  - Include source issue, coordinate, coverage suite path, separate baseline and
-    final API/deep JaCoCo coverage, coverage deltas, sampled guidance evidence,
-    completed, skipped, exhausted, or failed targets, and validation commands
-    in the PR body.
-  - Use a closing keyword only when the PR fully resolves the source issue;
-    otherwise link without auto-closing and describe remaining follow-up.
+  - Leave verified changes uncommitted or committed; the helper stages the
+    coverage suite and touched metadata itself and commits them.
+  - Run the helper with `--repo-path`, `--coordinate`, `--issue-number`,
+    `--finalization-dir`, `--coverage-suite-path`, and
+    `--worker-agent pi[high]:openai-codex/gpt-5.6-luna`. The helper names the head branch after
+    that target's model, so a run of this coordinate on another model owns a
+    different branch.
+  - Pass `--branch-suffix ` when that value is non-empty. It
+    only labels which run a branch belongs to; the publication ID the helper
+    appends already keeps two runs of one coordinate and model apart.
+  - The helper rebases onto upstream `master`, runs the pre-publication
+    verification gate, writes
+    `stats/<group>/<artifact>/<version>/forge-publication.json`, and pushes the
+    `ai/<login>/...` branch to `oracle/graalvm-reachability-metadata`. Pushing that branch is the whole
+    task: `Forge Branch Ready` validates the exact commit as data, and only its
+    success lets `Forge Open PR` render the body and open the pull request
+    (§GIT-actions-publication).
+  - The descriptor carries the coordinate, coverage suite path, separate
+    baseline and final API/deep JaCoCo coverage, the human-intervention flag,
+    the generating model, and per-phase token usage.
+    The trusted renderer writes every section of the body from it. Do not
+    hand-write a pull request body: a section an agent types is one no run
+    publishes.
+  - Report the pushed branch name in the work artifact.
 - Artifacts:
-  - `runtime/code-coverage/publication/pr.md`
-  - `runtime/code-coverage/work/code-coverage-publication.md`
+  - `runtime/code-coverage/publication/branch.md`
+  - `runtime/code-coverage/work/code-coverage-8380.code-coverage-publication.md`

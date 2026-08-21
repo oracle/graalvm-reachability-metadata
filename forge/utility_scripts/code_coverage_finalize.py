@@ -16,6 +16,7 @@ import json
 import os
 import re
 import sys
+from datetime import datetime, timezone
 from typing import Any
 
 from jsonschema import Draft202012Validator
@@ -253,6 +254,17 @@ def _delta(
     if include_not_reported:
         result["notReported"] = final["notReported"] - baseline["notReported"]
     return result
+
+
+def _generated_at() -> str:
+    """Stamp the run so publication identity survives a retried publication.
+
+    The trusted publisher derives one publication ID from durable run inputs,
+    and this timestamp is the coverage workflow's (§GIT-publication-descriptor).
+    Re-running publication against the same finalization artifacts therefore
+    reuses one branch and one pull request; re-running finalization is a new run.
+    """
+    return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
 
 
 def _suite_path(value: str) -> str:
@@ -597,6 +609,7 @@ def finalize_coverage(
     )
     metrics: dict[str, Any] = {
         "schemaVersion": SCHEMA_VERSION,
+        "generatedAt": _generated_at(),
         "coordinate": coordinate,
         "coverageSuitePath": _suite_path(coverage_suite_path),
         "apiJacoco": {

@@ -62,7 +62,8 @@
         "fixes-javac-fail",
         "fixes-java-run-fail",
         "fixes-native-image-run-fail",
-        "not-for-native-image"
+        "not-for-native-image",
+        "code-coverage-improvement"
       ]
     },
     "template_type": {
@@ -72,7 +73,8 @@
         "fixes-javac-fail",
         "fixes-java-run-fail",
         "fixes-native-image-run-fail",
-        "not-for-native-image"
+        "not-for-native-image",
+        "code-coverage-improvement"
       ]
     },
     "strategy_name": {
@@ -215,6 +217,22 @@
         "properties": {
           "template_type": {
             "const": "library-new-request"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "task_type": {
+            "const": "code-coverage-improvement"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "template_type": {
+            "const": "code-coverage-improvement"
           }
         }
       }
@@ -601,6 +619,61 @@
             "object",
             "null"
           ]
+        },
+        "code_coverage": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "token_usage": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "phase"
+            ],
+            "properties": {
+              "phase": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "input": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "cached": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "output": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "worker_model": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 200
         },
         "reason": {
           "type": [
