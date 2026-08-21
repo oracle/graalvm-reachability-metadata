@@ -197,7 +197,8 @@
 - Execution: this task is a deterministic program (the `reviewed-execute`
   state), not an agent checklist. A nonzero exit code is the number of the
   failed step and routes to `finalize-fix`. Finalization runs no Native Image
-  validation at this stage.
+  validation of the coverage tests; the stats step (5) does build a native image,
+  because the dynamic-access half of `stats.json` is only observable from one.
 - Program steps:
   1. Read `runtime/code-coverage/issues/conversion.json` for the resolved
      coordinate, worktree, work path, and coverage suite paths.
@@ -220,7 +221,10 @@
      `./gradlew codeCoverageTest -Pcoordinates=<resolved coordinate> --stacktrace`.
   5. Regenerate committed coverage statistics from the combined main-JAR-only
      report by running `./gradlew generateLibraryStats -Pcoordinates=<resolved coordinate> --stacktrace`
-     (§root/TCK-test-harness.8).
+     (§root/TCK-test-harness.8). The task re-runs the coverage report and builds
+     the dynamic-access native image, so this is the step that dominates the
+     program's wall clock; a failed native build degrades `dynamicAccess` to
+     `N/A` rather than failing the step.
   6. Invoke `forge/utility_scripts/code_coverage_finalize.py` with the resolved
      `--coordinate`, repository-relative `--coverage-suite-path`, the API
      baseline/final reports (`api-cover-report-0.json` and the highest-iteration report),

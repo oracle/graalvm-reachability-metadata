@@ -434,19 +434,27 @@ The Rhei template should decompose the workflow into these phases:
    JaCoCo and deep reports. The stats update makes the repository coverage
    dashboard reflect the tests this workflow adds without counting classified
    artifacts such as an upstream test JAR in the denominator
-   (§root/TCK-test-harness.8). The metadata split is the same step the
-   dynamic-access workflows run at their own finalization
-   (§WF-improve-library-coverage), and for the same reason: metadata the
+   (§root/TCK-test-harness.8). It is also the one step here that builds a native
+   image: `generateLibraryStats` measures dynamic access from a native build, so
+   the stats step, not the JVM suites, sets this phase's wall clock. A native
+   build that fails degrades the coordinate's `dynamicAccess` figure to `N/A`
+   instead of failing the run, and that `N/A` replaces whatever the committed
+   stats held before. The metadata split is the same step the dynamic-access
+   workflows run at their own finalization (§WF-improve-library-coverage), and
+   for the same reason: metadata the
    extension suite needed only for its own helper types must not reach a
    consumer, and deciding that by hand is exactly what the task automates
-   (§root/METADATA-suite.2, §root/TCK-test-harness.5). The step also fails the run when a
-   legacy split-config file survives anywhere under the coordinate's test tree,
-   which is how a tracing-agent artifact left behind by metadata preparation is
-   caught before publication rather than in review (§2). No Native Image
-   validation runs at this stage; a nonzero exit code names the failed step.
+   (§root/METADATA-suite.2, §root/TCK-test-harness.5). The step also fails the
+   run when a legacy split-config file survives anywhere under the coordinate's
+   test tree, which is how a tracing-agent artifact left behind by metadata
+   preparation is caught before publication rather than in review (§2). Nothing
+   at this stage validates the coverage tests under Native Image — the native
+   build the stats step runs measures dynamic access and does not gate the run;
+   a nonzero exit code names the failed step.
 8. **Publication** — push the verified branch and let trusted GitHub Actions
-   open the pull request. Local publication stages the coverage suite and the
-   metadata it justified, rebases onto upstream `master`, runs the
+   open the pull request. Local publication stages the coverage suite, the
+   metadata it justified, and the stats finalization regenerated, rebases onto
+   upstream `master`, runs the
    pre-publication verification gate, writes
    `stats/<group>/<artifact>/<version>/forge-publication.json`, and pushes
    `ai/<login>/...` — nothing else. `Forge Branch Ready` then validates that
