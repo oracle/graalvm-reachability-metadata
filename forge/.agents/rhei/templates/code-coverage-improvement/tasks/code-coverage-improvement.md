@@ -146,7 +146,7 @@
     output to commit — this repository loads none of them
     (§root/METADATA-suite.1, §WF-code-coverage-improvement.2). Do not split shipped
     from test-only entries by hand: finalization runs `splitTestOnlyMetadata`.
-  - Run `./gradlew nativeTest -Pcoordinates=<resolved coordinate> -PincludeCodeCoverageSuite=true`; if it fails, repair
+  - Run `./gradlew test -Pcoordinates=<resolved coordinate> -PincludeCodeCoverageSuite=true`; if it fails, repair
     metadata with the Codex `fix-missing-reachability-metadata` skill and re-run,
     up to the helper's fix budget.
   - If Native Image validation cannot be repaired automatically, request

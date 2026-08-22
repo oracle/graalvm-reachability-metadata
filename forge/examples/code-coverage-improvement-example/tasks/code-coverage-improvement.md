@@ -124,7 +124,7 @@
   - Read the resolved coordinate and absolute suite root from the conversion
     and preparation artifacts.
   - Generate metadata with `./gradlew generateMetadata -Pcoordinates=<resolved coordinate> -PincludeCodeCoverageSuite=true`.
-  - Run `./gradlew nativeTest -Pcoordinates=<resolved coordinate> -PincludeCodeCoverageSuite=true`; if it fails, repair
+  - Run `./gradlew test -Pcoordinates=<resolved coordinate> -PincludeCodeCoverageSuite=true`; if it fails, repair
     metadata with the Codex `fix-missing-reachability-metadata` skill and re-run,
     up to the helper's fix budget.
   - If Native Image validation cannot be repaired automatically, request
