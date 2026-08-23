@@ -232,6 +232,7 @@ ISSUE_SEARCH_CACHE_LOCK_FILENAME = "issue-search-cache-v1.lock"
 DEFAULT_ISSUE_SEARCH_CACHE_TTL_SECONDS = 10 * 60
 GITHUB_RATE_LIMIT_EXIT_CODE = 75
 GRADLE_BOOTSTRAP_EXIT_CODE = 76
+STOP_ON_FAILURE_EXIT_CODE = 77
 FIXTURE_E2E_LOG_DIRNAME = "fixture-e2e-logs"
 FIXTURE_RUN_LOG_FILENAME = "run.log"
 FIXTURE_PUBLICATION_FILENAME = "publication.md"
@@ -433,6 +434,10 @@ class WorkflowRunResult:
     success: bool
     started_at: float | None = None
     failure_was_external: bool = False
+
+
+class StopOnFailure(RuntimeError):
+    """Signal that §DW-do-work-loop.1 must terminate the worker."""
 
 
 @dataclass(frozen=True)
@@ -8058,6 +8063,7 @@ def process_fixture_issues_for_label(
         user_requested_only: bool = False,
         priority: str | None = None,
         attempted_issue_numbers: set[int] | None = None,
+        stop_on_failure: bool = False,
 ) -> int:
     """Run the local fixture issues for one label, sequentially, one `run.log` each.
 
@@ -8102,12 +8108,16 @@ def process_fixture_issues_for_label(
                 canonical_metrics_repo_path,
             )
             if claimed_issue is not None:
-                process_claimed_issue_lifecycle(
+                successful = process_claimed_issue_lifecycle(
                     claimed_issue,
                     strategy_name,
                     keep_tests_without_dynamic_access,
                     canonical_metrics_repo_path,
                 )
+                if stop_on_failure and not successful:
+                    raise StopOnFailure(
+                        "Stop-on-failure mode stopped after the first library workflow failure."
+                    )
         if claimed_issue is not None:
             processed_count += 1
     return processed_count
@@ -8128,6 +8138,7 @@ def process_issues_with_label(
         user_requested_only: bool = False,
         priority: str | None = None,
         attempted_issue_numbers: set[int] | None = None,
+        stop_on_failure: bool = False,
 ) -> int:
     """
     Process up to `limit` claimable issues, skipping over unclaimed candidates.
@@ -8309,9 +8320,21 @@ def process_issues_with_label(
             )
             if not done_futures:
                 continue
+            completed_results: list[bool] = []
             for future in done_futures:
                 active_futures.pop(future, None)
-                future.result()
+                completed_results.append(future.result())
+            if stop_on_failure and not all(completed_results):
+                log_stage(
+                    "shutdown",
+                    "Stop-on-failure mode detected a failed library workflow; "
+                    "waiting for already-running workflows before exiting.",
+                )
+                if active_futures:
+                    concurrent.futures.wait(active_futures.keys())
+                raise StopOnFailure(
+                    "Stop-on-failure mode stopped after the first library workflow failure."
+                )
     except KeyboardInterrupt:
         if is_shutdown_requested():
             mark_shutdown_requested()
@@ -8336,7 +8359,7 @@ def process_issues_with_label(
             revert_claimed_issue(claimed_issue, f"{interrupt_reason} in main loop")
         raise
     finally:
-        executor.shutdown(wait=False, cancel_futures=True)
+        executor.shutdown(wait=stop_on_failure, cancel_futures=True)
 
     print()
     log_stage("issue-scan", f"Scanned {scanned_count} issue(s) for label '{label}'")
@@ -8367,6 +8390,7 @@ def process_work_queues(
         keep_tests_without_dynamic_access_override
         or os.environ.get("FORGE_KEEP_TESTS_WITHOUT_DYNAMIC_ACCESS") == "1"
     )
+    stop_on_failure = get_env_zero_one_bool("FORGE_STOP_ON_FAILURE", False)
     parallelism = get_env_parallelism("FORGE_PARALLELISM", parallelism_default)
     user_requested_only = resolve_user_requested_only(user_requested_only_override)
     priority_kwargs: dict[str, str] = {}
@@ -8416,6 +8440,7 @@ def process_work_queues(
                 user_requested_only=user_requested_only,
                 environment_already_validated=True,
                 attempted_issue_numbers=attempted_issue_numbers,
+                stop_on_failure=stop_on_failure,
                 **priority_kwargs,
             )
             continue
@@ -8446,6 +8471,7 @@ def process_work_queues(
             user_requested_only=user_requested_only,
             environment_already_validated=True,
             attempted_issue_numbers=attempted_issue_numbers,
+            **({"stop_on_failure": True} if stop_on_failure else {}),
             **priority_kwargs,
             **claim_kwargs,
         )
@@ -8856,6 +8882,9 @@ def main() -> None:
                 priority=args.priority,
             )
         normal_exit = True
+    except StopOnFailure as exc:
+        log_failure_banner(str(exc), file=sys.stderr)
+        sys.exit(STOP_ON_FAILURE_EXIT_CODE)
     except KeyboardInterrupt:
         if is_shutdown_requested():
             mark_shutdown_requested()

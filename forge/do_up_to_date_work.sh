@@ -27,6 +27,7 @@ REVIEW_LABEL="${FORGE_REVIEW_LABEL:-}"
 REVIEW_LIMIT="${FORGE_REVIEW_LIMIT:-1}"
 REVIEW_MODEL="${FORGE_REVIEW_MODEL:-gpt-5.6-terra}"
 USER_REQUESTED_ONLY="${FORGE_USER_REQUESTED_ISSUES_ONLY:-0}"
+STOP_ON_FAILURE="${FORGE_STOP_ON_FAILURE:-0}"
 GRAALVM_VERSION_CHECK="${FORGE_GRAALVM_VERSION_CHECK:-strict}"
 WORK_STRATEGY_NAME="${FORGE_STRATEGY_NAME:-dynamic_access_main_sources_pi_gpt-5.6-sol}"
 GITHUB_RATE_LIMIT_EXIT_CODE=75
@@ -73,6 +74,9 @@ Options:
       Show this help text.
   --once
       Run one update/work cycle and exit without sleeping.
+  --stop-on-failure
+      Exit with failure after the first library workflow failure instead of
+      sleeping and retrying. Defaults to FORGE_STOP_ON_FAILURE, then 0.
   --stop
       Request Forge do-work loops to exit. Without a branch argument this
       creates the global stop marker ~/.metadata-forge-stop. With --branch or
@@ -149,6 +153,9 @@ Environment:
   FORGE_USER_REQUESTED_ISSUES_ONLY
       Set to 1 to fetch only user-requested issue queue items, or 0 to process
       all eligible issue authors. Defaults to 0.
+  FORGE_STOP_ON_FAILURE
+      Set to 1 to exit after the first library workflow failure, or 0 to
+      continue with later queues and retry after sleeping. Defaults to 0.
   FORGE_LIBRARY_REVIEW_LIMIT, FORGE_JAVAC_REVIEW_LIMIT, FORGE_JAVA_RUN_REVIEW_LIMIT,
   FORGE_NI_RUN_REVIEW_LIMIT, FORGE_BULK_UPDATE_REVIEW_LIMIT
       Override FORGE_REVIEW_LIMIT for one default review queue.
@@ -161,6 +168,7 @@ Examples:
   $0 master
   $0 --javac-limit 3 --new-limit 1
   $0 --user-requested-only --new-limit 1
+  $0 --stop-on-failure --new-limit 1
   $0 --once --branch master
   $0 --once --graalvm-version-check warn
   $0 --clear-issue-caches
@@ -411,6 +419,7 @@ export_work_configuration() {
     export FORGE_REVIEW_LIMIT="$REVIEW_LIMIT"
     export FORGE_REVIEW_MODEL="$REVIEW_MODEL"
     export FORGE_USER_REQUESTED_ISSUES_ONLY="$USER_REQUESTED_ONLY"
+    export FORGE_STOP_ON_FAILURE="$STOP_ON_FAILURE"
     export FORGE_GRAALVM_VERSION_CHECK="$GRAALVM_VERSION_CHECK"
 
     if [[ -n "$REVIEW_LABEL" ]]; then
@@ -477,7 +486,15 @@ run_cycle() {
     fi
 
     log "Running do_up_to_date_work.sh while monitoring ${FORGE_MONITORED_BRANCH}."
-    if ! process_work_queues; then
+    if process_work_queues; then
+        :
+    else
+        local status=$?
+        # §DW-do-work-loop.1: fail-fast mode hands the failure to its supervisor.
+        if [[ "$STOP_ON_FAILURE" == "1" ]]; then
+            log "Stop-on-failure mode is enabled; exiting after the library workflow failure."
+            exit "$status"
+        fi
         log "do_up_to_date_work.sh failed; retrying after sleep."
     fi
 
@@ -495,6 +512,10 @@ while [[ "$#" -gt 0 ]]; do
             ;;
         --once)
             RUN_ONCE=1
+            shift
+            ;;
+        --stop-on-failure)
+            STOP_ON_FAILURE=1
             shift
             ;;
         --stop)
@@ -697,6 +718,11 @@ fi
 
 if [[ "$USER_REQUESTED_ONLY" != "0" && "$USER_REQUESTED_ONLY" != "1" ]]; then
     echo "FORGE_USER_REQUESTED_ISSUES_ONLY must be 0 or 1." >&2
+    exit 1
+fi
+
+if [[ "$STOP_ON_FAILURE" != "0" && "$STOP_ON_FAILURE" != "1" ]]; then
+    echo "FORGE_STOP_ON_FAILURE must be 0 or 1." >&2
     exit 1
 fi
 

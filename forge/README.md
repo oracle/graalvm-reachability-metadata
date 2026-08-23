@@ -50,6 +50,7 @@ Common options:
 - `--user-requested-only`: fetch only user-requested issue queue items, excluding configured automation and maintainer authors.
 - `--graalvm-version-check {strict,warn,off}`: how a GraalVM version mismatch is treated. Default: `strict`.
 - `--once`: run a single update/work cycle through `do_up_to_date_work.sh` and exit.
+- `--stop-on-failure`: exit with failure after the first library workflow failure instead of sleeping and retrying.
 - `--stop`: ask all Forge `do-work` loops for the current user to exit by creating `~/.metadata-forge-stop`.
 - `--stop --branch BRANCH`: ask only loops monitoring `BRANCH` to exit, using a branch-scoped marker such as `~/.metadata-forge-stop.master`.
 - `--clear-stop`: remove the matching global or branch-scoped stop marker so future `do-work` loops can run.
@@ -62,6 +63,7 @@ Examples:
 ./do-work.sh --parallelism 2
 DO_WORK_SLEEP_SECONDS=60 ./do-work.sh --branch master
 ./do-work.sh --user-requested-only --new-limit 1
+./do-work.sh --stop-on-failure --new-limit 1
 FORGE_REVIEW_LABEL=library-new-request ./do-work.sh --review-limit 2
 ./do-work.sh --stop
 ./do-work.sh --stop --branch master

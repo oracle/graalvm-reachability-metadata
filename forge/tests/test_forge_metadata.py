@@ -2034,6 +2034,28 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             take_blocked_issues=True,
         )
 
+    def test_process_work_queues_forwards_stop_on_failure_mode(self) -> None:
+        env = {
+            "FORGE_JAVAC_WORK_LIMIT": "0",
+            "FORGE_JAVA_RUN_WORK_LIMIT": "0",
+            "FORGE_NI_RUN_WORK_LIMIT": "0",
+            "FORGE_LIBRARY_UPDATE_WORK_LIMIT": "0",
+            "FORGE_WORK_LIMIT": "1",
+            "FORGE_REVIEW_LIMIT": "0",
+            "FORGE_STOP_ON_FAILURE": "1",
+        }
+
+        with patch.dict(os.environ, env, clear=True), \
+                patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                patch.object(forge_metadata, "process_issues_with_label", return_value=0) as process_issues:
+            forge_metadata.process_work_queues(
+                "/tmp/reachability",
+                "/tmp/metrics",
+                "automation-user",
+            )
+
+        self.assertTrue(process_issues.call_args.kwargs["stop_on_failure"])
+
     def test_process_work_queues_shares_attempted_issues_across_issue_queues(self) -> None:
         env = {
             "FORGE_JAVAC_WORK_LIMIT": "1",
@@ -3488,6 +3510,55 @@ class InterruptHandlingTests(unittest.TestCase):
             forge_metadata.get_user_interrupt_reason(),
             forge_metadata.INTERRUPT_REASON_GRADLE_BOOTSTRAP,
         )
+
+    def test_stop_on_failure_stops_after_the_first_failed_library_workflow(self) -> None:
+        issues = [
+            {
+                "number": issue_number,
+                "title": f"Add support for org.example:lib{issue_number}:1.0.0",
+                "labels": [],
+                "assignees": [],
+            }
+            for issue_number in range(1, 4)
+        ]
+
+        with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as lock_root:
+            claimed_issue = _claimed_issue_in(repo_path)
+            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+                    patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                    patch.object(
+                        forge_metadata,
+                        "get_prioritized_issues_with_label",
+                        return_value=(issues, _scan_state(len(issues), exhausted=True)),
+                    ), \
+                    patch.object(forge_metadata, "get_issue_claim_preflights_or_empty"), \
+                    patch.object(
+                        forge_metadata,
+                        "claim_issue_for_processing",
+                        return_value=claimed_issue,
+                    ) as claim_issue_for_processing, \
+                    patch.object(
+                        forge_metadata,
+                        "process_claimed_issue_lifecycle",
+                        return_value=False,
+                    ) as process_lifecycle, \
+                    patch.object(forge_metadata, "cleanup_issue_workspace"):
+                with self.assertRaises(forge_metadata.StopOnFailure):
+                    forge_metadata.process_issues_with_label(
+                        forge_metadata.LABEL_LIBRARY_NEW,
+                        len(issues),
+                        0,
+                        "/tmp/reachability",
+                        "/tmp/metrics",
+                        None,
+                        False,
+                        "automation-user",
+                        1,
+                        stop_on_failure=True,
+                    )
+
+        claim_issue_for_processing.assert_called_once()
+        process_lifecycle.assert_called_once()
 
     def test_process_issues_with_label_skips_queue_when_shutdown_requested(self) -> None:
         with patch.object(forge_metadata, "is_shutdown_requested", return_value=True), \

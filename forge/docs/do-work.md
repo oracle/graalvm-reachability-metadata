@@ -52,3 +52,19 @@ not by individual workflow drivers (§ORCH-forge-orchestration-spec).
 The do-work loop is architectural rather than behavioral: it does not need a
 separate component functional spec unless worker semantics grow beyond
 bootstrap, self-update, and cycle scheduling.
+
+## 1. Fail-fast worker mode
+
+`do_up_to_date_work.sh --stop-on-failure` enables fail-fast operation for the
+worker cycle. The option is also enabled by setting `FORGE_STOP_ON_FAILURE=1`.
+When enabled, the worker exits with a non-zero status after the first library
+workflow fails, including failure handling or publication finalization. It does
+not sleep or re-exec for another cycle, allowing an external supervisor to
+stop, inspect, or restart the worker deliberately. The default mode continues
+to process later queues and retries after the normal sleep interval.
+
+The fail-fast setting is forwarded to `forge_metadata.py` through the worker
+environment. The dispatcher stops scheduling additional issue workflows after
+the first failed workflow in the current queue and lets already-running
+workflows finish their normal cleanup. Pull-request review queues are not
+treated as library workflow failures by this mode.
