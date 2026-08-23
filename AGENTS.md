@@ -78,6 +78,9 @@
 ## Releases and Packaging
 - Package artifacts: ./gradlew package
 
+- **Never cite under `tests/src`.** Checkstyle holds that suite to ASCII, so the
+  `§` marker cannot appear in a test file.
+
 <!-- BEGIN GRUND MANAGED BLOCK -->
 ## Grounding with grund (v7)
 

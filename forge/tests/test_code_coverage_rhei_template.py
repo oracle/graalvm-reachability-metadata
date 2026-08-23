@@ -4,9 +4,34 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 import os
+import re
 import unittest
 
 import yaml
+
+
+_TEMPLATE_NUMBERS: dict[str, int] = {
+    "measure_visits": 16,
+    "coverage_iterations": 5,
+    "fix_passes": 2,
+}
+
+
+def _render_numeric_placeholders(source: str) -> str:
+    """Resolve the numeric template placeholders, including arithmetic on them.
+
+    Visit caps are expressed relative to the budget they gate, so a placeholder
+    can be an expression rather than a bare name. Anything that is not numeric
+    is left untouched for the YAML parser to read as a plain string.
+    """
+
+    def render(match: re.Match) -> str:
+        try:
+            return str(eval(match.group(1).strip(), {"__builtins__": {}}, _TEMPLATE_NUMBERS))
+        except (NameError, SyntaxError, TypeError):
+            return match.group(0)
+
+    return re.sub(r"\{\{([^{}]+)\}\}", render, source)
 
 
 class CodeCoverageRheiTemplateTests(unittest.TestCase):
@@ -33,10 +58,7 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
         for states_path in states_paths:
             with open(states_path, encoding="utf-8") as states_file:
                 source: str = states_file.read()
-            source = source.replace("{{measure_visits}}", "16")
-            source = source.replace("{{coverage_iterations}}", "5")
-            source = source.replace("{{fix_passes}}", "2")
-            machine: dict = yaml.safe_load(source)
+            machine: dict = yaml.safe_load(_render_numeric_placeholders(source))
 
             for state_name in ("api-fix", "deep-fix", "finalize-fix"):
                 with self.subTest(path=states_path, state=state_name):

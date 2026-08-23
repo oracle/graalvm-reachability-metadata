@@ -187,6 +187,10 @@ states:
         `code-coverage-improvement/src/test/java` inside the coordinate's
         indexed test project (`coverageSuiteRepoRelativePath` in
         conversion.json); never touch the regular `src/test` sources.
+      - Open every test file with the CC0 header the sibling tests under
+        `src/test/java` already carry, and keep the whole file ASCII: checkstyle
+        runs over this suite at finalization and rejects both a missing header
+        and any non-ASCII character, the grund `§` marker included.
       - Target meaningful public user-callable behavior with real assertions,
         not superficial coverage hits.
       - Do not weaken metadata-generation tests.
@@ -397,6 +401,10 @@ states:
         `code-coverage-improvement/src/test/java` inside the coordinate's
         indexed test project (`coverageSuiteRepoRelativePath` in
         conversion.json); never touch the regular `src/test` sources.
+      - Open every test file with the CC0 header the sibling tests under
+        `src/test/java` already carry, and keep the whole file ASCII: checkstyle
+        runs over this suite at finalization and rejects both a missing header
+        and any non-ASCII character, the grund `§` marker included.
       - Do not weaken metadata-generation tests.
       - Do not write any target state: measurement tracks attempts and target
         rotation deterministically from its own report history.
@@ -458,7 +466,9 @@ states:
   reviewed-execute:
     description: Run the deterministic finalization steps; a nonzero exit code names the failed step.
     concurrent: true
-    visits: 2
+    # The first entry is the finalization run itself, not a repair, so the cap
+    # is one above the repair budget it gates.
+    visits: 3
     program: |
       python3 - "$RHEI_INPUT_CONVERSION_PATH" <<'PY'
       import json
@@ -556,7 +566,7 @@ states:
   finalize-verify:
     description: Deterministically verify finalization artifacts and route by outcome.
     concurrent: true
-    visits: 2
+    visits: 3
     program: |
       metrics="$RHEI_INPUT_FINAL_METRICS_PATH"
       summary="$RHEI_INPUT_FINAL_SUMMARY_PATH"
@@ -598,7 +608,7 @@ states:
     description: Repair the cause of a failed finalization step or verification.
     target: "pi:openai-codex/gpt-5.6-terra"
     concurrent: true
-    visits: 2
+    visits: 6
     instructions: |
       Fix the finalization failure for Task {task_id}: {task_title}.
 
@@ -820,19 +830,31 @@ transitions:
     to: finalize-fix
     exit_code: 2
     condition: visitCount < visits
-    description: Step 2 failed - checkstyle failed for the coverage suite.
+    description: Step 2 failed - test-only metadata split, metadata validation, or the legacy Native Image config check.
 
   - from: reviewed-execute
     to: finalize-fix
     exit_code: 3
     condition: visitCount < visits
-    description: Step 3 failed - JVM tests with the coverage suite failed.
+    description: Step 3 failed - checkstyle failed for the coverage suite.
 
   - from: reviewed-execute
     to: finalize-fix
     exit_code: 4
     condition: visitCount < visits
-    description: Step 4 failed - code_coverage_finalize.py rejected its inputs.
+    description: Step 4 failed - JVM tests with the coverage suite failed.
+
+  - from: reviewed-execute
+    to: finalize-fix
+    exit_code: 5
+    condition: visitCount < visits
+    description: Step 5 failed - generateLibraryStats did not persist coverage.
+
+  - from: reviewed-execute
+    to: finalize-fix
+    exit_code: 6
+    condition: visitCount < visits
+    description: Step 6 failed - code_coverage_finalize.py rejected its inputs.
 
   - from: reviewed-execute
     to: human-intervention
@@ -857,6 +879,18 @@ transitions:
     exit_code: 4
     condition: visitCount >= visits
     description: Step 4 still fails after the maximum fix passes.
+
+  - from: reviewed-execute
+    to: human-intervention
+    exit_code: 5
+    condition: visitCount >= visits
+    description: Step 5 still fails after the maximum fix passes.
+
+  - from: reviewed-execute
+    to: human-intervention
+    exit_code: 6
+    condition: visitCount >= visits
+    description: Step 6 still fails after the maximum fix passes.
 
   - from: finalize-verify
     to: completed

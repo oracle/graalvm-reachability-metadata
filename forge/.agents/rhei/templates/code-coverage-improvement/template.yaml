@@ -92,9 +92,13 @@ inputs:
     default: pi[high]:openai-codex/gpt-5.6-luna
 
   - name: fix_passes
-    description: Maximum automated fix passes when finalization verification fails.
+    description: >-
+      Automated repairs allowed on each finalization path - failed steps and
+      failed artifact verification are budgeted separately. Defaults to the
+      number of steps the step program can fail at, so one failing step cannot
+      spend the allowance another one needs.
     type: number
-    default: 2
+    default: 6
     validate: "[1-9][0-9]*"
 
   - name: coverage_iterations
