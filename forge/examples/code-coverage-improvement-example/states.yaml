@@ -191,6 +191,9 @@ states:
         `src/test/java` already carry, and keep the whole file ASCII: checkstyle
         runs over this suite at finalization and rejects both a missing header
         and any non-ASCII character, the grund `§` marker included.
+      - Put nothing between that header and the `package` declaration, and run
+        `./gradlew spotlessApply -Pcoordinates=<coordinate>` before you finish:
+        Spotless enforces that layout and gates every pull request.
       - Target meaningful public user-callable behavior with real assertions,
         not superficial coverage hits.
       - Do not weaken metadata-generation tests.
@@ -405,6 +408,9 @@ states:
         `src/test/java` already carry, and keep the whole file ASCII: checkstyle
         runs over this suite at finalization and rejects both a missing header
         and any non-ASCII character, the grund `§` marker included.
+      - Put nothing between that header and the `package` declaration, and run
+        `./gradlew spotlessApply -Pcoordinates=<coordinate>` before you finish:
+        Spotless enforces that layout and gates every pull request.
       - Do not weaken metadata-generation tests.
       - Do not write any target state: measurement tracks attempts and target
         rotation deterministically from its own report history.
@@ -836,25 +842,31 @@ transitions:
     to: finalize-fix
     exit_code: 3
     condition: visitCount < visits
-    description: Step 3 failed - checkstyle failed for the coverage suite.
+    description: Step 3 failed - spotlessApply or spotlessCheck rejected the coverage suite.
 
   - from: reviewed-execute
     to: finalize-fix
     exit_code: 4
     condition: visitCount < visits
-    description: Step 4 failed - JVM tests with the coverage suite failed.
+    description: Step 4 failed - checkstyle failed for the coverage suite.
 
   - from: reviewed-execute
     to: finalize-fix
     exit_code: 5
     condition: visitCount < visits
-    description: Step 5 failed - generateLibraryStats did not persist coverage.
+    description: Step 5 failed - JVM tests with the coverage suite failed.
 
   - from: reviewed-execute
     to: finalize-fix
     exit_code: 6
     condition: visitCount < visits
-    description: Step 6 failed - code_coverage_finalize.py rejected its inputs.
+    description: Step 6 failed - generateLibraryStats did not persist coverage.
+
+  - from: reviewed-execute
+    to: finalize-fix
+    exit_code: 7
+    condition: visitCount < visits
+    description: Step 7 failed - code_coverage_finalize.py rejected its inputs.
 
   - from: reviewed-execute
     to: human-intervention
@@ -891,6 +903,12 @@ transitions:
     exit_code: 6
     condition: visitCount >= visits
     description: Step 6 still fails after the maximum fix passes.
+
+  - from: reviewed-execute
+    to: human-intervention
+    exit_code: 7
+    condition: visitCount >= visits
+    description: Step 7 still fails after the maximum fix passes.
 
   - from: finalize-verify
     to: completed
