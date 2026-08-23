@@ -159,10 +159,10 @@ concentrated in ranks 201-400. The agent must work across the
 whole supplied batch through realistic public API usage and assertions, without
 superficial coverage-only invocation. The phase runs for a fixed budget of
 `coverage_iterations` passes and stops early when no public target remains
-uncovered. The budget is deliberately a constant rather than a function of the
-baseline uncovered count: scaling it made phase length depend on how that count
-is defined, so redefining the report summary silently halved it, and a
-constant cannot drift that way.
+uncovered or when the pass yield collapses (§3.3). The budget is deliberately a
+constant rather than a function of the baseline uncovered count: scaling it made
+phase length depend on how that count is defined, so redefining the report
+summary silently halved it, and a constant cannot drift that way.
 
 #### 3.1.1 Target selection by unlocked internal code
 
@@ -332,7 +332,8 @@ measurement, ranking prefers less-attempted targets, and covered targets leave
 the uncovered set — so later iterations advance beyond the first 200 without
 any agent-written state.
 The deep phase runs for the same fixed `coverage_iterations` budget and stops
-early when no actionable target remains.
+early when no actionable target remains or when the pass yield collapses
+(§3.3), on the same rule and the same thresholds as the API phase.
 
 Sampled observations may be emitted as LCOV guidance for standard tooling. That
 artifact contains positive sample counts only, is labeled guidance-only, and is
@@ -394,6 +395,55 @@ in JSON. When a route reaches its target through a closure the enclosing method
 hands to a scheduler or executor, the entry says so: the body then runs on
 another thread, and a test that does not wait for it covers nothing.
 
+### 3.3 Marginal-yield early stop
+
+Both phases stop before their budget when the last passes stop producing
+coverage. A pass costs a full agent invocation and a full re-measurement, so the
+question a phase must keep answering is not "is any target left" — targets are
+almost always left — but "is the next pass worth what it costs".
+
+A phase's **pass yield** is the number of universe methods JaCoCo newly reports
+covered between two consecutive measurements of that phase, counted on the
+phase's own roster. A phase stops when its two most recent passes each yielded
+at least zero and fewer than ten methods, and it evaluates that rule only once
+four passes have completed. The stop is a normal phase completion, not a
+failure: the run continues into the next phase exactly as a spent budget does.
+
+Three properties of the rule are deliberate, and each is a correction of a rule
+that looked reasonable and would have destroyed a measured run.
+
+1. **The threshold counts methods, not percentage points.** One percentage point
+   is 3.5 methods on a 347-method roster, 27 on commons-compress's 2688, and 70
+   on kafka-streams' 7065 — the same rule would be twenty times stricter on a
+   small library than on a large one. A percentage threshold of one point stops
+   a measured unguided run after its fourth pass and discards 661 of the 920
+   methods it went on to cover, because that run's dip was 23 and 39 methods:
+   negligible against 7065, and far above any absolute floor worth setting.
+2. **A window of two, not three.** Pass yields oscillate — a measured deep phase
+   ran 6, 47, 7, 24, 2, 8, 10 — so a single mediocre pass resets a longer
+   streak. Requiring three consecutive low passes never fires on any measured
+   run, at any threshold in this range, which makes it a rule that cannot act.
+3. **A negative pass does not count as low yield.** Losing coverage means the
+   cover agent rewrote or deleted tests the suite already had, which is a defect
+   to repair rather than a phase that has run out of material. A negative pass
+   therefore breaks the streak instead of ending the phase.
+
+The floor of four passes exists for the opposite failure. A measured deep pass
+once yielded nothing at all because the whole pass went to a missing dependency,
+and the two passes after it yielded 202 and 152; without a floor a two-pass
+window can end a run on an environment fault before the phase has begun. The
+floor makes the rule ignore a broken opening rather than repair it, which is the
+correct scope here — repair belongs to preparation — but it means a run broken
+early still spends its budget.
+
+Threshold, window and floor are workflow inputs rather than constants, because
+one saturating library is thin evidence for any of the three. Each measurement
+therefore records the phase's full yield series and its stop decision to a
+`stop-decision.json` next to that phase's reports, whether or not the rule
+fired, and finalization carries both phases' decisions into the run's metrics.
+Without that record a short run is indistinguishable from a crashed one, and the
+thresholds could only ever be re-argued rather than re-measured.
+
 ## 4. Workflow
 
 The Rhei template should decompose the workflow into these phases:
@@ -409,8 +459,8 @@ The Rhei template should decompose the workflow into these phases:
    agent cover pass. Measurement runs JVM JaCoCo
    plus exact API-inventory correlation, persists `api-cover-report-<n>` history
    and one fixed-location report, and decides the loop: the phase completes when
-   no uncovered public target remains or the fixed budget of
-   `coverage_iterations` (default 10) passes is spent.
+   no uncovered public target remains, when the pass yield collapses (§3.3), or
+   when the fixed budget of `coverage_iterations` (default 15) passes is spent.
    When the loop continues, measurement also derives the prompt of at most 200
    exact JaCoCo-uncovered public methods from that report. The cover agent attempts the complete supplied batch through
    normal public API behavior and always returns to measurement. Reachability
@@ -426,7 +476,8 @@ The Rhei template should decompose the workflow into these phases:
    JaCoCo-uncovered internal methods by shortest sampled/static path, retains
    every record in JSON plus sampled-guidance LCOV, persists
    `discovery-report-<n>` history and one fixed-location report, and decides
-   the loop with the same fixed `coverage_iterations` budget, and derives the compact
+   the loop with the same fixed `coverage_iterations` budget and the same
+   marginal-yield stop (§3.3), and derives the compact
    at-most-200-method prompt when it continues. The cover agent batches related paths, reaches
    internal methods through public behavior, and always returns to measurement;
    it writes no target state — measurement tracks attempts and rotation
@@ -439,7 +490,8 @@ The Rhei template should decompose the workflow into these phases:
    and the tracked extension suite (`codeCoverageTest`); regenerate the
    coordinate's committed library stats from the combined main-JAR-only JaCoCo
    report; and persist final metrics from the baseline and highest-iteration
-   JaCoCo and deep reports. The stats update makes the repository coverage
+   JaCoCo and deep reports, including each phase's recorded stop decision
+   (§3.3). The stats update makes the repository coverage
    dashboard reflect the tests this workflow adds without counting classified
    artifacts such as an upstream test JAR in the denominator
    (§root/AR-test-harness.8). It is also the one step here that builds a native
@@ -705,6 +757,12 @@ engine:
 - **Identity model** — normalizes API inventory, JaCoCo, call-tree CSV, and
   sampled-profile method identities in
   `forge/utility_scripts/code_coverage_model.py`.
+- **Marginal-yield stop evaluator** — reads a phase's own report history, derives
+  its per-pass yield series, and decides whether the phase has stopped producing
+  coverage (§AR-code-coverage-improvement.3.3). Implemented in
+  `forge/utility_scripts/code_coverage_stop.py` and shared by both measurement
+  states, so the two phases cannot drift onto different rules. It records the
+  decision on every pass, not only on the pass that stops a phase.
 - **Target-state store** — measurement-owned attempt and rotation state carried
   in the discovery-report history; agents never author target state. Externally
   supplied schema-valid state files remain accepted at finalization.

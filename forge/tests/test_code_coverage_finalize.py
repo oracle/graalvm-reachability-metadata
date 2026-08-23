@@ -96,7 +96,11 @@ class FinalizerTests(unittest.TestCase):
             output.write(value)
         return path
 
-    def _run(self, include_target_state: bool = True) -> dict:
+    def _run(
+            self,
+            include_target_state: bool = True,
+            include_stop_decisions: bool = True,
+    ) -> dict:
         baseline_api = self._write(
             "api-0.json", _api(["covered", "uncovered", "uncovered", "uncovered"])
         )
@@ -154,6 +158,29 @@ class FinalizerTests(unittest.TestCase):
                 ],
             },
         )
+        stop_decisions = [
+            self._write(
+                f"{phase}-stop-decision.json",
+                {
+                    "phase": phase,
+                    "schemaVersion": "1.0.0",
+                    "threshold": 10,
+                    "window": 2,
+                    "floor": 4,
+                    "budget": 15,
+                    "passes": passes,
+                    "targetsRemaining": 1,
+                    "covered": [],
+                    "passYields": yields,
+                    "stopped": True,
+                    "reason": reason,
+                },
+            )
+            for phase, passes, yields, reason in (
+                ("api", 5, [40, 30, 20, 6, 4], "marginal-yield"),
+                ("deep", 15, [40] * 15, "budget-spent"),
+            )
+        ]
         # Three checkpoints of one run: 1/9 -> 4/9 -> 6/9 of the frozen universe
         # of 4 API plus 5 deep methods.
         checkpoints = tuple(
@@ -173,6 +200,7 @@ class FinalizerTests(unittest.TestCase):
             deep_final_path=final_deep,
             jacoco_paths=checkpoints,
             target_state_paths=[state] if include_target_state else [],
+            stop_decision_paths=stop_decisions if include_stop_decisions else [],
             validation_commands=["./gradlew test -Pcoordinates=com.example:demo:1.0.0"],
             output_dir=os.path.join(self.directory.name, "output"),
         )
@@ -277,6 +305,22 @@ class FinalizerTests(unittest.TestCase):
         self.assertTrue(metrics["needsHumanIntervention"])
         module.validate_final_metrics(metrics)
 
+    def test_stop_decisions_are_carried_api_first(self) -> None:
+        """A phase that ended short must say why (§AR-code-coverage-improvement.3.3)."""
+        decisions = self._run()["stopDecisions"]
+
+        self.assertEqual([entry["phase"] for entry in decisions], ["api", "deep"])
+        self.assertEqual(decisions[0]["reason"], "marginal-yield")
+        self.assertEqual(decisions[0]["passYields"][-2:], [6, 4])
+        self.assertEqual(decisions[1]["reason"], "budget-spent")
+        self.assertEqual(decisions[1]["passes"], 15)
+
+    def test_finalizes_without_stop_decisions(self) -> None:
+        metrics = self._run(include_stop_decisions=False)
+
+        self.assertEqual(metrics["stopDecisions"], [])
+        module.validate_final_metrics(metrics)
+
     def test_writes_schema_valid_artifacts(self) -> None:
         self._run()
         output = os.path.join(self.directory.name, "output")
@@ -284,7 +328,7 @@ class FinalizerTests(unittest.TestCase):
         loaded = module.load_validated_final_metrics(
             os.path.join(output, "final-metrics.json")
         )
-        self.assertEqual(loaded["schemaVersion"], "1.1.0")
+        self.assertEqual(loaded["schemaVersion"], "1.2.0")
         with open(
                 os.path.join(output, "final-summary.md"),
                 encoding="utf-8",
@@ -296,6 +340,8 @@ class FinalizerTests(unittest.TestCase):
         self.assertIn("## Public API JaCoCo", summary)
         self.assertIn("## Deep-method JaCoCo", summary)
         self.assertIn("## Sampled PGO guidance only", summary)
+        self.assertIn("- api: marginal-yield after 5/15 passes", summary)
+        self.assertIn("2\u00d7<10 methods after pass 4", summary)
         self.assertIn("Sample counts do not measure coverage", summary)
         self.assertNotIn("PGO coverage", summary)
 

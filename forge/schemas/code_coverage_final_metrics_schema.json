@@ -13,11 +13,12 @@
     "deepJacoco",
     "pgoGuidance",
     "targets",
+    "stopDecisions",
     "validationCommands",
     "needsHumanIntervention"
   ],
   "properties": {
-    "schemaVersion": {"const": "1.1.0"},
+    "schemaVersion": {"const": "1.2.0"},
     "generatedAt": {
       "type": "string",
       "format": "date-time"
@@ -32,6 +33,12 @@
     "deepJacoco": {"$ref": "#/$defs/deepEvidence"},
     "pgoGuidance": {"$ref": "#/$defs/pgoGuidance"},
     "targets": {"$ref": "#/$defs/outcomes"},
+    "stopDecisions": {
+      "description": "Each phase's recorded loop decision, API first. Empty only for a run finalized without them.",
+      "type": "array",
+      "maxItems": 2,
+      "items": {"$ref": "#/$defs/stopDecision"}
+    },
     "validationCommands": {
       "type": "array",
       "minItems": 1,
@@ -106,6 +113,34 @@
         "covered": {"type": "integer", "minimum": 0},
         "uncovered": {"type": "integer", "minimum": 0},
         "coveragePercent": {"type": "number", "minimum": 0, "maximum": 100}
+      }
+    },
+    "stopDecision": {
+      "description": "Why one coverage phase's loop ended, recorded by that phase's own measurement. A phase may end before its budget because nothing uncovered remains or because its pass yield collapsed; without this record a short run cannot be told apart from a crashed one.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["phase", "passes", "budget", "threshold", "window", "floor", "reason", "passYields"],
+      "properties": {
+        "phase": {"enum": ["api", "deep"]},
+        "passes": {"type": "integer", "minimum": 0},
+        "budget": {"type": "integer", "minimum": 1},
+        "threshold": {
+          "description": "Pass yield below which a pass counts as low, in newly covered methods.",
+          "type": "integer",
+          "minimum": 1
+        },
+        "window": {"type": "integer", "minimum": 1},
+        "floor": {"type": "integer", "minimum": 1},
+        "reason": {
+          "description": "Null only for a decision recorded on a pass that did not end the phase.",
+          "type": ["string", "null"],
+          "enum": ["no-targets", "budget-spent", "marginal-yield", null]
+        },
+        "passYields": {
+          "description": "Methods newly covered by each cover pass, in run order.",
+          "type": "array",
+          "items": {"type": "integer"}
+        }
       }
     },
     "runPhaseGain": {

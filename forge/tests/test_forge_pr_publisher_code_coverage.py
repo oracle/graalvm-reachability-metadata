@@ -54,6 +54,7 @@ def _coverage_evidence(**overrides: Any) -> dict[str, Any]:
             "runCoverage",
             "apiJacoco",
             "deepJacoco",
+            "stopDecisions",
             "needsHumanIntervention",
         )
     }
@@ -217,6 +218,25 @@ class CoveragePublisherTemplateTests(unittest.TestCase):
         # 8 API methods at the boundary, 9 at the end: the deep phase covered one.
         self.assertIn("| Public API | 4/10 | 9/10 | 1 |", body)
         self.assertIn("| Internal | 5/20 | 12/20 | 8 |", body)
+
+    def test_body_says_why_each_phase_stopped(self) -> None:
+        """A phase short of its budget reads as broken unless the body explains it."""
+        _, body = publisher.render_publication(_descriptor())
+
+        self.assertIn(
+            "- Simple Jacoco guidance phase: yield collapsed, after 9 of 15 passes",
+            body,
+        )
+        self.assertIn(
+            "- PGO guidance phase: pass budget spent, after 15 of 15 passes", body
+        )
+
+    def test_body_omits_the_stop_section_for_an_older_descriptor(self) -> None:
+        _, body = publisher.render_publication(
+            _descriptor(code_coverage=_coverage_evidence(stopDecisions=[]))
+        )
+
+        self.assertNotIn("Why each phase stopped", body)
 
     def test_body_reports_token_usage_in_the_order_the_descriptor_carries(self) -> None:
         usage = [
