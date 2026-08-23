@@ -1,0 +1,78 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "io.netty:netty-transport:5.0.0.Alpha2",
+  "issueNumber": 9342,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "io.netty:netty-transport:5.0.0.Alpha1",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9342 [Automation] javac compile fails for io.netty:netty-transport:5.0.0.Alpha2; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "11 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 30102,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 9342,
+    "library": "io.netty:netty-transport:5.0.0.Alpha2",
+    "model": "gpt-5.6-sol",
+    "new_version": "5.0.0.Alpha2",
+    "output_tokens_used": 2053,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The existing tests use Alpha1 HTTP APIs removed or renamed in Alpha2, so they require source migration rather than additional setup.",
+      "HTTP coverage depends on the scaffold's existing io.netty:netty-codec-http dependency because it is not transitively provided by netty-transport."
+    ],
+    "session_log_path": "/home/vjovanov/g/forge/graalvm-reachability-metadata/forge/logs/io.netty:netty-transport:5.0.0.Alpha2/library-preparation-preflight/pi-generation-2026-08-23T07-28-41-528034Z.log",
+    "status": "completed",
+    "summary": "Netty Transport Alpha2 supports meaningful loopback NIO client/server coverage using its normal transitive dependencies; it requires no external service, Docker image, or environment property. The existing scaffold already declares the optional netty-codec-http module used by its HTTP tests."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "5.0.0.Alpha2",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 0,
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 2,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/vjovanov/human-intervention/issue-9342-fails-javac-compile-io.netty-netty-transport-5.0.0.Alpha2-a89b511c",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "io.netty:netty-transport:5.0.0.Alpha2",
+    "timestamp": "2026-08-23T07:39:13.172442Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "javac_iterative_with_coverage_sources_pi_gpt-5.6-terra"
+}
