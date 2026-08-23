@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - "ai/**"
+    # Only a descriptor push can publish. An unscoped push-triggered check failed
+    # on the open PR whenever a maintainer repaired the published branch
+    # (§forge/AR-actions-publication).
+    paths:
+      - "stats/*/*/*/forge-publication.json"
 
 permissions:
   contents: read
