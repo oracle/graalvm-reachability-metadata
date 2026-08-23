@@ -4,8 +4,6 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-
-// Exercise public archive/compressor factories and example workflows.
 package org_apache_commons_commons_compress;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;

@@ -4,8 +4,6 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-
-// Exercise compressor streams, optional-codec factories, and availability APIs.
 package org_apache_commons.commons_compress;
 
 import org.apache.commons.compress.compressors.CompressorInputStream;

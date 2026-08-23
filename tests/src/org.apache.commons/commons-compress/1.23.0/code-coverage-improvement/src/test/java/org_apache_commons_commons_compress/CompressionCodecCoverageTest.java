@@ -4,8 +4,6 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-
-// Exercise public compressor stream lifecycles with round-trip assertions.
 package org_apache_commons_commons_compress;
 
 import java.io.ByteArrayInputStream;

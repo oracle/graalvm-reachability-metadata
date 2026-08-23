@@ -4,8 +4,6 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-
-// Exercise Pack200 codecs, constant ordering, and ASM visitor callbacks.
 package org.apache.commons.compress.harmony.pack200;
 
 import org.apache.commons.compress.compressors.pack200.Pack200Strategy;
