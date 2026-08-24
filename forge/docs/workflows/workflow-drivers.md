@@ -208,12 +208,13 @@ orchestration in `ai_workflows/drivers/java_fail_workflow.py`.
 
 Preparation:
 
-- Resolve the previous version with the same shared version-backfill resolver
-  used by the missing-version `library-update-request` router, and resolve the
-  failing library version, repository roots, metrics root, GitHub
-  authentication, GraalVM home, and javac-fix strategy.
-- Log the selected previous-version coordinate and selection reason; fail with
-  an actionable error when no usable same-major baseline exists.
+- Resolve the previous version from the index entry marked `latest`, then
+  resolve the failing library version, repository roots, metrics root, GitHub
+  authentication, GraalVM home, and javac-fix strategy. The `fails-*` issue
+  producer targets the newest version, so this route must not substitute the
+  compatible baseline resolver used by missing-version
+  `library-update-request` issues; a below-`latest` failure is producer-contract
+  evidence that must remain visible.
 - Copy the previous version's test project to the failing version.
 - Update the metadata index for the new version.
 - Create the versioned metadata directory.
@@ -236,7 +237,7 @@ Preparation:
 - Use the same version-copy, metadata-index update, metadata-directory
   creation, checkpoint, artifact URL, source-context, layout, and editable-file
   preparation as `fails-javac-compile`.
-- Use the same shared baseline resolution, logging, and failure behavior as
+- Resolve the previous version from the index entry marked `latest`, as in
   `fails-javac-compile`.
 - Load the java-run strategy, runtime-failure prompt wording, runtime task
   type, and `fix_java_run_fail.json` metrics target.
@@ -249,10 +250,10 @@ Driver: `ai_workflows/drivers/fix_ni_run.py`.
 
 Preparation:
 
-- Resolve the current coordinate with the shared version-backfill resolver and
-  log its coordinate and selection reason. Resolve the new version and
-  reachability repository path. Fail with an actionable error when no usable
-  same-major baseline exists.
+- Resolve the current coordinate from the index entry marked `latest`, then
+  resolve the new version and reachability repository path. As with the Java
+  failure routes, do not substitute a compatible historical baseline for a
+  malformed below-`latest` issue.
 - Create a `fix-native-image-run-*` feature branch.
 - Run the Gradle `fixTestNativeImageRun` task to copy or update the test
   project and generate native-image metadata for the new version.
