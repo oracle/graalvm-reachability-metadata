@@ -8,8 +8,8 @@ Purpose: ensure safe, focused, and reviewable changes.
 
 Agents MUST read and strictly adhere to the following before making any changes:
 
-- [Functional Spec](docs/functional-spec/README.md) — what the system must do.
-- [Architecture](docs/architecture/README.md) — how the system is structured.
+- [Functional Spec](docs/functional-spec/functional-spec.md) — what the system must do.
+- [Architecture](docs/architecture/architecture.md) — how the system is structured.
 
 ## Do
 - Read README.md and DEVELOPING.md before acting.
@@ -82,13 +82,13 @@ A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and 
 - [GOAL](docs/goals.md): Where: Forge direction and outcomes
 - [AR](docs/architecture): Forge architecture and technical structure
 - [FS](docs/functional-spec): Forge functional behavior and requirements
-- [DW](docs/do-work.md): Forge do-work loop architecture
-- [STRAT](docs/strategies.md): Forge strategy configuration architecture
-- [ORCH](docs/orchestration-scripts.md): Forge orchestration scripts behavior and architecture
-- [GIT](docs/git-scripts.md): Forge git scripts publication behavior and architecture
-- [WF](docs/workflows): Forge workflow specifications and operating rules
+- [DW](docs/architecture/do-work.md): Forge do-work loop architecture
+- [STRAT](docs/functional-spec/strategies.md): Forge strategy configuration architecture
+- [ORCH](docs/architecture/orchestration-scripts.md): Forge orchestration scripts behavior and architecture
+- [GIT](docs/architecture/git-scripts.md): Forge git scripts publication behavior and architecture
+- [WF](docs/functional-spec/workflows): Forge workflow specifications and operating rules
 - [E2E](docs/e2e.md): Forge end-to-end test specifications
-- [BENCH](docs/benchmarking.md): Forge benchmark specifications
+- [BENCH](docs/functional-spec/benchmarking.md): Forge benchmark specifications
 - [ROADMAP](docs/roadmap.md): Forge implementation roadmap
 
 ### Project namespaces

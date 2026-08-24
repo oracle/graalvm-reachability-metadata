@@ -164,5 +164,5 @@ forge/
 §AR-forge-architecture
 
 See `DEVELOPING.md` for command-level workflow details,
-`docs/functional-spec/README.md` for the functional specification, and
-`docs/architecture/README.md` for the architecture overview.
+`docs/functional-spec/functional-spec.md` for the functional specification, and
+`docs/architecture/architecture.md` for the architecture overview.

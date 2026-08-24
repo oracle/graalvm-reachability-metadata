@@ -27,9 +27,9 @@ The interface is deliberately narrow:
 | `graphify(source_dirs)` | Build optional graph context from read-only source directories. |
 | `total_tokens_sent` / `total_tokens_received` / `cached_input_tokens_used` | Expose token accounting for run metrics and cost reporting. |
 
-This API keeps workflow behavior out of backend adapters. A new backend
-(plugging in through §AR-forge-extension-points) should implement the registry
-key, the prompt/session methods, token counters, and test-command bridge, then
+This API keeps workflow behavior out of backend adapters. A new backend should
+implement the registry key, the prompt/session methods, token counters, and
+test-command bridge, then
 be selected through strategy data (§WF-forge-workflow-strategy-config) instead
 of changing workflow drivers or workflow engines.
 

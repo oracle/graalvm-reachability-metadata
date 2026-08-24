@@ -21,52 +21,64 @@ home, so the prefix tells you which file to open.
 | --- | --- | --- |
 | `GRUND` | [grund.md](grund.md) | Why Forge exists — the motivation everything else climbs back to. |
 | `GOAL` | [goals.md](goals.md) | Where Forge is headed — direction and measurable outcomes. |
-| `FS` | [functional-spec/README.md](functional-spec/README.md) | What Forge must do — contributor-facing functional behavior. |
-| `AR` | [architecture/README.md](architecture/README.md), [architecture/agent.md](architecture/agent.md) | How Forge is structured — boundaries, components, extension points. |
-| `DW` | [do-work.md](do-work.md) | The unattended do-work loop architecture. |
-| `STRAT` | [strategies.md](strategies.md) | Predefined strategy configuration architecture. |
-| `ORCH` | [orchestration-scripts.md](orchestration-scripts.md) | Orchestration script behavior and architecture. |
-| `GIT` | [git-scripts.md](git-scripts.md) | Git and PR publication behavior and architecture. |
-| `WF` | [workflows/](workflows/) | Per-workflow specifications and operating rules. |
+| `FS` | [functional-spec/functional-spec.md](functional-spec/functional-spec.md) | What Forge must do — contributor-facing functional behavior. |
+| `AR` | [architecture/architecture.md](architecture/architecture.md), [architecture/agent.md](architecture/agent.md) | How Forge is structured — boundaries, components, extension points. |
+| `DW` | [architecture/do-work.md](architecture/do-work.md) | The unattended do-work loop architecture. |
+| `STRAT` | [functional-spec/strategies.md](functional-spec/strategies.md) | Predefined strategy configuration architecture. |
+| `ORCH` | [architecture/orchestration-scripts.md](architecture/orchestration-scripts.md) | Orchestration script behavior and architecture. |
+| `GIT` | [architecture/git-scripts.md](architecture/git-scripts.md) | Git and PR publication behavior and architecture. |
+| `WF` | [functional-spec/workflows/](functional-spec/workflows/) | Per-workflow specifications and operating rules. |
 | `E2E` | [e2e.md](e2e.md) | End-to-end workflow test specification. |
-| `BENCH` | [benchmarking.md](benchmarking.md) | Generation benchmarking specification. |
+| `BENCH` | [functional-spec/benchmarking.md](functional-spec/benchmarking.md) | Generation benchmarking specification. |
 | `ROADMAP` | [roadmap.md](roadmap.md) | Planned, not-yet-implemented work. |
 
 A kind whose home is a *folder* (`AR`, `FS`, `WF`) may spread its IDs across
 several files in that folder; a kind whose home is a single *file* keeps all of
 its IDs in that one file.
 
+Homes nest. `docs/` holds only the four documents that answer a question about
+Forge as a whole — why (`GRUND`), where (`GOAL`), what is planned (`ROADMAP`),
+and how it is tested end to end (`E2E`). Everything else lives under
+[architecture/](architecture/README.md) or
+[functional-spec/](functional-spec/README.md), including the kinds whose home is
+a file or folder inside one of those two: `DW`, `ORCH`, and `GIT` are
+architecture; `STRAT`, `BENCH`, and the whole `WF` subtree are spec. The prefix
+still tells you the kind, and the directory now tells you whether it describes
+behavior or structure.
+
 ### Files at a glance
 
 - [grund.md](grund.md) — `GRUND-forge-motivation`: why Forge exists.
 - [goals.md](goals.md) — `GOAL-forge-direction` and the outcome goals beneath it.
-- [functional-spec/README.md](functional-spec/README.md) — `FS-forge-functional-spec`: top-level functional spec and the workflow-spec catalog.
+- [functional-spec/functional-spec.md](functional-spec/functional-spec.md) — `FS-forge-functional-spec`: top-level functional spec and the workflow-spec catalog.
 - [functional-spec/continuation.md](functional-spec/continuation.md) — `FS-forge-run-continuation`: resuming a failed run at the phase that failed, and the continuation marker contract.
-- [architecture/README.md](architecture/README.md) — `AR-forge-architecture`: control plane, workflow boundaries, and extension points.
+- [architecture/architecture.md](architecture/architecture.md) — `AR-forge-architecture`: control plane, workflow boundaries, and extension points.
 - [architecture/agent.md](architecture/agent.md) — `AR-agent-api`: the agent API and its Pi implementation.
-- [do-work.md](do-work.md) — `DW-do-work-loop`: the long-running worker loop.
-- [strategies.md](strategies.md) — `STRAT-workflow-strategy-registry`: strategy registry, contract, and fields.
-- [orchestration-scripts.md](orchestration-scripts.md) — `ORCH-forge-orchestration-spec`.
-- [git-scripts.md](git-scripts.md) — `GIT-forge-publication`: PR eligibility, body, issue linking, and publication.
-- [benchmarking.md](benchmarking.md) — `BENCH-forge-generation-benchmarking`.
+- [architecture/do-work.md](architecture/do-work.md) — `DW-do-work-loop`: the long-running worker loop.
+- [architecture/orchestration-scripts.md](architecture/orchestration-scripts.md) — `ORCH-forge-orchestration-spec`.
+- [architecture/git-scripts.md](architecture/git-scripts.md) — `GIT-forge-publication`: PR eligibility, body, issue linking, and publication.
+- [functional-spec/strategies.md](functional-spec/strategies.md) — `STRAT-workflow-strategy-registry`: strategy registry, contract, and fields.
+- [functional-spec/benchmarking.md](functional-spec/benchmarking.md) — `BENCH-forge-generation-benchmarking`.
 - [e2e.md](e2e.md) — `E2E-forge-workflow-testing`: hermetic and live end-to-end testing.
 - [roadmap.md](roadmap.md) — `ROADMAP-forge-implementation` and the planned improvements beneath it.
 
-### The `workflows/` subtree
+### The `functional-spec/workflows/` subtree
 
-[workflows/](workflows/) is the `WF` home: every ID in this subtree — including
+[functional-spec/workflows/](functional-spec/workflows/) is the `WF` home:
+every ID in this subtree — including
 the workflow-system and per-workflow architecture — uses the `WF` prefix. The
 shared overview file carries both the behavioral contract and the architecture;
 each individual workflow is one file:
 
-- [workflows/architecture.md](workflows/architecture.md) — `WF-forge-workflow-system` and `WF-forge-workflow-architecture`: shared workflow behavior, engines, and strategy configuration.
-- [workflows/workflow-drivers.md](workflows/workflow-drivers.md) — `WF-forge-workflow-drivers`.
-- [workflows/dynamic-access.md](workflows/dynamic-access.md) — `WF-dynamic-access-workflow`.
-- [workflows/improve-library-coverage.md](workflows/improve-library-coverage.md) — `WF-improve-library-coverage`.
-- [workflows/java-fail-fix.md](workflows/java-fail-fix.md) — `WF-java-fail-fix-workflow`.
-- [workflows/native-image-run-fix.md](workflows/native-image-run-fix.md) — `WF-native-image-run-fix-workflow`.
-- [workflows/native-metadata-tracing.md](workflows/native-metadata-tracing.md) — `WF-native-metadata-tracing`.
-- [workflows/code-coverage-improvement.md](workflows/code-coverage-improvement.md) — `WF-code-coverage-improvement` and `WF-code-coverage-improvement-architecture`: partially implemented code coverage workflow — Rhei template plus deterministic helper scripts and PGO Gradle tasks; behavior and architecture in one file.
+- [functional-spec/workflows/workflow-system.md](functional-spec/workflows/workflow-system.md) — `WF-forge-workflow-system` and `WF-forge-workflow-architecture`: shared workflow behavior, engines, and strategy configuration.
+- [functional-spec/workflows/workflow-drivers.md](functional-spec/workflows/workflow-drivers.md) — `WF-forge-workflow-drivers`.
+- [functional-spec/workflows/add-new-library-support.md](functional-spec/workflows/add-new-library-support.md) — `WF-add-new-library-support`.
+- [functional-spec/workflows/dynamic-access.md](functional-spec/workflows/dynamic-access.md) — `WF-dynamic-access-workflow`.
+- [functional-spec/workflows/improve-library-coverage.md](functional-spec/workflows/improve-library-coverage.md) — `WF-improve-library-coverage`.
+- [functional-spec/workflows/java-fail-fix.md](functional-spec/workflows/java-fail-fix.md) — `WF-java-fail-fix-workflow`.
+- [functional-spec/workflows/native-image-run-fix.md](functional-spec/workflows/native-image-run-fix.md) — `WF-native-image-run-fix-workflow`.
+- [functional-spec/workflows/native-metadata-tracing.md](functional-spec/workflows/native-metadata-tracing.md) — `WF-native-metadata-tracing`.
+- [functional-spec/workflows/code-coverage-improvement.md](functional-spec/workflows/code-coverage-improvement.md) — `WF-code-coverage-improvement` and `WF-code-coverage-improvement-architecture`: partially implemented code coverage workflow — Rhei template plus deterministic helper scripts and PGO Gradle tasks; behavior and architecture in one file.
 
 A workflow file may declare both its behavioral contract and its own
 architecture; both use the `WF` prefix, as the shared overview and the planned

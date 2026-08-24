@@ -479,7 +479,7 @@ python3 complete_pipelines/add_new_library_support_create_pr.py \
 ```
 
 For the detailed behavior, implementation entry points, and sequence diagrams,
-see `docs/workflows/dynamic-access.md`.
+see `docs/functional-spec/workflows/dynamic-access.md`.
 
 ### Quick reference
 

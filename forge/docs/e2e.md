@@ -27,7 +27,7 @@ comments, blockers, and project state. The fixture issue does not need to exist
 on GitHub. Fixture mode must not mutate live GitHub state.
 
 A fixture-backed E2E still runs through `forge_metadata.py` and must exercise
-the real control-plane responsibilities. The fixture-specific behavior is
+the real control-plane responsibilities. The fixture-specific behavior is 
 limited to fetching the issue from local fixture state and suppressing live PR
 publication; routing, workflow-driver invocation, verification, metrics, and
 cleanup stay on the same modular path as normal issue processing:

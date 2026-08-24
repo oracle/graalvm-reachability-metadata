@@ -67,7 +67,9 @@ Local finalization writes schema version `1` to
 against `.github/scripts/forge_pr_publisher/schema.json` before the publication
 commit. Exactly one descriptor path may change in a publication diff. The file
 remains after merge; a later publication for the coordinate replaces the
-current file while Git history retains prior provenance.
+current file while Git history retains prior provenance. Committing it is what
+§ROADMAP-forge-descriptor-off-tree replaces: the descriptor is a build artifact
+of one run, so it should reach the publisher without entering a tree.
 
 The descriptor contains data, never GitHub instructions:
 

@@ -1,9 +1,8 @@
 # WF-code-coverage-improvement: Code coverage improvement workflow
 
 Code coverage improvement is a planned Forge workflow
-(§WF-forge-workflow-system, §FS-forge-code-coverage-improvement) for increasing
-how much of an already-supported library's API and runtime behavior is
-exercised by generated tests. It is separate from dynamic-access coverage:
+(§WF-forge-workflow-system) for increasing how much of an already-supported
+library's API and runtime behavior is exercised by generated tests. It is separate from dynamic-access coverage:
 dynamic-access workflows target calls that require reachability metadata,
 while this workflow targets the broader library API surface even when the
 executed code has no dynamic-access signal.

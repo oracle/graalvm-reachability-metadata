@@ -157,4 +157,4 @@ parameters, agent, model, MCP list, or persistent instructions. New behavior
 belongs in the workflow
 architecture first (§WF-forge-workflow-architecture); the strategy configuration
 should only expose it as a named bundle after the workflow contract and
-implementation boundary are clear (§AR-forge-extension-points).
+implementation boundary are clear (§WF-forge-workflow-engine).

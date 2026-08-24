@@ -21,15 +21,16 @@ orchestration live under `ai_workflows/core/`. They are used for four things:
    return a terminal status to orchestration. PR publication remains outside
    workflow drivers and belongs to git scripts (§GIT-forge-publication).
 
-Driver setup must be explicit Python logic, shared utility code, or
-predefined strategy configuration (§STRAT-forge-predefined-strategy-contract,
-§root/PRCPL-prefer-algorithmic).
-Codex, Pi, or any other LLM agent receives prepared context and works on the
-library-resolution task (§AR-forge-strategy-agent-boundary); it must not decide
-driver setup policy (§AR-forge-workflow-boundary), directory layout, branch
-setup, metrics paths, or other deterministic Forge plumbing during a generated
-run, and every such step belongs in the durable session log
-(§FS-durable-generation-logs).
+Normal setup, neural-input preparation, typed-action application, and the setup
+check must be explicit Python logic, shared utility code, or predefined strategy
+configuration (§STRAT-forge-predefined-strategy-contract,
+§root/PRCPL-prefer-algorithmic). During `neural_setup()`, the agent decides only
+the typed library-specific preparation fields; it must not decide driver policy,
+directory layout, branch setup, metrics paths, or other deterministic Forge
+plumbing (§AR-forge-workflow-boundary). The workflow agent receives the checked
+`ReadyRun` context and works on the library-resolution task
+(§AR-forge-strategy-agent-boundary). Every setup and generation step belongs in
+the durable session log (§FS-durable-generation-logs).
 
 ## 1. Common preparation contract
 
@@ -37,10 +38,72 @@ Every issue-driven driver receives an already selected issue from
 `forge_metadata.py`. The dispatcher (§AR-forge-control-plane) owns issue
 scanning, label routing, claiming, project state, worktree selection, and PR
 publication handoff (§ORCH-forge-orchestration-spec); the driver owns
-deterministic preparation inside the selected worktree.
+normal and neural preparation inside the selected worktree.
 
-Before an agent is created, each driver must prepare these inputs in normal
-Python code or shared utility code:
+Driver preparation has three explicit segments with typed boundaries:
+
+1. `normal_setup(coordinates, strategy, run_context) -> PreparedRun` creates or
+   selects the feature branch, scaffolds or copies the target library, resolves
+   its test and metadata directories. No model is involved.
+2. `neural_setup(PreparedRun) -> NeuralSetupResult` populates artifact URLs,
+   materializes the source context selected by the strategy, obtains the
+   library-preparation decision, and applies its typed actions through one call
+   across the agent boundary. Artifact URL population and source download are
+   deterministic internals, but the segment is neural because its output
+   includes the agent's typed setup decision. An agent timeout or unusable
+   response fails the setup segment; it is not silently converted to
+   `no_action`.
+3. `check_setup(PreparedRun, NeuralSetupResult) -> ReadyRun | FAILED` verifies that
+   the target files, requested source context, and every required typed setup
+   action are present. On success it captures the recovery checkpoint after all
+   setup edits and returns `ReadyRun`; only that output may initialize the
+   generation agent and enter the workflow engine. `FAILED` returns a setup
+   failure to `forge_metadata.py`.
+
+`PreparedRun` is the normal setup output and the neural setup input.
+`ReadyRun` adds the post-setup checkpoint used by workflow rollback and
+continuation.
+
+`NeuralSetupResult` is a JSON document, not an in-memory object. It crosses the
+agent boundary, is the setup check's input, and is the durable setup evidence
+recorded in run metrics and continuation state — so it carries a schema and is
+validated on read, not only on write (§root/PRCPL-verify-inputs). The schema
+lives with Forge's other artifact schemas, is versioned, and rejects unknown
+properties:
+
+```json
+{
+  "schema_version": 1,
+  "coordinates": "<group>:<artifact>:<version>",
+  "artifact": { "jar_url": "…", "sources_url": "…" },
+  "source_context": { "requested": "sources|none", "paths": ["…"] },
+  "decision": { "no_action": false, "summary": "…" },
+  "applied_actions": [
+    { "kind": "dependency", "coordinate": "<group>:<artifact>:<version>",
+      "scope": "testImplementation", "status": "applied",  "reason": "…" },
+    { "kind": "docker_image", "image": "…", "slug": "…",
+      "status": "already_present", "reason": "…" }
+  ],
+  "advisory": ["…"],
+  "evidence": { "prompt_path": "…", "response_path": "…", "session_log_path": "…" }
+}
+```
+
+`kind` is a closed set — the deterministic setup kinds of
+§ORCH-forge-orchestration-spec.1.1 — and `status` is one of `applied`,
+`already_present`, or `deferred`, where `deferred` means the item fell back into
+`advisory` because the tree could not carry it yet. An entry whose shape does
+not validate is not repaired and not ignored: it fails the setup segment.
+
+Schema validity is not the same as truth. The document is the agent's *claim*
+about what it did, so `check_setup` confirms every `applied` action against the
+worktree — the dependency line present in the library's test `build.gradle`, the
+image present in the allow-list directory, the source context present at the
+paths named — and fails when a claim and the tree disagree. A run that trusts
+the claim inherits whatever the agent got wrong.
+
+Before the workflow agent is created, each driver must prepare these inputs in
+driver logic or shared utility code:
 
 - Resolve the reachability repository and metrics roots.
 - Normalize the Java/GraalVM environment required by Gradle and Native Image.

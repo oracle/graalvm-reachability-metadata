@@ -112,9 +112,9 @@ because the marker never enters a successful run's publication staging
 - `libraryUpdateRoute` records the dispatcher-selected route for
   `library-update-request` issues so publication-only resume does not depend on
   a per-run sidecar directory that is absent from the preserved branch.
-- `libraryPreparationPreflight` records dispatcher preflight output so resume
-  can skip the preflight agent while still passing the original advisory setup
-  context back to the workflow driver.
+- `libraryPreparationPreflight` records the driver's completed neural setup
+  output so resume can skip the setup agent while still restoring applied
+  actions, source-context evidence, and advisory guidance.
 - `publicationMetrics` records the committed per-library execution-metrics
   entry (`library` plus `timestamp`) and only the local-only descriptor fields
   needed to reconstruct `.pending_metrics.json` during publication resume.
