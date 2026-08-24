@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.core.annotation.MergedAnnotation.Adapt;
 
-/** Verifies Spring's mapped annotation value adaptations. §FS-repository-functional-spec.5.2 */
+/** Verifies Spring's mapped annotation value adaptations. */
 public class TypeMappedAnnotationTest {
     @Test
     void adaptsScalarNestedAnnotationAndEmptyObjectArrays() {

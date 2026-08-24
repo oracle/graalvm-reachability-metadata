@@ -18,7 +18,7 @@ import java.net.URL;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.ResourceUtils;
 
-/** Verifies Spring's public classpath location resolution. §FS-repository-functional-spec.5.2 */
+/** Verifies Spring's public classpath location resolution. */
 public class ResourceUtilsTest {
     private static final String RESOURCE_PATH = "org_springframework/spring_core/class-path-resource.txt";
     private static final String RESOURCE_LOCATION = ResourceUtils.CLASSPATH_URL_PREFIX + RESOURCE_PATH;

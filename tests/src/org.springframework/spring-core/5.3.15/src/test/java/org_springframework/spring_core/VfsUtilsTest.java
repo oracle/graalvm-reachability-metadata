@@ -20,7 +20,7 @@ import org.junit.jupiter.api.io.TempDir;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.VfsResource;
 
-/** Verifies Spring's public JBoss VFS resource integration. §FS-repository-functional-spec.5.2 */
+/** Verifies Spring's public JBoss VFS resource integration. */
 public class VfsUtilsTest {
     private static final byte[] CONTENT = "Spring VFS resource content".getBytes(UTF_8);
 

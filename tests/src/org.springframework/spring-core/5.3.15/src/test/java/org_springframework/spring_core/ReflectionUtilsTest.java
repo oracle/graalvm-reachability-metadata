@@ -18,7 +18,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.util.CustomizableThreadCreator;
 import org.springframework.util.ReflectionUtils;
 
-/** Verifies Spring's public reflection utilities against Spring Core types. §FS-repository-functional-spec.5.2 */
+/** Verifies Spring's public reflection utilities against Spring Core types. */
 public class ReflectionUtilsTest {
     @Test
     void obtainsAccessibleConstructorAndCreatesResource() throws Exception {

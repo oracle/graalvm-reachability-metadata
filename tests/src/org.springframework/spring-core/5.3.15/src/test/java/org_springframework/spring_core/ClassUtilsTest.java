@@ -20,7 +20,7 @@ import org.springframework.core.io.InputStreamSource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.ClassUtils;
 
-/** Verifies Spring's public class loading and introspection utilities. §FS-repository-functional-spec.5.2 */
+/** Verifies Spring's public class loading and introspection utilities. */
 public class ClassUtilsTest {
     @Test
     void resolvesRegularNestedAndArrayClassNames() throws ClassNotFoundException {

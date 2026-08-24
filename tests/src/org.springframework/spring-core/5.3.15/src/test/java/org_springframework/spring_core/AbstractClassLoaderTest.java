@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.cglib.transform.AbstractClassLoader;
 import org.springframework.cglib.transform.ClassFilter;
 
-/** Verifies CGLIB's public transforming class loader selection behavior. §FS-repository-functional-spec.5.2 */
+/** Verifies CGLIB's public transforming class loader selection behavior. */
 public class AbstractClassLoaderTest {
     private static final String ABSENT_CLASS_NAME = "org_springframework.spring_core.AbsentTransformedType";
 

@@ -19,7 +19,7 @@ import org.springframework.core.io.AbstractResource;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
 
-/** Verifies CGLIB reflection utilities against Spring Core types. §FS-repository-functional-spec.5.2 */
+/** Verifies CGLIB reflection utilities against Spring Core types. */
 public class ReflectUtilsTest {
     @Test
     void createsInstanceThroughDeclaredConstructor() {

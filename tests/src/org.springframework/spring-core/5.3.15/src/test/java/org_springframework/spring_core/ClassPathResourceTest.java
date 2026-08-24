@@ -15,7 +15,7 @@ import java.io.InputStream;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
-/** Verifies Spring's public classpath resource lookup strategies. §FS-repository-functional-spec.5.2 */
+/** Verifies Spring's public classpath resource lookup strategies. */
 public class ClassPathResourceTest {
     private static final String RESOURCE_NAME = "class-path-resource.txt";
     private static final String RESOURCE_PATH = "org_springframework/spring_core/" + RESOURCE_NAME;

@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.OverridingClassLoader;
 
-/** Verifies Spring's public overriding class loader behavior. §FS-repository-functional-spec.5.2 */
+/** Verifies Spring's public overriding class loader behavior. */
 public class OverridingClassLoaderTest {
     private static final String ABSENT_CLASS_NAME = "org_springframework.spring_core.AbsentOverriddenType";
 

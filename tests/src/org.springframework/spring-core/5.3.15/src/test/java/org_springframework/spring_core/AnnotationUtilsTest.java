@@ -17,9 +17,10 @@ import org.springframework.core.annotation.AliasFor;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.annotation.AnnotationUtils;
 
-/** Verifies Spring's public annotation introspection and synthesis APIs. §FS-repository-functional-spec.5.2 */
+/** Verifies Spring's public annotation introspection and synthesis APIs. */
 public class AnnotationUtilsTest {
     @Test
+    @SuppressWarnings("checkstyle:annotationAccess")
     void retrievesAnnotationAttributeValue() {
         ValueAnnotation annotation =
                 AnnotationUtils.getAnnotation(AnnotatedFixture.class, ValueAnnotation.class);
@@ -30,6 +31,7 @@ public class AnnotationUtilsTest {
     }
 
     @Test
+    @SuppressWarnings("checkstyle:annotationAccess")
     void adaptsNestedAnnotationArrayForAliasedAttribute() {
         NestedHolder holder =
                 AnnotationUtils.getAnnotation(NestedHolderFixture.class, NestedHolder.class);
@@ -47,7 +49,7 @@ public class AnnotationUtilsTest {
     }
 
     @Test
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings({"deprecation", "checkstyle:annotationAccess"})
     void synthesizesAnnotationsFromAnnotatedElement() {
         Annotation[] annotations = AnnotationUtils.getAnnotations(AnnotatedFixture.class);
 
