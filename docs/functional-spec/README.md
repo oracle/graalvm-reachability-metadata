@@ -227,17 +227,18 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 ### 5.2 Tests
 
 - **Coverage-backed support.** Every supported library version must have tests that exercise the library's reachable surface enough to fail when metadata is wrong or missing.
+- **Test contract.** Every test must satisfy the test contract (§FS-test-contract): the normative statement of what a test must have, must not do, should do, and how it behaves under Native Image.
 - **Per-coordinate layout.** Tests live under `tests/src/<group>/<artifact>/<version>` unless an `index.json` entry sets `test-version` to share a suite across versions.
 - **Consumer-like exercise.** Tests must not pin to specific library versions or bypass the library's public API in ways that would mask metadata gaps. Scaffold-only tests are not acceptable.
 - **Separate test namespaces.** Tests and their helper types must use a package namespace that does not overlap the target library's allowed packages. This keeps test-only metadata separation from classifying library metadata as test-owned.
 - **Declared Docker images.** Tests that use Docker must declare every image they need in `required-docker-images.txt`. Each image must already appear in `tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-<dockerImageName>`. Tests fail otherwise.
 - **Required lanes.** Tests must compile under JDK 25 and pass both `javaTest` and `nativeTest` lanes on every JDK/OS combination listed in `ci.json`.
 - **Recorded passing versions.** Newly added `tested-versions` entries are recorded in `index.json` only after they pass on **every** required environment (enforced by `verify-new-library-version-compatibility`).
-- **Coverage non-regression.** Dynamic-access coverage between consecutive tested versions of a library must not regress (enforced by reviewer skills `review-fixes-javac-fail`, `review-fixes-native-image-run-fail`, `review-fixes-java-run-fail`).
+- **Coverage non-regression.** Dynamic-access coverage between consecutive tested versions of a library must hold the per-label gates of the contribution contract (§FS-contribution-contract.3): strict percentage non-regression for library updates, a bounded drop for the `fixes-*` repair labels, and a coverage floor for new libraries.
 
 ### 5.3 CI gates
 
-- **PR gates.** Every PR is gated on the relevant subset of: `checkstyle`, `spotlessCheck`, `validateIndexFiles`, `checkMetadataFiles`, `validateLibraryStats`, `library-and-framework-list-validation`, `grund check`, and the appropriate `test-*` workflow.
+- **PR gates.** Every PR is gated on the relevant subset of: `checkstyle`, `spotlessCheck`, `validateIndexFiles`, `checkMetadataFiles`, `validateLibraryStats`, `library-and-framework-list-validation`, `grund check`, and the appropriate `test-*` workflow (§PRCPL-prefer-algorithmic).
 - **Docker isolation.** Docker images used in tests are pre-pulled from `allowed-docker-images`, after which the runner disables Docker networking for deterministic, isolated test runs.
 - **Release style gate.** The release workflow runs `spotlessCheck` before packaging.
 - **Spring AOT scope.** The Spring AOT smoke matrix runs only when `metadata/` changes affect a Spring AOT project.
@@ -272,7 +273,7 @@ These are enforced on every PR that touches a scanned path (§CI-grund-check).
 - **Determinism.** Tests must be reproducible. Network-dependent tests are not allowed except where they declare an `allowed-docker-image` and run against that pre-pulled image with networking disabled.
 - **Isolation.** Per-coordinate test execution must not depend on or affect other coordinates' build outputs.
 - **Image-size discipline.** Conditional configuration (`typeReached`) is mandatory so consumers do not pay for metadata they do not exercise.
-- **Schema fidelity.** Every JSON file under `metadata/`, `stats/`, and `metadata/library-and-framework-list.json` must validate against the corresponding schema in `schemas/` or `stats/schemas/`.
+- **Schema fidelity.** Every JSON file under `metadata/`, `stats/`, and `metadata/library-and-framework-list.json` must validate against the corresponding schema in `schemas/` or `stats/schemas/` (§PRCPL-verify-inputs).
 - **Style consistency.** All Java/Groovy/Gradle/shell sources must pass `spotlessCheck` (CC0 license header) and `checkstyle`. JSON is sorted by keys, indented with two spaces.
 - **Sharded scalability.** Any Gradle task that accepts `-Pcoordinates=` must accept `k/n` shards so CI can parallelize. The harness must handle adding a new library without code changes (purely metadata-driven discovery).
 - **Auditability.** Every Forge run produces a schema-validated metrics record; every coverage publish writes to a force-pushed branch with retained history.

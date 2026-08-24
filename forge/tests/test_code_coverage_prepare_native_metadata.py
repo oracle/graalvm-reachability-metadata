@@ -6,6 +6,7 @@
 from contextlib import redirect_stderr
 import io
 import os
+import re
 import sys
 import tempfile
 import unittest
@@ -15,7 +16,7 @@ from utility_scripts import code_coverage_prepare_native_metadata as prepare_mod
 
 
 class _Gradle:
-    """Stateful fake for run_gradle_test_command driven by scripted nativeTest results."""
+    """Stateful fake for run_gradle_test_command driven by scripted native-validation results."""
 
     def __init__(
             self,
@@ -34,10 +35,32 @@ class _Gradle:
                 if self.generate_succeeded
                 else "BUILD FAILED\nmetadata generation failed"
             )
-        if "nativeTest" in command:
+        if f"./gradlew {prepare_module.NATIVE_VALIDATION_TASK} " in command:
             succeeded = self.native_results.pop(0) if self.native_results else False
             return "BUILD SUCCESSFUL in 9s" if succeeded else "BUILD FAILED\nmissing metadata"
         return "BUILD SUCCESSFUL"
+
+
+_HARNESS_GRADLE = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+    "tests", "tck-build-logic", "src", "main", "groovy",
+    "org.graalvm.internal.tck-harness.gradle",
+)
+
+
+class NativeValidationTaskTests(unittest.TestCase):
+    """The helper must name a task the harness root project registers.
+
+    Gradle matches an unknown task name by prefix, so a wrong name stays silent
+    until a sibling task makes it ambiguous. `nativeTest` was such a name: it is
+    registered on the per-library builds, never on the root project.
+    """
+
+    def test_native_validation_task_is_registered_on_the_root_project(self) -> None:
+        """Fails if the helper ever names a task only the per-library builds define."""
+        with open(_HARNESS_GRADLE, encoding="utf-8") as harness:
+            registered = set(re.findall(r'tasks\.register\("([^"]+)"', harness.read()))
+        self.assertIn(prepare_module.NATIVE_VALIDATION_TASK, registered)
 
 
 class PrepareNativeMetadataTests(unittest.TestCase):
@@ -98,8 +121,8 @@ class PrepareNativeMetadataTests(unittest.TestCase):
         self.assertTrue(report["nativeTestPassed"])
         self.assertFalse(report["needsHumanIntervention"])
         self.assertEqual(len(fix_calls), 1)
-        # The Codex fix is given the nativeTest reproduction command.
-        self.assertIn("nativeTest", fix_calls[0][2])
+        # The Codex fix is given the native-validation reproduction command.
+        self.assertIn(f"./gradlew {prepare_module.NATIVE_VALIDATION_TASK} ", fix_calls[0][2])
         self.assertIn("-PincludeCodeCoverageSuite=true", fix_calls[0][2])
 
     def test_exhausts_budget_routes_to_human(self) -> None:

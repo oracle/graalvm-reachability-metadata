@@ -1,22 +1,22 @@
-Rules:
-- Do not broaden the patch into unrelated features.
-- Do not create source stubs, fake replacements, or shadow classes for library or dependency API types in their real packages. If a needed API is missing from the test classpath, add the correct test dependency or leave the feature untested with an explanation.
-- Target supported library behavior. Do not assert a known bug, regression, broken path, or version-specific failure in the target artifact.
-- Do not use reflection directly in the tests unless the public API requires it naturally.
-- Do not compile or run tests yourself. The workflow will do that externally.
-- Follow idiomatic `{test_language_display_name}` coding conventions.
-- All top-level test classes must be public.
-- Do not add test JVM toolchain, target, or release overrides that move the test away from the TCK-resolved test JVM version. If a language plugin needs an explicit setting such as `JavaLanguageVersion.of(...)`, `jvmToolchain(...)`, `kotlinOptions.jvmTarget = ...`, or `options.release = ...`, wire it to the resolved test JVM version instead of hardcoding a number. Do not add old-JDK compatibility flags such as `-Djava.security.manager=allow`. If a path only works on a different JDK, leave that path untested.
-- Keep tests outside the library's packages. Do not place a test in the same package as the library just to access package-private or internal code.
-- Keep tests version-agnostic. Do not hardcode the artifact version in normal test inputs or assertions.
-- Exception assertions are acceptable only for documented, supported negative-path APIs. Do not write tests whose method name, comments, or assertions describe a known broken behavior path such as "fails before", "regression", "broken", or "version-specific" failure.
-- Every individual test must complete in under 60 seconds. Use bounded waits and close all clients, servers, executors, and other background resources.
-- When tests use connection, request, read, socket, server, client, process, database, messaging, or HTTP timeouts, set each explicit timeout to at least 10 seconds. Shorter timeouts are flaky under native-image-agent metadata generation and Native Image startup, while unbounded waits are still not allowed.
+Rules (test contract: §root/FS-test-contract):
+- Do not broaden the patch into unrelated features. §root/FS-test-contract.2.9
+- Do not create source stubs, fake replacements, or shadow classes for library or dependency API types in their real packages. If a needed API is missing from the test classpath, add the correct test dependency or leave the feature untested with an explanation. §root/FS-test-contract.2.3
+- Target supported library behavior. Do not assert a known bug, regression, broken path, or version-specific failure in the target artifact. §root/FS-test-contract.2.6
+- Do not use reflection directly in the tests unless the public API requires it naturally. §root/FS-test-contract.2.1
+- Do not compile or run tests yourself. The workflow will do that externally. §AR-forge-strategy-agent-boundary
+- Follow idiomatic `{test_language_display_name}` coding conventions. §root/FS-test-contract.1.2
+- All top-level test classes must be public. §root/FS-test-contract.1.2
+- Do not add test JVM toolchain, target, or release overrides that move the test away from the TCK-resolved test JVM version. If a language plugin needs an explicit setting such as `JavaLanguageVersion.of(...)`, `jvmToolchain(...)`, `kotlinOptions.jvmTarget = ...`, or `options.release = ...`, wire it to the resolved test JVM version instead of hardcoding a number. Do not add old-JDK compatibility flags such as `-Djava.security.manager=allow`. If a path only works on a different JDK, leave that path untested. §root/FS-test-contract.2.8
+- Keep tests outside the library's packages. Do not place a test in the same package as the library just to access package-private or internal code. §root/FS-test-contract.2.2
+- Keep tests version-agnostic. Do not hardcode the artifact version in normal test inputs or assertions. §root/FS-test-contract.2.5
+- Exception assertions are acceptable only for documented, supported negative-path APIs. Do not write tests whose method name, comments, or assertions describe a known broken behavior path such as "fails before", "regression", "broken", or "version-specific" failure. §root/FS-test-contract.2.6
+- Every individual test must complete in under 60 seconds. Use bounded waits and close all clients, servers, executors, and other background resources. §root/FS-test-contract.1.6
+- When tests use connection, request, read, socket, server, client, process, database, messaging, or HTTP timeouts, set each explicit timeout to at least 10 seconds. Shorter timeouts are flaky under native-image-agent metadata generation and Native Image startup, while unbounded waits are still not allowed. §root/FS-test-contract.1.7
 - Do not make tests depend on Native Image resource metadata for temporary, build, or
   machine-local absolute paths. If a test creates files under a temp/build directory,
   exercise them through normal file APIs or create the optional file that the library
   expects; do not rely on classloader resource lookup for paths such as `/tmp/...`,
-  JUnit temp dirs, or `build/...`.
+  JUnit temp dirs, or `build/...`. §root/FS-test-contract.4.4
 - Do not create tests for behavior that depends on runtime bytecode generation,
   runtime class definition or loading, runtime lambda definition, Java agent
   self-attach, class redefinition, instrumentation, native-image substitutions,
@@ -24,15 +24,15 @@ Rules:
   not already in the native image, or classes that exist only through a custom
   class loader. This includes Byte Buddy-backed inline mocking, static mocking,
   construction mocking, and concrete-class mocking. Prefer statically representable
-  behavior such as public APIs.
-- Never generate, write, or modify reachability metadata or Native Image config entries. Do not create or edit `reachability-metadata.json`, `reflect-config.json`, `resource-config.json`, `proxy-config.json`, `serialization-config.json`, `jni-config.json`, `predefined-classes-config.json`, or any other file under `src/test/resources/META-INF/native-image`; Forge handles metadata generation and merging externally.
+  behavior such as public APIs. §root/FS-test-contract.4.5
+- Never generate, write, or modify reachability metadata or Native Image config entries. Do not create or edit `reachability-metadata.json`, `reflect-config.json`, `resource-config.json`, `proxy-config.json`, `serialization-config.json`, `jni-config.json`, `predefined-classes-config.json`, or any other file under `src/test/resources/META-INF/native-image`; Forge handles metadata generation and merging externally. §root/FS-test-contract.2.7
 
-Native Image execution contract (non-negotiable):
+Native Image execution contract (non-negotiable, §root/FS-test-contract.4):
 
 Every test you create or edit must run and assert the same behavior under Native Image as on the JVM. Reviewers reject any PR whose tests skip or tolerate Native Image failures, the PR is closed, and the entire run is discarded. A test that is green only because it dodges Native Image is a failed deliverable, not a fix.
 
-- Never skip Native Image execution: no `assumeFalse("runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode")))`, early returns, `@DisabledInNativeImage`, `isNativeImageRuntime()`, `ImageInfo.inImageRuntimeCode()`, or equivalent guards.
-- Never tolerate Native Image failures: do not catch an exception or error and accept it because the code detects native-image runtime or recognizes a known native-image failure message. A failure that only happens under Native Image signals missing reachability metadata or unsupported behavior; surface it and never hide it inside the test.
+- Never skip Native Image execution: no `assumeFalse("runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode")))`, early returns, `@DisabledInNativeImage`, `isNativeImageRuntime()`, `ImageInfo.inImageRuntimeCode()`, or equivalent guards. §root/FS-test-contract.4.1
+- Never tolerate Native Image failures: do not catch an exception or error and accept it because the code detects native-image runtime or recognizes a known native-image failure message. A failure that only happens under Native Image signals missing reachability metadata or unsupported behavior; surface it and never hide it inside the test. §root/FS-test-contract.4.2
 
 Bad: test skipped under Native Image (rejected in review):
 ```java
@@ -51,7 +51,7 @@ try {{
 }}
 ```
 
-Sole sanctioned exception: behavior that fundamentally requires open-ended dynamic class loading that Native Image cannot support (loading classes, JARs, generated bytecode, plugin implementations, or other class definitions only discovered after the native executable is built). This exception is for unavoidable public API coverage only; do not use it to keep tests for Byte Buddy-backed inline mocking, static mocking, construction mocking, Java agent self-attach, runtime instrumentation, or native-image substitution paths. Catch `Error`, verify it with `NativeImageSupport.isUnsupportedFeatureError(e)` from `org.graalvm.internal.tck`, and re-throw anything else:
+Sole sanctioned exception (§root/FS-test-contract.4.3): behavior that fundamentally requires open-ended dynamic class loading that Native Image cannot support (loading classes, JARs, generated bytecode, plugin implementations, or other class definitions only discovered after the native executable is built). This exception is for unavoidable public API coverage only; do not use it to keep tests for Byte Buddy-backed inline mocking, static mocking, construction mocking, Java agent self-attach, runtime instrumentation, or native-image substitution paths. Catch `Error`, verify it with `NativeImageSupport.isUnsupportedFeatureError(e)` from `org.graalvm.internal.tck`, and re-throw anything else:
 ```java
 try {{
     Plugin plugin = PluginLoader.load(pluginJar, "example.Plugin");

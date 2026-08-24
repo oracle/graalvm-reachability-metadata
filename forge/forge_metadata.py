@@ -3254,7 +3254,10 @@ def load_current_metadata_version(
         if entry.get("latest") is True:
             return entry.get("test-version") or entry.get("metadata-version")
 
-    print(f"ERROR: No latest entry found in metadata index: {index_json_path_display}", file=sys.stderr)
+    print(
+        f"ERROR: No latest entry found in metadata index: {index_json_path_display}",
+        file=sys.stderr,
+    )
     return None
 
 
@@ -6014,6 +6017,8 @@ def build_claim_metadata(
         return None
 
     group, artifact, new_version = coordinate_parts
+    # `fails-*` issues target the newest version, so keep `latest` as the signal.
+    # §WF-forge-workflow-drivers.2
     current_version = load_current_metadata_version(
         base_reachability_metadata_path,
         group,

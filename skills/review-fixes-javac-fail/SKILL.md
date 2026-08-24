@@ -8,6 +8,8 @@ argument-hint: "[pr-number-or-url]"
 
 These PRs repair test sources or test dependencies after an existing library is bumped and the new version no longer compiles with the old test code. Review them more lightly than `library-new-request` PRs: the library already exists, so the goal is to preserve working coverage across the version update rather than prove a brand-new metadata contribution from scratch.
 
+The rules below implement the contribution contract: block only on a concrete violation of a must — the shape limits (§FS-contribution-contract.2), the coverage gates (§FS-contribution-contract.3), the cheating patterns (§FS-contribution-contract.4), and the test contract's musts (§FS-test-contract) — while shoulds stay advisory in review (§FS-contribution-contract.1).
+
 The PR number or URL can be passed as an optional argument (for example, `1234`, `https://github.com/oracle/graalvm-reachability-metadata/pull/1234`). If the user says "review this PR" without an argument, infer the PR from the surrounding conversation or `gh pr status`; only ask the user when it cannot be inferred. Use `gh pr view <pr>`, `gh pr diff <pr>`, and `gh pr checks <pr>` against the resolved PR throughout the workflow below.
 
 ## Review Principles

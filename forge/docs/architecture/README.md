@@ -122,6 +122,7 @@ Gradle command to run, how to interpret output, when to reset to a checkpoint,
 and which terminal status to return. Agents own only the editing and
 command-execution interface exposed by `Agent`: prompts, context management,
 token accounting, and test-command execution.
+§root/PRCPL-prefer-algorithmic
 
 This boundary lets a predefined strategy bind a workflow engine, agent, model,
 prompt-template set, workflow parameters, MCPs, and optional persistent

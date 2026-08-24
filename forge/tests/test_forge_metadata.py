@@ -382,6 +382,47 @@ class LibraryUpdateIssueTests(unittest.TestCase):
 
         self.assertEqual(claim_metadata, ("org.example:title-lib:1.2.3", None, None))
 
+    def test_direct_repair_uses_latest_entry_as_failure_baseline(self) -> None:
+        with tempfile.TemporaryDirectory() as repo:
+            group = "io.netty"
+            artifact = "netty-common"
+            index_dir = os.path.join(repo, "metadata", group, artifact)
+            os.makedirs(index_dir, exist_ok=True)
+            with open(os.path.join(index_dir, "index.json"), "w", encoding="utf-8") as index_file:
+                json.dump([
+                    {
+                        "metadata-version": "4.1.115.Final",
+                        "tested-versions": ["4.1.115.Final", "4.1.130.Final"],
+                    },
+                    {
+                        "latest": True,
+                        "metadata-version": "5.0.0.Alpha1",
+                        "tested-versions": ["5.0.0.Alpha1"],
+                    },
+                ], index_file)
+            for version in ["4.1.115.Final", "5.0.0.Alpha1"]:
+                os.makedirs(os.path.join(repo, "metadata", group, artifact, version), exist_ok=True)
+                os.makedirs(os.path.join(repo, "tests", "src", group, artifact, version), exist_ok=True)
+            issue = {
+                "number": 9408,
+                "title": "Fails native image run io.netty:netty-common:4.1.132.Final",
+            }
+
+            claim_metadata = forge_metadata.build_claim_metadata(
+                issue,
+                forge_metadata.LABEL_NI_RUN_FAIL,
+                repo,
+            )
+
+            self.assertEqual(
+                claim_metadata,
+                (
+                    "io.netty:netty-common:4.1.132.Final",
+                    "io.netty:netty-common:5.0.0.Alpha1",
+                    "4.1.132.Final",
+                ),
+            )
+
     def test_extract_issue_requested_metadata_context_keeps_full_issue_body(self) -> None:
         body = """
         The reporter may describe the missing metadata in arbitrary prose.
@@ -421,11 +462,8 @@ class LibraryUpdateIssueTests(unittest.TestCase):
                     "select_library_update_route",
                     return_value=forge_metadata.LibraryUpdateRoute(
                         selected_driver=forge_metadata.ROUTE_IMPROVE_COVERAGE,
-                        requested_coordinates="org.example:lib:1.0.0",
                         baseline_coordinates=None,
                         new_version="1.0.0",
-                        reason="test route",
-                        match_type="tested-version",
                     ),
                 ), \
                 patch.object(forge_metadata, "run_improve_library_coverage_workflow", return_value=0) as workflow:

@@ -22,7 +22,8 @@ orchestration live under `ai_workflows/core/`. They are used for four things:
    workflow drivers and belongs to git scripts (§GIT-forge-publication).
 
 Driver setup must be explicit Python logic, shared utility code, or
-predefined strategy configuration (§STRAT-forge-predefined-strategy-contract).
+predefined strategy configuration (§STRAT-forge-predefined-strategy-contract,
+§root/PRCPL-prefer-algorithmic).
 Codex, Pi, or any other LLM agent receives prepared context and works on the
 library-resolution task (§AR-forge-strategy-agent-boundary); it must not decide
 driver setup policy (§AR-forge-workflow-boundary), directory layout, branch
@@ -156,9 +157,30 @@ Preparation:
 
 - Resolve the requested `group:artifact:version`.
 - Confirm the repository already supports the requested `group:artifact`.
-- Resolve the latest supported test version for that artifact.
-- Prepare the latest supported test suite so it runs against the requested
-  version, preserving the latest supported version as the baseline.
+- Resolve one usable, version-compatible baseline with the shared version-
+  backfill resolver. Exact `tested-versions`, `metadata-version`, and
+  `default-for` ownership takes precedence. Otherwise, select the nearest
+  prior supported version on the same major/minor line, then the nearest
+  following version on that line, and only then repeat that ordering within
+  the same major version.
+- Treat `test-version` only as the directory alias used to locate a reusable
+  test suite. It does not declare library-version support and must not
+  contribute a compatibility candidate or version-line ownership.
+- Derive version lines from the leading numeric Maven components, including
+  conventional `v`- or `r`-prefixed numeric releases. Recognized prerelease
+  qualifiers retain their explicit ordering; other valid Maven suffixes such as
+  `-jre`, `.jre11`, `.GA`, and vendor/build identifiers retain the numeric
+  version line and use deterministic fallback ordering instead of making the
+  version ineligible for baseline selection.
+- Require both the selected metadata directory and test suite to exist. A
+  different major version, including a next-major prerelease marked `latest`,
+  is not a compatible baseline. If Forge cannot select one deterministically,
+  stop with an actionable routing error instead of probing a cross-major
+  suite (§FS-forge-issue-resolution-goal).
+- Log the selected baseline coordinate and the exact ownership or version-line
+  reason for selecting it.
+- Prepare the selected baseline test suite so it runs against the requested
+  version, preserving the selected supported version as the baseline.
 - Run a compatibility probe against the requested version.
 - If Java compilation fails, dispatch `ai_workflows/drivers/fix_javac_fail.py`;
   that driver owns the version-copy preparation, javac repair, and composite
@@ -171,7 +193,7 @@ Preparation:
   repair for the requested version.
 - If compilation, JVM tests, and native-image tests pass, dispatch
   `ai_workflows/drivers/improve_library_coverage.py` for the requested version
-  because the latest test suite is compatible.
+  because the selected baseline test suite is compatible.
 
 The selected driver must own its normal setup after the probe; the
 `library-update-request` router must not duplicate javac-fix, java-run-fix,
@@ -187,8 +209,13 @@ orchestration in `ai_workflows/drivers/java_fail_workflow.py`.
 
 Preparation:
 
-- Resolve the previous and failing library versions, repository roots, metrics
-  root, GitHub authentication, GraalVM home, and javac-fix strategy.
+- Resolve the previous version from the index entry marked `latest`, then
+  resolve the failing library version, repository roots, metrics root, GitHub
+  authentication, GraalVM home, and javac-fix strategy. The `fails-*` issue
+  producer targets the newest version, so this route must not substitute the
+  compatible baseline resolver used by missing-version
+  `library-update-request` issues; a below-`latest` failure is producer-contract
+  evidence that must remain visible.
 - Copy the previous version's test project to the failing version.
 - Update the metadata index for the new version.
 - Create the versioned metadata directory.
@@ -211,6 +238,8 @@ Preparation:
 - Use the same version-copy, metadata-index update, metadata-directory
   creation, checkpoint, artifact URL, source-context, layout, and editable-file
   preparation as `fails-javac-compile`.
+- Resolve the previous version from the index entry marked `latest`, as in
+  `fails-javac-compile`.
 - Load the java-run strategy, runtime-failure prompt wording, runtime task
   type, and `fix_java_run_fail.json` metrics target.
 - Prepare the project from the last supported version; the project is expected
@@ -222,8 +251,10 @@ Driver: `ai_workflows/drivers/fix_ni_run.py`.
 
 Preparation:
 
-- Resolve the current coordinate, new version, and reachability repository
-  path.
+- Resolve the current coordinate from the index entry marked `latest`, then
+  resolve the new version and reachability repository path. As with the Java
+  failure routes, do not substitute a compatible historical baseline for a
+  malformed below-`latest` issue.
 - Create a `fix-native-image-run-*` feature branch.
 - Run the Gradle `fixTestNativeImageRun` task to copy or update the test
   project and generate native-image metadata for the new version.
