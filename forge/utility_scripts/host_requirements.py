@@ -31,6 +31,7 @@ from ai_workflows.agents.runtime import (  # noqa: E402
     SUPPORTED_AGENT_BACKENDS,
     default_model_for_backend,
     normalize_backend_name,
+    resolve_codex_family_executable,
 )
 
 
@@ -157,13 +158,9 @@ class HostRequirements:
         self.python_bin = python_bin
         self.review_model = review_model
         self.environment = dict(os.environ if environment is None else environment)
-        family_value = agent_family or self.environment.get("FORGE_AGENT_FAMILY")
-        self.agent_family = normalize_backend_name(family_value) if family_value else None
         self.analysis_agent = normalize_backend_name(
             analysis_agent
-            or self.environment.get("FORGE_ANALYSIS_AGENT")
-            or self.agent_family
-            or DEFAULT_ANALYSIS_AGENT
+            or self.environment.get("FORGE_ANALYSIS_AGENT", DEFAULT_ANALYSIS_AGENT)
         )
         self.analysis_model = (
             analysis_model
@@ -171,16 +168,14 @@ class HostRequirements:
             or default_model_for_backend(self.analysis_agent)
         )
         self.test_agent = normalize_backend_name(
-            test_agent
-            or self.environment.get("FORGE_TEST_AGENT")
-            or self.agent_family
-            or "pi"
+            test_agent or self.environment.get("FORGE_TEST_AGENT", "pi")
         )
         self.test_model = (
             test_model
             or self.environment.get("FORGE_TEST_MODEL")
             or default_model_for_backend(self.test_agent, review_model)
         )
+        self.agent_family = agent_family or self.environment.get("FORGE_AGENT_FAMILY") or None
         self.requirements = (
             resolve_queue_requirements(self.environment)
             if requirements is None
@@ -305,7 +300,7 @@ class HostRequirements:
         selected_agent_commands = {
             "claude-code": "claude",
             "pi": "pi",
-            "codex": "codex",
+            "codex": self.agent_family or "codex",
             "opencode": "opencode",
         }
         required_agents = {self.analysis_agent}
@@ -932,7 +927,7 @@ query($owner: String!, $name: String!, $project: Int!) {
             executable = {
                 "claude-code": "claude",
                 "pi": "pi",
-                "codex": "codex",
+                "codex": self.agent_family or "codex",
                 "opencode": "opencode",
             }[backend]
             if resolve_executable(executable) is None:
@@ -945,6 +940,19 @@ query($owner: String!, $name: String!, $project: Int!) {
                     f"Install and authenticate `{executable}`, or select another {role} agent.",
                 )
                 continue
+            if backend == "codex" and self.agent_family:
+                try:
+                    resolve_codex_family_executable(self.agent_family, self.environment)
+                except RuntimeError as exc:
+                    self._add(
+                        "agent",
+                        f"{role} role authentication",
+                        True,
+                        False,
+                        str(exc),
+                        f"Ensure `{self.agent_family} doctor --json` reports a valid raw Codex executable.",
+                    )
+                    continue
             ready, detail = self._selected_agent_authentication(backend, model)
             self._add(
                 "agent",
@@ -967,7 +975,8 @@ query($owner: String!, $name: String!, $project: Int!) {
         if backend == "pi":
             return check_pi_authentication(model, self.environment)
         if backend == "codex":
-            result = run_command(["codex", "login", "status"], self.environment)
+            executable = resolve_codex_family_executable(self.agent_family, self.environment)
+            result = run_command([executable, "login", "status"], self.environment)
             return result.returncode == 0, first_output_line(result) or "codex login status failed"
         if backend == "claude-code":
             result = run_command(["claude", "auth", "status", "--json"], self.environment)
@@ -1603,7 +1612,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--review-model", default=DEFAULT_REVIEW_MODEL, help="Legacy review model override.")
     parser.add_argument("--analysis-agent", choices=SUPPORTED_AGENT_BACKENDS, default=None)
     parser.add_argument("--analysis-model", default=None)
-    parser.add_argument("--agent-family", choices=SUPPORTED_AGENT_BACKENDS, default=None)
+    parser.add_argument("--agent-family", default=None)
     parser.add_argument("--test-agent", choices=SUPPORTED_AGENT_BACKENDS, default=None)
     parser.add_argument("--test-model", default=None)
     parser.add_argument(

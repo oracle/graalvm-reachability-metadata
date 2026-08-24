@@ -25,7 +25,7 @@ PRIORITY_TIER=""
 PARALLELISM="${FORGE_PARALLELISM:-1}"
 REVIEW_LABEL="${FORGE_REVIEW_LABEL:-}"
 REVIEW_LIMIT="${FORGE_REVIEW_LIMIT:-1}"
-ANALYSIS_AGENT="${FORGE_ANALYSIS_AGENT:-}"
+ANALYSIS_AGENT="${FORGE_ANALYSIS_AGENT:-codex}"
 ANALYSIS_MODEL="${FORGE_ANALYSIS_MODEL:-}"
 AGENT_FAMILY="${FORGE_AGENT_FAMILY:-}"
 TEST_AGENT="${FORGE_TEST_AGENT:-}"
@@ -125,9 +125,9 @@ Options:
   --analysis-model MODEL
       Select its backend-specific model. Defaults to FORGE_ANALYSIS_MODEL,
       then gpt-5.6-luna for Codex or sonnet for Claude Code.
-  --agent-family {claude-code,pi,codex,opencode}
-      Select one backend as the common default for both agent roles.
-      Role-specific --analysis-agent and --test-agent selections take precedence.
+  --agent-family COMMAND
+      Select an optional Codex-compatible local launcher. Forge resolves its
+      raw Codex executable and retains the normal offline policy.
   --test-agent {claude-code,pi,codex,opencode}
       Override the predefined strategy's test-generation agent.
   --test-model MODEL
@@ -169,7 +169,7 @@ Environment:
       Codex defaults to gpt-5.6-luna/high (xhigh for review); Claude Code
       defaults to sonnet.
   FORGE_AGENT_FAMILY
-      Optional common backend selected by --agent-family.
+      Optional Codex-compatible launcher selected by --agent-family.
   FORGE_TEST_AGENT, FORGE_TEST_MODEL
       Override the selected strategy's test-generation backend and model.
   FORGE_USER_REQUESTED_ISSUES_ONLY
@@ -780,22 +780,6 @@ require_nonnegative_integer "FORGE_WORK_LIMIT" "$WORK_LIMIT"
 require_nonnegative_integer "FORGE_REVIEW_LIMIT" "$REVIEW_LIMIT"
 require_parallelism "$PARALLELISM"
 require_positive_integer "FORGE_DO_WORK_SLEEP_POLL_SECONDS" "$SLEEP_POLL_SECONDS"
-
-if [[ -n "$AGENT_FAMILY" ]]; then
-    case "$AGENT_FAMILY" in
-        claude-code|pi|codex|opencode) ;;
-        *)
-            echo "--agent-family must be claude-code, pi, codex, or opencode." >&2
-            exit 1
-            ;;
-    esac
-fi
-if [[ -z "$ANALYSIS_AGENT" ]]; then
-    ANALYSIS_AGENT="${AGENT_FAMILY:-codex}"
-fi
-if [[ -z "$TEST_AGENT" && -n "$AGENT_FAMILY" ]]; then
-    TEST_AGENT="$AGENT_FAMILY"
-fi
 
 if [[ -z "$ANALYSIS_MODEL" ]]; then
     case "$ANALYSIS_AGENT" in

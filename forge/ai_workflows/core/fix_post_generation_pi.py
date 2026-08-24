@@ -116,6 +116,7 @@ def run_pi_post_generation_fix(
         selection=AgentSelection(
             backend=backend,
             model=model_name,
+            family=os.environ.get("FORGE_AGENT_FAMILY") or None,
         ),
         working_dir=reachability_metadata_path,
         prompt=prompt,

@@ -45,8 +45,6 @@ Common options:
 - `--ni-run-limit N`: process up to `N` Native Image runtime failure tasks per cycle.
 - `--parallelism N`: run up to `N` issue workflows in parallel. Maximum: 4.
 - `--review-limit N`: process up to `N` PR review tasks per label per cycle.
-- `--agent-family {claude-code,pi,codex,opencode}`: select one backend for both
-  agent roles; `--analysis-agent` and `--test-agent` override individual roles.
 - `--random-offset`: start new-library issue scans at a random offset instead of the newest issues first.
 - `--priority {high,priority,normal}`: process only the selected issue priority tier.
 - `--user-requested-only`: fetch only user-requested issue queue items, excluding configured automation and maintainer authors.
@@ -64,7 +62,6 @@ Examples:
 ./do-work.sh --parallelism 2
 DO_WORK_SLEEP_SECONDS=60 ./do-work.sh --branch master
 ./do-work.sh --user-requested-only --new-limit 1
-./do-work.sh --once --agent-family codex --new-limit 1 --javac-limit 0 --java-run-limit 0 --ni-run-limit 0 --review-limit 0
 FORGE_REVIEW_LABEL=library-new-request ./do-work.sh --review-limit 2
 ./do-work.sh --stop
 ./do-work.sh --stop --branch master

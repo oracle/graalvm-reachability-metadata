@@ -2902,9 +2902,10 @@ def review_pull_request(
     review_worktree_path = create_review_workspace(reachability_metadata_path, pr_number)
     configured_selection = analysis_agent_selection()
     selection = AgentSelection(
-        backend=configured_selection.backend,
-        model=os.environ.get("FORGE_ANALYSIS_MODEL", review_model),
-        thinking_level=(
+        configured_selection.backend,
+        os.environ.get("FORGE_ANALYSIS_MODEL", review_model),
+        configured_selection.family,
+        (
             os.environ.get("FORGE_REVIEW_THINKING_LEVEL")
             or ("xhigh" if configured_selection.backend == "codex" else configured_selection.thinking_level)
         ),
