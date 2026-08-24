@@ -1,0 +1,59 @@
+{
+  "fix_javac_fail:2026-08-24": {
+    "timestamp": "2026-08-24T13:54:11.548449Z",
+    "library": "io.netty:netty-transport:5.0.0.Alpha2",
+    "starting_commit": "d1e6e9e93501b938197bfe332bedb662ee0fe954",
+    "ending_commit": "74f8dfba917eb40059b98a80ebb0567abb79dd21",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-terra",
+    "agent": "pi",
+    "model": "gpt-5.6-terra",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9342,
+      "issue_label": "fails-javac-compile",
+      "library": "io.netty:netty-transport:5.0.0.Alpha2",
+      "summary": "Netty Transport's transitive Netty dependencies are sufficient for meaningful local NIO client/server coverage; no external service or additional Maven artifact is required. The reported failure is caused by Netty 5 HTTP API changes in existing tests, not missing setup.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Tests adapted from 5.0.0.Alpha1 must update removed or renamed HTTP APIs for Alpha2.",
+        "Preserve the existing JDK module-opening JVM and Native Image arguments used by this test scaffold."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9342 [Automation] javac compile fails for io.netty:netty-transport:5.0.0.Alpha2; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "11 existing test file path(s) included"
+        }
+      ],
+      "current_library": "io.netty:netty-transport:5.0.0.Alpha1",
+      "new_version": "5.0.0.Alpha2",
+      "model": "gpt-5.6-sol",
+      "input_tokens_used": 39018,
+      "output_tokens_used": 1724,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/g/forge/graalvm-reachability-metadata/forge/logs/io.netty:netty-transport:5.0.0.Alpha2/library-preparation-preflight/pi-generation-2026-08-24T13-47-26-047362Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 36510,
+      "cached_input_tokens_used": 133632,
+      "output_tokens_used": 1851,
+      "iterations": 2,
+      "cost_usd": 0.1525,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}
