@@ -146,7 +146,7 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 ### Citation directions
 
 - **GOAL** must cite GRUND.
-- **PRCPL** must cite GRUND or GOAL.
+- **PRCPL** must cite GOAL.
 - **FS** should cite GOAL or FS.
 - **AR** must cite FS or GOAL.
 - **TCK** must cite FS or AR or GOAL.
