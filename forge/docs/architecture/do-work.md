@@ -10,9 +10,10 @@ handling, sleep timing, and re-execing the latest worker script before the
 next cycle.
 
 The worker accepts `--analysis-agent`, `--analysis-model`, `--test-agent`,
-`--test-model`, and the optional free-form `--agent-family`, with matching
-`FORGE_*` environment variables. It validates the four supported backend names
-and exports the effective role configuration
+`--test-model`, and the optional common `--agent-family`, with matching
+`FORGE_*` environment variables. The family and role flags accept the same four
+supported backend names; a role-specific flag overrides the family for that
+role. The worker validates these names and exports the effective configuration
 before every dispatch and re-exec, implementing
 §FS-forge-agent-runtime-selection.
 
