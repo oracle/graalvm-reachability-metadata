@@ -30,7 +30,8 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpContent;
-import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpObjectAggregator;
@@ -72,8 +73,8 @@ public class NettyTests {
         bootstrap.group(group).channel(NioSocketChannel.class).handler(new HttpClientInitializer(callback));
         Channel channel = bootstrap.connect("localhost", port).sync().channel();
         HttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/", Unpooled.EMPTY_BUFFER);
-        request.headers().set(HttpHeaders.Names.HOST, "localhost");
-        request.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.CLOSE);
+        request.headers().set(HttpHeaderNames.HOST, "localhost");
+        request.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
         channel.writeAndFlush(request);
     }
 
@@ -115,8 +116,8 @@ public class NettyTests {
         protected void messageReceived(ChannelHandlerContext context, HttpObject message) {
             if (message instanceof HttpResponse) {
                 HttpResponse response = (HttpResponse) message;
-                status = response.getStatus().code();
-                protocol = response.getProtocolVersion().toString();
+                status = response.status().code();
+                protocol = response.protocolVersion().toString();
             }
             if (message instanceof HttpContent) {
                 HttpContent httpContent = (HttpContent) message;
@@ -147,8 +148,8 @@ public class NettyTests {
         protected void messageReceived(ChannelHandlerContext context, Object message) {
             if (message instanceof HttpRequest) {
                 HttpRequest request = (HttpRequest) message;
-                keepAlive = HttpHeaders.isKeepAlive(request);
-                if (HttpHeaders.is100ContinueExpected(request)) {
+                keepAlive = !request.headers().contains(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE, true);
+                if (request.headers().contains(HttpHeaderNames.EXPECT, HttpHeaderValues.CONTINUE, true)) {
                     send100Continue(context);
                 }
             }
@@ -165,9 +166,9 @@ public class NettyTests {
                     HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
                     Unpooled.copiedBuffer("Hello World", CharsetUtil.UTF_8));
             if (keepAlive) {
-                response.headers().set(HttpHeaders.Names.CONTENT_LENGTH,
+                response.headers().set(HttpHeaderNames.CONTENT_LENGTH,
                         Integer.toString(response.content().readableBytes()));
-                response.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
+                response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
             }
             context.write(response);
         }
