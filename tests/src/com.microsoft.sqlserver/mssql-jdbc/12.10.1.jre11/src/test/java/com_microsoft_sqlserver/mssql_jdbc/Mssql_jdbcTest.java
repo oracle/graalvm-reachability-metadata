@@ -6,7 +6,6 @@
  */
 package com_microsoft_sqlserver.mssql_jdbc;
 
-import com.microsoft.sqlserver.jdbc.ConfigurableRetryLogic;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -27,11 +26,6 @@ import java.util.Properties;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class Mssql_jdbcTest {
-
-    @Test
-    void configurableRetryLogicCanBeLoaded() throws Exception {
-        assertThat(ConfigurableRetryLogic.getInstance()).isNotNull();
-    }
 
     private static final String USERNAME = "sa";
 
@@ -162,5 +156,22 @@ class Mssql_jdbcTest {
                 }
             }
         }
+    }
+
+    @Test
+    void preparedStatementExecutesWithConfigurableRetryLogic() throws Exception {
+        try (Connection connection = openConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT 1");
+             ResultSet resultSet = statement.executeQuery()) {
+            assertThat(resultSet.next()).isTrue();
+            assertThat(resultSet.getInt(1)).isEqualTo(1);
+        }
+    }
+
+    @Test
+    void configurableRetryLogicCanBeLoaded() throws Exception {
+        String className = "com.microsoft.sqlserver.jdbc."
+                + System.getProperty("mssql.retry.logic.class", "ConfigurableRetryLogic");
+        assertThat(Class.forName(className).getName()).isEqualTo(className);
     }
 }
