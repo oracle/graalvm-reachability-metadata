@@ -15,7 +15,7 @@ Rules (test contract: §root/FS-test-contract):
 - Don't duplicate tested features.
 - Use only the library's public API, no direct reflection or serialization.
 - Modify only the test file. Update build.gradle only if required to add missing classpath dependencies or runtime args.
-- Use only the features from the provided library version and avoid all deprecated APIs. Additional test dependencies are allowed only if they are necessary to exercise the tested library meaningfully and cannot be replaced with standard JDK or already-present dependencies.
+- Use only the features from the provided library version. Additional test dependencies are allowed only if they are necessary to exercise the tested library meaningfully and cannot be replaced with standard JDK or already-present dependencies.
 - You may inspect the repository only to learn local test style and structure.
 - If you are unsure about the library's API, look it up on the internet.
 - All top-level test classes must be public.

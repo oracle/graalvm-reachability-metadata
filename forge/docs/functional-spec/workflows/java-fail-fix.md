@@ -267,7 +267,7 @@ Rules:
 - Test that is fixed must maintain functional coverage. Never simplify the test to the point of triviality.
 - Keep the test in `{test_language_display_name}` under `src/test/{test_source_dir_name}`.
 - Follow idiomatic `{test_language_display_name}` coding conventions.
-- Use only the provided library version and avoid all deprecated APIs.
+- Use only the provided library version.
 
 Runtime error output:
 {initial_error}

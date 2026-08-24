@@ -61,19 +61,17 @@ coverage — never simplify a test to the point of triviality.
 }
 ```
 
-### 1.4 Only the tested version's supported API
+### 1.4 Only the tested version's API
 
-A test uses only the features of the provided library version and avoids all
-deprecated APIs, so the suite keeps compiling and passing across version bumps.
+A test uses only the features of the provided library version, so the suite
+compiles and passes against the version it is written for.
 
 ```java
-// Bad: deprecated in the tested version — breaks the next update
-mapper.enableDefaultTyping();
+// Bad: JsonMapper.builder() does not exist in the tested 2.9.x line
+ObjectMapper mapper = JsonMapper.builder().build();
 
-// Good: the current supported replacement
-ObjectMapper mapper = JsonMapper.builder()
-        .activateDefaultTyping(validator, DefaultTyping.NON_FINAL)
-        .build();
+// Good: the API the tested version actually ships
+ObjectMapper mapper = new ObjectMapper();
 ```
 
 ### 1.5 Coverage for every reporter-requested metadata need
