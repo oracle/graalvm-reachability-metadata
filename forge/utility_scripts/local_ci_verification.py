@@ -26,6 +26,7 @@ import tempfile
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
+from ai_workflows.agents.runtime import analysis_agent_selection, run_agent_task
 from git_scripts.common_git import run_git_transport
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import resolve_test_version
@@ -37,7 +38,6 @@ LOCAL_CI_VERIFICATION_KEY = "local_ci_verification"
 HUMAN_INTERVENTION_LABEL = "human-intervention"
 MAX_OUTPUT_CHARS = 12000
 MAX_FIXUP_ATTEMPTS = 2
-CODEX_MODEL_NAME = "gpt-5.6-terra"
 CODEX_TIMEOUT_SECONDS = 1800
 DEFAULT_BASE_BRANCH = "master"
 SPRING_AOT_BRANCH = "main"
@@ -587,45 +587,24 @@ def _script_sudo_line(script_path: str) -> str | None:
 
 def _run_fixup(repo_path: str, coordinates: str, failed_command: CommandRecord) -> FixupRecord:
     before_paths = _worktree_changed_paths(repo_path)
-    log_path = build_timestamped_task_log_path("local-ci-fixup", coordinates, failed_command.gate)
     prompt = _build_fixup_prompt(coordinates, failed_command)
-    command = [
-        "codex",
-        "exec",
-        "--dangerously-bypass-approvals-and-sandbox",
-        "--json",
-        "-c",
-        'reasoning.effort="high"',
-        "-m",
-        CODEX_MODEL_NAME,
-        prompt,
-    ]
-    try:
-        with open(log_path, "w", encoding="utf-8") as log_file:
-            completed = subprocess.run(
-                command,
-                cwd=repo_path,
-                stdout=log_file,
-                stderr=subprocess.STDOUT,
-                timeout=CODEX_TIMEOUT_SECONDS,
-                check=False,
-            )
-    except subprocess.TimeoutExpired:
+    selection = analysis_agent_selection()
+    command = [selection.backend, selection.model]
+    result = run_agent_task(
+        selection=selection,
+        working_dir=repo_path,
+        prompt=prompt,
+        task_type="local-ci-fixup",
+        library=coordinates,
+        timeout=CODEX_TIMEOUT_SECONDS,
+    )
+    if result.return_code != 0:
         return FixupRecord(
             gate=failed_command.gate,
             command=command,
             commit=None,
             changed_paths=[],
-            log_path=display_log_path(log_path),
-        )
-
-    if completed.returncode != 0:
-        return FixupRecord(
-            gate=failed_command.gate,
-            command=command,
-            commit=None,
-            changed_paths=[],
-            log_path=display_log_path(log_path),
+            log_path=display_log_path(result.log_path),
         )
 
     after_paths = _worktree_changed_paths(repo_path)
@@ -636,7 +615,7 @@ def _run_fixup(repo_path: str, coordinates: str, failed_command: CommandRecord) 
             command=command,
             commit=None,
             changed_paths=[],
-            log_path=display_log_path(log_path),
+            log_path=display_log_path(result.log_path),
         )
 
     subprocess.run(["git", "add", "-A", "--", *changed_paths], cwd=repo_path, check=True)
@@ -647,7 +626,7 @@ def _run_fixup(repo_path: str, coordinates: str, failed_command: CommandRecord) 
             command=command,
             commit=None,
             changed_paths=changed_paths,
-            log_path=display_log_path(log_path),
+            log_path=display_log_path(result.log_path),
         )
     subprocess.run(["git", "commit", "-m", "Apply local CI verification fixes"], cwd=repo_path, check=True)
     commit = _git_stdout(repo_path, ["rev-parse", "HEAD"])
@@ -656,7 +635,7 @@ def _run_fixup(repo_path: str, coordinates: str, failed_command: CommandRecord) 
         command=command,
         commit=commit,
         changed_paths=changed_paths,
-        log_path=display_log_path(log_path),
+        log_path=display_log_path(result.log_path),
     )
 
 

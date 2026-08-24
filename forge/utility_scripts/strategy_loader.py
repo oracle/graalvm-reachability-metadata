@@ -16,6 +16,8 @@ import json
 import os
 import sys
 
+from ai_workflows.agents.runtime import apply_test_agent_overrides
+
 
 def load_predefined_strategies():
     """Load the predefined strategies JSON file.
@@ -71,7 +73,7 @@ def load_strategy_by_name(name):
     """Load a strategy configuration from the predefined_strategies."""
     for strategy in load_predefined_strategies():
         if strategy.get("name") == name:
-            return strategy
+            return apply_test_agent_overrides(strategy)
     return None
 
 
@@ -84,7 +86,7 @@ def require_strategy_by_name(name):
     strategies = load_predefined_strategies()
     for strategy in strategies:
         if strategy.get("name") == name:
-            return strategy
+            return apply_test_agent_overrides(strategy)
 
     print(f"ERROR: Strategy not found: {name}", file=sys.stderr)
     print("Available strategies:", file=sys.stderr)

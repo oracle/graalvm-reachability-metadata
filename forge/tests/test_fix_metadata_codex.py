@@ -5,7 +5,6 @@
 
 from __future__ import annotations
 
-import json
 import os
 import shutil
 import subprocess
@@ -19,6 +18,7 @@ _FORGE_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(_FORGE_ROOT))
 
 from ai_workflows.core.fix_metadata_codex import run_codex_metadata_fix  # noqa: E402
+from ai_workflows.agents.runtime import AgentRunResult  # noqa: E402
 from utility_scripts.host_requirements import GRAALVM_SCHEMA_PATH  # noqa: E402
 
 
@@ -32,10 +32,7 @@ class FixMetadataCodexTests(unittest.TestCase):
         _make_forge_usable_graalvm(self.graalvm_home)
 
     def test_pins_codex_environment_and_instructions_to_resolved_graalvm(self) -> None:
-        calls: list[tuple[list[str], dict]] = []
-
         def fake_run(cmd, **kwargs):  # type: ignore[no-untyped-def]
-            calls.append((list(cmd), kwargs))
             if cmd[:2] == ["git", "rev-parse"]:
                 return subprocess.CompletedProcess(cmd, 0, stdout=self.repo + "\n")
             if cmd[0].endswith("native-image"):
@@ -50,37 +47,43 @@ class FixMetadataCodexTests(unittest.TestCase):
                 )
             return subprocess.CompletedProcess(cmd, 0)
 
+        agent_result = AgentRunResult(0, "/tmp/analysis.log", False, "fixed")
         with patch.dict(os.environ, {"GRAALVM_HOME": self.graalvm_home, "JAVA_HOME": "/other-jdk"}, clear=True), \
-                patch("ai_workflows.core.fix_metadata_codex.subprocess.run", side_effect=fake_run):
+                patch("ai_workflows.core.fix_metadata_codex.subprocess.run", side_effect=fake_run), \
+                patch(
+                    "ai_workflows.core.fix_metadata_codex.run_agent_task",
+                    return_value=agent_result,
+                ) as run_agent:
             rc, _log_path, timed_out = run_codex_metadata_fix(self.repo, "g:a:1.0")
 
         self.assertEqual(rc, 0)
         self.assertFalse(timed_out)
-        codex_cmd, codex_kwargs = calls[-1]
-        self.assertEqual(codex_cmd[:2], ["codex", "exec"])
-        self.assertEqual(codex_kwargs["env"]["GRAALVM_HOME"], self.graalvm_home)
-        self.assertEqual(codex_kwargs["env"]["JAVA_HOME"], self.graalvm_home)
-        developer_instructions = _developer_instructions_from(codex_cmd)
+        agent_kwargs = run_agent.call_args.kwargs
+        self.assertEqual(agent_kwargs["selection"].backend, "codex")
+        self.assertEqual(agent_kwargs["environment"]["GRAALVM_HOME"], self.graalvm_home)
+        self.assertEqual(agent_kwargs["environment"]["JAVA_HOME"], self.graalvm_home)
+        developer_instructions = agent_kwargs["persistent_instructions"]
         self.assertIn(self.graalvm_home, developer_instructions)
         self.assertIn("jvmci-25.1-b17", developer_instructions)
-        self.assertIn("GRAALVM_HOME=" + self.graalvm_home, codex_cmd[-1])
-        self.assertIn("jvmci-25.1-b17", codex_cmd[-1])
+        self.assertIn("GRAALVM_HOME=" + self.graalvm_home, agent_kwargs["prompt"])
+        self.assertIn("jvmci-25.1-b17", agent_kwargs["prompt"])
 
     def test_explicit_graalvm_home_overrides_base_environment_for_codex(self) -> None:
         inherited_graalvm = tempfile.mkdtemp(prefix="inherited-graalvm-")
         self.addCleanup(shutil.rmtree, inherited_graalvm, ignore_errors=True)
         _make_forge_usable_graalvm(inherited_graalvm)
-        calls: list[tuple[list[str], dict]] = []
-
         def fake_run(cmd, **kwargs):  # type: ignore[no-untyped-def]
-            calls.append((list(cmd), kwargs))
             if cmd[:2] == ["git", "rev-parse"]:
                 return subprocess.CompletedProcess(cmd, 0, stdout=self.repo + "\n")
             if cmd[0].endswith("native-image"):
                 return subprocess.CompletedProcess(cmd, 0, stdout="native-image pinned\n")
             return subprocess.CompletedProcess(cmd, 0)
 
-        with patch("ai_workflows.core.fix_metadata_codex.subprocess.run", side_effect=fake_run):
+        with patch("ai_workflows.core.fix_metadata_codex.subprocess.run", side_effect=fake_run), \
+                patch(
+                    "ai_workflows.core.fix_metadata_codex.run_agent_task",
+                    return_value=AgentRunResult(0, "/tmp/analysis.log", False, "fixed"),
+                ) as run_agent:
             rc, _log_path, timed_out = run_codex_metadata_fix(
                 self.repo,
                 "g:a:1.0",
@@ -90,17 +93,9 @@ class FixMetadataCodexTests(unittest.TestCase):
 
         self.assertEqual(rc, 0)
         self.assertFalse(timed_out)
-        codex_env = calls[-1][1]["env"]
+        codex_env = run_agent.call_args.kwargs["environment"]
         self.assertEqual(codex_env["GRAALVM_HOME"], self.graalvm_home)
         self.assertEqual(codex_env["JAVA_HOME"], self.graalvm_home)
-
-
-def _developer_instructions_from(cmd: list[str]) -> str:
-    for index, part in enumerate(cmd):
-        if part == "-c" and cmd[index + 1].startswith("developer_instructions="):
-            return json.loads(cmd[index + 1].split("=", 1)[1])
-    raise AssertionError(f"developer_instructions not found in command: {cmd}")
-
 
 def _make_forge_usable_graalvm(path: str) -> None:
     """Create a GraalVM home that satisfies `check_graalvm_installation`."""

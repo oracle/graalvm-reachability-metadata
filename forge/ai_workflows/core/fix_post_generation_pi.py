@@ -4,10 +4,9 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 import os
-import subprocess
 import sys
 
-from utility_scripts.pi_logs import build_pi_log_path
+from ai_workflows.agents.runtime import AgentSelection, normalize_backend_name, run_agent_task
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import display_log_path
 
@@ -87,26 +86,19 @@ def _build_prompt(
     )
 
 
-def _write_pi_post_generation_log(log_path: str, output: str) -> None:
-    """Write Pi post-generation output to the log file."""
-    with open(log_path, "w", encoding="utf-8") as log_file:
-        log_file.write(output or "")
-
-
 def run_pi_post_generation_fix(
         reachability_metadata_path: str,
         coordinates: str,
         codex_log_path: str,
         test_output: str,
         model_name: str,
+        agent_name: str = "pi",
         timeout_seconds: int = DEFAULT_PI_TIMEOUT_SECONDS,
         max_test_output_chars: int = DEFAULT_MAX_TEST_OUTPUT_CHARS,
 ) -> tuple[int, str, bool]:
-    """Run Pi to perform post-generation intervention and write the markdown artifact."""
-    log_stage("post-generation-fix", f"Running Pi post-generation fix for {coordinates}")
-    log_path = build_pi_log_path("post-gen", coordinates)
-    log_path_display = display_log_path(log_path)
-    log_stage("post-generation-fix", f"Pi post-generation output: {log_path_display}")
+    """Run the configured test agent for the last-resort intervention."""
+    backend = normalize_backend_name(agent_name)
+    log_stage("post-generation-fix", f"Running {backend} post-generation fix for {coordinates}")
     intervention_path = _build_intervention_path(reachability_metadata_path, coordinates)
     intervention_path_display = _repo_relative_path(intervention_path, reachability_metadata_path)
     os.makedirs(os.path.dirname(intervention_path), exist_ok=True)
@@ -120,33 +112,25 @@ def run_pi_post_generation_fix(
         intervention_path=intervention_path_display,
         max_test_output_chars=max_test_output_chars,
     )
-    command = ["pi", "-p", "--no-session", "--model", model_name, prompt]
-    try:
-        result = subprocess.run(
-            command,
-            cwd=reachability_metadata_path,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            timeout=timeout_seconds,
-            check=False,
-        )
-    except subprocess.TimeoutExpired as exc:
-        _write_pi_post_generation_log(log_path, exc.stdout or "")
+    result = run_agent_task(
+        selection=AgentSelection(
+            backend=backend,
+            model=model_name,
+            family=os.environ.get("FORGE_AGENT_FAMILY") or None,
+        ),
+        working_dir=reachability_metadata_path,
+        prompt=prompt,
+        task_type="post-gen",
+        library=coordinates,
+        timeout=timeout_seconds,
+    )
+    if result.return_code != 0:
         print(
-            f"ERROR: Pi post-generation intervention timed out for {coordinates}.",
+            f"ERROR: {backend} post-generation intervention failed for {coordinates}. "
+            f"See {display_log_path(result.log_path)} for details.",
             file=sys.stderr,
         )
-        return (1, intervention_path, True)
-
-    _write_pi_post_generation_log(log_path, result.stdout or "")
-
-    if result.returncode != 0:
-        print(
-            f"ERROR: Pi post-generation intervention failed for {coordinates}. See {log_path_display} for details.",
-            file=sys.stderr,
-        )
-        return (1, intervention_path, False)
+        return (1, intervention_path, result.timed_out)
 
     if not os.path.isfile(intervention_path):
         print(
@@ -164,5 +148,5 @@ def run_pi_post_generation_fix(
         )
         return (1, intervention_path, False)
 
-    log_stage("post-generation-fix", f"Pi post-generation fix completed for {coordinates}")
+    log_stage("post-generation-fix", f"{backend} post-generation fix completed for {coordinates}")
     return (0, intervention_path, False)

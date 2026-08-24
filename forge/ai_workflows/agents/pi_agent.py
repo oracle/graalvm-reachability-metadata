@@ -5,10 +5,10 @@
 
 import json
 import os
-import subprocess
 from datetime import datetime, timezone
 
 from ai_workflows.agents.agent import Agent
+from ai_workflows.agents.runtime import agent_process_environment
 from ai_workflows.agents.pi_rpc_client import PiRpcClient, PiRpcError, PromptResult
 from utility_scripts.gradle_test_runner import run_gradle_test_command
 from utility_scripts.pi_logs import build_pi_log_path
@@ -33,6 +33,7 @@ class PiAgent(Agent):
             task_type: str = "session",
             persistent_instructions: str | None = None,
             thinking_level: str | None = None,
+            environment: dict[str, str] | None = None,
             **_,
     ):
         self._model_name = model_name
@@ -43,6 +44,7 @@ class PiAgent(Agent):
         self._timeout = timeout
         self._persistent_instructions = persistent_instructions
         self._thinking_level = thinking_level
+        self._environment = agent_process_environment(environment)
         self._session_path: str | None = None
         self._total_tokens_sent = 0
         self._cached_input_tokens_used = 0
@@ -62,6 +64,7 @@ class PiAgent(Agent):
             timeout=self._timeout,
             persistent_instructions=self._persistent_instructions,
             thinking_level=self._thinking_level,
+            environment=self._environment,
         )
 
     @property
@@ -166,6 +169,7 @@ class PiAgent(Agent):
             timeout=self._timeout,
             persistent_instructions=self._persistent_instructions,
             thinking_level=self._thinking_level,
+            environment=self._environment,
         )
 
     def run_test_command(self, test_cmd: str) -> str:
@@ -216,6 +220,7 @@ class PiAgent(Agent):
             task_type=self._task_type,
             persistent_instructions=self._persistent_instructions,
             thinking_level=self._thinking_level,
+            environment=self._environment,
         )
         child._rpc_client = self._rpc_client
         return child

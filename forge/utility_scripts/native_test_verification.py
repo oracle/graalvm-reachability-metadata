@@ -27,6 +27,7 @@ import subprocess
 import tempfile
 from dataclasses import dataclass, field
 
+from ai_workflows.agents.runtime import analysis_agent_selection, run_agent_task
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import resolve_metadata_version
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
@@ -63,10 +64,10 @@ _FAILED_TASK_PATTERN = re.compile(r"> Task :(\S+) FAILED")
 
 @dataclass
 class InterventionRecord:
-    """One codex run that took place inside the gate."""
+    """One analysis-agent run that took place inside the gate."""
 
     stage: str
-    kind: str  # "codex"
+    kind: str
     log_path: str
 
 
@@ -90,7 +91,6 @@ DEFAULT_MAX_ITERATIONS = 40
 # ``fix_metadata_codex`` path (kept for the metadata-fix workflows), this lets the
 # agent either repair reachability metadata or remove a native-image-unsupported
 # generated test, then re-run until the native test passes.
-_CODEX_MODEL_NAME = "gpt-5.6-terra"
 _CODEX_FIX_TIMEOUT_SECONDS = 30 * 60
 
 
@@ -108,41 +108,25 @@ def run_codex_native_test_fix(
     GraalVM home are pinned to the environment that produced the failed native
     run so Codex verifies with the exact same distribution.
     """
-    log_path = build_timestamped_task_log_path(_LOG_TASK_TYPE, coordinates, "codex-fix")
     prompt = _build_native_test_fix_prompt(
         coordinates, reproduction_command, graalvm_home, failure_log_path
     )
-    command = [
-        "codex", "exec",
-        "--dangerously-bypass-approvals-and-sandbox",
-        "--json",
-        "-c", 'reasoning.effort="high"',
-        "-m", _CODEX_MODEL_NAME,
-        prompt,
-    ]
-    print(f"[Codex running... Output: {display_log_path(log_path)}]")
-    try:
-        with open(log_path, "w", encoding="utf-8") as log_file:
-            result = subprocess.run(
-                command,
-                cwd=repo_path,
-                env=env,
-                stdout=log_file,
-                stderr=subprocess.STDOUT,
-                timeout=_CODEX_FIX_TIMEOUT_SECONDS,
-                check=False,
-            )
-    except subprocess.TimeoutExpired:
+    selection = analysis_agent_selection(env)
+    result = run_agent_task(
+        selection=selection,
+        working_dir=repo_path,
+        prompt=prompt,
+        task_type=_LOG_TASK_TYPE,
+        library=coordinates,
+        timeout=_CODEX_FIX_TIMEOUT_SECONDS,
+        environment=env,
+    )
+    if result.return_code != 0:
         print(
-            f"ERROR: Codex native-test fix timed out after {_CODEX_FIX_TIMEOUT_SECONDS} seconds "
-            f"for {coordinates}.",
+            f"ERROR: {selection.backend} native-test fix failed for {coordinates}. "
+            f"See {display_log_path(result.log_path)}.",
         )
-        return (1, log_path, True)
-    if result.returncode != 0:
-        print(
-            f"ERROR: Codex native-test fix failed for {coordinates} with exit code {result.returncode}.",
-        )
-    return (result.returncode, log_path, False)
+    return (result.return_code, result.log_path, result.timed_out)
 
 
 def _build_native_test_fix_prompt(
@@ -245,15 +229,16 @@ def verify_native_test_passes(
             reproduction_command: str,
             iterations_used: int,
     ) -> NativeTestVerificationResult:
-        """Run Codex as the terminal recovery path for gate failures.
+        """Run the analysis agent as the terminal recovery path for gate failures.
 
         Per §FS-native-test-verification-gate, the gate preserves accepted
         metadata dirs and pins the same GraalVM environment that produced the
         failed native command.
         """
+        analysis_backend = analysis_agent_selection(command_env).backend
         log_stage(
             _GATE_STAGE,
-            f"{stage}: {reason}; routing to codex (terminal)",
+            f"{stage}: {reason}; routing to {analysis_backend} (terminal)",
         )
         require_complete_reachability_repo(reachability_repo_path)
         codex_rc, codex_log_path, codex_timed_out = run_codex_native_test_fix(
@@ -266,15 +251,16 @@ def verify_native_test_passes(
         )
         intervention_records.append(
             InterventionRecord(
-                stage=f"{stage}-codex",
-                kind="codex",
+                stage=f"{stage}-analysis-agent",
+                kind=analysis_backend,
                 log_path=codex_log_path,
             )
         )
         if codex_timed_out or codex_rc != 0:
             log_stage(
                 _GATE_STAGE,
-                f"codex did not converge (timed_out={codex_timed_out}, rc={codex_rc}); FAILED",
+                f"{analysis_backend} did not converge "
+                f"(timed_out={codex_timed_out}, rc={codex_rc}); FAILED",
             )
             return _make_result(STATUS_FAILED, iterations_used)
         require_complete_reachability_repo(reachability_repo_path)

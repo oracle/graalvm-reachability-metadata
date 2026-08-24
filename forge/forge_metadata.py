@@ -94,6 +94,11 @@ from ai_workflows.core.workflow_strategy import (
     SUCCESS_WITH_INTERVENTION_STATUS,
 )
 from ai_workflows.agents.codex_agent import extract_codex_token_usage
+from ai_workflows.agents.runtime import (
+    AgentSelection,
+    analysis_agent_selection,
+    run_agent_task,
+)
 from git_scripts.common_git import (
     GITHUB_TRANSIENT_RETRY_ATTEMPTS,
     GitHubError,
@@ -2888,102 +2893,203 @@ def review_pull_request(
         pr_url: str | None = None,
         coordinates: str | None = None,
 ) -> bool:
-    """Run a Pi review for the specified pull request number in the target repository.
+    """Run an offline analysis-agent review and submit its validated decision.
 
-    §FS-automated-pr-review
+    §FS-automated-pr-review §FS-forge-agent-runtime-selection
     """
-    if not check_pi_review_authentication(review_model):
-        return False
     if pr_url is None:
         pr_url = get_pull_request_url(pr_number)
     review_worktree_path = create_review_workspace(reachability_metadata_path, pr_number)
-    prompt = build_review_prompt(pr_number)
-    cmd = [
-        "pi", "-p",
-        "--no-session",
-        "--approve",
-        "--provider", PI_REVIEW_PROVIDER,
-        "--model", review_model,
-        "--thinking", "medium",
-        prompt,
-    ]
-    log_path = get_review_log_path(pr_number, coordinates)
-    log_path_display = display_log_path(log_path)
-    print(f"\n[Reviewing PR #{pr_number} with Pi in an isolated worktree and submitting the review to GitHub.]")
+    configured_selection = analysis_agent_selection()
+    selection = AgentSelection(
+        configured_selection.backend,
+        os.environ.get("FORGE_ANALYSIS_MODEL", review_model),
+        configured_selection.family,
+        (
+            os.environ.get("FORGE_REVIEW_THINKING_LEVEL")
+            or ("xhigh" if configured_selection.backend == "codex" else configured_selection.thinking_level)
+        ),
+    )
+    context_path = os.path.join(review_worktree_path, ".forge-review-context.json")
+    log_path_display = display_log_path(get_review_log_path(pr_number, coordinates))
+    print(
+        f"\n[Reviewing PR #{pr_number} with offline {selection.backend} in an isolated worktree; "
+        "Forge will submit the decision.]"
+    )
     print(f"[PR link: {pr_url}]")
-    print(f"[Pi review log: {log_path_display}]")
+    print(f"[Review log: {log_path_display}]")
     try:
-        with open(log_path, "w", encoding="utf-8") as log_file:
-            result = subprocess.run(
-                cmd,
-                cwd=review_worktree_path,
-                stdout=log_file,
-                stderr=subprocess.STDOUT,
-                text=True,
-                timeout=PI_REVIEW_TIMEOUT_SECONDS,
-                check=False,
-            )
-    except subprocess.TimeoutExpired:
-        print(
-            (
-                f"ERROR: Pi PR review timed out after {PI_REVIEW_TIMEOUT_SECONDS} seconds "
-                f"for PR #{pr_number}. See {log_path_display}."
-            ),
-            file=sys.stderr,
+        write_review_context_file(
+            pr_number=pr_number,
+            review_worktree_path=review_worktree_path,
+            context_path=context_path,
+            reachability_metadata_path=reachability_metadata_path,
         )
-        cleanup_review_workspace(reachability_metadata_path, review_worktree_path, pr_number)
-        return False
-
-    try:
-        final_findings = read_log_text(log_path)
-        if result.returncode != 0:
-            output_tail = read_log_tail(log_path)
+        baseline_status = review_worktree_status(review_worktree_path)
+        result = run_agent_task(
+            selection=selection,
+            working_dir=review_worktree_path,
+            prompt=build_review_prompt(pr_number, os.path.basename(context_path)),
+            task_type="pr-review",
+            library=coordinates or f"pr-{pr_number}",
+            timeout=PI_REVIEW_TIMEOUT_SECONDS,
+        )
+        if result.return_code != 0:
             print(
                 (
-                    f"ERROR: Pi PR review failed for PR #{pr_number} with exit code {result.returncode}. "
-                    f"PR: {pr_url}. Log: {log_path_display}."
-                    + (f"\n{output_tail}" if output_tail else "")
+                    f"ERROR: {selection.backend} PR review failed for PR #{pr_number}. "
+                    f"PR: {pr_url}. Log: {display_log_path(result.log_path)}."
                 ),
                 file=sys.stderr,
             )
-            if final_findings:
-                print(f"[Final findings for PR #{pr_number}]\n{final_findings}")
+            return False
+        if review_worktree_status(review_worktree_path) != baseline_status:
+            print(
+                f"ERROR: Offline review agent modified the review worktree for PR #{pr_number}.",
+                file=sys.stderr,
+            )
             return False
 
+        decision, body = parse_review_decision(result.response)
+        submit_pull_request_review(pr_number, decision, body, review_worktree_path)
         print(f"[Finished review for PR #{pr_number}: {pr_url}]")
-        if final_findings:
-            print(f"[Final findings for PR #{pr_number}]\n{final_findings}")
-        else:
-            print(f"[Final findings for PR #{pr_number}: unavailable in {log_path_display}]")
+        print(f"[Final findings for PR #{pr_number}]\n{body}")
         print_pull_request_discussion(pr_number)
         return True
+    except (GitHubError, GitHubRateLimitExceeded, RuntimeError, subprocess.CalledProcessError) as exc:
+        print(
+            f"ERROR: PR review orchestration failed for PR #{pr_number}: {exc}",
+            file=sys.stderr,
+        )
+        return False
     finally:
         cleanup_review_workspace(reachability_metadata_path, review_worktree_path, pr_number)
 
 
-def build_review_prompt(pr_number: int) -> str:
-    """Build the Pi prompt for an isolated pull-request review."""
+def write_review_context_file(
+        pr_number: int,
+        review_worktree_path: str,
+        context_path: str,
+        reachability_metadata_path: str,
+) -> None:
+    """Fetch every GitHub review input before the offline agent starts."""
+    pull_request = gh_json(
+        "pr", "view", str(pr_number), "--repo", REPO,
+        "--json",
+        "number,title,url,body,author,baseRefName,headRefName,headRefOid,labels,files,comments,reviews,statusCheckRollup",
+    )
+    patch_result = gh(
+        "pr", "diff", str(pr_number), "--repo", REPO, "--patch", quiet=True
+    )
+    changed_files = get_pull_request_changed_files(pr_number)
+    label_names = [
+        str(label.get("name"))
+        for label in pull_request.get("labels", [])
+        if isinstance(label, dict) and label.get("name")
+    ]
+    context = {
+        "schema_version": 1,
+        "repository": REPO,
+        "pull_request": pull_request,
+        "changed_files": changed_files,
+        "patch": patch_result.stdout,
+        "review_rules": load_review_rules(reachability_metadata_path, label_names),
+    }
+    with open(context_path, "w", encoding="utf-8") as context_file:
+        json.dump(context, context_file, indent=2, ensure_ascii=False)
+        context_file.write("\n")
+
+
+def load_review_rules(reachability_metadata_path: str, labels: list[str]) -> dict[str, str]:
+    """Load applicable checked-in review procedures into the context snapshot."""
+    skill_names = {
+        "library-new-request": "review-library-new-request",
+        "library-update-request": "review-library-update-request",
+        "fixes-javac-fail": "review-fixes-javac-fail",
+        "fixes-java-run-fail": "review-fixes-java-run-fail",
+        "fixes-native-image-run-fail": "review-fixes-native-image-run-fail",
+        "library-bulk-update": "review-library-bulk-update",
+    }
+    rules: dict[str, str] = {}
+    for label in labels:
+        skill_name = skill_names.get(label)
+        if skill_name is None:
+            continue
+        skill_path = os.path.join(reachability_metadata_path, "skills", skill_name, "SKILL.md")
+        if not os.path.isfile(skill_path):
+            skill_path = os.path.abspath(
+                os.path.join(os.path.dirname(__file__), "..", "skills", skill_name, "SKILL.md")
+            )
+        with open(skill_path, "r", encoding="utf-8") as skill_file:
+            rules[label] = skill_file.read()
+    if not rules:
+        raise RuntimeError(f"No checked-in review rules matched PR labels: {labels}")
+    return rules
+
+
+def review_worktree_status(review_worktree_path: str) -> str:
+    """Return stable worktree status while ignoring the generated context file."""
+    result = subprocess.run(
+        ["git", "status", "--porcelain", "--untracked-files=all"],
+        cwd=review_worktree_path,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=True,
+    )
+    return "\n".join(
+        line for line in result.stdout.splitlines()
+        if not line.endswith(" .forge-review-context.json")
+    )
+
+
+def parse_review_decision(response: str) -> tuple[str, str]:
+    """Validate the agent's backend-neutral review result."""
+    normalized = response.strip()
+    if normalized.startswith("```json") and normalized.endswith("```"):
+        normalized = normalized[len("```json"): -len("```")].strip()
+    try:
+        payload = json.loads(normalized)
+    except json.JSONDecodeError as exc:
+        raise RuntimeError("Review agent returned invalid JSON.") from exc
+    decision = str(payload.get("decision") or "").upper()
+    body = str(payload.get("body") or "").strip()
+    if decision not in {"APPROVE", "REQUEST_CHANGES"}:
+        raise RuntimeError("Review decision must be APPROVE or REQUEST_CHANGES.")
+    if not body:
+        raise RuntimeError("Review decision body must not be empty.")
+    return decision, body
+
+
+def submit_pull_request_review(
+        pr_number: int,
+        decision: str,
+        body: str,
+        review_worktree_path: str,
+) -> None:
+    """Submit a validated decision from orchestration, never from the agent."""
+    decision_flag = "--approve" if decision == "APPROVE" else "--request-changes"
+    gh(
+        "pr", "review", str(pr_number), "--repo", REPO,
+        decision_flag, "--body", body,
+        cwd=review_worktree_path,
+    )
+
+
+def build_review_prompt(pr_number: int, context_filename: str = ".forge-review-context.json") -> str:
+    """Build the prompt for an isolated, offline pull-request review."""
     return (
-        f"Review pull request #{pr_number} in the current GitHub repository. "
-        f"Submit the review directly on GitHub for exactly PR #{pr_number}. "
-        "Use the GitHub CLI from this isolated review worktree. "
-        "The pull request is already checked out in detached HEAD. "
-        f"Use `gh pr diff {pr_number} --name-only` and `gh pr diff {pr_number} --patch` as the authoritative "
-        "source for the pull request's changed files and patch content. "
-        "A fresh `origin/master` ref was fetched before checkout, so local `git diff origin/master...HEAD` "
-        "may be used for convenience, but if local git output disagrees with `gh pr diff`, trust `gh pr diff`. "
-        "During normal review, do not run `gh pr checkout`, `git checkout`, or `git switch`, and do not write files. "
-        "Exception: if the PR changes `metadata/<group>/<artifact>/index.json` files, run final index validation "
-        "against current `origin/master` before approving. If that validation fails because tested versions are in "
-        "the wrong metadata bucket or duplicated across buckets, use the `fix-index-file-inconsistencies` skill. "
-        "In that exception path, you may check out the PR branch, fix only the required `index.json` files, commit "
-        "the repair, and push it to this PR branch before submitting the GitHub review. "
+        f"Review pull request #{pr_number} from the checked-out detached worktree. "
+        f"Read `{context_filename}` first. It is the complete, authoritative GitHub snapshot: identity, body, "
+        "labels, changed files, patch, comments, reviews, status checks, and applicable checked-in review rules. "
+        "Do not use GitHub, the network, a shell, MCPs, skills, or delegated agents. Do not edit any file. "
         "Only request changes for a concrete violation of an enumerated review rule in the applicable review skill for this PR's label. "
         "Do not block on self-formed test-quality, test-scope, or 'end-user behavior' judgments that are not backed by a specific enumerated rule; "
         "in particular, do not require a test to exercise a chosen public API entry point when it already exercises the library's types, "
         "including relocated or shaded types that ship in the library JAR. "
-        "If you find such a rule-backed blocking issue, submit a review that requests changes with a concise summary that cites the specific rule. "
-        "If there are no rule-backed blocking issues, submit an approval review summarizing the check and stating that you found no blocking issues."
+        "Return only one JSON object with exactly two string fields: "
+        "`decision`, whose value is `APPROVE` or `REQUEST_CHANGES`, and `body`, a concise review summary. "
+        "Forge will validate and submit the result; you must not submit or mutate GitHub state."
     )
 
 
@@ -3728,7 +3834,7 @@ def run_codex_failed_generation_analysis(
         started_at: float | None,
         preservation_result: FailurePreservationResult | None = None,
 ) -> str:
-    """Use Codex to analyze a failed library-generation run and write an issue comment."""
+    """Use the analysis agent to analyze a failed generation run."""
     run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
     log_paths = collect_issue_log_paths(claimed_issue, started_at)
     if not claimed_issue_worktree_is_valid(claimed_issue, "failed-run analysis"):
@@ -3745,59 +3851,28 @@ def run_codex_failed_generation_analysis(
         run_metrics,
         preservation_result,
     )
-    log_path = get_codex_failure_analysis_log_path(
-        claimed_issue.issue["number"],
-        claimed_issue.issue_coordinates,
-    )
-    log_path_display = display_log_path(log_path)
-    cmd = [
-        "codex", "exec",
-        "--dangerously-bypass-approvals-and-sandbox",
-        "--json",
-        "-c", 'reasoning.effort="medium"',
-        "-m", DEFAULT_REVIEW_MODEL,
-        prompt,
-    ]
+    selection = analysis_agent_selection()
 
     log_stage(
         "failure-analysis",
-        f"Running Codex failure analysis for issue #{claimed_issue.issue['number']}; output: {log_path_display}",
+        f"Running {selection.backend} failure analysis for issue #{claimed_issue.issue['number']}",
     )
-    try:
-        with open(log_path, "w", encoding="utf-8") as log_file:
-            result = subprocess.run(
-                cmd,
-                cwd=claimed_issue.worktree_path,
-                stdout=log_file,
-                stderr=subprocess.STDOUT,
-                text=True,
-                timeout=CODEX_REVIEW_TIMEOUT_SECONDS,
-                check=False,
-            )
-    except subprocess.TimeoutExpired:
-        print(
-            (
-                f"ERROR: Codex failure analysis timed out after {CODEX_REVIEW_TIMEOUT_SECONDS} seconds "
-                f"for issue #{claimed_issue.issue['number']}. See {log_path_display}."
-            ),
-            file=sys.stderr,
-        )
-        return _build_failed_generation_fallback_comment(
-            claimed_issue,
-            candidate,
-            log_paths,
-            preservation_result,
-        )
+    result = run_agent_task(
+        selection=selection,
+        working_dir=claimed_issue.worktree_path,
+        prompt=prompt,
+        task_type="failure-analysis",
+        library=claimed_issue.issue_coordinates,
+        timeout=CODEX_REVIEW_TIMEOUT_SECONDS,
+    )
+    if result.return_code == 0 and result.response.strip():
+        return result.response.strip()
 
-    comment_body = extract_codex_final_message(log_path)
-    if result.returncode == 0 and comment_body:
-        return comment_body
-
-    output_tail = read_log_tail(log_path)
+    output_tail = read_log_tail(result.log_path)
     print(
         (
-            f"ERROR: Codex failure analysis failed for issue #{claimed_issue.issue['number']} "
-            f"with exit code {result.returncode}. Log: {log_path_display}."
+            f"ERROR: {selection.backend} failure analysis failed for issue "
+            f"#{claimed_issue.issue['number']}. Log: {display_log_path(result.log_path)}."
             + (f"\n{output_tail}" if output_tail else "")
         ),
         file=sys.stderr,

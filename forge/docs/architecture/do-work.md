@@ -9,6 +9,13 @@ owns branch selection, self-update, work limits, review limits, stop-file
 handling, sleep timing, and re-execing the latest worker script before the
 next cycle.
 
+The worker accepts `--analysis-agent`, `--analysis-model`, `--test-agent`,
+`--test-model`, and the optional free-form `--agent-family`, with matching
+`FORGE_*` environment variables. It validates the four supported backend names
+and exports the effective role configuration
+before every dispatch and re-exec, implementing
+§FS-forge-agent-runtime-selection.
+
 Before the first self-update or queue operation in each worker process,
 `do_up_to_date_work.sh` validates the host requirements defined in
 `utility_scripts/host_requirements.py`. It derives the required capabilities
@@ -32,7 +39,7 @@ without starting work from `forge/`:
 
 ```bash
 python3 utility_scripts/host_requirements.py --forge-dir . \
-  --python-bin python3 --review-model gpt-5.6-terra \
+  --python-bin python3 --review-model gpt-5.6-luna \
   --graalvm-version-check strict
 ```
 

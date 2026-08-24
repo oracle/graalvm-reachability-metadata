@@ -86,6 +86,7 @@ class PiRpcClient:
             timeout: int = 720,
             persistent_instructions: str | None = None,
             thinking_level: str | None = None,
+            environment: dict[str, str] | None = None,
     ):
         self._pi_command = pi_command
         self._session_dir = os.path.abspath(session_dir) if session_dir else None
@@ -95,6 +96,8 @@ class PiRpcClient:
         self._timeout = timeout
         self._persistent_instructions = persistent_instructions
         self._thinking_level = thinking_level
+        source_environment = os.environ if environment is None else environment
+        self._environment = dict(source_environment)
 
     def run_prompt(
             self,
@@ -237,6 +240,7 @@ class PiRpcClient:
             process = subprocess.Popen(
                 cmd,
                 cwd=self._working_dir,
+                env=self._environment,
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
@@ -258,7 +262,12 @@ class PiRpcClient:
 
     def _build_command(self, command_flags: list[str]) -> list[str]:
         """Build the Pi RPC command with explicit backend configuration."""
-        cmd = [self._pi_command, "--mode", "rpc"]
+        cmd = [
+            self._pi_command,
+            "--mode", "rpc",
+            "--no-extensions",
+            "--tools", "read,edit,write,grep,find,ls",
+        ]
         if self._session_dir:
             cmd.extend(["--session-dir", self._session_dir])
         if self._provider:

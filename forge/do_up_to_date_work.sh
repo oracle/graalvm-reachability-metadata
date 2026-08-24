@@ -25,7 +25,12 @@ PRIORITY_TIER=""
 PARALLELISM="${FORGE_PARALLELISM:-1}"
 REVIEW_LABEL="${FORGE_REVIEW_LABEL:-}"
 REVIEW_LIMIT="${FORGE_REVIEW_LIMIT:-1}"
-REVIEW_MODEL="${FORGE_REVIEW_MODEL:-gpt-5.6-terra}"
+ANALYSIS_AGENT="${FORGE_ANALYSIS_AGENT:-codex}"
+ANALYSIS_MODEL="${FORGE_ANALYSIS_MODEL:-}"
+AGENT_FAMILY="${FORGE_AGENT_FAMILY:-}"
+TEST_AGENT="${FORGE_TEST_AGENT:-}"
+TEST_MODEL="${FORGE_TEST_MODEL:-}"
+REVIEW_MODEL="${FORGE_REVIEW_MODEL:-}"
 USER_REQUESTED_ONLY="${FORGE_USER_REQUESTED_ISSUES_ONLY:-0}"
 GRAALVM_VERSION_CHECK="${FORGE_GRAALVM_VERSION_CHECK:-strict}"
 WORK_STRATEGY_NAME="${FORGE_STRATEGY_NAME:-dynamic_access_main_sources_pi_gpt-5.6-sol}"
@@ -114,6 +119,19 @@ Options:
       Defaults to FORGE_REVIEW_LIMIT, then 1. Without FORGE_REVIEW_LABEL, reviews
       library-new-request, fixes-javac-fail, fixes-java-run-fail,
       fixes-native-image-run-fail, and library-bulk-update PRs each cycle.
+  --analysis-agent {claude-code,pi,codex,opencode}
+      Select the offline analysis/recovery/review agent. Defaults to
+      FORGE_ANALYSIS_AGENT, then codex.
+  --analysis-model MODEL
+      Select its backend-specific model. Defaults to FORGE_ANALYSIS_MODEL,
+      then gpt-5.6-luna for Codex or sonnet for Claude Code.
+  --agent-family COMMAND
+      Select an optional Codex-compatible local launcher. Forge resolves its
+      raw Codex executable and retains the normal offline policy.
+  --test-agent {claude-code,pi,codex,opencode}
+      Override the predefined strategy's test-generation agent.
+  --test-model MODEL
+      Override the predefined strategy's test-generation model.
   --user-requested-only
       Fetch only user-requested issue queue items by excluding configured
       automation and maintainer issue authors. Defaults to
@@ -146,6 +164,14 @@ Environment:
   FORGE_REVIEW_LABEL
       Review only PRs with this label. If unset, each generated PR label is
       reviewed every cycle.
+  FORGE_ANALYSIS_AGENT, FORGE_ANALYSIS_MODEL
+      Configure offline analysis, recovery, style-fix, and review work.
+      Codex defaults to gpt-5.6-luna/high (xhigh for review); Claude Code
+      defaults to sonnet.
+  FORGE_AGENT_FAMILY
+      Optional Codex-compatible launcher selected by --agent-family.
+  FORGE_TEST_AGENT, FORGE_TEST_MODEL
+      Override the selected strategy's test-generation backend and model.
   FORGE_USER_REQUESTED_ISSUES_ONLY
       Set to 1 to fetch only user-requested issue queue items, or 0 to process
       all eligible issue authors. Defaults to 0.
@@ -410,8 +436,27 @@ export_work_configuration() {
     export FORGE_STRATEGY_NAME="$WORK_STRATEGY_NAME"
     export FORGE_REVIEW_LIMIT="$REVIEW_LIMIT"
     export FORGE_REVIEW_MODEL="$REVIEW_MODEL"
+    export FORGE_ANALYSIS_AGENT="$ANALYSIS_AGENT"
+    export FORGE_ANALYSIS_MODEL="$ANALYSIS_MODEL"
     export FORGE_USER_REQUESTED_ISSUES_ONLY="$USER_REQUESTED_ONLY"
     export FORGE_GRAALVM_VERSION_CHECK="$GRAALVM_VERSION_CHECK"
+
+    if [[ -n "$AGENT_FAMILY" ]]; then
+        export FORGE_AGENT_FAMILY="$AGENT_FAMILY"
+    else
+        unset FORGE_AGENT_FAMILY
+    fi
+
+    if [[ -n "$TEST_AGENT" ]]; then
+        export FORGE_TEST_AGENT="$TEST_AGENT"
+    else
+        unset FORGE_TEST_AGENT
+    fi
+    if [[ -n "$TEST_MODEL" ]]; then
+        export FORGE_TEST_MODEL="$TEST_MODEL"
+    else
+        unset FORGE_TEST_MODEL
+    fi
 
     if [[ -n "$REVIEW_LABEL" ]]; then
         export FORGE_REVIEW_LABEL="$REVIEW_LABEL"
@@ -448,6 +493,11 @@ run_host_requirements() {
         --forge-dir "$SCRIPT_DIR" \
         --python-bin "$PYTHON_BIN" \
         --review-model "$REVIEW_MODEL" \
+        --analysis-agent "$ANALYSIS_AGENT" \
+        --analysis-model "$ANALYSIS_MODEL" \
+        --agent-family "$AGENT_FAMILY" \
+        --test-agent "${TEST_AGENT:-pi}" \
+        --test-model "${TEST_MODEL:-$REVIEW_MODEL}" \
         --graalvm-version-check "$GRAALVM_VERSION_CHECK"
 }
 
@@ -591,6 +641,54 @@ while [[ "$#" -gt 0 ]]; do
             REVIEW_LIMIT="${1#*=}"
             shift
             ;;
+        --analysis-agent)
+            require_option_value "$1" "${2:-}"
+            ANALYSIS_AGENT="$2"
+            shift 2
+            ;;
+        --analysis-agent=*)
+            ANALYSIS_AGENT="${1#*=}"
+            shift
+            ;;
+        --analysis-model)
+            require_option_value "$1" "${2:-}"
+            ANALYSIS_MODEL="$2"
+            REVIEW_MODEL="$2"
+            shift 2
+            ;;
+        --analysis-model=*)
+            ANALYSIS_MODEL="${1#*=}"
+            REVIEW_MODEL="$ANALYSIS_MODEL"
+            shift
+            ;;
+        --agent-family)
+            require_option_value "$1" "${2:-}"
+            AGENT_FAMILY="$2"
+            shift 2
+            ;;
+        --agent-family=*)
+            AGENT_FAMILY="${1#*=}"
+            require_option_value "--agent-family" "$AGENT_FAMILY"
+            shift
+            ;;
+        --test-agent)
+            require_option_value "$1" "${2:-}"
+            TEST_AGENT="$2"
+            shift 2
+            ;;
+        --test-agent=*)
+            TEST_AGENT="${1#*=}"
+            shift
+            ;;
+        --test-model)
+            require_option_value "$1" "${2:-}"
+            TEST_MODEL="$2"
+            shift 2
+            ;;
+        --test-model=*)
+            TEST_MODEL="${1#*=}"
+            shift
+            ;;
         --user-requested-only)
             USER_REQUESTED_ONLY=1
             shift
@@ -682,6 +780,40 @@ require_nonnegative_integer "FORGE_WORK_LIMIT" "$WORK_LIMIT"
 require_nonnegative_integer "FORGE_REVIEW_LIMIT" "$REVIEW_LIMIT"
 require_parallelism "$PARALLELISM"
 require_positive_integer "FORGE_DO_WORK_SLEEP_POLL_SECONDS" "$SLEEP_POLL_SECONDS"
+
+if [[ -z "$ANALYSIS_MODEL" ]]; then
+    case "$ANALYSIS_AGENT" in
+        codex) ANALYSIS_MODEL="gpt-5.6-luna" ;;
+        claude-code) ANALYSIS_MODEL="sonnet" ;;
+        *) ANALYSIS_MODEL="gpt-5.6-terra" ;;
+    esac
+fi
+if [[ -z "$TEST_MODEL" ]]; then
+    case "$TEST_AGENT" in
+        codex) TEST_MODEL="gpt-5.6-luna" ;;
+        claude-code) TEST_MODEL="sonnet" ;;
+    esac
+fi
+if [[ -z "$REVIEW_MODEL" ]]; then
+    REVIEW_MODEL="$ANALYSIS_MODEL"
+fi
+
+case "$ANALYSIS_AGENT" in
+    claude-code|pi|codex|opencode) ;;
+    *)
+        echo "--analysis-agent must be claude-code, pi, codex, or opencode." >&2
+        exit 1
+        ;;
+esac
+if [[ -n "$TEST_AGENT" ]]; then
+    case "$TEST_AGENT" in
+        claude-code|pi|codex|opencode) ;;
+        *)
+            echo "--test-agent must be claude-code, pi, codex, or opencode." >&2
+            exit 1
+            ;;
+    esac
+fi
 if [[ -n "$PRIORITY_TIER" \
         && "$PRIORITY_TIER" != "high" \
         && "$PRIORITY_TIER" != "priority" \
