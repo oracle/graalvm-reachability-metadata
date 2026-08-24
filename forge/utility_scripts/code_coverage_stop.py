@@ -41,6 +41,7 @@ PHASE_REPORTS: dict[str, tuple[str, str]] = {
     "deep": ("discovery-report", "deepCovered"),
 }
 DECISION_FILE = "stop-decision.json"
+ACTIVE_MEASUREMENT_FILE = "active-measurement.txt"
 
 #: Why a phase ended. `None` while it continues.
 REASON_NO_TARGETS = "no-targets"
@@ -50,6 +51,66 @@ REASON_MARGINAL_YIELD = "marginal-yield"
 
 class StopDecisionError(ValueError):
     """Raised when the stop evaluator's inputs violate the workflow contract."""
+
+
+def begin_measurement(reports_dir: str, phase: str) -> int:
+    """Open or resume the measurement for one logical cover-pass iteration.
+
+    A measurement repair returns to measurement without running the cover agent.
+    The marker keeps that retry on the same iteration even when the failed
+    measurement already wrote its numbered report, so a retry cannot become a
+    zero-yield cover pass (§AR-code-coverage-improvement.3.3).
+    """
+    try:
+        stem, _ = PHASE_REPORTS[phase]
+    except KeyError:
+        raise StopDecisionError(f"unknown phase: {phase}") from None
+    pattern: re.Pattern[str] = re.compile(rf"^{re.escape(stem)}-(\d+)\.json$")
+    report_count: int = sum(
+        1 for name in os.listdir(reports_dir) if pattern.match(name)
+    )
+    marker_path: str = os.path.join(
+        reports_dir, f"{phase}-{ACTIVE_MEASUREMENT_FILE}"
+    )
+    if os.path.isfile(marker_path):
+        with open(marker_path, encoding="utf-8") as marker:
+            raw_iteration: str = marker.read().strip()
+        try:
+            iteration: int = int(raw_iteration)
+        except ValueError:
+            raise StopDecisionError(
+                f"active measurement is not an integer: {marker_path}"
+            ) from None
+        valid_iterations: set[int] = {report_count}
+        if report_count:
+            valid_iterations.add(report_count - 1)
+        if iteration not in valid_iterations:
+            raise StopDecisionError(
+                f"active measurement {iteration} is incoherent with "
+                f"{report_count} reports: {marker_path}"
+            )
+        return iteration
+
+    iteration: int = report_count
+    with open(marker_path, "w", encoding="utf-8") as marker:
+        marker.write(f"{iteration}\n")
+    return iteration
+
+
+def complete_measurement(reports_dir: str, phase: str, iteration: int) -> None:
+    """Close a successfully measured iteration so the next cover pass advances."""
+    marker_path: str = os.path.join(
+        reports_dir, f"{phase}-{ACTIVE_MEASUREMENT_FILE}"
+    )
+    if not os.path.isfile(marker_path):
+        raise StopDecisionError(f"active measurement is missing: {marker_path}")
+    with open(marker_path, encoding="utf-8") as marker:
+        raw_iteration: str = marker.read().strip()
+    if raw_iteration != str(iteration):
+        raise StopDecisionError(
+            f"active measurement is {raw_iteration}, not {iteration}: {marker_path}"
+        )
+    os.remove(marker_path)
 
 
 def covered_series(reports_dir: str, phase: str) -> list[int]:

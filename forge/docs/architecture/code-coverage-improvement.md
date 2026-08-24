@@ -408,6 +408,10 @@ phase's own roster. A phase stops when its two most recent passes each yielded
 at least zero and fewer than ten methods, and it evaluates that rule only once
 four passes have completed. The stop is a normal phase completion, not a
 failure: the run continues into the next phase exactly as a spent budget does.
+Only a completed cover-agent pass advances the yield series. When measurement
+fails after writing a report, its fix state returns to the same logical
+measurement iteration and overwrites that report; the repair retry contributes
+no additional yield.
 
 Three properties of the rule are deliberate, and each is a correction of a rule
 that looked reasonable and would have destroyed a measured run.

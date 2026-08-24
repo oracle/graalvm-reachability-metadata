@@ -114,6 +114,21 @@ class CoverageStopDecisionTests(unittest.TestCase):
                 json.dump(payload, report)
         return self.directory.name
 
+    def test_measurement_retry_reuses_the_cover_pass_iteration(self) -> None:
+        """A measurement repair must not introduce a zero-yield cover pass."""
+        directory: str = self._write_reports("api", [100])
+        self.assertEqual(module.begin_measurement(directory, "api"), 1)
+
+        # The measurement writes its report, then a later step fails. Returning
+        # from api-fix must overwrite iteration 1 instead of inventing pass 2.
+        self._write_reports("api", [100, 105])
+        self.assertEqual(module.begin_measurement(directory, "api"), 1)
+        self._write_reports("api", [100, 105])
+        self.assertEqual(module.covered_series(directory, "api"), [100, 105])
+
+        module.complete_measurement(directory, "api", 1)
+        self.assertEqual(module.begin_measurement(directory, "api"), 2)
+
     def test_reads_both_phase_rosters(self) -> None:
         for phase in ("api", "deep"):
             with self.subTest(phase=phase):
