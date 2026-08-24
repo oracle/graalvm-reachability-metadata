@@ -5,7 +5,7 @@ Task:
 Issue-Requested Metadata:
 {issue_requested_metadata_context}
 
-Rules:
+Rules (test contract: §root/FS-test-contract):
 - Do not change any test logic that is already done.
 - Do not re-test classes or logic flows already present in the file.
 - Keep the test in `{test_language_display_name}` under `src/test/{test_source_dir_name}`.

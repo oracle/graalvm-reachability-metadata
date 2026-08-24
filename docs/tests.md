@@ -4,8 +4,8 @@
 metadata entry exists only because a test exercises the dynamic access it
 registers and would fail without it (§GOAL-tested-metadata); this suite holds
 those tests. The behavioral requirements for tests are normative in
-§FS-repository-functional-spec.5.2; this document describes the test-project
-contract.
+§FS-repository-functional-spec.5.2 and, point by point, in §FS-test-contract;
+this document describes the test-project contract.
 
 ## 1. Coordinate test projects
 
@@ -30,8 +30,8 @@ contract.
 
 A good test drives the library the way a real consumer would, so that a missing
 or wrong metadata entry makes it fail. The requirements are normative in
-§FS-repository-functional-spec.5.2; the rules below are what they mean when
-writing one.
+§FS-repository-functional-spec.5.2 and §FS-test-contract; the rules below are a
+summary of what they mean when writing one.
 
 - **Drive real behavior through the public API.** Exercise enough of the
   library's reachable surface that the test fails when metadata is wrong or
@@ -64,7 +64,9 @@ writing one.
 - **Keep test code original.** Do not copy upstream or other third-party test
   sources into this repository. Upstream tests may be used only as behavioral
   examples, and documentation only as API guidance. Review policy details live
-  in [REVIEWING.md](REVIEWING.md).
+  in [REVIEWING.md](REVIEWING.md); what review may block on — rule strength,
+  shape limits, coverage gates, and cheating patterns — is normative in
+  §FS-contribution-contract.
 
 ## 3. How the suite is exercised
 

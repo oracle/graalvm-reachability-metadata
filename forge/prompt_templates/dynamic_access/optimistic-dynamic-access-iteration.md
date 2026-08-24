@@ -15,6 +15,6 @@ Iteration progress:
 Full dynamic-access coverage report, all classes with uncovered call sites:
 {dynamic_access_full_report}
 
-Rules:
-- Add or refine tests so execution reaches as many of the uncovered call sites as possible, across all classes listed above. Be pragmatic — focus on the most straightforward call sites first and keep the generation concise.
+Rules (test contract: §root/FS-test-contract):
+- Add or refine tests so execution reaches as many of the uncovered call sites as possible, across all classes listed above. Be pragmatic — focus on the most straightforward call sites first and keep the generation concise. §root/FS-test-contract.3.1
 - After finishing this generation, create a git commit with a focused message describing the test changes.

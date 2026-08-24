@@ -18,8 +18,8 @@ Iteration progress:
 Full dynamic-access coverage report, all classes with uncovered call sites:
 {dynamic_access_full_report}
 
-Rules:
-- Existing tests already pass. Add new tests, or refine in place only when strictly necessary; do not remove, rewrite, or weaken existing tests.
-- Add or refine tests so execution reaches as many of the uncovered call sites as possible, across all classes listed above. Be pragmatic — focus on the most straightforward call sites first and keep the generation concise.
-- Reporter issue context identifies what is missing; infer the requested metadata from that context and ensure any added or modified reachability metadata uses appropriate conditions, preferably `typeReached`. A condition is valid only if that type is reached before the dynamic access occurs; do not use a later or merely related class as the condition.
+Rules (test contract: §root/FS-test-contract):
+- Existing tests already pass. Add new tests, or refine in place only when strictly necessary; do not remove, rewrite, or weaken existing tests. §root/FS-test-contract.2.9
+- Add or refine tests so execution reaches as many of the uncovered call sites as possible, across all classes listed above. Be pragmatic — focus on the most straightforward call sites first and keep the generation concise. §root/FS-test-contract.3.1
+- Reporter issue context identifies what is missing; infer the requested metadata from that context and ensure any added or modified reachability metadata uses appropriate conditions, preferably `typeReached`. A condition is valid only if that type is reached before the dynamic access occurs; do not use a later or merely related class as the condition. §root/FS-test-contract.3.5
 - After finishing this generation, create a git commit with a focused message describing the test changes.
