@@ -25,3 +25,27 @@ Applying the principle:
 - Prompt instructions and review skills are the fallback for what genuinely
   requires judgment, and even then each instruction cites the spec point it
   enforces, so every rule keeps one checkable home.
+
+# PRCPL-verify-inputs: Define inputs exactly and verify them before running
+
+Every component declares its inputs exactly — a schema, a property list, a
+path set, a capability list — and verifies them at its boundary before doing
+any work. A component that runs on unverified inputs converts its caller's bug
+into its own mysterious failure, and in a system with this many components —
+harness, CI, Forge control plane, drivers, agents, publication — the debugging
+then happens in the wrong component. Fail fast at the boundary with a message
+naming the violated input contract, so a defect surfaces in the component that
+introduced it.
+§GOAL-protect-shipped-metadata
+
+Applying the principle:
+
+- Give every persisted or exchanged artifact a schema and validate on read,
+  not just on write; a reader that trusts its writer inherits the writer's
+  bugs.
+- Validate required properties, paths, and environment capabilities before the
+  first side effect, and reject with the exact missing or malformed input, not
+  a downstream stack trace.
+- When a failure is diagnosed to a missing input check, add the check to the
+  component that consumed the input — not a workaround in the component where
+  the failure happened to surface.
