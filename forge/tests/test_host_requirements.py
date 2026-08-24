@@ -553,7 +553,7 @@ class HostRequirementsTests(unittest.TestCase):
 
         self.assertLess(startup, first_cycle)
 
-    def test_worker_agent_family_selects_both_role_defaults(self) -> None:
+    def test_worker_propagates_role_specific_agent_families(self) -> None:
         worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"
         with tempfile.TemporaryDirectory() as temp_dir:
             fake_python = os.path.join(temp_dir, "python3")
@@ -569,8 +569,10 @@ class HostRequirementsTests(unittest.TestCase):
             for variable in (
                     "FORGE_AGENT_FAMILY",
                     "FORGE_ANALYSIS_AGENT",
+                    "FORGE_ANALYSIS_FAMILY",
                     "FORGE_ANALYSIS_MODEL",
                     "FORGE_TEST_AGENT",
+                    "FORGE_TEST_FAMILY",
                     "FORGE_TEST_MODEL",
                     "FORGE_REVIEW_MODEL",
             ):
@@ -581,7 +583,13 @@ class HostRequirementsTests(unittest.TestCase):
             })
 
             result = subprocess.run(
-                [str(worker_path), "--once", "--agent-family", "codex"],
+                [
+                    str(worker_path), "--once",
+                    "--analysis-agent", "cdx",
+                    "--analysis-family", "codex",
+                    "--test-agent", "pi",
+                    "--test-family", "pi",
+                ],
                 env=environment,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
@@ -592,11 +600,11 @@ class HostRequirementsTests(unittest.TestCase):
                 arguments = input_file.read().splitlines()
 
         self.assertNotEqual(result.returncode, 0)
-        self.assertEqual(arguments[arguments.index("--agent-family") + 1], "codex")
-        self.assertEqual(arguments[arguments.index("--analysis-agent") + 1], "codex")
+        self.assertEqual(arguments[arguments.index("--analysis-agent") + 1], "cdx")
+        self.assertEqual(arguments[arguments.index("--analysis-family") + 1], "codex")
         self.assertEqual(arguments[arguments.index("--analysis-model") + 1], "gpt-5.6-luna")
-        self.assertEqual(arguments[arguments.index("--test-agent") + 1], "codex")
-        self.assertEqual(arguments[arguments.index("--test-model") + 1], "gpt-5.6-luna")
+        self.assertEqual(arguments[arguments.index("--test-agent") + 1], "pi")
+        self.assertEqual(arguments[arguments.index("--test-family") + 1], "pi")
 
 
 if __name__ == "__main__":
