@@ -21,8 +21,8 @@ metadata and then repairs it with the Codex-backed
 the six deep collections (one baseline and five post-iteration reports) do not
 each have to discover and repair metadata gaps.
 
-Loop: `generateMetadata` -> `nativeTest`; while it fails and a fix budget
-remains, `run_codex_metadata_fix` then re-run `nativeTest`. If Native Image
+Loop: `generateMetadata` -> `test`; while it fails and a fix budget
+remains, `run_codex_metadata_fix` then re-run `test`. If Native Image
 validation still cannot pass automatically, the run is flagged
 `needsHumanIntervention` (exit code 3) so the reviewed Rhei task routes to
 human intervention. A failed `generateMetadata` stops immediately instead of
@@ -89,6 +89,15 @@ def _normalize_coverage_suite(repo_path: str, coverage_suite: str) -> str:
     return suite_path
 
 
+# The harness root project registers no `nativeTest` task: the per-library test
+# projects are separate Gradle builds. Root `test` is the invocation task that
+# runs `nativeTest` inside the resolved library build and forwards
+# `-PincludeCodeCoverageSuite`. Naming `nativeTest` here resolves against the
+# root project, where Gradle matches it by prefix against `nativeTestCompile`
+# and `nativeTestPGOSampling` and fails as ambiguous. §TCK-test-harness.3
+NATIVE_VALIDATION_TASK: str = "test"
+
+
 def _gradle_command(task: str, coordinate: str) -> str:
     coordinate_arg: str = shlex.quote(f"-Pcoordinates={coordinate}")
     return f"./gradlew {task} {coordinate_arg} -PincludeCodeCoverageSuite=true --stacktrace"
@@ -125,7 +134,7 @@ def prepare_native_metadata(
         return report
 
     generate_command: str = _gradle_command("generateMetadata", coordinate)
-    native_command: str = _gradle_command("nativeTest", coordinate)
+    native_command: str = _gradle_command(NATIVE_VALIDATION_TASK, coordinate)
 
     generate_output: str = run_gradle_test_command(
         generate_command,
@@ -152,7 +161,7 @@ def prepare_native_metadata(
     )
     passed: bool = _gradle_succeeded(native_output)
     steps.append({
-        "task": "nativeTest",
+        "task": NATIVE_VALIDATION_TASK,
         "command": native_command,
         "attempt": 0,
         "succeeded": passed,
@@ -172,7 +181,7 @@ def prepare_native_metadata(
         )
         passed = _gradle_succeeded(native_output)
         steps.append({
-            "task": "nativeTest",
+            "task": NATIVE_VALIDATION_TASK,
             "command": native_command,
             "attempt": fix_passes,
             "succeeded": passed,
