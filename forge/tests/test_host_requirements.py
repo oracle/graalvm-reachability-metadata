@@ -553,6 +553,51 @@ class HostRequirementsTests(unittest.TestCase):
 
         self.assertLess(startup, first_cycle)
 
+    def test_worker_agent_family_selects_both_role_defaults(self) -> None:
+        worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fake_python = os.path.join(temp_dir, "python3")
+            args_path = os.path.join(temp_dir, "args.txt")
+            with open(fake_python, "w", encoding="utf-8") as output_file:
+                output_file.write(
+                    "#!/usr/bin/env bash\n"
+                    "printf '%s\\n' \"$@\" > \"$FORGE_TEST_ARGS_FILE\"\n"
+                    "exit 1\n"
+                )
+            os.chmod(fake_python, 0o755)
+            environment = dict(os.environ)
+            for variable in (
+                    "FORGE_AGENT_FAMILY",
+                    "FORGE_ANALYSIS_AGENT",
+                    "FORGE_ANALYSIS_MODEL",
+                    "FORGE_TEST_AGENT",
+                    "FORGE_TEST_MODEL",
+                    "FORGE_REVIEW_MODEL",
+            ):
+                environment.pop(variable, None)
+            environment.update({
+                "PYTHON_BIN": fake_python,
+                "FORGE_TEST_ARGS_FILE": args_path,
+            })
+
+            result = subprocess.run(
+                [str(worker_path), "--once", "--agent-family", "codex"],
+                env=environment,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                check=False,
+            )
+            with open(args_path, encoding="utf-8") as input_file:
+                arguments = input_file.read().splitlines()
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(arguments[arguments.index("--agent-family") + 1], "codex")
+        self.assertEqual(arguments[arguments.index("--analysis-agent") + 1], "codex")
+        self.assertEqual(arguments[arguments.index("--analysis-model") + 1], "gpt-5.6-luna")
+        self.assertEqual(arguments[arguments.index("--test-agent") + 1], "codex")
+        self.assertEqual(arguments[arguments.index("--test-model") + 1], "gpt-5.6-luna")
+
 
 if __name__ == "__main__":
     unittest.main()
