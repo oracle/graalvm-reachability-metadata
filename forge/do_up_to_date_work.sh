@@ -25,7 +25,7 @@ PRIORITY_TIER=""
 PARALLELISM="${FORGE_PARALLELISM:-1}"
 REVIEW_LABEL="${FORGE_REVIEW_LABEL:-}"
 REVIEW_LIMIT="${FORGE_REVIEW_LIMIT:-1}"
-ANALYSIS_AGENT="${FORGE_ANALYSIS_AGENT:-codex}"
+ANALYSIS_AGENT="${FORGE_ANALYSIS_AGENT:-}"
 ANALYSIS_MODEL="${FORGE_ANALYSIS_MODEL:-}"
 ANALYSIS_FAMILY="${FORGE_ANALYSIS_FAMILY:-${FORGE_ANALYSIS_AGENT_FAMILY:-${FORGE_AGENT_FAMILY:-}}}"
 TEST_AGENT="${FORGE_TEST_AGENT:-}"
@@ -446,7 +446,6 @@ export_work_configuration() {
     export FORGE_PARALLELISM="$PARALLELISM"
     export FORGE_STRATEGY_NAME="$WORK_STRATEGY_NAME"
     export FORGE_REVIEW_LIMIT="$REVIEW_LIMIT"
-    export FORGE_REVIEW_MODEL="$REVIEW_MODEL"
     export FORGE_ANALYSIS_AGENT="$ANALYSIS_AGENT"
     export FORGE_ANALYSIS_FAMILY="$ANALYSIS_FAMILY"
     export FORGE_ANALYSIS_MODEL="$ANALYSIS_MODEL"
@@ -460,8 +459,11 @@ export_work_configuration() {
         unset FORGE_AGENT_FAMILY
     fi
 
-    export FORGE_TEST_FAMILY="$TEST_FAMILY"
-
+    if [[ -n "$TEST_FAMILY" ]]; then
+        export FORGE_TEST_FAMILY="$TEST_FAMILY"
+    else
+        unset FORGE_TEST_FAMILY
+    fi
     if [[ -n "$TEST_AGENT" ]]; then
         export FORGE_TEST_AGENT="$TEST_AGENT"
     else
@@ -471,6 +473,12 @@ export_work_configuration() {
         export FORGE_TEST_MODEL="$TEST_MODEL"
     else
         unset FORGE_TEST_MODEL
+    fi
+
+    if [[ -n "$REVIEW_MODEL" ]]; then
+        export FORGE_REVIEW_MODEL="$REVIEW_MODEL"
+    else
+        unset FORGE_REVIEW_MODEL
     fi
 
     if [[ -n "$REVIEW_LABEL" ]]; then
@@ -496,6 +504,14 @@ process_work_queues() {
 
 run_host_requirements() {
     local host_requirements_script="$SCRIPT_DIR/utility_scripts/host_requirements.py"
+    local host_requirements_args=(
+        --forge-dir "$SCRIPT_DIR"
+        --python-bin "$PYTHON_BIN"
+        --analysis-agent "$ANALYSIS_AGENT"
+        --analysis-family "$ANALYSIS_FAMILY"
+        --analysis-model "$ANALYSIS_MODEL"
+        --graalvm-version-check "$GRAALVM_VERSION_CHECK"
+    )
 
     if ! command -v "$PYTHON_BIN" >/dev/null 2>&1; then
         echo "ERROR: Forge host requirements need PYTHON_BIN='$PYTHON_BIN' to resolve to an executable." >&2
@@ -504,18 +520,37 @@ run_host_requirements() {
     fi
 
     log "Validating Forge host requirements before any work starts."
-    "$PYTHON_BIN" "$host_requirements_script" \
-        --forge-dir "$SCRIPT_DIR" \
-        --python-bin "$PYTHON_BIN" \
-        --review-model "$REVIEW_MODEL" \
-        --analysis-agent "$ANALYSIS_AGENT" \
-        --analysis-family "$ANALYSIS_FAMILY" \
-        --analysis-model "$ANALYSIS_MODEL" \
-        --agent-family "$AGENT_FAMILY" \
-        --test-agent "${TEST_AGENT:-pi}" \
-        --test-family "$TEST_FAMILY" \
-        --test-model "${TEST_MODEL:-$REVIEW_MODEL}" \
-        --graalvm-version-check "$GRAALVM_VERSION_CHECK"
+    if [[ -n "$REVIEW_MODEL" ]]; then
+        host_requirements_args+=(--review-model "$REVIEW_MODEL")
+    fi
+    if [[ -n "$AGENT_FAMILY" ]]; then
+        host_requirements_args+=(--agent-family "$AGENT_FAMILY")
+    fi
+    if [[ -n "$TEST_AGENT" ]]; then
+        host_requirements_args+=(--test-agent "$TEST_AGENT")
+    fi
+    if [[ -n "$TEST_FAMILY" ]]; then
+        host_requirements_args+=(--test-family "$TEST_FAMILY")
+    fi
+    if [[ -n "$TEST_MODEL" ]]; then
+        host_requirements_args+=(--test-model "$TEST_MODEL")
+    fi
+    if (( WORK_LIMIT > 0 )); then
+        host_requirements_args+=(--test-strategy "$WORK_STRATEGY_NAME")
+    fi
+    if (( JAVAC_WORK_LIMIT > 0 )) && [[ -n "$JAVAC_WORK_STRATEGY_NAME" ]]; then
+        host_requirements_args+=(--test-strategy "$JAVAC_WORK_STRATEGY_NAME")
+    fi
+    if (( JAVA_RUN_WORK_LIMIT > 0 )) && [[ -n "$JAVA_RUN_WORK_STRATEGY_NAME" ]]; then
+        host_requirements_args+=(--test-strategy "$JAVA_RUN_WORK_STRATEGY_NAME")
+    fi
+    if (( NI_RUN_WORK_LIMIT > 0 )) && [[ -n "$NI_RUN_WORK_STRATEGY_NAME" ]]; then
+        host_requirements_args+=(--test-strategy "$NI_RUN_WORK_STRATEGY_NAME")
+    fi
+    if (( LIBRARY_UPDATE_WORK_LIMIT > 0 )) && [[ -n "$LIBRARY_UPDATE_WORK_STRATEGY_NAME" ]]; then
+        host_requirements_args+=(--test-strategy "$LIBRARY_UPDATE_WORK_STRATEGY_NAME")
+    fi
+    "$PYTHON_BIN" "$host_requirements_script" "${host_requirements_args[@]}"
 }
 
 run_cycle() {
@@ -683,12 +718,10 @@ while [[ "$#" -gt 0 ]]; do
         --analysis-model)
             require_option_value "$1" "${2:-}"
             ANALYSIS_MODEL="$2"
-            REVIEW_MODEL="$2"
             shift 2
             ;;
         --analysis-model=*)
             ANALYSIS_MODEL="${1#*=}"
-            REVIEW_MODEL="$ANALYSIS_MODEL"
             shift
             ;;
         --agent-family)
@@ -829,11 +862,29 @@ require_nonnegative_integer "FORGE_REVIEW_LIMIT" "$REVIEW_LIMIT"
 require_parallelism "$PARALLELISM"
 require_positive_integer "FORGE_DO_WORK_SLEEP_POLL_SECONDS" "$SLEEP_POLL_SECONDS"
 
+default_agent_command() {
+    case "$1" in
+        claude-code) printf '%s\n' "claude" ;;
+        pi|codex|opencode) printf '%s\n' "$1" ;;
+    esac
+}
+
 if [[ -z "$ANALYSIS_FAMILY" ]]; then
-    ANALYSIS_FAMILY="$ANALYSIS_AGENT"
+    if [[ -n "$ANALYSIS_AGENT" ]]; then
+        ANALYSIS_FAMILY="$ANALYSIS_AGENT"
+    else
+        ANALYSIS_FAMILY="codex"
+    fi
 fi
 if [[ -z "$TEST_FAMILY" && -n "$TEST_AGENT" ]]; then
     TEST_FAMILY="$TEST_AGENT"
+fi
+
+if [[ -z "$ANALYSIS_AGENT" ]]; then
+    ANALYSIS_AGENT="$(default_agent_command "$ANALYSIS_FAMILY")"
+fi
+if [[ -z "$TEST_AGENT" && -n "$TEST_FAMILY" ]]; then
+    TEST_AGENT="$(default_agent_command "$TEST_FAMILY")"
 fi
 
 if [[ -z "$ANALYSIS_MODEL" ]]; then
@@ -849,10 +900,6 @@ if [[ -z "$TEST_MODEL" ]]; then
         claude-code) TEST_MODEL="sonnet" ;;
     esac
 fi
-if [[ -z "$REVIEW_MODEL" ]]; then
-    REVIEW_MODEL="$ANALYSIS_MODEL"
-fi
-
 case "$ANALYSIS_FAMILY" in
     claude-code|pi|codex|opencode) ;;
     *)

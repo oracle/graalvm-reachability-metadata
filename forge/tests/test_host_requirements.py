@@ -375,6 +375,86 @@ class HostRequirementsTests(unittest.TestCase):
         ]
         self.assertEqual(required_agent_checks, ["cdx"])
 
+    def test_custom_agent_alias_uses_family_for_state_and_provider_checks(self) -> None:
+        environment = {"HOME": "/operator"}
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            "review-model",
+            environment=environment,
+            requirements=QueueRequirements(
+                issue_work=False,
+                review_work=True,
+                github_work=False,
+            ),
+            analysis_agent="cdx",
+            analysis_family="codex",
+            analysis_model="gpt-5.6-terra",
+        )
+        with patch(
+                "utility_scripts.host_requirements.probe_write_access",
+                return_value=(True, "writable"),
+        ), patch.object(
+            host_requirements,
+            "_check_git_remote_access",
+        ), patch(
+            "utility_scripts.host_requirements.probe_tcp_host",
+            return_value=(True, "reachable"),
+        ) as probe_host:
+            host_requirements._check_write_permissions()
+            host_requirements._check_network()
+
+        result_by_name = {result.name: result for result in host_requirements.results}
+        self.assertIn("codex state", result_by_name)
+        self.assertIn("/operator/.codex", result_by_name["codex state"].remediation)
+        probed_hosts = [call.args[0] for call in probe_host.call_args_list]
+        self.assertIn("chatgpt.com", probed_hosts)
+        self.assertNotIn("opencode.ai", probed_hosts)
+
+    def test_test_role_defaults_come_from_the_selected_strategy(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            "gpt-5.6-luna",
+            environment={},
+            requirements=QueueRequirements(issue_work=True, review_work=False),
+            test_strategy_name="dynamic_access_main_sources_pi_gpt-5.6-sol",
+        )
+
+        self.assertEqual(host_requirements.test_family, "pi")
+        self.assertEqual(host_requirements.test_agent, "pi")
+        self.assertEqual(host_requirements.test_model, "gpt-5.6-sol")
+
+    def test_all_enabled_strategy_agents_are_validated(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            "gpt-5.6-luna",
+            environment={},
+            requirements=QueueRequirements(issue_work=True, review_work=False),
+            test_strategy_names=[
+                "dynamic_access_main_sources_pi_gpt-5.6-sol",
+                "dynamic_access_main_sources_codex_gpt-5.6-sol",
+            ],
+        )
+
+        self.assertEqual(
+            {requirement.family for requirement in host_requirements.test_requirements},
+            {"pi", "codex"},
+        )
+        with patch(
+                "utility_scripts.host_requirements.resolve_executable",
+                side_effect=lambda executable: f"/bin/{executable}",
+        ), patch.object(
+            host_requirements,
+            "_selected_agent_authentication",
+            return_value=(True, "ready"),
+        ) as authenticate:
+            host_requirements._check_selected_agents()
+
+        authenticated_families = {call.args[0] for call in authenticate.call_args_list}
+        self.assertEqual(authenticated_families, {"codex", "pi"})
+
     def test_github_permission_results_name_each_required_mutation_boundary(self) -> None:
         environment = {
             "FORGE_WORK_LIMIT": "1",
@@ -634,6 +714,112 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertEqual(arguments[arguments.index("--analysis-model") + 1], "gpt-5.6-luna")
         self.assertEqual(arguments[arguments.index("--test-agent") + 1], "pi")
         self.assertEqual(arguments[arguments.index("--test-family") + 1], "pi")
+
+    def test_worker_preserves_unset_test_role_overrides(self) -> None:
+        worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fake_python = os.path.join(temp_dir, "python3")
+            args_path = os.path.join(temp_dir, "args.txt")
+            with open(fake_python, "w", encoding="utf-8") as output_file:
+                output_file.write(
+                    "#!/usr/bin/env bash\n"
+                    "printf '%s\\n' \"$@\" > \"$FORGE_TEST_ARGS_FILE\"\n"
+                    "exit 1\n"
+                )
+            os.chmod(fake_python, 0o755)
+            environment = dict(os.environ)
+            for variable in (
+                    "FORGE_AGENT_FAMILY",
+                    "FORGE_ANALYSIS_AGENT",
+                    "FORGE_ANALYSIS_FAMILY",
+                    "FORGE_ANALYSIS_MODEL",
+                    "FORGE_TEST_AGENT",
+                    "FORGE_TEST_FAMILY",
+                    "FORGE_TEST_MODEL",
+                    "FORGE_REVIEW_MODEL",
+            ):
+                environment.pop(variable, None)
+            environment.update({
+                "PYTHON_BIN": fake_python,
+                "FORGE_TEST_ARGS_FILE": args_path,
+                "FORGE_WORK_LIMIT": "1",
+                "FORGE_JAVAC_WORK_LIMIT": "1",
+                "FORGE_JAVAC_STRATEGY_NAME": "dynamic_access_main_sources_codex_gpt-5.6-sol",
+                "FORGE_JAVA_RUN_WORK_LIMIT": "0",
+                "FORGE_NI_RUN_WORK_LIMIT": "0",
+                "FORGE_LIBRARY_UPDATE_WORK_LIMIT": "0",
+            })
+
+            result = subprocess.run(
+                [str(worker_path), "--once"],
+                env=environment,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                check=False,
+            )
+            with open(args_path, encoding="utf-8") as input_file:
+                arguments = input_file.read().splitlines()
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertNotIn("--test-agent", arguments)
+        self.assertNotIn("--test-family", arguments)
+        self.assertNotIn("--test-model", arguments)
+        strategy_values = [
+            arguments[index + 1]
+            for index, argument in enumerate(arguments)
+            if argument == "--test-strategy"
+        ]
+        self.assertEqual(
+            strategy_values,
+            [
+                "dynamic_access_main_sources_pi_gpt-5.6-sol",
+                "dynamic_access_main_sources_codex_gpt-5.6-sol",
+            ],
+        )
+
+    def test_worker_family_only_selection_uses_default_executable(self) -> None:
+        worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fake_python = os.path.join(temp_dir, "python3")
+            args_path = os.path.join(temp_dir, "args.txt")
+            with open(fake_python, "w", encoding="utf-8") as output_file:
+                output_file.write(
+                    "#!/usr/bin/env bash\n"
+                    "printf '%s\\n' \"$@\" > \"$FORGE_TEST_ARGS_FILE\"\n"
+                    "exit 1\n"
+                )
+            os.chmod(fake_python, 0o755)
+            environment = dict(os.environ)
+            for variable in (
+                    "FORGE_AGENT_FAMILY",
+                    "FORGE_ANALYSIS_AGENT",
+                    "FORGE_ANALYSIS_FAMILY",
+                    "FORGE_ANALYSIS_MODEL",
+                    "FORGE_TEST_AGENT",
+                    "FORGE_TEST_FAMILY",
+                    "FORGE_TEST_MODEL",
+            ):
+                environment.pop(variable, None)
+            environment.update({
+                "PYTHON_BIN": fake_python,
+                "FORGE_TEST_ARGS_FILE": args_path,
+            })
+
+            result = subprocess.run(
+                [str(worker_path), "--once", "--analysis-family", "pi"],
+                env=environment,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                check=False,
+            )
+            with open(args_path, encoding="utf-8") as input_file:
+                arguments = input_file.read().splitlines()
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(arguments[arguments.index("--analysis-family") + 1], "pi")
+        self.assertEqual(arguments[arguments.index("--analysis-agent") + 1], "pi")
 
 
 if __name__ == "__main__":

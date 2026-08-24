@@ -60,6 +60,18 @@ class AgentRuntimeTests(unittest.TestCase):
         self.assertEqual(codex.thinking_level, "high")
         self.assertEqual(claude.model, "sonnet")
 
+    def test_family_only_selection_uses_the_family_default_executable(self) -> None:
+        claude = analysis_agent_selection({"FORGE_ANALYSIS_FAMILY": "claude-code"})
+        self.assertEqual(claude.backend, "claude-code")
+        self.assertEqual(claude.agent, "claude")
+
+        strategy = apply_test_agent_overrides(
+            {"agent": "pi", "model": "gpt-5.6-sol"},
+            {"FORGE_TEST_FAMILY": "claude-code"},
+        )
+        self.assertEqual(strategy["agent"], "claude-code")
+        self.assertEqual(strategy["agent-command"], "claude")
+
     def test_test_agent_override_uses_backend_aware_model_default(self) -> None:
         strategy = {"agent": "pi", "model": "gpt-5.6-sol"}
         self.assertEqual(
@@ -138,6 +150,10 @@ class AgentRuntimeTests(unittest.TestCase):
             agent = ClaudeCodeAgent("claude-opus-4-1", temp_dir)
         command = agent._build_command("edit tests")
         self.assertIn("Read,Edit,Write,Glob,Grep", command)
+        self.assertIn("--allowedTools", command)
+        self.assertIn("--safe-mode", command)
+        self.assertIn("--strict-mcp-config", command)
+        self.assertIn("{}", command)
         self.assertNotIn("Bash", command)
         self.assertNotIn("WebFetch", command)
         self.assertNotIn("WebSearch", command)
@@ -164,7 +180,7 @@ class AgentRuntimeTests(unittest.TestCase):
                 clear=False,
         ):
             command = url_fetch_agent_command()
-        self.assertIn("sandbox_workspace_write.network_access=true", command)
+        self.assertIn("sandbox_workspace_write.network_access=false", command)
         self.assertIn('web_search="live"', command)
         self.assertIn("agents.enabled=false", command)
 
@@ -184,8 +200,8 @@ class AgentRuntimeTests(unittest.TestCase):
     def test_every_backend_has_a_bounded_url_discovery_command(self) -> None:
         expected = {
             "claude-code": "WebFetch,WebSearch",
-            "pi": "--provider openai-codex",
-            "codex": "network_access=true",
+            "pi": "web_fetch",
+            "codex": "network_access=false",
             "opencode": "OPENCODE_CONFIG_CONTENT=",
         }
         for backend, marker in expected.items():
@@ -204,6 +220,17 @@ class AgentRuntimeTests(unittest.TestCase):
             ):
                 command = url_fetch_agent_command()
             self.assertIn(marker, command)
+            if backend == "pi":
+                command_tokens = shlex.split(command)
+                self.assertNotIn("bash", command_tokens)
+                self.assertIn("--extension", command_tokens)
+                extension_path = command_tokens[command_tokens.index("--extension") + 1]
+                self.assertTrue(os.path.isfile(extension_path))
+            if backend == "claude-code":
+                command_tokens = shlex.split(command)
+                self.assertIn("--safe-mode", command_tokens)
+                self.assertIn("--strict-mcp-config", command_tokens)
+                self.assertIn("--allowedTools", command_tokens)
             if backend == "opencode":
                 config_argument = next(
                     token for token in shlex.split(command)
@@ -212,6 +239,21 @@ class AgentRuntimeTests(unittest.TestCase):
                 config = json.loads(config_argument.split("=", 1)[1])
                 self.assertEqual(config["permission"]["bash"], "deny")
                 self.assertEqual(config["permission"]["webfetch"], "allow")
+
+    def test_url_discovery_honors_custom_executables_for_every_backend(self) -> None:
+        for backend in SUPPORTED_AGENT_BACKENDS:
+            executable = f"my-{backend}"
+            with self.subTest(backend=backend), patch.dict(
+                    os.environ,
+                    {
+                        "FORGE_ANALYSIS_AGENT": executable,
+                        "FORGE_ANALYSIS_FAMILY": backend,
+                        "FORGE_ANALYSIS_MODEL": "gpt-5.6-terra",
+                    },
+                    clear=True,
+            ):
+                command = url_fetch_agent_command()
+            self.assertIn(executable, shlex.split(command))
 
 
 if __name__ == "__main__":

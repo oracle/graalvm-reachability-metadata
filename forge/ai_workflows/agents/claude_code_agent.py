@@ -90,11 +90,16 @@ class ClaudeCodeAgent(Agent):
         return response
 
     def _build_command(self, prompt: str, fork: bool = False) -> list[str]:
+        repository_tools = "Read,Edit,Write,Glob,Grep"
         command = [
             self._claude_command, "-p", prompt,
             "--output-format", "json",
+            "--safe-mode",
+            "--strict-mcp-config",
+            "--mcp-config", "{}",
             "--permission-mode", "dontAsk",
-            "--tools", "Read,Edit,Write,Glob,Grep",
+            "--tools", repository_tools,
+            "--allowedTools", repository_tools,
             "--model", self._model_name,
         ]
         if self._persistent_instructions:

@@ -64,6 +64,13 @@ TEST_FILE_EXTENSIONS_BY_LANGUAGE = {
 }
 DEFAULT_TEST_FILE_EXTENSIONS = TEST_FILE_EXTENSIONS_BY_LANGUAGE[DEFAULT_TEST_LANGUAGE]
 GRADLE_BOOTSTRAP_RETRY_DELAY_SECONDS = 5
+PI_URL_FETCH_EXTENSION_PATH = os.path.abspath(os.path.join(
+    os.path.dirname(__file__),
+    "..",
+    "ai_workflows",
+    "agents",
+    "pi_url_fetch_extension.ts",
+))
 # A wrapper failure is only ever reported alongside the distribution URL it was
 # fetching, so that URL is the narrowing guard and the markers below only have to
 # separate a failed fetch from a successful one.
@@ -202,21 +209,24 @@ def url_fetch_agent_command() -> str:
         return (
             f"{shlex.quote(executable)} exec --ignore-user-config -s workspace-write "
             "-c approval_policy=\"never\" "
-            "-c sandbox_workspace_write.network_access=true "
+            "-c sandbox_workspace_write.network_access=false "
             "-c web_search=\"live\" -c agents.enabled=false "
             "-c features.skill_mcp_dependency_install=false -c mcp_servers={} "
             f"-m {model}"
         )
     if selection.backend == "claude-code":
+        url_tools = "Read,Edit,Write,Glob,Grep,WebFetch,WebSearch"
         return (
-            "claude -p --permission-mode dontAsk "
-            "--tools Read,Edit,Write,Glob,Grep,WebFetch,WebSearch "
+            f"{shlex.quote(selection.agent or 'claude')} -p --permission-mode dontAsk "
+            "--safe-mode --strict-mcp-config --mcp-config '{}' "
+            f"--tools {url_tools} --allowedTools {url_tools} "
             f"--model {model}"
         )
     if selection.backend == "pi":
         return (
-            "pi -p --no-session --no-extensions "
-            "--tools read,edit,write,grep,find,ls,bash "
+            f"{shlex.quote(selection.agent or 'pi')} -p --no-session --no-extensions "
+            f"--extension {shlex.quote(PI_URL_FETCH_EXTENSION_PATH)} "
+            "--tools read,edit,write,grep,find,ls,web_fetch "
             f"--provider openai-codex --model {model}"
         )
     network_config = dict(OFFLINE_OPENCODE_CONFIG)
@@ -226,7 +236,7 @@ def url_fetch_agent_command() -> str:
     rendered_config = shlex.quote(json.dumps(network_config, separators=(",", ":")))
     return (
         f"env OPENCODE_CONFIG_CONTENT={rendered_config} "
-        f"opencode run --auto --model {model}"
+        f"{shlex.quote(selection.agent or 'opencode')} run --auto --model {model}"
     )
 
 

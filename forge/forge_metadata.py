@@ -399,7 +399,7 @@ class WorkQueueConfig:
 class ReviewQueueConfig:
     label: str
     limit: int
-    model: str
+    model: str | None
 
 
 @dataclass(frozen=True)
@@ -2889,7 +2889,7 @@ def check_pi_review_authentication(review_model: str) -> bool:
 def review_pull_request(
         pr_number: int,
         reachability_metadata_path: str,
-        review_model: str,
+        review_model: str | None,
         pr_url: str | None = None,
         coordinates: str | None = None,
 ) -> bool:
@@ -2903,7 +2903,11 @@ def review_pull_request(
     configured_selection = analysis_agent_selection()
     selection = AgentSelection(
         backend=configured_selection.backend,
-        model=os.environ.get("FORGE_ANALYSIS_MODEL", review_model),
+        model=(
+            os.environ.get("FORGE_ANALYSIS_MODEL")
+            or review_model
+            or configured_selection.model
+        ),
         family=configured_selection.family,
         thinking_level=(
             os.environ.get("FORGE_REVIEW_THINKING_LEVEL")
@@ -2926,6 +2930,7 @@ def review_pull_request(
             context_path=context_path,
             reachability_metadata_path=reachability_metadata_path,
         )
+        baseline_context_digest = review_context_digest(context_path)
         baseline_status = review_worktree_status(review_worktree_path)
         result = run_agent_task(
             selection=selection,
@@ -2950,6 +2955,12 @@ def review_pull_request(
                 file=sys.stderr,
             )
             return False
+        if review_context_digest(context_path) != baseline_context_digest:
+            print(
+                f"ERROR: Offline review agent modified the review context for PR #{pr_number}.",
+                file=sys.stderr,
+            )
+            return False
 
         decision, body = parse_review_decision(result.response)
         submit_pull_request_review(pr_number, decision, body, review_worktree_path)
@@ -2957,7 +2968,13 @@ def review_pull_request(
         print(f"[Final findings for PR #{pr_number}]\n{body}")
         print_pull_request_discussion(pr_number)
         return True
-    except (GitHubError, GitHubRateLimitExceeded, RuntimeError, subprocess.CalledProcessError) as exc:
+    except (
+        GitHubError,
+        GitHubRateLimitExceeded,
+        OSError,
+        RuntimeError,
+        subprocess.CalledProcessError,
+    ) as exc:
         print(
             f"ERROR: PR review orchestration failed for PR #{pr_number}: {exc}",
             file=sys.stderr,
@@ -3029,7 +3046,7 @@ def load_review_rules(reachability_metadata_path: str, labels: list[str]) -> dic
 
 
 def review_worktree_status(review_worktree_path: str) -> str:
-    """Return stable worktree status while ignoring the generated context file."""
+    """Return stable status; the generated context file is verified by digest."""
     result = subprocess.run(
         ["git", "status", "--porcelain", "--untracked-files=all"],
         cwd=review_worktree_path,
@@ -3042,6 +3059,12 @@ def review_worktree_status(review_worktree_path: str) -> str:
         line for line in result.stdout.splitlines()
         if not line.endswith(" .forge-review-context.json")
     )
+
+
+def review_context_digest(context_path: str) -> str:
+    """Return the authoritative review snapshot digest. §FS-forge-agent-runtime-selection"""
+    with open(context_path, "rb") as context_file:
+        return hashlib.sha256(context_file.read()).hexdigest()
 
 
 def parse_review_decision(response: str) -> tuple[str, str]:
@@ -3099,7 +3122,7 @@ def process_pull_requests_with_label(
         limit: int,
         reachability_metadata_path: str,
         authenticated_user: str,
-        review_model: str,
+        review_model: str | None,
 ) -> None:
     """Review labeled pull requests that are CI-complete, not self-authored, and need no human intervention."""
     status_check_cache: dict[int, list[dict]] = {}
@@ -5782,7 +5805,7 @@ def get_review_queue_configs_from_environment() -> list[ReviewQueueConfig]:
     """Return pull request review queue configurations from the FORGE_* environment."""
     review_label = os.environ.get("FORGE_REVIEW_LABEL")
     review_limit = get_env_non_negative_int("FORGE_REVIEW_LIMIT", 1)
-    review_model = os.environ.get("FORGE_REVIEW_MODEL", DEFAULT_REVIEW_MODEL)
+    review_model = os.environ.get("FORGE_REVIEW_MODEL")
     if review_label:
         return [
             ReviewQueueConfig(
@@ -5842,7 +5865,7 @@ def run_pull_request_review_loop(
         limit: int,
         reachability_metadata_path: str,
         authenticated_user: str,
-        review_model: str,
+        review_model: str | None,
         period_seconds: int | None = None,
 ) -> None:
     """Run pull request reviews once or repeatedly after each configured period."""
@@ -8535,8 +8558,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--review-model",
-        default=DEFAULT_REVIEW_MODEL,
-        help=f"Pi model used for `--review-pr` runs (default: {DEFAULT_REVIEW_MODEL}).",
+        default=None,
+        help="Override the backend-aware model used for `--review-pr` runs.",
     )
     parser.add_argument(
         "--graalvm-version-check",
@@ -8730,6 +8753,33 @@ def resolve_host_requirement_queues(args: argparse.Namespace) -> QueueRequiremen
     return QueueRequirements(issue_work=True, review_work=False, github_work=github_work)
 
 
+def resolve_host_requirement_strategy_names(args: argparse.Namespace) -> list[str]:
+    """Return every test strategy reachable from the enabled issue queues.
+
+    §FS-forge-host-requirements
+    """
+    if not resolve_host_requirement_queues(args).issue_work:
+        return []
+    if not args.run_work_queues:
+        return [args.strategy_name] if args.strategy_name else []
+
+    defaults_by_label = {
+        LABEL_LIBRARY_NEW: DEFAULT_NEW_LIBRARY_STRATEGY_NAME,
+        LABEL_LIBRARY_UPDATE: DEFAULT_LIBRARY_UPDATE_STRATEGY_NAME,
+        LABEL_JAVAC_FAIL: DEFAULT_JAVAC_STRATEGY,
+        LABEL_JAVA_RUN_FAIL: DEFAULT_JAVA_RUN_STRATEGY,
+        LABEL_NI_RUN_FAIL: DEFAULT_NI_RUN_STRATEGY_NAME,
+    }
+    strategy_names: list[str] = []
+    for queue_config in get_work_queue_configs_from_environment(args.strategy_name):
+        if queue_config.limit <= 0:
+            continue
+        strategy_name = queue_config.strategy_name or defaults_by_label[queue_config.label]
+        if strategy_name not in strategy_names:
+            strategy_names.append(strategy_name)
+    return strategy_names
+
+
 def require_host_requirements(args: argparse.Namespace, reachability_metadata_path: str) -> None:
     """Stop before any work when this host cannot run the invoked Forge mode.
 
@@ -8739,10 +8789,11 @@ def require_host_requirements(args: argparse.Namespace, reachability_metadata_pa
     """
     ensure_host_requirements(
         FORGE_DIR,
-        review_model=args.review_model,
+        review_model=args.review_model or DEFAULT_REVIEW_MODEL,
         requirements=resolve_host_requirement_queues(args),
         graalvm_version_check=resolve_graalvm_version_check(args.graalvm_version_check),
         repo_dir=reachability_metadata_path,
+        test_strategy_names=resolve_host_requirement_strategy_names(args),
     )
 
 

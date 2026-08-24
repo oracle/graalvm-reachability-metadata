@@ -22,6 +22,12 @@ DEFAULT_MODEL_BY_BACKEND = {
     "claude-code": "sonnet",
     "codex": "gpt-5.6-luna",
 }
+DEFAULT_AGENT_BY_BACKEND = {
+    "claude-code": "claude",
+    "pi": "pi",
+    "codex": "codex",
+    "opencode": "opencode",
+}
 GITHUB_CREDENTIAL_ENV_VARS = (
     "GH_TOKEN",
     "GITHUB_TOKEN",
@@ -83,6 +89,11 @@ def default_model_for_backend(backend: str, fallback: str = "gpt-5.6-terra") -> 
     return DEFAULT_MODEL_BY_BACKEND.get(normalize_backend_name(backend), fallback)
 
 
+def default_agent_for_backend(backend: str) -> str:
+    """Return the default executable for a registered adapter family."""
+    return DEFAULT_AGENT_BY_BACKEND[normalize_backend_name(backend)]
+
+
 def analysis_agent_selection(environment: dict[str, str] | None = None) -> AgentSelection:
     """Resolve the analysis role from the worker environment."""
     env = os.environ if environment is None else environment
@@ -98,7 +109,7 @@ def analysis_agent_selection(environment: dict[str, str] | None = None) -> Agent
         or DEFAULT_ANALYSIS_AGENT
     )
     backend = normalize_backend_name(family)
-    agent = env.get("FORGE_ANALYSIS_AGENT") or backend
+    agent = env.get("FORGE_ANALYSIS_AGENT") or default_agent_for_backend(backend)
     model = env.get("FORGE_ANALYSIS_MODEL") or default_model_for_backend(backend)
     thinking_level = env.get("FORGE_ANALYSIS_THINKING_LEVEL") or (
         "high" if backend == "codex" and model == "gpt-5.6-luna" else None
@@ -131,7 +142,11 @@ def apply_test_agent_overrides(
         )
     )
     backend = normalize_backend_name(family)
-    agent = env.get("FORGE_TEST_AGENT") or strategy.get("agent-command") or backend
+    agent = (
+        env.get("FORGE_TEST_AGENT")
+        or strategy.get("agent-command")
+        or default_agent_for_backend(backend)
+    )
     model = env.get("FORGE_TEST_MODEL")
     if (
             env.get("FORGE_TEST_AGENT")
