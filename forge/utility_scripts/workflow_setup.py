@@ -7,7 +7,7 @@ import os
 import subprocess
 import sys
 
-from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.gradle_environment import gradle_command_environment, pin_gradle_java_home
 from utility_scripts.host_requirements import (
     GRAALVM_SCHEMA_PATH,
     check_graalvm_installation,
@@ -46,11 +46,11 @@ def resolve_workflow_repo_paths(
 
 def resolve_graalvm_java_home() -> str:
     """
-    Align GRAALVM_HOME and JAVA_HOME on the first Forge-usable GraalVM in the environment.
+    Align every Java selector on the first Forge-usable GraalVM in the environment.
     Logic:
     - Take GRAALVM_HOME, then JAVA_HOME, and keep the first that satisfies
       `check_graalvm_installation` — the single Forge-usable GraalVM rule
-      (§FS-forge-host-requirements) — for both variables.
+      (§FS-forge-host-requirements) — for Java, GraalVM, and Gradle selectors.
     - Require GRAALVM_HOME_25_0 for the post-generation GraalVM 25 validation lane.
     - Otherwise, print why each candidate was rejected and exit(1).
     """
@@ -59,12 +59,11 @@ def resolve_graalvm_java_home() -> str:
         home = os.environ.get(variable)
         if not home:
             continue
-        problems = check_graalvm_installation(home)
+        problems = check_graalvm_installation(home, os.environ)
         if problems:
             rejected.append(f"  {variable}={home}: {'; '.join(problems)}")
             continue
-        os.environ["GRAALVM_HOME"] = home
-        os.environ["JAVA_HOME"] = home
+        pin_gradle_java_home(os.environ, home)
         require_graalvm_home_env("GRAALVM_HOME_25_0")
         return home
 
@@ -72,7 +71,8 @@ def resolve_graalvm_java_home() -> str:
     for rejection in rejected:
         print(rejection, file=sys.stderr)
     print(
-        "Fix: export `GRAALVM_HOME=/absolute/path/to/a/graalvm` that provides Native Image and "
+        "Fix: export `GRAALVM_HOME=/absolute/path/to/a/graalvm` that provides Native Image, "
+        "its agent, and "
         f"{GRAALVM_SCHEMA_PATH}.",
         file=sys.stderr,
     )
@@ -82,8 +82,7 @@ def resolve_graalvm_java_home() -> str:
 def build_graalvm_environment(graalvm_home: str, base_env: dict[str, str] | None = None) -> dict[str, str]:
     """Return an environment configured to run Gradle with the provided GraalVM."""
     env = dict(base_env or os.environ)
-    env["GRAALVM_HOME"] = graalvm_home
-    env["JAVA_HOME"] = graalvm_home
+    pin_gradle_java_home(env, graalvm_home)
     return env
 
 

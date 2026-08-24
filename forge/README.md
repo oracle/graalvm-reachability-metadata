@@ -30,7 +30,7 @@ The 25.0.x validation lane is pinned in `graalvm-versions.json`; update that
 file when Forge should move to a newer 25.0.x release. The main and EA lanes are
 checked against the latest published GA and EA release metadata at startup. Pass
 `--graalvm-version-check warn` or `off` to run against a locally built Graal;
-Native Image and the reachability-metadata schema remain mandatory.
+Native Image, its agent, and the reachability-metadata schema remain mandatory.
 
 ```console
 ./do-work.sh [options] [forge-branch]
@@ -102,7 +102,7 @@ Required local tools depend on the work queue being processed:
 - `codex` for Codex-agent strategies and metadata fixups.
 - For issue work, set `GRAALVM_HOME`, `GRAALVM_HOME_25_0`, and
   `GRAALVM_HOME_LATEST_EA` to the exact versions printed by the host-requirement
-  report. Each distribution must include Native Image and the
+  report. Each distribution must include Native Image, its agent, and the
   reachability-metadata schema. Review-only work needs only `JAVA_HOME` pointing
   to JDK 25.
 §FS-forge-predefined-strategy-contract

@@ -267,8 +267,8 @@ class HostRequirements:
         if self.requirements.issue_work:
             for variable in ISSUE_GRAALVM_ENV_VARS:
                 print(f"  - {variable}={self._required_graalvm_description(variable)}")
-            print(f"  - Every GraalVM must contain {GRAALVM_SCHEMA_PATH}")
-            print("  - JAVA_HOME is aligned to GRAALVM_HOME by Forge; explicit matching value is recommended")
+            print(f"  - Every GraalVM must load native-image-agent and contain {GRAALVM_SCHEMA_PATH}")
+            print("  - Forge pins JAVA_HOME and every Gradle Java selector to GRAALVM_HOME")
         elif self.requirements.review_work:
             print("  - JAVA_HOME=<JDK 25 with executable bin/java> (GRAALVM_HOME is not required for review-only work)")
         print(f"  - FORGE_ANALYSIS_AGENT={self.analysis_agent}")
@@ -283,7 +283,7 @@ class HostRequirements:
     def _required_graalvm_description(self, variable: str) -> str:
         """Describe the distribution one GraalVM lane must point to."""
         if self.graalvm_version_check == "off":
-            return "any GraalVM with Native Image and the reachability-metadata schema"
+            return "any GraalVM with Native Image, its agent, and the reachability-metadata schema"
         if variable == "GRAALVM_HOME_25_0":
             return f"GraalVM {self.graalvm_versions.pinned_25 or '<invalid repo pin>'}"
         if variable == "GRAALVM_HOME_LATEST_EA":
@@ -293,7 +293,7 @@ class HostRequirements:
     def _version_check_description(self) -> str:
         """Describe the effect of the selected GraalVM version-check mode."""
         if self.graalvm_version_check == "off":
-            return "off — version match is not evaluated; Native Image and schema stay mandatory"
+            return "off — version match is not evaluated; Native Image, its agent, and schema stay mandatory"
         if self.graalvm_version_check == "warn":
             return "warn — version mismatches report WARN and do not stop work"
         return "strict — a version mismatch stops the worker"
@@ -584,11 +584,11 @@ class HostRequirements:
                 True,
                 False,
                 f"current=<unset>; required={self._required_graalvm_description(variable)}",
-                f"Install {self._required_graalvm_description(variable)} with Native Image and "
+                f"Install {self._required_graalvm_description(variable)} with Native Image, its agent, and "
                 f"{GRAALVM_SCHEMA_PATH}, then export `{variable}=/absolute/path/to/that/distribution`.",
             )
             return
-        problems = check_graalvm_installation(value)
+        problems = check_graalvm_installation(value, self.environment)
         if problems:
             self._add(
                 "environment",
@@ -596,7 +596,7 @@ class HostRequirements:
                 True,
                 False,
                 f"path={value}; {'; '.join(problems)}",
-                f"Install {self._required_graalvm_description(variable)} with Native Image and "
+                f"Install {self._required_graalvm_description(variable)} with Native Image, its agent, and "
                 f"{GRAALVM_SCHEMA_PATH}, then point `{variable}` to it.",
             )
             return
@@ -605,7 +605,7 @@ class HostRequirements:
             variable,
             True,
             True,
-            f"path={value}; native-image and {GRAALVM_SCHEMA_PATH} are present",
+            f"path={value}; native-image, native-image-agent, and {GRAALVM_SCHEMA_PATH} are usable",
         )
         self._check_graalvm_version(variable, value, expected_version, early_access)
 
@@ -1084,12 +1084,16 @@ query($owner: String!, $name: String!, $project: Int!) {
             print("[forge-host] PASS: all required host checks succeeded; work may start.")
 
 
-def check_graalvm_installation(graalvm_home: str) -> list[str]:
+def check_graalvm_installation(
+        graalvm_home: str,
+        environment: Mapping[str, str] | None = None,
+) -> list[str]:
     """Return the reasons a GraalVM home cannot run Forge work; empty when it can.
 
     This is the single definition of a Forge-usable GraalVM distribution: it must
-    run Java and Native Image and carry the reachability-metadata schema that the
-    repository validates generated metadata against (§FS-forge-host-requirements).
+    run Java and Native Image, load the native-image agent, and carry the
+    reachability-metadata schema that the repository validates generated metadata
+    against (§FS-forge-host-requirements).
     """
     problems: list[str] = []
     for executable in ("java", "native-image"):
@@ -1098,7 +1102,31 @@ def check_graalvm_installation(graalvm_home: str) -> list[str]:
             problems.append(f"{os.path.join('bin', executable)} is missing or not executable")
     if not os.path.isfile(os.path.join(graalvm_home, GRAALVM_SCHEMA_PATH)):
         problems.append(f"{GRAALVM_SCHEMA_PATH} is missing")
+    if not problems:
+        agent_problem = probe_native_image_agent(graalvm_home, environment)
+        if agent_problem:
+            problems.append(agent_problem)
     return problems
+
+
+def probe_native_image_agent(
+        graalvm_home: str,
+        environment: Mapping[str, str] | None = None,
+) -> str | None:
+    """Return why `bin/java` cannot load the Native Image agent, or `None` on success."""
+    with tempfile.TemporaryDirectory(prefix="forge-native-image-agent-") as output_dir:
+        result = run_command(
+            [
+                os.path.join(graalvm_home, "bin", "java"),
+                f"-agentlib:native-image-agent=config-output-dir={output_dir}",
+                "-version",
+            ],
+            os.environ if environment is None else environment,
+        )
+    if result.returncode == 0:
+        return None
+    detail = first_output_line(result) or f"exit={result.returncode}"
+    return f"bin/java cannot load native-image-agent ({detail})"
 
 
 def require_graalvm_home_env(variable: str, environment: Mapping[str, str] | None = None) -> str:
@@ -1111,12 +1139,12 @@ def require_graalvm_home_env(variable: str, environment: Mapping[str, str] | Non
     if not graalvm_home:
         print(f"ERROR: Required environment variable '{variable}' is not set.", file=sys.stderr)
         print(
-            f"Fix: export `{variable}=/absolute/path/to/a/graalvm` that provides Native Image and "
+            f"Fix: export `{variable}=/absolute/path/to/a/graalvm` that provides Native Image, its agent, and "
             f"{GRAALVM_SCHEMA_PATH}.",
             file=sys.stderr,
         )
         sys.exit(1)
-    problems = check_graalvm_installation(graalvm_home)
+    problems = check_graalvm_installation(graalvm_home, values)
     if problems:
         print(
             f"ERROR: Environment variable '{variable}' points to '{graalvm_home}', "
@@ -1124,7 +1152,7 @@ def require_graalvm_home_env(variable: str, environment: Mapping[str, str] | Non
             file=sys.stderr,
         )
         print(
-            f"Fix: point `{variable}` at a GraalVM distribution that provides Native Image and "
+            f"Fix: point `{variable}` at a GraalVM distribution that provides Native Image, its agent, and "
             f"{GRAALVM_SCHEMA_PATH}.",
             file=sys.stderr,
         )

@@ -7,6 +7,8 @@ from __future__ import annotations
 
 import hashlib
 import os
+import shlex
+import subprocess
 import tempfile
 
 FORGE_GRADLE_USER_HOME_ENV = "FORGE_GRADLE_USER_HOME"
@@ -15,6 +17,7 @@ _GRADLE_USER_HOME_ROOT = "metadata-forge-gradle"
 _GRADLE_DISTRIBUTIONS_DIR = "wrapper-dists"
 _GRADLE_PROPERTIES_FILENAME = "gradle.properties"
 _DEFAULT_HOST_GRADLE_HOME_DIR = ".gradle"
+_GRADLE_JAVA_HOME_OPTION = "-Dorg.gradle.java.home="
 
 
 def gradle_user_home_for_repo(repo_path: str) -> str:
@@ -40,12 +43,33 @@ def _align_graalvm_java_home(env: dict[str, str]) -> None:
     graalvm_home = env.get("GRAALVM_HOME")
     java_home = env.get("JAVA_HOME")
     if graalvm_home and _has_native_image(graalvm_home):
-        env["GRAALVM_HOME"] = graalvm_home
-        env["JAVA_HOME"] = graalvm_home
+        pin_gradle_java_home(env, graalvm_home)
         return
     if java_home and _has_native_image(java_home):
-        env["GRAALVM_HOME"] = java_home
-        env["JAVA_HOME"] = java_home
+        pin_gradle_java_home(env, java_home)
+
+
+def pin_gradle_java_home(env: dict[str, str], graalvm_home: str) -> None:
+    """Pin every Gradle Java selector to one GraalVM distribution.
+
+    `GRADLE_OPTS` can carry an inherited `org.gradle.java.home` that wins over
+    `JAVA_HOME`; append the authoritative value so nested Gradle invocations use
+    the same agent-capable JVM (§FS-forge-host-requirements).
+    """
+    env["GRAALVM_HOME"] = graalvm_home
+    env["JAVA_HOME"] = graalvm_home
+    env["GRADLE_JAVA_HOME"] = graalvm_home
+    java_home_option = f"{_GRADLE_JAVA_HOME_OPTION}{graalvm_home}"
+    existing_options = env.get("GRADLE_OPTS", "").strip()
+    rendered_option = (
+        subprocess.list2cmdline([java_home_option])
+        if os.name == "nt"
+        else shlex.quote(java_home_option)
+    )
+    if existing_options == rendered_option or existing_options.endswith(f" {rendered_option}"):
+        env["GRADLE_OPTS"] = existing_options
+        return
+    env["GRADLE_OPTS"] = " ".join(option for option in (existing_options, rendered_option) if option)
 
 
 def _has_native_image(home: str) -> bool:

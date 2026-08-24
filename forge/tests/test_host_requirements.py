@@ -194,6 +194,28 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertIn("is missing", host_requirements.results[-1].detail)
 
     @patch("utility_scripts.host_requirements.run_command")
+    def test_graalvm_check_requires_loadable_native_image_agent(self, command: Mock) -> None:
+        command.return_value = subprocess.CompletedProcess(
+            ["java", "-agentlib:native-image-agent", "-version"],
+            1,
+            "",
+            "Could not find agent library native-image-agent",
+        )
+        with _graalvm_home() as graalvm_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                "gpt-5.6-terra",
+                {"GRAALVM_HOME": graalvm_home},
+            )
+
+            host_requirements._check_graalvm_home("GRAALVM_HOME", True, "25.2.4")
+
+        self.assertEqual(1, len(host_requirements.results))
+        self.assertFalse(host_requirements.results[0].passed)
+        self.assertIn("cannot load native-image-agent", host_requirements.results[0].detail)
+
+    @patch("utility_scripts.host_requirements.run_command")
     def test_strict_version_check_stops_work_on_a_mismatched_graalvm(self, command: Mock) -> None:
         command.return_value = subprocess.CompletedProcess(
             ["native-image", "--version"],
@@ -255,9 +277,11 @@ class HostRequirementsTests(unittest.TestCase):
             )
 
             with patch("utility_scripts.host_requirements.run_command") as command:
+                command.return_value = subprocess.CompletedProcess(["java", "-version"], 0, "", "")
                 host_requirements._check_graalvm_home("GRAALVM_HOME", True, None)
 
-        command.assert_not_called()
+        self.assertEqual(1, command.call_count)
+        self.assertIn("-agentlib:native-image-agent", command.call_args.args[0][1])
         installation, version = host_requirements.results
         self.assertEqual("PASS", installation.status)
         self.assertEqual("SKIP", version.status)
