@@ -355,22 +355,22 @@ The target shape:
   without web access is misconfigured
   (§STRAT-forge-predefined-strategy-contract).
 - **`check_setup(NeuralSetupResult) -> ReadyRun | FAILED`** — algorithmic.
-  Validates the result against its schema first, then confirms the claims
-  against the worktree — prepared directories, populated artifact information,
-  requested source context, and every action reported `applied` actually present
-  in the tree — and captures the recovery checkpoint
-  (§root/PRCPL-verify-inputs).
+  Opens each artifact the setup steps were supposed to produce and confirms it
+  was properly generated — the coordinate's `index.json` with its four URLs, the
+  source context, the preflight JSON against its schema, each decided action in
+  the tree — then captures the recovery checkpoint
+  (§WF-forge-workflow-drivers.1, §root/PRCPL-verify-inputs).
 
 Failure is uniform with the rest of the pipeline: a neural-setup timeout or an
 unusable response is `RUN_STATUS_FAILURE` to the driver — exactly as
 `agent_fix()` fails — and the driver reports the run as failed to
-`forge_metadata`, never as a successful `no_action` decision. `NeuralSetupResult`
-becomes a versioned JSON artifact with a schema next to Forge's existing ones, so
-the exchange across the agent boundary is validated on read
-(§WF-forge-workflow-drivers.1). A completed `NeuralSetupResult` is persisted in
-the continuation marker so a resumed run
-does not repeat it (§FS-forge-run-continuation), and the failure names the setup
-step it died in (§ROADMAP-forge-failure-locates-phase-and-step). The run context
+`forge_metadata`, never as a successful `no_action` decision. Each setup step
+writes its artifact to a place fixed by the coordinate, and `NeuralSetupResult`
+is the set of those paths rather than a report about them, so nothing the agent
+returns can move where the check looks (§WF-forge-workflow-drivers.1). A
+completed `NeuralSetupResult` is persisted in the continuation marker so a
+resumed run does not repeat it (§FS-forge-run-continuation), and the failure
+names the setup step it died in (§ROADMAP-forge-failure-locates-phase-and-step). The run context
 these steps consume is dispatcher-owned
 (§ROADMAP-forge-dispatcher-owned-run-preconditions).
 
@@ -378,8 +378,8 @@ Acceptance: no agent is invoked for setup before the driver has produced a
 `PreparedRun`; artifact URL population and source download happen inside
 `neural_setup()` rather than after it; generation cannot start from anything but
 a `ReadyRun`; a neural-setup timeout ends the run as a setup failure instead of
-proceeding as `no_action`; a `NeuralSetupResult` that does not validate against
-its schema, or that reports an action as `applied` which the worktree does not
-carry, fails the setup segment rather than being repaired or ignored; and a
-resumed run whose marker holds a completed neural setup skips straight to
-`check_setup()`.
+proceeding as `no_action`; a setup artifact that is missing, unparseable, or
+missing a required field — an `index.json` without its four URLs, an absent
+source context, a preflight JSON that does not validate — fails the setup
+segment rather than being repaired or ignored; and a resumed run whose marker
+holds a completed neural setup skips straight to `check_setup()`.

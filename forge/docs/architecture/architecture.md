@@ -379,12 +379,13 @@ maps this step onto an agent without web access is misconfigured, and
 `check_host_requirements()` verifies the configured setup agent is usable before
 any issue is claimed.
 
-`NeuralSetupResult` is a schema-validated JSON document — source-context paths,
-normalized decision, applied-action results, advisory guidance, and evidence
-paths — carried as data across the agent boundary rather than as an in-memory
-object, because it is also what `check_setup()` reads and what continuation
-state persists (§WF-forge-workflow-drivers.1). The step fails the same way
-`agent_fix()` does: a timeout or an unusable response is
+Each step writes its artifact to a place fixed by the coordinate: URL population
+into the coordinate's `index.json`, source context into the directory that entry
+names, the preparation decision into the run's preflight JSON, its typed actions
+into the test `build.gradle` and the image allow-list. `NeuralSetupResult` is the
+set of those paths, so continuation state and metrics point at the same files —
+not a description of what they contain (§WF-forge-workflow-drivers.1). The step
+fails the same way `agent_fix()` does: a timeout or an unusable response is
 `RUN_STATUS_FAILURE` to the driver, and the driver reports the run as failed to
 `forge_metadata` — never a successful `no_action` decision. The result is
 persisted in continuation state so a resumed run does not repeat a completed
@@ -400,17 +401,15 @@ neural segment is §ROADMAP-forge-algorithmic-then-neural-setup.
 
 **Algorithmic.**
 
-`check_setup(NeuralSetupResult) -> ReadyRun | FAILED` verifies in two passes,
-and the order matters (§WF-forge-workflow-drivers.1):
-
-1. **Shape** — validate the document against its schema before reading a field.
-   An unparseable or non-conforming result is a setup failure, never a repaired
-   or partially-honored one.
-2. **Truth** — confirm the claims against the worktree: prepared target
-   directories, populated artifact information, source context present at the
-   paths named, and every action reported `applied` actually present in the
-   tree. The document says what the agent believes it did; only the tree says
-   what happened.
+`check_setup(NeuralSetupResult) -> ReadyRun | FAILED` opens each artifact the
+setup steps were supposed to produce and confirms it was properly generated: the
+coordinate's `index.json` parses and carries its four URLs, the source context is
+present where that entry names, the preflight JSON parses and validates against
+its schema, and each decided action is in the tree
+(§WF-forge-workflow-drivers.1). Paths come from the coordinate and the run
+context, not from anything the agent returned, so the check cannot be pointed
+somewhere convenient. A missing, unparseable, or incomplete artifact is a setup
+failure.
 
 On success it captures the recovery checkpoint after all setup edits and returns
 `ReadyRun`. Only that output may initialize the workflow agent and call

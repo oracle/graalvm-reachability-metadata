@@ -64,43 +64,27 @@ Driver preparation has three explicit segments with typed boundaries:
 `ReadyRun` adds the post-setup checkpoint used by workflow rollback and
 continuation.
 
-`NeuralSetupResult` is a JSON document, not an in-memory object. It crosses the
-agent boundary, is the setup check's input, and is the durable setup evidence
-recorded in run metrics and continuation state — so it carries a schema and is
-validated on read, not only on write (§root/PRCPL-verify-inputs). The schema
-lives with Forge's other artifact schemas, is versioned, and rejects unknown
-properties:
+Every step inside `neural_setup` writes a real artifact to a place fixed by the
+coordinate and the run context. Those artifacts are the output — there is no
+separate report describing them, because a report is the agent's account of its
+work and the artifact is the work (§root/PRCPL-verify-inputs). `check_setup`
+therefore looks where each artifact must be and confirms it was properly
+generated:
 
-```json
-{
-  "schema_version": 1,
-  "coordinates": "<group>:<artifact>:<version>",
-  "artifact": { "jar_url": "…", "sources_url": "…" },
-  "source_context": { "requested": "sources|none", "paths": ["…"] },
-  "decision": { "no_action": false, "summary": "…" },
-  "applied_actions": [
-    { "kind": "dependency", "coordinate": "<group>:<artifact>:<version>",
-      "scope": "testImplementation", "status": "applied",  "reason": "…" },
-    { "kind": "docker_image", "image": "…", "slug": "…",
-      "status": "already_present", "reason": "…" }
-  ],
-  "advisory": ["…"],
-  "evidence": { "prompt_path": "…", "response_path": "…", "session_log_path": "…" }
-}
-```
+| Step | Artifact | Properly generated when |
+| --- | --- | --- |
+| Artifact URL population | `metadata/<group>/<artifact>/index.json` | it parses, and the coordinate's entry carries `source-code-url`, `test-code-url`, `documentation-url`, and `repository-url` |
+| Source context | the local source directory named by that entry | it exists and holds the sources the strategy requested |
+| Library preparation preflight | the run's `.library_preparation_preflight.json` | it parses, validates against its schema, and every typed action carries a supported `kind` with well-formed fields |
+| Applied preflight actions | the library's test `build.gradle`, the `allowed-docker-images` directory | each action the preflight decided is present in the tree, or recorded as advisory because the tree could not carry it |
 
-`kind` is a closed set — the deterministic setup kinds of
-§ORCH-forge-orchestration-spec.1.1 — and `status` is one of `applied`,
-`already_present`, or `deferred`, where `deferred` means the item fell back into
-`advisory` because the tree could not carry it yet. An entry whose shape does
-not validate is not repaired and not ignored: it fails the setup segment.
-
-Schema validity is not the same as truth. The document is the agent's *claim*
-about what it did, so `check_setup` confirms every `applied` action against the
-worktree — the dependency line present in the library's test `build.gradle`, the
-image present in the allow-list directory, the source context present at the
-paths named — and fails when a claim and the tree disagree. A run that trusts
-the claim inherits whatever the agent got wrong.
+`NeuralSetupResult` is the set of those paths, not a description of them. It
+records where each artifact landed so continuation state and run metrics can
+point at the same files; it does not restate their contents, and `check_setup`
+never takes a path from it that it could derive itself. An artifact that is
+missing, unparseable, or missing a required field fails the setup segment — it
+is not repaired, and it is not accepted on the strength of the step having
+reported success.
 
 Before the workflow agent is created, each driver must prepare these inputs in
 driver logic or shared utility code:
