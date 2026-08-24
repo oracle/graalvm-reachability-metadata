@@ -382,7 +382,7 @@ class LibraryUpdateIssueTests(unittest.TestCase):
 
         self.assertEqual(claim_metadata, ("org.example:title-lib:1.2.3", None, None))
 
-    def test_direct_repair_uses_same_line_netty_backfill_instead_of_latest(self) -> None:
+    def test_direct_repair_uses_latest_entry_as_failure_baseline(self) -> None:
         with tempfile.TemporaryDirectory() as repo:
             group = "io.netty"
             artifact = "netty-common"
@@ -408,22 +408,20 @@ class LibraryUpdateIssueTests(unittest.TestCase):
                 "title": "Fails native image run io.netty:netty-common:4.1.132.Final",
             }
 
-            with patch.object(forge_metadata, "log_stage") as stage_log:
-                claim_metadata = forge_metadata.build_claim_metadata(
-                    issue,
-                    forge_metadata.LABEL_NI_RUN_FAIL,
-                    repo,
-                )
+            claim_metadata = forge_metadata.build_claim_metadata(
+                issue,
+                forge_metadata.LABEL_NI_RUN_FAIL,
+                repo,
+            )
 
             self.assertEqual(
                 claim_metadata,
                 (
                     "io.netty:netty-common:4.1.132.Final",
-                    "io.netty:netty-common:4.1.115.Final",
+                    "io.netty:netty-common:5.0.0.Alpha1",
                     "4.1.132.Final",
                 ),
             )
-            self.assertIn("nearest prior same major/minor", stage_log.call_args.args[1])
 
     def test_extract_issue_requested_metadata_context_keeps_full_issue_body(self) -> None:
         body = """
