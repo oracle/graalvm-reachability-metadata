@@ -22,13 +22,25 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping, Sequence
 
+FORGE_PYTHON_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if FORGE_PYTHON_ROOT not in sys.path:
+    sys.path.insert(0, FORGE_PYTHON_ROOT)
+
+from ai_workflows.agents.runtime import (  # noqa: E402
+    DEFAULT_ANALYSIS_AGENT,
+    SUPPORTED_AGENT_BACKENDS,
+    default_model_for_backend,
+    normalize_backend_name,
+    resolve_codex_family_executable,
+)
+
 
 REPOSITORY_OWNER = "oracle"
 REPOSITORY_NAME = "graalvm-reachability-metadata"
 PROJECT_NUMBER = 30
 PI_PROVIDER = "openai-codex"
 REQUIRED_GRYPE_VERSION = "0.104.0"
-DEFAULT_REVIEW_MODEL = "gpt-5.6-terra"
+DEFAULT_REVIEW_MODEL = "gpt-5.6-luna"
 GRAALVM_VERSION_CONFIG = "graalvm-versions.json"
 GRAALVM_GA_RELEASE_ENDPOINT = "repos/graalvm/graalvm-ce-builds/releases/latest"
 GRAALVM_EA_RELEASE_ENDPOINT = (
@@ -56,7 +68,7 @@ REVIEW_LIMIT_ENV_VARS = (
     "FORGE_BULK_UPDATE_REVIEW_LIMIT",
 )
 NETWORK_HOSTS_GITHUB = ("github.com", "api.github.com")
-NETWORK_HOSTS_WORK = ("chatgpt.com", "services.gradle.org")
+NETWORK_HOSTS_WORK = ("services.gradle.org",)
 NETWORK_HOSTS_ISSUE_WORK = (
     "repo.maven.apache.org",
     "plugins.gradle.org",
@@ -132,6 +144,11 @@ class HostRequirements:
             requirements: QueueRequirements | None = None,
             graalvm_version_check: str | None = None,
             repo_dir: str | None = None,
+            analysis_agent: str | None = None,
+            analysis_model: str | None = None,
+            test_agent: str | None = None,
+            test_model: str | None = None,
+            agent_family: str | None = None,
     ) -> None:
         self.forge_dir = os.path.abspath(forge_dir)
         self.forge_repo_dir = os.path.dirname(self.forge_dir)
@@ -141,6 +158,24 @@ class HostRequirements:
         self.python_bin = python_bin
         self.review_model = review_model
         self.environment = dict(os.environ if environment is None else environment)
+        self.analysis_agent = normalize_backend_name(
+            analysis_agent
+            or self.environment.get("FORGE_ANALYSIS_AGENT", DEFAULT_ANALYSIS_AGENT)
+        )
+        self.analysis_model = (
+            analysis_model
+            or self.environment.get("FORGE_ANALYSIS_MODEL")
+            or default_model_for_backend(self.analysis_agent)
+        )
+        self.test_agent = normalize_backend_name(
+            test_agent or self.environment.get("FORGE_TEST_AGENT", "pi")
+        )
+        self.test_model = (
+            test_model
+            or self.environment.get("FORGE_TEST_MODEL")
+            or default_model_for_backend(self.test_agent, review_model)
+        )
+        self.agent_family = agent_family or self.environment.get("FORGE_AGENT_FAMILY") or None
         self.requirements = (
             resolve_queue_requirements(self.environment)
             if requirements is None
@@ -170,8 +205,7 @@ class HostRequirements:
         self._check_write_permissions()
         self._check_network()
         self._check_github()
-        self._check_pi()
-        self._check_codex()
+        self._check_selected_agents()
         self._check_docker()
         self._print_results()
         return not any(result.blocks_work for result in self.results)
@@ -204,9 +238,15 @@ class HostRequirements:
         proxy_url = self.environment.get("https_proxy") or self.environment.get("HTTPS_PROXY")
         if proxy_url:
             print(f"  - Network route: HTTPS reachability is checked through the configured proxy {proxy_url}")
-        print("  - Pi reviews: authenticated provider plus unattended tool approval (`pi --approve`)")
+        print(
+            f"  - Analysis agent: {self.analysis_agent} model={self.analysis_model}, "
+            "offline repository tools"
+        )
         if self.requirements.issue_work:
-            print("  - Codex recovery: approval=never, sandbox=danger-full-access, worktree write, provider network")
+            print(
+                f"  - Test agent: {self.test_agent} model={self.test_model}, "
+                "offline repository tools"
+            )
             print("  - Docker: access to the Docker daemon and configured image registries")
         print("[forge-host] Required environment:")
         if self.requirements.issue_work:
@@ -216,7 +256,13 @@ class HostRequirements:
             print("  - JAVA_HOME is aligned to GRAALVM_HOME by Forge; explicit matching value is recommended")
         elif self.requirements.review_work:
             print("  - JAVA_HOME=<JDK 25 with executable bin/java> (GRAALVM_HOME is not required for review-only work)")
-        print(f"  - FORGE_REVIEW_MODEL={self.review_model}")
+        print(f"  - FORGE_ANALYSIS_AGENT={self.analysis_agent}")
+        print(f"  - FORGE_ANALYSIS_MODEL={self.analysis_model}")
+        if self.agent_family:
+            print(f"  - FORGE_AGENT_FAMILY={self.agent_family}")
+        if self.requirements.issue_work:
+            print(f"  - FORGE_TEST_AGENT={self.test_agent}")
+            print(f"  - FORGE_TEST_MODEL={self.test_model}")
         print(f"  - GraalVM version match: {self._version_check_description()}")
 
     def _required_graalvm_description(self, variable: str) -> str:
@@ -251,12 +297,28 @@ class HostRequirements:
 
     def _check_tools(self) -> None:
         any_work = self.requirements.any_work
+        selected_agent_commands = {
+            "claude-code": "claude",
+            "pi": "pi",
+            "codex": self.agent_family or "codex",
+            "opencode": "opencode",
+        }
+        required_agents = {self.analysis_agent}
+        if self.requirements.issue_work:
+            required_agents.add(self.test_agent)
         tool_specs: tuple[tuple[str, str, bool, tuple[str, ...]], ...] = (
             ("Python", self.python_bin, True, ("--version",)),
             ("git", "git", True, ("--version",)),
             ("GitHub CLI", "gh", self.requirements.github_work, ("--version",)),
-            ("Pi", "pi", any_work, ("--version",)),
-            ("Codex", "codex", self.requirements.issue_work, ("--version",)),
+            *tuple(
+                (
+                    f"Agent backend {backend}",
+                    command,
+                    any_work and backend in required_agents,
+                    ("--version",),
+                )
+                for backend, command in selected_agent_commands.items()
+            ),
             ("Docker CLI", "docker", self.requirements.issue_work, ("--version",)),
         )
         for name, command, required, version_args in tool_specs:
@@ -617,9 +679,18 @@ class HostRequirements:
             ),
             ("Forge local repositories", os.path.join(self.forge_dir, "local_repositories"), any_work, ""),
             ("Gradle state", resolve_gradle_state_root(self.environment), any_work, ""),
-            ("Pi state", resolve_pi_state_root(self.environment), any_work, ""),
-            ("Codex state", resolve_codex_state_root(self.environment), self.requirements.issue_work, ""),
         ]
+        selected_state_roots = {
+            self.analysis_agent: resolve_agent_state_root(self.analysis_agent, self.environment),
+        }
+        if self.requirements.issue_work:
+            selected_state_roots[self.test_agent] = resolve_agent_state_root(
+                self.test_agent, self.environment
+            )
+        paths.extend(
+            (f"{backend} state", path, any_work, "")
+            for backend, path in selected_state_roots.items()
+        )
         for name, path, required, skip_detail in paths:
             if not required:
                 self._add("filesystem", name, False, None, skip_detail or f"{path} is not required by this run")
@@ -641,7 +712,14 @@ class HostRequirements:
         ]
         hosts.extend((host, self.requirements.any_work) for host in NETWORK_HOSTS_WORK)
         hosts.extend((host, self.requirements.issue_work) for host in NETWORK_HOSTS_ISSUE_WORK)
+        if self.requirements.any_work:
+            hosts.append((agent_provider_host(self.analysis_agent, self.analysis_model), True))
+        if self.requirements.issue_work:
+            hosts.append((agent_provider_host(self.test_agent, self.test_model), True))
+        required_by_host: dict[str, bool] = {}
         for host, required in hosts:
+            required_by_host[host] = required_by_host.get(host, False) or required
+        for host, required in required_by_host.items():
             if not required:
                 self._add("network", host, False, None, "not required by this run")
                 continue
@@ -833,6 +911,79 @@ query($owner: String!, $name: String!, $project: Int!) {
             f"Create `{login}/{REPOSITORY_NAME}` and grant the active account write access to push generated branches.",
         )
 
+    def _check_selected_agents(self) -> None:
+        """Validate only the backends selected for enabled runtime roles.
+
+        §FS-forge-agent-runtime-selection
+        """
+        roles: list[tuple[str, str, str, bool]] = [
+            ("analysis", self.analysis_agent, self.analysis_model, self.requirements.any_work),
+            ("test", self.test_agent, self.test_model, self.requirements.issue_work),
+        ]
+        for role, backend, model, required in roles:
+            if not required:
+                self._add("agent", f"{role} role", False, None, "not required by this run")
+                continue
+            executable = {
+                "claude-code": "claude",
+                "pi": "pi",
+                "codex": self.agent_family or "codex",
+                "opencode": "opencode",
+            }[backend]
+            if resolve_executable(executable) is None:
+                self._add(
+                    "agent",
+                    f"{role} role authentication",
+                    True,
+                    False,
+                    f"backend={backend}; executable={executable}; model={model}; unavailable",
+                    f"Install and authenticate `{executable}`, or select another {role} agent.",
+                )
+                continue
+            if backend == "codex" and self.agent_family:
+                try:
+                    resolve_codex_family_executable(self.agent_family, self.environment)
+                except RuntimeError as exc:
+                    self._add(
+                        "agent",
+                        f"{role} role authentication",
+                        True,
+                        False,
+                        str(exc),
+                        f"Ensure `{self.agent_family} doctor --json` reports a valid raw Codex executable.",
+                    )
+                    continue
+            ready, detail = self._selected_agent_authentication(backend, model)
+            self._add(
+                "agent",
+                f"{role} role authentication",
+                True,
+                ready,
+                f"backend={backend}; model={model}; {detail}",
+                f"Authenticate `{executable}` for model `{model}` before starting Forge.",
+            )
+            self._add(
+                "agent",
+                f"{role} role offline profile",
+                True,
+                True,
+                "network tools denied; GitHub remains in orchestration",
+            )
+
+    def _selected_agent_authentication(self, backend: str, model: str) -> tuple[bool, str]:
+        """Run a backend-specific authentication probe that never invokes a model."""
+        if backend == "pi":
+            return check_pi_authentication(model, self.environment)
+        if backend == "codex":
+            executable = resolve_codex_family_executable(self.agent_family, self.environment)
+            result = run_command([executable, "login", "status"], self.environment)
+            return result.returncode == 0, first_output_line(result) or "codex login status failed"
+        if backend == "claude-code":
+            result = run_command(["claude", "auth", "status", "--json"], self.environment)
+            return result.returncode == 0, first_output_line(result) or "claude auth status failed"
+        result = run_command(["opencode", "auth", "list"], self.environment)
+        return result.returncode == 0, first_output_line(result) or "opencode auth list failed"
+
     def _check_pi(self) -> None:
         required = self.requirements.any_work
         if not required:
@@ -893,7 +1044,7 @@ query($owner: String!, $name: String!, $project: Int!) {
             True,
             compatible,
             policy_detail,
-            "Forge Codex recovery requires approval policy `never` and sandbox `danger-full-access`; "
+            "Forge Codex recovery requires approval policy `never` and sandbox `workspace-write`; "
             "change the managed Codex requirements or replace the remaining Codex recovery lane.",
         )
 
@@ -1367,6 +1518,34 @@ def resolve_codex_state_root(environment: Mapping[str, str]) -> str:
     return os.path.join(os.path.expanduser(environment.get("HOME", "~")), ".codex")
 
 
+def resolve_agent_state_root(backend: str, environment: Mapping[str, str]) -> str:
+    """Resolve the writable state root for a selected backend."""
+    if backend == "pi":
+        return resolve_pi_state_root(environment)
+    if backend == "codex":
+        return resolve_codex_state_root(environment)
+    home = os.path.expanduser(environment.get("HOME", "~"))
+    if backend == "claude-code":
+        return os.path.join(home, ".claude")
+    data_home = environment.get("XDG_DATA_HOME") or os.path.join(home, ".local", "share")
+    return os.path.join(os.path.expanduser(data_home), "opencode")
+
+
+def agent_provider_host(backend: str, model: str) -> str:
+    """Return the provider transport host implied by a backend/model selection."""
+    if backend in {"codex", "pi"}:
+        return "chatgpt.com"
+    if backend == "claude-code":
+        return "api.anthropic.com"
+    provider = model.split("/", 1)[0].lower() if "/" in model else ""
+    return {
+        "anthropic": "api.anthropic.com",
+        "google": "generativelanguage.googleapis.com",
+        "openai": "api.openai.com",
+        "openai-codex": "chatgpt.com",
+    }.get(provider, "opencode.ai")
+
+
 def codex_doctor_provider_status(output: str) -> tuple[bool, str]:
     """Extract the provider reachability result from `codex doctor --json`."""
     try:
@@ -1407,8 +1586,8 @@ def codex_unattended_policy_status(codex_home: str) -> tuple[bool, str]:
         policies.append(name)
         if isinstance(approvals, list) and "never" not in approvals:
             conflicts.append(f"{name}: approval policy `never` is disallowed ({approvals})")
-        if isinstance(sandboxes, list) and "danger-full-access" not in sandboxes:
-            conflicts.append(f"{name}: sandbox `danger-full-access` is disallowed ({sandboxes})")
+        if isinstance(sandboxes, list) and "workspace-write" not in sandboxes:
+            conflicts.append(f"{name}: sandbox `workspace-write` is disallowed ({sandboxes})")
 
     if conflicts:
         return False, "; ".join(conflicts)
@@ -1430,7 +1609,12 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         ),
     )
     parser.add_argument("--python-bin", default=sys.executable, help="Python interpreter selected by do-work.")
-    parser.add_argument("--review-model", default=DEFAULT_REVIEW_MODEL, help="Pi model used for PR reviews.")
+    parser.add_argument("--review-model", default=DEFAULT_REVIEW_MODEL, help="Legacy review model override.")
+    parser.add_argument("--analysis-agent", choices=SUPPORTED_AGENT_BACKENDS, default=None)
+    parser.add_argument("--analysis-model", default=None)
+    parser.add_argument("--agent-family", default=None)
+    parser.add_argument("--test-agent", choices=SUPPORTED_AGENT_BACKENDS, default=None)
+    parser.add_argument("--test-model", default=None)
     parser.add_argument(
         "--graalvm-version-check",
         choices=GRAALVM_VERSION_CHECK_MODES,
@@ -1455,6 +1639,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             args.review_model,
             graalvm_version_check=resolve_graalvm_version_check(args.graalvm_version_check),
             repo_dir=args.reachability_metadata_path,
+            analysis_agent=args.analysis_agent,
+            analysis_model=args.analysis_model,
+            agent_family=args.agent_family,
+            test_agent=args.test_agent,
+            test_model=args.test_model,
         )
     except ValueError as exc:
         print(f"ERROR: Forge host requirement configuration is invalid: {exc}", file=sys.stderr)

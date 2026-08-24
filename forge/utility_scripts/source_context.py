@@ -27,6 +27,12 @@ from dataclasses import dataclass
 from email.message import Message
 from typing import Any
 
+from ai_workflows.agents.opencode_agent import OFFLINE_OPENCODE_CONFIG
+from ai_workflows.agents.runtime import (
+    agent_process_environment,
+    analysis_agent_selection,
+    resolve_codex_family_executable,
+)
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import find_index_entry_for_version, is_not_for_native_image_entry
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
@@ -45,7 +51,6 @@ SOURCE_CONTEXT_LABEL_BY_TYPE = {
     "documentation": "Documentation sources",
 }
 
-DEFAULT_POPULATE_AGENT_COMMAND = "codex -a never exec -s danger-full-access"
 DEFAULT_TEST_LANGUAGE = "java"
 VERSION_PLACEHOLDER = "$version$"
 TEST_SOURCE_DIR_BY_LANGUAGE = {
@@ -183,7 +188,58 @@ def normalize_source_context_types(raw_value: Any) -> list[str]:
     return normalized
 
 
-def populate_artifact_urls(reachability_repo_path: str, coordinate: str, agent_command: str = DEFAULT_POPULATE_AGENT_COMMAND) -> None:
+def url_fetch_agent_command() -> str:
+    """Build the sole network-enabled agent command used to discover URLs.
+
+    All other agent invocations use §FS-forge-agent-runtime-selection's
+    offline profile. This command is confined to ``populateArtifactURLs`` and
+    ``discoverArtifactMetadata`` prompts, whose job is to resolve and verify
+    URL fields.
+    """
+    selection = analysis_agent_selection()
+    model = shlex.quote(selection.model)
+    if selection.backend == "codex":
+        executable = resolve_codex_family_executable(selection.family)
+        return (
+            f"{shlex.quote(executable)} exec --ignore-user-config -s workspace-write "
+            "-c approval_policy=\"never\" "
+            "-c sandbox_workspace_write.network_access=true "
+            "-c web_search=\"live\" -c agents.enabled=false "
+            "-c features.skill_mcp_dependency_install=false -c mcp_servers={} "
+            f"-m {model}"
+        )
+    if selection.backend == "claude-code":
+        return (
+            "claude -p --permission-mode dontAsk "
+            "--tools Read,Edit,Write,Glob,Grep,WebFetch,WebSearch "
+            f"--model {model}"
+        )
+    if selection.backend == "pi":
+        return (
+            "pi -p --no-session --no-extensions "
+            "--tools read,edit,write,grep,find,ls,bash "
+            f"--provider openai-codex --model {model}"
+        )
+    network_config = dict(OFFLINE_OPENCODE_CONFIG)
+    network_config["permission"] = dict(OFFLINE_OPENCODE_CONFIG["permission"])
+    network_config["permission"]["webfetch"] = "allow"
+    network_config["permission"]["websearch"] = "allow"
+    rendered_config = shlex.quote(json.dumps(network_config, separators=(",", ":")))
+    return (
+        f"env OPENCODE_CONFIG_CONTENT={rendered_config} "
+        f"opencode run --auto --model {model}"
+    )
+
+
+def _effective_agent_command(agent_command: str | None) -> str:
+    return agent_command or url_fetch_agent_command()
+
+
+def populate_artifact_urls(
+        reachability_repo_path: str,
+        coordinate: str,
+        agent_command: str | None = None,
+) -> None:
     """Populate artifact URLs in ``index.json`` before source-context download.
 
     Satisfies the dynamic-access setup precondition that source/test/docs URLs
@@ -198,12 +254,12 @@ def populate_artifact_urls(reachability_repo_path: str, coordinate: str, agent_c
         "./gradlew",
         "populateArtifactURLs",
         f"--coordinates={coordinate}",
-        f"--agent-command={agent_command}",
+        f"--agent-command={_effective_agent_command(agent_command)}",
     ]
     result = subprocess.run(
         command,
         cwd=reachability_repo_path,
-        env=gradle_command_environment(reachability_repo_path),
+        env=agent_process_environment(gradle_command_environment(reachability_repo_path)),
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
         text=True,
@@ -241,7 +297,7 @@ def source_context_urls_available(
 def discover_artifact_metadata(
         reachability_repo_path: str,
         coordinate: str,
-        agent_command: str = DEFAULT_POPULATE_AGENT_COMMAND,
+        agent_command: str | None = None,
 ) -> None:
     """Discover artifact metadata, separating bootstrap outages from library failures.
 
@@ -254,14 +310,19 @@ def discover_artifact_metadata(
     log_path = build_task_log_path("discover-artifact-metadata", coordinate, "discover_artifact_metadata.log")
     log_path_display = display_log_path(log_path)
     log_stage("discover-artifact-metadata", f"Discovering artifact metadata for {coordinate}; output: {log_path_display}")
-    command = _discover_artifact_metadata_command(coordinate, agent_command)
-    command_env = gradle_command_environment(reachability_repo_path)
+    effective_agent_command = _effective_agent_command(agent_command)
+    command = _discover_artifact_metadata_command(coordinate, effective_agent_command)
+    command_env = agent_process_environment(gradle_command_environment(reachability_repo_path))
     result = _run_gradle_discovery_command(command, reachability_repo_path, command_env)
     attempt_logs = [_format_gradle_attempt_log("initial", command, result)]
     _write_gradle_attempt_logs(log_path, attempt_logs)
 
     if result.returncode != 0 and _is_gradle_bootstrap_failure(result.stdout):
-        retry_command = _discover_artifact_metadata_command(coordinate, agent_command, diagnostics=True)
+        retry_command = _discover_artifact_metadata_command(
+            coordinate,
+            effective_agent_command,
+            diagnostics=True,
+        )
         log_stage(
             "discover-artifact-metadata",
             (

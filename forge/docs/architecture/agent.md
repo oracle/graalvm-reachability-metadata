@@ -1,7 +1,9 @@
-# AR-agent-api: Forge agent API and Pi implementation
+# AR-agent-api: Forge offline agent API and backend adapters
 
 Forge treats an agent as a replaceable editing backend behind a small Python
 interface, preserving the boundary in §AR-forge-strategy-agent-boundary.
+§FS-forge-agent-runtime-selection requires every adapter to expose the same
+offline editing boundary.
 Workflow engines decide what work to do next; agents only send prompts,
 maintain or clear conversation context, report token usage, and run
 agent-visible test commands, with bundles wiring the chosen backend into a
@@ -33,7 +35,17 @@ test-command bridge, then
 be selected through strategy data (§AR-forge-workflow-strategy-config) instead
 of changing workflow drivers or workflow engines.
 
-## 2. Pi Implementation
+## 2. Backend implementations
+
+The registry exposes `claude-code`, `pi`, `codex`, and `opencode`. Each adapter
+starts its CLI with only offline repository read/write/search tools. Web,
+GitHub, MCP, extension, delegated-agent, and network-capable shell tools are denied. Deterministic utilities
+run tests and fetch external context before the prompt.
+
+`source_context.url_fetch_agent_command` is the one bounded exception: URL-field
+discovery enables the selected analysis backend's fetch/search capability while
+keeping GitHub credentials and general integrations unavailable. Normal turns
+always use the offline adapter command.
 
 [`PiAgent`](../../ai_workflows/agents/pi_agent.py) registers the `pi` backend and
 drives Pi through [`PiRpcClient`](../../ai_workflows/agents/pi_rpc_client.py), a
@@ -71,7 +83,24 @@ workflow engine chooses the gate (§AR-forge-workflow-engine), deterministic
 utilities run it, and the agent receives diagnostics for the next edit cycle,
 keeping the strategy/agent boundary intact (§AR-forge-strategy-agent-boundary).
 
-## 3. Why Pi Is The Default Lightweight Backend
+## 3. Runtime roles and defaults
+
+Runtime configuration names two roles rather than encoding a product in a
+workflow. `FORGE_ANALYSIS_AGENT` / `FORGE_ANALYSIS_MODEL` select recovery and
+review work, while `FORGE_TEST_AGENT` / `FORGE_TEST_MODEL` override the
+predefined strategy's test-generation backend and model. The analysis defaults
+to Codex with `gpt-5.6-luna` and high reasoning (`xhigh` for pull-request
+review); Claude Code defaults to its `sonnet` model alias. A strategy remains the test-role default when no override
+is supplied. The do-work loop exports these values
+unchanged across its self-update boundary (§DW-do-work-loop).
+
+`FORGE_AGENT_FAMILY` is an optional Codex-launcher discovery input shared by
+both roles. The runtime asks the compatible launcher for its installation
+diagnostics, extracts the raw executable path, and uses the raw executable for
+Codex turns and thread control. This preserves local-build selection without
+letting wrapper arguments override Forge's offline Codex configuration.
+
+## 4. Why Pi Is The Default Lightweight Backend
 
 Forge prefers Pi for strategy profiles where it is sufficient because the
 project goal is not maximum model strength on every turn; it is fast, reliable,

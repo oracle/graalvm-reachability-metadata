@@ -9,6 +9,8 @@ import subprocess
 import tempfile
 import time
 from ai_workflows.agents.agent import Agent
+from ai_workflows.agents.runtime import agent_process_environment
+from ai_workflows.agents.runtime import resolve_codex_family_executable
 from ai_workflows.agents.codex_app_server import CodexAppServerClient
 from utility_scripts.gradle_test_runner import run_gradle_test_command
 
@@ -101,6 +103,9 @@ class CodexAgent(Agent):
             task_type: str = "session",
             library: str | None = None,
             persistent_instructions: str | None = None,
+            environment: dict[str, str] | None = None,
+            agent_family: str | None = None,
+            thinking_level: str | None = None,
             **_,
     ):
         self._model_name = model_name
@@ -109,6 +114,16 @@ class CodexAgent(Agent):
         self._task_type = task_type
         self._library = library
         self._persistent_instructions = persistent_instructions
+        source_environment = os.environ if environment is None else environment
+        self._agent_family = agent_family or source_environment.get("FORGE_AGENT_FAMILY")
+        self._reasoning_effort = thinking_level or (
+            "high" if model_name == "gpt-5.6-luna" else "medium"
+        )
+        self._codex_command = resolve_codex_family_executable(
+            self._agent_family,
+            source_environment,
+        )
+        self._environment = agent_process_environment(source_environment)
         self._total_tokens_sent = 0
         self._cached_input_tokens_used = 0
         self._total_tokens_received = 0
@@ -124,6 +139,9 @@ class CodexAgent(Agent):
             working_dir=self._working_dir,
             timeout=self._timeout,
             persistent_instructions=self._persistent_instructions,
+            environment=self._environment,
+            codex_command=self._codex_command,
+            reasoning_effort=self._reasoning_effort,
         )
 
     @property
@@ -162,8 +180,8 @@ class CodexAgent(Agent):
         config_args = self._build_config_args()
         if self._thread_id is None:
             cmd = [
-                "codex", "exec",
-                "--dangerously-bypass-approvals-and-sandbox",
+                self._codex_command, "exec",
+                "--ignore-user-config",
                 "--json",
                 *config_args,
                 "-m", self._model_name,
@@ -171,8 +189,8 @@ class CodexAgent(Agent):
             ]
         else:
             cmd = [
-                "codex", "exec", "resume",
-                "--dangerously-bypass-approvals-and-sandbox",
+                self._codex_command, "exec", "resume",
+                "--ignore-user-config",
                 "--json",
                 *config_args,
                 "-m", self._model_name,
@@ -218,6 +236,7 @@ class CodexAgent(Agent):
                 process = subprocess.Popen(
                     cmd,
                     cwd=self._working_dir,
+                    env=self._environment,
                     stdout=temp_output,
                     stderr=subprocess.STDOUT,
                     text=True,
@@ -328,6 +347,9 @@ class CodexAgent(Agent):
             working_dir=self._working_dir,
             timeout=self._timeout,
             persistent_instructions=self._persistent_instructions,
+            environment=self._environment,
+            codex_command=self._codex_command,
+            reasoning_effort=self._reasoning_effort,
         )
 
     def run_test_command(self, test_cmd: str) -> str:
@@ -356,20 +378,37 @@ class CodexAgent(Agent):
             task_type=self._task_type,
             library=self._library,
             persistent_instructions=self._persistent_instructions,
+            environment=self._environment,
+            agent_family=self._agent_family,
+            thinking_level=self._reasoning_effort,
         )
         child._control_client = self._control_client
         return child
 
     def _build_config_args(self) -> list[str]:
         config = {
-            "reasoning.effort": "medium",
+            "reasoning.effort": self._reasoning_effort,
+            "approval_policy": "never",
+            "sandbox_mode": "workspace-write",
+            "sandbox_workspace_write.network_access": "false",
+            "web_search": "disabled",
+            "agents.enabled": "false",
+            "features.skill_mcp_dependency_install": "false",
+            "mcp_servers": "{}",
         }
         if self._persistent_instructions:
             config["developer_instructions"] = self._persistent_instructions
 
         args: list[str] = []
         for key, value in config.items():
-            args.extend(["-c", f"{key}={self._toml_string(value)}"])
+            raw_keys = {
+                "sandbox_workspace_write.network_access",
+                "agents.enabled",
+                "features.skill_mcp_dependency_install",
+                "mcp_servers",
+            }
+            rendered = value if key in raw_keys else self._toml_string(value)
+            args.extend(["-c", f"{key}={rendered}"])
         return args
 
     @staticmethod

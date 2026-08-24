@@ -42,12 +42,17 @@ class CodexAppServerClient:
             timeout: int = 600,
             reasoning_effort: str = "high",
             persistent_instructions: str | None = None,
+            environment: dict[str, str] | None = None,
+            codex_command: str = "codex",
     ):
         self._model_name = model_name
         self._working_dir = os.path.abspath(working_dir)
         self._timeout = timeout
         self._reasoning_effort = reasoning_effort
         self._persistent_instructions = persistent_instructions
+        source_environment = os.environ if environment is None else environment
+        self._environment = dict(source_environment)
+        self._codex_command = codex_command
 
     def start_thread(self) -> dict:
         params = self._build_common_thread_params()
@@ -73,8 +78,9 @@ class CodexAppServerClient:
     def fork_and_compact_thread(self, thread_id: str) -> dict:
         try:
             process = subprocess.Popen(
-                ["codex", "app-server", "--listen", "stdio://"],
+                self._command(),
                 cwd=self._working_dir,
+                env=self._environment,
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
@@ -116,14 +122,21 @@ class CodexAppServerClient:
             process.wait(timeout=5)
 
     def _build_common_thread_params(self) -> dict:
-        config = {"reasoning.effort": self._reasoning_effort}
+        config = {
+            "reasoning.effort": self._reasoning_effort,
+            "sandbox_workspace_write.network_access": False,
+            "web_search": "disabled",
+            "agents.enabled": False,
+            "features.skill_mcp_dependency_install": False,
+            "mcp_servers": {},
+        }
         if self._persistent_instructions:
             config["developer_instructions"] = self._persistent_instructions
         return {
             "model": self._model_name,
             "cwd": self._working_dir,
             "approvalPolicy": "never",
-            "sandbox": "danger-full-access",
+            "sandbox": "workspace-write",
             "config": config,
             "persistExtendedHistory": True,
         }
@@ -131,8 +144,9 @@ class CodexAppServerClient:
     def _request(self, method: str, params: dict) -> dict:
         try:
             process = subprocess.Popen(
-                ["codex", "app-server", "--listen", "stdio://"],
+                self._command(),
                 cwd=self._working_dir,
+                env=self._environment,
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
@@ -163,6 +177,17 @@ class CodexAppServerClient:
             process.stdout.close()
             process.kill()
             process.wait(timeout=5)
+
+    def _command(self) -> list[str]:
+        """Start thread control with integrations and network features disabled."""
+        return [
+            self._codex_command, "app-server", "--listen", "stdio://",
+            "-c", "sandbox_workspace_write.network_access=false",
+            "-c", 'web_search="disabled"',
+            "-c", "agents.enabled=false",
+            "-c", "features.skill_mcp_dependency_install=false",
+            "-c", "mcp_servers={}",
+        ]
 
     @staticmethod
     def _send(stream, payload: dict) -> None:

@@ -3,9 +3,11 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+import os
 import subprocess
 import sys
 
+from ai_workflows.agents.runtime import AgentSelection, analysis_agent_selection, run_agent_task
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.pi_logs import build_pi_log_path
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
@@ -96,7 +98,7 @@ def _run_pi_checkstyle_fix(
         model_name: str,
         timeout_seconds: int,
 ) -> bool:
-    """Invoke Pi to fix checkstyle errors shown in the output."""
+    """Invoke the analysis agent to fix checkstyle errors shown in the output."""
     trimmed = _trim_output(checkstyle_output, MAX_CHECKSTYLE_OUTPUT_CHARS)
     prompt = "\n".join([
         "Fix all checkstyle errors in the files shown in the output below.",
@@ -107,27 +109,26 @@ def _run_pi_checkstyle_fix(
         trimmed,
         "```",
     ])
-    command = ["pi", "-p", "--no-session", "--model", model_name, prompt]
-    try:
-        result = subprocess.run(
-            command,
-            cwd=repo_path,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            timeout=timeout_seconds,
-            check=False,
-        )
-    except subprocess.TimeoutExpired as exc:
-        _append_pi_output(log_path, "checkstyle", attempt, exc.stdout or "")
-        print("ERROR: Pi checkstyle fix timed out.", file=sys.stderr)
-        return False
-
-    _append_pi_output(log_path, "checkstyle", attempt, result.stdout or "")
-
-    if result.returncode != 0:
+    configured = analysis_agent_selection()
+    selection = AgentSelection(
+        configured.backend,
+        configured.model or model_name,
+        configured.family,
+        configured.thinking_level,
+    )
+    result = run_agent_task(
+        selection=selection,
+        working_dir=repo_path,
+        prompt=prompt,
+        task_type="checkstyle",
+        library=os.path.basename(log_path),
+        timeout=timeout_seconds,
+    )
+    _append_pi_output(log_path, "checkstyle", attempt, result.response)
+    if result.return_code != 0:
         print(
-            f"ERROR: Pi checkstyle fix failed. See {display_log_path(log_path)} for details.",
+            f"ERROR: {selection.backend} checkstyle fix failed. "
+            f"See {display_log_path(log_path)} for details.",
             file=sys.stderr,
         )
         return False
@@ -144,7 +145,7 @@ def _run_pi_test_fix_after_checkstyle(
         model_name: str,
         timeout_seconds: int,
 ) -> bool:
-    """Invoke Pi to fix a test failure introduced while fixing checkstyle."""
+    """Invoke the analysis agent after a checkstyle-related test failure."""
     prompt = "\n".join([
         "Fix the repository so the failing Gradle test command passes.",
         "Only make the minimal changes required to resolve the failure.",
@@ -159,27 +160,26 @@ def _run_pi_test_fix_after_checkstyle(
         _trim_output(checkstyle_output, MAX_CHECKSTYLE_OUTPUT_CHARS),
         "```",
     ])
-    command = ["pi", "-p", "--no-session", "--model", model_name, prompt]
-    try:
-        result = subprocess.run(
-            command,
-            cwd=repo_path,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            timeout=timeout_seconds,
-            check=False,
-        )
-    except subprocess.TimeoutExpired as exc:
-        _append_pi_output(log_path, "test-after-checkstyle", attempt, exc.stdout or "")
-        print("ERROR: Pi post-checkstyle test fix timed out.", file=sys.stderr)
-        return False
-
-    _append_pi_output(log_path, "test-after-checkstyle", attempt, result.stdout or "")
-
-    if result.returncode != 0:
+    configured = analysis_agent_selection()
+    selection = AgentSelection(
+        configured.backend,
+        configured.model or model_name,
+        configured.family,
+        configured.thinking_level,
+    )
+    result = run_agent_task(
+        selection=selection,
+        working_dir=repo_path,
+        prompt=prompt,
+        task_type="test-after-checkstyle",
+        library=os.path.basename(log_path),
+        timeout=timeout_seconds,
+    )
+    _append_pi_output(log_path, "test-after-checkstyle", attempt, result.response)
+    if result.return_code != 0:
         print(
-            f"ERROR: Pi post-checkstyle test fix failed. See {display_log_path(log_path)} for details.",
+            f"ERROR: {selection.backend} post-checkstyle test fix failed. "
+            f"See {display_log_path(log_path)} for details.",
             file=sys.stderr,
         )
         return False

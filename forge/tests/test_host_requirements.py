@@ -298,7 +298,52 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertFalse(passed)
         self.assertIn("Codex Developers", detail)
         self.assertIn("`never` is disallowed", detail)
-        self.assertIn("`danger-full-access` is disallowed", detail)
+        self.assertNotIn("`workspace-write` is disallowed", detail)
+
+    def test_only_selected_agent_executables_are_required(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            "review-model",
+            requirements=QueueRequirements(issue_work=False, review_work=True),
+            analysis_agent="claude-code",
+            analysis_model="claude-opus-4-1",
+            test_agent="opencode",
+            test_model="anthropic/claude-sonnet-4-5",
+        )
+        with patch.object(host_requirements, "_check_tool") as check_tool, \
+                patch.object(host_requirements, "_check_grype"), \
+                patch.object(host_requirements, "_check_gradle_wrapper"):
+            host_requirements._check_tools()
+
+        required_agent_checks = [
+            call_args.args[1]
+            for call_args in check_tool.call_args_list
+            if call_args.args[0].startswith("Agent backend") and call_args.args[2]
+        ]
+        self.assertEqual(required_agent_checks, ["claude"])
+
+    def test_codex_agent_family_replaces_the_required_launcher(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            "review-model",
+            requirements=QueueRequirements(issue_work=False, review_work=True),
+            analysis_agent="codex",
+            analysis_model="gpt-5.6-terra",
+            agent_family="local-codex",
+        )
+        with patch.object(host_requirements, "_check_tool") as check_tool, \
+                patch.object(host_requirements, "_check_grype"), \
+                patch.object(host_requirements, "_check_gradle_wrapper"):
+            host_requirements._check_tools()
+
+        required_agent_checks = [
+            call_args.args[1]
+            for call_args in check_tool.call_args_list
+            if call_args.args[0].startswith("Agent backend") and call_args.args[2]
+        ]
+        self.assertEqual(required_agent_checks, ["local-codex"])
 
     def test_github_permission_results_name_each_required_mutation_boundary(self) -> None:
         environment = {
