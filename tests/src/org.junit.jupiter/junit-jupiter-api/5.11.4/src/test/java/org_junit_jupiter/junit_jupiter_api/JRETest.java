@@ -47,6 +47,20 @@ public class JRETest {
                 return JRE.JAVA_17;
             case 18:
                 return JRE.JAVA_18;
+            case 19:
+                return JRE.JAVA_19;
+            case 20:
+                return JRE.JAVA_20;
+            case 21:
+                return JRE.JAVA_21;
+            case 22:
+                return JRE.JAVA_22;
+            case 23:
+                return JRE.JAVA_23;
+            case 24:
+                return JRE.JAVA_24;
+            case 25:
+                return JRE.JAVA_25;
             default:
                 return JRE.OTHER;
         }
