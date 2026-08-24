@@ -28,6 +28,7 @@ class PiAgent(Agent):
             timeout: int = 720,
             provider: str | None = None,
             pi_command: str = "pi",
+            agent_name: str | None = None,
             session_dir: str | None = None,
             library: str | None = None,
             task_type: str = "session",
@@ -38,7 +39,7 @@ class PiAgent(Agent):
     ):
         self._model_name = model_name
         self._provider = provider or DEFAULT_PI_PROVIDER
-        self._pi_command = pi_command
+        self._pi_command = agent_name or pi_command
         self._session_dir = session_dir
         self._working_dir = os.path.abspath(working_dir)
         self._timeout = timeout
@@ -56,7 +57,7 @@ class PiAgent(Agent):
         self._task_type = task_type
         self._session_log_path: str | None = None
         self._rpc_client = PiRpcClient(
-            pi_command=pi_command,
+            pi_command=self._pi_command,
             session_dir=session_dir,
             provider=self._provider,
             model=self._model_name,

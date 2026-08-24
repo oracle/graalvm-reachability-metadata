@@ -27,6 +27,7 @@ class ClaudeCodeAgent(Agent):
             library: str | None = None,
             persistent_instructions: str | None = None,
             environment: dict[str, str] | None = None,
+            agent_name: str | None = None,
             **_,
     ):
         self._model_name = model_name
@@ -35,6 +36,7 @@ class ClaudeCodeAgent(Agent):
         self._task_type = task_type
         self._library = library
         self._persistent_instructions = persistent_instructions
+        self._claude_command = agent_name or "claude"
         self._environment = agent_process_environment(environment)
         self._session_id: str | None = None
         self._total_tokens_sent = 0
@@ -89,7 +91,7 @@ class ClaudeCodeAgent(Agent):
 
     def _build_command(self, prompt: str, fork: bool = False) -> list[str]:
         command = [
-            "claude", "-p", prompt,
+            self._claude_command, "-p", prompt,
             "--output-format", "json",
             "--permission-mode", "dontAsk",
             "--tools", "Read,Edit,Write,Glob,Grep",
@@ -153,6 +155,7 @@ class ClaudeCodeAgent(Agent):
             library=self._library,
             persistent_instructions=self._persistent_instructions,
             environment=self._environment,
+            agent_name=self._claude_command,
         )
 
     def _append_log(self, prompt: str, output: str) -> None:

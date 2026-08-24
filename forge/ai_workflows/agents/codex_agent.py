@@ -10,7 +10,6 @@ import tempfile
 import time
 from ai_workflows.agents.agent import Agent
 from ai_workflows.agents.runtime import agent_process_environment
-from ai_workflows.agents.runtime import resolve_codex_family_executable
 from ai_workflows.agents.codex_app_server import CodexAppServerClient
 from utility_scripts.gradle_test_runner import run_gradle_test_command
 
@@ -105,6 +104,7 @@ class CodexAgent(Agent):
             persistent_instructions: str | None = None,
             environment: dict[str, str] | None = None,
             agent_family: str | None = None,
+            agent_name: str | None = None,
             thinking_level: str | None = None,
             **_,
     ):
@@ -119,10 +119,7 @@ class CodexAgent(Agent):
         self._reasoning_effort = thinking_level or (
             "high" if model_name == "gpt-5.6-luna" else "medium"
         )
-        self._codex_command = resolve_codex_family_executable(
-            self._agent_family,
-            source_environment,
-        )
+        self._codex_command = agent_name or "codex"
         self._environment = agent_process_environment(source_environment)
         self._total_tokens_sent = 0
         self._cached_input_tokens_used = 0
@@ -380,6 +377,7 @@ class CodexAgent(Agent):
             persistent_instructions=self._persistent_instructions,
             environment=self._environment,
             agent_family=self._agent_family,
+            agent_name=self._codex_command,
             thinking_level=self._reasoning_effort,
         )
         child._control_client = self._control_client

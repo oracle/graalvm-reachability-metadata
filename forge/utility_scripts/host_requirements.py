@@ -31,7 +31,6 @@ from ai_workflows.agents.runtime import (  # noqa: E402
     SUPPORTED_AGENT_BACKENDS,
     default_model_for_backend,
     normalize_backend_name,
-    resolve_codex_family_executable,
 )
 
 
@@ -145,8 +144,10 @@ class HostRequirements:
             graalvm_version_check: str | None = None,
             repo_dir: str | None = None,
             analysis_agent: str | None = None,
+            analysis_family: str | None = None,
             analysis_model: str | None = None,
             test_agent: str | None = None,
+            test_family: str | None = None,
             test_model: str | None = None,
             agent_family: str | None = None,
     ) -> None:
@@ -158,22 +159,31 @@ class HostRequirements:
         self.python_bin = python_bin
         self.review_model = review_model
         self.environment = dict(os.environ if environment is None else environment)
-        self.analysis_agent = normalize_backend_name(
-            analysis_agent
-            or self.environment.get("FORGE_ANALYSIS_AGENT", DEFAULT_ANALYSIS_AGENT)
+        self.analysis_agent = analysis_agent or self.environment.get("FORGE_ANALYSIS_AGENT", "codex")
+        self.analysis_family = normalize_backend_name(
+            analysis_family
+            or self.environment.get("FORGE_ANALYSIS_FAMILY")
+            or self.environment.get("FORGE_ANALYSIS_AGENT_FAMILY")
+            or self.environment.get("FORGE_AGENT_FAMILY")
+            or DEFAULT_ANALYSIS_AGENT
         )
         self.analysis_model = (
             analysis_model
             or self.environment.get("FORGE_ANALYSIS_MODEL")
-            or default_model_for_backend(self.analysis_agent)
+            or default_model_for_backend(self.analysis_family)
         )
-        self.test_agent = normalize_backend_name(
-            test_agent or self.environment.get("FORGE_TEST_AGENT", "pi")
+        self.test_agent = test_agent or self.environment.get("FORGE_TEST_AGENT", "pi")
+        self.test_family = normalize_backend_name(
+            test_family
+            or self.environment.get("FORGE_TEST_FAMILY")
+            or self.environment.get("FORGE_TEST_AGENT_FAMILY")
+            or self.environment.get("FORGE_AGENT_FAMILY")
+            or (self.test_agent if self.test_agent in SUPPORTED_AGENT_BACKENDS else "pi")
         )
         self.test_model = (
             test_model
             or self.environment.get("FORGE_TEST_MODEL")
-            or default_model_for_backend(self.test_agent, review_model)
+            or default_model_for_backend(self.test_family, review_model)
         )
         self.agent_family = agent_family or self.environment.get("FORGE_AGENT_FAMILY") or None
         self.requirements = (
@@ -297,27 +307,22 @@ class HostRequirements:
 
     def _check_tools(self) -> None:
         any_work = self.requirements.any_work
-        selected_agent_commands = {
-            "claude-code": "claude",
-            "pi": "pi",
-            "codex": self.agent_family or "codex",
-            "opencode": "opencode",
-        }
-        required_agents = {self.analysis_agent}
-        if self.requirements.issue_work:
-            required_agents.add(self.test_agent)
+        selected_agent_commands = [(self.analysis_family, self.analysis_agent)]
+        test_command = (self.test_family, self.test_agent)
+        if self.requirements.issue_work and test_command not in selected_agent_commands:
+            selected_agent_commands.append(test_command)
         tool_specs: tuple[tuple[str, str, bool, tuple[str, ...]], ...] = (
             ("Python", self.python_bin, True, ("--version",)),
             ("git", "git", True, ("--version",)),
             ("GitHub CLI", "gh", self.requirements.github_work, ("--version",)),
             *tuple(
                 (
-                    f"Agent backend {backend}",
+                    f"Agent backend {family}",
                     command,
-                    any_work and backend in required_agents,
+                    any_work,
                     ("--version",),
                 )
-                for backend, command in selected_agent_commands.items()
+                for family, command in selected_agent_commands
             ),
             ("Docker CLI", "docker", self.requirements.issue_work, ("--version",)),
         )
@@ -917,19 +922,21 @@ query($owner: String!, $name: String!, $project: Int!) {
         §FS-forge-agent-runtime-selection
         """
         roles: list[tuple[str, str, str, bool]] = [
-            ("analysis", self.analysis_agent, self.analysis_model, self.requirements.any_work),
-            ("test", self.test_agent, self.test_model, self.requirements.issue_work),
+            ("analysis", self.analysis_family, self.analysis_agent, self.analysis_model, self.requirements.any_work),
+            ("test", self.test_family, self.test_agent, self.test_model, self.requirements.issue_work),
         ]
-        for role, backend, model, required in roles:
+        for role, backend, agent, model, required in roles:
             if not required:
                 self._add("agent", f"{role} role", False, None, "not required by this run")
                 continue
-            executable = {
+            executable = agent
+            if not executable:
+                executable = {
                 "claude-code": "claude",
                 "pi": "pi",
                 "codex": self.agent_family or "codex",
                 "opencode": "opencode",
-            }[backend]
+                }[backend]
             if resolve_executable(executable) is None:
                 self._add(
                     "agent",
@@ -940,20 +947,7 @@ query($owner: String!, $name: String!, $project: Int!) {
                     f"Install and authenticate `{executable}`, or select another {role} agent.",
                 )
                 continue
-            if backend == "codex" and self.agent_family:
-                try:
-                    resolve_codex_family_executable(self.agent_family, self.environment)
-                except RuntimeError as exc:
-                    self._add(
-                        "agent",
-                        f"{role} role authentication",
-                        True,
-                        False,
-                        str(exc),
-                        f"Ensure `{self.agent_family} doctor --json` reports a valid raw Codex executable.",
-                    )
-                    continue
-            ready, detail = self._selected_agent_authentication(backend, model)
+            ready, detail = self._selected_agent_authentication(backend, agent, model)
             self._add(
                 "agent",
                 f"{role} role authentication",
@@ -970,18 +964,17 @@ query($owner: String!, $name: String!, $project: Int!) {
                 "network tools denied; GitHub remains in orchestration",
             )
 
-    def _selected_agent_authentication(self, backend: str, model: str) -> tuple[bool, str]:
+    def _selected_agent_authentication(self, backend: str, agent: str, model: str) -> tuple[bool, str]:
         """Run a backend-specific authentication probe that never invokes a model."""
         if backend == "pi":
-            return check_pi_authentication(model, self.environment)
+            return check_pi_authentication(model, self.environment, agent)
         if backend == "codex":
-            executable = resolve_codex_family_executable(self.agent_family, self.environment)
-            result = run_command([executable, "login", "status"], self.environment)
+            result = run_command([agent, "login", "status"], self.environment)
             return result.returncode == 0, first_output_line(result) or "codex login status failed"
         if backend == "claude-code":
-            result = run_command(["claude", "auth", "status", "--json"], self.environment)
+            result = run_command([agent, "auth", "status", "--json"], self.environment)
             return result.returncode == 0, first_output_line(result) or "claude auth status failed"
-        result = run_command(["opencode", "auth", "list"], self.environment)
+        result = run_command([agent, "auth", "list"], self.environment)
         return result.returncode == 0, first_output_line(result) or "opencode auth list failed"
 
     def _check_pi(self) -> None:
@@ -1324,17 +1317,18 @@ def parse_gradle_version(output: str) -> str | None:
 def check_pi_authentication(
         review_model: str,
         environment: Mapping[str, str] | None = None,
+        pi_command: str = "pi",
 ) -> tuple[bool, str]:
     """Check Pi authentication for the Forge provider and model without invoking a model.
 
     §FS-forge-host-requirements
     """
     values = os.environ if environment is None else environment
-    if resolve_executable("pi") is None:
-        return False, f"`pi` was not found on PATH; provider={PI_PROVIDER}, model={review_model}"
+    if resolve_executable(pi_command) is None:
+        return False, f"`{pi_command}` was not found on PATH; provider={PI_PROVIDER}, model={review_model}"
     result = run_command(
         [
-            "pi", "auth", "check",
+            pi_command, "auth", "check",
             "--provider", PI_PROVIDER,
             "--model", review_model,
             "--json",
@@ -1610,10 +1604,12 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--python-bin", default=sys.executable, help="Python interpreter selected by do-work.")
     parser.add_argument("--review-model", default=DEFAULT_REVIEW_MODEL, help="Legacy review model override.")
-    parser.add_argument("--analysis-agent", choices=SUPPORTED_AGENT_BACKENDS, default=None)
+    parser.add_argument("--analysis-agent", default=None)
+    parser.add_argument("--analysis-family", choices=SUPPORTED_AGENT_BACKENDS, default=None)
     parser.add_argument("--analysis-model", default=None)
     parser.add_argument("--agent-family", default=None)
-    parser.add_argument("--test-agent", choices=SUPPORTED_AGENT_BACKENDS, default=None)
+    parser.add_argument("--test-agent", default=None)
+    parser.add_argument("--test-family", choices=SUPPORTED_AGENT_BACKENDS, default=None)
     parser.add_argument("--test-model", default=None)
     parser.add_argument(
         "--graalvm-version-check",
@@ -1640,9 +1636,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             graalvm_version_check=resolve_graalvm_version_check(args.graalvm_version_check),
             repo_dir=args.reachability_metadata_path,
             analysis_agent=args.analysis_agent,
+            analysis_family=args.analysis_family,
             analysis_model=args.analysis_model,
             agent_family=args.agent_family,
             test_agent=args.test_agent,
+            test_family=args.test_family,
             test_model=args.test_model,
         )
     except ValueError as exc:

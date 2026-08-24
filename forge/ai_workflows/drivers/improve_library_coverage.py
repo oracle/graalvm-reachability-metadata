@@ -855,6 +855,7 @@ def main(argv=None) -> int:
         mcps=strategy.get("mcps", []),
         persistent_instructions=strategy_obj.persistent_instructions,
         thinking_level=strategy.get("thinking-level"),
+        agent_name=strategy.get("agent-command"),
     )
 
     if resume_finalization:

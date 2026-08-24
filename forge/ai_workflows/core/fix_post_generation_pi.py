@@ -92,12 +92,19 @@ def run_pi_post_generation_fix(
         codex_log_path: str,
         test_output: str,
         model_name: str,
-        agent_name: str = "pi",
+    agent_name: str = "pi",
+    agent_family: str | None = None,
         timeout_seconds: int = DEFAULT_PI_TIMEOUT_SECONDS,
         max_test_output_chars: int = DEFAULT_MAX_TEST_OUTPUT_CHARS,
 ) -> tuple[int, str, bool]:
     """Run the configured test agent for the last-resort intervention."""
-    backend = normalize_backend_name(agent_name)
+    backend = normalize_backend_name(
+        agent_family
+        or os.environ.get("FORGE_TEST_FAMILY")
+        or os.environ.get("FORGE_TEST_AGENT_FAMILY")
+        or os.environ.get("FORGE_AGENT_FAMILY")
+        or agent_name
+    )
     log_stage("post-generation-fix", f"Running {backend} post-generation fix for {coordinates}")
     intervention_path = _build_intervention_path(reachability_metadata_path, coordinates)
     intervention_path_display = _repo_relative_path(intervention_path, reachability_metadata_path)
@@ -116,7 +123,8 @@ def run_pi_post_generation_fix(
         selection=AgentSelection(
             backend=backend,
             model=model_name,
-            family=os.environ.get("FORGE_AGENT_FAMILY") or None,
+            family=backend,
+            agent=agent_name,
         ),
         working_dir=reachability_metadata_path,
         prompt=prompt,

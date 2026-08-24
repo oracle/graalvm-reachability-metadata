@@ -94,11 +94,11 @@ review); Claude Code defaults to its `sonnet` model alias. A strategy remains th
 is supplied. The do-work loop exports these values
 unchanged across its self-update boundary (§DW-do-work-loop).
 
-`FORGE_AGENT_FAMILY` is an optional Codex-launcher discovery input shared by
-both roles. The runtime asks the compatible launcher for its installation
-diagnostics, extracts the raw executable path, and uses the raw executable for
-Codex turns and thread control. This preserves local-build selection without
-letting wrapper arguments override Forge's offline Codex configuration.
+Each role carries an adapter family and an executable name. The family selects
+the registered adapter and its offline policy; the executable name is passed to
+that adapter, so machine-local aliases such as `cdx` are valid. Analysis and
+test families are independent, with `FORGE_AGENT_FAMILY` retained as a common
+fallback for older workers.
 
 ## 4. Why Pi Is The Default Lightweight Backend
 

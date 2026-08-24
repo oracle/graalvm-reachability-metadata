@@ -27,10 +27,13 @@ REVIEW_LABEL="${FORGE_REVIEW_LABEL:-}"
 REVIEW_LIMIT="${FORGE_REVIEW_LIMIT:-1}"
 ANALYSIS_AGENT="${FORGE_ANALYSIS_AGENT:-codex}"
 ANALYSIS_MODEL="${FORGE_ANALYSIS_MODEL:-}"
-AGENT_FAMILY="${FORGE_AGENT_FAMILY:-}"
+ANALYSIS_FAMILY="${FORGE_ANALYSIS_FAMILY:-${FORGE_ANALYSIS_AGENT_FAMILY:-${FORGE_AGENT_FAMILY:-}}}"
 TEST_AGENT="${FORGE_TEST_AGENT:-}"
 TEST_MODEL="${FORGE_TEST_MODEL:-}"
+TEST_FAMILY="${FORGE_TEST_FAMILY:-${FORGE_TEST_AGENT_FAMILY:-${FORGE_AGENT_FAMILY:-}}}"
+AGENT_FAMILY="${FORGE_AGENT_FAMILY:-}"
 REVIEW_MODEL="${FORGE_REVIEW_MODEL:-}"
+FAIL_FAST="${FORGE_FAIL_FAST:-0}"
 USER_REQUESTED_ONLY="${FORGE_USER_REQUESTED_ISSUES_ONLY:-0}"
 GRAALVM_VERSION_CHECK="${FORGE_GRAALVM_VERSION_CHECK:-strict}"
 WORK_STRATEGY_NAME="${FORGE_STRATEGY_NAME:-dynamic_access_main_sources_pi_gpt-5.6-sol}"
@@ -78,6 +81,8 @@ Options:
       Show this help text.
   --once
       Run one update/work cycle and exit without sleeping.
+  --fail-fast
+      Exit nonzero when the first work cycle is unsuccessful.
   --stop
       Request Forge do-work loops to exit. Without a branch argument this
       creates the global stop marker ~/.metadata-forge-stop. With --branch or
@@ -119,17 +124,21 @@ Options:
       Defaults to FORGE_REVIEW_LIMIT, then 1. Without FORGE_REVIEW_LABEL, reviews
       library-new-request, fixes-javac-fail, fixes-java-run-fail,
       fixes-native-image-run-fail, and library-bulk-update PRs each cycle.
-  --analysis-agent {claude-code,pi,codex,opencode}
-      Select the offline analysis/recovery/review agent. Defaults to
-      FORGE_ANALYSIS_AGENT, then codex.
+  --analysis-agent COMMAND
+      Select the executable used for analysis/recovery/review work. The
+      command may use any local name, such as cdx.
+  --analysis-family {claude-code,pi,codex,opencode}
+      Select the analysis agent family (adapter/protocol).
   --analysis-model MODEL
       Select its backend-specific model. Defaults to FORGE_ANALYSIS_MODEL,
       then gpt-5.6-luna for Codex or sonnet for Claude Code.
-  --agent-family COMMAND
-      Select an optional Codex-compatible local launcher. Forge resolves its
-      raw Codex executable and retains the normal offline policy.
-  --test-agent {claude-code,pi,codex,opencode}
-      Override the predefined strategy's test-generation agent.
+  --agent-family FAMILY
+      Backward-compatible common family fallback for both roles.
+  --test-agent COMMAND
+      Override the predefined strategy's test-generation executable. The
+      command may use any local name.
+  --test-family {claude-code,pi,codex,opencode}
+      Select the test-generation agent family (adapter/protocol).
   --test-model MODEL
       Override the predefined strategy's test-generation model.
   --user-requested-only
@@ -164,14 +173,16 @@ Environment:
   FORGE_REVIEW_LABEL
       Review only PRs with this label. If unset, each generated PR label is
       reviewed every cycle.
-  FORGE_ANALYSIS_AGENT, FORGE_ANALYSIS_MODEL
+  FORGE_ANALYSIS_AGENT, FORGE_ANALYSIS_FAMILY, FORGE_ANALYSIS_MODEL
       Configure offline analysis, recovery, style-fix, and review work.
       Codex defaults to gpt-5.6-luna/high (xhigh for review); Claude Code
       defaults to sonnet.
   FORGE_AGENT_FAMILY
-      Optional Codex-compatible launcher selected by --agent-family.
-  FORGE_TEST_AGENT, FORGE_TEST_MODEL
+      Backward-compatible common family fallback selected by --agent-family.
+  FORGE_TEST_AGENT, FORGE_TEST_FAMILY, FORGE_TEST_MODEL
       Override the selected strategy's test-generation backend and model.
+  FORGE_FAIL_FAST
+      Set to 1 to exit nonzero on the first unsuccessful work cycle.
   FORGE_USER_REQUESTED_ISSUES_ONLY
       Set to 1 to fetch only user-requested issue queue items, or 0 to process
       all eligible issue authors. Defaults to 0.
@@ -437,7 +448,9 @@ export_work_configuration() {
     export FORGE_REVIEW_LIMIT="$REVIEW_LIMIT"
     export FORGE_REVIEW_MODEL="$REVIEW_MODEL"
     export FORGE_ANALYSIS_AGENT="$ANALYSIS_AGENT"
+    export FORGE_ANALYSIS_FAMILY="$ANALYSIS_FAMILY"
     export FORGE_ANALYSIS_MODEL="$ANALYSIS_MODEL"
+    export FORGE_FAIL_FAST="$FAIL_FAST"
     export FORGE_USER_REQUESTED_ISSUES_ONLY="$USER_REQUESTED_ONLY"
     export FORGE_GRAALVM_VERSION_CHECK="$GRAALVM_VERSION_CHECK"
 
@@ -446,6 +459,8 @@ export_work_configuration() {
     else
         unset FORGE_AGENT_FAMILY
     fi
+
+    export FORGE_TEST_FAMILY="$TEST_FAMILY"
 
     if [[ -n "$TEST_AGENT" ]]; then
         export FORGE_TEST_AGENT="$TEST_AGENT"
@@ -494,9 +509,11 @@ run_host_requirements() {
         --python-bin "$PYTHON_BIN" \
         --review-model "$REVIEW_MODEL" \
         --analysis-agent "$ANALYSIS_AGENT" \
+        --analysis-family "$ANALYSIS_FAMILY" \
         --analysis-model "$ANALYSIS_MODEL" \
         --agent-family "$AGENT_FAMILY" \
         --test-agent "${TEST_AGENT:-pi}" \
+        --test-family "$TEST_FAMILY" \
         --test-model "${TEST_MODEL:-$REVIEW_MODEL}" \
         --graalvm-version-check "$GRAALVM_VERSION_CHECK"
 }
@@ -529,6 +546,9 @@ run_cycle() {
     log "Running do_up_to_date_work.sh while monitoring ${FORGE_MONITORED_BRANCH}."
     if ! process_work_queues; then
         log "do_up_to_date_work.sh failed; retrying after sleep."
+        if [[ "$FAIL_FAST" == "1" ]]; then
+            return 1
+        fi
     fi
 
     exit_if_stop_requested
@@ -650,6 +670,16 @@ while [[ "$#" -gt 0 ]]; do
             ANALYSIS_AGENT="${1#*=}"
             shift
             ;;
+        --analysis-family|--analysis-agent-family)
+            require_option_value "$1" "${2:-}"
+            ANALYSIS_FAMILY="$2"
+            shift 2
+            ;;
+        --analysis-family=*|--analysis-agent-family=*)
+            ANALYSIS_FAMILY="${1#*=}"
+            require_option_value "--analysis-family" "$ANALYSIS_FAMILY"
+            shift
+            ;;
         --analysis-model)
             require_option_value "$1" "${2:-}"
             ANALYSIS_MODEL="$2"
@@ -664,11 +694,19 @@ while [[ "$#" -gt 0 ]]; do
         --agent-family)
             require_option_value "$1" "${2:-}"
             AGENT_FAMILY="$2"
+            ANALYSIS_FAMILY="$2"
+            TEST_FAMILY="$2"
             shift 2
             ;;
         --agent-family=*)
             AGENT_FAMILY="${1#*=}"
             require_option_value "--agent-family" "$AGENT_FAMILY"
+            ANALYSIS_FAMILY="$AGENT_FAMILY"
+            TEST_FAMILY="$AGENT_FAMILY"
+            shift
+            ;;
+        --fail-fast)
+            FAIL_FAST=1
             shift
             ;;
         --test-agent)
@@ -678,6 +716,16 @@ while [[ "$#" -gt 0 ]]; do
             ;;
         --test-agent=*)
             TEST_AGENT="${1#*=}"
+            shift
+            ;;
+        --test-family|--test-agent-family)
+            require_option_value "$1" "${2:-}"
+            TEST_FAMILY="$2"
+            shift 2
+            ;;
+        --test-family=*|--test-agent-family=*)
+            TEST_FAMILY="${1#*=}"
+            require_option_value "--test-family" "$TEST_FAMILY"
             shift
             ;;
         --test-model)
@@ -781,15 +829,22 @@ require_nonnegative_integer "FORGE_REVIEW_LIMIT" "$REVIEW_LIMIT"
 require_parallelism "$PARALLELISM"
 require_positive_integer "FORGE_DO_WORK_SLEEP_POLL_SECONDS" "$SLEEP_POLL_SECONDS"
 
+if [[ -z "$ANALYSIS_FAMILY" ]]; then
+    ANALYSIS_FAMILY="$ANALYSIS_AGENT"
+fi
+if [[ -z "$TEST_FAMILY" && -n "$TEST_AGENT" ]]; then
+    TEST_FAMILY="$TEST_AGENT"
+fi
+
 if [[ -z "$ANALYSIS_MODEL" ]]; then
-    case "$ANALYSIS_AGENT" in
+    case "$ANALYSIS_FAMILY" in
         codex) ANALYSIS_MODEL="gpt-5.6-luna" ;;
         claude-code) ANALYSIS_MODEL="sonnet" ;;
         *) ANALYSIS_MODEL="gpt-5.6-terra" ;;
     esac
 fi
 if [[ -z "$TEST_MODEL" ]]; then
-    case "$TEST_AGENT" in
+    case "$TEST_FAMILY" in
         codex) TEST_MODEL="gpt-5.6-luna" ;;
         claude-code) TEST_MODEL="sonnet" ;;
     esac
@@ -798,18 +853,18 @@ if [[ -z "$REVIEW_MODEL" ]]; then
     REVIEW_MODEL="$ANALYSIS_MODEL"
 fi
 
-case "$ANALYSIS_AGENT" in
+case "$ANALYSIS_FAMILY" in
     claude-code|pi|codex|opencode) ;;
     *)
-        echo "--analysis-agent must be claude-code, pi, codex, or opencode." >&2
+        echo "--analysis-family must be claude-code, pi, codex, or opencode." >&2
         exit 1
         ;;
 esac
-if [[ -n "$TEST_AGENT" ]]; then
-    case "$TEST_AGENT" in
+if [[ -n "$TEST_FAMILY" ]]; then
+    case "$TEST_FAMILY" in
         claude-code|pi|codex|opencode) ;;
         *)
-            echo "--test-agent must be claude-code, pi, codex, or opencode." >&2
+            echo "--test-family must be claude-code, pi, codex, or opencode." >&2
             exit 1
             ;;
     esac
@@ -829,6 +884,11 @@ fi
 
 if [[ "$USER_REQUESTED_ONLY" != "0" && "$USER_REQUESTED_ONLY" != "1" ]]; then
     echo "FORGE_USER_REQUESTED_ISSUES_ONLY must be 0 or 1." >&2
+    exit 1
+fi
+
+if [[ "$FAIL_FAST" != "0" && "$FAIL_FAST" != "1" ]]; then
+    echo "FORGE_FAIL_FAST must be 0 or 1." >&2
     exit 1
 fi
 

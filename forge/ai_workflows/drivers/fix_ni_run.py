@@ -335,6 +335,7 @@ def build_strategy_and_agent(
         mcps=strategy.get("mcps", []),
         persistent_instructions=strategy_obj.persistent_instructions,
         thinking_level=strategy.get("thinking-level"),
+        agent_name=strategy.get("agent-command"),
     )
     return strategy_obj, agent, model_name, test_source_layout.source_root
 

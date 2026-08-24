@@ -111,10 +111,11 @@ def _run_pi_checkstyle_fix(
     ])
     configured = analysis_agent_selection()
     selection = AgentSelection(
-        configured.backend,
-        configured.model or model_name,
-        configured.family,
-        configured.thinking_level,
+        backend=configured.backend,
+        model=configured.model or model_name,
+        family=configured.family,
+        thinking_level=configured.thinking_level,
+        agent=configured.agent,
     )
     result = run_agent_task(
         selection=selection,
@@ -162,10 +163,11 @@ def _run_pi_test_fix_after_checkstyle(
     ])
     configured = analysis_agent_selection()
     selection = AgentSelection(
-        configured.backend,
-        configured.model or model_name,
-        configured.family,
-        configured.thinking_level,
+        backend=configured.backend,
+        model=configured.model or model_name,
+        family=configured.family,
+        thinking_level=configured.thinking_level,
+        agent=configured.agent,
     )
     result = run_agent_task(
         selection=selection,

@@ -48,6 +48,7 @@ class OpenCodeAgent(Agent):
             library: str | None = None,
             persistent_instructions: str | None = None,
             environment: dict[str, str] | None = None,
+            agent_name: str | None = None,
             **_,
     ):
         self._model_name = model_name
@@ -56,6 +57,7 @@ class OpenCodeAgent(Agent):
         self._task_type = task_type
         self._library = library
         self._persistent_instructions = persistent_instructions
+        self._opencode_command = agent_name or "opencode"
         self._environment = agent_process_environment(environment)
         self._environment["OPENCODE_CONFIG_CONTENT"] = json.dumps(OFFLINE_OPENCODE_CONFIG)
         self._session_id: str | None = None
@@ -85,7 +87,7 @@ class OpenCodeAgent(Agent):
         if self._persistent_instructions:
             effective_prompt = f"{self._persistent_instructions}\n\n{prompt}"
         command = [
-            "opencode", "run", "--format", "json", "--auto",
+            self._opencode_command, "run", "--format", "json", "--auto",
             "--model", self._model_name,
         ]
         if self._session_id:
@@ -144,6 +146,7 @@ class OpenCodeAgent(Agent):
             library=self._library,
             persistent_instructions=self._persistent_instructions,
             environment=self._environment,
+            agent_name=self._opencode_command,
         )
 
     def _parse_events(self, output: str) -> str:

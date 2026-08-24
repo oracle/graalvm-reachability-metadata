@@ -9,12 +9,15 @@ owns branch selection, self-update, work limits, review limits, stop-file
 handling, sleep timing, and re-execing the latest worker script before the
 next cycle.
 
-The worker accepts `--analysis-agent`, `--analysis-model`, `--test-agent`,
-`--test-model`, and the optional free-form `--agent-family`, with matching
-`FORGE_*` environment variables. It validates the four supported backend names
-and exports the effective role configuration
+The worker accepts role-specific agent commands and families through
+`--analysis-agent`, `--analysis-family`, `--analysis-model`, `--test-agent`,
+`--test-family`, and `--test-model`, with matching `FORGE_*` environment
+variables. Agent commands are free-form; families select one of the four
+registered backends. It exports the effective role configuration
 before every dispatch and re-exec, implementing
 §FS-forge-agent-runtime-selection.
+`--fail-fast` makes a failed work cycle return nonzero immediately instead of
+being retried after the normal sleep.
 
 Before the first self-update or queue operation in each worker process,
 `do_up_to_date_work.sh` validates the host requirements defined in

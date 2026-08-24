@@ -9,10 +9,7 @@ selected at runtime while workflows continue to depend only on ``Agent``.
 from __future__ import annotations
 
 from dataclasses import dataclass
-import json
 import os
-import shutil
-import subprocess
 
 from ai_workflows.agents.agent import Agent
 from utility_scripts.task_logs import build_task_log_path
@@ -41,6 +38,7 @@ class AgentSelection:
     model: str
     family: str | None = None
     thinking_level: str | None = None
+    agent: str | None = None
 
 
 @dataclass(frozen=True)
@@ -66,54 +64,6 @@ def agent_process_environment(
     return sanitized
 
 
-_CODEX_FAMILY_EXECUTABLE_CACHE: dict[tuple[str, str, str, str], str] = {}
-
-
-def resolve_codex_family_executable(
-        family: str | None,
-        environment: dict[str, str] | None = None,
-) -> str:
-    """Resolve a Codex-compatible launcher to its raw executable."""
-    if not family:
-        return "codex"
-    env = os.environ if environment is None else environment
-    launcher = shutil.which(family, path=env.get("PATH"))
-    if launcher is None:
-        raise RuntimeError(f"Agent family launcher is not available on PATH: {family}")
-    cache_key = (
-        os.path.realpath(launcher),
-        env.get("PATH", ""),
-        env.get("CODEX_HOME", ""),
-        env.get("HOME", ""),
-    )
-    cached = _CODEX_FAMILY_EXECUTABLE_CACHE.get(cache_key)
-    if cached:
-        return cached
-    try:
-        result = subprocess.run(
-            [launcher, "doctor", "--json"],
-            env=agent_process_environment(env),
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            timeout=30,
-            check=False,
-        )
-        payload = json.loads(result.stdout)
-        executable = payload["checks"]["installation"]["details"]["current executable"]
-    except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError, KeyError, TypeError) as exc:
-        raise RuntimeError(
-            f"Agent family '{family}' did not report a raw Codex executable via doctor --json"
-        ) from exc
-    if not isinstance(executable, str) or not os.path.isabs(executable) \
-            or not os.path.isfile(executable) or not os.access(executable, os.X_OK):
-        raise RuntimeError(
-            f"Agent family '{family}' reported an invalid raw Codex executable: {executable}"
-        )
-    _CODEX_FAMILY_EXECUTABLE_CACHE[cache_key] = executable
-    return executable
-
-
 def normalize_backend_name(value: str) -> str:
     """Return a canonical backend key or raise a concise configuration error."""
     normalized = value.strip().lower().replace("_", "-")
@@ -136,7 +86,19 @@ def default_model_for_backend(backend: str, fallback: str = "gpt-5.6-terra") -> 
 def analysis_agent_selection(environment: dict[str, str] | None = None) -> AgentSelection:
     """Resolve the analysis role from the worker environment."""
     env = os.environ if environment is None else environment
-    backend = normalize_backend_name(env.get("FORGE_ANALYSIS_AGENT", DEFAULT_ANALYSIS_AGENT))
+    family = (
+        env.get("FORGE_ANALYSIS_FAMILY")
+        or env.get("FORGE_ANALYSIS_AGENT_FAMILY")
+        or (
+            env.get("FORGE_ANALYSIS_AGENT")
+            if env.get("FORGE_ANALYSIS_AGENT") in SUPPORTED_AGENT_BACKENDS
+            else None
+        )
+        or env.get("FORGE_AGENT_FAMILY")
+        or DEFAULT_ANALYSIS_AGENT
+    )
+    backend = normalize_backend_name(family)
+    agent = env.get("FORGE_ANALYSIS_AGENT") or backend
     model = env.get("FORGE_ANALYSIS_MODEL") or default_model_for_backend(backend)
     thinking_level = env.get("FORGE_ANALYSIS_THINKING_LEVEL") or (
         "high" if backend == "codex" and model == "gpt-5.6-luna" else None
@@ -144,8 +106,9 @@ def analysis_agent_selection(environment: dict[str, str] | None = None) -> Agent
     return AgentSelection(
         backend=backend,
         model=model,
-        family=env.get("FORGE_AGENT_FAMILY") or None,
+        family=backend,
         thinking_level=thinking_level,
+        agent=agent,
     )
 
 
@@ -156,13 +119,31 @@ def apply_test_agent_overrides(
     """Return a copied strategy with the configured test-role overrides."""
     env = os.environ if environment is None else environment
     effective = dict(strategy)
-    backend = env.get("FORGE_TEST_AGENT")
+    configured_family = normalize_backend_name(str(strategy.get("agent") or "pi"))
+    family = (
+        env.get("FORGE_TEST_FAMILY")
+        or env.get("FORGE_TEST_AGENT_FAMILY")
+        or env.get("FORGE_AGENT_FAMILY")
+        or (
+            env.get("FORGE_TEST_AGENT")
+            if env.get("FORGE_TEST_AGENT") in SUPPORTED_AGENT_BACKENDS
+            else configured_family
+        )
+    )
+    backend = normalize_backend_name(family)
+    agent = env.get("FORGE_TEST_AGENT") or strategy.get("agent-command") or backend
     model = env.get("FORGE_TEST_MODEL")
-    if backend:
-        effective_backend = normalize_backend_name(backend)
-        effective["agent"] = effective_backend
-        if not model and effective_backend in DEFAULT_MODEL_BY_BACKEND:
-            effective["model"] = default_model_for_backend(effective_backend)
+    if (
+            env.get("FORGE_TEST_AGENT")
+            or env.get("FORGE_TEST_FAMILY")
+            or env.get("FORGE_TEST_AGENT_FAMILY")
+            or env.get("FORGE_AGENT_FAMILY")
+    ):
+        effective["agent"] = backend
+        effective["agent-family"] = backend
+        effective["agent-command"] = agent
+        if not model and backend in DEFAULT_MODEL_BY_BACKEND:
+            effective["model"] = default_model_for_backend(backend)
     if model:
         effective["model"] = model
     return effective
@@ -178,6 +159,7 @@ def create_agent(
     return agent_class(
         model_name=selection.model,
         working_dir=working_dir,
+        agent_name=selection.agent or selection.backend,
         agent_family=selection.family,
         thinking_level=selection.thinking_level,
         **kwargs,

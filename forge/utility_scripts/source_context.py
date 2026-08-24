@@ -31,7 +31,6 @@ from ai_workflows.agents.opencode_agent import OFFLINE_OPENCODE_CONFIG
 from ai_workflows.agents.runtime import (
     agent_process_environment,
     analysis_agent_selection,
-    resolve_codex_family_executable,
 )
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import find_index_entry_for_version, is_not_for_native_image_entry
@@ -199,7 +198,7 @@ def url_fetch_agent_command() -> str:
     selection = analysis_agent_selection()
     model = shlex.quote(selection.model)
     if selection.backend == "codex":
-        executable = resolve_codex_family_executable(selection.family)
+        executable = selection.agent or "codex"
         return (
             f"{shlex.quote(executable)} exec --ignore-user-config -s workspace-write "
             "-c approval_policy=\"never\" "

@@ -282,7 +282,11 @@ class WorkflowStrategy(ABC):
                     log_stage("post-generation-test", f"{stage_name} passed for {library} after metadata fix")
                     return RUN_STATUS_SUCCESS
 
-            test_agent_name = str(self.strategy_obj.get("agent") or "pi")
+            test_agent_name = str(
+                self.strategy_obj.get("agent-command")
+                or self.strategy_obj.get("agent")
+                or "pi"
+            )
             log_stage(
                 "post-generation-fix",
                 f"Running {test_agent_name} post generation fix for {library} after {stage_name} failure",
@@ -294,6 +298,7 @@ class WorkflowStrategy(ABC):
                 test_output=recovery_test_output,
                 model_name=self.model_name,
                 agent_name=test_agent_name,
+                agent_family=self.strategy_obj.get("agent-family"),
                 timeout_seconds=self._parameter_int("post-generation-timeout-seconds", DEFAULT_PI_TIMEOUT_SECONDS),
                 max_test_output_chars=self._parameter_int(
                     "post-generation-test-output-chars",

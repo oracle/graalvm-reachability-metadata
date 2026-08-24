@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 import os
 import shlex
-import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -21,7 +20,6 @@ from ai_workflows.agents.runtime import (
     agent_process_environment,
     apply_test_agent_overrides,
     normalize_backend_name,
-    resolve_codex_family_executable,
 )
 from utility_scripts.source_context import url_fetch_agent_command
 
@@ -39,7 +37,9 @@ class AgentRuntimeTests(unittest.TestCase):
             "FORGE_ANALYSIS_MODEL": "claude-opus-4-1",
             "FORGE_TEST_AGENT": "opencode",
             "FORGE_TEST_MODEL": "anthropic/claude-sonnet-4-5",
-            "FORGE_AGENT_FAMILY": "local-codex",
+            "FORGE_ANALYSIS_FAMILY": "claude-code",
+            "FORGE_TEST_FAMILY": "opencode",
+            "FORGE_ANALYSIS_AGENT": "cdx",
         }
         self.assertEqual(
             analysis_agent_selection(environment).backend,
@@ -51,7 +51,7 @@ class AgentRuntimeTests(unittest.TestCase):
         )
         self.assertEqual(strategy["agent"], "opencode")
         self.assertEqual(strategy["model"], "anthropic/claude-sonnet-4-5")
-        self.assertEqual(analysis_agent_selection(environment).family, "local-codex")
+        self.assertEqual(analysis_agent_selection(environment).agent, "cdx")
 
     def test_backend_aware_model_defaults(self) -> None:
         codex = analysis_agent_selection({"FORGE_ANALYSIS_AGENT": "codex"})
@@ -70,40 +70,6 @@ class AgentRuntimeTests(unittest.TestCase):
             apply_test_agent_overrides(strategy, {"FORGE_TEST_AGENT": "claude-code"})["model"],
             "sonnet",
         )
-
-    def test_agent_family_resolves_the_launchers_raw_codex_executable(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            launcher = os.path.join(temp_dir, "local-codex")
-            executable = os.path.join(temp_dir, "raw", "codex")
-            os.makedirs(os.path.dirname(executable))
-            for path in (launcher, executable):
-                with open(path, "w", encoding="utf-8") as output_file:
-                    output_file.write("#!/bin/sh\n")
-                os.chmod(path, 0o755)
-            doctor_result = subprocess.CompletedProcess(
-                [launcher, "doctor", "--json"],
-                1,
-                stdout=json.dumps({
-                    "checks": {
-                        "installation": {
-                            "details": {"current executable": executable},
-                        },
-                    },
-                }),
-                stderr="diagnostic checks may fail",
-            )
-            with patch(
-                    "ai_workflows.agents.runtime.shutil.which",
-                    return_value=launcher,
-            ), patch(
-                    "ai_workflows.agents.runtime.subprocess.run",
-                    return_value=doctor_result,
-            ):
-                resolved = resolve_codex_family_executable(
-                    "local-codex",
-                    {"PATH": temp_dir},
-                )
-        self.assertEqual(resolved, executable)
 
     def test_aliases_normalize_to_canonical_names(self) -> None:
         self.assertEqual(normalize_backend_name("claude"), "claude-code")
@@ -138,26 +104,20 @@ class AgentRuntimeTests(unittest.TestCase):
         self.assertIn("features.skill_mcp_dependency_install=false", rendered)
         self.assertIn("mcp_servers={}", rendered)
 
-    def test_codex_agent_uses_the_resolved_agent_family_executable(self) -> None:
+    def test_codex_agent_uses_the_role_agent_executable(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir, patch.object(
                 Agent,
                 "_create_session_log_path",
                 return_value=os.path.join(temp_dir, "codex.log"),
-        ), patch(
-                "ai_workflows.agents.codex_agent.resolve_codex_family_executable",
-                return_value="/opt/codex/bin/codex",
-        ) as resolve_family:
+        ):
             agent = CodexAgent(
                 "gpt-5.6-luna",
                 temp_dir,
-                environment={"FORGE_AGENT_FAMILY": "local-codex"},
+                environment={"FORGE_ANALYSIS_FAMILY": "codex"},
+                agent_name="cdx",
             )
-        self.assertEqual(agent._codex_command, "/opt/codex/bin/codex")
+        self.assertEqual(agent._codex_command, "cdx")
         self.assertEqual(agent._reasoning_effort, "high")
-        resolve_family.assert_called_once_with(
-            "local-codex",
-            {"FORGE_AGENT_FAMILY": "local-codex"},
-        )
 
     def test_codex_thread_control_uses_the_offline_profile(self) -> None:
         client = CodexAppServerClient("gpt-5.6-terra", "/repo", environment={})
@@ -208,21 +168,18 @@ class AgentRuntimeTests(unittest.TestCase):
         self.assertIn('web_search="live"', command)
         self.assertIn("agents.enabled=false", command)
 
-    def test_url_discovery_uses_the_resolved_agent_family_executable(self) -> None:
+    def test_url_discovery_uses_the_role_agent_executable(self) -> None:
         with patch.dict(
                 os.environ,
                 {
-                    "FORGE_ANALYSIS_AGENT": "codex",
+                    "FORGE_ANALYSIS_AGENT": "cdx",
+                    "FORGE_ANALYSIS_FAMILY": "codex",
                     "FORGE_ANALYSIS_MODEL": "gpt-5.6-terra",
-                    "FORGE_AGENT_FAMILY": "local-codex",
                 },
-                clear=False,
-        ), patch(
-                "utility_scripts.source_context.resolve_codex_family_executable",
-                return_value="/opt/local codex/bin/codex",
+                clear=True,
         ):
             command = url_fetch_agent_command()
-        self.assertTrue(command.startswith("'/opt/local codex/bin/codex' exec "))
+        self.assertTrue(command.startswith("cdx exec "))
 
     def test_every_backend_has_a_bounded_url_discovery_command(self) -> None:
         expected = {
@@ -236,13 +193,14 @@ class AgentRuntimeTests(unittest.TestCase):
                     os.environ,
                     {
                         "FORGE_ANALYSIS_AGENT": backend,
+                        "FORGE_ANALYSIS_FAMILY": backend,
                         "FORGE_ANALYSIS_MODEL": (
                             "anthropic/claude-sonnet-4-5"
                             if backend == "opencode"
                             else "gpt-5.6-terra"
                         ),
                     },
-                    clear=False,
+                    clear=True,
             ):
                 command = url_fetch_agent_command()
             self.assertIn(marker, command)

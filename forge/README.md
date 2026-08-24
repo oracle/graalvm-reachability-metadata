@@ -50,6 +50,9 @@ Common options:
 - `--user-requested-only`: fetch only user-requested issue queue items, excluding configured automation and maintainer authors.
 - `--graalvm-version-check {strict,warn,off}`: how a GraalVM version mismatch is treated. Default: `strict`.
 - `--once`: run a single update/work cycle through `do_up_to_date_work.sh` and exit.
+- `--fail-fast`: return nonzero on the first unsuccessful work cycle.
+- `--analysis-agent COMMAND --analysis-family FAMILY`: choose the analysis executable and adapter family.
+- `--test-agent COMMAND --test-family FAMILY`: choose the test executable and adapter family.
 - `--stop`: ask all Forge `do-work` loops for the current user to exit by creating `~/.metadata-forge-stop`.
 - `--stop --branch BRANCH`: ask only loops monitoring `BRANCH` to exit, using a branch-scoped marker such as `~/.metadata-forge-stop.master`.
 - `--clear-stop`: remove the matching global or branch-scoped stop marker so future `do-work` loops can run.

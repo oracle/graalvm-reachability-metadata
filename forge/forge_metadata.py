@@ -2902,13 +2902,14 @@ def review_pull_request(
     review_worktree_path = create_review_workspace(reachability_metadata_path, pr_number)
     configured_selection = analysis_agent_selection()
     selection = AgentSelection(
-        configured_selection.backend,
-        os.environ.get("FORGE_ANALYSIS_MODEL", review_model),
-        configured_selection.family,
-        (
+        backend=configured_selection.backend,
+        model=os.environ.get("FORGE_ANALYSIS_MODEL", review_model),
+        family=configured_selection.family,
+        thinking_level=(
             os.environ.get("FORGE_REVIEW_THINKING_LEVEL")
             or ("xhigh" if configured_selection.backend == "codex" else configured_selection.thinking_level)
         ),
+        agent=configured_selection.agent,
     )
     context_path = os.path.join(review_worktree_path, ".forge-review-context.json")
     log_path_display = display_log_path(get_review_log_path(pr_number, coordinates))
