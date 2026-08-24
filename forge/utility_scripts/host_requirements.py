@@ -50,6 +50,11 @@ ISSUE_GRAALVM_ENV_VARS = ("GRAALVM_HOME", "GRAALVM_HOME_25_0", "GRAALVM_HOME_LAT
 GRAALVM_VERSION_CHECK_MODES = ("strict", "warn", "off")
 DEFAULT_GRAALVM_VERSION_CHECK = "strict"
 GRAALVM_VERSION_CHECK_ENV_VAR = "FORGE_GRAALVM_VERSION_CHECK"
+# Published EA labels can be reissued from the same reported runtime revision.
+# §FS-forge-host-requirements
+GRAALVM_EA_RUNTIME_REVISIONS = {
+    "25i3-25.0.4.1-ea.03": 1,
+}
 WRITE_REPOSITORY_PERMISSIONS = {"WRITE", "MAINTAIN", "ADMIN"}
 ISSUE_LIMIT_ENV_VARS = (
     "FORGE_JAVAC_WORK_LIMIT",
@@ -1388,7 +1393,7 @@ def graalvm_ea_version_matches(
     if expected is None or graalvm_version is None or java_runtime_version is None:
         return False
     graal_version, jdk_version, build = expected
-    ea_revision = build - 1
+    ea_revision = GRAALVM_EA_RUNTIME_REVISIONS.get(expected_release, build - 1)
     graal_matches = re.match(
         rf"^{re.escape(graal_version)}\..*-dev\+\d+\.0*{ea_revision}(?:\D|$)",
         graalvm_version,

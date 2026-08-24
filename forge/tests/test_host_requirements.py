@@ -142,6 +142,11 @@ class HostRequirementsTests(unittest.TestCase):
             "25.3.4.1-dev+0.0",
             "25.0.4.1+0-LTS-jvmci-25.3-b20",
         ))
+        self.assertTrue(graalvm_ea_version_matches(
+            "25i3-25.0.4.1-ea.03",
+            "25.3.4.1-dev+0.1",
+            "25.0.4.1+0-LTS-jvmci-25.3-b21",
+        ))
 
     def test_grype_version_parsing(self) -> None:
         self.assertEqual("0.104.0", parse_grype_version("Application: grype\nVersion: 0.104.0\n"))
