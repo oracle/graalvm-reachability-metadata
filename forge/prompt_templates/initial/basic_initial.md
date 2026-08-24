@@ -9,7 +9,7 @@ Issue-Requested Metadata:
 Library Preparation Preflight:
 {library_preparation_preflight_context}
 
-Rules:
+Rules (test contract: §root/FS-test-contract):
 - Write tests in `{test_language_display_name}` under the module's existing `src/test/{test_source_dir_name}` tree.
 - Follow idiomatic `{test_language_display_name}` coding conventions.
 - Don't duplicate tested features.

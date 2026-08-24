@@ -31,6 +31,7 @@ home, so the prefix tells you which file to open.
 | --- | --- | --- |
 | `GRUND` | [grund.md](grund.md) | Why the repository exists — the motivation everything climbs back to. |
 | `GOAL` | [goals.md](goals.md) | Where the repository is headed — measurable outcome goals. |
+| `PRCPL` | [principles.md](principles.md) | Cross-cutting principles that constrain how the repository pursues its goals. |
 | `FS` | [functional-spec/README.md](functional-spec/README.md) | What the system must do — behavior, requirements, and how it is used. |
 | `AR` | [architecture/README.md](architecture/README.md), [architecture/build-infra.md](architecture/build-infra.md) | How the repository is structured and how the build is wired. |
 | `TCK` | [tck.md](tck.md) | The Gradle test harness task groups. |
@@ -48,8 +49,11 @@ all of its IDs in that one file.
 
 - [grund.md](grund.md) — `GRUND-repository-motivation`: why this repository exists.
 - [goals.md](goals.md) — the outcome goals: tested metadata, broad version coverage, fresh releases, and no regressions.
+- [principles.md](principles.md) — the cross-cutting principles, starting with `PRCPL-prefer-algorithmic`: everything that can be algorithmic should be algorithmic.
 - [functional-spec/README.md](functional-spec/README.md) — `FS-repository-functional-spec`: the system's behavior, requirements, the native-build-tools interface contract, library-version compatibility automation, and how each audience uses the repository.
 - [functional-spec/repository-status.md](functional-spec/repository-status.md) — `FS-repository-status-report`: issue progress measurements and their HTML/JSON representations.
+- [functional-spec/test-contract.md](functional-spec/test-contract.md) — `FS-test-contract`: the point-by-point contract for writing a test — what it must have, must not do, should do, and how it behaves under Native Image.
+- [functional-spec/contribution-contract.md](functional-spec/contribution-contract.md) — `FS-contribution-contract`: what review may block on — rule strength (must vs should), the algorithmic shape limits, the coverage gates, and the enumerated cheating patterns.
 - [architecture/README.md](architecture/README.md) — `AR-repository-architecture`: the component map and high-level implementation overview.
 - [architecture/build-infra.md](architecture/build-infra.md) — `AR-build-infrastructure`: the two-layer Gradle build, convention plugins, and scaffolding.
 - [tck.md](tck.md) — `TCK-test-harness`: the harness task groups.

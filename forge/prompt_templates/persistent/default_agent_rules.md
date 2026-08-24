@@ -1,16 +1,16 @@
-Workflow rules:
-- Modify only files the workflow made editable.
-- Use only the target library's public API unless a prompt explicitly says otherwise.
-- Keep generated tests meaningful and avoid replacing real coverage with trivial assertions.
-- Keep tests compatible with Native Image by default.
-- Never generate, write, or modify reachability metadata or Native Image config entries. Do not create or edit `reachability-metadata.json`, `reflect-config.json`, `resource-config.json`, `proxy-config.json`, `serialization-config.json`, `jni-config.json`, `predefined-classes-config.json`, or any other file under `src/test/resources/META-INF/native-image`; Forge handles metadata generation and merging externally.
-- Do not add test JVM toolchain, target, or release overrides that move the test away from the TCK-resolved test JVM version. If a language plugin needs an explicit setting such as `JavaLanguageVersion.of(...)`, `jvmToolchain(...)`, `kotlinOptions.jvmTarget = ...`, or `options.release = ...`, wire it to the resolved test JVM version instead of hardcoding a number. Do not add old-JDK compatibility flags such as `-Djava.security.manager=allow`. If a path only works on a different JDK, leave that path untested.
-- When tests use connection, request, read, socket, server, client, process, database, messaging, or HTTP timeouts, set each explicit timeout to at least 10 seconds. Shorter timeouts are flaky under native-image-agent metadata generation and Native Image startup, while unbounded waits are still not allowed.
+Workflow rules (test contract: §root/FS-test-contract):
+- Modify only files the workflow made editable. §AR-forge-strategy-agent-boundary
+- Use only the target library's public API unless a prompt explicitly says otherwise. §root/FS-test-contract.1.3
+- Keep generated tests meaningful and avoid replacing real coverage with trivial assertions. §root/FS-test-contract.1.3
+- Keep tests compatible with Native Image by default. §root/FS-test-contract.4
+- Never generate, write, or modify reachability metadata or Native Image config entries. Do not create or edit `reachability-metadata.json`, `reflect-config.json`, `resource-config.json`, `proxy-config.json`, `serialization-config.json`, `jni-config.json`, `predefined-classes-config.json`, or any other file under `src/test/resources/META-INF/native-image`; Forge handles metadata generation and merging externally. §root/FS-test-contract.2.7
+- Do not add test JVM toolchain, target, or release overrides that move the test away from the TCK-resolved test JVM version. If a language plugin needs an explicit setting such as `JavaLanguageVersion.of(...)`, `jvmToolchain(...)`, `kotlinOptions.jvmTarget = ...`, or `options.release = ...`, wire it to the resolved test JVM version instead of hardcoding a number. Do not add old-JDK compatibility flags such as `-Djava.security.manager=allow`. If a path only works on a different JDK, leave that path untested. §root/FS-test-contract.2.8
+- When tests use connection, request, read, socket, server, client, process, database, messaging, or HTTP timeouts, set each explicit timeout to at least 10 seconds. Shorter timeouts are flaky under native-image-agent metadata generation and Native Image startup, while unbounded waits are still not allowed. §root/FS-test-contract.1.7
 - Do not make tests depend on Native Image resource metadata for temporary, build, or
   machine-local absolute paths. If a test creates files under a temp/build directory,
   exercise them through normal file APIs or create the optional file that the library
   expects; do not rely on classloader resource lookup for paths such as `/tmp/...`,
-  JUnit temp dirs, or `build/...`.
+  JUnit temp dirs, or `build/...`. §root/FS-test-contract.4.4
 - Do not create tests for behavior that depends on runtime bytecode generation,
   runtime class definition or loading, runtime lambda definition, Java agent
   self-attach, class redefinition, instrumentation, native-image substitutions,
@@ -18,7 +18,7 @@ Workflow rules:
   not already in the native image, or classes that exist only through a custom
   class loader. This includes Byte Buddy-backed inline mocking, static mocking,
   construction mocking, and concrete-class mocking. Prefer statically representable
-  behavior such as public APIs.
-- Do not skip Native Image execution with runtime guards or native-image-specific disables.
-- Do not compile, run, or verify tests yourself; the workflow runs validation externally.
-- Keep edits focused on the active library and requested workflow task.
+  behavior such as public APIs. §root/FS-test-contract.4.5
+- Do not skip Native Image execution with runtime guards or native-image-specific disables. §root/FS-test-contract.4.1
+- Do not compile, run, or verify tests yourself; the workflow runs validation externally. §AR-forge-strategy-agent-boundary
+- Keep edits focused on the active library and requested workflow task. §root/FS-test-contract.2.9
