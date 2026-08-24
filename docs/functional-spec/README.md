@@ -238,7 +238,7 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 
 ### 5.3 CI gates
 
-- **PR gates.** Every PR is gated on the relevant subset of: `checkstyle`, `spotlessCheck`, `validateIndexFiles`, `checkMetadataFiles`, `validateLibraryStats`, `library-and-framework-list-validation`, `grund check`, and the appropriate `test-*` workflow.
+- **PR gates.** Every PR is gated on the relevant subset of: `checkstyle`, `spotlessCheck`, `validateIndexFiles`, `checkMetadataFiles`, `validateLibraryStats`, `library-and-framework-list-validation`, `grund check`, and the appropriate `test-*` workflow (§PRCPL-prefer-algorithmic).
 - **Docker isolation.** Docker images used in tests are pre-pulled from `allowed-docker-images`, after which the runner disables Docker networking for deterministic, isolated test runs.
 - **Release style gate.** The release workflow runs `spotlessCheck` before packaging.
 - **Spring AOT scope.** The Spring AOT smoke matrix runs only when `metadata/` changes affect a Spring AOT project.

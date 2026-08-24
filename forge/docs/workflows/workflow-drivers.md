@@ -22,7 +22,8 @@ orchestration live under `ai_workflows/core/`. They are used for four things:
    workflow drivers and belongs to git scripts (§GIT-forge-publication).
 
 Driver setup must be explicit Python logic, shared utility code, or
-predefined strategy configuration (§STRAT-forge-predefined-strategy-contract).
+predefined strategy configuration (§STRAT-forge-predefined-strategy-contract,
+§root/PRCPL-prefer-algorithmic).
 Codex, Pi, or any other LLM agent receives prepared context and works on the
 library-resolution task (§AR-forge-strategy-agent-boundary); it must not decide
 driver setup policy (§AR-forge-workflow-boundary), directory layout, branch

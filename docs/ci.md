@@ -5,7 +5,7 @@ integration: every GitHub Actions workflow, composite action, and shared script
 that runs on a schedule or in response to a pull request or issue. CI is the
 authoritative quality gate — local runs are best-effort, and no metadata ships
 without passing the relevant gates here (§FS-repository-functional-spec.4,
-§GOAL-protect-shipped-metadata). The normative run-size limits and per-gate
+§GOAL-protect-shipped-metadata, §PRCPL-prefer-algorithmic). The normative run-size limits and per-gate
 requirements are stated in the functional spec's CI-gates section; this document
 maps each requirement to the concrete workflow that enforces it.
 
