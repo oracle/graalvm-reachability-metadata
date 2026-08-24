@@ -146,7 +146,7 @@ metadata-relevant coverage from broader behavior coverage.
 
 ### FS-forge-host-requirements: Deterministic host requirement validation
 
-§GOAL-shorten-issue-to-shipped-metadata
+§GOAL-shorten-issue-to-shipped-metadata §root/PRCPL-verify-inputs
 
 Before Forge performs a self-update, queries queue state, claims an issue,
 creates a review worktree, or invokes an agent, it must validate every host

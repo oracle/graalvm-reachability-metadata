@@ -49,7 +49,7 @@ all of its IDs in that one file.
 
 - [grund.md](grund.md) — `GRUND-repository-motivation`: why this repository exists.
 - [goals.md](goals.md) — the outcome goals: tested metadata, broad version coverage, fresh releases, and no regressions.
-- [principles.md](principles.md) — the cross-cutting principles, starting with `PRCPL-prefer-algorithmic`: everything that can be algorithmic should be algorithmic.
+- [principles.md](principles.md) — the cross-cutting principles: `PRCPL-prefer-algorithmic` (everything that can be algorithmic should be algorithmic) and `PRCPL-verify-inputs` (define inputs exactly and verify them before running).
 - [functional-spec/README.md](functional-spec/README.md) — `FS-repository-functional-spec`: the system's behavior, requirements, the native-build-tools interface contract, library-version compatibility automation, and how each audience uses the repository.
 - [functional-spec/repository-status.md](functional-spec/repository-status.md) — `FS-repository-status-report`: issue progress measurements and their HTML/JSON representations.
 - [functional-spec/test-contract.md](functional-spec/test-contract.md) — `FS-test-contract`: the point-by-point contract for writing a test — what it must have, must not do, should do, and how it behaves under Native Image.

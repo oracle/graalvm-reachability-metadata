@@ -57,7 +57,8 @@ the workflow base class and is not selected per strategy; see the
 ## STRAT-predefined-strategy-loader: Strategy loading boundary
 
 Workflow drivers pass `--strategy-name` to the strategy loader, which resolves the
-matching JSON object, validates it against the schema, instantiates the selected
+matching JSON object, validates it against the schema
+(§root/PRCPL-verify-inputs), instantiates the selected
 agent, resolves the registered workflow engine named by `workflow`, and
 passes the prompt and parameter maps into that implementation. The loader owns
 configuration selection; workflow architecture owns how the selected workflow
