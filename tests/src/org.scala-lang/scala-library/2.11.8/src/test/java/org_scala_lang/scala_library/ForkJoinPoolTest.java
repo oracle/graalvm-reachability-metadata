@@ -15,7 +15,7 @@ import scala.concurrent.forkjoin.ForkJoinWorkerThread;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/** Exercises common-pool configuration through system properties. §FS-repository-functional-spec.5.2 */
+/** Exercises common-pool configuration through system properties. \u00A7FS-repository-functional-spec.5.2 */
 public class ForkJoinPoolTest {
     private static final String EXCEPTION_HANDLER_PROPERTY =
             "java.util.concurrent.ForkJoinPool.common.exceptionHandler";

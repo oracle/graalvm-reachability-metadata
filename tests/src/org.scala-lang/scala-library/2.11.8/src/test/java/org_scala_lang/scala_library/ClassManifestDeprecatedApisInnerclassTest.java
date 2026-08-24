@@ -14,7 +14,7 @@ import scala.reflect.ClassTag$;
 import static org.assertj.core.api.Assertions.assertThat;
 import static scala.reflect.ClassManifestDeprecatedApis$class.newArray;
 
-/** Exercises the deprecated manifest array APIs. §FS-repository-functional-spec.5.2 */
+/** Exercises the deprecated manifest array APIs. \u00A7FS-repository-functional-spec.5.2 */
 public class ClassManifestDeprecatedApisInnerclassTest {
 
     @Test

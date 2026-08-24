@@ -18,7 +18,7 @@ import scala.collection.immutable.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/** Exercises immutable hash-map proxy serialization. §FS-repository-functional-spec.5.2 */
+/** Exercises immutable hash-map proxy serialization. \u00A7FS-repository-functional-spec.5.2 */
 public class HashMapInnerSerializationProxyInneranonfunInnerwriteObjectAnonymous2Test {
 
     @Test

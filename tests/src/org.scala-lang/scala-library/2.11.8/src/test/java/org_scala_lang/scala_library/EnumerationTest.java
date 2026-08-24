@@ -18,7 +18,7 @@ import scala.math.BigDecimal.RoundingMode$;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/** Exercises reflective value naming and singleton restoration. §FS-repository-functional-spec.5.2 */
+/** Exercises reflective value naming and singleton restoration. \u00A7FS-repository-functional-spec.5.2 */
 public class EnumerationTest {
 
     @Test

@@ -17,7 +17,7 @@ import scala.concurrent.forkjoin.LinkedTransferQueue;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/** Exercises supported {@link LinkedTransferQueue} serialization. §FS-repository-functional-spec.5.2 */
+/** Exercises supported {@link LinkedTransferQueue} serialization. \u00A7FS-repository-functional-spec.5.2 */
 public class LinkedTransferQueueTest {
 
     @Test

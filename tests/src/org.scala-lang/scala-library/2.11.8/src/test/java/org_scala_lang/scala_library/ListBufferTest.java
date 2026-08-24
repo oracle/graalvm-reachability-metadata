@@ -17,7 +17,7 @@ import scala.collection.mutable.ListBuffer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/** Exercises supported {@link ListBuffer} serialization. §FS-repository-functional-spec.5.2 */
+/** Exercises supported {@link ListBuffer} serialization. \u00A7FS-repository-functional-spec.5.2 */
 public class ListBufferTest {
 
     @Test

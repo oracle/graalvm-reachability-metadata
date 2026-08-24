@@ -17,7 +17,7 @@ import scala.collection.concurrent.TrieMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/** Exercises supported serialization behavior. §FS-repository-functional-spec.5.2 */
+/** Exercises supported serialization behavior. \u00A7FS-repository-functional-spec.5.2 */
 public class TrieMapTest {
 
     @Test

@@ -18,7 +18,7 @@ import scala.collection.mutable.ListBuffer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/** Exercises the immutable list serialization proxy. §FS-repository-functional-spec.5.2 */
+/** Exercises the immutable list serialization proxy. \u00A7FS-repository-functional-spec.5.2 */
 public class ListInnerSerializationProxyTest {
 
     @Test

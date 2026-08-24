@@ -18,7 +18,7 @@ import scala.collection.mutable.LinkedHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/** Exercises linked hash-map entry serialization. §FS-repository-functional-spec.5.2 */
+/** Exercises linked hash-map entry serialization. \u00A7FS-repository-functional-spec.5.2 */
 public class LinkedHashMapInneranonfunInnerwriteObjectAnonymous1Test {
 
     @Test
