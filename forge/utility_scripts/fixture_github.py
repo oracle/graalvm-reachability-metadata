@@ -240,6 +240,10 @@ class FixtureGitHubState:
             return
         issue.labels = [label for label in issue.labels if label != label_name]
 
+    def close_issue(self, issue_number: int) -> None:
+        """Close a fixture issue so later fixture scans stop selecting it."""
+        self._issue(issue_number).state = "CLOSED"
+
     def get_issue_assignees(self, issue_number: int) -> list[str]:
         return list(self._issue(issue_number).assignees)
 

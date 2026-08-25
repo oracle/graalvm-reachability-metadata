@@ -17,6 +17,10 @@ import zipfile
 
 
 MAVEN_CENTRAL = "https://repo1.maven.org/maven2"
+CONFLUENT_MAVEN = "https://packages.confluent.io/maven"
+# Maven Central first, Confluent as the fallback, matching the harness.
+# §root/AR-build-infrastructure.1
+ARTIFACT_REPOSITORY_URLS: tuple[str, ...] = (MAVEN_CENTRAL, CONFLUENT_MAVEN)
 
 
 @dataclass(frozen=True)
@@ -145,9 +149,8 @@ def classify_coordinate_name(coordinate: str) -> NativeImageEligibility:
 
 def inspect_maven_artifact(coordinate: str) -> NativeImageEligibility:
     """Inspect Maven packaging and artifact contents when available."""
-    group, artifact, version = coordinate.split(":", 2)
-    base_path = "/".join([group.replace(".", "/"), artifact, version])
-    base_url = f"{MAVEN_CENTRAL}/{base_path}/{artifact}-{version}"
+    group, artifact, _version = coordinate.split(":", 2)
+    base_url = artifact_base_url(MAVEN_CENTRAL, coordinate)
 
     pom_metadata = read_maven_pom_metadata(f"{base_url}.pom")
     packaging = pom_metadata.packaging if pom_metadata else None
@@ -265,6 +268,47 @@ def _find_stripped_text(element: ET.Element, namespace: str, child: str) -> str 
     """Return trimmed text for an XML child element."""
     text = element.findtext(f"{namespace}{child}")
     return text.strip() if text else None
+
+
+def artifact_base_url(repository_url: str, coordinate: str) -> str:
+    """Return the URL prefix shared by every file published for one coordinate."""
+    group, artifact, version = coordinate.split(":", 2)
+    base_path = "/".join([group.replace(".", "/"), artifact, version])
+    return f"{repository_url}/{base_path}/{artifact}-{version}"
+
+
+def artifact_is_published(
+        coordinate: str,
+        repository_urls: tuple[str, ...] = ARTIFACT_REPOSITORY_URLS,
+) -> bool | None:
+    """Return whether a coordinate is published, or None when no repository answered.
+
+    The issue-form gate needs only the existence answer for a coordinate, so it
+    asks for the POM of each configured repository in order and stops at the
+    first hit (§FS-forge-run-requirements.3). The answer is three-valued: an
+    unreachable repository is an external condition and must never be read as
+    evidence that an artifact is missing.
+    """
+    undecided = False
+    for repository_url in repository_urls:
+        found = artifact_exists_in_repository(f"{artifact_base_url(repository_url, coordinate)}.pom")
+        if found is True:
+            return True
+        if found is None:
+            undecided = True
+    return None if undecided else False
+
+
+def artifact_exists_in_repository(pom_url: str) -> bool | None:
+    """Return True when the POM exists, False on 404, and None when the host did not answer."""
+    request = urllib.request.Request(pom_url, method="HEAD")
+    try:
+        with urllib.request.urlopen(request, timeout=20):
+            return True
+    except urllib.error.HTTPError as exc:
+        return False if exc.code == 404 else None
+    except (OSError, urllib.error.URLError):
+        return None
 
 
 def fetch_url(url: str):

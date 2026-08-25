@@ -164,9 +164,14 @@ from utility_scripts.library_update_alias_split import extract_follow_up_issue_n
 from utility_scripts.metadata_index import (
     coordinate_parts as metadata_coordinate_parts,
     get_not_for_native_image_marker,
+    is_newer_than_latest_metadata_version,
     is_not_for_native_image,
     resolve_metadata_version,
     resolve_test_dir,
+)
+from utility_scripts.native_image_artifact import (
+    ARTIFACT_REPOSITORY_URLS,
+    artifact_is_published,
 )
 from utility_scripts.metrics_writer import (
     PENDING_METRICS_FILENAME,
@@ -717,6 +722,16 @@ def format_github_exception_details(exc: Exception) -> str:
 
 
 PIPELINE_LABELS = {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE, LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL, LABEL_NI_RUN_FAIL}
+FAILURE_PIPELINE_LABELS = {LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL, LABEL_NI_RUN_FAIL}
+
+# Named rules of the pre-claim issue-form gate. The name of the failed rule is
+# what a rejection reports and what selects its comment. §FS-forge-run-requirements.3
+ISSUE_FORM_RULE_SINGLE_WORKFLOW_LABEL = "single-workflow-label"
+ISSUE_FORM_RULE_MAVEN_COORDINATES = "maven-coordinates"
+ISSUE_FORM_RULE_CURRENT_LATEST_VERSION = "current-latest-version"
+ISSUE_FORM_RULE_NEWER_THAN_LATEST = "newer-than-latest"
+ISSUE_FORM_RULE_PUBLISHED_ARTIFACT = "published-artifact"
+ISSUE_FORM_REJECTION_MARKER_PREFIX = "<!-- forge-issue-form-rejection"
 
 
 def get_issue_by_number(issue_number: int) -> tuple[dict, str]:
@@ -1023,12 +1038,18 @@ def attach_pull_request_status_check_rollup(
     return enriched_pull_request
 
 
+def get_issue_label_names(issue: dict) -> list[str]:
+    """Return the label names carried by a GitHub issue payload."""
+    return [
+        label["name"]
+        for label in issue.get("labels", [])
+        if isinstance(label, dict) and isinstance(label.get("name"), str) and label["name"]
+    ]
+
+
 def issue_has_label(issue: dict, label_name: str) -> bool:
     """Return True when the GitHub issue payload contains the given label."""
-    for label in issue.get("labels", []):
-        if isinstance(label, dict) and label.get("name") == label_name:
-            return True
-    return False
+    return label_name in get_issue_label_names(issue)
 
 
 def issue_is_resumable(issue: dict) -> bool:
@@ -3351,6 +3372,7 @@ def load_current_metadata_version(
         reachability_metadata_path: str,
         group: str,
         artifact: str,
+        report_errors: bool = True,
 ) -> Optional[str]:
     """Load the current metadata version from the latest index.json entry."""
     index_json_path = os.path.join(
@@ -3362,7 +3384,8 @@ def load_current_metadata_version(
     )
     index_json_path_display = _repo_relative_path(index_json_path, reachability_metadata_path)
     if not os.path.isfile(index_json_path):
-        print(f"ERROR: Missing metadata index file: {index_json_path_display}", file=sys.stderr)
+        if report_errors:
+            print(f"ERROR: Missing metadata index file: {index_json_path_display}", file=sys.stderr)
         return None
 
     with open(index_json_path, "r", encoding="utf-8") as index_file:
@@ -3372,10 +3395,11 @@ def load_current_metadata_version(
         if entry.get("latest") is True:
             return entry.get("test-version") or entry.get("metadata-version")
 
-    print(
-        f"ERROR: No latest entry found in metadata index: {index_json_path_display}",
-        file=sys.stderr,
-    )
+    if report_errors:
+        print(
+            f"ERROR: No latest entry found in metadata index: {index_json_path_display}",
+            file=sys.stderr,
+        )
     return None
 
 
@@ -6336,6 +6360,242 @@ def maybe_handle_not_for_native_image_issue(issue: dict, base_reachability_metad
     return True
 
 
+@dataclass(frozen=True)
+class IssueFormRejection:
+    """The one issue-form rule that failed, and the value that failed it."""
+
+    rule: str
+    offending_value: str
+    requirement: str
+
+
+@dataclass(frozen=True)
+class IssueFormVerdict:
+    """Outcome of the pre-claim issue-form gate.
+
+    Three-valued on purpose: a rule can fail, or the gate can be unable to
+    decide because a remote repository did not answer. Only a failure rejects
+    an issue; an undecided answer leaves it for a later cycle.
+    §FS-forge-run-requirements.3
+    """
+
+    rejection: Optional[IssueFormRejection] = None
+    undecided_reason: Optional[str] = None
+
+    @property
+    def accepted(self) -> bool:
+        return self.rejection is None and self.undecided_reason is None
+
+
+ISSUE_FORM_ACCEPTED = IssueFormVerdict()
+
+
+def check_issue_form(issue: dict, label: str, reachability_metadata_path: str) -> IssueFormVerdict:
+    """Decide every issue-form rule from the payload and the repository.
+
+    Runs before the first side effect, so a rejected issue is never assigned,
+    never moved to `In Progress`, and never given a worktree. The rules are
+    decided one at a time and the gate stops at the first failure, so the
+    verdict always names the rule and the value that failed it. The only rule
+    that leaves the machine is decided last (§FS-forge-run-requirements.3,
+    §root/PRCPL-verify-inputs).
+    """
+    issue_number = issue["number"]
+
+    workflow_labels = sorted(
+        label_name for label_name in get_issue_label_names(issue) if label_name in PIPELINE_LABELS
+    )
+    if len(workflow_labels) > 1:
+        return IssueFormVerdict(rejection=IssueFormRejection(
+            rule=ISSUE_FORM_RULE_SINGLE_WORKFLOW_LABEL,
+            offending_value=", ".join(workflow_labels),
+            requirement=(
+                "An issue must carry exactly one workflow label, because each one routes to a "
+                "different driver working from different assumptions about what the issue asks "
+                "for. Keep the single label that describes the work — one of "
+                f"{', '.join(f'`{name}`' for name in sorted(PIPELINE_LABELS))} — and remove the rest."
+            ),
+        ))
+
+    title = str(issue.get("title") or "")
+    coordinate_parts = extract_coordinate_parts(title)
+    if coordinate_parts is None:
+        return IssueFormVerdict(rejection=IssueFormRejection(
+            rule=ISSUE_FORM_RULE_MAVEN_COORDINATES,
+            offending_value=title,
+            requirement=(
+                "The issue title must name the library as Maven coordinates "
+                "`group:artifact:version`, for example "
+                "`Add support for org.postgresql:postgresql:42.7.3`."
+            ),
+        ))
+
+    group, artifact, requested_version = coordinate_parts
+    coordinate = f"{group}:{artifact}:{requested_version}"
+
+    if label in FAILURE_PIPELINE_LABELS:
+        current_version = load_current_metadata_version(
+            reachability_metadata_path,
+            group,
+            artifact,
+            report_errors=False,
+        )
+        if current_version is None:
+            return IssueFormVerdict(rejection=IssueFormRejection(
+                rule=ISSUE_FORM_RULE_CURRENT_LATEST_VERSION,
+                offending_value=f"{group}:{artifact}",
+                requirement=(
+                    f"A `{label}` issue repairs the move from the currently supported version to "
+                    "the requested one, so `metadata/<group>/<artifact>/index.json` must already "
+                    "carry an entry marked `\"latest\": true`. This artifact has none, so there is "
+                    "no supported version to repair from — file a `library-new-request` instead."
+                ),
+            ))
+        if not is_newer_than_latest_metadata_version(
+                reachability_metadata_path,
+                group,
+                artifact,
+                requested_version,
+        ):
+            return IssueFormVerdict(rejection=IssueFormRejection(
+                rule=ISSUE_FORM_RULE_NEWER_THAN_LATEST,
+                offending_value=requested_version,
+                requirement=(
+                    f"A `{label}` issue must request a version strictly above the currently "
+                    f"supported `latest` version `{current_version}`. Request a newer version, or "
+                    "file a `library-update-request` to add support at or below "
+                    f"`{current_version}`."
+                ),
+            ))
+
+    published = artifact_is_published(coordinate)
+    if published is None:
+        undecided_reason = (
+            f"no configured artifact repository answered for {coordinate}; "
+            "the issue form stays undecided and the issue is left for a later cycle"
+        )
+        log_stage("issue-form", f"Issue #{issue_number}: {undecided_reason}")
+        return IssueFormVerdict(undecided_reason=undecided_reason)
+    if not published:
+        return IssueFormVerdict(rejection=IssueFormRejection(
+            rule=ISSUE_FORM_RULE_PUBLISHED_ARTIFACT,
+            offending_value=coordinate,
+            requirement=(
+                "The coordinate must be published in a repository the build resolves against: "
+                f"{', '.join(ARTIFACT_REPOSITORY_URLS)}. None of them publishes a POM for it, so "
+                "no run could resolve the library. Check the group, artifact, and version for "
+                "typos."
+            ),
+        ))
+
+    return ISSUE_FORM_ACCEPTED
+
+
+def build_issue_form_rejection_marker(rejection: IssueFormRejection) -> str:
+    """Return the hidden comment marker keyed on the failed rule and its value."""
+    key = hashlib.sha1(
+        f"{rejection.rule}\n{rejection.offending_value}".encode("utf-8")
+    ).hexdigest()[:12]
+    return f"{ISSUE_FORM_REJECTION_MARKER_PREFIX} rule={rejection.rule} key={key} -->"
+
+
+def build_issue_form_rejection_comment(rejection: IssueFormRejection) -> str:
+    """Render the predefined comment the failed rule selects."""
+    return (
+        f"{build_issue_form_rejection_marker(rejection)}\n"
+        f"Forge did not start a run for this issue: it fails the issue-form rule "
+        f"`{rejection.rule}`.\n\n"
+        f"Offending value: `{rejection.offending_value}`\n\n"
+        f"{rejection.requirement}\n\n"
+        "This issue is closed because nothing about it changes until someone edits it. "
+        "Correct it and reopen it, or file a corrected issue."
+    )
+
+
+def issue_has_issue_form_rejection_comment(issue_number: int, rejection: IssueFormRejection) -> bool:
+    """Return whether this exact rule and value were already reported on the issue."""
+    marker = build_issue_form_rejection_marker(rejection)
+    return any(
+        marker in str(comment.get("body") or "")
+        for comment in get_issue_comments(issue_number)
+    )
+
+
+def release_issue_form_claim(
+        issue: dict,
+        rejection: IssueFormRejection,
+        authenticated_user: str | None,
+) -> None:
+    """Return a claim to `Todo` before a form rejection closes the issue.
+
+    The gate runs before claiming, so this normally finds nothing. It still runs
+    because an issue left assigned and `In Progress` by a crashed run reaches the
+    gate on the next scan (§FS-forge-run-requirements.3).
+    """
+    if is_fixture_testing_enabled():
+        # Fixture runs never take a live claim (§AR-forge-workflow-pipeline).
+        return
+    assignees = get_issue_payload_assignees(issue)
+    if not assignees or not is_assigned_only_to_authenticated_user(assignees, authenticated_user):
+        return
+    item_id, _project_status = get_project_item_state(issue["number"])
+    if not item_id:
+        return
+    revert_issue_claim(item_id, issue["number"], f"issue-form rule '{rejection.rule}' failed")
+
+
+def close_issue(issue_number: int, reason: str) -> None:
+    """Close an issue Forge will never process and stop scanning it."""
+    log_stage("issue-close", f"Closing issue #{issue_number}: {reason}")
+    if is_fixture_testing_enabled():
+        require_fixture_github_state().close_issue(issue_number)
+    else:
+        gh("issue", "close", str(issue_number), "--repo", REPO, "--reason", "not planned")
+    record_issue_claim_cache_observations([
+        IssueClaimCacheObservation(
+            issue_number=issue_number,
+            reason=ISSUE_CLAIM_CACHE_REASON_CLOSED,
+        )
+    ])
+
+
+def reject_issue_form(
+        issue: dict,
+        rejection: IssueFormRejection,
+        authenticated_user: str | None,
+) -> None:
+    """Release any claim, report the failed rule once, and close the issue.
+
+    A form defect is an input defect outside Forge's generation boundary: no
+    `human-intervention` label is applied and no branch is preserved. Closing is
+    what takes the issue out of every queue it cannot leave on its own, and the
+    comment marker keeps a reopened, unedited issue from collecting a second
+    comment (§FS-forge-run-requirements.3).
+    """
+    issue_number = issue["number"]
+    log_stage(
+        "issue-form",
+        f"Rejecting issue #{issue_number}: rule '{rejection.rule}' failed on "
+        f"'{rejection.offending_value}'",
+    )
+    try:
+        release_issue_form_claim(issue, rejection, authenticated_user)
+        if issue_has_issue_form_rejection_comment(issue_number, rejection):
+            log_stage(
+                "issue-form",
+                f"Issue #{issue_number} already reports rule '{rejection.rule}'; not commenting again",
+            )
+        else:
+            post_issue_comment(issue_number, build_issue_form_rejection_comment(rejection))
+        close_issue(issue_number, f"issue-form rule '{rejection.rule}' failed")
+    except Exception as exc:
+        print(
+            f"ERROR: Failed to reject issue #{issue_number} for issue-form rule "
+            f"'{rejection.rule}': {exc!r}",
+            file=sys.stderr,
+        )
+
+
 def claim_issue_for_processing(
         issue: dict,
         label: str,
@@ -6355,6 +6615,15 @@ def claim_issue_for_processing(
     in the checked-out repository (§AR-dynamic-access-exhaust-report).
     """
     if not refresh_issue_payload_for_claim(issue, label, authenticated_user):
+        return None
+
+    # The form gate precedes every side effect, including the terminal
+    # not-for-native-image follow-up. §FS-forge-run-requirements.3
+    form_verdict = check_issue_form(issue, label, base_reachability_metadata_path)
+    if form_verdict.rejection is not None:
+        reject_issue_form(issue, form_verdict.rejection, authenticated_user)
+        return None
+    if not form_verdict.accepted:
         return None
 
     if maybe_handle_not_for_native_image_issue(issue, base_reachability_metadata_path):
@@ -6482,7 +6751,17 @@ def build_fixture_claimed_issue(
 
     try:
         require_fixture_github_state().prepare_issue_worktree(issue_number, label, worktree_path)
-        claim_metadata = build_claim_metadata(issue, label, worktree_path)
+        # Fixture masking rewinds the index inside the worktree, so the gate is
+        # decided against the repository state this run actually uses.
+        # §FS-forge-run-requirements.3 §AR-forge-workflow-pipeline
+        form_verdict = check_issue_form(issue, label, worktree_path)
+        if form_verdict.rejection is not None:
+            reject_issue_form(issue, form_verdict.rejection, FIXTURE_AUTHENTICATED_USER)
+        claim_metadata = (
+            build_claim_metadata(issue, label, worktree_path)
+            if form_verdict.accepted
+            else None
+        )
     except BaseException as exc:
         if isinstance(exc, Exception):
             print(
