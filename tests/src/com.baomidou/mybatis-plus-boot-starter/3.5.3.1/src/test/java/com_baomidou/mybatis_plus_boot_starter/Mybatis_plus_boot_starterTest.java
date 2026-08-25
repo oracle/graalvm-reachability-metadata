@@ -8,6 +8,7 @@ package com_baomidou.mybatis_plus_boot_starter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -17,6 +18,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.time.LocalDateTime;
@@ -62,6 +66,25 @@ public class Mybatis_plus_boot_starterTest {
     }
 
     @Test
+    void paginatesMapperResultsWithPaginationInterceptor() throws Exception {
+        try (ConfigurableApplicationContext context = SpringApplication.run(PaginationTestApplication.class,
+                "--spring.main.web-application-type=none",
+                "--spring.datasource.url=jdbc:h2:mem:pagination;MODE=MYSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE",
+                "--spring.datasource.username=sa",
+                "--spring.datasource.password=")) {
+            createSchema(context.getBean(DataSource.class));
+            insertPeople(context.getBean(DataSource.class));
+
+            Page<Person> page = context.getBean(PersonMapper.class).selectPage(new Page<>(2, 2),
+                    Wrappers.<Person>query().orderByAsc("id"));
+
+            assertThat(page.getTotal()).isEqualTo(3);
+            assertThat(page.getPages()).isEqualTo(2);
+            assertThat(page.getRecords()).extracting(Person::getName).containsExactly("Grace");
+        }
+    }
+
+    @Test
     void fillsAuditFieldsThroughMetaObjectHandler() throws Exception {
         try (ConfigurableApplicationContext context = SpringApplication.run(AuditedTestApplication.class,
                 "--spring.main.web-application-type=none",
@@ -93,6 +116,13 @@ public class Mybatis_plus_boot_starterTest {
         }
     }
 
+    private void insertPeople(DataSource dataSource) throws Exception {
+        try (Connection connection = dataSource.getConnection();
+                Statement statement = connection.createStatement()) {
+            statement.execute("INSERT INTO people (name) VALUES ('Ada'), ('Linus'), ('Grace')");
+        }
+    }
+
     private void createAuditedSchema(DataSource dataSource) throws Exception {
         try (Connection connection = dataSource.getConnection();
                 Statement statement = connection.createStatement()) {
@@ -112,6 +142,24 @@ public class Mybatis_plus_boot_starterTest {
             MapperFactoryBean<PersonMapper> mapperFactoryBean = new MapperFactoryBean<>(PersonMapper.class);
             mapperFactoryBean.setSqlSessionFactory(sqlSessionFactory);
             return mapperFactoryBean;
+        }
+    }
+
+    @SpringBootConfiguration
+    @EnableAutoConfiguration
+    static class PaginationTestApplication {
+        @Bean
+        MapperFactoryBean<PersonMapper> personMapper(SqlSessionFactory sqlSessionFactory) {
+            MapperFactoryBean<PersonMapper> mapperFactoryBean = new MapperFactoryBean<>(PersonMapper.class);
+            mapperFactoryBean.setSqlSessionFactory(sqlSessionFactory);
+            return mapperFactoryBean;
+        }
+
+        @Bean
+        MybatisPlusInterceptor paginationInterceptor() {
+            MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+            interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
+            return interceptor;
         }
     }
 
