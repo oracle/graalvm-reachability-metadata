@@ -4,9 +4,7 @@ This spec realizes the Forge direction set out in §GOAL-forge-direction, in
 service of §GOAL-maximize-library-coverage and
 §GOAL-shorten-issue-to-shipped-metadata.
 
-## 1. Purpose
-
-### FS-forge-issue-resolution-goal: Forge issue resolution goal
+## FS-forge-issue-resolution-goal: Forge issue resolution goal
 
 The `forge/` directory automates the end-to-end resolution of supported GitHub
 issue queues in the
@@ -25,13 +23,12 @@ This shortens the path described in §GOAL-shorten-issue-to-shipped-metadata.
 
 A supported issue starts from a work label such as `library-new-request`,
 `library-update-request`, `fails-javac-compile`, `fails-java-run`, or
-`fails-native-image-run`. Section 2 (Scope) enumerates the queues Forge
-resolves, and its "Origin of the `fails-*` queues" subsection records where the
-`fails-*` work comes from. Forge drains each pipeline by priority tier rather
-than by scan batch: every `high-priority` issue first, then every `priority`
-issue, then the remaining issues.
+`fails-native-image-run`. §FS-forge-scope enumerates the queues Forge resolves,
+and §FS-forge-scope.1 records where the `fails-*` work comes from. Forge drains
+each pipeline by priority tier rather than by scan batch: every `high-priority`
+issue first, then every `priority` issue, then the remaining issues.
 
-## 2. Scope
+## FS-forge-scope: Supported issue queues
 
 The project covers these supported issue-resolution queues
 (§FS-forge-issue-resolution-goal), in service of
@@ -61,7 +58,7 @@ Successful fixes use the matching PR labels (`library-new-request`,
 Out of scope: anything that does not produce reachability metadata or its
 supporting tests for the reachability repo.
 
-### Origin of the `fails-*` queues
+### 1. Origin of the `fails-*` queues
 
 Every `fails-*` queue originates from a failed version update, not from a human
 report. The reachability repo's scheduled library version compatibility
@@ -73,7 +70,7 @@ the stage that broke (`fails-javac-compile`, `fails-java-run`,
 issues; it never opens them. The producer's contract is the reachability repo's
 Library version update automation (§root/FS-library-version-update-automation).
 
-## 3. Glossary
+## FS-forge-glossary: Glossary
 
 | Term | Definition |
 | --- | --- |
@@ -97,7 +94,7 @@ Library version update automation (§root/FS-library-version-update-automation).
 | **Source context** | Read-only files supplied to the agent. Types: `main` (library source), `test` (upstream tests), `documentation` (Javadoc). Selected by the strategy parameter `source-context-types`. |
 | **Library update target** | The metadata and test directories selected for a `library-update-request` coordinate (§WF-improve-library-coverage.3). Resolution records the requested coordinate, match type (`tested-version`, `metadata-version`, `default-for`, or `new-version`), matched index entry, resolved metadata version, resolved test version, and edit directories. |
 
-## 4. Requirements
+## FS-forge-requirements: Requirement gates
 
 Forge validates two kinds of requirement, split by the question each answers.
 **Host requirements** (§FS-forge-host-requirements) are what the machine must
@@ -108,31 +105,7 @@ one work cycle must resolve for itself — the strategy it will run, the issue i
 may claim, the form of that issue, and the run context a driver is handed. Each
 is a gate, and they run in that order (§AR-forge-workflow-pipeline).
 
-### 4.1 Top-level worker bootstrap
-
-- `do-work.sh` is a fixed bootstrap script and must not be changed for worker
-  behavior updates. It forwards `argv` unchanged to
-  `do_up_to_date_work.sh`, where every option and environment concern is
-  handled.
-- `do_up_to_date_work.sh` owns argument parsing, environment normalization,
-  Forge self-updates, queue dispatch, sleep timing, and re-execing the latest
-  worker script.
-- `do_up_to_date_work.sh --stop` creates a shared stop marker for the current
-  user at `~/.metadata-forge-stop` by default. Passing `--branch BRANCH` or a
-  positional branch creates a branch-scoped marker next to it, such as
-  `~/.metadata-forge-stop.master`. Running `--clear-stop` removes the matching
-  marker. Existing worker loops check the global marker and the marker for
-  their monitored branch between queue operations and during sleep, then exit
-  without claiming additional work.
-- `FORGE_PARALLELISM` controls how many issue workflows the top-level worker
-  may run concurrently. Valid values are `1` through `4`; the default is `1`.
-- `FORGE_DO_WORK_STOP_FILE` overrides the shared stop marker path used by
-  `do-work` loops. The default is `~/.metadata-forge-stop`.
-- `FORGE_USER_REQUESTED_ISSUES_ONLY=1` restricts issue queue scans to
-  user-requested issues by excluding configured automation and maintainer
-  authors locally before claim processing (§ORCH-forge-orchestration-spec).
-
-### FS-forge-host-requirements: Host requirements
+## FS-forge-host-requirements: Host requirements
 
 §GOAL-shorten-issue-to-shipped-metadata §root/PRCPL-verify-inputs
 
@@ -226,7 +199,7 @@ not required, a relaxed version mismatch does not fail startup, and commands
 that start no work — stop, resume, help, cache maintenance — do not run the gate
 at all.
 
-### FS-forge-run-requirements: Run requirements
+## FS-forge-run-requirements: Run requirements
 
 
 A satisfied host says nothing about whether a given cycle may do work. Before a
@@ -237,7 +210,7 @@ A run requirement that cannot be satisfied must fail where it is checked, naming
 and must leave GitHub in the state it found: a rejection after a claim releases
 the claim and returns the issue to `Todo` rather than failing the issue.
 
-#### 1. Strategy and model
+### 1. Strategy and model
 
 Every enabled queue must resolve its configured strategy name against the
 registry before scanning begins, and a strategy bundle must be rejected on load
@@ -246,7 +219,7 @@ engine declares as required (§STRAT-forge-predefined-strategy-contract). An
 unresolvable strategy or model is a worker configuration error: the worker must
 exit before it scans a queue, not fail one issue at a time.
 
-#### 2. Issue claimability
+### 2. Issue claimability
 
 Claiming is exclusive, and the decision must be made against live GitHub state
 rather than the scan results that led to it (§ORCH-forge-orchestration-spec).
@@ -258,7 +231,7 @@ additionally requires a valid continuation marker on a preserved branch
 exhaust report (§WF-dynamic-access-exhaust-report). Only once every condition
 holds may the issue be assigned and moved to `In Progress`.
 
-#### 3. Issue form
+### 3. Issue form
 
 The queue label decides the workflow, so the issue must be unambiguous before a
 driver starts (§WF-forge-workflow-drivers.2). The title must resolve to Maven
@@ -299,7 +272,7 @@ preserves no branch (§FS-human-intervention-policy). Like every requirement
 here it leaves GitHub as it found it — a rejection reached after a claim
 releases the claim and returns the issue to `Todo`.
 
-#### 4. Run context
+### 4. Run context
 
 A driver must be handed a complete run context and must not resolve, clone, or
 re-derive any part of it: the resolved coordinates, validated strategy,
@@ -311,7 +284,7 @@ preparation result; it does not own queue policy or repository resolution. The
 gap between this requirement and the current implementation is
 §ROADMAP-forge-dispatcher-owned-run-preconditions.
 
-## 5. Outputs
+## FS-forge-outputs: Run outputs
 
 - **Per-run metrics record** persisted to
   `stats/<group>/<artifact>/<version>/execution-metrics.json`, as required by
@@ -332,7 +305,7 @@ gap between this requirement and the current implementation is
 - **Pull request** created asynchronously by the trusted Forge Actions
   publisher after Branch Ready accepts the exact pushed SHA.
 
-### FS-forge-run-metrics: Per-run metrics record
+## FS-forge-run-metrics: Per-run metrics record
 §GOAL-minimize-generation-cost
 
 Every run must persist a per-library metrics record to
@@ -353,7 +326,7 @@ preserved work. Any later resumed run for the same library must add its current
 counters to the pending counters before writing durable metrics or publication
 metrics, so repeated continuation attempts do not reset usage accounting.
 
-### FS-durable-generation-logs: Durable generation and session logs
+## FS-durable-generation-logs: Durable generation and session logs
 
 Every Forge session and generation step must be logged and saved to a stable
 path because durable logs are the primary debugging surface for generated work.
@@ -370,9 +343,17 @@ If a run fails or times out, the saved logs are part of the diagnostic artifact
 set that allows maintainers or a later Forge run to continue from evidence,
 keeping the loop short as called for by §GOAL-shorten-issue-to-shipped-metadata.
 
-## 6. Local Pre-Publication Verification
+## FS-forge-publication-readiness: Publication readiness
 
-### FS-local-ci-equivalent-verification: Local pre-publication verification
+Generation ending is not the same as a run being publishable. Everything a run
+must still satisfy between a finished working tree and a merged pull request is
+grounded here: the verification it must pass (§FS-local-ci-equivalent-verification),
+the tested-version split its result must record
+(§FS-library-update-tested-version-split), when the result needs maintainer
+judgment rather than another automated attempt (§FS-human-intervention-policy),
+and the automated review the published PR receives (§FS-automated-pr-review).
+
+## FS-local-ci-equivalent-verification: Local pre-publication verification
 
 Every Forge task must pass local verification before it is allowed to produce a
 PR-eligible result. Verification is split into two tiers along the boundary
@@ -397,7 +378,7 @@ or return `RUN_STATUS_CHUNK_READY` until both tiers have passed. If Forge cannot
 complete either tier, the workflow must return `RUN_STATUS_FAILURE` and preserve
 enough diagnostics for human follow-up.
 
-#### 1. Generation and finalization
+### 1. Generation and finalization
 
 Library-scoped correctness is established during generation and finalization,
 because a single-library generation owns and can fully settle these checks.
@@ -415,7 +396,7 @@ sources, the run fails rather than publishing them, because that config form is
 no longer accepted and the reachability metadata belongs in the coordinate's
 `metadata/` directory.
 
-#### 2. Pre-publication gate
+### 2. Pre-publication gate
 
 Before a task may produce a PR-eligible result, Forge must also pass a
 pre-publication gate. This tier exists because the generated branch is rebased
@@ -461,7 +442,7 @@ paths. If any shared repository file changed, the PR must be labeled
 the repository-level paths that require maintainer review, following
 §FS-human-intervention-policy.
 
-### FS-library-update-tested-version-split: Library-update tested-version split
+## FS-library-update-tested-version-split: Library-update tested-version split
 
 A `library-update-request` entry often lists several tested versions of the same
 library at once (for example `["1.1", "1.2", "1.3"]`). When a coverage-improvement
@@ -511,7 +492,7 @@ through the `Refs:` line and `Forge-Unblocks-Issue:` trailer of §GIT-pr-body.
 Once the PR merges, Forge releases the issue — clearing its assignees and moving
 its project status to `Todo` — so the successor update enters normal processing.
 
-### FS-human-intervention-policy: Human intervention policy
+## FS-human-intervention-policy: Human intervention policy
 
 The `human-intervention` label is a maintainer follow-up signal, not a generic
 failure label. Forge must apply it only when the available evidence shows that
@@ -570,7 +551,7 @@ from the phase that failed instead of regenerating from scratch
 (§FS-forge-run-continuation).
 
 
-### FS-automated-pr-review: Automated pull request review
+## FS-automated-pr-review: Automated pull request review
 
 Forge review automation processes open pull requests by their PR labels after
 CI has completed. It is a PR review workflow, not an issue-resolution workflow:
@@ -615,7 +596,7 @@ metadata, or library-execution problem that requires maintainer judgment
 (§FS-human-intervention-policy).
 
 
-## 7. Run Status Semantics
+## FS-forge-run-status: Run status semantics
 
 Every workflow records one of these statuses:
 
@@ -628,7 +609,7 @@ Every workflow records one of these statuses:
 
 The exit code is `0` for PR-eligible statuses and `1` for failure.
 
-## 8. Chunked Dynamic-Access Semantics
+## FS-forge-chunked-dynamic-access: Chunked dynamic-access semantics
 
 - `FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD` configures the class-count threshold
   used by `forge_metadata.py` for `library-new-request` issues and
@@ -697,7 +678,7 @@ to store a GitHub-assigned PR number.
 ## FS-forge-workflow-spec-catalog: Workflow specifications
 
 The whole workflow system contract is §WF-forge-workflow-system. Each supported
-queue (Scope, section 2) is entered by a deterministic workflow driver
+queue (§FS-forge-scope) is entered by a deterministic workflow driver
 (§WF-forge-workflow-drivers) that prepares one run and delegates to the workflow
 engine governed by a workflow spec. The driver scripts and the workflow specs
 they run:

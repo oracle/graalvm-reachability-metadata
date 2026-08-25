@@ -22,14 +22,21 @@ you which file to open:
 | --- | --- |
 | §FS-forge-functional-spec | Forge functional specification |
 | §FS-forge-issue-resolution-goal | Forge issue resolution goal |
+| §FS-forge-scope | Supported issue queues |
+| §FS-forge-glossary | Glossary |
+| §FS-forge-requirements | Requirement gates |
 | §FS-forge-host-requirements | Host requirements |
 | §FS-forge-run-requirements | Run requirements |
+| §FS-forge-outputs | Run outputs |
 | §FS-forge-run-metrics | Per-run metrics record |
 | §FS-durable-generation-logs | Durable generation and session logs |
+| §FS-forge-publication-readiness | Publication readiness |
 | §FS-local-ci-equivalent-verification | Local pre-publication verification |
 | §FS-library-update-tested-version-split | Library-update tested-version split |
 | §FS-human-intervention-policy | Human intervention policy |
 | §FS-automated-pr-review | Automated pull request review |
+| §FS-forge-run-status | Run status semantics |
+| §FS-forge-chunked-dynamic-access | Chunked dynamic-access semantics |
 | §FS-forge-workflow-spec-catalog | Workflow specifications catalog |
 | §FS-forge-run-continuation | Run continuation and resume |
 | §STRAT-workflow-strategy-registry | Predefined strategy configuration architecture |
