@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 
 public class AnnotationInvocationHandlerTest {
     @Test
+    @SuppressWarnings("checkstyle:annotationAccess")
     void createsAnnotationWithPlatformAnnotationSemantics() throws Exception {
         SampleAnnotation generated = TypeFactory.annotation(
                 SampleAnnotation.class,
