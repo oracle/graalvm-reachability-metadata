@@ -1,17 +1,17 @@
 {
-  "continueFrom": "setup",
+  "continueFrom": "fix",
   "coordinate": "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3",
   "issueNumber": 7020,
   "label": "library-new-request",
   "libraryPreparationPreflight": {
     "action": "advisory_preparation",
-    "agent_guidance": "Create a minimal Spring Boot application with a REST controller, start it on port 0, and close the context after testing. Exercise `/v3/api-docs` and the Swagger UI redirect/resource path rather than only instantiating configuration classes. No Docker service or environment variable is required.",
+    "agent_guidance": "Use a minimal nested Spring Boot application and controller with `@SpringBootTest` and `@AutoConfigureMockMvc`. Exercise `/v3/api-docs`, `/swagger-ui.html`, and a Swagger UI static resource or configuration endpoint. No external service or special environment property is required.",
     "applied_setup": [],
     "deterministic_setup": [
       {
-        "coordinate": "org.springframework.boot:spring-boot-starter-webmvc:4.0.5",
+        "coordinate": "org.springframework.boot:spring-boot-starter-webmvc-test:4.0.5",
         "kind": "dependency",
-        "reason": "Springdoc 3.0.3 is built against Spring Boot 4.0.5. Its runtime graph includes Web MVC modules but excludes its own test-scoped Tomcat dependency; this starter supplies the embedded servlet container needed to exercise the documented HTTP endpoints.",
+        "reason": "Springdoc 3.0.3 is built against Spring Boot 4.0.5, and its upstream Web MVC UI tests use this starter for SpringBootTest, MockMvc, servlet, and embedded Web MVC support.",
         "scope": "testImplementation"
       }
     ],
@@ -25,21 +25,21 @@
         "summary": "0 existing test file path(s) included"
       }
     ],
-    "input_tokens_used": 74053,
+    "input_tokens_used": 52585,
     "issue_label": "library-new-request",
     "issue_number": 7020,
     "library": "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3",
     "model": "gpt-5.6-sol",
-    "output_tokens_used": 4144,
+    "output_tokens_used": 3566,
     "prompt_path": "library-preflight-prompt.txt",
     "raw_response_path": "library-preflight-response.txt",
     "risks": [
-      "Embedded Tomcat and full Spring auto-configuration increase native-image build size and startup cost.",
-      "Swagger UI requests may redirect from `/swagger-ui.html` to `/swagger-ui/index.html`; tests should handle the documented redirect behavior."
+      "A test limited to directly constructing UI helper classes may miss auto-configuration, controller discovery, resource transformation, and WebJar handling.",
+      "Keep the application context minimal because full Spring Boot startup can substantially increase Native Image build cost and test-only metadata."
     ],
-    "session_log_path": "/home/jovan/Work/graalvm-reachability-metadata/forge/logs/org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3/library-preparation-preflight/pi-generation-2026-08-25T09-48-00-059337Z.log",
+    "session_log_path": "/home/jovan/Work/graalvm-reachability-metadata/forge/logs/org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3/library-preparation-preflight/pi-generation-2026-08-25T17-09-20-975756Z.log",
     "status": "completed",
-    "summary": "The artifact provides Springdoc auto-configuration and Swagger UI resources but no embedded servlet container. Meaningful coverage requires a Spring Boot Web MVC host application."
+    "summary": "Meaningful coverage requires a Spring Boot Web MVC test context; the artifact does not transitively expose its upstream test infrastructure."
   },
   "libraryUpdateRoute": null,
   "newVersion": null,
@@ -54,7 +54,7 @@
       "status": "pending"
     },
     "fix": {
-      "iteration": null,
+      "iteration": 4,
       "status": "pending"
     },
     "publication": {
@@ -66,13 +66,17 @@
       "status": "pending"
     },
     "setup": {
-      "preflightDone": false,
-      "setupDone": false,
-      "status": "pending"
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
     }
   },
-  "preservedBranch": "ai/jormundur00/human-intervention/issue-7020-library-new-request-org.springdoc-springdoc-openapi-starter-webmvc-ui-3.0.3-031ccf17",
-  "publicationMetrics": null,
+  "preservedBranch": "ai/jormundur00/human-intervention/issue-7020-library-new-request-org.springdoc-springdoc-openapi-starter-webmvc-ui-3.0.3-e97ba8ca",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3",
+    "timestamp": "2026-08-25T18:06:57.492290Z"
+  },
   "schemaVersion": 1,
   "strategyName": "dynamic_access_main_sources_pi_gpt-5.6-terra"
 }

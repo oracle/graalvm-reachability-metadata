@@ -1,0 +1,71 @@
+{
+  "add_new_library_support:2026-08-25": {
+    "timestamp": "2026-08-25T18:06:57.492290Z",
+    "library": "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3",
+    "starting_commit": "05a39bb9a1c92bd8e778b6c73a62f7feb4b5e5c5",
+    "ending_commit": "275d45251d9ff680b0d0abb7d612b89b4435a4bf",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
+    "agent": "pi",
+    "model": "gpt-5.6-terra",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 7020,
+      "issue_label": "library-new-request",
+      "library": "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3",
+      "summary": "Meaningful coverage requires a Spring Boot Web MVC test context; the artifact does not transitively expose its upstream test infrastructure.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-starter-webmvc-test:4.0.5",
+          "scope": "testImplementation",
+          "reason": "Springdoc 3.0.3 is built against Spring Boot 4.0.5, and its upstream Web MVC UI tests use this starter for SpringBootTest, MockMvc, servlet, and embedded Web MVC support."
+        }
+      ],
+      "agent_guidance": "Use a minimal nested Spring Boot application and controller with `@SpringBootTest` and `@AutoConfigureMockMvc`. Exercise `/v3/api-docs`, `/swagger-ui.html`, and a Swagger UI static resource or configuration endpoint. No external service or special environment property is required.",
+      "risks": [
+        "A test limited to directly constructing UI helper classes may miss auto-configuration, controller discovery, resource transformation, and WebJar handling.",
+        "Keep the application context minimal because full Spring Boot startup can substantially increase Native Image build cost and test-only metadata."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-starter-webmvc-test:4.0.5",
+          "result": "applied",
+          "target": "tests/src/org.springdoc/springdoc-openapi-starter-webmvc-ui/3.0.3/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#7020 Support for org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3; label=library-new-request; body_chars=124"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-sol",
+      "input_tokens_used": 52585,
+      "output_tokens_used": 3566,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/jovan/Work/graalvm-reachability-metadata/forge/logs/org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3/library-preparation-preflight/pi-generation-2026-08-25T17-09-20-975756Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 174642,
+      "cached_input_tokens_used": 1376768,
+      "output_tokens_used": 13882,
+      "iterations": 4,
+      "cost_usd": 0.989,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}
