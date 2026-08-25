@@ -748,9 +748,9 @@ human-intervention handoff that happens today (§FS-human-intervention-policy).
 **Neural.** Judging whether a diff satisfies the review rules is what no gate can
 decide, and neither is the edit that answers a finding.
 
-Specified by §FS-local-branch-review; planned, not implemented
-(§ROADMAP-forge-local-branch-review). A second review of the branch before it is
-pushed, run cold — a detached worktree at the verified commit, no shared session
+Specified by §FS-local-branch-review. Except for the temporarily excluded
+`code-coverage-improvement` route, a second review of the branch before it is
+pushed runs cold — a detached worktree at the verified commit, no shared session
 with the run that produced it — over `base_ref..HEAD`, under the same
 `skills/review-*/SKILL.md` rules the post-push reviewer applies
 (§FS-automated-pr-review), selected by the same `task_type`, with the local

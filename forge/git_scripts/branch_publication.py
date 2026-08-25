@@ -25,13 +25,17 @@ from git_scripts.common_git import (
     run_git_transport,
     stage_and_commit as stage_and_commit_common,
 )
+from git_scripts.local_branch_review import run_local_branch_review
 from git_scripts.publication_descriptor import (
     PublicationDescriptorInput,
     build_publication_branch,
     build_publication_id,
     write_publication_descriptor,
 )
+from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.library_finalization import run_library_finalization
 from utility_scripts.library_stats import stats_artifact_dir
+from utility_scripts.metadata_index import resolve_metadata_version
 from utility_scripts.local_ci_verification import (
     LocalCIVerificationResult,
     fetch_pr_base_ref,
@@ -63,6 +67,9 @@ PRESERVATION_ONLY_DIRECTORIES: tuple[str, ...] = (
 MAX_PR_BODY_CHARS: int = 60_000
 MAX_INLINE_TEST_DIFF_CHARS: int = 12_000
 PR_BODY_REQUIRED_TAIL_CHARS: int = 12_000
+LOCAL_REVIEW_EXCLUDED_TASK_TYPES: frozenset[str] = frozenset({
+    "code-coverage-improvement",
+})
 
 
 def _publication_resume_marker(repo_path: str) -> ContinuationMarker | None:
@@ -185,6 +192,76 @@ def _prepare_unpushed_publication_resume_branch(
     _record_publication_branch(repo_path, branch, marker)
 
 
+def _run_post_review_gradle_test(
+        repo_path: str,
+        coordinates: str,
+        environment: dict[str, str],
+) -> bool:
+    """Run one deterministic native test lane after a reviewer edit."""
+    result = subprocess.run(
+        ["./gradlew", "test", f"-Pcoordinates={coordinates}"],
+        cwd=repo_path,
+        env=gradle_command_environment(repo_path, environment),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        print(result.stdout)
+        return False
+    return True
+
+
+def _run_standard_post_review_finalization(
+        repo_path: str,
+        coordinates: str,
+        base_commit: str,
+) -> bool:
+    """Replay the standard generation/finalization tier over reviewer edits.
+
+    The outer local-review phase owns the bounded repair and deterministic
+    rerun; this callback only reports whether the tier passed.
+    §FS-local-branch-review
+    """
+    current_environment: dict[str, str] = dict(os.environ)
+    future_defaults_environment: dict[str, str] = dict(os.environ)
+    future_defaults_environment["GVM_TCK_NATIVE_IMAGE_MODE"] = "future-defaults-all"
+    graalvm_25_home: str | None = os.environ.get("GRAALVM_HOME_25_0")
+    if not graalvm_25_home:
+        return False
+    graalvm_25_environment: dict[str, str] = dict(os.environ)
+    graalvm_25_environment["GRAALVM_HOME"] = graalvm_25_home
+    graalvm_25_environment["JAVA_HOME"] = graalvm_25_home
+    graalvm_25_environment.pop("GVM_TCK_NATIVE_IMAGE_MODE", None)
+    for environment in (
+            current_environment,
+            future_defaults_environment,
+            graalvm_25_environment,
+    ):
+        if not _run_post_review_gradle_test(repo_path, coordinates, environment):
+            return False
+
+    group, artifact, version = coordinates.split(":")
+    libraries: list[str] = [coordinates]
+    metadata_version: str = resolve_metadata_version(repo_path, group, artifact, version)
+    metadata_coordinates: str = f"{group}:{artifact}:{metadata_version}"
+    if metadata_coordinates not in libraries:
+        libraries.append(metadata_coordinates)
+    for library in libraries:
+        library_version: str = library.rsplit(":", 1)[-1]
+        if not run_library_finalization(
+                repo_path=repo_path,
+                library=library,
+                group=group,
+                artifact=artifact,
+                library_version=library_version,
+                base_commit=base_commit,
+        ):
+            return False
+    return True
+
+
 def publish_branch(
         repo_path: str,
         branch_suffix: str,
@@ -195,6 +272,7 @@ def publish_branch(
         before_verification: Callable[[str], None] | None = None,
         descriptor_input: PublicationDescriptorInput | Callable[[], PublicationDescriptorInput] | None = None,
         before_stage: Callable[[str, str], None] | None = None,
+        post_review_finalization: Callable[[], bool] | None = None,
 ) -> tuple[str, LocalCIVerificationResult]:
     """Create, stage, rebase, verify, and push the publication branch.
 
@@ -270,7 +348,54 @@ def publish_branch(
     if resolved_descriptor_input is not None:
         if publication_id is None:
             raise ValueError("Publication descriptor requires a publication ID")
-        final_descriptor_input = descriptor_input() if callable(descriptor_input) else resolved_descriptor_input
+        review_descriptor_input = (
+            descriptor_input() if callable(descriptor_input) else resolved_descriptor_input
+        )
+        if review_descriptor_input.timestamp != resolved_descriptor_input.timestamp:
+            review_descriptor_input = replace(
+                review_descriptor_input, timestamp=resolved_descriptor_input.timestamp,
+            )
+        review_publication_id = build_publication_id(
+            review_descriptor_input.issue_number,
+            review_descriptor_input.timestamp,
+            coordinates,
+            review_descriptor_input.task_type,
+        )
+        if review_publication_id != publication_id:
+            raise ValueError("Publication descriptor identity changed during finalization")
+
+        local_review_payload: dict | None = None
+        if review_descriptor_input.task_type not in LOCAL_REVIEW_EXCLUDED_TASK_TYPES:
+            # Code-coverage runs retain phase-boundary reports that cannot yet be
+            # regenerated correctly after reviewer test edits, so that route is
+            # excluded until it has phase snapshots. §FS-local-branch-review
+            review_outcome = run_local_branch_review(
+                repo_path=repo_path,
+                coordinates=coordinates,
+                base_commit=base_ref,
+                task_type=review_descriptor_input.task_type,
+                local_ci_verification=local_ci_verification,
+                descriptor_input=review_descriptor_input,
+                metrics_repo_path=metrics_repo_path,
+                post_review_finalization=(
+                    post_review_finalization
+                    if post_review_finalization is not None
+                    else (
+                        (lambda: True)
+                        if review_descriptor_input.task_type == "not-for-native-image"
+                        else lambda: _run_standard_post_review_finalization(
+                            repo_path, coordinates, base_ref,
+                        )
+                    )
+                ),
+                stage_publication_changes=stage,
+            )
+            local_ci_verification = review_outcome.local_ci_verification
+            local_review_payload = review_outcome.to_descriptor_payload()
+
+        final_descriptor_input = (
+            descriptor_input() if callable(descriptor_input) else review_descriptor_input
+        )
         if final_descriptor_input.timestamp != resolved_descriptor_input.timestamp:
             final_descriptor_input = replace(
                 final_descriptor_input, timestamp=resolved_descriptor_input.timestamp,
@@ -282,7 +407,7 @@ def publish_branch(
             final_descriptor_input.task_type,
         )
         if final_publication_id != publication_id:
-            raise ValueError("Publication descriptor identity changed during finalization")
+            raise ValueError("Publication descriptor identity changed after local review")
         descriptor_path = write_publication_descriptor(
             repo_path=repo_path,
             coordinates=coordinates,
@@ -292,6 +417,7 @@ def publish_branch(
             base_commit=base_ref,
             descriptor_input=final_descriptor_input,
             local_ci_verification=local_ci_verification,
+            local_review=local_review_payload,
         )
         descriptor_relative_path = os.path.relpath(descriptor_path, repo_path)
         stage_and_commit_common(

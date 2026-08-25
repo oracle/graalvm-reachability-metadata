@@ -291,6 +291,62 @@ def _path_changed(head_sha: str, path: str) -> bool:
     ).returncode != 0
 
 
+def _render_local_review(descriptor: dict[str, Any]) -> str:
+    """Render reviewer-owned words and Forge-owned tree facts separately."""
+    review: Any = descriptor.get("local_review")
+    if not isinstance(review, dict):
+        return ""
+    lines: list[str] = ["", "## Local Agent Review", ""]
+    if review["status"] == "unavailable":
+        lines.extend([
+            "The local reviewer was unavailable, so this branch carries no reviewer verdict or finding.",
+            "",
+            f"- Model: `{review['model']}`",
+            f"- Session log: `{review['session_log_path']}`",
+            "- Published tree: the verified pre-review tree",
+        ])
+        return "\n".join(lines) + "\n"
+
+    lines.extend([
+        f"- Decision: `{review['decision']}`",
+        f"- Model: `{review['model']}`",
+        f"- Session log: `{review['session_log_path']}`",
+        f"- Published tree: `{review['published_tree']}`",
+        "",
+        review["review_comment"],
+    ])
+    finding_title: str = review["finding_title"]
+    if finding_title:
+        lines.extend([
+            "",
+            f"**Finding — {finding_title}**",
+            "",
+            review["finding_body"],
+        ])
+    fix_note: str = review["fix_note"]
+    if fix_note:
+        lines.extend(["", "**Reviewer fix note**", "", fix_note])
+    if review["repair_reverted"]:
+        lines.extend([
+            "",
+            "**Forge verification fact:** the reviewer repair was reverted after "
+            f"`{review['failed_step']}` failed; the verified pre-review tree is published.",
+        ])
+    return "\n".join(lines) + "\n"
+
+
+def _local_review_requires_human_intervention(descriptor: dict[str, Any]) -> bool:
+    """Use only reviewer non-approval or Forge's reset fact as the review signal."""
+    review: Any = descriptor.get("local_review")
+    if not isinstance(review, dict):
+        return False
+    return (
+        review["status"] != "completed"
+        or review.get("decision") != "approved"
+        or bool(review["repair_reverted"])
+    )
+
+
 def render_publication(
         descriptor: dict[str, Any],
         validated: ValidatedPublication | None = None,
@@ -309,6 +365,7 @@ def render_publication(
     if builder is None:
         raise ValueError(f"Unsupported template type: {template}")
     title, body = builder(descriptor, validated)
+    body += _render_local_review(descriptor)
     body += f"\nForge-Publication-ID: {descriptor['publication_id']}\n"
     return title, _bound_body(body)
 
@@ -1311,7 +1368,11 @@ def _ensure_pull_request_metadata(
     modifiers = descriptor["modifiers"]
     if modifiers["chunked_dynamic_access"]:
         labels.append("chunked-dynamic-access")
-    if modifiers["human_intervention"] or _has_severe_metadata_drop(descriptor):
+    if (
+            modifiers["human_intervention"]
+            or _has_severe_metadata_drop(descriptor)
+            or _local_review_requires_human_intervention(descriptor)
+    ):
         labels.append("human-intervention")
     run(
         [
