@@ -58,12 +58,16 @@ sequenceDiagram
     D->>D: check_strategy_and_model()
     D->>GH: scan_issue_queue(label, priority)
     GH-->>D: candidate issues
+    D->>D: check_issue_form()
+    alt issue is malformed
+        opt a claim was already taken
+            D->>GH: release_claim()
+        end
+        D->>GH: post the predefined comment for the failed rule
+        D->>GH: close_issue()
+    end
     D->>GH: claim_issue()
     GH-->>D: assigned, status In Progress
-    D->>D: check_issue_form()
-    alt issue is malformed, or routes to no single driver
-        D->>GH: release_claim()
-    end
     D->>D: create_issue_workspace()
     D->>DR: route_to_driver(coordinates, strategy)
     end
@@ -272,6 +276,56 @@ other and is validated before scanning rather than at first use
 (§root/PRCPL-verify-inputs). An unknown strategy is a worker
 configuration error, not a per-issue failure.
 
+### check_issue_form()
+
+**Algorithmic.**
+
+The queue label decides the workflow, so the issue must be unambiguous before a
+driver starts (§FS-forge-run-requirements.3, §WF-forge-workflow-drivers.2). The
+issue is the run's input, and a malformed one is rejected at the boundary
+instead of failing inside a driver (§root/PRCPL-verify-inputs). The gate runs
+before `claim_issue()`, so a rejected issue is never assigned, never moved to
+`In Progress`, and never given a worktree:
+
+- **Exactly one workflow label.** An issue carrying two queue labels is
+  processed once per queue that matches it, so it would be claimed, worked, and
+  published once per label by drivers with different assumptions.
+- **The title must resolve to Maven coordinates** `group:artifact:version`.
+- **The coordinate must be fetchable.** Parsing is not resolution: the gate
+  requests the coordinate's POM from Maven Central and then from the Confluent
+  fallback (§root/AR-build-infrastructure.1), and a coordinate no repository
+  publishes is rejected. This reuses the artifact fetch that Native Image
+  eligibility already performs (`utility_scripts/native_image_artifact.py`) and
+  asks it only whether the artifact exists, so the answer costs one request
+  against a URL derived entirely from the coordinate. A repository that cannot
+  be reached leaves the answer undecided, and an undecided answer never rejects.
+- **`fails-*` issues must resolve a current `latest` metadata version** for the
+  coordinate, because a repair workflow is defined as a move from the currently
+  supported version to the requested one.
+- **`fails-*` issues must request a version strictly above that `latest`.**
+
+Which driver a `library-update-request` runs is decided after the claim, not
+here: when the requested version already has a test suite it routes to coverage
+improvement; otherwise the nearest compatible supported suite is probed with
+compile, JVM test, and native test, and the first failing stage selects the
+repair driver (`fix_javac_fail`, `fix_java_run_fail`, `fix_ni_run`). The probe
+needs the prepared worktree the gate protects, so the decision belongs to
+routing; it is persisted as a route sidecar so publication reports the same
+workflow that ran.
+
+Each rule is a named check, and the gate returns the name of the one that
+failed together with the value that failed it — the rules are decided one at a
+time from the payload, so no inference is needed to say which one it was. That
+name selects a predefined comment posted to the issue, so the reporter learns
+what to fix (§FS-forge-run-requirements.3). A rejection that somehow happens
+after a claim releases it through `release_claim()` first; then the comment is
+posted and the issue is closed, which is what takes it out of the queue it
+cannot leave on its own. The comment carries a marker keyed on rule and
+offending value so a reopened, unedited issue is closed again without a second
+comment. A form rejection applies no `human-intervention` label and preserves
+no branch: the defect is in the issue, not in anything Forge generated
+(§FS-human-intervention-policy).
+
 ### claim_issue() → check_issue_claimable()
 
 **Algorithmic.**
@@ -287,54 +341,6 @@ repository. A `resumable` issue additionally requires a valid continuation
 marker on a preserved branch (§FS-forge-run-continuation), and a
 `chunked-dynamic-access` issue requires its exhaust report
 (§AR-dynamic-access-exhaust-report).
-
-### check_issue_form()
-
-**Algorithmic.**
-
-The queue label decides the workflow, so the issue must be unambiguous before a
-driver starts (§FS-forge-run-requirements.3, §AR-forge-driver-queues). The
-issue is the run's input, and a malformed one is rejected at the boundary
-instead of failing inside a driver (§root/PRCPL-verify-inputs):
-
-- **The title must resolve to Maven coordinates** `group:artifact:version`; a
-  title that does not is rejected without claiming.
-- **The coordinate must be fetchable.** Parsing is not resolution: the gate
-  requests the coordinate's POM from Maven Central and then from the Confluent
-  fallback (§root/AR-build-infrastructure.1), and a coordinate no repository
-  publishes is rejected without claiming. This reuses the artifact fetch that
-  Native Image eligibility already performs
-  (`utility_scripts/native_image_artifact.py`) and asks it only whether the
-  artifact exists, so the answer costs one request against a URL derived
-  entirely from the coordinate.
-- **`fails-*` issues must resolve a current `latest` metadata version** for the
-  coordinate, because a repair workflow is defined as a move from the currently
-  supported version to the requested one.
-- **`library-update-request` must resolve to exactly one driver.** When the
-  requested version already has a test suite it routes to coverage improvement;
-  otherwise the nearest compatible supported suite is probed with compile, JVM
-  test, and native test, and the first failing stage selects the repair driver
-  (`fix_javac_fail`, `fix_java_run_fail`, `fix_ni_run`). The decision is
-  persisted as a route sidecar so publication reports the same workflow that
-  ran.
-- **Exactly one workflow label**, and for `fails-*` a requested version strictly
-  above the current `latest`. *These two rules are contract, not yet enforced in
-  code*: today a multi-labeled issue is processed once per queue that matches it,
-  and a non-newer `fails-*` version is only caught later by the driver. Both are
-  mechanically decidable, so both belong in this gate
-  (§root/PRCPL-prefer-algorithmic); enforcing them here is
-  §ROADMAP-forge-issue-form-enforcement.
-
-Each rule is a named check, and the gate returns the name of the one that
-failed together with the value that failed it — the rules are decided one at a
-time from the payload, so no inference is needed to say which one it was. That
-name selects a predefined comment posted to the issue, so the reporter learns
-what to fix (§FS-forge-run-requirements.3). Posting is keyed on rule and
-offending value, and a rejection that happens after the claim releases it
-through `release_claim()` before commenting, so the issue is back in `Todo`
-when the comment lands. A form rejection applies no `human-intervention` label:
-the defect is in the issue, not in anything Forge generated
-(§FS-human-intervention-policy).
 
 ### create_issue_workspace()
 

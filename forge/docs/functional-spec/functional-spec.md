@@ -287,7 +287,10 @@ before the side effect it protects, and each by deterministic code rather than
 by an agent (§root/PRCPL-prefer-algorithmic, §root/PRCPL-verify-inputs). 
 A run requirement that cannot be satisfied must fail where it is checked, naming what was missing or ambiguous,
 and must leave GitHub in the state it found: a rejection after a claim releases
-the claim and returns the issue to `Todo` rather than failing the issue.
+the claim and returns the issue to `Todo` rather than failing the issue. The
+issue form is the one requirement that then ends the issue rather than leaving
+it queued, because its defect is in the issue itself and no later cycle can
+repair it (see 3 below).
 
 ### 1. Strategy and model
 
@@ -313,14 +316,28 @@ holds may the issue be assigned and moved to `In Progress`.
 ### 3. Issue form
 
 The queue label decides the workflow, so the issue must be unambiguous before a
-driver starts (§AR-forge-driver-queues). The title must resolve to Maven
-coordinates and those coordinates must resolve to a published artifact; a
-`fails-*` issue must resolve a current `latest` metadata version for the
-coordinate and must request a version strictly above it; a
-`library-update-request` must resolve to exactly one driver, recorded so
-publication reports the workflow that actually ran; and an issue must carry
-exactly one workflow label. The last three are contract that no code enforces
-today, which §ROADMAP-forge-issue-form-enforcement closes.
+driver starts (§WF-forge-workflow-drivers.2). Every rule below is decided from
+the issue payload and the repository alone, so all of them are checked by one
+deterministic gate that runs before the first side effect — before assignment,
+before the project transition, before the worktree
+(§root/PRCPL-prefer-algorithmic, §root/PRCPL-verify-inputs):
+
+- The issue carries **exactly one workflow label**. An issue carrying two queue
+  labels is processed once per queue that matches it, so the same issue can be
+  claimed, worked, and published more than once, each time by a different
+  driver working from different assumptions about what the issue asks for.
+- The **title resolves to Maven coordinates** `group:artifact:version`.
+- The **coordinate is fetchable**, not merely parseable.
+- A `fails-*` issue **resolves a current `latest` metadata version** for the
+  coordinate, because a repair workflow is defined as a move from the currently
+  supported version to the requested one.
+- A `fails-*` issue **requests a version strictly above that `latest`**.
+
+Which driver a `library-update-request` runs is not part of this gate. It is
+decided by a compile, JVM-test, and native-test probe against a prepared
+baseline suite, so it needs the worktree the gate protects; it is resolved
+after the claim and recorded so publication reports the workflow that actually
+ran (§WF-forge-workflow-drivers.2).
 
 **Coordinates resolve when the artifact is fetchable.** A title that parses as
 `group:artifact:version` has satisfied a regular expression, not the
@@ -335,21 +352,35 @@ transition, and a worktree (§root/PRCPL-verify-inputs). Only the artifact's
 existence is checked — its content is a driver concern, and Native Image
 eligibility remains where it is (§AR-forge-driver-queues).
 
-**A rejection is reported on the issue.** Every rule above is decided from the
-issue payload and the repository, so when one fails the gate knows exactly
-which rule failed and what value failed it. That is what the reporter needs and
-what a worker log does not give them: an issue rejected in silence is rescanned
-and re-rejected every cycle, and nothing about it changes because nobody was
-told. The rejection therefore posts one predefined comment naming the failed
-rule, quoting the offending value, and stating what the issue must carry
-instead. The comment is per (rule, offending value), so a rescan of an
-unchanged issue posts nothing and an edited title is judged afresh.
+The answer is three-valued: published, absent from every configured
+repository, or undecided because a repository could not be reached. Only
+*absent* rejects an issue. An unreachable repository is an external condition
+outside Forge's boundary, so the gate takes no issue action and the issue waits
+for a later cycle (§FS-human-intervention-policy).
+
+**A rejection is reported on the issue, and the issue is closed.** Every rule
+above is decided separately, so when one fails the gate knows exactly which
+rule failed and what value failed it. That is what the reporter needs and what
+a worker log does not give them. The failed rule selects one predefined
+comment, which names the rule, quotes the offending value, and states what the
+issue must carry instead. The rejection then, in order: releases the claim if
+one was somehow taken, posts the comment, and closes the issue. A form defect
+is not repaired by waiting — nothing about the issue changes until a person
+changes it — so leaving it open only guarantees it is rescanned and re-rejected
+forever. Closing takes it out of every queue and puts the next move with the
+reporter, who reopens or files a corrected issue.
+
+**The comment is posted once.** Closing is the primary guard: a closed issue
+leaves every queue, so an unchanged issue is never rescanned and never
+re-commented. What remains is the reopened issue — reopening without editing
+puts the same defect back in the queue — so the comment carries a marker keyed
+on the failed rule and the offending value, and a rejection whose marker is
+already on the issue closes it again without posting a second comment. An
+edited title changes the value, so it changes the marker and is judged afresh.
 
 A form rejection is not a workflow failure: it is an input defect outside
 Forge's generation boundary, so it carries no `human-intervention` label and
-preserves no branch (§FS-human-intervention-policy). Like every requirement
-here it leaves GitHub as it found it — a rejection reached after a claim
-releases the claim and returns the issue to `Todo`.
+preserves no branch (§FS-human-intervention-policy).
 
 ### 4. Run context
 
