@@ -67,6 +67,13 @@ from utility_scripts.metadata_index import (
     resolve_version_backfill_baseline,
 )
 from utility_scripts.metrics_writer import count_metadata_entries, count_test_only_metadata_entries, create_failure_run_metrics_output
+from utility_scripts.run_location import (
+    STEP_NORMAL_SETUP,
+    STEP_RUN_WORKFLOW_ENGINE,
+    RunLocation,
+    record_step_failure,
+    run_step,
+)
 from utility_scripts.source_context import (
     normalize_source_context_types,
     populate_artifact_urls,
@@ -701,10 +708,12 @@ def main(argv=None) -> int:
         )
     model_name = strategy.get("model") or DEFAULT_MODEL_NAME
     if not resume_existing_tree:
-        # Create feature branch
-        new_branch = build_ai_branch_name(f"improve-coverage-{group}-{artifact}-{version}")
-        delete_remote_branch_if_exists(new_branch)
-        subprocess.run(["git", "switch", "-C", new_branch], check=True)
+        # Branching the improvement run is its model-free setup.
+        # §FS-forge-run-location-reporting.2
+        with run_step(PHASE_SETUP, STEP_NORMAL_SETUP, operand=library):
+            new_branch = build_ai_branch_name(f"improve-coverage-{group}-{artifact}-{version}")
+            delete_remote_branch_if_exists(new_branch)
+            subprocess.run(["git", "switch", "-C", new_branch], check=True)
     else:
         log_stage("continuation", f"Resuming {library} from preserved branch at phase {resume_from}")
 
@@ -725,6 +734,7 @@ def main(argv=None) -> int:
             ),
             file=sys.stderr,
         )
+        record_step_failure(location=RunLocation(PHASE_SETUP, STEP_NORMAL_SETUP, library))
         return 1
     if test_version != version:
         log_stage(
@@ -745,6 +755,7 @@ def main(argv=None) -> int:
                 f"{os.path.relpath(baseline_stats_path, reachability_repo_path)}",
                 file=sys.stderr,
             )
+            record_step_failure(location=RunLocation(PHASE_SETUP, STEP_NORMAL_SETUP, library))
             return 1
         log_stage("setup", f"Reusing cached baseline snapshot from {BASELINE_STATS_FILENAME}")
     else:
@@ -862,10 +873,11 @@ def main(argv=None) -> int:
         workflow_status = RUN_STATUS_SUCCESS
         iterations = 0
     else:
-        run_result = strategy_obj.run(
-            agent=agent,
-            checkpoint_commit_hash=checkpoint_commit,
-        )
+        with run_step(PHASE_SETUP, STEP_RUN_WORKFLOW_ENGINE, operand=strategy_name):
+            run_result = strategy_obj.run(
+                agent=agent,
+                checkpoint_commit_hash=checkpoint_commit,
+            )
         workflow_status, iterations = run_result[0], run_result[1]
 
     if workflow_status in {RUN_STATUS_SUCCESS, RUN_STATUS_CHUNK_READY}:

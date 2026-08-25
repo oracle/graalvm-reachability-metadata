@@ -8,6 +8,15 @@ import subprocess
 
 from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
 from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
+from utility_scripts.run_location import (
+    PHASE_EXPLORE as RUN_PHASE_EXPLORE,
+    STEP_GENERATE_TESTS,
+    STEP_NATIVE_TRACE_GATE,
+    RunLocation,
+    enter_phase,
+    record_step_failure,
+    run_step,
+)
 from utility_scripts.dynamic_access_report import format_full_report, load_dynamic_access_coverage_report
 from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.native_test_verification import global_output_dir
@@ -72,6 +81,7 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
                 marker.mark_phase_running(PHASE_EXPLORE),
             ),
         )
+        enter_phase(RUN_PHASE_EXPLORE)
         checkpoint = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
         successful_iterations = 0
         prompt_iterations = 0
@@ -101,9 +111,10 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
                 dynamic_access_full_report=full_report_text,
                 iteration_progress=iteration_progress,
             )
-            self._print_detail("agent: sending optimistic prompt")
-            agent.send_prompt(prompt)
-            self._print_detail("agent: complete")
+            with run_step(RUN_PHASE_EXPLORE, STEP_GENERATE_TESTS, operand=self.library):
+                self._print_detail("agent: sending optimistic prompt")
+                agent.send_prompt(prompt)
+                self._print_detail("agent: complete")
             prompt_iterations += 1
 
             # Inner loop: test and fix
@@ -167,9 +178,13 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
             checkpoint = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
             successful_iterations += 1
 
-            if not self.verify_native_test_gate(global_output_dir(
-                self.reachability_repo_path, self.group, self.artifact, self.test_version,
-            )):
+            with run_step(RUN_PHASE_EXPLORE, STEP_NATIVE_TRACE_GATE, operand=self.library):
+                gate_passed = self.verify_native_test_gate(global_output_dir(
+                    self.reachability_repo_path, self.group, self.artifact, self.test_version,
+                ))
+                if not gate_passed:
+                    record_step_failure()
+            if not gate_passed:
                 self._print_failure_analysis(
                     "native_test_verification_gate_failed",
                     issue="nativeTest_did_not_pass_within_verification_budget",
@@ -193,6 +208,9 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
         save_phase_update(
             self.continuation_marker_path,
             lambda marker: marker.mark_phase_pending(PHASE_EXPLORE, iteration=prompt_iterations),
+        )
+        record_step_failure(
+            location=RunLocation(RUN_PHASE_EXPLORE, STEP_GENERATE_TESTS, self.library),
         )
         return RUN_STATUS_FAILURE, prompt_iterations, 0
 

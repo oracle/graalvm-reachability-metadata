@@ -39,6 +39,12 @@ from utility_scripts.metadata_index import resolve_metadata_version, resolve_tes
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
 from utility_scripts.native_test_verification import global_output_dir
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
+from utility_scripts.run_location import (
+    STEP_NORMAL_SETUP,
+    STEP_RUN_WORKFLOW_ENGINE,
+    record_step_failure,
+    run_step,
+)
 from utility_scripts.source_context import (
     normalize_source_context_types,
     populate_artifact_urls,
@@ -381,60 +387,64 @@ def main(argv=None) -> int:
     model_name: str | None = None
     tests_root: str | None = None
     if not resume_existing_tree:
-        print(f"[pipeline] Creating branch: {branch}")
-        create_or_switch_branch(reachability_metadata_path, branch)
+        # Branching and the deterministic native-image fix are the run's
+        # model-free setup. §FS-forge-run-location-reporting.2
+        with run_step(PHASE_SETUP, STEP_NORMAL_SETUP, operand=library):
+            print(f"[pipeline] Creating branch: {branch}")
+            create_or_switch_branch(reachability_metadata_path, branch)
 
-        print(f"[pipeline] Running fixTestNativeImageRun for: {current_coordinates} -> {new_version}")
-        result = run_fix_test_native_image_run(
-            reachability_metadata_path=reachability_metadata_path,
-            current_coordinates=current_coordinates,
-            new_version=new_version,
-        )
-
-        if result.returncode != 0:
-            # The failed JVM-agent seed reaches runtime truth before any agent
-            # repair. §FS-native-test-verification-gate §AR-forge-workflow-pipeline
-            strategy_obj, agent, model_name, tests_root = build_strategy_and_agent(
-                strategy_name=args.strategy_name,
+            print(f"[pipeline] Running fixTestNativeImageRun for: {current_coordinates} -> {new_version}")
+            result = run_fix_test_native_image_run(
                 reachability_metadata_path=reachability_metadata_path,
-                library=library,
-                group=group,
-                artifact=artifact,
-                version=new_version,
-                library_preparation_preflight_context=library_preparation_preflight_context,
-                explore=False,
-                continuation_marker_path=args.continuation_marker_path,
+                current_coordinates=current_coordinates,
+                new_version=new_version,
             )
-            test_version = resolve_test_version(
-                reachability_metadata_path,
-                group,
-                artifact,
-                new_version,
-            )
-            if not strategy_obj.verify_native_test_gate(
-                    global_output_dir(
-                        reachability_metadata_path,
-                        group,
-                        artifact,
-                        test_version,
-                    ),
-                    label="fixTestNativeImageRun failure",
-            ):
-                print(
-                    f"ERROR: native-test gate failed after fixTestNativeImageRun for {library}.",
-                    file=sys.stderr,
-                )
-                return 1
 
-        populate_artifact_urls(reachability_metadata_path, library)
-        checkpoint = commit_checkpoint(reachability_metadata_path, library)
-        save_phase_update(
-            args.continuation_marker_path,
-            lambda marker: (
-                marker.mark_setup_done(),
-                marker.mark_phase_completed(PHASE_FIX),
-            ),
-        )
+            if result.returncode != 0:
+                # The failed JVM-agent seed reaches runtime truth before any agent
+                # repair. §FS-native-test-verification-gate §AR-forge-workflow-pipeline
+                strategy_obj, agent, model_name, tests_root = build_strategy_and_agent(
+                    strategy_name=args.strategy_name,
+                    reachability_metadata_path=reachability_metadata_path,
+                    library=library,
+                    group=group,
+                    artifact=artifact,
+                    version=new_version,
+                    library_preparation_preflight_context=library_preparation_preflight_context,
+                    explore=False,
+                    continuation_marker_path=args.continuation_marker_path,
+                )
+                test_version = resolve_test_version(
+                    reachability_metadata_path,
+                    group,
+                    artifact,
+                    new_version,
+                )
+                if not strategy_obj.verify_native_test_gate(
+                        global_output_dir(
+                            reachability_metadata_path,
+                            group,
+                            artifact,
+                            test_version,
+                        ),
+                        label="fixTestNativeImageRun failure",
+                ):
+                    print(
+                        f"ERROR: native-test gate failed after fixTestNativeImageRun for {library}.",
+                        file=sys.stderr,
+                    )
+                    record_step_failure()
+                    return 1
+
+            populate_artifact_urls(reachability_metadata_path, library)
+            checkpoint = commit_checkpoint(reachability_metadata_path, library)
+            save_phase_update(
+                args.continuation_marker_path,
+                lambda marker: (
+                    marker.mark_setup_done(),
+                    marker.mark_phase_completed(PHASE_FIX),
+                ),
+            )
     else:
         log_stage("continuation", f"Resuming {library} from preserved branch at phase {resume_from}")
         checkpoint = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
@@ -464,7 +474,8 @@ def main(argv=None) -> int:
     iterations = 0
     if explore:
         print(f"[pipeline] Running dynamic-access exploration for {library}")
-        run_result = strategy_obj.run(agent=agent, checkpoint_commit_hash=checkpoint)
+        with run_step(PHASE_SETUP, STEP_RUN_WORKFLOW_ENGINE, operand=args.strategy_name):
+            run_result = strategy_obj.run(agent=agent, checkpoint_commit_hash=checkpoint)
         explore_status, iterations = run_result[0], run_result[1]
         # Best-effort: a partial or failed explore must not abort. The seed is
         # already valid and the finalization gate decides PR eligibility.

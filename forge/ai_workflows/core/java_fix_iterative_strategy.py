@@ -5,6 +5,15 @@
 
 from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
 from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
+from utility_scripts.run_location import (
+    PHASE_FIX as RUN_PHASE_FIX,
+    STEP_FIX_REPORTED_FAILURE,
+    STEP_NATIVE_TRACE_GATE,
+    RunLocation,
+    enter_phase,
+    record_step_failure,
+    run_step,
+)
 from utility_scripts.native_test_verification import global_output_dir
 
 
@@ -92,13 +101,15 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
             self.continuation_marker_path,
             lambda marker: marker.mark_phase_running(PHASE_FIX),
         )
+        enter_phase(RUN_PHASE_FIX)
         workflow_status = RUN_STATUS_FAILURE
 
-        self._print_message("running initial gradle test to collect errors")
-        initial_error = agent.run_test_command(f"./gradlew test -Pcoordinates={self.library}")
-        self._print_message("running agent...")
-        agent.send_prompt(self._render_prompt("initial", initial_error=initial_error))
-        self._print_message("agent complete")
+        with run_step(RUN_PHASE_FIX, STEP_FIX_REPORTED_FAILURE, operand=self.library):
+            self._print_message("running initial gradle test to collect errors")
+            initial_error = agent.run_test_command(f"./gradlew test -Pcoordinates={self.library}")
+            self._print_message("running agent...")
+            agent.send_prompt(self._render_prompt("initial", initial_error=initial_error))
+            self._print_message("agent complete")
         global_iterations = 1
 
         for test_iter in range(self.max_test_iterations):
@@ -148,10 +159,12 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
         # Both repair modes must prove the repaired tree under Native Image.
         # §AR-native-test-verification-callers
         if workflow_status == RUN_STATUS_SUCCESS:
-            if not self.verify_native_test_gate(global_output_dir(
-                self.reachability_repo_path, self.group, self.artifact, self.version,
-            )):
-                workflow_status = RUN_STATUS_FAILURE
+            with run_step(RUN_PHASE_FIX, STEP_NATIVE_TRACE_GATE, operand=self.library):
+                if not self.verify_native_test_gate(global_output_dir(
+                    self.reachability_repo_path, self.group, self.artifact, self.version,
+                )):
+                    record_step_failure()
+                    workflow_status = RUN_STATUS_FAILURE
 
         agent.clear_context()
         if workflow_status == RUN_STATUS_SUCCESS:
@@ -166,6 +179,9 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
             save_phase_update(
                 self.continuation_marker_path,
                 lambda marker: marker.mark_phase_pending(PHASE_FIX, iteration=global_iterations),
+            )
+            record_step_failure(
+                location=RunLocation(RUN_PHASE_FIX, STEP_FIX_REPORTED_FAILURE, self.library),
             )
         return workflow_status, global_iterations
 
