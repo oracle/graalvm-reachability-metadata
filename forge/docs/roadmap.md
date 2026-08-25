@@ -11,11 +11,9 @@ introduced lives in the spec, workflow, or architecture declaration it cites.
 3. One fixer, prompted by the failure (§ROADMAP-forge-one-fixer-variable-prompt).
 4. Native-image-run-fail revamp (§ROADMAP-forge-native-image-run-fail-revamp).
 5. Pre-push local branch review (§ROADMAP-forge-local-branch-review).
-6. Issue-form rules enforced before the claim (§ROADMAP-forge-issue-form-enforcement).
-7. A rejected issue is told why (§ROADMAP-forge-issue-form-rejection-feedback).
-8. Publication descriptor off the tree (§ROADMAP-forge-descriptor-off-tree).
-9. Failures name the phase and the step (§ROADMAP-forge-failure-locates-phase-and-step).
-10. Algorithmic setup, then neural setup (§ROADMAP-forge-algorithmic-then-neural-setup).
+6. Publication descriptor off the tree (§ROADMAP-forge-descriptor-off-tree).
+7. Failures name the phase and the step (§ROADMAP-forge-failure-locates-phase-and-step).
+8. Algorithmic setup, then neural setup (§ROADMAP-forge-algorithmic-then-neural-setup).
 
 # ROADMAP-forge-dispatcher-owned-run-preconditions: Dispatcher-owned run preconditions
 
@@ -288,101 +286,9 @@ than after a later review, and a branch whose finding the reviewer repaired
 publishes unlabeled — finalization and the gate having passed again — with the
 finding still recorded in `forge/FINDINGS.md`.
 
-# ROADMAP-forge-issue-form-enforcement: Issue-form rules enforced before the claim
-
-Priority: sixth (part of §ROADMAP-forge-implementation).
-
-Three rules of the issue-form gate (§AR-forge-driver-queues,
-§AR-forge-workflow-pipeline) were contract in the spec and nowhere in the code:
-
-- **Exactly one workflow label.** An issue carrying two queue labels is
-  processed once per queue that matches it, so the same issue can be claimed,
-  worked, and published more than once, each time by a different driver working
-  from different assumptions about what the issue asks for.
-- **A `fails-*` issue must request a version strictly above the coordinate's
-  current `latest`.** Nothing rejected such an issue; the driver only consulted
-  the same predicate late, to decide whether to index the requested version as
-  the new `latest`, after the claim, the project transition, and the worktree
-  already existed — the full cost of the rejection paid before the rejection.
-- **The coordinate must be fetchable, not merely parseable.** A title was
-  accepted once a regular expression found `group:artifact:version` in it, so a
-  typo in a group, an artifact nobody published, or a version that does not
-  exist upstream was discovered as a Gradle resolution error deep inside a run
-  that already held a claim and a worktree.
-
-All three are decidable before the first side effect — the first two from the
-issue payload and the metadata index, the third from one request against a URL
-the coordinate fully determines — so all three belong in the deterministic gate
-rather than in prose each driver re-checks (§root/PRCPL-prefer-algorithmic,
-§root/PRCPL-verify-inputs). The fetch already exists in
-`utility_scripts/native_image_artifact.py`, which reads POMs from Maven Central
-for Native Image eligibility; the gate needs only the existence answer, against
-Maven Central and then the Confluent fallback
-(§root/AR-build-infrastructure.1). The answer is three-valued, because an
-unreachable repository is not evidence that an artifact is missing: only
-*absent from every repository* rejects, while *undecided* leaves the issue for
-a later cycle.
-
-Two rules the gate already applied — the title parses as Maven coordinates, and
-a `fails-*` coordinate resolves a current `latest` — were silent `return None`
-paths. They are now named rules of the same gate so they carry the same
-feedback.
-
-What the gate says when it rejects is §ROADMAP-forge-issue-form-rejection-feedback.
-
-Acceptance: an issue carrying more than one workflow label is rejected without
-being claimed, and the rejection names the conflicting labels; a `fails-*` issue
-whose requested version is not strictly above the current `latest` is rejected
-at the same point, before assignment, project transition, or worktree creation;
-a coordinate no configured repository publishes is rejected before the claim,
-naming the coordinate and the repositories tried; and the driver-side late use
-of the same version predicate is deleted rather than left in place as a second
-implementation of the rule.
-
-# ROADMAP-forge-issue-form-rejection-feedback: A rejected issue is told why
-
-Priority: seventh (part of §ROADMAP-forge-implementation).
-
-A form rejection reached only the worker log
-(§ROADMAP-forge-issue-form-enforcement). The issue kept its place in the queue,
-was rescanned and re-rejected every cycle, and the reporter — the one person who
-can fix it — was never told anything, so nothing about the issue ever changed.
-
-The information needed to tell them is already in hand. Each rule of the gate is
-decided separately from the issue payload, so a rejection knows exactly which
-rule failed and on what value (§FS-forge-run-requirements.3). That name selects
-one predefined comment, which quotes the offending value and states what the
-issue must carry instead. The rejection then, in order: runs `release_claim()`
-if a claim was somehow taken, posts the comment, and closes the issue
-(§AR-forge-architecture).
-
-**Closing, not returning to `Todo`.** A form defect is not repaired by waiting:
-no later cycle can change the label set or the title, so an open rejected issue
-is only a guarantee of being re-rejected forever. Closing takes it out of every
-queue and hands the next move to the reporter, who edits and reopens or files a
-corrected issue.
-
-Closing also settles the dedup requirement. A closed issue is not scanned, so an
-unchanged issue can never collect a second comment — the state change is the
-deduplication. The one case left is a reopened issue whose defect was not fixed,
-so the comment carries a marker keyed on the failed rule and the offending
-value: a rejection whose marker is already on the issue closes it again without
-commenting, while an edited title changes the value, changes the marker, and is
-judged afresh.
-
-A form rejection is an input defect, not a generation failure: it applies no
-`human-intervention` label and preserves no branch
-(§FS-human-intervention-policy).
-
-Acceptance: each issue-form rule has one predefined comment naming it and
-quoting the offending value; a rejected issue carries that comment and is closed
-within the cycle that rejected it; a reopened issue with the same defect is
-closed again without a second comment while an edited title is judged afresh;
-and no form rejection applies `human-intervention` or preserves a branch.
-
 # ROADMAP-forge-descriptor-off-tree: Publication descriptor off the tree
 
-Priority: eighth (part of §ROADMAP-forge-implementation).
+Priority: sixth (part of §ROADMAP-forge-implementation).
 
 The publication descriptor is a build artifact of one run, not repository
 content, but today it is committed at
@@ -435,7 +341,7 @@ pull request.
 
 # ROADMAP-forge-failure-locates-phase-and-step: Failures name the phase and the step
 
-Priority: ninth (part of §ROADMAP-forge-implementation).
+Priority: seventh (part of §ROADMAP-forge-implementation).
 
 When a run fails, the failure must say **where** it failed: the phase, and the
 step inside it. Today a failed run reports a status and an error, and the reader
@@ -473,7 +379,7 @@ reports a phase without a step.
 
 # ROADMAP-forge-algorithmic-then-neural-setup: Algorithmic setup, then neural setup
 
-Priority: tenth (part of §ROADMAP-forge-implementation).
+Priority: eighth (part of §ROADMAP-forge-implementation).
 
 The setup phase must be three steps in one fixed order, all owned by the driver
 (§AR-forge-workflow-pipeline): `normal_setup()` does every setup step that needs
