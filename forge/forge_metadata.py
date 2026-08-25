@@ -189,7 +189,27 @@ from utility_scripts.repo_path_resolver import (
     resolve_reachability_repo_root,
 )
 from utility_scripts.source_context import GradleBootstrapFailure
-from utility_scripts.stage_logger import log_failure_banner, log_stage, log_success_banner
+from utility_scripts.stage_logger import log_debug, log_failure_banner, log_stage, log_success_banner
+from utility_scripts.run_location import (
+    PHASE_CLAIM,
+    STEP_CHECK_HOST_REQUIREMENTS,
+    STEP_CHECK_ISSUE_FORM,
+    STEP_CHECK_STRATEGY_AND_MODEL,
+    STEP_CLAIM_ISSUE,
+    STEP_CREATE_ISSUE_WORKSPACE,
+    STEP_PUBLISH_BRANCH,
+    STEP_ROUTE_TO_DRIVER,
+    RunLocation,
+    bind_continuation_marker,
+    enter_phase,
+    format_run_failure_line,
+    marker_failure_location,
+    pipeline_step,
+    report_run_failure,
+    reset_run_location,
+    resolve_failure_location,
+    run_step,
+)
 from utility_scripts.shutdown_signal import get_active_shutdown_signal_path, is_shutdown_requested
 from utility_scripts.strategy_loader import load_strategy_by_name, require_strategy_by_name
 from utility_scripts.task_logs import (
@@ -4695,6 +4715,31 @@ def refresh_preserved_branch_logs(
     log_stage("preserve-failed-work", f"Updated preserved branch logs for issue #{issue_number}.")
 
 
+def resolve_claimed_issue_failure_location(
+        claimed_issue: ClaimedIssue,
+        exc: BaseException | None = None,
+) -> RunLocation:
+    """Return the phase/step this claimed issue failed in.
+
+    Prefers the location the failing step recorded in this process; falls back to
+    the continuation marker so a driver-side or resumed failure still names its
+    step. §FS-forge-run-location-reporting.3
+    """
+    location = resolve_failure_location(exc)
+    if location.is_located:
+        return location
+    marker = load_continuation_marker(continuation_marker_path(claimed_issue.worktree_path))
+    return marker_failure_location(marker) or location
+
+
+def lead_comment_with_failure_location(comment_body: str, location: RunLocation) -> str:
+    """Lead the human-intervention comment with the same pair the terminal printed."""
+    failure_line = format_run_failure_line(location)
+    if comment_body.lstrip().startswith(("`" + failure_line, failure_line)):
+        return comment_body
+    return f"`{failure_line}`\n\n{comment_body}"
+
+
 def ensure_preserved_branch_link_in_comment(
         comment_body: str,
         preservation_result: FailurePreservationResult | None,
@@ -4828,6 +4873,7 @@ def apply_failed_run_follow_up(
         claimed_issue: ClaimedIssue,
         started_at: float | None = None,
         preservation_result: FailurePreservationResult | None = None,
+        failure_location: RunLocation | None = None,
 ) -> None:
     """Run Codex failure analysis and apply the `human-intervention` follow-up.
 
@@ -4852,7 +4898,10 @@ def apply_failed_run_follow_up(
             post_human_intervention_comment_and_label(
                 claimed_issue.issue["number"],
                 ensure_preserved_branch_link_in_comment(
-                    _build_finalization_failure_comment(claimed_issue),
+                    _lead_failed_run_comment(
+                        _build_finalization_failure_comment(claimed_issue),
+                        failure_location,
+                    ),
                     preservation_result,
                 ),
                 resumable=True,
@@ -4866,6 +4915,9 @@ def apply_failed_run_follow_up(
             started_at,
             preservation_result,
         )
+        # The comment leads with the same pair the terminal printed.
+        # §FS-forge-run-location-reporting.3
+        comment_body = _lead_failed_run_comment(comment_body, failure_location)
         comment_body = ensure_preserved_branch_link_in_comment(comment_body, preservation_result)
     except Exception as exc:
         print(
@@ -4873,7 +4925,7 @@ def apply_failed_run_follow_up(
             file=sys.stderr,
         )
         traceback.print_exc()
-        comment_body = None
+        comment_body = None if failure_location is None else _lead_failed_run_comment("", failure_location)
     if is_user_interrupt_requested():
         raise KeyboardInterrupt
     post_human_intervention_comment_and_label(
@@ -4881,6 +4933,13 @@ def apply_failed_run_follow_up(
         comment_body,
         resumable=preservation_result_has_continuation_marker(preservation_result),
     )
+
+
+def _lead_failed_run_comment(comment_body: str, failure_location: RunLocation | None) -> str:
+    """Prefix a failed-run comment with its run location when one is known."""
+    if failure_location is None:
+        return comment_body
+    return lead_comment_with_failure_location(comment_body, failure_location).rstrip() + "\n"
 
 
 def dynamic_access_chunk_class_threshold() -> int:
@@ -5541,6 +5600,11 @@ def resolve_run_strategy_name(
     return strategy_override or default_strategy_name
 
 
+@pipeline_step(
+    PHASE_CLAIM,
+    STEP_ROUTE_TO_DRIVER,
+    operand=lambda claimed_issue, *args, **kwargs: f"issue #{claimed_issue.issue['number']}",
+)
 def invoke_pipeline(
         claimed_issue: ClaimedIssue,
         strategy_name: str | None,
@@ -6060,6 +6124,11 @@ def cleanup_review_workspace(
         )
 
 
+@pipeline_step(
+    PHASE_CLAIM,
+    STEP_CREATE_ISSUE_WORKSPACE,
+    operand=lambda *args, **kwargs: f"issue #{args[2] if len(args) > 2 else kwargs['issue_number']}",
+)
 def create_issue_workspace(
         base_reachability_metadata_path: str,
         canonical_metrics_repo_path: str,
@@ -6120,6 +6189,11 @@ def cleanup_issue_workspace(claimed_issue: ClaimedIssue, canonical_metrics_repo_
             )
 
 
+@pipeline_step(
+    PHASE_CLAIM,
+    STEP_CHECK_ISSUE_FORM,
+    operand=lambda issue, *args, **kwargs: f"issue #{issue['number']}",
+)
 def build_claim_metadata(
         issue: dict,
         label: str,
@@ -6611,6 +6685,7 @@ def claim_issue_for_processing(
     dynamic-access continuation derives its exhaust report from the coordinate
     in the checked-out repository (§AR-dynamic-access-exhaust-report).
     """
+    enter_phase(PHASE_CLAIM)
     if not refresh_issue_payload_for_claim(issue, label, authenticated_user):
         return None
 
@@ -7457,6 +7532,7 @@ def finalize_successful_issue(
     workflow records a PR-eligible status (§AR-pr-eligibility), keeping
     generation and publication separate (§AR-forge-verification-publication-boundary).
     """
+    enter_phase(PHASE_PUBLICATION)
     coverage_follow_up = prepare_java_fix_coverage_follow_up(claimed_issue)
     coverage_follow_up_args = coverage_follow_up or (None, None, None)
     if is_fixture_testing_enabled():
@@ -7471,8 +7547,13 @@ def finalize_successful_issue(
         )
         return
 
-    handoff = build_publication_handoff(claimed_issue, *coverage_follow_up_args)
-    handoff.runner(handoff.argv)
+    with run_step(
+        PHASE_PUBLICATION,
+        STEP_PUBLISH_BRANCH,
+        operand=claimed_issue.issue_coordinates,
+    ):
+        handoff = build_publication_handoff(claimed_issue, *coverage_follow_up_args)
+        handoff.runner(handoff.argv)
 
 
 def preserve_failed_work_for_follow_up(claimed_issue: ClaimedIssue) -> FailurePreservationResult | None:
@@ -8202,6 +8283,11 @@ def is_issue_blocked(issue_number: int) -> bool:
     return bool(get_open_blocking_issue_numbers(issue_number))
 
 
+@pipeline_step(
+    PHASE_CLAIM,
+    STEP_CLAIM_ISSUE,
+    operand=lambda issue, *args, **kwargs: f"issue #{issue['number']}",
+)
 def try_claim_issue(
         issue: dict,
         authenticated_user: str,
@@ -9123,6 +9209,7 @@ def resolve_host_requirement_strategy_names(args: argparse.Namespace) -> list[st
     return strategy_names
 
 
+@pipeline_step(PHASE_CLAIM, STEP_CHECK_HOST_REQUIREMENTS)
 def require_host_requirements(args: argparse.Namespace, reachability_metadata_path: str) -> None:
     """Stop before any work when this host cannot run the invoked Forge mode.
 
@@ -9170,9 +9257,11 @@ def main() -> None:
             return
         # The gate must check the repository this run actually operates on, so it is resolved first.
         reachability_metadata_path = resolve_reachability_repo_root(args.reachability_metadata_path)
+        enter_phase(PHASE_CLAIM)
         require_host_requirements(args, reachability_metadata_path)
         if args.strategy_name:
-            require_strategy_by_name(args.strategy_name)
+            with run_step(PHASE_CLAIM, STEP_CHECK_STRATEGY_AND_MODEL, operand=args.strategy_name):
+                require_strategy_by_name(args.strategy_name)
         metrics_repo_path = resolve_metrics_repo_root(reachability_metadata_path, None)
 
         if not PROJECT_NUMBER:

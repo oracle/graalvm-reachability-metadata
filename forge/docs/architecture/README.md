@@ -19,6 +19,7 @@ file rather than by prefix.
 | --- | --- |
 | [§AR-forge-architecture](architecture.md#ar-forge-architecture-forge-architecture) | Forge architecture, and the map of every architecture ID |
 | [§AR-forge-workflow-pipeline](architecture.md#ar-forge-workflow-pipeline-forge-workflow-architecture) | What runs during one workflow, step by step, and who owns each step |
+| [§AR-forge-run-location](architecture.md#ar-forge-run-location-one-run-location-for-progress-and-failure) | How progress and failure output share one phase/step vocabulary |
 | [§AR-forge-control-plane](architecture.md#ar-forge-control-plane-worker-loop-and-dispatcher-own-queue-control) | Worker loop and dispatcher own queue control |
 | [§AR-forge-workflow-boundary](architecture.md#ar-forge-workflow-boundary-workflow-drivers-compose-setup-workflow-engine-and-metrics) | Workflow drivers compose setup, workflow engine, and metrics |
 | [§AR-forge-drivers](drivers.md#ar-forge-drivers-workflow-drivers) | Workflow drivers: one per issue queue |

@@ -371,11 +371,30 @@ marker, and the human-intervention comment
 defect: an unlabeled failure means a code path is raising outside the pipeline's
 own step boundaries.
 
+The same pair is what the happy path is missing. A run that is working prints
+hundreds of lines with no statement of where it is, so a reader who wants to know
+whether a two-hour run is still in `explore` or already finalizing has to infer
+it. Naming the location only on failure would build the vocabulary and then use
+it once: the run must announce each phase it enters and each step it starts,
+from the same names the failure reports, so the progress log and the failure
+report can never disagree about what a phase or a step is called.
+
+Failure output must also get shorter, not longer. Today a failed run ends in a
+wall of text narrating the human-intervention handoff — branch switches, adds,
+commits, and pushes — and the actual error is somewhere inside it. Preserving
+the work and posting the handoff is required behavior (§FS-human-intervention-policy)
+and does not change; its narration is debugging detail and belongs at debug
+level, so what remains on a failed run is the location, the error, and the
+preserved-branch link.
+
 Acceptance: every terminal failure prints one line of the form
 `run failed in <phase>/<step>` before its error detail; the continuation marker
 records the same phase and step, so a resumed run states what it is retrying;
-the human-intervention comment leads with the same pair; and no failure path
-reports a phase without a step.
+the human-intervention comment leads with the same pair; no failure path
+reports a phase without a step; every phase entry prints a banner and every step
+entry prints `Running step <step> (<n>/<total>) of phase <phase>`; and the
+default failure output carries no git or push narration
+(§FS-forge-run-location-reporting).
 
 # ROADMAP-forge-algorithmic-then-neural-setup: Algorithmic setup, then neural setup
 

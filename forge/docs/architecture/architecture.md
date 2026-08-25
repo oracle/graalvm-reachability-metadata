@@ -894,6 +894,59 @@ the terminal run status implies, apply review or human-intervention labels, and
 clean up the worktree (§AR-forge-orchestration). A chunk-ready run leaves
 the issue open for its next chunk (§AR-chunked-dynamic-access-pr-linking).
 
+## AR-forge-run-location: One run location for progress and failure
+
+The pipeline above already names every step; `utility_scripts/run_location.py`
+turns those names into the run's single location vocabulary, so progress output
+and failure output cannot disagree about what a phase or a step is called
+(§FS-forge-run-location-reporting).
+
+**One table, no parallel enum.** The five durable phases are imported from
+`utility_scripts/continuation_marker.py`, which already owns them for
+continuation (§FS-forge-run-continuation.1); `run_location` adds only `claim`,
+the dispatcher-side segment that exists before continuation state does. The
+phase-to-steps table is the only place a step name is written, which is what
+makes `(<n>/<total>)` derivable rather than hand-counted, and makes an
+unregistered step name a hard error at the step boundary instead of a wrong
+label in a log.
+
+**Steps are marked, not narrated.** A step is entered through the `run_step()`
+context manager — or the `pipeline_step()` decorator, which is the same thing
+applied to a whole function. Entering prints the progress line and pushes the
+location onto a run-local stack; leaving pops it. Nothing at a raise site
+mentions a step name, because a raise site does not know which step it is in.
+
+**Failures propagate their location, they do not format it.** `run_step()`
+annotates a propagating exception with the location it was raised in and
+re-raises the original exception object. Annotating rather than wrapping is
+required: `forge_metadata` classifies external failures by exception type
+(§FS-human-intervention-policy), and a wrapper would erase that type. The
+annotation is written once by the innermost step and never overwritten, so a
+location survives every intermediate `except` on the way out.
+
+Status-code failures — the many Forge paths that return `RUN_STATUS_FAILURE`
+rather than raise — call `record_step_failure()` instead. Both routes write to
+the same run-local failure slot, so the lifecycle boundary reads one location
+regardless of how the failure travelled.
+
+**The location crosses process and phase boundaries in the marker.**
+`ContinuationMarker` carries a `failure` object with the phase, step, and
+operand, written when the failure is recorded. That is what puts the same pair
+on the preserved branch, in the resumed run's log, and in the human-intervention
+comment.
+
+**An unlocated failure is loud.** When the lifecycle boundary reports a failure
+that no step claimed, it reports the step as `<unlocated-step>` and prints a
+defect notice: a code path raising outside the pipeline's step boundaries is a
+bug in Forge, and the report says so rather than quietly omitting the step.
+
+**Debug narration is separate from failure output.** `stage_logger` gains a
+debug level, enabled by `FORGE_DEBUG_LOGGING`, and the human-intervention
+handoff's git narration moves onto it. The git commands themselves capture their
+output and replay it only on failure or under debug, so the default failed-run
+output is the location, the error, and the preserved branch
+(§FS-forge-run-location-reporting.4).
+
 ## AR-forge-control-plane: Worker loop and dispatcher own queue control
 
 Forge is shaped as a small control plane around independent workflow entry

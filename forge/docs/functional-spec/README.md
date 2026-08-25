@@ -26,6 +26,7 @@ contract in [strategies.md](strategies.md), the benchmark contract in
 | [§FS-forge-outputs](functional-spec.md#fs-forge-outputs-run-outputs) | Run outputs |
 | [§FS-forge-run-metrics](functional-spec.md#fs-forge-run-metrics-per-run-metrics-record) | Per-run metrics record |
 | [§FS-durable-generation-logs](functional-spec.md#fs-durable-generation-logs-durable-generation-and-session-logs) | Durable generation and session logs |
+| [§FS-forge-run-location-reporting](functional-spec.md#fs-forge-run-location-reporting-run-location-in-progress-and-failure-output) | Run location in progress and failure output |
 | [§FS-forge-publication-readiness](publication.md#fs-forge-publication-readiness-publication-readiness) | Publication readiness |
 | [§FS-local-ci-equivalent-verification](publication.md#fs-local-ci-equivalent-verification-local-pre-publication-verification) | Local pre-publication verification |
 | [§FS-native-test-verification-gate](publication.md#fs-native-test-verification-gate-native-test-verification-gate) | Native test verification gate |

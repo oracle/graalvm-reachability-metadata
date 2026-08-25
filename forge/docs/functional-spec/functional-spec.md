@@ -505,6 +505,80 @@ If a run fails or times out, the saved logs are part of the diagnostic artifact
 set that allows maintainers or a later Forge run to continue from evidence,
 keeping the loop short as called for by §GOAL-shorten-issue-to-shipped-metadata.
 
+## FS-forge-run-location-reporting: Run location in progress and failure output
+
+A Forge run must always be able to say **where** it is: the phase it is in and
+the step inside it. That location is one vocabulary used twice — to narrate
+progress while the run works, and to report the location of a failure — so a
+reader of a live run and a reader of a failed run name the same thing the same
+way, serving §GOAL-shorten-issue-to-shipped-metadata.
+
+### 1. Vocabulary
+
+A **phase** is one banded segment of the run: `claim`, `setup`, `fix`,
+`explore`, `finalization`, or `publication`. The last five are the continuation
+phases (§FS-forge-run-continuation.1) and must not be redeclared anywhere else;
+`claim` is the dispatcher-side segment that runs before a run exists and
+therefore before continuation state exists.
+
+A **step** is the pipeline method that is executing, written with its
+parentheses exactly as the pipeline names it — `check_host_requirements()`,
+`neural_setup()`, `check_setup()`, `generate_tests()`, `native_trace_gate()`,
+`local_ci_check()`, `publish_branch()`, and the rest. Every step belongs to
+exactly one phase, and the phase's steps are ordered, so a step has a position
+`<n>` within a total `<total>`.
+
+A step may carry an **operand**: the one value the step was working on when it
+ran — the class being generated, the gate command that returned non-zero, the
+coordinate being published. A location renders as `<phase>/<step>` without an
+operand and `<phase>/<step>[<operand>]` with one.
+
+### 2. Progress output
+
+Entering a phase prints a bounded, visually distinct banner naming the phase, so
+a phase transition is findable by eye in a long run log.
+
+Entering a step prints exactly one line:
+
+```
+Running step <step> (<n>/<total>) of phase <phase>
+```
+
+with ` on <operand>` appended when the step has an operand. The words "Running
+step" and "of phase" are fixed: this line is the anchor a reader and a log
+search look for.
+
+### 3. Failure output
+
+A terminal failure prints one line before its error detail:
+
+```
+run failed in <phase>/<step>
+```
+
+The same pair must appear, unchanged, in every place the failure surfaces: the
+worker's terminal output and run log, the terminal run status the workflow
+driver returns to `forge_metadata`, the continuation marker, and the
+human-intervention comment, which leads with it
+(§FS-human-intervention-policy). A resumed run therefore states the location it
+is retrying.
+
+No failure path may report a phase without a step. A failure raised outside
+every step boundary is a defect in Forge, not a formatting gap: it is reported
+with the step `<unlocated-step>` and an explicit defect notice on stderr, so it
+is visible rather than silently tolerated.
+
+### 4. Failure output stays short
+
+Failure output is the location, the error, and the preserved-work link. The
+human-intervention handoff itself is unchanged
+(§FS-human-intervention-policy) — the work is still preserved on a branch, the
+comment is still posted, the label is still applied — but its narration is
+debugging detail, not failure output: branch switches, staging, commits, pushes,
+and claim-revert bookkeeping are logged at debug level and are off unless debug
+logging is enabled. Errors, the failure location, and the preserved branch URL
+are never suppressed.
+
 ## FS-forge-run-status: Run status semantics
 
 Every workflow records one of these statuses:
