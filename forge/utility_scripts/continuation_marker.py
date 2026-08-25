@@ -88,6 +88,7 @@ class ContinuationMarker:
     library_update_route: dict[str, Any] | None = None
     library_preparation_preflight: dict[str, Any] | None = None
     publication_metrics: dict[str, Any] | None = None
+    failure: dict[str, Any] | None = None
     phases: dict[str, dict[str, Any]] = field(default_factory=_default_phases)
     schema_version: int = SCHEMA_VERSION
 
@@ -134,6 +135,7 @@ class ContinuationMarker:
             library_update_route=_optional_dict(payload.get("libraryUpdateRoute")),
             library_preparation_preflight=_optional_dict(payload.get("libraryPreparationPreflight")),
             publication_metrics=_optional_dict(payload.get("publicationMetrics")),
+            failure=_optional_dict(payload.get("failure")),
             phases=phases,
             schema_version=SCHEMA_VERSION,
         )
@@ -161,6 +163,7 @@ class ContinuationMarker:
             "libraryUpdateRoute": self.library_update_route,
             "libraryPreparationPreflight": self.library_preparation_preflight,
             "publicationMetrics": self.publication_metrics,
+            "failure": self.failure,
             "phases": self.phases,
         }
 
@@ -271,6 +274,16 @@ class ContinuationMarker:
         if chunk_processed_class_count is not None:
             phase["chunkProcessedClassCount"] = max(0, int(chunk_processed_class_count))
         self.recompute_continue_from()
+
+    def record_failure(self, phase: str, step: str, operand: str | None = None) -> None:
+        """Record where the run failed so a resume states what it is retrying.
+
+        The first recorded failure wins: the innermost step that failed is the
+        location every surface reports. §FS-forge-run-location-reporting.3
+        """
+        if self.failure is not None:
+            return
+        self.failure = {"phase": phase, "step": step, "operand": operand}
 
     def record_preserved_branch(self, branch_name: str) -> None:
         """Record the preservation branch that carries this marker."""
