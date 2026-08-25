@@ -38,55 +38,7 @@ where it is unavoidable (§root/PRCPL-prefer-algorithmic), and a step that drift
 from `Algorithmic` to `Neural` is a design regression, not an implementation
 detail.
 
-```mermaid
-%%{init: {"themeVariables": {"edgeLabelBackground": "#eef2f7"}}}%%
-flowchart TD
-    Wrapper["do-work.sh"] --> Worker["do_up_to_date_work.sh"]
-    Worker --> Host{"check_host_requirements()"}
-    Host -->|any required check fails| StopHost["worker exits, no work claimed"]
-    Host -->|all pass| Update["update_forge_checkout()"]
-    Update --> Dispatcher["forge_metadata: run_work_queues()"]
-    Dispatcher --> Strategy{"check_strategy_and_model()"}
-    Strategy -->|unknown strategy or model| StopStrategy["worker exits before scanning"]
-    Strategy -->|resolved| Claim["claim_issue()"]
-    Claim --> Form{"check_issue_form()"}
-    Form -->|malformed| Release["release claim, leave issue in Todo"]
-    Form -->|well formed| Route["route_to_driver()"]
-    Route --> Driver["workflow driver: one isolated run"]
-    Driver --> NormalSetup["normal_setup(coordinates, strategy)<br/>branch + scaffold or copy"]
-    NormalSetup --> NeuralSetup["agent: neural_setup(PreparedRun)"]
-    NeuralSetup -->|NeuralSetupResult| SetupCheck{"check_setup()<br/>verify + capture checkpoint"}
-    NeuralSetup -->|timeout or unusable result| SetupFailure["return setup failure to forge_metadata"]
-    SetupCheck -->|incomplete| SetupFailure
-    SetupFailure --> Dispatcher
-    SetupCheck -->|ReadyRun| Explore{"has dynamic access?"}
-    Explore -->|yes| Bulk["bulk pass over the whole report"]
-    Explore -->|no| Finalize
-    Bulk -->|coverage still incomplete, iterations left| Bulk
-    Bulk -->|nothing uncovered left| Finalize
-    Bulk -->|max iterations spent, call sites remain| Loop["per-class loop"]
-    Loop --> Class["generate_tests(single_class_report)"]
-    Class -->|committed coverage gain| Batch["queue class for native-test batch"]
-    Class -->|exhausted or rolled back| Next["next class"]
-    Batch -->|batch of 5, end of classes, or chunk boundary| Gate{"native_trace_gate()"}
-    Gate --> Next
-    Next --> Loop
-    Loop -->|all classes terminal| Finalize["finalize_run()"]
-    Finalize --> LocalCI{"local_ci_check()"}
-    LocalCI -->|fails| CIFix["agent_fix(gate records)"]
-    CIFix -->|repaired| LocalCI
-    CIFix -->|could not repair, or re-run still fails| Intervention["human-intervention handoff"]
-    LocalCI -->|passes| Review{"local_review()"}
-    Review -->|non-approval| ReviewFix["agent_fix(findings)"]
-    ReviewFix -->|repaired| LocalCI
-    ReviewFix -->|could not repair, or re-run still fails| ResetReview["reset to the verified pre-repair commit,<br/>publish with the verdict recorded"]
-    ResetReview --> Push
-    Review -->|approved| Push["push ai/** branch + descriptor"]
-    Push --> Ready["Forge Branch Ready (unprivileged)"]
-    Ready --> Bot["graalvmbot opens the PR with stats and generation summary"]
-```
-
-The same run as a sequence. Every step is a method with a contract below;
+The run is shown as a sequence. Every step is a method with a contract below;
 GitHub covers both the API surface and the repository Actions, which publish
 asynchronously after the run has finished:
 

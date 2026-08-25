@@ -381,6 +381,25 @@ step that is supposed to contain all of it.
 
 The target shape:
 
+```text
+normal_setup()
+  → create branch
+  → scaffold new library or copy target version
+  → resolve test and metadata directories
+
+neural_setup()
+  → populate artifact URLs
+  → materialize source context
+  → run preflight agent
+  → parse and validate its JSON
+  → algorithmically apply dependency and Docker actions
+  → render only remaining guidance
+
+check_setup()
+  → verify all expected files and edits
+  → capture checkpoint
+```
+
 - **`normal_setup(coordinates, strategy, run_context) -> PreparedRunResult`** —
   algorithmic. Branch creation or checkout, scaffolding a new library or copying
   the supported version for a repair, resolution of the test and metadata
