@@ -30,6 +30,7 @@ import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
+import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.sasl.Sasl;
 import javax.security.sasl.SaslClient;
@@ -93,6 +94,55 @@ public class Oci_java_sdk_addons_saslTest {
     }
 
     @Test
+    void userPrincipalCredentialsAuthenticateSaslClientThroughPasswordCallback(@TempDir Path tempDirectory)
+            throws Exception {
+        KeyPair keyPair = KeyPairGenerator.getInstance("RSA").generateKeyPair();
+        BasicAuthenticationDetailsProvider configuredProvider = new TestAuthenticationProvider(keyPair);
+        Path privateKeyFile = tempDirectory.resolve("oci_api_key.pem");
+        try (InputStream privateKey = configuredProvider.getPrivateKey()) {
+            Files.write(privateKeyFile, privateKey.readAllBytes());
+        }
+
+        Path configurationFile = tempDirectory.resolve("config");
+        Files.writeString(
+                configurationFile,
+                """
+                [SASL]
+                user=ocid1.user.oc1..test
+                fingerprint=fingerprint
+                tenancy=ocid1.tenancy.oc1..test
+                region=us-ashburn-1
+                key_file=%s
+                """
+                        .formatted(privateKeyFile));
+
+        Subject subject = new Subject();
+        UserPrincipalsLoginModule loginModule = new UserPrincipalsLoginModule();
+        loginModule.initialize(
+                subject,
+                null,
+                Map.of(),
+                Map.of("intent", "database", "config", configurationFile.toString(), "profile", "SASL"));
+        String authProviderKey = subject.getPrivateCredentials(String.class).iterator().next();
+
+        SaslClient client =
+                Sasl.createSaslClient(
+                        new String[] {OciMechanism.OCI_RSA_SHA256.mechanismName()},
+                        null,
+                        "database",
+                        "service.example.com",
+                        Map.of(),
+                        new CachedAuthenticationCallbackHandler(authProviderKey));
+
+        assertThat(client).isNotNull();
+        OciSaslMessages.Key key = OciSaslMessages.Key.parseFrom(client.evaluateChallenge(new byte[0]));
+        assertThat(key.getKeyId())
+                .isEqualTo("ocid1.tenancy.oc1..test/" + configuredProvider.getKeyId());
+        assertThat(key.getIntent()).isEqualTo("database");
+        client.dispose();
+    }
+
+    @Test
     void registeredProviderCreatesAndCompletesAnOciSaslExchange() throws Exception {
         OciSaslClientProvider.initialize();
         assertThat(Security.getProvider("SASL/OCI Client Provider")).isNotNull();
@@ -152,6 +202,27 @@ public class Oci_java_sdk_addons_saslTest {
                     nameCallback.setName("database");
                 } else if (callback instanceof OciAuthProviderCallback authProviderCallback) {
                     authProviderCallback.authProvider(provider);
+                } else {
+                    throw new UnsupportedCallbackException(callback);
+                }
+            }
+        }
+    }
+
+    private static final class CachedAuthenticationCallbackHandler implements CallbackHandler {
+        private final String authProviderKey;
+
+        private CachedAuthenticationCallbackHandler(String authProviderKey) {
+            this.authProviderKey = authProviderKey;
+        }
+
+        @Override
+        public void handle(Callback[] callbacks) throws UnsupportedCallbackException {
+            for (Callback callback : callbacks) {
+                if (callback instanceof NameCallback nameCallback) {
+                    nameCallback.setName("database");
+                } else if (callback instanceof PasswordCallback passwordCallback) {
+                    passwordCallback.setPassword(authProviderKey.toCharArray());
                 } else {
                     throw new UnsupportedCallbackException(callback);
                 }
