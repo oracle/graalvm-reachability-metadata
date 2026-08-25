@@ -128,7 +128,7 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 
 ### Rules
 
-- **Spec first.** For behavior or design changes, write or update the most-specific spec point before code.
+- **Check the spec first.** For behavior or design changes, check the idea against the most-specific spec point before writing code — see [Additional rules](#additional-rules).
 - **Cite as you write.** Place `§<ID>` at the point a claim or behavior is made — on the doc-comment for a whole behavior, inline beside the clause it enforces.
 - **Marker = live citation.** A `§`-prefixed token resolves and is checked wherever it appears — including inside Markdown backticks. To mention an ID without citing it, write `<§><ID>`, omit the marker, or use a fenced code block.
 - **Inline citation style.** Inline notes: ≤ 1 line preferred, hard cap 3 lines; ≤ 100 columns.
@@ -171,6 +171,18 @@ is the only place the workspace alias table is in scope.
 
 ### Additional rules
 
+- **The spec is the foundation.** Every idea, issue resolution, and design change is
+  checked against the spec before it is implemented. If it aligns, cite the most-specific
+  point it implements and proceed. If it does not align, stop and say so, then offer the
+  user two paths: **(dangerous)** change the spec, or work out how the idea fits inside
+  the current constraints. Never widen a spec point silently to make an implementation
+  legal. A spec change is dangerous because other points and code cite it: run
+  `grund refs <ID>` first to see the blast radius, get explicit approval, and land the
+  spec change as its own commit ahead of the code.
+- **The spec says how and why, not what each file is.** Spec points state the behavior
+  the repository guarantees and the reasoning behind it. They are not per-module or
+  per-function descriptions — if a paragraph would go stale merely because a file was
+  renamed or a function moved, it does not belong in the spec.
 - **Grund and goals are namespace-local top-level docs.** Repository motivation
   and direction live in `docs/grund.md` and `docs/goals.md`; Forge motivation and
   direction live in `forge/docs/grund.md` and `forge/docs/goals.md`.
