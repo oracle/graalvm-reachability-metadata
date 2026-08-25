@@ -6,19 +6,7 @@ is the entry point for understanding the system; the behavioral contract for
 each part is in the functional spec (§FS-repository-functional-spec) and the
 per-component module docs cited below.
 
-## 1. What the repository is
-
-At its core the repository is a **distribution of additive GraalVM reachability
-metadata** for community JVM libraries, wrapped in everything needed to keep
-that metadata correct: a test harness, continuous integration, a derived metrics
-mirror, and AI automation. The defining architectural constraint is additivity —
-shipping this metadata into a consumer's build must only fill in registrations
-`native-image` cannot infer, never change how the consumer's code runs. That
-invariant and its consequences (no build-time-initialization tweaks, no library
-patching, no `Feature` classes, no untested metadata) are specified in
-§FS-repository-functional-spec.3 and are why every other component exists.
-
-## 2. Components
+## 1. Components
 
 | Component | Role | Spec |
 | --- | --- | --- |
@@ -31,7 +19,7 @@ patching, no `Feature` classes, no untested metadata) are specified in
 | CI | GitHub Actions workflows that gate PRs, sweep metadata on a schedule, track upstream versions, scan images, and publish coverage and releases. | §CI-repository-ci |
 | Forge | The automation subproject that turns labeled issues into review-ready PRs. | §forge/AR-forge-architecture |
 
-## 3. How work flows through the system
+## 2. How work flows through the system
 
 A change enters as an issue (a support request or a compatibility failure) and
 leaves as released metadata:
@@ -60,7 +48,7 @@ against regressions before releases, and the upstream-version tracker discovers
 new versions, records the passing ones, and files failure issues that become the
 Forge repair queue (§FS-repository-functional-spec.9, §CI-repository-ci).
 
-## 4. Implementation overview
+## 3. Implementation overview
 
 - **Gradle, two layers.** A root harness layer owns coordinate selection,
   validation, reporting, matrix generation, and packaging; per-coordinate
