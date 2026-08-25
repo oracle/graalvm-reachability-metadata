@@ -45,6 +45,15 @@ public class Springdoc_openapi_starter_webmvc_uiTest {
     }
 
     @Test
+    void publishesSwaggerUiConfiguration() throws Exception {
+        mockMvc.perform(get("/v3/api-docs/swagger-config"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.url").value("/v3/api-docs"))
+                .andExpect(jsonPath("$.configUrl").value("/v3/api-docs/swagger-config"));
+    }
+
+    @Test
     void redirectsSwaggerUiHomeToIndexPage() throws Exception {
         mockMvc.perform(get("/swagger-ui.html"))
                 .andExpect(status().is3xxRedirection());
