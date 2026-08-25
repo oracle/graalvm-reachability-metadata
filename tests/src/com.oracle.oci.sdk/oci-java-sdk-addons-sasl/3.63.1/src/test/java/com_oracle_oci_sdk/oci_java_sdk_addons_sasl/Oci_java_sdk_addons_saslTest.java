@@ -14,15 +14,19 @@ import com.oracle.bmc.auth.sasl.OciAuthProviderCallback;
 import com.oracle.bmc.auth.sasl.OciMechanism;
 import com.oracle.bmc.auth.sasl.OciSaslClient;
 import com.oracle.bmc.auth.sasl.OciSaslClientProvider;
+import com.oracle.bmc.auth.sasl.UserPrincipalsLoginModule;
 import com.oracle.bmc.identity.auth.sasl.messages.OciSaslMessages;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.Security;
 import java.util.Base64;
 import java.util.Map;
+import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
@@ -30,6 +34,7 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.sasl.Sasl;
 import javax.security.sasl.SaslClient;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class Oci_java_sdk_addons_saslTest {
     @Test
@@ -42,6 +47,49 @@ public class Oci_java_sdk_addons_saslTest {
         assertThat(OciMechanism.isOci(mechanism.mechanismName())).isTrue();
         assertThat(OciMechanism.isOci("PLAIN")).isFalse();
         assertThat(mechanism.algorithm().getJvmName()).isEqualTo("SHA256withRSA");
+    }
+
+    @Test
+    void userPrincipalsLoginModuleLoadsConfiguredCredentialsIntoSubject(@TempDir Path tempDirectory)
+            throws Exception {
+        KeyPair keyPair = KeyPairGenerator.getInstance("RSA").generateKeyPair();
+        BasicAuthenticationDetailsProvider configuredProvider = new TestAuthenticationProvider(keyPair);
+        Path privateKeyFile = tempDirectory.resolve("oci_api_key.pem");
+        try (InputStream privateKey = configuredProvider.getPrivateKey()) {
+            Files.write(privateKeyFile, privateKey.readAllBytes());
+        }
+
+        Path configurationFile = tempDirectory.resolve("config");
+        Files.writeString(
+                configurationFile,
+                """
+                [SASL]
+                user=ocid1.user.oc1..test
+                fingerprint=fingerprint
+                tenancy=ocid1.tenancy.oc1..test
+                region=us-ashburn-1
+                key_file=%s
+                """
+                        .formatted(privateKeyFile));
+
+        Subject subject = new Subject();
+        UserPrincipalsLoginModule loginModule = new UserPrincipalsLoginModule();
+        loginModule.initialize(
+                subject,
+                null,
+                Map.of(),
+                Map.of("intent", "database", "config", configurationFile.toString(), "profile", "SASL"));
+
+        assertThat(loginModule.login()).isTrue();
+        assertThat(loginModule.commit()).isTrue();
+        assertThat(subject.getPublicCredentials()).contains("database");
+        assertThat(subject.getPrivateCredentials(BasicAuthenticationDetailsProvider.class))
+                .singleElement()
+                .satisfies(
+                        provider ->
+                                assertThat(provider.getKeyId())
+                                        .isEqualTo(
+                                                "ocid1.tenancy.oc1..test/ocid1.user.oc1..test/fingerprint"));
     }
 
     @Test
