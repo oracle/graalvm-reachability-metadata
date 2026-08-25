@@ -11,9 +11,10 @@ introduced lives in the spec, workflow, or architecture declaration it cites.
 3. Native-image-run-fail revamp (§ROADMAP-forge-native-image-run-fail-revamp).
 4. Pre-push local branch review (§ROADMAP-forge-local-branch-review).
 5. Issue-form rules enforced before the claim (§ROADMAP-forge-issue-form-enforcement).
-6. Publication descriptor off the tree (§ROADMAP-forge-descriptor-off-tree).
-7. Failures name the phase and the step (§ROADMAP-forge-failure-locates-phase-and-step).
-8. Algorithmic setup, then neural setup (§ROADMAP-forge-algorithmic-then-neural-setup).
+6. A rejected issue is told why (§ROADMAP-forge-issue-form-rejection-feedback).
+7. Publication descriptor off the tree (§ROADMAP-forge-descriptor-off-tree).
+8. Failures name the phase and the step (§ROADMAP-forge-failure-locates-phase-and-step).
+9. Algorithmic setup, then neural setup (§ROADMAP-forge-algorithmic-then-neural-setup).
 
 # ROADMAP-forge-dispatcher-owned-run-preconditions: Dispatcher-owned run preconditions
 
@@ -208,7 +209,7 @@ unlabeled with the finding still recorded.
 
 Priority: fifth (part of §ROADMAP-forge-implementation).
 
-Two rules of the issue-form gate (§WF-forge-workflow-drivers.2,
+Three rules of the issue-form gate (§WF-forge-workflow-drivers.2,
 §AR-forge-workflow-pipeline) are contract in the spec and nowhere in the code:
 
 - **Exactly one workflow label.** An issue carrying two queue labels is
@@ -219,23 +220,63 @@ Two rules of the issue-form gate (§WF-forge-workflow-drivers.2,
   current `latest`.** This is caught today inside the driver, after the claim,
   the project transition, and the worktree already exist — the full cost of the
   rejection is paid before the rejection happens.
+- **The coordinate must be fetchable, not merely parseable.** Today a title is
+  accepted once a regular expression finds `group:artifact:version` in it, so a
+  typo in a group, an artifact nobody published, or a version that does not
+  exist upstream is discovered as a Gradle resolution error deep inside a run
+  that already holds a claim and a worktree.
 
-Both are decidable from the issue payload alone, so both belong in the
-deterministic gate rather than in prose each driver re-checks
-(§root/PRCPL-prefer-algorithmic), and both must be decided at the boundary,
-before the first side effect, so a malformed issue never consumes a queue slot
-(§root/PRCPL-verify-inputs).
+All three are decidable before the first side effect — the first two from the
+issue payload alone, the third from one request against a URL the coordinate
+fully determines — so all three belong in the deterministic gate rather than in
+prose each driver re-checks (§root/PRCPL-prefer-algorithmic,
+§root/PRCPL-verify-inputs). The fetch already exists in
+`utility_scripts/native_image_artifact.py`, which reads POMs from Maven Central
+for Native Image eligibility; the gate needs only the existence answer, against
+Maven Central and then the Confluent fallback
+(§root/AR-build-infrastructure.1).
+
+What the gate says when it rejects is §ROADMAP-forge-issue-form-rejection-feedback.
 
 Acceptance: an issue carrying more than one workflow label is rejected without
 being claimed, and the rejection names the conflicting labels; a `fails-*` issue
 whose requested version is not strictly above the current `latest` is rejected
 at the same point, before assignment, project transition, or worktree creation;
-and the driver-side late checks are deleted rather than left in place as a
-second implementation of the same rule.
+a coordinate no configured repository publishes is rejected before the claim,
+naming the coordinate and the repositories tried; and the driver-side late
+checks are deleted rather than left in place as a second implementation of the
+same rule.
+
+# ROADMAP-forge-issue-form-rejection-feedback: A rejected issue is told why
+
+Priority: sixth (part of §ROADMAP-forge-implementation).
+
+A form rejection reaches only the worker log today
+(§ROADMAP-forge-issue-form-enforcement). The issue keeps its place in the queue,
+is rescanned and re-rejected every cycle, and the reporter — the one person who
+can fix it — is never told anything, so nothing about the issue ever changes.
+
+The information needed to tell them is already in hand. Each rule of the gate is
+decided separately from the issue payload, so a rejection knows exactly which
+rule failed and on what value (§FS-forge-run-requirements.3). That name selects
+one predefined comment, which quotes the offending value and states what the
+issue must carry instead. `release_claim()` runs first when the rejection came
+after a claim, so the issue is back in `Todo` before the comment lands
+(§AR-forge-architecture).
+
+A form rejection is an input defect, not a generation failure: it applies no
+`human-intervention` label and preserves no branch
+(§FS-human-intervention-policy).
+
+Acceptance: each issue-form rule has one predefined comment naming it; a
+rejected issue carries that comment within the cycle that rejected it; the
+comment is keyed on rule and offending value, so rescanning an unchanged issue
+posts no second comment while an edited title is judged afresh; and no form
+rejection applies `human-intervention`.
 
 # ROADMAP-forge-descriptor-off-tree: Publication descriptor off the tree
 
-Priority: sixth (part of §ROADMAP-forge-implementation).
+Priority: seventh (part of §ROADMAP-forge-implementation).
 
 The publication descriptor is a build artifact of one run, not repository
 content, but today it is committed at
@@ -288,7 +329,7 @@ pull request.
 
 # ROADMAP-forge-failure-locates-phase-and-step: Failures name the phase and the step
 
-Priority: seventh (part of §ROADMAP-forge-implementation).
+Priority: eighth (part of §ROADMAP-forge-implementation).
 
 When a run fails, the failure must say **where** it failed: the phase, and the
 step inside it. Today a failed run reports a status and an error, and the reader
@@ -325,7 +366,7 @@ reports a phase without a step.
 
 # ROADMAP-forge-algorithmic-then-neural-setup: Algorithmic setup, then neural setup
 
-Priority: eighth (part of §ROADMAP-forge-implementation).
+Priority: ninth (part of §ROADMAP-forge-implementation).
 
 The setup phase must be three steps in one fixed order, all owned by the driver
 (§AR-forge-workflow-pipeline): `normal_setup()` does every setup step that needs

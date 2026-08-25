@@ -297,6 +297,14 @@ instead of failing inside a driver (§root/PRCPL-verify-inputs):
 
 - **The title must resolve to Maven coordinates** `group:artifact:version`; a
   title that does not is rejected without claiming.
+- **The coordinate must be fetchable.** Parsing is not resolution: the gate
+  requests the coordinate's POM from Maven Central and then from the Confluent
+  fallback (§root/AR-build-infrastructure.1), and a coordinate no repository
+  publishes is rejected without claiming. This reuses the artifact fetch that
+  Native Image eligibility already performs
+  (`utility_scripts/native_image_artifact.py`) and asks it only whether the
+  artifact exists, so the answer costs one request against a URL derived
+  entirely from the coordinate.
 - **`fails-*` issues must resolve a current `latest` metadata version** for the
   coordinate, because a repair workflow is defined as a move from the currently
   supported version to the requested one.
@@ -314,6 +322,17 @@ instead of failing inside a driver (§root/PRCPL-verify-inputs):
   mechanically decidable, so both belong in this gate
   (§root/PRCPL-prefer-algorithmic); enforcing them here is
   §ROADMAP-forge-issue-form-enforcement.
+
+Each rule is a named check, and the gate returns the name of the one that
+failed together with the value that failed it — the rules are decided one at a
+time from the payload, so no inference is needed to say which one it was. That
+name selects a predefined comment posted to the issue, so the reporter learns
+what to fix (§FS-forge-run-requirements.3). Posting is keyed on rule and
+offending value, and a rejection that happens after the claim releases it
+through `release_claim()` before commenting, so the issue is back in `Todo`
+when the comment lands. A form rejection applies no `human-intervention` label:
+the defect is in the issue, not in anything Forge generated
+(§FS-human-intervention-policy).
 
 ### create_issue_workspace()
 

@@ -262,12 +262,42 @@ holds may the issue be assigned and moved to `In Progress`.
 
 The queue label decides the workflow, so the issue must be unambiguous before a
 driver starts (§WF-forge-workflow-drivers.2). The title must resolve to Maven
-coordinates; a `fails-*` issue must resolve a current `latest` metadata version
-for the coordinate and must request a version strictly above it; a
+coordinates and those coordinates must resolve to a published artifact; a
+`fails-*` issue must resolve a current `latest` metadata version for the
+coordinate and must request a version strictly above it; a
 `library-update-request` must resolve to exactly one driver, recorded so
 publication reports the workflow that actually ran; and an issue must carry
-exactly one workflow label. The last two are contract that no code enforces
+exactly one workflow label. The last three are contract that no code enforces
 today, which §ROADMAP-forge-issue-form-enforcement closes.
+
+**Coordinates resolve when the artifact is fetchable.** A title that parses as
+`group:artifact:version` has satisfied a regular expression, not the
+requirement. The run needs an artifact the build can actually resolve, so the
+gate confirms the coordinate is published in one of the repositories the
+harness resolves against — Maven Central, then the Confluent fallback
+(§root/AR-build-infrastructure.1). A typo in a group, an artifact that was
+never published, or a version that does not exist upstream is decidable from
+the repository's own layout, so it is decided here rather than surfacing later
+as a Gradle resolution error inside a run that already holds a claim, a project
+transition, and a worktree (§root/PRCPL-verify-inputs). Only the artifact's
+existence is checked — its content is a driver concern, and Native Image
+eligibility remains where it is (§WF-forge-workflow-drivers.2).
+
+**A rejection is reported on the issue.** Every rule above is decided from the
+issue payload and the repository, so when one fails the gate knows exactly
+which rule failed and what value failed it. That is what the reporter needs and
+what a worker log does not give them: an issue rejected in silence is rescanned
+and re-rejected every cycle, and nothing about it changes because nobody was
+told. The rejection therefore posts one predefined comment naming the failed
+rule, quoting the offending value, and stating what the issue must carry
+instead. The comment is per (rule, offending value), so a rescan of an
+unchanged issue posts nothing and an edited title is judged afresh.
+
+A form rejection is not a workflow failure: it is an input defect outside
+Forge's generation boundary, so it carries no `human-intervention` label and
+preserves no branch (§FS-human-intervention-policy). Like every requirement
+here it leaves GitHub as it found it — a rejection reached after a claim
+releases the claim and returns the issue to `Todo`.
 
 #### 4. Run context
 
