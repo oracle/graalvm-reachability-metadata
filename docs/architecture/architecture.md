@@ -27,7 +27,7 @@ patching, no `Feature` classes, no untested metadata) are specified in
 | `stats/` | The derived per-version metrics mirror and Forge run records that feed the coverage dashboard. | §forge/FS-forge-run-metrics |
 | Test harness (TCK) | The Gradle task surface that validates, compiles, and tests each coordinate on the JVM and `native-image`. | §TCK-test-harness |
 | Build infrastructure | The two-layer Gradle build that wires the harness, the convention plugins, scaffolding, and packaging. | §AR-build-infrastructure |
-| Infrastructure E2E tests | `testInfra`/`testAllInfra`, which exercise the whole task surface to prove the infrastructure itself works. | §E2E-infrastructure-tests |
+| Infrastructure E2E tests | `testInfra`/`testAllInfra`, which exercise the whole task surface to prove the infrastructure itself works. | §TCK-test-harness |
 | CI | GitHub Actions workflows that gate PRs, sweep metadata on a schedule, track upstream versions, scan images, and publish coverage and releases. | §CI-repository-ci |
 | Forge | The automation subproject that turns labeled issues into review-ready PRs. | §forge/AR-forge-architecture |
 

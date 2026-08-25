@@ -733,16 +733,11 @@ separate queue: it is the most basic workflow and the fallback the dynamic-acces
 workflow delegates to when a library turns out to have no dynamic access
 (§WF-basic-iterative).
 
-Forge E2E testing is a top-level functional test contract because it validates
-the whole issue-processing process through `forge_metadata.py`, not one workflow
-engine in isolation, as described in §E2E-forge-workflow-testing.
-
 Forge benchmarking is a top-level benchmark contract because it compares
 generation strategies across multiple `library-new-request` targets
 (§BENCH-forge-generation-benchmarking) and records cost (in service of
 §GOAL-minimize-generation-cost), token, iteration, LOC, coverage (in service
 of §GOAL-maximize-library-coverage), dynamic-access, and metadata metrics.
 
-The implementation roadmap orders the first known Forge spec gaps to close,
-starting with fixture-backed E2E coverage for the orchestration boundary; see
+The implementation roadmap orders the first known Forge spec gaps to close; see
 §ROADMAP-forge-implementation.

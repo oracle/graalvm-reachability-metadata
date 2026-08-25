@@ -4,7 +4,7 @@ The repository's build is a two-layer Gradle build, designed so that adding a
 library never requires build-logic changes (§FS-repository-functional-spec.6) — coordinate discovery is
 purely metadata-driven. This document specifies how that build is wired; the
 task surface it exposes is grouped in §TCK-test-harness, and the tests that
-prove the infrastructure works are in §E2E-infrastructure-tests.
+prove the infrastructure works are part of that harness.
 
 ## 1. Harness layer (repository root)
 

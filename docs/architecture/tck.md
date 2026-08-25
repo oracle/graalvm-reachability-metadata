@@ -11,10 +11,10 @@ group. Code that implements a task cites its group — for example
 `§TCK-test-harness.2` — and names the task in the surrounding comment, so a
 citation records both where the behavior is specified and which task realizes it.
 How the build that exposes these tasks is wired is §AR-build-infrastructure; the
-tests that exercise the whole task surface end to end are
-§E2E-infrastructure-tests; the per-task invocation reference (exact flags and
-examples) lives in `DEVELOPING.md` and the cheat sheet in `AGENTS.md`. Tasks are
-registered in the convention plugins under
+`testInfra` and `testAllInfra` tasks exercise the whole task surface end to end;
+the per-task invocation reference (exact flags and examples) lives in
+`DEVELOPING.md` and the cheat sheet in `AGENTS.md`. Tasks are registered in the
+convention plugins under
 `tests/tck-build-logic/src/main/groovy/`.
 
 ## 1. Coordinate selection and discovery
@@ -198,7 +198,7 @@ These emit the GitHub Actions matrices the workflows consume, all driven by
 | --- | --- |
 | `generateMatrixMatchingCoordinates`, `generateMatrixBatchedCoordinates` | Full and batched matrices (the latter powers §CI-test-all-metadata). |
 | `generateChangedCoordinatesMatrix`, `generateChangedMetadataTestMatrix`, `generateChangedCoordinatesOnlyMatrix`, `generateChangedIndexFileCoordinatesList` | PR-scoped matrices for changed metadata and index files. |
-| `generateInfrastructureChangedCoordinatesMatrix` | Matrix for build-logic changes; also selects the coordinate for §E2E-infrastructure-tests. |
+| `generateInfrastructureChangedCoordinatesMatrix` | Matrix for build-logic changes; also selects the coordinate for `testAllInfra`. |
 | `generateAffectedSpringTestMatrix` | Impacted Spring AOT projects. |
 | `fetchExistingLibrariesWithNewerVersions`, `generateNewLibraryVersionCompatibilityMatrix` | Discover newer upstream versions for `auto-update` libraries and build the compatibility matrix (§FS-library-version-update-automation.1). |
 

@@ -38,7 +38,6 @@ home, so the prefix tells you which file to open.
 | `AR` | [architecture/](architecture/README.md) | How the repository is structured and how the build is wired. |
 | `TCK` | [architecture/tck.md](architecture/tck.md) | The Gradle test harness task groups. |
 | `CI` | [architecture/ci.md](architecture/ci.md) | Recurring CI workflows, composite actions, and shared scripts. |
-| `E2E` | [e2e.md](e2e.md) | The infrastructure end-to-end tests (`testInfra`/`testAllInfra`). |
 | `SKILL` | [../skills/](../skills/) | Agent review and automation skills. |
 
 A kind whose home is a *folder* (`FS`, `AR`, `SKILL`) may spread its IDs
@@ -66,8 +65,6 @@ the repository is wired. The kinds stay distinct — a `METADATA-` ID is not an
 - [architecture/build-infra.md](architecture/build-infra.md) — `AR-build-infrastructure`: the two-layer Gradle build, convention plugins, and scaffolding.
 - [architecture/tck.md](architecture/tck.md) — `TCK-test-harness`: the harness task groups.
 - [architecture/ci.md](architecture/ci.md) — `CI-repository-ci` and one citable declaration per workflow, action, and script.
-- [e2e.md](e2e.md) — `E2E-infrastructure-tests`: `testInfra` and `testAllInfra`.
-
 ### Non-grounded contributor docs
 
 These standard guides live alongside the grounded docs and are referenced from

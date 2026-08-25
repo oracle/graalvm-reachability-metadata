@@ -2030,7 +2030,7 @@ def get_fixture_issue_artifact_dir(issue_number: int) -> str:
     """Return the artifact directory for one fixture issue: `issue-<number>/<timestamp>/`.
 
     Single-issue, label, and work-queue runs all write each issue's evidence here,
-    alongside any other results for that issue. §E2E-forge-workflow-testing.2
+    alongside any other results for that issue. §FS-durable-generation-logs
     """
     issue_dir = os.path.join(
         get_repo_root(),
@@ -5379,7 +5379,8 @@ def resolve_workflow_default_strategy_name(
 ) -> str:
     """Return the selected workflow driver.s default strategy for durable run state.
 
-    Omitted strategy overrides remain omitted at dispatch (§E2E-forge-workflow-testing.2).
+    Omitted strategy overrides remain omitted at dispatch
+    (§STRAT-forge-predefined-strategy-contract).
     """
     if claimed_issue.label == LABEL_LIBRARY_NEW:
         return DEFAULT_NEW_LIBRARY_STRATEGY_NAME
@@ -6339,7 +6340,7 @@ def build_fixture_claimed_issue(
 ) -> Optional[ClaimedIssue]:
     """Prepare a fixture issue without simulating GitHub claim mechanics.
 
-    §E2E-forge-workflow-testing.2
+    §AR-forge-control-plane
     """
     if not is_fixture_testing_enabled():
         raise RuntimeError("Fixture issue preparation requires fixture testing mode")
@@ -6640,7 +6641,7 @@ def build_publication_handoff(
 
     The dispatcher makes the routing decision once, then either executes the
     matching git script or records a dry-run fixture handoff
-    (§E2E-forge-workflow-testing.2, §AR-forge-verification-publication-boundary).
+    (§AR-forge-verification-publication-boundary).
     """
     require_claimed_issue_worktree(claimed_issue, "successful finalization")
     issue_number = claimed_issue.issue["number"]
@@ -8000,7 +8001,7 @@ def process_fixture_issues_for_label(
 
     Fixture selection is local to the loaded YAML and has no live claim or
     work-queue concurrency to model, so a queue/label run is simply each matching
-    issue processed in turn under its own issue-scoped tee (§E2E-forge-workflow-testing.2).
+    issue processed in turn under its own issue-scoped tee (§AR-forge-control-plane).
     """
     if not environment_already_validated:
         validate_issue_processing_environment()

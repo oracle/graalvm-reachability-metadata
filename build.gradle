@@ -191,7 +191,7 @@ void printTestInfraReproducer(String gradleCmd, String coordinate, int paralleli
     ).each { println(it) }
 }
 
-// Infrastructure end-to-end test for a single coordinate: §E2E-infrastructure-tests.
+// Infrastructure end-to-end test for a single coordinate: §TCK-test-harness.
 tasks.register('testInfra') { t ->
     t.group = "verification"
     t.setDescription("""Runs clean and pullAllowedDockerImages, then runs (${testInfraCommands('', '').collect { it.name }.join(', ')}) concurrently with isolated logs for a single coordinate.
@@ -265,7 +265,7 @@ tasks.register('testInfra') { t ->
     }
 }
 
-// Full infra end-to-end entry point (coordinate + 1/64 shard). §E2E-infrastructure-tests
+// Full infra end-to-end entry point (coordinate + 1/64 shard). §TCK-test-harness
 tasks.register('testAllInfra') { t ->
     t.group = "verification"
     t.setDescription("Determines one artifact coordinate via generateInfrastructureChangedCoordinatesMatrix (or uses -Pcoordinate/-Pcoordinates if provided), then runs testInfra for that coordinate and also for 1/64. Options: -Pparallelism to control concurrency.")

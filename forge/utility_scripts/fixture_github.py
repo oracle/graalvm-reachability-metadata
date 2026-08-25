@@ -3,10 +3,10 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Local GitHub issue fixtures for hermetic Forge E2E runs.
+"""Local GitHub issue fixtures for hermetic Forge runs.
 
-The module models the fixture-backed GitHub state required by
-§E2E-forge-workflow-testing.2 without importing `forge_metadata.py`.
+The module models fixture-backed GitHub state without importing
+`forge_metadata.py`. §AR-forge-control-plane
 """
 
 from __future__ import annotations

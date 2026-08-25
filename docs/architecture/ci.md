@@ -50,8 +50,8 @@ Triggers on PRs touching `tests/tck-build-logic/`, `gradle/`, `build.gradle`,
 `settings.gradle`, or `gradle.properties`. Runs
 `generateInfrastructureChangedCoordinatesMatrix`, then pulls allowed images,
 disables Docker networking, validates config, and runs tests for the affected
-coordinates. This is the CI counterpart of the local infrastructure end-to-end
-tests (§E2E-infrastructure-tests).
+coordinates. This is the CI counterpart of the local `testInfra` and
+`testAllInfra` harness tasks (§TCK-test-harness).
 
 ### CI-test-affected-spring-aot: Test affected Spring AOT smoke tests
 

@@ -1,7 +1,7 @@
 # Forge documentation
 
 This directory holds Forge's grounded documentation: motivation, direction,
-functional specifications, architecture, workflow specs, and test specs. Every
+functional specifications, architecture, and workflow specs. Every
 document follows the [`grund`](https://github.com/vjovanov/grund) convention, so
 each fact has a stable ID and can be cited from prose, other docs, and source
 code.
@@ -28,7 +28,6 @@ home, so the prefix tells you which file to open.
 | `ORCH` | [architecture/orchestration-scripts.md](architecture/orchestration-scripts.md) | Orchestration script behavior and architecture. |
 | `GIT` | [architecture/git-scripts.md](architecture/git-scripts.md) | Git and PR publication behavior and architecture. |
 | `WF` | [functional-spec/workflows/](functional-spec/workflows/) | Per-workflow specifications and operating rules. |
-| `E2E` | [e2e.md](e2e.md) | End-to-end workflow test specification. |
 | `BENCH` | [functional-spec/benchmarking.md](functional-spec/benchmarking.md) | Generation benchmarking specification. |
 | `ROADMAP` | [roadmap.md](roadmap.md) | Planned, not-yet-implemented work. |
 
@@ -36,9 +35,9 @@ A kind whose home is a *folder* (`AR`, `FS`, `WF`) may spread its IDs across
 several files in that folder; a kind whose home is a single *file* keeps all of
 its IDs in that one file.
 
-Homes nest. `docs/` holds only the four documents that answer a question about
-Forge as a whole — why (`GRUND`), where (`GOAL`), what is planned (`ROADMAP`),
-and how it is tested end to end (`E2E`). Everything else lives under
+Homes nest. `docs/` holds only the three documents that answer a question about
+Forge as a whole — why (`GRUND`), where (`GOAL`), and what is planned
+(`ROADMAP`). Everything else lives under
 [architecture/](architecture/README.md) or
 [functional-spec/](functional-spec/README.md), including the kinds whose home is
 a file or folder inside one of those two: `DW`, `ORCH`, and `GIT` are
@@ -59,7 +58,6 @@ behavior or structure.
 - [architecture/git-scripts.md](architecture/git-scripts.md) — `GIT-forge-publication`: PR eligibility, body, issue linking, and publication.
 - [functional-spec/strategies.md](functional-spec/strategies.md) — `STRAT-workflow-strategy-registry`: strategy registry, contract, and fields.
 - [functional-spec/benchmarking.md](functional-spec/benchmarking.md) — `BENCH-forge-generation-benchmarking`.
-- [e2e.md](e2e.md) — `E2E-forge-workflow-testing`: hermetic and live end-to-end testing.
 - [roadmap.md](roadmap.md) — `ROADMAP-forge-implementation` and the planned improvements beneath it.
 
 ### The `functional-spec/workflows/` subtree
@@ -97,8 +95,8 @@ Every grounded fact has a stable ID of the form `<KIND>-<slug>[.<section>]`:
   (`.1`, `.2.1`, …).
 
 For example, `GOAL-forge-direction` names the top-level direction goal, and
-`E2E-forge-workflow-testing.4` points at the fourth numbered section of the
-end-to-end test spec.
+`FS-forge-functional-spec.4` points at the fourth numbered section of the
+functional spec.
 
 ### Declarations
 

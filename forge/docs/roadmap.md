@@ -48,9 +48,8 @@ Acceptance: a driver invoked with an incomplete run context fails immediately
 with a message naming the missing precondition, instead of resolving, cloning,
 or re-deriving it; `resolve_workflow_repo_paths` and the per-driver clone
 fallback are removed; every driver-side GraalVM lookup reads the environment the
-dispatcher pinned. Fixture and E2E runs keep working through
-`forge_metadata.py`, which is already the documented entry point for hermetic
-testing (§E2E-forge-workflow-testing.2).
+dispatcher pinned. Fixture runs keep working through `forge_metadata.py`, the
+supported control-plane entry point (§AR-forge-control-plane).
 
 # ROADMAP-forge-native-finalization: One metadata collection step everywhere
 

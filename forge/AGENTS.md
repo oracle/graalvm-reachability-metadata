@@ -63,7 +63,7 @@ Agents MUST read and strictly adhere to the following before making any changes:
 <!-- BEGIN GRUND MANAGED BLOCK -->
 ## Grounding with grund (v7)
 
-This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]` (`KIND ∈ {GRUND, GOAL, AR, FS, DW, STRAT, ORCH, GIT, WF, E2E, BENCH, ROADMAP}`), cited with the marker `§` — e.g. `<§>FS-user-login.3.1` (the `FS-user-login` here is a shape illustration, not a real ID in this repo, hence the `<§>` escape). Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `grund.toml`, so only `§`-prefixed citations are checked.
+This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]` (`KIND ∈ {GRUND, GOAL, AR, FS, DW, STRAT, ORCH, GIT, WF, BENCH, ROADMAP}`), cited with the marker `§` — e.g. `<§>FS-user-login.3.1` (the `FS-user-login` here is a shape illustration, not a real ID in this repo, hence the `<§>` escape). Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `grund.toml`, so only `§`-prefixed citations are checked.
 
 ### Grounding from a citation
 
@@ -87,7 +87,6 @@ A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and 
 - [ORCH](docs/architecture/orchestration-scripts.md): Forge orchestration scripts behavior and architecture
 - [GIT](docs/architecture/git-scripts.md): Forge git scripts publication behavior and architecture
 - [WF](docs/functional-spec/workflows): Forge workflow specifications and operating rules
-- [E2E](docs/e2e.md): Forge end-to-end test specifications
 - [BENCH](docs/functional-spec/benchmarking.md): Forge benchmark specifications
 - [ROADMAP](docs/roadmap.md): Forge implementation roadmap
 
@@ -128,7 +127,6 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 - **ORCH** must cite FS or AR or STRAT.
 - **GIT** should cite FS or AR.
 - **WF** should cite FS or STRAT or ORCH or GIT.
-- **E2E** must cite FS or WF or ORCH.
 - **BENCH** must cite FS or AR or GOAL.
 - **ROADMAP** should cite GOAL or FS or AR.
 - **code** (any file outside a kind home) must cite FS or AR or DW or STRAT or ORCH or GIT or WF.
