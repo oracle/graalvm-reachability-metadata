@@ -73,9 +73,15 @@ flowchart TD
     Next --> Loop
     Loop -->|all classes terminal| Finalize["finalize_run()"]
     Finalize --> LocalCI{"local_ci_check()"}
-    LocalCI -->|fails| Intervention["human-intervention handoff"]
-    LocalCI -->|passes| Review["local_review()"]
-    Review --> Push["push ai/** branch + descriptor"]
+    LocalCI -->|fails| CIFix["agent_fix(gate records)"]
+    CIFix -->|repaired| LocalCI
+    CIFix -->|could not repair, or re-run still fails| Intervention["human-intervention handoff"]
+    LocalCI -->|passes| Review{"local_review()"}
+    Review -->|non-approval| ReviewFix["agent_fix(findings)"]
+    ReviewFix -->|repaired| LocalCI
+    ReviewFix -->|could not repair, or re-run still fails| ResetReview["reset to the verified pre-repair commit,<br/>publish with the verdict recorded"]
+    ResetReview --> Push
+    Review -->|approved| Push["push ai/** branch + descriptor"]
     Push --> Ready["Forge Branch Ready (unprivileged)"]
     Ready --> Bot["graalvmbot opens the PR with stats and generation summary"]
 ```
@@ -201,7 +207,24 @@ sequenceDiagram
     WC-->>DR: terminal run status
     DR->>DR: finalize_run()
     DR->>DR: local_ci_check()
+    opt gate fails
+        DR->>AG: agent_fix(gate records)
+        AG-->>DR: repaired or failed
+        DR->>DR: local_ci_check()
+        opt gate still fails
+            DR-->>D: human-intervention handoff
+        end
+    end
     DR->>DR: local_review()
+    opt review does not approve
+        DR->>AG: agent_fix(findings)
+        AG-->>DR: repaired or failed
+        DR->>DR: local_ci_check()
+        DR->>DR: local_review()
+        opt repair failed, or the re-run does not pass
+            DR->>DR: reset to the verified pre-repair commit
+        end
+    end
     end
 
     rect rgba(148, 163, 184, 0.12)
@@ -621,7 +644,9 @@ per-lane gate is §ROADMAP-forge-native-finalization.
 
 ### local_ci_check()
 
-**Algorithmic.**
+**Algorithmic, neural in the worst case.** The checks are deterministic; the
+agent is reached only for what a check has already failed
+(§root/PRCPL-prefer-algorithmic).
 
 Before the push that makes a branch PR-eligible, the pre-publication gate runs
 the cross-cutting checks a single-library generation cannot settle by itself
@@ -631,6 +656,16 @@ touches image allow-lists. Library-scoped verification belongs to
 `finalize_run()`, not here. The gate also classifies paths changed outside the
 target library and flags human intervention. Opting into full reproduction adds
 the changed-metadata native test matrix and the Spring AOT smoke tests.
+
+A failure gets one bounded `agent_fix()` before the run is handed off, on the
+same terms as every other agent repair in this pipeline. The agent is invoked
+only after a check has failed, is given that check's own records as the evidence, and gets one attempt;
+the gate then re-runs. What decides the outcome is that deterministic re-run,
+never the agent's report of what it did (§root/PRCPL-verify-inputs) — a repair
+the re-run does not confirm is a gate failure. An index bucket another merged PR
+moved and a newly flagged image are exactly the failures a bounded repair
+settles; a re-run that still fails is the human-intervention handoff that
+happens today (§FS-human-intervention-policy).
 
 ### local_review()
 
@@ -645,6 +680,16 @@ post-push PR reviewer applies, with the local evidence a PR reviewer never
 sees: the `local_ci_check()` records and the resolved descriptor statistics.
 The verdict travels in the publication descriptor rather than blocking the
 push, so a PR opens already carrying its review label.
+
+A non-approval gets one bounded `agent_fix()`, in the same shape as the gate's:
+the agent is reached only after the review returned a finding, is given the
+findings as its evidence, and gets one attempt. Because a repair changes the
+tree that was verified, `local_ci_check()` and the review both re-run over it —
+nothing may be pushed that the gates have not passed over, which is what
+`publish_branch()` depends on. A finding must not destroy an otherwise publishable
+run, so a repair that does not pass the re-run resets to the verified pre-repair
+commit and the branch publishes with the verdict recorded, rather than failing
+the run.
 
 ### publish_branch()
 

@@ -442,10 +442,20 @@ test matrix, pre-pulls Docker images for coordinates that declare them, runs the
 generated tests under the CI native-image mode matrix, and runs Spring AOT smoke
 verification when metadata changes affect Spring AOT projects.
 
-If the gate fails, Forge may run a bounded fixup step before retrying it. The
-fixup may repair generated library-scoped files or shared repository files when
-the failure is caused by the repository itself. After the gate passes, Forge
-must algorithmically compare the final PR diff with the expected library-scoped
+If the gate fails, Forge must run one bounded agent repair before the run is
+handed off, on the same terms as every other agent repair in the pipeline: the
+agent is reached only after a check has failed, is given that check's records as
+its evidence, gets one attempt, and the gate then re-runs. The repair may touch
+generated library-scoped files, or shared repository files when the failure is
+caused by the repository itself. The outcome is decided by the deterministic
+re-run and never by the agent's account of what it repaired
+(§root/PRCPL-verify-inputs); a re-run that still fails is a handoff under
+§FS-human-intervention-policy. The same discipline applies to a non-approval
+from the pre-push review, except that a repair which does not pass the re-run
+resets to the verified pre-repair commit and publishes with the verdict
+recorded, because a review finding must not destroy an otherwise publishable
+run (§ROADMAP-forge-local-branch-review). After the gate passes, Forge must
+algorithmically compare the final PR diff with the expected library-scoped
 paths. If any shared repository file changed, the PR must be labeled
 `human-intervention` and the verification metrics and PR description must list
 the repository-level paths that require maintainer review, following
