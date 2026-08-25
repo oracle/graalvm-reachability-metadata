@@ -316,7 +316,7 @@ holds may the issue be assigned and moved to `In Progress`.
 ### 3. Issue form
 
 The queue label decides the workflow, so the issue must be unambiguous before a
-driver starts (§WF-forge-workflow-drivers.2). Every rule below is decided from
+driver starts (§AR-forge-driver-queues). Every rule below is decided from
 the issue payload and the repository alone, so all of them are checked by one
 deterministic gate that runs before the first side effect — before assignment,
 before the project transition, before the worktree
@@ -327,17 +327,22 @@ before the project transition, before the worktree
   claimed, worked, and published more than once, each time by a different
   driver working from different assumptions about what the issue asks for.
 - The **title resolves to Maven coordinates** `group:artifact:version`.
-- The **coordinate is fetchable**, not merely parseable.
 - A `fails-*` issue **resolves a current `latest` metadata version** for the
   coordinate, because a repair workflow is defined as a move from the currently
   supported version to the requested one.
 - A `fails-*` issue **requests a version strictly above that `latest`**.
+- The **coordinate is fetchable**, not merely parseable.
+
+The rules are decided in that order, and the gate stops at the first failure.
+Everything decidable from the issue payload and the checked-out repository is
+decided before the one rule that costs a request to a remote repository, so a
+malformed issue is rejected without a network round trip.
 
 Which driver a `library-update-request` runs is not part of this gate. It is
 decided by a compile, JVM-test, and native-test probe against a prepared
 baseline suite, so it needs the worktree the gate protects; it is resolved
 after the claim and recorded so publication reports the workflow that actually
-ran (§WF-forge-workflow-drivers.2).
+ran (§AR-forge-driver-queues.2).
 
 **Coordinates resolve when the artifact is fetchable.** A title that parses as
 `group:artifact:version` has satisfied a regular expression, not the
@@ -377,6 +382,11 @@ puts the same defect back in the queue — so the comment carries a marker keyed
 on the failed rule and the offending value, and a rejection whose marker is
 already on the issue closes it again without posting a second comment. An
 edited title changes the value, so it changes the marker and is judged afresh.
+
+The live worker output must make the terminal action equally explicit: name the
+failed rule and offending value, say whether the matching comment was posted or
+skipped as a duplicate, and say that the issue is being closed
+(§FS-forge-run-output-legibility).
 
 A form rejection is not a workflow failure: it is an input defect outside
 Forge's generation boundary, so it carries no `human-intervention` label and

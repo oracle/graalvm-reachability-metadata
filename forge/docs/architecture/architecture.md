@@ -281,28 +281,46 @@ configuration error, not a per-issue failure.
 **Algorithmic.**
 
 The queue label decides the workflow, so the issue must be unambiguous before a
-driver starts (§FS-forge-run-requirements.3, §WF-forge-workflow-drivers.2). The
+driver starts (§FS-forge-run-requirements.3, §AR-forge-driver-queues). The
 issue is the run's input, and a malformed one is rejected at the boundary
 instead of failing inside a driver (§root/PRCPL-verify-inputs). The gate runs
 before `claim_issue()`, so a rejected issue is never assigned, never moved to
 `In Progress`, and never given a worktree:
 
-- **Exactly one workflow label.** An issue carrying two queue labels is
-  processed once per queue that matches it, so it would be claimed, worked, and
-  published once per label by drivers with different assumptions.
-- **The title must resolve to Maven coordinates** `group:artifact:version`.
-- **The coordinate must be fetchable.** Parsing is not resolution: the gate
-  requests the coordinate's POM from Maven Central and then from the Confluent
-  fallback (§root/AR-build-infrastructure.1), and a coordinate no repository
-  publishes is rejected. This reuses the artifact fetch that Native Image
-  eligibility already performs (`utility_scripts/native_image_artifact.py`) and
-  asks it only whether the artifact exists, so the answer costs one request
-  against a URL derived entirely from the coordinate. A repository that cannot
-  be reached leaves the answer undecided, and an undecided answer never rejects.
-- **`fails-*` issues must resolve a current `latest` metadata version** for the
-  coordinate, because a repair workflow is defined as a move from the currently
-  supported version to the requested one.
-- **`fails-*` issues must request a version strictly above that `latest`.**
+- `single-workflow-label` — **exactly one workflow label.** An issue carrying
+  two queue labels is processed once per queue that matches it, so it would be
+  claimed, worked, and published once per label by drivers with different
+  assumptions.
+- `maven-coordinates` — **the title must resolve to** `group:artifact:version`.
+- `current-latest-version` — **a `fails-*` issue must resolve a current
+  `latest` metadata version** for the coordinate, because a repair workflow is
+  defined as a move from the currently supported version to the requested one.
+- `newer-than-latest` — **a `fails-*` issue must request a version strictly
+  above that `latest`**, decided by the same
+  `is_newer_than_latest_metadata_version()` predicate the repair drivers use to
+  index a version.
+- `published-artifact` — **the coordinate must be fetchable.** Parsing is not
+  resolution: the gate requests the coordinate's POM from Maven Central and then
+  from the Confluent fallback (§root/AR-build-infrastructure.1), and a
+  coordinate no repository publishes is rejected. This reuses the artifact fetch
+  that Native Image eligibility already performs
+  (`utility_scripts/native_image_artifact.py`) and asks it only whether the
+  artifact exists, so the answer costs one request against a URL derived
+  entirely from the coordinate. A repository that cannot be reached leaves the
+  answer undecided; an undecided answer never rejects and never claims, so the
+  issue is simply left for a later cycle.
+
+The rules are evaluated in that order and the gate stops at the first failure,
+so `published-artifact` — the only rule that leaves the machine — is reached
+only by an issue every local rule accepts.
+
+The gate does not make the repair drivers stop deciding whether a prepared
+version is the new `latest`. `fix_javac_fail` and `fix_java_run_fail` also serve
+`library-update-request` issues routed to them for a version backfill, and a
+backfilled version may legitimately sit below `latest`, so
+`java_fail_workflow.metadata_index_update_task()` keeps its own use of the
+predicate (§AR-forge-driver-queues.3). What the gate removes is the *late
+rejection*, not the indexing decision.
 
 Which driver a `library-update-request` runs is decided after the claim, not
 here: when the requested version already has a test suite it routes to coverage
@@ -325,6 +343,17 @@ offending value so a reopened, unedited issue is closed again without a second
 comment. A form rejection applies no `human-intervention` label and preserves
 no branch: the defect is in the issue, not in anything Forge generated
 (§FS-human-intervention-policy).
+
+The live worker output states the failed rule and offending value, then says
+whether it posted the matching comment or skipped a duplicate, and finally says
+that it is closing the issue (§FS-forge-run-output-legibility).
+
+Fixture-backed runs are the one ordering exception. Fixture masking rewinds the
+metadata index inside the isolated fixture worktree, and no live GitHub state is
+mutated, so fixture setup creates and masks that worktree before it runs the
+same gate against the repository state the fixture run would consume. A
+rejection still comments on and closes the fixture issue, cleans the worktree,
+and never invokes a driver (§FS-forge-run-requirements.3).
 
 ### claim_issue() → check_issue_claimable()
 
