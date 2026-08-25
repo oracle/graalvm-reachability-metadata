@@ -35,7 +35,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 
-/** Exercises starter auto-configuration, mapper CRUD, and field filling through public APIs. §FS-test-contract */
+/** Exercises starter auto-configuration, mapper CRUD, and field filling through public APIs. FS-test-contract */
 public class Mybatis_plus_boot_starterTest {
     @Test
     void configuresMapperAndPerformsCrudOperations() throws Exception {
