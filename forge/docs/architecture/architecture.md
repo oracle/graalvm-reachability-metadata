@@ -516,10 +516,12 @@ never to the agent.
 **Neural.** The repair is the agent's; every decision around it is not
 (§root/PRCPL-prefer-algorithmic).
 
-This document's short name for the one repair shape the pipeline reuses. It is
-not a phase and has no slot of its own: `native_trace_gate()` reaches it as step
-3, `local_ci_check()` on a failed check, and `local_review()` on a non-approval.
-Wherever it is called the terms are the same:
+Three unrelated steps need the same arrangement — a deterministic check has
+failed, let an agent try once — so it is written once here and cited rather than
+restated three times. It is not a phase and has no slot of its own:
+`native_trace_gate()` reaches it as step 3, `local_ci_check()` on a failed
+check, and `local_review()` on a non-approval. Wherever it is called the terms
+are the same:
 
 1. **Only after a deterministic step has failed.** The agent is never asked for
    something a check, a trace, or a gate could have produced, and never runs
@@ -542,10 +544,27 @@ which is why the native-test gate forbids that rescue outright
 Failure is uniform with the rest of the pipeline: an agent timeout or an
 unusable response is `RUN_STATUS_FAILURE` to the driver, which reports the run
 as failed to `forge_metadata` — never a degraded pass. What each caller does
-with a failed repair is the caller's contract, and they differ: the gate resets
-to its checkpoint and fails the run, `local_ci_check()` hands off for human
-intervention, and `local_review()` resets to the verified pre-repair commit and
-publishes with the verdict recorded.
+with a failed repair is the caller's contract, and they differ because a failed
+repair means something different at each: the gate resets to its checkpoint and
+fails the run, because metadata it rejected must not publish; `local_ci_check()`
+hands off for human intervention, because the branch is not publishable; and
+`local_review()` resets to the verified pre-repair commit and publishes with the
+verdict recorded, because the branch is publishable and merely flagged.
+
+The name is this document's. No symbol reads `agent_fix`: it is a contract two
+implementations are measured against, the way `native_trace_gate()` names what
+the code calls `native_test_verification_gate`. `run_codex_metadata_fix`
+(`ai_workflows/core/fix_metadata_codex.py`) conforms — it is the gate's step 3,
+repairing metadata only after tracing has observed everything it can, with the
+gate re-running to decide. `run_pi_post_generation_fix`
+(`ai_workflows/core/fix_post_generation_pi.py`) does not: it deletes the
+offending failing tests, reruns, and returns `success_with_intervention`. The
+deletion is recorded in the publication descriptor as
+`post_generation_intervention`, so it is visible — but the branch publishes
+anyway and the defect the deleted test was reporting is gone, which is term 4
+inverted, the agent's account standing in for a verdict the check never gave.
+Finalization still runs it, because the gate does not yet run in every lane
+(§ROADMAP-forge-native-finalization).
 
 ### native_trace_gate()
 
