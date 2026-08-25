@@ -394,7 +394,7 @@ the human-intervention comment leads with the same pair; no failure path
 reports a phase without a step; every phase entry prints a banner and every step
 entry prints `Running step <step> (<n>/<total>) of phase <phase>`; and the
 default failure output carries no git or push narration
-(§FS-forge-run-location-reporting).
+(§FS-forge-run-location-reporting, §AR-forge-run-location).
 
 # ROADMAP-forge-algorithmic-then-neural-setup: Algorithmic setup, then neural setup
 

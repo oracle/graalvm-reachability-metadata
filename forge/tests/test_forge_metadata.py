@@ -3,6 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+import contextlib
 import dataclasses
 import io
 import json
@@ -18,7 +19,7 @@ import forge_metadata
 from types import SimpleNamespace
 from ai_workflows.agents.agent_runtime import AgentRunResult, AgentSelection
 from git_scripts import common_git
-from utility_scripts import host_requirements
+from utility_scripts import host_requirements, run_location
 from utility_scripts.continuation_marker import (
     PHASE_EXPLORE,
     PHASE_FINALIZATION,
@@ -3482,6 +3483,75 @@ class EnvironmentValidationTests(unittest.TestCase):
 
         clear_issue_caches.assert_called_once()
         ensure.assert_not_called()
+
+
+class RunFailureLocationTests(unittest.TestCase):
+    """The failure location a step recorded reaches every reporting surface.
+
+    §FS-forge-run-location-reporting.3
+    """
+
+    def setUp(self) -> None:
+        run_location.reset_run_location()
+
+    def tearDown(self) -> None:
+        run_location.reset_run_location()
+
+    def test_terminal_failure_prints_and_forwards_the_recorded_phase_and_step(self) -> None:
+        claimed_issue = _claimed_issue()
+        expected_line = "run failed in explore/native_trace_gate()[com.acme.Thing]"
+        stderr = io.StringIO()
+
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(stderr), \
+                patch.object(forge_metadata, "preserve_failed_work_for_follow_up", return_value=None), \
+                patch.object(forge_metadata, "refresh_preserved_branch_logs"), \
+                patch.object(forge_metadata, "revert_claimed_issue"), \
+                patch.object(forge_metadata, "apply_failed_run_follow_up") as follow_up:
+            with run_location.run_step(
+                run_location.PHASE_EXPLORE,
+                run_location.STEP_NATIVE_TRACE_GATE,
+                operand="com.acme.Thing",
+            ):
+                run_location.record_step_failure()
+            forge_metadata.handle_failed_claimed_issue(claimed_issue, "workflow failure")
+
+        self.assertIn(expected_line, stderr.getvalue())
+        forwarded = follow_up.call_args.kwargs["failure_location"]
+        self.assertEqual(forge_metadata.format_run_failure_line(forwarded), expected_line)
+
+    def test_human_intervention_comment_leads_with_the_same_pair(self) -> None:
+        claimed_issue = _claimed_issue(forge_metadata.LABEL_JAVAC_FAIL)
+        failure_location = run_location.RunLocation(
+            run_location.PHASE_EXPLORE,
+            run_location.STEP_NATIVE_TRACE_GATE,
+            "com.acme.Thing",
+        )
+
+        with patch.object(
+                forge_metadata,
+                "resolve_human_intervention_candidate",
+                return_value="candidate",
+        ), \
+                patch.object(
+                    forge_metadata,
+                    "run_codex_failed_generation_analysis",
+                    return_value="Analysis body.",
+                ), \
+                patch.object(
+                    forge_metadata,
+                    "post_human_intervention_comment_and_label",
+                ) as post_follow_up:
+            forge_metadata.apply_failed_run_follow_up(
+                claimed_issue,
+                failure_location=failure_location,
+            )
+
+        comment_body = post_follow_up.call_args.args[1]
+        self.assertTrue(
+            comment_body.startswith("`run failed in explore/native_trace_gate()[com.acme.Thing]`"),
+            comment_body,
+        )
+        self.assertIn("Analysis body.", comment_body)
 
 
 class FailedRunFollowUpTests(unittest.TestCase):
