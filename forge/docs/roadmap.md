@@ -335,7 +335,8 @@ When a run fails, the failure must say **where** it failed: the phase, and the
 step inside it. Today a failed run reports a status and an error, and the reader
 reconstructs the location by reading logs backwards — even though the pipeline
 already defines the vocabulary needed to state it outright
-(§AR-forge-workflow-pipeline).
+(§AR-forge-workflow-pipeline). This is the failure half of the legible run
+output required by §FS-forge-run-output-legibility.
 
 Every failure report must carry both coordinates:
 

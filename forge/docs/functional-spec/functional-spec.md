@@ -305,6 +305,39 @@ gap between this requirement and the current implementation is
 - **Pull request** created asynchronously by the trusted Forge Actions
   publisher after Branch Ready accepts the exact pushed SHA.
 
+### FS-forge-run-output-legibility: Legible run output
+
+The run's own output is an output of the run. Whoever is running generation
+watches it live, so it must answer two questions at a glance: which concrete
+step the run is in right now, and — when the run stops — what exactly failed.
+Clarity is the requirement, not volume: a wall of text that has to be read
+backwards to locate the current step fails this section as surely as silence
+does. This is the live counterpart of the durable record required by
+§FS-durable-generation-logs, and it keeps the loop short as called for by
+§GOAL-shorten-issue-to-shipped-metadata.
+
+1. **Every step announces itself once.** On entering a pipeline step, the run
+   prints one line naming the phase and the step (`setup/neural_setup`,
+   `explore/native_trace_gate`, `finalization/local_ci_check`, …) and the
+   operand it is working on. The reader must never have to infer the current
+   step from incidental output such as a Gradle banner or an agent's prose.
+2. **Every failure names its location and its cause.** A failing run states the
+   phase, the step, the operand, and the concrete reason it stopped, in that
+   order, before any surrounding detail — the same pair required everywhere a
+   failure surfaces by §ROADMAP-forge-failure-locates-phase-and-step. A failure
+   reported only as a status, a stack trace, or a generic message does not
+   satisfy this requirement.
+3. **The inside of a step stays quiet.** Work within a step is reported by
+   outcome, not by narration: one line per completed unit (a generated class, a
+   passed gate, a trace cycle) and nothing per intermediate operation. Repeated
+   or retried work says that it is a retry and which attempt it is, so a
+   stalled loop is visible as a loop.
+4. **Detail lives in the logs, not in the terminal.** Full agent conversations,
+   Gradle output, and native-image output are written to the durable logs; the
+   run output prints the path to the relevant log instead of reproducing it, so
+   a maintainer can escalate from the summary to the evidence in one step
+   (§FS-durable-generation-logs).
+
 ## FS-forge-run-metrics: Per-run metrics record
 §GOAL-minimize-generation-cost
 
@@ -337,8 +370,10 @@ verification output.
 
 Logs must be scoped by task and coordinate where possible, and the workflow
 must print or record the log path so a maintainer can inspect the exact
-conversation or command that produced a generated artifact. A workflow must
-not rely on transient terminal output as the only record of a generation step.
+conversation or command that produced a generated artifact; the live run output
+that points at those paths is specified by §FS-forge-run-output-legibility.
+A workflow must not rely on transient terminal output as the only record of a
+generation step.
 If a run fails or times out, the saved logs are part of the diagnostic artifact
 set that allows maintainers or a later Forge run to continue from evidence,
 keeping the loop short as called for by §GOAL-shorten-issue-to-shipped-metadata.
