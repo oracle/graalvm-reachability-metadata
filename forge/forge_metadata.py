@@ -169,16 +169,16 @@ from utility_scripts.metadata_index import (
     resolve_metadata_version,
     resolve_test_dir,
 )
-from utility_scripts.native_image_artifact import (
-    ARTIFACT_REPOSITORY_URLS,
-    artifact_is_published,
-)
 from utility_scripts.metrics_writer import (
     PENDING_METRICS_FILENAME,
     calc_model_session_cost,
     load_execution_metrics_for_timestamp,
     read_pending_metrics,
     write_pending_metrics,
+)
+from utility_scripts.native_image_artifact import (
+    ARTIFACT_REPOSITORY_URLS,
+    artifact_is_published,
 )
 from utility_scripts.repo_path_resolver import (
     git_env_limited_to_repo_root,
