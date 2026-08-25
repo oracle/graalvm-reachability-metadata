@@ -215,11 +215,11 @@ Sunday metadata sweep (§CI-test-all-metadata) and the Monday release
 (§CI-create-scheduled-release) so the three never compete for runners.
 
 The scheduled run takes every input's default — all coordinates over 85 shards on
-the `crema` lane with assertions cleared — because the `inputs` context is empty
-on a `schedule` event; the workflow restates each default rather than resolving
-an empty matrix. The weekly trigger is confined to the canonical repository so a
-fork does not sweep on its own schedule, while manual dispatch stays available
-everywhere.
+the `crema` lane with the normal test configuration — because the `inputs`
+context is empty on a `schedule` event; the workflow restates each default rather
+than resolving an empty matrix. The weekly trigger is confined to the canonical
+repository so a fork does not sweep on its own schedule, while manual dispatch
+stays available everywhere.
 
 The JDK is built once by a dedicated job via §CI-setup-crema-jdk and shared with
 every shard as an artifact, because the macro build takes about ten minutes and
@@ -276,17 +276,6 @@ attributed per coordinate and published as NDJSON plus log artifacts in the same
 shape as §CI-test-all-metadata, so the existing failure tooling applies. The
 matrix comes from `generateMatrixBatchedCoordinates` (§TCK-test-harness.7) via
 the `batches` input; `coordinates` narrows a run to one shard or one library.
-
-Crema currently rejects `-ea` at VM startup, and Gradle puts `-ea` on every test
-worker, so leaving it in place fails every coordinate identically before any test
-executes and the sweep returns one finding repeated per coordinate instead of a
-survey. The `disable-assertions` input therefore defaults to true, clearing
-Gradle's `enableAssertions` (§TCK-test-harness.3.1) so the sweep reaches the
-failures behind that blocker. Setting it false re-checks whether the blocker is
-still present. Because assertions do not fire under this default, tests that
-verify via `assert` pass vacuously: a green coordinate here means Crema ran the
-code, never that the library is supported.
-
 
 ## Event-triggered automation
 
