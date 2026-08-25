@@ -1,13 +1,23 @@
 # Functional spec
 
-Repository behavior and contributor-facing requirements live here as
-`FS-<slug>` declarations. A document belongs in this directory when it states
-*what* the repository must do or what a contribution must satisfy — a rule a
-reviewer or a gate can be held to. How that behavior is implemented belongs in
-[../architecture/](../architecture/README.md) instead.
+This directory holds everything that states *what* the repository must do or
+what a contribution must satisfy — a rule a reviewer or a gate can be held to,
+and the two suites those rules govern. How that behavior is implemented belongs
+in [../architecture/](../architecture/README.md) instead.
 
-Each file declares its IDs at its headings; an `FS` ID always lives in this
-folder, so the prefix tells you to open this directory.
+Three kinds live here, and the prefix tells you which file to open:
+
+| Kind | Home | Holds |
+| --- | --- | --- |
+| `FS` | this folder | The repository specification and the contribution/test contracts. |
+| `METADATA` | [metadata.md](metadata.md) | The shipped `metadata/` suite: layout, invariants, provenance. |
+| `TESTS` | [tests.md](tests.md) | The `tests/` suite that justifies every metadata entry. |
+
+`METADATA` and `TESTS` are filed here because each describes a suite's contract —
+what the shipped metadata must be, and what a test must do to justify it — not
+how the build produces either. They keep their own prefixes: a `METADATA-` or
+`TESTS-` ID is not an `FS-` ID, and each is declared in its own home file above
+rather than anywhere in this folder.
 
 | ID | Subject |
 | --- | --- |
@@ -16,6 +26,8 @@ folder, so the prefix tells you to open this directory.
 | §FS-contribution-contract | Test and metadata contribution contract |
 | §FS-test-contract | The test contract |
 | §FS-repository-status-report | Repository issue progress and state |
+| §METADATA-suite | The `metadata/` suite |
+| §TESTS-suite | The `tests/` suite |
 
 This index is navigational. Cite the specific declaration ID rather than this
 file.
@@ -30,3 +42,7 @@ Files:
   metadata it justifies.
 - [repository-status.md](repository-status.md) — how repository issue progress
   and state are reported.
+- [metadata.md](metadata.md) — the `metadata/` suite: its layout, its additive
+  invariants, and where each entry comes from.
+- [tests.md](tests.md) — the `tests/` suite: the per-coordinate test projects
+  and how the harness exercises them.

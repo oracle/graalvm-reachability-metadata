@@ -1,6 +1,6 @@
 # TESTS-suite: The `tests/` suite
 
-[`tests/`](../tests) is what justifies every byte of shipped metadata. A
+[`tests/`](../../tests) is what justifies every byte of shipped metadata. A
 metadata entry exists only because a test exercises the dynamic access it
 registers and would fail without it (§GOAL-tested-metadata); this suite holds
 those tests. The behavioral requirements for tests are normative in
@@ -9,7 +9,7 @@ this document describes the test-project contract.
 
 ## 1. Coordinate test projects
 
-- [`tests/src/<groupId>/<artifactId>/<version>/`](../tests/src) — one
+- [`tests/src/<groupId>/<artifactId>/<version>/`](../../tests/src) — one
   self-contained Gradle test project per coordinate, unless an `index.json`
   entry sets `test-version` to share one suite across versions. Each project
   exercises the library's reachable surface through its public API, declares any
@@ -64,7 +64,7 @@ summary of what they mean when writing one.
 - **Keep test code original.** Do not copy upstream or other third-party test
   sources into this repository. Upstream tests may be used only as behavioral
   examples, and documentation only as API guidance. Review policy details live
-  in [REVIEWING.md](REVIEWING.md); what review may block on — rule strength,
+  in [REVIEWING.md](../REVIEWING.md); what review may block on — rule strength,
   shape limits, coverage gates, and cheating patterns — is normative in
   §FS-contribution-contract.
 

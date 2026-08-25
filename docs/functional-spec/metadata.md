@@ -1,6 +1,6 @@
 # METADATA-suite: The `metadata/` suite
 
-[`metadata/`](../metadata) is the repository's product: the curated GraalVM
+[`metadata/`](../../metadata) is the repository's product: the curated GraalVM
 reachability metadata that native-build-tools resolves and passes to
 `native-image`. Everything else in the repository exists to produce, validate,
 or describe it. Its contract toward consumers is normative in
@@ -34,7 +34,7 @@ would otherwise miss, and must never change how a consumer's code runs
 - `metadata/library-and-framework-list.json` — the master list of every
   supported library with its `test_level`, driving the
   libraries-and-frameworks page.
-- [`metadata/schemas/`](../metadata/schemas) — vendored JSON schemas
+- [`metadata/schemas/`](../../metadata/schemas) — vendored JSON schemas
   (`reachability-metadata`, `metadata-library-index`,
   `library-and-framework-list`) used for offline validation; also packaged into
   the release.

@@ -109,11 +109,11 @@ A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and 
 - [PRCPL](docs/principles.md): Cross-cutting principles for how the repository works
 - [FS](docs/functional-spec): Repository functional behavior and contributor-facing requirements
 - [AR](docs/architecture): Repository architecture and build infrastructure
-- [TCK](docs/tck.md): Test harness (TCK): task groups
+- [TCK](docs/architecture/tck.md): Test harness (TCK): task groups
 - [E2E](docs/e2e.md): Infrastructure end-to-end tests (testInfra/testAllInfra)
-- [CI](docs/ci.md): Recurring CI workflows and composite actions
-- [METADATA](docs/metadata.md): The metadata/ suite: shipped reachability metadata
-- [TESTS](docs/tests.md): The tests/ suite: tests that justify the metadata
+- [CI](docs/architecture/ci.md): Recurring CI workflows and composite actions
+- [METADATA](docs/functional-spec/metadata.md): The metadata/ suite: shipped reachability metadata
+- [TESTS](docs/functional-spec/tests.md): The tests/ suite: tests that justify the metadata
 - [SKILL](skills): Agent review and automation skills
 
 ### Project namespaces
@@ -196,3 +196,13 @@ is the only place the workspace alias table is in scope.
   spreads across several files as `folder`. The generated project map links each
   kind to its home, so a shared home makes the map useless — the prefix must
   tell you which file or folder to open.
+- **A `file` home may sit inside a `folder` home.** `docs/architecture/` is the
+  `AR` folder home and also holds the `TCK` and `CI` file homes; `docs/functional-spec/`
+  is the `FS` folder home and also holds the `METADATA` and `TESTS` file homes.
+  `forge/docs/architecture/` does the same with `DW`, `ORCH`, and `GIT`. A kind
+  is filed under the folder whose question it answers — the harness and CI
+  document how the repository is wired, the two suites state what the shipped
+  metadata and its tests must be. The kinds stay distinct: `TCK-` and `CI-` IDs
+  are not `AR-` IDs, and `METADATA-` and `TESTS-` IDs are not `FS-` IDs. Locate a
+  nested kind by its own `file` entry in `grund.toml`, not by the folder it
+  happens to live in.

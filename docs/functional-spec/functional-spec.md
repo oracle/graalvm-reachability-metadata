@@ -63,7 +63,7 @@ The harness uses a single coordinates filter `-Pcoordinates=` accepting `all`, `
 ### 4.3 Continuous integration
 §CI-repository-ci
 
-GitHub Actions, configured by [`ci.json`](../../ci.json) as the single source of truth for OS/JDK matrix, run the workflows enumerated in [ci.md](../ci.md):
+GitHub Actions, configured by [`ci.json`](../../ci.json) as the single source of truth for OS/JDK matrix, run the workflows enumerated in [ci.md](../architecture/ci.md):
 - PR-scoped: changed-metadata, changed-infrastructure, new-library-version, Spring AOT smoke, library-stats validation, library-and-framework-list validation, checkstyle.
 - Schedule-driven: full metadata sweep every three days to prevent incomplete or breaking metadata from shipping in releases, opted-in new-library-version compatibility (daily), Docker image vulnerability scans, scheduled release every Monday, scheduled coverage publication.
 - Event-driven snapshot publication: every push to `master` may refresh the floating `SNAPSHOT` release when metadata changed since the previous `SNAPSHOT` tag.
@@ -468,9 +468,9 @@ a full release of a base version is now handled, older pre-release issues
 - [CONTRIBUTING.md](../CONTRIBUTING.md) — how to add or update metadata.
 - [REVIEWING.md](../REVIEWING.md) — reviewer checklist (licensing, security, metadata quality).
 - [DEVELOPING.md](../DEVELOPING.md) — Gradle task reference for development.
-- [ci.md](../ci.md) — recurring CI workflows and composite actions (§CI-repository-ci).
-- [tck.md](../tck.md) — test harness task groups and Gradle harness (§TCK-test-harness).
-- [metadata.md](../metadata.md), [tests.md](../tests.md) — the metadata and tests suites (§METADATA-suite, §TESTS-suite).
+- [architecture/ci.md](../architecture/ci.md) — recurring CI workflows and composite actions (§CI-repository-ci).
+- [architecture/tck.md](../architecture/tck.md) — test harness task groups and Gradle harness (§TCK-test-harness).
+- [metadata.md](metadata.md), [tests.md](tests.md) — the metadata and tests suites (§METADATA-suite, §TESTS-suite).
 - [CollectingMetadata.md](../CollectingMetadata.md) — using the Native Image Agent to collect metadata.
 - [SECURITY.md](../SECURITY.md) — vulnerability disclosure.
 - [forge/README.md](../../forge/README.md) — Forge user manual.

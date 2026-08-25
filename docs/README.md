@@ -32,18 +32,24 @@ home, so the prefix tells you which file to open.
 | `GRUND` | [grund.md](grund.md) | Why the repository exists — the motivation everything climbs back to. |
 | `GOAL` | [goals.md](goals.md) | Where the repository is headed — measurable outcome goals. |
 | `PRCPL` | [principles.md](principles.md) | Cross-cutting principles that constrain how the repository pursues its goals. |
-| `FS` | [functional-spec/functional-spec.md](functional-spec/functional-spec.md) | What the system must do — behavior, requirements, and how it is used. |
-| `AR` | [architecture/architecture.md](architecture/architecture.md), [architecture/build-infra.md](architecture/build-infra.md) | How the repository is structured and how the build is wired. |
-| `TCK` | [tck.md](tck.md) | The Gradle test harness task groups. |
+| `FS` | [functional-spec/](functional-spec/README.md) | What the system must do — behavior, requirements, and how it is used. |
+| `METADATA` | [functional-spec/metadata.md](functional-spec/metadata.md) | The shipped `metadata/` suite — the curated reachability metadata. |
+| `TESTS` | [functional-spec/tests.md](functional-spec/tests.md) | The `tests/` suite that justifies every metadata entry. |
+| `AR` | [architecture/](architecture/README.md) | How the repository is structured and how the build is wired. |
+| `TCK` | [architecture/tck.md](architecture/tck.md) | The Gradle test harness task groups. |
+| `CI` | [architecture/ci.md](architecture/ci.md) | Recurring CI workflows, composite actions, and shared scripts. |
 | `E2E` | [e2e.md](e2e.md) | The infrastructure end-to-end tests (`testInfra`/`testAllInfra`). |
-| `CI` | [ci.md](ci.md) | Recurring CI workflows, composite actions, and shared scripts. |
-| `METADATA` | [metadata.md](metadata.md) | The shipped `metadata/` suite — the curated reachability metadata. |
-| `TESTS` | [tests.md](tests.md) | The `tests/` suite that justifies every metadata entry. |
 | `SKILL` | [../skills/](../skills/) | Agent review and automation skills. |
 
 A kind whose home is a *folder* (`FS`, `AR`, `SKILL`) may spread its IDs
 across several files in that folder; a kind whose home is a single *file* keeps
 all of its IDs in that one file.
+
+A single-file home may sit inside a folder home, and four do: `METADATA` and
+`TESTS` file with the functional spec because they state what the two suites
+must be, and `TCK` and `CI` file with the architecture because they describe how
+the repository is wired. The kinds stay distinct — a `METADATA-` ID is not an
+`FS-` ID — so read the table above, not the directory, to find a kind's home.
 
 ### Files at a glance
 
@@ -54,13 +60,13 @@ all of its IDs in that one file.
 - [functional-spec/repository-status.md](functional-spec/repository-status.md) — `FS-repository-status-report`: issue progress measurements and their HTML/JSON representations.
 - [functional-spec/test-contract.md](functional-spec/test-contract.md) — `FS-test-contract`: the point-by-point contract for writing a test — what it must have, must not do, should do, and how it behaves under Native Image.
 - [functional-spec/contribution-contract.md](functional-spec/contribution-contract.md) — `FS-contribution-contract`: what review may block on — rule strength (must vs should), the algorithmic shape limits, the coverage gates, and the enumerated cheating patterns.
+- [functional-spec/metadata.md](functional-spec/metadata.md) — `METADATA-suite`: the published `metadata/` directory and its index/schema contracts.
+- [functional-spec/tests.md](functional-spec/tests.md) — `TESTS-suite`: the `tests/` suite that justifies the metadata.
 - [architecture/architecture.md](architecture/architecture.md) — `AR-repository-architecture`: the component map and high-level implementation overview.
 - [architecture/build-infra.md](architecture/build-infra.md) — `AR-build-infrastructure`: the two-layer Gradle build, convention plugins, and scaffolding.
-- [tck.md](tck.md) — `TCK-test-harness`: the harness task groups.
+- [architecture/tck.md](architecture/tck.md) — `TCK-test-harness`: the harness task groups.
+- [architecture/ci.md](architecture/ci.md) — `CI-repository-ci` and one citable declaration per workflow, action, and script.
 - [e2e.md](e2e.md) — `E2E-infrastructure-tests`: `testInfra` and `testAllInfra`.
-- [ci.md](ci.md) — `CI-repository-ci` and one citable declaration per workflow, action, and script.
-- [metadata.md](metadata.md) — `METADATA-suite`: the published `metadata/` directory and its index/schema contracts.
-- [tests.md](tests.md) — `TESTS-suite`: the `tests/` suite that justifies the metadata.
 
 ### Non-grounded contributor docs
 
