@@ -31,6 +31,8 @@ class MybatisTest {
                 "");
         Configuration configuration = new Configuration(
                 new Environment("h2", new JdbcTransactionFactory(), dataSource));
+        assertEquals("org.apache.ibatis.executor.loader.javassist.JavassistProxyFactory",
+                configuration.getProxyFactory().getClass().getName());
         XMLLanguageDriver languageDriver = assertInstanceOf(
                 XMLLanguageDriver.class,
                 configuration.getDefaultScriptingLanguageInstance());
