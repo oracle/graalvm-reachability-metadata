@@ -13,6 +13,7 @@ structure chosen to satisfy it, with the workflow catalog in
 | ID | Concern |
 | --- | --- |
 | §AR-forge-workflow-pipeline | the end-to-end pipeline of one workflow run, step by step |
+| §AR-forge-run-location | how progress output and failure output share one phase/step vocabulary |
 | §AR-forge-control-plane | how the worker loop, dispatcher, GitHub queues, and worktrees compose |
 | §AR-forge-workflow-boundary | how workflow drivers turn a claimed issue into an isolated workflow run |
 | §AR-forge-strategy-agent-boundary | how strategy configuration, workflow engines, agents, and post-generation interventions are separated |
@@ -910,11 +911,27 @@ makes `(<n>/<total>)` derivable rather than hand-counted, and makes an
 unregistered step name a hard error at the step boundary instead of a wrong
 label in a log.
 
+The table lists the steps the pipeline enters today, in the order it enters
+them, not the full set of pseudo-methods §AR-forge-workflow-pipeline names. Two
+of those — `check_setup()` and `local_review()` — are still folded into larger
+methods, so registering them would make `<total>` count a step that never runs;
+they join the table when §ROADMAP-forge-algorithmic-then-neural-setup and the
+local-review work split them out. A step name may appear under several phases,
+because more than one phase runs `generate_tests()` and `native_trace_gate()`.
+
 **Steps are marked, not narrated.** A step is entered through the `run_step()`
 context manager — or the `pipeline_step()` decorator, which is the same thing
 applied to a whole function. Entering prints the progress line and pushes the
 location onto a run-local stack; leaving pops it. Nothing at a raise site
 mentions a step name, because a raise site does not know which step it is in.
+The decorator resolves its operand from the call's arguments **by parameter
+name**, binding the wrapped signature rather than indexing `args`, so a keyword
+call and a positional call of the same function locate identically.
+
+The state is thread-local because runs execute concurrently on a pool
+(§AR-forge-control-plane): each lifecycle resets it, names its run, and points
+it at that run's continuation marker, so two runs never read each other's
+location and interleaved banners say which run they belong to.
 
 **Failures propagate their location, they do not format it.** `run_step()`
 annotates a propagating exception with the location it was raised in and
@@ -922,7 +939,9 @@ re-raises the original exception object. Annotating rather than wrapping is
 required: `forge_metadata` classifies external failures by exception type
 (§FS-human-intervention-policy), and a wrapper would erase that type. The
 annotation is written once by the innermost step and never overwritten, so a
-location survives every intermediate `except` on the way out.
+location survives every intermediate `except` on the way out. A `KeyboardInterrupt`
+travels unmarked: an interrupt is not a run failure, and marking it would put a
+failure location on the marker of a run the operator stopped.
 
 Status-code failures — the many Forge paths that return `RUN_STATUS_FAILURE`
 rather than raise — call `record_step_failure()` instead. Both routes write to
@@ -939,6 +958,11 @@ comment.
 that no step claimed, it reports the step as `<unlocated-step>` and prints a
 defect notice: a code path raising outside the pipeline's step boundaries is a
 bug in Forge, and the report says so rather than quietly omitting the step.
+
+**The line is printed once.** A run has one terminal failure, and it passes
+several boundaries on the way out — the driver's status code, the workflow run
+result, the failed-issue handler. The reporter is idempotent for the run, so the
+boundary nearest the error owns the line and the rest add nothing.
 
 **Debug narration is separate from failure output.** `stage_logger` gains a
 debug level, enabled by `FORGE_DEBUG_LOGGING`, and the human-intervention

@@ -522,11 +522,20 @@ phases (§FS-forge-run-continuation.1) and must not be redeclared anywhere else;
 therefore before continuation state exists.
 
 A **step** is the pipeline method that is executing, written with its
-parentheses exactly as the pipeline names it — `check_host_requirements()`,
-`neural_setup()`, `check_setup()`, `generate_tests()`, `native_trace_gate()`,
-`local_ci_check()`, `publish_branch()`, and the rest. Every step belongs to
-exactly one phase, and the phase's steps are ordered, so a step has a position
-`<n>` within a total `<total>`.
+parentheses exactly as the pipeline names it (§AR-forge-workflow-pipeline) —
+`check_host_requirements()`, `neural_setup()`, `normal_setup()`,
+`run_workflow_engine()`, `generate_tests()`, `native_trace_gate()`,
+`agent_fix()`, `finalize_run()`, `local_ci_check()`, `publish_branch()`. A step
+is registered under the phase that runs it, and a phase's registered steps are
+ordered by the order the run enters them, so a step has a position `<n>` within
+a total `<total>`. A step name may belong to more than one phase when more than
+one phase runs it, but the registry is the only place the binding is written: a
+step the run enters must be registered, and `<total>` is derived from the
+registry rather than counted by hand.
+
+Only steps the pipeline actually enters are registered. A pipeline method that
+is still folded into a larger one is registered when it becomes a step of its
+own, so `<n>/<total>` never counts a step that never runs.
 
 A step may carry an **operand**: the one value the step was working on when it
 ran — the class being generated, the gate command that returned non-zero, the
@@ -535,8 +544,11 @@ operand and `<phase>/<step>[<operand>]` with one.
 
 ### 2. Progress output
 
-Entering a phase prints a bounded, visually distinct banner naming the phase, so
-a phase transition is findable by eye in a long run log.
+Entering a phase prints a bounded, visually distinct banner naming the phase and
+the run it belongs to, so a phase transition is findable by eye in a long run
+log even though runs are interleaved on a pool (§AR-forge-control-plane). The
+banner marks a transition: re-entering the phase the run is already in prints
+nothing.
 
 Entering a step prints exactly one line:
 
@@ -562,6 +574,16 @@ driver returns to `forge_metadata`, the continuation marker, and the
 human-intervention comment, which leads with it
 (§FS-human-intervention-policy). A resumed run therefore states the location it
 is retrying.
+
+The location is reported once per run — the failure that ends a run is one
+failure, and the first boundary to report it owns the line — and the innermost
+step that failed is the one reported, however many intermediate handlers the
+failure passes through. A failure that returns a status code instead of raising
+records its location at the point it gives up, so both routes out reach the
+lifecycle boundary with one location.
+
+A user interrupt is not a run failure: it carries no location, records none, and
+prints none.
 
 No failure path may report a phase without a step. A failure raised outside
 every step boundary is a defect in Forge, not a formatting gap: it is reported
