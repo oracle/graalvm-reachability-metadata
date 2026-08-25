@@ -45,6 +45,18 @@ public class Springdoc_openapi_starter_webmvc_uiTest {
     }
 
     @Test
+    void servesSwaggerUiStylesheet() throws Exception {
+        String stylesheet = mockMvc.perform(get("/swagger-ui/swagger-ui.css"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.parseMediaType("text/css")))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        assertThat(stylesheet).contains(".swagger-ui");
+    }
+
+    @Test
     void publishesSwaggerUiConfiguration() throws Exception {
         mockMvc.perform(get("/v3/api-docs/swagger-config"))
                 .andExpect(status().isOk())
