@@ -29,6 +29,13 @@ from utility_scripts.workflow_setup import build_graalvm_environment
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.gradle_test_runner import run_gradle_test_command
 from utility_scripts.library_stats import stats_artifact_dir
+from utility_scripts.run_location import (
+    PHASE_FINALIZATION as RUN_PHASE_FINALIZATION,
+    STEP_AGENT_FIX,
+    STEP_FINALIZE_RUN,
+    record_step_failure,
+    run_step,
+)
 from utility_scripts.metadata_index import (
     coordinate_parts,
     find_index_entry_for_version,
@@ -273,43 +280,51 @@ class WorkflowStrategy(ABC):
                 log_stage("post-generation-test", f"{stage_name} passed for {library}")
                 return RUN_STATUS_SUCCESS
 
-            log_stage("metadata-fix", f"Running metadata fix workflow for {library} after {stage_name} failure")
-            codex_env = gradle_command_environment(repo_path, command_env)
-            codex_rc, codex_log_path, codex_timed_out = run_metadata_fix(
-                repo_path,
-                library,
-                reproduction_command=reproduction_command,
-                graalvm_home=codex_env.get("GRAALVM_HOME"),
-                base_env=command_env,
-            )
-            recovery_test_output = test_output
-            if not codex_timed_out and codex_rc == 0:
-                recovery_test_output = command_runner()
-                if self._get_first_failed_task(recovery_test_output) is None:
-                    log_stage("post-generation-test", f"{stage_name} passed for {library} after metadata fix")
-                    return RUN_STATUS_SUCCESS
-
-            log_stage(
-                "post-generation-fix",
-                f"Running post generation fix for {library} after {stage_name} failure",
-            )
-            pi_rc, intervention_path, pi_timed_out = run_post_generation_fix(
-                reachability_metadata_path=repo_path,
-                coordinates=library,
-                analysis_log_path=codex_log_path,
-                test_output=recovery_test_output,
-                timeout_seconds=self._parameter_int("post-generation-timeout-seconds", DEFAULT_POST_GENERATION_TIMEOUT_SECONDS),
-                max_test_output_chars=self._parameter_int(
-                    "post-generation-test-output-chars",
-                    DEFAULT_MAX_TEST_OUTPUT_CHARS,
-                ),
-            )
-            if pi_timed_out or pi_rc != 0:
+            def record_lane_failure() -> str:
+                """Locate this lane's unrepaired failure before returning it."""
+                record_step_failure()
                 return RUN_STATUS_FAILURE
 
-            rerun_output = command_runner()
-            if self._get_first_failed_task(rerun_output) is not None:
-                return RUN_STATUS_FAILURE
+            # Repairing a failed post-generation lane is the finalization phase's
+            # agent fix. §FS-forge-run-location-reporting.2
+            with run_step(RUN_PHASE_FINALIZATION, STEP_AGENT_FIX, operand=f"{library} {stage_name}"):
+                log_stage("metadata-fix", f"Running metadata fix workflow for {library} after {stage_name} failure")
+                codex_env = gradle_command_environment(repo_path, command_env)
+                codex_rc, codex_log_path, codex_timed_out = run_metadata_fix(
+                    repo_path,
+                    library,
+                    reproduction_command=reproduction_command,
+                    graalvm_home=codex_env.get("GRAALVM_HOME"),
+                    base_env=command_env,
+                )
+                recovery_test_output = test_output
+                if not codex_timed_out and codex_rc == 0:
+                    recovery_test_output = command_runner()
+                    if self._get_first_failed_task(recovery_test_output) is None:
+                        log_stage("post-generation-test", f"{stage_name} passed for {library} after metadata fix")
+                        return RUN_STATUS_SUCCESS
+
+                log_stage("post-generation-fix", f"Running post generation fix for {library} after {stage_name} failure")
+                pi_rc, intervention_path, pi_timed_out = run_post_generation_fix(
+                    reachability_metadata_path=repo_path,
+                    coordinates=library,
+                    analysis_log_path=codex_log_path,
+                    test_output=recovery_test_output,
+                    timeout_seconds=self._parameter_int(
+                        "post-generation-timeout-seconds",
+                        DEFAULT_POST_GENERATION_TIMEOUT_SECONDS,
+                    ),
+                    max_test_output_chars=self._parameter_int(
+                        "post-generation-test-output-chars",
+                        DEFAULT_MAX_TEST_OUTPUT_CHARS,
+                    ),
+                )
+                if pi_timed_out or pi_rc != 0:
+                    return record_lane_failure()
+
+                rerun_output = command_runner()
+                if self._get_first_failed_task(rerun_output) is not None:
+                    return record_lane_failure()
 
             with open(intervention_path, "r", encoding="utf-8") as intervention_file:
                 intervention_markdown = intervention_file.read().strip()
@@ -530,8 +545,13 @@ class WorkflowStrategy(ABC):
             self.continuation_marker_path,
             lambda marker: marker.mark_phase_running(PHASE_FINALIZATION),
         )
-        finalize_status, _ = self._finalize_successful_iteration(base_commit=base_commit)
+        # Finalization is one step of the run, and a status-code failure inside
+        # it still names its location. §FS-forge-run-location-reporting.2
+        with run_step(RUN_PHASE_FINALIZATION, STEP_FINALIZE_RUN, operand=self.library):
+            finalize_status, _ = self._finalize_successful_iteration(base_commit=base_commit)
         finalize_succeeded = finalize_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS}
+        if not finalize_succeeded:
+            record_step_failure(operand=self.library)
         if finalize_succeeded:
             save_phase_update(
                 self.continuation_marker_path,

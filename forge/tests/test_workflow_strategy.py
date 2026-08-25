@@ -218,6 +218,7 @@ class WorkflowStrategyTests(unittest.TestCase):
             reachability_repo_path="/tmp/reachability",
             library="org.example:demo:1.0.0",
         )
+        strategy.library = "org.example:demo:1.0.0"
         # (finalization status, incoming workflow status) -> merged run status.
         cases = [
             (RUN_STATUS_SUCCESS, RUN_STATUS_SUCCESS, RUN_STATUS_SUCCESS),

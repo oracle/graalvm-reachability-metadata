@@ -38,6 +38,7 @@ from utility_scripts.library_preparation_preflight import (
 from utility_scripts.metadata_index import is_newer_than_latest_metadata_version
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
+from utility_scripts.run_location import STEP_NORMAL_SETUP, STEP_RUN_WORKFLOW_ENGINE, run_step
 from utility_scripts.source_context import (
     normalize_source_context_types,
     populate_artifact_urls,
@@ -509,14 +510,17 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
     metadata_dir_preexisted = os.path.exists(metadata_dir)
 
     if not resume_existing_tree:
-        copy_and_prepare_project_dir(group, artifact, old_library_version, updated_library_version)
-        update_metadata_index_json(config, group, artifact, updated_library_version)
-        create_versioned_metadata_dir(reachability_repo_path, group, artifact, updated_library_version)
-        commit_checkpoint = create_project_prep_checkpoint(config, group, artifact, updated_library_version)
-        save_phase_update(
-            continuation_marker_path,
-            lambda marker: marker.mark_setup_done(),
-        )
+        # Copying the target version into the tree is the model-free setup.
+        # §FS-forge-run-location-reporting.2
+        with run_step(PHASE_SETUP, STEP_NORMAL_SETUP, operand=f"{group}:{artifact}:{updated_library_version}"):
+            copy_and_prepare_project_dir(group, artifact, old_library_version, updated_library_version)
+            update_metadata_index_json(config, group, artifact, updated_library_version)
+            create_versioned_metadata_dir(reachability_repo_path, group, artifact, updated_library_version)
+            commit_checkpoint = create_project_prep_checkpoint(config, group, artifact, updated_library_version)
+            save_phase_update(
+                continuation_marker_path,
+                lambda marker: marker.mark_setup_done(),
+            )
     else:
         log_stage("continuation", f"Resuming {group}:{artifact}:{updated_library_version} from phase {resume_from}")
         commit_checkpoint = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
@@ -585,9 +589,10 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         workflow_status = RUN_STATUS_SUCCESS
         iterations = 0
     else:
-        workflow_status, iterations = strategy_obj.run(
-            agent=agent,
-        )
+        with run_step(PHASE_SETUP, STEP_RUN_WORKFLOW_ENGINE, operand=strategy_name):
+            workflow_status, iterations = strategy_obj.run(
+                agent=agent,
+            )
 
     last_passing_candidate_commit = None
     if workflow_status == RUN_STATUS_SUCCESS:

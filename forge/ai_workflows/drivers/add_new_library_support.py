@@ -58,6 +58,13 @@ from utility_scripts.library_preparation_preflight import (
 from utility_scripts.metadata_index import is_not_for_native_image, write_not_for_native_image_marker
 from utility_scripts.native_image_artifact import evaluate_native_image_eligibility
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
+from utility_scripts.run_location import (
+    STEP_NORMAL_SETUP,
+    STEP_RUN_WORKFLOW_ENGINE,
+    report_run_failure,
+    resolve_failure_location,
+    run_step,
+)
 from utility_scripts.schema_validator import validate_benchmark_run_metrics
 from utility_scripts.source_context import (
     discover_artifact_metadata,
@@ -491,22 +498,27 @@ def main(argv=None):
 
     os.chdir(reachability_repo_path)
     if not resume_existing_tree:
-        create_feature_branch_for_library(package, artifact, library_version)
-        try:
-            if not prepare_native_image_eligible_artifact(reachability_repo_path, library):
-                return 0
-            run_scaffold(library)
-        except ScaffoldError as exc:
-            print(f"ERROR: Gradle 'scaffold' task failed for coordinates: {library}", file=sys.stderr)
-            print(f"ERROR: {exc}", file=sys.stderr)
-            return 1
-        populate_artifact_urls(reachability_repo_path, library)
-        save_phase_update(
-            continuation_marker_path,
-            lambda marker: marker.mark_setup_done(
-                skip_fix_phase=strategy_skips_initial_fix_phase(strategy),
-            ),
-        )
+        # Branching and scaffolding is the run's model-free setup.
+        # §FS-forge-run-location-reporting.2
+        with run_step(PHASE_SETUP, STEP_NORMAL_SETUP, operand=library):
+            create_feature_branch_for_library(package, artifact, library_version)
+            try:
+                if not prepare_native_image_eligible_artifact(reachability_repo_path, library):
+                    return 0
+                run_scaffold(library)
+            except ScaffoldError as exc:
+                report_run_failure(
+                    resolve_failure_location(exc),
+                    f"ERROR: Gradle 'scaffold' task failed for coordinates: {library}\nERROR: {exc}",
+                )
+                return 1
+            populate_artifact_urls(reachability_repo_path, library)
+            save_phase_update(
+                continuation_marker_path,
+                lambda marker: marker.mark_setup_done(
+                    skip_fix_phase=strategy_skips_initial_fix_phase(strategy),
+                ),
+            )
     else:
         log_stage("continuation", f"Resuming {library} from preserved branch at phase {resume_from}")
     source_context_types = normalize_source_context_types(strategy.get("parameters", {}).get("source-context-types"))
@@ -607,10 +619,11 @@ def main(argv=None):
         global_iterations = 0
         unittest_number = 1
     else:
-        workflow_status, global_iterations, unittest_number = strategy_obj.run(
-            agent=agent,
-            checkpoint_commit_hash=checkpoint_commit_hash,
-        )
+        with run_step(PHASE_SETUP, STEP_RUN_WORKFLOW_ENGINE, operand=strategy_name):
+            workflow_status, global_iterations, unittest_number = strategy_obj.run(
+                agent=agent,
+                checkpoint_commit_hash=checkpoint_commit_hash,
+            )
 
     scaffold_placeholder_quality_gate_failed = False
     generated_test_validity_gate_failed = False

@@ -49,6 +49,7 @@ from utility_scripts.continuation_marker import (
     load_continuation_marker,
 )
 from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME
+from utility_scripts.run_location import STEP_LOCAL_CI_CHECK, run_step
 
 REPO: str = "oracle/graalvm-reachability-metadata"
 BASE_BRANCH: str = "master"
@@ -339,12 +340,15 @@ def publish_branch(
         # Library-update publishers may refine alias buckets before local CI
         # decides PR eligibility. §FS-library-update-tested-version-split
         before_verification(base_ref)
-    local_ci_verification = run_local_ci_verification(
-        repo_path=repo_path,
-        coordinates=coordinates,
-        base_commit=base_ref,
-        metrics_repo_path=metrics_repo_path,
-    )
+    # Local CI-equivalent verification is the publication phase's own step.
+    # §FS-forge-run-location-reporting.2
+    with run_step(PHASE_PUBLICATION, STEP_LOCAL_CI_CHECK, operand=coordinates):
+        local_ci_verification = run_local_ci_verification(
+            repo_path=repo_path,
+            coordinates=coordinates,
+            base_commit=base_ref,
+            metrics_repo_path=metrics_repo_path,
+        )
     if resolved_descriptor_input is not None:
         if publication_id is None:
             raise ValueError("Publication descriptor requires a publication ID")
