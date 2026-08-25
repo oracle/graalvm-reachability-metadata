@@ -35,7 +35,7 @@ The dispatcher owns, and a driver may only consume:
 - The strategy bundle and its model, resolved and validated before scanning
   (§STRAT-forge-predefined-strategy-contract).
 - Issue eligibility and issue form, including label routing to exactly one
-  driver (§WF-forge-workflow-drivers.2).
+  driver (§AR-forge-driver-queues).
 - Repository locations: the reachability worktree, the scratch metrics
   repository, and the setup-evidence directory. Drivers must not resolve
   repository paths and must not clone a repository as a fallback.
@@ -56,17 +56,20 @@ supported control-plane entry point (§AR-forge-control-plane).
 
 This item of §ROADMAP-forge-implementation makes metadata collection a single
 shared step — the native trace gate (§AR-forge-workflow-pipeline,
-§WF-native-test-verification-gate) — used at every point a run produces
+§FS-native-test-verification-gate) — used at every point a run produces
 metadata: after a repair, after an exploration batch, and in finalization
 (§WF-dynamic-access-workflow). The gate already is this contract in exploration;
 the work is making repair and finalization use it instead of a subset of their
 own.
 
 The terminal case is the one that matters most: every workflow must end with the
-gate, so no run publishes metadata that no native run has checked. Today the
-gate exists only in the dynamic-access strategies, which leaves the `javac` and
-native-image-run repairs, and the finalization step every workflow shares, ending
-without it.
+gate, so no run publishes metadata that no native run has checked
+(§WF-forge-workflow-engine.2, §WF-native-test-verification-callers). Today the
+dynamic-access engines, `basic_iterative`, and `java_run_iterative` invoke it.
+That leaves `javac_iterative` — which shares one implementation with
+`java_run_iterative` but skips the gate on the compile-fix branch — the
+native-image-run repair, and the finalization step every workflow shares, all
+ending without it.
 
 Collecting metadata is always the same ordered three steps, and never a subset:
 
@@ -74,17 +77,17 @@ Collecting metadata is always the same ordered three steps, and never a subset:
    the durable `metadata/` tree.
 2. Native tracing — `runNativeTraceImage` and the trace metadata it collects,
    which is the only source of metadata a JVM-mode agent run cannot observe
-   (§WF-native-metadata-tracing).
+   (§FS-native-test-verification-gate).
 3. Agent fix — invoked only if the coordinate still fails after 1 and 2, and
    only with the staged agent and trace metadata directories and the failing
-   native-image log in hand (§WF-native-test-verification-gate).
+   native-image log in hand (§FS-native-test-verification-gate).
 
 The order is the requirement. An agent must never be asked to invent metadata a
 deterministic step could have observed, so no call site may run
 `generateMetadata` and then jump to the agent, and none may skip tracing because
 the JVM-mode run looked healthy. Durable metadata is finalized only after a
 passing validation path, and a residual failure returns `FAILED` only once the
-agent has not converged (§WF-native-test-verification-gate).
+agent has not converged (§FS-native-test-verification-gate).
 
 Current gaps this item closes:
 
@@ -146,7 +149,7 @@ Test deletion stops being a ladder rung and becomes a conclusion the fixer must
 justify. Two findings have to hold: that the failure is not a metadata gap,
 established by re-running the coordinate under the gate's trace build and
 reading the binary's exit status rather than by the agent's own account
-(§WF-native-trace-gradle-tasks); and that the behavior under test is genuinely
+(§FS-native-test-verification-gate.5); and that the behavior under test is genuinely
 unsupported by Native Image, named in the record. Ruling metadata out is not
 enough on its own — most non-metadata failures are ordinary defects and are
 repaired. Every deletion is recorded with the finding that justified it and
@@ -164,7 +167,7 @@ Priority: fourth (part of §ROADMAP-forge-implementation).
 
 The `fails-native-image-run` queue is the workflow that exists to make a native
 image run, and it is the one workflow that never observes a native image run
-while producing its metadata (§WF-native-image-run-fix-workflow). Two problems
+while producing its metadata (§AR-forge-driver-queues.4). Two problems
 have to be fixed together.
 
 ## 1. The seed is collected without tracing, and repaired by an agent that never saw a run
@@ -283,7 +286,7 @@ finding still recorded in `forge/FINDINGS.md`.
 
 Priority: sixth (part of §ROADMAP-forge-implementation).
 
-Three rules of the issue-form gate (§WF-forge-workflow-drivers.2,
+Three rules of the issue-form gate (§AR-forge-driver-queues,
 §AR-forge-workflow-pipeline) are contract in the spec and nowhere in the code:
 
 - **Exactly one workflow label.** An issue carrying two queue labels is
@@ -494,7 +497,7 @@ check_setup()
   was properly generated — the coordinate's `index.json` with its four URLs, the
   source context, the preflight JSON against its schema, each decided action in
   the tree — then captures the recovery checkpoint
-  (§WF-forge-workflow-drivers.1, §root/PRCPL-verify-inputs).
+  (§AR-forge-driver-contract, §root/PRCPL-verify-inputs).
 
 Failure is uniform with the rest of the pipeline: a neural-setup timeout or an
 unusable response is `RUN_STATUS_FAILURE` to the driver — exactly as
@@ -502,7 +505,7 @@ unusable response is `RUN_STATUS_FAILURE` to the driver — exactly as
 `forge_metadata`, never as a successful `no_action` decision. Each setup step
 writes its artifact to a place fixed by the coordinate, and `NeuralSetupResult`
 is the set of those paths rather than a report about them, so nothing the agent
-returns can move where the check looks (§WF-forge-workflow-drivers.1). A
+returns can move where the check looks (§AR-forge-driver-contract). A
 completed `NeuralSetupResult` is persisted in the continuation marker so a
 resumed run does not repeat it (§FS-forge-run-continuation), and the failure
 names the setup step it died in (§ROADMAP-forge-failure-locates-phase-and-step). The run context

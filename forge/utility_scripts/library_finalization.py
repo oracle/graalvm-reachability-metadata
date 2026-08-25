@@ -251,7 +251,7 @@ def run_library_finalization(
 ) -> bool:
     """Run the shared end-of-workflow finalization steps for one library.
 
-    §WF-forge-workflow-drivers.3
+    §AR-forge-driver-finalization
     """
     del log_prefix
     log_stage("split-test-only-metadata", f"Running splitTestOnlyMetadata for {library}")

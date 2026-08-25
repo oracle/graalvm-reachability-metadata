@@ -1,4 +1,12 @@
-# WF-code-coverage-improvement: Code coverage improvement workflow
+# CC-code-coverage-improvement: Code coverage improvement workflow
+
+This workflow is getting its own spec. What follows is the current design in one
+document — behavior and architecture together — kept under the `CC` prefix so it
+can be cited while it is worked on. A later change splits it the way the rest of
+Forge is split: what the workflow must do into the functional spec, the engine
+that runs it into [workflows.md](workflows.md), and the driver that prepares it
+into [drivers.md](drivers.md). Until then, treat the two declarations here as one
+component's documentation rather than as a settled behavior contract.
 
 Code coverage improvement is a planned Forge workflow
 (§WF-forge-workflow-system) for increasing how much of an already-supported
@@ -439,7 +447,7 @@ The Rhei template should decompose the workflow into these phases:
    build that fails degrades the coordinate's `dynamicAccess` figure to `N/A`
    instead of failing the run, and that `N/A` replaces whatever the committed
    stats held before. The metadata split is the same step the dynamic-access
-   workflows run at their own finalization (§WF-improve-library-coverage), and
+   workflows run at their own finalization (§AR-forge-driver-queues.2), and
    for the same reason: metadata the
    extension suite needed only for its own helper types must not reach a
    consumer, and deciding that by hand is exactly what the task automates
@@ -610,15 +618,15 @@ provide the sampled profile and coherent call-tree inputs. A Forge driver or
 driver mode is still required before the control plane can autonomously claim
 issues and launch this lane; that missing integration does not make the Rhei
 workspace or helper chain non-executable
-(§WF-code-coverage-improvement-architecture).
+(§CC-code-coverage-improvement-architecture).
 
-# WF-code-coverage-improvement-architecture: Code coverage improvement workflow architecture
+# CC-code-coverage-improvement-architecture: Code coverage improvement workflow architecture
 
-Code coverage improvement (§WF-code-coverage-improvement) should be implemented
+Code coverage improvement (§CC-code-coverage-improvement) should be implemented
 as its own workflow component because its intent, inputs, metrics, and review
 evidence differ from dynamic-access coverage. The workflow reuses Forge's
 normal driver, strategy, agent, verification, metrics, and publication
-boundaries (§WF-forge-workflow-architecture), but it owns the PGO profile analysis
+boundaries (§AR-forge-drivers), but it owns the PGO profile analysis
 and API-target state needed to broaden tests for already-supported libraries.
 
 ## 1. Component Boundaries
@@ -641,12 +649,12 @@ engine:
   `forge/utility_scripts/java/CallGraphExtractor.java`, run through single-file
   source launch so it needs no build step. It reads class files directly rather
   than parsing `javap` output, which keeps `invokedynamic` lambda targets and
-  raw descriptors exact (§WF-code-coverage-improvement.3.1.1).
+  raw descriptors exact (§CC-code-coverage-improvement.3.1.1).
 - **API target ranker** — orders JaCoCo-uncovered public entries by the amount of
   still-uncovered code each unlocks and renders the API-cover prompt, filling it
   to the cap. Implemented in `forge/utility_scripts/code_coverage_api_rank.py`.
   It reuses the cached call graph and recomputes reachable sets each iteration
-  against the shrinking universe (§WF-code-coverage-improvement.3.1.1).
+  against the shrinking universe (§CC-code-coverage-improvement.3.1.1).
 - **JVM coverage validator** — runs Java compilation and JVM tests under JaCoCo,
   joins exact JaCoCo identities with the API inventory, and writes the public
   API baseline and post-iteration reports. Implemented in
@@ -690,7 +698,7 @@ engine:
   silently resolves to a different model. The template therefore bundles a `pi`
   agent profile in its `settings.json` whose `high` and `xhigh` modes add
   `--thinking`, and publication reads the model back out of the same target to
-  name the head branch (§WF-code-coverage-improvement.4). That profile replaces
+  name the head branch (§CC-code-coverage-improvement.4). That profile replaces
   Rhei's built-in one outright rather than extending it, so it restates the
   `session` block as well: without it Rhei passes no `--session-dir`, cannot
   read back the agent's native transcript, and silently captures no per-state
@@ -776,7 +784,7 @@ Metrics and PR publication should expose:
 Review automation and maintainers should be able to distinguish this workflow's
 evidence from dynamic-access coverage evidence. A PR that improves code
 coverage should not be presented as a dynamic-access coverage fix unless it
-also ran and reported the dynamic-access workflow (§WF-improve-library-coverage).
+also ran and reported the dynamic-access workflow (§AR-forge-driver-queues.2).
 
 ## 5. Implementation Status
 

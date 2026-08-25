@@ -117,7 +117,7 @@ distribution cache under the system temp directory. Set
 
 The top-level worker delegates to these lower-level entry points. Use them
 directly when debugging a single task or reproducing a failure.
-§WF-forge-workflow-drivers
+§AR-forge-drivers
 
 ```console
 python3 forge_metadata.py --help

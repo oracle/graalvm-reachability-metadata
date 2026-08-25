@@ -248,7 +248,7 @@ workflow is metadata-first and does not produce agent token metrics, so its body
 omits them. It reports the previous and new library-coverage percentages, a
 stats diff between the previous and new coordinate, a severe-metadata-drop note
 when the new version's metadata shrank suspiciously, and the local
-CI-equivalent verification section (§WF-native-image-run-fix-workflow).
+CI-equivalent verification section (§AR-forge-driver-queues.4).
 
 ### Not-for-native-image
 
@@ -261,7 +261,7 @@ artifact is not a Native Image target, includes any replacement guidance, the
 ### Code coverage improvement
 
 The trusted `code-coverage-improvement` template represents the JaCoCo workflow
-in §WF-code-coverage-improvement, which measures method coverage rather than
+in §CC-code-coverage-improvement, which measures method coverage rather than
 dynamic-access metadata, so it shares no body shape with the routes above. It
 reports the coordinate, the dedicated coverage suite path, the generating model,
 the human-intervention flag, baseline and final coverage for each guidance phase
@@ -332,7 +332,7 @@ readable during migration.
 
 The `not-for-native-image` route handles artifacts that the
 `library-new-request` driver judged not to be GraalVM Native Image targets
-(§WF-forge-workflow-drivers). Local finalization stages the marker
+(§AR-forge-drivers). Local finalization stages the marker
 `metadata/<group>/<artifact>/index.json`, its publication stats path, and the
 descriptor, then runs the same verification and push boundary as other routes.
 

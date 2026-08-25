@@ -82,7 +82,7 @@ Library version update automation (§root/FS-library-version-update-automation).
 | **Forge Actions publisher** | Default-branch code triggered through a successful unprivileged Branch Ready run. It treats the feature branch as data, revalidates the exact head SHA and descriptor, renders the PR, and performs publication-related GitHub mutations with a short-lived GitHub App token (§GIT-actions-publication). |
 | **Coordinate** | Maven coordinate of the target library, formatted `group:artifact:version`. |
 | **Agent** | LLM-driven code editor (Codex or Pi) registered through [ai_workflows/agents/](../../ai_workflows/agents/). Each implements `send_prompt`, `run_test_command`, and `clear_context`; the concrete API and Pi adapter are documented by §AR-agent-api. |
-| **Workflow driver** | Deterministic script in the `drivers/` subdirectory of [ai_workflows/](../../ai_workflows/) that prepares the working environment, directories, branch/context, strategy bundle, workflow engine, agent, and metrics for one claimed unit of work. The driver runs Forge plumbing; Codex or another LLM agent should not decide that setup during a generated run. Specified by §WF-forge-workflow-drivers. |
+| **Workflow driver** | Deterministic script in the `drivers/` subdirectory of [ai_workflows/](../../ai_workflows/) that prepares the working environment, directories, branch/context, strategy bundle, workflow engine, agent, and metrics for one claimed unit of work. The driver runs Forge plumbing; Codex or another LLM agent should not decide that setup during a generated run. Specified by §AR-forge-drivers. |
 | **Workflow engine** | A registered state-machine-like workflow implementation among the core workflow objects in [ai_workflows/core/](../../ai_workflows/core/), such as `basic_iterative` or `dynamic_access_iterative`. The engine owns prompts, command execution, retries, transitions, and terminal status selection for one run. |
 | **Predefined strategy** | Named configuration bundle in [strategies/predefined_strategies.json](../../strategies/predefined_strategies.json). It selects the workflow engine, agent backend, model, prompts, workflow parameters, optional MCPs, and optional persistent instructions. Selected via `--strategy-name`. |
 | **Post-generation intervention** | The built-in recovery sequence the workflow base class runs when the post-iteration `./gradlew test` still fails during finalization. It is a fixed Codex-then-Pi lane, not a pluggable registry and not selected per strategy: a Codex metadata fix runs first (using the `fix-missing-reachability-metadata` skill, pinned to the run's GraalVM); only if that does not recover does Pi remove the offending failing tests as a last resort. When recovery makes the post-generation test pass, the run reports `SUCCESS_WITH_INTERVENTION_STATUS` and the intervention record (stage, intervention file, analysis) is saved for the run metrics and PR body. The base class runs this lane once per GraalVM test lane (current defaults and `future-defaults-all` on the latest GraalVM, plus current defaults on the GraalVM 25 toolchain). |
@@ -92,7 +92,7 @@ Library version update automation (§root/FS-library-version-update-automation).
 | **Dynamic-access exhaust report** | Durable coordinate-scoped JSON state for chunked dynamic-access work. It records the coordinate, issue number, class threshold, completed/skipped/exhausted/failed classes, and latest publication ID/branch. It is stored with the target test suite so orchestration can find it from the coordinate. It does not predefine chunks; each resume regenerates the report and filters processed classes. Legacy PR-number/commit fields remain readable during migration. Specified by §WF-dynamic-access-exhaust-report. |
 | **Chunked dynamic-access workflow** | Dynamic-access generation mode for oversized `library-new-request` issues and `library-update-request` issues routed to dynamic-access coverage improvement. `forge_metadata.py` owns the class threshold decision and passes the current chunk size to the workflow. The workflow processes at most that many uncovered classes, publishes that chunk, then resumes after the chunk PR merges. PR linking rules are in §WF-chunked-dynamic-access-pr-linking. |
 | **Source context** | Read-only files supplied to the agent. Types: `main` (library source), `test` (upstream tests), `documentation` (Javadoc). Selected by the strategy parameter `source-context-types`. |
-| **Library update target** | The metadata and test directories selected for a `library-update-request` coordinate (§WF-improve-library-coverage.3). Resolution records the requested coordinate, match type (`tested-version`, `metadata-version`, `default-for`, or `new-version`), matched index entry, resolved metadata version, resolved test version, and edit directories. |
+| **Library update target** | The metadata and test directories selected for a `library-update-request` coordinate (§AR-forge-driver-queues.2). Resolution records the requested coordinate, match type (`tested-version`, `metadata-version`, `default-for`, or `new-version`), matched index entry, resolved metadata version, resolved test version, and edit directories. |
 
 ## FS-forge-requirements: Requirement gates
 
@@ -234,7 +234,7 @@ holds may the issue be assigned and moved to `In Progress`.
 ### 3. Issue form
 
 The queue label decides the workflow, so the issue must be unambiguous before a
-driver starts (§WF-forge-workflow-drivers.2). The title must resolve to Maven
+driver starts (§AR-forge-driver-queues). The title must resolve to Maven
 coordinates and those coordinates must resolve to a published artifact; a
 `fails-*` issue must resolve a current `latest` metadata version for the
 coordinate and must request a version strictly above it; a
@@ -254,7 +254,7 @@ the repository's own layout, so it is decided here rather than surfacing later
 as a Gradle resolution error inside a run that already holds a claim, a project
 transition, and a worktree (§root/PRCPL-verify-inputs). Only the artifact's
 existence is checked — its content is a driver concern, and Native Image
-eligibility remains where it is (§WF-forge-workflow-drivers.2).
+eligibility remains where it is (§AR-forge-driver-queues).
 
 **A rejection is reported on the issue.** Every rule above is decided from the
 issue payload and the repository, so when one fails the gate knows exactly
@@ -475,6 +475,195 @@ paths. If any shared repository file changed, the PR must be labeled
 `human-intervention` and the verification metrics and PR description must list
 the repository-level paths that require maintainer review, following
 §FS-human-intervention-policy.
+
+## FS-native-test-verification-gate: Native test verification gate
+
+Metadata production for a coordinate begins with an *approximation*. The JVM
+`native-image-agent`, and any metadata an agent wrote by hand, record only the
+reflection, resource, proxy, and serialization accesses observed while the test
+suite runs on HotSpot. Two classes of access slip past that: accesses the suite
+never exercised on HotSpot, and accesses whose reachability differs only under
+closed-world native compilation. Both surface as native test failures *after*
+metadata generation reported success — the agent can fail to produce the metadata
+the native image actually needs.
+
+The gate closes those gaps with **runtime truth** rather than more inference. It
+runs a real native image with metadata tracing enabled, records what the
+execution actually touches, and re-supplies it until the binary stops missing
+metadata. It is what proves a coordinate's test binary passes on Native Image,
+and every workflow ends on it (§WF-forge-workflow-engine.2,
+§WF-native-test-verification-callers). Native Image must always work, so `FAILED`
+is a hard error: the caller returns a failure status and resets its branch to its
+checkpoint.
+
+### 1. Observe, record, rebuild
+
+Two native-image behaviors cooperate in a single execution. **Exact reachability
+metadata with exit-on-miss** makes the image treat any access not backed by
+supplied metadata as a hard miss rather than silently registering it: the binary
+exits `ExitStatus.MISSING_METADATA` (172) and prints the exact missing entry the
+instant it hits one. **Metadata tracing support** makes that same execution write
+what it observed into a per-cycle trace directory.
+
+So one run both detects a miss and records it. Feeding that directory into the
+next build makes the next cycle aware of the previously missed access. Iterating
+walks the metadata from the agent's approximation to the exact set the image
+requires; exit `0` means nothing missed.
+
+Recovery is therefore ordered: **JVM agent, then native tracing, then Codex.**
+Tracing must not run before the agent step. Only when the loop still cannot make
+the binary pass does the residual failure go to Codex, because at that point it
+is evidence of a code or test defect rather than a metadata gap. Pi is never
+invoked — its role elsewhere is to remove failing tests, exactly the wrong move
+when the failure is a real defect that must surface.
+
+### 2. Inputs and budget
+
+The caller supplies the coordinate, the reachability repo path, and an absolute
+staging root namespaced per class for the per-class caller and per coordinate
+otherwise. Agent metadata is staged under `agent` and merged trace metadata under
+`trace`; durable repository metadata is written only after the final merge
+succeeds and the durable re-run passes.
+
+Condition packages, when not supplied, are derived from the coordinate's
+`user-code-filter.json` after the agent step has had a chance to refresh it,
+excluding obvious generated-test packages, and fall back to the coordinate's
+group. They follow the library's code, not its Maven coordinate: Maven groups are
+frequently not Java package roots — an `org.apache.tomcat.embed` artifact executes
+`org.apache.catalina`, `org.apache.coyote`, and `org.apache.tomcat` code — and
+tracing needs a condition class that is actually on the access stack before the
+access occurs.
+
+The outer budget is the strategy parameter
+`max-native-test-verification-iterations`, default 40
+(§STRAT-predefined-strategy-parameter-families). Convergence is expected within a
+handful of cycles; the default is a soft cap, not a target, and each cycle
+rebuilds the image, so wall-clock cost is dominated by build time. A per-cycle
+timeout, default 30 minutes, caps the preflight test invocation and each trace
+cycle; a timeout is treated as a non-zero exit.
+
+### 3. The loop
+
+The staging root and its per-cycle runs directory are reset at the start of every
+invocation, so no stale entry leaks across runs.
+
+The agent step runs first, always. If it fails, tracing starts with no accepted
+trace directories. If it succeeds, the coordinate is tested against the staged
+agent metadata; a failure *before* the native tests is a code or test problem and
+goes straight to Codex, and a native-test failure enters the trace loop.
+
+**A pass must survive finalization.** When the coordinate passes against staged
+metadata, the gate merges it into durable repository metadata and re-runs the
+tests *without* staged directories. Only that durable re-run returns `PASSED`;
+otherwise the finalized metadata goes to Codex. This catches merge-time condition
+invalidation, where raw staged metadata passes but the merged result leaves an
+access behind an unsatisfied condition. A trace-backed pass takes the same route:
+merge accepted trace directories, merge into durable metadata, re-run.
+
+```mermaid
+flowchart TD
+    Agent[Generate agent metadata] -- fail --> Outer
+    Agent -- pass --> Test[Test against staged agent metadata]
+    Test -- pass --> FinalA[Merge into durable metadata]
+    FinalA --> DurA[Re-run without staged dirs]
+    DurA -- pass --> PassA([PASSED])
+    DurA -- fail --> Codex
+    Test -- fails before native tests --> Codex
+    Test -- native tests fail --> Outer{budget left?}
+    Outer -- no --> Codex
+    Outer -- yes --> Run[One trace cycle]
+    Run --> Route{exit code}
+    Route -- 0 --> MergeT[Merge accepted trace dirs] --> FinalA
+    Route -- "172, new entries" --> Accept[Accept dir] --> Outer
+    Route -- "172, none" --> Codex
+    Route -- other --> Codex
+    Codex[Codex] --> Ok{converged?}
+    Ok -- yes --> PassI([PASSED_WITH_INTERVENTION])
+    Ok -- no --> Fail([FAILED])
+```
+
+Each trace cycle is one Gradle invocation, rebuilding with every accepted
+directory so far, and routes on the binary's exit code:
+
+| Exit | Meaning | Action |
+| --- | --- | --- |
+| `0` | accumulated metadata and the code under test are sufficient | merge, finalize, return `PASSED` |
+| `172`, new entries | the cycle captured a missing access | accept the directory, continue |
+| `172`, no new entries | tracing stalled: the run reported a miss it did not record | open a Native Image tracing ticket, route to Codex |
+| other non-zero | the code is broken in a way more metadata cannot fix | route to Codex |
+
+A `172` with no new entries is a Native Image tracing defect, not a library
+metadata gap — the run already proved the access happens and named it. The gate
+prints accumulated progress and the failure-log tail so the defect is reproducible
+upstream, then falls back so the run still makes progress.
+
+**Inactive conditions are too-late conditions.** When GraalVM reports that
+metadata for an access exists but is inactive because its runtime conditions were
+not satisfied, the repair must move or duplicate that metadata under a condition
+reached *before* the access — usually inferred from the library frame performing
+it. Reusing the unsatisfied condition is invalid: it preserves the same timing
+failure.
+
+The result carries the status (`PASSED`, `PASSED_WITH_INTERVENTION`, or
+`FAILED`), the staging root, the cycles consumed, the ordered trace directories
+that produced 172, at most one intervention record, and the last relevant Gradle
+log path with the binary's parsed exit code — the log path is **required** when
+the status is `FAILED`, and callers surface it in run metrics and the PR body
+(§FS-forge-run-metrics).
+
+### 4. Codex, and the one carve-out
+
+Codex is terminal when invoked. It has full repository write access through the
+`fix-missing-reachability-metadata` skill, validates its own work, and the gate
+does not re-verify or re-run a trace cycle afterwards — that would produce a
+Codex/verify ping-pong on a real code defect. Its exit decides between
+`PASSED_WITH_INTERVENTION` and `FAILED`.
+
+Everything reaching Codex — exhausted budget (reason `metadata-gap-exhausted`),
+stalled progress, trace timeouts, non-172 failures — arrives with a reproduction
+command including the accepted trace directories. The Codex process and its
+instructions must pin the GraalVM and Java homes and the full native-image version
+to the exact distribution the failed command used, and must fail rather than
+reproduce or verify against a different installation. Accumulated directories are
+not discarded before Codex runs; its fixes are additive.
+
+**Final merge failures are the only carve-out.** If the trace-output merge or the
+final durable merge fails, the gate returns `FAILED` directly without invoking
+Codex. These are infrastructure problems downstream of a successful validation
+path — a merge task, a filesystem write, malformed metadata input — and Codex
+cannot repair the metadata pipeline itself. Every other failure mode routes
+through Codex first.
+
+### 5. Gradle task contract
+
+Tracing shells out **only** to the Gradle wrapper; it must never invoke
+`native-image` or `native-image-utils` directly. Rebuilding inside the loop is the
+point: metadata collected by an earlier pass unlocks code paths only later builds
+reach. The reachability repo must provide three tasks (§root/TCK-test-harness);
+which flags they pass and where they put the binary is a Gradle-side concern.
+
+| Task | Properties | Contract |
+| --- | --- | --- |
+| `nativeTraceImage` | `-Pcoordinates` (required), `-PmetadataConfigDirs` (optional, → `-H:ConfigurationFileDirectories`) | Adds `-H:+MetadataTracingSupport`. Produces a binary at a path derivable from the coordinate alone. Non-zero exit is a build failure. |
+| `runNativeTraceImage` | `-Pcoordinates`, `-PtraceMetadataPath` (→ `-XX:TraceMetadata=path=…`, fresh per cycle), `-PtraceMetadataConditionPackages` (→ `-XX:TraceMetadataConditionPackages`) all required; `-PmetadataConfigDirs` optional | Adds `-H:+MetadataTracingSupport` so the tracer writes at runtime, *and* `--exact-reachability-metadata` with `-H:MissingRegistrationReportingMode=Exit` so the reporter exits 172 on a miss. No caller-supplied program arguments. Runs with `ignoreExitValue=true`; the gate recovers the real code from Gradle's `finished with non-zero exit value N` line. |
+| `mergeNativeTraceMetadata` | `-PinputDirs`, `-PoutputDir` (contents replaced) | Wraps `native-image-utils generate` and is the **only** point at which that tool is invoked. |
+
+**The tracer must record whatever the reporter reports missing.** When the
+reporter prints a missing entry, the same invocation must add the equivalent entry
+to the directory named by `-PtraceMetadataPath`, with the metadata kind, condition
+package, and target identity matching what the merge later consumes — otherwise
+the loop has not produced a trustworthy runtime-observed signal and the gate falls
+back rather than converging.
+
+Toolchain configuration — GraalVM home, Java home, the native-image binary,
+`native-image-utils` — is the reachability repo's responsibility; the gate does
+not export, override, or check it beyond what Gradle requires. All three tasks
+must accept `--no-daemon` and be idempotent across invocations on the same
+coordinate, so a rerun is possible after the gate exits whatever its status.
+
+The gate is composed from these tasks and owns no domain logic of its own. It
+must not depend on any workflow implementation or on the post-generation
+intervention lane, so that every caller gets identical behavior.
 
 ## FS-local-branch-review: Local pre-push branch review
 
@@ -852,18 +1041,18 @@ to store a GitHub-assigned PR number.
 
 The whole workflow system contract is §WF-forge-workflow-system. Each supported
 queue (§FS-forge-scope) is entered by a deterministic workflow driver
-(§WF-forge-workflow-drivers) that prepares one run and delegates to the workflow
+(§AR-forge-drivers) that prepares one run and delegates to the workflow
 engine governed by a workflow spec. The driver scripts and the workflow specs
 they run:
 
 | Queue | Driver script | Workflow spec |
 | --- | --- | --- |
-| `library-new-request` | `add_new_library_support.py` | new library support (§WF-add-new-library-support), which runs dynamic-access generation plus native metadata tracing and verification |
-| `library-update-request` | `improve_library_coverage.py`, or the missing-version router | dynamic-access coverage improvement (§WF-improve-library-coverage), Java repair (§WF-java-fail-fix-workflow), or native-image run repair (§WF-native-image-run-fix-workflow) depending on the compatibility probe |
+| `library-new-request` | `add_new_library_support.py` | new library support (§AR-forge-driver-queues.1), which runs dynamic-access generation plus native metadata tracing and verification |
+| `library-update-request` | `improve_library_coverage.py`, or the missing-version router | dynamic-access coverage improvement (§AR-forge-driver-queues.2), Java repair (§WF-java-fail-fix-workflow), or native-image run repair (§AR-forge-driver-queues.4) depending on the compatibility probe |
 | `fails-javac-compile` | `fix_javac_fail.py` | Java failure repair (§WF-java-fail-fix-workflow) |
 | `fails-java-run` | `fix_java_run_fail.py` | Java failure repair (§WF-java-fail-fix-workflow) |
-| `fails-native-image-run` | `fix_ni_run.py` | native-image run repair (§WF-native-image-run-fix-workflow) |
-| code coverage improvement (planned) | — | code coverage improvement (§WF-code-coverage-improvement) |
+| `fails-native-image-run` | `fix_ni_run.py` | native-image run repair (§AR-forge-driver-queues.4) |
+| code coverage improvement (planned) | — | code coverage improvement (§CC-code-coverage-improvement) |
 
 Each engine is bound to a named configuration bundle defined by
 §STRAT-forge-predefined-strategy-contract. The `basic_iterative` engine is not a

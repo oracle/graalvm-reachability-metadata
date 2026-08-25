@@ -2,7 +2,7 @@
 
 `forge_metadata.py` is Forge's orchestration hub between the do-work loop
 (§DW-do-work-loop), GitHub, isolated worktrees, workflow drivers
-(§WF-forge-workflow-drivers), review queues, and the git-scripts publication
+(§AR-forge-drivers), review queues, and the git-scripts publication
 component (§GIT-forge-publication). It resolves supported GitHub issues into
 isolated workflow runs (§FS-forge-issue-resolution-goal): it owns queue
 scanning, optimistic single-issue claiming, Maven coordinate and workflow
@@ -15,9 +15,9 @@ policy to Codex or other LLM agents during a generated run.
 Supported issue queues are label-driven: `library-new-request` and
 `library-update-request` route to dynamic-access generation
 (§WF-dynamic-access-workflow) and coverage improvement
-(§WF-improve-library-coverage); `fails-javac-compile` and `fails-java-run` route
+(§AR-forge-driver-queues.2); `fails-javac-compile` and `fails-java-run` route
 to Java fail-fix (§WF-java-fail-fix-workflow); `fails-native-image-run` routes
-to native-image run-fix (§WF-native-image-run-fix-workflow).
+to native-image run-fix (§AR-forge-driver-queues.4).
 Successful runs produce PRs with matching review labels such as
 `fixes-javac-fail`, `fixes-java-run-fail`, and `fixes-native-image-run-fail`;
 issue labels and PR labels are not interchangeable.

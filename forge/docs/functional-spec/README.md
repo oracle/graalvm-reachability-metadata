@@ -3,9 +3,10 @@
 Forge behavior and contributor-facing requirements live here. A document belongs
 in this directory when it states *what* Forge must do — a requirement a run can
 be held to, a gate it must pass, a contract that decides an outcome. How Forge
-is built belongs in [../architecture/](../architecture/README.md), and the
-behavior of one named workflow belongs in its own file under
-[workflows/](workflows/README.md).
+is built belongs in [../architecture/](../architecture/README.md) — including the
+workflow engines that execute a run
+([workflows.md](../architecture/workflows.md)) and the drivers that prepare one
+([drivers.md](../architecture/drivers.md)).
 
 Not every ID here is an `FS` ID. A contract that belongs to one component keeps
 its own prefix and its own home file in this folder, so the prefix still tells
@@ -16,7 +17,6 @@ you which file to open:
 | `FS` | this folder | what Forge must do |
 | `STRAT` | [strategies.md](strategies.md) | the predefined strategy bundle contract |
 | `BENCH` | [benchmarking.md](benchmarking.md) | the generation benchmark contract |
-| `WF` | [workflows/](workflows/README.md) | one file per named workflow |
 
 | ID | Subject |
 | --- | --- |
@@ -32,6 +32,7 @@ you which file to open:
 | §FS-durable-generation-logs | Durable generation and session logs |
 | §FS-forge-publication-readiness | Publication readiness |
 | §FS-local-ci-equivalent-verification | Local pre-publication verification |
+| §FS-native-test-verification-gate | Native test verification gate |
 | §FS-local-branch-review | Local pre-push branch review |
 | §FS-library-update-tested-version-split | Library-update tested-version split |
 | §FS-human-intervention-policy | Human intervention policy |
@@ -64,5 +65,3 @@ Files:
   one is loaded, extended, and bound to a workflow engine.
 - [benchmarking.md](benchmarking.md) — what a generation benchmark must measure
   and record when comparing strategies.
-- [workflows/](workflows/README.md) — one file per named workflow, plus the
-  shared mechanisms workflows invoke rather than restate.

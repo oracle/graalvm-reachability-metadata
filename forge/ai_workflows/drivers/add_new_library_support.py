@@ -367,7 +367,7 @@ def write_add_new_library_support_metrics(run_metrics, metrics_repo_dir, is_benc
     """Write or update add_new_library_support metrics depending on the execution mode.
 
     Non-benchmark runs publish through the shared workflow metrics writer
-    (§WF-forge-workflow-drivers.3); benchmark mode updates the last benchmark
+    (§AR-forge-driver-finalization); benchmark mode updates the last benchmark
     record instead of appending a run entry.
     """
     if not is_benchmark_mode:
@@ -424,7 +424,7 @@ def _should_create_failure_run_metrics(
 def main(argv=None):
     """Run one new-library workflow from setup through metrics publication.
 
-    The single-run driver (§WF-forge-workflow-drivers,
+    The single-run driver (§AR-forge-drivers,
     §AR-forge-workflow-boundary) that performs setup and finalization around the
     strategy: scaffold, source-context materialization, checkpoint capture,
     strategy execution, metadata finalization, placeholder cleanup, and

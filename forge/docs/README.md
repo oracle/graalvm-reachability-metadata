@@ -27,11 +27,12 @@ home, so the prefix tells you which file to open.
 | `STRAT` | [functional-spec/strategies.md](functional-spec/strategies.md) | Predefined strategy configuration architecture. |
 | `ORCH` | [architecture/orchestration-scripts.md](architecture/orchestration-scripts.md) | Orchestration script behavior and architecture. |
 | `GIT` | [architecture/git-scripts.md](architecture/git-scripts.md) | Git and PR publication behavior and architecture. |
-| `WF` | [functional-spec/workflows/](functional-spec/workflows/) | Per-workflow specifications and operating rules. |
+| `WF` | [architecture/workflows.md](architecture/workflows.md) | The registered workflow engines. |
+| `CC` | [architecture/code-coverage-improvement.md](architecture/code-coverage-improvement.md) | Code coverage improvement workflow, pending its own spec. |
 | `BENCH` | [functional-spec/benchmarking.md](functional-spec/benchmarking.md) | Generation benchmarking specification. |
 | `ROADMAP` | [roadmap.md](roadmap.md) | Planned, not-yet-implemented work. |
 
-A kind whose home is a *folder* (`AR`, `FS`, `WF`) may spread its IDs across
+A kind whose home is a *folder* (`AR`, `FS`) may spread its IDs across
 several files in that folder; a kind whose home is a single *file* keeps all of
 its IDs in that one file.
 
@@ -60,27 +61,15 @@ behavior or structure.
 - [functional-spec/benchmarking.md](functional-spec/benchmarking.md) — `BENCH-forge-generation-benchmarking`.
 - [roadmap.md](roadmap.md) — `ROADMAP-forge-implementation` and the planned improvements beneath it.
 
-### The `functional-spec/workflows/` subtree
+### A component still awaiting its split
 
-[functional-spec/workflows/](functional-spec/workflows/) is the `WF` home:
-every ID in this subtree — including
-the workflow-system and per-workflow architecture — uses the `WF` prefix. The
-shared overview file carries both the behavioral contract and the architecture;
-each individual workflow is one file:
-
-- [functional-spec/workflows/workflow-system.md](functional-spec/workflows/workflow-system.md) — `WF-forge-workflow-system` and `WF-forge-workflow-architecture`: shared workflow behavior, engines, and strategy configuration.
-- [functional-spec/workflows/workflow-drivers.md](functional-spec/workflows/workflow-drivers.md) — `WF-forge-workflow-drivers`.
-- [functional-spec/workflows/add-new-library-support.md](functional-spec/workflows/add-new-library-support.md) — `WF-add-new-library-support`.
-- [functional-spec/workflows/dynamic-access.md](functional-spec/workflows/dynamic-access.md) — `WF-dynamic-access-workflow`.
-- [functional-spec/workflows/improve-library-coverage.md](functional-spec/workflows/improve-library-coverage.md) — `WF-improve-library-coverage`.
-- [functional-spec/workflows/java-fail-fix.md](functional-spec/workflows/java-fail-fix.md) — `WF-java-fail-fix-workflow`.
-- [functional-spec/workflows/native-image-run-fix.md](functional-spec/workflows/native-image-run-fix.md) — `WF-native-image-run-fix-workflow`.
-- [functional-spec/workflows/native-metadata-tracing.md](functional-spec/workflows/native-metadata-tracing.md) — `WF-native-metadata-tracing`.
-- [functional-spec/workflows/code-coverage-improvement.md](functional-spec/workflows/code-coverage-improvement.md) — `WF-code-coverage-improvement` and `WF-code-coverage-improvement-architecture`: partially implemented code coverage workflow — Rhei template plus deterministic helper scripts and PGO Gradle tasks; behavior and architecture in one file.
-
-A workflow file may declare both its behavioral contract and its own
-architecture; both use the `WF` prefix, as the shared overview and the planned
-code coverage workflow above do.
+[architecture/code-coverage-improvement.md](architecture/code-coverage-improvement.md)
+holds the `CC` prefix and keeps behavior and architecture in one document. It is
+the only component documented that way. The split — behavior into the functional
+spec, engine into [architecture/workflows.md](architecture/workflows.md), driver
+into [architecture/drivers.md](architecture/drivers.md) — happens in a later
+change, and the document says so in its opening paragraph. Cite `CC-` IDs
+normally in the meantime; they are stable until that change renames them.
 
 ## Grund tags in the documentation
 

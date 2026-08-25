@@ -35,7 +35,7 @@ DEFAULT_NATIVE_TEST_VERIFICATION_BATCH_SIZE = 5
 class DynamicAccessIterativeStrategy(WorkflowStrategy):
     """Iterative strategy guided by per-class dynamic-access coverage.
 
-    This is the engine behind §WF-dynamic-access-iterative-strategy: it owns
+    This is the engine behind §WF-dynamic-access-iterative: it owns
     fallback selection, uncovered-class prompting, coverage deltas, per-class
     checkpointing, native-test gate batching, and chunk-ready returns.
     """
@@ -207,7 +207,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
     def _run_dynamic_access_phase(self, agent, current_report=None) -> tuple[bool, int]:
         """Drive the per-class dynamic-access loop for one strategy phase.
 
-        This is the per-class loop of §WF-dynamic-access-iterative-strategy:
+        This is the per-class loop of §WF-dynamic-access-iterative:
         each selected class gets bounded prompt/test attempts, coverage-gain
         commits advance the class checkpoint, and exhausted classes are not
         retried in the same phase.
@@ -737,7 +737,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
     ) -> tuple[bool, str | None]:
         """Run and clear the pending native-test gate batch when any classes are queued.
 
-        A `FAILED` result from the gate (§WF-native-test-verification-gate)
+        A `FAILED` result from the gate (§FS-native-test-verification-gate)
         aborts the workflow: partial coverage with broken native tests is not a
         PR-eligible state.
         """
@@ -768,7 +768,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
     def _run_native_test_verification_gate(self, class_name: str) -> bool:
         """Run the per-class native-test verification gate; return True if PASSED.
 
-        The gate (§WF-native-test-verification-gate) is the dynamic-access
+        The gate (§FS-native-test-verification-gate) is the dynamic-access
         success criterion for committed class progress; it writes durable
         metadata only after verification passes.
         """
@@ -788,7 +788,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
 
         Gate-supplied metadata can change which call sites remain uncovered for
         the next class prompt — the post-gate report refresh required by the
-        per-class loop (§WF-dynamic-access-iterative-strategy).
+        per-class loop (§WF-dynamic-access-iterative).
         """
         refreshed = self._generate_dynamic_access_report(indent_level=2)
         if refreshed is None:

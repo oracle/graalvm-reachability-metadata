@@ -16,7 +16,7 @@ Repo layout (§AR-forge-architecture):
 
 ### Repository mode
 
-Forge is located inside `graalvm-reachability-metadata/forge`. The parent checkout is the default reachability repository, and successful run metrics are written under `stats/<group>/<artifact>/<version>/execution-metrics.json`. Top-level automation still creates one detached metadata-repo worktree per issue run; the run's pending metrics root is the same worktree's `forge/` directory (§WF-forge-workflow-drivers, §FS-durable-generation-logs).
+Forge is located inside `graalvm-reachability-metadata/forge`. The parent checkout is the default reachability repository, and successful run metrics are written under `stats/<group>/<artifact>/<version>/execution-metrics.json`. Top-level automation still creates one detached metadata-repo worktree per issue run; the run's pending metrics root is the same worktree's `forge/` directory (§AR-forge-drivers, §FS-durable-generation-logs).
 
 ### Prerequisites
 
@@ -93,7 +93,7 @@ Purpose:
 - Iteratively generate a meaningful, cohesive JUnit test suite for library using AI.
 - Keep indices up to date and create the versioned metadata directory.
 - Generates metadata for the new library.
-- Script results are written in `output/results.json` (§WF-dynamic-access-workflow, §WF-forge-workflow-drivers).
+- Script results are written in `output/results.json` (§WF-dynamic-access-workflow, §AR-forge-drivers).
 
 Usage:
 ```bash
@@ -479,7 +479,7 @@ python3 complete_pipelines/add_new_library_support_create_pr.py \
 ```
 
 For the detailed behavior, implementation entry points, and sequence diagrams,
-see `docs/functional-spec/workflows/dynamic-access.md`.
+see `docs/functional-spec/workflows/workflows.md`.
 
 ### Quick reference
 

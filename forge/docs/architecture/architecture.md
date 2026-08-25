@@ -27,7 +27,7 @@ issue and a bot pull request* (§FS-forge-issue-resolution-goal). Steps that are
 gates rather than components are written below as pseudo-methods: the name fixes
 the contract, the contract text fixes what the step must do, and the citation
 fixes where the behavior is specified. Code coverage improvement
-(§WF-code-coverage-improvement) has its own pipeline and is not covered here.
+(§CC-code-coverage-improvement) has its own pipeline and is not covered here.
 
 Every method carries one label: **Algorithmic** — deterministic code decides,
 no model is involved; **Neural** — a model decides, by design, because the
@@ -277,7 +277,7 @@ marker on a preserved branch (§FS-forge-run-continuation), and a
 **Algorithmic.**
 
 The queue label decides the workflow, so the issue must be unambiguous before a
-driver starts (§FS-forge-run-requirements.3, §WF-forge-workflow-drivers.2). The
+driver starts (§FS-forge-run-requirements.3, §AR-forge-driver-queues). The
 issue is the run's input, and a malformed one is rejected at the boundary
 instead of failing inside a driver (§root/PRCPL-verify-inputs):
 
@@ -389,7 +389,7 @@ into the coordinate's `index.json`, source context into the directory that entry
 names, the preparation decision into the run's preflight JSON, its typed actions
 into the test `build.gradle` and the image allow-list. `NeuralSetupResult` is the
 set of those paths, so continuation state and metrics point at the same files —
-not a description of what they contain (§WF-forge-workflow-drivers.1). The step
+not a description of what they contain (§AR-forge-driver-contract). The step
 fails the same way `agent_fix()` does: a timeout or an unusable response is
 `RUN_STATUS_FAILURE` to the driver, and the driver reports the run as failed to
 `forge_metadata` — never a successful `no_action` decision. The result is
@@ -411,7 +411,7 @@ setup steps were supposed to produce and confirms it was properly generated: the
 coordinate's `index.json` parses and carries its four URLs, the source context is
 present where that entry names, the preflight JSON parses and validates against
 its schema, and each decided action is in the tree
-(§WF-forge-workflow-drivers.1). Paths come from the coordinate and the run
+(§AR-forge-driver-contract). Paths come from the coordinate and the run
 context, not from anything the agent returned, so the check cannot be pointed
 somewhere convenient. A missing, unparseable, or incomplete artifact is a setup
 failure.
@@ -435,7 +435,7 @@ above trace — class selection, checkpoints, `commit_class()`,
 `reset_to_class_checkpoint()`, `refresh_dynamic_access_report()`, and the
 `run_basic_iterative_fallback()` path a library with no dynamic-access signal
 takes instead — is engine-owned and specified in full by
-§WF-dynamic-access-iterative-strategy and
+§WF-dynamic-access-iterative and
 §WF-dynamic-access-fallback-and-failure. Only the steps with a contract of their
 own are listed here.
 
@@ -446,13 +446,13 @@ itself is the agent's.
 
 A `fails-*` issue is a repair run: the engine reproduces the reported failure,
 sends it to the agent, and iterates until the failing task passes or the budget
-is exhausted (§WF-java-fail-fix-workflow, §WF-native-image-run-fix-workflow).
+is exhausted (§WF-java-fail-fix-workflow, §AR-forge-driver-queues.4).
 Whether exploration follows is a strategy decision, not a workflow rule. A bare
 repair engine completes the fix phase and marks explore skipped. A composite
 bundle — the strategies whose workflow is the composite engine and that name a
 `primary-workflow` — runs the repair first and then the dynamic-access loop on
 the same run, and defers exploration when the uncovered-class count exceeds the
-configured threshold (§WF-dynamic-access-composite-strategy). A plain
+configured threshold (§WF-dynamic-access-composite). A plain
 dynamic-access engine has no repair step and marks the fix phase skipped.
 
 ### generate_tests()
@@ -462,8 +462,8 @@ Forge exists to buy; the attempt loop around it is deterministic.
 
 One step, two scopes, decided by the argument: `report_with_every_class` is the
 bulk pass over the whole dynamic-access report, and `single_class_report` is one
-class of it (§WF-dynamic-access-bulk-strategy,
-§WF-dynamic-access-iterative-strategy). Nothing else differs — same prompt
+class of it (§WF-dynamic-access-bulk,
+§WF-dynamic-access-iterative). Nothing else differs — same prompt
 rendering, same test budget, same verdict rules — so the two exploration stages
 are one step called with a different slice of the same report.
 
@@ -512,7 +512,7 @@ that is true, and neither implies the other:
 1. **The failure is not a metadata gap.** A command establishes this, not the
    agent: re-running the coordinate under the gate's trace build reports a
    missing registration as the binary's own exit status
-   (§WF-native-trace-gradle-tasks). A missing-registration exit is metadata, and
+   (§FS-native-test-verification-gate.5). A missing-registration exit is metadata, and
    deletion is forbidden outright.
 2. **The failure is unsupported Native Image behavior.** Ruling metadata out
    does not make a test deletable. Most non-metadata failures are ordinary
@@ -534,7 +534,7 @@ position in a sequence. In `finalize_run()`:
 
 | Failing step | What the repair may be |
 | --- | --- |
-| `native_trace_gate()` | its own step 3: metadata the gate staged but could not make sufficient (§WF-native-test-verification-gate) |
+| `native_trace_gate()` | its own step 3: metadata the gate staged but could not make sufficient (§FS-native-test-verification-gate) |
 | A native test lane | re-run the coordinate under the gate's trace build in that lane's environment and let the binary's exit status route the repair: a missing-registration exit is metadata the lane's image mode or toolchain needs and the gate could not observe; any other failure is repaired on its own terms, and only a positive finding of unsupported behavior admits deleting the test; a trace re-run that passes means the lane failure was environmental, and neither repair applies |
 | `splitTestOnlyMetadata` and the legacy test-config rejection | moving the config to the metadata form the repository loads; the legacy form is never reinstated |
 | `checkMetadataFiles` | the metadata's own validity — schema, duplicate entries, an illegal `typeReached`, or an `allowed-packages` entry the coordinate genuinely owns |
@@ -581,7 +581,7 @@ the agent is reached only for what neither observed
 (§root/PRCPL-prefer-algorithmic).
 
 The gate is the one place metadata is produced and proven, and it is the same
-ordered contract wherever it runs (§WF-native-test-verification-gate). It is
+ordered contract wherever it runs (§FS-native-test-verification-gate). It is
 always:
 
 1. `generateMetadata` — JVM-agent metadata for the coordinate, staged outside
@@ -591,7 +591,7 @@ always:
    `-H:MissingRegistrationReportingMode=Exit` so an access that no metadata
    backs is a hard miss rather than a silent registration. This is the only
    source of metadata a JVM-mode agent run cannot observe
-   (§WF-native-trace-gradle-tasks).
+   (§FS-native-test-verification-gate.5).
 3. Agent fix — invoked **only** when the coordinate still fails after 1 and 2,
    and only with the runtime-observed metadata from those steps in hand.
 
@@ -615,7 +615,7 @@ not normal operation.
 **Every workflow ends with this gate.** Native Image must always work, so no
 run may hand a branch to publication carrying metadata this gate has not passed
 — and that holds identically for a new library, a coverage improvement, and each
-of the three repair workflows (§WF-forge-workflow-drivers). The per-batch
+of the three repair workflows (§AR-forge-driver-queues). The per-batch
 invocations exploration makes are extra invocations of the same contract, not a
 substitute for the terminal one: a batch gate proves the classes committed so
 far, while the terminal gate proves what the run is actually about to publish.
@@ -626,12 +626,12 @@ Today it does not run everywhere. It lives in the dynamic-access strategies and
 nowhere else, so exploration is the only phase with all three steps; a `java-run`
 repair reaches it only when its composite bundle runs the dynamic-access engine,
 `javac` and native-image-run repairs never trace at all, and finalization
-(§WF-forge-workflow-drivers.3) runs step 1 and then goes straight to the agent.
+(§AR-forge-driver-finalization) runs step 1 and then goes straight to the agent.
 Making the gate the terminal step of every workflow is
 §ROADMAP-forge-native-finalization.
 
 The short name is this document's; the spec ID and the implementation read
-`native_test_verification_gate` (§WF-native-test-verification-gate).
+`native_test_verification_gate` (§FS-native-test-verification-gate).
 
 ### finalize_run()
 
@@ -639,7 +639,7 @@ The short name is this document's; the spec ID and the implementation read
 only when a step still fails.
 
 Finalization is the fixed end-of-generation sequence and must run in this order
-for every finalization library (§WF-forge-workflow-drivers.3):
+for every finalization library (§AR-forge-driver-finalization):
 
 1. `native_trace_gate()`, once. This is the terminal gate invocation every
    workflow shares — finalization is the one phase all five drivers reach, so it
@@ -849,7 +849,7 @@ one verified branch and descriptor. Repository Actions then hand the exact SHA
 to trusted default-branch publisher code (§GIT-actions-publication), which owns
 PR creation and publication-related GitHub mutations. The dispatched workflows
 are defined separately, in §WF-forge-workflow-system and
-§WF-forge-workflow-architecture.
+§AR-forge-drivers.
 
 The dispatcher routes issue work by issue labels, not by PR labels:
 
@@ -895,7 +895,7 @@ flowchart LR
 ## AR-forge-workflow-boundary: Workflow drivers compose setup, workflow engine, and metrics
 
 Workflow drivers are single-run boundaries, as defined by
-§WF-forge-workflow-drivers. They translate a claimed issue into one isolated
+§AR-forge-drivers. They translate a claimed issue into one isolated
 run by creating or checking out the feature branch, preparing source context and
 required directories, loading the named predefined strategy, running the
 selected workflow engine, finalizing metadata, and writing schema-validated
@@ -905,7 +905,7 @@ dispatcher is §ROADMAP-forge-dispatcher-owned-run-preconditions.
 
 The workflow driver owns run setup and finalization; the workflow engine owns
 the state-machine-like issue-resolution process described in
-§WF-forge-workflow-architecture. The predefined strategy supplies configuration:
+§WF-forge-workflow-engine. The predefined strategy supplies configuration:
 which workflow engine, agent backend, model, prompt set, and workflow
 parameters are used for the run. This keeps every workflow aligned with the
 same repository, metrics, and local verification contracts
@@ -952,9 +952,9 @@ was diagnosed; replacing the ladder with the gate and one `agent_fix()` is
 Dynamic-access and native-test behavior stay in workflow specs, not in this
 architecture file. The architecture only fixes the boundaries: workflow engines
 call shared utilities for dynamic-access reports, and native test verification
-is a reusable gate (§WF-native-test-verification-gate) that drives native
+is a reusable gate (§FS-native-test-verification-gate) that drives native
 tracing and Codex recovery through the Gradle task contract in
-§WF-native-trace-gradle-tasks. The concrete agent API and Pi adapter are
+§FS-native-test-verification-gate.5. The concrete agent API and Pi adapter are
 documented in §AR-agent-api, and the
 strategy bundles that bind these pieces live in the strategy registry
 (§STRAT-forge-predefined-strategy-contract, §STRAT-workflow-strategy-registry).

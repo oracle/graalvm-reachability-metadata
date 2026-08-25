@@ -165,7 +165,7 @@ class WorkflowStrategy(ABC):
         return value
 
     def _verify_native_test_gate(self, output_dir: str, label: str | None = None) -> bool:
-        """Run the shared native-test gate (§WF-native-test-verification-gate)."""
+        """Run the shared native-test gate (§FS-native-test-verification-gate)."""
         label_suffix: str = f" for {label}" if label else ""
         log_stage(
             "native-test-verify",
@@ -513,7 +513,7 @@ class WorkflowStrategy(ABC):
     def finalize_run(self, base_commit: str | None, workflow_status: str = RUN_STATUS_SUCCESS) -> str:
         """Finalize a PR-eligible run and merge the finalization status.
 
-        The single driver-facing finalization path (§WF-forge-workflow-drivers.3):
+        The single driver-facing finalization path (§AR-forge-driver-finalization):
         a chunk-ready run stays chunk-ready when finalization succeeds, otherwise
         the finalization status becomes the run status.
         """
@@ -597,7 +597,7 @@ class WorkflowStrategy(ABC):
             ),
             # Whole `metadata/` tree, not the target artifact's directory: generation traces
             # through transitive dependencies and can produce entries owned by another
-            # artifact, which artifact-scoped staging would drop (§WF-forge-workflow-drivers.3).
+            # artifact, which artifact-scoped staging would drop (§AR-forge-driver-finalization).
             os.path.join(self.reachability_repo_path, "metadata"),
             stats_artifact_dir(self.reachability_repo_path, self.group, self.artifact),
         ]

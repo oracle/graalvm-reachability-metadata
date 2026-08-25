@@ -442,7 +442,7 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
 
     The shared implementation of §WF-java-fail-fix-workflow that both the javac
     and java-run drivers delegate to, structured as the single-run
-    driver boundary (§WF-forge-workflow-drivers).
+    driver boundary (§AR-forge-drivers).
     """
     (
         group,

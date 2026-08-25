@@ -36,11 +36,11 @@ Agents MUST read and strictly adhere to the following before making any changes:
 
 ### Module Map
 - `forge_metadata.py`: control-plane dispatcher that claims GitHub issues, dispatches the matching workflow driver, and updates project status. Do not pile shared workflow logic here. §AR-forge-control-plane
-- `ai_workflows/drivers/`: workflow drivers for major automation flows such as new-library support, javac fixes, and native-image-run fixes. Put deterministic setup, working-directory preparation, branch/context setup, and metrics finalization here; do not make Codex decide this plumbing during generated runs. §WF-forge-workflow-drivers
+- `ai_workflows/drivers/`: workflow drivers for major automation flows such as new-library support, javac fixes, and native-image-run fixes. Put deterministic setup, working-directory preparation, branch/context setup, and metrics finalization here; do not make Codex decide this plumbing during generated runs. §AR-forge-drivers
 - `ai_workflows/core/`: reusable workflow engine implementations. Put iteration logic, workflow decision-making, and prompt sequencing here. §WF-forge-workflow-engine
 - `ai_workflows/agents/`: agent integrations and transport adapters. Put agent specific session, prompt, fork, and logging behavior here, not in workflow scripts. §AR-forge-strategy-agent-boundary
 - `git_scripts/`: Git and GitHub automation for commits, branches, PR creation, and stats formatting. Shared GitHub or git helpers belong in `git_scripts/common_git.py`. §GIT-forge-publication
-- `utility_scripts/`: shared support code used across workflows and pipelines. Check here first before adding helper logic anywhere else. §WF-forge-workflow-architecture
+- `utility_scripts/`: shared support code used across workflows and pipelines. Check here first before adding helper logic anywhere else. §AR-forge-drivers
 - `benchmarks/`: benchmark campaign configuration and runner for comparing generation strategies across several new-library support targets. §BENCH-forge-generation-benchmarking
 - `prompt_templates/`: prompt text only. Put instruction wording here when behavior does not require Python changes. §WF-forge-workflow-strategy-config
 - `strategies/predefined_strategies.json`: declarative workflow configuration such as strategy names, prompt files, parameters, model, and agent selection. §STRAT-workflow-strategy-registry
@@ -63,7 +63,7 @@ Agents MUST read and strictly adhere to the following before making any changes:
 <!-- BEGIN GRUND MANAGED BLOCK -->
 ## Grounding with grund (v7)
 
-This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]` (`KIND ∈ {GRUND, GOAL, AR, FS, DW, STRAT, ORCH, GIT, WF, BENCH, ROADMAP}`), cited with the marker `§` — e.g. `<§>FS-user-login.3.1` (the `FS-user-login` here is a shape illustration, not a real ID in this repo, hence the `<§>` escape). Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `grund.toml`, so only `§`-prefixed citations are checked.
+This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]` (`KIND ∈ {GRUND, GOAL, AR, FS, DW, STRAT, ORCH, GIT, WF, CC, BENCH, ROADMAP}`), cited with the marker `§` — e.g. `<§>FS-user-login.3.1` (the `FS-user-login` here is a shape illustration, not a real ID in this repo, hence the `<§>` escape). Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `grund.toml`, so only `§`-prefixed citations are checked.
 
 ### Grounding from a citation
 
@@ -86,7 +86,8 @@ A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and 
 - [STRAT](docs/functional-spec/strategies.md): Forge strategy configuration architecture
 - [ORCH](docs/architecture/orchestration-scripts.md): Forge orchestration scripts behavior and architecture
 - [GIT](docs/architecture/git-scripts.md): Forge git scripts publication behavior and architecture
-- [WF](docs/functional-spec/workflows): Forge workflow specifications and operating rules
+- [WF](docs/architecture/workflows.md): Forge workflow engines: what each one is for
+- [CC](docs/architecture/code-coverage-improvement.md): Forge code coverage improvement workflow, pending its own spec
 - [BENCH](docs/functional-spec/benchmarking.md): Forge benchmark specifications
 - [ROADMAP](docs/roadmap.md): Forge implementation roadmap
 
@@ -111,7 +112,7 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 
 ### Rules
 
-- **Check the spec first.** For behavior or design changes, check the idea against the most-specific spec point before writing code — see [Additional rules](../AGENTS.md#additional-rules).
+- **Spec first.** For behavior or design changes, write or update the most-specific spec point before code.
 - **Cite as you write.** Place `§<ID>` at the point a claim or behavior is made — on the doc-comment for a whole behavior, inline beside the clause it enforces.
 - **Marker = live citation.** A `§`-prefixed token resolves and is checked wherever it appears — including inside Markdown backticks. To mention an ID without citing it, write `<§><ID>`, omit the marker, or use a fenced code block.
 - **Inline citation style.** Inline notes: ≤ 1 line preferred, hard cap 3 lines; ≤ 100 columns.
@@ -127,9 +128,10 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 - **ORCH** must cite FS or AR or STRAT.
 - **GIT** should cite FS or AR.
 - **WF** should cite FS or STRAT or ORCH or GIT.
+- **CC** should cite FS or AR or WF or GOAL.
 - **BENCH** must cite FS or AR or GOAL.
 - **ROADMAP** should cite GOAL or FS or AR.
-- **code** (any file outside a kind home) must cite FS or AR or DW or STRAT or ORCH or GIT or WF.
+- **code** (any file outside a kind home) must cite FS or AR or DW or STRAT or ORCH or GIT or WF or CC.
 Unlisted kinds and pairs are fine.
 
 ### Clickable citations

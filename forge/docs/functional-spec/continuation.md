@@ -6,7 +6,7 @@ cross-cutting capability across the Forge workflow system
 (§WF-forge-workflow-system) and builds on the workflow engine's ownership of run
 state (§WF-forge-workflow-engine): the engine
 already advances per-iteration progress as commits and reverts to the last good
-checkpoint on a failed iteration (§WF-dynamic-access-iterative-strategy).
+checkpoint on a failed iteration (§WF-dynamic-access-iterative).
 Continuation makes that checkpoint state survive process exit and become
 re-entrant on a new run.
 

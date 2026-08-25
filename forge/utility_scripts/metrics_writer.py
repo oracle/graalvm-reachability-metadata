@@ -1035,7 +1035,7 @@ def write_workflow_run_metrics(
     """Append run metrics, write pending metrics, and validate the written file.
 
     The shared metrics-publication path for all workflow drivers
-    (§WF-forge-workflow-drivers.3); drivers contribute only their task type and
+    (§AR-forge-driver-finalization); drivers contribute only their task type and
     the per-workflow metrics payload.
     """
     run_metrics = merge_pending_usage_metrics(metrics_repo_root, run_metrics)

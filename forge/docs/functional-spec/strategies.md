@@ -61,10 +61,10 @@ matching JSON object, validates it against the schema
 (§root/PRCPL-verify-inputs), instantiates the selected
 agent, resolves the registered workflow engine named by `workflow`, and
 passes the prompt and parameter maps into that implementation. The loader owns
-configuration selection; workflow architecture owns how the selected workflow
-engine uses the configuration (see §AR-forge-workflow-boundary and
-§WF-forge-workflow-architecture), including the dynamic-access strategy family
-defined in §WF-dynamic-access-strategy-family that shares this loader.
+configuration selection; the workflow layer owns how the selected engine uses
+the configuration (§WF-forge-workflow-engine, §AR-forge-workflow-boundary),
+including the dynamic-access engines defined in §WF-dynamic-access-workflow that
+share this loader.
 
 ```mermaid
 flowchart LR
@@ -100,8 +100,9 @@ The currently configured source-context choices are `main`, `test`, and
 `documentation`. The currently configured agent backends are `pi` and `codex`.
 The currently configured workflows are `basic_iterative`,
 `dynamic_access_iterative` (§WF-dynamic-access-workflow),
-`optimistic_dynamic_access`, `increase_dynamic_access_coverage`
-(§WF-improve-library-coverage), `javac_iterative`, and `java_run_iterative`
+`optimistic_dynamic_access` (§WF-dynamic-access-bulk),
+`increase_dynamic_access_coverage` (§WF-dynamic-access-composite),
+`javac_iterative`, and `java_run_iterative`
 (§WF-java-fail-fix-workflow).
 
 ## STRAT-predefined-strategy-example: Representative predefined strategy bundle
@@ -110,7 +111,7 @@ The exact active bundle list lives in `forge/strategies/predefined_strategies.js
 this document keeps one representative example to show the architecture shape
 defined in §STRAT-forge-predefined-strategy-contract without duplicating the
 configuration file. `library_update_dynamic_access_bulk_pi_gpt-5.6-sol` selects the
-`optimistic_dynamic_access` workflow (§WF-improve-library-coverage), the `pi`
+`optimistic_dynamic_access` workflow (§WF-dynamic-access-bulk), the `pi`
 agent, model `gpt-5.6-sol`, main-source read-only context, the
 `optimistic-dynamic-access-iteration` prompt, and parameters for optimistic
 iterations, test retries, source-context materialization, and the native-test
@@ -120,7 +121,7 @@ verification retry budget (§WF-native-test-verification-callers).
 
 Java fail-fix strategy bundles (§WF-java-fail-fix-workflow) that should repair
 the version-bump failure and then improve dynamic-access coverage use the
-`increase_dynamic_access_coverage` workflow (§WF-improve-library-coverage) as
+`increase_dynamic_access_coverage` workflow (§WF-dynamic-access-composite) as
 the configured bundle workflow. The bundle's primary workflow is
 `javac_iterative` for compilation-failure issues and `java_run_iterative` for
 JVM runtime-failure issues; after that primary workflow succeeds, the composite
@@ -138,7 +139,9 @@ The basic iterative bundles set `max-test-iterations`,
 default. Java-fix bundles
 set `max-test-iterations` and `source-context-types`. Per-class dynamic-access
 bundles set `max-iterations`, `max-class-test-iterations`, and
-`source-context-types`. Optimistic dynamic-access bundles set
+`source-context-types`; they may also set `native-test-verification-batch-size`,
+which decides how many coverage-gaining classes accumulate before the gate is
+flushed (§WF-native-test-verification-callers). Optimistic dynamic-access bundles set
 `max-optimistic-iterations`, `max-test-iterations`, and `source-context-types`;
 Graphify variants also set `graphify-context`, and
 `library_update_dynamic_access_bulk_pi_gpt-5.6-sol` also sets
@@ -146,7 +149,7 @@ Graphify variants also set `graphify-context`, and
 §WF-native-test-verification-callers. Composite coverage bundles combine the
 primary workflow's limits with dynamic-access limits so the selected primary
 workflow can run first and the coverage phase
-(§WF-improve-library-coverage) can run afterward.
+(§WF-dynamic-access-composite) can run afterward.
 
 ## STRAT-predefined-strategy-extension: Adding or changing a strategy bundle
 
@@ -155,6 +158,6 @@ Changing a strategy means changing a predefined configuration entry
 be expressed by selecting an existing registered workflow, prompt set,
 parameters, agent, model, MCP list, or persistent instructions. New behavior
 belongs in the workflow
-architecture first (§WF-forge-workflow-architecture); the strategy configuration
+architecture first (§AR-forge-drivers); the strategy configuration
 should only expose it as a named bundle after the workflow contract and
 implementation boundary are clear (§WF-forge-workflow-engine).

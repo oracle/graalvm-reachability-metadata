@@ -16,7 +16,7 @@ Benchmarking must evaluate full generation runs, not isolated prompt snippets
 or mocked workflow calls. The primary subject is new-library support because it
 exercises scaffold setup, source context, test generation, metadata generation,
 verification, and benchmark metrics in one comparable process
-(§WF-forge-workflow-drivers).
+(§AR-forge-drivers).
 
 Other workflows may be benchmarked later, but they must define their own suite
 shape and metric compatibility before their results are compared with

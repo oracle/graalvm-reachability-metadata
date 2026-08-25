@@ -8,7 +8,7 @@
 Predefined strategies choose source-context types
 (§STRAT-forge-predefined-strategy-contract); workflow drivers use this module to
 materialize those artifacts as the read-only files the dynamic-access strategies
-read class source from (§WF-dynamic-access-strategy-family) before the strategy
+read class source from (§WF-dynamic-access-workflow) before the strategy
 starts.
 """
 
@@ -385,7 +385,7 @@ def prepare_source_contexts(
 
     Workflow drivers prepare this context once (§AR-forge-workflow-boundary)
     so dynamic-access strategies can pass class-targeted source files to the
-    agent without owning download policy (§WF-dynamic-access-strategy-family).
+    agent without owning download policy (§WF-dynamic-access-workflow).
     """
     index_entry = load_index_entry(reachability_repo_path, coordinate)
     _, _, requested_version = _coordinate_parts(coordinate)

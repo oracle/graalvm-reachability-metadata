@@ -18,7 +18,7 @@ from utility_scripts.java_fix_coverage_follow_up import uncovered_dynamic_access
 class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
     """Composite strategy that runs a primary workflow then improves dynamic-access coverage.
 
-    Implements the composite engine of §WF-dynamic-access-composite-strategy.
+    Implements the composite engine of §WF-dynamic-access-composite.
     """
 
     REQUIRED_PROMPTS = []

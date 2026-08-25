@@ -2538,7 +2538,7 @@ def apply_unblocked_issue_merge_follow_up(pr: dict) -> None:
     The shared `Forge-Unblocks-Issue` trailer releases both library-update alias
     successors and deferred Java-fix coverage issues from `In Progress` to
     `Todo`. §FS-library-update-tested-version-split,
-    §WF-java-fail-fix-workflow.3
+    §AR-forge-driver-queues.3
     """
     for issue_number in extract_follow_up_issue_numbers(pr.get("body")):
         item_id = get_project_item_id(issue_number)
@@ -6019,7 +6019,7 @@ def build_claim_metadata(
 
     group, artifact, new_version = coordinate_parts
     # `fails-*` issues target the newest version, so keep `latest` as the signal.
-    # §WF-forge-workflow-drivers.2
+    # §AR-forge-driver-queues
     current_version = load_current_metadata_version(
         base_reachability_metadata_path,
         group,
@@ -6943,7 +6943,7 @@ def prepare_java_fix_coverage_follow_up(
     The composite strategy already made this decision against the report it had
     when the repair finished, so publication reads that recorded decision instead
     of regenerating a report and deciding a second time.
-    §WF-java-fail-fix-workflow.3
+    §AR-forge-driver-queues.3
     """
     is_java_fix_issue = claimed_issue.label in {LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL}
     library_update_route = _load_library_update_publication_route(claimed_issue)
