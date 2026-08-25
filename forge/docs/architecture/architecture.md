@@ -467,9 +467,14 @@ The driver hands the agent, rendered prompts, workflow parameters, repository
 paths, and run metadata to the registered workflow engine and gets one terminal
 run status back (§WF-forge-workflow-engine). The engine owns run state —
 checkpoints, prompt/command cycles, gate interpretation, retry budgets, metrics
-— and the driver owns everything around it. `commit_class()`,
-`reset_to_class_checkpoint()`, and `refresh_dynamic_access_report()` are
-engine-owned steps described under the two sections that follow.
+— and the driver owns everything around it. The exploration loop the diagrams
+above trace — class selection, checkpoints, `commit_class()`,
+`reset_to_class_checkpoint()`, `refresh_dynamic_access_report()`, and the
+`run_basic_iterative_fallback()` path a library with no dynamic-access signal
+takes instead — is engine-owned and specified in full by
+§WF-dynamic-access-iterative-strategy and
+§WF-dynamic-access-fallback-and-failure. Only the steps with a contract of their
+own are listed here.
 
 ### fix_reported_failure()
 
@@ -486,32 +491,6 @@ bundle — the strategies whose workflow is the composite engine and that name a
 the same run, and defers exploration when the uncovered-class count exceeds the
 configured threshold (§WF-dynamic-access-composite-strategy). A plain
 dynamic-access engine has no repair step and marks the fix phase skipped.
-
-### explore
-
-**Algorithmic.** The phase is a loop, not a single method: class selection,
-budgets, commits, and rollbacks are deterministic, and only the generation steps
-inside it are neural.
-
-Exploration is conditional. The engine generates the dynamic-access coverage
-report first, and only a library that actually reports uncovered dynamic access
-enters the per-class loop; a library with no dynamic-access signal skips the
-phase entirely and runs `run_basic_iterative_fallback()` instead — a plain
-generate-and-test loop with no class selection
-(§WF-dynamic-access-fallback-and-failure). Once the class loop has begun, losing
-the report is a hard failure rather than a fallback.
-
-For each class with uncovered call sites
-(§WF-dynamic-access-iterative-strategy):
-
-1. Snapshot `HEAD` as the class checkpoint.
-2. Call `generate_tests(single_class_report)` until the class is completed or
-   its attempt budget is exhausted.
-3. On a coverage gain, commit the test sources and queue the class for the next
-   native-test batch. On failure, `git reset --hard` back to the class
-   checkpoint so earlier classes survive, and mark the class exhausted.
-4. Move to the next class; a class already marked exhausted is never retried in
-   the same phase.
 
 ### generate_tests()
 
@@ -531,6 +510,42 @@ to the configured test budget. A failure *before* `nativeTest` is fed back to th
 agent as another attempt. Reaching `nativeTest` — passing or failing — ends the
 test loop and hands the decision to the coverage report and the native-test gate,
 never to the agent.
+
+### agent_fix()
+
+**Neural.** The repair is the agent's; every decision around it is not
+(§root/PRCPL-prefer-algorithmic).
+
+This document's short name for the one repair shape the pipeline reuses. It is
+not a phase and has no slot of its own: `native_trace_gate()` reaches it as step
+3, `local_ci_check()` on a failed check, and `local_review()` on a non-approval.
+Wherever it is called the terms are the same:
+
+1. **Only after a deterministic step has failed.** The agent is never asked for
+   something a check, a trace, or a gate could have produced, and never runs
+   speculatively ahead of one.
+2. **On that step's own evidence.** The failing step's records are the input —
+   gate output, verification records, review findings — not a summary of them
+   and not the run's history.
+3. **One bounded attempt**, against the step's configured budget.
+4. **The step re-runs, and its verdict decides.** What the agent reports having
+   done settles nothing; the deterministic re-run is the answer
+   (§root/PRCPL-verify-inputs). A repair the re-run does not confirm is a
+   failure of the step that called for it.
+
+A repair may only make the failing check pass on its merits. Deleting or
+neutering the failing test, relaxing the assertion, or removing the coordinate
+from the lane is not a repair — it is the failure suppressing its own evidence,
+which is why the native-test gate forbids that rescue outright
+(§WF-native-test-verification-gate).
+
+Failure is uniform with the rest of the pipeline: an agent timeout or an
+unusable response is `RUN_STATUS_FAILURE` to the driver, which reports the run
+as failed to `forge_metadata` — never a degraded pass. What each caller does
+with a failed repair is the caller's contract, and they differ: the gate resets
+to its checkpoint and fails the run, `local_ci_check()` hands off for human
+intervention, and `local_review()` resets to the verified pre-repair commit and
+publishes with the verdict recorded.
 
 ### native_trace_gate()
 
@@ -657,15 +672,11 @@ touches image allow-lists. Library-scoped verification belongs to
 target library and flags human intervention. Opting into full reproduction adds
 the changed-metadata native test matrix and the Spring AOT smoke tests.
 
-A failure gets one bounded `agent_fix()` before the run is handed off, on the
-same terms as every other agent repair in this pipeline. The agent is invoked
-only after a check has failed, is given that check's own records as the evidence, and gets one attempt;
-the gate then re-runs. What decides the outcome is that deterministic re-run,
-never the agent's report of what it did (§root/PRCPL-verify-inputs) — a repair
-the re-run does not confirm is a gate failure. An index bucket another merged PR
-moved and a newly flagged image are exactly the failures a bounded repair
-settles; a re-run that still fails is the human-intervention handoff that
-happens today (§FS-human-intervention-policy).
+A failure gets one `agent_fix()` on the terms that step sets out — after the
+check has failed, on that check's own records, one attempt, and the gate re-runs
+to decide. An index bucket another merged PR moved and a newly flagged image are
+exactly the failures a bounded repair settles; a re-run that still fails is the
+human-intervention handoff that happens today (§FS-human-intervention-policy).
 
 ### local_review()
 
@@ -681,15 +692,13 @@ sees: the `local_ci_check()` records and the resolved descriptor statistics.
 The verdict travels in the publication descriptor rather than blocking the
 push, so a PR opens already carrying its review label.
 
-A non-approval gets one bounded `agent_fix()`, in the same shape as the gate's:
-the agent is reached only after the review returned a finding, is given the
-findings as its evidence, and gets one attempt. Because a repair changes the
-tree that was verified, `local_ci_check()` and the review both re-run over it —
-nothing may be pushed that the gates have not passed over, which is what
-`publish_branch()` depends on. A finding must not destroy an otherwise publishable
-run, so a repair that does not pass the re-run resets to the verified pre-repair
-commit and the branch publishes with the verdict recorded, rather than failing
-the run.
+A non-approval gets one `agent_fix()` on the same terms, with the findings as
+its evidence. Because a repair changes the tree that was verified,
+`local_ci_check()` and the review both re-run over it — nothing may be pushed
+that the gates have not passed over, which is what `publish_branch()` depends
+on. A finding must not destroy an otherwise publishable run, so a repair that
+does not pass the re-run resets to the verified pre-repair commit and the branch
+publishes with the verdict recorded, rather than failing the run.
 
 ### publish_branch()
 
