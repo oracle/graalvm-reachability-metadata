@@ -83,6 +83,12 @@ The descriptor contains data, never GitHub instructions:
   reference and publication metrics, local verification evidence, optional
   post-generation intervention, and Forge revision evidence;
 - typed flags for chunking, final-chunk state, and human-intervention evidence;
+- the pre-push review verdict as its own object rather than folded into the
+  human-intervention flag, so the publisher can render what the review found and
+  triage can still tell the causes of the label apart (§FS-local-branch-review).
+  It carries the reviewer's own decision, comment, finding, and fix note, the
+  session log path, and — separately, because it is Forge's fact and not the
+  reviewer's — whether a repair had to be reverted before the push;
 - typed follow-up facts for deferred dynamic-access coverage or a tested-version
   split, each carrying the number of the issue Forge already opened locally, so
   the publisher only references it.

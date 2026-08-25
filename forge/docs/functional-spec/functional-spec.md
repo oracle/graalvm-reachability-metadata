@@ -384,9 +384,10 @@ Generation ending is not the same as a run being publishable. Everything a run
 must still satisfy between a finished working tree and a merged pull request is
 grounded here: the verification it must pass (§FS-local-ci-equivalent-verification),
 the tested-version split its result must record
-(§FS-library-update-tested-version-split), when the result needs maintainer
-judgment rather than another automated attempt (§FS-human-intervention-policy),
-and the automated review the published PR receives (§FS-automated-pr-review).
+(§FS-library-update-tested-version-split), the review it receives before the
+push (§FS-local-branch-review), when the result needs maintainer judgment rather
+than another automated attempt (§FS-human-intervention-policy), and the
+automated review the published PR receives (§FS-automated-pr-review).
 
 ## FS-local-ci-equivalent-verification: Local pre-publication verification
 
@@ -466,16 +467,147 @@ generated library-scoped files, or shared repository files when the failure is
 caused by the repository itself. The outcome is decided by the deterministic
 re-run and never by the agent's account of what it repaired
 (§root/PRCPL-verify-inputs); a re-run that still fails is a handoff under
-§FS-human-intervention-policy. The same discipline applies to a non-approval
-from the pre-push review, except that a repair which does not pass the re-run
-resets to the verified pre-repair commit and publishes with the verdict
-recorded, because a review finding must not destroy an otherwise publishable
-run (§ROADMAP-forge-local-branch-review). After the gate passes, Forge must
+§FS-human-intervention-policy. A finding from the pre-push review is not a
+failed check and does not reach this repair; §FS-local-branch-review states what
+answers it, and re-runs this gate when it has. After the gate passes, Forge must
 algorithmically compare the final PR diff with the expected library-scoped
 paths. If any shared repository file changed, the PR must be labeled
 `human-intervention` and the verification metrics and PR description must list
 the repository-level paths that require maintainer review, following
 §FS-human-intervention-policy.
+
+## FS-local-branch-review: Local pre-push branch review
+
+Every generated branch must be reviewed before it is pushed, and not only after
+it has become a pull request (§FS-automated-pr-review). The pre-push review is
+the cheaper of the two: the working tree that generation verified is still on
+disk, the local gate records still exist, and the branch can still be corrected
+without a maintainer's queue being involved. Planned, not implemented
+(§ROADMAP-forge-local-branch-review).
+
+**Placement.** The review runs inside publication, after the pre-publication
+gate of §FS-local-ci-equivalent-verification.2 has passed and the descriptor
+input has resolved, and before the descriptor is written. It therefore judges
+`base_ref..HEAD` — the eventual pull-request diff minus the descriptor commit —
+with the local evidence the post-push reviewer never sees: the gate records and
+the resolved render statistics.
+
+**Isolation and rules.** The review must run cold: a worktree detached at the
+verified commit, in a session carrying no part of the generation transcript. A
+review that shares context with the run that produced the branch inherits the
+justifications that run already accepted, and its verdict then carries no
+information. It applies the same review rules the post-push reviewer applies,
+selected by the run's `task_type` so that one rule set governs both reviews, and
+the same blocking discipline: a finding is a concrete violation of an enumerated
+rule, never a self-formed judgment about test quality.
+
+**Outcomes.** The review has exactly three outcomes and must never fail the run:
+the branch is approved; a finding is repaired; or a finding the reviewer cannot
+repair publishes flagged for a maintainer under §FS-human-intervention-policy.
+Publication proceeds in all three — a review must never be able to withhold work
+that verification already passed. A reviewer that cannot be reached at all —
+failed authentication, a non-zero exit, a timeout, or a verdict Forge cannot
+read — is the third outcome and not an error: an outage must cost one labeled
+pull request, never a stalled queue.
+
+**A finding is answered by the reviewer.** A review finding is not a failed
+deterministic check, and it must not be routed to the bounded agent repair of
+§FS-local-ci-equivalent-verification.2: nothing can re-run to confirm that a rule
+violation is gone, so the only party that can answer a finding is the reviewer
+that formed it. On a finding the reviewer must both record it and, when it can,
+correct it in the worktree in the same pass.
+
+**Findings record.** Every finding must be appended to the tracked
+`forge/FINDINGS.md`, including one the reviewer went on to fix and one it could
+not fix. A defect is only legible as a recurrence if the resolved instances were
+written down too. Forge renders each entry from a title and a body the reviewer
+supplies, so the file's shape cannot drift across runs, and a reviewer that is
+unavailable takes a fixed title, whose recurrence measures the outage. Because
+`forge/FINDINGS.md` lies outside every library-scoped path, the diff
+classification of §FS-local-ci-equivalent-verification.2 must treat it as
+expected publication output; otherwise a run that re-runs the gate after writing
+it would report repository-level changes that did not happen.
+
+**What the reviewer returns.** The reviewer's output is a single structured
+verdict written to a path Forge supplies, and it is the only channel by which
+its judgment reaches the run. It must carry the decision, a review comment
+stating what was checked and concluded, the finding as a reusable title and a
+body, and — when the reviewer corrected the finding — a fix note describing what
+it changed and why. All five are the reviewer's own: the decision is a judgment
+against the review rules, and the fix note describes an edit only the reviewer
+made, so Forge must record both as returned and must not recompute or overwrite
+either. A verdict that is missing, unreadable, or carries no decision is the
+degraded case below, not a default.
+
+**What Forge derives.** Forge owns everything downstream of that verdict. It
+renders the `forge/FINDINGS.md` entry from the returned title and body rather
+than letting the reviewer write the file, so the record's shape cannot drift
+across runs. It stages and commits the changed paths itself, so a repair has one
+form. And it decides from the paths changed against the verified commit, less
+`forge/FINDINGS.md`, whether finalization and the gate must run again: a changed
+tree must be re-run over, an unchanged one must not be, because re-running the
+gates over a tree that already passed them spends native-image compilation on
+nothing. That is a question about the tree, not about the verdict — it selects
+which steps run, and never edits what the reviewer decided.
+
+**Finalization and the gate run again.** A repaired tree must pass finalization
+(§FS-local-ci-equivalent-verification.1) and the pre-publication gate
+(§FS-local-ci-equivalent-verification.2) again before it is pushed; nothing may
+be pushed that the gates have not passed over, and a review repair can break
+either tier. Both are deterministic checks, so a failure of either — not the
+finding — is what earns one bounded agent repair on the terms
+§FS-local-ci-equivalent-verification.2 sets out. A repaired tree that still fails
+either must be reset to the verified pre-repair commit — the tree the gate
+cleared before the review ran — and that tree is what publishes: a review finding
+must not destroy an otherwise publishable run. The reset discards only what the
+review wrote to gate-covered paths. The findings entry survives it and is
+committed on top of the restored tree, and so does the verdict, unedited: the
+reviewer judged and repaired in good faith, and a reset does not make its
+decision wrong. What Forge adds is its own fact — that the repair was reverted,
+and which step it broke — recorded beside the verdict, and the run's verification
+record must describe the restored tree rather than the discarded one. That fact
+is what flags the branch, because the tree being published is no longer the one
+the reviewer approved; the human-intervention signal is therefore a reverted
+repair or a decision that was not an approval, and never a rewriting of the
+latter into the former.
+
+**Where the review is kept.** The review is an agent session and is logged like
+every other one (§FS-durable-generation-logs): the prompt, the response, and the
+repair pass that follows a finding must be written to the run's durable task
+logs, scoped by task and coordinate, and never left as terminal output. That log
+stays on the machine that ran it. What reaches a reader of the pull request is
+therefore only what is committed: the finding, in `forge/FINDINGS.md`, and the
+verdict, on the descriptor. Because those two are the whole public record, the
+descriptor's review field must also carry the session log path, as the
+verification records already do for each command they run, so a maintainer with
+access to the machine can reach the conversation the verdict came from.
+
+**The verdict outlives the phase that produced it.** The review runs before the
+descriptor is written, so the descriptor cannot be where the verdict is kept
+until then. Forge must stage it with the run's other in-flight publication data
+in the Forge metrics directory (§FS-forge-run-metrics), which is what descriptor
+construction already consumes, so a publication that resumes after the review
+(§FS-forge-run-continuation) reconstructs the verdict rather than re-running the
+reviewer or publishing without it.
+
+**Verdict.** The verdict must travel on the publication descriptor as its own
+field rather than folded into the human-intervention modifier, so triage can
+still tell repository-level surgery, a severe metadata drop, and a review
+finding apart, and the publisher must render it into the pull-request body as a
+Local Agent Review section, because triage reads the body before it reads
+anything else. The rendered section must show the reviewer's own words — its
+comment, its finding, and its fix note — together with the fact Forge owns: which
+tree publishes, the repaired one or the restored one. When the reviewer was
+unavailable there are no words to show, and the section must say that this, and
+not a finding, is why the branch did not carry an approval.
+
+The descriptor is validated by the publisher against the schema on the default
+branch (§GIT-actions-publication), which admits no unknown fields, so the field
+and the renderer that reads it must reach the default branch before any run
+emits them; a run that emits a field the published schema does not know fails
+publication outright. Until they have landed, the review may still run: the
+finding is committed markdown that needs no schema, and the human-intervention
+signal reaches the pull request through the modifier that already exists.
 
 ## FS-library-update-tested-version-split: Library-update tested-version split
 
@@ -550,6 +682,9 @@ Forge's responsibility boundary, including:
   changed, so a maintainer must review repository-level effects before merge.
 - Publication detects a severe metadata, test, or coverage anomaly that makes
   the PR unsafe to auto-review as a normal generated result.
+- The pre-push review found something it could not correct, or its repair did
+  not survive finalization and the gate, so the branch publishes with the
+  finding still open (§FS-local-branch-review).
 
 Forge must not use `human-intervention` for failures that are only external or
 transient infrastructure conditions. The issue-side classification is by failure
@@ -589,7 +724,10 @@ from the phase that failed instead of regenerating from scratch
 ## FS-automated-pr-review: Automated pull request review
 
 Forge review automation processes open pull requests by their PR labels after
-CI has completed. It is a PR review workflow, not an issue-resolution workflow:
+CI has completed. It is the second review a generated branch receives; the first
+runs before the push, against evidence this one cannot see
+(§FS-local-branch-review). It is a PR review workflow, not an issue-resolution
+workflow:
 it must inspect an already published PR, use an isolated review worktree,
 compare the PR diff and status checks against the label-specific review rules,
 and submit either an approval or a requested-changes review on GitHub.

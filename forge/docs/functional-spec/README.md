@@ -32,6 +32,7 @@ you which file to open:
 | §FS-durable-generation-logs | Durable generation and session logs |
 | §FS-forge-publication-readiness | Publication readiness |
 | §FS-local-ci-equivalent-verification | Local pre-publication verification |
+| §FS-local-branch-review | Local pre-push branch review |
 | §FS-library-update-tested-version-split | Library-update tested-version split |
 | §FS-human-intervention-policy | Human intervention policy |
 | §FS-automated-pr-review | Automated pull request review |
