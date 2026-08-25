@@ -8,15 +8,20 @@ package com_baomidou.mybatis_plus_boot_starter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import java.sql.Connection;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import javax.sql.DataSource;
+import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.mapper.MapperFactoryBean;
@@ -26,7 +31,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 
-/** Exercises starter auto-configuration and mapper CRUD through its public API. §FS-test-contract */
+/** Exercises starter auto-configuration, mapper CRUD, and field filling through public APIs. §FS-test-contract */
 public class Mybatis_plus_boot_starterTest {
     @Test
     void configuresMapperAndPerformsCrudOperations() throws Exception {
@@ -56,10 +61,46 @@ public class Mybatis_plus_boot_starterTest {
         }
     }
 
+    @Test
+    void fillsAuditFieldsThroughMetaObjectHandler() throws Exception {
+        try (ConfigurableApplicationContext context = SpringApplication.run(AuditedTestApplication.class,
+                "--spring.main.web-application-type=none",
+                "--spring.datasource.url=jdbc:h2:mem:test;MODE=MYSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE",
+                "--spring.datasource.username=sa",
+                "--spring.datasource.password=")) {
+            createAuditedSchema(context.getBean(DataSource.class));
+            AuditedPersonMapper mapper = context.getBean(AuditedPersonMapper.class);
+
+            AuditedPerson person = new AuditedPerson();
+            person.setName("Ada");
+            assertThat(mapper.insert(person)).isEqualTo(1);
+            assertThat(person.getCreatedAt()).isNotNull();
+            assertThat(person.getUpdatedAt()).isNotNull();
+
+            person.setName("Grace");
+            assertThat(mapper.updateById(person)).isEqualTo(1);
+            AuditedPerson updatedPerson = mapper.selectById(person.getId());
+            assertThat(updatedPerson.getName()).isEqualTo("Grace");
+            assertThat(updatedPerson.getCreatedAt()).isNotNull();
+            assertThat(updatedPerson.getUpdatedAt()).isNotNull();
+        }
+    }
+
     private void createSchema(DataSource dataSource) throws Exception {
         try (Connection connection = dataSource.getConnection();
                 Statement statement = connection.createStatement()) {
             statement.execute("CREATE TABLE people (id BIGINT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(64) NOT NULL)");
+        }
+    }
+
+    private void createAuditedSchema(DataSource dataSource) throws Exception {
+        try (Connection connection = dataSource.getConnection();
+                Statement statement = connection.createStatement()) {
+            statement.execute("CREATE TABLE IF NOT EXISTS audited_people ("
+                    + "id BIGINT AUTO_INCREMENT PRIMARY KEY, "
+                    + "name VARCHAR(64) NOT NULL, "
+                    + "created_at TIMESTAMP NOT NULL, "
+                    + "updated_at TIMESTAMP NOT NULL)");
         }
     }
 
@@ -74,7 +115,38 @@ public class Mybatis_plus_boot_starterTest {
         }
     }
 
+    @SpringBootConfiguration
+    @EnableAutoConfiguration
+    static class AuditedTestApplication {
+        @Bean
+        MapperFactoryBean<AuditedPersonMapper> auditedPersonMapper(SqlSessionFactory sqlSessionFactory) {
+            MapperFactoryBean<AuditedPersonMapper> mapperFactoryBean = new MapperFactoryBean<>(AuditedPersonMapper.class);
+            mapperFactoryBean.setSqlSessionFactory(sqlSessionFactory);
+            return mapperFactoryBean;
+        }
+
+        @Bean
+        MetaObjectHandler auditFieldHandler() {
+            return new MetaObjectHandler() {
+                @Override
+                public void insertFill(MetaObject metaObject) {
+                    LocalDateTime now = LocalDateTime.now();
+                    strictInsertFill(metaObject, "createdAt", LocalDateTime.class, now);
+                    strictInsertFill(metaObject, "updatedAt", LocalDateTime.class, now);
+                }
+
+                @Override
+                public void updateFill(MetaObject metaObject) {
+                    strictUpdateFill(metaObject, "updatedAt", LocalDateTime.class, LocalDateTime.now());
+                }
+            };
+        }
+    }
+
     public interface PersonMapper extends BaseMapper<Person> {
+    }
+
+    public interface AuditedPersonMapper extends BaseMapper<AuditedPerson> {
     }
 
     @TableName("people")
@@ -97,6 +169,49 @@ public class Mybatis_plus_boot_starterTest {
 
         public void setName(String name) {
             this.name = name;
+        }
+    }
+
+    @TableName("audited_people")
+    public static class AuditedPerson {
+        @TableId(type = IdType.AUTO)
+        private Long id;
+        private String name;
+        @TableField(fill = FieldFill.INSERT)
+        private LocalDateTime createdAt;
+        @TableField(fill = FieldFill.INSERT_UPDATE)
+        private LocalDateTime updatedAt;
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public LocalDateTime getCreatedAt() {
+            return createdAt;
+        }
+
+        public void setCreatedAt(LocalDateTime createdAt) {
+            this.createdAt = createdAt;
+        }
+
+        public LocalDateTime getUpdatedAt() {
+            return updatedAt;
+        }
+
+        public void setUpdatedAt(LocalDateTime updatedAt) {
+            this.updatedAt = updatedAt;
         }
     }
 }
