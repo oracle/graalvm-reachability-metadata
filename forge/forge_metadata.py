@@ -188,28 +188,32 @@ from utility_scripts.repo_path_resolver import (
     resolve_metrics_repo_root,
     resolve_reachability_repo_root,
 )
-from utility_scripts.source_context import GradleBootstrapFailure
-from utility_scripts.stage_logger import log_debug, log_failure_banner, log_stage, log_success_banner
 from utility_scripts.run_location import (
     PHASE_CLAIM,
+    PHASE_SETUP,
     STEP_CHECK_HOST_REQUIREMENTS,
     STEP_CHECK_ISSUE_FORM,
     STEP_CHECK_STRATEGY_AND_MODEL,
     STEP_CLAIM_ISSUE,
     STEP_CREATE_ISSUE_WORKSPACE,
+    STEP_NEURAL_SETUP,
     STEP_PUBLISH_BRANCH,
     STEP_ROUTE_TO_DRIVER,
     RunLocation,
     bind_continuation_marker,
+    bind_run_context,
     enter_phase,
     format_run_failure_line,
     marker_failure_location,
     pipeline_step,
+    record_step_failure,
     report_run_failure,
     reset_run_location,
     resolve_failure_location,
     run_step,
 )
+from utility_scripts.source_context import GradleBootstrapFailure
+from utility_scripts.stage_logger import log_debug, log_failure_banner, log_stage, log_success_banner
 from utility_scripts.shutdown_signal import get_active_shutdown_signal_path, is_shutdown_requested
 from utility_scripts.strategy_loader import load_strategy_by_name, require_strategy_by_name
 from utility_scripts.task_logs import (
@@ -4574,6 +4578,40 @@ def git_rebase_in_progress(repo_path: str, git_env: dict[str, str]) -> bool:
     return False
 
 
+def run_preservation_git(
+        args: list[str],
+        cwd: str,
+        env: dict[str, str],
+        check: bool = True,
+) -> subprocess.CompletedProcess[str]:
+    """Run one git command of the failure handoff without narrating it.
+
+    Failure output is the location, the error, and the preserved branch, so the
+    handoff's own git chatter is captured and replayed only when the command
+    fails or when debug logging is on. §FS-forge-run-location-reporting.4
+    """
+    result = subprocess.run(
+        ["git", *args],
+        cwd=cwd,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    detail = "\n".join(
+        stream.strip()
+        for stream in (result.stdout, result.stderr)
+        if stream and stream.strip()
+    )
+    if result.returncode != 0 and check:
+        if detail:
+            print(detail, file=sys.stderr)
+        raise subprocess.CalledProcessError(result.returncode, ["git", *args], result.stdout, result.stderr)
+    if detail:
+        log_debug("preserve-failed-work", detail)
+    return result
+
+
 def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservationResult:
     """Commit and push the failed run worktree so it survives workspace cleanup."""
     branch_name = build_failure_preservation_branch_name(claimed_issue)
@@ -4581,7 +4619,7 @@ def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservat
     git_env = git_env_limited_to_repo_root(repo_path)
     issue_number = claimed_issue.issue["number"]
 
-    log_stage("preserve-failed-work", f"Preserving failed work for issue #{issue_number} on branch {branch_name}")
+    log_debug("preserve-failed-work", f"Preserving failed work for issue #{issue_number} on branch {branch_name}")
     # A publication `git rebase` that halts on an index.json conflict leaves the
     # worktree mid-rebase with unmerged entries, and `git switch -C` then refuses
     # ("resolve your current index first"). Clear the sequencer state first so the
@@ -4589,9 +4627,9 @@ def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservat
     # actual rebase so the common clean-worktree path does not log a spurious
     # "fatal: No rebase in progress?" from git. §FS-forge-run-continuation
     if git_rebase_in_progress(repo_path, git_env):
-        log_stage("preserve-failed-work", f"Aborting in-progress rebase before preserving issue #{issue_number}.")
-        subprocess.run(["git", "rebase", "--abort"], cwd=repo_path, env=git_env, check=False)
-    subprocess.run(["git", "switch", "-C", branch_name], cwd=repo_path, env=git_env, check=True)
+        log_debug("preserve-failed-work", f"Aborting in-progress rebase before preserving issue #{issue_number}.")
+        run_preservation_git(["rebase", "--abort"], repo_path, git_env, check=False)
+    run_preservation_git(["switch", "-C", branch_name], repo_path, git_env)
     logs_destination_relpath = copy_library_logs_to_preserved_worktree(claimed_issue)
     marker_path = continuation_marker_path(repo_path)
     marker = load_continuation_marker(marker_path)
@@ -4599,9 +4637,9 @@ def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservat
         record_publication_metrics_from_pending(marker, claimed_issue.scratch_metrics_repo_path)
         marker.record_preserved_branch(branch_name)
         marker.save(marker_path)
-    subprocess.run(["git", "add", "-A"], cwd=repo_path, env=git_env, check=True)
+    run_preservation_git(["add", "-A"], repo_path, git_env)
     if logs_destination_relpath is not None:
-        subprocess.run(["git", "add", "-f", "--", logs_destination_relpath], cwd=repo_path, env=git_env, check=True)
+        run_preservation_git(["add", "-f", "--", logs_destination_relpath], repo_path, git_env)
     force_add_paths = []
     marker_relpath = os.path.relpath(marker_path, repo_path)
     if os.path.exists(marker_path):
@@ -4611,18 +4649,17 @@ def preserve_failed_work_branch(claimed_issue: ClaimedIssue) -> FailurePreservat
         force_add_paths.append(pending_metrics_relpath)
     force_add_paths.extend(baseline_stats_relpaths_for_preservation(repo_path))
     if force_add_paths:
-        subprocess.run(["git", "add", "-f", "--", *force_add_paths], cwd=repo_path, env=git_env, check=True)
-    diff_result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=repo_path, env=git_env, check=False)
+        run_preservation_git(["add", "-f", "--", *force_add_paths], repo_path, git_env)
+    diff_result = run_preservation_git(["diff", "--cached", "--quiet"], repo_path, git_env, check=False)
     committed_changes = diff_result.returncode != 0
     if committed_changes:
-        subprocess.run(
-            ["git", "commit", "-m", f"Preserve failed automation work for issue #{issue_number}"],
-            cwd=repo_path,
-            env=git_env,
-            check=True,
+        run_preservation_git(
+            ["commit", "-m", f"Preserve failed automation work for issue #{issue_number}"],
+            repo_path,
+            git_env,
         )
     else:
-        log_stage("preserve-failed-work", f"No uncommitted work found for issue #{issue_number}; pushing branch at current HEAD.")
+        log_debug("preserve-failed-work", f"No uncommitted work found for issue #{issue_number}; pushing branch at current HEAD.")
 
     run_git_transport(["push", "-u", "origin", branch_name], cwd=repo_path, env=git_env)
     branch_url = build_origin_branch_url(repo_path, branch_name)
@@ -4689,30 +4726,29 @@ def refresh_preserved_branch_logs(
     repo_path = require_claimed_issue_worktree(claimed_issue, "preserved log refresh")
     git_env = git_env_limited_to_repo_root(repo_path)
     issue_number = claimed_issue.issue["number"]
-    subprocess.run(["git", "switch", preservation_result.branch_name], cwd=repo_path, env=git_env, check=True)
+    run_preservation_git(["switch", preservation_result.branch_name], repo_path, git_env)
     logs_destination_relpath = copy_library_logs_to_preserved_worktree(claimed_issue)
     if logs_destination_relpath is None:
         return
 
-    subprocess.run(["git", "add", "-f", "--", logs_destination_relpath], cwd=repo_path, env=git_env, check=True)
-    diff_result = subprocess.run(
-        ["git", "diff", "--cached", "--quiet", "--", logs_destination_relpath],
-        cwd=repo_path,
-        env=git_env,
+    run_preservation_git(["add", "-f", "--", logs_destination_relpath], repo_path, git_env)
+    diff_result = run_preservation_git(
+        ["diff", "--cached", "--quiet", "--", logs_destination_relpath],
+        repo_path,
+        git_env,
         check=False,
     )
     if diff_result.returncode == 0:
-        log_stage("preserve-failed-work", f"No new workflow logs to add for issue #{issue_number}.")
+        log_debug("preserve-failed-work", f"No new workflow logs to add for issue #{issue_number}.")
         return
 
-    subprocess.run(
-        ["git", "commit", "-m", f"Add automation logs for issue #{issue_number}"],
-        cwd=repo_path,
-        env=git_env,
-        check=True,
+    run_preservation_git(
+        ["commit", "-m", f"Add automation logs for issue #{issue_number}"],
+        repo_path,
+        git_env,
     )
     run_git_transport(["push"], cwd=repo_path, env=git_env)
-    log_stage("preserve-failed-work", f"Updated preserved branch logs for issue #{issue_number}.")
+    log_debug("preserve-failed-work", f"Updated preserved branch logs for issue #{issue_number}.")
 
 
 def resolve_claimed_issue_failure_location(
@@ -5603,7 +5639,7 @@ def resolve_run_strategy_name(
 @pipeline_step(
     PHASE_CLAIM,
     STEP_ROUTE_TO_DRIVER,
-    operand=lambda claimed_issue, *args, **kwargs: f"issue #{claimed_issue.issue['number']}",
+    operand=lambda arguments: f"issue #{arguments['claimed_issue'].issue['number']}",
 )
 def invoke_pipeline(
         claimed_issue: ClaimedIssue,
@@ -5644,6 +5680,9 @@ def invoke_pipeline(
         claimed_issue,
         run_strategy_name,
     )
+    # Failures recorded from here on travel to the preserved branch in the
+    # marker. §FS-forge-run-location-reporting.3
+    bind_continuation_marker(continuation_path)
     marker = load_continuation_marker(continuation_path)
     record_library_update_route_in_marker(continuation_path, library_update_route)
     if marker is not None and marker.continue_from == PHASE_PUBLICATION:
@@ -5664,9 +5703,12 @@ def invoke_pipeline(
             f"Issue #{claimed_issue.issue['number']} skips completed setup preflight.",
         )
     else:
-        library_preparation_preflight_path = run_library_preparation_preflight(
-            claimed_issue,
-        )
+        # The preflight agent is the run's neural setup, and it runs before the
+        # driver prepares the tree. §FS-forge-run-location-reporting.1
+        with run_step(PHASE_SETUP, STEP_NEURAL_SETUP, operand=claimed_issue.issue_coordinates):
+            library_preparation_preflight_path = run_library_preparation_preflight(
+                claimed_issue,
+            )
         record_library_preparation_preflight_in_marker(
             continuation_path,
             library_preparation_preflight_path,
@@ -5713,12 +5755,14 @@ def invoke_pipeline(
         preserve_user_interrupt_reason()
         raise KeyboardInterrupt
     if rc != 0:
-        print(
+        # A driver that returns non-zero has already recorded the step it failed
+        # in; the location leads its error. §FS-forge-run-location-reporting.3
+        report_run_failure(
+            resolve_failure_location(),
             (
                 f"ERROR: {invocation.failure_name} workflow failed for issue "
                 f"#{invocation.issue_number} (exit {rc})"
             ),
-            file=sys.stderr,
         )
         return False
 
@@ -6127,7 +6171,7 @@ def cleanup_review_workspace(
 @pipeline_step(
     PHASE_CLAIM,
     STEP_CREATE_ISSUE_WORKSPACE,
-    operand=lambda *args, **kwargs: f"issue #{args[2] if len(args) > 2 else kwargs['issue_number']}",
+    operand=lambda arguments: f"issue #{arguments['issue_number']}",
 )
 def create_issue_workspace(
         base_reachability_metadata_path: str,
@@ -6192,7 +6236,7 @@ def cleanup_issue_workspace(claimed_issue: ClaimedIssue, canonical_metrics_repo_
 @pipeline_step(
     PHASE_CLAIM,
     STEP_CHECK_ISSUE_FORM,
-    operand=lambda issue, *args, **kwargs: f"issue #{issue['number']}",
+    operand=lambda arguments: f"issue #{arguments['issue']['number']}",
 )
 def build_claim_metadata(
         issue: dict,
@@ -6967,9 +7011,11 @@ def run_claimed_issue(
     except Exception as exc:
         if is_user_interrupt_requested():
             raise KeyboardInterrupt from exc
-        print(
+        # The location the step annotated onto the exception leads its detail.
+        # §FS-forge-run-location-reporting.3
+        report_run_failure(
+            resolve_failure_location(exc),
             f"ERROR: Issue #{claimed_issue.issue['number']} workflow raised an exception: {exc!r}",
-            file=sys.stderr,
         )
         traceback.print_exc()
         success = False
@@ -6993,9 +7039,11 @@ def revert_issue_claim(item_id: str, issue_number: int, reason: str) -> None:
         )
         return
 
-    print(f"\n[issue-revert] Reverting issue #{issue_number} claim because {reason}", file=sys.stderr)
+    # Claim-revert bookkeeping is narration, not failure output.
+    # §FS-forge-run-location-reporting.4
+    log_debug("issue-revert", f"Reverting issue #{issue_number} claim because {reason}")
     revert_errors: list[Exception] = []
-    print(f"[issue-revert] Reverting issue #{issue_number}: setting project item {item_id} -> {STATUS_TODO}", file=sys.stderr)
+    log_debug("issue-revert", f"Reverting issue #{issue_number}: setting project item {item_id} -> {STATUS_TODO}")
     try:
         set_item_status(item_id, STATUS_TODO)
     except Exception as exc:
@@ -7005,7 +7053,7 @@ def revert_issue_claim(item_id: str, issue_number: int, reason: str) -> None:
             f"to {STATUS_TODO}: {format_github_exception_details(exc)}",
             file=sys.stderr,
         )
-    print(f"[issue-revert] Reverting issue #{issue_number}: clearing all assignees", file=sys.stderr)
+    log_debug("issue-revert", f"Reverting issue #{issue_number}: clearing all assignees")
     try:
         clear_issue_assignees(issue_number)
     except Exception as exc:
@@ -7026,10 +7074,10 @@ def revert_issue_claim(item_id: str, issue_number: int, reason: str) -> None:
             raise verification_error from revert_errors[0]
         raise verification_error
     invalidate_issue_claim_cache_entry(issue_number)
-    print(
-        f"ERROR: Issue #{issue_number} failed due to {reason}; verified revert with "
+    log_debug(
+        "issue-revert",
+        f"Issue #{issue_number} failed due to {reason}; verified revert with "
         f"status={verified_status}, assignees={verified_assignees}",
-        file=sys.stderr,
     )
 
 
@@ -7634,6 +7682,10 @@ def handle_failed_claimed_issue(
     """
     if is_user_interrupt_requested():
         raise KeyboardInterrupt
+    # Every terminal failure names where it failed, whatever route it took here.
+    # §FS-forge-run-location-reporting.3
+    failure_location = resolve_claimed_issue_failure_location(claimed_issue)
+    report_run_failure(failure_location, f"ERROR: {reason}")
     if external:
         log_stage(
             "issue-external-failure",
@@ -7655,6 +7707,7 @@ def handle_failed_claimed_issue(
         claimed_issue,
         started_at=started_at,
         preservation_result=preservation_result,
+        failure_location=failure_location,
     )
     try:
         refresh_preserved_branch_logs(claimed_issue, preservation_result)
@@ -7725,6 +7778,10 @@ def process_claimed_issue_lifecycle(
     lifecycle_completed = False
     started_at = time.time()
     stable_cwd = claimed_issue.base_reachability_metadata_path
+    # This run owns its thread's location for the whole lifecycle.
+    # §FS-forge-run-location-reporting.2
+    reset_run_location()
+    bind_run_context(f"issue #{claimed_issue.issue['number']} {claimed_issue.issue_coordinates}")
     try:
         os.chdir(stable_cwd)
         run_result = run_claimed_issue(
@@ -8286,7 +8343,7 @@ def is_issue_blocked(issue_number: int) -> bool:
 @pipeline_step(
     PHASE_CLAIM,
     STEP_CLAIM_ISSUE,
-    operand=lambda issue, *args, **kwargs: f"issue #{issue['number']}",
+    operand=lambda arguments: f"issue #{arguments['issue']['number']}",
 )
 def try_claim_issue(
         issue: dict,

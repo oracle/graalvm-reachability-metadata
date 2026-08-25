@@ -37,14 +37,16 @@ def log_debug(stage: str, message: str, indent_level: int = 0) -> None:
         log_stage(stage, message, indent_level)
 
 
-def log_phase_banner(phase: str, file: TextIO | None = None) -> None:
+def log_phase_banner(phase: str, context: str | None = None, file: TextIO | None = None) -> None:
     """Print the bounded banner that opens a run phase.
 
-    A phase transition must be findable by eye in a long run log.
+    A phase transition must be findable by eye in a long run log, and it names
+    the run it belongs to because runs are interleaved on a pool.
     §FS-forge-run-location-reporting.2
     """
     output = sys.stdout if file is None else file
-    title_line = f" PHASE: {phase.upper()} ".center(BANNER_WIDTH, "#")
+    title = f" PHASE: {phase.upper()} " if context is None else f" PHASE: {phase.upper()} — {context} "
+    title_line = title.center(BANNER_WIDTH, "#")
     print(f"\n{ANSI_BOLD_CYAN}{title_line}{ANSI_RESET}", file=output)
 
 
