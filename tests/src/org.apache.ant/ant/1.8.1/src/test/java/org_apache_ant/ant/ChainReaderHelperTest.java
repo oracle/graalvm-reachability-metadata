@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.Vector;
+import org.apache.tools.ant.util.VectorSet;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.filters.PrefixLines;
 import org.apache.tools.ant.filters.util.ChainReaderHelper;
@@ -49,7 +49,7 @@ public class ChainReaderHelperTest {
 
         FilterChain filterChain = new FilterChain();
         filterChain.addFilterReader(filterReader);
-        Vector<FilterChain> filterChains = new Vector<>();
+        VectorSet filterChains = new VectorSet();
         filterChains.add(filterChain);
 
         ChainReaderHelper helper = new ChainReaderHelper();

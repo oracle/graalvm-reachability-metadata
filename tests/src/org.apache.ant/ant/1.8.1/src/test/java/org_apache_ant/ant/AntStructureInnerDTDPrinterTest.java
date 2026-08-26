@@ -58,7 +58,7 @@ public class AntStructureInnerDTDPrinterTest {
     public static class Format extends EnumeratedAttribute {
         @Override
         public String[] getValues() {
-            return new String[] { "compact", "expanded" };
+            return new String[] {"compact", "expanded"};
         }
     }
 }
