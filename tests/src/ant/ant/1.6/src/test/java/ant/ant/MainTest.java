@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 public class MainTest {
+    private static final String ANT_VERSION = Main.getAntVersion();
 
     @Test
     void configuresRequestedLoggerAndBuildListener(@TempDir Path temporaryDirectory) throws IOException {
@@ -32,7 +33,7 @@ public class MainTest {
         main.configureBuildListeners(project);
 
         assertThat(project.getBuildListeners()).hasSize(2);
-        assertThat(Main.getAntVersion()).startsWith("Apache Ant version");
+        assertThat(ANT_VERSION).startsWith("Apache Ant version");
     }
 
     private static final class ConfigurableMain extends Main {
