@@ -31,6 +31,13 @@ public class Plexus_compiler_managerTest {
     }
 
     @Test
+    void preservesCompilerIdInNoSuchCompilerException() {
+        NoSuchCompilerException exception = new NoSuchCompilerException("missing-compiler");
+
+        assertThat(exception.getCompilerId()).isEqualTo("missing-compiler");
+    }
+
+    @Test
     void reportsUnknownCompilerId() throws Exception {
         DefaultPlexusContainer container = createContainer();
 
