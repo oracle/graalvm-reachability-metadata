@@ -124,7 +124,7 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 - **Spec first.** For behavior or design changes, write or update the most-specific spec point before code.
 - **Cite as you write.** Place `§<ID>` at the point a claim or behavior is made — on the doc-comment for a whole behavior, inline beside the clause it enforces.
 - **Marker = live citation.** A `§`-prefixed token resolves and is checked wherever it appears — including inside Markdown backticks. To mention an ID without citing it, write `<§><ID>`, omit the marker, or use a fenced code block.
-- **Inline citation style.** Inline notes: ≤ 1 line preferred, hard cap 3 lines; ≤ 100 columns.
+- **Inline citation style.** Inline notes: ≤ 1 line preferred, hard cap 20 lines; ≤ 100 columns.
 - **Always cite the most-specific point.**
 
 ### Citation directions
@@ -140,7 +140,7 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 - **CC** should cite FS or AR or WF or GOAL.
 - **BENCH** must cite FS or AR or GOAL.
 - **ROADMAP** should cite GOAL or FS or AR.
-- **prompt_templates/** should cite FS or STRAT or WF or GOAL.
+- **prompt_templates/** should cite */FS or STRAT or WF or GOAL.
 - **examples/** should cite FS or WF or CC.
 - **ai_workflows/** should cite FS or AR or DW or STRAT or ORCH or WF or CC.
 - **git_scripts/** should cite FS or AR or GIT or ORCH.
