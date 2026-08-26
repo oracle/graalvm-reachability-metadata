@@ -8,21 +8,25 @@ package org_apache_ant.ant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import org.apache.tools.ant.ProjectHelper;
+import org.apache.tools.ant.ProjectHelperRepository;
 import org.junit.jupiter.api.Test;
 
 public class ProjectHelperRepositoryTest {
     @Test
-    void loadsConfiguredProjectHelperThroughFallbackClassLookup() {
+    void loadsConfiguredAndServiceProjectHelpers() {
         String propertyName = ProjectHelper.HELPER_PROPERTY;
         String previousHelper = System.getProperty(propertyName);
         Thread thread = Thread.currentThread();
         ClassLoader previousLoader = thread.getContextClassLoader();
-        thread.setContextClassLoader(ClassLoader.getPlatformClassLoader());
-        System.setProperty(propertyName, ConfiguredProjectHelper.class.getName());
+        System.setProperty(propertyName, LoadedProjectHelper.class.getName());
 
         try {
-            assertThat(ProjectHelper.getProjectHelper()).isInstanceOf(ConfiguredProjectHelper.class);
+            assertThat(ProjectHelper.getProjectHelper()).isInstanceOf(LoadedProjectHelper.class);
+            assertThat(hasServiceHelper(helpers())).isTrue();
         } finally {
             thread.setContextClassLoader(previousLoader);
             if (previousHelper == null) {
@@ -33,8 +37,32 @@ public class ProjectHelperRepositoryTest {
         }
     }
 
-    public static class ConfiguredProjectHelper extends ProjectHelper {
-        public ConfiguredProjectHelper() {
+    private List<ProjectHelper> helpers() {
+        List<ProjectHelper> helpers = new ArrayList<>();
+        Iterator<?> iterator = ProjectHelperRepository.getInstance().getHelpers();
+        while (iterator.hasNext()) {
+            helpers.add((ProjectHelper) iterator.next());
+        }
+        return helpers;
+    }
+
+    private boolean hasServiceHelper(List<ProjectHelper> helpers) {
+        for (ProjectHelper helper : helpers) {
+            if (helper instanceof ServiceProjectHelper) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static class LoadedProjectHelper extends ProjectHelper {
+        public LoadedProjectHelper() {
+            Thread.currentThread().setContextClassLoader(ClassLoader.getPlatformClassLoader());
+        }
+    }
+
+    public static class ServiceProjectHelper extends ProjectHelper {
+        public ServiceProjectHelper() {
         }
     }
 }
