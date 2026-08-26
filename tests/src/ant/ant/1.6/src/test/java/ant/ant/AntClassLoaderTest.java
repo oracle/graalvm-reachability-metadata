@@ -8,6 +8,7 @@ package ant.ant;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,5 +44,14 @@ public class AntClassLoaderTest {
     @Test
     void initializesAClassThroughTheLoaderUtility() {
         assertThatCode(() -> AntClassLoader.initializeClass(Project.class)).doesNotThrowAnyException();
+    }
+
+    @Test
+    void forceLoadingDoesNotFallBackToTheParent() {
+        AntClassLoader loader = new AntClassLoader();
+
+        assertThat(loader.getClasspath()).isEmpty();
+        assertThatThrownBy(() -> loader.forceLoadClass(Project.class.getName()))
+                .isInstanceOf(ClassNotFoundException.class);
     }
 }
