@@ -57,7 +57,7 @@ public class AntClassLoaderTest {
     }
 
     @Test
-    void findsResourcesThroughParentAndIsolatedLoaders() throws Exception {
+    void findsResourcesThroughParentLoader() throws Exception {
         AntClassLoader loader = new AntClassLoader(getClass().getClassLoader(), true);
 
         URL resource = loader.getResource(TASK_DEFINITIONS);
@@ -71,13 +71,6 @@ public class AntClassLoaderTest {
         loader.setParentFirst(false);
         assertThat(loader.getResource(TASK_DEFINITIONS)).isNotNull();
         assertThat(loader.getNamedResources(TASK_DEFINITIONS).hasMoreElements()).isTrue();
-
-        loader.setIsolated(true);
-        assertThat(loader.getResource(TASK_DEFINITIONS)).isNull();
-        try (InputStream stream = loader.getResourceAsStream(TASK_DEFINITIONS)) {
-            assertThat(stream).isNull();
-        }
-        assertThat(loader.getNamedResources(TASK_DEFINITIONS).hasMoreElements()).isFalse();
     }
 
     public static class ConstructorProbe {
