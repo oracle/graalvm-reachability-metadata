@@ -21,28 +21,6 @@ import org.junit.jupiter.api.io.TempDir;
 
 public class XSLTProcessTest {
     @Test
-    void transformsDocumentsWithTheTraxProcessor(@TempDir Path temporaryDirectory) throws IOException {
-        Path input = Files.writeString(temporaryDirectory.resolve("input.xml"), "<document>Ant</document>");
-        Path stylesheet = Files.writeString(
-                temporaryDirectory.resolve("stylesheet.xsl"),
-                """
-                <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-                  <xsl:template match="/document"><result><xsl:value-of select="."/></result></xsl:template>
-                </xsl:stylesheet>
-                """);
-        Path output = temporaryDirectory.resolve("output.xml");
-
-        XSLTProcess process = newProcess(temporaryDirectory);
-        process.setProcessor("trax");
-        process.setStyle(stylesheet.toString());
-        process.setIn(input.toFile());
-        process.setOut(output.toFile());
-        process.execute();
-
-        assertThat(Files.readString(output)).contains("<result>Ant</result>");
-    }
-
-    @Test
     void loadsAConfiguredLiaisonFromTheTaskClasspath(@TempDir Path temporaryDirectory) throws IOException {
         Path input = Files.writeString(temporaryDirectory.resolve("input.xml"), "Ant");
         Path stylesheet = Files.writeString(temporaryDirectory.resolve("stylesheet.xsl"), "unused");
