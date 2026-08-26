@@ -20,27 +20,28 @@ you which file to open:
 
 | ID | Subject |
 | --- | --- |
-| §FS-forge-functional-spec | Forge functional specification |
-| §FS-forge-issue-resolution-goal | Forge issue resolution goal |
-| §FS-forge-scope | Supported issue queues |
-| §FS-forge-glossary | Glossary |
-| §FS-forge-requirements | Requirement gates |
-| §FS-forge-host-requirements | Host requirements |
-| §FS-forge-run-requirements | Run requirements |
-| §FS-forge-outputs | Run outputs |
-| §FS-forge-run-metrics | Per-run metrics record |
-| §FS-durable-generation-logs | Durable generation and session logs |
-| §FS-forge-publication-readiness | Publication readiness |
-| §FS-local-ci-equivalent-verification | Local pre-publication verification |
-| §FS-native-test-verification-gate | Native test verification gate |
-| §FS-local-branch-review | Local pre-push branch review |
-| §FS-library-update-tested-version-split | Library-update tested-version split |
-| §FS-human-intervention-policy | Human intervention policy |
-| §FS-automated-pr-review | Automated pull request review |
-| §FS-forge-run-status | Run status semantics |
-| §FS-forge-chunked-dynamic-access | Chunked dynamic-access semantics |
-| §FS-forge-workflow-spec-catalog | Workflow specifications catalog |
-| §FS-forge-run-continuation | Run continuation and resume |
+| [§FS-forge-functional-spec](functional-spec.md#fs-forge-functional-spec-forge-functional-specification) | Forge functional specification |
+| [§FS-forge-issue-resolution-goal](functional-spec.md#fs-forge-issue-resolution-goal-forge-issue-resolution-goal) | Forge issue resolution goal |
+| [§FS-forge-scope](functional-spec.md#fs-forge-scope-supported-issue-queues) | Supported issue queues |
+| [§FS-forge-glossary](functional-spec.md#fs-forge-glossary-glossary) | Glossary |
+| [§FS-forge-requirements](functional-spec.md#fs-forge-requirements-requirement-gates) | Requirement gates |
+| [§FS-forge-host-requirements](functional-spec.md#fs-forge-host-requirements-host-requirements) | Host requirements |
+| [§FS-forge-run-requirements](functional-spec.md#fs-forge-run-requirements-run-requirements) | Run requirements |
+| [§FS-forge-outputs](functional-spec.md#fs-forge-outputs-run-outputs) | Run outputs |
+| [§FS-forge-run-metrics](functional-spec.md#fs-forge-run-metrics-per-run-metrics-record) | Per-run metrics record |
+| [§FS-durable-generation-logs](functional-spec.md#fs-durable-generation-logs-durable-generation-and-session-logs) | Durable generation and session logs |
+| [§FS-forge-publication-readiness](functional-spec.md#fs-forge-publication-readiness-publication-readiness) | Publication readiness |
+| [§FS-local-ci-equivalent-verification](functional-spec.md#fs-local-ci-equivalent-verification-local-pre-publication-verification) | Local pre-publication verification |
+| [§FS-native-test-verification-gate](functional-spec.md#fs-native-test-verification-gate-native-test-verification-gate) | Native test verification gate |
+| [§FS-local-branch-review](functional-spec.md#fs-local-branch-review-local-pre-push-branch-review) | Local pre-push branch review |
+| [§FS-library-update-tested-version-split](functional-spec.md#fs-library-update-tested-version-split-library-update-tested-version-split) | Library-update tested-version split |
+| [§FS-human-intervention-policy](functional-spec.md#fs-human-intervention-policy-human-intervention-policy) | Human intervention policy |
+| [§FS-automated-pr-review](functional-spec.md#fs-automated-pr-review-automated-pull-request-review) | Automated pull request review |
+| [§FS-forge-run-status](functional-spec.md#fs-forge-run-status-run-status-semantics) | Run status semantics |
+| [§FS-forge-run-output-legibility](functional-spec.md#fs-forge-run-output-legibility-legible-run-output) | Legible run output |
+| [§FS-forge-chunked-dynamic-access](functional-spec.md#fs-forge-chunked-dynamic-access-chunked-dynamic-access-semantics) | Chunked dynamic-access semantics |
+| [§FS-forge-workflow-spec-catalog](functional-spec.md#fs-forge-workflow-spec-catalog-workflow-specifications) | Workflow specifications catalog |
+| [§FS-forge-run-continuation](continuation.md#fs-forge-run-continuation-run-continuation-and-resume) | Run continuation and resume |
 | §STRAT-workflow-strategy-registry | Predefined strategy configuration architecture |
 | §STRAT-forge-predefined-strategy-contract | Predefined strategy configuration contract |
 | §STRAT-predefined-strategy-loader | Strategy loading boundary |

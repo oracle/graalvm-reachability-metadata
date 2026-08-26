@@ -21,8 +21,8 @@ folder.
 
 | ID | Subject |
 | --- | --- |
-| §AR-repository-architecture | Repository architecture and high-level overview |
-| §AR-build-infrastructure | Build infrastructure |
+| [§AR-repository-architecture](architecture.md#ar-repository-architecture-repository-architecture-and-high-level-overview) | Repository architecture and high-level overview |
+| [§AR-build-infrastructure](build-infra.md#ar-build-infrastructure-build-infrastructure) | Build infrastructure |
 | §TCK-test-harness | Test harness (TCK) task groups |
 | §CI-repository-ci | Recurring CI workflows and composite actions |
 

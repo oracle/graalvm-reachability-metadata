@@ -21,11 +21,11 @@ rather than anywhere in this folder.
 
 | ID | Subject |
 | --- | --- |
-| §FS-repository-functional-spec | Repository functional specification |
-| §FS-library-version-update-automation | Library version update automation |
-| §FS-contribution-contract | Test and metadata contribution contract |
-| §FS-test-contract | The test contract |
-| §FS-repository-status-report | Repository issue progress and state |
+| [§FS-repository-functional-spec](functional-spec.md#fs-repository-functional-spec-repository-functional-specification) | Repository functional specification |
+| [§FS-library-version-update-automation](functional-spec.md#fs-library-version-update-automation-library-version-update-automation) | Library version update automation |
+| [§FS-contribution-contract](contribution-contract.md#fs-contribution-contract-test-and-metadata-contribution-contract) | Test and metadata contribution contract |
+| [§FS-test-contract](test-contract.md#fs-test-contract-the-test-contract) | The test contract |
+| [§FS-repository-status-report](repository-status.md#fs-repository-status-report-repository-issue-progress-and-state) | Repository issue progress and state |
 | §METADATA-suite | The `metadata/` suite |
 | §TESTS-suite | The `tests/` suite |
 

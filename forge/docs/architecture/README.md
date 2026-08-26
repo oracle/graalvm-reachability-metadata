@@ -21,17 +21,17 @@ tells you which file to open:
 
 | ID | Subject |
 | --- | --- |
-| §AR-forge-architecture | Forge architecture, and the map of every architecture ID |
-| §AR-forge-workflow-pipeline | What runs during one workflow, step by step, and who owns each step |
-| §AR-forge-control-plane | Worker loop and dispatcher own queue control |
-| §AR-forge-workflow-boundary | Workflow drivers compose setup, workflow engine, and metrics |
-| §AR-forge-drivers | Workflow drivers: one per issue queue |
-| §AR-forge-driver-contract | What every driver does |
-| §AR-forge-driver-queues | The per-queue drivers |
-| §AR-forge-driver-finalization | Finalization and metrics |
-| §AR-forge-strategy-agent-boundary | Strategies configure workflows, agents edit code |
-| §AR-forge-verification-publication-boundary | Local verification hands data to trusted publication |
-| §AR-agent-api | Forge agent API and Pi implementation |
+| [§AR-forge-architecture](architecture.md#ar-forge-architecture-forge-architecture) | Forge architecture, and the map of every architecture ID |
+| [§AR-forge-workflow-pipeline](architecture.md#ar-forge-workflow-pipeline-forge-workflow-architecture) | What runs during one workflow, step by step, and who owns each step |
+| [§AR-forge-control-plane](architecture.md#ar-forge-control-plane-worker-loop-and-dispatcher-own-queue-control) | Worker loop and dispatcher own queue control |
+| [§AR-forge-workflow-boundary](architecture.md#ar-forge-workflow-boundary-workflow-drivers-compose-setup-workflow-engine-and-metrics) | Workflow drivers compose setup, workflow engine, and metrics |
+| [§AR-forge-drivers](drivers.md#ar-forge-drivers-workflow-drivers) | Workflow drivers: one per issue queue |
+| [§AR-forge-driver-contract](drivers.md#ar-forge-driver-contract-what-every-driver-does) | What every driver does |
+| [§AR-forge-driver-queues](drivers.md#ar-forge-driver-queues-the-per-queue-drivers) | The per-queue drivers |
+| [§AR-forge-driver-finalization](drivers.md#ar-forge-driver-finalization-finalization-and-metrics) | Finalization and metrics |
+| [§AR-forge-strategy-agent-boundary](architecture.md#ar-forge-strategy-agent-boundary-strategies-configure-workflows-agents-edit-code) | Strategies configure workflows, agents edit code |
+| [§AR-forge-verification-publication-boundary](architecture.md#ar-forge-verification-publication-boundary-local-verification-hands-data-to-trusted-publication) | Local verification hands data to trusted publication |
+| [§AR-agent-api](agent.md#ar-agent-api-forge-agent-api-and-pi-implementation) | Forge agent API and Pi implementation |
 | §WF-forge-workflow-system | Forge workflows: workflow, driver, strategy, and the six engines |
 | §WF-forge-workflow-engine | What every workflow owns |
 | §WF-forge-workflow-strategy-config | Strategies bind to workflows |
