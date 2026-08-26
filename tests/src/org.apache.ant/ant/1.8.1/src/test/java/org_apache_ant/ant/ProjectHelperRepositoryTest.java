@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.ProjectHelperRepository;
+import org.apache.tools.ant.helper.ProjectHelper2;
 import org.junit.jupiter.api.Test;
 
 public class ProjectHelperRepositoryTest {
@@ -55,7 +56,7 @@ public class ProjectHelperRepositoryTest {
         return false;
     }
 
-    public static class LoadedProjectHelper extends ProjectHelper {
+    public static class LoadedProjectHelper extends ProjectHelper2 {
         public LoadedProjectHelper() {
             Thread.currentThread().setContextClassLoader(ClassLoader.getPlatformClassLoader());
         }
