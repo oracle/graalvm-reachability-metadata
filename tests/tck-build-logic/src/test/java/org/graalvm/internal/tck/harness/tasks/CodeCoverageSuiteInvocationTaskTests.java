@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests dedicated coverage-suite forwarding (§TCK-test-harness.8,
- * §forge/WF-code-coverage-improvement.3.1).
+ * §forge/CC-code-coverage-improvement.3.1).
  */
 class CodeCoverageSuiteInvocationTaskTests {
 

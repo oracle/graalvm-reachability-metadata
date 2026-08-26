@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * Task that runs the code-coverage-improvement extension suite ("codeCoverageTest")
- * on subprojects (§forge/WF-code-coverage-improvement.3.1).
+ * on subprojects (§forge/CC-code-coverage-improvement.3.1).
  */
 @SuppressWarnings("unused")
 public abstract class CodeCoverageTestInvocationTask extends AllCoordinatesExecTask {

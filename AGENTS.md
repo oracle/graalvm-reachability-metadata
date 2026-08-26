@@ -110,6 +110,7 @@ A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and 
 - [.github/actions/](.github/actions): Composite actions the workflows reuse
 - [metadata/](metadata): The shipped reachability metadata, verbatim
 - [tests/](tests): Per-library test projects that justify the metadata
+- [tests/tck-build-logic/](tests/tck-build-logic): The TCK harness build logic the test projects run on
 - [stats/](stats): Generated library statistics
 - [docs/assets/](docs/assets): README images, shipped verbatim
 

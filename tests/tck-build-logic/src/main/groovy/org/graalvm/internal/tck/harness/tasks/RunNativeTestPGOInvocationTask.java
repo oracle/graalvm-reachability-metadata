@@ -14,7 +14,7 @@ import java.util.List;
  * subprojects to collect the sampled {@code .iprof} profile.
  * <p>
  * Supports sampled deep-path navigation (§TCK-test-harness.8,
- * §forge/WF-code-coverage-improvement.3.2).
+ * §forge/CC-code-coverage-improvement.3.2).
  */
 @SuppressWarnings("unused")
 public abstract class RunNativeTestPGOInvocationTask extends AllCoordinatesExecTask {
