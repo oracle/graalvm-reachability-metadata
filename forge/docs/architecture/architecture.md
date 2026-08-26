@@ -213,6 +213,8 @@ one of them: it runs before a run exists, in the dispatcher
 
 A blocking, deterministic host gate that runs before any issue is claimed, so a
 misconfigured host never consumes a queue item (§FS-forge-host-requirements).
+This is the host half of the two requirement gates (§FS-forge-requirements); the
+run half is checked per issue, below.
 Every capability the run depends on is verified at the process boundary before
 the first side effect (§root/PRCPL-verify-inputs). It must verify, and report as
 one manifest:

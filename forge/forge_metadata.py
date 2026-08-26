@@ -5379,8 +5379,9 @@ def resolve_workflow_default_strategy_name(
 ) -> str:
     """Return the selected workflow driver.s default strategy for durable run state.
 
-    Omitted strategy overrides remain omitted at dispatch
-    (§STRAT-forge-predefined-strategy-contract).
+    An unresolvable strategy raises rather than failing one issue at a time
+    (§FS-forge-run-requirements.1). Omitted strategy overrides remain omitted at
+    dispatch (§STRAT-forge-predefined-strategy-contract).
     """
     if claimed_issue.label == LABEL_LIBRARY_NEW:
         return DEFAULT_NEW_LIBRARY_STRATEGY_NAME
@@ -6003,7 +6004,11 @@ def build_claim_metadata(
         label: str,
         base_reachability_metadata_path: str,
 ) -> Optional[tuple[str, str | None, str | None]]:
-    """Resolve the coordinates needed to execute a claimed issue."""
+    """Resolve the coordinates needed to execute a claimed issue.
+
+    The issue is the run's input, so a title that does not resolve to Maven
+    coordinates is rejected at the boundary (§FS-forge-run-requirements.3).
+    """
     issue_coordinates = extract_maven_coordinates(issue["title"])
     if issue_coordinates is None:
         print(f"ERROR: No coordinates found in issue title: {issue['title']}", file=sys.stderr)
@@ -6245,7 +6250,10 @@ def claim_issue_for_processing(
     """Claim an issue and prepare its isolated execution workspace.
 
     Claiming, assignment validation, and worktree creation are orchestration
-    responsibilities, not strategy logic (§AR-forge-control-plane). Chunked
+    responsibilities, not strategy logic (§AR-forge-control-plane). This is
+    where the run context of §FS-forge-run-requirements.4 is assembled; moving
+    the rest of it off the driver is
+    §ROADMAP-forge-dispatcher-owned-run-preconditions. Chunked
     dynamic-access continuation derives its exhaust report from the coordinate
     in the checked-out repository (§WF-dynamic-access-exhaust-report).
     """
@@ -7471,7 +7479,11 @@ def refresh_issue_payload_for_claim(
         required_label: str | None = None,
         authenticated_user: str | None = None,
 ) -> bool:
-    """Refresh mutable issue state and return whether it remains claimable."""
+    """Refresh mutable issue state and return whether it remains claimable.
+
+    The payload is re-read against live GitHub state at claim time rather than
+    trusted from the scan (§FS-forge-run-requirements.2).
+    """
     issue_number = issue.get("number")
     if not isinstance(issue_number, int):
         return False
