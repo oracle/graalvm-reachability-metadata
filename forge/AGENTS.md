@@ -90,6 +90,15 @@ A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and 
 - [CC](docs/architecture/code-coverage-improvement.md): Forge code coverage improvement workflow, pending its own spec
 - [BENCH](docs/functional-spec/benchmarking.md): Forge benchmark specifications
 - [ROADMAP](docs/roadmap.md): Forge implementation roadmap
+- [prompt_templates/](prompt_templates): Agent prompt templates the workflows render
+- [examples/](examples): Worked examples of a workflow run
+- [ai_workflows/](ai_workflows): Workflow drivers, engines, and agent adapters
+- [git_scripts/](git_scripts): Git and GitHub automation: commits, branches, PRs, stats
+- [utility_scripts/](utility_scripts): Shared support code used across workflows and pipelines
+- [benchmarks/](benchmarks): Benchmark campaign configuration and runner
+- [tests/](tests): Unit and integration tests for the Python modules
+- [schemas/](schemas): JSON Schemas for strategies, metrics, and continuation markers
+- [strategies/](strategies): Predefined strategy configurations
 
 ### Project namespaces
 
@@ -131,7 +140,14 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 - **CC** should cite FS or AR or WF or GOAL.
 - **BENCH** must cite FS or AR or GOAL.
 - **ROADMAP** should cite GOAL or FS or AR.
-- **code** (any file outside a kind home) must cite FS or AR or DW or STRAT or ORCH or GIT or WF or CC.
+- **prompt_templates/** should cite FS or STRAT or WF or GOAL.
+- **examples/** should cite FS or WF or CC.
+- **ai_workflows/** should cite FS or AR or DW or STRAT or ORCH or WF or CC.
+- **git_scripts/** should cite FS or AR or GIT or ORCH.
+- **utility_scripts/** should cite FS or AR or DW or STRAT or ORCH or GIT or WF or CC.
+- **benchmarks/** should cite FS or AR or BENCH.
+- **tests/** should cite FS or AR or DW or STRAT or ORCH or GIT or WF or CC or BENCH.
+- **code** (Loose scripts and plugins outside a kind home) should cite FS or AR or DW or STRAT or ORCH or GIT or WF or CC.
 Unlisted kinds and pairs are fine.
 
 ### Clickable citations
