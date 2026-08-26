@@ -2,7 +2,7 @@
 
 This Rhei template converts one GitHub issue labeled `code-coverage-improvement`
 into a bounded workspace for the planned Forge code coverage workflow
-§WF-code-coverage-improvement.
+§CC-code-coverage-improvement.
 
 Instantiate it from `forge/` with the issue number and, optionally, an explicit
 coordinate override:
@@ -56,7 +56,7 @@ explicit `needsHumanIntervention` flag route to `human-intervention`. Pipeline
 tasks also route there when a required helper or artifact fails instead of
 completing with partial evidence. Finalization writes schema-validated,
 separate API/deep JaCoCo metrics and labels PGO as guidance only
-§WF-code-coverage-improvement.
+§CC-code-coverage-improvement.
 
 The rendered example in `examples/code-coverage-improvement-example/` is a dry
 workspace that validates and dry-runs without touching GitHub or a worktree.

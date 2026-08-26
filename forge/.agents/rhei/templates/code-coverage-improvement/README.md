@@ -2,7 +2,7 @@
 
 This Rhei template converts one GitHub issue labeled `code-coverage-improvement`
 into a bounded workspace for the planned Forge code coverage workflow
-§WF-code-coverage-improvement.
+§CC-code-coverage-improvement.
 
 Instantiate it from `forge/` with the issue number and, optionally, an explicit
 coordinate override:
@@ -37,7 +37,7 @@ target remains or its fixed iteration budget of `coverage_iterations` passes
 is spent. Public
 API prompts contain 400 methods the latest exact JaCoCo report marks uncovered,
 ordered by how much still-uncovered code each one unlocks over a bytecode call
-graph rather than by identifier (§WF-code-coverage-improvement.3.1.1). Deep
+graph rather than by identifier (§CC-code-coverage-improvement.3.1.1). Deep
 prompts list at most 200 JaCoCo-uncovered internal methods using compact
 `Observed` / `Uncovered paths` navigation. Measurement owns target rotation:
 attempt counts are carried deterministically in the discovery-report history
@@ -57,7 +57,7 @@ explicit `needsHumanIntervention` flag route to `human-intervention`. Pipeline
 tasks also route there when a required helper or artifact fails instead of
 completing with partial evidence. Finalization writes schema-validated,
 separate API/deep JaCoCo metrics and labels PGO as guidance only
-§WF-code-coverage-improvement.
+§CC-code-coverage-improvement.
 
 The rendered example in `examples/code-coverage-improvement-example/` is a dry
 workspace that validates and dry-runs without touching GitHub or a worktree.

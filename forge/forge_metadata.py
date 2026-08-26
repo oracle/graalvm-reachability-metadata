@@ -563,7 +563,7 @@ def preserve_user_interrupt_reason(reason: str = INTERRUPT_REASON_CTRL_C) -> Non
 
     Unwinding passes several handlers, and the first one to fire knows why the
     run is stopping; later ones must not relabel a shared bootstrap stop as a
-    Ctrl+C (§FS-shared-infrastructure-bootstrap-failure).
+    Ctrl+C (§FS-human-intervention-policy).
     """
     if not is_user_interrupt_requested():
         mark_user_interrupt_requested(reason)
@@ -3366,7 +3366,7 @@ def is_external_failure_exception(exc: BaseException | None) -> bool:
     retry without `human-intervention`, while any other exception (including agent
     timeouts) is logical. The cause/context chain is walked so a wrapped external
     error is still recognized.
-    §FS-human-intervention-policy, §FS-shared-infrastructure-bootstrap-failure
+    §FS-human-intervention-policy
     """
     error: BaseException | None = exc
     while error is not None:

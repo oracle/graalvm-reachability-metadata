@@ -30,7 +30,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 /// Bytecode call-graph extractor for the code coverage improvement workflow
-/// (§WF-code-coverage-improvement.3.1.1, §WF-code-coverage-improvement-architecture.1).
+/// (§CC-code-coverage-improvement.3.1.1, §CC-code-coverage-improvement-architecture.1).
 ///
 /// Reads library jars with the JDK Class-File API and writes three CSV files:
 /// one row per declared method, one row per call edge, and one row per declared
@@ -39,7 +39,7 @@ import java.util.zip.ZipFile;
 /// joins directly with JaCoCo evidence and the API inventory.
 ///
 /// `types.csv` carries the declared supertypes that receiver-obtainability
-/// analysis needs (§WF-code-coverage-improvement.3.1.2). The hierarchy is
+/// analysis needs (§CC-code-coverage-improvement.3.1.2). The hierarchy is
 /// already parsed here for class-hierarchy analysis; writing it out saves the
 /// ranking step a second pass over the jars. The join key both ways is the
 /// owner: everything before `#` in a canonical id is a `types.csv` name.
@@ -58,7 +58,7 @@ public final class CallGraphExtractor {
 
     /// One declared method: its canonical id and whether it carries a body.
     /// `isStatic` is what tells eligibility analysis that an entry needs no
-    /// receiver at all (§WF-code-coverage-improvement.3.1.2).
+    /// receiver at all (§CC-code-coverage-improvement.3.1.2).
     private record MethodNode(String id, boolean hasCode, boolean isPublicApi, boolean isStatic) {
     }
 

@@ -3,9 +3,12 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+# The public-API phase's exact JaCoCo correlation: §CC-code-coverage-improvement.3.1.
+# JVM-only by design, with native metadata prepared once before PGO discovery rather
+# than per iteration: §CC-code-coverage-improvement-architecture.1.
+
 """
-JVM coverage validator for the code coverage improvement workflow
-(§WF-code-coverage-improvement.3.1, §WF-code-coverage-improvement-architecture).
+JVM coverage validator for the code coverage improvement workflow.
 
 Public-API phase helper. It compiles the tracked code-coverage-improvement
 extension suite and runs the regular plus extension JVM tests under JaCoCo
@@ -15,18 +18,12 @@ compute which public-API targets remain uncovered after the iteration. It
 writes the per-iteration JaCoCo report copy and the remaining-uncovered-API
 report that feeds the next API-cover pass.
 
-Native Image and reachability-metadata concerns are intentionally NOT here:
-JaCoCo coverage measurement needs only the JVM. Metadata is generated and
-repaired once before the PGO discovery phase by
-`code_coverage_prepare_native_metadata.py`, so the PGO-sampling native build can
-succeed without rebuilding a native image on every API-cover iteration.
-
 The deterministic, library-execution-free core is `correlate_jacoco`: it joins
 JaCoCo `<method>` entries against API inventory target ids. The Gradle steps are
 thin wrappers over the existing harness tasks (`compileTestJava`,
 `codeCoverageTest`, `jacocoCodeCoverageReport`). The extension suite lives at
 the tracked `code-coverage-improvement/` directory inside the coordinate's
-indexed test project (§forge/WF-code-coverage-improvement.3.1).
+indexed test project.
 
 Usage:
   python3 utility_scripts/code_coverage_validate.py \
@@ -59,7 +56,7 @@ def correlate_jacoco(inventory: dict, jacoco_xml_paths: list[str]) -> dict:
     """Classify public API methods from exact JaCoCo evidence only.
 
     Sampled evidence and loose owner/name/arity keys cannot affect phase-one
-    coverage (§WF-code-coverage-improvement.3.1).
+    coverage (§CC-code-coverage-improvement.3.1).
     """
     coverage_by_id: dict[str, JacocoMethodCoverage] = load_jacoco_method_coverage(
         jacoco_xml_paths

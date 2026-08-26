@@ -787,7 +787,7 @@ class LibraryMethodFilterTest(unittest.TestCase):
 
 
 class SyntheticLambdaTest(unittest.TestCase):
-    """Lambda attribution and route honesty (§WF-code-coverage-improvement.3.2.1).
+    """Lambda attribution and route honesty (§CC-code-coverage-improvement.3.2.1).
 
     The graph models one closure end to end: `reload` captures it, the generated
     class carries it, its body calls `persist`, and an unrelated `drain` invokes

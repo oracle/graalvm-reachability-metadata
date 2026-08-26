@@ -5,7 +5,7 @@
 
 """
 Shared method-identity model for the code coverage improvement helpers
-(§WF-code-coverage-improvement-architecture).
+(§CC-code-coverage-improvement-architecture).
 
 The three coverage helpers each speak a different dialect of "which method is
 this": the API inventory uses `owner#name(params):ret`, the GraalVM analysis

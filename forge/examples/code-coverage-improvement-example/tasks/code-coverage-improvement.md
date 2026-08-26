@@ -11,7 +11,7 @@
 - Project owner: `oracle`
 - Project number: `30`
 - Purpose: fetch one `code-coverage-improvement` issue and create or reuse the per-issue
-  worktree for the code coverage workflow §WF-code-coverage-improvement.
+  worktree for the code coverage workflow §CC-code-coverage-improvement.
 - Required work:
   - Fetch the issue with `gh issue view 8380 --repo oracle/graalvm-reachability-metadata`.
   - Verify that it carries `code-coverage-improvement`.
@@ -119,7 +119,7 @@
   `--max-fix-passes`.
 - Purpose: generate and repair reachability metadata once after public API
   coverage so the deep sampled-PGO builds can run
-  §WF-code-coverage-improvement.
+  §CC-code-coverage-improvement.
 - Required work:
   - Read the resolved coordinate and absolute suite root from the conversion
     and preparation artifacts.

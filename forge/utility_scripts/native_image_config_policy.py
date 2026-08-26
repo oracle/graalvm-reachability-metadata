@@ -26,7 +26,7 @@ LEGACY_TEST_NATIVE_IMAGE_CONFIG_FILENAMES = frozenset(
 #: under `src/test/resources/META-INF/native-image/`. Extension suites such as
 #: `code-coverage-improvement/` are siblings of `src/`, and a guard anchored on the
 #: resource segment alone lets a tracing-agent artifact land beside them unnoticed
-#: (§WF-code-coverage-improvement.2, §root/METADATA-suite.1).
+#: (§CC-code-coverage-improvement.2, §root/METADATA-suite.1).
 TEST_SOURCE_ROOT = "tests/src/"
 
 

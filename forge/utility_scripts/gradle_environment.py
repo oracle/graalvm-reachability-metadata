@@ -65,7 +65,7 @@ def _gradle_cache_identity(repo_path: str) -> str:
 
     Keying on the common git directory lets all issue worktrees of a checkout
     resolve the root build's plugins once instead of once per issue
-    (§FS-shared-infrastructure-bootstrap-failure).
+    (§FS-human-intervention-policy).
     """
     return _resolve_git_common_dir(repo_path) or os.path.realpath(repo_path)
 
@@ -137,7 +137,7 @@ def _share_host_gradle_properties(gradle_user_home: str, env: dict[str, str]) ->
     that reaches Maven Central and the Gradle plugin repository only through an
     HTTP proxy, that file carries the proxy settings, and an isolated home
     without it fails every plugin and distribution download during root-build
-    configuration (§FS-shared-infrastructure-bootstrap-failure).
+    configuration (§FS-human-intervention-policy).
     """
     host_properties = _resolve_host_gradle_properties(gradle_user_home, env)
     if host_properties is None:

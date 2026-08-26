@@ -83,7 +83,7 @@ class GradleBootstrapFailure(RuntimeError):
     A configuration-time Gradle failure is host-wide, not a property of the
     claimed library, so the control plane releases the claim without
     `human-intervention` and stops the run
-    (§FS-shared-infrastructure-bootstrap-failure).
+    (§FS-human-intervention-policy).
     """
 
     def __init__(self, coordinate: str, log_path: str):
@@ -248,7 +248,7 @@ def discover_artifact_metadata(
     This is the first Gradle invocation of a new-library run, so a shared
     bootstrap outage surfaces here. It is retried once with a dependency refresh
     and, if still failing, reported as `GradleBootstrapFailure` rather than as
-    this library's failure (§FS-shared-infrastructure-bootstrap-failure).
+    this library's failure (§FS-human-intervention-policy).
     """
     require_complete_reachability_repo(reachability_repo_path)
     log_path = build_task_log_path("discover-artifact-metadata", coordinate, "discover_artifact_metadata.log")

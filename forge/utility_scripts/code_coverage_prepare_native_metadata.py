@@ -3,23 +3,19 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""
-Native-metadata preparation for the code coverage improvement workflow
-(§WF-code-coverage-improvement.3.2,
-§WF-code-coverage-improvement-architecture).
+# The deep phase this prepares for: §CC-code-coverage-improvement.3.2. Running once
+# between the phases, and the generate-then-repair loop:
+# §CC-code-coverage-improvement-architecture.1.
 
-This runs once between public API coverage and sampled-PGO deep discovery. The
-deep phase builds Native Images with the tracked code-coverage-improvement
-extension suite included (`-PincludeCodeCoverageSuite=true`), which needs valid
-reachability metadata; the public JaCoCo phase deliberately stays JVM-only.
-The suite runs against the shipped metadata for the indexed test version;
-supplemental configs the suite additionally needs live in the suite-local
-`code-coverage-improvement/metadata/` directory, which the build applies on
-the include lane and which are promotion candidates for `metadata/`. Mirroring how the other workflows finalize, this helper generates
-metadata and then repairs it with the Codex-backed
-`fix-missing-reachability-metadata` skill until a Native Image test passes, so
-the six deep collections (one baseline and five post-iteration reports) do not
-each have to discover and repair metadata gaps.
+"""
+Native-metadata preparation for the code coverage improvement workflow.
+
+It runs once between public API coverage and sampled-PGO deep discovery,
+generating metadata and repairing it with the Codex-backed
+`fix-missing-reachability-metadata` skill until a Native Image test passes.
+Supplemental configs the suite needs live in its own
+`code-coverage-improvement/metadata/` directory and are promotion candidates
+for `metadata/`.
 
 Loop: `generateMetadata` -> `test`; while it fails and a fix budget
 remains, `run_codex_metadata_fix` then re-run `test`. If Native Image

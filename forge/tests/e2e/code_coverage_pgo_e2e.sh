@@ -5,7 +5,7 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 #
 # End-to-end check for the code coverage improvement helpers
-# (§WF-code-coverage-improvement.3.2). It exercises the real GraalVM
+# (§CC-code-coverage-improvement.3.2). It exercises the real GraalVM
 # PGO-sampling path and exact JaCoCo correlation against a tiny throwaway
 # library, with no dependency on a checked-in metadata coordinate.
 #

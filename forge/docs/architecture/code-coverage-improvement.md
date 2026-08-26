@@ -668,7 +668,18 @@ engine:
 - **Native metadata preparer** — runs once after the API-cover loop and before
   PGO discovery: generates reachability metadata and repairs it with the Codex
   `fix-missing-reachability-metadata` skill until a Native Image test passes, so
-  the PGO-sampling builds succeed. Implemented in
+  the PGO-sampling builds succeed. Once, rather than per iteration, is the point:
+  the deep phase makes six collections — one baseline and five post-iteration
+  reports — and each would otherwise have to rediscover and repair the same
+  metadata gaps. The public JaCoCo phase stays JVM-only for the same reason, and
+  the deep phase's Native Image builds include the extension suite
+  (`-PincludeCodeCoverageSuite=true`), which is what makes valid metadata a
+  precondition. Supplemental configs the suite needs live in its suite-local
+  `code-coverage-improvement/metadata/` directory, applied on the include lane
+  and promotion candidates for `metadata/`. A failed `generateMetadata` stops
+  immediately instead of validating or repairing stale metadata; when repair
+  exhausts its budget the run is flagged `needsHumanIntervention` so the reviewed
+  Rhei task routes to a human. Implemented in
   `forge/utility_scripts/code_coverage_prepare_native_metadata.py`.
 - **Native Image deep-path analyzer** — intersects exact JaCoCo library methods
   with the analysis call-tree CSV graph, subtracts public API inventory entries,
