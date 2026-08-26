@@ -7,6 +7,7 @@
 package ant.ant;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -17,7 +18,9 @@ import org.junit.jupiter.api.Test;
 public class DiagnosticsTest {
 
     @Test
-    void reportsRuntimeAndTaskAvailabilityDiagnostics() {
+    void validatesVersionsAndReportsRuntimeAndTaskAvailabilityDiagnostics() {
+        assertThatCode(Diagnostics::validateVersion).doesNotThrowAnyException();
+
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
         try (PrintStream stream = new PrintStream(output, true, StandardCharsets.UTF_8)) {
@@ -25,6 +28,7 @@ public class DiagnosticsTest {
         }
 
         assertThat(output.toString(StandardCharsets.UTF_8))
-                .contains("Ant diagnostics report", "Tasks availability", "XML Parser information");
+                .contains("Ant diagnostics report", "Tasks availability", "XML Parser information")
+                .doesNotContain("Not available.");
     }
 }
