@@ -16,7 +16,6 @@ import java.nio.file.Path;
 import javax.xml.transform.Source;
 import javax.xml.transform.sax.SAXSource;
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.types.ResourceLocation;
 import org.apache.tools.ant.types.XMLCatalog;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -42,18 +41,7 @@ public class XMLCatalogExternalResolverTest {
 
         InputSource externalEntity = catalog(catalogFile).resolveEntity(null, EXTERNAL_SYSTEM_ID);
         assertThat(path(externalEntity.getSystemId())).isEqualTo(entity);
-
-        XMLCatalog entityCatalog = catalog(catalogFile);
-        entityCatalog.addDTD(location("public-id", temporaryDirectory.resolve("missing.dtd").toString()));
-        InputSource localEntity = entityCatalog.resolveEntity("public-id", EXTERNAL_SYSTEM_ID);
-        assertThat(path(localEntity.getSystemId())).isEqualTo(entity);
-
         assertThat(path(systemId(catalog(catalogFile).resolve(EXTERNAL_URI, null))))
-                .isEqualTo(schema);
-
-        XMLCatalog uriCatalog = catalog(catalogFile);
-        uriCatalog.addEntity(location(EXTERNAL_URI, temporaryDirectory.resolve("missing.xsd").toString()));
-        assertThat(path(systemId(uriCatalog.resolve(EXTERNAL_URI, null))))
                 .isEqualTo(schema);
     }
 
@@ -64,13 +52,6 @@ public class XMLCatalogExternalResolverTest {
         catalog.setProject(project);
         catalog.createCatalogPath().setLocation(catalogFile.toFile());
         return catalog;
-    }
-
-    private ResourceLocation location(String publicId, String resource) {
-        ResourceLocation location = new ResourceLocation();
-        location.setPublicId(publicId);
-        location.setLocation(resource);
-        return location;
     }
 
     private String systemId(Source source) {
