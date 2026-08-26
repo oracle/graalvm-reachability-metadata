@@ -17,6 +17,7 @@ public class ProjectTest {
     @Test
     void configuresProjectsTasksAndProjectAwareObjects() {
         Project project = new Project();
+        project.initProperties();
         ProjectHolder holder = new ProjectHolder(project);
 
         assertThat(Project.getProject(holder)).isSameAs(project);
@@ -31,6 +32,11 @@ public class ProjectTest {
         Project subProject = configurableProject.createSubProject();
         assertThat(subProject).isInstanceOf(ConfigurableProject.class);
         assertThat(subProject.getExecutor()).isNotNull();
+
+        Project coreExecutorProject = new Project();
+        coreExecutorProject.setCoreLoader(ConfiguredExecutor.class.getClassLoader());
+        coreExecutorProject.setProperty("ant.executor.class", ConfiguredExecutor.class.getName());
+        assertThat(coreExecutorProject.getExecutor()).isInstanceOf(ConfiguredExecutor.class);
 
         Project executorProject = new Project();
         executorProject.setProperty("ant.executor.class", ConfiguredExecutor.class.getName());
