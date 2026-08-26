@@ -6,11 +6,49 @@
  */
 package org_codehaus_plexus.plexus_compiler_manager;
 
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.compiler.Compiler;
+import org.codehaus.plexus.compiler.manager.CompilerManager;
+import org.codehaus.plexus.compiler.manager.NoSuchCompilerException;
 import org.junit.jupiter.api.Test;
 
-class Plexus_compiler_managerTest {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+public class Plexus_compiler_managerTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void looksUpJavacCompilerFromPlexusContainer() throws Exception {
+        DefaultPlexusContainer container = createContainer();
+
+        try {
+            CompilerManager compilerManager = (CompilerManager) container.lookup(CompilerManager.ROLE);
+            Compiler compiler = compilerManager.getCompiler("javac");
+
+            assertThat(compiler).isNotNull();
+        } finally {
+            container.dispose();
+        }
+    }
+
+    @Test
+    void reportsUnknownCompilerId() throws Exception {
+        DefaultPlexusContainer container = createContainer();
+
+        try {
+            CompilerManager compilerManager = (CompilerManager) container.lookup(CompilerManager.ROLE);
+
+            assertThatThrownBy(() -> compilerManager.getCompiler("unknown"))
+                    .isInstanceOf(NoSuchCompilerException.class)
+                    .hasMessageContaining("unknown");
+        } finally {
+            container.dispose();
+        }
+    }
+
+    private DefaultPlexusContainer createContainer() throws Exception {
+        DefaultPlexusContainer container = new DefaultPlexusContainer();
+        container.initialize();
+        container.start();
+        return container;
     }
 }
