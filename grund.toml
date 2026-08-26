@@ -25,59 +25,107 @@ number_pattern = "\\d+"
 slug_pattern = "[a-z0-9][a-z0-9-]*"
 
 [[kinds]]
-prefix = "GRUND"
+kind = "GRUND"
 file = "docs/grund.md"
 title = "Why: repository motivation"
 
 [[kinds]]
-prefix = "GOAL"
+kind = "GOAL"
 file = "docs/goals.md"
 title = "Where: repository direction and outcomes"
 
 [[kinds]]
-prefix = "PRCPL"
+kind = "PRCPL"
 file = "docs/principles.md"
 title = "Cross-cutting principles for how the repository works"
 
 [[kinds]]
-prefix = "FS"
+kind = "FS"
 folder = "docs/functional-spec"
 title = "Repository functional behavior and contributor-facing requirements"
 
 [[kinds]]
-prefix = "AR"
+kind = "AR"
 folder = "docs/architecture"
 title = "Repository architecture and build infrastructure"
 
 [[kinds]]
-prefix = "TCK"
+kind = "TCK"
 file = "docs/architecture/tck.md"
 title = "Test harness (TCK): task groups"
 
 [[kinds]]
-prefix = "CI"
+kind = "CI"
 file = "docs/architecture/ci.md"
 title = "Recurring CI workflows and composite actions"
 
 [[kinds]]
-prefix = "METADATA"
+kind = "METADATA"
 file = "docs/functional-spec/metadata.md"
 title = "The metadata/ suite: shipped reachability metadata"
 
 [[kinds]]
-prefix = "TESTS"
+kind = "TESTS"
 file = "docs/functional-spec/tests.md"
 title = "The tests/ suite: tests that justify the metadata"
 
 [[kinds]]
-prefix = "SKILL"
+kind = "SKILL"
 folder = "skills"
+citable = false
 title = "Agent review and automation skills"
+
+[[kinds]]
+kind = "workflow"
+folder = ".github/workflows"
+citable = false
+title = "CI and release workflows: the gate on GitHub"
+
+[[kinds]]
+kind = "action"
+folder = ".github/actions"
+citable = false
+title = "Composite actions the workflows reuse"
+
+# Places that are listed, not walked: content that ships verbatim or is generated.
+[[kinds]]
+kind = "metadata-suite"
+folder = "metadata"
+citable = false
+scan = false
+title = "The shipped reachability metadata, verbatim"
+
+[[kinds]]
+kind = "test-suite"
+folder = "tests"
+citable = false
+scan = false
+title = "Per-library test projects that justify the metadata"
+
+[[kinds]]
+kind = "stats"
+folder = "stats"
+citable = false
+scan = false
+title = "Generated library statistics"
+
+[[kinds]]
+kind = "asset"
+folder = "docs/assets"
+citable = false
+scan = false
+title = "README images, shipped verbatim"
+
+# The homeless kind: every citation site outside every home above.
+[[kinds]]
+kind = "code"
+citable = false
+title = "Build files and repository scripts outside a kind home"
 
 [scan]
 include = ["AGENTS.md", "README.md", "COVERAGE.md", "docs", "skills", ".github/workflows", ".github/actions", "build.gradle"]
-exclude = ["target", "node_modules", ".git", "dist", "build", ".venv", ".gradle", "out", "metadata", "stats", "tests", "forge/.venv", "forge/**/__pycache__"]
-extensions = ["md", "html", "yml", "yaml", "gradle"]
+exclude = ["target", "node_modules", ".git", "dist", "build", ".venv", ".gradle", "out", "forge/.venv", "forge/**/__pycache__"]
+extensions = ["md", "html", "yml", "yaml", "gradle", "sh", "js"]
 comment_prefixes = ["//", "#", "/*", "*", "<!--"]
 docstring_python = false
 respect_gitignore = true
@@ -120,6 +168,12 @@ must = ["FS|METADATA|GOAL"]
 
 [citations.SKILL]
 must = ["FS|CI|METADATA|TESTS"]
+
+[citations.workflow]
+should = ["CI|FS|AR|TCK|METADATA|TESTS"]
+
+[citations.action]
+should = ["CI|FS|AR"]
 
 [citations.code]
 must = ["FS|AR|TCK|CI|METADATA|TESTS"]

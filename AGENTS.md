@@ -81,7 +81,7 @@
 <!-- BEGIN GRUND MANAGED BLOCK -->
 ## Grounding with grund (v7)
 
-This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]` (`KIND ∈ {GRUND, GOAL, PRCPL, FS, AR, TCK, CI, METADATA, TESTS, SKILL}`), cited with the marker `§` — e.g. `<§>FS-user-login.3.1` (the `FS-user-login` here is a shape illustration, not a real ID in this repo, hence the `<§>` escape). Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `grund.toml`, so only `§`-prefixed citations are checked.
+This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]` (`KIND ∈ {GRUND, GOAL, PRCPL, FS, AR, TCK, CI, METADATA, TESTS}`), cited with the marker `§` — e.g. `<§>FS-user-login.3.1` (the `FS-user-login` here is a shape illustration, not a real ID in this repo, hence the `<§>` escape). Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `grund.toml`, so only `§`-prefixed citations are checked.
 
 ### Grounding from a citation
 
@@ -105,7 +105,13 @@ A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and 
 - [CI](docs/architecture/ci.md): Recurring CI workflows and composite actions
 - [METADATA](docs/functional-spec/metadata.md): The metadata/ suite: shipped reachability metadata
 - [TESTS](docs/functional-spec/tests.md): The tests/ suite: tests that justify the metadata
-- [SKILL](skills): Agent review and automation skills
+- [skills/](skills): Agent review and automation skills
+- [.github/workflows/](.github/workflows): CI and release workflows: the gate on GitHub
+- [.github/actions/](.github/actions): Composite actions the workflows reuse
+- [metadata/](metadata): The shipped reachability metadata, verbatim
+- [tests/](tests): Per-library test projects that justify the metadata
+- [stats/](stats): Generated library statistics
+- [docs/assets/](docs/assets): README images, shipped verbatim
 
 ### Project namespaces
 
@@ -128,7 +134,7 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 
 ### Rules
 
-- **Check the spec first.** For behavior or design changes, check the idea against the most-specific spec point before writing code — see [Additional rules](#additional-rules).
+- **Spec first.** For behavior or design changes, write or update the most-specific spec point before code.
 - **Cite as you write.** Place `§<ID>` at the point a claim or behavior is made — on the doc-comment for a whole behavior, inline beside the clause it enforces.
 - **Marker = live citation.** A `§`-prefixed token resolves and is checked wherever it appears — including inside Markdown backticks. To mention an ID without citing it, write `<§><ID>`, omit the marker, or use a fenced code block.
 - **Inline citation style.** Inline notes: ≤ 1 line preferred, hard cap 3 lines; ≤ 100 columns.
@@ -144,8 +150,10 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 - **CI** should cite FS or TCK or METADATA or TESTS or GOAL.
 - **METADATA** must cite FS or GOAL.
 - **TESTS** must cite FS or METADATA or GOAL.
-- **SKILL** must cite FS or CI or METADATA or TESTS.
-- **code** (any file outside a kind home) must cite FS or AR or TCK or CI or METADATA or TESTS.
+- **skills/** must cite FS or CI or METADATA or TESTS.
+- **.github/workflows/** should cite CI or FS or AR or TCK or METADATA or TESTS.
+- **.github/actions/** should cite CI or FS or AR.
+- **code** (Build files and repository scripts outside a kind home) must cite FS or AR or TCK or CI or METADATA or TESTS.
 Unlisted kinds and pairs are fine.
 
 ### Clickable citations
