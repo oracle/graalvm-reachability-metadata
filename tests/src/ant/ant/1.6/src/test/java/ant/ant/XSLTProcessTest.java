@@ -37,6 +37,22 @@ public class XSLTProcessTest {
         assertThat(Files.readString(output)).isEqualTo("transformed: Ant");
     }
 
+    @Test
+    void loadsAConfiguredLiaisonWithoutTaskClasspath(@TempDir Path temporaryDirectory) throws IOException {
+        Path input = Files.writeString(temporaryDirectory.resolve("input.xml"), "Ant");
+        Path stylesheet = Files.writeString(temporaryDirectory.resolve("stylesheet.xsl"), "unused");
+        Path output = temporaryDirectory.resolve("output.xml");
+
+        XSLTProcess process = newProcess(temporaryDirectory);
+        process.setProcessor(CopyingLiaison.class.getName());
+        process.setStyle(stylesheet.toString());
+        process.setIn(input.toFile());
+        process.setOut(output.toFile());
+        process.execute();
+
+        assertThat(Files.readString(output)).isEqualTo("transformed: Ant");
+    }
+
     private static XSLTProcess newProcess(Path baseDirectory) {
         Project project = new Project();
         project.setBaseDir(baseDirectory.toFile());
