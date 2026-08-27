@@ -46,6 +46,15 @@ creates or reuses a per-issue worktree, and generates bounded Rhei tasks for
 preparation, inventory, coverage generation, validation, discovery, finalization,
 and publication.
 
+The operator entry point selects an issue when no issue number is supplied. It
+considers only open, unassigned, unblocked `code-coverage-improvement` issues in
+Project status `Todo`, drains `high-priority`, then `priority`, then normal work,
+and selects the newest issue number within a tier. If no issue is eligible, it
+fails before creating a workspace. For the selected issue it instantiates the
+required `code-coverage-<issue_number>` workspace and immediately executes it in
+the foreground with Rhei's browser dashboard enabled, preserving the terminal
+TUI and all ordinary run output.
+
 That worktree's branch is created from the HEAD of the source checkout, never
 from `origin/master`. Measurement resolves this workflow's own helpers from the
 issue worktree, so basing it on a commit that predates them fails the
