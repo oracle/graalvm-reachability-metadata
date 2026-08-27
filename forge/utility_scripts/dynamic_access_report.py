@@ -83,6 +83,50 @@ class DynamicAccessCoverageReport:
 
 
 @dataclass(frozen=True)
+class BulkDynamicAccessProgress:
+    """Post-gate class progress from one optimistic bulk phase.
+
+    The workflow compares its baseline with the last successfully gated report
+    and carries that exact report into the composite boundary
+    (§AR-dynamic-access-bulk).
+    """
+
+    final_report: DynamicAccessCoverageReport
+    completed_classes: tuple[str, ...]
+    remaining_classes: tuple[str, ...]
+
+
+def compute_bulk_dynamic_access_progress(
+        initial_report: DynamicAccessCoverageReport,
+        final_report: DynamicAccessCoverageReport,
+        processed_classes: set[str],
+) -> BulkDynamicAccessProgress:
+    """Return completed and still-eligible classes after optimistic bulk."""
+    initial_uncovered_classes: set[str] = {
+        class_coverage.class_name
+        for class_coverage in initial_report.classes
+        if class_coverage.uncovered_calls > 0
+    }
+    completed_classes: tuple[str, ...] = tuple(sorted(
+        class_name
+        for class_name in initial_uncovered_classes
+        if (
+            (final_class := final_report.get_class(class_name)) is not None
+            and final_class.uncovered_calls == 0
+        )
+    ))
+    remaining_classes: tuple[str, ...] = tuple(
+        class_coverage.class_name
+        for class_coverage in final_report.classes
+        if (
+            class_coverage.uncovered_calls > 0
+            and class_coverage.class_name not in processed_classes
+        )
+    )
+    return BulkDynamicAccessProgress(final_report, completed_classes, remaining_classes)
+
+
+@dataclass(frozen=True)
 class DynamicAccessClassDelta:
     newly_covered: list[DynamicAccessCallSite]
     still_uncovered: list[DynamicAccessCallSite]

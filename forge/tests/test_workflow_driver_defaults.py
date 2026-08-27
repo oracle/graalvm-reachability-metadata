@@ -24,24 +24,33 @@ def _claimed_issue(label: str) -> forge_metadata.ClaimedIssue:
 
 
 class WorkflowDriverDefaultTests(unittest.TestCase):
-    def test_new_and_update_queues_default_to_sol_bulk_strategies(self) -> None:
+    def test_new_and_update_queues_default_to_sol_composite_strategies(self) -> None:
         self.assertEqual(
             forge_metadata.DEFAULT_NEW_LIBRARY_STRATEGY_NAME,
-            "dynamic_access_bulk_pi_gpt-5.6-sol",
+            "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
         )
         self.assertEqual(
             forge_metadata.DEFAULT_LIBRARY_UPDATE_STRATEGY_NAME,
-            "library_update_dynamic_access_bulk_pi_gpt-5.6-sol",
+            "library_update_optimistic_pi_gpt-5.6-sol",
+        )
+        self.assertEqual(
+            forge_metadata.DEFAULT_WORK_QUEUE_STRATEGY_NAME,
+            "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
         )
 
-    def test_bulk_strategy_skips_incompatible_class_chunking(self) -> None:
+    def test_optimistic_strategies_defer_chunk_selection_to_bulk(self) -> None:
+        strategies = (
+            "dynamic_access_bulk_pi_gpt-5.6-sol",
+            "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+        )
         with patch.object(forge_metadata, "_prepare_new_library_dynamic_access_report") as prepare_report:
-            chunk_count = forge_metadata.prepare_dynamic_access_chunking(
-                _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW),
-                "dynamic_access_bulk_pi_gpt-5.6-sol",
-            )
-
-        self.assertIsNone(chunk_count)
+            for strategy_name in strategies:
+                with self.subTest(strategy=strategy_name):
+                    chunk_count = forge_metadata.prepare_dynamic_access_chunking(
+                        _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW),
+                        strategy_name,
+                    )
+                    self.assertEqual(chunk_count, 15)
         prepare_report.assert_not_called()
 
     def test_java_repair_queues_default_to_sol_strategies(self) -> None:

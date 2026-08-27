@@ -1,0 +1,202 @@
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+import unittest
+from unittest.mock import patch
+
+from ai_workflows.core.increase_dynamic_access_coverage_strategy import (
+    IncreaseDynamicAccessCoverageStrategy,
+)
+from ai_workflows.core.optimistic_dynamic_access_strategy import OptimisticDynamicAccessStrategy
+from ai_workflows.core.workflow_strategy import RUN_STATUS_SUCCESS
+from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport
+from utility_scripts.dynamic_access_report import (
+    BulkDynamicAccessProgress,
+    DynamicAccessClass,
+    DynamicAccessCoverageReport,
+    compute_bulk_dynamic_access_progress,
+)
+
+
+class OptimisticDynamicAccessChunkTests(unittest.TestCase):
+    def test_bulk_progress_compares_gated_report_and_excludes_processed_classes(self) -> None:
+        initial_report = self._report(["A", "B", "C", "D"], [])
+        final_report = self._report(["A", "B", "C", "D"], ["A", "B"])
+
+        progress = compute_bulk_dynamic_access_progress(
+            initial_report,
+            final_report,
+            {"D"},
+        )
+
+        self.assertIs(progress.final_report, final_report)
+        self.assertEqual(progress.completed_classes, ("A", "B"))
+        self.assertEqual(progress.remaining_classes, ("C",))
+
+    def test_bulk_progress_is_recorded_in_shared_exhaust_state(self) -> None:
+        exhaust_report = DynamicAccessExhaustReport.create(
+            coordinate="org.example:lib:1.0.0",
+            issue_number=1412,
+        )
+        exhaust_report.mark_skipped("D")
+        strategy = self._optimistic_strategy(
+            chunk_class_count=15,
+            dynamic_access_exhaust_report=exhaust_report,
+        )
+
+        strategy._record_bulk_chunk_progress(
+            self._report(["A", "B", "C", "D"], []),
+            self._report(["A", "B", "C", "D"], ["A", "B"]),
+        )
+
+        self.assertEqual(exhaust_report.completed_classes, ["A", "B"])
+        self.assertEqual(exhaust_report.skipped_classes, ["D"])
+        self.assertEqual(exhaust_report.class_threshold, 15)
+        self.assertEqual(exhaust_report.current_chunk_class_count, 15)
+        self.assertEqual(strategy.bulk_chunk_progress.remaining_classes, ("C",))
+
+    def test_composite_routes_post_bulk_quota(self) -> None:
+        scenarios = (
+            (20, 80, 0, True),
+            (10, 90, 5, False),
+            (20, 10, 10, False),
+            (0, 90, 15, False),
+        )
+
+        for completed, remaining, expected_budget, expected_chunk_ready in scenarios:
+            with self.subTest(completed=completed, remaining=remaining):
+                strategy = self._composite_strategy()
+                primary = self._FakePrimary(self._progress(completed, remaining))
+                strategy.primary = primary
+
+                report, iterative_budget, chunk_ready = strategy._route_after_optimistic_bulk()
+
+                self.assertIs(report, primary.bulk_chunk_progress.final_report)
+                self.assertEqual(iterative_budget, expected_budget)
+                self.assertEqual(chunk_ready, expected_chunk_ready)
+                self.assertEqual(primary.saved, expected_chunk_ready)
+
+    def test_composite_passes_shortfall_and_gated_report_to_iterative(self) -> None:
+        strategy = self._composite_strategy()
+        primary = self._FakePrimary(self._progress(10, 90))
+        strategy.primary = primary
+        strategy.primary_workflow_name = "optimistic_dynamic_access"
+        captured_context: dict[str, object] = {}
+        captured_reports: list[DynamicAccessCoverageReport] = []
+
+        class FakeDynamicAccess:
+            def __init__(self, strategy_obj: dict, **context: object) -> None:
+                captured_context.update(context)
+                self._last_phase_status = RUN_STATUS_SUCCESS
+
+            def _run_dynamic_access_phase(
+                    self,
+                    agent: object,
+                    report: DynamicAccessCoverageReport,
+            ) -> tuple[bool, int]:
+                captured_reports.append(report)
+                return True, 2
+
+            def has_issue_requested_metadata_context(self) -> bool:
+                return False
+
+        class FakeAgent:
+            def clear_context(self) -> None:
+                pass
+
+        with patch(
+                "ai_workflows.core.increase_dynamic_access_coverage_strategy.DynamicAccessIterativeStrategy",
+                FakeDynamicAccess,
+        ):
+            result = strategy.run(FakeAgent())
+
+        self.assertEqual(result, (RUN_STATUS_SUCCESS, 5, 1))
+        self.assertEqual(captured_context["chunk_class_count"], 5)
+        self.assertEqual(captured_reports, [primary.bulk_chunk_progress.final_report])
+
+    @staticmethod
+    def _optimistic_strategy(**context: object) -> OptimisticDynamicAccessStrategy:
+        return OptimisticDynamicAccessStrategy(
+            {
+                "model": "test-model",
+                "prompts": {"optimistic-dynamic-access-iteration": "unused"},
+                "parameters": {
+                    "max-optimistic-iterations": 3,
+                    "max-test-iterations": 2,
+                },
+            },
+            library="org.example:lib:1.0.0",
+            reachability_repo_path="/tmp/reachability",
+            test_version="1.0.0",
+            **context,
+        )
+
+    @staticmethod
+    def _composite_strategy() -> IncreaseDynamicAccessCoverageStrategy:
+        strategy = IncreaseDynamicAccessCoverageStrategy(
+            {
+                "model": "test-model",
+                "parameters": {},
+                "prompts": {},
+            },
+            reachability_repo_path="/tmp/reachability",
+            library="org.example:lib:1.0.0",
+            chunk_class_count=15,
+        )
+        strategy.primary_workflow_name = "optimistic_dynamic_access"
+        return strategy
+
+    @classmethod
+    def _progress(cls, completed: int, remaining: int) -> BulkDynamicAccessProgress:
+        final_report = cls._report(
+            [f"completed-{index}" for index in range(completed)]
+            + [f"remaining-{index}" for index in range(remaining)],
+            [f"completed-{index}" for index in range(completed)],
+        )
+        return BulkDynamicAccessProgress(
+            final_report=final_report,
+            completed_classes=tuple(f"completed-{index}" for index in range(completed)),
+            remaining_classes=tuple(f"remaining-{index}" for index in range(remaining)),
+        )
+
+    @staticmethod
+    def _report(
+            class_names: list[str],
+            covered_class_names: list[str],
+    ) -> DynamicAccessCoverageReport:
+        covered = set(covered_class_names)
+        return DynamicAccessCoverageReport(
+            coordinate="org.example:lib:1.0.0",
+            has_dynamic_access=True,
+            total_calls=len(class_names),
+            covered_calls=len(covered),
+            classes=[
+                DynamicAccessClass(
+                    class_name=class_name,
+                    source_file=None,
+                    resolved_source_file=None,
+                    total_calls=1,
+                    covered_calls=1 if class_name in covered else 0,
+                    call_sites=[],
+                )
+                for class_name in class_names
+            ],
+        )
+
+    class _FakePrimary:
+        def __init__(self, progress: BulkDynamicAccessProgress) -> None:
+            self.bulk_chunk_progress = progress
+            self.saved = False
+            self.post_generation_intervention = None
+
+        def run(self, agent: object, **kwargs: object) -> tuple[str, int, int]:
+            return RUN_STATUS_SUCCESS, 3, 1
+
+        def save_bulk_chunk_state(self) -> None:
+            self.saved = True
+
+
+if __name__ == "__main__":
+    unittest.main()

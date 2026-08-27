@@ -382,7 +382,7 @@ DEFAULT_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD = 15
 
 
 PI_REVIEW_PROVIDER = PI_PROVIDER
-DEFAULT_WORK_QUEUE_STRATEGY_NAME = "dynamic_access_bulk_pi_gpt-5.6-sol"
+DEFAULT_WORK_QUEUE_STRATEGY_NAME = "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol"
 FAILURE_ANALYSIS_TIMEOUT_SECONDS = 1800
 REVIEW_TIMEOUT_SECONDS = 1800
 DEFAULT_WORKTREE_BASE_REF = "master"
@@ -5160,26 +5160,33 @@ def prepare_dynamic_access_chunking(
         claimed_issue: ClaimedIssue,
         strategy_name: str | None,
 ) -> int | None:
-    """Prepare dispatcher-owned chunking state and return the concrete chunk size.
+    """Return the iterative budget or optimistic post-bulk class boundary.
 
-    The control plane owns the class threshold decision for issue-driven
-    dynamic-access work (§AR-chunked-dynamic-access-pr-linking): it refreshes
-    the report, records the exhaust-report chunk fields, applies the public
-    label, and passes only the concrete chunk count to the workflow.
+    Iterative-only work keeps dispatcher-owned report selection. An optimistic
+    phase receives the configured boundary and decides after its gated bulk
+    loop, when its exact progress is known
+    (§FS-forge-chunked-dynamic-access).
     """
     if claimed_issue.label not in {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE}:
         return None
 
+    threshold: int = dynamic_access_chunk_class_threshold()
     if strategy_name:
         strategy: dict = require_strategy_by_name(strategy_name)
-        if strategy.get("workflow") == "optimistic_dynamic_access":
-            # Pure bulk runs have no per-class checkpoints or budgets.
-            # §AR-dynamic-access-bulk §AR-chunked-dynamic-access-pr-linking
+        workflow_name: str | None = strategy.get("workflow")
+        has_optimistic_bulk_phase: bool = (
+            workflow_name == "optimistic_dynamic_access"
+            or (
+                workflow_name == "increase_dynamic_access_coverage"
+                and strategy.get("primary-workflow") == "optimistic_dynamic_access"
+            )
+        )
+        if has_optimistic_bulk_phase:
             log_stage(
                 "dynamic-access-chunking",
-                f"Chunking disabled for bulk strategy '{strategy_name}'; the bulk engine owns the full report.",
+                f"Deferring chunk selection for '{strategy_name}' until its optimistic bulk phase completes.",
             )
-            return None
+            return threshold
 
     if claimed_issue.label == LABEL_LIBRARY_NEW:
         if not _prepare_new_library_dynamic_access_report(claimed_issue):
@@ -5198,7 +5205,6 @@ def prepare_dynamic_access_chunking(
         )
         return None
 
-    threshold = dynamic_access_chunk_class_threshold()
     exhaust_report, exhaust_report_path = _resolve_dynamic_access_exhaust_report(claimed_issue)
     already_chunked = _issue_has_chunked_dynamic_access_state(claimed_issue.issue) or exhaust_report is not None
     current_uncovered_classes = [
