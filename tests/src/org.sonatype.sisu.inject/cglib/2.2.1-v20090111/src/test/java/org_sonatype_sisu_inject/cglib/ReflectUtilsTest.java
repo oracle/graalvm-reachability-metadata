@@ -33,9 +33,12 @@ public class ReflectUtilsTest {
     @Test
     void resolvesMethodsWithPrimitiveArrayParameters() {
         Method method = ReflectUtils.findMethod(MethodTarget.class.getName() + ".accept(int[])");
+        Method substring = ReflectUtils.findMethod("String.substring(int)");
 
         assertThat(method.getDeclaringClass()).isEqualTo(MethodTarget.class);
         assertThat(method.getName()).isEqualTo("accept");
+        assertThat(substring.getDeclaringClass()).isEqualTo(String.class);
+        assertThat(substring.getName()).isEqualTo("substring");
     }
 
     @Test
