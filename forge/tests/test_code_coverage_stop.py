@@ -74,13 +74,12 @@ class CoverageStopRuleTests(unittest.TestCase):
         stopped, _ = module.evaluate(_series(yields[:2]), THRESHOLD, WINDOW, 1)
         self.assertTrue(stopped)
 
-    def test_a_negative_pass_breaks_the_streak(self) -> None:
-        """Lost coverage is a rewritten test suite, not a phase out of material."""
+    def test_a_negative_pass_counts_as_zero_yield(self) -> None:
         stopped, yields = module.evaluate(
             _series([50, 40, 30, 5, -27]), THRESHOLD, WINDOW, FLOOR
         )
-        self.assertFalse(stopped)
-        self.assertEqual(yields[-1], -27)
+        self.assertTrue(stopped)
+        self.assertEqual(yields[-2:], [5, 0])
 
     def test_evaluates_only_once_the_floor_is_reached(self) -> None:
         for passes in range(1, FLOOR):

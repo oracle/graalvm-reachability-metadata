@@ -18,9 +18,9 @@ percentage is not portable across libraries: one point is 3.5 methods on a
 347-method roster and 70 on a 7065-method one, and a one-point rule stops a
 measured run four passes before the pass that produced 38% of its coverage.
 
-A negative yield breaks the streak instead of ending the phase: losing coverage
-means the cover agent rewrote or deleted existing tests, which is a defect to
-repair rather than a phase out of material.
+A negative delta is recorded as zero yield. Losing coverage means the cover
+agent produced no net coverage gain, so it counts as a low-yield pass rather
+than creating a negative value in the recorded series.
 """
 
 from __future__ import annotations
@@ -153,8 +153,8 @@ def covered_series(reports_dir: str, phase: str) -> list[int]:
 
 
 def pass_yields(series: list[int]) -> list[int]:
-    """Per-pass yields; index `i` is the yield of cover pass `i + 1`."""
-    return [later - earlier for earlier, later in zip(series, series[1:])]
+    """Per-pass yields, clamping coverage loss to zero."""
+    return [max(0, later - earlier) for earlier, later in zip(series, series[1:])]
 
 
 def evaluate(

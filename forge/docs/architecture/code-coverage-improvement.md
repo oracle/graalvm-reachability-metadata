@@ -427,10 +427,9 @@ that looked reasonable and would have destroyed a measured run.
    ran 6, 47, 7, 24, 2, 8, 10 — so a single mediocre pass resets a longer
    streak. Requiring three consecutive low passes never fires on any measured
    run, at any threshold in this range, which makes it a rule that cannot act.
-3. **A negative pass does not count as low yield.** Losing coverage means the
-   cover agent rewrote or deleted tests the suite already had, which is a defect
-   to repair rather than a phase that has run out of material. A negative pass
-   therefore breaks the streak instead of ending the phase.
+3. **A negative delta counts as zero yield.** Losing coverage means the cover
+   agent produced no net coverage gain. Clamping the delta to zero keeps the
+   recorded series non-negative and counts that pass as low yield.
 
 The floor of four passes exists for the opposite failure. A measured deep pass
 once yielded nothing at all because the whole pass went to a missing dependency,
