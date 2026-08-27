@@ -213,7 +213,7 @@ Acceptance: a `fails-native-image-run` run collects native-trace metadata before
 any agent repair, and one whose run fails in the seed, collection, exploration,
 or finalization step ends labeled and commented; a second cycle either resumes
 from the preserved marker or, if the same phase fails again, is not
-re-attempted silently (§ORCH-forge-orchestration-spec).
+re-attempted silently (§ORCH-forge-orchestration).
 
 # ROADMAP-forge-local-branch-review: Pre-push local branch review
 

@@ -15,7 +15,7 @@ it (§AR-forge-workflow-boundary).
 
 Drivers sit between two boundaries they do not cross. The control plane owns
 issue scanning, label routing, claiming, project state, and worktree selection
-(§AR-forge-control-plane, §ORCH-forge-orchestration-spec). Publication owns
+(§AR-forge-control-plane, §ORCH-forge-orchestration). Publication owns
 everything after a run is verified (§AR-forge-verification-publication-boundary,
 §GIT-forge-publication). A driver receives an already-claimed issue in an already
 -selected worktree and returns a terminal status; it never opens a pull request.

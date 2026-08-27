@@ -48,7 +48,7 @@ tells you which file to open:
 | §CC-code-coverage-improvement | Code coverage improvement workflow |
 | §CC-code-coverage-improvement-architecture | Code coverage improvement workflow architecture |
 | §DW-do-work-loop | do-work loop architecture |
-| §ORCH-forge-orchestration-spec | Forge orchestration scripts |
+| §ORCH-forge-orchestration | Forge orchestration scripts |
 | §GIT-forge-publication | Forge branch and pull-request publication |
 | §GIT-pr-eligibility | PR eligibility boundary |
 | §GIT-shared-publication-pipeline | Shared branch publication pipeline |

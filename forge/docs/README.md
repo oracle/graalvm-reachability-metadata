@@ -55,7 +55,7 @@ behavior or structure.
 - [architecture/architecture.md](architecture/architecture.md) — `AR-forge-architecture`: control plane, workflow boundaries, and extension points.
 - [architecture/agent.md](architecture/agent.md) — `AR-agent-api`: the agent API and its Pi implementation.
 - [architecture/do-work.md](architecture/do-work.md) — `DW-do-work-loop`: the long-running worker loop.
-- [architecture/orchestration-scripts.md](architecture/orchestration-scripts.md) — `ORCH-forge-orchestration-spec`.
+- [architecture/orchestration-scripts.md](architecture/orchestration-scripts.md) — `ORCH-forge-orchestration`.
 - [architecture/git-scripts.md](architecture/git-scripts.md) — `GIT-forge-publication`: PR eligibility, body, issue linking, and publication.
 - [functional-spec/strategies.md](functional-spec/strategies.md) — `STRAT-workflow-strategy-registry`: strategy registry, contract, and fields.
 - [functional-spec/benchmarking.md](functional-spec/benchmarking.md) — `BENCH-forge-generation-benchmarking`.

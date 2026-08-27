@@ -222,7 +222,7 @@ exit before it scans a queue, not fail one issue at a time.
 ### 2. Issue claimability
 
 Claiming is exclusive, and the decision must be made against live GitHub state
-rather than the scan results that led to it (§ORCH-forge-orchestration-spec).
+rather than the scan results that led to it (§ORCH-forge-orchestration).
 The issue payload is re-read at claim time and must still be open, still carry
 the queue label, be unassigned or assigned only to the authenticated user, carry
 no open blockers, and sit in project status `Todo`. A `resumable` issue

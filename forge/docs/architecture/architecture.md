@@ -277,7 +277,7 @@ configuration error, not a per-issue failure.
 **Algorithmic.**
 
 Claiming is orchestration, never workflow logic (§AR-forge-control-plane,
-§ORCH-forge-orchestration-spec). The issue payload is re-read at claim time
+§ORCH-forge-orchestration). The issue payload is re-read at claim time
 against live GitHub state rather than trusted from the scan
 (§FS-forge-run-requirements.2), and must still be open, still carry the
 queue label, be unassigned or assigned only to the authenticated user, have no
@@ -345,7 +345,7 @@ isolated worktree of the reachability repository, a scratch metrics repository,
 and the per-run setup-evidence directory. It also validates that the issue
 GraalVM lanes are present before any driver is invoked
 (§FS-forge-run-requirements.4, §AR-forge-control-plane,
-§ORCH-forge-orchestration-spec). Drivers are given the resulting paths.
+§ORCH-forge-orchestration). Drivers are given the resulting paths.
 
 ### route_to_driver()
 
@@ -355,7 +355,7 @@ Routing and driver invocation are one step: the dispatcher resolves the issue
 label to exactly one driver script under `ai_workflows/drivers/` and calls it
 with two explicit run inputs — resolved coordinates and the validated strategy —
 plus the worktree, metrics and setup-evidence paths, issue context, and
-continuation marker (§ORCH-forge-orchestration-spec). Routing is by issue label
+continuation marker (§ORCH-forge-orchestration). Routing is by issue label
 only, never by PR label, and the driver does not re-implement queue policy. The
 driver returns a terminal status and its durable run evidence.
 
@@ -391,7 +391,7 @@ before `normal_setup()` or between `neural_setup()` and `check_setup()`. The
 agent receives the coordinates, strategy, prepared tree, issue context, artifact
 evidence, and source context. Returned dependency, Docker-image, and advisory
 fields are typed and structurally validated
-(§ORCH-forge-orchestration-spec.1.1, §root/PRCPL-verify-inputs).
+(§ORCH-forge-orchestration.1.1, §root/PRCPL-verify-inputs).
 
 The agent running this step must have web tooling: resolving artifact URLs,
 downloading sources, and deciding what a library needs to build require reading
@@ -846,7 +846,7 @@ dynamic-access work, only the final chunk may close the issue
 After the driver returns, the dispatcher owns the GitHub bookkeeping the run
 must not do for itself: unassign the issue, move the project item to the status
 the terminal run status implies, apply review or human-intervention labels, and
-clean up the worktree (§ORCH-forge-orchestration-spec). A chunk-ready run leaves
+clean up the worktree (§ORCH-forge-orchestration). A chunk-ready run leaves
 the issue open for its next chunk (§WF-chunked-dynamic-access-pr-linking).
 
 ## AR-forge-control-plane: Worker loop and dispatcher own queue control
@@ -859,7 +859,7 @@ and invokes `forge_metadata.py` for one work cycle, as described in
 §DW-do-work-loop. The dispatcher owns GitHub queue scanning, issue claiming,
 worktree creation, workflow routing, review queues, project status updates, and
 cleanup; its behavior and implementation are specified in
-§ORCH-forge-orchestration-spec. After the dispatcher observes a PR-eligible
+§ORCH-forge-orchestration. After the dispatcher observes a PR-eligible
 status, the git-scripts component (§GIT-forge-publication) finalizes and pushes
 one verified branch and descriptor. Repository Actions then hand the exact SHA
 to trusted default-branch publisher code (§GIT-actions-publication), which owns

@@ -382,7 +382,7 @@ newer upstream versions, tests every candidate across the supported environment
 matrix, records the versions that pass as a single bulk-update pull request, and
 files one tracking issue per version that fails. The failure issues are the
 entry point of the Forge repair queue (§forge/FS-forge-functional-spec,
-§forge/ORCH-forge-orchestration-spec); the bulk-update PR is reviewed by the
+§forge/ORCH-forge-orchestration); the bulk-update PR is reviewed by the
 `review-library-bulk-update` skill. This section is the behavioral contract for
 that workflow; the run-size limits are stated in §FS-repository-functional-spec.5.3
 and the recording precondition in §FS-repository-functional-spec.5.2, and every

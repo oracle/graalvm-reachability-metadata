@@ -1,4 +1,4 @@
-# ORCH-forge-orchestration-spec: Forge orchestration scripts
+# ORCH-forge-orchestration: Forge orchestration scripts
 
 `forge_metadata.py` is Forge's orchestration hub between the do-work loop
 (§DW-do-work-loop), GitHub, isolated worktrees, workflow drivers

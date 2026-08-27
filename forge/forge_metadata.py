@@ -11,7 +11,7 @@ runs the matching pipeline, and updates the project item status.
 This module is the Forge control-plane dispatcher (§AR-forge-control-plane): it
 owns queue selection, issue claiming, isolated worktree setup, workflow routing,
 publication handoff, follow-up labeling, and cleanup, implementing the
-orchestration contract in §ORCH-forge-orchestration-spec.
+orchestration contract in §ORCH-forge-orchestration.
 
 Usage:
   python forge-metadata.py --label <label> [--limit N] [--offset N|--random-offset]
