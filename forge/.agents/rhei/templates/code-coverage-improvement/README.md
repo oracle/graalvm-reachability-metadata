@@ -4,8 +4,15 @@ This Rhei template converts one GitHub issue labeled `code-coverage-improvement`
 into a bounded workspace for the planned Forge code coverage workflow
 §AR-code-coverage-improvement.
 
-Instantiate it from `forge/` with the issue number and, optionally, an explicit
-coordinate override:
+From `forge/`, automatically select an eligible issue and start execution with
+the terminal TUI and browser dashboard:
+
+```console
+./run-code-coverage-improvement.sh
+```
+
+To instantiate a specific issue without immediately executing it, supply the
+issue number and, optionally, an explicit coordinate override:
 
 ```console
 rhei instantiate code-coverage-improvement \

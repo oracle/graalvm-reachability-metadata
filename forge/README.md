@@ -102,6 +102,7 @@ pip install -e .
 Required local tools depend on the work queue being processed:
 
 - `gh` for issue, PR, and review automation.
+- `rhei` for the interactive code-coverage-improvement workflow.
 - `pi` for Pi-agent strategies and automated style recovery.
 - `codex` for Codex-agent strategies and metadata fixups.
 - For issue work, set `GRAALVM_HOME`, `GRAALVM_HOME_25_0`, and
@@ -128,6 +129,17 @@ distribution cache under the system temp directory. Set
 The top-level worker delegates to these lower-level entry points. Use them
 directly when debugging a single task or reproducing a failure.
 §AR-forge-drivers
+
+To select the highest-priority eligible `code-coverage-improvement` issue and
+start its Rhei workspace with the terminal TUI and browser dashboard:
+
+```console
+./run-code-coverage-improvement.sh
+```
+
+Pass `rhei run` options after `--`, for example
+`./run-code-coverage-improvement.sh -- --parallel 2`.
+§AR-code-coverage-improvement.2
 
 ```console
 python3 forge_metadata.py --help
