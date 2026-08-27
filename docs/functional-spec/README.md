@@ -5,19 +5,10 @@ what a contribution must satisfy — a rule a reviewer or a gate can be held to,
 and the two suites those rules govern. How that behavior is implemented belongs
 in [../architecture/](../architecture/README.md) instead.
 
-Three kinds live here, and the prefix tells you which file to open:
-
-| Kind | Home | Holds |
-| --- | --- | --- |
-| `FS` | this folder | The repository specification and the contribution/test contracts. |
-| `METADATA` | [metadata.md](metadata.md) | The shipped `metadata/` suite: layout, invariants, provenance. |
-| `TESTS` | [tests.md](tests.md) | The `tests/` suite that justifies every metadata entry. |
-
-`METADATA` and `TESTS` are filed here because each describes a suite's contract —
-what the shipped metadata must be, and what a test must do to justify it — not
-how the build produces either. They keep their own prefixes: a `METADATA-` or
-`TESTS-` ID is not an `FS-` ID, and each is declared in its own home file above
-rather than anywhere in this folder.
+One kind lives here: every declaration in this folder is an `FS-` ID, whichever
+file it sits in. The two suites' contracts are part of that — `FS-metadata` says
+what the shipped metadata must be and `FS-tests` what a test must do to justify
+it, neither of which is about how the build produces either.
 
 | ID | Subject |
 | --- | --- |
@@ -26,8 +17,8 @@ rather than anywhere in this folder.
 | [§FS-contribution-contract](contribution-contract.md#fs-contribution-contract-test-and-metadata-contribution-contract) | Test and metadata contribution contract |
 | [§FS-test-contract](test-contract.md#fs-test-contract-the-test-contract) | The test contract |
 | [§FS-repository-status-report](repository-status.md#fs-repository-status-report-repository-issue-progress-and-state) | Repository issue progress and state |
-| §METADATA-suite | The `metadata/` suite |
-| §TESTS-suite | The `tests/` suite |
+| [§FS-metadata](metadata.md#fs-metadata-the-metadata-suite) | The `metadata/` suite |
+| [§FS-tests](tests.md#fs-tests-the-tests-suite) | The `tests/` suite |
 
 This index is navigational. Cite the specific declaration ID rather than this
 file.

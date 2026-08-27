@@ -593,7 +593,7 @@ states:
       # what remains. The extension suite contributes to the same two
       # reachability-metadata.json files as every other test, and the split is by
       # the entry's own type, never by hand
-      # (§CC-code-coverage-improvement.2, §root/METADATA-suite.2, §root/TCK-test-harness.5).
+      # (§CC-code-coverage-improvement.2, §root/FS-metadata.2, §root/AR-test-harness.5).
       for metadata_task in ("splitTestOnlyMetadata", "checkMetadataFiles"):
           metadata_command = [
               f"{worktree_path}/gradlew",
@@ -609,7 +609,7 @@ states:
 
       # A tracing-agent run during metadata preparation can leave legacy split
       # configs behind; this repository loads none of them
-      # (§root/METADATA-suite.1).
+      # (§root/FS-metadata.1).
       sys.path.insert(0, work_path)
       try:
           from utility_scripts.native_image_config_policy import (
@@ -661,7 +661,7 @@ states:
 
       # Step 5: persist coverage from the newly written tests. The stats task
       # consumes the combined report, whose denominator is only the coordinate's
-      # unclassified main JAR (§root/TCK-test-harness.8).
+      # unclassified main JAR (§root/AR-test-harness.8).
       stats_command = [
           f"{worktree_path}/gradlew",
           "generateLibraryStats",

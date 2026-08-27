@@ -106,11 +106,11 @@ contributes to the same two as every other test: entries a consumer needs go
 to `metadata/<group>/<artifact>/<version>/reachability-metadata.json`, and
 entries that exist only for the tests go to the test project's
 `src/test/resources/META-INF/native-image/reachability-metadata.json`
-(§root/METADATA-suite.2, §root/FS-repository-functional-spec.5.1). The single-file
+(§root/FS-metadata.2, §root/FS-repository-functional-spec.5.1). The single-file
 `reachability-metadata.json` format is the only one `native-image` loads here;
 the legacy split-config files — `reflect-config.json`, `jni-config.json`,
 `resource-config.json`, `serialization-config.json`, `proxy-config.json` — are
-never used in this repository (§root/METADATA-suite.1), so a native-image tracing
+never used in this repository (§root/FS-metadata.1), so a native-image tracing
 agent run that emits them has produced input to convert, not output to commit.
 Which of the two homes an entry belongs to is not decided by hand: finalization
 runs `splitTestOnlyMetadata` and the split is by the entry's own type
@@ -441,7 +441,7 @@ The Rhei template should decompose the workflow into these phases:
    JaCoCo and deep reports. The stats update makes the repository coverage
    dashboard reflect the tests this workflow adds without counting classified
    artifacts such as an upstream test JAR in the denominator
-   (§root/TCK-test-harness.8). It is also the one step here that builds a native
+   (§root/AR-test-harness.8). It is also the one step here that builds a native
    image: `generateLibraryStats` measures dynamic access from a native build, so
    the stats step, not the JVM suites, sets this phase's wall clock. A native
    build that fails degrades the coordinate's `dynamicAccess` figure to `N/A`
@@ -451,7 +451,7 @@ The Rhei template should decompose the workflow into these phases:
    for the same reason: metadata the
    extension suite needed only for its own helper types must not reach a
    consumer, and deciding that by hand is exactly what the task automates
-   (§root/METADATA-suite.2, §root/TCK-test-harness.5). The step also fails the
+   (§root/FS-metadata.2, §root/AR-test-harness.5). The step also fails the
    run when a legacy split-config file survives anywhere under the coordinate's
    test tree, which is how a tracing-agent artifact left behind by metadata
    preparation is caught before publication rather than in review (§2). Nothing

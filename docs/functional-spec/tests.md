@@ -1,4 +1,4 @@
-# TESTS-suite: The `tests/` suite
+# FS-tests: The `tests/` suite
 
 [`tests/`](../../tests) is what justifies every byte of shipped metadata. A
 metadata entry exists only because a test exercises the dynamic access it
@@ -19,7 +19,7 @@ this document describes the test-project contract.
   — when present, the test-only reachability metadata that
   `splitTestOnlyMetadata` carved out of the shipped library metadata so the test
   image can reach its own helper types without those entries reaching consumers
-  (§METADATA-suite, §FS-repository-functional-spec.5.1).
+  (§FS-metadata, §FS-repository-functional-spec.5.1).
 - `build.gradle` may add test dependencies and, when there is no better public
   API path, restrict Native Image configuration edits to `--add-opens` /
   `--add-exports` under `graalvmNative`.
@@ -72,10 +72,10 @@ summary of what they mean when writing one.
 
 The harness compiles and runs each coordinate's project through the
 `compileTestJava` → `javaTest` → `nativeTestCompile` → `nativeTest` lanes
-(§TCK-test-harness.3), and CI runs the same lanes across the `ci.json` JDK/OS
-matrix and native-image modes (§CI-repository-ci). A version is recorded as
+(§AR-test-harness.3), and CI runs the same lanes across the `ci.json` JDK/OS
+matrix and native-image modes (§AR-repository-ci). A version is recorded as
 supported only after it passes on every required environment, and dynamic-access
 coverage between consecutive versions must not regress
 (§FS-repository-functional-spec.5.2, §GOAL-protect-shipped-metadata). New test
 projects are created from the scaffold templates by the authoring tasks
-(§TCK-test-harness.5), by a human or by Forge (§forge/FS-forge-functional-spec).
+(§AR-test-harness.5), by a human or by Forge (§forge/FS-forge-functional-spec).

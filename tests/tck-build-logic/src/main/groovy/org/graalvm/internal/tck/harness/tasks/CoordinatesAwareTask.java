@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  *  - "all"
  *  - fractional batches "k/n"
  * Fixture coordinates remain runnable; reporting tasks decide which coordinates
- * are excluded from supported-library outputs. §TCK-test-harness.1
+ * are excluded from supported-library outputs. §AR-test-harness.1
  */
 public abstract class CoordinatesAwareTask extends DefaultTask {
     private static final String EXCLUDED_COORDINATES_FILE_PROPERTY = "tck.excludedCoordinatesFile";

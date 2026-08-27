@@ -3,7 +3,7 @@
 This document describes what the **GraalVM Reachability Metadata Repository** does for its users, who those users are, and the requirements that the repository, its build infrastructure, and its automation (Forge) must meet. For the structural and implementation overview that organizes these behaviors into components, see §AR-repository-architecture.
 §GOAL-tested-metadata §GOAL-broad-version-coverage §GOAL-fresh-metadata §GOAL-protect-shipped-metadata
 
-It is intended for agents, contributors, and downstream tooling owners who need a single, behavior-focused description of the system. The repository's moving parts are documented as modules that this spec cites at the point each behavior is stated: the test harness (§TCK-test-harness), the CI workflows (§CI-repository-ci), and the metadata and tests suites (§METADATA-suite, §TESTS-suite). Forge automation has its own functional spec in its namespace (§forge/FS-forge-functional-spec) and owns the derived metrics under `stats/` (§forge/FS-forge-run-metrics). For the task-oriented "what do I run, and when" view rather than the requirements, see [§8 How this repository is used](#8-how-this-repository-is-used).
+It is intended for agents, contributors, and downstream tooling owners who need a single, behavior-focused description of the system. The repository's moving parts are documented as modules that this spec cites at the point each behavior is stated: the test harness (§AR-test-harness), the CI workflows (§AR-repository-ci), and the metadata and tests suites (§FS-metadata, §FS-tests). Forge automation has its own functional spec in its namespace (§forge/FS-forge-functional-spec) and owns the derived metrics under `stats/` (§forge/FS-forge-run-metrics). For the task-oriented "what do I run, and when" view rather than the requirements, see [§8 How this repository is used](#8-how-this-repository-is-used).
 
 ---
 
@@ -46,10 +46,10 @@ These constraints apply uniformly to human-authored PRs and to Forge output, and
 - A repository-level `metadata/library-and-framework-list.json` enumerating every supported library, with `test_level` ∈ `{untested, community-tested, fully-tested}`.
 - A `stats/<groupId>/<artifactId>/<metadata-version>/` mirror of per-version metrics — `stats.json` (dynamic-access call sites, coverage, lines of code, dependency information) produced by the harness, alongside the schema-validated `execution-metrics.json` each Forge run records.
 
-The metadata directory and its index/list/schema contracts are specified in §METADATA-suite. The derived `stats/` metrics are not consumed by native-build-tools; what each entry holds and how a run produces it are specified in the Forge spec (§forge/FS-forge-run-metrics), and the dashboard built from them is §4.5.
+The metadata directory and its index/list/schema contracts are specified in §FS-metadata. The derived `stats/` metrics are not consumed by native-build-tools; what each entry holds and how a run produces it are specified in the Forge spec (§forge/FS-forge-run-metrics), and the dashboard built from them is §4.5.
 
 ### 4.2 Test harness
-§TCK-test-harness
+§AR-test-harness
 
 A Gradle-based TCK that, given a library coordinate `group:artifact:version`, runs:
 
@@ -58,10 +58,10 @@ A Gradle-based TCK that, given a library coordinate `group:artifact:version`, ru
 - Compilation, JVM-mode tests (`javaTest`), and native-image tests (`nativeTest`).
 - Coverage collection (JaCoCo) and dynamic-access reporting per coordinate.
 
-The harness uses a single coordinates filter `-Pcoordinates=` accepting `all`, `group:artifact`, `group:artifact:version`, or shard `k/n`. It also exposes authoring helpers (`generateMetadata`, `splitTestOnlyMetadata`, `fixTestNativeImageRun`, `addTestedVersion`, `fetchExistingLibrariesWithNewerVersions`), reporting tasks (`jacocoTestReport`, `generateDynamicAccessCoverageReport`, `generateLibraryStats`, `analyzeExternalLibraryDynamicAccess`, `listTopCoordinatesByMetric`, `generateTopCoordinatesByMetricMatrix`), and the `package` release task. Its task groups and the Gradle harness that delegates `-Pcoordinates=` to per-coordinate sub-builds are specified in §TCK-test-harness; the test sources it drives in §TESTS-suite. The full task reference lives in [DEVELOPING.md](../DEVELOPING.md).
+The harness uses a single coordinates filter `-Pcoordinates=` accepting `all`, `group:artifact`, `group:artifact:version`, or shard `k/n`. It also exposes authoring helpers (`generateMetadata`, `splitTestOnlyMetadata`, `fixTestNativeImageRun`, `addTestedVersion`, `fetchExistingLibrariesWithNewerVersions`), reporting tasks (`jacocoTestReport`, `generateDynamicAccessCoverageReport`, `generateLibraryStats`, `analyzeExternalLibraryDynamicAccess`, `listTopCoordinatesByMetric`, `generateTopCoordinatesByMetricMatrix`), and the `package` release task. Its task groups and the Gradle harness that delegates `-Pcoordinates=` to per-coordinate sub-builds are specified in §AR-test-harness; the test sources it drives in §FS-tests. The full task reference lives in [DEVELOPING.md](../DEVELOPING.md).
 
 ### 4.3 Continuous integration
-§CI-repository-ci
+§AR-repository-ci
 
 GitHub Actions, configured by [`ci.json`](../../ci.json) as the single source of truth for OS/JDK matrix, run the workflows enumerated in [ci.md](../architecture/ci.md):
 - PR-scoped: changed-metadata, changed-infrastructure, new-library-version, Spring AOT smoke, library-stats validation, library-and-framework-list validation, checkstyle.
@@ -72,9 +72,9 @@ CI must pass before any merge, and is the authoritative gate — local runs are 
 
 ### 4.4 Releases
 
-Every Monday the `create-scheduled-release` workflow packages metadata into the next numbered release if it has changed (§CI-create-scheduled-release). The release is deliberately not gated on the periodic `test-all-metadata` sweep: merged metadata is already gated per-PR (§5.3), and the sweep exercises bleeding-edge JDK and native-image configurations whose failures must not stall the release cadence. Numbered releases consider only semantic version tags when computing the previous version tag, so floating snapshot tags such as `SNAPSHOT` cannot affect the permanent release cadence.
+Every Monday the `create-scheduled-release` workflow packages metadata into the next numbered release if it has changed (§AR-create-scheduled-release). The release is deliberately not gated on the periodic `test-all-metadata` sweep: merged metadata is already gated per-PR (§5.3), and the sweep exercises bleeding-edge JDK and native-image configurations whose failures must not stall the release cadence. Numbered releases consider only semantic version tags when computing the previous version tag, so floating snapshot tags such as `SNAPSHOT` cannot affect the permanent release cadence.
 
-The `create-snapshot-release` workflow refreshes a floating `SNAPSHOT` GitHub Release on the `SNAPSHOT` tag after `master` pushes when metadata changed since the previous `SNAPSHOT` tag, or since the latest numbered release when bootstrapping (§CI-create-snapshot-release). It packages the repository with version `SNAPSHOT`, replaces the previous snapshot release/tag, and provides a continuously updated snapshot-style metadata bundle between numbered releases without taking GitHub's Latest marker from the newest numbered release. The packaged artifacts are what the GraalVM Gradle/Maven plugins consume.
+The `create-snapshot-release` workflow refreshes a floating `SNAPSHOT` GitHub Release on the `SNAPSHOT` tag after `master` pushes when metadata changed since the previous `SNAPSHOT` tag, or since the latest numbered release when bootstrapping (§AR-create-snapshot-release). It packages the repository with version `SNAPSHOT`, replaces the previous snapshot release/tag, and provides a continuously updated snapshot-style metadata bundle between numbered releases without taking GitHub's Latest marker from the newest numbered release. The packaged artifacts are what the GraalVM Gradle/Maven plugins consume.
 
 ### 4.5 Coverage and metrics dashboard
 
@@ -222,7 +222,7 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 - **No test-only shipped entries.** A metadata entry is test-only when the type it describes belongs to a package from the test suite; such entries must not ship. A type from the library JAR or one of its dependencies is library metadata even when a test is what exercised it.
 - **Index coverage.** Each `metadata/<group>/<artifact>/` directory must include a valid `index.json` enumerating its metadata versions and tested library versions.
 - **Single latest entry.** Exactly one entry in a non-empty `index.json` must carry `latest: true`. If a library version is not in `tested-versions`, the harness selects an entry by matching the optional `default-for` regex.
-- **Dependency and test-only split.** Metadata can declare dependencies on other artifacts via `requires`. Metadata needed only by the tests — entries whose type or `typeReached` names a test package, or whose resource is a test resource — must not ship to consumers; `splitTestOnlyMetadata` moves them out of the library's `reachability-metadata.json` into the test project's `src/test/resources/META-INF/native-image/reachability-metadata.json`, keeping the shipped metadata free of test-only types (§METADATA-suite).
+- **Dependency and test-only split.** Metadata can declare dependencies on other artifacts via `requires`. Metadata needed only by the tests — entries whose type or `typeReached` names a test package, or whose resource is a test resource — must not ship to consumers; `splitTestOnlyMetadata` moves them out of the library's `reachability-metadata.json` into the test project's `src/test/resources/META-INF/native-image/reachability-metadata.json`, keeping the shipped metadata free of test-only types (§FS-metadata).
 
 ### 5.2 Tests
 
@@ -266,7 +266,7 @@ Forge's requirements are specified in [forge/docs/functional-spec/functional-spe
 - **Held citation directions.** The directions declared `must` in `[citations]`
   hold; the ones declared `should` are a worklist rather than a gate.
 
-These are enforced on every PR that touches a scanned path (§CI-grund-check).
+These are enforced on every PR that touches a scanned path (§AR-grund-check).
 
 ## 6. Operational Guarantees
 
@@ -318,7 +318,7 @@ every dependency in your build and passes it to `native-image` (§4.7). Concrete
 - **Check whether a library is supported.**
   `curl -sSL …/check-library-support.sh | bash -s "<group>:<artifact>:<version>"`,
   or browse the [libraries-and-frameworks page](https://www.graalvm.org/native-image/libraries-and-frameworks/),
-  which is derived from `metadata/library-and-framework-list.json` (§METADATA-suite).
+  which is derived from `metadata/library-and-framework-list.json` (§FS-metadata).
   The script checks the published `index.json` contract (§4.7): it reports exact
   tested-version support when present, and it also reports when the artifact is
   already recorded as `not-for-native-image`.
@@ -343,7 +343,7 @@ coordinate that exposed the gap (§forge/GOAL-improve-automation-first).
 Direct human edits to metadata or tests are reserved for high-priority work that
 the automation cannot safely resolve yet. Those edits are still bound by the
 same additivity constraints (§3), test requirements (§5.2), metadata rules
-(§5.1), and CI gates (§4.3, §CI-repository-ci) as Forge output. The usual local
+(§5.1), and CI gates (§4.3, §AR-repository-ci) as Forge output. The usual local
 verification is coordinate-scoped:
 `./gradlew pullAllowedDockerImages checkMetadataFiles test -Pcoordinates=<group:artifact:version>`.
 
@@ -468,9 +468,9 @@ a full release of a base version is now handled, older pre-release issues
 - [CONTRIBUTING.md](../CONTRIBUTING.md) — how to add or update metadata.
 - [REVIEWING.md](../REVIEWING.md) — reviewer checklist (licensing, security, metadata quality).
 - [DEVELOPING.md](../DEVELOPING.md) — Gradle task reference for development.
-- [architecture/ci.md](../architecture/ci.md) — recurring CI workflows and composite actions (§CI-repository-ci).
-- [architecture/tck.md](../architecture/tck.md) — test harness task groups and Gradle harness (§TCK-test-harness).
-- [metadata.md](metadata.md), [tests.md](tests.md) — the metadata and tests suites (§METADATA-suite, §TESTS-suite).
+- [architecture/ci.md](../architecture/ci.md) — recurring CI workflows and composite actions (§AR-repository-ci).
+- [architecture/tck.md](../architecture/tck.md) — test harness task groups and Gradle harness (§AR-test-harness).
+- [metadata.md](metadata.md), [tests.md](tests.md) — the metadata and tests suites (§FS-metadata, §FS-tests).
 - [CollectingMetadata.md](../CollectingMetadata.md) — using the Native Image Agent to collect metadata.
 - [SECURITY.md](../SECURITY.md) — vulnerability disclosure.
 - [forge/README.md](../../forge/README.md) — Forge user manual.

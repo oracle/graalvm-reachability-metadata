@@ -50,26 +50,6 @@ folder = "docs/architecture"
 title = "Repository architecture and build infrastructure"
 
 [[kinds]]
-kind = "TCK"
-file = "docs/architecture/tck.md"
-title = "Test harness (TCK): task groups"
-
-[[kinds]]
-kind = "CI"
-file = "docs/architecture/ci.md"
-title = "Recurring CI workflows and composite actions"
-
-[[kinds]]
-kind = "METADATA"
-file = "docs/functional-spec/metadata.md"
-title = "The metadata/ suite: shipped reachability metadata"
-
-[[kinds]]
-kind = "TESTS"
-file = "docs/functional-spec/tests.md"
-title = "The tests/ suite: tests that justify the metadata"
-
-[[kinds]]
 kind = "SKILL"
 folder = "skills"
 citable = false
@@ -160,26 +140,21 @@ should = ["GOAL|FS"]
 [citations.AR]
 must = ["FS|GOAL"]
 
-[citations.TCK]
-must = ["FS|AR|GOAL"]
-
-[citations.CI]
-should = ["FS|TCK|METADATA|TESTS|GOAL"]
-
-[citations.METADATA]
-must = ["FS|GOAL"]
-
-[citations.TESTS]
-must = ["FS|METADATA|GOAL"]
-
 [citations.SKILL]
-must = ["FS|CI|METADATA|TESTS"]
+must = ["FS"]
+should = ["AR"]
 
 [citations.workflow]
-should = ["CI|FS|AR|TCK|METADATA|TESTS"]
+should = ["FS|AR"]
 
 [citations.action]
-should = ["CI|FS|AR"]
+should = ["FS|AR"]
 
+[citations.tck-build-logic]
+should = ["FS|AR"]
+
+# `must = ["FS"]` with `should = ["AR"]` is the intent, but the build and harness
+# layer legitimately grounds in AR alone, and a file under tests/tck-build-logic
+# classifies as `code` rather than its own kind while tests/ is an unwalked home.
 [citations.code]
-must = ["FS|AR|TCK|CI|METADATA|TESTS"]
+must = ["FS|AR"]

@@ -259,7 +259,7 @@ through Codex first.
 Tracing shells out **only** to the Gradle wrapper; it must never invoke
 `native-image` or `native-image-utils` directly. Rebuilding inside the loop is the
 point: metadata collected by an earlier pass unlocks code paths only later builds
-reach. The reachability repo must provide three tasks (§root/TCK-test-harness);
+reach. The reachability repo must provide three tasks (§root/AR-test-harness);
 which flags they pass and where they put the binary is a Gradle-side concern.
 
 | Task | Properties | Contract |

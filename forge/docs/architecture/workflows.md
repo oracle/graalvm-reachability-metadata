@@ -151,7 +151,7 @@ happens at runtime. The reachability repo's coverage tooling makes that
 measurable: it produces a **dynamic-access report** naming every class in the
 target library that performs reflection, JNI, resource, serialization, or proxy
 access, with each call site marked covered or uncovered
-(§root/TESTS-suite). "Covered" means the repository's tests
+(§root/FS-tests). "Covered" means the repository's tests
 reached it. Exploration is the work of turning uncovered call sites into covered
 ones by writing tests that exercise them through public API
 (§GOAL-maximize-library-coverage).

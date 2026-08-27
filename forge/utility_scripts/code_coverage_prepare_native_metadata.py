@@ -90,7 +90,7 @@ def _normalize_coverage_suite(repo_path: str, coverage_suite: str) -> str:
 # runs `nativeTest` inside the resolved library build and forwards
 # `-PincludeCodeCoverageSuite`. Naming `nativeTest` here resolves against the
 # root project, where Gradle matches it by prefix against `nativeTestCompile`
-# and `nativeTestPGOSampling` and fails as ambiguous. §TCK-test-harness.3
+# and `nativeTestPGOSampling` and fails as ambiguous. §root/AR-test-harness.3
 NATIVE_VALIDATION_TASK: str = "test"
 
 

@@ -236,7 +236,7 @@ or Native Image config entries: no creating or editing
 tests and merged by the harness and Forge (§FS-repository-functional-spec.5.1).
 The only permitted `build.gradle` native configuration is `--add-opens` /
 `--add-exports` under `graalvmNative` when no better public API path exists
-(§TESTS-suite.1).
+(§FS-tests.1).
 
 ```text
 Bad: a PR diff adding
@@ -301,7 +301,7 @@ Client client = Client.builder().codec(new GzipCodec()).build();
 
 Upstream test sources serve only as behavioral examples and documentation only
 as API guidance. Test code in this repository stays original — no copying
-third-party test sources (§TESTS-suite.2).
+third-party test sources (§FS-tests.2).
 
 ```text
 Read upstream RecyclerTest to learn the recycle-then-get contract;

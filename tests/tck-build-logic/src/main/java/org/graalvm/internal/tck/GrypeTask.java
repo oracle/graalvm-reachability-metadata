@@ -28,8 +28,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Implements §TCK-test-harness.6 — the {@code checkAllowedDockerImages} task that scans allowed
- * images for vulnerabilities with grype (§CI-scan-docker-images).
+ * Implements §AR-test-harness.6 — the {@code checkAllowedDockerImages} task that scans allowed
+ * images for vulnerabilities with grype (§AR-scan-docker-images).
  */
 @SuppressWarnings("unused")
 public abstract class GrypeTask extends DefaultTask {

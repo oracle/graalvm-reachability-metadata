@@ -19,7 +19,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/** Tests the root-to-coordinate PGO property contract (§TCK-test-harness.8). */
+/** Tests the root-to-coordinate PGO property contract (§AR-test-harness.8). */
 class PGOInvocationTaskTests {
 
     @TempDir

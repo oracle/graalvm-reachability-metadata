@@ -1,4 +1,4 @@
-// §CI-shared-scripts; invoked by §CI-triage-new-issues.
+// §AR-shared-scripts; invoked by §AR-triage-new-issues.
 
 // Opens or reuses GitHub issues for unsupported dependencies discovered in a deps.dev
 // expansion and wires them together with GitHub "blocked by" relationships.

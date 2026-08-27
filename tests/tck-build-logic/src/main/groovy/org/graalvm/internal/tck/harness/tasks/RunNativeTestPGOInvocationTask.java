@@ -13,7 +13,7 @@ import java.util.List;
  * Task that runs the PGO-sampling native test image once on matching
  * subprojects to collect the sampled {@code .iprof} profile.
  * <p>
- * Supports sampled deep-path navigation (§TCK-test-harness.8,
+ * Supports sampled deep-path navigation (§AR-test-harness.8,
  * §forge/CC-code-coverage-improvement.3.2).
  */
 @SuppressWarnings("unused")

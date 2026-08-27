@@ -1,4 +1,4 @@
-# METADATA-suite: The `metadata/` suite
+# FS-metadata: The `metadata/` suite
 
 [`metadata/`](../../metadata) is the repository's product: the curated GraalVM
 reachability metadata that native-build-tools resolves and passes to
@@ -71,15 +71,15 @@ native-build-tools loads no metadata for such a coordinate.
   silently absorb (§FS-repository-functional-spec.4).
 - **Schema-valid and sorted.** JSON validates against its vendored schema and is
   key-sorted; `index.json` integrity and entry validity are enforced by
-  `validateIndexFiles` and `checkMetadataFiles` (§TCK-test-harness.2) and the
-  matching CI workflows (§CI-repository-ci).
+  `validateIndexFiles` and `checkMetadataFiles` (§AR-test-harness.2) and the
+  matching CI workflows (§AR-repository-ci).
 
 ### Test-only metadata is kept out of the shipped metadata
 
 Tests routinely need reachability metadata for their *own* helper types — the
 test classes, fixtures, and resources that exercise the library — but those
 entries must never reach a consumer (§FS-repository-functional-spec.5.1). The
-harness `splitTestOnlyMetadata` task (§TCK-test-harness.5) maintains that
+harness `splitTestOnlyMetadata` task (§AR-test-harness.5) maintains that
 separation: any entry whose `type` or `condition.typeReached` names a test
 package, or whose resource is a test resource, is moved out of the library's
 `metadata/<group>/<artifact>/<version>/reachability-metadata.json` and into the
@@ -91,7 +91,7 @@ native image still loads everything it needs from its own resources.
 ## 3. Provenance
 
 No file here is hand-trusted: each metadata entry is justified by a test in the
-`tests/` suite (§TESTS-suite, §GOAL-tested-metadata) and is added or updated only
-through the harness authoring tasks (§TCK-test-harness.5) by a human contributor
+`tests/` suite (§FS-tests, §GOAL-tested-metadata) and is added or updated only
+through the harness authoring tasks (§AR-test-harness.5) by a human contributor
 or by Forge (§forge/FS-forge-functional-spec). Coverage grows without weakening
 what already ships (§GOAL-protect-shipped-metadata).

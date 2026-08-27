@@ -81,7 +81,7 @@
 <!-- BEGIN GRUND MANAGED BLOCK -->
 ## Grounding with grund (v7)
 
-This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]` (`KIND ∈ {GRUND, GOAL, PRCPL, FS, AR, TCK, CI, METADATA, TESTS}`), cited with the marker `§` — e.g. `<§>FS-user-login.3.1` (the `FS-user-login` here is a shape illustration, not a real ID in this repo, hence the `<§>` escape). Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `grund.toml`, so only `§`-prefixed citations are checked.
+This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]` (`KIND ∈ {GRUND, GOAL, PRCPL, FS, AR}`), cited with the marker `§` — e.g. `<§>FS-user-login.3.1` (the `FS-user-login` here is a shape illustration, not a real ID in this repo, hence the `<§>` escape). Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `grund.toml`, so only `§`-prefixed citations are checked.
 
 ### Grounding from a citation
 
@@ -101,10 +101,6 @@ A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and 
 - [PRCPL](docs/principles.md): Cross-cutting principles for how the repository works
 - [FS](docs/functional-spec): Repository functional behavior and contributor-facing requirements
 - [AR](docs/architecture): Repository architecture and build infrastructure
-- [TCK](docs/architecture/tck.md): Test harness (TCK): task groups
-- [CI](docs/architecture/ci.md): Recurring CI workflows and composite actions
-- [METADATA](docs/functional-spec/metadata.md): The metadata/ suite: shipped reachability metadata
-- [TESTS](docs/functional-spec/tests.md): The tests/ suite: tests that justify the metadata
 - [skills/](skills): Agent review and automation skills
 - [.github/workflows/](.github/workflows): CI and release workflows: the gate on GitHub
 - [.github/actions/](.github/actions): Composite actions the workflows reuse
@@ -147,14 +143,11 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 - **PRCPL** must cite GOAL.
 - **FS** should cite GOAL or FS.
 - **AR** must cite FS or GOAL.
-- **TCK** must cite FS or AR or GOAL.
-- **CI** should cite FS or TCK or METADATA or TESTS or GOAL.
-- **METADATA** must cite FS or GOAL.
-- **TESTS** must cite FS or METADATA or GOAL.
-- **skills/** must cite FS or CI or METADATA or TESTS.
-- **.github/workflows/** should cite CI or FS or AR or TCK or METADATA or TESTS.
-- **.github/actions/** should cite CI or FS or AR.
-- **code** (Build files and repository scripts outside a kind home) must cite FS or AR or TCK or CI or METADATA or TESTS.
+- **skills/** must cite FS; should cite AR.
+- **.github/workflows/** should cite FS or AR.
+- **.github/actions/** should cite FS or AR.
+- **tests/tck-build-logic/** should cite FS or AR.
+- **code** (Build files and repository scripts outside a kind home) must cite FS or AR.
 Unlisted kinds and pairs are fine.
 
 ### Clickable citations

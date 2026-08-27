@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
  * <p>
  * Run with {@code gradle checkMetadataFiles -Pcoordinates com.example:library:1.0.0}.
  * <p>
- * Implements §TCK-test-harness.2 — the {@code checkMetadataFiles} validation gate that
- * enforces the §METADATA-suite entry invariants: only {@code condition.typeReached}, inside
+ * Implements §AR-test-harness.2 — the {@code checkMetadataFiles} validation gate that
+ * enforces the §FS-metadata entry invariants: only {@code condition.typeReached}, inside
  * {@code allowed-packages}, and no test-only types (§FS-repository-functional-spec.5.1).
  */
 @SuppressWarnings("unused")

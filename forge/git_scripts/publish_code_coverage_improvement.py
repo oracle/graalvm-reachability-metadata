@@ -151,7 +151,7 @@ def stage_coverage_paths(
     suite, the coordinate's test directory, the metadata the suite justified, and
     the coverage stats finalization regenerated from the combined main-JAR-only
     JaCoCo report. Leaving the stats unstaged publishes tests whose effect the
-    repository's own coverage record never shows (§root/TCK-test-harness.8).
+    repository's own coverage record never shows (§root/AR-test-harness.8).
     """
     test_dir: str = os.path.relpath(
         resolve_test_dir(repo_path, group, artifact, version),

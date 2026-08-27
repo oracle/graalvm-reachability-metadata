@@ -1,4 +1,4 @@
-// §CI-detect-file-changes.
+// §AR-detect-file-changes.
 
 // Lightweight in-repository file-change filter for GitHub pull request workflows.
 //

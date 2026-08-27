@@ -29,7 +29,7 @@ public abstract class JarUtils {
 
     /**
      * Returns whether a resolved artifact is the unclassified main JAR eligible
-     * for the coverage denominator. §TCK-test-harness.8
+     * for the coverage denominator. §AR-test-harness.8
      */
     public static boolean isUnclassifiedMainJar(String extension, String classifier) {
         return "jar".equals(extension) && (classifier == null || classifier.isEmpty());

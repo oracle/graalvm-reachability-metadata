@@ -144,7 +144,7 @@
     (`jni-config.json`, `reflect-config.json`, `resource-config.json`,
     `serialization-config.json`, `proxy-config.json`) are input to convert, not
     output to commit — this repository loads none of them
-    (§root/METADATA-suite.1, §CC-code-coverage-improvement.2). Do not split shipped
+    (§root/FS-metadata.1, §CC-code-coverage-improvement.2). Do not split shipped
     from test-only entries by hand: finalization runs `splitTestOnlyMetadata`.
   - Run `./gradlew test -Pcoordinates=<resolved coordinate> -PincludeCodeCoverageSuite=true`; if it fails, repair
     metadata with the Codex `fix-missing-reachability-metadata` skill and re-run,
@@ -212,7 +212,7 @@
      test project. The extension suite contributes to the same two
      `reachability-metadata.json` files as every other test and owns no metadata
      directory of its own; the split is by the entry's own type, never by hand
-     (§CC-code-coverage-improvement.2, §root/METADATA-suite.2, §root/TCK-test-harness.5).
+     (§CC-code-coverage-improvement.2, §root/FS-metadata.2, §root/AR-test-harness.5).
   3. Run checkstyle over the coordinate's subprojects, including the tracked
      coverage suite source set:
      `./gradlew checkstyle -Pcoordinates=<resolved coordinate> --stacktrace`.
@@ -221,7 +221,7 @@
      `./gradlew codeCoverageTest -Pcoordinates=<resolved coordinate> --stacktrace`.
   5. Regenerate committed coverage statistics from the combined main-JAR-only
      report by running `./gradlew generateLibraryStats -Pcoordinates=<resolved coordinate> --stacktrace`
-     (§root/TCK-test-harness.8). The task re-runs the coverage report and builds
+     (§root/AR-test-harness.8). The task re-runs the coverage report and builds
      the dynamic-access native image, so this is the step that dominates the
      program's wall clock; a failed native build degrades `dynamicAccess` to
      `N/A` rather than failing the step.

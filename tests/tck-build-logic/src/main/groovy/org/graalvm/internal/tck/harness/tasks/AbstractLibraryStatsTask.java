@@ -241,7 +241,7 @@ public abstract class AbstractLibraryStatsTask extends CoordinatesAwareTask {
         );
     }
 
-    /// §TCK-test-harness.8: agent-origin fallback for coordinates whose dynamic-access frames carry
+    /// §AR-test-harness.8: agent-origin fallback for coordinates whose dynamic-access frames carry
     /// no line numbers. Returns null (today's behaviour) unless line-based matching is impossible;
     /// otherwise runs the JVM-only `javaTest` lane under `native-image-agent` and returns its
     /// configuration-origin directory. `javaTest` avoids re-running and clobbering the native

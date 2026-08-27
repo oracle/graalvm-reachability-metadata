@@ -1,14 +1,14 @@
-# TCK-test-harness: Test harness (TCK) task groups
+# AR-test-harness: Test harness (TCK) task groups
 
 The repository ships a Gradle-based Technology Compatibility Kit (TCK) that,
 given a library coordinate, validates its metadata and runs its tests on both
 the JVM and `native-image`. The TCK is what makes every shipped metadata file
 demonstrably backed by a test (§GOAL-tested-metadata): nothing is published until
-it passes here and in CI (§CI-repository-ci).
+it passes here and in CI (§AR-repository-ci).
 
 This document specifies the harness as task groups, one citable section per
 group. Code that implements a task cites its group — for example
-`§TCK-test-harness.2` — and names the task in the surrounding comment, so a
+`§AR-test-harness.2` — and names the task in the surrounding comment, so a
 citation records both where the behavior is specified and which task realizes it.
 How the build that exposes these tasks is wired is §AR-build-infrastructure; the
 `testInfra` and `testAllInfra` tasks exercise the whole task surface end to end;
@@ -40,18 +40,18 @@ appropriate.
 | --- | --- |
 | `listCoordinates` | Enumerate the coordinates the filter currently selects. |
 | `diff` / `testDiff` | Compute and test the coordinates affected by a Git diff. |
-| `discoverArtifactMetadata`, `listLibraryJars`, `populateArtifactURLs` | Inspect resolved artifacts and backfill index URL fields (§METADATA-suite). |
+| `discoverArtifactMetadata`, `listLibraryJars`, `populateArtifactURLs` | Inspect resolved artifacts and backfill index URL fields (§FS-metadata). |
 
 ## 2. Validation gates
 
 These enforce the metadata and style contracts before any test runs; CI runs the
-same tasks as the authoritative gate (§CI-repository-ci,
+same tasks as the authoritative gate (§AR-repository-ci,
 §FS-repository-functional-spec.5.3).
 
 | Task | Gate |
 | --- | --- |
-| `validateIndexFiles` | Index schema plus `metadata-version`/`tested-versions` consistency (§METADATA-suite). |
-| `checkMetadataFiles` | Every entry uses `condition.typeReached`, stays inside `allowed-packages`, and references no test-only types (§METADATA-suite, §FS-repository-functional-spec.5.1). |
+| `validateIndexFiles` | Index schema plus `metadata-version`/`tested-versions` consistency (§FS-metadata). |
+| `checkMetadataFiles` | Every entry uses `condition.typeReached`, stays inside `allowed-packages`, and references no test-only types (§FS-metadata, §FS-repository-functional-spec.5.1). |
 | `checkstyle` | Checkstyle across the selected coordinates' sources. |
 | `checkTestTimeoutAnnotations` | Rejects oversized JUnit `@Timeout` values. |
 | `validateLibraryStats` | Schema and normalized sorting of the `stats/` mirror, including the Forge run records (§forge/FS-forge-run-metrics). |
@@ -142,7 +142,7 @@ Kotlin and Scala projects) have their toolchain-derived launcher cleared so the
 selected JDK wins uniformly across every coordinate.
 
 This exists so the whole test suite can be run against a JDK that is not able to
-host Gradle — the Crema JVM of §CI-test-all-metadata-crema is the motivating
+host Gradle — the Crema JVM of §AR-test-all-metadata-crema is the motivating
 case. Because the selected JDK is used unmodified, a failure under it is a
 property of that JDK and not of the harness, which is what makes the resulting
 run usable as a bug report.
@@ -177,7 +177,7 @@ Tasks that create or update metadata, tests, and index entries.
 | `scaffold` | Create the test project and metadata skeleton for a new coordinate from the scaffold templates (§AR-build-infrastructure). |
 | `contribute` | Guided contribution flow for a new coordinate. |
 | `generateMetadata` | Generate metadata for a coordinate (optionally deriving `user-code-filter.json` from the resolved JAR). |
-| `splitTestOnlyMetadata` | Move test-only metadata into the test resources file (§FS-repository-functional-spec.5.1, §METADATA-suite). |
+| `splitTestOnlyMetadata` | Move test-only metadata into the test resources file (§FS-repository-functional-spec.5.1, §FS-metadata). |
 | `fixTestNativeImageRun` | Regenerate metadata for a new version failing a native-image run. |
 | `addTestedVersion` | Record a newly passing version in the artifact's `index.json` and refresh the mirrored stats and shared test sources; used by the compatibility workflow (§FS-repository-functional-spec.9). |
 | `addLibraryMetadataIndexJson`, `addLibraryAsLatestMetadataIndexJson`, `extractLibraryTestParams` | Lower-level index and parameter helpers. |
@@ -187,16 +187,16 @@ Tasks that create or update metadata, tests, and index entries.
 | Task | Purpose |
 | --- | --- |
 | `pullAllowedDockerImages` | Pre-pull only the images a coordinate's metadata allows, before networking is disabled for isolated runs (§FS-repository-functional-spec.5.3). |
-| `checkAllowedDockerImages` | Scan allowed images for vulnerabilities with grype, either all images or only those changed between two commits (§CI-scan-docker-images). |
+| `checkAllowedDockerImages` | Scan allowed images for vulnerabilities with grype, either all images or only those changed between two commits (§AR-scan-docker-images). |
 
 ## 7. CI matrix generation
 
 These emit the GitHub Actions matrices the workflows consume, all driven by
-`ci.json` (§CI-matrix-source).
+`ci.json` (§AR-matrix-source).
 
 | Task | Matrix |
 | --- | --- |
-| `generateMatrixMatchingCoordinates`, `generateMatrixBatchedCoordinates` | Full and batched matrices (the latter powers §CI-test-all-metadata). |
+| `generateMatrixMatchingCoordinates`, `generateMatrixBatchedCoordinates` | Full and batched matrices (the latter powers §AR-test-all-metadata). |
 | `generateChangedCoordinatesMatrix`, `generateChangedMetadataTestMatrix`, `generateChangedCoordinatesOnlyMatrix`, `generateChangedIndexFileCoordinatesList` | PR-scoped matrices for changed metadata and index files. |
 | `generateInfrastructureChangedCoordinatesMatrix` | Matrix for build-logic changes; also selects the coordinate for `testAllInfra`. |
 | `generateAffectedSpringTestMatrix` | Impacted Spring AOT projects. |
@@ -212,7 +212,7 @@ These emit the GitHub Actions matrices the workflows consume, all driven by
 | `generateDynamicAccessCoverageReport`, `analyzeExternalLibraryDynamicAccess` | Dynamic-access coverage reporting (§FS-repository-functional-spec.4.5). |
 | `nativeTestPGOSampling` | Build coordinate native tests with sampled PGO and the analysis call-tree CSV dump for Forge deep-coverage navigation (§forge/CC-code-coverage-improvement.3.2). |
 | `runNativeTestPGO` | Run the sampling image and write its sampled `.iprof` to the required absolute `pgoProfilePath`. |
-| `generateLibraryStats`, `listTopCoordinatesByMetric`, `generateTopCoordinatesByMetricMatrix`, `generateReadmeBadgeSummary`, `generateDependencyGraph` | Produce and query the stats mirror, README badge inputs, and dependency graphs that feed the coverage dashboard (§CI-publish-scheduled-coverage). Library coverage analyzes only the coordinate's unclassified main JAR and includes both the regular and tracked extension suites. |
+| `generateLibraryStats`, `listTopCoordinatesByMetric`, `generateTopCoordinatesByMetricMatrix`, `generateReadmeBadgeSummary`, `generateDependencyGraph` | Produce and query the stats mirror, README badge inputs, and dependency graphs that feed the coverage dashboard (§AR-publish-scheduled-coverage). Library coverage analyzes only the coordinate's unclassified main JAR and includes both the regular and tracked extension suites. |
 | `package` | Zip the `metadata/` directory into the release artifact consumed by native-build-tools (§FS-repository-functional-spec.4). |
 
 Dynamic-access coverage normally marks a call site covered when its stack frame

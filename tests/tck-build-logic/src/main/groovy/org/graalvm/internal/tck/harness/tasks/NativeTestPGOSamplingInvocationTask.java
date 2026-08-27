@@ -13,7 +13,7 @@ import java.util.List;
  * Task that builds PGO-sampling native test images, with the analysis
  * call-tree CSV dump enabled, on matching subprojects.
  * <p>
- * Supports sampled deep-path navigation (§TCK-test-harness.8,
+ * Supports sampled deep-path navigation (§AR-test-harness.8,
  * §forge/CC-code-coverage-improvement.3.2).
  */
 @SuppressWarnings("unused")

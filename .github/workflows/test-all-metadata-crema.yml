@@ -1,10 +1,10 @@
 # Weekly and on-demand sweep of the JVM test lane against Crema (Native Image run-time class
 # loading), to find where Crema cannot yet run real library test suites. Bug-finding, not a metadata
-# gate: it never blocks a release. §CI-test-all-metadata-crema; §TCK-test-harness.3.1.
+# gate: it never blocks a release. §AR-test-all-metadata-crema; §AR-test-harness.3.1.
 name: "Test all metadata on the Crema JVM"
 
 on:
-  # Saturday, clear of the Sunday sweep (§CI-test-all-metadata) and the Monday
+  # Saturday, clear of the Sunday sweep (§AR-test-all-metadata) and the Monday
   # release, so the three never compete for runners.
   schedule:
     - cron: "0 2 * * 6"
@@ -276,7 +276,7 @@ jobs:
       - name: "🧪 Run '${{ matrix.coordinates }}' JVM tests on ${{ matrix.vm }}"
         id: run-tests
         env:
-          # §TCK-test-harness.3.1 — selects the test workers' interpreter, adds no flag.
+          # §AR-test-harness.3.1 — selects the test workers' interpreter, adds no flag.
           GVM_TCK_TEST_JAVA_HOME: ${{ steps.crema.outputs.crema-home }}
           GVM_TCK_TEST_DISABLE_ASSERTIONS: ${{ inputs.disable-assertions || 'true' }}
           MATRIX_COORDINATES: ${{ matrix.coordinates }}
