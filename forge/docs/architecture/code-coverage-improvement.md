@@ -552,9 +552,15 @@ budget, route to human intervention.
 Every fix state that can be entered more than once is a counted Rhei state and
 writes a visit-scoped output. API and deep fix states use the corresponding
 measurement visit cap, which records each fix entry without tightening the
-measurement-owned retry budget. The finalization fix state uses the configured
-`fix_passes` cap. This ensures that an output from an earlier repair pass cannot
-satisfy the output-existence completion check for a later pass.
+measurement-owned retry budget. Finalization has two separate `fix_passes`
+repair budgets: one for failures from the numbered step program and one for
+failures from artifact verification. The execution and verification states each
+allow `fix_passes + 1` visits because their first visit is the initial attempt,
+not a repair. Both paths share the finalization fix state, whose
+`fix_passes * 2 + 2` visit cap is only large enough not to tighten either
+path-owned budget. Its counted visits ensure that an output from an earlier
+repair pass cannot satisfy the output-existence completion check for a later
+pass.
 
 ## 5. Acceptance Criteria
 
