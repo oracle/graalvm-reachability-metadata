@@ -27,6 +27,16 @@ def _git(repo_path: str, *args: str) -> str:
 
 
 class BranchPublicationTests(unittest.TestCase):
+    def test_code_coverage_is_excluded_from_local_review(self) -> None:
+        self.assertIn(
+            "code-coverage-improvement",
+            branch_publication.LOCAL_REVIEW_EXCLUDED_TASK_TYPES,
+        )
+        self.assertNotIn(
+            "library-new-request",
+            branch_publication.LOCAL_REVIEW_EXCLUDED_TASK_TYPES,
+        )
+
     def test_format_bounded_test_diff_section_truncates_large_diff(self) -> None:
         diff_text = "Q" * (branch_publication.MAX_INLINE_TEST_DIFF_CHARS + 1)
         with patch.object(

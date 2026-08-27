@@ -287,12 +287,16 @@ intervention lane, so that every caller gets identical behavior.
 
 ## FS-local-branch-review: Local pre-push branch review
 
-Every generated branch must be reviewed before it is pushed, and not only after
-it has become a pull request (§FS-automated-pr-review). The pre-push review is
-the cheaper of the two: the working tree that generation verified is still on
-disk, the local gate records still exist, and the branch can still be corrected
-without a maintainer's queue being involved. Planned, not implemented
-(§ROADMAP-forge-local-branch-review).
+Every generated branch except a `code-coverage-improvement` branch must be reviewed
+before it is pushed, and not only after it has become a pull request
+(§FS-automated-pr-review). The pre-push review is the cheaper of the two: the
+working tree that generation verified is still on disk, the local gate records
+still exist, and the branch can still be corrected without a maintainer's queue
+being involved. The shared publication pipeline implements this phase before it
+writes the descriptor. Code-coverage publication is temporarily excluded: its
+phase-boundary coverage evidence cannot yet be reconstructed after reviewer
+edits to tests, so it must not emit a review verdict until that workflow owns
+durable phase snapshots.
 
 **Placement.** The review runs inside publication, after the pre-publication
 gate of §FS-local-ci-equivalent-verification.2 has passed and the descriptor
@@ -305,7 +309,11 @@ the resolved render statistics.
 verified commit, in a session carrying no part of the generation transcript. A
 review that shares context with the run that produced the branch inherits the
 justifications that run already accepted, and its verdict then carries no
-information. It applies the same review rules the post-push reviewer applies,
+information. Forge invokes it through the worker-configured analysis role
+rather than selecting an agent backend, model, or provider locally
+(§FS-forge-agent-runtime-selection). The caller supplies the review prompt and
+detached worktree while the centralized runtime owns execution and logging.
+The reviewer applies the same review rules the post-push reviewer applies,
 selected by the run's `task_type` so that one rule set governs both reviews, and
 the same blocking discipline: a finding is a concrete violation of an enumerated
 rule, never a self-formed judgment about test quality.

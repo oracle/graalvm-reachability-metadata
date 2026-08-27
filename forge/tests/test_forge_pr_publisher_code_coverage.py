@@ -12,7 +12,7 @@ import sys
 import unittest
 from typing import Any
 
-from jsonschema import Draft202012Validator, FormatChecker
+from jsonschema import Draft202012Validator, FormatChecker, ValidationError
 
 REPOSITORY_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PUBLISHER_PATH = os.path.join(
@@ -109,6 +109,23 @@ def _descriptor(**render_overrides: Any) -> dict[str, Any]:
     }
 
 
+def _local_review() -> dict[str, Any]:
+    return {
+        "status": "completed",
+        "decision": "approved",
+        "review_comment": "Checked the publication rules; no blocking issue remains.",
+        "finding_title": "",
+        "finding_body": "",
+        "fix_note": "",
+        "model": "gpt-5.6-terra",
+        "session_log_path": "task-logs/review.log",
+        "changed_paths": [],
+        "repair_reverted": False,
+        "failed_step": None,
+        "published_tree": "verified",
+    }
+
+
 class CoveragePublisherTemplateTests(unittest.TestCase):
 
     def test_descriptor_is_schema_valid(self) -> None:
@@ -116,6 +133,45 @@ class CoveragePublisherTemplateTests(unittest.TestCase):
             schema = json.load(schema_file)
 
         Draft202012Validator(schema, format_checker=FormatChecker()).validate(_descriptor())
+
+    def test_unavailable_review_has_no_reviewer_words(self) -> None:
+        review = _local_review()
+        review["status"] = "unavailable"
+        for field in (
+                "decision", "review_comment", "finding_title", "finding_body", "fix_note",
+        ):
+            review.pop(field)
+        with open(SCHEMA_PATH, encoding="utf-8") as schema_file:
+            schema = json.load(schema_file)
+
+        Draft202012Validator(
+            schema["properties"]["local_review"], format_checker=FormatChecker(),
+        ).validate(review)
+        body = publisher._render_local_review({"local_review": review})
+
+        self.assertIn("reviewer was unavailable", body)
+        self.assertIn("no reviewer verdict or finding", body)
+        self.assertNotIn("Checked the publication rules", body)
+
+    def test_nonapproval_requires_a_complete_finding(self) -> None:
+        review = _local_review()
+        review["decision"] = "changes_requested"
+        with open(SCHEMA_PATH, encoding="utf-8") as schema_file:
+            schema = json.load(schema_file)
+
+        with self.assertRaises(ValidationError):
+            Draft202012Validator(
+                schema["properties"]["local_review"], format_checker=FormatChecker(),
+            ).validate(review)
+
+    def test_code_coverage_descriptor_rejects_local_review(self) -> None:
+        descriptor = _descriptor()
+        descriptor["local_review"] = _local_review()
+        with open(SCHEMA_PATH, encoding="utf-8") as schema_file:
+            schema = json.load(schema_file)
+
+        with self.assertRaises(ValidationError):
+            Draft202012Validator(schema, format_checker=FormatChecker()).validate(descriptor)
 
     def test_title_names_the_coordinate_and_the_model(self) -> None:
         title, _ = publisher.render_publication(_descriptor())
@@ -195,6 +251,21 @@ class CoveragePublisherTemplateTests(unittest.TestCase):
         self.assertIn("Needs human intervention: yes", body)
         self.assertIn("### Local CI Verification", body)
         self.assertIn("Forge-Publication-ID: forge-8380-20260820101530-0123456789ab", body)
+
+    def test_body_omits_the_local_agent_review(self) -> None:
+        _, body = publisher.render_publication(_descriptor())
+
+        self.assertNotIn("## Local Agent Review", body)
+
+    def test_review_nonapproval_or_reverted_repair_requires_intervention(self) -> None:
+        descriptor = {"local_review": _local_review()}
+        self.assertFalse(publisher._local_review_requires_human_intervention(descriptor))
+        descriptor["local_review"]["decision"] = "changes_requested"
+        self.assertTrue(publisher._local_review_requires_human_intervention(descriptor))
+        descriptor["local_review"]["decision"] = "approved"
+        descriptor["local_review"]["repair_reverted"] = True
+        descriptor["local_review"]["failed_step"] = "checkMetadataFiles"
+        self.assertTrue(publisher._local_review_requires_human_intervention(descriptor))
 
     def test_body_omits_the_forge_revision_block(self) -> None:
         """A Rhei-template workflow has no Forge strategy revision to report."""

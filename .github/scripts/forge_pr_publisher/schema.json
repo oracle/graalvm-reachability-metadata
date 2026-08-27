@@ -144,6 +144,178 @@
         }
       }
     },
+    "local_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "model",
+        "session_log_path",
+        "changed_paths",
+        "repair_reverted",
+        "failed_step",
+        "published_tree"
+      ],
+      "properties": {
+        "status": {
+          "enum": ["completed", "unavailable"]
+        },
+        "decision": {
+          "enum": ["approved", "changes_requested"]
+        },
+        "review_comment": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30000
+        },
+        "finding_title": {
+          "type": "string",
+          "maxLength": 30000
+        },
+        "finding_body": {
+          "type": "string",
+          "maxLength": 30000
+        },
+        "fix_note": {
+          "type": "string",
+          "maxLength": 30000
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "session_log_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "changed_paths": {
+          "type": "array",
+          "maxItems": 200,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "repair_reverted": {
+          "type": "boolean"
+        },
+        "failed_step": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "maxLength": 1000}
+          ]
+        },
+        "published_tree": {
+          "enum": ["verified", "repaired"]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"status": {"const": "completed"}},
+            "required": ["status"]
+          },
+          "then": {
+            "required": [
+              "decision",
+              "review_comment",
+              "finding_title",
+              "finding_body",
+              "fix_note"
+            ]
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                {"required": ["decision"]},
+                {"required": ["review_comment"]},
+                {"required": ["finding_title"]},
+                {"required": ["finding_body"]},
+                {"required": ["fix_note"]}
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"repair_reverted": {"const": true}},
+            "required": ["repair_reverted"]
+          },
+          "then": {
+            "properties": {
+              "failed_step": {"type": "string", "minLength": 1},
+              "published_tree": {"const": "verified"}
+            }
+          },
+          "else": {
+            "properties": {
+              "failed_step": {"type": "null"}
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {"changed_paths": {"minItems": 1}},
+                  "required": ["changed_paths"]
+                },
+                "then": {
+                  "properties": {
+                    "published_tree": {"const": "repaired"}
+                  }
+                },
+                "else": {
+                  "properties": {
+                    "published_tree": {"const": "verified"}
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {"decision": {"const": "changes_requested"}},
+            "required": ["decision"]
+          },
+          "then": {
+            "properties": {
+              "finding_title": {"type": "string", "minLength": 1},
+              "finding_body": {"type": "string", "minLength": 1}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"status": {"const": "unavailable"}},
+            "required": ["status"]
+          },
+          "then": {
+            "properties": {
+              "changed_paths": {"maxItems": 0},
+              "repair_reverted": {"const": false},
+              "failed_step": {"type": "null"},
+              "published_tree": {"const": "verified"}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"changed_paths": {"minItems": 1}},
+            "required": ["changed_paths"]
+          },
+          "then": {
+            "properties": {
+              "status": {"const": "completed"},
+              "finding_title": {"type": "string", "minLength": 1},
+              "finding_body": {"type": "string", "minLength": 1},
+              "fix_note": {"type": "string", "minLength": 1}
+            }
+          }
+        }
+      ]
+    },
     "forge": {
       "type": "object",
       "additionalProperties": false,
@@ -205,6 +377,20 @@
     }
   },
   "allOf": [
+    {
+      "if": {
+        "properties": {
+          "task_type": {"const": "code-coverage-improvement"}
+        },
+        "required": ["task_type"]
+      },
+      "then": {
+        "not": {"required": ["local_review"]}
+      },
+      "else": {
+        "required": ["local_review"]
+      }
+    },
     {
       "if": {
         "properties": {

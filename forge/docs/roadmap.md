@@ -217,14 +217,20 @@ re-attempted silently (§AR-forge-orchestration).
 
 # ROADMAP-forge-local-branch-review: Pre-push local branch review
 
+Status: implemented for every publication route except
+`code-coverage-improvement`, which is deferred until its phase evidence is
+snapshot-backed.
+
 Priority: fifth (part of §ROADMAP-forge-implementation).
 
-A generated branch is reviewed once today, and only after it is already a pull
-request. Everything the run held — the verified worktree, the local CI gate
-records, the resolved descriptor statistics — is discarded at push time, so the
-cheapest moment to fix a finding has passed before any reviewer looks.
+Before this item, a generated branch was reviewed once and only after it was
+already a pull request. Everything the run held — the verified worktree, the
+local CI gate records, the resolved descriptor statistics — was discarded at
+push time, so the cheapest moment to fix a finding passed before any reviewer
+looked.
 
-This item adds `local_review()` as a phase of `publish_branch()`
+The implementation adds `local_review()` as a phase of `publish_branch()` for
+every route except `code-coverage-improvement`
 (§AR-forge-workflow-pipeline), in the one slot the existing ordering allows:
 after the pre-publication gate (§FS-local-ci-equivalent-verification.2) and
 after descriptor input resolution, because the review rules dereference render

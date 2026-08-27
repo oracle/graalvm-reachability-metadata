@@ -35,6 +35,8 @@ from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import build_timestamped_task_log_path, display_log_path
 
 LOCAL_CI_VERIFICATION_KEY = "local_ci_verification"
+FINDINGS_RELATIVE_PATH = "forge/FINDINGS.md"
+EXPECTED_PUBLICATION_PATHS = frozenset({FINDINGS_RELATIVE_PATH})
 HUMAN_INTERVENTION_LABEL = "human-intervention"
 MAX_OUTPUT_CHARS = 12000
 MAX_FIXUP_ATTEMPTS = 2
@@ -70,6 +72,17 @@ class FixupRecord:
     commit: str | None
     changed_paths: list[str]
     log_path: str | None = None
+
+
+@dataclass(frozen=True)
+class RepairAttempt:
+    """Outcome of one bounded centralized analysis-agent repair."""
+
+    command: list[str]
+    commit: str | None
+    changed_paths: list[str]
+    log_path: str | None
+    failure_reason: str | None = None
 
 
 @dataclass
@@ -147,7 +160,7 @@ def run_local_ci_verification(
             result.repo_fix_paths = classify_repo_fix_paths(repo_path, base_commit, coordinates)
             result.human_intervention_required = bool(result.repo_fix_paths)
             _log_local_ci(f"Verification passed for {coordinates}", indent_level=1)
-            _write_verification_metrics(metrics_repo_path, result)
+            write_verification_metrics(metrics_repo_path, result)
             return result
 
         result.failure_gate = failed_command.gate
@@ -156,7 +169,7 @@ def run_local_ci_verification(
         if attempt >= max_fixup_attempts:
             result.status = "failure"
             result.final_commit = _git_stdout(repo_path, ["rev-parse", "HEAD"])
-            _write_verification_metrics(metrics_repo_path, result)
+            write_verification_metrics(metrics_repo_path, result)
             raise LocalCIVerificationError(result)
 
         _log_local_ci(f"Running fixup after {failed_command.gate}", indent_level=1)
@@ -165,11 +178,11 @@ def run_local_ci_verification(
         if fixup.commit is None:
             result.status = "failure"
             result.final_commit = _git_stdout(repo_path, ["rev-parse", "HEAD"])
-            _write_verification_metrics(metrics_repo_path, result)
+            write_verification_metrics(metrics_repo_path, result)
             raise LocalCIVerificationError(result)
 
     result.status = "failure"
-    _write_verification_metrics(metrics_repo_path, result)
+    write_verification_metrics(metrics_repo_path, result)
     raise LocalCIVerificationError(result)
 
 
@@ -248,7 +261,7 @@ def classify_repo_fix_paths(repo_path: str, base_commit: str, coordinates: str) 
     )
     repo_fix_paths: list[str] = []
     for path in _changed_files(repo_path, base_commit, "HEAD", diff_filter="ACMRTD"):
-        if path.startswith(allowed_prefixes):
+        if path.startswith(allowed_prefixes) or path in EXPECTED_PUBLICATION_PATHS:
             continue
         repo_fix_paths.append(path)
     return sorted(repo_fix_paths)
@@ -585,56 +598,68 @@ def _script_sudo_line(script_path: str) -> str | None:
     return None
 
 
-def _run_fixup(repo_path: str, coordinates: str, failed_command: CommandRecord) -> FixupRecord:
+def run_repair_agent(
+        *,
+        repo_path: str,
+        prompt: str,
+        task_type: str,
+        library: str,
+        commit_message: str,
+        timeout_seconds: int = LOCAL_CI_FIXUP_TIMEOUT_SECONDS,
+) -> RepairAttempt:
+    """Run one centralized analysis-agent repair and commit only its edits."""
     before_paths = _worktree_changed_paths(repo_path)
-    prompt = _build_fixup_prompt(coordinates, failed_command)
     selection = get_analysis_agent()
     command = [selection.backend, selection.model]
     result = analysis_agent_run(
         working_dir=repo_path,
         context=prompt,
-        task_type="local-ci-fixup",
-        library=coordinates,
-        timeout=LOCAL_CI_FIXUP_TIMEOUT_SECONDS,
+        task_type=task_type,
+        library=library,
+        timeout=timeout_seconds,
     )
+    displayed_log_path = display_log_path(result.log_path)
     if result.return_code != 0:
-        return FixupRecord(
-            gate=failed_command.gate,
-            command=command,
-            commit=None,
-            changed_paths=[],
-            log_path=display_log_path(result.log_path),
+        failure_reason = (
+            "timed out" if result.timed_out
+            else f"exited with code {result.return_code}"
         )
+        return RepairAttempt(command, None, [], displayed_log_path, failure_reason)
 
-    after_paths = _worktree_changed_paths(repo_path)
-    changed_paths = sorted(after_paths - before_paths)
+    changed_paths = sorted(_worktree_changed_paths(repo_path) - before_paths)
     if not changed_paths:
-        return FixupRecord(
-            gate=failed_command.gate,
-            command=command,
-            commit=None,
-            changed_paths=[],
-            log_path=display_log_path(result.log_path),
-        )
+        return RepairAttempt(command, None, [], displayed_log_path, "changed no files")
 
     subprocess.run(["git", "add", "-A", "--", *changed_paths], cwd=repo_path, check=True)
     staged = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=repo_path, check=False)
     if staged.returncode == 0:
-        return FixupRecord(
-            gate=failed_command.gate,
-            command=command,
-            commit=None,
-            changed_paths=changed_paths,
-            log_path=display_log_path(result.log_path),
+        return RepairAttempt(
+            command, None, changed_paths, displayed_log_path, "left nothing to commit",
         )
-    subprocess.run(["git", "commit", "-m", "Apply local CI verification fixes"], cwd=repo_path, check=True)
-    commit = _git_stdout(repo_path, ["rev-parse", "HEAD"])
+    subprocess.run(["git", "commit", "-m", commit_message], cwd=repo_path, check=True)
+    return RepairAttempt(
+        command,
+        _git_stdout(repo_path, ["rev-parse", "HEAD"]),
+        changed_paths,
+        displayed_log_path,
+        None,
+    )
+
+
+def _run_fixup(repo_path: str, coordinates: str, failed_command: CommandRecord) -> FixupRecord:
+    attempt = run_repair_agent(
+        repo_path=repo_path,
+        prompt=_build_fixup_prompt(coordinates, failed_command),
+        task_type="local-ci-fixup",
+        library=coordinates,
+        commit_message="Apply local CI verification fixes",
+    )
     return FixupRecord(
         gate=failed_command.gate,
-        command=command,
-        commit=commit,
-        changed_paths=changed_paths,
-        log_path=display_log_path(result.log_path),
+        command=attempt.command,
+        commit=attempt.commit,
+        changed_paths=attempt.changed_paths,
+        log_path=attempt.log_path,
     )
 
 
@@ -659,7 +684,7 @@ def _build_fixup_prompt(coordinates: str, failed_command: CommandRecord) -> str:
     ])
 
 
-def _write_verification_metrics(metrics_repo_path: str | None, result: LocalCIVerificationResult) -> None:
+def write_verification_metrics(metrics_repo_path: str | None, result: LocalCIVerificationResult) -> None:
     if metrics_repo_path is None:
         return
     pending_path = os.path.join(metrics_repo_path, PENDING_METRICS_FILENAME)
