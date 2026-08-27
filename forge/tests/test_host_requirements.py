@@ -28,6 +28,7 @@ from utility_scripts.host_requirements import (
     parse_graalvm_runtime_version,
     parse_gradle_version,
     parse_grype_version,
+    parse_args,
     parse_native_image_version,
     probe_proxied_host,
     resolve_graalvm_version_check,
@@ -803,6 +804,57 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertEqual(arguments[arguments.index("--setup-agent") + 1], "my-pi")
         self.assertEqual(arguments[arguments.index("--setup-model") + 1], "cheap-model")
         self.assertEqual(arguments[arguments.index("--setup-provider") + 1], "openrouter")
+
+    def test_worker_only_forwards_options_the_gate_defines(self) -> None:
+        """A stale forwarded option would exit the gate with code 2 before any work starts."""
+        worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"
+
+        def gate_arguments(extra_args: list[str], extra_environment: dict[str, str]) -> list[str]:
+            with tempfile.TemporaryDirectory() as temp_dir:
+                fake_python = os.path.join(temp_dir, "python3")
+                args_path = os.path.join(temp_dir, "args.txt")
+                with open(fake_python, "w", encoding="utf-8") as output_file:
+                    output_file.write(
+                        "#!/usr/bin/env bash\n"
+                        "printf '%s\\n' \"$@\" > \"$FORGE_TEST_ARGS_FILE\"\n"
+                        "exit 1\n"
+                    )
+                os.chmod(fake_python, 0o755)
+                environment = dict(os.environ)
+                for variable in (
+                        "FORGE_AGENT_FAMILY",
+                        "FORGE_ANALYSIS_AGENT",
+                        "FORGE_ANALYSIS_FAMILY",
+                        "FORGE_ANALYSIS_MODEL",
+                        "FORGE_REVIEW_MODEL",
+                ):
+                    environment.pop(variable, None)
+                environment.update({
+                    "PYTHON_BIN": fake_python,
+                    "FORGE_TEST_ARGS_FILE": args_path,
+                })
+                environment.update(extra_environment)
+                subprocess.run(
+                    [str(worker_path), "--once", *extra_args],
+                    env=environment,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    check=False,
+                )
+                with open(args_path, encoding="utf-8") as input_file:
+                    recorded = input_file.read().splitlines()
+                self.assertTrue(recorded[0].endswith("host_requirements.py"), recorded[0])
+                return recorded[1:]
+
+        for extra_args, extra_environment in (
+                ([], {}),
+                (["--agent-family", "codex"], {}),
+                ([], {"FORGE_REVIEW_MODEL": "gpt-5.6-luna"}),
+                (["--setup-family", "pi", "--setup-model", "cheap-model"], {}),
+        ):
+            with self.subTest(extra_args=extra_args, extra_environment=extra_environment):
+                parse_args(gate_arguments(extra_args, extra_environment))
 
     def test_worker_names_enabled_strategies_and_never_retargets_them(self) -> None:
         worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"

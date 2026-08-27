@@ -195,7 +195,6 @@ from utility_scripts.task_logs import (
 )
 from utility_scripts.host_requirements import (
     DEFAULT_GRAALVM_VERSION_CHECK,
-    DEFAULT_REVIEW_MODEL,
     GRAALVM_VERSION_CHECK_ENV_VAR,
     GRAALVM_VERSION_CHECK_MODES,
     ISSUE_GRAALVM_ENV_VARS,
@@ -8774,7 +8773,6 @@ def require_host_requirements(args: argparse.Namespace, reachability_metadata_pa
     """
     ensure_host_requirements(
         FORGE_DIR,
-        review_model=args.review_model or DEFAULT_REVIEW_MODEL,
         requirements=resolve_host_requirement_queues(args),
         graalvm_version_check=resolve_graalvm_version_check(args.graalvm_version_check),
         repo_dir=reachability_metadata_path,

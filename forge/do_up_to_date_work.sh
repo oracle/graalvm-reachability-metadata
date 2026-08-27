@@ -559,12 +559,9 @@ run_host_requirements() {
     fi
 
     log "Validating Forge host requirements before any work starts."
-    if [[ -n "$REVIEW_MODEL" ]]; then
-        host_requirements_args+=(--review-model "$REVIEW_MODEL")
-    fi
-    if [[ -n "$AGENT_FAMILY" ]]; then
-        host_requirements_args+=(--agent-family "$AGENT_FAMILY")
-    fi
+    # The gate takes no review model or shared family: --agent-family already
+    # reaches it as --analysis-family, and PR review runs on the analysis role
+    # (§FS-forge-agent-runtime-selection).
     if [[ -n "$SETUP_AGENT" ]]; then
         host_requirements_args+=(--setup-agent "$SETUP_AGENT")
     fi
