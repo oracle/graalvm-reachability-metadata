@@ -7,6 +7,7 @@
 package org_bouncycastle.bc_fips;
 
 import java.security.Security;
+import java.util.Arrays;
 
 import org.bouncycastle.crypto.fips.FipsStatus;
 import org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider;
@@ -23,8 +24,13 @@ public class FipsStatusTest {
 
     @Test
     void reportsAReadyProviderAndItsModuleIntegrityValue() {
-        assertThat(FipsStatus.isReady()).isTrue();
-        assertThat(FipsStatus.getStatusMessage()).isEqualTo(FipsStatus.READY);
-        assertThat(FipsStatus.getModuleHMAC()).hasSize(32);
+        boolean ready = FipsStatus.isReady();
+        String statusMessage = FipsStatus.getStatusMessage();
+        byte[] moduleHmac = FipsStatus.getModuleHMAC();
+
+        assertThat(ready).isTrue();
+        assertThat(statusMessage).isEqualTo(FipsStatus.READY);
+        assertThat(moduleHmac).hasSize(32);
+        assertThat(Arrays.equals(moduleHmac, new byte[moduleHmac.length])).isFalse();
     }
 }
