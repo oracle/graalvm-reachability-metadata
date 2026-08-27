@@ -285,6 +285,10 @@ class ContinuationMarker:
             return
         self.failure = {"phase": phase, "step": step, "operand": operand}
 
+    def clear_failure(self) -> None:
+        """Forget a non-terminal failure after recovery. §FS-forge-run-location-reporting.3"""
+        self.failure = None
+
     def record_preserved_branch(self, branch_name: str) -> None:
         """Record the preservation branch that carries this marker."""
         self.preserved_branch = branch_name

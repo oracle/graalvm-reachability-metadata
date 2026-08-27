@@ -30,6 +30,7 @@ from utility_scripts.run_location import (
     RunLocation,
     bind_continuation_marker,
     bind_run_context,
+    clear_recorded_failure,
     format_run_failure_line,
     marker_failure_location,
     pipeline_step,
@@ -222,6 +223,36 @@ class MarkerFailureLocationTests(unittest.TestCase):
         self.assertEqual(
             format_run_failure_line(marker_failure_location(reloaded)),
             "run failed in explore/generate_tests()[com.acme.Thing]",
+        )
+
+    def test_a_recovered_failure_is_cleared_before_a_later_failure(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path:
+            marker_path = continuation_marker_path(repo_path)
+            ContinuationMarker.create(
+                strategy_name="strategy",
+                issue_number=1412,
+                label="fails-native-image-run",
+                coordinate="org.example:demo:1.0.0",
+                new_version="2.0.0",
+            ).save(marker_path)
+            bind_continuation_marker(marker_path)
+
+            with run_step(PHASE_EXPLORE, STEP_GENERATE_TESTS):
+                record_step_failure()
+            clear_recorded_failure()
+            self.assertIsNone(load_continuation_marker(marker_path).failure)
+
+            with run_step(PHASE_PUBLICATION, STEP_PUBLISH_BRANCH):
+                record_step_failure()
+            reloaded = load_continuation_marker(marker_path)
+
+        self.assertEqual(
+            format_run_failure_line(resolve_failure_location()),
+            "run failed in publication/publish_branch()",
+        )
+        self.assertEqual(
+            reloaded.failure,
+            {"phase": PHASE_PUBLICATION, "step": STEP_PUBLISH_BRANCH, "operand": None},
         )
 
 

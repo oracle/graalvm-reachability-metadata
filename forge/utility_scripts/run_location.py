@@ -312,6 +312,17 @@ def record_step_failure(
     return _STATE.failure
 
 
+def clear_recorded_failure() -> None:
+    """Clear a status-code failure after the workflow has recovered from it.
+
+    Only terminal failures reach the lifecycle boundary, so a best-effort step
+    that deliberately continues must clear both run-local and durable state.
+    §FS-forge-run-location-reporting.3
+    """
+    _STATE.failure = None
+    save_phase_update(_STATE.marker_path, lambda marker: marker.clear_failure())
+
+
 def resolve_failure_location(exc: BaseException | None = None) -> RunLocation:
     """Return the location to report for a terminal failure.
 

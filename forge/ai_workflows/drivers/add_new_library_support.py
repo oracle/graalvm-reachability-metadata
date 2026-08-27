@@ -61,6 +61,7 @@ from utility_scripts.repo_path_resolver import require_complete_reachability_rep
 from utility_scripts.run_location import (
     STEP_NORMAL_SETUP,
     STEP_RUN_WORKFLOW_ENGINE,
+    record_step_failure,
     report_run_failure,
     resolve_failure_location,
     run_step,
@@ -507,6 +508,7 @@ def main(argv=None):
                     return 0
                 run_scaffold(library)
             except ScaffoldError as exc:
+                record_step_failure()
                 report_run_failure(
                     resolve_failure_location(exc),
                     f"ERROR: Gradle 'scaffold' task failed for coordinates: {library}\nERROR: {exc}",
