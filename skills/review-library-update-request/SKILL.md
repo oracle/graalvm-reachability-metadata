@@ -11,8 +11,7 @@ The rules below implement the contribution contract: block only on a concrete vi
 
 ## Chunked dynamic-access PRs
 
-When the Forge publication descriptor has
-`modifiers.chunked_dynamic_access: true`, skip every percentage-based
+When the PR has the `chunked-dynamic-access` label, skip every percentage-based
 dynamic-access coverage threshold and regression rule in this skill, including
 for the final chunk. Request changes for coverage only when the reported
 `dynamicAccess.coveredCalls` is `0`. Keep every non-coverage rule. §FS-contribution-contract.3
