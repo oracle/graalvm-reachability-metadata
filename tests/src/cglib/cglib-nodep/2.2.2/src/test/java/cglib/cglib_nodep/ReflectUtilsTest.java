@@ -19,10 +19,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ReflectUtilsTest {
     @Test
     void resolvesConstructorsAndMethodsFromSignatures() {
-        Constructor<?> constructor = ReflectUtils.findConstructor("java.lang.String(byte[])");
+        Constructor<?> constructor = ReflectUtils.findConstructor("java.lang.String(java.lang.String)");
         Method method = ReflectUtils.findMethod("String.valueOf(int)");
 
-        assertThat(constructor.getParameterTypes()).containsExactly(byte[].class);
+        assertThat(constructor.getParameterTypes()).containsExactly(String.class);
         assertThat(method.getName()).isEqualTo("valueOf");
         assertThat(method.getParameterTypes()).containsExactly(int.class);
     }
