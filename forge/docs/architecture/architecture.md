@@ -200,12 +200,26 @@ sequenceDiagram
     end
 ```
 
-The banded segments in the sequence are the run's logical phases. The five
-durable ones — `setup`, `fix`, `explore`, `finalization`, `publication` — are
-recorded in the continuation marker, so a failed run resumes at the phase that
-failed rather than from the start (§FS-forge-run-continuation). `claim` is not
-one of them: it runs before a run exists, in the dispatcher
-(§AR-forge-control-plane).
+The banded segments in the sequence are the run's logical phases. A phase is the
+unit a run resumes at and the unit a failure names, so each one has a single
+purpose and a boundary a reader can point at:
+
+| Phase | Owner | Purpose | Begins when | Ends when |
+| --- | --- | --- | --- | --- |
+| `claim` | dispatcher (§AR-forge-control-plane) | Turn a labeled issue into one run that is safe to start: prove the host and the strategy, take exactly one issue, and prepare the ground the run executes on | The worker loop reaches an eligible queue | A driver is invoked with resolved coordinates, a validated strategy, and the prepared workspace — or the claim is released back to the queue |
+| `setup` | workflow driver (§AR-forge-driver-contract) | Put the coordinate's inputs on disk — index entry, source context, preflight decisions — so the workflow engine starts from a tree that is already correct | The dispatcher routes the claimed issue to the driver | `check_setup()` accepts every artifact the setup steps were supposed to produce and returns `ReadyRun` |
+| `fix` | workflow core (§WF-java-fail-fix-workflow) | Repair the failure the issue reports, and prove the repair under Native Image | A `fails-*` issue reaches the workflow engine | The reported failure passes and the trace gate is clean; `skipped` on workflows with no reported failure to repair |
+| `explore` | workflow core (§WF-dynamic-access-iterative) | Raise dynamic-access coverage by writing tests that reach uncovered call sites, keeping only what actually gained coverage | The dynamic-access report lists classes with uncovered access | Every class is terminal — committed or exhausted; `skipped` on workflows that do not explore, and deferred when the uncovered-class count exceeds the threshold |
+| `finalization` | workflow driver (§AR-forge-driver-finalization) | Turn generated work into a verified tree: the terminal gate, the three native lanes, the repository checks, the local CI equivalent, and the local review | The workflow engine returns a terminal run status | The tree that will be pushed has passed `local_ci_check()` and `local_review()` |
+| `publication` | driver, then GitHub Actions (§AR-forge-verification-publication-boundary) | Make the verified tree PR-eligible and hand the privileged half to Actions, which opens the pull request | The verified branch is ready to push | The pull request is open and the issue is closed out |
+
+The five durable phases — `setup`, `fix`, `explore`, `finalization`,
+`publication` — are recorded in the continuation marker, so a failed run resumes
+at the phase that failed rather than from the start; that marker also fixes each
+phase's resume *shape* (§FS-forge-run-continuation.1). `claim` is not one of
+them: it runs before a run exists, in the dispatcher
+(§AR-forge-control-plane). The same six names are the phase half of a failure
+report (§ROADMAP-forge-failure-locates-phase-and-step).
 
 ### check_host_requirements()
 
