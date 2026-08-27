@@ -1,4 +1,4 @@
-# DW-do-work-loop: do-work loop architecture
+# AR-do-work-loop: do-work loop architecture
 
 The do-work loop is Forge's long-running worker shell, the local entry path
 into Forge's issue-resolution responsibility defined in
@@ -39,7 +39,7 @@ python3 utility_scripts/host_requirements.py --forge-dir . \
 The loop does not own issue semantics. It converts command-line flags and
 environment variables into one bounded worker cycle, then delegates queue
 selection and workflow routing to the orchestration layer described in
-§ORCH-forge-orchestration-spec. This keeps
+§AR-forge-orchestration. This keeps
 local operator controls outside of the Python issue dispatcher
 (§AR-forge-control-plane) while preventing individual workflows from learning
 about worker sleep, branch monitoring, or stop markers.
@@ -47,7 +47,7 @@ about worker sleep, branch monitoring, or stop markers.
 When invoked with `--user-requested-only`, or with
 `FORGE_USER_REQUESTED_ISSUES_ONLY=1`, the worker asks orchestration to fetch
 only user-requested issue queue items. The filter is applied by the dispatcher,
-not by individual workflow drivers (§ORCH-forge-orchestration-spec).
+not by individual workflow drivers (§AR-forge-orchestration).
 
 The do-work loop is architectural rather than behavioral: it does not need a
 separate component functional spec unless worker semantics grow beyond

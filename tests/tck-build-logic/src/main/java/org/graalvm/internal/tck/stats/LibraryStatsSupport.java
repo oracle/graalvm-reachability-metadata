@@ -331,7 +331,7 @@ public final class LibraryStatsSupport {
         return buildVersionStats(coordinate, libraryJars, dynamicAccessDir, jacocoReport, Set.of());
     }
 
-    /// §TCK-test-harness.8: `agentCoveredCallSites` (from `parseAgentOrigins`) enables the
+    /// §AR-test-harness.8: `agentCoveredCallSites` (from `parseAgentOrigins`) enables the
     /// agent-origin fallback for line-less call sites; pass `Set.of()` for the line-based path.
     public static LibraryStatsModels.VersionStats buildVersionStats(
             String coordinate,
@@ -390,7 +390,7 @@ public final class LibraryStatsSupport {
         return buildDynamicAccessCoverageReport(coordinate, libraryJars, dynamicAccessDir, jacocoReport, Set.of());
     }
 
-    /// §TCK-test-harness.8: `agentCoveredCallSites` (from `parseAgentOrigins`) enables the
+    /// §AR-test-harness.8: `agentCoveredCallSites` (from `parseAgentOrigins`) enables the
     /// agent-origin fallback for line-less call sites; pass `Set.of()` for the line-based path.
     public static LibraryStatsModels.DynamicAccessCoverageReport buildDynamicAccessCoverageReport(
             String coordinate,
@@ -421,7 +421,7 @@ public final class LibraryStatsSupport {
         );
     }
 
-    /// §TCK-test-harness.8: streams the agent's compressed configuration-origin trees and
+    /// §AR-test-harness.8: streams the agent's compressed configuration-origin trees and
     /// retains the statically reported call sites whose exact tracked API and caller
     /// class/method occur, in that order, on a path carrying configuration. `originsOutput` may
     /// be one origins file or the agent output directory. Returns an empty set when no origins
@@ -598,7 +598,7 @@ public final class LibraryStatsSupport {
         return methodSignature.replace(" ", "");
     }
 
-    /// §TCK-test-harness.8: the agent-origin fallback is the only-when-lines-are-absent gate.
+    /// §AR-test-harness.8: the agent-origin fallback is the only-when-lines-are-absent gate.
     /// Returns true iff the dynamic-access reports contain at least one library call site and
     /// every such call site is line-less, so line-based matching can never succeed. Purely
     /// data-driven — no jar bytecode scanning.
@@ -981,7 +981,7 @@ public final class LibraryStatsSupport {
                     if (callSitesByKey.containsKey(callSiteKey)) {
                         continue;
                     }
-                    // §TCK-test-harness.8: line-based matching is primary. A line-less site falls
+                    // §AR-test-harness.8: line-based matching is primary. A line-less site falls
                     // back to an exact tracked API plus caller class/method match from an agent
                     // configuration-origin path.
                     boolean covered = false;

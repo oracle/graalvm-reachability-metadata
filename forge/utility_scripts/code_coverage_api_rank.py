@@ -6,35 +6,12 @@
 """
 Rank JaCoCo-uncovered public API entries by how much still-uncovered internal
 code each one unlocks, and render the API-cover prompt
-(§WF-code-coverage-improvement.3.1.1, §WF-code-coverage-improvement-architecture.1).
+(§AR-code-coverage-improvement.3.1.1, §AR-code-coverage-improvement-architecture.1).
 
-Selection is a budgeted greedy maximum-coverage pass over a static call graph
-extracted from the library bytecode by `java/CallGraphExtractor.java`. After each
-pick the winner's reachable set is removed from every remaining candidate, so
-delegating overloads sink to their own single bit without special-casing.
-
-The unlock universe is every still-uncovered library method with a body, taken
-from the bytecode rather than from JaCoCo: a JaCoCo report only contains classes
-some test loaded, so a JaCoCo-derived universe omits exactly the untouched code
-this phase exists to open up. JaCoCo stays the sole coverage authority — it
-decides which methods are covered, and any universe method absent from its
-report counts as uncovered.
-
-Public API entries belong to that universe alongside internal methods, so each
-candidate contributes its own bit and scores at least one. The phase is measured
-on public methods covered, so covering an entry is a gain in itself, and no
-other pick can take that bit away: being statically reached by a selected entry
-is an over-approximation, while the score is exact execution. Only an entry that
-holds no bit at all — one without a body — can score zero.
-
-Candidacy is filtered before ranking by receiver obtainability
-(§WF-code-coverage-improvement.3.1.2): `public` alone does not make a method
-callable, since a test that can never obtain an instance of the declaring class
-can never invoke it. Ineligible entries stay in the coverage denominator — they
-still execute collaterally — they are simply not something an agent can target.
-
-Reachability over-approximates virtual dispatch and is navigation only; it never
-changes a method's JaCoCo status.
+The unlock universe, the greedy overlap-subtracting pass, and the
+over-approximating call graph are specified in §AR-code-coverage-improvement.3.1.1;
+candidacy is filtered by receiver obtainability
+(§AR-code-coverage-improvement.3.1.2).
 
 Usage:
   python3 utility_scripts/code_coverage_api_rank.py \
@@ -63,7 +40,7 @@ from utility_scripts.code_coverage_jacoco import (
 )
 from utility_scripts.code_coverage_model import parse_inventory_id
 
-#: Hard cap on prompt targets per pass, matching §WF-code-coverage-improvement.3.1.
+#: Hard cap on prompt targets per pass, matching §AR-code-coverage-improvement.3.1.
 MAX_PROMPT_TARGETS = 400
 
 
@@ -93,7 +70,7 @@ class TypeModel:
 
     Owner is the join key in both directions: everything before `#` in a
     canonical method id is a `types.csv` name
-    (§WF-code-coverage-improvement.3.1.2).
+    (§AR-code-coverage-improvement.3.1.2).
     """
 
     #: Direct supertypes (superclass plus interfaces) of every declared type.
@@ -396,7 +373,7 @@ def select_targets(
     """Greedy maximum coverage: repeatedly take the largest marginal unlock.
 
     A candidate's own bit is never subtracted, so no other pick can eliminate it
-    (§WF-code-coverage-improvement.3.1.1). Reaching an entry statically is an
+    (§AR-code-coverage-improvement.3.1.1). Reaching an entry statically is an
     over-approximation over class-hierarchy-resolved dispatch, while the phase is
     scored on exact execution: dropping an entry because a selected one calls it
     would silently remove an uncovered public method from every future prompt.
@@ -431,7 +408,7 @@ def select_targets(
             # The maximum holds no bit of its own and unlocks nothing, so every
             # remaining candidate is bounded above by zero too. Only bodiless
             # entries reach this: JaCoCo never reports them, so they cannot be
-            # targets (§WF-code-coverage-improvement.3.1.1).
+            # targets (§AR-code-coverage-improvement.3.1.1).
             break
         unlocked |= reach[node]
         selected.append((node, exact))
@@ -465,7 +442,7 @@ def rank(
     }
 
     # The universe is bytecode-derived; anything JaCoCo does not report counts
-    # as uncovered (§WF-code-coverage-improvement.3.1.1). Public API entries are
+    # as uncovered (§AR-code-coverage-improvement.3.1.1). Public API entries are
     # members too, so every candidate holds its own bit and is worth at least
     # one: this phase is scored on public methods covered, so covering the entry
     # itself is a real gain, not merely a means of reaching internal code.
@@ -478,7 +455,7 @@ def rank(
     }
 
     # Eligibility is a membership filter applied before ranking, not a reorder
-    # (§WF-code-coverage-improvement.3.1.2). An owner the extractor never
+    # (§AR-code-coverage-improvement.3.1.2). An owner the extractor never
     # declared fails open: it came from a jar outside the graph, and excluding
     # it would be a guess rather than a finding.
     model: TypeModel | None = load_type_model(graph_dir)
@@ -513,7 +490,7 @@ def rank(
         The extractor resolves each `invokedynamic` to its bootstrap target, so
         the enclosing method already points at its own bodies — no name parsing,
         and therefore no overload ambiguity
-        (§WF-code-coverage-improvement.3.2.1).
+        (§AR-code-coverage-improvement.3.2.1).
         """
         owner: str = ids[node].split("#", 1)[0]
         return sorted(

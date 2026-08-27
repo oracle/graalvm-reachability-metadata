@@ -29,8 +29,8 @@ from ai_workflows.drivers.java_fail_workflow import JAVA_RUN_CONFIG, run_java_fa
 def main(argv=None):
     """Execute the end-to-end java-run fix driver for a version bump.
 
-    The java-run-failure driver for §WF-java-fail-fix-workflow, following the
-    single-run driver contract (§WF-forge-workflow-drivers).
+    The java-run-failure driver for §AR-java-fail-fix-workflow, following the
+    single-run driver contract (§AR-forge-drivers).
     """
     return run_java_fail_workflow(JAVA_RUN_CONFIG, argv)
 

@@ -12,8 +12,8 @@ generation fails or when native testing still fails after that metadata exists.
 Codex is the terminal repair path when the fallback cannot converge. Pi is not
 invoked.
 
-This module implements the gate of §WF-native-test-verification-gate; see
-``forge/docs/workflows/native-metadata-tracing.md`` for the full contract.
+This module implements the gate of §FS-native-test-verification-gate; see
+``forge/docs/functional-spec/workflows/native-metadata-tracing.md`` for the full contract.
 """
 
 from __future__ import annotations
@@ -197,7 +197,7 @@ def verify_native_test_passes(
 ) -> NativeTestVerificationResult:
     """Try JVM-agent metadata first, then use native tracing as fallback.
 
-    The public entry for §WF-native-test-verification-gate: it stages agent and
+    The public entry for §FS-native-test-verification-gate: it stages agent and
     trace metadata outside durable repository metadata, finalizes only after a
     passing validation path, and invokes Codex at most once as the terminal
     repair step.
@@ -247,7 +247,7 @@ def verify_native_test_passes(
     ) -> NativeTestVerificationResult:
         """Run Codex as the terminal recovery path for gate failures.
 
-        Per §WF-native-test-verification-gate, the gate preserves accepted
+        Per §FS-native-test-verification-gate, the gate preserves accepted
         metadata dirs and pins the same GraalVM environment that produced the
         failed native command.
         """
@@ -516,7 +516,7 @@ def _default_condition_packages(reachability_repo_path: str, coordinate: str) ->
     """Return native-trace condition packages for ``coordinate``.
 
     Native tracing conditions must be package roots that can actually appear on
-    the access stack (§WF-native-test-verification-gate). Maven groups are only
+    the access stack (§FS-native-test-verification-gate). Maven groups are only
     a fallback because many artifacts execute code outside the group-shaped
     package, e.g. ``org.apache.tomcat.embed`` artifacts using
     ``org.apache.catalina``.
@@ -689,7 +689,7 @@ def _run_generate_metadata(
     """Run JVM-agent metadata generation for the coordinate into a staging dir.
 
     Always the gate's first metadata action, before any native tracing
-    (§WF-native-test-verification-gate).
+    (§FS-native-test-verification-gate).
     """
     cmd = [
         "./gradlew",
@@ -863,8 +863,8 @@ def _run_native_trace_image(
     """Run ``runNativeTraceImage`` and surface the binary's exit code.
 
     Drives the ``runNativeTraceImage`` task per its contract
-    (§WF-native-trace-gradle-tasks) and recovers the exact-metadata-aware exit
-    code the gate routes on (§WF-native-test-verification-gate).
+    (§FS-native-test-verification-gate.5) and recovers the exact-metadata-aware exit
+    code the gate routes on (§FS-native-test-verification-gate).
 
     Returns ``(gradle_rc, binary_rc)``. ``binary_rc`` is read from the
     sentinel file written by the Gradle task (``-PexitFile=<path>``); the

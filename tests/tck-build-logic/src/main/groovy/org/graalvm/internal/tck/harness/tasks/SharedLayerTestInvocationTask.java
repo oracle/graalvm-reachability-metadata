@@ -15,7 +15,7 @@ import org.graalvm.internal.tck.utils.BaseLayerUtils;
 /**
  * Task that runs native tests with the shared Native Image base layer.
  * <p>
- * Implements §TCK-test-harness.3 — the LayerUse test lane.
+ * Implements §AR-test-harness.3 — the LayerUse test lane.
  */
 @SuppressWarnings("unused")
 public abstract class SharedLayerTestInvocationTask extends TestInvocationTask {

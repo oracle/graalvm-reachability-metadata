@@ -1,4 +1,4 @@
-# BENCH-forge-generation-benchmarking: Forge generation benchmarking
+# FS-forge-generation-benchmarking: Forge generation benchmarking
 
 Forge benchmarking measures generation quality, cost
 (§GOAL-minimize-generation-cost), and coverage (§GOAL-maximize-library-coverage)
@@ -6,7 +6,7 @@ for strategy comparisons. It is mainly for the `library-new-request` flow
 (§FS-forge-issue-resolution-goal): the benchmark runner clears selected library
 tests/metadata, executes `ai_workflows/drivers/add_new_library_support.py` in
 benchmark mode exercising the dynamic-access workflow
-(§WF-dynamic-access-workflow), and stores durable per-library results under
+(§AR-dynamic-access-workflow), and stores durable per-library results under
 `benchmark_run_metrics/`
 (§FS-durable-generation-logs).
 
@@ -16,7 +16,7 @@ Benchmarking must evaluate full generation runs, not isolated prompt snippets
 or mocked workflow calls. The primary subject is new-library support because it
 exercises scaffold setup, source context, test generation, metadata generation,
 verification, and benchmark metrics in one comparable process
-(§WF-forge-workflow-drivers).
+(§AR-forge-drivers).
 
 Other workflows may be benchmarked later, but they must define their own suite
 shape and metric compatibility before their results are compared with
@@ -27,7 +27,7 @@ new-library benchmark runs.
 A benchmark suite must contain several real library coordinates and must be run
 across a large set of different predefined strategies. The suite should include
 libraries with different API shapes and metadata needs so strategy comparisons
-do not overfit one artifact (§STRAT-forge-predefined-strategy-contract).
+do not overfit one artifact (§FS-forge-predefined-strategy-contract).
 
 The benchmark suite file may represent one strategy per benchmark entry, but a
 benchmark campaign must include multiple entries that cover the same or

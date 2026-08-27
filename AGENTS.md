@@ -78,18 +78,10 @@
 ## Releases and Packaging
 - Package artifacts: ./gradlew package
 
-## Forge automation E2E
-- After changing Forge control-plane, workflow, strategy, git-publication, or
-  shared workflow code under `forge/`, run the hermetic fixture Forge E2E
-  (§forge/E2E-forge-workflow-testing) as described in
-  [forge/docs/e2e.md](forge/docs/e2e.md); treat `forge_metadata.py` runs as the
-  source of truth instead of mock-only or direct-driver tests. Live GitHub Forge
-  E2E still requires an explicit user request.
-
 <!-- BEGIN GRUND MANAGED BLOCK -->
 ## Grounding with grund (v7)
 
-This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]` (`KIND ∈ {GRUND, GOAL, PRCPL, FS, AR, TCK, E2E, CI, METADATA, TESTS, SKILL}`), cited with the marker `§` — e.g. `<§>FS-user-login.3.1` (the `FS-user-login` here is a shape illustration, not a real ID in this repo, hence the `<§>` escape). Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `grund.toml`, so only `§`-prefixed citations are checked.
+This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]` (`KIND ∈ {GRUND, GOAL, PRCPL, FS, AR}`), cited with the marker `§` — e.g. `<§>FS-user-login.3.1` (the `FS-user-login` here is a shape illustration, not a real ID in this repo, hence the `<§>` escape). Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `grund.toml`, so only `§`-prefixed citations are checked.
 
 ### Grounding from a citation
 
@@ -109,12 +101,14 @@ A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and 
 - [PRCPL](docs/principles.md): Cross-cutting principles for how the repository works
 - [FS](docs/functional-spec): Repository functional behavior and contributor-facing requirements
 - [AR](docs/architecture): Repository architecture and build infrastructure
-- [TCK](docs/tck.md): Test harness (TCK): task groups
-- [E2E](docs/e2e.md): Infrastructure end-to-end tests (testInfra/testAllInfra)
-- [CI](docs/ci.md): Recurring CI workflows and composite actions
-- [METADATA](docs/metadata.md): The metadata/ suite: shipped reachability metadata
-- [TESTS](docs/tests.md): The tests/ suite: tests that justify the metadata
-- [SKILL](skills): Agent review and automation skills
+- [skills/](skills): Agent review and automation skills
+- [.github/workflows/](.github/workflows): CI and release workflows: the gate on GitHub
+- [.github/actions/](.github/actions): Composite actions the workflows reuse
+- [metadata/](metadata): The shipped reachability metadata, verbatim
+- [tests/](tests): Per-library test projects that justify the metadata
+- [tests/tck-build-logic/](tests/tck-build-logic): The TCK harness build logic the test projects run on
+- [stats/](stats): Generated library statistics
+- [docs/assets/](docs/assets): README images, shipped verbatim
 
 ### Project namespaces
 
@@ -149,13 +143,10 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 - **PRCPL** must cite GOAL.
 - **FS** should cite GOAL or FS.
 - **AR** must cite FS or GOAL.
-- **TCK** must cite FS or AR or GOAL.
-- **E2E** must cite FS or TCK or AR.
-- **CI** should cite FS or TCK or METADATA or TESTS or E2E or GOAL.
-- **METADATA** must cite FS or GOAL.
-- **TESTS** must cite FS or METADATA or GOAL.
-- **SKILL** must cite FS or CI or METADATA or TESTS.
-- **code** (any file outside a kind home) must cite FS or AR or TCK or E2E or CI or METADATA or TESTS.
+- **skills/** must cite FS; should cite AR.
+- **.github/workflows/** should cite FS or AR.
+- **.github/actions/** should cite FS or AR.
+- **code** (Build files and repository scripts outside a kind home) must cite FS; should cite AR.
 Unlisted kinds and pairs are fine.
 
 ### Clickable citations
@@ -173,7 +164,7 @@ Start from [docs/README.md](docs/README.md) for the documentation index.
 ### Namespaces in this repository
 
 `forge` is a workspace member with its own namespace and its own kinds
-(`KIND ∈ {GRUND, GOAL, AR, FS, DW, STRAT, ORCH, GIT, WF, E2E, BENCH, ROADMAP}`),
+(`KIND ∈ {GRUND, GOAL, AR, FS, ROADMAP}`),
 documented in [forge/AGENTS.md](forge/AGENTS.md). Inside `forge/`, cite Forge
 facts as `§<ID>`; from repository docs, cite them as `§forge/<ID>` — for example
 `§forge/GOAL-forge-direction`. Run `grund check` from the repository root, which
@@ -181,6 +172,18 @@ is the only place the workspace alias table is in scope.
 
 ### Additional rules
 
+- **The spec is the foundation.** Every idea, issue resolution, and design change is
+  checked against the spec before it is implemented. If it aligns, cite the most-specific
+  point it implements and proceed. If it does not align, stop and say so, then offer the
+  user two paths: **(dangerous)** change the spec, or work out how the idea fits inside
+  the current constraints. Never widen a spec point silently to make an implementation
+  legal. A spec change is dangerous because other points and code cite it: run
+  `grund refs <ID>` first to see the blast radius, get explicit approval, and land the
+  spec change as its own commit ahead of the code.
+- **The spec says how and why, not what each file is.** Spec points state the behavior
+  the repository guarantees and the reasoning behind it. They are not per-module or
+  per-function descriptions — if a paragraph would go stale merely because a file was
+  renamed or a function moved, it does not belong in the spec.
 - **Grund and goals are namespace-local top-level docs.** Repository motivation
   and direction live in `docs/grund.md` and `docs/goals.md`; Forge motivation and
   direction live in `forge/docs/grund.md` and `forge/docs/goals.md`.
@@ -196,3 +199,11 @@ is the only place the workspace alias table is in scope.
   spreads across several files as `folder`. The generated project map links each
   kind to its home, so a shared home makes the map useless — the prefix must
   tell you which file or folder to open.
+- **A folder home covers every file in it.** `docs/architecture/` is the `AR`
+  folder home and `docs/functional-spec/` is the `FS` folder home, in both
+  namespaces; every declaration in those folders carries that prefix, whichever
+  file it sits in. A document is filed under the folder whose question it
+  answers — the harness and CI document how the repository is wired, the two
+  suites state what the shipped metadata and its tests must be — and the file,
+  not the prefix, tells you which component it belongs to. Find a declaration
+  with `grund list` or the folder's `README.md` index, not by its prefix.

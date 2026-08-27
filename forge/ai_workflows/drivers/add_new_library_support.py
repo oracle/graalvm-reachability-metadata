@@ -18,7 +18,7 @@ New-library support is the single-run workflow driver for new-library issues
 (§AR-forge-workflow-boundary). It resolves repository paths, selects the
 predefined strategy bundle, prepares source context, creates the scaffold
 checkpoint, runs the selected strategy — by default the dynamic-access workflow
-(§WF-dynamic-access-workflow) — finalizes metadata, and writes validated metrics.
+(§AR-dynamic-access-workflow) — finalizes metadata, and writes validated metrics.
 """
 
 import subprocess
@@ -329,7 +329,7 @@ def init_agent(
     """Initialize the agent selected by the predefined strategy bundle.
 
     Workflow drivers bind the backend, model, MCPs, prompt context, and persistent
-    instructions named by the bundle (§STRAT-forge-predefined-strategy-contract);
+    instructions named by the bundle (§FS-forge-predefined-strategy-contract);
     strategy code owns the iteration loop on the far side of that boundary
     (§AR-forge-strategy-agent-boundary).
     """
@@ -367,7 +367,7 @@ def write_add_new_library_support_metrics(run_metrics, metrics_repo_dir, is_benc
     """Write or update add_new_library_support metrics depending on the execution mode.
 
     Non-benchmark runs publish through the shared workflow metrics writer
-    (§WF-forge-workflow-drivers.3); benchmark mode updates the last benchmark
+    (§AR-forge-driver-finalization); benchmark mode updates the last benchmark
     record instead of appending a run entry.
     """
     if not is_benchmark_mode:
@@ -424,12 +424,12 @@ def _should_create_failure_run_metrics(
 def main(argv=None):
     """Run one new-library workflow from setup through metrics publication.
 
-    The single-run driver (§WF-forge-workflow-drivers,
+    The single-run driver (§AR-forge-drivers,
     §AR-forge-workflow-boundary) that performs setup and finalization around the
     strategy: scaffold, source-context materialization, checkpoint capture,
     strategy execution, metadata finalization, placeholder cleanup, and
     schema-validated metrics. The default strategy runs the dynamic-access
-    workflow (§WF-dynamic-access-workflow).
+    workflow (§AR-dynamic-access-workflow).
     """
     (
         library,

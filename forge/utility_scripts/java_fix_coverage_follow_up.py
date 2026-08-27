@@ -95,7 +95,7 @@ def ensure_coverage_follow_up_issue(
     """Open and park the fixed-version library-update issue for this repair, once.
 
     A retried publication reuses the issue this repair already opened rather than
-    filing a duplicate. §WF-java-fail-fix-workflow.3
+    filing a duplicate. §AR-forge-driver-queues.3
     """
     if existing_issue_number is None:
         existing_issue_number = _find_coverage_follow_up_issue(

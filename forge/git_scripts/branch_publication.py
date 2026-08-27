@@ -3,7 +3,10 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Shared branch-publication pipeline for the publish_* routes (§GIT-shared-publication-pipeline)."""
+"""Shared branch-publication pipeline for the publish_* routes.
+
+§AR-shared-publication-pipeline.
+"""
 
 import os
 import shutil
@@ -196,10 +199,10 @@ def publish_branch(
     """Create, stage, rebase, verify, and push the publication branch.
 
     The one shared path from a verified worktree to a pushed PR branch
-    (§GIT-shared-publication-pipeline): publishers supply only their staging
-    policy (§GIT-expected-paths) and optional pre-rebase hooks. Local
+    (§AR-shared-publication-pipeline): publishers supply only their staging
+    policy (§AR-expected-paths) and optional pre-rebase hooks. Local
     CI-equivalent verification always runs before the push that makes the branch
-    PR-eligible (§GIT-pr-eligibility).
+    PR-eligible (§AR-pr-eligibility).
     """
     resume_marker = _publication_resume_marker(repo_path)
     resume_branch = None if resume_marker is None or not resume_marker.publication_is_pushed() else resume_marker.publication_branch()
@@ -312,7 +315,7 @@ def stage_library_version_paths(
 
     Publication scripts stage the workflow-specific expected paths instead of a
     generic repository-wide add, keeping the path boundary explicit
-    (§GIT-expected-paths).
+    (§AR-expected-paths).
     """
     candidate_paths: list[str] = [
         str(os.path.join("tests", "src", group, artifact, library_version)),
@@ -345,7 +348,7 @@ def _generate_test_diff_outputs(
         new_version: str,
         repo_path: str,
 ) -> tuple[str, str]:
-    """Build full and stat test diffs for bounded PR descriptions (§GIT-pr-body)."""
+    """Build full and stat test diffs for bounded PR descriptions (§AR-pr-body)."""
     old_dir = os.path.join(repo_path, "tests", "src", group, artifact, current_version)
     new_dir = os.path.join(repo_path, "tests", "src", group, artifact, new_version)
     old_display_dir = os.path.relpath(old_dir, repo_path).replace(os.sep, "/")
@@ -408,7 +411,7 @@ def format_bounded_test_diff_section(
         new_version: str,
         repo_path: str,
 ) -> str:
-    """Format a reviewable test diff excerpt that cannot exhaust a PR body (§GIT-pr-body)."""
+    """Format a reviewable test diff excerpt that cannot exhaust a PR body (§AR-pr-body)."""
     diff_text, diff_stat = _generate_test_diff_outputs(
         group, artifact, current_version, new_version, repo_path,
     )
@@ -432,7 +435,7 @@ def format_bounded_test_diff_section(
 
 
 def bound_pr_body(body: str) -> str:
-    """Keep all publisher PR bodies below GitHub's limit (§GIT-pr-body)."""
+    """Keep all publisher PR bodies below GitHub's limit (§AR-pr-body)."""
     if len(body) <= MAX_PR_BODY_CHARS:
         return body
     truncation_notice = (

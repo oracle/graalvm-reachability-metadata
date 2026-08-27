@@ -65,8 +65,7 @@ the backstop (§PRCPL-prefer-algorithmic).
 - **Index integrity.** `index.json` changes keep tested versions in the
   correct metadata-version bucket, without duplicates, with exactly one
   `latest` entry (§FS-repository-functional-spec.5.1), and must pass index
-  validation against current master before merge
-  (§forge/FS-index-validation-safeguard).
+  validation against current master before merge.
 
 ## 3. Coverage and metadata gates
 
@@ -97,8 +96,7 @@ or metadata file contents. Coverage numbers are a minimum gate, not proof of
 completeness — high coverage alone does not show the metadata is complete or
 necessary. When the tested version reports zero dynamic-access calls, the
 entry-count guardrail, the entry-count mismatch probe, and depth-of-coverage
-objections carry no signal and are not applied
-(§forge/FS-zero-dynamic-access-tolerance). That leniency covers only the
+objections carry no signal and are not applied. That leniency covers only the
 numeric evidence: the Native Image execution contract and any issue-requested
 metadata gate still apply.
 

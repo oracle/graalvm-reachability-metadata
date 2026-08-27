@@ -1,6 +1,6 @@
 # Per-PR gate that runs `grund check` over both namespaces, so a citation that stops resolving,
 # or a managed AGENTS.md block that drifts from its grund.toml, fails the PR instead of rotting.
-# §CI-grund-check; enforces §FS-repository-functional-spec.5.6.
+# §AR-grund-check; enforces §FS-repository-functional-spec.5.6.
 name: "Validate grund citations"
 
 on:
@@ -14,8 +14,8 @@ permissions:
 env:
   # Pinned, not floating: a newer grund can render a newer managed AGENTS.md block, which would
   # fail every PR until someone re-runs `grund init`. Bump this and the checksum together.
-  GRUND_VERSION: "0.10.0"
-  GRUND_SHA256: "ce6e3eac69ecf91da795c898e068530610fd0b9a2a9a7c9e9263b43564baf61a"
+  GRUND_VERSION: "0.12.2"
+  GRUND_SHA256: "b61d8f828cb746a4a94a02b485fcb3e1f54843b1b47eb50063f65277f7346339"
 
 jobs:
   grund-check:

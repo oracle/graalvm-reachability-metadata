@@ -8,8 +8,8 @@
 This helper owns the local half only: expected-path staging, the shared
 publication pipeline, and a descriptor carrying the finalized JaCoCo evidence
 and per-phase token accounting. Trusted GitHub Actions render that data and open
-the pull request (§GIT-shared-publication-pipeline, §GIT-publication-descriptor,
-§AR-forge-verification-publication-boundary, §WF-code-coverage-improvement.4).
+the pull request (§AR-shared-publication-pipeline, §AR-publication-descriptor,
+§AR-forge-verification-publication-boundary, §AR-code-coverage-improvement.4).
 """
 
 from __future__ import annotations
@@ -39,7 +39,7 @@ MAX_COMMIT_SUBJECT_LENGTH = 60
 
 #: The finalized evidence the trusted coverage template renders. `runCoverage`
 #: is the whole-run accounting the body is built from; the per-phase blocks ride
-#: along as each phase's own guidance record (§WF-code-coverage-improvement.4.1).
+#: along as each phase's own guidance record (§AR-code-coverage-improvement.4.1).
 #: Everything else `final-metrics.json` records — per-target rosters, sampled PGO
 #: guidance, the validation command list — stays in the finalization artifacts a
 #: reviewer reads from the run, so the descriptor holds render inputs and nothing else.
@@ -105,7 +105,7 @@ def model_slug(worker_agent: str) -> str:
     """Return the branch segment naming the model a Rhei target generates with.
 
     A Rhei target reads `<agent>[<mode>]:<provider>/<model>`, and only the model
-    identifies what produced the run (§WF-code-coverage-improvement.4).
+    identifies what produced the run (§AR-code-coverage-improvement.4).
     """
     target: str = worker_agent.split(":", 1)[-1]
     model: str = re.split(r"[/:]", target)[-1]
@@ -147,11 +147,11 @@ def stage_coverage_paths(
 ) -> None:
     """Stage the code coverage suite, touched metadata, and stats, then commit.
 
-    The coverage route's expected paths (§GIT-expected-paths): the dedicated
+    The coverage route's expected paths (§AR-expected-paths): the dedicated
     suite, the coordinate's test directory, the metadata the suite justified, and
     the coverage stats finalization regenerated from the combined main-JAR-only
     JaCoCo report. Leaving the stats unstaged publishes tests whose effect the
-    repository's own coverage record never shows (§root/TCK-test-harness.8).
+    repository's own coverage record never shows (§root/AR-test-harness.8).
     """
     test_dir: str = os.path.relpath(
         resolve_test_dir(repo_path, group, artifact, version),
@@ -190,7 +190,7 @@ def build_descriptor_input(
 
     The run timestamp is `generatedAt` from the finalization artifacts rather
     than the wall clock, so a retried publication rebuilds the same publication
-    ID, branch, and pull request (§GIT-publication-descriptor).
+    ID, branch, and pull request (§AR-publication-descriptor).
     """
     return PublicationDescriptorInput(
         issue_number=issue_number,
@@ -245,7 +245,7 @@ def publish(
     # The branch names the model that generated the run, so runs of one
     # coordinate on different models never collide, and the publication ID the
     # pipeline appends separates repeated runs of one model
-    # (§WF-code-coverage-improvement.4).
+    # (§AR-code-coverage-improvement.4).
     model: str = model_slug(worker_agent)
     suffix: str = f"-{branch_suffix}" if branch_suffix else ""
     # Rhei writes accounting beside the workflow runtime, two levels above the

@@ -32,36 +32,34 @@ home, so the prefix tells you which file to open.
 | `GRUND` | [grund.md](grund.md) | Why the repository exists — the motivation everything climbs back to. |
 | `GOAL` | [goals.md](goals.md) | Where the repository is headed — measurable outcome goals. |
 | `PRCPL` | [principles.md](principles.md) | Cross-cutting principles that constrain how the repository pursues its goals. |
-| `FS` | [functional-spec/README.md](functional-spec/README.md) | What the system must do — behavior, requirements, and how it is used. |
-| `AR` | [architecture/README.md](architecture/README.md), [architecture/build-infra.md](architecture/build-infra.md) | How the repository is structured and how the build is wired. |
-| `TCK` | [tck.md](tck.md) | The Gradle test harness task groups. |
-| `E2E` | [e2e.md](e2e.md) | The infrastructure end-to-end tests (`testInfra`/`testAllInfra`). |
-| `CI` | [ci.md](ci.md) | Recurring CI workflows, composite actions, and shared scripts. |
-| `METADATA` | [metadata.md](metadata.md) | The shipped `metadata/` suite — the curated reachability metadata. |
-| `TESTS` | [tests.md](tests.md) | The `tests/` suite that justifies every metadata entry. |
+| `FS` | [functional-spec/](functional-spec/README.md) | What the system must do — behavior, requirements, the two suites' contracts, and how it is used. |
+| `AR` | [architecture/](architecture/README.md) | How the repository is structured: the build, the harness, and the CI that drives them. |
 | `SKILL` | [../skills/](../skills/) | Agent review and automation skills. |
 
-A kind whose home is a *folder* (`FS`, `AR`, `SKILL`) may spread its IDs
-across several files in that folder; a kind whose home is a single *file* keeps
-all of its IDs in that one file.
+A kind whose home is a *folder* (`FS`, `AR`, `SKILL`) may spread its IDs across
+several files in that folder; a kind whose home is a single *file* keeps all of
+its IDs in that one file.
+
+Behavior is `FS-` and structure is `AR-`, whichever file inside the folder holds
+it: the two suites' contracts are `FS-` because they state what the metadata and
+the tests must be, and the harness and CI are `AR-` because they describe how the
+repository is wired. The directory is the home; the file only groups.
 
 ### Files at a glance
 
 - [grund.md](grund.md) — `GRUND-repository-motivation`: why this repository exists.
 - [goals.md](goals.md) — the outcome goals: tested metadata, broad version coverage, fresh releases, and no regressions.
 - [principles.md](principles.md) — the cross-cutting principles: `PRCPL-prefer-algorithmic` (everything that can be algorithmic should be algorithmic) and `PRCPL-verify-inputs` (define inputs exactly and verify them before running).
-- [functional-spec/README.md](functional-spec/README.md) — `FS-repository-functional-spec`: the system's behavior, requirements, the native-build-tools interface contract, library-version compatibility automation, and how each audience uses the repository.
+- [functional-spec/functional-spec.md](functional-spec/functional-spec.md) — `FS-repository-functional-spec`: the system's behavior, requirements, the native-build-tools interface contract, library-version compatibility automation, and how each audience uses the repository.
 - [functional-spec/repository-status.md](functional-spec/repository-status.md) — `FS-repository-status-report`: issue progress measurements and their HTML/JSON representations.
 - [functional-spec/test-contract.md](functional-spec/test-contract.md) — `FS-test-contract`: the point-by-point contract for writing a test — what it must have, must not do, should do, and how it behaves under Native Image.
 - [functional-spec/contribution-contract.md](functional-spec/contribution-contract.md) — `FS-contribution-contract`: what review may block on — rule strength (must vs should), the algorithmic shape limits, the coverage gates, and the enumerated cheating patterns.
-- [architecture/README.md](architecture/README.md) — `AR-repository-architecture`: the component map and high-level implementation overview.
+- [functional-spec/metadata.md](functional-spec/metadata.md) — `FS-metadata`: the published `metadata/` directory and its index/schema contracts.
+- [functional-spec/tests.md](functional-spec/tests.md) — `FS-tests`: the `tests/` suite that justifies the metadata.
+- [architecture/architecture.md](architecture/architecture.md) — `AR-repository-architecture`: the component map and high-level implementation overview.
 - [architecture/build-infra.md](architecture/build-infra.md) — `AR-build-infrastructure`: the two-layer Gradle build, convention plugins, and scaffolding.
-- [tck.md](tck.md) — `TCK-test-harness`: the harness task groups.
-- [e2e.md](e2e.md) — `E2E-infrastructure-tests`: `testInfra` and `testAllInfra`.
-- [ci.md](ci.md) — `CI-repository-ci` and one citable declaration per workflow, action, and script.
-- [metadata.md](metadata.md) — `METADATA-suite`: the published `metadata/` directory and its index/schema contracts.
-- [tests.md](tests.md) — `TESTS-suite`: the `tests/` suite that justifies the metadata.
-
+- [architecture/tck.md](architecture/tck.md) — `AR-test-harness`: the harness task groups.
+- [architecture/ci.md](architecture/ci.md) — `AR-repository-ci` and one citable declaration per workflow, action, and script.
 ### Non-grounded contributor docs
 
 These standard guides live alongside the grounded docs and are referenced from

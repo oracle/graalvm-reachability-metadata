@@ -13,7 +13,7 @@ Rules (test contract: §root/FS-test-contract):
 - Don't duplicate tested features.
 - Use only the library’s public API, no direct reflection or serialization.
 - Modify only the test file. Update build.gradle only if absolutely required.
-- Use only the provided library version and avoid all deprecated APIs.
+- Use only the provided library version.
 - Keep tests version-agnostic. Do not hardcode the artifact version in normal test inputs or assertions.
 - Every individual test must complete in under 60 seconds. Use bounded waits and close all clients, servers, executors, and other background resources.
 - Reporter issue context identifies what is missing; infer the relevant public API paths from that context and cover them in tests.

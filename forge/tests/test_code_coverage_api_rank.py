@@ -213,7 +213,7 @@ class RankUniverseTests(unittest.TestCase):
         self.assertEqual(selected[self.DELEGATE], 3)
         # `entry` keeps its own bit and stays, ranked below `delegate`: static
         # reach resolves dispatch by class hierarchy, so covering `delegate` is
-        # not evidence that `entry` executed (§WF-code-coverage-improvement.3.1.1).
+        # not evidence that `entry` executed (§AR-code-coverage-improvement.3.1.1).
         self.assertEqual(selected[self.ENTRY], 1)
         ranks = {target["id"]: target["rank"] for target in report["targets"]}
         self.assertLess(ranks[self.DELEGATE], ranks[self.ENTRY])
@@ -416,7 +416,7 @@ class SelectTargetTests(unittest.TestCase):
         # outright. Static reach is a class-hierarchy over-approximation while
         # the score is exact execution, so `callee` stays — ranked last, on the
         # single bit nothing can take from it
-        # (§WF-code-coverage-improvement.3.1.1).
+        # (§AR-code-coverage-improvement.3.1.1).
         ids = ["caller", "callee"]
         universe_bit = {0: 0b01, 1: 0b10}
         reach = {0: 0b11, 1: 0b10}
@@ -475,7 +475,7 @@ class ClosureNoteTests(unittest.TestCase):
 
     The deep phase drops compiler-owned bodies from its prompt, so when the
     enclosing method is a public entry the note belongs here
-    (§WF-code-coverage-improvement.3.2.1).
+    (§AR-code-coverage-improvement.3.2.1).
     """
 
     OWNER = "com/example/Api"
@@ -629,7 +629,7 @@ class ExtractorTests(unittest.TestCase):
         # Production puts the entries in the universe too, so the delegating
         # overload adds no internal reach once `entry` is taken but still holds
         # its own bit: it ranks last and stays in the prompt, as does `lonely`,
-        # which reaches nothing at all (§WF-code-coverage-improvement.3.1.1).
+        # which reaches nothing at all (§AR-code-coverage-improvement.3.1.1).
         entry_bits = dict(universe_bit)
         for bit, node in enumerate((entry, overload, lonely), start=len(internal)):
             entry_bits[node] = 1 << bit

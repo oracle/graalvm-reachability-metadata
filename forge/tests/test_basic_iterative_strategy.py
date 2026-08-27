@@ -21,7 +21,7 @@ LIBRARY = "org.example:lib:1.0.0"
 
 # A `./gradlew test` run that reached nativeTest and failed there. The basic
 # iterative loop accepts this as progress, which is exactly why the terminal
-# native-test gate has to run afterwards (§WF-basic-iterative).
+# native-test gate has to run afterwards (§AR-basic-iterative).
 NATIVE_TEST_FAILED_OUTPUT = "> Task :nativeTest FAILED\n"
 
 
@@ -167,7 +167,7 @@ class DynamicAccessFallbackNativeTestGateTests(unittest.TestCase):
     Regression test for the transitive-dependency metadata gap: the requested
     artifact reports no dynamic-access call sites, the basic iterative fallback
     generates a working test suite, and `nativeTest` still needs metadata that
-    only the native-test gate can trace (§WF-dynamic-access-fallback-and-failure).
+    only the native-test gate can trace (§AR-dynamic-access-fallback-and-failure).
     """
 
     def test_zero_call_report_falls_back_and_still_runs_the_gate(self) -> None:

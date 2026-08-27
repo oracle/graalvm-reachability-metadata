@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Resolves and identifies Native Image base layers. §TCK-test-harness.3
+ * Resolves and identifies Native Image base layers. §AR-test-harness.3
  */
 public final class BaseLayerUtils {
     private static final String BASE_LAYER_FILE_PROPERTY = "tck.baseLayerFile";

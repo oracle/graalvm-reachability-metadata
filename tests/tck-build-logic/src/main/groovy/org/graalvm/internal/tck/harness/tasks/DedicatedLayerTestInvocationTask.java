@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Runs native tests with a coordinate-specific base layer containing the tested library.
  *
- * Implements §TCK-test-harness.3 — the library LayerUse test lane.
+ * Implements §AR-test-harness.3 — the library LayerUse test lane.
  */
 @SuppressWarnings("unused")
 public abstract class DedicatedLayerTestInvocationTask extends SharedLayerTestInvocationTask {

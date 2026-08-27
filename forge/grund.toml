@@ -9,7 +9,7 @@ strict = true
 require_grounding = false
 inline_style = "citation-with-note" # citation-with-note | citation-only
 inline_note_suggested_lines = 1
-inline_note_max_lines = 3
+inline_note_max_lines = 20
 inline_note_max_columns = 100
 warn_on_suggested = false
 
@@ -21,71 +21,100 @@ number_pattern = "\\d+"
 slug_pattern = "[a-z0-9][a-z0-9-]*"
 
 [[kinds]]
-prefix = "GRUND"
+kind = "GRUND"
 file = "docs/grund.md"
 title = "Why: Forge motivation"
 
 [[kinds]]
-prefix = "GOAL"
+kind = "GOAL"
 file = "docs/goals.md"
 title = "Where: Forge direction and outcomes"
 
 [[kinds]]
-prefix = "AR"
+kind = "AR"
 folder = "docs/architecture"
 title = "Forge architecture and technical structure"
 
 [[kinds]]
-prefix = "FS"
+kind = "FS"
 folder = "docs/functional-spec"
 title = "Forge functional behavior and requirements"
 
 [[kinds]]
-prefix = "DW"
-file = "docs/do-work.md"
-title = "Forge do-work loop architecture"
-
-[[kinds]]
-prefix = "STRAT"
-file = "docs/strategies.md"
-title = "Forge strategy configuration architecture"
-
-[[kinds]]
-prefix = "ORCH"
-file = "docs/orchestration-scripts.md"
-title = "Forge orchestration scripts behavior and architecture"
-
-[[kinds]]
-prefix = "GIT"
-file = "docs/git-scripts.md"
-title = "Forge git scripts publication behavior and architecture"
-
-[[kinds]]
-prefix = "WF"
-folder = "docs/workflows"
-title = "Forge workflow specifications and operating rules"
-
-[[kinds]]
-prefix = "E2E"
-file = "docs/e2e.md"
-title = "Forge end-to-end test specifications"
-
-[[kinds]]
-prefix = "BENCH"
-file = "docs/benchmarking.md"
-title = "Forge benchmark specifications"
-
-[[kinds]]
-prefix = "ROADMAP"
+kind = "ROADMAP"
 file = "docs/roadmap.md"
 title = "Forge implementation roadmap"
 
+# Places that are read and checked, but declare no IDs.
+[[kinds]]
+kind = "prompt"
+folder = "prompt_templates"
+citable = false
+title = "Agent prompt templates the workflows render"
+
+[[kinds]]
+kind = "example"
+folder = "examples"
+citable = false
+title = "Worked examples of a workflow run"
+
+[[kinds]]
+kind = "ai-workflows"
+folder = "ai_workflows"
+citable = false
+title = "Workflow drivers, engines, and agent adapters"
+
+[[kinds]]
+kind = "git-scripts"
+folder = "git_scripts"
+citable = false
+title = "Git and GitHub automation: commits, branches, PRs, stats"
+
+[[kinds]]
+kind = "utility-scripts"
+folder = "utility_scripts"
+citable = false
+title = "Shared support code used across workflows and pipelines"
+
+[[kinds]]
+kind = "benchmarks"
+folder = "benchmarks"
+citable = false
+title = "Benchmark campaign configuration and runner"
+
+[[kinds]]
+kind = "tests"
+folder = "tests"
+citable = false
+title = "Unit and integration tests for the Python modules"
+
+# Places that are listed, not walked: data that ships verbatim.
+[[kinds]]
+kind = "schema"
+folder = "schemas"
+citable = false
+scan = false
+title = "JSON Schemas for strategies, metrics, and continuation markers"
+
+[[kinds]]
+kind = "strategy"
+folder = "strategies"
+citable = false
+scan = false
+title = "Predefined strategy configurations"
+
+# The homeless kind: every citation site outside every home above.
+[[kinds]]
+kind = "code"
+citable = false
+title = "Loose scripts and plugins outside a kind home"
+
 [scan]
-include = ["AGENTS.md", "README.md", "DEVELOPING.md", "docs", "prompt_templates"]
-exclude = ["target", "node_modules", ".git", "dist", "build", ".venv", ".gradle", "out", ".venv", "**/__pycache__", "local_repositories"]
-extensions = ["md", "html"]
+include = ["AGENTS.md", "README.md", "DEVELOPING.md", "docs", "scripts", "pylint_plugins", "forge_metadata.py"]
+exclude = ["target", "node_modules", ".git", "dist", "build", ".venv", ".gradle", "out", "**/__pycache__", "local_repositories", "logs", "roadmap-planning", "skills"]
+extensions = ["md", "html", "py"]
 comment_prefixes = ["//", "#", "/*", "*", "<!--"]
-docstring_python = false
+docstring_python = true
 respect_gitignore = true
 
 [output]
@@ -109,29 +138,30 @@ must = ["GOAL|FS"]
 [citations.AR]
 must = ["FS|GOAL"]
 
-[citations.DW]
-must = ["FS|AR"]
-
-[citations.STRAT]
-should = ["FS|AR|GOAL"]
-
-[citations.ORCH]
-must = ["FS|AR|STRAT"]
-
-[citations.GIT]
-should = ["FS|AR"]
-
-[citations.WF]
-should = ["FS|STRAT|ORCH|GIT"]
-
-[citations.E2E]
-must = ["FS|WF|ORCH"]
-
-[citations.BENCH]
-must = ["FS|AR|GOAL"]
-
 [citations.ROADMAP]
 should = ["GOAL|FS|AR"]
 
+[citations.prompt]
+should = ["*/FS|AR|GOAL"]
+
+[citations.example]
+should = ["FS|AR"]
+
+[citations.ai-workflows]
+should = ["FS|AR"]
+
+[citations.git-scripts]
+should = ["FS|AR"]
+
+[citations.utility-scripts]
+should = ["FS|AR"]
+
+[citations.benchmarks]
+should = ["FS|AR"]
+
+[citations.tests]
+should = ["FS|AR"]
+
 [citations.code]
-must = ["FS|AR|DW|STRAT|ORCH|GIT|WF"]
+must = ["FS"]
+should = ["AR"]

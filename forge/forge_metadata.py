@@ -11,7 +11,7 @@ runs the matching pipeline, and updates the project item status.
 This module is the Forge control-plane dispatcher (§AR-forge-control-plane): it
 owns queue selection, issue claiming, isolated worktree setup, workflow routing,
 publication handoff, follow-up labeling, and cleanup, implementing the
-orchestration contract in §ORCH-forge-orchestration-spec.
+orchestration contract in §AR-forge-orchestration.
 
 Usage:
   python forge-metadata.py --label <label> [--limit N] [--offset N|--random-offset]
@@ -563,7 +563,7 @@ def preserve_user_interrupt_reason(reason: str = INTERRUPT_REASON_CTRL_C) -> Non
 
     Unwinding passes several handlers, and the first one to fire knows why the
     run is stopping; later ones must not relabel a shared bootstrap stop as a
-    Ctrl+C (§FS-shared-infrastructure-bootstrap-failure).
+    Ctrl+C (§FS-human-intervention-policy).
     """
     if not is_user_interrupt_requested():
         mark_user_interrupt_requested(reason)
@@ -2030,7 +2030,7 @@ def get_fixture_issue_artifact_dir(issue_number: int) -> str:
     """Return the artifact directory for one fixture issue: `issue-<number>/<timestamp>/`.
 
     Single-issue, label, and work-queue runs all write each issue's evidence here,
-    alongside any other results for that issue. §E2E-forge-workflow-testing.2
+    alongside any other results for that issue. §FS-durable-generation-logs
     """
     issue_dir = os.path.join(
         get_repo_root(),
@@ -2538,7 +2538,7 @@ def apply_unblocked_issue_merge_follow_up(pr: dict) -> None:
     The shared `Forge-Unblocks-Issue` trailer releases both library-update alias
     successors and deferred Java-fix coverage issues from `In Progress` to
     `Todo`. §FS-library-update-tested-version-split,
-    §WF-java-fail-fix-workflow.3
+    §AR-forge-driver-queues.3
     """
     for issue_number in extract_follow_up_issue_numbers(pr.get("body")):
         item_id = get_project_item_id(issue_number)
@@ -3366,7 +3366,7 @@ def is_external_failure_exception(exc: BaseException | None) -> bool:
     retry without `human-intervention`, while any other exception (including agent
     timeouts) is logical. The cause/context chain is walked so a wrapped external
     error is still recognized.
-    §FS-human-intervention-policy, §FS-shared-infrastructure-bootstrap-failure
+    §FS-human-intervention-policy
     """
     error: BaseException | None = exc
     while error is not None:
@@ -4958,7 +4958,7 @@ def prepare_dynamic_access_chunking(
     """Prepare dispatcher-owned chunking state and return the concrete chunk size.
 
     The control plane owns the class threshold decision for issue-driven
-    dynamic-access work (§WF-chunked-dynamic-access-pr-linking): it refreshes
+    dynamic-access work (§AR-chunked-dynamic-access-pr-linking): it refreshes
     the report, records the exhaust-report chunk fields, applies the public
     label, and passes only the concrete chunk count to the workflow.
     """
@@ -5067,7 +5067,7 @@ def append_chunked_dynamic_access_workflow_args(
     The dispatcher (§AR-forge-control-plane) computes the issue-scoped chunking
     context and passes only execution flags to the workflow driver, so the
     chunk limits stay consistent with the exhaust report
-    (§WF-dynamic-access-exhaust-report).
+    (§AR-dynamic-access-exhaust-report).
     """
     issue_number = claimed_issue.issue["number"]
     pipeline_argv.extend(["--issue-number", str(issue_number)])
@@ -5379,7 +5379,9 @@ def resolve_workflow_default_strategy_name(
 ) -> str:
     """Return the selected workflow driver.s default strategy for durable run state.
 
-    Omitted strategy overrides remain omitted at dispatch (§E2E-forge-workflow-testing.2).
+    An unresolvable strategy raises rather than failing one issue at a time
+    (§FS-forge-run-requirements.1). Omitted strategy overrides remain omitted at
+    dispatch (§FS-forge-predefined-strategy-contract).
     """
     if claimed_issue.label == LABEL_LIBRARY_NEW:
         return DEFAULT_NEW_LIBRARY_STRATEGY_NAME
@@ -6002,7 +6004,11 @@ def build_claim_metadata(
         label: str,
         base_reachability_metadata_path: str,
 ) -> Optional[tuple[str, str | None, str | None]]:
-    """Resolve the coordinates needed to execute a claimed issue."""
+    """Resolve the coordinates needed to execute a claimed issue.
+
+    The issue is the run's input, so a title that does not resolve to Maven
+    coordinates is rejected at the boundary (§FS-forge-run-requirements.3).
+    """
     issue_coordinates = extract_maven_coordinates(issue["title"])
     if issue_coordinates is None:
         print(f"ERROR: No coordinates found in issue title: {issue['title']}", file=sys.stderr)
@@ -6018,7 +6024,7 @@ def build_claim_metadata(
 
     group, artifact, new_version = coordinate_parts
     # `fails-*` issues target the newest version, so keep `latest` as the signal.
-    # §WF-forge-workflow-drivers.2
+    # §AR-forge-driver-queues
     current_version = load_current_metadata_version(
         base_reachability_metadata_path,
         group,
@@ -6244,9 +6250,12 @@ def claim_issue_for_processing(
     """Claim an issue and prepare its isolated execution workspace.
 
     Claiming, assignment validation, and worktree creation are orchestration
-    responsibilities, not strategy logic (§AR-forge-control-plane). Chunked
+    responsibilities, not strategy logic (§AR-forge-control-plane). This is
+    where the run context of §FS-forge-run-requirements.4 is assembled; moving
+    the rest of it off the driver is
+    §ROADMAP-forge-dispatcher-owned-run-preconditions. Chunked
     dynamic-access continuation derives its exhaust report from the coordinate
-    in the checked-out repository (§WF-dynamic-access-exhaust-report).
+    in the checked-out repository (§AR-dynamic-access-exhaust-report).
     """
     if not refresh_issue_payload_for_claim(issue, label, authenticated_user):
         return None
@@ -6339,7 +6348,7 @@ def build_fixture_claimed_issue(
 ) -> Optional[ClaimedIssue]:
     """Prepare a fixture issue without simulating GitHub claim mechanics.
 
-    §E2E-forge-workflow-testing.2
+    §AR-forge-control-plane
     """
     if not is_fixture_testing_enabled():
         raise RuntimeError("Fixture issue preparation requires fixture testing mode")
@@ -6520,7 +6529,7 @@ def build_chunked_dynamic_access_pr_args(
 
     Non-final chunks publish with continuation state and must not close the
     backing issue, per the chunk PR linking contract
-    (§WF-chunked-dynamic-access-pr-linking, §GIT-issue-linking).
+    (§AR-chunked-dynamic-access-pr-linking, §AR-issue-linking).
     """
     if exhaust_report_path is None:
         return []
@@ -6640,7 +6649,7 @@ def build_publication_handoff(
 
     The dispatcher makes the routing decision once, then either executes the
     matching git script or records a dry-run fixture handoff
-    (§E2E-forge-workflow-testing.2, §AR-forge-verification-publication-boundary).
+    (§AR-forge-verification-publication-boundary).
     """
     require_claimed_issue_worktree(claimed_issue, "successful finalization")
     issue_number = claimed_issue.issue["number"]
@@ -6942,7 +6951,7 @@ def prepare_java_fix_coverage_follow_up(
     The composite strategy already made this decision against the report it had
     when the repair finished, so publication reads that recorded decision instead
     of regenerating a report and deciding a second time.
-    §WF-java-fail-fix-workflow.3
+    §AR-forge-driver-queues.3
     """
     is_java_fix_issue = claimed_issue.label in {LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL}
     library_update_route = _load_library_update_publication_route(claimed_issue)
@@ -7003,7 +7012,7 @@ def finalize_successful_issue(
     """Create the PR for a successful isolated workflow run.
 
     Publication is delegated to workflow-specific git scripts only after the
-    workflow records a PR-eligible status (§GIT-pr-eligibility), keeping
+    workflow records a PR-eligible status (§AR-pr-eligibility), keeping
     generation and publication separate (§AR-forge-verification-publication-boundary).
     """
     coverage_follow_up = prepare_java_fix_coverage_follow_up(claimed_issue)
@@ -7470,7 +7479,11 @@ def refresh_issue_payload_for_claim(
         required_label: str | None = None,
         authenticated_user: str | None = None,
 ) -> bool:
-    """Refresh mutable issue state and return whether it remains claimable."""
+    """Refresh mutable issue state and return whether it remains claimable.
+
+    The payload is re-read against live GitHub state at claim time rather than
+    trusted from the scan (§FS-forge-run-requirements.2).
+    """
     issue_number = issue.get("number")
     if not isinstance(issue_number, int):
         return False
@@ -8000,7 +8013,7 @@ def process_fixture_issues_for_label(
 
     Fixture selection is local to the loaded YAML and has no live claim or
     work-queue concurrency to model, so a queue/label run is simply each matching
-    issue processed in turn under its own issue-scoped tee (§E2E-forge-workflow-testing.2).
+    issue processed in turn under its own issue-scoped tee (§AR-forge-control-plane).
     """
     if not environment_already_validated:
         validate_issue_processing_environment()

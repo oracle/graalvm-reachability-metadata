@@ -1,6 +1,6 @@
 # Issue triage: labels eligible library-new-request issues, validates coordinates, closes
 # invalid/duplicate/supported requests, and uses open-dependency-issues-and-link-blockers.js
-# (§CI-shared-scripts) for blockers. §CI-triage-new-issues; §FS-repository-functional-spec.4.
+# (§AR-shared-scripts) for blockers. §AR-triage-new-issues; §FS-repository-functional-spec.4.
 name: "Triage new issues"
 
 on:
@@ -243,7 +243,7 @@ jobs:
 
       # Closed-world search over the repositories the test builds configure: a miss proves
       # absence from those repositories only, never that the artifact does not exist, so
-      # only a definite 404 from every one of them closes an issue. §CI-triage-new-issues
+      # only a definite 404 from every one of them closes an issue. §AR-triage-new-issues
       - name: "Check whether the artifact resolves from a configured repository"
         if: ${{ steps.classify.outputs.should_triage == 'true' && steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' && steps.support.outputs.supported != 'true' && steps.support.outputs.not_for_native_image != 'true' }}
         id: resolvable

@@ -1,3 +1,4 @@
+# Opens the pull request for a verified Forge branch (§FS-repository-functional-spec.4.6).
 name: Forge Open PR
 
 on:
@@ -41,7 +42,7 @@ jobs:
       - name: Revalidate and publish exact SHA
         env:
           # Publication runs as the graalvmbot machine account, the same identity
-          # the compatibility sweep already publishes with (§GIT-actions-publication).
+          # the compatibility sweep already publishes with (§forge/AR-actions-publication).
           GH_TOKEN: ${{ vars.FORGE_PR_PUBLISH_MODE == 'live' && secrets.GRAALBOT_PR_TOKEN || github.token }}
           HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
           HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}

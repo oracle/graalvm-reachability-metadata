@@ -56,7 +56,7 @@ class DynamicAccessExhaustReport:
 
     The report is intentionally not a precomputed chunk manifest. Every resume
     regenerates the current dynamic-access report and filters out these recorded
-    class sets (§WF-dynamic-access-exhaust-report).
+    class sets (§AR-dynamic-access-exhaust-report).
     """
 
     coordinate: str

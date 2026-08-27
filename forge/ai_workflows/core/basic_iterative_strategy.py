@@ -245,7 +245,7 @@ class BasicIterativeStrategy(WorkflowStrategy):
 
         # The loop above accepts a failing nativeTest as progress, so the gate is what
         # validates native-image behavior and traces misses this workflow cannot see —
-        # including transitive-dependency metadata (§WF-basic-iterative).
+        # including transitive-dependency metadata (§AR-basic-iterative).
         if not self._verify_native_test_gate(global_output_dir(
             self.reachability_repo_path, self.group, self.artifact, self.test_version,
         )):

@@ -229,7 +229,7 @@ def resolve_version_backfill_baseline(
     """Resolve one usable same-major baseline for deterministic version backfill.
 
     Exact index ownership takes precedence over version ordering. Non-exact
-    selection never crosses a major-version boundary. §WF-forge-workflow-drivers.2
+    selection never crosses a major-version boundary. §AR-forge-driver-queues
     """
     target = resolve_library_update_target(repo_path, group, artifact, requested_version)
     if target.match_type != MATCH_NEW_VERSION and target.matched_entry is not None:
@@ -474,7 +474,7 @@ def _compare_parseable_metadata_versions(first_version: str, second_version: str
 def _parse_metadata_version(version: str) -> ParsedMetadataVersion | None:
     """Parse known qualifiers or retain the numeric line of a Maven variant.
 
-    §WF-forge-workflow-drivers.2
+    §AR-forge-driver-queues
     """
     match = _VERSION_PATTERN.match(version)
     if not match:

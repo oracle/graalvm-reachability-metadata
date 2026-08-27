@@ -5,19 +5,17 @@
 
 """
 Deterministic public-API inventory for the code coverage improvement workflow
-(§WF-code-coverage-improvement.3.1, §WF-code-coverage-improvement-architecture).
+(§AR-code-coverage-improvement.3.1, §AR-code-coverage-improvement-architecture).
 
 It enumerates the public, user-callable method and constructor surface of a
 resolved library artifact and emits compact JSON and Markdown reports. The
-canonical target `id` carries full identity (`owner#name(params):ret`) so the
-JaCoCo validator can classify public entries exactly. The deep-path analyzer
-uses those identities as public navigation boundaries and removes them from its
-internal-method target set; redundant split fields are avoided.
+canonical target `id` carries full identity (`owner#name(params):ret`), the
+exactness §AR-code-coverage-improvement.3.1 requires of the correlation.
 
-The inventory is derived from the library jar via `javap -public -s`, so it is repeatable
-and needs no network access or library execution. Generic type arguments are
-erased, varargs are normalized to arrays, and fields are excluded so target ids line up with the raw
-types used by the analysis call tree and the sampled profile.
+Derivation is `javap -public -s` over the library jar, per
+§AR-code-coverage-improvement-architecture.1: erased generics, varargs
+normalized to arrays, fields excluded, so ids line up with the analysis call
+tree and the sampled profile.
 
 Usage:
   python3 utility_scripts/code_coverage_api_inventory.py \
@@ -237,7 +235,7 @@ def _parse_member(body: str, owner_class: ClassInfo) -> ApiTarget | None:
         return ApiTarget(ref, ref.canonical_id, kind, owner_class.source_path,
                          _behavior_hint(name, kind), is_static)
 
-    # §WF-code-coverage-improvement.3.1: fields are not callable entry targets.
+    # §AR-code-coverage-improvement.3.1: fields are not callable entry targets.
     return None
 
 
@@ -314,7 +312,7 @@ def build_inventory(coordinate: str, classes: list[ClassInfo], jar_paths: list[s
     targets.sort(key=lambda item: item["id"])
     # The resolved jars are recorded so later deterministic steps — notably the
     # bytecode call-graph extractor — need no separate artifact resolution
-    # (§WF-code-coverage-improvement.3.1.1).
+    # (§AR-code-coverage-improvement.3.1.1).
     return {
         "coordinate": coordinate,
         "libraryJars": sorted(os.path.abspath(path) for path in (jar_paths or [])),

@@ -4,13 +4,15 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 """
-Script for benchmarking the AI workflows (§BENCH-forge-generation-benchmarking).
+Script for benchmarking the AI workflows (§FS-forge-generation-benchmarking).
 Cleans up existing tests/metadata in the reachability-metadata repo for the provided coordinates and
-runs ai_workflows/drivers/add_new_library_support.py per library in the benchmark suite with the selected strategy and logs the metrics.
+runs ai_workflows/drivers/add_new_library_support.py per library in the
+benchmark suite with the selected strategy and logs the metrics.
 
 Usage:
   python3 benchmarks/benchmark_runner.py --benchmark-name benchmark-name \
-  [--reachability-metadata-path /path/to/graalvm-reachability-metadata] [--metrics-repo-path /path/to/metrics-storage] [-v]
+  [--reachability-metadata-path /path/to/graalvm-reachability-metadata]
+  [--metrics-repo-path /path/to/metrics-storage] [-v]
 """
 
 import argparse

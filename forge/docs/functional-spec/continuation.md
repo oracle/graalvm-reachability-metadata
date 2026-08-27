@@ -3,10 +3,10 @@
 Run continuation lets a later Forge run re-enter a failed issue run at the phase
 that failed, instead of regenerating the whole result from scratch. It is a
 cross-cutting capability across the Forge workflow system
-(§WF-forge-workflow-system) and builds on the workflow engine's ownership of run
-state (§WF-forge-workflow-engine): the engine
+(§AR-forge-workflow-system) and builds on the workflow engine's ownership of run
+state (§AR-forge-workflow-engine): the engine
 already advances per-iteration progress as commits and reverts to the last good
-checkpoint on a failed iteration (§WF-dynamic-access-iterative-strategy).
+checkpoint on a failed iteration (§AR-dynamic-access-iterative).
 Continuation makes that checkpoint state survive process exit and become
 re-entrant on a new run.
 
@@ -38,7 +38,7 @@ A run is an ordered sequence of phases. Continuation classifies each phase by it
 | `fix` | continuous | Continue from the preserved branch at the recorded `iteration`. |
 | `explore` | continuous | Rerun the phase; the regenerated dynamic-access report self-prunes to uncovered classes, and the recorded `exhaustedClasses` keep already-abandoned classes from being retried. |
 | `finalization` | discrete | If entered but not completed, redo from the preserved branch. |
-| `publication` | discrete (remote) | If `isPushed`, the exact descriptor branch already landed and local publication is complete; report it without another mutation. Otherwise reuse the recorded publication identity and run local finalization (§GIT-shared-publication-pipeline). |
+| `publication` | discrete (remote) | If `isPushed`, the exact descriptor branch already landed and local publication is complete; report it without another mutation. Otherwise reuse the recorded publication identity and run local finalization (§AR-shared-publication-pipeline). |
 
 The unifying invariant: **the preserved branch HEAD is the cursor.** The
 committed tree is the source of truth for where a phase got to, so the marker
@@ -94,9 +94,9 @@ The marker is **gitignored in the worktree during the run** and written eagerly
 on each phase transition, so it survives a hard kill or agent timeout. It is
 **force-added onto the preservation branch only** when a logical failure
 preserves the work. This is the same mechanic the chunked dynamic-access exhaust
-report already uses to carry resume state (§WF-dynamic-access-exhaust-report);
+report already uses to carry resume state (§AR-dynamic-access-exhaust-report);
 because the marker never enters a successful run's publication staging
-(§GIT-expected-paths), a completed PR stays clean with no cleanup step.
+(§AR-expected-paths), a completed PR stays clean with no cleanup step.
 
 ### 2.2 Field rules
 
@@ -105,16 +105,16 @@ because the marker never enters a successful run's publication staging
 - `preservedBranch` is the remote branch that holds the preserved tree and the
   marker.
 - `strategyName` re-instantiates the workflow engine and its exploration variant
-  (§STRAT-forge-predefined-strategy-contract).
+  (§FS-forge-predefined-strategy-contract).
 - `issueNumber`, `label`, `coordinate`, and `newVersion` re-route the workflow;
   they are kept explicit because the coordinate is sanitized inside the branch
   name and cannot be parsed back reliably.
 - `libraryUpdateRoute` records the dispatcher-selected route for
   `library-update-request` issues so publication-only resume does not depend on
   a per-run sidecar directory that is absent from the preserved branch.
-- `libraryPreparationPreflight` records dispatcher preflight output so resume
-  can skip the preflight agent while still passing the original advisory setup
-  context back to the workflow driver.
+- `libraryPreparationPreflight` records the driver's completed neural setup
+  output so resume can skip the setup agent while still restoring applied
+  actions, source-context evidence, and advisory guidance.
 - `publicationMetrics` records the committed per-library execution-metrics
   entry (`library` plus `timestamp`) and only the local-only descriptor fields
   needed to reconstruct `.pending_metrics.json` during publication resume.
@@ -185,7 +185,7 @@ halts the worktree mid-rebase, in either publication rebase mode: the rebase
 *starts* and then stops on an `index.json` conflict from a sibling same-artifact
 PR that landed while the run was in flight, or the rebase *refuses to start*
 because the worktree carries changes outside the narrowly staged expected paths
-(§GIT-expected-paths). Preservation first aborts any in-progress rebase — a no-op
+(§AR-expected-paths). Preservation first aborts any in-progress rebase — a no-op
 in the refuse-to-start mode, where no sequencer state exists — then commits the
 generated tree (including those unstaged changes) to the preserved branch, so the
 branch is never silently dropped. The marker rides that same preserved branch,

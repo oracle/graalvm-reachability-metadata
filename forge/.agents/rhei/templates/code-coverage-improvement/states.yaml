@@ -139,14 +139,14 @@ states:
       # Step 3: static call graph from the library bytecode, built once and
       # cached. The Native Image call tree cannot serve here: it holds only
       # methods current tests already reach, which excludes exactly the code
-      # this phase opens up (§WF-code-coverage-improvement.3.1.1). It runs
+      # this phase opens up (§AR-code-coverage-improvement.3.1.1). It runs
       # before the loop decision because the deep phase needs its method list
       # even when this phase completes on the first measurement.
       inventory_path = Path("runtime/code-coverage/api-inventory/api-inventory.json")
       graph_dir = Path("runtime/code-coverage/graph")
       # `types.csv` is the extractor's last output and its newest one, so its
       # absence means either no graph or a graph from an extractor that predates
-      # receiver-obtainability analysis (§WF-code-coverage-improvement.3.1.2).
+      # receiver-obtainability analysis (§AR-code-coverage-improvement.3.1.2).
       # Keying the cache on it rebuilds instead of silently ranking unfiltered.
       if not (graph_dir / "types.csv").is_file():
           try:
@@ -180,7 +180,7 @@ states:
       # Fixed iteration budget. Scaling it from the baseline uncovered count
       # made the phase length depend on how that count is defined, so a change
       # to the summary basis silently halved the budget; a constant cannot
-      # drift that way (§WF-code-coverage-improvement.3.1).
+      # drift that way (§AR-code-coverage-improvement.3.1).
       budget = {{coverage_iterations}}
       print(f"[api-measure] iteration budget {budget}", flush=True)
       if not uncovered or iteration >= budget:
@@ -408,7 +408,7 @@ states:
       # method list keeps the deep universe to methods the resolved jars declare;
       # a JaCoCo report also covers whatever else the test runtime classpath
       # instruments, including the library's own test-classifier artifact
-      # (§WF-code-coverage-improvement.3.2).
+      # (§AR-code-coverage-improvement.3.2).
       library_methods = Path("runtime/code-coverage/graph/methods.csv")
       if not library_methods.is_file():
           fail(6, f"the API phase left no library method list at {library_methods}")
@@ -436,7 +436,7 @@ states:
       actionable = report.get("bulkTargets", [])
       print(f"[deep-measure] iteration {iteration}: {len(actionable)} actionable deep targets", flush=True)
 
-      # Fixed iteration budget, matching the API phase (§WF-code-coverage-improvement.3.1).
+      # Fixed iteration budget, matching the API phase (§AR-code-coverage-improvement.3.1).
       budget = {{coverage_iterations}}
       print(f"[deep-measure] iteration budget {budget}", flush=True)
       if not actionable or iteration >= budget:
@@ -593,7 +593,7 @@ states:
       # what remains. The extension suite contributes to the same two
       # reachability-metadata.json files as every other test, and the split is by
       # the entry's own type, never by hand
-      # (§WF-code-coverage-improvement.2, §root/METADATA-suite.2, §root/TCK-test-harness.5).
+      # (§AR-code-coverage-improvement.2, §root/FS-metadata.2, §root/AR-test-harness.5).
       for metadata_task in ("splitTestOnlyMetadata", "checkMetadataFiles"):
           metadata_command = [
               f"{worktree_path}/gradlew",
@@ -609,7 +609,7 @@ states:
 
       # A tracing-agent run during metadata preparation can leave legacy split
       # configs behind; this repository loads none of them
-      # (§root/METADATA-suite.1).
+      # (§root/FS-metadata.1).
       sys.path.insert(0, work_path)
       try:
           from utility_scripts.native_image_config_policy import (
@@ -661,7 +661,7 @@ states:
 
       # Step 5: persist coverage from the newly written tests. The stats task
       # consumes the combined report, whose denominator is only the coordinate's
-      # unclassified main JAR (§root/TCK-test-harness.8).
+      # unclassified main JAR (§root/AR-test-harness.8).
       stats_command = [
           f"{worktree_path}/gradlew",
           "generateLibraryStats",

@@ -8,7 +8,7 @@
 JaCoCo is the authoritative coverage source in both workflow phases. This
 module preserves every reported method's complete JVM identity and source
 evidence so overloads cannot inherit one another's status
-(§WF-code-coverage-improvement.3.1).
+(§AR-code-coverage-improvement.3.1).
 """
 
 from __future__ import annotations

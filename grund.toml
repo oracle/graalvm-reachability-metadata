@@ -25,64 +25,93 @@ number_pattern = "\\d+"
 slug_pattern = "[a-z0-9][a-z0-9-]*"
 
 [[kinds]]
-prefix = "GRUND"
+kind = "GRUND"
 file = "docs/grund.md"
 title = "Why: repository motivation"
 
 [[kinds]]
-prefix = "GOAL"
+kind = "GOAL"
 file = "docs/goals.md"
 title = "Where: repository direction and outcomes"
 
 [[kinds]]
-prefix = "PRCPL"
+kind = "PRCPL"
 file = "docs/principles.md"
 title = "Cross-cutting principles for how the repository works"
 
 [[kinds]]
-prefix = "FS"
+kind = "FS"
 folder = "docs/functional-spec"
 title = "Repository functional behavior and contributor-facing requirements"
 
 [[kinds]]
-prefix = "AR"
+kind = "AR"
 folder = "docs/architecture"
 title = "Repository architecture and build infrastructure"
 
 [[kinds]]
-prefix = "TCK"
-file = "docs/tck.md"
-title = "Test harness (TCK): task groups"
-
-[[kinds]]
-prefix = "E2E"
-file = "docs/e2e.md"
-title = "Infrastructure end-to-end tests (testInfra/testAllInfra)"
-
-[[kinds]]
-prefix = "CI"
-file = "docs/ci.md"
-title = "Recurring CI workflows and composite actions"
-
-[[kinds]]
-prefix = "METADATA"
-file = "docs/metadata.md"
-title = "The metadata/ suite: shipped reachability metadata"
-
-[[kinds]]
-prefix = "TESTS"
-file = "docs/tests.md"
-title = "The tests/ suite: tests that justify the metadata"
-
-[[kinds]]
-prefix = "SKILL"
+kind = "SKILL"
 folder = "skills"
+citable = false
 title = "Agent review and automation skills"
+
+[[kinds]]
+kind = "workflow"
+folder = ".github/workflows"
+citable = false
+title = "CI and release workflows: the gate on GitHub"
+
+[[kinds]]
+kind = "action"
+folder = ".github/actions"
+citable = false
+title = "Composite actions the workflows reuse"
+
+# Places that are listed, not walked: content that ships verbatim or is generated.
+[[kinds]]
+kind = "metadata"
+folder = "metadata"
+citable = false
+scan = false
+title = "The shipped reachability metadata, verbatim"
+
+[[kinds]]
+kind = "tests"
+folder = "tests"
+citable = false
+scan = false
+title = "Per-library test projects that justify the metadata"
+
+[[kinds]]
+kind = "tck-build-logic"
+folder = "tests/tck-build-logic"
+citable = false
+title = "The TCK harness build logic the test projects run on"
+
+[[kinds]]
+kind = "stats"
+folder = "stats"
+citable = false
+scan = false
+title = "Generated library statistics"
+
+[[kinds]]
+kind = "asset"
+folder = "docs/assets"
+citable = false
+scan = false
+title = "README images, shipped verbatim"
+
+# The homeless kind: every citation site outside every home above.
+[[kinds]]
+kind = "code"
+citable = false
+title = "Build files and repository scripts outside a kind home"
 
 [scan]
 include = ["AGENTS.md", "README.md", "COVERAGE.md", "docs", "skills", ".github/workflows", ".github/actions", "build.gradle"]
-exclude = ["target", "node_modules", ".git", "dist", "build", ".venv", ".gradle", "out", "metadata", "stats", "tests", "forge/.venv", "forge/**/__pycache__"]
-extensions = ["md", "html", "yml", "yaml", "gradle"]
+exclude = ["target", "node_modules", ".git", "dist", "build", ".venv", ".gradle", "out", "forge/.venv", "forge/**/__pycache__"]
+extensions = ["md", "html", "yml", "yaml", "gradle", "sh", "js"]
 comment_prefixes = ["//", "#", "/*", "*", "<!--"]
 docstring_python = false
 respect_gitignore = true
@@ -111,23 +140,21 @@ should = ["GOAL|FS"]
 [citations.AR]
 must = ["FS|GOAL"]
 
-[citations.TCK]
-must = ["FS|AR|GOAL"]
-
-[citations.E2E]
-must = ["FS|TCK|AR"]
-
-[citations.CI]
-should = ["FS|TCK|METADATA|TESTS|E2E|GOAL"]
-
-[citations.METADATA]
-must = ["FS|GOAL"]
-
-[citations.TESTS]
-must = ["FS|METADATA|GOAL"]
-
 [citations.SKILL]
-must = ["FS|CI|METADATA|TESTS"]
+must = ["FS"]
+should = ["AR"]
+
+[citations.workflow]
+should = ["FS|AR"]
+
+[citations.action]
+should = ["FS|AR"]
+
+# No [citations.tck-build-logic] rule: a file here sits in two homes, `tests`
+# and `tck-build-logic`, and grund reads a nested home as ambiguity rather than
+# most-specific-wins, so these files classify as `code`. The rule below governs
+# them; restore this one when grund resolves the nesting.
 
 [citations.code]
-must = ["FS|AR|TCK|E2E|CI|METADATA|TESTS"]
+must = ["FS"]
+should = ["AR"]

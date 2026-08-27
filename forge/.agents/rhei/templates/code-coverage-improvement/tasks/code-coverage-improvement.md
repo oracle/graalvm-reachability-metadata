@@ -11,7 +11,7 @@
 - Project owner: `{{project_owner}}`
 - Project number: `{{project_number}}`
 - Purpose: fetch one `{{issue_label}}` issue and create or reuse the per-issue
-  worktree for the code coverage workflow §WF-code-coverage-improvement.
+  worktree for the code coverage workflow §AR-code-coverage-improvement.
 - Required work:
   - Fetch the issue with `gh issue view {{issue_number}} --repo {{repo}}`.
   - Verify that it carries `{{issue_label}}`.
@@ -26,7 +26,7 @@
     its branch created from the HEAD of `{{repo_checkout}}` — never from
     `origin/master`. The workflow's own measurement helpers are resolved from
     the issue worktree, so a base without them fails measurement outright
-    (§WF-code-coverage-improvement.2).
+    (§AR-code-coverage-improvement.2).
   - Record the resolved worktree and work path, where work path is the worktree
     joined with `{{work_subdir}}`.
   - Write `runtime/code-coverage/issues/conversion.json` with exactly these
@@ -117,7 +117,7 @@
 - Loop: measure -> cover -> measure. Measurement always writes the report to the
   fixed location and lists only exact JaCoCo-uncovered public targets in the
   prompt, ordered by unlocked internal code rather than by identifier
-  (§WF-code-coverage-improvement.3.1.1); the cover agent generates meaningful
+  (§AR-code-coverage-improvement.3.1.1); the cover agent generates meaningful
   behavior tests in the dedicated coverage suite and always returns to
   measurement. The phase completes when no uncovered public target remains or
   the iteration budget is spent. Only re-measurement moves the loop forward;
@@ -133,7 +133,7 @@
   `--max-fix-passes`.
 - Purpose: generate and repair reachability metadata once after public API
   coverage so the deep sampled-PGO builds can run
-  §WF-code-coverage-improvement.
+  §AR-code-coverage-improvement.
 - Required work:
   - Read the resolved coordinate and absolute suite root from the conversion
     and preparation artifacts.
@@ -144,7 +144,7 @@
     (`jni-config.json`, `reflect-config.json`, `resource-config.json`,
     `serialization-config.json`, `proxy-config.json`) are input to convert, not
     output to commit — this repository loads none of them
-    (§root/METADATA-suite.1, §WF-code-coverage-improvement.2). Do not split shipped
+    (§root/FS-metadata.1, §AR-code-coverage-improvement.2). Do not split shipped
     from test-only entries by hand: finalization runs `splitTestOnlyMetadata`.
   - Run `./gradlew test -Pcoordinates=<resolved coordinate> -PincludeCodeCoverageSuite=true`; if it fails, repair
     metadata with the Codex `fix-missing-reachability-metadata` skill and re-run,
@@ -171,7 +171,7 @@
   absent from `runtime/code-coverage/graph/methods.csv`. The method list keeps
   the library's own `test`-classifier classes out of the universe, since JaCoCo
   reports them in the library's own packages
-  (§WF-code-coverage-improvement.3.2).
+  (§AR-code-coverage-improvement.3.2).
 - Prompt location: `runtime/code-coverage/prompts/deep-cover-prompt.md`, taken
   by the measurement program from the analyzer's compact
   `Observed` / `Uncovered paths` Markdown when the loop continues.
@@ -212,7 +212,7 @@
      test project. The extension suite contributes to the same two
      `reachability-metadata.json` files as every other test and owns no metadata
      directory of its own; the split is by the entry's own type, never by hand
-     (§WF-code-coverage-improvement.2, §root/METADATA-suite.2, §root/TCK-test-harness.5).
+     (§AR-code-coverage-improvement.2, §root/FS-metadata.2, §root/AR-test-harness.5).
   3. Run checkstyle over the coordinate's subprojects, including the tracked
      coverage suite source set:
      `./gradlew checkstyle -Pcoordinates=<resolved coordinate> --stacktrace`.
@@ -221,7 +221,7 @@
      `./gradlew codeCoverageTest -Pcoordinates=<resolved coordinate> --stacktrace`.
   5. Regenerate committed coverage statistics from the combined main-JAR-only
      report by running `./gradlew generateLibraryStats -Pcoordinates=<resolved coordinate> --stacktrace`
-     (§root/TCK-test-harness.8). The task re-runs the coverage report and builds
+     (§root/AR-test-harness.8). The task re-runs the coverage report and builds
      the dynamic-access native image, so this is the step that dominates the
      program's wall clock; a failed native build degrades `dynamicAccess` to
      `N/A` rather than failing the step.
@@ -275,7 +275,7 @@
     `ai/<login>/...` branch to `{{repo}}`. Pushing that branch is the whole
     task: `Forge Branch Ready` validates the exact commit as data, and only its
     success lets `Forge Open PR` render the body and open the pull request
-    (§GIT-actions-publication).
+    (§AR-actions-publication).
   - The descriptor carries the coordinate, coverage suite path, the whole-run
     coverage checkpoints and phase gains on one shared denominator (§4.1), the
     per-phase JaCoCo records, the human-intervention flag, the generating model,

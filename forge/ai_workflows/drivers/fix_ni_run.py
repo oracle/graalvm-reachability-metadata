@@ -164,7 +164,7 @@ def commit_checkpoint(reachability_metadata_path: str, library: str) -> str:
     The checkpoint captures the valid seed after artifact URL population and
     before any exploratory test-suite split. If best-effort exploration resets to
     this checkpoint, finalization can still publish the seeded fix
-    (§WF-native-image-run-fix-workflow.3).
+    (§AR-forge-driver-queues.4).
     """
     subprocess.run(["git", "add", "-A"], cwd=reachability_metadata_path, check=False)
     subprocess.run(
@@ -207,7 +207,7 @@ def should_explore_new_version(reachability_metadata_path: str, group: str, arti
     Exploration is conditional: an empty or fully-covered dynamic-access report
     skips the version-specific suite preparation and exploration entirely, and
     the workflow finalizes the metadata-first seed directly
-    (§WF-native-image-run-fix-workflow.3).
+    (§AR-forge-driver-queues.4).
     """
     library = f"{group}:{artifact}:{version}"
     result = run_dynamic_access_coverage_report(reachability_metadata_path, library)
@@ -342,8 +342,8 @@ def build_strategy_and_agent(
 def main(argv=None) -> int:
     """Run the Native Image fix driver.
 
-    The single-run driver (§WF-forge-workflow-drivers) for
-    §WF-native-image-run-fix-workflow. `fixTestNativeImageRun` produces the seed;
+    The single-run driver (§AR-forge-drivers) for
+    §AR-forge-driver-queues.4. `fixTestNativeImageRun` produces the seed;
     dynamic-access exploration runs only when the new version has uncovered
     calls; the shared `finalize_run` path (three native-test
     lanes + dual-coordinate finalization) always gates PR eligibility.
@@ -525,7 +525,7 @@ def main(argv=None) -> int:
         )
     else:
         # Keep the generated working-tree state as the debugging surface for the
-        # next maintainer or Forge run (§WF-native-image-run-fix-workflow.5).
+        # next maintainer or Forge run (§AR-forge-driver-queues.4).
         print("[pipeline] Finalization failed. Skipping PR creation.", file=sys.stderr)
         ending_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
         run_metrics = create_failure_run_metrics_output(

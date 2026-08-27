@@ -3,14 +3,15 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""
-JaCoCo-exact deep-method report with sampled-PGO path guidance
-(§WF-code-coverage-improvement, §WF-code-coverage-improvement-architecture).
+# Deep-method coverage, with JaCoCo as the only coverage authority and sampled PGO as
+# navigation: §AR-code-coverage-improvement.3.2, §AR-code-coverage-improvement-architecture.1.
 
-JaCoCo is the only coverage authority. The analyzer selects exact library
-methods reported by JaCoCo but absent from the public API inventory. Sampled
-PGO and the static graph rank graph-present paths; graph-absent methods remain
-in full JSON but never enter prompts.
+"""
+JaCoCo-exact deep-method report with sampled-PGO path guidance.
+
+The analyzer selects exact library methods reported by JaCoCo but absent from
+the public API inventory. Sampled PGO and the static graph rank graph-present
+paths; graph-absent methods remain in full JSON but never enter prompts.
 
 Inputs:
 - `call_tree_{methods,invokes,targets}_*.csv` — the analysis call-tree CSV dump
@@ -81,11 +82,11 @@ TEST_TYPE_SUFFIXES = ("IT", "ITCase", "Test", "TestCase", "Tests")
 SYNTHETIC_LAMBDA_CLASS_MARKER = "$$Lambda"
 
 #: Method-name prefixes the compiler owns; no test can name one of these
-#: (§WF-code-coverage-improvement.3.2.1).
+#: (§AR-code-coverage-improvement.3.2.1).
 SYNTHETIC_METHOD_PREFIXES = ("lambda$", "access$")
 
 #: Methods that hand a closure to another thread, so its body runs later, on a
-#: thread the test does not control (§WF-code-coverage-improvement.3.2.1).
+#: thread the test does not control (§AR-code-coverage-improvement.3.2.1).
 HAND_OFF_METHOD_NAMES: frozenset[str] = frozenset({
     "execute",
     "invokeAll",
@@ -142,7 +143,7 @@ def library_owners(library_methods: set[str] | None) -> set[str] | None:
 
     Jar membership, not package prefix: the library's own test-classifier
     artifact ships classes in the library's packages
-    (§WF-code-coverage-improvement.3.2).
+    (§AR-code-coverage-improvement.3.2).
     """
     if library_methods is None:
         return None
@@ -388,7 +389,7 @@ def _creator_by_name(
 
     The body name carries the enclosing method's name without its parameter
     types, so this answers only when that name identifies exactly one method
-    (§WF-code-coverage-improvement.3.2.1).
+    (§AR-code-coverage-improvement.3.2.1).
     """
     parts: list[str] = ref.name.split("$")
     if len(parts) < 3 or not parts[1]:
@@ -405,7 +406,7 @@ def _index_synthetic_lambdas(graph: CallGraph) -> None:
     constructor is called where the closure is captured, and its interface
     method calls the body. Both hops are exact, so neither the overload
     ambiguity of the body name nor the meaningless generated class name reaches
-    a prompt (§WF-code-coverage-improvement.3.2.1).
+    a prompt (§AR-code-coverage-improvement.3.2.1).
     """
     by_owner: dict[str, list[int]] = {}
     by_owner_name: dict[tuple[str, str], list[int]] = {}
@@ -464,7 +465,7 @@ def _mark_dispatch_edges(
 
     A virtual site is marked when either holds. The site admits a generated
     lambda class, so it invokes a functional interface whose object was captured
-    elsewhere and handed in (§WF-code-coverage-improvement.3.2.1). Or its
+    elsewhere and handed in (§AR-code-coverage-improvement.3.2.1). Or its
     statically declared target belongs to a foreign type — `Iterator.hasNext`,
     `Closeable.close`, `Object.equals` — where class-hierarchy analysis answers
     with every implementation in the image and none of them is what runs.
@@ -504,7 +505,7 @@ def _add_creation_edges(graph: CallGraph) -> None:
 
     The dump links a body only to its generated class, so without this edge the
     single honest route to a closure body does not exist
-    (§WF-code-coverage-improvement.3.2.1).
+    (§AR-code-coverage-improvement.3.2.1).
     """
     for creator_id, body_ids in sorted(graph.closures_of.items()):
         existing: set[int] = {
@@ -733,7 +734,7 @@ def _multi_source_routes(
         for edge in graph.adjacency.get(current, []):
             # A functional-interface call site names no callee of its own, so
             # routing through it invents a reachability claim
-            # (§WF-code-coverage-improvement.3.2.1).
+            # (§AR-code-coverage-improvement.3.2.1).
             if edge["kind"] == "dispatch":
                 continue
             callee: int = edge["callee"]
@@ -899,7 +900,7 @@ def _closure_stats(
     """How many closures this method owns, and how many never execute.
 
     This is what the excluded synthetic rows carried, moved onto the one name an
-    agent can act on (§WF-code-coverage-improvement.3.2.1). A body JaCoCo never
+    agent can act on (§AR-code-coverage-improvement.3.2.1). A body JaCoCo never
     reported counts as not executed, exactly as an unreported method counts as
     uncovered everywhere else in this phase.
     """
@@ -1066,7 +1067,7 @@ def correlate(
     # A JaCoCo report covers every instrumented class on the test runtime
     # classpath, which for libraries publishing a `test`-classifier artifact
     # includes their own unit tests. Restrict the deep universe to methods the
-    # resolved library jars actually declare (§WF-code-coverage-improvement.3.2).
+    # resolved library jars actually declare (§AR-code-coverage-improvement.3.2).
     deep_candidate_ids: set[str] = jacoco_ids - inventory_ids
     foreign_ids: set[str] = (
         deep_candidate_ids - library_methods if library_methods is not None else set()
@@ -1115,7 +1116,7 @@ def correlate(
     # Compiler-owned methods stay in the universe and the denominator, but no
     # agent can write a test naming one, and for nearly all of them the
     # enclosing method is an offered target already
-    # (§WF-code-coverage-improvement.3.2.1).
+    # (§AR-code-coverage-improvement.3.2.1).
     actionable_records: list[NearCallRecord] = [
         record
         for record in uncovered_records
@@ -1257,7 +1258,7 @@ def _display_method(ref: MethodRef, qualify_owner: bool) -> str:
 def _display_path(static_path: list[int], graph: CallGraph, limit: int = 6) -> str:
     # Generated lambda classes and extracted bodies carry compiler-chosen names;
     # the agent can only act on the method that creates them
-    # (§WF-code-coverage-improvement.3.2.1).
+    # (§AR-code-coverage-improvement.3.2.1).
     path: list[int] = _translated_path(static_path, graph)
     selected: list[int | None]
     if len(path) <= limit:

@@ -144,7 +144,7 @@ def select_library_update_route(repo_path: str, metrics_repo_root: str, coordina
     Existing requested-version suites keep the normal coverage path. Missing
     requested-version suites are probed from a compatible supported test suite,
     then routed to the driver that owns the selected repair or coverage path.
-    §WF-forge-workflow-drivers.2
+    §AR-forge-driver-queues
     """
     group, artifact, requested_version = _require_versioned_coordinate(coordinates)
     target = resolve_library_update_target(repo_path, group, artifact, requested_version)

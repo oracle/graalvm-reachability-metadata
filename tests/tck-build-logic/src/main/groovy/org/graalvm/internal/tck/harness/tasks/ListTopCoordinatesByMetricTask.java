@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Lists top coordinates from committed library stats.
  * <p>
- * Implements §TCK-test-harness.8 — the {@code listTopCoordinatesByMetric} reporting task.
+ * Implements §AR-test-harness.8 — the {@code listTopCoordinatesByMetric} reporting task.
  */
 @SuppressWarnings("unused")
 public abstract class ListTopCoordinatesByMetricTask extends DefaultTask {

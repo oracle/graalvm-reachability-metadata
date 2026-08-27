@@ -1,170 +1,523 @@
 # ROADMAP-forge-implementation: Forge implementation roadmap
 
 This roadmap lists the active implementation gaps to close in Forge against the
-functional spec (§FS-forge-functional-spec), ordered by delivery priority.
-Completed roadmap points stay in this file for citation history. It serves the
-overall Forge direction in §GOAL-forge-direction.
+functional spec (§FS-forge-functional-spec), ordered by delivery priority. It
+serves the overall Forge direction in §GOAL-forge-direction. Only open work is
+listed: an item is deleted from this file once it ships, and the behavior it
+introduced lives in the spec, workflow, or architecture declaration it cites.
 
-1. Better structure of `ai_workflows/` (§ROADMAP-forge-ai-workflows-structure).
-2. Library-specific preparation preflight (§ROADMAP-forge-library-preflight).
-3. Missing-version library-update router (§ROADMAP-forge-missing-version-router).
-4. Native metadata exploration finalization path (§ROADMAP-forge-native-finalization).
-5. Human-intervention strictness (§ROADMAP-forge-human-intervention-strictness).
-6. Planned code coverage improvement workflow (§ROADMAP-forge-code-coverage-workflow).
+1. Dispatcher-owned run preconditions (§ROADMAP-forge-dispatcher-owned-run-preconditions).
+2. One metadata collection step everywhere (§ROADMAP-forge-native-finalization).
+3. One fixer, prompted by the failure (§ROADMAP-forge-one-fixer-variable-prompt).
+4. Native-image-run-fail revamp (§ROADMAP-forge-native-image-run-fail-revamp).
+5. Pre-push local branch review (§ROADMAP-forge-local-branch-review).
+6. Issue-form rules enforced before the claim (§ROADMAP-forge-issue-form-enforcement).
+7. A rejected issue is told why (§ROADMAP-forge-issue-form-rejection-feedback).
+8. Publication descriptor off the tree (§ROADMAP-forge-descriptor-off-tree).
+9. Failures name the phase and the step (§ROADMAP-forge-failure-locates-phase-and-step).
+10. Algorithmic setup, then neural setup (§ROADMAP-forge-algorithmic-then-neural-setup).
 
-Completed roadmap points:
-
-- Fixture-backed E2E mode (§ROADMAP-forge-fixture-backed-e2e): completed by PR
-  #7636.
-
-# ROADMAP-forge-ai-workflows-structure: Better structure of ai_workflows
+# ROADMAP-forge-dispatcher-owned-run-preconditions: Dispatcher-owned run preconditions
 
 Priority: first (part of §ROADMAP-forge-implementation).
 
-Reorganize the `ai_workflows/` package into clear subpackages so the driver
-layer and the core workflow layer are separated by directory, not just by file
-name. The top-level package name stays `ai_workflows`; its contents move into:
+`forge_metadata.py` must be the only way a workflow starts. Running a driver
+under `ai_workflows/drivers/` directly is not a supported mode, and no driver may
+carry the fallback code that makes standalone execution possible. Every
+precondition a run depends on is checked and resolved once, in the dispatcher,
+before any workflow is invoked (§AR-forge-control-plane,
+§AR-forge-workflow-pipeline).
 
-- `ai_workflows/drivers/` — the deterministic workflow drivers, one per claimed
-  unit of work (§WF-forge-workflow-drivers).
-- `ai_workflows/core/` — the core workflow objects: the registered workflow
-  engines and shared workflow orchestration that own run state
-  (§WF-forge-workflow-engine).
-- `ai_workflows/agents/` — unchanged; the backend-neutral agent integrations
-  (§AR-agent-api).
+The dispatcher owns, and a driver may only consume:
 
-This is a structural refactor with no behavior change: it must not alter
-workflow contracts, driver responsibilities, or the strategy-agent boundary
-(§WF-forge-workflow-architecture). Implementation moves the modules, updates imports
-and the workflow-engine registration in `__init__.py`, and updates the path
-references in code and in the remaining docs (README.md, AGENTS.md,
-DEVELOPING.md, and workflow specs) to match the canonical layout already
-described by §WF-forge-workflow-drivers and §WF-forge-workflow-engine.
+- Host and tooling requirements, including agent availability and
+  authentication (§FS-forge-host-requirements).
+- The strategy bundle and its model, resolved and validated before scanning
+  (§FS-forge-predefined-strategy-contract).
+- Issue eligibility and issue form, including label routing to exactly one
+  driver (§AR-forge-driver-queues).
+- Repository locations: the reachability worktree, the scratch metrics
+  repository, and the setup-evidence directory. Drivers must not resolve
+  repository paths and must not clone a repository as a fallback.
+- One pinned GraalVM environment for the whole run, inherited by every Gradle
+  command, rather than an environment each driver re-derives per command.
+- The issue context and setup-evidence directory used by the driver's neural
+  setup. The driver persists a completed neural setup result in the
+  continuation marker so a resumed run does not repeat it.
 
-# ROADMAP-forge-fixture-backed-e2e: Fixture-backed E2E mode
+Acceptance: a driver invoked with an incomplete run context fails immediately
+with a message naming the missing precondition, instead of resolving, cloning,
+or re-deriving it; `resolve_workflow_repo_paths` and the per-driver clone
+fallback are removed; every driver-side GraalVM lookup reads the environment the
+dispatcher pinned. Fixture runs keep working through `forge_metadata.py`, the
+supported control-plane entry point (§AR-forge-control-plane).
 
-Status: Completed by PR #7636.
+# ROADMAP-forge-native-finalization: One metadata collection step everywhere
 
-Priority: completed (part of §ROADMAP-forge-implementation).
+This item of §ROADMAP-forge-implementation makes metadata collection a single
+shared step — the native trace gate (§AR-forge-workflow-pipeline,
+§FS-native-test-verification-gate) — used at every point a run produces
+metadata: after a repair, after an exploration batch, and in finalization
+(§AR-dynamic-access-workflow). The gate already is this contract in exploration;
+the work is making repair and finalization use it instead of a subset of their
+own.
 
-Implement hermetic fixture-backed E2E execution through `forge_metadata.py`,
-per the hermetic fixture E2E mode (§E2E-forge-workflow-testing.2).
-The command-line surface must accept `--fixture-testing`, one issue number from
-the local YAML fixtures or local fixture queue selection, a strategy name, a
-reachability-repo path, and the existing dynamic-access preservation flag.
+The terminal case is the one that matters most: every workflow must end with the
+gate, so no run publishes metadata that no native run has checked
+(§AR-forge-workflow-engine.2, §AR-native-test-verification-callers). Today the
+dynamic-access engines, `basic_iterative`, and `java_run_iterative` invoke it.
+That leaves `javac_iterative` — which shares one implementation with
+`java_run_iterative` but skips the gate on the compile-fix branch — the
+native-image-run repair, and the finalization step every workflow shares, all
+ending without it.
 
-The fixture backend must model issues, labels, assignees, project items,
-blockers, comments, and expected side effects as local fixture state without
-mutating live GitHub state. Fixture runs do not simulate live GitHub claiming,
-assignee races, blocker checks, or project-board transitions; they construct the
-same `ClaimedIssue` boundary that live claiming produces, then exercise issue
-lookup, label routing, isolated worktree and metrics setup, workflow dispatch,
-workflow execution, local verification, and metrics writing, stopping at the
-publication boundary (§ORCH-forge-orchestration-spec).
+Collecting metadata is always the same ordered three steps, and never a subset:
 
-Acceptance should be based on boundary evidence, not only process exit code.
-The fixture run artifacts must make the fixture mode, issue number or queue
-label, strategy, command, routed driver, workflow engine, logs, metrics
-(§E2E-forge-workflow-testing.5), generated artifacts, and any suspicious
-behavior reviewable from `run.log` and the recorded run artifacts
-(§E2E-forge-workflow-testing.9).
+1. `generateMetadata` — JVM-agent metadata for the coordinate, staged outside
+   the durable `metadata/` tree.
+2. Native tracing — `runNativeTraceImage` and the trace metadata it collects,
+   which is the only source of metadata a JVM-mode agent run cannot observe
+   (§FS-native-test-verification-gate).
+3. Agent fix — invoked only if the coordinate still fails after 1 and 2, and
+   only with the staged agent and trace metadata directories and the failing
+   native-image log in hand (§FS-native-test-verification-gate).
 
-# ROADMAP-forge-library-preflight: Library-specific preparation preflight
+The order is the requirement. An agent must never be asked to invent metadata a
+deterministic step could have observed, so no call site may run
+`generateMetadata` and then jump to the agent, and none may skip tracing because
+the JVM-mode run looked healthy. Durable metadata is finalized only after a
+passing validation path, and a residual failure returns `FAILED` only once the
+agent has not converged (§FS-native-test-verification-gate).
 
-This item of §ROADMAP-forge-implementation adds the bounded LLM preparation
-decision before workflow dispatch (§ORCH-forge-orchestration-spec.1). The
-decision must inspect issue text,
-resolved artifact metadata, existing tests, source context, documentation, and
-CI constraints, then produce explicit preparation context for special
-dependencies, feature modules, Docker-backed services, fixtures, environment
-setup, or other library-specific setup that labels alone cannot express.
+Current gaps this item closes:
 
-The preflight decision is advisory, not a verification result. It must be saved
-in metrics with prompt, model, decision, evidence, and selected actions; local
-CI-equivalent verification (§FS-local-ci-equivalent-verification) remains
-responsible for rejecting untracked downloads, undeclared optional
-dependencies, or Docker images that CI would not allow.
+- Finalization runs `generateMetadata` once and then hands each of its three
+  lanes — current-defaults, `future-defaults-all`, and current-defaults on
+  GraalVM 25 (§FS-local-ci-equivalent-verification.1) — a bare `./gradlew test`
+  with a fixed recovery ladder and no tracing anywhere. Finalization must run
+  the gate once, as its first step, and the three lanes after it
+  (§AR-forge-workflow-pipeline): the gate is what collects and proves the
+  metadata, and a lane then judges that metadata under its own image mode and
+  toolchain. A lane failure is not a second collection pass — it is repaired
+  against the trace evidence the gate already produced, re-obtained in that
+  lane's environment when the mode or toolchain is what the failure turns on.
+- Nothing in the gate's environment is selectable by its caller.
+  `verify_native_test_passes` derives its own Gradle environment and takes no
+  override, so a repair cannot re-run the trace build under the toolchain or
+  image mode of the lane that failed. The environment must become an argument.
+- Repair runs reach the full gate only in the `java-run` fix mode, so a `javac`
+  repair ends without collecting native metadata at all.
+- The native-image run fix collects its seed with no tracing at all and then
+  repairs it with an agent, detailed in
+  §ROADMAP-forge-native-image-run-fail-revamp.
 
-# ROADMAP-forge-missing-version-router: Missing-version library-update router
+Acceptance is that every call site routes through the same collection step, and
+that a metadata fix prompt can be traced back to the trace run that produced its
+evidence.
 
-This item of §ROADMAP-forge-implementation implements the missing
-requested-version path for `library-update-request`
-(§WF-improve-library-coverage.2).
-When the artifact is already supported but the requested version has no test
-suite, Forge must resolve a usable same-major baseline with the shared version-
-backfill resolver, prepare that suite against the requested version, run a
-compatibility probe, and dispatch
-the rest of the work to the owning driver (§WF-forge-workflow-drivers.2).
+# ROADMAP-forge-one-fixer-variable-prompt: One fixer, prompted by the failure
 
-The router must dispatch compilation failures to the javac-fix driver
-(§WF-java-fail-fix-workflow), JVM-mode runtime failures to the java-run-fix
-driver, and compatible versions to the ordinary improve-coverage driver
-(§WF-improve-library-coverage.2). The router must not duplicate javac-fix,
-java-run-fix, or coverage setup logic; the selected driver owns normal
-preparation after the probe.
+Priority: third (part of §ROADMAP-forge-implementation).
 
-# ROADMAP-forge-native-finalization: Native test verification finalization path
+Forge repairs a failed check with one fixer whose *prompt* is chosen by the step
+that failed (§AR-forge-workflow-pipeline). Today it has the opposite shape: each
+step owns a hard-coded ladder of fixed prompts, and which repair runs is decided
+by how far down its ladder the run has fallen rather than by what the evidence
+says. A ladder's later rung is reached because the earlier one did not converge
+— which is why the last rung ends up being the one move no evidence supports.
 
-This item of §ROADMAP-forge-implementation wires native test verification
-(§WF-native-test-verification-gate) into successful dynamic-access finalization
-(§WF-dynamic-access-workflow). A failing post-iteration native test must drive
-the gate's ordered recovery — JVM-agent metadata, then native tracing, then
-Codex — rather than invoking Codex directly, so Codex receives
-runtime-observed metadata instead of being asked to invent it
-(§WF-native-metadata-tracing).
+Finalization alone runs four unrelated ladders:
 
-The gate hands a residual failure to Codex with the coordinate, the staged
-agent and trace metadata directories, and the failing native-image log, and
-returns `FAILED` only when Codex does not converge. Pi is not used in this
-path (§WF-native-test-verification-gate).
+| Step | Ladder today |
+| --- | --- |
+| The three native test lanes | Codex metadata fix, rerun, then Pi deleting the failing tests, rerun — once per lane |
+| `checkMetadataFiles` | an `allowed-packages` auto-append loop up to three times, then up to three Codex attempts |
+| Style fix and checks | up to three Pi checkstyle attempts, each re-running `./gradlew test` and invoking a second Pi recovery inside the attempt |
+| `splitTestOnlyMetadata` and its legacy test-config rejection, `generateLibraryStats`, the commit | no repair at all — the run fails outright |
 
-# ROADMAP-forge-human-intervention-strictness: Human-intervention strictness
+What replaces them is one fixer, invoked on the terms `agent_fix()` already sets
+out — after a deterministic step has failed, on that step's own records, one
+bounded attempt, with the step's re-run deciding. Only the prompt varies, and it
+varies with the failing step: a gate failure prompts for metadata, a lane
+failure prompts against that lane's trace evidence, `checkMetadataFiles` prompts
+for metadata validity, a style failure prompts for the violation. The steps that
+have no repair today gain one; the generated-test quality screening deliberately
+does not, because it asks whether a test should exist rather than reporting a
+defect.
 
-This item of §ROADMAP-forge-implementation makes `human-intervention` handling
-match the stricter policy in the spec (§FS-human-intervention-policy).
-The label must be a maintainer follow-up signal for semantic generated-result,
-repository-automation, metadata, or library-behavior concerns, not a generic
-failure bucket for transient infrastructure, GitHub status/API problems, rate
-limits, Maven/download failures, or review uncertainty.
+Test deletion stops being a ladder rung and becomes a conclusion the fixer must
+justify. Two findings have to hold: that the failure is not a metadata gap,
+established by re-running the coordinate under the gate's trace build and
+reading the binary's exit status rather than by the agent's own account
+(§FS-native-test-verification-gate.5); and that the behavior under test is genuinely
+unsupported by Native Image, named in the record. Ruling metadata out is not
+enough on its own — most non-metadata failures are ordinary defects and are
+repaired. Every deletion is recorded with the finding that justified it and
+travels in the publication descriptor, including the second and third within one
+run: the base class keeps only the first intervention it sees, so a run that
+deletes in two lanes reports one.
 
-Publication and review automation must preserve this distinction. Automated
-review (§FS-automated-pr-review) may skip existing `human-intervention` PRs, and
-may add or request the label only when the label-specific review rules identify
-a semantic issue that cannot be handled by a normal approval or
-requested-changes review. A `human-intervention-fixed` PR must remain the
-explicit maintainer signal that manual follow-up is complete before normal
-merge gates resume.
+Acceptance is that no step carries a repair sequence of its own, that the prompt
+a repair used can be traced to the step and records that selected it, and that
+every deletion in a run appears in the descriptor with its justification.
 
-Local CI verification (§FS-local-ci-equivalent-verification) must be the
-algorithmic source for the shared-repository edit case: when verification
-passes only after repository-level files changed, metrics and the PR
-description must list those paths and publication must add
-`human-intervention`. Other local verification failures should remain normal
-failures with diagnostics unless the evidence fits the policy's semantic cases.
+# ROADMAP-forge-native-image-run-fail-revamp: Native-image-run-fail revamp
 
-# ROADMAP-forge-code-coverage-workflow: Planned code coverage improvement workflow
+Priority: fourth (part of §ROADMAP-forge-implementation).
 
-This item of §ROADMAP-forge-implementation implements the planned
-PGO/API-coverage workflow for already-supported libraries
-(§WF-code-coverage-improvement). The workflow must be separate from
-dynamic-access coverage: it targets broader public API and runtime behavior
-using exact JaCoCo coverage plus sampled-PGO/static-graph navigation, while
-dynamic-access workflows target metadata-relevant calls
-(§FS-forge-code-coverage-improvement).
+The `fails-native-image-run` queue is the workflow that exists to make a native
+image run, and it is the one workflow that never observes a native image run
+while producing its metadata (§AR-forge-driver-queues.4). Two problems
+have to be fixed together.
 
-The Rhei lane provides the PGO collector, exact API inventory/JaCoCo helpers,
-target selection, durable target-state and metrics schemas, dedicated suite
-wiring, validation, and publication path
-(§WF-code-coverage-improvement-architecture). A registered Forge driver or
-driver mode remains before the control plane can launch it autonomously.
-Generated tests live in a separate code coverage suite with separate metrics
-and review evidence, not in the metadata-generation suite
-(§WF-code-coverage-improvement.2).
+## 1. The seed is collected without tracing, and repaired by an agent that never saw a run
 
-Acceptance requires meaningful behavior tests, exact JaCoCo improvement across
-the separate public-entry and deep-internal phases or recorded
-skipped/exhausted targets, no regression in metadata validity or JVM/native
-gates (§FS-local-ci-equivalent-verification), and metrics that keep JaCoCo
-coverage results separate from sampled-path guidance while recording generated
-test paths, strategy, model, target outcomes, and verification commands
-(§WF-code-coverage-improvement.5).
+`fixTestNativeImageRun` is JVM-agent collection only: `-Pagent test` plus
+`metadataCopy` and a durable merge, run once, retried once on a failing test
+because the agent is non-deterministic, then thrown as a Gradle failure. No
+`runNativeTraceImage` runs at any point, so metadata that only a native run can
+reveal is never collected.
+
+The failure path makes it worse. When the task fails but has already written
+`metadata/<group>/<artifact>/<newVersion>/reachability-metadata.json`, the driver
+sends that untraced seed straight to the agent for a metadata fix and then
+reruns the tests; when the file does not exist it fails outright. So the agent is
+asked to invent exactly the metadata the collection step declined to observe,
+which is the ordering forbidden by §ROADMAP-forge-native-finalization.
+
+The revamp replaces the seed-and-repair pair with the native trace gate
+(§AR-forge-workflow-pipeline): `generateMetadata`, then native tracing, then an
+agent fix only if the coordinate still fails. `fixTestNativeImageRun` stays a
+seed generator and never a success gate, but its output must reach the agent
+only after tracing has had its turn.
+
+## 2. A failed run tells nobody and is retried from scratch
+
+A logical failure must produce the same follow-up in every issue queue
+(§FS-human-intervention-policy). The follow-up resolver only considers
+`library-new-request` and `library-update-request`, so a failed
+`fails-native-image-run` run — like a failed `fails-javac-compile` or
+`fails-java-run` run — preserves a branch and then silently releases the claim.
+The issue returns to `Todo` with no comment, no `human-intervention` label, and
+no `resumable` label, so the next cycle re-claims it and repeats the same
+failure from scratch while preserved branches accumulate and no maintainer is
+told anything.
+
+A logical failure in a repair queue must produce the analysis comment, the
+`human-intervention` label, and — when the preserved work carries a continuation
+marker — the `resumable` label that lets the next run continue from the phase
+that failed instead of restarting (§FS-forge-run-continuation). External
+failures keep the existing silent-release behavior in every queue.
+
+Acceptance: a `fails-native-image-run` run collects native-trace metadata before
+any agent repair, and one whose run fails in the seed, collection, exploration,
+or finalization step ends labeled and commented; a second cycle either resumes
+from the preserved marker or, if the same phase fails again, is not
+re-attempted silently (§AR-forge-orchestration).
+
+# ROADMAP-forge-local-branch-review: Pre-push local branch review
+
+Priority: fifth (part of §ROADMAP-forge-implementation).
+
+A generated branch is reviewed once today, and only after it is already a pull
+request. Everything the run held — the verified worktree, the local CI gate
+records, the resolved descriptor statistics — is discarded at push time, so the
+cheapest moment to fix a finding has passed before any reviewer looks.
+
+This item adds `local_review()` as a phase of `publish_branch()`
+(§AR-forge-workflow-pipeline), in the one slot the existing ordering allows:
+after the pre-publication gate (§FS-local-ci-equivalent-verification.2) and
+after descriptor input resolution, because the review rules dereference render
+statistics that only exist once that input resolves, and before the descriptor
+is written, because the verdict has to be inside the descriptor the publisher
+reads.
+
+The phase must:
+
+- Review cold: a detached worktree at the verified commit, with no session
+  shared with the run that generated the branch, over `base_ref..HEAD` — the
+  eventual PR diff minus the descriptor commit.
+- Judge under the same `skills/review-*/SKILL.md` rules the post-push reviewer
+  applies, selected by `task_type` so both reviews use one rule set, with the
+  same blocking discipline: request changes only for a concrete violation of an
+  enumerated rule.
+- Substitute each PR-only input the skills reach for with its local
+  equivalent — `git diff` for `gh pr diff`, the local CI gate records for PR
+  check runs, the resolved descriptor statistics for PR body entry counts.
+- Answer a finding itself rather than delegating it to the bounded repair step
+  (§AR-forge-workflow-pipeline): the reviewing agent reports the finding and
+  makes the edit in the same pass, because no deterministic check can re-run to
+  confirm that a rule violation is gone.
+- Take the reviewer's report through one structured verdict — decision, review
+  comment, finding title and body, and a fix note when it repaired something —
+  and record all of it as returned. Forge renders `forge/FINDINGS.md` from the
+  title and body so the record cannot drift, and never rewrites the decision or
+  the fix note, which describe judgments and edits only the reviewer made.
+- Re-run finalization and the local CI gate together over the repaired tree,
+  and only over a repaired tree: whether a repair happened is read from the
+  paths changed against the verified commit, so an approval costs no gate time.
+  That selects which steps run; it does not edit the verdict. Both are deterministic steps, so a failure of either — not
+  the finding — is what gets one bounded repair, and a repaired tree that still
+  fails either resets to the verified pre-repair commit, keeping the findings
+  entry and the verdict and publishing that branch labeled; a review finding
+  must not destroy an otherwise-publishable run.
+- Never fail the run. A finding the reviewer cannot repair publishes flagged
+  for a maintainer (§FS-human-intervention-policy) rather than stopping
+  publication, and is filed like any other.
+- Carry the verdict as its own descriptor field rather than folding it into
+  `modifiers.human_intervention`, so triage can still tell the causes apart,
+  and render it in the PR body as a Local Agent Review section. Between the
+  review and the descriptor write the verdict is staged with the run's other
+  in-flight publication data, so a resumed publication does not lose it.
+- Land the descriptor field and its renderer on the default branch before any
+  run emits them. The publisher validates against its own copy of the schema and
+  rejects unknown fields (§AR-actions-publication), so the two must ship in that
+  order or every publication from a run carrying the verdict fails.
+- Treat an unavailable reviewer as a non-approval rather than an error, so a
+  review outage becomes one labeled PR instead of a throughput stall.
+
+Acceptance: a run publishes a branch whose descriptor already carries the
+review verdict, a PR opens with the review label applied at open time rather
+than after a later review, and a branch whose finding the reviewer repaired
+publishes unlabeled — finalization and the gate having passed again — with the
+finding still recorded in `forge/FINDINGS.md`.
+
+# ROADMAP-forge-issue-form-enforcement: Issue-form rules enforced before the claim
+
+Priority: sixth (part of §ROADMAP-forge-implementation).
+
+Three rules of the issue-form gate (§AR-forge-driver-queues,
+§AR-forge-workflow-pipeline) are contract in the spec and nowhere in the code:
+
+- **Exactly one workflow label.** An issue carrying two queue labels is
+  processed once per queue that matches it, so the same issue can be claimed,
+  worked, and published more than once, each time by a different driver working
+  from different assumptions about what the issue asks for.
+- **A `fails-*` issue must request a version strictly above the coordinate's
+  current `latest`.** This is caught today inside the driver, after the claim,
+  the project transition, and the worktree already exist — the full cost of the
+  rejection is paid before the rejection happens.
+- **The coordinate must be fetchable, not merely parseable.** Today a title is
+  accepted once a regular expression finds `group:artifact:version` in it, so a
+  typo in a group, an artifact nobody published, or a version that does not
+  exist upstream is discovered as a Gradle resolution error deep inside a run
+  that already holds a claim and a worktree.
+
+All three are decidable before the first side effect — the first two from the
+issue payload alone, the third from one request against a URL the coordinate
+fully determines — so all three belong in the deterministic gate rather than in
+prose each driver re-checks (§root/PRCPL-prefer-algorithmic,
+§root/PRCPL-verify-inputs). The fetch already exists in
+`utility_scripts/native_image_artifact.py`, which reads POMs from Maven Central
+for Native Image eligibility; the gate needs only the existence answer, against
+Maven Central and then the Confluent fallback
+(§root/AR-build-infrastructure.1).
+
+What the gate says when it rejects is §ROADMAP-forge-issue-form-rejection-feedback.
+
+Acceptance: an issue carrying more than one workflow label is rejected without
+being claimed, and the rejection names the conflicting labels; a `fails-*` issue
+whose requested version is not strictly above the current `latest` is rejected
+at the same point, before assignment, project transition, or worktree creation;
+a coordinate no configured repository publishes is rejected before the claim,
+naming the coordinate and the repositories tried; and the driver-side late
+checks are deleted rather than left in place as a second implementation of the
+same rule.
+
+# ROADMAP-forge-issue-form-rejection-feedback: A rejected issue is told why
+
+Priority: seventh (part of §ROADMAP-forge-implementation).
+
+A form rejection reaches only the worker log today
+(§ROADMAP-forge-issue-form-enforcement). The issue keeps its place in the queue,
+is rescanned and re-rejected every cycle, and the reporter — the one person who
+can fix it — is never told anything, so nothing about the issue ever changes.
+
+The information needed to tell them is already in hand. Each rule of the gate is
+decided separately from the issue payload, so a rejection knows exactly which
+rule failed and on what value (§FS-forge-run-requirements.3). That name selects
+one predefined comment, which quotes the offending value and states what the
+issue must carry instead. `release_claim()` runs first when the rejection came
+after a claim, so the issue is back in `Todo` before the comment lands
+(§AR-forge-architecture).
+
+A form rejection is an input defect, not a generation failure: it applies no
+`human-intervention` label and preserves no branch
+(§FS-human-intervention-policy).
+
+Acceptance: each issue-form rule has one predefined comment naming it; a
+rejected issue carries that comment within the cycle that rejected it; the
+comment is keyed on rule and offending value, so rescanning an unchanged issue
+posts no second comment while an edited title is judged afresh; and no form
+rejection applies `human-intervention`.
+
+# ROADMAP-forge-descriptor-off-tree: Publication descriptor off the tree
+
+Priority: eighth (part of §ROADMAP-forge-implementation).
+
+The publication descriptor is a build artifact of one run, not repository
+content, but today it is committed at
+`stats/<group>/<artifact>/<version>/forge-publication.json`, appears in the pull
+request diff, and lands on `master` when the PR merges
+(§AR-publication-descriptor). The repository has already had to absorb that:
+the stats schema validator was widened to accept the file. Every merged Forge PR
+leaves one behind, in a directory that otherwise holds derived per-version
+metrics.
+
+This item makes the descriptor exist for exactly as long as it is needed — from
+the push that certifies a branch until the pull request is open — and never
+enter a tree.
+
+The constraint that shapes the design: an unprivileged local run hands data to
+CI only through a pushed ref, and GitHub fires `push` workflows for
+`refs/heads/*` and `refs/tags/*` only, so a side ref such as `refs/forge/*`
+would be pushed and silently ignored. The descriptor therefore travels as an
+annotated tag rather than as a commit:
+
+- Local finalization pushes the verified branch, then an annotated tag
+  `forge-publication/<publication-id>` pointing at the verified head commit,
+  carrying the descriptor JSON as its message. The branch itself carries only
+  generated work.
+- Branch Ready triggers on that tag, validates the descriptor against its own
+  copy of the schema from the default branch, and hands the commit on
+  (§AR-actions-publication). The tag *is* the SHA binding: it names the commit
+  it certifies, which removes the current awkwardness that the head SHA cannot
+  be a descriptor field because a commit cannot contain its own object ID.
+- The publisher reads the descriptor from the tag, opens the pull request
+  against `descriptor.branch`, and deletes the tag once the PR exists, so the
+  tag namespace does not accumulate one entry per publication.
+
+Everything the descriptor is for survives unchanged: it is still data and never
+GitHub instructions, still schema-validated by trusted default-branch code,
+still bound to one exact commit, and still the only channel from local
+verification to the publisher.
+
+Retries need the tag to be force-updatable, and a re-pushed tag re-triggers
+publication; the existing `Forge-Publication-ID` idempotency check absorbs that
+by resolving to the pull request already opened for the identity. If a
+descriptor ever outgrows a tag message, the fallback is a lightweight tag
+pointing at a blob.
+
+Acceptance: a merged Forge pull request adds no `forge-publication.json`
+anywhere, and `stats/` contains only derived metrics; the pull request diff
+contains only generated work; the stats schema validator no longer needs a
+descriptor exemption; and a publication whose tag is re-pushed opens no second
+pull request.
+
+# ROADMAP-forge-failure-locates-phase-and-step: Failures name the phase and the step
+
+Priority: ninth (part of §ROADMAP-forge-implementation).
+
+When a run fails, the failure must say **where** it failed: the phase, and the
+step inside it. Today a failed run reports a status and an error, and the reader
+reconstructs the location by reading logs backwards — even though the pipeline
+already defines the vocabulary needed to state it outright
+(§AR-forge-workflow-pipeline). This is the failure half of the legible run
+output required by §FS-forge-run-output-legibility.
+
+Every failure report must carry both coordinates:
+
+- **Phase**: one of the banded segments of the pipeline — `claim`, `setup`,
+  `fix`, `explore`, `finalization`, `publication`. The five durable ones are
+  already the continuation vocabulary (§FS-forge-run-continuation); `claim` is
+  the dispatcher-side segment before a run exists.
+- **Step**: the exact method from the pipeline that failed — for example
+  `check_host_requirements()`, `neural_setup()`, `check_setup()`,
+  `native_trace_gate()`, `generate_tests()`, `local_ci_check()`,
+  `push_verified_branch()` — plus the operand it failed on when the step has
+  one, such as the class being generated or the gate command that returned
+  non-zero.
+
+The pair must appear identically everywhere a failure surfaces, so the terminal,
+the marker, and the issue tell the same story: the worker's terminal output and
+run log, the terminal run status returned to `forge_metadata`, the continuation
+marker, and the human-intervention comment
+(§FS-human-intervention-policy). A failure that cannot name its step is itself a
+defect: an unlabeled failure means a code path is raising outside the pipeline's
+own step boundaries.
+
+Acceptance: every terminal failure prints one line of the form
+`run failed in <phase>/<step>` before its error detail; the continuation marker
+records the same phase and step, so a resumed run states what it is retrying;
+the human-intervention comment leads with the same pair; and no failure path
+reports a phase without a step.
+
+# ROADMAP-forge-algorithmic-then-neural-setup: Algorithmic setup, then neural setup
+
+Priority: tenth (part of §ROADMAP-forge-implementation).
+
+The setup phase must be three steps in one fixed order, all owned by the driver
+(§AR-forge-workflow-pipeline): `normal_setup()` does every setup step that needs
+no model, `neural_setup()` does every setup step that needs one, and
+`check_setup()` verifies the result before any generation starts. Today the
+order is inverted and the ownership is split: `forge_metadata` invokes the
+preflight agent before driver dispatch, the fix drivers try to apply its
+decision before the target version is copied or created, and artifact URL
+population and source-context download happen later still — so the model decides
+about a tree that does not exist yet, and part of the neural work runs after the
+step that is supposed to contain all of it.
+
+The target shape:
+
+```text
+normal_setup()
+  → create branch
+  → scaffold new library or copy target version
+  → resolve test and metadata directories
+
+neural_setup()
+  → populate artifact URLs
+  → materialize source context
+  → run preflight agent
+  → parse and validate its JSON
+  → algorithmically apply dependency and Docker actions
+  → render only remaining guidance
+
+check_setup()
+  → verify all expected files and edits
+  → capture checkpoint
+```
+
+- **`normal_setup(coordinates, strategy, run_context) -> PreparedRunResult`** —
+  algorithmic. Branch creation or checkout, scaffolding a new library or copying
+  the supported version for a repair, resolution of the test and metadata
+  directories. Its output is the only valid input to the neural step.
+- **`neural_setup(PreparedRun) -> NeuralSetupResult`** — neural, and the single
+  place every model-driven setup step happens: artifact URL population,
+  source-context download, the library-preparation decision, and application of
+  its typed actions. No model-driven setup work may run before `normal_setup()`
+  or between `neural_setup()` and `check_setup()`. The step runs on an agent with
+  web tooling, because resolving artifact URLs, downloading sources, and judging
+  what a library needs to build require reading upstream repositories, Maven
+  Central, and library documentation; a strategy mapping this step onto an agent
+  without web access is misconfigured
+  (§FS-forge-predefined-strategy-contract).
+- **`check_setup(NeuralSetupResult) -> ReadyRun | FAILED`** — algorithmic.
+  Opens each artifact the setup steps were supposed to produce and confirms it
+  was properly generated — the coordinate's `index.json` with its four URLs, the
+  source context, the preflight JSON against its schema, each decided action in
+  the tree — then captures the recovery checkpoint
+  (§AR-forge-driver-contract, §root/PRCPL-verify-inputs).
+
+Failure is uniform with the rest of the pipeline: a neural-setup timeout or an
+unusable response is `RUN_STATUS_FAILURE` to the driver — exactly as
+`agent_fix()` fails — and the driver reports the run as failed to
+`forge_metadata`, never as a successful `no_action` decision. Each setup step
+writes its artifact to a place fixed by the coordinate, and `NeuralSetupResult`
+is the set of those paths rather than a report about them, so nothing the agent
+returns can move where the check looks (§AR-forge-driver-contract). A
+completed `NeuralSetupResult` is persisted in the continuation marker so a
+resumed run does not repeat it (§FS-forge-run-continuation), and the failure
+names the setup step it died in (§ROADMAP-forge-failure-locates-phase-and-step). The run context
+these steps consume is dispatcher-owned
+(§ROADMAP-forge-dispatcher-owned-run-preconditions).
+
+Acceptance: no agent is invoked for setup before the driver has produced a
+`PreparedRun`; artifact URL population and source download happen inside
+`neural_setup()` rather than after it; generation cannot start from anything but
+a `ReadyRun`; a neural-setup timeout ends the run as a setup failure instead of
+proceeding as `no_action`; a setup artifact that is missing, unparseable, or
+missing a required field — an `index.json` without its four URLs, an absent
+source context, a preflight JSON that does not validate — fails the setup
+segment rather than being repaired or ignored; and a resumed run whose marker
+holds a completed neural setup skips straight to `check_setup()`.

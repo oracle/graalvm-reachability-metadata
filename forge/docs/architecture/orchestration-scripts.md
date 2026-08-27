@@ -1,9 +1,9 @@
-# ORCH-forge-orchestration-spec: Forge orchestration scripts
+# AR-forge-orchestration: Forge orchestration scripts
 
 `forge_metadata.py` is Forge's orchestration hub between the do-work loop
-(§DW-do-work-loop), GitHub, isolated worktrees, workflow drivers
-(§WF-forge-workflow-drivers), review queues, and the git-scripts publication
-component (§GIT-forge-publication). It resolves supported GitHub issues into
+(§AR-do-work-loop), GitHub, isolated worktrees, workflow drivers
+(§AR-forge-drivers), review queues, and the git-scripts publication
+component (§AR-forge-publication). It resolves supported GitHub issues into
 isolated workflow runs (§FS-forge-issue-resolution-goal): it owns queue
 scanning, optimistic single-issue claiming, Maven coordinate and workflow
 derivation, project status transitions, worktree creation, workflow dispatch,
@@ -14,10 +14,10 @@ policy to Codex or other LLM agents during a generated run.
 
 Supported issue queues are label-driven: `library-new-request` and
 `library-update-request` route to dynamic-access generation
-(§WF-dynamic-access-workflow) and coverage improvement
-(§WF-improve-library-coverage); `fails-javac-compile` and `fails-java-run` route
-to Java fail-fix (§WF-java-fail-fix-workflow); `fails-native-image-run` routes
-to native-image run-fix (§WF-native-image-run-fix-workflow).
+(§AR-dynamic-access-workflow) and coverage improvement
+(§AR-forge-driver-queues.2); `fails-javac-compile` and `fails-java-run` route
+to Java fail-fix (§AR-java-fail-fix-workflow); `fails-native-image-run` routes
+to native-image run-fix (§AR-forge-driver-queues.4).
 Successful runs produce PRs with matching review labels such as
 `fixes-javac-fail`, `fixes-java-run-fail`, and `fixes-native-image-run-fail`;
 issue labels and PR labels are not interchangeable.
@@ -27,7 +27,7 @@ the repository's scheduled library version compatibility automation, which tests
 newer upstream versions, records the passing ones in a `library-bulk-update` PR,
 and files one labeled tracking issue per failing `(library, version)` pair —
 the contract for that producer is the repository functional spec's
-[Library version update automation](../../docs/functional-spec/README.md#fs-library-version-update-automation-library-version-update-automation)
+[Library version update automation](../../../docs/functional-spec/functional-spec.md#fs-library-version-update-automation-library-version-update-automation)
 (root-namespace ID `FS-library-version-update-automation`).
 
 Queue scans drain a pipeline by label-derived urgency tier rather than ranking
@@ -55,7 +55,7 @@ offset—random or explicit—is relative only to the selected tier.
 
 Orchestration must claim exactly one issue per workflow run, dispatch the
 matching workflow driver, and either hand PR-eligible results to publication
-(§GIT-pr-eligibility) or preserve failed results according to the workflow
+(§AR-pr-eligibility) or preserve failed results according to the workflow
 status.
 
 To keep queue scanning and claiming cheap under the GitHub API, orchestration
@@ -79,14 +79,16 @@ artifacts, or pull request review queues.
 
 ## 1. Library-Specific Preparation Decision
 
-After claiming a supported issue and preparing its isolated worktree, but before
-dispatching the workflow driver, orchestration runs an LLM preflight decision
-that identifies whether the library needs additional setup beyond the normal
-generated test scaffold. Orchestration gives the agent a small starting context
-— issue text and any existing tests — and instructs it to research the library
-itself (its resolved artifact, dependencies, usage, and documentation) rather
-than deciding solely from that context. The agent investigates but must not
-modify the repository or apply setup; it returns only the decision.
+After claiming a supported issue and preparing its isolated worktree,
+orchestration passes the resolved coordinates, validated strategy, issue
+context, worktree, setup-evidence path, and continuation state to the selected
+workflow driver. The driver first completes normal setup, then runs an LLM
+preflight decision as part of neural setup to identify whether the library needs
+anything beyond the prepared scaffold or copied repair target. During
+`neural_setup()`, the agent receives the populated artifact information,
+downloaded source context, issue text, and prepared tests. It investigates but
+must not modify the repository directly; typed setup actions are validated and
+applied through the neural-setup boundary.
 
 The preflight uses its own predefined Pi strategy with model `gpt-5.6-sol` and
 medium reasoning, independently of the strategy selected for the dispatched
@@ -139,19 +141,18 @@ evidence, selected deterministic setup, advisory guidance, and the result of
 applying each deterministic action. A preflight decision must not allow tests to
 rely on untracked downloads, undeclared optional dependencies, or Docker images
 that CI would reject (§FS-local-ci-equivalent-verification).
-The dispatcher stores preflight handoff and prompt/response evidence in an
-ignored per-run `local_repositories/preflight_info/` directory, not in the
-isolated reachability worktree; the workflow receives only the explicit handoff
-path, and durable evidence is the normalized record embedded in run metrics
-(§FS-forge-run-metrics).
+The driver stores preflight handoff and prompt/response evidence in the ignored
+per-run setup-evidence directory supplied by orchestration, not in the isolated
+reachability worktree. Durable evidence is the normalized record embedded in
+run metrics (§FS-forge-run-metrics).
 
-If the preflight decision cannot run or returns invalid, unavailable, or unsafe
-output, orchestration must degrade to a recorded no-action advisory result. It
-must keep the collected evidence and failure reason visible in metrics rather
-than silently omitting the preflight record.
+If the agent times out during `neural_setup()` or returns invalid, unavailable,
+or unsafe output, the driver must return a setup failure to orchestration. It
+must keep the collected evidence and failure reason visible in metrics and
+continuation state rather than silently converting the failure to `no_action`.
 
 Orchestration scripts must not let a failed workflow silently disappear.
-Successful or chunk-ready runs (§WF-chunked-dynamic-access-pr-linking) build one
+Successful or chunk-ready runs (§AR-chunked-dynamic-access-pr-linking) build one
 typed publication handoff and invoke the shared local branch finalizer. That
 finalizer writes the descriptor and pushes the verified branch; orchestration
 then reports the branch and publication ID as the successful local outcome
@@ -160,7 +161,7 @@ without invoking a workflow-specific PR creator.
 Follow-up issues for deferred coverage or tested-version splits are created
 locally before the verified push and handed to the trusted Actions publisher as
 typed descriptor facts carrying their issue numbers
-(§GIT-publication-descriptor). A later Branch Ready failure
+(§AR-publication-descriptor). A later Branch Ready failure
 does not cause local failure handling: the pushed branch remains preserved and
 the claimed issue remains `In Progress` and assigned for manual inspection.
 Failed generation or local finalization still preserves diagnostics
@@ -174,7 +175,7 @@ separate responsibility from issue resolution: it reviews already-published PRs
 rather than producing them. This is the orchestration mechanics behind the
 review behavior contract in §FS-automated-pr-review. It is entered through
 `forge_metadata.py --review-pr <label> [--limit N] [--review-model <model>]
-[--period <seconds|Nm|Nh|Nd>]`, and the do-work loop (§DW-do-work-loop) drives
+[--period <seconds|Nm|Nh|Nd>]`, and the do-work loop (§AR-do-work-loop) drives
 the same code path on its own schedule.
 
 **Queue configuration.** A single explicit `FORGE_REVIEW_LABEL` selects one
@@ -208,5 +209,5 @@ review timeout or non-zero Pi exit is a review failure, not an approval.
 
 **Scheduling and shutdown.** With `--period`, the review loop repeats after each
 interval; without it, it runs once. The loop checks the do-work stop markers
-(§DW-do-work-loop) between iterations and during sleep and exits without
+(§AR-do-work-loop) between iterations and during sleep and exits without
 starting another review when a stop marker is present.

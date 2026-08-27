@@ -5,7 +5,7 @@
 
 """Typed access to Gradle dynamic-access coverage reports.
 
-The iterative engine (§WF-dynamic-access-iterative-strategy) depends on these
+The iterative engine (§AR-dynamic-access-iterative) depends on these
 parsed reports to select the next uncovered class, compute per-class coverage
 deltas, and format call sites for the targeted prompts of its per-class loop.
 """
@@ -54,7 +54,7 @@ class DynamicAccessCoverageReport:
 
     The iterative engine consumes this state class-by-class and skips exhausted
     classes rather than retrying already-processed dynamic-access surface
-    (§WF-dynamic-access-iterative-strategy).
+    (§AR-dynamic-access-iterative).
     """
 
     coordinate: str
@@ -96,7 +96,7 @@ def load_dynamic_access_coverage_report(
 
     Source files are resolved against prepared read-only source context so the
     per-class prompt can carry class-specific implementation context
-    (§WF-dynamic-access-iterative-strategy).
+    (§AR-dynamic-access-iterative).
     """
     if not os.path.isfile(report_path):
         raise FileNotFoundError(report_path)
@@ -147,7 +147,7 @@ def compute_class_delta(
     """Compare two reports for one class to find what changed between iterations.
 
     The per-class prompt uses this delta to focus the next attempt on newly
-    covered and still-uncovered call sites (§WF-dynamic-access-iterative-strategy).
+    covered and still-uncovered call sites (§AR-dynamic-access-iterative).
     """
     previous_class = None if previous_report is None else previous_report.get_class(class_name)
     current_class = current_report.get_class(class_name)

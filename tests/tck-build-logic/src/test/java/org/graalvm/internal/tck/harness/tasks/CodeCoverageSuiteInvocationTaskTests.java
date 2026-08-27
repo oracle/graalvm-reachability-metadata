@@ -20,8 +20,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Tests dedicated coverage-suite forwarding (§TCK-test-harness.8,
- * §forge/WF-code-coverage-improvement.3.1).
+ * Tests dedicated coverage-suite forwarding (§AR-test-harness.8,
+ * §forge/AR-code-coverage-improvement.3.1).
  */
 class CodeCoverageSuiteInvocationTaskTests {
 

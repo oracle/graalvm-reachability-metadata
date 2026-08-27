@@ -3,7 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Cover the trusted coverage template that renders the descriptor (§GIT-actions-publication)."""
+"""Cover the trusted coverage template that renders the descriptor (§AR-actions-publication)."""
 
 import importlib.util
 import json
@@ -181,7 +181,7 @@ class CoveragePublisherTemplateTests(unittest.TestCase):
 
     def test_body_closes_the_issue(self) -> None:
         # A coverage run is a single-PR workflow, so merging its PR closes the
-        # issue it claimed (§GIT-issue-linking).
+        # issue it claimed (§AR-issue-linking).
         _, body = publisher.render_publication(_descriptor())
 
         self.assertIn("Fixes: #8380", body)

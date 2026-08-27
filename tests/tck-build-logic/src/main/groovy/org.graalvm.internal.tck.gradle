@@ -31,12 +31,15 @@ plugins {
     id 'jacoco'
 }
 
+// The per-coordinate test project the harness drives through its lanes: §FS-tests.3
 
-// §forge/WF-code-coverage-improvement.3.1: coverage-improvement tests are a
-// tracked extension suite in code-coverage-improvement/, kept out of the
-// metadata-generation test source set. Native lanes opt in with
-// -PincludeCodeCoverageSuite=true because the plugin-managed test binary is
-// derived from the test source set.
+
+// §forge/AR-code-coverage-improvement.3.1
+
+// Coverage-improvement tests are a tracked extension suite in
+// code-coverage-improvement/, kept out of the metadata-generation test source
+// set. Native lanes opt in with -PincludeCodeCoverageSuite=true because the
+// plugin-managed test binary is derived from the test source set.
 File codeCoverageSuiteDir = new File(projectDir, "code-coverage-improvement")
 boolean includeCodeCoverageSuite = providers.gradleProperty("includeCodeCoverageSuite")
         .map { it.toBoolean() }.getOrElse(false)
@@ -174,7 +177,7 @@ def timeoutAnnotationWithinLimit = { String annotationBody ->
     }
 }
 
-// §TCK-test-harness.2
+// §AR-test-harness.2
 tasks.register("checkTestTimeoutAnnotations") {
     description = "Rejects JUnit @Timeout annotations above ${maxJUnitTestTimeoutSeconds} seconds."
     group = JavaBasePlugin.VERIFICATION_GROUP
@@ -240,7 +243,7 @@ boolean nativeTraceImageTaskRequested = !informationalTaskRequested &&
 boolean runNativeTraceImageTaskRequested = !informationalTaskRequested && isTaskRequested("runNativeTraceImage")
 boolean nativeTestTaskRequested = !informationalTaskRequested &&
         (isTaskRequested("nativeTest") || isTaskRequested("nativeTestCompile"))
-// §TCK-test-harness.8, §forge/WF-code-coverage-improvement.3.2: deep-path guidance
+// §AR-test-harness.8, §forge/AR-code-coverage-improvement.3.2: deep-path guidance
 // needs a PGO-sampling image plus the analysis call-tree CSV graph; JaCoCo alone
 // decides coverage.
 boolean nativeTestPGOSamplingTaskRequested = !informationalTaskRequested &&
@@ -843,10 +846,10 @@ tasks.register("mergeNativeTraceMetadata", Exec) { Exec task ->
     }
 }
 
-// §TCK-test-harness.3.1: run the forked JVM test workers on a JDK that need not be able to host
+// §AR-test-harness.3.1: run the forked JVM test workers on a JDK that need not be able to host
 // Gradle. Selects an interpreter only — JVM arguments are left exactly as they would be otherwise.
 String testJavaHome = System.getenv("GVM_TCK_TEST_JAVA_HOME")
-// §TCK-test-harness.3.1: opt-in escape hatch for a JDK that rejects Gradle's default `-ea`.
+// §AR-test-harness.3.1: opt-in escape hatch for a JDK that rejects Gradle's default `-ea`.
 boolean disableTestAssertions = Boolean.parseBoolean(System.getenv("GVM_TCK_TEST_DISABLE_ASSERTIONS"))
 
 tasks.register("nativeTestPGOSampling") { task ->
@@ -878,11 +881,11 @@ tasks.register("runNativeTestPGO", Exec) { Exec task ->
 
 // Ensure detailed exception/stacktrace logging for all Test tasks, including nativeTest
 tasks.withType(Test).configureEach { Test testTask ->
-    // §TCK-test-harness.3: downstream pass/fail gates can run without coverage instrumentation.
+    // §AR-test-harness.3: downstream pass/fail gates can run without coverage instrumentation.
     if (skipJacoco) {
         jacoco.enabled = false
     }
-    // §TCK-test-harness.8: when a jar has no line info, collect the agent's compressed origin
+    // §AR-test-harness.8: when a jar has no line info, collect the agent's compressed origin
     // tree so the harness can match exact tracked APIs and reported caller methods on each path.
     if (testTask.name == 'test' && providers.gradleProperty('dynamicAccessOriginsOutput').isPresent()) {
         String originsOutput = providers.gradleProperty('dynamicAccessOriginsOutput').get()
@@ -916,7 +919,7 @@ tasks.named('test') {
     dependsOn tasks.named("checkTestTimeoutAnnotations")
 }
 
-// §forge/WF-code-coverage-improvement.3.1: the extension suite runs and is
+// §forge/AR-code-coverage-improvement.3.1: the extension suite runs and is
 // measured separately from the metadata-justifying tests.
 tasks.register("codeCoverageTest", Test) {
     description = "Runs the code-coverage-improvement extension suite on the JVM"

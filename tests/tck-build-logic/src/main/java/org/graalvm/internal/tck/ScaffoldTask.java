@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
  * <p>
  * Run with {@code gradle scaffold --coordinates com.example:library:1.0.0}.
  * <p>
- * Implements §TCK-test-harness.5 — the {@code scaffold} authoring helper.
+ * Implements §AR-test-harness.5 — the {@code scaffold} authoring helper.
  *
  * @author Moritz Halbritter
  */

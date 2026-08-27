@@ -106,7 +106,7 @@ def build_test_comparison_section(group: str, artifact: str, old_version: str, n
 
     The metadata-first seed keeps tests shared under the old version (no new-version
     test dir), so the diff section is emitted only when exploration split a
-    version-specific suite (§WF-native-image-run-fix-workflow.3).
+    version-specific suite (§AR-forge-driver-queues.4).
     """
     new_test_dir = os.path.join(repo_path, "tests", "src", group, artifact, new_version)
     if not os.path.isdir(new_test_dir):

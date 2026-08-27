@@ -21,9 +21,9 @@ public abstract class JavaTestInvocationTask extends AllCoordinatesExecTask {
                 tckExtension.getRepoRoot().get().getAsFile().toPath().resolve("gradlew").toString(),
                 "test"
         ));
-        // §TCK-test-harness.3
+        // §AR-test-harness.3
         appendProperty(command, "skipJacoco");
-        // §TCK-test-harness.8: forward the agent-origin output directory so the inner `test` run
+        // §AR-test-harness.8: forward the agent-origin output directory so the inner `test` run
         // attaches native-image-agent when the dynamic-access fallback needs origin paths.
         appendProperty(command, "dynamicAccessOriginsOutput");
         appendProperty(command, "includeCodeCoverageSuite");

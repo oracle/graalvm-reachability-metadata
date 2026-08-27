@@ -5,7 +5,7 @@ interface, preserving the boundary in §AR-forge-strategy-agent-boundary.
 Workflow engines decide what work to do next; agents only send prompts,
 maintain or clear conversation context, report token usage, and run
 agent-visible test commands, with bundles wiring the chosen backend into a
-strategy (§STRAT-forge-predefined-strategy-contract).
+strategy (§FS-forge-predefined-strategy-contract).
 
 ## 1. Agent API
 
@@ -13,7 +13,7 @@ strategy (§STRAT-forge-predefined-strategy-contract).
 `Agent` base class and registry. Concrete backends register with
 `@Agent.register("<name>")`, and strategy loading resolves the configured
 backend by the strategy's `agent` field (see
-§STRAT-forge-predefined-strategy-contract).
+§FS-forge-predefined-strategy-contract).
 
 The interface is deliberately narrow:
 
@@ -27,10 +27,10 @@ The interface is deliberately narrow:
 | `graphify(source_dirs)` | Build optional graph context from read-only source directories. |
 | `total_tokens_sent` / `total_tokens_received` / `cached_input_tokens_used` | Expose token accounting for run metrics and cost reporting. |
 
-This API keeps workflow behavior out of backend adapters. A new backend
-(plugging in through §AR-forge-extension-points) should implement the registry
-key, the prompt/session methods, token counters, and test-command bridge, then
-be selected through strategy data (§WF-forge-workflow-strategy-config) instead
+This API keeps workflow behavior out of backend adapters. A new backend should
+implement the registry key, the prompt/session methods, token counters, and
+test-command bridge, then
+be selected through strategy data (§AR-forge-workflow-strategy-config) instead
 of changing workflow drivers or workflow engines.
 
 ## 2. Pi Implementation
@@ -67,7 +67,7 @@ session.
 `PiAgent.run_test_command` delegates Gradle execution to the
 [shared test runner](../../utility_scripts/gradle_test_runner.py) instead of
 asking Pi to choose shell behavior. That preserves the architecture: the
-workflow engine chooses the gate (§WF-forge-workflow-engine), deterministic
+workflow engine chooses the gate (§AR-forge-workflow-engine), deterministic
 utilities run it, and the agent receives diagnostics for the next edit cycle,
 keeping the strategy/agent boundary intact (§AR-forge-strategy-agent-boundary).
 

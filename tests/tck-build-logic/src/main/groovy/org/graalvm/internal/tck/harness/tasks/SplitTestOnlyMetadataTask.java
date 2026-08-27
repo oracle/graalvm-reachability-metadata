@@ -33,8 +33,8 @@ import java.util.Set;
  * Splits test-only entries out of library reachability metadata into a separate
  * test-resources reachability-metadata.json.
  * <p>
- * Implements §TCK-test-harness.5 — the {@code splitTestOnlyMetadata} helper that keeps test-only
- * entries out of the shipped metadata (§METADATA-suite, §FS-repository-functional-spec.5.1).
+ * Implements §AR-test-harness.5 — the {@code splitTestOnlyMetadata} helper that keeps test-only
+ * entries out of the shipped metadata (§FS-metadata, §FS-repository-functional-spec.5.1).
  */
 @SuppressWarnings("unused")
 public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {

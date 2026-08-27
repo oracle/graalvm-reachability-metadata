@@ -61,19 +61,17 @@ coverage — never simplify a test to the point of triviality.
 }
 ```
 
-### 1.4 Only the tested version's supported API
+### 1.4 Only the tested version's API
 
-A test uses only the features of the provided library version and avoids all
-deprecated APIs, so the suite keeps compiling and passing across version bumps.
+A test uses only the features of the provided library version, so the suite
+compiles and passes against the version it is written for.
 
 ```java
-// Bad: deprecated in the tested version — breaks the next update
-mapper.enableDefaultTyping();
+// Bad: JsonMapper.builder() does not exist in the tested 2.9.x line
+ObjectMapper mapper = JsonMapper.builder().build();
 
-// Good: the current supported replacement
-ObjectMapper mapper = JsonMapper.builder()
-        .activateDefaultTyping(validator, DefaultTyping.NON_FINAL)
-        .build();
+// Good: the API the tested version actually ships
+ObjectMapper mapper = new ObjectMapper();
 ```
 
 ### 1.5 Coverage for every reporter-requested metadata need
@@ -238,7 +236,7 @@ or Native Image config entries: no creating or editing
 tests and merged by the harness and Forge (§FS-repository-functional-spec.5.1).
 The only permitted `build.gradle` native configuration is `--add-opens` /
 `--add-exports` under `graalvmNative` when no better public API path exists
-(§TESTS-suite.1).
+(§FS-tests.1).
 
 ```text
 Bad: a PR diff adding
@@ -303,7 +301,7 @@ Client client = Client.builder().codec(new GzipCodec()).build();
 
 Upstream test sources serve only as behavioral examples and documentation only
 as API guidance. Test code in this repository stays original — no copying
-third-party test sources (§TESTS-suite.2).
+third-party test sources (§FS-tests.2).
 
 ```text
 Read upstream RecyclerTest to learn the recycle-then-get contract;

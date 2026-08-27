@@ -16,7 +16,7 @@ Repo layout (§AR-forge-architecture):
 
 ### Repository mode
 
-Forge is located inside `graalvm-reachability-metadata/forge`. The parent checkout is the default reachability repository, and successful run metrics are written under `stats/<group>/<artifact>/<version>/execution-metrics.json`. Top-level automation still creates one detached metadata-repo worktree per issue run; the run's pending metrics root is the same worktree's `forge/` directory (§WF-forge-workflow-drivers, §FS-durable-generation-logs).
+Forge is located inside `graalvm-reachability-metadata/forge`. The parent checkout is the default reachability repository, and successful run metrics are written under `stats/<group>/<artifact>/<version>/execution-metrics.json`. Top-level automation still creates one detached metadata-repo worktree per issue run; the run's pending metrics root is the same worktree's `forge/` directory (§AR-forge-drivers, §FS-durable-generation-logs).
 
 ### Prerequisites
 
@@ -45,7 +45,7 @@ Script: `ai_workflows/drivers/fix_javac_fail.py`
 Purpose:
 - Create/update the versioned test module in reachability-metadata.
 - Run Gradle tests and, if native test fails, collect metadata and re-run.
-- Keep the test meaningful (do not trivialize), while adapting to the new library version (§WF-java-fail-fix-workflow).
+- Keep the test meaningful (do not trivialize), while adapting to the new library version (§AR-java-fail-fix-workflow).
 
 Usage:
 ```bash
@@ -93,7 +93,7 @@ Purpose:
 - Iteratively generate a meaningful, cohesive JUnit test suite for library using AI.
 - Keep indices up to date and create the versioned metadata directory.
 - Generates metadata for the new library.
-- Script results are written in `output/results.json` (§WF-dynamic-access-workflow, §WF-forge-workflow-drivers).
+- Script results are written in `output/results.json` (§AR-dynamic-access-workflow, §AR-forge-drivers).
 
 Usage:
 ```bash
@@ -157,7 +157,7 @@ python3 git_scripts/publish_javac_fix.py \
 
 Requirements:
 - gh CLI must be installed and authenticated (gh auth login).
-- Run after the fix_javac_fail.py workflow has produced a successful result and metrics (§GIT-forge-publication).
+- Run after the fix_javac_fail.py workflow has produced a successful result and metrics (§AR-forge-publication).
 
 ### Open a PR for new library support
 
@@ -183,7 +183,7 @@ python3 git_scripts/publish_new_library_support.py \
 
 Requirements:
 - gh CLI must be installed and authenticated (gh auth login).
-- Run after the add_new_library_support.py workflow has produced a successful result and metrics written under `<metrics_repo_root>/new_library_support/results.json` (§GIT-forge-publication).
+- Run after the add_new_library_support.py workflow has produced a successful result and metrics written under `<metrics_repo_root>/new_library_support/results.json` (§AR-forge-publication).
 
 ### Pipeline: Fix javac test failures + PR creation
 
@@ -222,7 +222,7 @@ python3 complete_pipelines/add_new_library_support_create_pr.py \
 
 ### Benchmark runner
 
-Script: `benchmarks/benchmark_runner.py` (§BENCH-forge-generation-benchmarking)
+Script: `benchmarks/benchmark_runner.py` (§FS-forge-generation-benchmarking)
 
 Description:
 - Run `ai_workflows/drivers/add_new_library_support.py` for a predefined set of libraries.
@@ -479,7 +479,7 @@ python3 complete_pipelines/add_new_library_support_create_pr.py \
 ```
 
 For the detailed behavior, implementation entry points, and sequence diagrams,
-see `docs/workflows/dynamic-access.md`.
+see `docs/functional-spec/workflows/workflows.md`.
 
 ### Quick reference
 

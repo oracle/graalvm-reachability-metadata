@@ -6,7 +6,7 @@
 """Build schema-validated final evidence for code coverage improvement.
 
 JaCoCo is the only coverage authority. Sampled PGO is retained only as
-navigation guidance (§WF-code-coverage-improvement).
+navigation guidance (§AR-code-coverage-improvement).
 """
 
 from __future__ import annotations
@@ -28,7 +28,7 @@ SCHEMA_VERSION = "1.1.0"
 
 #: Run checkpoints, in run order. Each is one JaCoCo report, and each phase
 #: begins at the checkpoint the previous phase ended on
-#: (§WF-code-coverage-improvement.4.1).
+#: (§AR-code-coverage-improvement.4.1).
 CHECKPOINT_NAMES: tuple[str, ...] = ("runStart", "afterApiPhase", "final")
 SCHEMA_FILE = "code_coverage_final_metrics_schema.json"
 TARGET_STATE_SCHEMA_FILE = "code_coverage_target_state_schema.json"
@@ -246,7 +246,7 @@ def _universe_ids(
     that an unreported method is not silently dropped on one side and a hard
     error on the other. The two rosters must not overlap, since the deep roster
     is by construction the library methods the inventory does not hold, and an
-    overlap would double count (§WF-code-coverage-improvement.4.1).
+    overlap would double count (§AR-code-coverage-improvement.4.1).
     """
     inventory_ids: list[str] = list(
         _coverage_statuses(
@@ -329,7 +329,7 @@ def _run_coverage(
     a phase's own guidance is ranked on. This block is the run as a reader sees
     it: every checkpoint a share of the same complete method count, so a phase's
     gain is the distance from the previous checkpoint and the phase gains sum to
-    the run's gain (§WF-code-coverage-improvement.4.1).
+    the run's gain (§AR-code-coverage-improvement.4.1).
     """
     run_start_coverage: dict[str, Any] = load_jacoco_method_coverage(
         [jacoco_paths[0]]
@@ -400,7 +400,7 @@ def _generated_at() -> str:
     """Stamp the run so publication identity survives a retried publication.
 
     The trusted publisher derives one publication ID from durable run inputs,
-    and this timestamp is the coverage workflow's (§GIT-publication-descriptor).
+    and this timestamp is the coverage workflow's (§AR-publication-descriptor).
     Re-running publication against the same finalization artifacts therefore
     reuses one branch and one pull request; re-running finalization is a new run.
     """
