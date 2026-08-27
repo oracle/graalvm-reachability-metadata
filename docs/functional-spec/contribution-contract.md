@@ -80,6 +80,13 @@ credible explanation such as a changed upstream API surface.
 | `library-update-request` | Coverage percentage does not drop at all against the previously supported version. |
 | `fixes-javac-fail`, `fixes-java-run-fail`, `fixes-native-image-run-fail` | Coverage percentage does not drop by more than 20 percentage points against the previously tested version. |
 
+Forge-generated PRs whose publication descriptor reports
+`modifiers.chunked_dynamic_access: true` are exempt from every percentage gate
+in this table, including the final chunk. A chunk covers only part of the
+library-wide dynamic-access report (§forge/FS-forge-chunked-dynamic-access), so
+its coverage gate fails only when the reported `dynamicAccess.coveredCalls` is
+zero. This exception does not relax any non-coverage rule or guardrail below.
+
 Two guardrails accompany the gates:
 
 - **Metadata entry count.** For the `fixes-*` repair labels, the new version's
