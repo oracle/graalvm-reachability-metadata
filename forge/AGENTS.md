@@ -147,7 +147,7 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 - **utility_scripts/** should cite FS or AR or DW or STRAT or ORCH or GIT or WF or CC.
 - **benchmarks/** should cite FS or AR or BENCH.
 - **tests/** should cite FS or AR or DW or STRAT or ORCH or GIT or WF or CC or BENCH.
-- **code** (Loose scripts and plugins outside a kind home) should cite FS or AR or DW or STRAT or ORCH or GIT or WF or CC.
+- **code** (Loose scripts and plugins outside a kind home) must cite FS; should cite AR.
 Unlisted kinds and pairs are fine.
 
 ### Clickable citations
