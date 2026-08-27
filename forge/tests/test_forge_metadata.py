@@ -11,6 +11,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from collections.abc import Callable
 from unittest.mock import call, patch
 
 import forge_metadata
@@ -1565,7 +1566,7 @@ def _fixture_form_issue(
 
 
 class IssueFormGateTests(unittest.TestCase):
-    """The pre-claim issue-form gate. §FS-forge-run-requirements.3"""
+    """The claim-held issue-form gate. §FS-forge-run-requirements.3"""
 
     def test_well_formed_issue_is_accepted(self) -> None:
         with patch.object(forge_metadata, "artifact_is_published", return_value=True):
@@ -1638,7 +1639,7 @@ class IssueFormGateTests(unittest.TestCase):
         is_published.assert_not_called()
         self.assertEqual("", stderr.getvalue())
 
-    def test_failure_issue_at_or_below_latest_is_rejected_before_the_claim(self) -> None:
+    def test_failure_issue_at_or_below_latest_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path:
             _write_index(
                 repo_path,
@@ -1723,7 +1724,7 @@ class IssueFormRejectionTests(unittest.TestCase):
             forge_metadata.LABEL_LIBRARY_NEW,
             "/nonexistent",
         ).rejection
-        forge_metadata.reject_issue_form(issue, rejection, forge_metadata.FIXTURE_AUTHENTICATED_USER)
+        forge_metadata.reject_issue_form(issue, rejection)
         return rejection
 
     def test_rejection_comments_the_rule_then_closes_the_issue(self) -> None:
@@ -1804,58 +1805,103 @@ class IssueFormRejectionTests(unittest.TestCase):
             offending_value="Add support for Widget",
             requirement="Name the coordinates.",
         )
-        with patch.object(forge_metadata, "revert_issue_claim") as revert, \
+        events: list[str] = []
+
+        def record(event: str) -> Callable[..., None]:
+            return lambda *_args, **_kwargs: events.append(event)
+
+        with patch.object(forge_metadata, "get_issue_comments", return_value=[]), \
                 patch.object(
                     forge_metadata,
-                    "get_project_item_state",
-                    return_value=("item-4242", forge_metadata.STATUS_IN_PROGRESS),
-                ), \
-                patch.object(forge_metadata, "get_issue_comments", return_value=[]), \
-                patch.object(forge_metadata, "post_issue_comment") as comment, \
-                patch.object(forge_metadata, "add_issue_label") as label, \
-                patch.object(forge_metadata, "gh") as run_gh:
-            forge_metadata.reject_issue_form(issue, rejection, "runner")
-        return revert, comment, label, run_gh
+                    "post_issue_comment",
+                    side_effect=record("comment"),
+                ) as comment, \
+                patch.object(
+                    forge_metadata,
+                    "close_issue",
+                    side_effect=record("close"),
+                ) as close, \
+                patch.object(
+                    forge_metadata,
+                    "clear_issue_assignees",
+                    side_effect=record("clear"),
+                ) as clear, \
+                patch.object(forge_metadata, "add_issue_label") as label:
+            succeeded = forge_metadata.reject_issue_form(issue, rejection)
+        return succeeded, events, comment, close, clear, label
 
-    def test_rejection_releases_a_claim_before_closing(self) -> None:
+    def test_rejection_closes_claim_before_clearing_assignee(self) -> None:
         issue = _form_issue(title="Add support for Widget", assignees=["runner"])
 
-        revert, comment, label, run_gh = self._reject_live(issue)
+        succeeded, events, comment, close, clear, label = self._reject_live(issue)
 
-        revert.assert_called_once()
-        self.assertEqual(revert.call_args.args[1], 4242)
+        self.assertTrue(succeeded)
+        self.assertEqual(events, ["comment", "close", "clear"])
         comment.assert_called_once()
+        close.assert_called_once()
+        clear.assert_called_once_with(4242)
         label.assert_not_called()
-        self.assertIn("close", run_gh.call_args.args)
 
-    def test_unclaimed_rejection_does_not_touch_the_claim(self) -> None:
-        revert, _comment, _label, _run_gh = self._reject_live(
-            _form_issue(title="Add support for Widget"),
+    def test_failed_comment_does_not_close_or_clear_the_claim(self) -> None:
+        rejection = forge_metadata.IssueFormRejection(
+            rule=forge_metadata.ISSUE_FORM_RULE_MAVEN_COORDINATES,
+            offending_value="Add support for Widget",
+            requirement="Name the coordinates.",
         )
+        with patch.object(forge_metadata, "get_issue_comments", return_value=[]), \
+                patch.object(
+                    forge_metadata,
+                    "post_issue_comment",
+                    side_effect=RuntimeError("comment failed"),
+                ), \
+                patch.object(forge_metadata, "close_issue") as close, \
+                patch.object(forge_metadata, "clear_issue_assignees") as clear:
+            succeeded = forge_metadata.reject_issue_form(
+                _form_issue(title="Add support for Widget", assignees=["runner"]),
+                rejection,
+            )
 
-        revert.assert_not_called()
+        self.assertFalse(succeeded)
+        close.assert_not_called()
+        clear.assert_not_called()
 
 
 class IssueFormGateClaimOrderTests(unittest.TestCase):
-    """A rejected issue is never assigned and never given a worktree."""
+    """The form gate runs with a claim and before any worktree."""
 
-    def test_malformed_issue_is_rejected_before_any_claim_side_effect(self) -> None:
+    def test_malformed_issue_is_claimed_before_rejection(self) -> None:
         issue = _form_issue(title="Add support for Widget")
         rejection = forge_metadata.IssueFormRejection(
             rule=forge_metadata.ISSUE_FORM_RULE_MAVEN_COORDINATES,
             offending_value="Add support for Widget",
             requirement="Name the coordinates.",
         )
+        events: list[str] = []
 
         with patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
                 patch.object(
                     forge_metadata,
-                    "check_issue_form",
-                    return_value=forge_metadata.IssueFormVerdict(rejection=rejection),
+                    "maybe_handle_not_for_native_image_issue",
+                    return_value=False,
                 ), \
-                patch.object(forge_metadata, "reject_issue_form") as reject, \
-                patch.object(forge_metadata, "maybe_handle_not_for_native_image_issue") as not_for_ni, \
-                patch.object(forge_metadata, "try_claim_issue") as claim, \
+                patch.object(
+                    forge_metadata,
+                    "try_claim_issue",
+                    side_effect=lambda *_args: events.append("claim") or "item-4242",
+                ) as claim, \
+                patch.object(
+                    forge_metadata,
+                    "check_issue_form",
+                    side_effect=lambda *_args: (
+                        events.append("check")
+                        or forge_metadata.IssueFormVerdict(rejection=rejection)
+                    ),
+                ), \
+                patch.object(
+                    forge_metadata,
+                    "reject_issue_form",
+                    side_effect=lambda *_args: events.append("reject") or True,
+                ) as reject, \
                 patch.object(forge_metadata, "create_issue_workspace") as workspace:
             claimed_issue = forge_metadata.claim_issue_for_processing(
                 issue,
@@ -1866,20 +1912,29 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
             )
 
         self.assertIsNone(claimed_issue)
-        reject.assert_called_once_with(issue, rejection, "runner")
-        not_for_ni.assert_not_called()
-        claim.assert_not_called()
+        self.assertEqual(events, ["claim", "check", "reject"])
+        claim.assert_called_once()
+        reject.assert_called_once_with(issue, rejection)
         workspace.assert_not_called()
 
-    def test_undecided_form_skips_the_issue_without_touching_it(self) -> None:
+    def test_undecided_form_releases_the_claim_without_a_worktree(self) -> None:
         with patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
                 patch.object(
                     forge_metadata,
+                    "maybe_handle_not_for_native_image_issue",
+                    return_value=False,
+                ), \
+                patch.object(forge_metadata, "try_claim_issue", return_value="item-4242") as claim, \
+                patch.object(
+                    forge_metadata,
                     "check_issue_form",
-                    return_value=forge_metadata.IssueFormVerdict(undecided_reason="host unreachable"),
+                    return_value=forge_metadata.IssueFormVerdict(
+                        undecided_reason="host unreachable",
+                    ),
                 ), \
                 patch.object(forge_metadata, "reject_issue_form") as reject, \
-                patch.object(forge_metadata, "try_claim_issue") as claim:
+                patch.object(forge_metadata, "revert_issue_claim") as revert, \
+                patch.object(forge_metadata, "create_issue_workspace") as workspace:
             claimed_issue = forge_metadata.claim_issue_for_processing(
                 _form_issue(),
                 forge_metadata.LABEL_LIBRARY_NEW,
@@ -1889,8 +1944,49 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
             )
 
         self.assertIsNone(claimed_issue)
+        claim.assert_called_once()
         reject.assert_not_called()
-        claim.assert_not_called()
+        revert.assert_called_once_with(
+            "item-4242",
+            4242,
+            "issue-form check was undecided",
+        )
+        workspace.assert_not_called()
+
+    def test_failed_rejection_releases_the_claim_for_retry(self) -> None:
+        rejection = forge_metadata.IssueFormRejection(
+            rule=forge_metadata.ISSUE_FORM_RULE_MAVEN_COORDINATES,
+            offending_value="Add support for Widget",
+            requirement="Name the coordinates.",
+        )
+        with patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
+                patch.object(
+                    forge_metadata,
+                    "maybe_handle_not_for_native_image_issue",
+                    return_value=False,
+                ), \
+                patch.object(forge_metadata, "try_claim_issue", return_value="item-4242"), \
+                patch.object(
+                    forge_metadata,
+                    "check_issue_form",
+                    return_value=forge_metadata.IssueFormVerdict(rejection=rejection),
+                ), \
+                patch.object(forge_metadata, "reject_issue_form", return_value=False), \
+                patch.object(forge_metadata, "revert_issue_claim") as revert:
+            claimed_issue = forge_metadata.claim_issue_for_processing(
+                _form_issue(title="Add support for Widget"),
+                forge_metadata.LABEL_LIBRARY_NEW,
+                "/repo",
+                "/metrics",
+                "runner",
+            )
+
+        self.assertIsNone(claimed_issue)
+        revert.assert_called_once_with(
+            "item-4242",
+            4242,
+            "issue-form rule 'maven-coordinates' could not close the issue",
+        )
 
 
 class SingleIssueProcessingTests(unittest.TestCase):

@@ -724,7 +724,7 @@ def format_github_exception_details(exc: Exception) -> str:
 PIPELINE_LABELS = {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE, LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL, LABEL_NI_RUN_FAIL}
 FAILURE_PIPELINE_LABELS = {LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL, LABEL_NI_RUN_FAIL}
 
-# Named rules of the pre-claim issue-form gate. The name of the failed rule is
+# Named rules of the post-claim issue-form gate. The name of the failed rule is
 # what a rejection reports and what selects its comment. §FS-forge-run-requirements.3
 ISSUE_FORM_RULE_SINGLE_WORKFLOW_LABEL = "single-workflow-label"
 ISSUE_FORM_RULE_MAVEN_COORDINATES = "maven-coordinates"
@@ -6371,7 +6371,7 @@ class IssueFormRejection:
 
 @dataclass(frozen=True)
 class IssueFormVerdict:
-    """Outcome of the pre-claim issue-form gate.
+    """Outcome of the claim-held issue-form gate.
 
     Three-valued on purpose: a rule can fail, or the gate can be unable to
     decide because a remote repository did not answer. Only a failure rejects
@@ -6393,12 +6393,11 @@ ISSUE_FORM_ACCEPTED = IssueFormVerdict()
 def check_issue_form(issue: dict, label: str, reachability_metadata_path: str) -> IssueFormVerdict:
     """Decide every issue-form rule from the payload and the repository.
 
-    Runs before the first side effect, so a rejected issue is never assigned,
-    never moved to `In Progress`, and never given a worktree. The rules are
-    decided one at a time and the gate stops at the first failure, so the
-    verdict always names the rule and the value that failed it. The only rule
-    that leaves the machine is decided last (§FS-forge-run-requirements.3,
-    §root/PRCPL-verify-inputs).
+    Runs while the exclusive issue claim is held and before worktree creation.
+    The rules are decided one at a time and the gate stops at the first failure,
+    so the verdict always names the rule and the value that failed it. The only
+    rule that leaves the machine is decided last
+    (§FS-forge-run-requirements.3, §root/PRCPL-verify-inputs).
     """
     issue_number = issue["number"]
 
@@ -6521,29 +6520,6 @@ def issue_has_issue_form_rejection_comment(issue_number: int, rejection: IssueFo
     )
 
 
-def release_issue_form_claim(
-        issue: dict,
-        rejection: IssueFormRejection,
-        authenticated_user: str | None,
-) -> None:
-    """Return a claim to `Todo` before a form rejection closes the issue.
-
-    The gate runs before claiming, so this normally finds nothing. It still runs
-    because an issue left assigned and `In Progress` by a crashed run reaches the
-    gate on the next scan (§FS-forge-run-requirements.3).
-    """
-    if is_fixture_testing_enabled():
-        # Fixture runs never take a live claim (§AR-forge-workflow-pipeline).
-        return
-    assignees = get_issue_payload_assignees(issue)
-    if not assignees or not is_assigned_only_to_authenticated_user(assignees, authenticated_user):
-        return
-    item_id, _project_status = get_project_item_state(issue["number"])
-    if not item_id:
-        return
-    revert_issue_claim(item_id, issue["number"], f"issue-form rule '{rejection.rule}' failed")
-
-
 def close_issue(issue_number: int, reason: str) -> None:
     """Close an issue Forge will never process and stop scanning it."""
     log_stage("issue-close", f"Closing issue #{issue_number}: {reason}")
@@ -6562,15 +6538,16 @@ def close_issue(issue_number: int, reason: str) -> None:
 def reject_issue_form(
         issue: dict,
         rejection: IssueFormRejection,
-        authenticated_user: str | None,
-) -> None:
-    """Release any claim, report the failed rule once, and close the issue.
+) -> bool:
+    """Report the failed rule and close the issue while its claim is held.
 
     A form defect is an input defect outside Forge's generation boundary: no
     `human-intervention` label is applied and no branch is preserved. Closing is
     what takes the issue out of every queue it cannot leave on its own, and the
     comment marker keeps a reopened, unedited issue from collecting a second
-    comment (§FS-forge-run-requirements.3).
+    comment. The Forge assignee is cleared only after the issue is closed, so
+    another worker cannot enter the rejection sequence
+    (§FS-forge-run-requirements.3).
     """
     issue_number = issue["number"]
     log_stage(
@@ -6579,7 +6556,6 @@ def reject_issue_form(
         f"'{rejection.offending_value}'",
     )
     try:
-        release_issue_form_claim(issue, rejection, authenticated_user)
         if issue_has_issue_form_rejection_comment(issue_number, rejection):
             log_stage(
                 "issue-form",
@@ -6599,6 +6575,22 @@ def reject_issue_form(
             f"'{rejection.rule}': {exc!r}",
             file=sys.stderr,
         )
+        return False
+
+    if not is_fixture_testing_enabled():
+        try:
+            log_stage(
+                "issue-close",
+                f"Clearing Forge assignee from closed issue #{issue_number}",
+            )
+            clear_issue_assignees(issue_number)
+        except Exception as exc:
+            print(
+                f"ERROR: Failed to clear Forge assignee from closed issue "
+                f"#{issue_number}: {exc!r}",
+                file=sys.stderr,
+            )
+    return True
 
 
 def claim_issue_for_processing(
@@ -6622,20 +6614,56 @@ def claim_issue_for_processing(
     if not refresh_issue_payload_for_claim(issue, label, authenticated_user):
         return None
 
-    # The form gate precedes every side effect, including the terminal
-    # not-for-native-image follow-up. §FS-forge-run-requirements.3
-    form_verdict = check_issue_form(issue, label, base_reachability_metadata_path)
+    item_id = try_claim_issue(issue, authenticated_user, label, take_blocked_issues)
+    if not item_id:
+        return None
+
+    # The claim makes form rejection exclusive and no worktree exists yet.
+    # §FS-forge-run-requirements.3
+    try:
+        form_verdict = check_issue_form(issue, label, base_reachability_metadata_path)
+    except BaseException as exc:
+        revert_issue_claim(
+            item_id,
+            issue["number"],
+            "issue-form check interrupted by Ctrl+C" if is_interrupt_exception(exc)
+            else f"issue-form check failure ({type(exc).__name__})",
+        )
+        if isinstance(exc, Exception):
+            return None
+        raise
     if form_verdict.rejection is not None:
-        reject_issue_form(issue, form_verdict.rejection, authenticated_user)
+        rejection_succeeded = reject_issue_form(issue, form_verdict.rejection)
+        if not rejection_succeeded:
+            revert_issue_claim(
+                item_id,
+                issue["number"],
+                f"issue-form rule '{form_verdict.rejection.rule}' could not close the issue",
+            )
         return None
     if not form_verdict.accepted:
+        revert_issue_claim(
+            item_id,
+            issue["number"],
+            "issue-form check was undecided",
+        )
         return None
 
     if maybe_handle_not_for_native_image_issue(issue, base_reachability_metadata_path):
+        revert_issue_claim(
+            item_id,
+            issue["number"],
+            "artifact is marked not-for-native-image",
+        )
         return None
 
     claim_metadata = build_claim_metadata(issue, label, base_reachability_metadata_path)
     if claim_metadata is None:
+        revert_issue_claim(
+            item_id,
+            issue["number"],
+            "issue-form accepted but claim metadata could not be built",
+        )
         return None
     issue_coordinates, current_coordinates, new_version = claim_metadata
     continuation_marker = resolve_issue_continuation_marker(
@@ -6652,6 +6680,11 @@ def claim_issue_for_processing(
                 "but no valid continuation marker was found on a preserved branch."
             ),
         )
+        revert_issue_claim(
+            item_id,
+            issue["number"],
+            "resumable issue has no valid continuation marker",
+        )
         return None
     try:
         chunked_exhaust_report = resolve_chunked_dynamic_access_exhaust_report(
@@ -6662,13 +6695,14 @@ def claim_issue_for_processing(
         )
     except Exception as exc:
         print(
-            f"ERROR: Cannot resume chunked dynamic-access issue #{issue['number']}: {exc}",
+            f"ERROR: Cannot resume chunked-dynamic-access issue #{issue['number']}: {exc}",
             file=sys.stderr,
         )
-        return None
-
-    item_id = try_claim_issue(issue, authenticated_user, label, take_blocked_issues)
-    if not item_id:
+        revert_issue_claim(
+            item_id,
+            issue["number"],
+            f"chunked-dynamic-access setup failure ({type(exc).__name__})",
+        )
         return None
 
     try:
@@ -6761,7 +6795,7 @@ def build_fixture_claimed_issue(
         # §FS-forge-run-requirements.3 §AR-forge-workflow-pipeline
         form_verdict = check_issue_form(issue, label, worktree_path)
         if form_verdict.rejection is not None:
-            reject_issue_form(issue, form_verdict.rejection, FIXTURE_AUTHENTICATED_USER)
+            reject_issue_form(issue, form_verdict.rejection)
         claim_metadata = (
             build_claim_metadata(issue, label, worktree_path)
             if form_verdict.accepted
