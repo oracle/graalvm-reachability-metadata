@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.XSLTLiaison;
 import org.apache.tools.ant.taskdefs.XSLTProcess;
+import org.apache.tools.ant.taskdefs.optional.TraXLiaison;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -53,12 +54,20 @@ public class XSLTProcessTest {
         assertThat(Files.readString(output)).isEqualTo("transformed: Ant");
     }
 
-    private static XSLTProcess newProcess(Path baseDirectory) {
+    @Test
+    void resolvesTheTraxProcessor(@TempDir Path temporaryDirectory) {
+        ExposedXSLTProcess process = newProcess(temporaryDirectory);
+        process.setProcessor("trax");
+
+        assertThat(process.resolveLiaison()).isInstanceOf(TraXLiaison.class);
+    }
+
+    private static ExposedXSLTProcess newProcess(Path baseDirectory) {
         Project project = new Project();
         project.setBaseDir(baseDirectory.toFile());
         project.init();
 
-        XSLTProcess process = new XSLTProcess();
+        ExposedXSLTProcess process = new ExposedXSLTProcess();
         process.setProject(project);
         process.init();
         return process;
@@ -77,6 +86,12 @@ public class XSLTProcessTest {
 
         @Override
         public void addParam(String name, String expression) {
+        }
+    }
+
+    public static final class ExposedXSLTProcess extends XSLTProcess {
+        public XSLTLiaison resolveLiaison() {
+            return getLiaison();
         }
     }
 }
