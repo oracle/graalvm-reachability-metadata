@@ -150,11 +150,11 @@ should = ["FS|AR"]
 [citations.action]
 should = ["FS|AR"]
 
-[citations.tck-build-logic]
-should = ["FS|AR"]
+# No [citations.tck-build-logic] rule: a file here sits in two homes, `tests`
+# and `tck-build-logic`, and grund reads a nested home as ambiguity rather than
+# most-specific-wins, so these files classify as `code`. The rule below governs
+# them; restore this one when grund resolves the nesting.
 
-# `must = ["FS"]` with `should = ["AR"]` is the intent, but the build and harness
-# layer legitimately grounds in AR alone, and a file under tests/tck-build-logic
-# classifies as `code` rather than its own kind while tests/ is an unwalked home.
 [citations.code]
-must = ["FS|AR"]
+must = ["FS"]
+should = ["AR"]

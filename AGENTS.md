@@ -146,8 +146,7 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 - **skills/** must cite FS; should cite AR.
 - **.github/workflows/** should cite FS or AR.
 - **.github/actions/** should cite FS or AR.
-- **tests/tck-build-logic/** should cite FS or AR.
-- **code** (Build files and repository scripts outside a kind home) must cite FS or AR.
+- **code** (Build files and repository scripts outside a kind home) must cite FS; should cite AR.
 Unlisted kinds and pairs are fine.
 
 ### Clickable citations
