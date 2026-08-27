@@ -31,8 +31,8 @@ public class ReflectUtilsTest {
     }
 
     @Test
-    void resolvesMethodsWithPrimitiveArrayParameters() {
-        Method method = ReflectUtils.findMethod(MethodTarget.class.getName() + ".accept(int[])");
+    void resolvesMethodsWithReferenceParameters() {
+        Method method = ReflectUtils.findMethod(MethodTarget.class.getName() + ".accept(java.lang.String)");
         Method substring = ReflectUtils.findMethod("String.substring(int)");
 
         assertThat(method.getDeclaringClass()).isEqualTo(MethodTarget.class);
@@ -67,7 +67,7 @@ class ConstructorTarget {
 }
 
 class MethodTarget {
-    public void accept(int[] values) {
+    public void accept(String value) {
     }
 }
 
