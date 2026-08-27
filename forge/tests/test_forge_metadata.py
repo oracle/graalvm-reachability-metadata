@@ -1730,7 +1730,8 @@ class IssueFormRejectionTests(unittest.TestCase):
         state = FixtureGitHubState([_fixture_form_issue(title="Add support for Widget")])
         issue = _form_issue(title="Add support for Widget")
 
-        rejection = self._reject(state, issue)
+        with patch("sys.stdout", new_callable=io.StringIO) as stdout:
+            rejection = self._reject(state, issue)
 
         comments = state.get_issue_comments(4242)
         self.assertEqual(len(comments), 1)
@@ -1739,7 +1740,25 @@ class IssueFormRejectionTests(unittest.TestCase):
         self.assertIn("`Add support for Widget`", body)
         self.assertIn(rejection.requirement, body)
         self.assertEqual(state.get_issue_claim_payload(4242)["state"], "CLOSED")
-        self.assertNotIn(forge_metadata.LABEL_HUMAN_INTERVENTION, state.get_issue_labels(4242))
+        self.assertNotIn(
+            forge_metadata.LABEL_HUMAN_INTERVENTION,
+            state.get_issue_labels(4242),
+        )
+        output = stdout.getvalue()
+        self.assertIn(
+            "[issue-form] Rejecting issue #4242: rule 'maven-coordinates'",
+            output,
+        )
+        self.assertIn(
+            "[issue-form] Posting rejection comment to issue #4242: "
+            "rule 'maven-coordinates'",
+            output,
+        )
+        self.assertIn(
+            "[issue-close] Closing issue #4242: "
+            "issue-form rule 'maven-coordinates' failed",
+            output,
+        )
 
     def _reopened_state(self, title: str) -> FixtureGitHubState:
         """Fixture state for an issue reopened with its rejection comment still on it."""
@@ -1761,10 +1780,16 @@ class IssueFormRejectionTests(unittest.TestCase):
     def test_reopened_issue_with_the_same_defect_is_closed_without_a_second_comment(self) -> None:
         state = self._reopened_state("Add support for Widget")
 
-        self._reject(state, _form_issue(title="Add support for Widget"))
+        with patch("sys.stdout", new_callable=io.StringIO) as stdout:
+            self._reject(state, _form_issue(title="Add support for Widget"))
 
         self.assertEqual(len(state.get_issue_comments(4242)), 1)
         self.assertEqual(state.get_issue_claim_payload(4242)["state"], "CLOSED")
+        self.assertIn(
+            "[issue-form] Skipping rejection comment for issue #4242: "
+            "rule 'maven-coordinates' was already reported",
+            stdout.getvalue(),
+        )
 
     def test_edited_title_is_judged_afresh_and_gets_its_own_comment(self) -> None:
         state = self._reopened_state("Add support for Widget")

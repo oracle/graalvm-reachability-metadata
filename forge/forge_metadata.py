@@ -6583,9 +6583,14 @@ def reject_issue_form(
         if issue_has_issue_form_rejection_comment(issue_number, rejection):
             log_stage(
                 "issue-form",
-                f"Issue #{issue_number} already reports rule '{rejection.rule}'; not commenting again",
+                f"Skipping rejection comment for issue #{issue_number}: "
+                f"rule '{rejection.rule}' was already reported",
             )
         else:
+            log_stage(
+                "issue-form",
+                f"Posting rejection comment to issue #{issue_number}: rule '{rejection.rule}'",
+            )
             post_issue_comment(issue_number, build_issue_form_rejection_comment(rejection))
         close_issue(issue_number, f"issue-form rule '{rejection.rule}' failed")
     except Exception as exc:
