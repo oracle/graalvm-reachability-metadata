@@ -81,11 +81,11 @@ Library version update automation (§root/FS-library-version-update-automation).
 | **Forge publication ID** | A run-unique identity derived before the publication commit and recorded in the descriptor. Chunked runs also record it and the unique head branch in their exhaust report so a later run can resolve the preceding PR without committing a GitHub-assigned PR number after publication (§AR-chunked-linking). |
 | **Forge Actions publisher** | Default-branch code triggered through a successful unprivileged Branch Ready run. It treats the feature branch as data, revalidates the exact head SHA and descriptor, renders the PR, and performs publication-related GitHub mutations with a short-lived GitHub App token (§AR-actions-publication). |
 | **Coordinate** | Maven coordinate of the target library, formatted `group:artifact:version`. |
-| **Agent** | LLM-driven code editor (Codex or Pi) registered through [ai_workflows/agents/](../../ai_workflows/agents/). Each implements `send_prompt`, `run_test_command`, and `clear_context`; the concrete API and Pi adapter are documented by §AR-agent-api. |
-| **Workflow driver** | Deterministic script in the `drivers/` subdirectory of [ai_workflows/](../../ai_workflows/) that prepares the working environment, directories, branch/context, strategy bundle, workflow engine, agent, and metrics for one claimed unit of work. The driver runs Forge plumbing; Codex or another LLM agent should not decide that setup during a generated run. Specified by §AR-forge-drivers. |
+| **Agent** | LLM-driven code editor registered through [ai_workflows/agents/](../../ai_workflows/agents/). Each implements `send_prompt`, `run_test_command`, and `clear_context` behind one editing contract (§FS-forge-agent-runtime-selection); the concrete API and its adapters are documented by §AR-agent-api. |
+| **Workflow driver** | Deterministic script in the `drivers/` subdirectory of [ai_workflows/](../../ai_workflows/) that prepares the working environment, directories, branch/context, strategy bundle, workflow engine, agent, and metrics for one claimed unit of work. The driver runs Forge plumbing; no LLM agent should decide that setup during a generated run. Specified by §AR-forge-drivers. |
 | **Workflow engine** | A registered state-machine-like workflow implementation among the core workflow objects in [ai_workflows/core/](../../ai_workflows/core/), such as `basic_iterative` or `dynamic_access_iterative`. The engine owns prompts, command execution, retries, transitions, and terminal status selection for one run. |
 | **Predefined strategy** | Named configuration bundle in [strategies/predefined_strategies.json](../../strategies/predefined_strategies.json). It selects the workflow engine, agent backend, model, prompts, workflow parameters, optional MCPs, and optional persistent instructions. Selected via `--strategy-name`. |
-| **Post-generation intervention** | The built-in recovery sequence the workflow base class runs when the post-iteration `./gradlew test` still fails during finalization. It is a fixed Codex-then-Pi lane, not a pluggable registry and not selected per strategy: a Codex metadata fix runs first (using the `fix-missing-reachability-metadata` skill, pinned to the run's GraalVM); only if that does not recover does Pi remove the offending failing tests as a last resort. When recovery makes the post-generation test pass, the run reports `SUCCESS_WITH_INTERVENTION_STATUS` and the intervention record (stage, intervention file, analysis) is saved for the run metrics and PR body. The base class runs this lane once per GraalVM test lane (current defaults and `future-defaults-all` on the latest GraalVM, plus current defaults on the GraalVM 25 toolchain). |
+| **Post-generation intervention** | The durable record of bounded analysis-agent repair during finalization. It is not a pluggable registry and is not selected per strategy: a repairable failed step supplies its exact command, environment, and captured output; the analysis agent diagnoses and edits; then Forge re-runs the failed check and lets that result decide. Native lanes receive one repair. Metadata validation and Checkstyle retain their established budgets of up to three repair attempts, with deterministic verification after each. Deterministic production and policy steps fail directly. A successful re-run reports `SUCCESS_WITH_INTERVENTION_STATUS` and saves the intervention record (stage, intervention file, analysis) for run metrics and the PR body (§FS-forge-agent-runtime-selection). |
 | **Human intervention** | A maintainer follow-up signal applied through the `human-intervention` issue or PR label when Forge has evidence that generated work, repository automation, or library execution semantics require human judgment. It is distinct from post-generation intervention, which is an automated recovery step. The policy is defined in §FS-human-intervention-policy. |
 | **Dynamic access** | Reflection, JNI, resource access, serialization, or proxy use that GraalVM `native-image` cannot determine statically. |
 | **Dynamic-access report** | JSON written by Gradle task `generateDynamicAccessCoverageReport` to `tests/src/<group>/<artifact>/<version>/build/reports/dynamic-access/dynamic-access-coverage.json`, listing classes and per-class call sites that require dynamic-access metadata, marked covered/uncovered. |
@@ -120,7 +120,8 @@ to the same rule rather than a second one.
 The host must provide:
 
 - **Executables on `PATH`**: the selected Python interpreter, `git`, the GitHub
-  CLI, Pi, Codex, the Docker CLI, the pinned `grype` release, and the selected
+  CLI, the agent backends the enabled roles select, the Docker CLI, the pinned
+  `grype` release, and the selected
   repository's Gradle wrapper.
 - **A usable GitHub account**: the CLI authenticated, `Contents`, `Issues`, and
   `Pull requests` write on the repository, and `Projects` write on the tracked
@@ -129,18 +130,31 @@ The host must provide:
   merges eligible pull requests. The local process never holds the Forge
   publisher App credentials: it neither opens pull requests nor creates
   publication follow-up issues.
-- **Agents that are usable, not merely installed**: Pi authenticated against its
-  provider with unattended tool approval, Codex configured for unattended runs,
-  and a writable state directory for each.
+- **Agents that are usable, not merely installed**: each selected backend
+  authenticated against its provider with unattended tool approval and a
+  writable state directory. Validation covers only the executables, models, and
+  state roots the enabled roles actually select
+  (§FS-forge-agent-runtime-selection) — supporting a backend is not a reason to
+  require it.
 - **Every Java lane**, each pointing at a GraalVM distribution that provides
-  Native Image and contains the reachability-metadata schema the checked-out
-  repository requires: `GRAALVM_HOME` at the latest published GraalVM GA
+  Native Image, allows its `bin/java` to load the `native-image-agent`, and
+  contains the reachability-metadata schema the checked-out repository requires:
+  `GRAALVM_HOME` at the latest published GraalVM GA
   release, `GRAALVM_HOME_LATEST_EA` at the newest published Oracle GraalVM EA
   build, and `GRAALVM_HOME_25_0` at the repository-pinned 25.0.x release in
-  `graalvm-versions.json`. The operator updates the pinned value deliberately;
+  `graalvm-versions.json`. The agent probe writes to a disposable output
+  directory, so it verifies the JVM capability metadata generation depends on
+  without leaving generated configuration behind. The operator updates the
+  pinned value deliberately;
   GA and EA freshness are resolved from their authoritative release metadata on
-  every run. `GRAALVM_HOME` and `JAVA_HOME` are aligned to one distribution, and
-  a review-only host needs a working JDK on `JAVA_HOME` instead of the lanes.
+  every run. An Oracle EA release label can advance without the GraalVM runtime
+  revision its binaries report changing, so the gate accepts a published
+  label-to-runtime revision exception while still requiring the matching Graal
+  and JDK version tuple. `GRAALVM_HOME` and `JAVA_HOME` are aligned to one
+  distribution, and `GRADLE_JAVA_HOME` and Gradle's `org.gradle.java.home`
+  system property are pinned to that same distribution, so inherited host
+  `GRADLE_OPTS` cannot silently hand Gradle test workers an agent-less JVM. A
+  review-only host needs a working JDK on `JAVA_HOME` instead of the lanes.
   Every agent repair step runs against the exact distribution whose Gradle or
   Native Image failure triggered it — the selected `GRAALVM_HOME`, `JAVA_HOME`,
   and full `native-image --version` output go into the agent's instructions and
@@ -178,11 +192,11 @@ checkout can neither pass on a broken target nor be rejected because an
 unrelated parent checkout is broken.
 
 Requirements are scoped to what the invoked mode actually does: a review-only
-run does not need the issue-work Java lanes, Codex, or Docker; an issue run
+run does not need the issue-work Java lanes or Docker; an issue run
 needs everything its enabled queues select; a fixture-testing run needs no live
 GitHub access, because it mutates no GitHub state. Only the release-version
 comparison for the Java lanes is relaxable, and relaxing it never waives Native
-Image or the reachability-metadata schema.
+Image, the `native-image-agent`, or the reachability-metadata schema.
 
 The gate must always print an operator-facing report. Each entry names the
 capability, whether the invoked mode requires it, the exact executable,
@@ -198,6 +212,71 @@ before the first work cycle. Capabilities the mode does not need are reported as
 not required, a relaxed version mismatch does not fail startup, and commands
 that start no work — stop, resume, help, cache maintenance — do not run the gate
 at all.
+
+## FS-forge-agent-runtime-selection: Configurable agent roles
+
+§GOAL-forge-direction §root/PRCPL-prefer-algorithmic
+
+Forge names three runtime agent **roles** rather than encoding one product into
+a workflow. The **setup agent** prepares a library before any generation
+starts — resolving artifact URL fields and researching what deterministic setup
+the library needs. The **analysis agent** handles recovery, diagnosis, style
+repair, native-test repair, post-generation recovery, and pull-request
+assessment. The **test agent** generates and adjusts library tests inside
+strategy workflows.
+
+Setup and analysis both read evidence and decide, so the line between them is
+what they are allowed to touch and when. A setup step runs before the working
+tree holds generated work, reads the library and the network, and writes only
+the fields it was asked to resolve; it cannot repair the repository. An analysis
+step runs after something has failed, reproduces that failure, and edits until
+it passes. Separating them lets the cheap, network-facing lookup that precedes
+every run be priced differently from the repair loop that follows a failure,
+which §GOAL-forge-direction requires by asking for the least capable agent that
+is sufficient.
+
+The roles are selected from different places, because they answer to different
+owners. Setup and analysis are worker configuration: whoever runs the worker
+selects, per role, a registered backend, an optional backend-specific model,
+and — for a backend that addresses a model through a named provider — that
+provider. The test role is strategy data: a predefined strategy names the
+backend, model, and provider it was written and measured against, and nothing
+outside the bundle retargets it, so a strategy name always denotes the agent
+that produced the results recorded under it. The worker may replace only that
+agent's machine-local executable name through `--test-agent-alias`; the alias
+does not change the test backend, model, provider, or recorded selection. No
+role may borrow its selection from another role or from a bundle written for
+one, so retuning one role never
+silently moves a second. Every role's effective selection must reach
+every workflow and its metrics rather than being replaced by a direct backend
+invocation. `do-work.sh` preserves the worker-configured selections across
+self-update and re-execution (§AR-do-work-loop); the concrete roles, families,
+and defaults are architecture (§AR-agent-api).
+
+**A reviewing agent reads a context file.** Before a pull-request
+agent starts, orchestration fetches the complete review input — pull-request
+identity and body, labels, changed-file list, patch, comments, reviews, status
+checks, and the label-specific checked-in rules — and persists it as a local
+context file in the isolated review worktree. The agent may read that file and
+the checked-out repository, and returns a structured review decision; Forge
+validates that decision and submits the review through its own authenticated
+process.
+
+This is what lets one reviewer serve both reviews. The pre-push review
+(§FS-local-branch-review) has no pull request to query, so a reviewer that
+called GitHub for its inputs could not run there at all; a reviewer that reads a
+context file runs in both places from one rule set, with each caller building
+the file from what it has. It also makes a verdict reproducible — the exact
+input a review saw is a recorded artifact rather than whatever calls the model
+chose to make — and keeps a GitHub outage from becoming a verdict, which
+§FS-human-intervention-policy requires by classifying such failures as external.
+
+The context file is therefore a validated input, not a best-effort bundle
+(§root/PRCPL-verify-inputs). It is schema-checked before the agent starts, and a
+rule whose required input is absent fails the review outright rather than being
+silently skipped — an unapplied rule that nobody is told about is
+indistinguishable from a rule that passed. A prefetch that fails or validates
+incomplete stops the review before the agent is invoked.
 
 ## FS-forge-run-requirements: Run requirements
 
@@ -385,7 +464,7 @@ Every workflow records one of these statuses:
 | Status | Meaning |
 | --- | --- |
 | `RUN_STATUS_SUCCESS` | All generation gates and the local CI-equivalent verification passed; metadata and tests committed (see §FS-local-ci-equivalent-verification). |
-| `SUCCESS_WITH_INTERVENTION_STATUS` | Tests succeeded after the built-in post-generation recovery modified the working tree (a Codex metadata fix, then Pi removing failing tests as a last resort), and the local CI-equivalent verification (§FS-local-ci-equivalent-verification) passed. The intervention's record is included in the run-metrics and PR description. PR-eligible; distinct from the `human-intervention` label unless §FS-human-intervention-policy separately requires that label. |
+| `SUCCESS_WITH_INTERVENTION_STATUS` | Tests succeeded after the built-in post-generation recovery modified the working tree (an analysis-agent metadata repair, then the same role removing unsupported failing tests as a last resort), and the local CI-equivalent verification (§FS-local-ci-equivalent-verification) passed. The intervention's record is included in the run-metrics and PR description. PR-eligible; distinct from the `human-intervention` label unless §FS-human-intervention-policy separately requires that label. |
 | `RUN_STATUS_CHUNK_READY` | A chunked dynamic-access run reached a reviewable class boundary and §FS-local-ci-equivalent-verification passed for the current part. The current part is PR-eligible, and the issue must not be resumed until the part PR has merged. |
 | `RUN_STATUS_FAILURE` | The workflow could not converge or a quality gate failed; the feature branch is reset to its workflow recovery checkpoint and no PR is opened. Iterative dynamic-access exploration advances that checkpoint after each committed class (§AR-dynamic-access-fallback-and-failure); other workflows retain their specified checkpoint behavior. |
 

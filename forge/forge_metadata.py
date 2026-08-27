@@ -94,10 +94,9 @@ from ai_workflows.core.workflow_strategy import (
     SUCCESS_WITH_INTERVENTION_STATUS,
 )
 from ai_workflows.agents.codex_agent import extract_codex_token_usage
-from ai_workflows.agents.runtime import (
-    AgentSelection,
-    analysis_agent_selection,
-    run_agent_task,
+from ai_workflows.agents.agent_runtime import (
+    analysis_agent_run,
+    get_analysis_agent,
 )
 from git_scripts.common_git import (
     GITHUB_TRANSIENT_RETRY_ATTEMPTS,
@@ -155,7 +154,6 @@ from utility_scripts.fixture_github import FixtureGitHubState, load_fixture_gith
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_stats import resolve_stats_file_path
 from utility_scripts.library_preparation_preflight import (
-    DEFAULT_LIBRARY_PREFLIGHT_STRATEGY_NAME,
     LIBRARY_PREPARATION_PREFLIGHT_FILENAME,
     load_library_preparation_preflight,
     run_library_preparation_preflight as run_preflight_decision,
@@ -356,8 +354,8 @@ DEFAULT_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD = 15
 
 PI_REVIEW_PROVIDER = PI_PROVIDER
 DEFAULT_WORK_QUEUE_STRATEGY_NAME = "dynamic_access_main_sources_pi_gpt-5.6-terra"
-CODEX_REVIEW_TIMEOUT_SECONDS = 1800
-PI_REVIEW_TIMEOUT_SECONDS = 1800
+FAILURE_ANALYSIS_TIMEOUT_SECONDS = 1800
+REVIEW_TIMEOUT_SECONDS = 1800
 DEFAULT_WORKTREE_BASE_REF = "master"
 # The GraalVM lanes are named once in `host_requirements`, in this order.
 DEV_GRAALVM_ENV_VAR, POST_GENERATION_GRAALVM_ENV_VAR, LATEST_EA_GRAALVM_ENV_VAR = ISSUE_GRAALVM_ENV_VARS
@@ -2900,25 +2898,14 @@ def review_pull_request(
     if pr_url is None:
         pr_url = get_pull_request_url(pr_number)
     review_worktree_path = create_review_workspace(reachability_metadata_path, pr_number)
-    configured_selection = analysis_agent_selection()
-    selection = AgentSelection(
-        backend=configured_selection.backend,
-        model=(
-            os.environ.get("FORGE_ANALYSIS_MODEL")
-            or review_model
-            or configured_selection.model
-        ),
-        family=configured_selection.family,
-        thinking_level=(
-            os.environ.get("FORGE_REVIEW_THINKING_LEVEL")
-            or ("xhigh" if configured_selection.backend == "codex" else configured_selection.thinking_level)
-        ),
-        agent=configured_selection.agent,
+    selection = get_analysis_agent()
+    review_thinking_level = os.environ.get("FORGE_REVIEW_THINKING_LEVEL") or (
+        "xhigh" if selection.backend == "codex" else None
     )
     context_path = os.path.join(review_worktree_path, ".forge-review-context.json")
     log_path_display = display_log_path(get_review_log_path(pr_number, coordinates))
     print(
-        f"\n[Reviewing PR #{pr_number} with offline {selection.backend} in an isolated worktree; "
+        f"\n[Reviewing PR #{pr_number} with {selection.backend} in an isolated worktree; "
         "Forge will submit the decision.]"
     )
     print(f"[PR link: {pr_url}]")
@@ -2932,13 +2919,14 @@ def review_pull_request(
         )
         baseline_context_digest = review_context_digest(context_path)
         baseline_status = review_worktree_status(review_worktree_path)
-        result = run_agent_task(
-            selection=selection,
+        result = analysis_agent_run(
             working_dir=review_worktree_path,
-            prompt=build_review_prompt(pr_number, os.path.basename(context_path)),
+            context=build_review_prompt(pr_number, os.path.basename(context_path)),
             task_type="pr-review",
             library=coordinates or f"pr-{pr_number}",
-            timeout=PI_REVIEW_TIMEOUT_SECONDS,
+            timeout=REVIEW_TIMEOUT_SECONDS,
+            model=review_model,
+            thinking_level=review_thinking_level,
         )
         if result.return_code != 0:
             print(
@@ -3875,19 +3863,18 @@ def run_codex_failed_generation_analysis(
         run_metrics,
         preservation_result,
     )
-    selection = analysis_agent_selection()
+    selection = get_analysis_agent()
 
     log_stage(
         "failure-analysis",
         f"Running {selection.backend} failure analysis for issue #{claimed_issue.issue['number']}",
     )
-    result = run_agent_task(
-        selection=selection,
+    result = analysis_agent_run(
         working_dir=claimed_issue.worktree_path,
-        prompt=prompt,
+        context=prompt,
         task_type="failure-analysis",
         library=claimed_issue.issue_coordinates,
-        timeout=CODEX_REVIEW_TIMEOUT_SECONDS,
+        timeout=FAILURE_ANALYSIS_TIMEOUT_SECONDS,
     )
     if result.return_code == 0 and result.response.strip():
         return result.response.strip()
@@ -5183,8 +5170,6 @@ def run_library_preparation_preflight(
     return run_preflight_decision(
         claimed_issue=claimed_issue,
         issue_body_provider=get_issue_body,
-        init_agent=init_workflow_agent,
-        default_strategy_name=DEFAULT_LIBRARY_PREFLIGHT_STRATEGY_NAME,
     )
 
 

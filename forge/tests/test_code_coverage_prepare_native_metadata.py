@@ -84,7 +84,7 @@ class PrepareNativeMetadataTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as tmp, \
                 patch.object(prepare_module, "run_gradle_test_command", gradle), \
-                patch.object(prepare_module, "run_codex_metadata_fix", fake_fix):
+                patch.object(prepare_module, "run_metadata_fix", fake_fix):
             relative_suite: str = os.path.join(
                 "tests", "src", "g", "a", "1.0", "code-coverage-improvement",
             )

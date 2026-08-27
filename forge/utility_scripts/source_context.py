@@ -27,10 +27,11 @@ from dataclasses import dataclass
 from email.message import Message
 from typing import Any
 
-from ai_workflows.agents.opencode_agent import OFFLINE_OPENCODE_CONFIG
-from ai_workflows.agents.runtime import (
+from ai_workflows.agents.opencode_agent import opencode_config
+from ai_workflows.agents.agent_runtime import (
+    DEFAULT_AGENT_PROVIDER,
     agent_process_environment,
-    analysis_agent_selection,
+    get_setup_agent,
 )
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import find_index_entry_for_version, is_not_for_native_image_entry
@@ -195,48 +196,56 @@ def normalize_source_context_types(raw_value: Any) -> list[str]:
 
 
 def url_fetch_agent_command() -> str:
-    """Build the sole network-enabled agent command used to discover URLs.
+    """Build the agent command Gradle runs for URL discovery.
 
-    All other agent invocations use §FS-forge-agent-runtime-selection's
-    offline profile. This command is confined to ``populateArtifactURLs`` and
-    ``discoverArtifactMetadata`` prompts, whose job is to resolve and verify
-    URL fields.
+    ``populateArtifactURLs`` and ``discoverArtifactMetadata`` resolve URL fields
+    before any generation starts, which is setup work
+    (§FS-forge-agent-runtime-selection). Gradle owns the process for these two
+    tasks, so the role reaches them as a command string rather than an adapter,
+    and the selection is read through `get_setup_agent` instead of being run.
     """
-    selection = analysis_agent_selection()
+    selection = get_setup_agent()
     model = shlex.quote(selection.model)
+    # Each backend spells reasoning effort differently, and OpenCode takes it as
+    # configuration rather than a flag. The command carries whatever the role
+    # resolved, so both setup steps run at the same effort.
+    thinking = shlex.quote(selection.thinking_level) if selection.thinking_level else None
     if selection.backend == "codex":
         executable = selection.agent or "codex"
         return (
-            f"{shlex.quote(executable)} exec --ignore-user-config -s workspace-write "
+            f"{shlex.quote(executable)} exec --ignore-user-config -s danger-full-access "
             "-c approval_policy=\"never\" "
-            "-c sandbox_workspace_write.network_access=false "
-            "-c web_search=\"live\" -c agents.enabled=false "
-            "-c features.skill_mcp_dependency_install=false -c mcp_servers={} "
-            f"-m {model}"
+            + (f"-c reasoning.effort={thinking} " if thinking else "")
+            + f"-m {model}"
         )
     if selection.backend == "claude-code":
-        url_tools = "Read,Edit,Write,Glob,Grep,WebFetch,WebSearch"
         return (
             f"{shlex.quote(selection.agent or 'claude')} -p --permission-mode dontAsk "
-            "--safe-mode --strict-mcp-config --mcp-config '{}' "
-            f"--tools {url_tools} --allowedTools {url_tools} "
-            f"--model {model}"
+            + (f"--effort {thinking} " if thinking else "")
+            + f"--model {model}"
         )
     if selection.backend == "pi":
+        # Pi has no built-in web fetch, so this extension is its only network reach.
         return (
-            f"{shlex.quote(selection.agent or 'pi')} -p --no-session --no-extensions "
+            f"{shlex.quote(selection.agent or 'pi')} -p --no-session "
             f"--extension {shlex.quote(PI_URL_FETCH_EXTENSION_PATH)} "
-            "--tools read,edit,write,grep,find,ls,web_fetch "
-            f"--provider openai-codex --model {model}"
+            f"--provider {shlex.quote(selection.provider or DEFAULT_AGENT_PROVIDER)} "
+            + (f"--thinking {thinking} " if thinking else "")
+            + f"--model {model}"
         )
-    network_config = dict(OFFLINE_OPENCODE_CONFIG)
-    network_config["permission"] = dict(OFFLINE_OPENCODE_CONFIG["permission"])
-    network_config["permission"]["webfetch"] = "allow"
-    network_config["permission"]["websearch"] = "allow"
-    rendered_config = shlex.quote(json.dumps(network_config, separators=(",", ":")))
+    qualified_model = (
+        selection.model
+        if not selection.provider or "/" in selection.model
+        else f"{selection.provider}/{selection.model}"
+    )
+    rendered_config = shlex.quote(json.dumps(
+        opencode_config(qualified_model, selection.thinking_level),
+        separators=(",", ":"),
+    ))
     return (
         f"env OPENCODE_CONFIG_CONTENT={rendered_config} "
-        f"{shlex.quote(selection.agent or 'opencode')} run --auto --model {model}"
+        f"{shlex.quote(selection.agent or 'opencode')} run --auto "
+        f"--model {shlex.quote(qualified_model)}"
     )
 
 

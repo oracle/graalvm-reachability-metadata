@@ -26,7 +26,7 @@ import tempfile
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
-from ai_workflows.agents.runtime import analysis_agent_selection, run_agent_task
+from ai_workflows.agents.agent_runtime import analysis_agent_run, get_analysis_agent
 from git_scripts.common_git import run_git_transport
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import resolve_test_version
@@ -38,7 +38,7 @@ LOCAL_CI_VERIFICATION_KEY = "local_ci_verification"
 HUMAN_INTERVENTION_LABEL = "human-intervention"
 MAX_OUTPUT_CHARS = 12000
 MAX_FIXUP_ATTEMPTS = 2
-CODEX_TIMEOUT_SECONDS = 1800
+LOCAL_CI_FIXUP_TIMEOUT_SECONDS = 1800
 DEFAULT_BASE_BRANCH = "master"
 SPRING_AOT_BRANCH = "main"
 SPRING_AOT_REPO_URL = "https://github.com/spring-projects/spring-aot-smoke-tests.git"
@@ -588,15 +588,14 @@ def _script_sudo_line(script_path: str) -> str | None:
 def _run_fixup(repo_path: str, coordinates: str, failed_command: CommandRecord) -> FixupRecord:
     before_paths = _worktree_changed_paths(repo_path)
     prompt = _build_fixup_prompt(coordinates, failed_command)
-    selection = analysis_agent_selection()
+    selection = get_analysis_agent()
     command = [selection.backend, selection.model]
-    result = run_agent_task(
-        selection=selection,
+    result = analysis_agent_run(
         working_dir=repo_path,
-        prompt=prompt,
+        context=prompt,
         task_type="local-ci-fixup",
         library=coordinates,
-        timeout=CODEX_TIMEOUT_SECONDS,
+        timeout=LOCAL_CI_FIXUP_TIMEOUT_SECONDS,
     )
     if result.return_code != 0:
         return FixupRecord(

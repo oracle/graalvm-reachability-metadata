@@ -49,9 +49,11 @@ Each entry in `strategies/predefined_strategies.json` must provide:
   etc.).
 - `mcps` — optional list of MCP server names.
 
-There is no `post-generation-intervention` bundle field. The post-generation
-recovery sequence (analysis-agent metadata fix, then the test agent as a last resort) is built into
-the workflow base class and is not selected per strategy; see the
+There is no `post-generation-intervention` bundle field. Post-generation
+recovery is evidence-driven analysis-agent repair built into the workflow and
+finalization utilities, followed by deterministic re-runs of the failed
+repairable step. Native lanes receive one attempt; metadata validation and
+Checkstyle retain up to three. It is not selected per strategy; see the
 **Post-generation intervention** glossary entry in §FS-forge-functional-spec.
 
 ## FS-predefined-strategy-loader: Strategy loading boundary
@@ -100,7 +102,7 @@ recovery is built into the workflow base class and is not a bundle field
 The currently configured source-context choices are `main`, `test`, and
 `documentation`. Registered agent backends are `claude-code`, `pi`, `codex`,
 and `opencode`; §FS-forge-agent-runtime-selection allows do-work runtime
-overrides without rewriting strategy JSON.
+aliasing of the test agent's executable without rewriting strategy JSON.
 The currently configured workflows are `basic_iterative`,
 `dynamic_access_iterative` (§AR-dynamic-access-workflow),
 `optimistic_dynamic_access` (§AR-dynamic-access-bulk),

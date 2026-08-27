@@ -14,7 +14,8 @@ import unittest
 from unittest.mock import call, patch
 
 import forge_metadata
-from ai_workflows.agents.runtime import AgentRunResult
+from types import SimpleNamespace
+from ai_workflows.agents.agent_runtime import AgentRunResult, AgentSelection
 from git_scripts import common_git
 from utility_scripts import host_requirements
 from utility_scripts.continuation_marker import (
@@ -304,7 +305,7 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
 
 
 class LibraryUpdateIssueTests(unittest.TestCase):
-    def test_library_preflight_uses_dedicated_strategy(self) -> None:
+    def test_library_preflight_dispatches_without_a_strategy(self) -> None:
         claimed_issue = forge_metadata.ClaimedIssue(
             issue={"number": 1412, "title": "Update org.example:lib:1.0.0"},
             label=forge_metadata.LABEL_LIBRARY_UPDATE,
@@ -323,10 +324,55 @@ class LibraryUpdateIssueTests(unittest.TestCase):
         ) as preflight:
             forge_metadata.run_library_preparation_preflight(claimed_issue)
 
+        # The setup role owns the backend and model; no bundle is consulted.
         self.assertEqual(
-            preflight.call_args.kwargs["default_strategy_name"],
-            "library_preflight_pi_gpt-5.6-sol",
+            set(preflight.call_args.kwargs),
+            {"claimed_issue", "issue_body_provider"},
         )
+
+    def test_library_preflight_runs_on_the_setup_role(self) -> None:
+        """Preflight prepares a library, so FORGE_SETUP_* selects it."""
+        from utility_scripts import library_preparation_preflight as preflight_module
+
+        claimed_issue = SimpleNamespace(
+            issue={"number": 1412, "title": "Update org.example:lib:1.0.0"},
+            issue_coordinates="org.example:lib:1.0.0",
+            worktree_path="/tmp/reachability-worktree",
+            preflight_info_path="/tmp/preflight-info",
+            current_coordinates=None,
+            new_version=None,
+            label="library-update-request",
+        )
+        with patch.object(
+                preflight_module,
+                "setup_agent_run",
+                return_value=AgentRunResult(
+                    0, "/tmp/preflight.log", False,
+                    '{"action":"no_action","summary":"nothing needed"}',
+                    input_tokens=11, output_tokens=7,
+                ),
+        ) as setup, patch.object(
+                preflight_module, "get_setup_agent",
+                return_value=AgentSelection(backend="pi", model="cheap-model"),
+        ), patch.object(
+                preflight_module, "build_library_preflight_input_bundle",
+                return_value={"library": "org.example:lib:1.0.0"},
+        ), patch.object(
+                preflight_module, "_write_text_artifact", return_value="/tmp/a.txt",
+        ), patch.object(
+                preflight_module, "_write_and_log_preflight", side_effect=lambda _i, record: record,
+        ):
+            record = preflight_module.run_library_preparation_preflight(
+                claimed_issue=claimed_issue,
+                issue_body_provider=lambda _n: "",
+            )
+
+        setup.assert_called_once()
+        self.assertEqual(setup.call_args.kwargs["task_type"], "library-preparation-preflight")
+        # The record names the model that ran, not a bundle's claim about it.
+        self.assertEqual(record["model"], "cheap-model")
+        self.assertEqual(record["input_tokens_used"], 11)
+        self.assertEqual(record["output_tokens_used"], 7)
 
     def test_issue_lookup_does_not_request_body_for_generic_claiming(self) -> None:
         issue_payload = {
@@ -3305,7 +3351,7 @@ class PullRequestReviewTests(unittest.TestCase):
                 side_effect=forge_metadata.GitHubError("prefetch failed"),
         ), patch.object(
                 forge_metadata,
-                "run_agent_task",
+                "analysis_agent_run",
         ) as run_agent, patch.object(
                 forge_metadata,
                 "cleanup_review_workspace",
@@ -3345,9 +3391,8 @@ class PullRequestReviewTests(unittest.TestCase):
                     forge_metadata,
                     "review_context_digest",
                     return_value="stable-context",
-            ), patch.object(
-                    forge_metadata,
-                    "run_agent_task",
+            ), patch(
+                    "ai_workflows.agents.agent_runtime.run_agent_task",
                     return_value=AgentRunResult(
                         0,
                         log_path,
@@ -3407,9 +3452,8 @@ class PullRequestReviewTests(unittest.TestCase):
             forge_metadata,
             "review_context_digest",
             return_value="stable-context",
-        ), patch.object(
-            forge_metadata,
-            "run_agent_task",
+        ), patch(
+            "ai_workflows.agents.agent_runtime.run_agent_task",
             return_value=AgentRunResult(
                 0,
                 os.path.join(temp_dir, "review.log"),
@@ -3476,7 +3520,7 @@ class PullRequestReviewTests(unittest.TestCase):
                     return_value="",
             ), patch.object(
                     forge_metadata,
-                    "run_agent_task",
+                    "analysis_agent_run",
                     side_effect=mutate_context,
             ), patch.object(
                     forge_metadata,

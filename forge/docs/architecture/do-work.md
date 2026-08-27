@@ -9,13 +9,16 @@ owns branch selection, self-update, work limits, review limits, stop-file
 handling, sleep timing, and re-execing the latest worker script before the
 next cycle.
 
-The worker accepts role-specific agent commands and families through
-`--analysis-agent`, `--analysis-family`, `--analysis-model`, `--test-agent`,
-`--test-family`, and `--test-model`, with matching `FORGE_*` environment
-variables. Agent commands are free-form; families select one of the four
-registered backends. It exports the effective role configuration
-before every dispatch and re-exec, implementing
-§FS-forge-agent-runtime-selection.
+The worker accepts the analysis role through `--analysis-agent`,
+`--analysis-family`, `--analysis-model`, and `--analysis-provider`, and the
+setup role through the matching `--setup-*` options, with `FORGE_*` environment
+variables for both. The two are independent: a setup option left unset takes the
+shared default, not the analysis setting. Agent commands are free-form;
+families select one of the four registered backends. `--strategy-name` selects
+the test-role bundle and therefore its backend, model, and provider;
+`--test-agent-alias` may replace only that agent's machine-local executable
+name. The worker exports the effective configuration before every dispatch and
+re-exec, implementing §FS-forge-agent-runtime-selection.
 `--fail-fast` makes a failed work cycle return nonzero immediately instead of
 being retried after the normal sleep.
 

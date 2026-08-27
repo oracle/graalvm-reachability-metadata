@@ -27,10 +27,15 @@ REVIEW_LABEL="${FORGE_REVIEW_LABEL:-}"
 REVIEW_LIMIT="${FORGE_REVIEW_LIMIT:-1}"
 ANALYSIS_AGENT="${FORGE_ANALYSIS_AGENT:-}"
 ANALYSIS_MODEL="${FORGE_ANALYSIS_MODEL:-}"
+ANALYSIS_PROVIDER="${FORGE_ANALYSIS_PROVIDER:-${FORGE_AGENT_PROVIDER:-}}"
 ANALYSIS_FAMILY="${FORGE_ANALYSIS_FAMILY:-${FORGE_ANALYSIS_AGENT_FAMILY:-${FORGE_AGENT_FAMILY:-}}}"
-TEST_AGENT="${FORGE_TEST_AGENT:-}"
-TEST_MODEL="${FORGE_TEST_MODEL:-}"
-TEST_FAMILY="${FORGE_TEST_FAMILY:-${FORGE_TEST_AGENT_FAMILY:-${FORGE_AGENT_FAMILY:-}}}"
+SETUP_AGENT="${FORGE_SETUP_AGENT:-}"
+SETUP_MODEL="${FORGE_SETUP_MODEL:-}"
+SETUP_PROVIDER="${FORGE_SETUP_PROVIDER:-}"
+SETUP_FAMILY="${FORGE_SETUP_FAMILY:-}"
+# Alias only the test executable; the strategy still owns selection.
+# §FS-forge-agent-runtime-selection
+TEST_AGENT_ALIAS="${FORGE_TEST_AGENT_ALIAS:-}"
 AGENT_FAMILY="${FORGE_AGENT_FAMILY:-}"
 REVIEW_MODEL="${FORGE_REVIEW_MODEL:-}"
 FAIL_FAST="${FORGE_FAIL_FAST:-0}"
@@ -129,18 +134,31 @@ Options:
       command may use any local name, such as cdx.
   --analysis-family {claude-code,pi,codex,opencode}
       Select the analysis agent family (adapter/protocol).
+  --analysis-provider PROVIDER
+      Select the provider for a pi or opencode analysis agent. Defaults to
+      FORGE_ANALYSIS_PROVIDER, then openai-codex. Ignored by codex and
+      claude-code, which authenticate their own provider.
   --analysis-model MODEL
       Select its backend-specific model. Defaults to FORGE_ANALYSIS_MODEL,
       then gpt-5.6-luna for Codex or sonnet for Claude Code.
-  --agent-family FAMILY
-      Backward-compatible common family fallback for both roles.
-  --test-agent COMMAND
-      Override the predefined strategy's test-generation executable. The
+  --setup-agent COMMAND
+      Select the executable used for URL discovery and library preflight. The
       command may use any local name.
-  --test-family {claude-code,pi,codex,opencode}
-      Select the test-generation agent family (adapter/protocol).
-  --test-model MODEL
-      Override the predefined strategy's test-generation model.
+  --setup-family {claude-code,pi,codex,opencode}
+      Select the setup agent family (adapter/protocol).
+  --setup-provider PROVIDER
+      Select the provider for a pi or opencode setup agent. Ignored by codex and
+      claude-code, which authenticate their own provider.
+  --setup-model MODEL
+      Select its backend-specific model. Setup and analysis are independent:
+      an unset setup option takes the shared default, never the analysis
+      setting.
+  --agent-family FAMILY
+      Backward-compatible alias for --analysis-family. The test-generation
+      backend, model, and provider come from the selected strategy.
+  --test-agent-alias COMMAND
+      Use a machine-local executable name for the test agent without changing
+      the backend, model, or provider selected by its strategy.
   --user-requested-only
       Fetch only user-requested issue queue items by excluding configured
       automation and maintainer issue authors. Defaults to
@@ -173,14 +191,19 @@ Environment:
   FORGE_REVIEW_LABEL
       Review only PRs with this label. If unset, each generated PR label is
       reviewed every cycle.
-  FORGE_ANALYSIS_AGENT, FORGE_ANALYSIS_FAMILY, FORGE_ANALYSIS_MODEL
+  FORGE_ANALYSIS_AGENT, FORGE_ANALYSIS_FAMILY, FORGE_ANALYSIS_MODEL,
+  FORGE_ANALYSIS_PROVIDER
       Configure offline analysis, recovery, style-fix, and review work.
       Codex defaults to gpt-5.6-luna/high (xhigh for review); Claude Code
       defaults to sonnet.
+  FORGE_SETUP_AGENT, FORGE_SETUP_FAMILY, FORGE_SETUP_MODEL,
+  FORGE_SETUP_PROVIDER
+      Configure artifact-URL discovery and library preparation preflight,
+      independently of the analysis role.
   FORGE_AGENT_FAMILY
-      Backward-compatible common family fallback selected by --agent-family.
-  FORGE_TEST_AGENT, FORGE_TEST_FAMILY, FORGE_TEST_MODEL
-      Override the selected strategy's test-generation backend and model.
+      Backward-compatible analysis family fallback selected by --agent-family.
+  FORGE_TEST_AGENT_ALIAS
+      Machine-local executable name for the strategy-selected test agent.
   FORGE_FAIL_FAST
       Set to 1 to exit nonzero on the first unsuccessful work cycle.
   FORGE_USER_REQUESTED_ISSUES_ONLY
@@ -449,6 +472,7 @@ export_work_configuration() {
     export FORGE_ANALYSIS_AGENT="$ANALYSIS_AGENT"
     export FORGE_ANALYSIS_FAMILY="$ANALYSIS_FAMILY"
     export FORGE_ANALYSIS_MODEL="$ANALYSIS_MODEL"
+    export FORGE_ANALYSIS_PROVIDER="$ANALYSIS_PROVIDER"
     export FORGE_FAIL_FAST="$FAIL_FAST"
     export FORGE_USER_REQUESTED_ISSUES_ONLY="$USER_REQUESTED_ONLY"
     export FORGE_GRAALVM_VERSION_CHECK="$GRAALVM_VERSION_CHECK"
@@ -459,21 +483,35 @@ export_work_configuration() {
         unset FORGE_AGENT_FAMILY
     fi
 
-    if [[ -n "$TEST_FAMILY" ]]; then
-        export FORGE_TEST_FAMILY="$TEST_FAMILY"
+    # Exported only when configured, so an unset option takes the shared
+    # default rather than a stale value from a previous cycle.
+    if [[ -n "$SETUP_AGENT" ]]; then
+        export FORGE_SETUP_AGENT="$SETUP_AGENT"
     else
-        unset FORGE_TEST_FAMILY
+        unset FORGE_SETUP_AGENT
     fi
-    if [[ -n "$TEST_AGENT" ]]; then
-        export FORGE_TEST_AGENT="$TEST_AGENT"
+    if [[ -n "$SETUP_FAMILY" ]]; then
+        export FORGE_SETUP_FAMILY="$SETUP_FAMILY"
     else
-        unset FORGE_TEST_AGENT
+        unset FORGE_SETUP_FAMILY
     fi
-    if [[ -n "$TEST_MODEL" ]]; then
-        export FORGE_TEST_MODEL="$TEST_MODEL"
+    if [[ -n "$SETUP_MODEL" ]]; then
+        export FORGE_SETUP_MODEL="$SETUP_MODEL"
     else
-        unset FORGE_TEST_MODEL
+        unset FORGE_SETUP_MODEL
     fi
+    if [[ -n "$SETUP_PROVIDER" ]]; then
+        export FORGE_SETUP_PROVIDER="$SETUP_PROVIDER"
+    else
+        unset FORGE_SETUP_PROVIDER
+    fi
+
+    if [[ -n "$TEST_AGENT_ALIAS" ]]; then
+        export FORGE_TEST_AGENT_ALIAS="$TEST_AGENT_ALIAS"
+    else
+        unset FORGE_TEST_AGENT_ALIAS
+    fi
+
 
     if [[ -n "$REVIEW_MODEL" ]]; then
         export FORGE_REVIEW_MODEL="$REVIEW_MODEL"
@@ -510,6 +548,7 @@ run_host_requirements() {
         --analysis-agent "$ANALYSIS_AGENT"
         --analysis-family "$ANALYSIS_FAMILY"
         --analysis-model "$ANALYSIS_MODEL"
+        --analysis-provider "$ANALYSIS_PROVIDER"
         --graalvm-version-check "$GRAALVM_VERSION_CHECK"
     )
 
@@ -526,14 +565,17 @@ run_host_requirements() {
     if [[ -n "$AGENT_FAMILY" ]]; then
         host_requirements_args+=(--agent-family "$AGENT_FAMILY")
     fi
-    if [[ -n "$TEST_AGENT" ]]; then
-        host_requirements_args+=(--test-agent "$TEST_AGENT")
+    if [[ -n "$SETUP_AGENT" ]]; then
+        host_requirements_args+=(--setup-agent "$SETUP_AGENT")
     fi
-    if [[ -n "$TEST_FAMILY" ]]; then
-        host_requirements_args+=(--test-family "$TEST_FAMILY")
+    if [[ -n "$SETUP_FAMILY" ]]; then
+        host_requirements_args+=(--setup-family "$SETUP_FAMILY")
     fi
-    if [[ -n "$TEST_MODEL" ]]; then
-        host_requirements_args+=(--test-model "$TEST_MODEL")
+    if [[ -n "$SETUP_MODEL" ]]; then
+        host_requirements_args+=(--setup-model "$SETUP_MODEL")
+    fi
+    if [[ -n "$SETUP_PROVIDER" ]]; then
+        host_requirements_args+=(--setup-provider "$SETUP_PROVIDER")
     fi
     if (( WORK_LIMIT > 0 )); then
         host_requirements_args+=(--test-strategy "$WORK_STRATEGY_NAME")
@@ -715,6 +757,15 @@ while [[ "$#" -gt 0 ]]; do
             require_option_value "--analysis-family" "$ANALYSIS_FAMILY"
             shift
             ;;
+        --analysis-provider)
+            [[ $# -ge 2 ]] || { echo "--analysis-provider requires a value" >&2; exit 2; }
+            ANALYSIS_PROVIDER="$2"
+            shift 2
+            ;;
+        --analysis-provider=*)
+            ANALYSIS_PROVIDER="${1#*=}"
+            shift
+            ;;
         --analysis-model)
             require_option_value "$1" "${2:-}"
             ANALYSIS_MODEL="$2"
@@ -724,50 +775,70 @@ while [[ "$#" -gt 0 ]]; do
             ANALYSIS_MODEL="${1#*=}"
             shift
             ;;
+        --setup-agent)
+            require_option_value "$1" "${2:-}"
+            SETUP_AGENT="$2"
+            shift 2
+            ;;
+        --setup-agent=*)
+            SETUP_AGENT="${1#*=}"
+            require_option_value "--setup-agent" "$SETUP_AGENT"
+            shift
+            ;;
+        --setup-family|--setup-agent-family)
+            require_option_value "$1" "${2:-}"
+            SETUP_FAMILY="$2"
+            shift 2
+            ;;
+        --setup-family=*|--setup-agent-family=*)
+            SETUP_FAMILY="${1#*=}"
+            require_option_value "--setup-family" "$SETUP_FAMILY"
+            shift
+            ;;
+        --setup-model)
+            require_option_value "$1" "${2:-}"
+            SETUP_MODEL="$2"
+            shift 2
+            ;;
+        --setup-model=*)
+            SETUP_MODEL="${1#*=}"
+            require_option_value "--setup-model" "$SETUP_MODEL"
+            shift
+            ;;
+        --setup-provider)
+            require_option_value "$1" "${2:-}"
+            SETUP_PROVIDER="$2"
+            shift 2
+            ;;
+        --setup-provider=*)
+            SETUP_PROVIDER="${1#*=}"
+            require_option_value "--setup-provider" "$SETUP_PROVIDER"
+            shift
+            ;;
         --agent-family)
             require_option_value "$1" "${2:-}"
             AGENT_FAMILY="$2"
             ANALYSIS_FAMILY="$2"
-            TEST_FAMILY="$2"
             shift 2
             ;;
         --agent-family=*)
             AGENT_FAMILY="${1#*=}"
             require_option_value "--agent-family" "$AGENT_FAMILY"
             ANALYSIS_FAMILY="$AGENT_FAMILY"
-            TEST_FAMILY="$AGENT_FAMILY"
+            shift
+            ;;
+        --test-agent-alias)
+            require_option_value "$1" "${2:-}"
+            TEST_AGENT_ALIAS="$2"
+            shift 2
+            ;;
+        --test-agent-alias=*)
+            TEST_AGENT_ALIAS="${1#*=}"
+            require_option_value "--test-agent-alias" "$TEST_AGENT_ALIAS"
             shift
             ;;
         --fail-fast)
             FAIL_FAST=1
-            shift
-            ;;
-        --test-agent)
-            require_option_value "$1" "${2:-}"
-            TEST_AGENT="$2"
-            shift 2
-            ;;
-        --test-agent=*)
-            TEST_AGENT="${1#*=}"
-            shift
-            ;;
-        --test-family|--test-agent-family)
-            require_option_value "$1" "${2:-}"
-            TEST_FAMILY="$2"
-            shift 2
-            ;;
-        --test-family=*|--test-agent-family=*)
-            TEST_FAMILY="${1#*=}"
-            require_option_value "--test-family" "$TEST_FAMILY"
-            shift
-            ;;
-        --test-model)
-            require_option_value "$1" "${2:-}"
-            TEST_MODEL="$2"
-            shift 2
-            ;;
-        --test-model=*)
-            TEST_MODEL="${1#*=}"
             shift
             ;;
         --user-requested-only)
@@ -876,15 +947,9 @@ if [[ -z "$ANALYSIS_FAMILY" ]]; then
         ANALYSIS_FAMILY="codex"
     fi
 fi
-if [[ -z "$TEST_FAMILY" && -n "$TEST_AGENT" ]]; then
-    TEST_FAMILY="$TEST_AGENT"
-fi
 
 if [[ -z "$ANALYSIS_AGENT" ]]; then
     ANALYSIS_AGENT="$(default_agent_command "$ANALYSIS_FAMILY")"
-fi
-if [[ -z "$TEST_AGENT" && -n "$TEST_FAMILY" ]]; then
-    TEST_AGENT="$(default_agent_command "$TEST_FAMILY")"
 fi
 
 if [[ -z "$ANALYSIS_MODEL" ]]; then
@@ -894,12 +959,6 @@ if [[ -z "$ANALYSIS_MODEL" ]]; then
         *) ANALYSIS_MODEL="gpt-5.6-terra" ;;
     esac
 fi
-if [[ -z "$TEST_MODEL" ]]; then
-    case "$TEST_FAMILY" in
-        codex) TEST_MODEL="gpt-5.6-luna" ;;
-        claude-code) TEST_MODEL="sonnet" ;;
-    esac
-fi
 case "$ANALYSIS_FAMILY" in
     claude-code|pi|codex|opencode) ;;
     *)
@@ -907,13 +966,18 @@ case "$ANALYSIS_FAMILY" in
         exit 1
         ;;
 esac
-if [[ -n "$TEST_FAMILY" ]]; then
-    case "$TEST_FAMILY" in
+if [[ -n "$SETUP_FAMILY" ]]; then
+    case "$SETUP_FAMILY" in
         claude-code|pi|codex|opencode) ;;
         *)
-            echo "--test-family must be claude-code, pi, codex, or opencode." >&2
+            echo "--setup-family must be claude-code, pi, codex, or opencode." >&2
             exit 1
             ;;
+    esac
+fi
+if [[ -z "$SETUP_FAMILY" && -n "$SETUP_AGENT" ]]; then
+    case "$SETUP_AGENT" in
+        claude-code|pi|codex|opencode) SETUP_FAMILY="$SETUP_AGENT" ;;
     esac
 fi
 if [[ -n "$PRIORITY_TIER" \

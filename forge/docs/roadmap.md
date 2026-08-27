@@ -130,9 +130,9 @@ Finalization alone runs four unrelated ladders:
 
 | Step | Ladder today |
 | --- | --- |
-| The three native test lanes | Codex metadata fix, rerun, then Pi deleting the failing tests, rerun — once per lane |
-| `checkMetadataFiles` | an `allowed-packages` auto-append loop up to three times, then up to three Codex attempts |
-| Style fix and checks | up to three Pi checkstyle attempts, each re-running `./gradlew test` and invoking a second Pi recovery inside the attempt |
+| The three native test lanes | analysis-agent metadata fix, rerun, then the test agent deleting the failing tests, rerun — once per lane |
+| `checkMetadataFiles` | an `allowed-packages` auto-append loop up to three times, then up to three analysis-agent attempts |
+| Style fix and checks | up to three test-agent checkstyle attempts, each re-running `./gradlew test` and invoking a second recovery inside the attempt |
 | `splitTestOnlyMetadata` and its legacy test-config rejection, `generateLibraryStats`, the commit | no repair at all — the run fails outright |
 
 What replaces them is one fixer, invoked on the terms `agent_fix()` already sets

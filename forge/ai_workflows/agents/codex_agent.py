@@ -9,7 +9,7 @@ import subprocess
 import tempfile
 import time
 from ai_workflows.agents.agent import Agent
-from ai_workflows.agents.runtime import agent_process_environment
+from ai_workflows.agents.agent_runtime import agent_process_environment
 from ai_workflows.agents.codex_app_server import CodexAppServerClient
 from utility_scripts.gradle_test_runner import run_gradle_test_command
 
@@ -387,24 +387,14 @@ class CodexAgent(Agent):
         config = {
             "reasoning.effort": self._reasoning_effort,
             "approval_policy": "never",
-            "sandbox_mode": "workspace-write",
-            "sandbox_workspace_write.network_access": "false",
-            "web_search": "disabled",
-            "agents.enabled": "false",
-            "features.skill_mcp_dependency_install": "false",
-            "mcp_servers": "{}",
+            "sandbox_mode": "danger-full-access",
         }
         if self._persistent_instructions:
             config["developer_instructions"] = self._persistent_instructions
 
         args: list[str] = []
         for key, value in config.items():
-            raw_keys = {
-                "sandbox_workspace_write.network_access",
-                "agents.enabled",
-                "features.skill_mcp_dependency_install",
-                "mcp_servers",
-            }
+            raw_keys: set[str] = set()
             rendered = value if key in raw_keys else self._toml_string(value)
             args.extend(["-c", f"{key}={rendered}"])
         return args

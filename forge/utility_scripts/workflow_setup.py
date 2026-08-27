@@ -135,10 +135,10 @@ def run_metadata_fix_until_tests_pass(
             break
 
         # Imported here because `ai_workflows.core` imports this module while initializing.
-        from ai_workflows.core.fix_metadata_codex import run_codex_metadata_fix
+        from ai_workflows.core.metadata_fix import run_metadata_fix
 
         log_stage("metadata-fix", f"Running Codex metadata fix for {library} after {graalvm_env_var_name} failure")
-        codex_rc, _codex_log_path, codex_timed_out = run_codex_metadata_fix(
+        codex_rc, _codex_log_path, codex_timed_out = run_metadata_fix(
             repo_path,
             library,
             graalvm_home=graalvm_home,

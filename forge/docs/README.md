@@ -42,7 +42,7 @@ whether a document describes structure or behavior.
 - [functional-spec/functional-spec.md](functional-spec/functional-spec.md) — `FS-forge-functional-spec`: top-level functional spec and the workflow-spec catalog.
 - [functional-spec/continuation.md](functional-spec/continuation.md) — `FS-forge-run-continuation`: resuming a failed run at the phase that failed, and the continuation marker contract.
 - [architecture/architecture.md](architecture/architecture.md) — `AR-forge-architecture`: control plane, workflow boundaries, and extension points.
-- [architecture/agent.md](architecture/agent.md) — `AR-agent-api`: the agent API and its Pi implementation.
+- [architecture/agent.md](architecture/agent.md) — `AR-agent-api`: the agent API and its backend adapters.
 - [architecture/do-work.md](architecture/do-work.md) — `AR-do-work-loop`: the long-running worker loop.
 - [architecture/orchestration-scripts.md](architecture/orchestration-scripts.md) — `AR-forge-orchestration`.
 - [architecture/git-scripts.md](architecture/git-scripts.md) — `AR-forge-publication`: PR eligibility, body, issue linking, and publication.

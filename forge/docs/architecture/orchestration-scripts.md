@@ -201,7 +201,7 @@ Each selected PR is reviewed in a throwaway detached worktree created from a
 freshly fetched base ref, with the PR checked out in detached HEAD.
 Orchestration fetches the complete PR snapshot, patch, discussion, checks, and
 label-specific checked-in rules into a local context file. The selected analysis
-agent reads that file offline and returns only a structured approval or
+agent reads that file and returns only a structured approval or
 requested-changes decision. Forge validates and submits the review through its
 own authenticated `gh` process. The agent must not write files or re-checkout.
 The run is logged durably

@@ -259,8 +259,8 @@ flowchart TD
     Seed[Gradle seed task] --> Ok{task passed?}
     Ok -- no --> Gen{metadata file generated?}
     Gen -- no --> Fail[fail: no reliable base to repair]
-    Gen -- yes --> Codex[Codex metadata repair<br/>same GraalVM as the failed run]
-    Codex --> Retest{coordinate test passes?}
+    Gen -- yes --> Fix[analysis-agent metadata repair<br/>same GraalVM as the failed run]
+    Fix --> Retest{coordinate test passes?}
     Retest -- no --> Fail
     Retest -- yes --> URLs
     Ok -- yes --> URLs[Populate artifact URLs]
@@ -298,9 +298,16 @@ staging only artifact-scoped paths would drop them, and the next checkpoint rese
 would delete them. Test sources and stats stay scoped to the target coordinate.
 
 Per-coordinate finalization repairs missing allowed-packages deterministically.
-If metadata validation still fails, Forge runs up to three Codex metadata fix and
-validation attempts before failing the run, each bounded to twenty minutes, with
-the combined output written to a printed coordinate-scoped log
+If metadata validation still fails, Forge gives its command and captured output
+to the analysis agent up to three times, rerunning validation after each repair
+and letting each deterministic result decide whether another attempt is needed.
+Native lanes receive one evidence-driven repair. Checkstyle retains its
+three-attempt repair loop and its test-after-Checkstyle recovery, using the same
+centralized analysis configuration. The agent diagnoses the supplied evidence
+instead of entering a fixed sequence of metadata repair followed by test
+deletion. Other finalization steps are terminal deterministic production or
+policy boundaries and do not invoke an agent. Agent output is written to a
+printed coordinate-scoped log
 (§FS-durable-generation-logs).
 
 Run metrics flow through the shared writer: it appends the run entry to the

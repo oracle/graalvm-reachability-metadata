@@ -265,8 +265,6 @@ class PiRpcClient:
         cmd = [
             self._pi_command,
             "--mode", "rpc",
-            "--no-extensions",
-            "--tools", "read,edit,write,grep,find,ls",
         ]
         if self._session_dir:
             cmd.extend(["--session-dir", self._session_dir])

@@ -9,35 +9,36 @@ import os
 import subprocess
 
 from ai_workflows.agents.agent import Agent
-from ai_workflows.agents.runtime import agent_process_environment
+from ai_workflows.agents.agent_runtime import agent_process_environment
 from utility_scripts.gradle_test_runner import run_gradle_test_command
 
 
-OFFLINE_OPENCODE_CONFIG = {
+OPENCODE_CONFIG = {
     "autoupdate": False,
     "share": "disabled",
-    "permission": {
-        "*": "deny",
-        "read": "allow",
-        "edit": "allow",
-        "glob": "allow",
-        "grep": "allow",
-        "list": "allow",
-        "lsp": "allow",
-        "bash": "deny",
-        "task": "deny",
-        "external_directory": "deny",
-        "webfetch": "deny",
-        "websearch": "deny",
-        "skill": "deny",
-        "question": "deny",
-    },
 }
+
+
+def opencode_config(qualified_model: str, thinking_level: str | None = None) -> dict:
+    """Return the injected OpenCode config for one selection.
+
+    OpenCode takes reasoning effort as model configuration rather than a flag,
+    keyed by the provider and model it applies to, so a qualified model is
+    required to place it.
+    """
+    config = dict(OPENCODE_CONFIG)
+    if not thinking_level or "/" not in qualified_model:
+        return config
+    provider, model = qualified_model.split("/", 1)
+    config["provider"] = {
+        provider: {"models": {model: {"options": {"reasoningEffort": thinking_level}}}}
+    }
+    return config
 
 
 @Agent.register("opencode")
 class OpenCodeAgent(Agent):
-    """Drive OpenCode with an inline deny-by-default tool policy."""
+    """Drive OpenCode with its default tool set."""
 
     def __init__(
             self,
@@ -49,9 +50,18 @@ class OpenCodeAgent(Agent):
             persistent_instructions: str | None = None,
             environment: dict[str, str] | None = None,
             agent_name: str | None = None,
+            provider: str | None = None,
+            thinking_level: str | None = None,
             **_,
     ):
         self._model_name = model_name
+        self._thinking_level = thinking_level
+        # OpenCode addresses a model as `provider/model`, so the provider is
+        # carried in the model argument rather than a flag of its own.
+        self._provider = provider
+        self._qualified_model = (
+            model_name if not provider or "/" in model_name else f"{provider}/{model_name}"
+        )
         self._working_dir = os.path.abspath(working_dir)
         self._timeout = timeout
         self._task_type = task_type
@@ -59,7 +69,9 @@ class OpenCodeAgent(Agent):
         self._persistent_instructions = persistent_instructions
         self._opencode_command = agent_name or "opencode"
         self._environment = agent_process_environment(environment)
-        self._environment["OPENCODE_CONFIG_CONTENT"] = json.dumps(OFFLINE_OPENCODE_CONFIG)
+        self._environment["OPENCODE_CONFIG_CONTENT"] = json.dumps(
+            opencode_config(self._qualified_model, thinking_level)
+        )
         self._session_id: str | None = None
         self._total_tokens_sent = 0
         self._total_tokens_received = 0
@@ -88,7 +100,7 @@ class OpenCodeAgent(Agent):
             effective_prompt = f"{self._persistent_instructions}\n\n{prompt}"
         command = [
             self._opencode_command, "run", "--format", "json", "--auto",
-            "--model", self._model_name,
+            "--model", self._qualified_model,
         ]
         if self._session_id:
             command.extend(["--session", self._session_id])
@@ -140,6 +152,8 @@ class OpenCodeAgent(Agent):
     def _clone(self) -> "OpenCodeAgent":
         return OpenCodeAgent(
             model_name=self._model_name,
+            provider=self._provider,
+            thinking_level=self._thinking_level,
             working_dir=self._working_dir,
             timeout=self._timeout,
             task_type=self._task_type,

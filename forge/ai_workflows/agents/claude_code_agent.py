@@ -10,7 +10,7 @@ import subprocess
 import uuid
 
 from ai_workflows.agents.agent import Agent
-from ai_workflows.agents.runtime import agent_process_environment
+from ai_workflows.agents.agent_runtime import agent_process_environment
 from utility_scripts.gradle_test_runner import run_gradle_test_command
 
 
@@ -28,9 +28,11 @@ class ClaudeCodeAgent(Agent):
             persistent_instructions: str | None = None,
             environment: dict[str, str] | None = None,
             agent_name: str | None = None,
+            thinking_level: str | None = None,
             **_,
     ):
         self._model_name = model_name
+        self._thinking_level = thinking_level
         self._working_dir = os.path.abspath(working_dir)
         self._timeout = timeout
         self._task_type = task_type
@@ -90,18 +92,14 @@ class ClaudeCodeAgent(Agent):
         return response
 
     def _build_command(self, prompt: str, fork: bool = False) -> list[str]:
-        repository_tools = "Read,Edit,Write,Glob,Grep"
         command = [
             self._claude_command, "-p", prompt,
             "--output-format", "json",
-            "--safe-mode",
-            "--strict-mcp-config",
-            "--mcp-config", "{}",
             "--permission-mode", "dontAsk",
-            "--tools", repository_tools,
-            "--allowedTools", repository_tools,
             "--model", self._model_name,
         ]
+        if self._thinking_level:
+            command.extend(["--effort", self._thinking_level])
         if self._persistent_instructions:
             command.extend(["--append-system-prompt", self._persistent_instructions])
         if self._session_id:

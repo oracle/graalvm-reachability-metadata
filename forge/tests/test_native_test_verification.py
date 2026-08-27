@@ -21,7 +21,7 @@ import tempfile
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 # Tests run from the forge/ directory in CI; make the package imports work
 # whether the test is invoked via pytest or `python -m unittest`.
@@ -110,6 +110,61 @@ class FailureLogTailTests(unittest.TestCase):
         self.assertNotIn("line-49", excerpt)
         self.assertIn("line-50", excerpt)
         self.assertIn("line-349", excerpt)
+
+
+class NativeTestFixPromptTests(unittest.TestCase):
+
+    def test_preserves_the_original_reproduce_and_verify_prompt(self) -> None:
+        prompt = ntv._build_native_test_fix_prompt(
+            coordinates="g:a:1.0",
+            reproduction_command="./gradlew reproduce",
+            graalvm_home="/graalvm",
+            failure_log_path=None,
+        )
+
+        self.assertEqual(
+            prompt,
+            "\n".join([
+                "Reproduce the failure first and read the FULL stack trace, including every `Caused by:`",
+                "line, to find the real cause before changing anything.",
+                "- If the cause is missing or inactive-condition for metadata, fix that condition.",
+                "- If the cause is native-image-unsupported behavior (dynamic class loading, runtime bytecode",
+                "  or class definition, runtime lambda definition, URL/plugin/OSGi class-loader assumptions,",
+                "  or a class reachable only through a custom class loader), Remove the",
+                "  generated test that exercises it, or rewrite it to a native-compatible public-API path that",
+                "  still validates metadata.",
+                "Re-run the reproduce command after each change and keep running until the test passes.",
+                "Do not use any skill for this.",
+                "",
+                "Use this exact GraalVM for every command; do not switch to another that appears on PATH:",
+                "- GRAALVM_HOME=/graalvm",
+                "- JAVA_HOME=/graalvm",
+                "",
+                "Reproduce with:",
+                "./gradlew reproduce",
+            ]),
+        )
+
+    def test_runs_the_central_analysis_agent_without_overrides(self) -> None:
+        environment = {"FORGE_ANALYSIS_AGENT": "pi"}
+        agent_result = Mock(return_code=0, log_path="/tmp/analysis.log", timed_out=False)
+
+        with patch(
+                "utility_scripts.native_test_verification.analysis_agent_run",
+                return_value=agent_result,
+        ) as analysis_run:
+            result = ntv.run_native_test_fix(
+                repo_path="/repo",
+                coordinates="g:a:1.0",
+                reproduction_command="./gradlew reproduce",
+                env=environment,
+            )
+
+        self.assertEqual(result, (0, "/tmp/analysis.log", False))
+        call_kwargs = analysis_run.call_args.kwargs
+        self.assertEqual(call_kwargs["environment"], environment)
+        self.assertNotIn("model", call_kwargs)
+        self.assertNotIn("selection", call_kwargs)
 
 
 class ClassKeyTests(unittest.TestCase):
@@ -438,8 +493,6 @@ class GateRoutingTests(unittest.TestCase):
             test_failed_task: str | None = "nativeTest",
             finalized_test_rc: int = 0,
             finalized_test_failed_task: str | None = None,
-            repaired_test_rc: int = 0,
-            repaired_trace_rc: int = 0,
     ):
         """Build a subprocess.run replacement that consumes ``scripted_exits``.
 
@@ -452,7 +505,6 @@ class GateRoutingTests(unittest.TestCase):
         """
         calls: list[list[str]] = []
         remaining = list(scripted_exits)
-        test_call_counts = {"staged": 0, "finalized": 0}
         metadata_exit_codes = {172} if metadata_exit_codes is None else metadata_exit_codes
 
         def _fake(cmd, **kwargs):  # type: ignore[no-untyped-def]
@@ -478,12 +530,9 @@ class GateRoutingTests(unittest.TestCase):
                     arg.startswith("-PmetadataConfigDirs=")
                     for arg in cmd
                 )
-                test_kind = "staged" if uses_staged_metadata else "finalized"
-                initial_rc = test_rc if uses_staged_metadata else finalized_test_rc
-                rc = initial_rc if test_call_counts[test_kind] == 0 else repaired_test_rc
-                test_call_counts[test_kind] += 1
+                rc = test_rc if uses_staged_metadata else finalized_test_rc
                 failed_task = test_failed_task if uses_staged_metadata else finalized_test_failed_task
-                if hasattr(stdout, "write") and failed_task is not None and rc != 0:
+                if hasattr(stdout, "write") and failed_task is not None:
                     stdout.write(f"> Task :{failed_task} FAILED\n")
                 return subprocess.CompletedProcess(cmd, rc)
             if "runNativeTraceImage" in cmd:
@@ -495,7 +544,7 @@ class GateRoutingTests(unittest.TestCase):
                     (a.split("=", 1)[1] for a in cmd if a.startswith("-PtraceMetadataPath=")),
                     None,
                 )
-                rc = remaining.pop(0) if remaining else repaired_trace_rc
+                rc = remaining.pop(0)
                 if exit_file:
                     Path(exit_file).parent.mkdir(parents=True, exist_ok=True)
                     Path(exit_file).write_text(str(rc), encoding="utf-8")
@@ -588,7 +637,7 @@ class GateRoutingTests(unittest.TestCase):
             finalized_test_failed_task="nativeTest",
         )
         with patch("utility_scripts.native_test_verification.subprocess.run", side_effect=fake), patch(
-            "utility_scripts.native_test_verification.run_codex_native_test_fix",
+            "utility_scripts.native_test_verification.run_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ) as codex_mock:
             result = ntv.verify_native_test_passes(
@@ -603,7 +652,7 @@ class GateRoutingTests(unittest.TestCase):
         reproduction_command = codex_mock.call_args.kwargs["reproduction_command"]
         self.assertEqual(reproduction_command, "./gradlew test -Pcoordinates=g:a:1.0")
         test_calls = [call for call in calls if "test" in call]
-        self.assertEqual(len(test_calls), 3)
+        self.assertEqual(len(test_calls), 2)
         self.assertFalse(any("runNativeTraceImage" in call for call in calls))
 
     def test_continues_on_172_until_pass(self) -> None:
@@ -677,7 +726,7 @@ class GateRoutingTests(unittest.TestCase):
                 "utility_scripts.native_test_verification.subprocess.run",
                 side_effect=fake,
         ), patch(
-            "utility_scripts.native_test_verification.run_codex_native_test_fix",
+            "utility_scripts.native_test_verification.run_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ), redirect_stdout(output):
             result = ntv.verify_native_test_passes(
@@ -803,7 +852,7 @@ class GateRoutingTests(unittest.TestCase):
             "utility_scripts.native_test_verification.subprocess.run",
             side_effect=merge_fails,
         ), patch(
-            "utility_scripts.native_test_verification.run_codex_native_test_fix",
+            "utility_scripts.native_test_verification.run_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ) as codex_mock:
             result = ntv.verify_native_test_passes(
@@ -832,7 +881,7 @@ class GateRoutingTests(unittest.TestCase):
             "utility_scripts.native_test_verification.subprocess.run",
             side_effect=fake,
         ), patch(
-            "utility_scripts.native_test_verification.run_codex_native_test_fix",
+            "utility_scripts.native_test_verification.run_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ) as codex_mock:
             result = ntv.verify_native_test_passes(
@@ -878,7 +927,7 @@ class GateRoutingTests(unittest.TestCase):
             "utility_scripts.native_test_verification.subprocess.run",
             side_effect=fake,
         ), patch(
-            "utility_scripts.native_test_verification.run_codex_native_test_fix",
+            "utility_scripts.native_test_verification.run_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ), redirect_stdout(output):
             result = ntv.verify_native_test_passes(
@@ -893,11 +942,8 @@ class GateRoutingTests(unittest.TestCase):
         self.assertIn("produced no usable trace metadata", printed)
         self.assertIn("com.example.MissingThingException: boom", printed)
 
-    def test_fails_when_repair_leaves_durable_coordinate_test_broken(self) -> None:
-        trace_call_count = 0
-
+    def test_routes_to_codex_when_172_produces_empty_metadata_json(self) -> None:
         def _fake_run(cmd, **kwargs):  # type: ignore[no-untyped-def]
-            nonlocal trace_call_count
             stdout = kwargs.get("stdout")
             if hasattr(stdout, "write"):
                 stdout.write(
@@ -911,7 +957,6 @@ class GateRoutingTests(unittest.TestCase):
                     stdout.write("> Task :nativeTest FAILED\n")
                 return subprocess.CompletedProcess(cmd, 1)
             if "runNativeTraceImage" in cmd:
-                trace_call_count += 1
                 exit_file = next(
                     (a.split("=", 1)[1] for a in cmd if a.startswith("-PtraceBinaryExitFile=")),
                     None,
@@ -922,8 +967,7 @@ class GateRoutingTests(unittest.TestCase):
                 )
                 if exit_file:
                     Path(exit_file).parent.mkdir(parents=True, exist_ok=True)
-                    exit_code = ntv.MISSING_METADATA_EXIT_CODE if trace_call_count == 1 else 0
-                    Path(exit_file).write_text(str(exit_code), encoding="utf-8")
+                    Path(exit_file).write_text(str(ntv.MISSING_METADATA_EXIT_CODE), encoding="utf-8")
                 if run_dir:
                     Path(run_dir).mkdir(parents=True, exist_ok=True)
                     Path(run_dir, "reachability-metadata.json").write_text("{}", encoding="utf-8")
@@ -935,7 +979,7 @@ class GateRoutingTests(unittest.TestCase):
             "utility_scripts.native_test_verification.subprocess.run",
             side_effect=_fake_run,
         ), patch(
-            "utility_scripts.native_test_verification.run_codex_native_test_fix",
+            "utility_scripts.native_test_verification.run_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ), redirect_stdout(output):
             result = ntv.verify_native_test_passes(
@@ -944,7 +988,7 @@ class GateRoutingTests(unittest.TestCase):
                 output_dir=self.output_dir,
                 max_iterations=5,
             )
-        self.assertEqual(result.status, ntv.STATUS_FAILED)
+        self.assertEqual(result.status, ntv.STATUS_PASSED_WITH_INTERVENTION)
         self.assertEqual(result.iterations_used, 1)
         printed = output.getvalue()
         self.assertIn("reachability-metadata.json:", printed)
@@ -958,7 +1002,7 @@ class GateRoutingTests(unittest.TestCase):
     def test_routes_to_codex_when_budget_exhausted_with_only_172(self) -> None:
         fake, _calls = self._fake_run_factory([172, 172])
         with patch("utility_scripts.native_test_verification.subprocess.run", side_effect=fake), patch(
-            "utility_scripts.native_test_verification.run_codex_native_test_fix",
+            "utility_scripts.native_test_verification.run_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ) as codex_mock:
             result = ntv.verify_native_test_passes(
@@ -969,7 +1013,7 @@ class GateRoutingTests(unittest.TestCase):
             )
         self.assertEqual(result.status, ntv.STATUS_PASSED_WITH_INTERVENTION)
         self.assertEqual(result.iterations_used, 2)
-        self.assertEqual(result.last_native_test_exit_code, 0)
+        self.assertEqual(result.last_native_test_exit_code, ntv.MISSING_METADATA_EXIT_CODE)
         self.assertEqual(len(result.intervention_records), 1)
         reproduction_command = codex_mock.call_args.kwargs["reproduction_command"]
         trace_path = _command_property(reproduction_command, "-PtraceMetadataPath")
@@ -988,7 +1032,7 @@ class GateRoutingTests(unittest.TestCase):
         )
         output = io.StringIO()
         with patch("utility_scripts.native_test_verification.subprocess.run", side_effect=fake), patch(
-            "utility_scripts.native_test_verification.run_codex_native_test_fix",
+            "utility_scripts.native_test_verification.run_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ) as codex_mock, redirect_stdout(output):
             result = ntv.verify_native_test_passes(
@@ -1014,7 +1058,7 @@ class GateRoutingTests(unittest.TestCase):
     def test_routes_to_codex_after_native_trace_failure_when_generate_metadata_fails(self) -> None:
         fake, calls = self._fake_run_factory([1], generate_metadata_rc=1)
         with patch("utility_scripts.native_test_verification.subprocess.run", side_effect=fake), patch(
-            "utility_scripts.native_test_verification.run_codex_native_test_fix",
+            "utility_scripts.native_test_verification.run_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ) as codex_mock:
             result = ntv.verify_native_test_passes(
@@ -1030,7 +1074,7 @@ class GateRoutingTests(unittest.TestCase):
     def test_routes_to_codex_when_test_fails_before_native_test(self) -> None:
         fake, calls = self._fake_run_factory([], test_rc=1, test_failed_task="compileTestJava")
         with patch("utility_scripts.native_test_verification.subprocess.run", side_effect=fake), patch(
-            "utility_scripts.native_test_verification.run_codex_native_test_fix",
+            "utility_scripts.native_test_verification.run_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ) as codex_mock:
             result = ntv.verify_native_test_passes(
@@ -1042,29 +1086,16 @@ class GateRoutingTests(unittest.TestCase):
         self.assertEqual(result.status, ntv.STATUS_PASSED_WITH_INTERVENTION)
         codex_mock.assert_called_once()
         self.assertFalse(any("runNativeTraceImage" in c for c in calls))
-        test_calls = [call for call in calls if "test" in call]
-        self.assertEqual(len(test_calls), 3)
-        self.assertTrue(any(arg.startswith("-PmetadataConfigDirs=") for arg in test_calls[1]))
-        self.assertFalse(any(arg.startswith("-PmetadataConfigDirs=") for arg in test_calls[2]))
-        durable_metadata_path = Path(
-            self.repo,
-            "metadata",
-            "g",
-            "a",
-            "1.0",
-            "reachability-metadata.json",
-        )
-        self.assertTrue(durable_metadata_path.is_file())
 
-    def test_routes_to_codex_on_non_172_failure(self) -> None:
-        fake, _calls = self._fake_run_factory([1])
+    def test_analysis_agent_success_is_terminal_without_gate_rerun(self) -> None:
+        fake, calls = self._fake_run_factory([1])
         with patch(
                 "utility_scripts.native_test_verification.subprocess.run",
                 side_effect=fake,
         ), patch(
-            "utility_scripts.native_test_verification.run_codex_native_test_fix",
+            "utility_scripts.native_test_verification.run_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
-        ) as codex_mock:
+        ) as analysis_mock:
             result = ntv.verify_native_test_passes(
                 reachability_repo_path=self.repo,
                 coordinate="g:a:1.0",
@@ -1072,37 +1103,11 @@ class GateRoutingTests(unittest.TestCase):
                 max_iterations=5,
             )
         self.assertEqual(result.status, ntv.STATUS_PASSED_WITH_INTERVENTION)
-        codex_mock.assert_called_once()
+        analysis_mock.assert_called_once()
+        self.assertEqual(result.last_native_test_exit_code, 1)
+        self.assertEqual(len([call for call in calls if "runNativeTraceImage" in call]), 1)
         self.assertEqual(len(result.intervention_records), 1)
         self.assertEqual(result.intervention_records[0].kind, "codex")
-
-    def test_repair_fails_when_only_transient_staged_metadata_passes(self) -> None:
-        fake, calls = self._fake_run_factory(
-            [],
-            test_rc=1,
-            test_failed_task="compileTestJava",
-            repaired_test_rc=0,
-            finalized_test_rc=1,
-            finalized_test_failed_task="nativeTest",
-        )
-        with patch(
-                "utility_scripts.native_test_verification.subprocess.run",
-                side_effect=fake,
-        ), patch(
-            "utility_scripts.native_test_verification.run_codex_native_test_fix",
-            return_value=(0, "/tmp/codex.log", False),
-        ):
-            result = ntv.verify_native_test_passes(
-                reachability_repo_path=self.repo,
-                coordinate="g:a:1.0",
-                output_dir=self.output_dir,
-                max_iterations=5,
-            )
-
-        self.assertEqual(result.status, ntv.STATUS_FAILED)
-        test_calls = [call for call in calls if "test" in call]
-        self.assertTrue(any(arg.startswith("-PmetadataConfigDirs=") for arg in test_calls[1]))
-        self.assertFalse(any(arg.startswith("-PmetadataConfigDirs=") for arg in test_calls[2]))
 
     def test_routes_to_codex_with_same_graalvm_home_as_gate_commands(self) -> None:
         graalvm_home = tempfile.mkdtemp(prefix="gate-graalvm-")
@@ -1114,7 +1119,7 @@ class GateRoutingTests(unittest.TestCase):
                 "utility_scripts.native_test_verification.subprocess.run",
                 side_effect=fake,
         ), patch(
-            "utility_scripts.native_test_verification.run_codex_native_test_fix",
+            "utility_scripts.native_test_verification.run_native_test_fix",
             return_value=(0, "/tmp/codex.log", False),
         ) as codex_mock:
             result = ntv.verify_native_test_passes(
@@ -1135,7 +1140,7 @@ class GateRoutingTests(unittest.TestCase):
                 "utility_scripts.native_test_verification.subprocess.run",
                 side_effect=fake,
         ), patch(
-            "utility_scripts.native_test_verification.run_codex_native_test_fix",
+            "utility_scripts.native_test_verification.run_native_test_fix",
             return_value=(2, "/tmp/codex.log", False),
         ):
             result = ntv.verify_native_test_passes(
@@ -1145,27 +1150,6 @@ class GateRoutingTests(unittest.TestCase):
                 max_iterations=5,
             )
         self.assertEqual(result.status, ntv.STATUS_FAILED)
-
-    def test_failed_when_analysis_agent_returns_success_but_native_gate_still_fails(self) -> None:
-        fake, calls = self._fake_run_factory([1], repaired_trace_rc=1)
-        with patch(
-                "utility_scripts.native_test_verification.subprocess.run",
-                side_effect=fake,
-        ), patch(
-            "utility_scripts.native_test_verification.run_codex_native_test_fix",
-            return_value=(0, "/tmp/analysis-agent.log", False),
-        ):
-            result = ntv.verify_native_test_passes(
-                reachability_repo_path=self.repo,
-                coordinate="g:a:1.0",
-                output_dir=self.output_dir,
-                max_iterations=5,
-            )
-
-        self.assertEqual(result.status, ntv.STATUS_FAILED)
-        trace_calls = [call for call in calls if "runNativeTraceImage" in call]
-        self.assertEqual(len(trace_calls), 2)
-
 
 def _command_property(command: str, property_name: str) -> str:
     prefix = f"{property_name}="

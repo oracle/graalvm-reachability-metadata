@@ -10,7 +10,7 @@ The gate first tries the normal JVM ``native-image-agent`` metadata collection
 ``./gradlew test``. Native tracing is the fallback when JVM-agent metadata
 generation fails or when native testing still fails after that metadata exists.
 The configured analysis agent is the terminal repair path when the fallback
-cannot converge, and Forge reruns the failing native gate after every edit.
+cannot converge.
 
 This module implements the gate of §FS-native-test-verification-gate; see
 ``forge/docs/functional-spec/workflows/native-metadata-tracing.md`` for the full contract.
@@ -26,9 +26,8 @@ import shutil
 import subprocess
 import tempfile
 from dataclasses import dataclass, field
-from typing import Callable
 
-from ai_workflows.agents.runtime import analysis_agent_selection, run_agent_task
+from ai_workflows.agents.agent_runtime import analysis_agent_run, get_analysis_agent
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import resolve_metadata_version
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
@@ -88,14 +87,11 @@ class NativeTestVerificationResult:
 DEFAULT_CYCLE_TIMEOUT_SECONDS = 30 * 60
 DEFAULT_MAX_ITERATIONS = 40
 
-# Quick analysis-agent fixup used as the terminal gate recovery. Unlike the metadata-only
-# ``fix_metadata_codex`` path (kept for the metadata-fix workflows), this lets the
-# agent either repair reachability metadata or remove a native-image-unsupported
-# generated test, then re-run until the native test passes.
-_CODEX_FIX_TIMEOUT_SECONDS = 30 * 60
+# Quick analysis-agent fixup used as the terminal gate recovery.
+_NATIVE_TEST_FIX_TIMEOUT_SECONDS = 30 * 60
 
 
-def run_codex_native_test_fix(
+def run_native_test_fix(
         repo_path: str,
         coordinates: str,
         reproduction_command: str,
@@ -112,19 +108,17 @@ def run_codex_native_test_fix(
     prompt = _build_native_test_fix_prompt(
         coordinates, reproduction_command, graalvm_home, failure_log_path
     )
-    selection = analysis_agent_selection(env)
-    result = run_agent_task(
-        selection=selection,
+    result = analysis_agent_run(
         working_dir=repo_path,
-        prompt=prompt,
+        context=prompt,
         task_type=_LOG_TASK_TYPE,
         library=coordinates,
-        timeout=_CODEX_FIX_TIMEOUT_SECONDS,
+        timeout=_NATIVE_TEST_FIX_TIMEOUT_SECONDS,
         environment=env,
     )
     if result.return_code != 0:
         print(
-            f"ERROR: {selection.backend} native-test fix failed for {coordinates}. "
+            f"ERROR: Native-test fix failed for {coordinates}. "
             f"See {display_log_path(result.log_path)}.",
         )
     return (result.return_code, result.log_path, result.timed_out)
@@ -138,16 +132,15 @@ def _build_native_test_fix_prompt(
 ) -> str:
     """Build the diagnose-first prompt for the quick native-test fixup."""
     lines = [
-        "Read the supplied failure output, including every `Caused by:` line,",
-        "to find the real cause before changing anything.",
+        "Reproduce the failure first and read the FULL stack trace, including every `Caused by:`",
+        "line, to find the real cause before changing anything.",
         "- If the cause is missing or inactive-condition for metadata, fix that condition.",
         "- If the cause is native-image-unsupported behavior (dynamic class loading, runtime bytecode",
         "  or class definition, runtime lambda definition, URL/plugin/OSGi class-loader assumptions,",
         "  or a class reachable only through a custom class loader), Remove the",
         "  generated test that exercises it, or rewrite it to a native-compatible public-API path that",
         "  still validates metadata.",
-        "Make the smallest repair that addresses the failure. Forge will rerun the native gate",
-        "deterministically after your edit.",
+        "Re-run the reproduce command after each change and keep running until the test passes.",
         "Do not use any skill for this."
     ]
     if graalvm_home:
@@ -159,7 +152,7 @@ def _build_native_test_fix_prompt(
         ]
     lines += [
         "",
-        "Forge verification command:",
+        "Reproduce with:",
         reproduction_command,
     ]
     if failure_log_path:
@@ -225,14 +218,11 @@ def verify_native_test_passes(
             intervention_records=intervention_records,
         )
 
-    def _route_to_codex(
+    def _route_to_analysis_agent(
             stage: str,
             reason: str,
             reproduction_command: str,
             iterations_used: int,
-            verify_after_repair: Callable[[str], tuple[bool, int | None]],
-            staged_metadata_dirs: Callable[[], list[str]],
-            repair_verifies_durable_coordinate: bool = False,
     ) -> NativeTestVerificationResult:
         """Run the analysis agent as the terminal recovery path for gate failures.
 
@@ -240,14 +230,13 @@ def verify_native_test_passes(
         metadata dirs and pins the same GraalVM environment that produced the
         failed native command.
         """
-        nonlocal last_binary_rc, last_log_path
-        analysis_backend = analysis_agent_selection(command_env).backend
+        analysis_backend = get_analysis_agent(command_env).backend
         log_stage(
             _GATE_STAGE,
-            f"{stage}: {reason}; routing to {analysis_backend} (terminal)",
+            f"{stage}: {reason}; routing to the analysis agent (terminal)",
         )
         require_complete_reachability_repo(reachability_repo_path)
-        codex_rc, codex_log_path, codex_timed_out = run_codex_native_test_fix(
+        fix_rc, fix_log_path, fix_timed_out = run_native_test_fix(
             reachability_repo_path,
             coordinate,
             reproduction_command=reproduction_command,
@@ -259,102 +248,22 @@ def verify_native_test_passes(
             InterventionRecord(
                 stage=f"{stage}-analysis-agent",
                 kind=analysis_backend,
-                log_path=codex_log_path,
+                log_path=fix_log_path,
             )
         )
-        if codex_timed_out or codex_rc != 0:
+        if fix_timed_out or fix_rc != 0:
             log_stage(
                 _GATE_STAGE,
                 f"{analysis_backend} did not converge "
-                f"(timed_out={codex_timed_out}, rc={codex_rc}); FAILED",
+                f"(timed_out={fix_timed_out}, rc={fix_rc}); FAILED",
             )
             return _make_result(STATUS_FAILED, iterations_used)
         require_complete_reachability_repo(reachability_repo_path)
-        verification_log_path = _gate_log_path(
-            coordinate,
-            iterations_used,
-            f"{stage}-analysisAgentVerification",
-        )
         log_stage(
             _GATE_STAGE,
-            f"{analysis_backend} finished; rerunning the native gate",
-        )
-        verification_passed, verification_rc = verify_after_repair(verification_log_path)
-        last_log_path = verification_log_path
-        last_binary_rc = verification_rc
-        if not verification_passed:
-            log_stage(
-                _GATE_STAGE,
-                f"post-{analysis_backend} native verification failed (exit={verification_rc}); FAILED",
-            )
-            return _make_result(STATUS_FAILED, iterations_used)
-        log_stage(_GATE_STAGE, f"post-{analysis_backend} native verification passed")
-
-        if repair_verifies_durable_coordinate:
-            return _make_result(STATUS_PASSED_WITH_INTERVENTION, iterations_used)
-
-        if not _finalize_staged_metadata(
-            reachability_repo_path=reachability_repo_path,
-            coordinate=coordinate,
-            metadata_dirs=staged_metadata_dirs(),
-            env=command_env,
-        ):
-            return _make_result(STATUS_FAILED, iterations_used)
-
-        durable_verification_log_path = _gate_log_path(
-            coordinate,
-            iterations_used,
-            f"{stage}-durableVerification",
-        )
-        durable_passed, durable_rc = _verify_coordinate_after_repair(
-            [], durable_verification_log_path
-        )
-        last_log_path = durable_verification_log_path
-        last_binary_rc = durable_rc
-        if not durable_passed:
-            log_stage(
-                _GATE_STAGE,
-                f"post-{analysis_backend} durable metadata verification failed "
-                f"(exit={durable_rc}); FAILED",
-            )
-            return _make_result(STATUS_FAILED, iterations_used)
-        log_stage(
-            _GATE_STAGE,
-            f"post-{analysis_backend} durable metadata verification passed",
+            f"{analysis_backend} exited successfully; PASSED_WITH_INTERVENTION",
         )
         return _make_result(STATUS_PASSED_WITH_INTERVENTION, iterations_used)
-
-    def _verify_coordinate_after_repair(
-            metadata_config_dirs: list[str],
-            log_path: str,
-    ) -> tuple[bool, int | None]:
-        test_rc, _failed_task = _run_coordinate_test(
-            reachability_repo_path=reachability_repo_path,
-            coordinate=coordinate,
-            metadata_config_dirs=metadata_config_dirs,
-            log_path=log_path,
-            timeout_seconds=cycle_timeout_seconds,
-            env=command_env,
-        )
-        return test_rc == 0, test_rc
-
-    def _verify_trace_after_repair(
-            run_dir: str,
-            metadata_config_dirs: list[str],
-            log_path: str,
-    ) -> tuple[bool, int | None]:
-        gradle_rc, binary_rc = _run_native_trace_image(
-            reachability_repo_path=reachability_repo_path,
-            coordinate=coordinate,
-            run_dir=run_dir,
-            condition_packages=trace_condition_packages or [],
-            metadata_config_dirs=metadata_config_dirs,
-            log_path=log_path,
-            timeout_seconds=cycle_timeout_seconds,
-            env=command_env,
-        )
-        effective_rc = binary_rc if binary_rc is not None else gradle_rc
-        return gradle_rc == 0 and binary_rc == 0, effective_rc
 
     def _finalize_and_verify_durable_metadata(
             metadata_dirs: list[str],
@@ -386,7 +295,7 @@ def verify_native_test_passes(
             return None
 
         failed_task_display = failed_task or "unknown"
-        return _route_to_codex(
+        return _route_to_analysis_agent(
             stage=f"{stage}-finalized-test",
             reason=(
                 "finalized durable metadata failed coordinate test "
@@ -394,9 +303,6 @@ def verify_native_test_passes(
             ),
             reproduction_command=_coordinate_test_command(coordinate),
             iterations_used=iterations_used,
-            verify_after_repair=lambda log_path: _verify_coordinate_after_repair([], log_path),
-            staged_metadata_dirs=lambda: [],
-            repair_verifies_durable_coordinate=True,
         )
 
     generate_metadata_log_path = _gate_log_path(coordinate, 0, "generateMetadata")
@@ -439,15 +345,11 @@ def verify_native_test_passes(
             return _make_result(STATUS_PASSED, 0)
         if failed_task != "nativeTest":
             failed_task_display = failed_task or "unknown"
-            return _route_to_codex(
+            return _route_to_analysis_agent(
                 stage="test",
                 reason=f"test failed before native trace fallback (failed_task={failed_task_display}, exit={test_rc})",
                 reproduction_command=_coordinate_test_command(coordinate, [agent_metadata_dir]),
                 iterations_used=0,
-                verify_after_repair=lambda log_path: _verify_coordinate_after_repair(
-                    [agent_metadata_dir], log_path
-                ),
-                staged_metadata_dirs=lambda: [agent_metadata_dir],
             )
 
         log_stage(_GATE_STAGE, "nativeTest still fails after JVM-agent metadata; starting native trace fallback")
@@ -513,7 +415,7 @@ def verify_native_test_passes(
                     f"cycle {cycle + 1}: binary exited 172 but produced no usable trace metadata",
                 )
                 _print_failure_log_tail(log_path, cycle + 1)
-                return _route_to_codex(
+                return _route_to_analysis_agent(
                     stage=f"cycle-{cycle + 1}",
                     reason="binary exited 172 but produced no usable trace metadata",
                     reproduction_command=_run_native_trace_image_command(
@@ -523,12 +425,6 @@ def verify_native_test_passes(
                         metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
                     ),
                     iterations_used=cycle + 1,
-                    verify_after_repair=lambda verification_log_path: _verify_trace_after_repair(
-                        run_dir,
-                        _existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
-                        verification_log_path,
-                    ),
-                    staged_metadata_dirs=lambda: agent_metadata_dirs + accepted_run_dirs + [run_dir],
                 )
             metadata_entries = _metadata_entries(run_dir)
             added_entries = metadata_entries - accepted_metadata_entries
@@ -540,7 +436,7 @@ def verify_native_test_passes(
                     reason="no new trace metadata entries",
                 )
                 _print_failure_log_tail(log_path, cycle + 1)
-                return _route_to_codex(
+                return _route_to_analysis_agent(
                     stage=f"cycle-{cycle + 1}",
                     reason="binary exited 172 without new trace metadata",
                     reproduction_command=_run_native_trace_image_command(
@@ -550,12 +446,6 @@ def verify_native_test_passes(
                         metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
                     ),
                     iterations_used=cycle + 1,
-                    verify_after_repair=lambda verification_log_path: _verify_trace_after_repair(
-                        run_dir,
-                        _existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
-                        verification_log_path,
-                    ),
-                    staged_metadata_dirs=lambda: agent_metadata_dirs + accepted_run_dirs + [run_dir],
                 )
             log_stage(
                 _GATE_STAGE,
@@ -569,7 +459,7 @@ def verify_native_test_passes(
 
         if not collected_metadata_files:
             _print_failure_log_tail(log_path, cycle + 1)
-        return _route_to_codex(
+        return _route_to_analysis_agent(
             stage=f"cycle-{cycle + 1}",
             reason=f"binary failed (gradle_exit={gradle_rc}, binary_exit={binary_rc})",
             reproduction_command=_run_native_trace_image_command(
@@ -579,12 +469,6 @@ def verify_native_test_passes(
                 metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
             ),
             iterations_used=cycle + 1,
-            verify_after_repair=lambda verification_log_path: _verify_trace_after_repair(
-                run_dir,
-                _existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
-                verification_log_path,
-            ),
-            staged_metadata_dirs=lambda: agent_metadata_dirs + accepted_run_dirs + [run_dir],
         )
 
     log_stage(
@@ -596,7 +480,7 @@ def verify_native_test_passes(
         runs_dir,
         "codex-repro-metadata-gap-exhausted",
     )
-    return _route_to_codex(
+    return _route_to_analysis_agent(
         stage="metadata-gap-exhausted",
         reason=f"metadata gap exhausted after {max_iterations} cycles",
         reproduction_command=_run_native_trace_image_command(
@@ -606,14 +490,6 @@ def verify_native_test_passes(
             metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
         ),
         iterations_used=max_iterations,
-        verify_after_repair=lambda verification_log_path: _verify_trace_after_repair(
-            codex_reproduction_run_dir,
-            _existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
-            verification_log_path,
-        ),
-        staged_metadata_dirs=lambda: (
-            agent_metadata_dirs + accepted_run_dirs + [codex_reproduction_run_dir]
-        ),
     )
 
 

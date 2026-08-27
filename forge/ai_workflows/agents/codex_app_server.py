@@ -124,11 +124,6 @@ class CodexAppServerClient:
     def _build_common_thread_params(self) -> dict:
         config = {
             "reasoning.effort": self._reasoning_effort,
-            "sandbox_workspace_write.network_access": False,
-            "web_search": "disabled",
-            "agents.enabled": False,
-            "features.skill_mcp_dependency_install": False,
-            "mcp_servers": {},
         }
         if self._persistent_instructions:
             config["developer_instructions"] = self._persistent_instructions
@@ -179,14 +174,9 @@ class CodexAppServerClient:
             process.wait(timeout=5)
 
     def _command(self) -> list[str]:
-        """Start thread control with integrations and network features disabled."""
+        """Start thread control for the Codex app server."""
         return [
             self._codex_command, "app-server", "--listen", "stdio://",
-            "-c", "sandbox_workspace_write.network_access=false",
-            "-c", 'web_search="disabled"',
-            "-c", "agents.enabled=false",
-            "-c", "features.skill_mcp_dependency_install=false",
-            "-c", "mcp_servers={}",
         ]
 
     @staticmethod

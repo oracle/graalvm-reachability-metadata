@@ -158,7 +158,7 @@ sequenceDiagram
     Note over D,GH: finalization
     WC-->>DR: terminal run status
     DR->>DR: finalize_run()
-    opt a finalization step fails
+    opt a repairable finalization check fails
         DR->>AG: agent_fix(failing step records)
         AG-->>DR: repaired or failed
         DR->>DR: rerun_failed_step()
@@ -235,9 +235,9 @@ one manifest:
 
 - **Tooling on PATH**: Python, `git`, `gh`, `pi`, `codex`, the Docker CLI,
   `grype`, and the repository's Gradle wrapper.
-- **Agents are really usable**, not merely installed: Pi authenticated against
-  its provider with unattended tool approval, and Codex configured for
-  unattended runs (`approval=never`, `sandbox=danger-full-access`).
+- **Agents are really usable**, not merely installed: every backend the enabled
+  roles select, authenticated against its provider and configured for unattended
+  runs (§FS-forge-agent-runtime-selection).
 - **GitHub is alive and authorized**: `gh` authenticated, repository
   Contents/Issues/Pull-requests write, and Projects write on the tracked
   project board.
@@ -495,13 +495,15 @@ never to the agent.
 **Neural.** The repair is the agent's; every decision around it is not
 (§root/PRCPL-prefer-algorithmic).
 
-Four unrelated steps need the same arrangement — a deterministic check has
-failed, let an agent try once — so it is written once here and cited rather than
-restated four times. It is not a phase and has no slot of its own:
-`native_trace_gate()` reaches it as step 3, `finalize_run()` on any step of its
-sequence, `local_ci_check()` on a failed check, and either of them again when a
+Several unrelated steps need the same arrangement — a deterministic check has
+failed, let an agent try within that check's budget — so it is written once here
+and cited rather than restated at every call site. It is not a phase and has no
+slot of its own:
+`native_trace_gate()` reaches it as step 3, `finalize_run()` on a failed native
+lane, metadata validation, or Checkstyle, `local_ci_check()` on a failed check,
+and either of them again when a
 `local_review()` repair does not survive them. Wherever it is called the terms
-are the same:
+are the same until verification:
 
 1. **Only after a deterministic step has failed.** The agent is never asked for
    something a check, a trace, or a gate could have produced, and never runs
@@ -509,11 +511,15 @@ are the same:
 2. **On that step's own evidence.** The failing step's records are the input —
    gate output, verification records, review findings — not a summary of them
    and not the run's history.
-3. **One bounded attempt**, against the step's configured budget.
-4. **The step re-runs, and its verdict decides.** What the agent reports having
-   done settles nothing; the deterministic re-run is the answer
-   (§root/PRCPL-verify-inputs). A repair the re-run does not confirm is a
-   failure of the step that called for it.
+3. **A bounded number of attempts**, owned by the failing step. Native lanes
+   receive one; metadata validation and Checkstyle retain up to three.
+4. **The caller verifies on its own contract.** Finalization checks and
+   `local_ci_check()` re-run after a repair, and that deterministic verdict decides
+   (§root/PRCPL-verify-inputs). The native trace gate is deliberately terminal:
+   its analysis prompt tells the agent to reproduce and verify with the supplied
+   command, then maps agent exit `0` to `PASSED_WITH_INTERVENTION` and any
+   timeout or non-zero exit to `FAILED`; Forge does not start another trace
+   cycle afterwards (§FS-native-test-verification-gate.4).
 
 A repair may only make the failing check pass on its merits. Relaxing an
 assertion or removing the coordinate from the lane is not a repair — it is the
@@ -550,15 +556,17 @@ position in a sequence. In `finalize_run()`:
 
 | Failing step | What the repair may be |
 | --- | --- |
-| `native_trace_gate()` | its own step 3: metadata the gate staged but could not make sufficient (§FS-native-test-verification-gate) |
+| `native_trace_gate()` | its own step 3: diagnose the residual with the original reproduce-and-verify prompt; repair missing or inactive metadata, repair another code or test defect on its own terms, or remove/rewrite a generated test only on a positive unsupported-Native-Image finding (§FS-native-test-verification-gate.1) |
 | A native test lane | re-run the coordinate under the gate's trace build in that lane's environment and let the binary's exit status route the repair: a missing-registration exit is metadata the lane's image mode or toolchain needs and the gate could not observe; any other failure is repaired on its own terms, and only a positive finding of unsupported behavior admits deleting the test; a trace re-run that passes means the lane failure was environmental, and neither repair applies |
-| `splitTestOnlyMetadata` and the legacy test-config rejection | moving the config to the metadata form the repository loads; the legacy form is never reinstated |
 | `checkMetadataFiles` | the metadata's own validity — schema, duplicate entries, an illegal `typeReached`, or an `allowed-packages` entry the coordinate genuinely owns |
-| Style fix and checks | the style violation |
-| `generateLibraryStats` and the commit | the input that made the task fail |
+| Checkstyle | the style violation |
 
-Finalization's generated-test quality screening is not in the table because it
-does not call this step at all: it stops the run instead.
+The remaining direct finalization steps do not call this repair.
+`splitTestOnlyMetadata`, legacy test-config rejection, Spotless, generated-test
+quality screening, `generateLibraryStats`, and the commit are deterministic
+production or policy boundaries: their failure stops the run with their own
+records. They do not become agent work merely because they occur beside checks
+that an agent can repair.
 
 Failure is uniform with the rest of the pipeline: an agent timeout or an
 unusable response is `RUN_STATUS_FAILURE` to the driver, which reports the run
@@ -578,17 +586,16 @@ chosen because the sequence ran out, not because the evidence pointed there.
 
 The name is this document's. No symbol reads `agent_fix`: it is a contract the
 implementations are measured against, the way `native_trace_gate()` names what
-the code calls `native_test_verification_gate`. `run_codex_metadata_fix`
-(`ai_workflows/core/fix_metadata_codex.py`) conforms — it is the gate's step 3,
-repairing metadata only after tracing has observed everything it can, with the
-gate re-running to decide. Finalization does not: its lanes run
-`run_codex_metadata_fix` and then `run_pi_post_generation_fix`
-(`ai_workflows/core/fix_post_generation_pi.py`) as a fixed ladder, so Pi is
-reached because Codex did not converge rather than because the failure was
-diagnosed as an unsupported feature — deletion as the last rung, which is term 4
-inverted, the agent's account standing in for a verdict the check never gave.
-`checkMetadataFiles` runs a third ladder of its own. Collapsing all of them into
-this one step is §ROADMAP-forge-native-finalization.
+the code calls `native_test_verification_gate`. Each implementation gives the
+analysis agent the failed command, the exact environment, and that command's
+captured failure output in one prompt. Finalization and local-CI prompts ask for
+a diagnosis and the smallest repair supported by that evidence; they do not
+preselect metadata repair and append test deletion as a fallback. The native
+trace gate retains its reproduce-and-verify prompt and lets the analysis agent
+validate the repair itself (§FS-native-test-verification-gate.4). Forge then
+reruns the failed check once except at that terminal gate. Adding the terminal
+native trace gate to every workflow remains
+§ROADMAP-forge-native-finalization.
 
 ### native_trace_gate()
 
@@ -681,19 +688,24 @@ for every finalization library (§AR-forge-driver-finalization):
 8. Commit the iteration, staging the coordinate's `tests/src`, the whole
    `metadata/` tree, and the coordinate's `stats/`.
 
-**Every step routes its failure to the same repair.** A step that fails calls
-`agent_fix()` on that step's own records, the step re-runs, and the re-run
-decides — one arrangement for the whole sequence, not a per-step recovery
-ladder. What the repair *is* varies with what failed, because the failing step
-is what says which repair could be correct; the arrangement around it does not
-vary at all. A step whose re-run still fails fails the run.
+**The three native lanes, metadata validation, and Checkstyle route failure to
+the same repair.** A repairable check that fails calls `agent_fix()` on that
+check's own records and lets a deterministic re-run decide. Each native lane
+gets one repair; metadata validation and Checkstyle retain their established
+budgets of up to three repair attempts. Checkstyle also retains its
+post-Checkstyle coordinate-test recovery inside that loop. This is one
+arrangement, not a metadata-fix then test-deletion ladder. What the repair *is*
+varies with the evidence: a proven missing registration or inactive condition
+is repaired as metadata; another defect is repaired on its own terms; deletion
+requires a positive unsupported-Native-Image finding and is never selected just
+because metadata repair did not converge.
 
-Step 6 is the exception, and it is deliberate. The quality screening does not
-ask whether something is broken; it asks whether a generated test should exist
-at all — a test that pins a library's own defect passes today and proves nothing
-about metadata. That is a question about the test's purpose, not a failing check
-with a repair, so the screening stops the run for a human and never reaches
-`agent_fix()`.
+Step 3, step 5's Spotless tasks, and steps 6, 7, and 8 do not call
+`agent_fix()`. They transform metadata, enforce a repository policy, screen
+generated test purpose, calculate publication evidence, or commit the result.
+Their failure is terminal and keeps finalization pending. In particular, generated-test
+quality screening asks whether a test should exist at all, not whether a failed
+check can be repaired, so it stops for a human.
 
 Run alone, `generateMetadata` produces the JVM agent's
 approximation and nothing that checks it, so a lane failure on top of it is
@@ -706,14 +718,9 @@ A finalization failure leaves the phase pending so a resumed run repeats it
 
 Today the gate does not run here at all. Finalization runs `./gradlew
 generateMetadata --agentAllowedPackages=fromJar` once, then each of the three
-lanes as a bare `./gradlew test` under its own environment, and gives every lane
-the same two-tool recovery ladder: a Codex metadata fix, rerun, then Pi deleting
-the offending failing tests, rerun. Native tracing appears nowhere, so the
-metadata each lane is judged against is never observed under any native run.
-`checkMetadataFiles` has a second, unrelated ladder of its own — an
-`allowed-packages` auto-append loop, then up to three Codex attempts. Replacing
-both ladders with step 1 and a single `agent_fix()` is
-§ROADMAP-forge-native-finalization.
+lanes as a bare `./gradlew test` under its own environment. Native tracing
+appears nowhere, so the metadata each lane is judged against is never observed
+under any native run. Adding step 1 is §ROADMAP-forge-native-finalization.
 
 ### local_ci_check()
 
@@ -955,22 +962,22 @@ Post-generation recovery is built into the workflow base class, not a pluggable
 registry and not selected per strategy. What that recovery *is* belongs to
 `finalize_run()` and `agent_fix()`: metadata is observed before it is invented,
 one repair step serves every failing step, and a residual failure is a run
-failure. Today the base class instead runs a fixed Codex-then-Pi ladder, once
-for each finalization lane — current-defaults, `future-defaults-all`, and
-current-defaults on GraalVM 25 — whenever that lane's `./gradlew test` fails: a
-Codex metadata fix, then Pi deleting the offending failing tests as a last
-resort, recorded as a post-generation intervention (see the intervention
-glossary in §FS-forge-functional-spec). Deletion as the ladder's last rung is
-reached because the previous rung did not converge, never because the failure
-was diagnosed; replacing the ladder with the gate and one `agent_fix()` is
+failure. The base class uses that single analysis-agent repair for each of the
+three native finalization lanes — current-defaults, `future-defaults-all`, and
+current-defaults on GraalVM 25 — and records a successful repair as a
+post-generation intervention (see the glossary in
+§FS-forge-functional-spec). Metadata validation and Checkstyle use the same
+evidence-driven repair arrangement with up to three attempts in their
+finalization utilities. Adding the native
+trace gate as the common terminal finalization step remains
 §ROADMAP-forge-native-finalization.
 
 Dynamic-access and native-test behavior stay in workflow specs, not in this
 architecture file. The architecture only fixes the boundaries: workflow engines
 call shared utilities for dynamic-access reports, and native test verification
 is a reusable gate (§FS-native-test-verification-gate) that drives native
-tracing and Codex recovery through the Gradle task contract in
-§FS-native-test-verification-gate.5. The concrete agent API and Pi adapter are
+tracing and analysis-agent recovery through the Gradle task contract in
+§FS-native-test-verification-gate.5. The concrete agent API and its adapters are
 documented in §AR-agent-api, and the
 strategy bundles that bind these pieces live in the strategy registry
 (§FS-forge-predefined-strategy-contract, §FS-workflow-strategy-registry).

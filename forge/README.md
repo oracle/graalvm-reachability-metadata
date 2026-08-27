@@ -45,8 +45,9 @@ Common options:
 - `--ni-run-limit N`: process up to `N` Native Image runtime failure tasks per cycle.
 - `--parallelism N`: run up to `N` issue workflows in parallel. Maximum: 4.
 - `--review-limit N`: process up to `N` PR review tasks per label per cycle.
-- `--agent-family {claude-code,pi,codex,opencode}`: select one backend for both
-  agent roles; `--analysis-agent` and `--test-agent` override individual roles.
+- `--agent-family {claude-code,pi,codex,opencode}`: select the analysis backend;
+  an alias for `--analysis-family`. The test-generation backend, model, and
+  provider come from the selected strategy.
 - `--random-offset`: start new-library issue scans at a random offset instead of the newest issues first.
 - `--priority {high,priority,normal}`: process only the selected issue priority tier.
 - `--user-requested-only`: fetch only user-requested issue queue items, excluding configured automation and maintainer authors.
@@ -54,7 +55,10 @@ Common options:
 - `--once`: run a single update/work cycle through `do_up_to_date_work.sh` and exit.
 - `--fail-fast`: return nonzero on the first unsuccessful work cycle.
 - `--analysis-agent COMMAND --analysis-family FAMILY`: choose the analysis executable and adapter family.
-- `--test-agent COMMAND --test-family FAMILY`: choose the test executable and adapter family.
+- `--setup-agent COMMAND --setup-family FAMILY`: choose the executable and adapter family for artifact-URL
+  discovery and library preflight, independently of the analysis role.
+- `--test-agent-alias COMMAND`: use a machine-local executable name for the
+  test agent without changing the strategy's backend, model, or provider.
 - `--stop`: ask all Forge `do-work` loops for the current user to exit by creating `~/.metadata-forge-stop`.
 - `--stop --branch BRANCH`: ask only loops monitoring `BRANCH` to exit, using a branch-scoped marker such as `~/.metadata-forge-stop.master`.
 - `--clear-stop`: remove the matching global or branch-scoped stop marker so future `do-work` loops can run.

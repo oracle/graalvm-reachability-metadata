@@ -17,8 +17,8 @@ from unittest.mock import patch
 _FORGE_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(_FORGE_ROOT))
 
-from ai_workflows.core.fix_metadata_codex import run_codex_metadata_fix  # noqa: E402
-from ai_workflows.agents.runtime import AgentRunResult  # noqa: E402
+from ai_workflows.core.metadata_fix import run_metadata_fix  # noqa: E402
+from ai_workflows.agents.agent_runtime import AgentRunResult  # noqa: E402
 from utility_scripts.host_requirements import GRAALVM_SCHEMA_PATH  # noqa: E402
 
 
@@ -49,24 +49,24 @@ class FixMetadataCodexTests(unittest.TestCase):
 
         agent_result = AgentRunResult(0, "/tmp/analysis.log", False, "fixed")
         with patch.dict(os.environ, {"GRAALVM_HOME": self.graalvm_home, "JAVA_HOME": "/other-jdk"}, clear=True), \
-                patch("ai_workflows.core.fix_metadata_codex.subprocess.run", side_effect=fake_run), \
+                patch("ai_workflows.core.metadata_fix.subprocess.run", side_effect=fake_run), \
                 patch(
-                    "ai_workflows.core.fix_metadata_codex.run_agent_task",
+                    "ai_workflows.core.metadata_fix.analysis_agent_run",
                     return_value=agent_result,
                 ) as run_agent:
-            rc, _log_path, timed_out = run_codex_metadata_fix(self.repo, "g:a:1.0")
+            rc, _log_path, timed_out = run_metadata_fix(self.repo, "g:a:1.0")
 
         self.assertEqual(rc, 0)
         self.assertFalse(timed_out)
         agent_kwargs = run_agent.call_args.kwargs
-        self.assertEqual(agent_kwargs["selection"].backend, "codex")
+        self.assertEqual(agent_kwargs["task_type"], "metadata-fix")
         self.assertEqual(agent_kwargs["environment"]["GRAALVM_HOME"], self.graalvm_home)
         self.assertEqual(agent_kwargs["environment"]["JAVA_HOME"], self.graalvm_home)
-        developer_instructions = agent_kwargs["persistent_instructions"]
+        developer_instructions = agent_kwargs["instructions"]
         self.assertIn(self.graalvm_home, developer_instructions)
         self.assertIn("jvmci-25.1-b17", developer_instructions)
-        self.assertIn("GRAALVM_HOME=" + self.graalvm_home, agent_kwargs["prompt"])
-        self.assertIn("jvmci-25.1-b17", agent_kwargs["prompt"])
+        self.assertIn("GRAALVM_HOME=" + self.graalvm_home, agent_kwargs["context"])
+        self.assertIn("jvmci-25.1-b17", agent_kwargs["context"])
 
     def test_explicit_graalvm_home_overrides_base_environment_for_codex(self) -> None:
         inherited_graalvm = tempfile.mkdtemp(prefix="inherited-graalvm-")
@@ -79,12 +79,12 @@ class FixMetadataCodexTests(unittest.TestCase):
                 return subprocess.CompletedProcess(cmd, 0, stdout="native-image pinned\n")
             return subprocess.CompletedProcess(cmd, 0)
 
-        with patch("ai_workflows.core.fix_metadata_codex.subprocess.run", side_effect=fake_run), \
+        with patch("ai_workflows.core.metadata_fix.subprocess.run", side_effect=fake_run), \
                 patch(
-                    "ai_workflows.core.fix_metadata_codex.run_agent_task",
+                    "ai_workflows.core.metadata_fix.analysis_agent_run",
                     return_value=AgentRunResult(0, "/tmp/analysis.log", False, "fixed"),
                 ) as run_agent:
-            rc, _log_path, timed_out = run_codex_metadata_fix(
+            rc, _log_path, timed_out = run_metadata_fix(
                 self.repo,
                 "g:a:1.0",
                 graalvm_home=self.graalvm_home,
@@ -93,9 +93,9 @@ class FixMetadataCodexTests(unittest.TestCase):
 
         self.assertEqual(rc, 0)
         self.assertFalse(timed_out)
-        codex_env = run_agent.call_args.kwargs["environment"]
-        self.assertEqual(codex_env["GRAALVM_HOME"], self.graalvm_home)
-        self.assertEqual(codex_env["JAVA_HOME"], self.graalvm_home)
+        agent_env = run_agent.call_args.kwargs["environment"]
+        self.assertEqual(agent_env["GRAALVM_HOME"], self.graalvm_home)
+        self.assertEqual(agent_env["JAVA_HOME"], self.graalvm_home)
 
 def _make_forge_usable_graalvm(path: str) -> None:
     """Create a GraalVM home that satisfies `check_graalvm_installation`."""
