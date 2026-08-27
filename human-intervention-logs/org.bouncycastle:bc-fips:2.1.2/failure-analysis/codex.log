@@ -1,0 +1,21 @@
+Human intervention needed
+
+The automated job for `org.bouncycastle:bc-fips:2.1.2` failed during native-test generation/verification. The native image compiled, but `nativeTest` failed at runtime: initial cycles reported missing BC-FIPS native resources, and the final cycle still failed with missing `org.junit.ComparisonFailure` reflection metadata. The Gradle run also reports nine failed tests, including BC-FIPS provider verification errors, missing `ProvRSA*`/`ProvXDHPrivateKey` classes, and an all-zero module HMAC assertion in `FipsStatusTest`.
+
+The run summary reports dynamic-access coverage of 45/65 (69.23%). However, the checked-in `stats.json` and execution metrics currently report 35/65 (53.85%), so the coverage result should be reconciled.
+
+Preserved work is available at: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-5950-library-update-request-org.bouncycastle-bc-fips-2.1.2-822d5dc1
+
+Please inspect:
+
+- `human-intervention-logs/org.bouncycastle:bc-fips:2.1.2/gradle-test/gradle-test-2026-08-27T19-04-40-310038Z.log`
+- `human-intervention-logs/org.bouncycastle:bc-fips:2.1.2/native-test-verify/cycle-0-runNativeTraceImage-2026-08-27T18-58-57-849306Z.log`
+- `human-intervention-logs/org.bouncycastle:bc-fips:2.1.2/native-test-verify/cycle-2-runNativeTraceImage-2026-08-27T19-01-10-355967Z.log`
+- `stats/org.bouncycastle/bc-fips/2.1.2/stats.json`
+- `stats/org.bouncycastle/bc-fips/2.1.2/execution-metrics.json`
+
+Manual next steps:
+
+1. Reconcile the 45/65 report with the checked-in 35/65 statistics and regenerate stats if necessary.
+2. Correct the BC-FIPS native provider/resource configuration and required reflection metadata, then rerun native tests.
+3. Investigate or remove the `FipsStatusTest` module-HMAC assertion if BC-FIPS integrity reporting is unsupported under Native Image.
