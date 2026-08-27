@@ -209,8 +209,9 @@ label.
 The last supported version is resolved from the index entry marked **latest** —
 not through the compatible-baseline resolver used for missing-version library
 updates. The `fails-*` producer targets the newest version, so a below-`latest`
-issue is rejected by the issue-form gate before the claim; the driver does not
-re-check that queue rule (§FS-forge-run-requirements.3). The driver copies the
+issue is rejected by the issue-form gate after the claim but before the
+worktree; the driver does not re-check that queue rule
+(§FS-forge-run-requirements.3). The driver copies the
 latest version's test project to the failing version, updates the index, creates
 the versioned metadata directory, records whether those directories pre-existed
 so cleanup can restore the right state, and checkpoints. The index update marks

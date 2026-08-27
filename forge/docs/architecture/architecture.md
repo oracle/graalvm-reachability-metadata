@@ -58,18 +58,19 @@ sequenceDiagram
     D->>D: check_strategy_and_model()
     D->>GH: scan_issue_queue(label, priority)
     GH-->>D: candidate issues
-    D->>D: check_issue_form()
-    alt issue is malformed
-        opt a claim was already taken
-            D->>GH: release_claim()
-        end
-        D->>GH: post the predefined comment for the failed rule
-        D->>GH: close_issue()
-    end
     D->>GH: claim_issue()
     GH-->>D: assigned, status In Progress
-    D->>D: create_issue_workspace()
-    D->>DR: route_to_driver(coordinates, strategy)
+    D->>D: check_issue_form()
+    alt issue is malformed
+        D->>GH: post the predefined comment for the failed rule
+        D->>GH: close_issue()
+        D->>GH: clear Forge assignee
+    else artifact repository did not answer
+        D->>GH: release_claim()
+    else issue form is valid
+        D->>D: create_issue_workspace()
+        D->>DR: route_to_driver(coordinates, strategy)
+    end
     end
 
     rect rgba(148, 163, 184, 0.12)
@@ -284,8 +285,9 @@ The queue label decides the workflow, so the issue must be unambiguous before a
 driver starts (§FS-forge-run-requirements.3, §AR-forge-driver-queues). The
 issue is the run's input, and a malformed one is rejected at the boundary
 instead of failing inside a driver (§root/PRCPL-verify-inputs). The gate runs
-before `claim_issue()`, so a rejected issue is never assigned, never moved to
-`In Progress`, and never given a worktree:
+after `claim_issue()` holds the exclusive claim and before
+`create_issue_workspace()`, so a rejected issue is never given a worktree and
+never reaches a driver:
 
 - `single-workflow-label` — **exactly one workflow label.** An issue carrying
   two queue labels is processed once per queue that matches it, so it would be
@@ -307,8 +309,8 @@ before `claim_issue()`, so a rejected issue is never assigned, never moved to
   (`utility_scripts/native_image_artifact.py`) and asks it only whether the
   artifact exists, so the answer costs one request against a URL derived
   entirely from the coordinate. A repository that cannot be reached leaves the
-  answer undecided; an undecided answer never rejects and never claims, so the
-  issue is simply left for a later cycle.
+  answer undecided; an undecided answer releases the claim without rejecting,
+  so the issue is left in `Todo` for a later cycle.
 
 The rules are evaluated in that order and the gate stops at the first failure,
 so `published-artifact` — the only rule that leaves the machine — is reached
@@ -335,10 +337,10 @@ Each rule is a named check, and the gate returns the name of the one that
 failed together with the value that failed it — the rules are decided one at a
 time from the payload, so no inference is needed to say which one it was. That
 name selects a predefined comment posted to the issue, so the reporter learns
-what to fix (§FS-forge-run-requirements.3). A rejection that somehow happens
-after a claim releases it through `release_claim()` first; then the comment is
-posted and the issue is closed, which is what takes it out of the queue it
-cannot leave on its own. The comment carries a marker keyed on rule and
+what to fix (§FS-forge-run-requirements.3). The claim remains held while the
+comment is posted and the issue is closed; only then is the Forge assignee
+cleared. Releasing the claim first would admit another worker between the
+comment and close operations. The comment carries a marker keyed on rule and
 offending value so a reopened, unedited issue is closed again without a second
 comment. A form rejection applies no `human-intervention` label and preserves
 no branch: the defect is in the issue, not in anything Forge generated
@@ -360,12 +362,13 @@ and never invokes a driver (§FS-forge-run-requirements.3).
 **Algorithmic.**
 
 Claiming is orchestration, never workflow logic (§AR-forge-control-plane,
-§AR-forge-orchestration). The issue payload is re-read at claim time
-against live GitHub state rather than trusted from the scan
-(§FS-forge-run-requirements.2), and must still be open, still carry the
-queue label, be unassigned or assigned only to the authenticated user, have no
-open blockers, and sit in project status `Todo`. Only then is it assigned,
-moved to `In Progress`, and given an isolated worktree plus scratch metrics
+§AR-forge-orchestration). The issue payload is re-read at claim time against
+live GitHub state rather than trusted from the scan
+(§FS-forge-run-requirements.2), and must still be open, still carry the queue
+label, be unassigned or assigned only to the authenticated user, have no open
+blockers, and sit in project status `Todo`. Only then is it assigned and moved
+to `In Progress`. The issue-form gate runs while that exclusive claim is held;
+only an accepted form is given an isolated worktree plus scratch metrics
 repository. A `resumable` issue additionally requires a valid continuation
 marker on a preserved branch (§FS-forge-run-continuation), and a
 `chunked-dynamic-access` issue requires its exhaust report
