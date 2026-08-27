@@ -120,6 +120,15 @@ feature branch and must not create or modify GitHub resources. The title and
 body it publishes come from the shared non-mutating renderer
 (§AR-pr-preview-builders), never from a second rendering path.
 
+Its push trigger is scoped to the descriptor path, so it fires only on the push
+that carries a `forge-publication.json`. A publication is the only push it can
+act on: every validation reads the tip-committed descriptor, and a push without
+one fails the first check with nothing to publish. Because Actions reports a
+push-triggered job as a check run on the pushed commit, an unscoped trigger also
+made every later push to a published branch report a failing check on the open
+pull request. That check gates publication, not the pull request, so a
+maintainer repairing a published branch must not see it re-run and fail there.
+
 A Branch Ready failure leaves the branch, issue assignment, labels, and project
 status unchanged. Its job summary and logs must identify the exact SHA and each
 validation error so a maintainer can inspect or repair the preserved branch and
