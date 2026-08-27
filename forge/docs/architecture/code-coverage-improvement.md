@@ -433,7 +433,8 @@ The Rhei template should decompose the workflow into these phases:
    deterministically from its own report history.
 7. **Finalization and stats** — a deterministic step program: read the
    machine-readable conversion record; run `splitTestOnlyMetadata` and then
-   `checkMetadataFiles`; run checkstyle over the coordinate's subprojects
+   `checkMetadataFiles`; apply and check formatting with `spotlessApply` and
+   `spotlessCheck`; run checkstyle over the coordinate's subprojects
    (including the tracked coverage suite); run the regular JVM tests (`javaTest`)
    and the tracked extension suite (`codeCoverageTest`); regenerate the
    coordinate's committed library stats from the combined main-JAR-only JaCoCo

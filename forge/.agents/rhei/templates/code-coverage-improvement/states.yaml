@@ -239,6 +239,9 @@ states:
         `src/test/java` already carry, and keep the whole file ASCII: checkstyle
         runs over this suite at finalization and rejects both a missing header
         and any non-ASCII character, the grund `§` marker included.
+      - Put nothing between that header and the `package` declaration, and run
+        `./gradlew spotlessApply -Pcoordinates=<coordinate>` before you finish:
+        Spotless enforces that layout and gates every pull request.
       - Target meaningful public user-callable behavior with real assertions,
         not superficial coverage hits.
       - Do not weaken metadata-generation tests.
@@ -490,6 +493,9 @@ states:
         `src/test/java` already carry, and keep the whole file ASCII: checkstyle
         runs over this suite at finalization and rejects both a missing header
         and any non-ASCII character, the grund `§` marker included.
+      - Put nothing between that header and the `package` declaration, and run
+        `./gradlew spotlessApply -Pcoordinates=<coordinate>` before you finish:
+        Spotless enforces that layout and gates every pull request.
       - Do not weaken metadata-generation tests.
       - Do not write any target state: measurement tracks attempts and target
         rotation deterministically from its own report history.
@@ -637,7 +643,24 @@ states:
           print(format_legacy_test_native_image_config_error(legacy_paths), file=sys.stderr)
           fail(2, "legacy Native Image config files found under the test project")
 
-      # Step 3: checkstyle over the coordinate's subprojects, including the
+      # Step 3: formatting. `spotlessApply` writes the licence header and
+      # layout `spotlessCheck` and the CI Spotless job enforce, so trivially
+      # formattable output repairs itself here rather than spending a fix pass
+      # or failing review after publication.
+      for spotless_task in ("spotlessApply", "spotlessCheck"):
+          spotless_command = [
+              f"{worktree_path}/gradlew",
+              spotless_task,
+              f"-Pcoordinates={coordinate}",
+              "--stacktrace",
+          ]
+          try:
+              if subprocess.run(spotless_command, cwd=worktree_path).returncode != 0:
+                  fail(3, f"{spotless_task} failed")
+          except OSError as error:
+              fail(3, f"{spotless_task} could not run: {error}")
+
+      # Step 4: checkstyle over the coordinate's subprojects, including the
       # tracked coverage suite source set.
       checkstyle_command = [
           f"{worktree_path}/gradlew",
@@ -647,11 +670,11 @@ states:
       ]
       try:
           if subprocess.run(checkstyle_command, cwd=worktree_path).returncode != 0:
-              fail(3, "checkstyle failed")
+              fail(4, "checkstyle failed")
       except OSError as error:
-          fail(3, f"checkstyle could not run: {error}")
+          fail(4, f"checkstyle could not run: {error}")
 
-      # Step 4: regular JVM tests plus the tracked extension suite.
+      # Step 5: regular JVM tests plus the tracked extension suite.
       # Finalization runs no Native Image validation at this stage.
       jvm_commands = [
           [
@@ -665,11 +688,11 @@ states:
       for jvm_command in jvm_commands:
           try:
               if subprocess.run(jvm_command, cwd=worktree_path).returncode != 0:
-                  fail(4, f"JVM tests failed: {jvm_command[1]}")
+                  fail(5, f"JVM tests failed: {jvm_command[1]}")
           except OSError as error:
-              fail(4, f"JVM tests could not run: {error}")
+              fail(5, f"JVM tests could not run: {error}")
 
-      # Step 5: persist coverage from the newly written tests. The stats task
+      # Step 6: persist coverage from the newly written tests. The stats task
       # consumes the combined report, whose denominator is only the coordinate's
       # unclassified main JAR (§root/AR-test-harness.8).
       stats_command = [
@@ -680,11 +703,11 @@ states:
       ]
       try:
           if subprocess.run(stats_command, cwd=worktree_path).returncode != 0:
-              fail(5, "generateLibraryStats failed")
+              fail(6, "generateLibraryStats failed")
       except OSError as error:
-          fail(5, f"generateLibraryStats could not run: {error}")
+          fail(6, f"generateLibraryStats could not run: {error}")
 
-      # Step 6: finalize separate API/deep JaCoCo metrics and guidance-only PGO
+      # Step 7: finalize separate API/deep JaCoCo metrics and guidance-only PGO
       # evidence from the recorded reports and target state.
       def report_bounds(directory: str, stem: str, suffix: str = ".json") -> tuple:
           reports = sorted(
@@ -692,7 +715,7 @@ states:
               key=lambda p: int(p.stem.rsplit("-", 1)[1]),
           )
           if not reports:
-              fail(6, f"no {stem} reports under {directory}")
+              fail(7, f"no {stem} reports under {directory}")
           return reports[0], reports[-1]
 
       api_baseline, api_final = report_bounds("runtime/code-coverage/validation", "api-cover-report")
@@ -726,9 +749,9 @@ states:
       finalize_env = dict(os.environ, PYTHONPATH=work_path)
       try:
           if subprocess.run(finalize_command, env=finalize_env).returncode != 0:
-              fail(6, "code_coverage_finalize.py failed")
+              fail(7, "code_coverage_finalize.py failed")
       except OSError as error:
-          fail(6, f"code_coverage_finalize.py could not run: {error}")
+          fail(7, f"code_coverage_finalize.py could not run: {error}")
       PY
     program_timeout: 90m
     inputs:
@@ -798,13 +821,15 @@ states:
         single-file `reachability-metadata.json` format, delete them, and re-run;
         this repository loads no other format. If `checkMetadataFiles` rejects an
         entry, fix the entry or its `allowed-packages`, never the check.
-      - step 3: checkstyle failed - fix the style violations in the generated
+      - step 3: formatting failed - re-run `spotlessApply` and commit what it
+        rewrites; never edit the Spotless configuration to accept the output.
+      - step 4: checkstyle failed - fix the style violations in the generated
         coverage tests; do not suppress or weaken the checkstyle rules.
-      - step 4: JVM tests failed - fix the generated coverage tests in the
+      - step 5: JVM tests failed - fix the generated coverage tests in the
         issue worktree; do not weaken or delete meaningful assertions.
-      - step 5: `generateLibraryStats` failed - repair the coverage report or
+      - step 6: `generateLibraryStats` failed - repair the coverage report or
         stats input; do not hand-edit `stats.json`.
-      - step 6: `code_coverage_finalize.py` failed - repair the report or
+      - step 7: `code_coverage_finalize.py` failed - repair the report or
         target-state artifacts it rejected; never edit its output by hand.
       - verification: finalization artifacts are missing, empty, or
         schema-invalid - repair the inputs and let the program regenerate them.
@@ -1053,25 +1078,31 @@ transitions:
     to: finalize-fix
     exit_code: 3
     condition: visitCount < visits
-    description: Step 3 failed - checkstyle failed for the coverage suite.
+    description: Step 3 failed - spotlessApply or spotlessCheck rejected the coverage suite.
 
   - from: reviewed-execute
     to: finalize-fix
     exit_code: 4
     condition: visitCount < visits
-    description: Step 4 failed - JVM tests with the coverage suite failed.
+    description: Step 4 failed - checkstyle failed for the coverage suite.
 
   - from: reviewed-execute
     to: finalize-fix
     exit_code: 5
     condition: visitCount < visits
-    description: Step 5 failed - generateLibraryStats did not persist coverage.
+    description: Step 5 failed - JVM tests with the coverage suite failed.
 
   - from: reviewed-execute
     to: finalize-fix
     exit_code: 6
     condition: visitCount < visits
-    description: Step 6 failed - code_coverage_finalize.py rejected its inputs.
+    description: Step 6 failed - generateLibraryStats did not persist coverage.
+
+  - from: reviewed-execute
+    to: finalize-fix
+    exit_code: 7
+    condition: visitCount < visits
+    description: Step 7 failed - code_coverage_finalize.py rejected its inputs.
 
   - from: reviewed-execute
     to: human-intervention
@@ -1108,6 +1139,12 @@ transitions:
     exit_code: 6
     condition: visitCount >= visits
     description: Step 6 still fails after the maximum fix passes.
+
+  - from: reviewed-execute
+    to: human-intervention
+    exit_code: 7
+    condition: visitCount >= visits
+    description: Step 7 still fails after the maximum fix passes.
 
   - from: finalize-verify
     to: completed
