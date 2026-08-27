@@ -1,0 +1,143 @@
+{
+  "fix_javac_fail:2026-08-27": {
+    "timestamp": "2026-08-27T21:24:57.173272Z",
+    "library": "io.netty:netty-common:5.0.0.Alpha2",
+    "starting_commit": "3873982a91b50ae2d332dc6a35cbe8d8c2d27d60",
+    "ending_commit": "cdea95b31770a2b58c52c16f6db46cd1d0937e75",
+    "previous_library": "io.netty:netty-common:5.0.0.Alpha1",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "5.0.0.Alpha2",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.789474,
+            "coveredCalls": 30,
+            "totalCalls": 38
+          },
+          "resources": {
+            "coverageRatio": 0.75,
+            "coveredCalls": 3,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.785714,
+        "coveredCalls": 33,
+        "totalCalls": 42
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5469,
+          "missed": 36015,
+          "ratio": 0.131834,
+          "total": 41484
+        },
+        "line": {
+          "covered": 1410,
+          "missed": 7840,
+          "ratio": 0.152432,
+          "total": 9250
+        },
+        "method": {
+          "covered": 339,
+          "missed": 1377,
+          "ratio": 0.197552,
+          "total": 1716
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "5.0.0.Alpha1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.933333,
+            "coveredCalls": 28,
+            "totalCalls": 30
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.935484,
+        "coveredCalls": 29,
+        "totalCalls": 31
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4458,
+          "missed": 30296,
+          "ratio": 0.128273,
+          "total": 34754
+        },
+        "line": {
+          "covered": 1096,
+          "missed": 6493,
+          "ratio": 0.14442,
+          "total": 7589
+        },
+        "method": {
+          "covered": 254,
+          "missed": 1100,
+          "ratio": 0.187592,
+          "total": 1354
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9307,
+      "issue_label": "fails-javac-compile",
+      "library": "io.netty:netty-common:5.0.0.Alpha2",
+      "summary": "The artifact resolves without transitive dependencies and exposes self-contained utility, concurrency, timer, attribute, and leak-detection APIs that provide meaningful coverage without external services or configuration.",
+      "deterministic_setup": [],
+      "agent_guidance": "No environment variables or system properties are required. Replace the stale LongAdder test: io.netty.util.internal.chmv8.LongAdder was removed in Alpha2, so its compile failure is an API change rather than missing setup. Prefer APIs present in the Alpha2 artifact.",
+      "risks": [
+        "Javassist and logging APIs are optional POM dependencies; tests relying on those optional execution paths would need separate justification.",
+        "Some low-level PlatformDependent capabilities are unavailable on JDK 25 without additional access, but ordinary public API coverage works without enabling them."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9307 [Automation] javac compile fails for io.netty:netty-common:5.0.0.Alpha2; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "18 existing test file path(s) included"
+        }
+      ],
+      "current_library": "io.netty:netty-common:5.0.0.Alpha1",
+      "new_version": "5.0.0.Alpha2",
+      "model": "gpt-5.6-sol",
+      "input_tokens_used": 33260,
+      "output_tokens_used": 3496,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/io.netty:netty-common:5.0.0.Alpha2/library-preparation-preflight/pi-generation-2026-08-27T20-15-05-957651Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 789974,
+      "cached_input_tokens_used": 5503488,
+      "output_tokens_used": 54823,
+      "iterations": 16,
+      "cost_usd": 8.3463,
+      "tested_library_loc": 1410,
+      "metadata_entries": 90,
+      "test_only_metadata_entries": 25,
+      "previous_library_metadata_entries": 28,
+      "previous_library_test_only_metadata_entries": 4,
+      "code_coverage_percent": 15.24,
+      "previous_library_coverage_percent": 14.44
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.netty/netty-common/5.0.0.Alpha2/reachability-metadata.json"
+    }
+  }
+}
