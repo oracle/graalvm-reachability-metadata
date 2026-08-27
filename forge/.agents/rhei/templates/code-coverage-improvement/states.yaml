@@ -8,14 +8,20 @@
 #   api-measure -- 0 (phase done) -> completed
 #     |  ^     \-- 10 (uncovered remain; ranked prompt written) -> api-cover --+
 #     |  +----------------------------------------------------------------------+
-#     +-- step failed (exit 1-4) -> api-fix -> api-measure
+#     +-- step failed (exit 1-5) -> api-fix -> api-measure
 #         (budget exhausted -> human-intervention)
 #
 # Measurement steps: 1 conversion record, 2 JaCoCo correlation, 3 bytecode
-# call-graph extraction (cached), 4 unlock-score ranking and prompt render.
+# call-graph extraction (cached), 4 marginal-yield stop decision,
+# 5 unlock-score ranking and prompt render.
+#
+# A phase completes on exit 0 for any of three reasons, all recorded in its
+# `<phase>-stop-decision.json`: nothing uncovered remains, the pass yield
+# collapsed (§AR-code-coverage-improvement.3.3), or the budget is spent.
 #
 # Deep coverage loop (one task): identical shape with deep-measure (JaCoCo +
-# sampled PGO + call-tree steps, exits 1-6), deep-cover, deep-fix.
+# sampled PGO + call-tree steps plus the same stop decision, exits 1-7),
+# deep-cover, deep-fix.
 #
 # Final verified task (finalization only):
 #   reviewed-prepared -> reviewed-execute -- 0 -> finalize-verify -- 0 -> completed
@@ -110,7 +116,14 @@ states:
 
       validation = Path("runtime/code-coverage/validation")
       validation.mkdir(parents=True, exist_ok=True)
-      iteration = len(list(validation.glob("api-cover-report-*.json")))
+      sys.path.insert(0, work_path)
+      try:
+          from utility_scripts.code_coverage_stop import (
+              begin_measurement, complete_measurement,
+          )
+          iteration = begin_measurement(str(validation), "api")
+      except Exception as error:
+          fail(4, f"the stop evaluator rejected the report history: {error}")
 
       # Step 2: JVM JaCoCo run and exact API-inventory correlation. The
       # validator resolves the tracked code-coverage-improvement suite inside
@@ -177,21 +190,41 @@ states:
       ]
       print(f"[api-measure] iteration {iteration}: {len(uncovered)} uncovered public targets", flush=True)
 
-      # Fixed iteration budget. Scaling it from the baseline uncovered count
-      # made the phase length depend on how that count is defined, so a change
-      # to the summary basis silently halved the budget; a constant cannot
-      # drift that way (§AR-code-coverage-improvement.3.1).
-      budget = {{coverage_iterations}}
-      print(f"[api-measure] iteration budget {budget}", flush=True)
-      if not uncovered or iteration >= budget:
+      # Step 4: the loop decision, recorded on every pass whether or not it
+      # stops the phase (§AR-code-coverage-improvement.3.3). The budget stays a
+      # constant rather than a function of the baseline uncovered count:
+      # scaling it made phase length depend on how that count is defined, so a
+      # change to the summary basis silently halved the budget
+      # (§AR-code-coverage-improvement.3.1).
+      try:
+          from utility_scripts.code_coverage_stop import (
+              covered_series, decision, record, summarize,
+          )
+          stop = decision(
+              covered_series(str(validation), "api"),
+              threshold={{stop_threshold}},
+              window={{stop_window}},
+              floor={{stop_floor}},
+              budget={{coverage_iterations}},
+              targets_remaining=len(uncovered),
+          )
+          record(str(validation), "api", stop)
+      except Exception as error:
+          fail(4, f"the stop evaluator rejected the report history: {error}")
+      print(f"[api-measure] {summarize(stop)}", flush=True)
+      if stop["stopped"]:
+          try:
+              complete_measurement(str(validation), "api", iteration)
+          except Exception as error:
+              fail(4, f"the stop evaluator could not complete measurement: {error}")
           sys.exit(0)
 
-      # Step 4: order the uncovered public entries by how much still-uncovered
+      # Step 5: order the uncovered public entries by how much still-uncovered
       # code each unlocks, and render the cover prompt from that.
       # The validator copies the report it correlated as jacoco-<iteration>.xml.
       jacoco_xml = validation / f"jacoco-{iteration}.xml"
       if not jacoco_xml.is_file():
-          fail(4, f"validator wrote no JaCoCo XML copy at {jacoco_xml}")
+          fail(5, f"validator wrote no JaCoCo XML copy at {jacoco_xml}")
       ranker = [
           sys.executable, f"{work_path}/utility_scripts/code_coverage_api_rank.py",
           "--graph-dir", str(graph_dir),
@@ -204,9 +237,13 @@ states:
       print(f"[api-measure] {' '.join(ranker)}", flush=True)
       try:
           if subprocess.run(ranker, env=dict(os.environ, PYTHONPATH=work_path)).returncode != 0:
-              fail(4, "code_coverage_api_rank.py failed")
+              fail(5, "code_coverage_api_rank.py failed")
       except OSError as error:
-          fail(4, f"code_coverage_api_rank.py could not run: {error}")
+          fail(5, f"code_coverage_api_rank.py could not run: {error}")
+      try:
+          complete_measurement(str(validation), "api", iteration)
+      except Exception as error:
+          fail(4, f"the stop evaluator could not complete measurement: {error}")
       sys.exit(10)
       PY
     program_timeout: 60m
@@ -294,7 +331,11 @@ states:
       - step 3: the bytecode call-graph extraction failed - check that
         `api-inventory.json` records `libraryJars` and that those jars exist;
         repair the inventory artifact by re-running its helper, never by hand.
-      - step 4: the API target ranker rejected its inputs - repair the call
+      - step 4: the stop evaluator rejected the report history - an
+        `api-cover-report-<n>.json` is missing, out of sequence, or has no
+        integer `summary.covered`; restore the missing report from the run's
+        own history, never by writing a replacement.
+      - step 5: the API target ranker rejected its inputs - repair the call
         graph or JaCoCo XML copy it named; never hand-craft the rank report or
         the cover prompt.
 
@@ -371,7 +412,13 @@ states:
       include_suite = "-PincludeCodeCoverageSuite=true"
       discovery = Path("runtime/code-coverage/discovery")
       discovery.mkdir(parents=True, exist_ok=True)
-      iteration = len(list(discovery.glob("discovery-report-*.json")))
+      try:
+          from utility_scripts.code_coverage_stop import (
+              begin_measurement, complete_measurement,
+          )
+          iteration = begin_measurement(str(discovery), "deep")
+      except Exception as error:
+          fail(7, f"the stop evaluator rejected the report history: {error}")
       helper_env = dict(os.environ, PYTHONPATH=work_path)
 
       # Step 2: combined JVM JaCoCo XML (regular + extension suite) for exact
@@ -443,10 +490,30 @@ states:
       actionable = report.get("bulkTargets", [])
       print(f"[deep-measure] iteration {iteration}: {len(actionable)} actionable deep targets", flush=True)
 
-      # Fixed iteration budget, matching the API phase (§AR-code-coverage-improvement.3.1).
-      budget = {{coverage_iterations}}
-      print(f"[deep-measure] iteration budget {budget}", flush=True)
-      if not actionable or iteration >= budget:
+      # Step 7: the loop decision, on the same budget and the same
+      # marginal-yield rule as the API phase, through the same evaluator so the
+      # two phases cannot drift apart (§AR-code-coverage-improvement.3.3).
+      try:
+          from utility_scripts.code_coverage_stop import (
+              covered_series, decision, record, summarize,
+          )
+          stop = decision(
+              covered_series(str(discovery), "deep"),
+              threshold={{stop_threshold}},
+              window={{stop_window}},
+              floor={{stop_floor}},
+              budget={{coverage_iterations}},
+              targets_remaining=len(actionable),
+          )
+          record(str(discovery), "deep", stop)
+      except Exception as error:
+          fail(7, f"the stop evaluator rejected the report history: {error}")
+      print(f"[deep-measure] {summarize(stop)}", flush=True)
+      if stop["stopped"]:
+          try:
+              complete_measurement(str(discovery), "deep", iteration)
+          except Exception as error:
+              fail(7, f"the stop evaluator could not complete measurement: {error}")
           sys.exit(0)
 
       # Steering: the analyzer already renders the compact Observed /
@@ -458,6 +525,10 @@ states:
       prompts.mkdir(parents=True, exist_ok=True)
       (prompts / "deep-cover-prompt.md").write_text(markdown.read_text())
       print(f"[deep-measure] wrote prompt with {len(actionable)} targets", flush=True)
+      try:
+          complete_measurement(str(discovery), "deep", iteration)
+      except Exception as error:
+          fail(7, f"the stop evaluator could not complete measurement: {error}")
       sys.exit(10)
       PY
     program_timeout: 120m
@@ -549,6 +620,10 @@ states:
         metadata preparation helper if needed.
       - step 5/6: measurement artifacts are missing or incoherent - repair the
         inputs; never hand-craft reports.
+      - step 7: the stop evaluator rejected the report history - a
+        `discovery-report-<n>.json` is missing, out of sequence, or has no
+        integer `summary.deepCovered`; restore the missing report from the
+        run's own history, never by writing a replacement.
 
       Fix only that cause. Measurement re-runs automatically after this state.
 
@@ -746,6 +821,15 @@ states:
           finalize_command += ["--validation-command", " ".join(validation_command)]
       for target_state in sorted(Path("runtime/code-coverage/targets").glob("*.json")):
           finalize_command += ["--target-state", str(target_state)]
+      # Why each phase's loop ended. A phase may complete before its budget on
+      # the marginal-yield rule, and the run's evidence has to say so
+      # (§AR-code-coverage-improvement.3.3).
+      for stop_decision in (
+          "runtime/code-coverage/validation/api-stop-decision.json",
+          "runtime/code-coverage/discovery/deep-stop-decision.json",
+      ):
+          if Path(stop_decision).is_file():
+              finalize_command += ["--stop-decision", stop_decision]
       finalize_env = dict(os.environ, PYTHONPATH=work_path)
       try:
           if subprocess.run(finalize_command, env=finalize_env).returncode != 0:
@@ -892,7 +976,9 @@ transitions:
   - from: api-measure
     to: completed
     exit_code: 0
-    description: No uncovered public targets remain, or the iteration budget is spent.
+    description: >-
+      No uncovered public targets remain, the pass yield collapsed, or the
+      iteration budget is spent; the recorded stop decision names which.
 
   - from: api-measure
     to: api-cover
@@ -921,7 +1007,13 @@ transitions:
     to: api-fix
     exit_code: 4
     condition: visitCount < visits
-    description: Step 4 failed - the API target ranker rejected its inputs.
+    description: Step 4 failed - the stop evaluator rejected the report history.
+
+  - from: api-measure
+    to: api-fix
+    exit_code: 5
+    condition: visitCount < visits
+    description: Step 5 failed - the API target ranker rejected its inputs.
 
   - from: api-measure
     to: human-intervention
@@ -947,6 +1039,12 @@ transitions:
     condition: visitCount >= visits
     description: Step 4 still fails after the maximum fix passes.
 
+  - from: api-measure
+    to: human-intervention
+    exit_code: 5
+    condition: visitCount >= visits
+    description: Step 5 still fails after the maximum fix passes.
+
   - from: api-cover
     to: api-measure
     description: Cover pass finished; re-measure deterministically.
@@ -962,7 +1060,9 @@ transitions:
   - from: deep-measure
     to: completed
     exit_code: 0
-    description: No actionable deep targets remain, or the iteration budget is spent.
+    description: >-
+      No actionable deep targets remain, the pass yield collapsed, or the
+      iteration budget is spent; the recorded stop decision names which.
 
   - from: deep-measure
     to: deep-cover
@@ -1006,6 +1106,12 @@ transitions:
     description: Step 6 failed - the deep-path analyzer rejected its inputs.
 
   - from: deep-measure
+    to: deep-fix
+    exit_code: 7
+    condition: visitCount < visits
+    description: Step 7 failed - the stop evaluator rejected the report history.
+
+  - from: deep-measure
     to: human-intervention
     exit_code: 1
     condition: visitCount >= visits
@@ -1040,6 +1146,12 @@ transitions:
     exit_code: 6
     condition: visitCount >= visits
     description: Step 6 still fails after the maximum fix passes.
+
+  - from: deep-measure
+    to: human-intervention
+    exit_code: 7
+    condition: visitCount >= visits
+    description: Step 7 still fails after the maximum fix passes.
 
   - from: deep-cover
     to: deep-measure

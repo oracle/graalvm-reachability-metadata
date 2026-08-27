@@ -24,7 +24,7 @@ from jsonschema import Draft202012Validator
 from utility_scripts.code_coverage_model import parse_inventory_id
 from utility_scripts.code_coverage_jacoco import load_jacoco_method_coverage
 
-SCHEMA_VERSION = "1.1.0"
+SCHEMA_VERSION = "1.2.0"
 
 #: Run checkpoints, in run order. Each is one JaCoCo report, and each phase
 #: begins at the checkpoint the previous phase ended on
@@ -365,6 +365,42 @@ def _run_coverage(
     }
 
 
+def _stop_decisions(paths: list[str]) -> list[dict[str, Any]]:
+    """Carry each phase's recorded loop decision into the run's evidence.
+
+    A phase that ends before its budget is spent is not a failure, but a run
+    that cannot say why it ended short is indistinguishable from a crashed one
+    (§AR-code-coverage-improvement.3.3).
+    """
+    decisions: list[dict[str, Any]] = []
+    for path in paths:
+        label: str = f"stop decision {os.path.basename(path)}"
+        record: dict[str, Any] = _read_object(path, label)
+        phase: str = _string(record.get("phase"), f"{label}.phase")
+        if phase not in ("api", "deep"):
+            raise FinalizationError(f"{label}.phase must be api or deep: {phase}")
+        reason: Any = record.get("reason")
+        if reason is not None and not isinstance(reason, str):
+            raise FinalizationError(f"{label}.reason must be a string or null")
+        yields: list[Any] = _array(record.get("passYields"), f"{label}.passYields")
+        decisions.append({
+            "phase": phase,
+            "passes": _integer(record.get("passes"), f"{label}.passes"),
+            "budget": _integer(record.get("budget"), f"{label}.budget"),
+            "threshold": _integer(record.get("threshold"), f"{label}.threshold"),
+            "window": _integer(record.get("window"), f"{label}.window"),
+            "floor": _integer(record.get("floor"), f"{label}.floor"),
+            "reason": reason,
+            "passYields": [
+                _integer(value, f"{label}.passYields[]") for value in yields
+            ],
+        })
+    phases: list[str] = [decision["phase"] for decision in decisions]
+    if len(set(phases)) != len(phases):
+        raise FinalizationError(f"stop decisions repeat a phase: {phases}")
+    return sorted(decisions, key=lambda decision: decision["phase"] != "api")
+
+
 def _pgo_snapshot(report: dict[str, Any], label: str) -> dict[str, int]:
     summary: dict[str, Any] = _object(report.get("summary"), f"{label}.summary")
     fields: tuple[tuple[str, str], ...] = (
@@ -700,6 +736,16 @@ def _write_summary(metrics: dict[str, Any], path: str) -> None:
         lines += [f"### {status.title()} ({len(targets)})", ""]
         lines += _target_lines(targets)
         lines.append("")
+    if metrics["stopDecisions"]:
+        lines += ["## Phase stop decisions", ""]
+        for stop in metrics["stopDecisions"]:
+            reason: str = stop["reason"] or "budget-spent"
+            lines.append(
+                f"- {stop['phase']}: {reason} after {stop['passes']}/{stop['budget']} "
+                f"passes — yields {stop['passYields']}, low-yield rule "
+                f"{stop['window']}×<{stop['threshold']} methods after pass {stop['floor']}"
+            )
+        lines.append("")
     lines += ["## Validation commands", "", "```console"]
     lines += metrics["validationCommands"]
     lines += ["```", ""]
@@ -716,6 +762,7 @@ def finalize_coverage(
         deep_final_path: str,
         jacoco_paths: tuple[str, str, str],
         target_state_paths: list[str],
+        stop_decision_paths: list[str],
         validation_commands: list[str],
         output_dir: str,
 ) -> dict[str, Any]:
@@ -776,6 +823,7 @@ def finalize_coverage(
             "final": _pgo_snapshot(deep_final_report, "Deep final"),
         },
         "targets": target_outcomes,
+        "stopDecisions": _stop_decisions(stop_decision_paths),
         "needsHumanIntervention": bool(target_outcomes["failed"]),
         "validationCommands": _commands(validation_commands),
     }
@@ -808,6 +856,8 @@ def build_parser() -> argparse.ArgumentParser:
             "--jacoco-after-api discovery/jacoco-deep-0.xml "
             "--jacoco-final discovery/jacoco-deep-5.xml "
             "--target-state targets.json "
+            "--stop-decision validation/api-stop-decision.json "
+            "--stop-decision discovery/deep-stop-decision.json "
             "--validation-command './gradlew test -Pcoordinates=group:artifact:version' "
             "--output-dir runtime/code-coverage/finalization"
         ),
@@ -850,6 +900,13 @@ def build_parser() -> argparse.ArgumentParser:
         help="Optional deep target-state JSON; repeat in chronological order.",
     )
     parser.add_argument(
+        "--stop-decision",
+        action="append",
+        default=[],
+        dest="stop_decision_paths",
+        help="Optional phase stop-decision JSON; repeat once per phase.",
+    )
+    parser.add_argument(
         "--validation-command",
         action="append",
         required=True,
@@ -876,6 +933,7 @@ def main() -> int:
             args.deep_final,
             (args.jacoco_run_start, args.jacoco_after_api, args.jacoco_final),
             args.target_state_paths,
+            args.stop_decision_paths,
             args.validation_commands,
             args.output_dir,
         )

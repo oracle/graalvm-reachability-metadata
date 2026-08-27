@@ -102,13 +102,48 @@ inputs:
     validate: "[1-9][0-9]*"
 
   - name: coverage_iterations
-    description: Fixed number of cover iterations per phase; measurement completes the phase when it is spent or nothing uncovered remains.
+    description: >-
+      Maximum number of cover iterations per phase. Measurement completes the
+      phase when the budget is spent, when nothing uncovered remains, or when
+      the marginal-yield stop fires.
+    type: number
+    default: 15
+    validate: "[1-9][0-9]*"
+
+  - name: stop_threshold
+    description: >-
+      Pass yield below which a cover pass counts as low, in newly covered
+      methods. Counted in methods rather than percentage points because one
+      point is worth an order of magnitude more methods on a large library than
+      on a small one.
     type: number
     default: 10
     validate: "[1-9][0-9]*"
 
-  - name: measure_visits
-    description: Hard visit cap on each measurement loop and its fix state, bounding cover and repair re-runs.
+  - name: stop_window
+    description: >-
+      Consecutive low-yield passes that complete a phase. Pass yields
+      oscillate, so a longer window is reset by a single mediocre pass and
+      never fires.
     type: number
-    default: 16
+    default: 2
+    validate: "[1-9][0-9]*"
+
+  - name: stop_floor
+    description: >-
+      Cover passes that must complete before the marginal-yield stop applies,
+      so a broken opening pass cannot end a phase before it has produced
+      anything.
+    type: number
+    default: 4
+    validate: "[1-9][0-9]*"
+
+  - name: measure_visits
+    description: >-
+      Hard visit cap on each measurement loop and its fix state, bounding cover
+      and repair re-runs. It must exceed `coverage_iterations` by the number of
+      measurement retries a run may need: a full-budget phase already spends
+      one measurement per pass plus the baseline.
+    type: number
+    default: 22
     validate: "[1-9][0-9]*"

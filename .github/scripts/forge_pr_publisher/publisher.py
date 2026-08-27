@@ -700,6 +700,38 @@ PHASE_LABELS: dict[str, str] = {
 }
 
 
+#: How each phase's loop ended, in reader-facing words
+#: (§forge/AR-code-coverage-improvement.3.3).
+STOP_REASON_LABELS: dict[str, str] = {
+    "no-targets": "nothing left uncovered",
+    "budget-spent": "pass budget spent",
+    "marginal-yield": "yield collapsed",
+}
+
+
+def _coverage_stop_lines(decisions: Any) -> list[str]:
+    """Why each phase stopped where it did.
+
+    A phase may end before its budget because its passes stopped producing
+    coverage, and a reader who cannot see that reads a short run as a broken one
+    (§forge/AR-code-coverage-improvement.3.3). Rendered only when the run
+    recorded the decisions, so descriptors from earlier runs still publish.
+    """
+    if not isinstance(decisions, list) or not decisions:
+        return []
+    lines = ["Why each phase stopped:", ""]
+    for decision in decisions:
+        if not isinstance(decision, dict):
+            continue
+        reason = STOP_REASON_LABELS.get(decision.get("reason"), "budget spent")
+        phase = PHASE_LABELS.get(decision.get("phase"), decision.get("phase"))
+        lines.append(
+            f"- {phase}: {reason}, after {decision['passes']} of "
+            f"{decision['budget']} passes"
+        )
+    return lines + [""]
+
+
 def _coverage_universe_lines(run: dict[str, Any]) -> list[str]:
     """The run as one timeline on one denominator.
 
@@ -828,6 +860,7 @@ def _render_code_coverage_improvement(
     ]
     lines += _coverage_universe_lines(metrics["runCoverage"])
     lines += [""]
+    lines += _coverage_stop_lines(metrics.get("stopDecisions"))
     token_lines = _coverage_token_lines(render.get("token_usage") or [])
     if token_lines:
         lines += token_lines + [""]

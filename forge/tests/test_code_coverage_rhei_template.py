@@ -36,6 +36,31 @@ def _render_numeric_placeholders(source: str) -> str:
 
 class CodeCoverageRheiTemplateTests(unittest.TestCase):
 
+    def test_measurement_repairs_reuse_the_logical_cover_pass(self) -> None:
+        """Both loops must keep retries out of the pass-yield history."""
+        forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        states_path: str = os.path.join(
+            forge_root,
+            ".agents",
+            "rhei",
+            "templates",
+            "code-coverage-improvement",
+            "states.yaml",
+        )
+        with open(states_path, encoding="utf-8") as states_file:
+            source: str = states_file.read()
+
+        self.assertEqual(source.count("begin_measurement("), 2)
+        self.assertEqual(source.count("complete_measurement("), 4)
+        self.assertNotIn(
+            'iteration = len(list(validation.glob("api-cover-report-*.json")))',
+            source,
+        )
+        self.assertNotIn(
+            'iteration = len(list(discovery.glob("discovery-report-*.json")))',
+            source,
+        )
+
     def test_reenterable_fix_states_have_visit_scoped_outputs(self) -> None:
         forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         states_paths: tuple[str, ...] = (

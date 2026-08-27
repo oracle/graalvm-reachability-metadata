@@ -43,12 +43,15 @@ MAX_COMMIT_SUBJECT_LENGTH = 60
 #: Everything else `final-metrics.json` records — per-target rosters, sampled PGO
 #: guidance, the validation command list — stays in the finalization artifacts a
 #: reviewer reads from the run, so the descriptor holds render inputs and nothing else.
+#: `stopDecisions` rides along because a phase that ended before its budget reads
+#: as a broken run unless the body says why (§AR-code-coverage-improvement.3.3).
 COVERAGE_RENDER_KEYS: tuple[str, ...] = (
     "coordinate",
     "coverageSuitePath",
     "runCoverage",
     "apiJacoco",
     "deepJacoco",
+    "stopDecisions",
     "needsHumanIntervention",
 )
 
