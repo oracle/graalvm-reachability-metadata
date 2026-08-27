@@ -145,8 +145,10 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
             )
             self._print_detail("agent: complete", indent_level=2)
 
-        if workflow_status == RUN_STATUS_SUCCESS and self.fix_mode == JAVA_FIX_MODE_JAVA_RUN:
-            if not self._verify_native_test_gate(global_output_dir(
+        # Both repair modes must prove the repaired tree under Native Image.
+        # §AR-native-test-verification-callers
+        if workflow_status == RUN_STATUS_SUCCESS:
+            if not self.verify_native_test_gate(global_output_dir(
                 self.reachability_repo_path, self.group, self.artifact, self.version,
             )):
                 workflow_status = RUN_STATUS_FAILURE

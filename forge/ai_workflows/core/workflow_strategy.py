@@ -39,6 +39,7 @@ from utility_scripts.native_test_verification import (
     DEFAULT_MAX_ITERATIONS,
     NativeTestVerificationResult,
     STATUS_FAILED as NATIVE_TEST_GATE_FAILED,
+    global_output_dir,
     verify_native_test_passes,
 )
 from utility_scripts.issue_requested_metadata import NO_REPORTER_METADATA_CONTEXT
@@ -164,7 +165,12 @@ class WorkflowStrategy(ABC):
             raise ValueError(f"Strategy parameter '{name}' must be a non-negative integer")
         return value
 
-    def _verify_native_test_gate(self, output_dir: str, label: str | None = None) -> bool:
+    def verify_native_test_gate(
+            self,
+            output_dir: str,
+            label: str | None = None,
+            env: dict[str, str] | None = None,
+    ) -> bool:
         """Run the shared native-test gate (§FS-native-test-verification-gate)."""
         label_suffix: str = f" for {label}" if label else ""
         log_stage(
@@ -174,9 +180,10 @@ class WorkflowStrategy(ABC):
         )
         result: NativeTestVerificationResult = verify_native_test_passes(
             reachability_repo_path=self.context["reachability_repo_path"],
-            coordinate=self.context["library"],
+            coordinate=self.library,
             output_dir=output_dir,
             max_iterations=self.max_native_test_verification_iterations,
+            env=env,
         )
         if result.status == NATIVE_TEST_GATE_FAILED:
             log_path: str = result.last_native_test_log_path or "(none)"
@@ -543,9 +550,21 @@ class WorkflowStrategy(ABC):
         return finalize_status
 
     def _finalize_successful_iteration(self, base_commit: str | None = None) -> tuple[str, str | None]:
-        """Generate metadata, run follow-up Gradle tasks, and commit the iteration."""
-        log_stage("generate-metadata", f"Running generateMetadata for {self.library}")
-        self._run_command(f"./gradlew generateMetadata -Pcoordinates={self.library} --agentAllowedPackages=fromJar")
+        """Run the terminal native gate, follow-up tasks, and commit the iteration.
+
+        §AR-forge-workflow-pipeline §FS-native-test-verification-gate
+        """
+        test_version = str(
+            self.context.get("test_version")
+            or resolve_test_version(self.reachability_repo_path, self.group, self.artifact, self.version)
+        )
+        if not self.verify_native_test_gate(global_output_dir(
+            self.reachability_repo_path,
+            self.group,
+            self.artifact,
+            test_version,
+        )):
+            return RUN_STATUS_FAILURE, None
         final_status = RUN_STATUS_SUCCESS
         finalization_libraries = self._finalization_libraries()
         for library in finalization_libraries:
@@ -564,7 +583,6 @@ class WorkflowStrategy(ABC):
                 group=group,
                 artifact=artifact,
                 library_version=library_version,
-                model_name=self.model_name,
                 base_commit=base_commit,
             ):
                 return RUN_STATUS_FAILURE, None

@@ -83,7 +83,7 @@ from utility_scripts.workflow_setup import (
 )
 
 DEFAULT_MODEL_NAME = "gpt-5.4"
-DEFAULT_STRATEGY_NAME = "dynamic_access_main_sources_pi_gpt-5.6-terra"
+DEFAULT_STRATEGY_NAME = "dynamic_access_bulk_pi_gpt-5.6-sol"
 METRICS_TASK_TYPE = "add_new_library_support"
 
 

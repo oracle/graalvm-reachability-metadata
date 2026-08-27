@@ -14,7 +14,6 @@ if __package__ in (None, ""):
 import ai_workflows.agents  # noqa: F401 - triggers agent registration
 import ai_workflows.core  # noqa: F401 - triggers strategy registration
 from ai_workflows.agents import Agent
-from ai_workflows.core.metadata_fix import run_metadata_fix
 from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
@@ -38,6 +37,7 @@ from utility_scripts.library_preparation_preflight import (
 )
 from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
+from utility_scripts.native_test_verification import global_output_dir
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.source_context import (
     normalize_source_context_types,
@@ -126,22 +126,6 @@ def run_fix_test_native_image_run(
             "./gradlew", "fixTestNativeImageRun",
             f"-PtestLibraryCoordinates={current_coordinates}",
             f"-PnewLibraryVersion={new_version}",
-        ],
-        cwd=reachability_metadata_path,
-        env=gradle_command_environment(reachability_metadata_path),
-    )
-
-
-def run_gradle_test(
-        reachability_metadata_path: str,
-        coordinates: str,
-) -> subprocess.CompletedProcess[str]:
-    """Run Gradle tests for the provided coordinates."""
-    require_complete_reachability_repo(reachability_metadata_path)
-    return subprocess.run(
-        [
-            "./gradlew", "test",
-            f"-Pcoordinates={coordinates}",
         ],
         cwd=reachability_metadata_path,
         env=gradle_command_environment(reachability_metadata_path),
@@ -344,10 +328,10 @@ def main(argv=None) -> int:
     """Run the Native Image fix driver.
 
     The single-run driver (§AR-forge-drivers) for
-    §AR-forge-driver-queues.4. `fixTestNativeImageRun` produces the seed;
+    §AR-forge-driver-queues.4. `fixTestNativeImageRun` produces the seed. A
+    failed seed enters the shared native-test gate before any agent repair;
     dynamic-access exploration runs only when the new version has uncovered
-    calls; the shared `finalize_run` path (three native-test
-    lanes + dual-coordinate finalization) always gates PR eligibility.
+    calls; the shared `finalize_run` path always gates PR eligibility.
     """
     args = build_parser().parse_args(sys.argv[1:] if argv is None else argv)
 
@@ -392,6 +376,10 @@ def main(argv=None) -> int:
         f"fix-native-image-run-{group}-{artifact}-{new_version}",
         cwd=reachability_metadata_path,
     )
+    strategy_obj: WorkflowStrategy | None = None
+    agent: Agent | None = None
+    model_name: str | None = None
+    tests_root: str | None = None
     if not resume_existing_tree:
         print(f"[pipeline] Creating branch: {branch}")
         create_or_switch_branch(reachability_metadata_path, branch)
@@ -404,40 +392,39 @@ def main(argv=None) -> int:
         )
 
         if result.returncode != 0:
-            generated_metadata_file = os.path.join(
+            # The failed JVM-agent seed reaches runtime truth before any agent
+            # repair. §FS-native-test-verification-gate §AR-forge-workflow-pipeline
+            strategy_obj, agent, model_name, tests_root = build_strategy_and_agent(
+                strategy_name=args.strategy_name,
+                reachability_metadata_path=reachability_metadata_path,
+                library=library,
+                group=group,
+                artifact=artifact,
+                version=new_version,
+                library_preparation_preflight_context=library_preparation_preflight_context,
+                explore=False,
+                continuation_marker_path=args.continuation_marker_path,
+            )
+            test_version = resolve_test_version(
                 reachability_metadata_path,
-                "metadata",
                 group,
                 artifact,
                 new_version,
-                "reachability-metadata.json",
             )
-            if not os.path.isfile(generated_metadata_file):
+            if not strategy_obj.verify_native_test_gate(
+                    global_output_dir(
+                        reachability_metadata_path,
+                        group,
+                        artifact,
+                        test_version,
+                    ),
+                    label="fixTestNativeImageRun failure",
+            ):
                 print(
-                    "ERROR: fixTestNativeImageRun failed before generating "
-                    f"{generated_metadata_file}. Skipping Codex metadata repair.",
+                    f"ERROR: native-test gate failed after fixTestNativeImageRun for {library}.",
                     file=sys.stderr,
                 )
-                return result.returncode
-            print(f"[pipeline] Detected missing metadata entries for {library}. Running Codex fix.")
-            gradle_env = gradle_command_environment(reachability_metadata_path)
-            codex_rc, _codex_log, _codex_timed_out = run_metadata_fix(
-                reachability_metadata_path,
-                library,
-                graalvm_home=gradle_env.get("GRAALVM_HOME"),
-                library_preparation_preflight_context=library_preparation_preflight_context,
-            )
-            if codex_rc != 0:
-                print(f"ERROR: Codex failed with return code: {codex_rc}", file=sys.stderr)
-                return codex_rc
-            print(f"[pipeline] Codex metadata fix completed. Running Gradle test for {library}.")
-            result = run_gradle_test(
-                reachability_metadata_path=reachability_metadata_path,
-                coordinates=library,
-            )
-            if result.returncode != 0:
-                print("[pipeline] Gradle test failed after Codex metadata fix. Skipping PR creation.", file=sys.stderr)
-                return result.returncode
+                return 1
 
         populate_artifact_urls(reachability_metadata_path, library)
         checkpoint = commit_checkpoint(reachability_metadata_path, library)
@@ -458,17 +445,21 @@ def main(argv=None) -> int:
         print(f"[pipeline] Preparing version-specific test-suite for {library}")
         prepare_library_update_target(reachability_metadata_path, group, artifact, new_version)
 
-    strategy_obj, agent, model_name, tests_root = build_strategy_and_agent(
-        strategy_name=args.strategy_name,
-        reachability_metadata_path=reachability_metadata_path,
-        library=library,
-        group=group,
-        artifact=artifact,
-        version=new_version,
-        library_preparation_preflight_context=library_preparation_preflight_context,
-        explore=explore,
-        continuation_marker_path=args.continuation_marker_path,
-    )
+    if strategy_obj is None or explore:
+        strategy_obj, agent, model_name, tests_root = build_strategy_and_agent(
+            strategy_name=args.strategy_name,
+            reachability_metadata_path=reachability_metadata_path,
+            library=library,
+            group=group,
+            artifact=artifact,
+            version=new_version,
+            library_preparation_preflight_context=library_preparation_preflight_context,
+            explore=explore,
+            continuation_marker_path=args.continuation_marker_path,
+        )
+    assert agent is not None
+    assert model_name is not None
+    assert tests_root is not None
 
     iterations = 0
     if explore:

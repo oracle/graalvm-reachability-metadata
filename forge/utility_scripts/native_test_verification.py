@@ -173,20 +173,22 @@ def verify_native_test_passes(
         condition_packages: list[str] | None = None,
         max_iterations: int = DEFAULT_MAX_ITERATIONS,
         cycle_timeout_seconds: int = DEFAULT_CYCLE_TIMEOUT_SECONDS,
+        env: dict[str, str] | None = None,
 ) -> NativeTestVerificationResult:
     """Try JVM-agent metadata first, then use native tracing as fallback.
 
     The public entry for §FS-native-test-verification-gate: it stages agent and
     trace metadata outside durable repository metadata, finalizes only after a
     passing validation path, and invokes the analysis agent at most once as the
-    terminal repair step.
+    terminal repair step. A caller-supplied environment selects the exact image
+    mode and GraalVM lane used by every command in the gate.
     """
     require_complete_reachability_repo(reachability_repo_path)
     if max_iterations < 1:
         raise ValueError("max_iterations must be >= 1")
     if not os.path.isabs(output_dir):
         raise ValueError("output_dir must be an absolute path")
-    command_env = gradle_command_environment(reachability_repo_path)
+    command_env = gradle_command_environment(reachability_repo_path, env)
     required_graalvm_home = command_env.get("GRAALVM_HOME")
 
     runs_dir = os.path.normpath(os.path.join(output_dir, "..", "runs"))
