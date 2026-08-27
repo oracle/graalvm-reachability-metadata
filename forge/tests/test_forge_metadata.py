@@ -1559,7 +1559,10 @@ class SingleIssueProcessingTests(unittest.TestCase):
                     patch.object(forge_metadata, "_load_dispatcher_dynamic_access_report", return_value=report), \
                     patch.object(forge_metadata, "add_issue_label") as add_issue_label, \
                     patch.dict(os.environ, {"FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD": "5"}, clear=True):
-                chunk_count = forge_metadata.prepare_dynamic_access_chunking(claimed_issue, "test-strategy")
+                chunk_count = forge_metadata.prepare_dynamic_access_chunking(
+                    claimed_issue,
+                    "dynamic_access_main_sources_pi_gpt-5.6-sol",
+                )
 
             report_path = forge_metadata.dynamic_access_exhaust_report_path(
                 tmpdir,
@@ -1606,7 +1609,10 @@ class SingleIssueProcessingTests(unittest.TestCase):
                     patch.object(forge_metadata, "_load_dispatcher_dynamic_access_report", return_value=report), \
                     patch.object(forge_metadata, "add_issue_label") as add_issue_label, \
                     patch.dict(os.environ, {"FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD": "5"}, clear=True):
-                chunk_count = forge_metadata.prepare_dynamic_access_chunking(claimed_issue, "test-strategy")
+                chunk_count = forge_metadata.prepare_dynamic_access_chunking(
+                    claimed_issue,
+                    "dynamic_access_main_sources_pi_gpt-5.6-sol",
+                )
 
             report_state = forge_metadata.DynamicAccessExhaustReport.load(report_state.default_path(tmpdir))
             self.assertEqual(chunk_count, 2)

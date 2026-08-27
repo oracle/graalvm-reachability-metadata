@@ -167,7 +167,7 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
             checkpoint = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
             successful_iterations += 1
 
-            if not self._verify_native_test_gate(global_output_dir(
+            if not self.verify_native_test_gate(global_output_dir(
                 self.reachability_repo_path, self.group, self.artifact, self.test_version,
             )):
                 self._print_failure_analysis(

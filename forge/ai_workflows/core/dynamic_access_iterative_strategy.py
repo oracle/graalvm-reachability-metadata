@@ -775,7 +775,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         output_dir = per_class_output_dir(
             self.reachability_repo_path, self.group, self.artifact, self.test_version, class_name,
         )
-        if not self._verify_native_test_gate(output_dir, label=class_name):
+        if not self.verify_native_test_gate(output_dir, label=class_name):
             return False
         self._commit_test_sources(f"Native-test gate fixes for {class_name}")
         self._latest_class_checkpoint = self._commit_library_metadata(

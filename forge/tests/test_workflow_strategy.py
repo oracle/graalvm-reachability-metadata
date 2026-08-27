@@ -132,16 +132,28 @@ class WorkflowStrategyTests(unittest.TestCase):
         strategy.reachability_repo_path = "/tmp/reachability"
         tested_libraries: list[str] = []
         finalized_libraries: list[str] = []
+        finalization_steps: list[str] = []
 
-        def fake_finalization(**kwargs):  # type: ignore[no-untyped-def]
-            finalized_libraries.append(kwargs["library"])
+        def fake_finalization(**kwargs: object) -> bool:
+            library = str(kwargs["library"])
+            finalized_libraries.append(library)
+            finalization_steps.append(f"finalize:{library}")
             return True
 
-        with patch.object(strategy, "_run_command"), \
+        with patch.object(
+                    strategy,
+                    "verify_native_test_gate",
+                    side_effect=lambda _output_dir: finalization_steps.append("native-gate") or True,
+                ) as native_gate, \
+                patch.object(strategy, "_run_command") as run_command, \
                 patch.object(
                     strategy,
                     "_run_test_with_retry",
-                    side_effect=lambda library: tested_libraries.append(library) or RUN_STATUS_SUCCESS,
+                    side_effect=lambda library: (
+                        tested_libraries.append(library)
+                        or finalization_steps.append(f"test:{library}")
+                        or RUN_STATUS_SUCCESS
+                    ),
                 ), \
                 patch.object(strategy, "_commit_library_iteration", return_value=True), \
                 patch("ai_workflows.core.workflow_strategy.run_library_finalization",
@@ -157,6 +169,48 @@ class WorkflowStrategyTests(unittest.TestCase):
         self.assertEqual(checkpoint, "checkpoint")
         self.assertEqual(tested_libraries, expected_libraries)
         self.assertEqual(finalized_libraries, expected_libraries)
+        native_gate.assert_called_once()
+        run_command.assert_not_called()
+        self.assertTrue(
+            native_gate.call_args.args[0].endswith(
+                "1.0.1/build/natively-collected/_global_",
+            )
+        )
+        self.assertEqual(
+            finalization_steps,
+            [
+                "native-gate",
+                "test:org.example:demo:1.0.1",
+                "test:org.example:demo:1.0.0",
+                "finalize:org.example:demo:1.0.1",
+                "finalize:org.example:demo:1.0.0",
+            ],
+        )
+
+    def test_finalize_successful_iteration_stops_when_terminal_native_gate_fails(self) -> None:
+        strategy = _TestWorkflowStrategy(
+            {"model": "test-model"},
+            reachability_repo_path="/tmp/reachability",
+            library="org.example:demo:1.0.0",
+            test_version="1.0.0",
+        )
+        strategy.group = "org.example"
+        strategy.artifact = "demo"
+        strategy.library = "org.example:demo:1.0.0"
+        strategy.version = "1.0.0"
+        strategy.reachability_repo_path = "/tmp/reachability"
+
+        with patch.object(strategy, "verify_native_test_gate", return_value=False), \
+                patch.object(strategy, "_run_test_with_retry") as run_test, \
+                patch("ai_workflows.core.workflow_strategy.run_library_finalization") as finalize, \
+                patch.object(strategy, "_commit_library_iteration") as commit:
+            status, checkpoint = strategy._finalize_successful_iteration()
+
+        self.assertEqual(status, RUN_STATUS_FAILURE)
+        self.assertIsNone(checkpoint)
+        run_test.assert_not_called()
+        finalize.assert_not_called()
+        commit.assert_not_called()
 
     def test_finalize_run_merges_finalization_status_for_all_driver_cases(self) -> None:
         strategy = _TestWorkflowStrategy(

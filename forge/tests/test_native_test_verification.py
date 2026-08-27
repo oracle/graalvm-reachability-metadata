@@ -628,6 +628,31 @@ class GateRoutingTests(unittest.TestCase):
         self.assertEqual(result.status, ntv.STATUS_PASSED)
         self.assertEqual(observed_test_timeouts, [17, 17])
 
+    def test_caller_environment_is_used_for_every_gate_command(self) -> None:
+        fake, _calls = self._fake_run_factory([], test_rc=0, test_failed_task=None)
+        caller_env = {"GVM_TCK_NATIVE_IMAGE_MODE": "future-defaults-all"}
+        command_env = {**caller_env, "GRADLE_USER_HOME": "/tmp/gradle-home"}
+
+        with patch(
+            "utility_scripts.native_test_verification.gradle_command_environment",
+            return_value=command_env,
+        ) as build_environment, patch(
+            "utility_scripts.native_test_verification.subprocess.run",
+            side_effect=fake,
+        ) as run:
+            result = ntv.verify_native_test_passes(
+                reachability_repo_path=self.repo,
+                coordinate="g:a:1.0",
+                output_dir=self.output_dir,
+                max_iterations=5,
+                env=caller_env,
+            )
+
+        self.assertEqual(result.status, ntv.STATUS_PASSED)
+        build_environment.assert_called_once_with(self.repo, caller_env)
+        self.assertTrue(run.call_args_list)
+        self.assertTrue(all(call.kwargs["env"] is command_env for call in run.call_args_list))
+
     def test_routes_to_codex_when_finalized_jvm_agent_metadata_fails(self) -> None:
         fake, calls = self._fake_run_factory(
             [],

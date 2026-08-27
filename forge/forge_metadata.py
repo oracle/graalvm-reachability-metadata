@@ -353,7 +353,7 @@ DEFAULT_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD = 15
 
 
 PI_REVIEW_PROVIDER = PI_PROVIDER
-DEFAULT_WORK_QUEUE_STRATEGY_NAME = "dynamic_access_main_sources_pi_gpt-5.6-terra"
+DEFAULT_WORK_QUEUE_STRATEGY_NAME = "dynamic_access_bulk_pi_gpt-5.6-sol"
 FAILURE_ANALYSIS_TIMEOUT_SECONDS = 1800
 REVIEW_TIMEOUT_SECONDS = 1800
 DEFAULT_WORKTREE_BASE_REF = "master"
@@ -5051,6 +5051,17 @@ def prepare_dynamic_access_chunking(
     if claimed_issue.label not in {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE}:
         return None
 
+    if strategy_name:
+        strategy: dict = require_strategy_by_name(strategy_name)
+        if strategy.get("workflow") == "optimistic_dynamic_access":
+            # Pure bulk runs have no per-class checkpoints or budgets.
+            # §AR-dynamic-access-bulk §AR-chunked-dynamic-access-pr-linking
+            log_stage(
+                "dynamic-access-chunking",
+                f"Chunking disabled for bulk strategy '{strategy_name}'; the bulk engine owns the full report.",
+            )
+            return None
+
     if claimed_issue.label == LABEL_LIBRARY_NEW:
         if not _prepare_new_library_dynamic_access_report(claimed_issue):
             return None
@@ -5306,6 +5317,8 @@ def build_workflow_driver_invocation(
         ]
         append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
         append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
+        if strategy_name:
+            pipeline_argv.extend(["--strategy-name", strategy_name])
         return WorkflowDriverInvocation(
             driver_name="fix_ni_run",
             script_name="fix_ni_run.py",

@@ -77,7 +77,7 @@ python3 ai_workflows/drivers/fix_javac_fail.py \
 ```
 
 Options:
-- `--strategy-name NAME` select a predefined workflow strategy from `strategies/predefined_strategies.json`. Defaults to `javac_iterative_with_coverage_sources_pi_gpt-5.6-terra`.
+- `--strategy-name NAME` select a predefined workflow strategy from `strategies/predefined_strategies.json`. Defaults to `javac_iterative_with_coverage_sources_pi_gpt-5.6-sol`.
 - `--dynamic-access-class-threshold N` skips oversized post-repair exploration; publication opens a fixed-version `library-update-request`, whose normal workflow owns chunking. `0` disables the check for direct CLI use. Issue-driven Forge runs supply `FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD` automatically.
 - `-v`, `--verbose` enable verbose agent output.
 
@@ -123,7 +123,7 @@ python3 ai_workflows/drivers/add_new_library_support.py \
 ```
 
 Options:
-- `--strategy-name NAME` select a predefined workflow strategy from `strategies/predefined_strategies.json`. Defaults to `dynamic_access_main_sources_pi_gpt-5.6-terra` (Pi agent).
+- `--strategy-name NAME` select a predefined workflow strategy from `strategies/predefined_strategies.json`. Defaults to `dynamic_access_bulk_pi_gpt-5.6-sol` (Pi agent).
 - `--keep-tests-without-dynamic-access` keeps generated tests for dynamic-access workflows even if no dynamic-access call sites are covered.
 - `-v`, `--verbose` enable verbose agent output.
 
