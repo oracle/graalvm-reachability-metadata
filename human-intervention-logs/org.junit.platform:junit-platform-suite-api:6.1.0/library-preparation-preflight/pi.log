@@ -1,0 +1,16 @@
+{
+  "action": "advisory_preparation",
+  "summary": "The artifact contains only suite-configuration annotations; JUnit documentation requires the Suite Engine to discover and execute an annotated suite.",
+  "deterministic_setup": [
+    {
+      "kind": "dependency",
+      "coordinate": "org.junit.platform:junit-platform-suite-engine:6.1.0",
+      "scope": "testImplementation",
+      "reason": "junit-platform-suite-api does not transitively provide its runtime implementation; suite-engine is required for representative @Suite discovery and execution."
+    }
+  ],
+  "agent_guidance": "Use a narrowly scoped @Suite selecting dedicated Jupiter fixture classes and verify selectors, configuration parameters, and BeforeSuite/AfterSuite lifecycle behavior. Avoid package-wide discovery that could execute scaffold tests twice.",
+  "risks": [
+    "The additional test engine may cause duplicate discovery if suite selectors overlap tests already discovered directly by Jupiter."
+  ]
+}
