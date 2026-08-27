@@ -30,13 +30,13 @@ you which file to open:
 | [§FS-forge-outputs](functional-spec.md#fs-forge-outputs-run-outputs) | Run outputs |
 | [§FS-forge-run-metrics](functional-spec.md#fs-forge-run-metrics-per-run-metrics-record) | Per-run metrics record |
 | [§FS-durable-generation-logs](functional-spec.md#fs-durable-generation-logs-durable-generation-and-session-logs) | Durable generation and session logs |
-| [§FS-forge-publication-readiness](functional-spec.md#fs-forge-publication-readiness-publication-readiness) | Publication readiness |
-| [§FS-local-ci-equivalent-verification](functional-spec.md#fs-local-ci-equivalent-verification-local-pre-publication-verification) | Local pre-publication verification |
-| [§FS-native-test-verification-gate](functional-spec.md#fs-native-test-verification-gate-native-test-verification-gate) | Native test verification gate |
-| [§FS-local-branch-review](functional-spec.md#fs-local-branch-review-local-pre-push-branch-review) | Local pre-push branch review |
-| [§FS-library-update-tested-version-split](functional-spec.md#fs-library-update-tested-version-split-library-update-tested-version-split) | Library-update tested-version split |
-| [§FS-human-intervention-policy](functional-spec.md#fs-human-intervention-policy-human-intervention-policy) | Human intervention policy |
-| [§FS-automated-pr-review](functional-spec.md#fs-automated-pr-review-automated-pull-request-review) | Automated pull request review |
+| [§FS-forge-publication-readiness](publication.md#fs-forge-publication-readiness-publication-readiness) | Publication readiness |
+| [§FS-local-ci-equivalent-verification](publication.md#fs-local-ci-equivalent-verification-local-pre-publication-verification) | Local pre-publication verification |
+| [§FS-native-test-verification-gate](publication.md#fs-native-test-verification-gate-native-test-verification-gate) | Native test verification gate |
+| [§FS-local-branch-review](publication.md#fs-local-branch-review-local-pre-push-branch-review) | Local pre-push branch review |
+| [§FS-library-update-tested-version-split](publication.md#fs-library-update-tested-version-split-library-update-tested-version-split) | Library-update tested-version split |
+| [§FS-human-intervention-policy](publication.md#fs-human-intervention-policy-human-intervention-policy) | Human intervention policy |
+| [§FS-automated-pr-review](publication.md#fs-automated-pr-review-automated-pull-request-review) | Automated pull request review |
 | [§FS-forge-run-status](functional-spec.md#fs-forge-run-status-run-status-semantics) | Run status semantics |
 | [§FS-forge-run-output-legibility](functional-spec.md#fs-forge-run-output-legibility-legible-run-output) | Legible run output |
 | [§FS-forge-chunked-dynamic-access](functional-spec.md#fs-forge-chunked-dynamic-access-chunked-dynamic-access-semantics) | Chunked dynamic-access semantics |
