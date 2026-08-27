@@ -10,6 +10,13 @@ These PRs usually add reachability metadata and tests for one target library coo
 
 The rules below implement the contribution contract: block only on a concrete violation of a must — the shape limits (§FS-contribution-contract.2), the coverage gates (§FS-contribution-contract.3), the cheating patterns (§FS-contribution-contract.4), and the test contract's musts (§FS-test-contract) — while shoulds stay advisory in review (§FS-contribution-contract.1).
 
+## Chunked dynamic-access PRs
+
+When the PR has the `chunked-dynamic-access` label, skip every percentage-based
+dynamic-access coverage threshold and regression rule in this skill, including
+for the final chunk. Request changes for coverage only when the reported
+`dynamicAccess.coveredCalls` is `0`. Keep every non-coverage rule. §FS-contribution-contract.3
+
 The PR number or URL can be passed as an optional argument (for example, `1234`, `https://github.com/oracle/graalvm-reachability-metadata/pull/1234`). If the user says "review this PR" without an argument, infer the PR from the surrounding conversation (for example, an open review tab, a PR URL mentioned earlier, or the current branch's PR from `gh pr status`); only ask the user when it cannot be inferred. Use `gh pr view <pr>`, `gh pr diff <pr>`, and `gh pr checks <pr>` against the resolved PR throughout the workflow below.
 
 ## Review Signals
