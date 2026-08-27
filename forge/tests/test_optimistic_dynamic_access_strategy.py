@@ -10,7 +10,7 @@ from ai_workflows.core.increase_dynamic_access_coverage_strategy import (
     IncreaseDynamicAccessCoverageStrategy,
 )
 from ai_workflows.core.optimistic_dynamic_access_strategy import OptimisticDynamicAccessStrategy
-from ai_workflows.core.workflow_strategy import RUN_STATUS_SUCCESS
+from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS
 from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport
 from utility_scripts.dynamic_access_report import (
     BulkDynamicAccessProgress,
@@ -115,6 +115,49 @@ class OptimisticDynamicAccessChunkTests(unittest.TestCase):
         self.assertEqual(result, (RUN_STATUS_SUCCESS, 5, 1))
         self.assertEqual(captured_context["chunk_class_count"], 5)
         self.assertEqual(captured_reports, [primary.bulk_chunk_progress.final_report])
+
+    def test_composite_fails_when_required_iterative_shortfall_fails(self) -> None:
+        for has_reporter_context in (False, True):
+            with self.subTest(has_reporter_context=has_reporter_context):
+                strategy = self._composite_strategy()
+                strategy.primary = self._FakePrimary(self._progress(10, 90))
+                reporter_phase_calls: list[bool] = []
+
+                class FailingDynamicAccess:
+                    def __init__(self, strategy_obj: dict, **context: object) -> None:
+                        self._last_phase_status = RUN_STATUS_SUCCESS
+
+                    def _run_dynamic_access_phase(
+                            self,
+                            agent: object,
+                            report: DynamicAccessCoverageReport,
+                    ) -> tuple[bool, int]:
+                        return False, 0
+
+                    def has_issue_requested_metadata_context(self) -> bool:
+                        return has_reporter_context
+
+                    def _run_issue_requested_metadata_phase(
+                            self,
+                            agent: object,
+                    ) -> tuple[bool, int]:
+                        reporter_phase_calls.append(True)
+                        return True, 1
+
+                class FakeAgent:
+                    def clear_context(self) -> None:
+                        pass
+
+                with patch(
+                        "ai_workflows.core.increase_dynamic_access_coverage_strategy."
+                        "DynamicAccessIterativeStrategy",
+                        FailingDynamicAccess,
+                ):
+                    result = strategy.run(FakeAgent())
+
+                expected_iterations = 4 if has_reporter_context else 3
+                self.assertEqual(result, (RUN_STATUS_FAILURE, expected_iterations, 1))
+                self.assertEqual(reporter_phase_calls, [True] if has_reporter_context else [])
 
     @staticmethod
     def _optimistic_strategy(**context: object) -> OptimisticDynamicAccessStrategy:

@@ -5171,6 +5171,9 @@ def prepare_dynamic_access_chunking(
         return None
 
     threshold: int = dynamic_access_chunk_class_threshold()
+    active_chunk_remaining_budget: int | None = _continuation_active_chunk_remaining_budget(
+        claimed_issue.continuation_marker,
+    )
     if strategy_name:
         strategy: dict = require_strategy_by_name(strategy_name)
         workflow_name: str | None = strategy.get("workflow")
@@ -5182,11 +5185,18 @@ def prepare_dynamic_access_chunking(
             )
         )
         if has_optimistic_bulk_phase:
+            chunk_boundary: int = threshold
+            if active_chunk_remaining_budget is not None and active_chunk_remaining_budget > 0:
+                chunk_boundary = min(chunk_boundary, active_chunk_remaining_budget)
             log_stage(
                 "dynamic-access-chunking",
-                f"Deferring chunk selection for '{strategy_name}' until its optimistic bulk phase completes.",
+                "Deferring chunk selection for '{strategy}' until its optimistic bulk phase completes; "
+                "class_boundary={boundary}.".format(
+                    strategy=strategy_name,
+                    boundary=chunk_boundary,
+                ),
             )
-            return threshold
+            return chunk_boundary
 
     if claimed_issue.label == LABEL_LIBRARY_NEW:
         if not _prepare_new_library_dynamic_access_report(claimed_issue):

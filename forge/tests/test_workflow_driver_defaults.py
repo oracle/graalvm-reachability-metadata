@@ -9,7 +9,10 @@ from unittest.mock import patch
 import forge_metadata
 
 
-def _claimed_issue(label: str) -> forge_metadata.ClaimedIssue:
+def _claimed_issue(
+        label: str,
+        continuation_marker: forge_metadata.ContinuationMarker | None = None,
+) -> forge_metadata.ClaimedIssue:
     return forge_metadata.ClaimedIssue(
         issue={"number": 1412},
         label=label,
@@ -20,6 +23,7 @@ def _claimed_issue(label: str) -> forge_metadata.ClaimedIssue:
         issue_coordinates="g:a:2.0",
         current_coordinates="g:a:1.0",
         new_version="2.0",
+        continuation_marker=continuation_marker,
     )
 
 
@@ -51,6 +55,37 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
                         strategy_name,
                     )
                     self.assertEqual(chunk_count, 15)
+        prepare_report.assert_not_called()
+
+    def test_optimistic_resume_uses_remaining_active_chunk_budget(self) -> None:
+        marker = forge_metadata.ContinuationMarker.create(
+            strategy_name="optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+            issue_number=1412,
+            label=forge_metadata.LABEL_LIBRARY_NEW,
+            coordinate="g:a:2.0",
+            new_version="2.0",
+        )
+        marker.mark_phase_completed("setup")
+        marker.mark_phase_skipped("fix")
+        marker.mark_phase_running("explore")
+        marker.record_chunk_progress(5, 2)
+        claimed_issue = _claimed_issue(
+            forge_metadata.LABEL_LIBRARY_NEW,
+            continuation_marker=marker,
+        )
+
+        with patch.object(forge_metadata, "_prepare_new_library_dynamic_access_report") as prepare_report, \
+                patch.dict(
+                    "os.environ",
+                    {"FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD": "15"},
+                    clear=True,
+                ):
+            chunk_count = forge_metadata.prepare_dynamic_access_chunking(
+                claimed_issue,
+                "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+            )
+
+        self.assertEqual(chunk_count, 3)
         prepare_report.assert_not_called()
 
     def test_java_repair_queues_default_to_sol_strategies(self) -> None:

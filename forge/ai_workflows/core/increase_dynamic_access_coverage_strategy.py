@@ -53,6 +53,7 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
     def run(self, agent, **kwargs):
         current_report: DynamicAccessCoverageReport | None = None
         iterative_chunk_count: int | None = None
+        required_iterative_chunk_phase: bool = False
         skip_dynamic_access_phase: bool = False
 
         if self.primary is None:
@@ -92,6 +93,7 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
                         "classes={budget}".format(budget=iterative_chunk_count)
                     )
                     skip_dynamic_access_phase = iterative_chunk_count == 0
+                    required_iterative_chunk_phase = iterative_chunk_count > 0
 
         library = self.context.get("library") or self.context.get("updated_library")
         da_context = dict(self.context)
@@ -142,7 +144,12 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
 
         has_issue_requested_metadata = da.has_issue_requested_metadata_context()
         if not phase_ok:
-            if self.primary is None and not has_issue_requested_metadata:
+            if required_iterative_chunk_phase:
+                self._print_message(
+                    "required iterative dynamic-access chunk phase did not succeed"
+                )
+                status = RUN_STATUS_FAILURE
+            elif self.primary is None and not has_issue_requested_metadata:
                 self._print_message(
                     "dynamic-access coverage phase did not succeed and no reporter-requested metadata phase is available"
                 )
@@ -180,7 +187,7 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
                 if len(result) == 2:
                     return status, iterations
                 return (status, iterations) + result[2:]
-            if status != RUN_STATUS_CHUNK_READY:
+            if status not in {RUN_STATUS_CHUNK_READY, RUN_STATUS_FAILURE}:
                 status = RUN_STATUS_SUCCESS
 
         if self.primary is None:
