@@ -42,6 +42,7 @@ from utility_scripts.repo_path_resolver import require_complete_reachability_rep
 from utility_scripts.run_location import (
     STEP_NORMAL_SETUP,
     STEP_RUN_WORKFLOW_ENGINE,
+    clear_recorded_failure,
     record_step_failure,
     run_step,
 )
@@ -481,6 +482,7 @@ def main(argv=None) -> int:
         # already valid and the finalization gate decides PR eligibility.
         log_stage("explore", f"Dynamic-access exploration completed with status: {explore_status}")
         if explore_status != RUN_STATUS_SUCCESS:
+            clear_recorded_failure()
             save_phase_update(
                 args.continuation_marker_path,
                 lambda marker: marker.mark_phase_completed(PHASE_EXPLORE, iteration=iterations),

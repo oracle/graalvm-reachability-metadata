@@ -8,13 +8,14 @@ import unittest
 from contextlib import ExitStack
 from unittest.mock import Mock, patch
 
-from ai_workflows.core.workflow_strategy import RUN_STATUS_SUCCESS
+from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS
 from ai_workflows.drivers import fix_ni_run
 
 
 class _FakeStrategy:
-    def __init__(self, gate_result: bool = True) -> None:
+    def __init__(self, gate_result: bool = True, run_status: str = RUN_STATUS_SUCCESS) -> None:
         self.gate_result = gate_result
+        self.run_status = run_status
         self.gate_calls: list[tuple[str, str | None]] = []
         self.run_calls: list[tuple[object, str]] = []
         self.finalize_calls: list[str] = []
@@ -26,7 +27,7 @@ class _FakeStrategy:
 
     def run(self, agent: object, checkpoint_commit_hash: str) -> tuple[str, int]:
         self.run_calls.append((agent, checkpoint_commit_hash))
-        return RUN_STATUS_SUCCESS, 1
+        return self.run_status, 1
 
     def finalize_run(self, checkpoint: str) -> str:
         self.finalize_calls.append(checkpoint)
@@ -39,7 +40,7 @@ class NativeImageRunDriverTests(unittest.TestCase):
             seed_returncode: int,
             explore: bool,
             strategy: _FakeStrategy,
-    ) -> tuple[int, Mock, Mock, object]:
+    ) -> tuple[int, Mock, Mock, Mock, object]:
         agent = object()
         seed_result = subprocess.CompletedProcess(args=["./gradlew"], returncode=seed_returncode)
 
@@ -75,6 +76,10 @@ class NativeImageRunDriverTests(unittest.TestCase):
                 return_value=explore,
             ))
             stack.enter_context(patch.object(fix_ni_run, "prepare_library_update_target"))
+            clear_recorded_failure = stack.enter_context(patch.object(
+                fix_ni_run,
+                "clear_recorded_failure",
+            ))
             stack.enter_context(patch.object(
                 fix_ni_run,
                 "build_strategy_and_agent",
@@ -97,12 +102,12 @@ class NativeImageRunDriverTests(unittest.TestCase):
                 "--new-version", "2.0",
             ])
 
-        return returncode, run_seed, populate_urls, agent
+        return returncode, run_seed, populate_urls, clear_recorded_failure, agent
 
     def test_failed_seed_enters_native_gate_then_finalization(self) -> None:
         strategy = _FakeStrategy()
 
-        returncode, run_seed, populate_urls, _agent = self._run_driver(
+        returncode, run_seed, populate_urls, _clear_recorded_failure, _agent = self._run_driver(
             seed_returncode=1,
             explore=False,
             strategy=strategy,
@@ -126,7 +131,7 @@ class NativeImageRunDriverTests(unittest.TestCase):
     def test_successful_seed_checks_exploration_then_finalizes(self) -> None:
         strategy = _FakeStrategy()
 
-        returncode, _run_seed, _populate_urls, agent = self._run_driver(
+        returncode, _run_seed, _populate_urls, clear_recorded_failure, agent = self._run_driver(
             seed_returncode=0,
             explore=True,
             strategy=strategy,
@@ -136,11 +141,26 @@ class NativeImageRunDriverTests(unittest.TestCase):
         self.assertEqual(strategy.gate_calls, [])
         self.assertEqual(strategy.run_calls, [(agent, "checkpoint")])
         self.assertEqual(strategy.finalize_calls, ["checkpoint"])
+        clear_recorded_failure.assert_not_called()
+
+    def test_failed_exploration_clears_its_non_terminal_failure(self) -> None:
+        strategy = _FakeStrategy(run_status=RUN_STATUS_FAILURE)
+
+        returncode, _run_seed, _populate_urls, clear_recorded_failure, agent = self._run_driver(
+            seed_returncode=0,
+            explore=True,
+            strategy=strategy,
+        )
+
+        self.assertEqual(returncode, 0)
+        self.assertEqual(strategy.run_calls, [(agent, "checkpoint")])
+        self.assertEqual(strategy.finalize_calls, ["checkpoint"])
+        clear_recorded_failure.assert_called_once_with()
 
     def test_failed_seed_stops_when_native_gate_fails(self) -> None:
         strategy = _FakeStrategy(gate_result=False)
 
-        returncode, _run_seed, populate_urls, _agent = self._run_driver(
+        returncode, _run_seed, populate_urls, _clear_recorded_failure, _agent = self._run_driver(
             seed_returncode=1,
             explore=False,
             strategy=strategy,
