@@ -21,30 +21,19 @@ home, so the prefix tells you which file to open.
 | --- | --- | --- |
 | `GRUND` | [grund.md](grund.md) | Why Forge exists — the motivation everything else climbs back to. |
 | `GOAL` | [goals.md](goals.md) | Where Forge is headed — direction and measurable outcomes. |
-| `FS` | [functional-spec/functional-spec.md](functional-spec/functional-spec.md) | What Forge must do — contributor-facing functional behavior. |
-| `AR` | [architecture/architecture.md](architecture/architecture.md), [architecture/agent.md](architecture/agent.md) | How Forge is structured — boundaries, components, extension points. |
-| `DW` | [architecture/do-work.md](architecture/do-work.md) | The unattended do-work loop architecture. |
-| `STRAT` | [functional-spec/strategies.md](functional-spec/strategies.md) | Predefined strategy configuration architecture. |
-| `ORCH` | [architecture/orchestration-scripts.md](architecture/orchestration-scripts.md) | Orchestration script behavior and architecture. |
-| `GIT` | [architecture/git-scripts.md](architecture/git-scripts.md) | Git and PR publication behavior and architecture. |
-| `WF` | [architecture/workflows.md](architecture/workflows.md) | The registered workflow engines. |
-| `CC` | [architecture/code-coverage-improvement.md](architecture/code-coverage-improvement.md) | Code coverage improvement workflow, pending its own spec. |
-| `BENCH` | [functional-spec/benchmarking.md](functional-spec/benchmarking.md) | Generation benchmarking specification. |
+| `FS` | [functional-spec/](functional-spec/README.md) | What Forge must do — contributor-facing functional behavior and the per-component contracts. |
+| `AR` | [architecture/](architecture/README.md) | How Forge is structured — boundaries, components, extension points, and the per-component design. |
 | `ROADMAP` | [roadmap.md](roadmap.md) | Planned, not-yet-implemented work. |
 
-A kind whose home is a *folder* (`AR`, `FS`) may spread its IDs across
-several files in that folder; a kind whose home is a single *file* keeps all of
-its IDs in that one file.
+`AR` and `FS` are *folder* homes: they spread their IDs across every file in
+that folder, and the file — not the prefix — tells you which component a
+declaration belongs to.
 
-Homes nest. `docs/` holds only the three documents that answer a question about
-Forge as a whole — why (`GRUND`), where (`GOAL`), and what is planned
-(`ROADMAP`). Everything else lives under
-[architecture/](architecture/README.md) or
-[functional-spec/](functional-spec/README.md), including the kinds whose home is
-a file or folder inside one of those two: `DW`, `ORCH`, and `GIT` are
-architecture; `STRAT`, `BENCH`, and the whole `WF` subtree are spec. The prefix
-still tells you the kind, and the directory now tells you whether it describes
-behavior or structure.
+`docs/` holds only the three documents that answer a question about Forge as a
+whole — why (`GRUND`), where (`GOAL`), and what is planned (`ROADMAP`).
+Everything else lives under [architecture/](architecture/README.md) or
+[functional-spec/](functional-spec/README.md), and the directory tells you
+whether a document describes structure or behavior.
 
 ### Files at a glance
 
@@ -54,17 +43,17 @@ behavior or structure.
 - [functional-spec/continuation.md](functional-spec/continuation.md) — `FS-forge-run-continuation`: resuming a failed run at the phase that failed, and the continuation marker contract.
 - [architecture/architecture.md](architecture/architecture.md) — `AR-forge-architecture`: control plane, workflow boundaries, and extension points.
 - [architecture/agent.md](architecture/agent.md) — `AR-agent-api`: the agent API and its Pi implementation.
-- [architecture/do-work.md](architecture/do-work.md) — `DW-do-work-loop`: the long-running worker loop.
-- [architecture/orchestration-scripts.md](architecture/orchestration-scripts.md) — `ORCH-forge-orchestration`.
-- [architecture/git-scripts.md](architecture/git-scripts.md) — `GIT-forge-publication`: PR eligibility, body, issue linking, and publication.
-- [functional-spec/strategies.md](functional-spec/strategies.md) — `STRAT-workflow-strategy-registry`: strategy registry, contract, and fields.
-- [functional-spec/benchmarking.md](functional-spec/benchmarking.md) — `BENCH-forge-generation-benchmarking`.
+- [architecture/do-work.md](architecture/do-work.md) — `AR-do-work-loop`: the long-running worker loop.
+- [architecture/orchestration-scripts.md](architecture/orchestration-scripts.md) — `AR-forge-orchestration`.
+- [architecture/git-scripts.md](architecture/git-scripts.md) — `AR-forge-publication`: PR eligibility, body, issue linking, and publication.
+- [functional-spec/strategies.md](functional-spec/strategies.md) — `FS-workflow-strategy-registry`: strategy registry, contract, and fields.
+- [functional-spec/benchmarking.md](functional-spec/benchmarking.md) — `FS-forge-generation-benchmarking`.
 - [roadmap.md](roadmap.md) — `ROADMAP-forge-implementation` and the planned improvements beneath it.
 
 ### A component still awaiting its split
 
 [architecture/code-coverage-improvement.md](architecture/code-coverage-improvement.md)
-holds the `CC` prefix and keeps behavior and architecture in one document. It is
+keeps behavior and architecture in one document. It is
 the only component documented that way. The split — behavior into the functional
 spec, engine into [architecture/workflows.md](architecture/workflows.md), driver
 into [architecture/drivers.md](architecture/drivers.md) — happens in a later

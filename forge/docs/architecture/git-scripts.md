@@ -1,40 +1,43 @@
-# GIT-forge-publication: Forge branch and pull-request publication
+# AR-forge-publication: Forge branch and pull-request publication
 
 Forge publication has a local branch-finalization half and a trusted GitHub
 Actions half (§FS-forge-issue-resolution-goal). The `git_scripts/` directory
 owns the local half: workflow-specific expected-path staging, rebase,
 pre-publication verification, descriptor creation, the single final commit, and
 the direct push to the upstream `ai/**` branch
-(§GIT-shared-publication-pipeline).
+(§AR-shared-publication-pipeline).
 
 After an unprivileged Branch Ready workflow accepts that exact SHA, publisher
 code and templates loaded from the default branch own the GitHub half
-(§GIT-actions-publication): trusted rendering, labels, reviewers, idempotent PR
+(§AR-actions-publication): trusted rendering, labels, reviewers, idempotent PR
 creation, and publication reporting. Publication opens the pull request and
 nothing else; every issue and project mutation stays local, where Forge already
 owns the claimed issue. The feature branch supplies data only; neither it nor
 the local Forge process receives the publisher App credentials.
 Chunked dynamic-access runs identify each part before the push
-(§GIT-chunked-linking). Local finalization runs after workflow generation and
+(§AR-chunked-linking). Local finalization runs after workflow generation and
 the verification required by §FS-local-ci-equivalent-verification, never during
 the strategy loop.
 
-## GIT-pr-eligibility: PR eligibility boundary
+## AR-pr-eligibility: PR eligibility boundary
 
 Local finalization accepts only statuses that orchestration has already
 classified as PR-eligible: `RUN_STATUS_SUCCESS`,
 `SUCCESS_WITH_INTERVENTION_STATUS`, or `RUN_STATUS_CHUNK_READY`. It must not
 turn a failed workflow into a pushed publication branch. The descriptor and
 commit preserve the verification, intervention, metrics, and diagnostic context
-that the trusted publisher later renders.
+that the trusted publisher later renders. A finished working tree is not yet a
+publishable run (§FS-forge-publication-readiness); this boundary is where that
+distinction is enforced.
 
-## GIT-shared-publication-pipeline: Shared branch publication pipeline
+## AR-shared-publication-pipeline: Shared branch publication pipeline
 
 Every workflow route must use one shared local finalization pipeline. Routes
 contribute only their expected paths, commit wording, and bounded hooks needed
 before rebase or verification. The pipeline creates a publication ID and unique
 `ai/<producer>/<suffix>-<publication-id>` branch, stages expected paths, rebases
-onto a fresh upstream `master`, runs the pre-publication verification gate,
+onto a fresh upstream `master`, runs the pre-publication verification gate
+(§FS-local-ci-equivalent-verification),
 writes and validates the descriptor, commits any resulting changes, and pushes
 the final HEAD directly to `oracle/graalvm-reachability-metadata`.
 
@@ -44,7 +47,7 @@ post-publication bookkeeping commit. A resumed publication reuses its persisted
 publication ID and branch. Once the exact branch has been pushed, local
 finalization completes without waiting for Actions to create the PR.
 
-## GIT-expected-paths: Expected path staging
+## AR-expected-paths: Expected path staging
 
 Each local publication route must encode workflow-specific staging policy
 instead of a generic `git add .`, staging only generated tests, metadata
@@ -54,13 +57,13 @@ Java-fix, native-run-fix, dynamic-access coverage-improvement, and JaCoCo
 code-coverage-improvement routes each define their expected paths. The
 code-coverage route stages the dedicated coverage suite, the coordinate's test
 directory, and the metadata that suite justified; the not-for-native-image route
-(§GIT-not-for-native-image-publication) stages the marker
+(§AR-not-for-native-image-publication) stages the marker
 `metadata/<group>/<artifact>/index.json`, its stats publication path, and the
 descriptor. Shared repository edits are allowed only when local verification
 (§FS-local-ci-equivalent-verification) proved them necessary, and those paths
 must be listed in descriptor verification evidence for maintainer review.
 
-## GIT-publication-descriptor: Durable publication descriptor
+## AR-publication-descriptor: Durable publication descriptor
 
 Local finalization writes schema version `1` to
 `stats/<group>/<artifact>/<version>/forge-publication.json` and validates it
@@ -106,14 +109,16 @@ publication recreates the same ID, descriptor, and branch. A fresh run for the
 same issue gets a distinct identity. The producer must equal the authenticated
 login that owns the `ai/<producer>/...` branch.
 
-## GIT-actions-publication: Trusted GitHub Actions publisher
+## AR-actions-publication: Trusted GitHub Actions publisher
 
 `Forge Branch Ready` runs on pushes to upstream `ai/**` branches with read-only
 repository permissions and no secrets. It treats the head tree as data, requires
 one schema-valid descriptor, checks the branch namespace and descriptor/branch
 identity, and requires that exactly one descriptor changed in the publication
 diff. It must not execute scripts, actions, build files, or other code from the
-feature branch and must not create or modify GitHub resources.
+feature branch and must not create or modify GitHub resources. The title and
+body it publishes come from the shared non-mutating renderer
+(§AR-pr-preview-builders), never from a second rendering path.
 
 A Branch Ready failure leaves the branch, issue assignment, labels, and project
 status unchanged. Its job summary and logs must identify the exact SHA and each
@@ -141,7 +146,7 @@ Before mutation the publisher must verify all of the following:
 
 Neither workflow re-checks the workflow-specific changed-path scope, the
 execution metrics, or the local verification evidence. Expected-path staging
-(§GIT-expected-paths) and local CI already gated that work
+(§AR-expected-paths) and local CI already gated that work
 (§FS-local-ci-equivalent-verification), and re-deriving it from branch-supplied
 data proves nothing the branch could not also assert.
 
@@ -174,11 +179,11 @@ head branch and publication ID, an open or merged PR is a successful no-op. A
 closed, unmerged PR or ambiguous match fails for manual inspection. Any
 publisher failure preserves the pushed branch and claimed issue state.
 
-## GIT-pr-body: Pull request body contents
+## AR-pr-body: Pull request body contents
 
 The trusted default-branch renderer records the verified run's tracked
 parameters in the PR body so maintainers can review the result without rerunning
-Forge. Common contents are the issue reference (§GIT-issue-linking), a
+Forge. Common contents are the issue reference (§AR-issue-linking), a
 human-readable summary, Forge branch/revision evidence, publication ID trailer,
 any post-generation intervention, and local verification commands and outcomes
 (§FS-local-ci-equivalent-verification), except where a subsection below states
@@ -207,7 +212,7 @@ library stats plus an explanation when covered-call and metadata-entry counts
 diverge, while coverage improvement reports a before/after stats diff computed
 from the run's baseline snapshot. New-library PRs link with `Fixes:` for a
 single-PR run and `Refs:` for non-final chunked dynamic-access chunks
-(§GIT-chunked-linking).
+(§AR-chunked-linking).
 
 ### Java fail-fix (javac and java-run)
 
@@ -217,7 +222,7 @@ the agent generation metrics, a stats comparison for the bumped version, and a
 bounded test-source comparison so reviewers can see what the fix changed without
 preventing PR creation. The two differ only in workflow identity (compilation
 vs. runtime wording), the metrics file, and the PR label
-(§WF-java-fail-fix-workflow).
+(§AR-java-fail-fix-workflow).
 
 When post-repair dynamic-access exploration is skipped because the report
 exceeds the configured class threshold, the body reports only what that run
@@ -232,14 +237,14 @@ The deferred-exploration section shows the uncovered class count and configured
 threshold, then links the new fixed-version `library-update-request`. The body
 retains `Fixes: #<repair-issue>`, adds `Refs: #<coverage-issue>`, and includes
 `Forge-Unblocks-Issue: #<coverage-issue>` so orchestration releases the parked
-coverage issue only after the repair PR merges (§WF-java-fail-fix-workflow).
+coverage issue only after the repair PR merges (§AR-java-fail-fix-workflow).
 The locally generated follow-up issue keeps the coordinate in its title and uses one
 brief sentence stating that it was opened while resolving the repair issue
 because the dynamic-access class count exceeded the threshold.
 
 Neither template blocks on a dynamic-access category regression between the
 previous and repaired version; coverage trade-offs are settled in review
-(§WF-java-fail-fix-workflow).
+(§AR-java-fail-fix-workflow).
 
 ### Native-image run-fix
 
@@ -253,7 +258,7 @@ CI-equivalent verification section (§AR-forge-driver-queues.4).
 ### Not-for-native-image
 
 The trusted `not-for-native-image` template follows
-§GIT-not-for-native-image-publication.
+§AR-not-for-native-image-publication.
 No generation happened, so the body has no generation metrics. It states why the
 artifact is not a Native Image target, includes any replacement guidance, the
 `Fixes:` issue reference, and the local CI-equivalent verification section.
@@ -261,7 +266,7 @@ artifact is not a Native Image target, includes any replacement guidance, the
 ### Code coverage improvement
 
 The trusted `code-coverage-improvement` template represents the JaCoCo workflow
-in §CC-code-coverage-improvement, which measures method coverage rather than
+in §AR-code-coverage-improvement, which measures method coverage rather than
 dynamic-access metadata, so it shares no body shape with the routes above. It
 reports the coordinate, the dedicated coverage suite path, the generating model,
 the human-intervention flag, baseline and final coverage for each guidance phase
@@ -271,7 +276,7 @@ because entries JaCoCo never reports are ones no run can cover. The title names
 the coordinate and the model, matching the head branch. The body links with
 `Fixes:`, like every other route: the coverage route has no chunked mode, so
 each published run is a single-PR workflow whose merge closes its issue
-(§GIT-issue-linking).
+(§AR-issue-linking).
 
 The body omits the Forge branch/revision block the other templates carry: this
 workflow is driven by a Rhei template rather than a Forge strategy revision, so
@@ -284,14 +289,15 @@ deliberately absent. The counts restate what the coverage figures already say,
 and the commands embed the run's own absolute worktree paths, which no reader of
 the PR can execute; both stay in the finalization artifacts.
 
-## GIT-pr-preview-builders: Reusable title and body builders
+## AR-pr-preview-builders: Reusable title and body builders
 
 The default-branch publisher exposes one non-mutating render command that reads
 a validated descriptor and exact feature tree. Both live and shadow publication
 call that renderer before any GitHub mutation, making descriptor-plus-tree the
-publication source of truth.
+publication source of truth. Both paths render the pull request that
+§FS-forge-publication-readiness governs.
 
-## GIT-issue-linking: Issue linking and labels
+## AR-issue-linking: Issue linking and labels
 
 Publication owns user-visible GitHub linkage: PR labels, `Fixes:` issue
 references, review text, metrics summaries, and human-intervention visibility.
@@ -312,11 +318,13 @@ project item in `In Progress`, and records the resulting number in the typed
 descriptor fact. The trusted publisher only renders that number into `Refs:`
 and `Forge-Unblocks-Issue:`. Retrying publication must reuse the same issue.
 
-## GIT-chunked-linking: Chunked dynamic-access PR linking
+## AR-chunked-linking: Chunked dynamic-access PR linking
 
-Chunked dynamic-access PRs carry the `chunked-dynamic-access` label and use
+Chunked runs are the spec's answer to an oversized report
+(§FS-forge-chunked-dynamic-access). Chunked dynamic-access PRs carry the
+`chunked-dynamic-access` label and use
 `Refs: #<issue>` until the final chunk; only the final chunk may use
-`Fixes: #<issue>`, as specified by §WF-chunked-dynamic-access-pr-linking.
+`Fixes: #<issue>`, as specified by §AR-chunked-dynamic-access-pr-linking.
 
 Before the one final push, the exhaust report stores the publication ID and
 unique head branch also present in the descriptor. The publisher adds
@@ -328,7 +336,7 @@ number back to the branch, so the exact validated SHA remains unchanged.
 Previously committed reports that contain `latestChunkPullRequest` remain
 readable during migration.
 
-## GIT-not-for-native-image-publication: Not-for-native-image publication
+## AR-not-for-native-image-publication: Not-for-native-image publication
 
 The `not-for-native-image` route handles artifacts that the
 `library-new-request` driver judged not to be GraalVM Native Image targets

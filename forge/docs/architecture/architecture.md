@@ -27,7 +27,7 @@ issue and a bot pull request* (§FS-forge-issue-resolution-goal). Steps that are
 gates rather than components are written below as pseudo-methods: the name fixes
 the contract, the contract text fixes what the step must do, and the citation
 fixes where the behavior is specified. Code coverage improvement
-(§CC-code-coverage-improvement) has its own pipeline and is not covered here.
+(§AR-code-coverage-improvement) has its own pipeline and is not covered here.
 
 Every method carries one label: **Algorithmic** — deterministic code decides,
 no model is involved; **Neural** — a model decides, by design, because the
@@ -208,8 +208,8 @@ purpose and a boundary a reader can point at:
 | --- | --- | --- | --- | --- |
 | `claim` | dispatcher (§AR-forge-control-plane) | Turn a labeled issue into one run that is safe to start: prove the host and the strategy, take exactly one issue, and prepare the ground the run executes on | The worker loop reaches an eligible queue | A driver is invoked with resolved coordinates, a validated strategy, and the prepared workspace — or the claim is released back to the queue |
 | `setup` | workflow driver (§AR-forge-driver-contract) | Put the coordinate's inputs on disk — index entry, source context, preflight decisions — so the workflow engine starts from a tree that is already correct | The dispatcher routes the claimed issue to the driver | `check_setup()` accepts every artifact the setup steps were supposed to produce and returns `ReadyRun` |
-| `fix` | workflow core (§WF-java-fail-fix-workflow) | Repair the failure the issue reports, and prove the repair under Native Image | A `fails-*` issue reaches the workflow engine | The reported failure passes and the trace gate is clean; `skipped` on workflows with no reported failure to repair |
-| `explore` | workflow core (§WF-dynamic-access-iterative) | Raise dynamic-access coverage by writing tests that reach uncovered call sites, keeping only what actually gained coverage | The dynamic-access report lists classes with uncovered access | Every class is terminal — committed or exhausted; `skipped` on workflows that do not explore, and deferred when the uncovered-class count exceeds the threshold |
+| `fix` | workflow core (§AR-java-fail-fix-workflow) | Repair the failure the issue reports, and prove the repair under Native Image | A `fails-*` issue reaches the workflow engine | The reported failure passes and the trace gate is clean; `skipped` on workflows with no reported failure to repair |
+| `explore` | workflow core (§AR-dynamic-access-iterative) | Raise dynamic-access coverage by writing tests that reach uncovered call sites, keeping only what actually gained coverage | The dynamic-access report lists classes with uncovered access | Every class is terminal — committed or exhausted; `skipped` on workflows that do not explore, and deferred when the uncovered-class count exceeds the threshold |
 | `finalization` | workflow driver (§AR-forge-driver-finalization) | Turn generated work into a verified tree: the terminal gate, the three native lanes, the repository checks, the local CI equivalent, and the local review | The workflow engine returns a terminal run status | The tree that will be pushed has passed `local_ci_check()` and `local_review()` |
 | `publication` | driver, then GitHub Actions (§AR-forge-verification-publication-boundary) | Make the verified tree PR-eligible and hand the privileged half to Actions, which opens the pull request | The verified branch is ready to push | The pull request is open and the issue is closed out |
 
@@ -267,7 +267,7 @@ Every enabled issue queue resolves its configured strategy name against the
 registry before scanning starts, and a strategy bundle is rejected on load
 unless it names a model and carries the prompts and parameters its workflow
 engine declares as required (§FS-forge-run-requirements.1,
-§STRAT-forge-predefined-strategy-contract). The bundle is an input like any
+§FS-forge-predefined-strategy-contract). The bundle is an input like any
 other and is validated before scanning rather than at first use
 (§root/PRCPL-verify-inputs). An unknown strategy is a worker
 configuration error, not a per-issue failure.
@@ -277,7 +277,7 @@ configuration error, not a per-issue failure.
 **Algorithmic.**
 
 Claiming is orchestration, never workflow logic (§AR-forge-control-plane,
-§ORCH-forge-orchestration). The issue payload is re-read at claim time
+§AR-forge-orchestration). The issue payload is re-read at claim time
 against live GitHub state rather than trusted from the scan
 (§FS-forge-run-requirements.2), and must still be open, still carry the
 queue label, be unassigned or assigned only to the authenticated user, have no
@@ -286,7 +286,7 @@ moved to `In Progress`, and given an isolated worktree plus scratch metrics
 repository. A `resumable` issue additionally requires a valid continuation
 marker on a preserved branch (§FS-forge-run-continuation), and a
 `chunked-dynamic-access` issue requires its exhaust report
-(§WF-dynamic-access-exhaust-report).
+(§AR-dynamic-access-exhaust-report).
 
 ### check_issue_form()
 
@@ -345,7 +345,7 @@ isolated worktree of the reachability repository, a scratch metrics repository,
 and the per-run setup-evidence directory. It also validates that the issue
 GraalVM lanes are present before any driver is invoked
 (§FS-forge-run-requirements.4, §AR-forge-control-plane,
-§ORCH-forge-orchestration). Drivers are given the resulting paths.
+§AR-forge-orchestration). Drivers are given the resulting paths.
 
 ### route_to_driver()
 
@@ -355,7 +355,7 @@ Routing and driver invocation are one step: the dispatcher resolves the issue
 label to exactly one driver script under `ai_workflows/drivers/` and calls it
 with two explicit run inputs — resolved coordinates and the validated strategy —
 plus the worktree, metrics and setup-evidence paths, issue context, and
-continuation marker (§ORCH-forge-orchestration). Routing is by issue label
+continuation marker (§AR-forge-orchestration). Routing is by issue label
 only, never by PR label, and the driver does not re-implement queue policy. The
 driver returns a terminal status and its durable run evidence.
 
@@ -391,7 +391,7 @@ before `normal_setup()` or between `neural_setup()` and `check_setup()`. The
 agent receives the coordinates, strategy, prepared tree, issue context, artifact
 evidence, and source context. Returned dependency, Docker-image, and advisory
 fields are typed and structurally validated
-(§ORCH-forge-orchestration.1.1, §root/PRCPL-verify-inputs).
+(§AR-forge-orchestration.1.1, §root/PRCPL-verify-inputs).
 
 The agent running this step must have web tooling: resolving artifact URLs,
 downloading sources, and deciding what a library needs to build require reading
@@ -444,15 +444,15 @@ it invokes (§AR-forge-strategy-agent-boundary).
 
 The driver hands the agent, rendered prompts, workflow parameters, repository
 paths, and run metadata to the registered workflow engine and gets one terminal
-run status back (§WF-forge-workflow-engine). The engine owns run state —
+run status back (§AR-forge-workflow-engine). The engine owns run state —
 checkpoints, prompt/command cycles, gate interpretation, retry budgets, metrics
 — and the driver owns everything around it. The exploration loop the diagrams
 above trace — class selection, checkpoints, `commit_class()`,
 `reset_to_class_checkpoint()`, `refresh_dynamic_access_report()`, and the
 `run_basic_iterative_fallback()` path a library with no dynamic-access signal
 takes instead — is engine-owned and specified in full by
-§WF-dynamic-access-iterative and
-§WF-dynamic-access-fallback-and-failure. Only the steps with a contract of their
+§AR-dynamic-access-iterative and
+§AR-dynamic-access-fallback-and-failure. Only the steps with a contract of their
 own are listed here.
 
 ### fix_reported_failure()
@@ -462,13 +462,13 @@ itself is the agent's.
 
 A `fails-*` issue is a repair run: the engine reproduces the reported failure,
 sends it to the agent, and iterates until the failing task passes or the budget
-is exhausted (§WF-java-fail-fix-workflow, §AR-forge-driver-queues.4).
+is exhausted (§AR-java-fail-fix-workflow, §AR-forge-driver-queues.4).
 Whether exploration follows is a strategy decision, not a workflow rule. A bare
 repair engine completes the fix phase and marks explore skipped. A composite
 bundle — the strategies whose workflow is the composite engine and that name a
 `primary-workflow` — runs the repair first and then the dynamic-access loop on
 the same run, and defers exploration when the uncovered-class count exceeds the
-configured threshold (§WF-dynamic-access-composite). A plain
+configured threshold (§AR-dynamic-access-composite). A plain
 dynamic-access engine has no repair step and marks the fix phase skipped.
 
 ### generate_tests()
@@ -478,8 +478,8 @@ Forge exists to buy; the attempt loop around it is deterministic.
 
 One step, two scopes, decided by the argument: `report_with_every_class` is the
 bulk pass over the whole dynamic-access report, and `single_class_report` is one
-class of it (§WF-dynamic-access-bulk,
-§WF-dynamic-access-iterative). Nothing else differs — same prompt
+class of it (§AR-dynamic-access-bulk,
+§AR-dynamic-access-iterative). Nothing else differs — same prompt
 rendering, same test budget, same verdict rules — so the two exploration stages
 are one step called with a different slice of the same report.
 
@@ -817,7 +817,7 @@ produced with no pre-push review at all, which is the bar this step has to clear
 
 Publication is separated from generation and never runs with publisher
 credentials (§AR-forge-verification-publication-boundary,
-§GIT-forge-publication). "Publish" means *make PR-eligible*, and that is the
+§AR-forge-publication). "Publish" means *make PR-eligible*, and that is the
 push at the end: nothing leaves the machine before `local_ci_check()` and
 `local_review()` have passed over the tree that will be pushed, and — when the
 review repaired something — before `finalize_run()` and `local_ci_check()` have
@@ -835,9 +835,9 @@ validates the descriptor and diff as data. Only its successful completion
 triggers the privileged **Forge Open PR** workflow, which loads publisher code
 from the default branch, takes a short-lived token, revalidates the exact head
 SHA, and opens the pull request as `graalvmbot` with the stats and generation
-summary rendered from the descriptor (§GIT-actions-publication). For chunked
+summary rendered from the descriptor (§AR-actions-publication). For chunked
 dynamic-access work, only the final chunk may close the issue
-(§WF-chunked-dynamic-access-pr-linking).
+(§AR-chunked-dynamic-access-pr-linking).
 
 ### close_out_issue()
 
@@ -846,8 +846,8 @@ dynamic-access work, only the final chunk may close the issue
 After the driver returns, the dispatcher owns the GitHub bookkeeping the run
 must not do for itself: unassign the issue, move the project item to the status
 the terminal run status implies, apply review or human-intervention labels, and
-clean up the worktree (§ORCH-forge-orchestration). A chunk-ready run leaves
-the issue open for its next chunk (§WF-chunked-dynamic-access-pr-linking).
+clean up the worktree (§AR-forge-orchestration). A chunk-ready run leaves
+the issue open for its next chunk (§AR-chunked-dynamic-access-pr-linking).
 
 ## AR-forge-control-plane: Worker loop and dispatcher own queue control
 
@@ -856,15 +856,15 @@ scripts, serving §FS-forge-issue-resolution-goal. `do-work.sh` is the stable
 shell entrypoint. It forwards arguments to `do_up_to_date_work.sh`, which keeps
 the local Forge checkout up to date, honors stop files, applies worker limits,
 and invokes `forge_metadata.py` for one work cycle, as described in
-§DW-do-work-loop. The dispatcher owns GitHub queue scanning, issue claiming,
+§AR-do-work-loop. The dispatcher owns GitHub queue scanning, issue claiming,
 worktree creation, workflow routing, review queues, project status updates, and
 cleanup; its behavior and implementation are specified in
-§ORCH-forge-orchestration. After the dispatcher observes a PR-eligible
-status, the git-scripts component (§GIT-forge-publication) finalizes and pushes
+§AR-forge-orchestration. After the dispatcher observes a PR-eligible
+status, the git-scripts component (§AR-forge-publication) finalizes and pushes
 one verified branch and descriptor. Repository Actions then hand the exact SHA
-to trusted default-branch publisher code (§GIT-actions-publication), which owns
+to trusted default-branch publisher code (§AR-actions-publication), which owns
 PR creation and publication-related GitHub mutations. The dispatched workflows
-are defined separately, in §WF-forge-workflow-system and
+are defined separately, in §AR-forge-workflow-system and
 §AR-forge-drivers.
 
 The dispatcher routes issue work by issue labels, not by PR labels:
@@ -921,7 +921,7 @@ dispatcher is §ROADMAP-forge-dispatcher-owned-run-preconditions.
 
 The workflow driver owns run setup and finalization; the workflow engine owns
 the state-machine-like issue-resolution process described in
-§WF-forge-workflow-engine. The predefined strategy supplies configuration:
+§AR-forge-workflow-engine. The predefined strategy supplies configuration:
 which workflow engine, agent backend, model, prompt set, and workflow
 parameters are used for the run. This keeps every workflow aligned with the
 same repository, metrics, and local verification contracts
@@ -973,7 +973,7 @@ tracing and Codex recovery through the Gradle task contract in
 §FS-native-test-verification-gate.5. The concrete agent API and Pi adapter are
 documented in §AR-agent-api, and the
 strategy bundles that bind these pieces live in the strategy registry
-(§STRAT-forge-predefined-strategy-contract, §STRAT-workflow-strategy-registry).
+(§FS-forge-predefined-strategy-contract, §FS-workflow-strategy-registry).
 
 ## AR-forge-verification-publication-boundary: Local verification hands data to trusted publication
 
@@ -984,24 +984,24 @@ expected paths, rebases, runs the pre-publication gate required by
 §FS-local-ci-equivalent-verification, writes the durable
 descriptor, commits once, and pushes the unique `ai/**` branch. It does not
 render or create a PR and never receives publisher credentials
-(§GIT-shared-publication-pipeline, §GIT-publication-descriptor).
+(§AR-shared-publication-pipeline, §AR-publication-descriptor).
 
 The unprivileged Branch Ready workflow observes the push without secrets and
 validates the branch as data. Only its successful completion triggers the
 privileged workflow. That workflow loads publisher code and templates from the
 default branch, obtains a short-lived GitHub App token, revalidates the exact
 head SHA and all trust inputs, and performs PR and publication follow-up
-mutations (§GIT-actions-publication). This two-stage shape prevents feature
+mutations (§AR-actions-publication). This two-stage shape prevents feature
 branch code from running with publisher credentials.
 
 This boundary is especially important for chunked dynamic-access work. A
 non-final chunk records a publication identity known before the commit,
 publishes a reviewable PR that references the issue, and carries the
 exhaust-report state needed by the next run, as specified in
-§WF-dynamic-access-exhaust-report. The final chunk is the only one allowed to
+§AR-dynamic-access-exhaust-report. The final chunk is the only one allowed to
 close the issue. The publication layer must preserve that issue linking
 contract instead of treating every successful chunk as a completed issue
-(§WF-chunked-dynamic-access-pr-linking).
+(§AR-chunked-dynamic-access-pr-linking).
 
 Shared repository edits are allowed only when local verification proves they
 are necessary, and they must be surfaced in metrics and PR text for maintainer

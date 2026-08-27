@@ -18,7 +18,7 @@ New-library support is the single-run workflow driver for new-library issues
 (§AR-forge-workflow-boundary). It resolves repository paths, selects the
 predefined strategy bundle, prepares source context, creates the scaffold
 checkpoint, runs the selected strategy — by default the dynamic-access workflow
-(§WF-dynamic-access-workflow) — finalizes metadata, and writes validated metrics.
+(§AR-dynamic-access-workflow) — finalizes metadata, and writes validated metrics.
 """
 
 import subprocess
@@ -329,7 +329,7 @@ def init_agent(
     """Initialize the agent selected by the predefined strategy bundle.
 
     Workflow drivers bind the backend, model, MCPs, prompt context, and persistent
-    instructions named by the bundle (§STRAT-forge-predefined-strategy-contract);
+    instructions named by the bundle (§FS-forge-predefined-strategy-contract);
     strategy code owns the iteration loop on the far side of that boundary
     (§AR-forge-strategy-agent-boundary).
     """
@@ -429,7 +429,7 @@ def main(argv=None):
     strategy: scaffold, source-context materialization, checkpoint capture,
     strategy execution, metadata finalization, placeholder cleanup, and
     schema-validated metrics. The default strategy runs the dynamic-access
-    workflow (§WF-dynamic-access-workflow).
+    workflow (§AR-dynamic-access-workflow).
     """
     (
         library,

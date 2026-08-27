@@ -14,7 +14,7 @@ import java.util.List;
  * call-tree CSV dump enabled, on matching subprojects.
  * <p>
  * Supports sampled deep-path navigation (§AR-test-harness.8,
- * §forge/CC-code-coverage-improvement.3.2).
+ * §forge/AR-code-coverage-improvement.3.2).
  */
 @SuppressWarnings("unused")
 public abstract class NativeTestPGOSamplingInvocationTask extends AllCoordinatesExecTask {

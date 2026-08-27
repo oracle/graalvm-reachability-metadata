@@ -12,7 +12,7 @@ The workflow keeps generated code coverage tests under the dedicated suite path
 `tests/src/<group>/<artifact>/<test-version>/code-coverage-improvement` (a tracked
 extension suite inside the indexed test project), writes runtime evidence under
 `runtime/code-coverage/`, and runs two separately measured phases
-§CC-code-coverage-improvement. The first gives the agent at most 200 exact
+§AR-code-coverage-improvement. The first gives the agent at most 200 exact
 JaCoCo-uncovered public API entries. The second gives it at most 200
 JaCoCo-uncovered internal methods as compact paths derived from sampled PGO and
 the Native Image static call graph. Each phase has a bounded editing-pass

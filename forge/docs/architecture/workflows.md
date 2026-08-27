@@ -1,4 +1,4 @@
-# WF-forge-workflow-system: Forge workflows
+# AR-forge-workflow-system: Forge workflows
 
 A **workflow** is a registered engine that owns the ordered run state for one
 claimed unit of work: it sends prompts through the agent API, runs deterministic
@@ -11,7 +11,7 @@ issue — worktree, branch, test project, source context, strategy, metrics — 
 instantiates a workflow and finalizes what it returns; drivers are per-queue and
 are specified by §AR-forge-drivers. A **strategy** is the named configuration
 bundle that selects which workflow runs and with which agent, model, prompts,
-and parameters; the bundle contract is §STRAT-forge-predefined-strategy-contract.
+and parameters; the bundle contract is §FS-forge-predefined-strategy-contract.
 The same workflow runs under many strategies, and one driver may run different
 workflows for different phases of its issue.
 
@@ -31,7 +31,7 @@ project work again; an **explore** workflow raises dynamic-access coverage. The
 composite is how a driver runs both in one issue: fix first, then explore if the
 remaining surface is worth exploring.
 
-## WF-forge-workflow-engine: What every workflow owns
+## AR-forge-workflow-engine: What every workflow owns
 
 A workflow receives an agent, rendered prompt configuration, workflow
 parameters, repository paths, coordinate context, and run metadata. The agent is
@@ -64,7 +64,7 @@ steer generation — a coverage report, a compiler error, nothing at all — its
 terminal criterion is the native test verification gate
 (§FS-native-test-verification-gate). A `FAILED` gate is a workflow failure;
 partial recovery is not an acceptable terminal state. Which engine invokes it,
-and how often, is specified by §WF-native-test-verification-callers.
+and how often, is specified by §AR-native-test-verification-callers.
 
 This holds for repairs too, including a compilation repair whose own failure mode
 was not about metadata. A version bump that changed an API changes what the tests
@@ -80,11 +80,11 @@ dynamic-access report only names call sites in the requested artifact, so metada
 required by a transitive dependency is invisible to it, and the gate is where that
 is caught.
 
-## WF-forge-workflow-strategy-config: Strategies bind to workflows
+## AR-forge-workflow-strategy-config: Strategies bind to workflows
 
 A strategy bundle names exactly one workflow. That name is the binding: the
 loader resolves it to the registered engine, and the engine interprets the
-bundle's parameters (§STRAT-predefined-strategy-loader). A parameter a workflow
+bundle's parameters (§FS-predefined-strategy-loader). A parameter a workflow
 does not read has no effect, so the set of parameters a workflow interprets is
 part of that workflow's contract and is listed with it below.
 
@@ -93,14 +93,14 @@ registry holds many agent and model permutations of the same configuration, and
 which permutation is current changes without any behavior changing. This spec
 therefore names families and parameters, never bundle names or model versions —
 the registry is the source of truth for what exists today
-(§STRAT-forge-predefined-strategy-contract).
+(§FS-forge-predefined-strategy-contract).
 
 Changing a strategy may change how an existing workflow is parameterized or
 which workflow is selected. Changing what a workflow *does* is a change to the
 workflow and to this spec, not to a bundle
-(§STRAT-workflow-strategy-registry).
+(§FS-workflow-strategy-registry).
 
-## WF-basic-iterative: Basic iterative
+## AR-basic-iterative: Basic iterative
 
 `basic_iterative` is the narrowest workflow: prompt the agent to write tests,
 run the coordinate's test task, feed failures back, repeat within budget. It has
@@ -109,14 +109,14 @@ whether an attempt gained anything.
 
 It is not the workflow for any issue queue. It exists as the fallback the
 dynamic-access workflows delegate to when no usable report exists at the start
-of a run (§WF-dynamic-access-fallback-and-failure). Because its loop accepts a
+of a run (§AR-dynamic-access-fallback-and-failure). Because its loop accepts a
 failing native test as progress, the terminal gate is doing all the real
 validation for this workflow.
 
 Parameters: generation and test-iteration budgets
-(§STRAT-predefined-strategy-parameter-families). Families: `basic_iterative_*`.
+(§FS-predefined-strategy-parameter-families). Families: `basic_iterative_*`.
 
-## WF-java-fail-fix-workflow: Java fix workflows
+## AR-java-fail-fix-workflow: Java fix workflows
 
 `javac_iterative` and `java_run_iterative` repair an already-supported library's
 test project after a version bump breaks it on the JVM, before any native-image
@@ -139,12 +139,12 @@ triviality is a workflow failure even though the command exits zero, because the
 test no longer justifies the metadata it produces
 (§FS-local-ci-equivalent-verification). Neither workflow raises coverage: a
 driver that wants the repaired version explored runs them as the primary
-workflow of the composite (§WF-dynamic-access-composite).
+workflow of the composite (§AR-dynamic-access-composite).
 
 Parameters: test-iteration budget, source-context types. Families:
 `javac_iterative_*`, `java_run_iterative_*`.
 
-## WF-dynamic-access-workflow: Dynamic-access exploration
+## AR-dynamic-access-workflow: Dynamic-access exploration
 
 Reachability metadata can only be generated for dynamic access that actually
 happens at runtime. The reachability repo's coverage tooling makes that
@@ -183,12 +183,13 @@ and the work resumes in a later run against the merged result. The threshold and
 the decision to chunk belong to the driver and the control plane, not the
 workflow (§FS-forge-chunked-dynamic-access, §AR-forge-drivers). What the
 workflow owns is the durable record of which classes are already done
-(§WF-dynamic-access-exhaust-report).
+(§AR-dynamic-access-exhaust-report).
 
-## WF-dynamic-access-iterative: Iterative exploration
+## AR-dynamic-access-iterative: Iterative exploration
 
 `dynamic_access_iterative` is the required workflow when Forge must make
-class-scoped, reviewable progress. It generates the initial report, selects one
+class-scoped, reviewable progress on the coverage-improvement queue
+(§FS-forge-scope). It generates the initial report, selects one
 uncovered class, and gives that class a bounded number of prompt attempts; each
 attempt gets a bounded number of test-repair rounds before the class is rolled
 back to its checkpoint.
@@ -208,7 +209,7 @@ Parameters: prompt-attempt budget per class, test-iteration budget per class,
 source-context types, native-test verification budget. Families:
 `dynamic_access_*`, library-update coverage strategies.
 
-## WF-dynamic-access-bulk: Optimistic exploration
+## AR-dynamic-access-bulk: Optimistic exploration
 
 `optimistic_dynamic_access` refreshes the report, gives the agent all of it, and
 asks for a broad pass. Test failures before the native test task go back to the
@@ -229,10 +230,11 @@ Parameters: bulk-iteration budget, test-iteration budget, source-context types,
 optional graph-assisted context. Families: `dynamic_access_bulk_*`,
 `dynamic_access_graphify_bulk_*`.
 
-## WF-dynamic-access-composite: Composite fix-then-explore
+## AR-dynamic-access-composite: Composite fix-then-explore
 
 `increase_dynamic_access_coverage` runs a configured primary workflow and then
-explores what it left uncovered. It serves two profiles:
+explores what it left uncovered, so one run can serve both a repair queue and
+the coverage-improvement queue (§FS-forge-scope). It serves two profiles:
 
 - **Fix then explore** — a Java fix workflow as primary, so a repaired version
   is also improved before it is published.
@@ -251,7 +253,7 @@ Parameters: the primary workflow's parameters plus the iterative exploration
 parameters, from one bundle. Families: composite coverage strategies, Java-fix
 composite strategies.
 
-## WF-dynamic-access-fallback-and-failure: Fallback and failure
+## AR-dynamic-access-fallback-and-failure: Fallback and failure
 
 Fallback is deliberately narrow. An exploration workflow may delegate to
 `basic_iterative` only when the report cannot provide guidance *at the start* of
@@ -277,10 +279,11 @@ committed class for iterative exploration, the scaffold checkpoint for bulk —
 and a composite preserves and returns its primary workflow's failure rather than
 replacing it with its own.
 
-## WF-dynamic-access-exhaust-report: Exhaust report
+## AR-dynamic-access-exhaust-report: Exhaust report
 
 The exhaust report is the durable, coordinate-scoped record of which classes a
-coordinate has already processed. It is intentionally minimal: the coordinate
+coordinate has already processed, and the state a chunked run resumes from
+(§FS-forge-chunked-dynamic-access). It is intentionally minimal: the coordinate
 and issue, the class threshold and current chunk count, the class names recorded
 as completed, skipped, exhausted, or failed, and the latest chunk's publication
 identity.
@@ -296,22 +299,22 @@ Repository-wide stats stay authoritative: coverage is reported against the full
 current dynamic-access surface, and a chunk may additionally report how many
 classes it processed and how many remain.
 
-## WF-native-test-verification-callers: Callers
+## AR-native-test-verification-callers: Callers
 
 Every caller reaches the gate through **one** invocation point on the workflow
 base class, so the budget, logging, and `FAILED` handling are identical wherever
 it runs. An engine chooses only two things: when to invoke it, and which output
 directory to scope it to. The budget is the strategy parameter
-`max-native-test-verification-iterations` (§STRAT-predefined-strategy-parameter-families).
+`max-native-test-verification-iterations` (§FS-predefined-strategy-parameter-families).
 
 | Engine | When it invokes the gate | Output-dir scope |
 | --- | --- | --- |
-| `dynamic_access_iterative` (§WF-dynamic-access-iterative) | after classes with a coverage gain — resolved or partial — flushed in batches of `native-test-verification-batch-size`, and again at phase wrap-up for any pending classes | one directory per class |
-| `optimistic_dynamic_access` (§WF-dynamic-access-bulk) | after **every** accepted bulk iteration, once the attempt is committed and checkpointed — not once per run | one directory per coordinate |
-| `javac_iterative` (§WF-java-fail-fix-workflow) | once, after the compilation repair succeeds | one directory per coordinate |
-| `java_run_iterative` (§WF-java-fail-fix-workflow) | once, after the agent's final edit, when the JVM fix succeeded | one directory per coordinate |
-| `basic_iterative` (§WF-basic-iterative) | once, after the loop commits at least one test suite | one directory per coordinate |
-| `increase_dynamic_access_coverage` (§WF-dynamic-access-composite) | never directly — its primary workflow and its exploration phase each gate their own result | inherited |
+| `dynamic_access_iterative` (§AR-dynamic-access-iterative) | after classes with a coverage gain — resolved or partial — flushed in batches of `native-test-verification-batch-size`, and again at phase wrap-up for any pending classes | one directory per class |
+| `optimistic_dynamic_access` (§AR-dynamic-access-bulk) | after **every** accepted bulk iteration, once the attempt is committed and checkpointed — not once per run | one directory per coordinate |
+| `javac_iterative` (§AR-java-fail-fix-workflow) | once, after the compilation repair succeeds | one directory per coordinate |
+| `java_run_iterative` (§AR-java-fail-fix-workflow) | once, after the agent's final edit, when the JVM fix succeeded | one directory per coordinate |
+| `basic_iterative` (§AR-basic-iterative) | once, after the loop commits at least one test suite | one directory per coordinate |
+| `increase_dynamic_access_coverage` (§AR-dynamic-access-composite) | never directly — its primary workflow and its exploration phase each gate their own result | inherited |
 
 The composite is the one engine that adds no gate of its own, and that is not an
 exemption: every path through it is already gated by the phase that produced the
@@ -323,13 +326,13 @@ the native image, whereas a fix produces one final state worth verifying once.
 
 `FAILED` is handled the same way by all of them — the calling workflow propagates
 a failure status and resets its feature branch to its checkpoint
-(§WF-dynamic-access-fallback-and-failure). No caller retries the gate, downgrades
+(§AR-dynamic-access-fallback-and-failure). No caller retries the gate, downgrades
 its result, or treats a partial recovery as success.
 
-## WF-chunked-dynamic-access-pr-linking: Chunk PR linking
+## AR-chunked-dynamic-access-pr-linking: Chunk PR linking
 
 A chunk must link its pull request to the issue without completing it, because
-the issue is only done when the last chunk lands. Non-final chunk PRs reference
+the issue is only done when the last chunk lands (§FS-forge-chunked-dynamic-access). Non-final chunk PRs reference
 the issue; only the final chunk PR closes it and moves it to done. Every chunk PR
 carries the merged exhaust state the next run needs to skip classes already
 completed, skipped, exhausted, or failed.
@@ -342,4 +345,4 @@ will fix.
 Each chunk also records its publication identity and unique head branch in the
 exhaust report before the verified push, which is how a later chunk resolves the
 preceding PR without committing a GitHub-assigned number back to the branch. The
-publication mechanism is §GIT-chunked-linking.
+publication mechanism is §AR-chunked-linking.

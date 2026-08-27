@@ -5,10 +5,10 @@
 
 """Helper module for loading predefined strategy bundles and prompt templates.
 
-This is the loader of §STRAT-predefined-strategy-loader: it resolves the named
+This is the loader of §FS-predefined-strategy-loader: it resolves the named
 JSON bundle, prompt files, and optional persistent instructions, then lets entry
 scripts bind that bundle — the configuration shape defined by
-§STRAT-forge-predefined-strategy-contract — to registered agents and workflow
+§FS-forge-predefined-strategy-contract — to registered agents and workflow
 implementations.
 """
 
@@ -21,7 +21,7 @@ def load_predefined_strategies():
     """Load the predefined strategies JSON file.
 
     Each JSON entry is a configuration bundle in the shape of
-    §STRAT-predefined-strategy-fields, not an independent workflow contract.
+    §FS-predefined-strategy-fields, not an independent workflow contract.
     """
     repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     strategies_path = os.path.join(repo_root, "strategies", "predefined_strategies.json")
@@ -48,7 +48,7 @@ def load_persistent_instructions(strategy: dict, **kwargs) -> str | None:
     """Load optional persistent agent instructions for a strategy.
 
     Persistent instructions are part of the predefined bundle shape
-    (§STRAT-forge-predefined-strategy-contract) and are rendered with the same
+    (§FS-forge-predefined-strategy-contract) and are rendered with the same
     context as workflow prompts.
     """
     relative_path = strategy.get("persistent-instructions")
@@ -79,7 +79,7 @@ def require_strategy_by_name(name):
     """Load a strategy configuration or exit with a list of available strategies.
 
     Workflow drivers select behavior by strategy name, then execute the workflow
-    implementation named by the bundle (§STRAT-predefined-strategy-loader).
+    implementation named by the bundle (§FS-predefined-strategy-loader).
     """
     strategies = load_predefined_strategies()
     for strategy in strategies:

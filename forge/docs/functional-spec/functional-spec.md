@@ -77,9 +77,9 @@ Library version update automation (§root/FS-library-version-update-automation).
 | **Reachability metadata** | JSON describing reflection, JNI, resource, serialization, and proxy access for a library, consumed by GraalVM `native-image`. |
 | **Reachability repo** | Local checkout or worktree of `oracle/graalvm-reachability-metadata`. The build and metadata-generation Gradle tasks run inside it. The parent checkout of `forge/` is used by default. |
 | **Forge metrics directory** | The `forge/` subdirectory of the reachability checkout, used as the transient staging area for a run's in-flight metrics (`.pending_metrics.json`) until local finalization writes the publication descriptor. Durable per-library run metrics persist to `stats/<group>/<artifact>/<version>/execution-metrics.json` (§FS-forge-run-metrics). |
-| **Forge publication descriptor** | Versioned, schema-validated JSON committed at `stats/<group>/<artifact>/<version>/forge-publication.json`. It is the durable, branch-controlled data handoff from locally verified Forge generation to the trusted Actions publisher (§GIT-publication-descriptor). |
-| **Forge publication ID** | A run-unique identity derived before the publication commit and recorded in the descriptor. Chunked runs also record it and the unique head branch in their exhaust report so a later run can resolve the preceding PR without committing a GitHub-assigned PR number after publication (§GIT-chunked-linking). |
-| **Forge Actions publisher** | Default-branch code triggered through a successful unprivileged Branch Ready run. It treats the feature branch as data, revalidates the exact head SHA and descriptor, renders the PR, and performs publication-related GitHub mutations with a short-lived GitHub App token (§GIT-actions-publication). |
+| **Forge publication descriptor** | Versioned, schema-validated JSON committed at `stats/<group>/<artifact>/<version>/forge-publication.json`. It is the durable, branch-controlled data handoff from locally verified Forge generation to the trusted Actions publisher (§AR-publication-descriptor). |
+| **Forge publication ID** | A run-unique identity derived before the publication commit and recorded in the descriptor. Chunked runs also record it and the unique head branch in their exhaust report so a later run can resolve the preceding PR without committing a GitHub-assigned PR number after publication (§AR-chunked-linking). |
+| **Forge Actions publisher** | Default-branch code triggered through a successful unprivileged Branch Ready run. It treats the feature branch as data, revalidates the exact head SHA and descriptor, renders the PR, and performs publication-related GitHub mutations with a short-lived GitHub App token (§AR-actions-publication). |
 | **Coordinate** | Maven coordinate of the target library, formatted `group:artifact:version`. |
 | **Agent** | LLM-driven code editor (Codex or Pi) registered through [ai_workflows/agents/](../../ai_workflows/agents/). Each implements `send_prompt`, `run_test_command`, and `clear_context`; the concrete API and Pi adapter are documented by §AR-agent-api. |
 | **Workflow driver** | Deterministic script in the `drivers/` subdirectory of [ai_workflows/](../../ai_workflows/) that prepares the working environment, directories, branch/context, strategy bundle, workflow engine, agent, and metrics for one claimed unit of work. The driver runs Forge plumbing; Codex or another LLM agent should not decide that setup during a generated run. Specified by §AR-forge-drivers. |
@@ -89,8 +89,8 @@ Library version update automation (§root/FS-library-version-update-automation).
 | **Human intervention** | A maintainer follow-up signal applied through the `human-intervention` issue or PR label when Forge has evidence that generated work, repository automation, or library execution semantics require human judgment. It is distinct from post-generation intervention, which is an automated recovery step. The policy is defined in §FS-human-intervention-policy. |
 | **Dynamic access** | Reflection, JNI, resource access, serialization, or proxy use that GraalVM `native-image` cannot determine statically. |
 | **Dynamic-access report** | JSON written by Gradle task `generateDynamicAccessCoverageReport` to `tests/src/<group>/<artifact>/<version>/build/reports/dynamic-access/dynamic-access-coverage.json`, listing classes and per-class call sites that require dynamic-access metadata, marked covered/uncovered. |
-| **Dynamic-access exhaust report** | Durable coordinate-scoped JSON state for chunked dynamic-access work. It records the coordinate, issue number, class threshold, completed/skipped/exhausted/failed classes, and latest publication ID/branch. It is stored with the target test suite so orchestration can find it from the coordinate. It does not predefine chunks; each resume regenerates the report and filters processed classes. Legacy PR-number/commit fields remain readable during migration. Specified by §WF-dynamic-access-exhaust-report. |
-| **Chunked dynamic-access workflow** | Dynamic-access generation mode for oversized `library-new-request` issues and `library-update-request` issues routed to dynamic-access coverage improvement. `forge_metadata.py` owns the class threshold decision and passes the current chunk size to the workflow. The workflow processes at most that many uncovered classes, publishes that chunk, then resumes after the chunk PR merges. PR linking rules are in §WF-chunked-dynamic-access-pr-linking. |
+| **Dynamic-access exhaust report** | Durable coordinate-scoped JSON state for chunked dynamic-access work. It records the coordinate, issue number, class threshold, completed/skipped/exhausted/failed classes, and latest publication ID/branch. It is stored with the target test suite so orchestration can find it from the coordinate. It does not predefine chunks; each resume regenerates the report and filters processed classes. Legacy PR-number/commit fields remain readable during migration. Specified by §AR-dynamic-access-exhaust-report. |
+| **Chunked dynamic-access workflow** | Dynamic-access generation mode for oversized `library-new-request` issues and `library-update-request` issues routed to dynamic-access coverage improvement. `forge_metadata.py` owns the class threshold decision and passes the current chunk size to the workflow. The workflow processes at most that many uncovered classes, publishes that chunk, then resumes after the chunk PR merges. PR linking rules are in §AR-chunked-dynamic-access-pr-linking. |
 | **Source context** | Read-only files supplied to the agent. Types: `main` (library source), `test` (upstream tests), `documentation` (Javadoc). Selected by the strategy parameter `source-context-types`. |
 | **Library update target** | The metadata and test directories selected for a `library-update-request` coordinate (§AR-forge-driver-queues.2). Resolution records the requested coordinate, match type (`tested-version`, `metadata-version`, `default-for`, or `new-version`), matched index entry, resolved metadata version, resolved test version, and edit directories. |
 
@@ -215,20 +215,20 @@ the claim and returns the issue to `Todo` rather than failing the issue.
 Every enabled queue must resolve its configured strategy name against the
 registry before scanning begins, and a strategy bundle must be rejected on load
 unless it names a model and carries the prompts and parameters its workflow
-engine declares as required (§STRAT-forge-predefined-strategy-contract). An
+engine declares as required (§FS-forge-predefined-strategy-contract). An
 unresolvable strategy or model is a worker configuration error: the worker must
 exit before it scans a queue, not fail one issue at a time.
 
 ### 2. Issue claimability
 
 Claiming is exclusive, and the decision must be made against live GitHub state
-rather than the scan results that led to it (§ORCH-forge-orchestration).
+rather than the scan results that led to it (§AR-forge-orchestration).
 The issue payload is re-read at claim time and must still be open, still carry
 the queue label, be unassigned or assigned only to the authenticated user, carry
 no open blockers, and sit in project status `Todo`. A `resumable` issue
 additionally requires a valid continuation marker on a preserved branch
 (§FS-forge-run-continuation), and a `chunked-dynamic-access` issue requires its
-exhaust report (§WF-dynamic-access-exhaust-report). Only once every condition
+exhaust report (§AR-dynamic-access-exhaust-report). Only once every condition
 holds may the issue be assigned and moved to `In Progress`.
 
 ### 3. Issue form
@@ -349,7 +349,7 @@ transiently in the Forge metrics directory as `.pending_metrics.json` and
 consumed while constructing the durable publication descriptor; they are not a
 durable output. Benchmark-mode runs
 instead record durable, schema-validated metrics under
-`benchmarks/benchmark_results/` (§BENCH-forge-generation-benchmarking.4).
+`benchmarks/benchmark_results/` (§FS-forge-generation-benchmarking.4).
 Run metrics may identify the generated metadata artifact, but must not record a
 single test-file artifact: the version-controlled test tree and pull-request
 diff are the authoritative set of test files for the run.
@@ -387,7 +387,7 @@ Every workflow records one of these statuses:
 | `RUN_STATUS_SUCCESS` | All generation gates and the local CI-equivalent verification passed; metadata and tests committed (see §FS-local-ci-equivalent-verification). |
 | `SUCCESS_WITH_INTERVENTION_STATUS` | Tests succeeded after the built-in post-generation recovery modified the working tree (a Codex metadata fix, then Pi removing failing tests as a last resort), and the local CI-equivalent verification (§FS-local-ci-equivalent-verification) passed. The intervention's record is included in the run-metrics and PR description. PR-eligible; distinct from the `human-intervention` label unless §FS-human-intervention-policy separately requires that label. |
 | `RUN_STATUS_CHUNK_READY` | A chunked dynamic-access run reached a reviewable class boundary and §FS-local-ci-equivalent-verification passed for the current part. The current part is PR-eligible, and the issue must not be resumed until the part PR has merged. |
-| `RUN_STATUS_FAILURE` | The workflow could not converge or a quality gate failed; the feature branch is reset to its workflow recovery checkpoint and no PR is opened. Iterative dynamic-access exploration advances that checkpoint after each committed class (§WF-dynamic-access-fallback-and-failure); other workflows retain their specified checkpoint behavior. |
+| `RUN_STATUS_FAILURE` | The workflow could not converge or a quality gate failed; the feature branch is reset to its workflow recovery checkpoint and no PR is opened. Iterative dynamic-access exploration advances that checkpoint after each committed class (§AR-dynamic-access-fallback-and-failure); other workflows retain their specified checkpoint behavior. |
 
 The exit code is `0` for PR-eligible statuses and `1` for failure.
 
@@ -437,7 +437,7 @@ no failed-job rerun remains available, Forge must move the issue back to `Todo`
 and mark that PR for human follow-up so a replacement chunk can be generated.
 Forge must not require an explicit resume-state CLI flag; the exhaust report
 location must be derived from the coordinate and loaded automatically by the
-orchestration scripts, as specified by §WF-dynamic-access-exhaust-report. When
+orchestration scripts, as specified by §AR-dynamic-access-exhaust-report. When
 the issue is being resumed from a preserved failed-run continuation marker,
 Forge may proceed without a coordinate-local exhaust report and use
 `explore.exhaustedClasses` from the marker as the processed-class set for the
@@ -447,7 +447,7 @@ Chunk PRs use `Refs: #<issue>` until the final chunk. Only the final chunk PR
 may use `Fixes: #<issue>` and move the issue to `Done`. Non-final chunk PRs
 must commit enough exhaust-report state for the next run to skip classes already
 completed, skipped, exhausted, or failed in earlier chunks
-(§WF-chunked-dynamic-access-pr-linking).
+(§AR-chunked-dynamic-access-pr-linking).
 
 Before the single verified push, every chunk also records its publication ID
 and unique publication branch in the exhaust report. The publisher repeats the
@@ -459,7 +459,7 @@ to store a GitHub-assigned PR number.
 
 ## FS-forge-workflow-spec-catalog: Workflow specifications
 
-The whole workflow system contract is §WF-forge-workflow-system. Each supported
+The whole workflow system contract is §AR-forge-workflow-system. Each supported
 queue (§FS-forge-scope) is entered by a deterministic workflow driver
 (§AR-forge-drivers) that prepares one run and delegates to the workflow
 engine governed by a workflow spec. The driver scripts and the workflow specs
@@ -468,21 +468,21 @@ they run:
 | Queue | Driver script | Workflow spec |
 | --- | --- | --- |
 | `library-new-request` | `add_new_library_support.py` | new library support (§AR-forge-driver-queues.1), which runs dynamic-access generation plus native metadata tracing and verification |
-| `library-update-request` | `improve_library_coverage.py`, or the missing-version router | dynamic-access coverage improvement (§AR-forge-driver-queues.2), Java repair (§WF-java-fail-fix-workflow), or native-image run repair (§AR-forge-driver-queues.4) depending on the compatibility probe |
-| `fails-javac-compile` | `fix_javac_fail.py` | Java failure repair (§WF-java-fail-fix-workflow) |
-| `fails-java-run` | `fix_java_run_fail.py` | Java failure repair (§WF-java-fail-fix-workflow) |
+| `library-update-request` | `improve_library_coverage.py`, or the missing-version router | dynamic-access coverage improvement (§AR-forge-driver-queues.2), Java repair (§AR-java-fail-fix-workflow), or native-image run repair (§AR-forge-driver-queues.4) depending on the compatibility probe |
+| `fails-javac-compile` | `fix_javac_fail.py` | Java failure repair (§AR-java-fail-fix-workflow) |
+| `fails-java-run` | `fix_java_run_fail.py` | Java failure repair (§AR-java-fail-fix-workflow) |
 | `fails-native-image-run` | `fix_ni_run.py` | native-image run repair (§AR-forge-driver-queues.4) |
-| code coverage improvement (planned) | — | code coverage improvement (§CC-code-coverage-improvement) |
+| code coverage improvement (planned) | — | code coverage improvement (§AR-code-coverage-improvement) |
 
 Each engine is bound to a named configuration bundle defined by
-§STRAT-forge-predefined-strategy-contract. The `basic_iterative` engine is not a
+§FS-forge-predefined-strategy-contract. The `basic_iterative` engine is not a
 separate queue: it is the most basic workflow and the fallback the dynamic-access
 workflow delegates to when a library turns out to have no dynamic access
-(§WF-basic-iterative).
+(§AR-basic-iterative).
 
 Forge benchmarking is a top-level benchmark contract because it compares
 generation strategies across multiple `library-new-request` targets
-(§BENCH-forge-generation-benchmarking) and records cost (in service of
+(§FS-forge-generation-benchmarking) and records cost (in service of
 §GOAL-minimize-generation-cost), token, iteration, LOC, coverage (in service
 of §GOAL-maximize-library-coverage), dynamic-access, and metadata metrics.
 

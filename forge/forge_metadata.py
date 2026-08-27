@@ -11,7 +11,7 @@ runs the matching pipeline, and updates the project item status.
 This module is the Forge control-plane dispatcher (§AR-forge-control-plane): it
 owns queue selection, issue claiming, isolated worktree setup, workflow routing,
 publication handoff, follow-up labeling, and cleanup, implementing the
-orchestration contract in §ORCH-forge-orchestration.
+orchestration contract in §AR-forge-orchestration.
 
 Usage:
   python forge-metadata.py --label <label> [--limit N] [--offset N|--random-offset]
@@ -4958,7 +4958,7 @@ def prepare_dynamic_access_chunking(
     """Prepare dispatcher-owned chunking state and return the concrete chunk size.
 
     The control plane owns the class threshold decision for issue-driven
-    dynamic-access work (§WF-chunked-dynamic-access-pr-linking): it refreshes
+    dynamic-access work (§AR-chunked-dynamic-access-pr-linking): it refreshes
     the report, records the exhaust-report chunk fields, applies the public
     label, and passes only the concrete chunk count to the workflow.
     """
@@ -5067,7 +5067,7 @@ def append_chunked_dynamic_access_workflow_args(
     The dispatcher (§AR-forge-control-plane) computes the issue-scoped chunking
     context and passes only execution flags to the workflow driver, so the
     chunk limits stay consistent with the exhaust report
-    (§WF-dynamic-access-exhaust-report).
+    (§AR-dynamic-access-exhaust-report).
     """
     issue_number = claimed_issue.issue["number"]
     pipeline_argv.extend(["--issue-number", str(issue_number)])
@@ -5381,7 +5381,7 @@ def resolve_workflow_default_strategy_name(
 
     An unresolvable strategy raises rather than failing one issue at a time
     (§FS-forge-run-requirements.1). Omitted strategy overrides remain omitted at
-    dispatch (§STRAT-forge-predefined-strategy-contract).
+    dispatch (§FS-forge-predefined-strategy-contract).
     """
     if claimed_issue.label == LABEL_LIBRARY_NEW:
         return DEFAULT_NEW_LIBRARY_STRATEGY_NAME
@@ -6255,7 +6255,7 @@ def claim_issue_for_processing(
     the rest of it off the driver is
     §ROADMAP-forge-dispatcher-owned-run-preconditions. Chunked
     dynamic-access continuation derives its exhaust report from the coordinate
-    in the checked-out repository (§WF-dynamic-access-exhaust-report).
+    in the checked-out repository (§AR-dynamic-access-exhaust-report).
     """
     if not refresh_issue_payload_for_claim(issue, label, authenticated_user):
         return None
@@ -6529,7 +6529,7 @@ def build_chunked_dynamic_access_pr_args(
 
     Non-final chunks publish with continuation state and must not close the
     backing issue, per the chunk PR linking contract
-    (§WF-chunked-dynamic-access-pr-linking, §GIT-issue-linking).
+    (§AR-chunked-dynamic-access-pr-linking, §AR-issue-linking).
     """
     if exhaust_report_path is None:
         return []
@@ -7012,7 +7012,7 @@ def finalize_successful_issue(
     """Create the PR for a successful isolated workflow run.
 
     Publication is delegated to workflow-specific git scripts only after the
-    workflow records a PR-eligible status (§GIT-pr-eligibility), keeping
+    workflow records a PR-eligible status (§AR-pr-eligibility), keeping
     generation and publication separate (§AR-forge-verification-publication-boundary).
     """
     coverage_follow_up = prepare_java_fix_coverage_follow_up(claimed_issue)

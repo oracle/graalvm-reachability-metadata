@@ -3,9 +3,9 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-# The public-API phase's exact JaCoCo correlation: §CC-code-coverage-improvement.3.1.
+# The public-API phase's exact JaCoCo correlation: §AR-code-coverage-improvement.3.1.
 # JVM-only by design, with native metadata prepared once before PGO discovery rather
-# than per iteration: §CC-code-coverage-improvement-architecture.1.
+# than per iteration: §AR-code-coverage-improvement-architecture.1.
 
 """
 JVM coverage validator for the code coverage improvement workflow.
@@ -56,7 +56,7 @@ def correlate_jacoco(inventory: dict, jacoco_xml_paths: list[str]) -> dict:
     """Classify public API methods from exact JaCoCo evidence only.
 
     Sampled evidence and loose owner/name/arity keys cannot affect phase-one
-    coverage (§CC-code-coverage-improvement.3.1).
+    coverage (§AR-code-coverage-improvement.3.1).
     """
     coverage_by_id: dict[str, JacocoMethodCoverage] = load_jacoco_method_coverage(
         jacoco_xml_paths

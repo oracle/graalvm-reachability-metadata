@@ -307,7 +307,7 @@ def push_current_branch_to_origin(
 
     Local CI-equivalent verification (§FS-local-ci-equivalent-verification) is
     required before pushing the branch that will back a PR — the precondition
-    for PR eligibility (§GIT-pr-eligibility).
+    for PR eligibility (§AR-pr-eligibility).
     """
     group, artifact, library_version = parse_coordinate_parts(coordinates)
 

@@ -208,9 +208,9 @@ These emit the GitHub Actions matrices the workflows consume, all driven by
 | --- | --- |
 | `jacocoTestReport` | JaCoCo coverage for a coordinate's regular test suite. |
 | `codeCoverageTest` | Run the tracked `code-coverage-improvement/` extension suite of a coordinate on the JVM. |
-| `jacocoCodeCoverageReport` | Combined JaCoCo coverage over the regular and extension suites (§forge/CC-code-coverage-improvement.3.1). |
+| `jacocoCodeCoverageReport` | Combined JaCoCo coverage over the regular and extension suites (§forge/AR-code-coverage-improvement.3.1). |
 | `generateDynamicAccessCoverageReport`, `analyzeExternalLibraryDynamicAccess` | Dynamic-access coverage reporting (§FS-repository-functional-spec.4.5). |
-| `nativeTestPGOSampling` | Build coordinate native tests with sampled PGO and the analysis call-tree CSV dump for Forge deep-coverage navigation (§forge/CC-code-coverage-improvement.3.2). |
+| `nativeTestPGOSampling` | Build coordinate native tests with sampled PGO and the analysis call-tree CSV dump for Forge deep-coverage navigation (§forge/AR-code-coverage-improvement.3.2). |
 | `runNativeTestPGO` | Run the sampling image and write its sampled `.iprof` to the required absolute `pgoProfilePath`. |
 | `generateLibraryStats`, `listTopCoordinatesByMetric`, `generateTopCoordinatesByMetricMatrix`, `generateReadmeBadgeSummary`, `generateDependencyGraph` | Produce and query the stats mirror, README badge inputs, and dependency graphs that feed the coverage dashboard (§AR-publish-scheduled-coverage). Library coverage analyzes only the coordinate's unclassified main JAR and includes both the regular and tracked extension suites. |
 | `package` | Zip the `metadata/` directory into the release artifact consumed by native-build-tools (§FS-repository-functional-spec.4). |
@@ -242,7 +242,7 @@ is derived from it; compile, JVM test, JaCoCo, Checkstyle, native compile/run,
 and sampled-PGO root tasks forward that property to the coordinate project.
 This keeps broad coverage tests separate from metadata-generation tests while
 reusing the coordinate's dependencies and build configuration
-(§forge/CC-code-coverage-improvement.3.1).
+(§forge/AR-code-coverage-improvement.3.1).
 
 JaCoCo coverage reports analyze only the coordinate's unclassified main JAR;
 classified artifacts such as upstream test JARs stay on the execution classpath
@@ -260,4 +260,4 @@ root coordinate fan-out for both build-only and build-and-run invocations.
 `-XX:ProfilesDumpFile=<absolute path>`. A nonzero sampling-image exit fails the
 task, so a profile from a failing native suite cannot be accepted. Sampling is
 guidance only; JaCoCo remains the coverage metric
-(§forge/CC-code-coverage-improvement.3.2).
+(§forge/AR-code-coverage-improvement.3.2).

@@ -91,7 +91,7 @@ def validate_publication(
         actor: str,
         repository: str,
 ) -> ValidatedPublication:
-    """Validate a feature tree as inert data (§GIT-actions-publication)."""
+    """Validate a feature tree as inert data (§forge/AR-actions-publication)."""
     if repository != REPOSITORY:
         raise ValueError(f"Unexpected head repository: {repository}")
     resolved_head = git("rev-parse", f"{head_sha}^{{commit}}").strip()
@@ -192,7 +192,7 @@ def _validate_render_inputs(descriptor: dict[str, Any]) -> None:
     """Require only the descriptor fields the templates dereference unconditionally.
 
     Local verification owns whether the work is correct; this guards the publisher
-    against a `KeyError` mid-render, not against a bad run (§GIT-actions-publication).
+    against a `KeyError` mid-render, not against a bad run (§forge/AR-actions-publication).
     """
     template_type = descriptor["template_type"]
     if template_type in {
@@ -239,7 +239,7 @@ def _validate_run_coverage(run: Any) -> None:
 
     The renderer divides nothing itself, so a descriptor missing a checkpoint or
     a universe count cannot be rendered against a fallback denominator — it is
-    rejected here instead (§forge/WF-code-coverage-improvement.4.1).
+    rejected here instead (§forge/AR-code-coverage-improvement.4.1).
     """
     if not isinstance(run, dict):
         raise ValueError("Code coverage runCoverage must be an object")
@@ -295,7 +295,10 @@ def render_publication(
         descriptor: dict[str, Any],
         validated: ValidatedPublication | None = None,
 ) -> tuple[str, str]:
-    """Render the pre-Actions PR body shape from validated descriptor data (§forge/GIT-pr-body).
+    """Render the pre-Actions PR body shape from validated descriptor data (§forge/AR-pr-body).
+
+    The one non-mutating renderer both live and shadow publication call before any
+    GitHub mutation (§forge/AR-pr-preview-builders).
 
     Publication moved into Actions but the rendered body did not change with it: every
     template below reproduces the layout its local builder produced, so reviewers read the
@@ -311,7 +314,7 @@ def render_publication(
 
 
 def _issue_reference(descriptor: dict[str, Any]) -> str:
-    """Chunked runs keep the issue open until the final chunk (§forge/GIT-chunked-linking)."""
+    """Chunked runs keep the issue open until the final chunk (§forge/AR-chunked-linking)."""
     modifiers = descriptor["modifiers"]
     if modifiers["chunked_dynamic_access"] and not modifiers["chunk_final"]:
         return f"Refs: #{descriptor['issue_number']}"
@@ -649,7 +652,7 @@ def _coverage_universe_lines(run: dict[str, Any]) -> list[str]:
     distance from the checkpoint the previous phase ended on, and the phase gains
     sum to the run's gain. Reporting each phase against its own roster instead
     put two different instants of the run on two different scales
-    (§forge/WF-code-coverage-improvement.4.1).
+    (§forge/AR-code-coverage-improvement.4.1).
     """
     universe = int(run["universe"])
     api_universe = int(run["apiUniverse"])
@@ -743,7 +746,7 @@ def _render_code_coverage_improvement(
 
     The descriptor carries the schema-validated `final-metrics.json` and the
     per-phase token accounting; this renderer only reports them, exactly as the
-    local helper did before publication moved into Actions (§forge/WF-code-coverage-improvement.4).
+    local helper did before publication moved into Actions (§forge/AR-code-coverage-improvement.4).
     """
     coordinates = descriptor["library"]["coordinates"]
     render = descriptor["render"]
@@ -752,7 +755,7 @@ def _render_code_coverage_improvement(
     title = f"[GenAI] Improve code coverage for {coordinates} using {model}"
 
     # Always closing: the route has no chunked mode, so every published run is
-    # the run that finishes its issue (§forge/GIT-issue-linking).
+    # the run that finishes its issue (§forge/AR-issue-linking).
     lines = [
         "## Code coverage improvement",
         "",

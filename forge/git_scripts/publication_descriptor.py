@@ -6,7 +6,7 @@
 """Create the data-only handoff consumed by trusted Actions publication.
 
 The descriptor is committed with the generated library changes and is the only
-feature-branch input accepted by the GitHub publisher (§GIT-publication-descriptor).
+feature-branch input accepted by the GitHub publisher (§AR-publication-descriptor).
 """
 
 from __future__ import annotations

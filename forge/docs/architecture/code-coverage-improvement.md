@@ -1,7 +1,7 @@
-# CC-code-coverage-improvement: Code coverage improvement workflow
+# AR-code-coverage-improvement: Code coverage improvement workflow
 
 This workflow is getting its own spec. What follows is the current design in one
-document — behavior and architecture together — kept under the `CC` prefix so it
+document — behavior and architecture together — so it
 can be cited while it is worked on. A later change splits it the way the rest of
 Forge is split: what the workflow must do into the functional spec, the engine
 that runs it into [workflows.md](workflows.md), and the driver that prepares it
@@ -9,7 +9,7 @@ into [drivers.md](drivers.md). Until then, treat the two declarations here as on
 component's documentation rather than as a settled behavior contract.
 
 Code coverage improvement is a planned Forge workflow
-(§WF-forge-workflow-system) for increasing how much of an already-supported
+(§AR-forge-workflow-system) for increasing how much of an already-supported
 library's API and runtime behavior is exercised by generated tests. It is separate from dynamic-access coverage:
 dynamic-access workflows target calls that require reachability metadata,
 while this workflow targets the broader library API surface even when the
@@ -468,7 +468,7 @@ The Rhei template should decompose the workflow into these phases:
    exact commit as data, and only its success lets `Forge Open PR` render the
    body and open the PR as the machine account, with the fixed `GenAI` and
    `code-coverage-improvement` labels and the configured reviewers
-   (§GIT-actions-publication). The workflow keeps no PR-creation credential and
+   (§AR-actions-publication). The workflow keeps no PR-creation credential and
    opens nothing itself (§AR-forge-verification-publication-boundary).
 
    The descriptor carries the render inputs and only those: coordinate, coverage
@@ -477,7 +477,7 @@ The Rhei template should decompose the workflow into these phases:
    per-phase token usage read from the Rhei accounting directory. The body links
    its issue with `Fixes:`, never conditionally: one run publishes one pull
    request, so merging it closes
-   the issue that claimed the coordinate (§GIT-issue-linking). Per-target
+   the issue that claimed the coordinate (§AR-issue-linking). Per-target
    rosters, sampled PGO evidence, and the validation command list stay in the
    finalization artifacts: the target counts restate what the coverage figures
    already say, and the commands embed the run's own absolute worktree paths,
@@ -618,13 +618,14 @@ provide the sampled profile and coherent call-tree inputs. A Forge driver or
 driver mode is still required before the control plane can autonomously claim
 issues and launch this lane; that missing integration does not make the Rhei
 workspace or helper chain non-executable
-(§CC-code-coverage-improvement-architecture).
+(§AR-code-coverage-improvement-architecture).
 
-# CC-code-coverage-improvement-architecture: Code coverage improvement workflow architecture
+# AR-code-coverage-improvement-architecture: Code coverage improvement workflow architecture
 
-Code coverage improvement (§CC-code-coverage-improvement) should be implemented
+Code coverage improvement (§AR-code-coverage-improvement) should be implemented
 as its own workflow component because its intent, inputs, metrics, and review
-evidence differ from dynamic-access coverage. The workflow reuses Forge's
+evidence differ from dynamic-access coverage — it is its own queue
+(§FS-forge-scope). The workflow reuses Forge's
 normal driver, strategy, agent, verification, metrics, and publication
 boundaries (§AR-forge-drivers), but it owns the PGO profile analysis
 and API-target state needed to broaden tests for already-supported libraries.
@@ -649,12 +650,12 @@ engine:
   `forge/utility_scripts/java/CallGraphExtractor.java`, run through single-file
   source launch so it needs no build step. It reads class files directly rather
   than parsing `javap` output, which keeps `invokedynamic` lambda targets and
-  raw descriptors exact (§CC-code-coverage-improvement.3.1.1).
+  raw descriptors exact (§AR-code-coverage-improvement.3.1.1).
 - **API target ranker** — orders JaCoCo-uncovered public entries by the amount of
   still-uncovered code each unlocks and renders the API-cover prompt, filling it
   to the cap. Implemented in `forge/utility_scripts/code_coverage_api_rank.py`.
   It reuses the cached call graph and recomputes reachable sets each iteration
-  against the shrinking universe (§CC-code-coverage-improvement.3.1.1).
+  against the shrinking universe (§AR-code-coverage-improvement.3.1.1).
 - **JVM coverage validator** — runs Java compilation and JVM tests under JaCoCo,
   joins exact JaCoCo identities with the API inventory, and writes the public
   API baseline and post-iteration reports. Implemented in
@@ -709,7 +710,7 @@ engine:
   silently resolves to a different model. The template therefore bundles a `pi`
   agent profile in its `settings.json` whose `high` and `xhigh` modes add
   `--thinking`, and publication reads the model back out of the same target to
-  name the head branch (§CC-code-coverage-improvement.4). That profile replaces
+  name the head branch (§AR-code-coverage-improvement.4). That profile replaces
   Rhei's built-in one outright rather than extending it, so it restates the
   `session` block as well: without it Rhei passes no `--session-dir`, cannot
   read back the agent's native transcript, and silently captures no per-state
@@ -718,7 +719,7 @@ engine:
   CI-equivalent verification passes (§AR-forge-verification-publication-boundary).
   Implemented in `forge/git_scripts/publish_code_coverage_improvement.py`, which
   contributes this route's expected paths and descriptor to the shared branch
-  publication pipeline (§GIT-shared-publication-pipeline); the trusted
+  publication pipeline (§AR-shared-publication-pipeline); the trusted
   `code-coverage-improvement` template in
   `.github/scripts/forge_pr_publisher/publisher.py` renders the body from the
   descriptor. The descriptor's timestamp is `generatedAt` in the finalization
@@ -730,7 +731,7 @@ engine:
 The workflow state is target-based, not call-site-based. Public API state comes
 from the exact inventory/JaCoCo join. Deep state comes from exact JaCoCo library
 methods joined to the static graph after public inventory entries are removed
-(§WF-dynamic-access-workflow).
+(§AR-dynamic-access-workflow).
 
 The code coverage test suite should be physically and logically separate from
 the test suite used to generate reachability metadata. The workflow may inspect
@@ -751,7 +752,7 @@ and report history — no agent-authored status exists. It should include:
 The persisted state should be coordinate-scoped and stable enough for
 orchestration to resume later runs from the coordinate alone, following the same
 operational shape as chunked dynamic-access exhaust state without sharing the
-dynamic-access report schema (§WF-dynamic-access-exhaust-report).
+dynamic-access report schema (§AR-dynamic-access-exhaust-report).
 
 ## 3. PGO Profile Handling
 

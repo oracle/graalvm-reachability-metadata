@@ -164,7 +164,7 @@ Start from [docs/README.md](docs/README.md) for the documentation index.
 ### Namespaces in this repository
 
 `forge` is a workspace member with its own namespace and its own kinds
-(`KIND ∈ {GRUND, GOAL, AR, FS, DW, STRAT, ORCH, GIT, WF, E2E, BENCH, ROADMAP}`),
+(`KIND ∈ {GRUND, GOAL, AR, FS, ROADMAP}`),
 documented in [forge/AGENTS.md](forge/AGENTS.md). Inside `forge/`, cite Forge
 facts as `§<ID>`; from repository docs, cite them as `§forge/<ID>` — for example
 `§forge/GOAL-forge-direction`. Run `grund check` from the repository root, which
@@ -199,13 +199,11 @@ is the only place the workspace alias table is in scope.
   spreads across several files as `folder`. The generated project map links each
   kind to its home, so a shared home makes the map useless — the prefix must
   tell you which file or folder to open.
-- **A `file` home may sit inside a `folder` home.** `docs/architecture/` is the
-  `AR` folder home and also holds the `TCK` and `CI` file homes; `docs/functional-spec/`
-  is the `FS` folder home and also holds the `METADATA` and `TESTS` file homes.
-  `forge/docs/architecture/` does the same with `DW`, `ORCH`, and `GIT`. A kind
-  is filed under the folder whose question it answers — the harness and CI
-  document how the repository is wired, the two suites state what the shipped
-  metadata and its tests must be. The kinds stay distinct: `TCK-` and `CI-` IDs
-  are not `AR-` IDs, and `METADATA-` and `TESTS-` IDs are not `FS-` IDs. Locate a
-  nested kind by its own `file` entry in `grund.toml`, not by the folder it
-  happens to live in.
+- **A folder home covers every file in it.** `docs/architecture/` is the `AR`
+  folder home and `docs/functional-spec/` is the `FS` folder home, in both
+  namespaces; every declaration in those folders carries that prefix, whichever
+  file it sits in. A document is filed under the folder whose question it
+  answers — the harness and CI document how the repository is wired, the two
+  suites state what the shipped metadata and its tests must be — and the file,
+  not the prefix, tells you which component it belongs to. Find a declaration
+  with `grund list` or the folder's `README.md` index, not by its prefix.

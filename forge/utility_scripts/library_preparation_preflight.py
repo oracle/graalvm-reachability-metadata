@@ -41,7 +41,7 @@ LIBRARY_PREFLIGHT_UNSAFE_TERMS = (
     "token",
 )
 # Deterministic setup the driver applies itself, idempotently, as source edits
-# (§ORCH-forge-orchestration.1.1). Anything else stays advisory guidance.
+# (§AR-forge-orchestration.1.1). Anything else stays advisory guidance.
 LIBRARY_PREFLIGHT_DETERMINISTIC_KINDS = ("dependency", "docker_image")
 LIBRARY_PREFLIGHT_DEPENDENCY_SCOPES = (
     "testImplementation",
@@ -661,7 +661,7 @@ def apply_library_preparation_setup(
 ) -> dict[str, Any] | None:
     """Apply deterministic preflight setup once and idempotently, recording results.
 
-    Driver-owned step (§ORCH-forge-orchestration.1.1): typed `dependency` and
+    Driver-owned step (§AR-forge-orchestration.1.1): typed `dependency` and
     `docker_image` entries are applied as source edits; unappliable entries are
     left for the advisory guidance fallback. Mutates and returns the record.
 
@@ -708,7 +708,7 @@ def prepare_library_preparation_preflight(
 
     Returns the (mutated) record for metrics and the advisory-only prompt context.
     Must run after the reachability repo path is resolved so source edits land in
-    the right worktree (§ORCH-forge-orchestration.1.1).
+    the right worktree (§AR-forge-orchestration.1.1).
     """
     preflight = load_library_preparation_preflight(preflight_path)
     apply_library_preparation_setup(preflight, reachability_repo_path)

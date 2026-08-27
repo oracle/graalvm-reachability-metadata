@@ -16,7 +16,7 @@ Use `do-work.sh` for unattended operation. It is a stable wrapper that forwards
 all arguments to `do_up_to_date_work.sh`; the up-to-date worker owns argument
 parsing, self-updates, queue processing, sleeping, and re-execing the latest
 script before the next cycle.
-§DW-do-work-loop
+§AR-do-work-loop
 
 Before self-update or queue processing, and again at the start of every
 work-starting `forge_metadata.py` invocation, Forge prints and validates the
@@ -76,7 +76,7 @@ The same limits can be controlled with environment variables such as
 `FORGE_BULK_UPDATE_REVIEW_LIMIT`, `FORGE_USER_REQUESTED_ISSUES_ONLY`, and
 `DO_WORK_SLEEP_SECONDS`. Set `FORGE_DO_WORK_STOP_FILE` to override the shared
 stop marker path.
-§DW-do-work-loop
+§AR-do-work-loop
 
 ## Setup
 
@@ -99,7 +99,7 @@ Required local tools depend on the work queue being processed:
   report. Each distribution must include Native Image and the
   reachability-metadata schema. Review-only work needs only `JAVA_HOME` pointing
   to JDK 25.
-§STRAT-forge-predefined-strategy-contract
+§FS-forge-predefined-strategy-contract
 
 Local Forge automation must run without `sudo`. Local CI verification fails
 fast instead of prompting for an administrator password if a command or script
@@ -132,7 +132,7 @@ python3 ai_workflows/drivers/fix_ni_run.py --coordinates <group:artifact:oldVers
 
 Strategies are declared in `strategies/predefined_strategies.json`. Prompt text
 lives in `prompt_templates/`. Persisted output contracts live in `schemas/`.
-§STRAT-workflow-strategy-registry
+§FS-workflow-strategy-registry
 
 ## Repository Layout
 
@@ -157,7 +157,7 @@ forge/
 - `ai_workflows/drivers/`: deterministic workflow entry points.
 - `ai_workflows/core/`: registered workflow engines and shared orchestration.
 - `ai_workflows/agents/`: backend-neutral agent adapters.
-- `benchmarks/`: generation benchmark suites and runner. §BENCH-forge-generation-benchmarking
+- `benchmarks/`: generation benchmark suites and runner. §FS-forge-generation-benchmarking
 - `git_scripts/`: branch, commit, PR, and review helpers.
 - `utility_scripts/`: shared support code.
 - `docs/`: design notes, workflow specifications, and testing guidance.

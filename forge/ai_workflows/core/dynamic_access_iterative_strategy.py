@@ -35,7 +35,7 @@ DEFAULT_NATIVE_TEST_VERIFICATION_BATCH_SIZE = 5
 class DynamicAccessIterativeStrategy(WorkflowStrategy):
     """Iterative strategy guided by per-class dynamic-access coverage.
 
-    This is the engine behind §WF-dynamic-access-iterative: it owns
+    This is the engine behind §AR-dynamic-access-iterative: it owns
     fallback selection, uncovered-class prompting, coverage deltas, per-class
     checkpointing, native-test gate batching, and chunk-ready returns.
     """
@@ -95,7 +95,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
 
         Basic fallback is allowed only before dynamic-access guidance is
         available; once the class loop begins, report loss and gate failure are
-        hard workflow failures, per §WF-dynamic-access-fallback-and-failure.
+        hard workflow failures, per §AR-dynamic-access-fallback-and-failure.
         """
         self._latest_class_checkpoint = checkpoint_commit_hash
         initial_report = self._generate_dynamic_access_report()
@@ -207,7 +207,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
     def _run_dynamic_access_phase(self, agent, current_report=None) -> tuple[bool, int]:
         """Drive the per-class dynamic-access loop for one strategy phase.
 
-        This is the per-class loop of §WF-dynamic-access-iterative:
+        This is the per-class loop of §AR-dynamic-access-iterative:
         each selected class gets bounded prompt/test attempts, coverage-gain
         commits advance the class checkpoint, and exhausted classes are not
         retried in the same phase.
@@ -712,7 +712,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         """Queue one committed class step for the next native-test verification batch.
 
         Implements the dynamic-access caller half of
-        §WF-native-test-verification-callers: the gate runs after a configured
+        §AR-native-test-verification-callers: the gate runs after a configured
         batch of coverage-gain commits, and any remaining batch is flushed
         before returning.
         """
@@ -788,7 +788,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
 
         Gate-supplied metadata can change which call sites remain uncovered for
         the next class prompt — the post-gate report refresh required by the
-        per-class loop (§WF-dynamic-access-iterative).
+        per-class loop (§AR-dynamic-access-iterative).
         """
         refreshed = self._generate_dynamic_access_report(indent_level=2)
         if refreshed is None:
@@ -831,7 +831,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         # The exhaust-report commit records terminal class state above the last
         # test/metadata commit, so advance the whole-phase recovery checkpoint
         # past it too; otherwise a later reset drops the completed-class marker
-        # while keeping its tests, per §WF-dynamic-access-fallback-and-failure.
+        # while keeping its tests, per §AR-dynamic-access-fallback-and-failure.
         self._latest_class_checkpoint = subprocess.check_output(
             ["git", "rev-parse", "HEAD"],
             cwd=self.reachability_repo_path,
@@ -891,7 +891,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
     ) -> bool:
         """Return True when the current chunk reached its configured boundary.
 
-        A class is never split across chunks (§WF-dynamic-access-exhaust-report):
+        A class is never split across chunks (§AR-dynamic-access-exhaust-report):
         the strategy stops only after enough classes have reached a terminal
         state, whether explicitly selected or incidentally completed.
         """
@@ -1009,7 +1009,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
 
         Returns the resulting `HEAD` SHA so a passing gate can advance the
         whole-phase recovery checkpoint past the verified test and metadata
-        commits, per §WF-dynamic-access-fallback-and-failure.
+        commits, per §AR-dynamic-access-fallback-and-failure.
         """
         metadata_version = resolve_metadata_version(
             self.reachability_repo_path,
@@ -1049,7 +1049,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
 
         Missing guidance at the start allows fallback, but report loss after
         entering the class loop is a hard failure
-        (§WF-dynamic-access-fallback-and-failure).
+        (§AR-dynamic-access-fallback-and-failure).
         """
         current_status = self._current_dynamic_access_status()
         self._print_dynamic_access_detail(

@@ -2,7 +2,7 @@
 
 A **driver** turns one claimed issue into one isolated run. It resolves where
 the work happens, prepares everything the agent will need, hands control to a
-workflow (§WF-forge-workflow-system), and finalizes whatever the workflow
+workflow (§AR-forge-workflow-system), and finalizes whatever the workflow
 returns. Drivers are how the supported issue queues (§FS-forge-scope) reach a
 workflow at all (§FS-forge-issue-resolution-goal).
 
@@ -15,9 +15,9 @@ it (§AR-forge-workflow-boundary).
 
 Drivers sit between two boundaries they do not cross. The control plane owns
 issue scanning, label routing, claiming, project state, and worktree selection
-(§AR-forge-control-plane, §ORCH-forge-orchestration). Publication owns
+(§AR-forge-control-plane, §AR-forge-orchestration). Publication owns
 everything after a run is verified (§AR-forge-verification-publication-boundary,
-§GIT-forge-publication). A driver receives an already-claimed issue in an already
+§AR-forge-publication). A driver receives an already-claimed issue in an already
 -selected worktree and returns a terminal status; it never opens a pull request.
 
 ## AR-forge-driver-contract: What every driver does
@@ -25,7 +25,7 @@ everything after a run is verified (§AR-forge-verification-publication-boundary
 Driver work is deterministic Forge plumbing. Directory layout, branch setup,
 metrics paths, and strategy selection are decided by Python logic, shared utility
 code, or strategy configuration — never by a model
-(§root/PRCPL-prefer-algorithmic, §STRAT-forge-predefined-strategy-contract). Every
+(§root/PRCPL-prefer-algorithmic, §FS-forge-predefined-strategy-contract). Every
 setup and generation step is written to the durable session log
 (§FS-durable-generation-logs).
 
@@ -76,7 +76,7 @@ step having reported success.
 
 Repository and metrics roots; the Java and GraalVM environment Gradle and
 `native-image` require; the requested strategy bundle, validated
-(§STRAT-predefined-strategy-loader); the feature branch; the target test and
+(§FS-predefined-strategy-loader); the feature branch; the target test and
 metadata directories; a checkpoint that lets failure handling tell setup output
 from generated work; artifact URLs and any requested source context; the workflow
 object, built with resolved paths, coordinate, chunk and progress state where
@@ -107,14 +107,14 @@ An ineligible artifact ends the run early and successfully: the driver writes a
 marker-only index entry recording the ineligibility, the reason, and any
 replacement guidance, and returns without generating tests or metadata.
 Publication routes that marker through its own template
-(§GIT-not-for-native-image-publication), and a pre-claim check on an
+(§AR-not-for-native-image-publication), and a pre-claim check on an
 already-marked artifact lets the control plane close such issues with an
 explanation instead of dispatching a run at all.
 
 Otherwise the driver scaffolds the coordinate, commits the scaffold and index as
 its checkpoint, and runs dynamic-access exploration
-(§WF-dynamic-access-iterative). Oversized coordinates run chunked and resume
-across chunk PRs (§WF-dynamic-access-exhaust-report).
+(§AR-dynamic-access-iterative). Oversized coordinates run chunked and resume
+across chunk PRs (§AR-dynamic-access-exhaust-report).
 
 ### 2. Library update
 
@@ -141,10 +141,10 @@ it would silently widen what older versions claim to support
 **When the requested version already has a test suite**, the driver resolves that
 suite, fails fast if it is absent, checkpoints the current test directory and
 index, snapshots baseline stats into the test directory, and runs coverage-only
-exploration (§WF-dynamic-access-composite). Local finalization reads the baseline
+exploration (§AR-dynamic-access-composite). Local finalization reads the baseline
 snapshot into the publication descriptor and removes it, so the before/after
 comparison reaches the PR body without the snapshot reaching the published tree
-(§GIT-publication-descriptor).
+(§AR-publication-descriptor).
 
 **When it does not**, the driver must first find a version-compatible baseline
 suite and probe it. Exact index ownership wins; otherwise it prefers the nearest
@@ -216,7 +216,7 @@ creates the versioned metadata directory, records whether those directories
 pre-existed so cleanup can restore the right state, and checkpoints.
 
 Generation is the composite workflow: repair first, then explore
-(§WF-dynamic-access-composite). Between the two, the driver generates the
+(§AR-dynamic-access-composite). Between the two, the driver generates the
 dynamic-access report and decides whether exploring is worth it in this run.
 
 #### 3.1 Deferring an oversized exploration
@@ -238,7 +238,7 @@ older matching issue must never be reused, while every retry of the same
 publication reuses the issue this same repair already opened, recovered from the
 marker or by its exact repair reference. The repair PR closes the repair issue,
 states that exploration was deferred, and carries the trailer that releases the
-follow-up issue once the repair reaches the default branch (§GIT-pr-body).
+follow-up issue once the repair reaches the default branch (§AR-pr-body).
 
 A repair that trades away coverage never blocks publication. That is a review
 question, and after a deferred exploration the reduction is the intended outcome.
@@ -308,7 +308,7 @@ execution-metrics store, or to the local fallback named by the driver's task
 type, writes the pending metrics publication consumes, and schema-validates what
 it wrote (§FS-forge-run-metrics). Drivers contribute only their task type and the
 per-workflow payload. Benchmark-mode metrics update an existing benchmark record
-instead of appending a run entry and stay driver-owned (§BENCH-forge-generation-benchmarking).
+instead of appending a run entry and stay driver-owned (§FS-forge-generation-benchmarking).
 
 Failed runs roll the worktree back through the shared checkpoint-reset helpers.
 Drivers contribute only the policy — which paths survive the reset for follow-up

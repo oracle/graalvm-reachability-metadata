@@ -128,7 +128,7 @@ def _workflow_argv(flags):
 def main(argv=None):
     """Select and run the appropriate java-fail driver based on the mode flag.
 
-    Routes to the javac or java-run variant of §WF-java-fail-fix-workflow,
+    Routes to the javac or java-run variant of §AR-java-fail-fix-workflow,
     following the single-run driver contract (§AR-forge-drivers).
     """
     flags = build_parser().parse_args(argv if argv is not None else sys.argv[1:])

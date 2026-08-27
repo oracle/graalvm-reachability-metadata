@@ -6,9 +6,9 @@
 """Source-context preparation for Forge workflow drivers.
 
 Predefined strategies choose source-context types
-(§STRAT-forge-predefined-strategy-contract); workflow drivers use this module to
+(§FS-forge-predefined-strategy-contract); workflow drivers use this module to
 materialize those artifacts as the read-only files the dynamic-access strategies
-read class source from (§WF-dynamic-access-workflow) before the strategy
+read class source from (§AR-dynamic-access-workflow) before the strategy
 starts.
 """
 
@@ -156,7 +156,7 @@ def normalize_source_context_types(raw_value: Any) -> list[str]:
     """Normalize and validate the strategy's requested source-context types.
 
     Source context is selected by predefined strategy parameters
-    (§STRAT-predefined-strategy-parameter-families); this utility enforces the
+    (§FS-predefined-strategy-parameter-families); this utility enforces the
     supported type set.
     """
     if raw_value is None:
@@ -188,7 +188,7 @@ def populate_artifact_urls(reachability_repo_path: str, coordinate: str, agent_c
 
     Satisfies the dynamic-access setup precondition that source/test/docs URLs
     be available before the agent receives read-only context
-    (§WF-dynamic-access-workflow).
+    (§AR-dynamic-access-workflow).
     """
     require_complete_reachability_repo(reachability_repo_path)
     log_path = build_task_log_path("populate-artifact-urls", coordinate, "populate_artifact_urls.log")
@@ -385,7 +385,7 @@ def prepare_source_contexts(
 
     Workflow drivers prepare this context once (§AR-forge-workflow-boundary)
     so dynamic-access strategies can pass class-targeted source files to the
-    agent without owning download policy (§WF-dynamic-access-workflow).
+    agent without owning download policy (§AR-dynamic-access-workflow).
     """
     index_entry = load_index_entry(reachability_repo_path, coordinate)
     _, _, requested_version = _coordinate_parts(coordinate)

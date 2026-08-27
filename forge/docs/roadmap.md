@@ -33,7 +33,7 @@ The dispatcher owns, and a driver may only consume:
 - Host and tooling requirements, including agent availability and
   authentication (§FS-forge-host-requirements).
 - The strategy bundle and its model, resolved and validated before scanning
-  (§STRAT-forge-predefined-strategy-contract).
+  (§FS-forge-predefined-strategy-contract).
 - Issue eligibility and issue form, including label routing to exactly one
   driver (§AR-forge-driver-queues).
 - Repository locations: the reachability worktree, the scratch metrics
@@ -58,13 +58,13 @@ This item of §ROADMAP-forge-implementation makes metadata collection a single
 shared step — the native trace gate (§AR-forge-workflow-pipeline,
 §FS-native-test-verification-gate) — used at every point a run produces
 metadata: after a repair, after an exploration batch, and in finalization
-(§WF-dynamic-access-workflow). The gate already is this contract in exploration;
+(§AR-dynamic-access-workflow). The gate already is this contract in exploration;
 the work is making repair and finalization use it instead of a subset of their
 own.
 
 The terminal case is the one that matters most: every workflow must end with the
 gate, so no run publishes metadata that no native run has checked
-(§WF-forge-workflow-engine.2, §WF-native-test-verification-callers). Today the
+(§AR-forge-workflow-engine.2, §AR-native-test-verification-callers). Today the
 dynamic-access engines, `basic_iterative`, and `java_run_iterative` invoke it.
 That leaves `javac_iterative` — which shares one implementation with
 `java_run_iterative` but skips the gate on the compile-fix branch — the
@@ -213,7 +213,7 @@ Acceptance: a `fails-native-image-run` run collects native-trace metadata before
 any agent repair, and one whose run fails in the seed, collection, exploration,
 or finalization step ends labeled and commented; a second cycle either resumes
 from the preserved marker or, if the same phase fails again, is not
-re-attempted silently (§ORCH-forge-orchestration).
+re-attempted silently (§AR-forge-orchestration).
 
 # ROADMAP-forge-local-branch-review: Pre-push local branch review
 
@@ -271,7 +271,7 @@ The phase must:
   in-flight publication data, so a resumed publication does not lose it.
 - Land the descriptor field and its renderer on the default branch before any
   run emits them. The publisher validates against its own copy of the schema and
-  rejects unknown fields (§GIT-actions-publication), so the two must ship in that
+  rejects unknown fields (§AR-actions-publication), so the two must ship in that
   order or every publication from a run carrying the verdict fails.
 - Treat an unavailable reviewer as a non-approval rather than an error, so a
   review outage becomes one labeled PR instead of a throughput stall.
@@ -359,7 +359,7 @@ The publication descriptor is a build artifact of one run, not repository
 content, but today it is committed at
 `stats/<group>/<artifact>/<version>/forge-publication.json`, appears in the pull
 request diff, and lands on `master` when the PR merges
-(§GIT-publication-descriptor). The repository has already had to absorb that:
+(§AR-publication-descriptor). The repository has already had to absorb that:
 the stats schema validator was widened to accept the file. Every merged Forge PR
 leaves one behind, in a directory that otherwise holds derived per-version
 metrics.
@@ -380,7 +380,7 @@ annotated tag rather than as a commit:
   generated work.
 - Branch Ready triggers on that tag, validates the descriptor against its own
   copy of the schema from the default branch, and hands the commit on
-  (§GIT-actions-publication). The tag *is* the SHA binding: it names the commit
+  (§AR-actions-publication). The tag *is* the SHA binding: it names the commit
   it certifies, which removes the current awkwardness that the head SHA cannot
   be a descriptor field because a commit cannot contain its own object ID.
 - The publisher reads the descriptor from the tag, opens the pull request
@@ -491,7 +491,7 @@ check_setup()
   what a library needs to build require reading upstream repositories, Maven
   Central, and library documentation; a strategy mapping this step onto an agent
   without web access is misconfigured
-  (§STRAT-forge-predefined-strategy-contract).
+  (§FS-forge-predefined-strategy-contract).
 - **`check_setup(NeuralSetupResult) -> ReadyRun | FAILED`** — algorithmic.
   Opens each artifact the setup steps were supposed to produce and confirms it
   was properly generated — the coordinate's `index.json` with its four URLs, the

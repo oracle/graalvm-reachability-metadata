@@ -8,15 +8,10 @@ workflow engines that execute a run
 ([workflows.md](../architecture/workflows.md)) and the drivers that prepare one
 ([drivers.md](../architecture/drivers.md)).
 
-Not every ID here is an `FS` ID. A contract that belongs to one component keeps
-its own prefix and its own home file in this folder, so the prefix still tells
-you which file to open:
-
-| Prefix | Home | Scope |
-| --- | --- | --- |
-| `FS` | this folder | what Forge must do |
-| `STRAT` | [strategies.md](strategies.md) | the predefined strategy bundle contract |
-| `BENCH` | [benchmarking.md](benchmarking.md) | the generation benchmark contract |
+One kind lives here: every declaration in this folder is an `FS-` ID, whichever
+file it sits in. A contract that belongs to one component — the strategy bundle
+contract in [strategies.md](strategies.md), the benchmark contract in
+[benchmarking.md](benchmarking.md) — is grouped by file rather than by prefix.
 
 | ID | Subject |
 | --- | --- |
@@ -42,15 +37,15 @@ you which file to open:
 | [§FS-forge-chunked-dynamic-access](functional-spec.md#fs-forge-chunked-dynamic-access-chunked-dynamic-access-semantics) | Chunked dynamic-access semantics |
 | [§FS-forge-workflow-spec-catalog](functional-spec.md#fs-forge-workflow-spec-catalog-workflow-specifications) | Workflow specifications catalog |
 | [§FS-forge-run-continuation](continuation.md#fs-forge-run-continuation-run-continuation-and-resume) | Run continuation and resume |
-| §STRAT-workflow-strategy-registry | Predefined strategy configuration architecture |
-| §STRAT-forge-predefined-strategy-contract | Predefined strategy configuration contract |
-| §STRAT-predefined-strategy-loader | Strategy loading boundary |
-| §STRAT-predefined-strategy-fields | Strategy bundle fields |
-| §STRAT-predefined-strategy-example | Representative predefined strategy bundle |
-| §STRAT-predefined-strategy-parameter-families | Parameter families |
-| §STRAT-java-fail-fix-composite-strategy-config | Java fail-fix composite strategy configuration |
-| §STRAT-predefined-strategy-extension | Adding or changing a strategy bundle |
-| §BENCH-forge-generation-benchmarking | Forge generation benchmarking |
+| [§FS-workflow-strategy-registry](strategies.md#fs-workflow-strategy-registry-predefined-strategy-configuration-architecture) | Predefined strategy configuration architecture |
+| [§FS-forge-predefined-strategy-contract](strategies.md#fs-forge-predefined-strategy-contract-predefined-strategy-configuration-contract) | Predefined strategy configuration contract |
+| [§FS-predefined-strategy-loader](strategies.md#fs-predefined-strategy-loader-strategy-loading-boundary) | Strategy loading boundary |
+| [§FS-predefined-strategy-fields](strategies.md#fs-predefined-strategy-fields-strategy-bundle-fields) | Strategy bundle fields |
+| [§FS-predefined-strategy-example](strategies.md#fs-predefined-strategy-example-representative-predefined-strategy-bundle) | Representative predefined strategy bundle |
+| [§FS-predefined-strategy-parameter-families](strategies.md#fs-predefined-strategy-parameter-families-parameter-families) | Parameter families |
+| [§FS-java-fail-fix-composite-strategy-config](strategies.md#fs-java-fail-fix-composite-strategy-config-java-fail-fix-composite-strategy-configuration) | Java fail-fix composite strategy configuration |
+| [§FS-predefined-strategy-extension](strategies.md#fs-predefined-strategy-extension-adding-or-changing-a-strategy-bundle) | Adding or changing a strategy bundle |
+| [§FS-forge-generation-benchmarking](benchmarking.md#fs-forge-generation-benchmarking-forge-generation-benchmarking) | Forge generation benchmarking |
 
 This index is navigational. Cite the specific declaration ID rather than this
 file.

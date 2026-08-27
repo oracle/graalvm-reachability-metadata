@@ -5,15 +5,15 @@
 
 """
 Deterministic public-API inventory for the code coverage improvement workflow
-(§CC-code-coverage-improvement.3.1, §CC-code-coverage-improvement-architecture).
+(§AR-code-coverage-improvement.3.1, §AR-code-coverage-improvement-architecture).
 
 It enumerates the public, user-callable method and constructor surface of a
 resolved library artifact and emits compact JSON and Markdown reports. The
 canonical target `id` carries full identity (`owner#name(params):ret`), the
-exactness §CC-code-coverage-improvement.3.1 requires of the correlation.
+exactness §AR-code-coverage-improvement.3.1 requires of the correlation.
 
 Derivation is `javap -public -s` over the library jar, per
-§CC-code-coverage-improvement-architecture.1: erased generics, varargs
+§AR-code-coverage-improvement-architecture.1: erased generics, varargs
 normalized to arrays, fields excluded, so ids line up with the analysis call
 tree and the sampled profile.
 
@@ -235,7 +235,7 @@ def _parse_member(body: str, owner_class: ClassInfo) -> ApiTarget | None:
         return ApiTarget(ref, ref.canonical_id, kind, owner_class.source_path,
                          _behavior_hint(name, kind), is_static)
 
-    # §CC-code-coverage-improvement.3.1: fields are not callable entry targets.
+    # §AR-code-coverage-improvement.3.1: fields are not callable entry targets.
     return None
 
 
@@ -312,7 +312,7 @@ def build_inventory(coordinate: str, classes: list[ClassInfo], jar_paths: list[s
     targets.sort(key=lambda item: item["id"])
     # The resolved jars are recorded so later deterministic steps — notably the
     # bytecode call-graph extractor — need no separate artifact resolution
-    # (§CC-code-coverage-improvement.3.1.1).
+    # (§AR-code-coverage-improvement.3.1.1).
     return {
         "coordinate": coordinate,
         "libraryJars": sorted(os.path.abspath(path) for path in (jar_paths or [])),

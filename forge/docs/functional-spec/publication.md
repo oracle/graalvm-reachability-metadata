@@ -111,8 +111,8 @@ The gate closes those gaps with **runtime truth** rather than more inference. It
 runs a real native image with metadata tracing enabled, records what the
 execution actually touches, and re-supplies it until the binary stops missing
 metadata. It is what proves a coordinate's test binary passes on Native Image,
-and every workflow ends on it (§WF-forge-workflow-engine.2,
-§WF-native-test-verification-callers). Native Image must always work, so `FAILED`
+and every workflow ends on it (§AR-forge-workflow-engine.2,
+§AR-native-test-verification-callers). Native Image must always work, so `FAILED`
 is a hard error: the caller returns a failure status and resets its branch to its
 checkpoint.
 
@@ -156,7 +156,7 @@ access occurs.
 
 The outer budget is the strategy parameter
 `max-native-test-verification-iterations`, default 40
-(§STRAT-predefined-strategy-parameter-families). Convergence is expected within a
+(§FS-predefined-strategy-parameter-families). Convergence is expected within a
 handful of cycles; the default is a soft cap, not a target, and each cycle
 rebuilds the image, so wall-clock cost is dominated by build time. A per-cycle
 timeout, default 30 minutes, caps the preflight test invocation and each trace
@@ -411,7 +411,7 @@ unavailable there are no words to show, and the section must say that this, and
 not a finding, is why the branch did not carry an approval.
 
 The descriptor is validated by the publisher against the schema on the default
-branch (§GIT-actions-publication), which admits no unknown fields, so the field
+branch (§AR-actions-publication), which admits no unknown fields, so the field
 and the renderer that reads it must reach the default branch before any run
 emits them; a run that emits a field the published schema does not know fails
 publication outright. Until they have landed, the review may still run: the
@@ -464,7 +464,7 @@ creating the successor entry and publishes them under
 **Follow-up issue.** On every split, Forge also opens a `library-update-request`
 issue for the successor metadata version and holds it in `In Progress` so the
 queue cannot claim it early. The PR references this issue but does not close it,
-through the `Refs:` line and `Forge-Unblocks-Issue:` trailer of §GIT-pr-body.
+through the `Refs:` line and `Forge-Unblocks-Issue:` trailer of §AR-pr-body.
 Once the PR merges, Forge releases the issue — clearing its assignees and moving
 its project status to `Todo` — so the successor update enters normal processing.
 

@@ -3,9 +3,9 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-# The deep phase this prepares for: §CC-code-coverage-improvement.3.2. Running once
+# The deep phase this prepares for: §AR-code-coverage-improvement.3.2. Running once
 # between the phases, and the generate-then-repair loop:
-# §CC-code-coverage-improvement-architecture.1.
+# §AR-code-coverage-improvement-architecture.1.
 
 """
 Native-metadata preparation for the code coverage improvement workflow.

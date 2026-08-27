@@ -1,9 +1,9 @@
-# ORCH-forge-orchestration: Forge orchestration scripts
+# AR-forge-orchestration: Forge orchestration scripts
 
 `forge_metadata.py` is Forge's orchestration hub between the do-work loop
-(§DW-do-work-loop), GitHub, isolated worktrees, workflow drivers
+(§AR-do-work-loop), GitHub, isolated worktrees, workflow drivers
 (§AR-forge-drivers), review queues, and the git-scripts publication
-component (§GIT-forge-publication). It resolves supported GitHub issues into
+component (§AR-forge-publication). It resolves supported GitHub issues into
 isolated workflow runs (§FS-forge-issue-resolution-goal): it owns queue
 scanning, optimistic single-issue claiming, Maven coordinate and workflow
 derivation, project status transitions, worktree creation, workflow dispatch,
@@ -14,9 +14,9 @@ policy to Codex or other LLM agents during a generated run.
 
 Supported issue queues are label-driven: `library-new-request` and
 `library-update-request` route to dynamic-access generation
-(§WF-dynamic-access-workflow) and coverage improvement
+(§AR-dynamic-access-workflow) and coverage improvement
 (§AR-forge-driver-queues.2); `fails-javac-compile` and `fails-java-run` route
-to Java fail-fix (§WF-java-fail-fix-workflow); `fails-native-image-run` routes
+to Java fail-fix (§AR-java-fail-fix-workflow); `fails-native-image-run` routes
 to native-image run-fix (§AR-forge-driver-queues.4).
 Successful runs produce PRs with matching review labels such as
 `fixes-javac-fail`, `fixes-java-run-fail`, and `fixes-native-image-run-fail`;
@@ -55,7 +55,7 @@ offset—random or explicit—is relative only to the selected tier.
 
 Orchestration must claim exactly one issue per workflow run, dispatch the
 matching workflow driver, and either hand PR-eligible results to publication
-(§GIT-pr-eligibility) or preserve failed results according to the workflow
+(§AR-pr-eligibility) or preserve failed results according to the workflow
 status.
 
 To keep queue scanning and claiming cheap under the GitHub API, orchestration
@@ -152,7 +152,7 @@ must keep the collected evidence and failure reason visible in metrics and
 continuation state rather than silently converting the failure to `no_action`.
 
 Orchestration scripts must not let a failed workflow silently disappear.
-Successful or chunk-ready runs (§WF-chunked-dynamic-access-pr-linking) build one
+Successful or chunk-ready runs (§AR-chunked-dynamic-access-pr-linking) build one
 typed publication handoff and invoke the shared local branch finalizer. That
 finalizer writes the descriptor and pushes the verified branch; orchestration
 then reports the branch and publication ID as the successful local outcome
@@ -161,7 +161,7 @@ without invoking a workflow-specific PR creator.
 Follow-up issues for deferred coverage or tested-version splits are created
 locally before the verified push and handed to the trusted Actions publisher as
 typed descriptor facts carrying their issue numbers
-(§GIT-publication-descriptor). A later Branch Ready failure
+(§AR-publication-descriptor). A later Branch Ready failure
 does not cause local failure handling: the pushed branch remains preserved and
 the claimed issue remains `In Progress` and assigned for manual inspection.
 Failed generation or local finalization still preserves diagnostics
@@ -175,7 +175,7 @@ separate responsibility from issue resolution: it reviews already-published PRs
 rather than producing them. This is the orchestration mechanics behind the
 review behavior contract in §FS-automated-pr-review. It is entered through
 `forge_metadata.py --review-pr <label> [--limit N] [--review-model <model>]
-[--period <seconds|Nm|Nh|Nd>]`, and the do-work loop (§DW-do-work-loop) drives
+[--period <seconds|Nm|Nh|Nd>]`, and the do-work loop (§AR-do-work-loop) drives
 the same code path on its own schedule.
 
 **Queue configuration.** A single explicit `FORGE_REVIEW_LABEL` selects one
@@ -209,5 +209,5 @@ review timeout or non-zero Pi exit is a review failure, not an approval.
 
 **Scheduling and shutdown.** With `--period`, the review loop repeats after each
 interval; without it, it runs once. The loop checks the do-work stop markers
-(§DW-do-work-loop) between iterations and during sleep and exits without
+(§AR-do-work-loop) between iterations and during sleep and exits without
 starting another review when a stop marker is present.

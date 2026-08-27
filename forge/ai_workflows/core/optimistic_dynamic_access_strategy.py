@@ -22,7 +22,7 @@ FALLBACK_STRATEGY_NAME = "basic_iterative_pi_gpt-5.6-sol"
 class OptimisticDynamicAccessStrategy(WorkflowStrategy):
     """Bulk dynamic-access coverage strategy that shows the full report to the agent.
 
-    Implements the bulk engine of §WF-dynamic-access-bulk.
+    Implements the bulk engine of §AR-dynamic-access-bulk.
     """
 
     REQUIRED_PROMPTS = ["optimistic-dynamic-access-iteration"]
