@@ -208,12 +208,16 @@ label.
 
 The last supported version is resolved from the index entry marked **latest** —
 not through the compatible-baseline resolver used for missing-version library
-updates. The `fails-*` producer targets the newest version, so a below-latest
-failure is evidence that the producer's contract was violated and must stay
-visible rather than being silently repaired against an older baseline. The driver
-copies that version's test project to the failing version, updates the index,
-creates the versioned metadata directory, records whether those directories
-pre-existed so cleanup can restore the right state, and checkpoints.
+updates. The `fails-*` producer targets the newest version, so a below-`latest`
+issue is rejected by the issue-form gate after the claim but before the
+worktree; the driver does not re-check that queue rule
+(§FS-forge-run-requirements.3). The driver copies the
+latest version's test project to the failing version, updates the index, creates
+the versioned metadata directory, records whether those directories pre-existed
+so cleanup can restore the right state, and checkpoints. The index update marks
+the prepared version `latest` only when it is newer than the current `latest`:
+the same driver serves `library-update-request` version backfills that may
+legitimately sit below `latest`, so that indexing decision remains driver-owned.
 
 Generation is the composite workflow: repair first, then explore
 (§AR-dynamic-access-composite). Between the two, the driver generates the
@@ -251,7 +255,9 @@ This driver is therefore **metadata-first**: it does not rewrite the test suite
 unless the failure proves the test itself is invalid for the bumped version.
 
 The current coordinate is resolved from the entry marked latest, with the same
-no-substitution rule as the Java failure queues. Gradle then produces a metadata
+no-substitution rule as the Java failure queues: a below-`latest` `fails-*`
+issue is rejected by the issue-form gate before it reaches this driver
+(§FS-forge-run-requirements.3). Gradle then produces a metadata
 **seed** for the new version — and the seed task is a generator, not a gate:
 
 ```mermaid

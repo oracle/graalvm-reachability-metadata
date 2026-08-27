@@ -287,7 +287,10 @@ before the side effect it protects, and each by deterministic code rather than
 by an agent (§root/PRCPL-prefer-algorithmic, §root/PRCPL-verify-inputs). 
 A run requirement that cannot be satisfied must fail where it is checked, naming what was missing or ambiguous,
 and must leave GitHub in the state it found: a rejection after a claim releases
-the claim and returns the issue to `Todo` rather than failing the issue.
+the claim and returns the issue to `Todo` rather than failing the issue. The
+issue form is the one requirement that then ends the issue rather than leaving
+it queued, because its defect is in the issue itself and no later cycle can
+repair it (see 3 below).
 
 ### 1. Strategy and model
 
@@ -304,23 +307,45 @@ Claiming is exclusive, and the decision must be made against live GitHub state
 rather than the scan results that led to it (§AR-forge-orchestration).
 The issue payload is re-read at claim time and must still be open, still carry
 the queue label, be unassigned or assigned only to the authenticated user, carry
-no open blockers, and sit in project status `Todo`. A `resumable` issue
-additionally requires a valid continuation marker on a preserved branch
-(§FS-forge-run-continuation), and a `chunked-dynamic-access` issue requires its
-exhaust report (§AR-dynamic-access-exhaust-report). Only once every condition
-holds may the issue be assigned and moved to `In Progress`.
+no open blockers, and sit in project status `Todo`. Once those live conditions
+hold, the issue is assigned and moved to `In Progress`. While that exclusive
+claim is held and before a worktree is created, the issue-form gate runs, a
+`resumable` issue must resolve a valid continuation marker on a preserved
+branch (§FS-forge-run-continuation), and a `chunked-dynamic-access` issue must
+resolve its exhaust report (§AR-dynamic-access-exhaust-report). A failed
+non-terminal precondition releases the claim back to `Todo`.
 
 ### 3. Issue form
 
 The queue label decides the workflow, so the issue must be unambiguous before a
-driver starts (§AR-forge-driver-queues). The title must resolve to Maven
-coordinates and those coordinates must resolve to a published artifact; a
-`fails-*` issue must resolve a current `latest` metadata version for the
-coordinate and must request a version strictly above it; a
-`library-update-request` must resolve to exactly one driver, recorded so
-publication reports the workflow that actually ran; and an issue must carry
-exactly one workflow label. The last three are contract that no code enforces
-today, which §ROADMAP-forge-issue-form-enforcement closes.
+driver starts (§AR-forge-driver-queues). Every rule below is decided from the
+issue payload and the repository alone, so all of them are checked by one
+deterministic gate after the exclusive claim and before the worktree or driver
+run (§root/PRCPL-prefer-algorithmic, §root/PRCPL-verify-inputs). The claim makes
+the terminal decision exclusive, so two workers cannot both reject the same
+issue.
+
+- The issue carries **exactly one workflow label**. An issue carrying two queue
+  labels is processed once per queue that matches it, so the same issue can be
+  claimed, worked, and published more than once, each time by a different
+  driver working from different assumptions about what the issue asks for.
+- The **title resolves to Maven coordinates** `group:artifact:version`.
+- A `fails-*` issue **resolves a current `latest` metadata version** for the
+  coordinate, because a repair workflow is defined as a move from the currently
+  supported version to the requested one.
+- A `fails-*` issue **requests a version strictly above that `latest`**.
+- The **coordinate is fetchable**, not merely parseable.
+
+The rules are decided in that order, and the gate stops at the first failure.
+Everything decidable from the issue payload and the checked-out repository is
+decided before the one rule that costs a request to a remote repository, so a
+malformed issue is rejected without a network round trip.
+
+Which driver a `library-update-request` runs is not part of this gate. It is
+decided by a compile, JVM-test, and native-test probe against a prepared
+baseline suite, so it needs the worktree the gate protects; it is resolved
+after the claim and recorded so publication reports the workflow that actually
+ran (§AR-forge-driver-queues.2).
 
 **Coordinates resolve when the artifact is fetchable.** A title that parses as
 `group:artifact:version` has satisfied a regular expression, not the
@@ -330,26 +355,49 @@ harness resolves against — Maven Central, then the Confluent fallback
 (§root/AR-build-infrastructure.1). A typo in a group, an artifact that was
 never published, or a version that does not exist upstream is decidable from
 the repository's own layout, so it is decided here rather than surfacing later
-as a Gradle resolution error inside a run that already holds a claim, a project
-transition, and a worktree (§root/PRCPL-verify-inputs). Only the artifact's
-existence is checked — its content is a driver concern, and Native Image
-eligibility remains where it is (§AR-forge-driver-queues).
+as a Gradle resolution error after Forge has created a worktree and started a
+driver (§root/PRCPL-verify-inputs). Only the artifact's existence is checked —
+its content is a driver concern, and Native Image eligibility remains where it
+is (§AR-forge-driver-queues).
 
-**A rejection is reported on the issue.** Every rule above is decided from the
-issue payload and the repository, so when one fails the gate knows exactly
-which rule failed and what value failed it. That is what the reporter needs and
-what a worker log does not give them: an issue rejected in silence is rescanned
-and re-rejected every cycle, and nothing about it changes because nobody was
-told. The rejection therefore posts one predefined comment naming the failed
-rule, quoting the offending value, and stating what the issue must carry
-instead. The comment is per (rule, offending value), so a rescan of an
-unchanged issue posts nothing and an edited title is judged afresh.
+The answer is three-valued: published, absent from every configured
+repository, or undecided because a repository could not be reached. Only
+*absent* rejects an issue. An unreachable repository is an external condition
+outside Forge's boundary, so the gate releases the claim without taking any
+terminal issue action and the issue waits in `Todo` for a later cycle
+(§FS-human-intervention-policy).
+
+**A rejection is reported on the issue, and the issue is closed.** Every rule
+above is decided separately, so when one fails the gate knows exactly which
+rule failed and what value failed it. That is what the reporter needs and what
+a worker log does not give them. The failed rule selects one predefined
+comment, which names the rule, quotes the offending value, and states what the
+issue must carry instead. While the exclusive claim is still held, the rejection
+posts the comment and closes the issue; only after the issue is closed does it
+clear the Forge assignee. It must not release the issue back to `Todo` before
+closing, because doing so would let another worker claim the same issue inside
+the rejection sequence. A form defect is not repaired by waiting — nothing
+about the issue changes until a person changes it — so leaving it open only
+guarantees it is rescanned and re-rejected forever. Closing takes it out of
+every queue and puts the next move with the reporter, who reopens or files a
+corrected issue.
+
+**The comment is posted once.** Closing is the primary guard: a closed issue
+leaves every queue, so an unchanged issue is never rescanned and never
+re-commented. What remains is the reopened issue — reopening without editing
+puts the same defect back in the queue — so the comment carries a marker keyed
+on the failed rule and the offending value, and a rejection whose marker is
+already on the issue closes it again without posting a second comment. An
+edited title changes the value, so it changes the marker and is judged afresh.
+
+The live worker output must make the terminal action equally explicit: name the
+failed rule and offending value, say whether the matching comment was posted or
+skipped as a duplicate, and say that the issue is being closed
+(§FS-forge-run-output-legibility).
 
 A form rejection is not a workflow failure: it is an input defect outside
 Forge's generation boundary, so it carries no `human-intervention` label and
-preserves no branch (§FS-human-intervention-policy). Like every requirement
-here it leaves GitHub as it found it — a rejection reached after a claim
-releases the claim and returns the issue to `Todo`.
+preserves no branch (§FS-human-intervention-policy).
 
 ### 4. Run context
 
