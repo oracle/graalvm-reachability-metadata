@@ -265,6 +265,8 @@ class GradleEnvironmentTests(unittest.TestCase):
 
             self.assertEqual(env["GRAALVM_HOME"], graalvm_home)
             self.assertEqual(env["JAVA_HOME"], graalvm_home)
+            self.assertEqual(env["GRADLE_JAVA_HOME"], graalvm_home)
+            self.assertIn(f"-Dorg.gradle.java.home={graalvm_home}", env["GRADLE_OPTS"])
 
     def test_java_home_with_native_image_backfills_graalvm_home(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as java_home:
@@ -278,6 +280,31 @@ class GradleEnvironmentTests(unittest.TestCase):
 
             self.assertEqual(env["GRAALVM_HOME"], java_home)
             self.assertEqual(env["JAVA_HOME"], java_home)
+            self.assertEqual(env["GRADLE_JAVA_HOME"], java_home)
+
+    def test_selected_graalvm_overrides_inherited_gradle_java_home(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as graalvm_home:
+            os.makedirs(os.path.join(graalvm_home, "bin"))
+            with open(os.path.join(graalvm_home, "bin", "native-image"), "w", encoding="utf-8"):
+                pass
+
+            with patch.dict(os.environ, {}, clear=True):
+                env = gradle_command_environment(
+                    repo_path,
+                    {
+                        "GRAALVM_HOME": graalvm_home,
+                        "GRADLE_JAVA_HOME": "/plain-jdk",
+                        "GRADLE_OPTS": "-Xmx2g -Dorg.gradle.java.home=/plain-jdk",
+                    },
+                )
+
+            self.assertEqual(env["GRADLE_JAVA_HOME"], graalvm_home)
+            self.assertTrue(env["GRADLE_OPTS"].endswith(f"-Dorg.gradle.java.home={graalvm_home}"))
+            self.assertIn("-Xmx2g", env["GRADLE_OPTS"])
+
+            nested_env = gradle_command_environment(repo_path, env)
+
+            self.assertEqual(env["GRADLE_OPTS"], nested_env["GRADLE_OPTS"])
 
 
 if __name__ == "__main__":

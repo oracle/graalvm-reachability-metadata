@@ -9,6 +9,7 @@ import re
 import subprocess
 import sys
 
+from ai_workflows.agents.agent_runtime import analysis_agent_run, get_analysis_agent
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import find_index_entry_for_version
 from utility_scripts.style_checks import run_style_fix_and_checks
@@ -19,13 +20,14 @@ from utility_scripts.native_image_config_policy import (
 )
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
-from utility_scripts.task_logs import build_timestamped_task_log_path, display_log_path
+from utility_scripts.task_logs import display_log_path
 from utility_scripts.test_quality_checks import (
     collect_generated_test_validity_issues,
     format_generated_test_validity_issue,
 )
 
-CODEX_CHECK_METADATA_TIMEOUT_SECONDS = 1200
+CHECK_METADATA_FIX_TIMEOUT_SECONDS = 1200
+MAX_CHECK_METADATA_FIX_ATTEMPTS = 3
 
 
 def _run_gradle_command_with_output(repo_path: str, command: list[str]) -> subprocess.CompletedProcess[str]:
@@ -51,41 +53,36 @@ def _run_gradle_command(repo_path: str, command: list[str]) -> bool:
     return True
 
 
-def _run_codex_check_metadata_fix(repo_path: str, library: str) -> bool:
-    """Ask Codex to repair an unresolved metadata validation failure."""
-    log_path = build_timestamped_task_log_path("metadata-fix", library, "check-metadata-codex")
-    prompt = (
-        f"Fix the checkMetadataFiles failure for {library}. "
-        f"Reproduce it with ./gradlew checkMetadataFiles -Pcoordinates={library}, "
-        "make the minimal fix, and rerun the command until it passes."
+def _run_check_metadata_fix(repo_path: str, library: str, failure_output: str) -> bool:
+    """Ask the analysis agent to repair an unresolved metadata validation failure."""
+    analysis_backend = get_analysis_agent().backend
+    prompt = "\n".join([
+        f"The deterministic checkMetadataFiles step failed for {library}.",
+        "Make the smallest metadata correction supported by the captured failure output.",
+        "Do not remove tested versions, weaken validation, or change the command to suppress the failure.",
+        "Forge will rerun the exact command after this repair and provide new evidence if another attempt is needed.",
+        "",
+        "Exact command:",
+        f"./gradlew checkMetadataFiles -Pcoordinates={library}",
+        "",
+        "Captured failure output:",
+        "```text",
+        failure_output,
+        "```",
+    ])
+    result = analysis_agent_run(
+        working_dir=repo_path,
+        context=prompt,
+        task_type="check-metadata-fix",
+        library=library,
+        timeout=CHECK_METADATA_FIX_TIMEOUT_SECONDS,
     )
-    print(f"[Codex running... Output: {display_log_path(log_path)}]")
-    try:
-        with open(log_path, "w", encoding="utf-8") as log_file:
-            result = subprocess.run(
-                [
-                    "codex",
-                    "exec",
-                    "--dangerously-bypass-approvals-and-sandbox",
-                    "-m",
-                    "gpt-5.6-terra",
-                    prompt,
-                ],
-                cwd=repo_path,
-                stdout=log_file,
-                stderr=subprocess.STDOUT,
-                timeout=CODEX_CHECK_METADATA_TIMEOUT_SECONDS,
-                check=False,
-            )
-    except subprocess.TimeoutExpired:
+    if result.return_code != 0:
         print(
-            f"ERROR: Codex metadata fix timed out after {CODEX_CHECK_METADATA_TIMEOUT_SECONDS} "
-            f"seconds for {library}.",
+            f"ERROR: {analysis_backend} metadata fix failed for {library}. "
+            f"See {display_log_path(result.log_path)}.",
             file=sys.stderr,
         )
-        return False
-    if result.returncode != 0:
-        print(f"ERROR: Codex metadata fix failed for {library}.", file=sys.stderr)
         return False
     return True
 
@@ -201,7 +198,7 @@ def _run_check_metadata_files_with_allowed_packages_fix(
         artifact: str,
         library_version: str,
         log_stage_name: str,
-) -> bool:
+) -> tuple[bool, str]:
     """Run checkMetadataFiles and update missing allowed-packages when the task reports them."""
     log_stage(log_stage_name, f"Running checkMetadataFiles for {library}")
     seen_packages: set[str] = set()
@@ -213,7 +210,7 @@ def _run_check_metadata_files_with_allowed_packages_fix(
         )
         if result.returncode == 0:
             log_stage(log_stage_name, f"checkMetadataFiles passed for {library}")
-            return True
+            return (True, result.stdout)
 
         log_stage(log_stage_name, f"checkMetadataFiles failed for {library}; resolving missing allowed-packages")
         missing_packages = _extract_missing_allowed_packages(result.stdout)
@@ -221,7 +218,7 @@ def _run_check_metadata_files_with_allowed_packages_fix(
         if not new_packages:
             log_stage(log_stage_name, "No new TypeReached packages found in checkMetadataFiles output")
             print(result.stdout)
-            return False
+            return (False, result.stdout)
         log_stage("allowed-packages", f"Adding allowed-packages for {library}: {', '.join(sorted(new_packages))}")
         if not _append_allowed_packages_to_metadata_index(
             repo_path=repo_path,
@@ -232,11 +229,11 @@ def _run_check_metadata_files_with_allowed_packages_fix(
             packages=new_packages,
         ):
             print(result.stdout)
-            return False
+            return (False, result.stdout)
         seen_packages.update(new_packages)
 
     print(f"ERROR: checkMetadataFiles still fails after updating allowed-packages for {library}.", file=sys.stderr)
-    return False
+    return (False, result.stdout)
 
 
 def run_library_finalization(
@@ -246,7 +243,6 @@ def run_library_finalization(
         artifact: str,
         library_version: str,
         log_prefix: str | None = None,
-        model_name: str | None = None,
         base_commit: str | None = None,
 ) -> bool:
     """Run the shared end-of-workflow finalization steps for one library.
@@ -267,31 +263,36 @@ def run_library_finalization(
     if legacy_test_config_paths:
         print(format_legacy_test_native_image_config_error(sorted(legacy_test_config_paths)), file=sys.stderr)
         return False
-    if not _run_check_metadata_files_with_allowed_packages_fix(
+    metadata_valid, metadata_failure_output = _run_check_metadata_files_with_allowed_packages_fix(
         repo_path=repo_path,
         library=library,
         group=group,
         artifact=artifact,
         library_version=library_version,
         log_stage_name="check-metadata-files",
-    ):
-        for attempt in range(1, 4):
-            log_stage("check-metadata-files", f"Running Codex metadata fix attempt {attempt}/3 for {library}")
-            if not _run_codex_check_metadata_fix(repo_path, library):
+    )
+    if not metadata_valid:
+        for attempt in range(1, MAX_CHECK_METADATA_FIX_ATTEMPTS + 1):
+            log_stage(
+                "check-metadata-files",
+                f"Running analysis metadata fix attempt {attempt}/{MAX_CHECK_METADATA_FIX_ATTEMPTS} for {library}",
+            )
+            if not _run_check_metadata_fix(repo_path, library, metadata_failure_output):
                 continue
-            if _run_check_metadata_files_with_allowed_packages_fix(
+            metadata_valid, metadata_failure_output = _run_check_metadata_files_with_allowed_packages_fix(
                 repo_path=repo_path,
                 library=library,
                 group=group,
                 artifact=artifact,
                 library_version=library_version,
                 log_stage_name="check-metadata-files",
-            ):
+            )
+            if metadata_valid:
                 break
         else:
             return False
     log_stage("style-checks", f"Running style checks for {library}")
-    if not run_style_fix_and_checks(repo_path, library, model_name=model_name):
+    if not run_style_fix_and_checks(repo_path, library):
         return False
     test_source_root = os.path.join(repo_path, "tests", "src", group, artifact, library_version, "src", "test")
     generated_test_validity_issues = collect_generated_test_validity_issues(test_source_root)

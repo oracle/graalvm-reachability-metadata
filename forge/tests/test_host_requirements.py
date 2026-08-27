@@ -28,8 +28,8 @@ from utility_scripts.host_requirements import (
     parse_graalvm_runtime_version,
     parse_gradle_version,
     parse_grype_version,
+    parse_args,
     parse_native_image_version,
-    pi_approve_supported,
     probe_proxied_host,
     resolve_graalvm_version_check,
     resolve_https_proxy,
@@ -142,22 +142,16 @@ class HostRequirementsTests(unittest.TestCase):
             "25.3.4.1-dev+0.0",
             "25.0.4.1+0-LTS-jvmci-25.3-b20",
         ))
+        self.assertTrue(graalvm_ea_version_matches(
+            "25i3-25.0.4.1-ea.03",
+            "25.3.4.1-dev+0.1",
+            "25.0.4.1+0-LTS-jvmci-25.3-b21",
+        ))
 
     def test_grype_version_parsing(self) -> None:
         self.assertEqual("0.104.0", parse_grype_version("Application: grype\nVersion: 0.104.0\n"))
         self.assertEqual("0.104.0", parse_grype_version("Version: v0.104.0\n"))
         self.assertEqual("9.1.0", parse_gradle_version("\nWelcome to Gradle 9.1.0!\n\nGradle 9.1.0\n"))
-
-    @patch("utility_scripts.host_requirements.run_command")
-    def test_pi_approve_support_is_checked_from_help(self, command: Mock) -> None:
-        command.return_value = subprocess.CompletedProcess(
-            ["pi", "--help"],
-            0,
-            "Usage: pi [options]\n  --approve  Approve all tool calls\n",
-            "",
-        )
-
-        self.assertTrue(pi_approve_supported({}))
 
     def test_pinned_graalvm_25_version_is_recorded_in_repository(self) -> None:
         forge_dir = Path(__file__).resolve().parents[1]
@@ -178,7 +172,6 @@ class HostRequirementsTests(unittest.TestCase):
             host_requirements = HostRequirements(
                 "/repo/forge",
                 "python3",
-                "gpt-5.6-terra",
                 {"GRAALVM_HOME": graalvm_home},
             )
 
@@ -187,6 +180,27 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertFalse(host_requirements.results[-1].passed)
         self.assertIn(GRAALVM_SCHEMA_PATH, host_requirements.results[-1].detail)
         self.assertIn("is missing", host_requirements.results[-1].detail)
+
+    @patch("utility_scripts.host_requirements.run_command")
+    def test_graalvm_check_requires_loadable_native_image_agent(self, command: Mock) -> None:
+        command.return_value = subprocess.CompletedProcess(
+            ["java", "-agentlib:native-image-agent", "-version"],
+            1,
+            "",
+            "Could not find agent library native-image-agent",
+        )
+        with _graalvm_home() as graalvm_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                {"GRAALVM_HOME": graalvm_home},
+            )
+
+            host_requirements._check_graalvm_home("GRAALVM_HOME", True, "25.2.4")
+
+        self.assertEqual(1, len(host_requirements.results))
+        self.assertFalse(host_requirements.results[0].passed)
+        self.assertIn("cannot load native-image-agent", host_requirements.results[0].detail)
 
     @patch("utility_scripts.host_requirements.run_command")
     def test_strict_version_check_stops_work_on_a_mismatched_graalvm(self, command: Mock) -> None:
@@ -201,7 +215,6 @@ class HostRequirementsTests(unittest.TestCase):
             host_requirements = HostRequirements(
                 "/repo/forge",
                 "python3",
-                "gpt-5.6-terra",
                 {"GRAALVM_HOME": graalvm_home},
                 graalvm_version_check="strict",
             )
@@ -226,7 +239,6 @@ class HostRequirementsTests(unittest.TestCase):
             host_requirements = HostRequirements(
                 "/repo/forge",
                 "python3",
-                "gpt-5.6-terra",
                 {"GRAALVM_HOME": patched_graalvm, "GRAALVM_HOME_25_0": broken_graalvm},
                 graalvm_version_check="warn",
             )
@@ -244,15 +256,16 @@ class HostRequirementsTests(unittest.TestCase):
             host_requirements = HostRequirements(
                 "/repo/forge",
                 "python3",
-                "gpt-5.6-terra",
                 {"GRAALVM_HOME": graalvm_home, "FORGE_WORK_LIMIT": "1"},
                 graalvm_version_check="off",
             )
 
             with patch("utility_scripts.host_requirements.run_command") as command:
+                command.return_value = subprocess.CompletedProcess(["java", "-version"], 0, "", "")
                 host_requirements._check_graalvm_home("GRAALVM_HOME", True, None)
 
-        command.assert_not_called()
+        self.assertEqual(1, command.call_count)
+        self.assertIn("-agentlib:native-image-agent", command.call_args.args[0][1])
         installation, version = host_requirements.results
         self.assertEqual("PASS", installation.status)
         self.assertEqual("SKIP", version.status)
@@ -298,14 +311,199 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertFalse(passed)
         self.assertIn("Codex Developers", detail)
         self.assertIn("`never` is disallowed", detail)
-        self.assertIn("`danger-full-access` is disallowed", detail)
+        self.assertNotIn("`workspace-write` is disallowed", detail)
+
+    def test_only_selected_agent_executables_are_required(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            requirements=QueueRequirements(issue_work=False, review_work=True),
+            analysis_agent="claude",
+            analysis_family="claude-code",
+            analysis_model="claude-opus-4-1",
+        )
+        with patch.object(host_requirements, "_check_tool") as check_tool, \
+                patch.object(host_requirements, "_check_grype"), \
+                patch.object(host_requirements, "_check_gradle_wrapper"):
+            host_requirements._check_tools()
+
+        required_agent_checks = [
+            call_args.args[1]
+            for call_args in check_tool.call_args_list
+            if call_args.args[0].startswith("Agent backend") and call_args.args[2]
+        ]
+        self.assertEqual(required_agent_checks, ["claude"])
+
+    def test_role_agent_family_and_command_are_checked_independently(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            requirements=QueueRequirements(issue_work=False, review_work=True),
+            analysis_agent="cdx",
+            analysis_family="codex",
+            analysis_model="gpt-5.6-terra",
+        )
+        with patch.object(host_requirements, "_check_tool") as check_tool, \
+                patch.object(host_requirements, "_check_grype"), \
+                patch.object(host_requirements, "_check_gradle_wrapper"):
+            host_requirements._check_tools()
+
+        required_agent_checks = [
+            call_args.args[1]
+            for call_args in check_tool.call_args_list
+            if call_args.args[0].startswith("Agent backend") and call_args.args[2]
+        ]
+        self.assertEqual(required_agent_checks, ["cdx"])
+
+    def test_custom_agent_alias_uses_family_for_state_and_provider_checks(self) -> None:
+        environment = {"HOME": "/operator"}
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            environment=environment,
+            requirements=QueueRequirements(
+                issue_work=False,
+                review_work=True,
+                github_work=False,
+            ),
+            analysis_agent="cdx",
+            analysis_family="codex",
+            analysis_model="gpt-5.6-terra",
+        )
+        with patch(
+                "utility_scripts.host_requirements.probe_write_access",
+                return_value=(True, "writable"),
+        ), patch.object(
+            host_requirements,
+            "_check_git_remote_access",
+        ), patch(
+            "utility_scripts.host_requirements.probe_tcp_host",
+            return_value=(True, "reachable"),
+        ) as probe_host:
+            host_requirements._check_write_permissions()
+            host_requirements._check_network()
+
+        result_by_name = {result.name: result for result in host_requirements.results}
+        self.assertIn("codex state", result_by_name)
+        self.assertIn("/operator/.codex", result_by_name["codex state"].remediation)
+        probed_hosts = [call.args[0] for call in probe_host.call_args_list]
+        self.assertIn("chatgpt.com", probed_hosts)
+        self.assertNotIn("opencode.ai", probed_hosts)
+
+    def test_setup_role_gets_every_host_capability_check(self) -> None:
+        environment = {"HOME": "/operator"}
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            environment=environment,
+            requirements=QueueRequirements(
+                issue_work=True,
+                review_work=False,
+                github_work=False,
+            ),
+            analysis_family="codex",
+            analysis_agent="codex",
+            setup_family="opencode",
+            setup_agent="setup-code",
+            setup_model="setup-model",
+            setup_provider="openrouter",
+        )
+
+        with patch.object(host_requirements, "_check_tool") as check_tool, \
+                patch.object(host_requirements, "_check_grype"), \
+                patch.object(host_requirements, "_check_gradle_wrapper"):
+            host_requirements._check_tools()
+
+        required_agent_commands = {
+            call_args.args[1]
+            for call_args in check_tool.call_args_list
+            if call_args.args[0].startswith("Agent backend") and call_args.args[2]
+        }
+        self.assertIn("setup-code", required_agent_commands)
+
+        with patch(
+                "utility_scripts.host_requirements.probe_write_access",
+                return_value=(True, "writable"),
+        ), patch.object(
+            host_requirements,
+            "_check_git_remote_access",
+        ), patch(
+            "utility_scripts.host_requirements.probe_tcp_host",
+            return_value=(True, "reachable"),
+        ) as probe_host:
+            host_requirements._check_write_permissions()
+            host_requirements._check_network()
+
+        result_by_name = {result.name: result for result in host_requirements.results}
+        self.assertIn("opencode state", result_by_name)
+        self.assertTrue(result_by_name["opencode state"].required)
+        self.assertIn("/operator/.local/share/opencode", result_by_name["opencode state"].remediation)
+        probed_hosts = [call.args[0] for call in probe_host.call_args_list]
+        self.assertIn("openrouter.ai", probed_hosts)
+
+        with patch(
+                "utility_scripts.host_requirements.resolve_executable",
+                side_effect=lambda executable: f"/bin/{executable}",
+        ), patch.object(
+            host_requirements,
+            "_selected_agent_authentication",
+            return_value=(True, "ready"),
+        ) as authenticate:
+            host_requirements._check_selected_agents()
+
+        self.assertIn(
+            ("opencode", "setup-code", "setup-model", "openrouter"),
+            [call.args for call in authenticate.call_args_list],
+        )
+
+    def test_test_role_defaults_come_from_the_selected_strategy(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            environment={},
+            requirements=QueueRequirements(issue_work=True, review_work=False),
+            test_strategy_name="dynamic_access_main_sources_pi_gpt-5.6-sol",
+        )
+
+        self.assertEqual(host_requirements.test_family, "pi")
+        self.assertEqual(host_requirements.test_agent, "pi")
+        self.assertEqual(host_requirements.test_model, "gpt-5.6-sol")
+
+    def test_all_enabled_strategy_agents_are_validated(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            environment={},
+            requirements=QueueRequirements(issue_work=True, review_work=False),
+            test_strategy_names=[
+                "dynamic_access_main_sources_pi_gpt-5.6-sol",
+                "dynamic_access_main_sources_codex_gpt-5.6-sol",
+            ],
+        )
+
+        self.assertEqual(
+            {requirement.family for requirement in host_requirements.test_requirements},
+            {"pi", "codex"},
+        )
+        with patch(
+                "utility_scripts.host_requirements.resolve_executable",
+                side_effect=lambda executable: f"/bin/{executable}",
+        ), patch.object(
+            host_requirements,
+            "_selected_agent_authentication",
+            return_value=(True, "ready"),
+        ) as authenticate:
+            host_requirements._check_selected_agents()
+
+        authenticated_families = {call.args[0] for call in authenticate.call_args_list}
+        self.assertEqual(authenticated_families, {"codex", "pi"})
 
     def test_github_permission_results_name_each_required_mutation_boundary(self) -> None:
         environment = {
             "FORGE_WORK_LIMIT": "1",
             "FORGE_REVIEW_LIMIT": "1",
         }
-        host_requirements = HostRequirements("/repo/forge", "python3", "gpt-5.6-terra", environment)
+        host_requirements = HostRequirements("/repo/forge", "python3", environment)
         response = json.dumps({
             "data": {
                 "viewer": {
@@ -344,7 +542,7 @@ class HostRequirementsTests(unittest.TestCase):
             "FORGE_WORK_LIMIT": "0",
             "FORGE_REVIEW_LIMIT": "1",
         }
-        host_requirements = HostRequirements("/repo/forge", "python3", "gpt-5.6-terra", environment)
+        host_requirements = HostRequirements("/repo/forge", "python3", environment)
 
         def fail_tools() -> None:
             host_requirements._add(
@@ -363,7 +561,6 @@ class HostRequirementsTests(unittest.TestCase):
                 patch.object(host_requirements, "_check_write_permissions"), \
                 patch.object(host_requirements, "_check_network"), \
                 patch.object(host_requirements, "_check_github"), \
-                patch.object(host_requirements, "_check_pi"), \
                 patch.object(host_requirements, "_check_codex"), \
                 patch.object(host_requirements, "_check_docker"), \
                 redirect_stdout(stdout), redirect_stderr(stderr):
@@ -388,7 +585,7 @@ class HostRequirementsTests(unittest.TestCase):
             "host:\n  arch: amd64\n",
             "",
         )
-        host_requirements = HostRequirements("/repo/forge", "python3", "gpt-5.6-terra", {"FORGE_WORK_LIMIT": "1"})
+        host_requirements = HostRequirements("/repo/forge", "python3", {"FORGE_WORK_LIMIT": "1"})
 
         host_requirements._check_docker()
 
@@ -399,7 +596,6 @@ class HostRequirementsTests(unittest.TestCase):
         host_requirements = HostRequirements(
             "/repo/forge",
             "python3",
-            "gpt-5.6-terra",
             {},
             requirements=QueueRequirements(issue_work=True, review_work=False, github_work=False),
         )
@@ -422,7 +618,6 @@ class HostRequirementsTests(unittest.TestCase):
             host_requirements = HostRequirements(
                 "/parent/forge",
                 "python3",
-                "gpt-5.6-terra",
                 {},
                 requirements=QueueRequirements(issue_work=True, review_work=False),
                 repo_dir=target_repo,
@@ -449,7 +644,6 @@ class HostRequirementsTests(unittest.TestCase):
         host_requirements = HostRequirements(
             "/repo/forge",
             "python3",
-            "gpt-5.6-terra",
             {},
             requirements=QueueRequirements(issue_work=False, review_work=True),
         )
@@ -506,6 +700,262 @@ class HostRequirementsTests(unittest.TestCase):
         first_cycle = worker.rindex("\nrun_cycle\n")
 
         self.assertLess(startup, first_cycle)
+
+    def test_worker_propagates_the_analysis_role_selection(self) -> None:
+        worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fake_python = os.path.join(temp_dir, "python3")
+            args_path = os.path.join(temp_dir, "args.txt")
+            with open(fake_python, "w", encoding="utf-8") as output_file:
+                output_file.write(
+                    "#!/usr/bin/env bash\n"
+                    "printf '%s\\n' \"$@\" > \"$FORGE_TEST_ARGS_FILE\"\n"
+                    "exit 1\n"
+                )
+            os.chmod(fake_python, 0o755)
+            environment = dict(os.environ)
+            for variable in (
+                    "FORGE_AGENT_FAMILY",
+                    "FORGE_ANALYSIS_AGENT",
+                    "FORGE_ANALYSIS_FAMILY",
+                    "FORGE_ANALYSIS_MODEL",
+            ):
+                environment.pop(variable, None)
+            environment.update({
+                "PYTHON_BIN": fake_python,
+                "FORGE_TEST_ARGS_FILE": args_path,
+            })
+
+            result = subprocess.run(
+                [
+                    str(worker_path), "--once",
+                    "--analysis-agent", "cdx",
+                    "--analysis-family", "codex",
+                ],
+                env=environment,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                check=False,
+            )
+            with open(args_path, encoding="utf-8") as input_file:
+                arguments = input_file.read().splitlines()
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(arguments[arguments.index("--analysis-agent") + 1], "cdx")
+        self.assertEqual(arguments[arguments.index("--analysis-family") + 1], "codex")
+        self.assertEqual(arguments[arguments.index("--analysis-model") + 1], "gpt-5.6-luna")
+
+    def test_worker_forwards_setup_options_only_when_configured(self) -> None:
+        worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"
+
+        def run_worker(extra_args: list[str]) -> list[str]:
+            with tempfile.TemporaryDirectory() as temp_dir:
+                fake_python = os.path.join(temp_dir, "python3")
+                args_path = os.path.join(temp_dir, "args.txt")
+                with open(fake_python, "w", encoding="utf-8") as output_file:
+                    output_file.write(
+                        "#!/usr/bin/env bash\n"
+                        "printf '%s\\n' \"$@\" > \"$FORGE_TEST_ARGS_FILE\"\n"
+                        "exit 1\n"
+                    )
+                os.chmod(fake_python, 0o755)
+                environment = dict(os.environ)
+                for variable in (
+                        "FORGE_AGENT_FAMILY",
+                        "FORGE_ANALYSIS_AGENT",
+                        "FORGE_ANALYSIS_FAMILY",
+                        "FORGE_ANALYSIS_MODEL",
+                        "FORGE_SETUP_AGENT",
+                        "FORGE_SETUP_FAMILY",
+                        "FORGE_SETUP_MODEL",
+                        "FORGE_SETUP_PROVIDER",
+                ):
+                    environment.pop(variable, None)
+                environment.update({
+                    "PYTHON_BIN": fake_python,
+                    "FORGE_TEST_ARGS_FILE": args_path,
+                })
+                subprocess.run(
+                    [str(worker_path), "--once", *extra_args],
+                    env=environment,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    check=False,
+                )
+                with open(args_path, encoding="utf-8") as input_file:
+                    return input_file.read().splitlines()
+
+        # Unset means the shared default, not the analysis setting.
+        arguments = run_worker([])
+        self.assertNotIn("--setup-agent", arguments)
+        self.assertNotIn("--setup-family", arguments)
+        self.assertNotIn("--setup-model", arguments)
+        self.assertNotIn("--setup-provider", arguments)
+
+        arguments = run_worker([
+            "--setup-family", "pi",
+            "--setup-agent", "my-pi",
+            "--setup-model", "cheap-model",
+            "--setup-provider", "openrouter",
+        ])
+        self.assertEqual(arguments[arguments.index("--setup-family") + 1], "pi")
+        self.assertEqual(arguments[arguments.index("--setup-agent") + 1], "my-pi")
+        self.assertEqual(arguments[arguments.index("--setup-model") + 1], "cheap-model")
+        self.assertEqual(arguments[arguments.index("--setup-provider") + 1], "openrouter")
+
+    def test_worker_only_forwards_options_the_gate_defines(self) -> None:
+        """A stale forwarded option would exit the gate with code 2 before any work starts."""
+        worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"
+
+        def gate_arguments(extra_args: list[str], extra_environment: dict[str, str]) -> list[str]:
+            with tempfile.TemporaryDirectory() as temp_dir:
+                fake_python = os.path.join(temp_dir, "python3")
+                args_path = os.path.join(temp_dir, "args.txt")
+                with open(fake_python, "w", encoding="utf-8") as output_file:
+                    output_file.write(
+                        "#!/usr/bin/env bash\n"
+                        "printf '%s\\n' \"$@\" > \"$FORGE_TEST_ARGS_FILE\"\n"
+                        "exit 1\n"
+                    )
+                os.chmod(fake_python, 0o755)
+                environment = dict(os.environ)
+                for variable in (
+                        "FORGE_AGENT_FAMILY",
+                        "FORGE_ANALYSIS_AGENT",
+                        "FORGE_ANALYSIS_FAMILY",
+                        "FORGE_ANALYSIS_MODEL",
+                        "FORGE_REVIEW_MODEL",
+                ):
+                    environment.pop(variable, None)
+                environment.update({
+                    "PYTHON_BIN": fake_python,
+                    "FORGE_TEST_ARGS_FILE": args_path,
+                })
+                environment.update(extra_environment)
+                subprocess.run(
+                    [str(worker_path), "--once", *extra_args],
+                    env=environment,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    check=False,
+                )
+                with open(args_path, encoding="utf-8") as input_file:
+                    recorded = input_file.read().splitlines()
+                self.assertTrue(recorded[0].endswith("host_requirements.py"), recorded[0])
+                return recorded[1:]
+
+        for extra_args, extra_environment in (
+                ([], {}),
+                (["--agent-family", "codex"], {}),
+                ([], {"FORGE_REVIEW_MODEL": "gpt-5.6-luna"}),
+                (["--setup-family", "pi", "--setup-model", "cheap-model"], {}),
+        ):
+            with self.subTest(extra_args=extra_args, extra_environment=extra_environment):
+                parse_args(gate_arguments(extra_args, extra_environment))
+
+    def test_worker_names_enabled_strategies_and_never_retargets_them(self) -> None:
+        worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fake_python = os.path.join(temp_dir, "python3")
+            args_path = os.path.join(temp_dir, "args.txt")
+            with open(fake_python, "w", encoding="utf-8") as output_file:
+                output_file.write(
+                    "#!/usr/bin/env bash\n"
+                    "printf '%s\\n' \"$@\" > \"$FORGE_TEST_ARGS_FILE\"\n"
+                    "exit 1\n"
+                )
+            os.chmod(fake_python, 0o755)
+            environment = dict(os.environ)
+            for variable in (
+                    "FORGE_AGENT_FAMILY",
+                    "FORGE_ANALYSIS_AGENT",
+                    "FORGE_ANALYSIS_FAMILY",
+                    "FORGE_ANALYSIS_MODEL",
+            ):
+                environment.pop(variable, None)
+            environment.update({
+                "PYTHON_BIN": fake_python,
+                "FORGE_TEST_ARGS_FILE": args_path,
+                "FORGE_WORK_LIMIT": "1",
+                "FORGE_JAVAC_WORK_LIMIT": "1",
+                "FORGE_JAVAC_STRATEGY_NAME": "dynamic_access_main_sources_codex_gpt-5.6-sol",
+                "FORGE_JAVA_RUN_WORK_LIMIT": "0",
+                "FORGE_NI_RUN_WORK_LIMIT": "0",
+                "FORGE_LIBRARY_UPDATE_WORK_LIMIT": "0",
+            })
+
+            result = subprocess.run(
+                [str(worker_path), "--once"],
+                env=environment,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                check=False,
+            )
+            with open(args_path, encoding="utf-8") as input_file:
+                arguments = input_file.read().splitlines()
+
+        self.assertNotEqual(result.returncode, 0)
+        # The strategy is the only thing that names a test-role backend.
+        self.assertNotIn("--test-agent", arguments)
+        self.assertNotIn("--test-family", arguments)
+        self.assertNotIn("--test-model", arguments)
+        self.assertNotIn("--test-provider", arguments)
+        strategy_values = [
+            arguments[index + 1]
+            for index, argument in enumerate(arguments)
+            if argument == "--test-strategy"
+        ]
+        self.assertEqual(
+            strategy_values,
+            [
+                "dynamic_access_main_sources_pi_gpt-5.6-sol",
+                "dynamic_access_main_sources_codex_gpt-5.6-sol",
+            ],
+        )
+
+    def test_worker_family_only_selection_uses_default_executable(self) -> None:
+        worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fake_python = os.path.join(temp_dir, "python3")
+            args_path = os.path.join(temp_dir, "args.txt")
+            with open(fake_python, "w", encoding="utf-8") as output_file:
+                output_file.write(
+                    "#!/usr/bin/env bash\n"
+                    "printf '%s\\n' \"$@\" > \"$FORGE_TEST_ARGS_FILE\"\n"
+                    "exit 1\n"
+                )
+            os.chmod(fake_python, 0o755)
+            environment = dict(os.environ)
+            for variable in (
+                    "FORGE_AGENT_FAMILY",
+                    "FORGE_ANALYSIS_AGENT",
+                    "FORGE_ANALYSIS_FAMILY",
+                    "FORGE_ANALYSIS_MODEL",
+            ):
+                environment.pop(variable, None)
+            environment.update({
+                "PYTHON_BIN": fake_python,
+                "FORGE_TEST_ARGS_FILE": args_path,
+            })
+
+            result = subprocess.run(
+                [str(worker_path), "--once", "--analysis-family", "pi"],
+                env=environment,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                check=False,
+            )
+            with open(args_path, encoding="utf-8") as input_file:
+                arguments = input_file.read().splitlines()
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(arguments[arguments.index("--analysis-family") + 1], "pi")
+        self.assertEqual(arguments[arguments.index("--analysis-agent") + 1], "pi")
 
 
 if __name__ == "__main__":

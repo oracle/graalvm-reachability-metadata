@@ -11,12 +11,12 @@ import subprocess
 import sys
 from typing import Callable
 
-from ai_workflows.core.fix_metadata_codex import run_codex_metadata_fix
-from ai_workflows.core.fix_post_generation_pi import (
+from ai_workflows.core.metadata_fix import run_metadata_fix
+from ai_workflows.core.post_generation_fix import (
     DEFAULT_MAX_TEST_OUTPUT_CHARS,
-    DEFAULT_PI_TIMEOUT_SECONDS,
+    DEFAULT_POST_GENERATION_TIMEOUT_SECONDS,
     POST_GENERATION_STAGE_METADATA_FIX_FAILED,
-    run_pi_post_generation_fix,
+    run_post_generation_fix,
 )
 from utility_scripts.library_finalization import run_library_finalization
 from utility_scripts.continuation_marker import (
@@ -268,7 +268,7 @@ class WorkflowStrategy(ABC):
 
             log_stage("metadata-fix", f"Running metadata fix workflow for {library} after {stage_name} failure")
             codex_env = gradle_command_environment(repo_path, command_env)
-            codex_rc, codex_log_path, codex_timed_out = run_codex_metadata_fix(
+            codex_rc, codex_log_path, codex_timed_out = run_metadata_fix(
                 repo_path,
                 library,
                 reproduction_command=reproduction_command,
@@ -282,14 +282,16 @@ class WorkflowStrategy(ABC):
                     log_stage("post-generation-test", f"{stage_name} passed for {library} after metadata fix")
                     return RUN_STATUS_SUCCESS
 
-            log_stage("post-generation-fix", f"Running pi post generation fix for {library} after {stage_name} failure")
-            pi_rc, intervention_path, pi_timed_out = run_pi_post_generation_fix(
+            log_stage(
+                "post-generation-fix",
+                f"Running post generation fix for {library} after {stage_name} failure",
+            )
+            pi_rc, intervention_path, pi_timed_out = run_post_generation_fix(
                 reachability_metadata_path=repo_path,
                 coordinates=library,
-                codex_log_path=codex_log_path,
+                analysis_log_path=codex_log_path,
                 test_output=recovery_test_output,
-                model_name=self.model_name,
-                timeout_seconds=self._parameter_int("post-generation-timeout-seconds", DEFAULT_PI_TIMEOUT_SECONDS),
+                timeout_seconds=self._parameter_int("post-generation-timeout-seconds", DEFAULT_POST_GENERATION_TIMEOUT_SECONDS),
                 max_test_output_chars=self._parameter_int(
                     "post-generation-test-output-chars",
                     DEFAULT_MAX_TEST_OUTPUT_CHARS,

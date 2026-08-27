@@ -18,7 +18,7 @@ Supplemental configs the suite needs live in its own
 for `metadata/`.
 
 Loop: `generateMetadata` -> `test`; while it fails and a fix budget
-remains, `run_codex_metadata_fix` then re-run `test`. If Native Image
+remains, `run_metadata_fix` then re-run `test`. If Native Image
 validation still cannot pass automatically, the run is flagged
 `needsHumanIntervention` (exit code 3) so the reviewed Rhei task routes to
 human intervention. A failed `generateMetadata` stops immediately instead of
@@ -39,7 +39,7 @@ import os
 import shlex
 import sys
 
-from ai_workflows.core.fix_metadata_codex import run_codex_metadata_fix
+from ai_workflows.core.metadata_fix import run_metadata_fix
 from utility_scripts.gradle_test_runner import run_gradle_test_command
 
 
@@ -166,7 +166,7 @@ def prepare_native_metadata(
     fix_passes: int = 0
     while not passed and fix_passes < max_fix_passes:
         fix_passes += 1
-        return_code, _log_path, _timed_out = run_codex_metadata_fix(
+        return_code, _log_path, _timed_out = run_metadata_fix(
             repo_path, coordinate, reproduction_command=native_command,
         )
         steps.append({"task": "codexMetadataFix", "pass": fix_passes, "returncode": return_code})

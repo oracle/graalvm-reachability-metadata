@@ -352,6 +352,7 @@ def init_agent(
         mcps=strategy.get("mcps", []),
         persistent_instructions=persistent_instructions,
         thinking_level=thinking_level or strategy.get("thinking-level"),
+        agent_name=strategy.get("agent-command"),
     )
 
 

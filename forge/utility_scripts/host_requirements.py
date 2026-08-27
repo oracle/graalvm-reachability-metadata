@@ -22,13 +22,30 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping, Sequence
 
+FORGE_PYTHON_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if FORGE_PYTHON_ROOT not in sys.path:
+    sys.path.insert(0, FORGE_PYTHON_ROOT)
+
+from ai_workflows.agents.agent_runtime import (  # noqa: E402
+    SUPPORTED_AGENT_BACKENDS,
+    get_analysis_agent,
+    get_setup_agent,
+    resolve_provider,
+    default_agent_for_backend,
+    default_model_for_backend,
+    normalize_backend_name,
+)
+from utility_scripts.strategy_loader import (  # noqa: E402
+    apply_test_agent_alias,
+    load_predefined_strategies,
+)
+
 
 REPOSITORY_OWNER = "oracle"
 REPOSITORY_NAME = "graalvm-reachability-metadata"
 PROJECT_NUMBER = 30
 PI_PROVIDER = "openai-codex"
 REQUIRED_GRYPE_VERSION = "0.104.0"
-DEFAULT_REVIEW_MODEL = "gpt-5.6-terra"
 GRAALVM_VERSION_CONFIG = "graalvm-versions.json"
 GRAALVM_GA_RELEASE_ENDPOINT = "repos/graalvm/graalvm-ce-builds/releases/latest"
 GRAALVM_EA_RELEASE_ENDPOINT = (
@@ -39,6 +56,11 @@ ISSUE_GRAALVM_ENV_VARS = ("GRAALVM_HOME", "GRAALVM_HOME_25_0", "GRAALVM_HOME_LAT
 GRAALVM_VERSION_CHECK_MODES = ("strict", "warn", "off")
 DEFAULT_GRAALVM_VERSION_CHECK = "strict"
 GRAALVM_VERSION_CHECK_ENV_VAR = "FORGE_GRAALVM_VERSION_CHECK"
+# Published EA labels can be reissued from the same reported runtime revision.
+# §FS-forge-host-requirements
+GRAALVM_EA_RUNTIME_REVISIONS = {
+    "25i3-25.0.4.1-ea.03": 1,
+}
 WRITE_REPOSITORY_PERMISSIONS = {"WRITE", "MAINTAIN", "ADMIN"}
 ISSUE_LIMIT_ENV_VARS = (
     "FORGE_JAVAC_WORK_LIMIT",
@@ -56,7 +78,7 @@ REVIEW_LIMIT_ENV_VARS = (
     "FORGE_BULK_UPDATE_REVIEW_LIMIT",
 )
 NETWORK_HOSTS_GITHUB = ("github.com", "api.github.com")
-NETWORK_HOSTS_WORK = ("chatgpt.com", "services.gradle.org")
+NETWORK_HOSTS_WORK = ("services.gradle.org",)
 NETWORK_HOSTS_ISSUE_WORK = (
     "repo.maven.apache.org",
     "plugins.gradle.org",
@@ -117,6 +139,17 @@ class GraalVMVersions:
     latest_ea: str | None
 
 
+@dataclass(frozen=True)
+class AgentRequirement:
+    """One executable, family, and model required by an enabled runtime role."""
+
+    family: str
+    agent: str
+    model: str
+    strategy_name: str | None = None
+    provider: str | None = None
+
+
 class HostRequirements:
     """Collect and print Forge host requirements without invoking a model.
 
@@ -127,11 +160,20 @@ class HostRequirements:
             self,
             forge_dir: str,
             python_bin: str,
-            review_model: str,
             environment: Mapping[str, str] | None = None,
             requirements: QueueRequirements | None = None,
             graalvm_version_check: str | None = None,
             repo_dir: str | None = None,
+            analysis_agent: str | None = None,
+            analysis_family: str | None = None,
+            analysis_model: str | None = None,
+            analysis_provider: str | None = None,
+            setup_agent: str | None = None,
+            setup_family: str | None = None,
+            setup_model: str | None = None,
+            setup_provider: str | None = None,
+            test_strategy_name: str | None = None,
+            test_strategy_names: Sequence[str] | None = None,
     ) -> None:
         self.forge_dir = os.path.abspath(forge_dir)
         self.forge_repo_dir = os.path.dirname(self.forge_dir)
@@ -139,8 +181,49 @@ class HostRequirements:
         # contains Forge, so each set of paths is checked for what it actually owns.
         self.repo_dir = os.path.abspath(repo_dir) if repo_dir else self.forge_repo_dir
         self.python_bin = python_bin
-        self.review_model = review_model
         self.environment = dict(os.environ if environment is None else environment)
+        # Command-line values are layered onto the environment so the probe
+        # resolves each role exactly the way the run will
+        # (§FS-forge-agent-runtime-selection) instead of restating the rules.
+        selected_env = dict(self.environment)
+        for variable, value in (
+                ("FORGE_ANALYSIS_AGENT", analysis_agent),
+                ("FORGE_ANALYSIS_FAMILY", analysis_family),
+                ("FORGE_ANALYSIS_MODEL", analysis_model),
+                ("FORGE_ANALYSIS_PROVIDER", analysis_provider),
+                ("FORGE_SETUP_AGENT", setup_agent),
+                ("FORGE_SETUP_FAMILY", setup_family),
+                ("FORGE_SETUP_MODEL", setup_model),
+                ("FORGE_SETUP_PROVIDER", setup_provider),
+        ):
+            if value:
+                selected_env[variable] = value
+        analysis_selection = get_analysis_agent(selected_env)
+        self.analysis_family = analysis_selection.backend
+        self.analysis_agent = analysis_selection.agent
+        self.analysis_model = analysis_selection.model
+        self.analysis_provider = analysis_selection.provider
+        setup_selection = get_setup_agent(selected_env)
+        self.setup_family = setup_selection.backend
+        self.setup_agent = setup_selection.agent
+        self.setup_model = setup_selection.model
+        self.setup_provider = setup_selection.provider
+        requested_strategy_names = list(test_strategy_names or [])
+        if test_strategy_name and test_strategy_name not in requested_strategy_names:
+            requested_strategy_names.append(test_strategy_name)
+        if not requested_strategy_names and self.environment.get("FORGE_STRATEGY_NAME"):
+            requested_strategy_names.append(str(self.environment["FORGE_STRATEGY_NAME"]))
+        configured_test_strategies = [
+            (strategy_name, self._load_test_strategy(strategy_name))
+            for strategy_name in requested_strategy_names
+        ] or [(None, {})]
+        self.test_requirements = self._resolve_test_requirements(
+            configured_test_strategies,
+        )
+        primary_test_requirement = self.test_requirements[0]
+        self.test_family = primary_test_requirement.family
+        self.test_agent = primary_test_requirement.agent
+        self.test_model = primary_test_requirement.model
         self.requirements = (
             resolve_queue_requirements(self.environment)
             if requirements is None
@@ -149,6 +232,46 @@ class HostRequirements:
         self.graalvm_version_check = resolve_graalvm_version_check(graalvm_version_check, self.environment)
         self.graalvm_versions = GraalVMVersions(None, None, None)
         self.results: list[CheckResult] = []
+
+    def _load_test_strategy(self, strategy_name: str | None) -> dict:
+        """Load the selected strategy, which owns the test role it declares."""
+        if not strategy_name:
+            return {}
+        for strategy in load_predefined_strategies():
+            if strategy.get("name") == strategy_name:
+                return apply_test_agent_alias(strategy, self.environment)
+        raise ValueError(f"Unknown Forge test strategy '{strategy_name}'")
+
+    def _resolve_test_requirements(
+            self,
+            configured_strategies: Sequence[tuple[str | None, dict]],
+    ) -> list[AgentRequirement]:
+        """Resolve and deduplicate the test roles the enabled strategies declare.
+
+        The bundle is the only source: nothing outside it retargets the test role
+        (§FS-forge-agent-runtime-selection), so the probe checks the backend that
+        the named strategy will actually run.
+        """
+        requirements: list[AgentRequirement] = []
+        seen: set[tuple[str, str, str, str | None]] = set()
+        for strategy_name, strategy in configured_strategies:
+            family = normalize_backend_name(
+                strategy.get("agent-family") or strategy.get("agent") or "pi"
+            )
+            agent = strategy.get("agent-command") or default_agent_for_backend(family)
+            model = strategy.get("model") or default_model_for_backend(family)
+            provider = resolve_provider(family, strategy.get("provider"))
+            key = (family, str(agent), str(model), provider)
+            if key in seen:
+                continue
+            seen.add(key)
+            requirements.append(
+                AgentRequirement(
+                    family, str(agent), str(model),
+                    strategy_name=strategy_name, provider=provider,
+                )
+            )
+        return requirements
 
     @property
     def version_check_advisory(self) -> bool:
@@ -170,8 +293,7 @@ class HostRequirements:
         self._check_write_permissions()
         self._check_network()
         self._check_github()
-        self._check_pi()
-        self._check_codex()
+        self._check_selected_agents()
         self._check_docker()
         self._print_results()
         return not any(result.blocks_work for result in self.results)
@@ -204,25 +326,46 @@ class HostRequirements:
         proxy_url = self.environment.get("https_proxy") or self.environment.get("HTTPS_PROXY")
         if proxy_url:
             print(f"  - Network route: HTTPS reachability is checked through the configured proxy {proxy_url}")
-        print("  - Pi reviews: authenticated provider plus unattended tool approval (`pi --approve`)")
+        print(
+            f"  - Analysis agent: {self.analysis_agent} model={self.analysis_model}, "
+            "offline repository tools"
+        )
         if self.requirements.issue_work:
-            print("  - Codex recovery: approval=never, sandbox=danger-full-access, worktree write, provider network")
+            print(
+                f"  - Setup agent: {self.setup_agent} model={self.setup_model}, "
+                "network access for URL discovery"
+            )
+        if self.requirements.issue_work:
+            for test_requirement in self.test_requirements:
+                strategy_suffix = (
+                    f" strategy={test_requirement.strategy_name}"
+                    if test_requirement.strategy_name
+                    else ""
+                )
+                print(
+                    f"  - Test agent: {test_requirement.agent} "
+                    f"model={test_requirement.model}{strategy_suffix}, offline repository tools"
+                )
             print("  - Docker: access to the Docker daemon and configured image registries")
         print("[forge-host] Required environment:")
         if self.requirements.issue_work:
             for variable in ISSUE_GRAALVM_ENV_VARS:
                 print(f"  - {variable}={self._required_graalvm_description(variable)}")
-            print(f"  - Every GraalVM must contain {GRAALVM_SCHEMA_PATH}")
-            print("  - JAVA_HOME is aligned to GRAALVM_HOME by Forge; explicit matching value is recommended")
+            print(f"  - Every GraalVM must load native-image-agent and contain {GRAALVM_SCHEMA_PATH}")
+            print("  - Forge pins JAVA_HOME and every Gradle Java selector to GRAALVM_HOME")
         elif self.requirements.review_work:
             print("  - JAVA_HOME=<JDK 25 with executable bin/java> (GRAALVM_HOME is not required for review-only work)")
-        print(f"  - FORGE_REVIEW_MODEL={self.review_model}")
+        print(f"  - FORGE_ANALYSIS_AGENT={self.analysis_agent}")
+        print(f"  - FORGE_ANALYSIS_MODEL={self.analysis_model}")
+        if self.requirements.issue_work:
+            print(f"  - FORGE_SETUP_AGENT={self.setup_agent}")
+            print(f"  - FORGE_SETUP_MODEL={self.setup_model}")
         print(f"  - GraalVM version match: {self._version_check_description()}")
 
     def _required_graalvm_description(self, variable: str) -> str:
         """Describe the distribution one GraalVM lane must point to."""
         if self.graalvm_version_check == "off":
-            return "any GraalVM with Native Image and the reachability-metadata schema"
+            return "any GraalVM with Native Image, its agent, and the reachability-metadata schema"
         if variable == "GRAALVM_HOME_25_0":
             return f"GraalVM {self.graalvm_versions.pinned_25 or '<invalid repo pin>'}"
         if variable == "GRAALVM_HOME_LATEST_EA":
@@ -232,7 +375,7 @@ class HostRequirements:
     def _version_check_description(self) -> str:
         """Describe the effect of the selected GraalVM version-check mode."""
         if self.graalvm_version_check == "off":
-            return "off — version match is not evaluated; Native Image and schema stay mandatory"
+            return "off — version match is not evaluated; Native Image, its agent, and schema stay mandatory"
         if self.graalvm_version_check == "warn":
             return "warn — version mismatches report WARN and do not stop work"
         return "strict — a version mismatch stops the worker"
@@ -251,12 +394,29 @@ class HostRequirements:
 
     def _check_tools(self) -> None:
         any_work = self.requirements.any_work
+        selected_agent_commands = [(self.analysis_family, self.analysis_agent)]
+        if self.requirements.issue_work:
+            setup_command = (self.setup_family, self.setup_agent)
+            if setup_command not in selected_agent_commands:
+                selected_agent_commands.append(setup_command)
+        if self.requirements.issue_work:
+            for requirement in self.test_requirements:
+                test_command = (requirement.family, requirement.agent)
+                if test_command not in selected_agent_commands:
+                    selected_agent_commands.append(test_command)
         tool_specs: tuple[tuple[str, str, bool, tuple[str, ...]], ...] = (
             ("Python", self.python_bin, True, ("--version",)),
             ("git", "git", True, ("--version",)),
             ("GitHub CLI", "gh", self.requirements.github_work, ("--version",)),
-            ("Pi", "pi", any_work, ("--version",)),
-            ("Codex", "codex", self.requirements.issue_work, ("--version",)),
+            *tuple(
+                (
+                    f"Agent backend {family}",
+                    command,
+                    any_work,
+                    ("--version",),
+                )
+                for family, command in selected_agent_commands
+            ),
             ("Docker CLI", "docker", self.requirements.issue_work, ("--version",)),
         )
         for name, command, required, version_args in tool_specs:
@@ -512,11 +672,11 @@ class HostRequirements:
                 True,
                 False,
                 f"current=<unset>; required={self._required_graalvm_description(variable)}",
-                f"Install {self._required_graalvm_description(variable)} with Native Image and "
+                f"Install {self._required_graalvm_description(variable)} with Native Image, its agent, and "
                 f"{GRAALVM_SCHEMA_PATH}, then export `{variable}=/absolute/path/to/that/distribution`.",
             )
             return
-        problems = check_graalvm_installation(value)
+        problems = check_graalvm_installation(value, self.environment)
         if problems:
             self._add(
                 "environment",
@@ -524,7 +684,7 @@ class HostRequirements:
                 True,
                 False,
                 f"path={value}; {'; '.join(problems)}",
-                f"Install {self._required_graalvm_description(variable)} with Native Image and "
+                f"Install {self._required_graalvm_description(variable)} with Native Image, its agent, and "
                 f"{GRAALVM_SCHEMA_PATH}, then point `{variable}` to it.",
             )
             return
@@ -533,7 +693,7 @@ class HostRequirements:
             variable,
             True,
             True,
-            f"path={value}; native-image and {GRAALVM_SCHEMA_PATH} are present",
+            f"path={value}; native-image, native-image-agent, and {GRAALVM_SCHEMA_PATH} are usable",
         )
         self._check_graalvm_version(variable, value, expected_version, early_access)
 
@@ -617,9 +777,22 @@ class HostRequirements:
             ),
             ("Forge local repositories", os.path.join(self.forge_dir, "local_repositories"), any_work, ""),
             ("Gradle state", resolve_gradle_state_root(self.environment), any_work, ""),
-            ("Pi state", resolve_pi_state_root(self.environment), any_work, ""),
-            ("Codex state", resolve_codex_state_root(self.environment), self.requirements.issue_work, ""),
         ]
+        selected_state_roots = {
+            self.analysis_family: resolve_agent_state_root(self.analysis_family, self.environment),
+        }
+        if self.requirements.issue_work:
+            selected_state_roots[self.setup_family] = resolve_agent_state_root(
+                self.setup_family, self.environment
+            )
+            for requirement in self.test_requirements:
+                selected_state_roots[requirement.family] = resolve_agent_state_root(
+                    requirement.family, self.environment
+                )
+        paths.extend(
+            (f"{backend} state", path, any_work, "")
+            for backend, path in selected_state_roots.items()
+        )
         for name, path, required, skip_detail in paths:
             if not required:
                 self._add("filesystem", name, False, None, skip_detail or f"{path} is not required by this run")
@@ -641,7 +814,30 @@ class HostRequirements:
         ]
         hosts.extend((host, self.requirements.any_work) for host in NETWORK_HOSTS_WORK)
         hosts.extend((host, self.requirements.issue_work) for host in NETWORK_HOSTS_ISSUE_WORK)
+        if self.requirements.any_work:
+            hosts.append((agent_provider_host(
+                self.analysis_family,
+                self.analysis_model,
+                self.analysis_provider,
+            ), True))
+        if self.requirements.issue_work:
+            hosts.append((agent_provider_host(
+                self.setup_family,
+                self.setup_model,
+                self.setup_provider,
+            ), True))
+            hosts.extend(
+                (agent_provider_host(
+                    requirement.family,
+                    requirement.model,
+                    requirement.provider,
+                ), True)
+                for requirement in self.test_requirements
+            )
+        required_by_host: dict[str, bool] = {}
         for host, required in hosts:
+            required_by_host[host] = required_by_host.get(host, False) or required
+        for host, required in required_by_host.items():
             if not required:
                 self._add("network", host, False, None, "not required by this run")
                 continue
@@ -833,29 +1029,87 @@ query($owner: String!, $name: String!, $project: Int!) {
             f"Create `{login}/{REPOSITORY_NAME}` and grant the active account write access to push generated branches.",
         )
 
-    def _check_pi(self) -> None:
-        required = self.requirements.any_work
-        if not required:
-            self._add("agent", "Pi authentication", False, None, "not required by this run")
-        else:
-            ready, detail = check_pi_authentication(self.review_model, self.environment)
+    def _check_selected_agents(self) -> None:
+        """Validate only the backends selected for enabled runtime roles.
+
+        §FS-forge-agent-runtime-selection
+        """
+        roles: list[tuple[str, str, str, str, bool, str | None]] = [
+            (
+                "analysis",
+                self.analysis_family,
+                self.analysis_agent,
+                self.analysis_model,
+                self.requirements.any_work,
+                self.analysis_provider,
+            ),
+            (
+                "setup",
+                self.setup_family,
+                self.setup_agent,
+                self.setup_model,
+                self.requirements.issue_work,
+                self.setup_provider,
+            ),
+        ]
+        roles.extend(
+            (
+                (
+                    f"test ({requirement.strategy_name})"
+                    if requirement.strategy_name
+                    else "test"
+                ),
+                requirement.family,
+                requirement.agent,
+                requirement.model,
+                self.requirements.issue_work,
+                requirement.provider,
+            )
+            for requirement in self.test_requirements
+        )
+        for role, backend, agent, model, required, provider in roles:
+            if not required:
+                self._add("agent", f"{role} role", False, None, "not required by this run")
+                continue
+            executable = agent or default_agent_for_backend(backend)
+            if resolve_executable(executable) is None:
+                self._add(
+                    "agent",
+                    f"{role} role authentication",
+                    True,
+                    False,
+                    f"backend={backend}; executable={executable}; model={model}; unavailable",
+                    f"Install and authenticate `{executable}`, or select another {role} agent.",
+                )
+                continue
+            ready, detail = self._selected_agent_authentication(backend, agent, model, provider)
             self._add(
                 "agent",
-                "Pi authentication",
+                f"{role} role authentication",
                 True,
                 ready,
-                detail,
-                f"Install `pi`, then run `pi` and `/login {PI_PROVIDER}`; `pi auth check --provider "
-                f"{PI_PROVIDER} --model {self.review_model} --json` must report status=ready.",
+                f"backend={backend}; model={model}; {detail}",
+                f"Authenticate `{executable}` for model `{model}` before starting Forge.",
             )
-        self._add(
-            "agent",
-            "Pi review command approval",
-            self.requirements.review_work,
-            pi_approve_supported(self.environment) if self.requirements.review_work else None,
-            "required command option: `pi --approve`",
-            "Upgrade Pi to a version whose `pi --help` lists `--approve`.",
-        )
+
+    def _selected_agent_authentication(
+            self,
+            backend: str,
+            agent: str,
+            model: str,
+            provider: str | None = None,
+    ) -> tuple[bool, str]:
+        """Run a backend-specific authentication probe that never invokes a model."""
+        if backend == "pi":
+            return check_pi_authentication(model, self.environment, agent, provider)
+        if backend == "codex":
+            result = run_command([agent, "login", "status"], self.environment)
+            return result.returncode == 0, first_output_line(result) or "codex login status failed"
+        if backend == "claude-code":
+            result = run_command([agent, "auth", "status", "--json"], self.environment)
+            return result.returncode == 0, first_output_line(result) or "claude auth status failed"
+        result = run_command([agent, "auth", "list"], self.environment)
+        return result.returncode == 0, first_output_line(result) or "opencode auth list failed"
 
     def _check_codex(self) -> None:
         if not self.requirements.issue_work:
@@ -893,7 +1147,7 @@ query($owner: String!, $name: String!, $project: Int!) {
             True,
             compatible,
             policy_detail,
-            "Forge Codex recovery requires approval policy `never` and sandbox `danger-full-access`; "
+            "Forge Codex recovery requires approval policy `never` and sandbox `workspace-write`; "
             "change the managed Codex requirements or replace the remaining Codex recovery lane.",
         )
 
@@ -935,12 +1189,16 @@ query($owner: String!, $name: String!, $project: Int!) {
             print("[forge-host] PASS: all required host checks succeeded; work may start.")
 
 
-def check_graalvm_installation(graalvm_home: str) -> list[str]:
+def check_graalvm_installation(
+        graalvm_home: str,
+        environment: Mapping[str, str] | None = None,
+) -> list[str]:
     """Return the reasons a GraalVM home cannot run Forge work; empty when it can.
 
     This is the single definition of a Forge-usable GraalVM distribution: it must
-    run Java and Native Image and carry the reachability-metadata schema that the
-    repository validates generated metadata against (§FS-forge-host-requirements).
+    run Java and Native Image, load the native-image agent, and carry the
+    reachability-metadata schema that the repository validates generated metadata
+    against (§FS-forge-host-requirements).
     """
     problems: list[str] = []
     for executable in ("java", "native-image"):
@@ -949,7 +1207,31 @@ def check_graalvm_installation(graalvm_home: str) -> list[str]:
             problems.append(f"{os.path.join('bin', executable)} is missing or not executable")
     if not os.path.isfile(os.path.join(graalvm_home, GRAALVM_SCHEMA_PATH)):
         problems.append(f"{GRAALVM_SCHEMA_PATH} is missing")
+    if not problems:
+        agent_problem = probe_native_image_agent(graalvm_home, environment)
+        if agent_problem:
+            problems.append(agent_problem)
     return problems
+
+
+def probe_native_image_agent(
+        graalvm_home: str,
+        environment: Mapping[str, str] | None = None,
+) -> str | None:
+    """Return why `bin/java` cannot load the Native Image agent, or `None` on success."""
+    with tempfile.TemporaryDirectory(prefix="forge-native-image-agent-") as output_dir:
+        result = run_command(
+            [
+                os.path.join(graalvm_home, "bin", "java"),
+                f"-agentlib:native-image-agent=config-output-dir={output_dir}",
+                "-version",
+            ],
+            os.environ if environment is None else environment,
+        )
+    if result.returncode == 0:
+        return None
+    detail = first_output_line(result) or f"exit={result.returncode}"
+    return f"bin/java cannot load native-image-agent ({detail})"
 
 
 def require_graalvm_home_env(variable: str, environment: Mapping[str, str] | None = None) -> str:
@@ -962,12 +1244,12 @@ def require_graalvm_home_env(variable: str, environment: Mapping[str, str] | Non
     if not graalvm_home:
         print(f"ERROR: Required environment variable '{variable}' is not set.", file=sys.stderr)
         print(
-            f"Fix: export `{variable}=/absolute/path/to/a/graalvm` that provides Native Image and "
+            f"Fix: export `{variable}=/absolute/path/to/a/graalvm` that provides Native Image, its agent, and "
             f"{GRAALVM_SCHEMA_PATH}.",
             file=sys.stderr,
         )
         sys.exit(1)
-    problems = check_graalvm_installation(graalvm_home)
+    problems = check_graalvm_installation(graalvm_home, values)
     if problems:
         print(
             f"ERROR: Environment variable '{variable}' points to '{graalvm_home}', "
@@ -975,7 +1257,7 @@ def require_graalvm_home_env(variable: str, environment: Mapping[str, str] | Non
             file=sys.stderr,
         )
         print(
-            f"Fix: point `{variable}` at a GraalVM distribution that provides Native Image and "
+            f"Fix: point `{variable}` at a GraalVM distribution that provides Native Image, its agent, and "
             f"{GRAALVM_SCHEMA_PATH}.",
             file=sys.stderr,
         )
@@ -1011,11 +1293,12 @@ def resolve_graalvm_version_check(
 def verify_host_requirements(
         forge_dir: str,
         python_bin: str | None = None,
-        review_model: str = DEFAULT_REVIEW_MODEL,
         requirements: QueueRequirements | None = None,
         graalvm_version_check: str | None = None,
         environment: Mapping[str, str] | None = None,
         repo_dir: str | None = None,
+        test_strategy_name: str | None = None,
+        test_strategy_names: Sequence[str] | None = None,
 ) -> bool:
     """Run every host requirement selected by this run and report whether work may start.
 
@@ -1025,11 +1308,12 @@ def verify_host_requirements(
     host_requirements = HostRequirements(
         forge_dir,
         python_bin or sys.executable,
-        review_model,
         environment,
         requirements,
         graalvm_version_check,
         repo_dir,
+        test_strategy_name=test_strategy_name,
+        test_strategy_names=test_strategy_names,
     )
     return host_requirements.run()
 
@@ -1037,11 +1321,12 @@ def verify_host_requirements(
 def ensure_host_requirements(
         forge_dir: str,
         python_bin: str | None = None,
-        review_model: str = DEFAULT_REVIEW_MODEL,
         requirements: QueueRequirements | None = None,
         graalvm_version_check: str | None = None,
         environment: Mapping[str, str] | None = None,
         repo_dir: str | None = None,
+        test_strategy_name: str | None = None,
+        test_strategy_names: Sequence[str] | None = None,
 ) -> None:
     """Stop the process with a non-zero exit when a required host capability is missing.
 
@@ -1050,11 +1335,12 @@ def ensure_host_requirements(
     passed = verify_host_requirements(
         forge_dir,
         python_bin,
-        review_model,
         requirements,
         graalvm_version_check,
         environment,
         repo_dir,
+        test_strategy_name,
+        test_strategy_names,
     )
     if not passed:
         sys.exit(1)
@@ -1171,21 +1457,24 @@ def parse_gradle_version(output: str) -> str | None:
 
 
 def check_pi_authentication(
-        review_model: str,
+        model: str,
         environment: Mapping[str, str] | None = None,
+        pi_command: str = "pi",
+        provider: str | None = None,
 ) -> tuple[bool, str]:
     """Check Pi authentication for the Forge provider and model without invoking a model.
 
     §FS-forge-host-requirements
     """
     values = os.environ if environment is None else environment
-    if resolve_executable("pi") is None:
-        return False, f"`pi` was not found on PATH; provider={PI_PROVIDER}, model={review_model}"
+    checked_provider = provider or PI_PROVIDER
+    if resolve_executable(pi_command) is None:
+        return False, f"`{pi_command}` was not found on PATH; provider={checked_provider}, model={model}"
     result = run_command(
         [
-            "pi", "auth", "check",
-            "--provider", PI_PROVIDER,
-            "--model", review_model,
+            pi_command, "auth", "check",
+            "--provider", checked_provider,
+            "--model", model,
             "--json",
         ],
         values,
@@ -1199,20 +1488,14 @@ def check_pi_authentication(
     ready = (
         result.returncode == 0
         and payload.get("status") == "ready"
-        and payload.get("provider") == PI_PROVIDER
+        and payload.get("provider") == checked_provider
     )
     detail = (
-        f"provider={payload.get('provider') or PI_PROVIDER}, model={review_model}, "
+        f"provider={payload.get('provider') or checked_provider}, model={model}, "
         f"status={payload.get('status') or 'invalid'}"
     )
     failure = "" if ready else first_output_line(result)
     return ready, f"{detail}; {failure}" if failure else detail
-
-
-def pi_approve_supported(environment: Mapping[str, str]) -> bool:
-    """Return whether the installed Pi CLI supports unattended tool approval."""
-    result = run_command(["pi", "--help"], environment)
-    return result.returncode == 0 and re.search(r"(?:^|\s)--approve(?:\s|,|$)", result.stdout) is not None
 
 
 def parse_java_runtime_version(output: str) -> str | None:
@@ -1243,7 +1526,7 @@ def graalvm_ea_version_matches(
     if expected is None or graalvm_version is None or java_runtime_version is None:
         return False
     graal_version, jdk_version, build = expected
-    ea_revision = build - 1
+    ea_revision = GRAALVM_EA_RUNTIME_REVISIONS.get(expected_release, build - 1)
     graal_matches = re.match(
         rf"^{re.escape(graal_version)}\..*-dev\+\d+\.0*{ea_revision}(?:\D|$)",
         graalvm_version,
@@ -1367,6 +1650,41 @@ def resolve_codex_state_root(environment: Mapping[str, str]) -> str:
     return os.path.join(os.path.expanduser(environment.get("HOME", "~")), ".codex")
 
 
+def resolve_agent_state_root(backend: str, environment: Mapping[str, str]) -> str:
+    """Resolve the writable state root for a selected backend."""
+    if backend == "pi":
+        return resolve_pi_state_root(environment)
+    if backend == "codex":
+        return resolve_codex_state_root(environment)
+    home = os.path.expanduser(environment.get("HOME", "~"))
+    if backend == "claude-code":
+        return os.path.join(home, ".claude")
+    data_home = environment.get("XDG_DATA_HOME") or os.path.join(home, ".local", "share")
+    return os.path.join(os.path.expanduser(data_home), "opencode")
+
+
+def agent_provider_host(
+        backend: str,
+        model: str,
+        provider: str | None = None,
+) -> str:
+    """Return the provider transport host implied by a backend/model selection."""
+    if backend == "codex":
+        return "chatgpt.com"
+    if backend == "claude-code":
+        return "api.anthropic.com"
+    selected_provider = (
+        provider or (model.split("/", 1)[0] if "/" in model else "")
+    ).lower()
+    return {
+        "anthropic": "api.anthropic.com",
+        "google": "generativelanguage.googleapis.com",
+        "openai": "api.openai.com",
+        "openai-codex": "chatgpt.com",
+        "openrouter": "openrouter.ai",
+    }.get(selected_provider, "opencode.ai")
+
+
 def codex_doctor_provider_status(output: str) -> tuple[bool, str]:
     """Extract the provider reachability result from `codex doctor --json`."""
     try:
@@ -1407,8 +1725,8 @@ def codex_unattended_policy_status(codex_home: str) -> tuple[bool, str]:
         policies.append(name)
         if isinstance(approvals, list) and "never" not in approvals:
             conflicts.append(f"{name}: approval policy `never` is disallowed ({approvals})")
-        if isinstance(sandboxes, list) and "danger-full-access" not in sandboxes:
-            conflicts.append(f"{name}: sandbox `danger-full-access` is disallowed ({sandboxes})")
+        if isinstance(sandboxes, list) and "workspace-write" not in sandboxes:
+            conflicts.append(f"{name}: sandbox `workspace-write` is disallowed ({sandboxes})")
 
     if conflicts:
         return False, "; ".join(conflicts)
@@ -1430,7 +1748,15 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         ),
     )
     parser.add_argument("--python-bin", default=sys.executable, help="Python interpreter selected by do-work.")
-    parser.add_argument("--review-model", default=DEFAULT_REVIEW_MODEL, help="Pi model used for PR reviews.")
+    parser.add_argument("--analysis-agent", default=None)
+    parser.add_argument("--analysis-family", choices=SUPPORTED_AGENT_BACKENDS, default=None)
+    parser.add_argument("--analysis-model", default=None)
+    parser.add_argument("--analysis-provider", default=None)
+    parser.add_argument("--setup-agent", default=None)
+    parser.add_argument("--setup-family", choices=SUPPORTED_AGENT_BACKENDS, default=None)
+    parser.add_argument("--setup-model", default=None)
+    parser.add_argument("--setup-provider", default=None)
+    parser.add_argument("--test-strategy", action="append", default=None)
     parser.add_argument(
         "--graalvm-version-check",
         choices=GRAALVM_VERSION_CHECK_MODES,
@@ -1452,9 +1778,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         host_requirements = HostRequirements(
             args.forge_dir,
             args.python_bin,
-            args.review_model,
             graalvm_version_check=resolve_graalvm_version_check(args.graalvm_version_check),
             repo_dir=args.reachability_metadata_path,
+            analysis_agent=args.analysis_agent,
+            analysis_family=args.analysis_family,
+            analysis_model=args.analysis_model,
+            analysis_provider=args.analysis_provider,
+            setup_agent=args.setup_agent,
+            setup_family=args.setup_family,
+            setup_model=args.setup_model,
+            setup_provider=args.setup_provider,
+            test_strategy_names=args.test_strategy,
         )
     except ValueError as exc:
         print(f"ERROR: Forge host requirement configuration is invalid: {exc}", file=sys.stderr)

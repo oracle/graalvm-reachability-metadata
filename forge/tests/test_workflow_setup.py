@@ -23,7 +23,9 @@ def _graalvm_home(native_image: bool = True, schema: bool = True) -> Iterator[st
         bin_dir = Path(temp_dir) / "bin"
         bin_dir.mkdir()
         for executable in ["java", "native-image"] if native_image else ["java"]:
-            (bin_dir / executable).touch(mode=0o755)
+            executable_path = bin_dir / executable
+            executable_path.write_text("#!/usr/bin/env sh\nexit 0\n", encoding="utf-8")
+            executable_path.chmod(0o755)
         if schema:
             schema_path = Path(temp_dir) / GRAALVM_SCHEMA_PATH
             schema_path.parent.mkdir(parents=True)
@@ -38,6 +40,8 @@ class ResolveGraalvmJavaHomeTests(unittest.TestCase):
                 "GRAALVM_HOME": without_schema,
                 "JAVA_HOME": complete,
                 "GRAALVM_HOME_25_0": complete,
+                "GRADLE_JAVA_HOME": "/agent-less-jdk",
+                "GRADLE_OPTS": "-Xmx2g -Dorg.gradle.java.home=/agent-less-jdk",
             }
             with patch.dict(os.environ, environment, clear=True):
                 resolved = resolve_graalvm_java_home()
@@ -45,6 +49,10 @@ class ResolveGraalvmJavaHomeTests(unittest.TestCase):
                 self.assertEqual(complete, resolved)
                 self.assertEqual(complete, os.environ["GRAALVM_HOME"])
                 self.assertEqual(complete, os.environ["JAVA_HOME"])
+                self.assertEqual(complete, os.environ["GRADLE_JAVA_HOME"])
+                self.assertTrue(
+                    os.environ["GRADLE_OPTS"].endswith(f"-Dorg.gradle.java.home={complete}")
+                )
 
     def test_no_forge_usable_home_names_every_rejection_once(self) -> None:
         stderr = io.StringIO()

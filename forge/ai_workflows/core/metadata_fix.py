@@ -3,21 +3,20 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-import json
 import os
 import subprocess
 import sys
 
+from ai_workflows.agents.agent_runtime import analysis_agent_run
 from utility_scripts.task_logs import build_task_log_path, display_log_path
 from utility_scripts.host_requirements import check_graalvm_installation
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.gradle_environment import gradle_command_environment
 
-CODEX_MODEL_NAME = "gpt-5.6-terra"
-CODEX_TIMEOUT_SECONDS = 1200
+METADATA_FIX_TIMEOUT_SECONDS = 1200
 
 
-def run_codex_metadata_fix(
+def run_metadata_fix(
         reachability_metadata_path: str,
         coordinates: str,
         reproduction_command: str | None = None,
@@ -25,26 +24,41 @@ def run_codex_metadata_fix(
         base_env: dict[str, str] | None = None,
         library_preparation_preflight_context: str | None = None,
 ) -> tuple[int, str, bool]:
-    """Run Codex to update metadata entries for the target library.
+    """Run the configured analysis agent to update metadata entries.
 
     Requires the ``fix-missing-reachability-metadata`` skill. The skill definition lives at:
     https://github.com/oracle/graalvm-reachability-metadata/blob/master/skills/fix-missing-reachability-metadata/SKILL.md
     """
     reachability_metadata_path = require_complete_reachability_repo(reachability_metadata_path)
-    log_path = build_task_log_path("metadata-fix", coordinates, "codex.log")
-    log_path_display = display_log_path(log_path)
-    codex_env = _codex_environment(reachability_metadata_path, graalvm_home, base_env)
-    required_graalvm_home = codex_env.get("GRAALVM_HOME")
+    fallback_log_path = build_task_log_path("metadata-fix", coordinates, "metadata-fix.log")
+    agent_env = _agent_environment(reachability_metadata_path, graalvm_home, base_env)
+    required_graalvm_home = agent_env.get("GRAALVM_HOME")
     problems = check_graalvm_installation(required_graalvm_home) if required_graalvm_home else ["GRAALVM_HOME is unset"]
     if problems:
         print(
-            "ERROR: Codex metadata fix requires the exact GraalVM home from the failed run, "
+            "ERROR: Metadata fix requires the exact GraalVM home from the failed run, "
             f"but that home cannot run Forge work: {'; '.join(problems)}.",
             file=sys.stderr,
         )
-        return (1, log_path, False)
-    graalvm_version = _native_image_version(required_graalvm_home, codex_env)
-    developer_instructions = _codex_graalvm_instructions(required_graalvm_home, graalvm_version)
+        return (1, fallback_log_path, False)
+    graalvm_version = _native_image_version(required_graalvm_home, agent_env)
+    developer_instructions = _graalvm_instructions(required_graalvm_home, graalvm_version)
+    skill_path = os.path.join(
+        reachability_metadata_path,
+        "skills",
+        "fix-missing-reachability-metadata",
+        "SKILL.md",
+    )
+    if not os.path.isfile(skill_path):
+        skill_path = os.path.abspath(
+            os.path.join(
+                os.path.dirname(__file__),
+                "..", "..", "..",
+                "skills", "fix-missing-reachability-metadata", "SKILL.md",
+            )
+        )
+    with open(skill_path, "r", encoding="utf-8") as skill_file:
+        developer_instructions += f"\n\nLocal metadata-fix procedure:\n{skill_file.read()}"
     prompt = f"Fix the metadata entries for {coordinates}"
     prompt += (
         "\n\nRequired GraalVM for every reproduction and verification command:\n"
@@ -61,43 +75,25 @@ def run_codex_metadata_fix(
             "\n\nLibrary preparation preflight context:\n"
             f"{library_preparation_preflight_context}"
         )
-    cmd = [
-        "codex", "exec",
-        "--dangerously-bypass-approvals-and-sandbox",
-        "--json",
-        "-c", 'reasoning.effort="high"',
-        "-c", f"developer_instructions={json.dumps(developer_instructions)}",
-        "-m", CODEX_MODEL_NAME,
-        prompt,
-    ]
-    print(f"[Codex running... Output: {log_path_display}]")
-    try:
-        with open(log_path, "w", encoding="utf-8") as log_file:
-            result = subprocess.run(
-                cmd,
-                cwd=reachability_metadata_path,
-                env=codex_env,
-                stdout=log_file,
-                stderr=subprocess.STDOUT,
-                timeout=CODEX_TIMEOUT_SECONDS,
-                check=False,
-            )
-    except subprocess.TimeoutExpired:
+    result = analysis_agent_run(
+        working_dir=reachability_metadata_path,
+        context=prompt,
+        task_type="metadata-fix",
+        library=coordinates,
+        timeout=METADATA_FIX_TIMEOUT_SECONDS,
+        instructions=developer_instructions,
+        environment=agent_env,
+    )
+    if result.return_code != 0:
         print(
-            f"ERROR: Codex metadata fix timed out after {CODEX_TIMEOUT_SECONDS} seconds for {coordinates}.",
+            f"ERROR: Metadata fix failed for {coordinates}. "
+            f"See {display_log_path(result.log_path)}.",
             file=sys.stderr,
         )
-        return (1, log_path, True)
-
-    if result.returncode != 0:
-        print(
-            f"ERROR: Codex metadata fix failed for {coordinates} with exit code {result.returncode}.",
-            file=sys.stderr,
-        )
-    return (result.returncode, log_path, False)
+    return (result.return_code, result.log_path, result.timed_out)
 
 
-def _codex_environment(
+def _agent_environment(
         reachability_metadata_path: str,
         graalvm_home: str | None,
         base_env: dict[str, str] | None,
@@ -126,7 +122,7 @@ def _native_image_version(graalvm_home: str, env: dict[str, str]) -> str:
     return result.stdout.strip() or f"<native-image --version exited {result.returncode} without output>"
 
 
-def _codex_graalvm_instructions(graalvm_home: str, graalvm_version: str) -> str:
+def _graalvm_instructions(graalvm_home: str, graalvm_version: str) -> str:
     return (
         "Hard requirement for this metadata-fix run: every Gradle, Java, and native-image command "
         "must use the exact same GraalVM distribution as the failed run.\n"

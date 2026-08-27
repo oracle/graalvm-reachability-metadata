@@ -27,7 +27,7 @@ file rather than by prefix.
 | [§AR-forge-driver-finalization](drivers.md#ar-forge-driver-finalization-finalization-and-metrics) | Finalization and metrics |
 | [§AR-forge-strategy-agent-boundary](architecture.md#ar-forge-strategy-agent-boundary-strategies-configure-workflows-agents-edit-code) | Strategies configure workflows, agents edit code |
 | [§AR-forge-verification-publication-boundary](architecture.md#ar-forge-verification-publication-boundary-local-verification-hands-data-to-trusted-publication) | Local verification hands data to trusted publication |
-| [§AR-agent-api](agent.md#ar-agent-api-forge-agent-api-and-pi-implementation) | Forge agent API and Pi implementation |
+| [§AR-agent-api](agent.md#ar-agent-api-forge-agent-api-and-backend-adapters) | Forge agent API and backend adapters |
 | [§AR-forge-workflow-system](workflows.md#ar-forge-workflow-system-forge-workflows) | Forge workflows: workflow, driver, strategy, and the six engines |
 | [§AR-forge-workflow-engine](workflows.md#ar-forge-workflow-engine-what-every-workflow-owns) | What every workflow owns |
 | [§AR-forge-workflow-strategy-config](workflows.md#ar-forge-workflow-strategy-config-strategies-bind-to-workflows) | Strategies bind to workflows |
@@ -68,7 +68,7 @@ Files:
   is for, which strategy families bind to it, and what every engine owes a run.
 - [drivers.md](drivers.md) — one driver per issue queue: what each prepares,
   which workflow it runs, and how a run is finalized.
-- [agent.md](agent.md) — the agent interface and its Pi implementation.
+- [agent.md](agent.md) — the agent interface and its backend adapters.
 - [do-work.md](do-work.md) — the long-running worker loop: bootstrap,
   self-update, stop markers, and cycle scheduling.
 - [orchestration-scripts.md](orchestration-scripts.md) — the dispatcher: queue

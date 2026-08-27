@@ -14,7 +14,7 @@ if __package__ in (None, ""):
 import ai_workflows.agents  # noqa: F401 - triggers agent registration
 import ai_workflows.core  # noqa: F401 - triggers strategy registration
 from ai_workflows.agents import Agent
-from ai_workflows.core.fix_metadata_codex import run_codex_metadata_fix
+from ai_workflows.core.metadata_fix import run_metadata_fix
 from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
@@ -335,6 +335,7 @@ def build_strategy_and_agent(
         mcps=strategy.get("mcps", []),
         persistent_instructions=strategy_obj.persistent_instructions,
         thinking_level=strategy.get("thinking-level"),
+        agent_name=strategy.get("agent-command"),
     )
     return strategy_obj, agent, model_name, test_source_layout.source_root
 
@@ -420,7 +421,7 @@ def main(argv=None) -> int:
                 return result.returncode
             print(f"[pipeline] Detected missing metadata entries for {library}. Running Codex fix.")
             gradle_env = gradle_command_environment(reachability_metadata_path)
-            codex_rc, _codex_log, _codex_timed_out = run_codex_metadata_fix(
+            codex_rc, _codex_log, _codex_timed_out = run_metadata_fix(
                 reachability_metadata_path,
                 library,
                 graalvm_home=gradle_env.get("GRAALVM_HOME"),

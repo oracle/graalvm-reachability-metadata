@@ -138,7 +138,7 @@ class LibraryFinalizationTests(unittest.TestCase):
             base = _commit_all(repo_path, "existing legacy config")
 
             with patch("utility_scripts.library_finalization._run_gradle_command", return_value=True), \
-                    patch("utility_scripts.library_finalization._run_check_metadata_files_with_allowed_packages_fix", return_value=True) as check_metadata, \
+                    patch("utility_scripts.library_finalization._run_check_metadata_files_with_allowed_packages_fix", return_value=(True, "")) as check_metadata, \
                     patch("utility_scripts.library_finalization.run_style_fix_and_checks", return_value=True) as style_checks:
                 result = run_library_finalization(
                     repo_path=repo_path,
@@ -152,6 +152,79 @@ class LibraryFinalizationTests(unittest.TestCase):
         self.assertTrue(result)
         check_metadata.assert_called_once()
         style_checks.assert_called_once()
+
+    def test_metadata_validation_passes_after_first_analysis_repair(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path, patch(
+                "utility_scripts.library_finalization._run_gradle_command",
+                return_value=True,
+        ), patch(
+                "utility_scripts.library_finalization.find_uncommitted_legacy_test_native_image_config_files_for_coordinate",
+                return_value=[],
+        ), patch(
+                "utility_scripts.library_finalization._run_check_metadata_files_with_allowed_packages_fix",
+                side_effect=[(False, "schema failure"), (True, "BUILD SUCCESSFUL")],
+        ) as check_metadata, patch(
+                "utility_scripts.library_finalization._run_check_metadata_fix",
+                return_value=True,
+        ) as analysis_fix, patch(
+                "utility_scripts.library_finalization.run_style_fix_and_checks",
+                return_value=True,
+        ), patch(
+                "utility_scripts.library_finalization.collect_generated_test_validity_issues",
+                return_value=[],
+        ):
+            result = run_library_finalization(
+                repo_path=repo_path,
+                library="org.example:demo:1.0.0",
+                group="org.example",
+                artifact="demo",
+                library_version="1.0.0",
+            )
+
+        self.assertTrue(result)
+        analysis_fix.assert_called_once_with(repo_path, "org.example:demo:1.0.0", "schema failure")
+        self.assertEqual(check_metadata.call_count, 2)
+
+    def test_metadata_validation_uses_up_to_three_analysis_repairs(self) -> None:
+        failures = [
+            (False, "schema failure 1"),
+            (False, "schema failure 2"),
+            (False, "schema failure 3"),
+            (True, "BUILD SUCCESSFUL"),
+        ]
+        with tempfile.TemporaryDirectory() as repo_path, patch(
+                "utility_scripts.library_finalization._run_gradle_command",
+                return_value=True,
+        ), patch(
+                "utility_scripts.library_finalization.find_uncommitted_legacy_test_native_image_config_files_for_coordinate",
+                return_value=[],
+        ), patch(
+                "utility_scripts.library_finalization._run_check_metadata_files_with_allowed_packages_fix",
+                side_effect=failures,
+        ) as check_metadata, patch(
+                "utility_scripts.library_finalization._run_check_metadata_fix",
+                return_value=True,
+        ) as analysis_fix, patch(
+                "utility_scripts.library_finalization.run_style_fix_and_checks",
+                return_value=True,
+        ), patch(
+                "utility_scripts.library_finalization.collect_generated_test_validity_issues",
+                return_value=[],
+        ):
+            result = run_library_finalization(
+                repo_path=repo_path,
+                library="org.example:demo:1.0.0",
+                group="org.example",
+                artifact="demo",
+                library_version="1.0.0",
+            )
+
+        self.assertTrue(result)
+        self.assertEqual(
+            ["schema failure 1", "schema failure 2", "schema failure 3"],
+            [call.args[2] for call in analysis_fix.call_args_list],
+        )
+        self.assertEqual(check_metadata.call_count, 4)
 
 
 if __name__ == "__main__":

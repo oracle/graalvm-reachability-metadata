@@ -195,15 +195,16 @@ orchestration may dismiss stale requested-changes reviews and let normal merge
 gates proceed (§FS-automated-pr-review).
 
 **Isolated review run.** Before selecting review work, orchestration validates
-the parent process's GitHub CLI authentication. Before launching Pi, it runs
-`pi auth check` for the configured provider and review model. Both checks are
-deterministic and do not invoke a model (§FS-automated-pr-review). Each selected
-PR is reviewed in a throwaway detached worktree created from a freshly fetched
-base ref, with the PR checked out in detached HEAD. Review is performed by Pi
-(`pi -p --no-session`), which is expected to apply the label-specific review
-skill, read the authoritative diff with `gh pr diff`, and submit either an
-approval or a requested-changes review directly on GitHub. The review must not
-write files or re-checkout. The run is logged durably
+the parent process's GitHub CLI authentication and the selected analysis
+backend's authentication without invoking a model (§FS-automated-pr-review).
+Each selected PR is reviewed in a throwaway detached worktree created from a
+freshly fetched base ref, with the PR checked out in detached HEAD.
+Orchestration fetches the complete PR snapshot, patch, discussion, checks, and
+label-specific checked-in rules into a local context file. The selected analysis
+agent reads that file and returns only a structured approval or
+requested-changes decision. Forge validates and submits the review through its
+own authenticated `gh` process. The agent must not write files or re-checkout.
+The run is logged durably
 (§FS-durable-generation-logs) and the worktree is cleaned up afterward; a
 review timeout or non-zero Pi exit is a review failure, not an approval.
 

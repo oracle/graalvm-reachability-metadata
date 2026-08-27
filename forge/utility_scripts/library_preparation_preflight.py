@@ -14,16 +14,14 @@ from utility_scripts.metadata_index import (
     coordinate_parts as metadata_coordinate_parts,
     resolve_test_dir,
 )
+from ai_workflows.agents.agent_runtime import AgentRunResult, get_setup_agent, setup_agent_run
 from utility_scripts.stage_logger import log_stage
-from utility_scripts.strategy_loader import load_strategy_by_name
 
 LIBRARY_PREPARATION_PREFLIGHT_FILENAME = ".library_preparation_preflight.json"
 NO_LIBRARY_PREPARATION_PREFLIGHT_CONTEXT = (
     "Library preparation preflight did not request additional setup."
 )
-DEFAULT_LIBRARY_PREFLIGHT_STRATEGY_ENV = "FORGE_LIBRARY_PREFLIGHT_STRATEGY_NAME"
-DEFAULT_LIBRARY_PREFLIGHT_STRATEGY_NAME = "library_preflight_pi_gpt-5.6-sol"
-DEFAULT_LIBRARY_PREFLIGHT_MODEL_NAME = "gpt-5.6-sol"
+LIBRARY_PREFLIGHT_TIMEOUT_SECONDS = 900
 LIBRARY_PREFLIGHT_MAX_ISSUE_BODY_CHARS = 8000
 LIBRARY_PREFLIGHT_MAX_TEST_FILES = 40
 LIBRARY_PREFLIGHT_MAX_DETERMINISTIC_SETUP = 8
@@ -312,7 +310,7 @@ def _completed_library_preflight_record(
         input_bundle: dict[str, Any],
         response_payload: dict[str, Any],
         model_name: str,
-        agent: Any | None,
+        result: Any | None,
         prompt_path: str | None,
         raw_response_path: str | None,
         session_log_path: str | None,
@@ -340,8 +338,8 @@ def _completed_library_preflight_record(
     record["agent_guidance"] = agent_guidance
     record["risks"] = risks
     record["model"] = model_name
-    record["input_tokens_used"] = int(getattr(agent, "total_tokens_sent", 0) or 0)
-    record["output_tokens_used"] = int(getattr(agent, "total_tokens_received", 0) or 0)
+    record["input_tokens_used"] = int(getattr(result, "input_tokens", 0) or 0)
+    record["output_tokens_used"] = int(getattr(result, "output_tokens", 0) or 0)
     if prompt_path:
         record["prompt_path"] = prompt_path
     if raw_response_path:
@@ -437,15 +435,15 @@ def _write_and_log_preflight(claimed_issue: Any, record: dict[str, Any]) -> str:
 def run_library_preparation_preflight(
         claimed_issue: Any,
         issue_body_provider: Callable[[int], str],
-        init_agent: Callable[..., Any],
-        default_strategy_name: str = DEFAULT_LIBRARY_PREFLIGHT_STRATEGY_NAME,
-        default_model_name: str = DEFAULT_LIBRARY_PREFLIGHT_MODEL_NAME,
 ) -> str:
-    """Run and persist the library-specific preparation preflight before workflow dispatch."""
-    selected_strategy_name = (
-        os.environ.get(DEFAULT_LIBRARY_PREFLIGHT_STRATEGY_ENV)
-        or default_strategy_name
-    )
+    """Run and persist the library-specific preparation preflight before workflow dispatch.
+
+    Preflight researches a library and decides which deterministic setup it
+    needs, before the tree holds any generated work, so it runs on the setup
+    role (§FS-forge-agent-runtime-selection). The role owns the backend and the
+    model; the record reports what actually ran.
+    """
+    selection = get_setup_agent()
     input_bundle = build_library_preflight_input_bundle(
         claimed_issue,
         issue_body_provider,
@@ -455,7 +453,8 @@ def run_library_preparation_preflight(
         (
             f"Running preflight for issue #{claimed_issue.issue['number']} "
             "(live) "
-            f"library={input_bundle.get('library')} strategy={selected_strategy_name}"
+            f"library={input_bundle.get('library')} "
+            f"agent={selection.backend} model={selection.model}"
         ),
     )
     prompt = _library_preflight_prompt(input_bundle)
@@ -467,39 +466,30 @@ def run_library_preparation_preflight(
     )
     raw_response_path: str | None = None
     session_log_path: str | None = None
-    model_name = default_model_name
+    model_name = selection.model
 
-    strategy = load_strategy_by_name(selected_strategy_name)
-    if strategy is None:
-        record = _degraded_library_preflight_record(
-            claimed_issue,
-            input_bundle,
-            f"preflight strategy not found: {selected_strategy_name}",
-            prompt_path=prompt_path,
-        )
-        return _write_and_log_preflight(claimed_issue, record)
-
-    model_name = str(strategy.get("model") or default_model_name)
-    agent: Any | None = None
+    result: AgentRunResult | None = None
     try:
-        agent = init_agent(
-            strategy=strategy,
+        result = setup_agent_run(
             working_dir=claimed_issue.worktree_path,
-            editable_files=[],
-            read_only_files=[],
-            library=str(input_bundle.get("library") or ""),
+            context=prompt,
             task_type="library-preparation-preflight",
-            verbose=False,
-            model_name=model_name,
+            library=str(input_bundle.get("library") or ""),
+            timeout=LIBRARY_PREFLIGHT_TIMEOUT_SECONDS,
         )
-        response_text = agent.send_prompt(prompt)
+        if result.return_code != 0:
+            raise RuntimeError(
+                f"preflight agent exited {result.return_code}"
+                + (" (timed out)" if result.timed_out else "")
+            )
+        response_text = result.response
         raw_response_path = _write_text_artifact(
             preflight_artifact_root,
             "library-preflight-response.txt",
             response_text,
         )
         session_log_path = _relative_or_absolute_path(
-            getattr(agent, "_session_log_path", None),
+            result.session_log_path,
             preflight_artifact_root,
         )
         response_payload = _extract_preflight_json_response(response_text)
@@ -508,15 +498,15 @@ def run_library_preparation_preflight(
             input_bundle,
             response_payload,
             model_name,
-            agent,
+            result,
             prompt_path,
             raw_response_path,
             session_log_path,
         )
     except Exception as exc:
-        if session_log_path is None and agent is not None:
+        if session_log_path is None and result is not None:
             session_log_path = _relative_or_absolute_path(
-                getattr(agent, "_session_log_path", None),
+                result.session_log_path,
                 preflight_artifact_root,
             )
         record = _degraded_library_preflight_record(
