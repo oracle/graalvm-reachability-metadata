@@ -1232,12 +1232,26 @@ def _load_stats_at_head(
         validated: ValidatedPublication,
         coordinates: str,
 ) -> dict[str, Any] | None:
+    """Load one coordinate's version entry from its exploded stats document.
+
+    The trusted renderer reads the publication tree directly, so it must unwrap
+    the same `versions` document shape written by `generateLibraryStats`
+    (§forge/AR-pr-body).
+    """
     group, artifact, version = coordinates.split(":")
     path = f"stats/{group}/{artifact}/{version}/stats.json"
     try:
-        return read_json_at_commit(validated.head_sha, path)
+        stats_document = read_json_at_commit(validated.head_sha, path)
     except (RuntimeError, TypeError, json.JSONDecodeError):
         return None
+
+    versions = stats_document.get("versions")
+    if not isinstance(versions, list):
+        return None
+    for version_entry in versions:
+        if isinstance(version_entry, dict) and version_entry.get("version") == version:
+            return version_entry
+    return None
 
 
 def _format_dynamic_access_metadata_entry_note(
