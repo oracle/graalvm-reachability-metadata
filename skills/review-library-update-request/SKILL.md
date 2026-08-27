@@ -65,6 +65,7 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
    - Small formatting or rounding differences are not blocking; compare using the precision reported by the stats or PR body.
    - If stats are missing or stale, ask for regenerated stats or CI evidence before approval.
    - Do not apply the `library-new-request` rule that dynamic-access coverage must be above 20%.
+   - Do not apply any coverage percentage comparison to a PR that carries the `chunked-dynamic-access` label: the chunk covers only the classes in its own chunk while the percentage is measured against the whole library, so it cannot reflect the chunk's work. Block such a PR on coverage only when it reports zero covered dynamic-access calls while the report has calls to cover (§FS-contribution-contract.3).
 
 5. Verify issue-requested metadata and tests.
    - If the linked issue requests specific metadata, inspect the PR's `reachability-metadata.json` and test-only metadata to confirm the requested metadata exists.
