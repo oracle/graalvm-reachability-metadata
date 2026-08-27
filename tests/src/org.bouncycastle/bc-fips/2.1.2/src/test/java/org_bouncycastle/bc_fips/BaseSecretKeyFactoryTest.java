@@ -32,7 +32,7 @@ public class BaseSecretKeyFactoryTest {
         SecretKeyFactory factory = SecretKeyFactory.getInstance(
             "DES", BouncyCastleFipsProvider.PROVIDER_NAME);
 
-        EncodedKeySpec keySpec = factory.getKeySpec(
+        EncodedKeySpec keySpec = (EncodedKeySpec) factory.getKeySpec(
             new SecretKeySpec(KEY_BYTES, "DES"), EncodedKeySpec.class);
 
         assertThat(keySpec.getEncoded()).hasSize(8);
