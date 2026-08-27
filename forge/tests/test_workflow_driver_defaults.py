@@ -7,6 +7,7 @@ import unittest
 from unittest.mock import patch
 
 import forge_metadata
+from utility_scripts.strategy_loader import load_predefined_strategies
 
 
 def _claimed_issue(
@@ -87,6 +88,20 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
 
         self.assertEqual(chunk_count, 3)
         prepare_report.assert_not_called()
+
+    def test_coverage_composites_declare_the_reporter_metadata_prompt(self) -> None:
+        # A library-update issue body may carry reporter-requested metadata, and
+        # the composite then runs that phase unconditionally. A coverage
+        # composite without the prompt raises instead of covering the request.
+        coverage_composites = [
+            strategy for strategy in load_predefined_strategies()
+            if strategy.get("workflow") == "increase_dynamic_access_coverage"
+            and strategy.get("primary-workflow") in {None, "optimistic_dynamic_access"}
+        ]
+        self.assertTrue(coverage_composites)
+        for strategy in coverage_composites:
+            with self.subTest(strategy=strategy["name"]):
+                self.assertIn("issue-requested-metadata", strategy["prompts"])
 
     def test_java_repair_queues_default_to_sol_strategies(self) -> None:
         expected_defaults = {
