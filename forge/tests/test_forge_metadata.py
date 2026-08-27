@@ -1988,6 +1988,42 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
             "issue-form rule 'maven-coordinates' could not close the issue",
         )
 
+    def test_unexpected_post_claim_failure_releases_the_claim(self) -> None:
+        with patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
+                patch.object(forge_metadata, "try_claim_issue", return_value="item-4242"), \
+                patch.object(
+                    forge_metadata,
+                    "check_issue_form",
+                    return_value=forge_metadata.ISSUE_FORM_ACCEPTED,
+                ), \
+                patch.object(
+                    forge_metadata,
+                    "maybe_handle_not_for_native_image_issue",
+                    return_value=False,
+                ), \
+                patch.object(
+                    forge_metadata,
+                    "build_claim_metadata",
+                    side_effect=RuntimeError("invalid metadata index"),
+                ), \
+                patch.object(forge_metadata, "revert_issue_claim") as revert, \
+                patch.object(forge_metadata, "create_issue_workspace") as workspace:
+            claimed_issue = forge_metadata.claim_issue_for_processing(
+                _form_issue(),
+                forge_metadata.LABEL_LIBRARY_NEW,
+                "/repo",
+                "/metrics",
+                "runner",
+            )
+
+        self.assertIsNone(claimed_issue)
+        revert.assert_called_once_with(
+            "item-4242",
+            4242,
+            "post-claim preparation failure (RuntimeError)",
+        )
+        workspace.assert_not_called()
+
 
 class SingleIssueProcessingTests(unittest.TestCase):
     def test_append_chunked_dynamic_access_workflow_args_passes_issue_context_for_first_run(self) -> None:

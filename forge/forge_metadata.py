@@ -6649,7 +6649,41 @@ def claim_issue_for_processing(
         )
         return None
 
-    if maybe_handle_not_for_native_image_issue(issue, base_reachability_metadata_path):
+    # Preparation now runs with the claim held, so an unexpected failure must
+    # return the issue to Todo just like an expected failed precondition.
+    # §FS-forge-run-requirements.2
+    try:
+        not_for_native_image: bool = maybe_handle_not_for_native_image_issue(
+            issue,
+            base_reachability_metadata_path,
+        )
+        claim_metadata: Optional[tuple[str, str | None, str | None]] = (
+            None
+            if not_for_native_image
+            else build_claim_metadata(issue, label, base_reachability_metadata_path)
+        )
+        continuation_marker: ContinuationMarker | None = (
+            resolve_issue_continuation_marker(
+                issue,
+                label,
+                claim_metadata[0],
+                base_reachability_metadata_path,
+            )
+            if claim_metadata is not None
+            else None
+        )
+    except BaseException as exc:
+        revert_issue_claim(
+            item_id,
+            issue["number"],
+            "post-claim preparation interrupted by Ctrl+C" if is_interrupt_exception(exc)
+            else f"post-claim preparation failure ({type(exc).__name__})",
+        )
+        if isinstance(exc, Exception):
+            return None
+        raise
+
+    if not_for_native_image:
         revert_issue_claim(
             item_id,
             issue["number"],
@@ -6657,7 +6691,6 @@ def claim_issue_for_processing(
         )
         return None
 
-    claim_metadata = build_claim_metadata(issue, label, base_reachability_metadata_path)
     if claim_metadata is None:
         revert_issue_claim(
             item_id,
@@ -6666,12 +6699,6 @@ def claim_issue_for_processing(
         )
         return None
     issue_coordinates, current_coordinates, new_version = claim_metadata
-    continuation_marker = resolve_issue_continuation_marker(
-        issue,
-        label,
-        issue_coordinates,
-        base_reachability_metadata_path,
-    )
     if issue_is_resumable(issue) and continuation_marker is None:
         log_stage(
             "continuation",
