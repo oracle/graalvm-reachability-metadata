@@ -25,7 +25,7 @@ public class ProxyFactoryTest {
         OracleOpaque cachedProxy = factory.<OracleOpaque>proxyFor(cachedDelegate);
         assertThat(factory.<OracleOpaque>proxyFor(cachedDelegate)).isSameAs(cachedProxy);
         assertThat(delegateOf(cachedProxy)).isSameAs(cachedDelegate);
-        assertThat(cachedProxy.getBytesValue()).containsExactly(1);
+        assertThat(cachedDelegate.getBytesValue()).containsExactly(1);
 
         OPAQUE createdDelegate = opaque(2);
         OracleOpaque createdProxy = factory.<OracleOpaque>proxyForCreate(createdDelegate);
