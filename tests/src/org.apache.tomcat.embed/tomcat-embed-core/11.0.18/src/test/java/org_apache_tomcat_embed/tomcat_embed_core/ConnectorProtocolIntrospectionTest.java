@@ -10,6 +10,7 @@ import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleState;
 import org.apache.catalina.connector.Connector;
 import org.apache.coyote.http2.Http2Protocol;
+import org.apache.tomcat.util.net.SSLHostConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -41,6 +42,20 @@ public class ConnectorProtocolIntrospectionTest {
         assertThat(connector.findUpgradeProtocols()).containsExactly(http2Protocol);
         assertThat(http2Protocol.getHttpUpgradeName(false)).isEqualTo("h2c");
         assertThat(http2Protocol.getAlpnName()).isEqualTo("h2");
+    }
+
+    @Test
+    void connectorRegistersNamedSslHostConfiguration() {
+        Connector connector = new Connector();
+        SSLHostConfig sslHostConfig = new SSLHostConfig();
+        sslHostConfig.setHostName("api.example.test");
+        sslHostConfig.setProtocols("TLSv1.3");
+
+        connector.addSslHostConfig(sslHostConfig);
+
+        assertThat(connector.findSslHostConfigs()).containsExactly(sslHostConfig);
+        assertThat(sslHostConfig.getHostName()).isEqualTo("api.example.test");
+        assertThat(sslHostConfig.getProtocols()).containsExactly("TLSv1.3");
     }
 
     @ParameterizedTest
