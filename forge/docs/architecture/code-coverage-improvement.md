@@ -48,8 +48,8 @@ coverage generation, validation, discovery, finalization, and publication.
 
 The operator entry point validates the coverage host requirements before its
 first GitHub query (§FS-forge-host-requirements). It also requires GitHub CLI
-2.24.0 or newer, the first release whose issue JSON fields include
-`projectItems`, because eligibility is read from that field. It then considers
+2.39.0 or newer, the minimum validated version for the `projectItems` status
+payload from which eligibility is read. It then considers
 only open, unassigned, unblocked `code-coverage-improvement` issues in Project
 status `Todo`, drains `high-priority`, then `priority`, then normal work, and
 selects the newest issue number within a tier. It reads that issue's title,
