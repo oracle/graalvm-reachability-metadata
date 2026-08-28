@@ -99,6 +99,13 @@ overall dynamic-access report and every breakdown present in either version:
 The order is part of the rule: step 4 is reached only when both the covered-call
 count and percentage decreased, so its subtraction is always positive.
 
+When a scope fails, the reviewer must investigate why before deciding. The
+analysis uses available evidence such as the old and new stats, test diff,
+upstream API or runtime changes, and CI output. The review states the supported
+cause; when the evidence does not establish one, it states that the cause is
+unknown and asks for an explanation. A reviewer must not present speculation as
+the cause of a regression.
+
 PRs with the `chunked-dynamic-access` label are exempt from every percentage
 and repair-comparison gate in this section, including the final chunk. A chunk
 covers only part of the library-wide dynamic-access report
