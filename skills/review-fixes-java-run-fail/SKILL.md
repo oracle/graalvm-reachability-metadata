@@ -87,6 +87,11 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
    - Reach step 4 only after both covered calls and percentage decreased, so the
      subtraction is always positive. A failing scope is blocking unless the PR
      gives a concrete, credible explanation of the changed upstream surface.
+   - For every failing scope, inspect the old and new stats and the test diff,
+     then relevant upstream API/runtime or CI evidence, before deciding. State
+     the evidence-backed cause. If the evidence does not establish one, say
+     `Cause not established from the available evidence` and ask for an
+     explanation. Never guess or present speculation as the cause.
    - For reference: `8/8 -> 7/9` and `8/8 -> 6/9` pass the small-report rule;
      `8/8 -> 5/9` fails it; `10/10 -> 15/20` passes because covered calls grew;
      and `20/20 -> 15/20` fails the large-report rule.
@@ -130,8 +135,11 @@ Keep comments short and factual:
 - For coverage failures: name the failing overall or breakdown scope, report old
   and new `coveredCalls`, `totalCalls`, and percentages, and identify whether it
   failed the zero-covered, small-report, or large-report rule. Ask for restored
-  coverage or a concrete explanation. Do not report a change that an earlier
-  step of the ordered gate accepts.
+  coverage or a concrete explanation. Explain why the regression happened
+  using evidence from the stats, test diff, upstream changes, or CI. If the
+  cause cannot be established, say so explicitly and request an explanation;
+  never guess. Do not report a change that an earlier step of the ordered gate
+  accepts.
 - For deleted or bypassed coverage: say that the PR fixes Java runtime execution by removing coverage and should instead adapt the test to the new runtime behavior.
 - For swallowed exceptions: say that catching or ignoring the failing exception hides the runtime failure instead of proving the library behavior works.
 - For native skips that does not depend on the open-ended dynamic class loading: say that the PR avoids the failing native path instead of fixing it, so it does not demonstrate native-image runtime coverage.
