@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-08-28 — org.apache.tomcat.embed:tomcat-embed-core:11.0.18 (#8328)
+
+**Test-only metadata captures machine-local paths**
+
+The two branch-added entries in tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/src/test/resources/META-INF/native-image/reachability-metadata.json registered JUnit /tmp/jaas-realm-file.config paths. Tests must not depend on Native Image resource metadata for machine-local paths.
+
 ## 2026-08-28 — org.junit.platform:junit-platform-commons:1.11.0 (#9209)
 
 **Resource dynamic-access coverage regresses beyond the fixes-javac limit**
