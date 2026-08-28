@@ -175,15 +175,15 @@ what the bulk pass missed.
 
 ### 1. Chunking
 
-An oversized report is not explored in one run. When a coordinate has more
-uncovered classes than the configured threshold, the driver gives the workflow a
-class limit for this invocation; the workflow processes at most that many
-classes, returns a chunk-ready status once the chunk passes local verification,
-and the work resumes in a later run against the merged result. The threshold and
-the decision to chunk belong to the driver and the control plane, not the
-workflow (§FS-forge-chunked-dynamic-access, §AR-forge-drivers). What the
-workflow owns is the durable record of which classes are already done
-(§AR-dynamic-access-exhaust-report).
+An oversized report is not explored in one run. An iterative-only run receives
+a concrete class budget before it starts. A run with an optimistic bulk phase
+receives the configured class boundary and decides after bulk: classes completed
+by bulk count first, iterative exploration fills only the shortfall, and a final
+remainder no larger than the boundary is finished in the same run. The workflow
+returns a chunk-ready status once the resulting part passes local verification,
+and work resumes in a later run against the merged result
+(§FS-forge-chunked-dynamic-access). The workflow also owns the durable record of
+which classes are already done (§AR-dynamic-access-exhaust-report).
 
 ## AR-dynamic-access-iterative: Iterative exploration
 
@@ -220,7 +220,18 @@ runs the terminal gate.
 
 Unlike iterative exploration, this workflow does not commit per class and does
 not record exhausted classes — a bulk attempt is accepted or reset whole. It
-succeeds only if at least one iteration reached the accepted state.
+succeeds only if at least one iteration reached the accepted state. For a
+chunked run it retains the initial report and, after the full iteration budget,
+compares it with the report refreshed immediately before the last passing gate.
+Every class that changed from uncovered to covered is recorded as completed;
+bulk never records a class as skipped, exhausted, or failed because it cannot
+attribute those outcomes to one class. This comparison runs once after the
+bulk loop and does not regenerate the report.
+
+In a pure-bulk workflow, a productive pass with more than the configured
+threshold still remaining returns chunk-ready. A zero-yield pass is final, as
+is a pass whose remainder is no larger than the threshold, because no iterative
+phase exists to make a stronger class-scoped attempt.
 
 Optimistic exploration is the right first attempt when the library is expected
 to be easy, when a coverage improvement should be cheap, and for runs that
@@ -248,6 +259,16 @@ primary failure is the one worth reporting. When the exploration phase returns
 chunk-ready, the composite returns that immediately — a chunk is a reviewable
 boundary, and work that depends on reaching final success waits for the resumed
 run rather than blocking the chunk.
+
+When the primary workflow is `optimistic_dynamic_access`, the composite takes
+the chunk boundary after the bulk loop and its gates, before iterative
+exploration. Bulk-completed classes count toward the invocation's class
+boundary. If more than the boundary remain and bulk already met the boundary,
+the composite returns chunk-ready immediately. If bulk did not meet it,
+iterative exploration receives only the shortfall; a zero-yield bulk pass
+therefore gives iterative the whole boundary. When no more than the boundary
+remain, iterative exploration receives the entire remainder and finishes the
+final chunk even if bulk already met the boundary.
 
 Parameters: the primary workflow's parameters plus the iterative exploration
 parameters, from one bundle. Families: composite coverage strategies, Java-fix
@@ -334,8 +355,11 @@ its result, or treats a partial recovery as success.
 A chunk must link its pull request to the issue without completing it, because
 the issue is only done when the last chunk lands (§FS-forge-chunked-dynamic-access). Non-final chunk PRs reference
 the issue; only the final chunk PR closes it and moves it to done. Every chunk PR
-carries the merged exhaust state the next run needs to skip classes already
-completed, skipped, exhausted, or failed.
+carries the merged exhaust state the next run needs. Iterative exploration can
+attribute completed, skipped, exhausted, and failed classes and records all four
+states. Bulk can attribute only classes proven completed by its baseline/final
+report comparison and records only those; a composite carries the union of the
+states its two phases can attribute.
 
 If a non-final chunk PR has failing CI and no eligible job remains to rerun,
 Forge releases the linked issue so a replacement chunk can be generated —

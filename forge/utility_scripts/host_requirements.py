@@ -17,7 +17,9 @@ import subprocess
 import sys
 import tempfile
 import tomllib
+import urllib.error
 import urllib.parse
+import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping, Sequence
@@ -35,6 +37,7 @@ from ai_workflows.agents.agent_runtime import (  # noqa: E402
     default_model_for_backend,
     normalize_backend_name,
 )
+from utility_scripts.native_image_artifact import ARTIFACT_REPOSITORY_URLS  # noqa: E402
 from utility_scripts.strategy_loader import (  # noqa: E402
     apply_test_agent_alias,
     load_predefined_strategies,
@@ -80,7 +83,6 @@ REVIEW_LIMIT_ENV_VARS = (
 NETWORK_HOSTS_GITHUB = ("github.com", "api.github.com")
 NETWORK_HOSTS_WORK = ("services.gradle.org",)
 NETWORK_HOSTS_ISSUE_WORK = (
-    "repo.maven.apache.org",
     "plugins.gradle.org",
     "registry-1.docker.io",
     "auth.docker.io",
@@ -809,6 +811,7 @@ class HostRequirements:
 
     def _check_network(self) -> None:
         self._check_git_remote_access()
+        self._check_artifact_repositories()
         hosts: list[tuple[str, bool]] = [
             (host, self.requirements.github_work) for host in NETWORK_HOSTS_GITHUB
         ]
@@ -864,6 +867,29 @@ class HostRequirements:
                 None,
                 "Targets are discovered from each selected library and cannot be enumerated before queue selection",
                 "Allow outbound HTTPS to source-code/documentation URLs and registries declared by selected libraries.",
+            )
+
+    def _check_artifact_repositories(self) -> None:
+        """Require HTTP 200 from every repository used by issue-form artifact lookup.
+
+        §FS-forge-host-requirements
+        """
+        for repository_url in ARTIFACT_REPOSITORY_URLS:
+            name = f"artifact repository {repository_url}"
+            if not self.requirements.issue_work:
+                self._add("network", name, False, None, "not required by this run")
+                continue
+            passed, detail = probe_http_200(repository_url)
+            self._add(
+                "network",
+                name,
+                True,
+                passed,
+                detail,
+                (
+                    f"Make `HEAD {repository_url.rstrip('/')}/` return HTTP 200 from this host; "
+                    "check DNS, TLS, proxy or firewall policy, and repository availability."
+                ),
             )
 
     def _check_git_remote_access(self) -> None:
@@ -1381,6 +1407,23 @@ def resolve_executable(command: str) -> str | None:
     if os.path.sep in command:
         return command if os.path.isfile(command) and os.access(command, os.X_OK) else None
     return shutil.which(command)
+
+
+def probe_http_200(url: str, timeout: float = 20.0) -> tuple[bool, str]:
+    """Return whether an HTTP HEAD request to a base URL returns exactly 200.
+
+    §FS-forge-host-requirements
+    """
+    probe_url = f"{url.rstrip('/')}/"
+    request = urllib.request.Request(probe_url, method="HEAD")
+    try:
+        with urllib.request.urlopen(request, timeout=timeout) as response:
+            status = response.getcode()
+    except urllib.error.HTTPError as exc:
+        return False, f"HEAD {probe_url} returned HTTP {exc.code}"
+    except (OSError, urllib.error.URLError) as exc:
+        return False, f"HEAD {probe_url} failed: {exc}"
+    return status == 200, f"HEAD {probe_url} returned HTTP {status}"
 
 
 def run_command(

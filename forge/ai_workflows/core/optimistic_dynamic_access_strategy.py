@@ -6,7 +6,12 @@
 import os
 import subprocess
 
-from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
+from ai_workflows.core.workflow_strategy import (
+    RUN_STATUS_CHUNK_READY,
+    RUN_STATUS_FAILURE,
+    RUN_STATUS_SUCCESS,
+    WorkflowStrategy,
+)
 from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
 from utility_scripts.run_location import (
     PHASE_EXPLORE as RUN_PHASE_EXPLORE,
@@ -17,7 +22,14 @@ from utility_scripts.run_location import (
     record_step_failure,
     run_step,
 )
-from utility_scripts.dynamic_access_report import format_full_report, load_dynamic_access_coverage_report
+from utility_scripts.dynamic_access_report import (
+    BulkDynamicAccessProgress,
+    DynamicAccessCoverageReport,
+    compute_bulk_dynamic_access_progress,
+    format_full_report,
+    load_dynamic_access_coverage_report,
+)
+from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport
 from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.native_test_verification import global_output_dir
 from utility_scripts.stage_logger import log_stage
@@ -48,6 +60,19 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
         )
         self.max_optimistic_iterations = self.parameters["max-optimistic-iterations"]
         self.max_test_iterations = self.parameters["max-test-iterations"]
+        self.chunk_class_count: int = int(self.context.get("chunk_class_count") or 0)
+        if self.chunk_class_count < 0:
+            raise ValueError("chunk_class_count must be non-negative")
+        self.dynamic_access_exhaust_report: DynamicAccessExhaustReport | None = self.context.get(
+            "dynamic_access_exhaust_report",
+        )
+        self.dynamic_access_exhaust_report_path: str | None = self.context.get(
+            "dynamic_access_exhaust_report_path",
+        )
+        self.defer_dynamic_access_chunk_decision: bool = bool(
+            self.context.get("defer_dynamic_access_chunk_decision", False)
+        )
+        self.bulk_chunk_progress: BulkDynamicAccessProgress | None = None
         self._last_dynamic_access_report_issue = "not_run"
         self.dynamic_access_report_path = os.path.join(
             self.reachability_repo_path,
@@ -86,6 +111,7 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
         successful_iterations = 0
         prompt_iterations = 0
         current_report = initial_report
+        last_successful_report: DynamicAccessCoverageReport | None = None
 
         for iteration in range(self.max_optimistic_iterations):
             agent.clear_context()
@@ -194,17 +220,23 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
                     lambda marker: marker.mark_phase_pending(PHASE_EXPLORE, iteration=prompt_iterations),
                 )
                 return RUN_STATUS_FAILURE, prompt_iterations, 0
+            last_successful_report = current_report
 
             if current_report.total_calls == current_report.covered_calls:
                 self._print_message("all call sites covered")
                 break
 
-        if successful_iterations > 0:
+        if successful_iterations > 0 and last_successful_report is not None:
+            self._record_bulk_chunk_progress(initial_report, last_successful_report)
+            workflow_status: str = RUN_STATUS_SUCCESS
+            if not self.defer_dynamic_access_chunk_decision and self._pure_bulk_chunk_is_ready():
+                self.save_bulk_chunk_state()
+                workflow_status = RUN_STATUS_CHUNK_READY
             save_phase_update(
                 self.continuation_marker_path,
                 lambda marker: marker.mark_phase_completed(PHASE_EXPLORE, iteration=prompt_iterations),
             )
-            return RUN_STATUS_SUCCESS, prompt_iterations, successful_iterations
+            return workflow_status, prompt_iterations, successful_iterations
         save_phase_update(
             self.continuation_marker_path,
             lambda marker: marker.mark_phase_pending(PHASE_EXPLORE, iteration=prompt_iterations),
@@ -213,6 +245,71 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
             location=RunLocation(RUN_PHASE_EXPLORE, STEP_GENERATE_TESTS, self.library),
         )
         return RUN_STATUS_FAILURE, prompt_iterations, 0
+
+    def _record_bulk_chunk_progress(
+            self,
+            initial_report: DynamicAccessCoverageReport,
+            final_report: DynamicAccessCoverageReport,
+    ) -> None:
+        """Record the exact post-gate progress used by the chunk boundary.
+
+        Bulk can prove completed classes by report comparison but cannot
+        attribute skipped, exhausted, or failed classes
+        (§AR-dynamic-access-bulk).
+        """
+        processed_classes: set[str] = self._continuation_processed_classes()
+        if self.dynamic_access_exhaust_report is not None:
+            processed_classes.update(self.dynamic_access_exhaust_report.processed_classes())
+        progress: BulkDynamicAccessProgress = compute_bulk_dynamic_access_progress(
+            initial_report,
+            final_report,
+            processed_classes,
+        )
+        if self.dynamic_access_exhaust_report is not None:
+            for class_name in progress.completed_classes:
+                self.dynamic_access_exhaust_report.mark_completed(class_name)
+            self.dynamic_access_exhaust_report.update_chunk_limits(
+                self.chunk_class_count,
+                self.chunk_class_count,
+            )
+        self.bulk_chunk_progress = progress
+        self._print_message(
+            "bulk chunk progress: completed={completed} remaining={remaining} boundary={boundary}".format(
+                completed=len(progress.completed_classes),
+                remaining=len(progress.remaining_classes),
+                boundary=self.chunk_class_count,
+            )
+        )
+
+    def _continuation_processed_classes(self) -> set[str]:
+        """Return classes a resumed bulk run must exclude from its remainder."""
+        if self.continuation_marker is None:
+            return set()
+        explore_phase: dict[str, object] = self.continuation_marker.phases.get(PHASE_EXPLORE, {})
+        exhausted_classes: object = explore_phase.get("exhaustedClasses", [])
+        if not isinstance(exhausted_classes, list):
+            return set()
+        return {
+            class_name
+            for class_name in exhausted_classes
+            if isinstance(class_name, str) and class_name
+        }
+
+    def _pure_bulk_chunk_is_ready(self) -> bool:
+        """Return whether productive pure bulk should publish a non-final chunk."""
+        progress: BulkDynamicAccessProgress | None = self.bulk_chunk_progress
+        return bool(
+            self.chunk_class_count > 0
+            and progress is not None
+            and progress.completed_classes
+            and len(progress.remaining_classes) > self.chunk_class_count
+        )
+
+    def save_bulk_chunk_state(self) -> None:
+        """Persist bulk-completed classes for a non-final chunk."""
+        if self.dynamic_access_exhaust_report is None or self.dynamic_access_exhaust_report_path is None:
+            return
+        self.dynamic_access_exhaust_report.save(self.dynamic_access_exhaust_report_path)
 
     def _run_basic_iterative_fallback(self, agent, **kwargs):
         """Instantiate a BasicIterativeStrategy and delegate to it."""
