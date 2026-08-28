@@ -9,12 +9,26 @@ package org_apache_tomcat_embed.tomcat_embed_core;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleState;
 import org.apache.catalina.connector.Connector;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConnectorProtocolIntrospectionTest {
+
+    @Test
+    void connectorReadsAndUpdatesBindOnInitThroughPublicApi() {
+        Connector connector = new Connector();
+
+        Object bindOnInitBeforeUpdate = connector.getProperty("bindOnInit");
+        boolean bindOnInitUpdated = connector.setProperty("bindOnInit", "false");
+        Object bindOnInitAfterUpdate = connector.getProperty("bindOnInit");
+
+        assertThat(bindOnInitBeforeUpdate).isNull();
+        assertThat(bindOnInitUpdated).isTrue();
+        assertThat(bindOnInitAfterUpdate).isEqualTo("false");
+    }
 
     @ParameterizedTest
     @ValueSource(strings = {"HTTP/1.1", "org.apache.coyote.http11.Http11NioProtocol",
@@ -24,13 +38,6 @@ public class ConnectorProtocolIntrospectionTest {
         connector.setPort(0);
 
         try {
-            connector.getProperty("bindOnInit");
-            boolean bindOnInitUpdated = connector.setProperty("bindOnInit", "false");
-            Object bindOnInitAfterUpdate = connector.getProperty("bindOnInit");
-
-            assertThat(bindOnInitUpdated).isTrue();
-            assertThat(bindOnInitAfterUpdate).isEqualTo("false");
-
             connector.init();
             connector.start();
 
