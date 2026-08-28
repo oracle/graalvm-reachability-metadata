@@ -39,13 +39,12 @@ produced a passing test suite, but its own work product is broader API coverage
 for a library that is already represented locally.
 
 The initial automation entry point should be a Rhei workspace template for one
-GitHub issue labeled `code-coverage-improvement`. The issue title must name
-exactly one Maven coordinate in `group:artifact:version` form. The operator
-launcher passes its validated coordinate into the template; direct template
-instantiation resolves the same coordinate from the title. Conversion verifies
-that the library is already represented locally, creates or reuses a per-issue
-worktree, and generates bounded Rhei tasks for preparation, inventory, coverage
-generation, validation, discovery, finalization, and publication.
+GitHub issue labeled `code-coverage-improvement`. The operator launcher
+validates exactly one Maven coordinate from the issue title and passes that
+coordinate into the template. Conversion consumes the supplied coordinate,
+verifies that the library is already represented locally, creates or reuses a
+per-issue worktree, and generates bounded Rhei tasks for preparation, inventory,
+coverage generation, validation, discovery, finalization, and publication.
 
 The operator entry point validates the coverage host requirements before its
 first GitHub query (§FS-forge-host-requirements). It also requires GitHub CLI
