@@ -179,7 +179,7 @@ public class Spring_boot_reactor_nettyTest {
     @Test
     void nativeForwardHeadersUpdateRequestUri() throws Exception {
         NettyReactiveWebServerFactory factory = loopbackFactory();
-        factory.setUseForwardHeaders(true);
+        factory.setUseRfcForwardHeader(true);
         WebServer webServer = factory.getWebServer((request, response) -> {
             response.getHeaders().setContentType(MediaType.TEXT_PLAIN);
             return write(response, request.getURI().toString());
