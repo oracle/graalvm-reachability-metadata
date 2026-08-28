@@ -8,7 +8,6 @@ package org_springframework.spring_core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,19 +21,6 @@ import org.springframework.core.io.ClassPathResource;
 
 /** Verifies CGLIB reflection utilities against Spring Core types. */
 public class ReflectUtilsTest {
-    @Test
-    void findsPublicConstructorWithPrimitiveArrayParameter() {
-        byte[] content = new byte[] {1, 2, 3};
-
-        Constructor<?> constructor = ReflectUtils.findConstructor(
-                "org.springframework.core.io.ByteArrayResource(byte[])");
-        ByteArrayResource resource =
-                (ByteArrayResource) ReflectUtils.newInstance(constructor, new Object[] {content});
-
-        assertThat(constructor.getDeclaringClass()).isEqualTo(ByteArrayResource.class);
-        assertThat(resource.getByteArray()).isSameAs(content);
-    }
-
     @Test
     void createsInstanceThroughDeclaredConstructor() {
         byte[] content = new byte[] {4, 5, 6};

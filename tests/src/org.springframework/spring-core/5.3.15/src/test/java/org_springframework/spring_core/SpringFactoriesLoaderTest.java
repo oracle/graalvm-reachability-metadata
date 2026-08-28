@@ -28,7 +28,7 @@ public class SpringFactoriesLoaderTest {
     }
 
     public static final class FactoryImplementation implements TestFactory {
-        public FactoryImplementation() {}
+        public FactoryImplementation() { }
 
         @Override
         public String name() {

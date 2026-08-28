@@ -26,6 +26,6 @@ public class ConstantsTest {
         public static final int MAX_RETRIES = 3;
         public static final String MODE = "safe";
 
-        private ConstantFixture() {}
+        private ConstantFixture() { }
     }
 }
