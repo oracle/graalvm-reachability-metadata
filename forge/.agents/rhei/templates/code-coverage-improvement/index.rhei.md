@@ -10,7 +10,7 @@ coordinate in `group:artifact:version` form unless `{{coordinate}}` is
 provided.
 
 The workflow keeps generated code coverage tests under the dedicated suite path
-`tests/src/<group>/<artifact>/<test-version>/code-coverage-improvement` (a tracked
+`tests/src/<group>/<artifact>/<version>/code-coverage-improvement` (a tracked
 extension suite inside the indexed test project), writes runtime evidence under
 `runtime/code-coverage/`, and runs two separately measured phases
 §AR-code-coverage-improvement. The first gives the agent 400 exact

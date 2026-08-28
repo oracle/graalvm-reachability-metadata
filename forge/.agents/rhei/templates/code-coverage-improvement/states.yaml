@@ -43,6 +43,79 @@ states:
     concurrent: true
     program: "true"
 
+  prepare-test-project:
+    description: Verify the coordinate has its own test project before preparing the library.
+    concurrent: true
+    program: |
+      # Reject a coordinate that CI would compile from a different test project
+      # (§AR-code-coverage-improvement.2).
+      python3 - <<'PY' || exit 2
+      import json
+      import os
+      import re
+      import subprocess
+      import sys
+
+      repo: str = "{{repo}}"
+      issue_number: str = "{{issue_number}}"
+      repo_checkout: str = "{{repo_checkout}}"
+      override: str = "{{coordinate}}".strip()
+
+      if override:
+          coordinate: str = override
+          source: str = "the configured coordinate override"
+      else:
+          try:
+              result: subprocess.CompletedProcess[str] = subprocess.run(
+                  ["gh", "issue", "view", issue_number, "--repo", repo, "--json", "title"],
+                  capture_output=True,
+                  text=True,
+                  check=True,
+              )
+              title: str = json.loads(result.stdout)["title"]
+          except (subprocess.CalledProcessError, ValueError, KeyError) as error:
+              print(
+                  f"ERROR: Cannot read the title of {repo}#{issue_number}: {error}",
+                  file=sys.stderr,
+              )
+              sys.exit(1)
+          matches: list[str] = re.findall(
+              r"[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.+-]+",
+              title,
+          )
+          if len(matches) != 1:
+              print(
+                  f"ERROR: The title of {repo}#{issue_number} names {len(matches)} coordinates; "
+                  f"expected exactly one: {title!r}",
+                  file=sys.stderr,
+              )
+              sys.exit(1)
+          coordinate = matches[0]
+          source = f"the title of {repo}#{issue_number}"
+
+      group, artifact, version = coordinate.split(":")
+      artifact_root: str = os.path.join(repo_checkout, "tests", "src", group, artifact)
+      test_project: str = os.path.join(artifact_root, version)
+      if os.path.isdir(test_project):
+          print(f"{coordinate} has its test project at tests/src/{group}/{artifact}/{version}.")
+          sys.exit(0)
+
+      available: list[str] = sorted(
+          entry
+          for entry in os.listdir(artifact_root)
+          if os.path.isdir(os.path.join(artifact_root, entry))
+      ) if os.path.isdir(artifact_root) else []
+      print(f"ERROR: {coordinate}, from {source}, has no test project.", file=sys.stderr)
+      print(f"Expected directory: tests/src/{group}/{artifact}/{version}", file=sys.stderr)
+      print(
+          "Fix: Retitle the issue to name a version with its own test project"
+          + (f" ({', '.join(available)})." if available else " for this artifact."),
+          file=sys.stderr,
+      )
+      sys.exit(1)
+      PY
+    program_timeout: 10m
+
   execute:
     description: Execute one code coverage pipeline phase.
     target: "{{worker_agent}}"
@@ -961,6 +1034,13 @@ states:
     final: true
 
 transitions:
+  # A missing exact-version test project is not repairable by the preparation
+  # agent, so the nonzero exit is deliberately unrouted.
+  - from: prepare-test-project
+    to: execute
+    exit_code: 0
+    description: The coordinate has its own test project; prepare the library.
+
   - from: prepared
     to: execute
     description: Pipeline task enters execution.

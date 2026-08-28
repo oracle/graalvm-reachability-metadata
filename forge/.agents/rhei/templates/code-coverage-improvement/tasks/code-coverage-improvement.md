@@ -16,10 +16,7 @@
   - Fetch the issue with `gh issue view {{issue_number}} --repo {{repo}}`.
   - Verify that it carries `{{issue_label}}`.
   - If `{{coordinate}}` is non-empty, use it as the coordinate; otherwise parse
-    exactly one `group:artifact:version` coordinate from the issue title. The
-    title is the same source, with the same exactly-one rule, that Task
-    code-coverage-requirement-test validated, so conversion can never resolve a
-    coordinate the gate did not admit.
+    exactly one `group:artifact:version` coordinate from the issue title.
   - If `{{project_owner}}` and `{{project_number}}` are non-empty, verify the
     issue's Project item is in `{{todo_status}}`, then move it to
     `{{in_progress_status}}` only after the worktree and conversion artifacts
@@ -35,11 +32,8 @@
   - Write `runtime/code-coverage/issues/conversion.json` with exactly these
     fields: `coordinate`, `worktreePath`, `workPath`,
     `coverageSuiteAbsolutePath`, and `coverageSuiteRepoRelativePath`
-    (`tests/src/<group>/<artifact>/<test-version>/code-coverage-improvement`,
-    where `<test-version>` is the indexed test project directory that covers
-    the coordinate — resolve it with
-    `utility_scripts.metadata_index.resolve_test_dir`). The deterministic
-    finalization program reads this record; all paths except the
+    (`tests/src/<group>/<artifact>/<version>/code-coverage-improvement`). The
+    deterministic finalization program reads this record; all paths except the
     repository-relative suite path must be absolute.
 - Artifacts:
   - `runtime/code-coverage/issues/inventory.md`
@@ -48,24 +42,33 @@
   - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-convert.md`
 
 ### Task code-coverage-prepare: Prepare library
-**State:** prepared
+**State:** prepare-test-project
 **Prior:** Task code-coverage-convert
 
+- Source issue: `https://github.com/{{repo}}/issues/{{issue_number}}`
+- Coordinate override: `{{coordinate}}`
 - Source artifact: `runtime/code-coverage/issues/conversion.md`
 - Helper preference: reuse Forge path and source-context helpers before adding
   task-specific setup logic.
-- Purpose: resolve the target coordinate, confirm it is already represented in
-  the reachability repository, and create or verify the dedicated code coverage
-  test suite.
+- Purpose: require the coordinate's own test project, then create or verify the
+  dedicated code coverage test suite and prepare its context.
+- Execution: the deterministic `prepare-test-project` state validates the
+  test project before the task enters the agent-backed `execute` state.
+- Program:
+  - Resolve the coordinate from `{{coordinate}}` when it is set, otherwise from
+    the issue title, and require `tests/src/<group>/<artifact>/<version>` to
+    exist in the source checkout.
+  - Keep the check literal: a version backed only by another indexed test
+    project must be retitled to the version that owns its test project.
+- Failure handling: a missing exact-version test project is not repairable by
+  the preparation agent, so only exit 0 enters `execute`.
 - Required work:
-  - Resolve `group`, `artifact`, and `version` from the conversion artifact.
-  - Confirm the library has an existing metadata or test entry in the source
-    checkout.
-  - Resolve the existing metadata-generation test location.
+  - Read the coordinate and canonical coverage-suite paths from the conversion
+    artifact.
   - Create or verify the tracked extension suite at
-    `code-coverage-improvement/` inside the resolved test project, including
-    `src/test/java` and optional `src/test/resources` below that suite root,
-    plus a `suite.json` recording the true `coordinates` being improved.
+    `coverageSuiteAbsolutePath`, including `src/test/java` and optional
+    `src/test/resources` below that suite root, plus a `suite.json` recording
+    the true `coordinates` being improved.
   - Prepare source context for main sources, upstream tests, and documentation
     when available.
   - Record baseline facts without mutating metadata-generation tests.

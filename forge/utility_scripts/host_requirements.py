@@ -96,11 +96,27 @@ class QueueRequirements:
     issue_work: bool
     review_work: bool
     github_work: bool = True
+    coverage_work: bool = False
 
     @property
     def any_work(self) -> bool:
-        """Return whether this run starts issue or review work."""
-        return self.issue_work or self.review_work
+        """Return whether this run starts issue, coverage, or review work."""
+        return self.issue_work or self.coverage_work or self.review_work
+
+    @property
+    def build_work(self) -> bool:
+        """Return whether this run builds and tests libraries locally."""
+        return self.issue_work or self.coverage_work
+
+
+#: The standalone coverage launcher needs build and publication capabilities,
+#: but only one unpinned GraalVM lane (§FS-forge-host-requirements).
+COVERAGE_REQUIREMENTS = QueueRequirements(
+    issue_work=False,
+    review_work=False,
+    github_work=True,
+    coverage_work=True,
+)
 
 
 @dataclass(frozen=True)
@@ -302,9 +318,13 @@ class HostRequirements:
 
     def _print_manifest(self) -> None:
         issue_text = "enabled" if self.requirements.issue_work else "disabled"
+        coverage_text = "enabled" if self.requirements.coverage_work else "disabled"
         review_text = "enabled" if self.requirements.review_work else "disabled"
         print("[forge-host] Deterministic host requirements")
-        print(f"[forge-host] Queues: issue work={issue_text}, PR review={review_text}")
+        print(
+            f"[forge-host] Modes: issue work={issue_text}, coverage work={coverage_text}, "
+            f"PR review={review_text}"
+        )
         print(f"[forge-host] Forge checkout: {self.forge_dir}")
         print(f"[forge-host] Selected repository: {self.repo_dir}")
         print("[forge-host] Required host permissions:")
@@ -317,8 +337,11 @@ class HostRequirements:
             print("  - GitHub repository: Contents=write, Issues=write, Pull requests=write")
             print(f"  - GitHub project: Projects=write for oracle project {PROJECT_NUMBER}")
             github_operations: list[str] = []
-            if self.requirements.issue_work:
-                github_operations.extend(("assign/label/comment issues", "push generated branches"))
+            if self.requirements.build_work:
+                github_operations.extend((
+                    "assign/label/comment issues",
+                    f"push generated branches to {REPOSITORY_OWNER}/{REPOSITORY_NAME}",
+                ))
             if self.requirements.review_work:
                 github_operations.extend(("submit reviews", "merge eligible PRs"))
             print(f"  - GitHub operations: {', '.join(github_operations)}")
@@ -348,6 +371,7 @@ class HostRequirements:
                     f"  - Test agent: {test_requirement.agent} "
                     f"model={test_requirement.model}{strategy_suffix}, offline repository tools"
                 )
+        if self.requirements.build_work:
             print("  - Docker: access to the Docker daemon and configured image registries")
         print("[forge-host] Required environment:")
         if self.requirements.issue_work:
@@ -355,6 +379,14 @@ class HostRequirements:
                 print(f"  - {variable}={self._required_graalvm_description(variable)}")
             print(f"  - Every GraalVM must load native-image-agent and contain {GRAALVM_SCHEMA_PATH}")
             print("  - Forge pins JAVA_HOME and every Gradle Java selector to GRAALVM_HOME")
+        elif self.requirements.coverage_work:
+            print(
+                "  - GRAALVM_HOME=<GraalVM JDK 25 or newer with Native Image>; "
+                "unset takes the value of JAVA_HOME"
+            )
+            print(
+                f"  - The selected GraalVM must load native-image-agent and contain {GRAALVM_SCHEMA_PATH}"
+            )
         elif self.requirements.review_work:
             print("  - JAVA_HOME=<JDK 25 with executable bin/java> (GRAALVM_HOME is not required for review-only work)")
         print(f"  - FORGE_ANALYSIS_AGENT={self.analysis_agent}")
@@ -362,7 +394,7 @@ class HostRequirements:
         if self.requirements.issue_work:
             print(f"  - FORGE_SETUP_AGENT={self.setup_agent}")
             print(f"  - FORGE_SETUP_MODEL={self.setup_model}")
-        print(f"  - GraalVM version match: {self._version_check_description()}")
+            print(f"  - GraalVM version match: {self._version_check_description()}")
 
     def _required_graalvm_description(self, variable: str) -> str:
         """Describe the distribution one GraalVM lane must point to."""
@@ -419,7 +451,7 @@ class HostRequirements:
                 )
                 for family, command in selected_agent_commands
             ),
-            ("Docker CLI", "docker", self.requirements.issue_work, ("--version",)),
+            ("Docker CLI", "docker", self.requirements.build_work, ("--version",)),
         )
         for name, command, required, version_args in tool_specs:
             self._check_tool(name, command, required, version_args)
@@ -518,6 +550,9 @@ class HostRequirements:
         )
 
     def _check_environment(self) -> None:
+        if self.requirements.coverage_work and not self.requirements.issue_work:
+            self._check_coverage_graalvm_home()
+            return
         self._check_graalvm_home(
             "GRAALVM_HOME",
             self.requirements.issue_work,
@@ -545,6 +580,52 @@ class HostRequirements:
             self._add("environment", "JAVA_HOME alignment", True, True, detail)
         elif self.requirements.review_work:
             self._check_review_java_home()
+
+    def _check_coverage_graalvm_home(self) -> None:
+        """Require one Forge-usable GraalVM of JDK 25 or newer for coverage work."""
+        home: str | None = self.environment.get("GRAALVM_HOME")
+        source: str = ""
+        if not home:
+            home = self.environment.get("JAVA_HOME")
+            source = " (from JAVA_HOME)"
+        if not home:
+            self._add(
+                "environment",
+                "GRAALVM_HOME",
+                True,
+                False,
+                "neither GRAALVM_HOME nor JAVA_HOME is set",
+                "Export `GRAALVM_HOME=/absolute/path/to/a/graalvm` of JDK 25 or newer that provides "
+                f"Native Image, native-image-agent, and {GRAALVM_SCHEMA_PATH}.",
+            )
+            return
+        self.environment["GRAALVM_HOME"] = home
+        problems: list[str] = check_graalvm_installation(home, self.environment)
+        if problems:
+            self._add(
+                "environment",
+                "GRAALVM_HOME",
+                True,
+                False,
+                f"GRAALVM_HOME={home}{source}: {'; '.join(problems)}",
+                "Point `GRAALVM_HOME` to a GraalVM that provides Native Image, native-image-agent, "
+                f"and {GRAALVM_SCHEMA_PATH}.",
+            )
+            return
+        version: subprocess.CompletedProcess[str] = run_command(
+            [os.path.join(home, "bin", "java"), "-version"],
+            self.environment,
+        )
+        version_line: str = first_output_line(version) or "java version unavailable"
+        major: int | None = java_version_major(version_line) if version.returncode == 0 else None
+        self._add(
+            "environment",
+            "GRAALVM_HOME",
+            True,
+            major is not None and major >= 25,
+            f"GRAALVM_HOME={home}{source} ({version_line})",
+            "Point `GRAALVM_HOME` to a GraalVM of JDK 25 or newer; coverage work requires 25+.",
+        )
 
     def _check_review_java_home(self) -> None:
         java_home = self.environment.get("JAVA_HOME")
@@ -816,7 +897,7 @@ class HostRequirements:
             (host, self.requirements.github_work) for host in NETWORK_HOSTS_GITHUB
         ]
         hosts.extend((host, self.requirements.any_work) for host in NETWORK_HOSTS_WORK)
-        hosts.extend((host, self.requirements.issue_work) for host in NETWORK_HOSTS_ISSUE_WORK)
+        hosts.extend((host, self.requirements.build_work) for host in NETWORK_HOSTS_ISSUE_WORK)
         if self.requirements.any_work:
             hosts.append((agent_provider_host(
                 self.analysis_family,
@@ -859,7 +940,7 @@ class HostRequirements:
                     else f"Allow DNS and outbound TCP 443 access to `{host}` in the host firewall or sandbox policy."
                 ),
             )
-        if self.requirements.issue_work:
+        if self.requirements.build_work:
             self._add(
                 "network",
                 "library-specific sources and Docker registries",
@@ -876,7 +957,7 @@ class HostRequirements:
         """
         for repository_url in ARTIFACT_REPOSITORY_URLS:
             name = f"artifact repository {repository_url}"
-            if not self.requirements.issue_work:
+            if not self.requirements.build_work:
                 self._add("network", name, False, None, "not required by this run")
                 continue
             passed, detail = probe_http_200(repository_url)
@@ -966,10 +1047,7 @@ class HostRequirements:
 
         query = """
 query($owner: String!, $name: String!, $project: Int!) {
-  viewer {
-    login
-    repository(name: $name) { nameWithOwner viewerPermission }
-  }
+  viewer { login }
   repository(owner: $owner, name: $name) { nameWithOwner viewerPermission }
   organization(login: $owner) {
     projectV2(number: $project) { id title viewerCanUpdate }
@@ -1041,18 +1119,14 @@ query($owner: String!, $name: String!, $project: Int!) {
             f"Grant the active account write access to oracle GitHub project {PROJECT_NUMBER}.",
         )
 
-        fork = viewer.get("repository")
-        fork_permission = str((fork or {}).get("viewerPermission") or "NONE")
         self._add(
             "github",
             "generated-branch push target",
-            self.requirements.issue_work,
-            fork_permission in WRITE_REPOSITORY_PERMISSIONS if self.requirements.issue_work else None,
-            (
-                f"repository={(fork or {}).get('nameWithOwner') or f'{login}/{REPOSITORY_NAME}'}, "
-                f"permission={fork_permission}"
-            ),
-            f"Create `{login}/{REPOSITORY_NAME}` and grant the active account write access to push generated branches.",
+            self.requirements.build_work,
+            target_permission in WRITE_REPOSITORY_PERMISSIONS if self.requirements.build_work else None,
+            f"repository={REPOSITORY_OWNER}/{REPOSITORY_NAME}, permission={target_permission}",
+            f"Grant the active account write access to `{REPOSITORY_OWNER}/{REPOSITORY_NAME}` "
+            "to push generated branches.",
         )
 
     def _check_selected_agents(self) -> None:
@@ -1178,7 +1252,7 @@ query($owner: String!, $name: String!, $project: Int!) {
         )
 
     def _check_docker(self) -> None:
-        if not self.requirements.issue_work:
+        if not self.requirements.build_work:
             self._add("docker", "daemon access", False, None, "not required by this run")
             return
         if resolve_executable("docker") is None:
@@ -1790,6 +1864,15 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
             "contains --forge-dir."
         ),
     )
+    parser.add_argument(
+        "--mode",
+        choices=("queues", "coverage"),
+        default="queues",
+        help=(
+            "Which capabilities to require. `queues` derives them from the effective queue limits; "
+            "`coverage` selects the standalone code-coverage launcher requirements."
+        ),
+    )
     parser.add_argument("--python-bin", default=sys.executable, help="Python interpreter selected by do-work.")
     parser.add_argument("--analysis-agent", default=None)
     parser.add_argument("--analysis-family", choices=SUPPORTED_AGENT_BACKENDS, default=None)
@@ -1821,6 +1904,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         host_requirements = HostRequirements(
             args.forge_dir,
             args.python_bin,
+            requirements=COVERAGE_REQUIREMENTS if args.mode == "coverage" else None,
             graalvm_version_check=resolve_graalvm_version_check(args.graalvm_version_check),
             repo_dir=args.reachability_metadata_path,
             analysis_agent=args.analysis_agent,

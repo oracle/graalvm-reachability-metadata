@@ -24,7 +24,15 @@ class RunCodeCoverageImprovementTests(unittest.TestCase):
             self,
             issue_number: str,
             *arguments: str,
-    ) -> tuple[subprocess.CompletedProcess[str], Path, Path]:
+            gh_version: str = "2.24.0",
+            host_exit: int = 0,
+    ) -> tuple[
+        subprocess.CompletedProcess[str],
+        Path,
+        Path,
+        Path,
+        Path,
+    ]:
         temp_dir = tempfile.TemporaryDirectory()
         self.addCleanup(temp_dir.cleanup)
         temp_path = Path(temp_dir.name)
@@ -32,25 +40,45 @@ class RunCodeCoverageImprovementTests(unittest.TestCase):
         bin_path.mkdir()
         gh_arguments_path = temp_path / "gh-arguments.txt"
         rhei_invocation_path = temp_path / "rhei-invocation.txt"
+        host_arguments_path = temp_path / "host-arguments.txt"
+        events_path = temp_path / "events.txt"
 
         _write_executable(
             bin_path / "gh",
             """#!/usr/bin/env bash
-printf '%s\\n' "$@" > "$FAKE_GH_ARGUMENTS"
-printf '%s\\n' "$FAKE_ISSUE_NUMBER"
+if [[ "${1:-}" == "version" || "${1:-}" == "--version" ]]; then
+    printf 'gh version %s (fake)\n' "$FAKE_GH_VERSION"
+    exit 0
+fi
+printf '%s\n' "$@" > "$FAKE_GH_ARGUMENTS"
+printf 'gh-issue-list\n' >> "$FAKE_EVENTS"
+printf '%s\n' "$FAKE_ISSUE_NUMBER"
+""".replace("\\$", "$"),
+        )
+        _write_executable(
+            bin_path / "python3",
+            """#!/usr/bin/env bash
+printf '%s\n' "$@" > "$FAKE_HOST_ARGUMENTS"
+printf 'host-requirements\n' >> "$FAKE_EVENTS"
+exit "$FAKE_HOST_EXIT"
 """,
         )
         _write_executable(
             bin_path / "rhei",
             """#!/usr/bin/env bash
+printf 'rhei\n' >> "$FAKE_EVENTS"
 pwd > "$FAKE_RHEI_INVOCATION"
-printf '%s\\n' "$@" >> "$FAKE_RHEI_INVOCATION"
+printf '%s\n' "$@" >> "$FAKE_RHEI_INVOCATION"
 """,
         )
 
         environment = os.environ.copy()
         environment.update({
+            "FAKE_EVENTS": str(events_path),
             "FAKE_GH_ARGUMENTS": str(gh_arguments_path),
+            "FAKE_GH_VERSION": gh_version,
+            "FAKE_HOST_ARGUMENTS": str(host_arguments_path),
+            "FAKE_HOST_EXIT": str(host_exit),
             "FAKE_ISSUE_NUMBER": issue_number,
             "FAKE_RHEI_INVOCATION": str(rhei_invocation_path),
             "PATH": f"{bin_path}{os.pathsep}{environment['PATH']}",
@@ -63,18 +91,38 @@ printf '%s\\n' "$@" >> "$FAKE_RHEI_INVOCATION"
             capture_output=True,
             text=True,
         )
-        return result, gh_arguments_path, rhei_invocation_path
+        return (
+            result,
+            gh_arguments_path,
+            rhei_invocation_path,
+            host_arguments_path,
+            events_path,
+        )
 
-    def test_selects_issue_and_executes_with_dashboard(self) -> None:
-        result, gh_arguments_path, rhei_invocation_path = self._run_launcher("9460")
+    def test_validates_host_before_selecting_issue_and_executes_with_dashboard(self) -> None:
+        result, gh_path, rhei_path, host_path, events_path = self._run_launcher("9460")
 
         self.assertEqual(0, result.returncode, result.stderr)
+        self.assertIn("Validating code-coverage host requirements.", result.stdout)
         self.assertIn("Selected code-coverage-improvement issue #9460.", result.stdout)
-        gh_arguments = gh_arguments_path.read_text(encoding="utf-8").splitlines()
+
+        host_arguments = host_path.read_text(encoding="utf-8").splitlines()
+        self.assertEqual(
+            str(FORGE_ROOT / "utility_scripts" / "host_requirements.py"),
+            host_arguments[0],
+        )
+        self.assertIn("--mode", host_arguments)
+        self.assertIn("coverage", host_arguments)
+        self.assertIn("--analysis-agent", host_arguments)
+        self.assertIn("pi", host_arguments)
+        self.assertIn("gpt-5.6-luna", host_arguments)
+
+        gh_arguments = gh_path.read_text(encoding="utf-8").splitlines()
         self.assertIn("code-coverage-improvement", gh_arguments)
         self.assertIn("no:assignee -is:blocked", gh_arguments)
         self.assertIn("number,labels,projectItems", gh_arguments)
-        invocation = rhei_invocation_path.read_text(encoding="utf-8").splitlines()
+
+        invocation = rhei_path.read_text(encoding="utf-8").splitlines()
         self.assertEqual(str(FORGE_ROOT), invocation[0])
         self.assertEqual([
             "instantiate",
@@ -86,9 +134,41 @@ printf '%s\\n' "$@" >> "$FAKE_RHEI_INVOCATION"
             "--",
             "--dashboard",
         ], invocation[1:])
+        self.assertEqual(
+            ["host-requirements", "gh-issue-list", "rhei"],
+            events_path.read_text(encoding="utf-8").splitlines(),
+        )
+
+    def test_rejects_gh_before_project_items_support(self) -> None:
+        result, gh_path, rhei_path, host_path, events_path = self._run_launcher(
+            "9460",
+            gh_version="2.23.0",
+        )
+
+        self.assertEqual(1, result.returncode)
+        self.assertIn("gh 2.23.0 is too old", result.stderr)
+        self.assertIn("gh 2.24.0 or newer", result.stderr)
+        self.assertFalse(gh_path.exists())
+        self.assertFalse(host_path.exists())
+        self.assertFalse(rhei_path.exists())
+        self.assertFalse(events_path.exists())
+
+    def test_host_failure_stops_before_issue_selection(self) -> None:
+        result, gh_path, rhei_path, _, events_path = self._run_launcher(
+            "9460",
+            host_exit=1,
+        )
+
+        self.assertEqual(1, result.returncode)
+        self.assertFalse(gh_path.exists())
+        self.assertFalse(rhei_path.exists())
+        self.assertEqual(
+            ["host-requirements"],
+            events_path.read_text(encoding="utf-8").splitlines(),
+        )
 
     def test_forwards_rhei_run_options_after_dashboard(self) -> None:
-        result, _, rhei_invocation_path = self._run_launcher(
+        result, _, rhei_path, _, _ = self._run_launcher(
             "9459",
             "--",
             "--parallel",
@@ -96,15 +176,19 @@ printf '%s\\n' "$@" >> "$FAKE_RHEI_INVOCATION"
         )
 
         self.assertEqual(0, result.returncode, result.stderr)
-        invocation = rhei_invocation_path.read_text(encoding="utf-8").splitlines()
+        invocation = rhei_path.read_text(encoding="utf-8").splitlines()
         self.assertEqual(["--dashboard", "--parallel", "2"], invocation[-3:])
 
     def test_fails_before_rhei_when_no_issue_is_eligible(self) -> None:
-        result, _, rhei_invocation_path = self._run_launcher("null")
+        result, _, rhei_path, _, events_path = self._run_launcher("null")
 
         self.assertEqual(1, result.returncode)
         self.assertIn("No eligible code-coverage-improvement issue", result.stderr)
-        self.assertFalse(rhei_invocation_path.exists())
+        self.assertFalse(rhei_path.exists())
+        self.assertEqual(
+            ["host-requirements", "gh-issue-list"],
+            events_path.read_text(encoding="utf-8").splitlines(),
+        )
 
 
 if __name__ == "__main__":

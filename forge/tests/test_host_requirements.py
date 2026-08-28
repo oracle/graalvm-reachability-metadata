@@ -16,6 +16,7 @@ from unittest.mock import Mock, patch
 
 from utility_scripts.host_requirements import (
     ARTIFACT_REPOSITORY_URLS,
+    COVERAGE_REQUIREMENTS,
     GRAALVM_SCHEMA_PATH,
     HostRequirements,
     QueueRequirements,
@@ -252,6 +253,113 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertEqual("WARN", mismatched_version.status)
         self.assertFalse(mismatched_version.blocks_work)
         self.assertTrue(host_requirements.results[2].blocks_work)
+
+    def test_coverage_lane_uses_graalvm_home_at_jdk_25_or_newer(self) -> None:
+        with _graalvm_home() as graalvm_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                {"GRAALVM_HOME": graalvm_home},
+                requirements=COVERAGE_REQUIREMENTS,
+            )
+            with patch("utility_scripts.host_requirements.run_command") as command:
+                command.return_value = subprocess.CompletedProcess(
+                    ["java", "-version"], 0, "", 'openjdk version "26.0.1" 2026-10-20\n'
+                )
+                host_requirements._check_environment()
+
+        selected, = host_requirements.results
+        self.assertEqual("GRAALVM_HOME", selected.name)
+        self.assertEqual("PASS", selected.status)
+
+    def test_coverage_lane_falls_back_from_graalvm_home_to_java_home(self) -> None:
+        with _graalvm_home() as graalvm_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                {"JAVA_HOME": graalvm_home},
+                requirements=COVERAGE_REQUIREMENTS,
+            )
+            with patch("utility_scripts.host_requirements.run_command") as command:
+                command.return_value = subprocess.CompletedProcess(
+                    ["java", "-version"], 0, "", 'openjdk version "26.0.1" 2026-10-20\n'
+                )
+                host_requirements._check_environment()
+
+        selected, = host_requirements.results
+        self.assertEqual("PASS", selected.status)
+        self.assertIn("from JAVA_HOME", selected.detail)
+        self.assertEqual(graalvm_home, host_requirements.environment["GRAALVM_HOME"])
+
+    def test_coverage_lane_prefers_graalvm_home_over_java_home(self) -> None:
+        with _graalvm_home() as graalvm_home, _graalvm_home() as java_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                {"GRAALVM_HOME": graalvm_home, "JAVA_HOME": java_home},
+                requirements=COVERAGE_REQUIREMENTS,
+            )
+            with patch("utility_scripts.host_requirements.run_command") as command:
+                command.return_value = subprocess.CompletedProcess(
+                    ["java", "-version"], 0, "", 'openjdk version "26.0.1" 2026-10-20\n'
+                )
+                host_requirements._check_environment()
+
+        selected, = host_requirements.results
+        self.assertIn(graalvm_home, selected.detail)
+        self.assertNotIn("from JAVA_HOME", selected.detail)
+
+    def test_coverage_lane_rejects_graalvm_older_than_25(self) -> None:
+        with _graalvm_home() as graalvm_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                {"JAVA_HOME": graalvm_home},
+                requirements=COVERAGE_REQUIREMENTS,
+            )
+            with patch("utility_scripts.host_requirements.run_command") as command:
+                command.return_value = subprocess.CompletedProcess(
+                    ["java", "-version"], 0, "", 'openjdk version "21.0.5" 2024-10-15\n'
+                )
+                host_requirements._check_environment()
+
+        selected, = host_requirements.results
+        self.assertTrue(selected.blocks_work)
+        self.assertIn("JDK 25 or newer", selected.remediation)
+
+    def test_coverage_lane_requires_a_graalvm_environment_variable(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            {},
+            requirements=COVERAGE_REQUIREMENTS,
+        )
+
+        host_requirements._check_environment()
+
+        selected, = host_requirements.results
+        self.assertTrue(selected.blocks_work)
+        self.assertIn("neither GRAALVM_HOME nor JAVA_HOME is set", selected.detail)
+
+    def test_coverage_lane_requires_native_image(self) -> None:
+        with _graalvm_home(native_image=False) as graalvm_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                {"GRAALVM_HOME": graalvm_home},
+                requirements=COVERAGE_REQUIREMENTS,
+            )
+            host_requirements._check_environment()
+
+        selected, = host_requirements.results
+        self.assertTrue(selected.blocks_work)
+        self.assertIn("bin/native-image is missing", selected.detail)
+
+    def test_coverage_lane_selects_build_capabilities(self) -> None:
+        self.assertTrue(COVERAGE_REQUIREMENTS.build_work)
+        self.assertTrue(COVERAGE_REQUIREMENTS.any_work)
+        self.assertFalse(COVERAGE_REQUIREMENTS.issue_work)
+        self.assertTrue(COVERAGE_REQUIREMENTS.github_work)
 
     def test_disabled_version_check_skips_version_resolution_and_comparison(self) -> None:
         with _graalvm_home() as graalvm_home:
@@ -513,10 +621,6 @@ class HostRequirementsTests(unittest.TestCase):
             "data": {
                 "viewer": {
                     "login": "automation-user",
-                    "repository": {
-                        "nameWithOwner": "automation-user/graalvm-reachability-metadata",
-                        "viewerPermission": "ADMIN",
-                    },
                 },
                 "repository": {
                     "nameWithOwner": "oracle/graalvm-reachability-metadata",
@@ -536,7 +640,9 @@ class HostRequirementsTests(unittest.TestCase):
         result_by_name = {result.name: result for result in host_requirements.results}
         self.assertTrue(result_by_name["oracle repository mutations"].passed)
         self.assertTrue(result_by_name["oracle project 30 updates"].passed)
-        self.assertTrue(result_by_name["generated-branch push target"].passed)
+        push_target = result_by_name["generated-branch push target"]
+        self.assertTrue(push_target.passed)
+        self.assertIn("oracle/graalvm-reachability-metadata", push_target.detail)
 
     def test_required_failure_stops_before_work_and_prints_remediation(self) -> None:
         environment = {

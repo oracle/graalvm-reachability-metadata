@@ -36,6 +36,48 @@ def _render_numeric_placeholders(source: str) -> str:
 
 class CodeCoverageRheiTemplateTests(unittest.TestCase):
 
+    def test_test_project_validation_belongs_to_prepare(self) -> None:
+        forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        states_path: str = os.path.join(
+            forge_root,
+            ".agents",
+            "rhei",
+            "templates",
+            "code-coverage-improvement",
+            "states.yaml",
+        )
+        with open(states_path, encoding="utf-8") as states_file:
+            source: str = states_file.read()
+        machine: dict = yaml.safe_load(_render_numeric_placeholders(source))
+
+        self.assertNotIn("requirement-test-prepared", machine["states"])
+        prepare_program: str = machine["states"]["prepare-test-project"]["program"]
+        self.assertIn('["gh", "issue", "view"', prepare_program)
+        self.assertIn('"tests", "src"', prepare_program)
+        self.assertTrue(any(
+            transition["from"] == "prepare-test-project"
+            and transition["to"] == "execute"
+            and transition.get("exit_code") == 0
+            for transition in machine["transitions"]
+        ))
+
+        tasks_path: str = os.path.join(
+            forge_root,
+            ".agents",
+            "rhei",
+            "templates",
+            "code-coverage-improvement",
+            "tasks",
+            "code-coverage-improvement.md",
+        )
+        with open(tasks_path, encoding="utf-8") as tasks_file:
+            tasks_source: str = tasks_file.read()
+        self.assertIn(
+            "### Task code-coverage-prepare: Prepare library\n"
+            "**State:** prepare-test-project",
+            tasks_source,
+        )
+
     def test_measurement_repairs_reuse_the_logical_cover_pass(self) -> None:
         """Both loops must keep retries out of the pass-yield history."""
         forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

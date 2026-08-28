@@ -11,6 +11,9 @@ the terminal TUI and browser dashboard:
 ./run-code-coverage-improvement.sh
 ```
 
+The launcher requires GitHub CLI 2.24.0 or newer and runs the coverage host gate
+before it queries eligible issues. A failed preflight creates no Rhei workspace.
+
 To instantiate a specific issue without immediately executing it, supply the
 issue number and, optionally, an explicit coordinate override:
 
@@ -53,7 +56,7 @@ and previously prompted methods are deprioritized; the cover agent writes no
 target state.
 
 Generated tests are constrained to
-`tests/src/<group>/<artifact>/<test-version>/code-coverage-improvement/src/test/java` (plus optional
+`tests/src/<group>/<artifact>/<version>/code-coverage-improvement/src/test/java` (plus optional
 `src/test/resources`), while runtime evidence stays under
 `runtime/code-coverage/` inside the Rhei workspace. The pipeline tasks run
 unreviewed; finalization executes as a deterministic step program (JVM tests
