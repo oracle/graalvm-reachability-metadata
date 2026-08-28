@@ -8,14 +8,17 @@ package com_oracle_database_jdbc.ojdbc11;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import jakarta.json.JsonValue;
+import jakarta.json.stream.JsonParser;
 import oracle.jdbc.driver.json.Jsonp;
 import org.junit.jupiter.api.Test;
 
 public class JsonpTest {
     @Test
-    void reportsWhetherJakartaJsonIsAvailable() {
-        assertThat(Jsonp.hasJakarta()).isEqualTo(Jsonp.JAKARTA_JSON_PARSER != null);
-        assertThat(Jsonp.isJakartaJson(String.class)).isFalse();
-        assertThat(Jsonp.isJakartaJsonStream(String.class)).isFalse();
+    void recognizesJakartaJsonApiTypes() {
+        assertThat(Jsonp.hasJakarta()).isTrue();
+        assertThat(Jsonp.JAKARTA_JSON_PARSER).isEqualTo(JsonParser.class);
+        assertThat(Jsonp.isJakartaJson(JsonValue.class)).isTrue();
+        assertThat(Jsonp.isJakartaJsonStream(JsonParser.class)).isTrue();
     }
 }
