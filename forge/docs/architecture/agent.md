@@ -85,8 +85,8 @@ keeping the strategy/agent boundary intact (§AR-forge-strategy-agent-boundary).
 The three roles are configured from different places. `FORGE_ANALYSIS_AGENT` /
 `FORGE_ANALYSIS_FAMILY` / `FORGE_ANALYSIS_MODEL` / `FORGE_ANALYSIS_PROVIDER`
 select recovery, style, native-test, post-generation, and review work; the
-defaults are Codex with `gpt-5.6-luna` and high reasoning (`xhigh` for
-pull-request review), and Claude Code answers to its `sonnet` model alias.
+defaults are Codex with `gpt-5.6-luna` and high reasoning, and Claude Code
+answers to its `sonnet` model alias.
 `FORGE_SETUP_*` selects artifact-URL discovery and the library-preparation
 preflight. The roles do not read each other: what a role leaves unset comes from
 the shared defaults, so retuning one never moves the other. The do-work loop exports
@@ -110,10 +110,14 @@ strategy loader may replace only its machine-local `agent-command` through
 `FORGE_TEST_AGENT_ALIAS`, so a strategy name still denotes the agent behind the
 numbers recorded under it.
 
-Every step that hands a failure to the analysis role calls one function,
+Every step that invokes the analysis role, including published pull-request
+review, calls one function,
 `agent_runtime.analysis_agent_run(working_dir, context, ...)`: the caller assembles the
 context, because only the caller knows what failed, and role resolution and
-agent construction happen inside. No call site selects a backend for itself.
+agent construction happen inside. No call site selects a backend, model,
+provider, or thinking level for itself. Published pull-request review adds only
+the trusted GitHub-access capability required by §FS-automated-pr-review; it
+does not create a separate review role or alter the analysis selection.
 The test role never passes through `agent_runtime`: a driver's `init_agent` resolves
 the bundle's backend through `Agent.get_class` and hands the instance to the
 workflow engine, which owns it for the conversation.

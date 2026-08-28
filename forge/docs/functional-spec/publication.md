@@ -570,11 +570,15 @@ the authenticated review worker when that same account is the GitHub PR author;
 it does not treat descriptor provenance as authorship.
 
 Before launching a review agent, Forge must validate GitHub CLI authentication
-in the orchestration process and use Pi's deterministic authentication check for
-the configured review provider and model. Neither check may invoke a model.
-The review agent must run in an execution environment that can use the
-authenticated `gh` session without an interactive approval boundary; either
-authentication failure must stop the queue before the agent starts.
+in the orchestration process and deterministically validate the worker-configured
+analysis agent, model, and provider. Neither check may invoke a model. The
+review agent is trusted automation acting on Forge's behalf: it must run in an
+execution environment that can use the authenticated `gh` session without an
+interactive approval boundary, inspect the live pull request and its checked-out
+diff, and submit the approval or requested-changes review itself. Forge does not
+parse an agent verdict and resubmit it through a second GitHub client. An
+authentication failure, timeout, or unsuccessful agent turn must stop processing
+that review rather than being treated as an approval.
 
 Automated review may add or request the `human-intervention` PR label only when
 the applicable label-specific review rules say the result cannot be handled by
