@@ -29,7 +29,8 @@ public class AbstractRecursiveAnnotationVisitorTest {
                 visitor.getAnnotationAttributes(ModeAnnotation.class.getName(), false);
 
         assertThat(attributes).isNotNull();
-        assertThat(attributes.getEnum("value")).isEqualTo(Mode.SAFE);
+        Mode mode = attributes.getEnum("value");
+        assertThat(mode).isEqualTo(Mode.SAFE);
     }
 
     public enum Mode {
