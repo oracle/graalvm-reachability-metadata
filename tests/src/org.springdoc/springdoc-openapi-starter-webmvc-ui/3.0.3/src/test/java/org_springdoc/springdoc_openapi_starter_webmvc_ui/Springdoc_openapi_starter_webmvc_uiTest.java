@@ -102,6 +102,16 @@ public class Springdoc_openapi_starter_webmvc_uiTest {
 
     @Test
     @Timeout(value = 59, unit = TimeUnit.SECONDS)
+    void servesOpenApiDocumentInYamlFormat() throws Exception {
+        HttpResponse<String> apiDocs = get("/v3/api-docs.yaml", "application/vnd.oai.openapi");
+
+        assertThat(apiDocs.statusCode()).isEqualTo(200);
+        assertThat(contentType(apiDocs)).startsWith("application/vnd.oai.openapi");
+        assertThat(apiDocs.body()).startsWith("openapi:").contains("info:", "paths:").doesNotStartWith("{");
+    }
+
+    @Test
+    @Timeout(value = 59, unit = TimeUnit.SECONDS)
     void servesSwaggerUiRedirectPageAssetsAndConfiguration() throws Exception {
         HttpResponse<String> redirect = get("/swagger-ui.html", MediaType.TEXT_HTML_VALUE);
 
