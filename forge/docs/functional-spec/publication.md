@@ -588,3 +588,20 @@ infrastructure errors must not be converted into `human-intervention` unless
 the review rules identify a semantic generated-result, repository-automation,
 metadata, or library-execution problem that requires maintainer judgment
 (§FS-human-intervention-policy).
+
+**A conflict that needs no judgment is resolved, not escalated.** An approved
+pull request whose only merge conflict is the shared findings ledger must not be
+left for a maintainer. Because every branch records its finding at the same
+offset in the append-only `forge/FINDINGS.md` (§FS-local-branch-review), any two
+open pull requests conflict there, and each merge re-conflicts the rest; keeping
+both entries is the only correct resolution, so the repository configures git to
+take it without asking. Forge must therefore, for an approved pull request whose
+checks pass but which GitHub reports as conflicting, merge the base branch into
+the pull request head and push the result when that merge left no conflict
+behind. A merge that still conflicts — in the ledger or in any other file — is a
+real disagreement over content and takes the human-intervention path instead, as
+does a head Forge cannot push to. Pushing restarts the pull request's checks, so
+the merge itself belongs to a later pass: Forge must re-read the review decision
+and the checks after pushing rather than carrying the pre-push state forward,
+which also means an approval dismissed by the push is re-earned by the normal
+review path rather than assumed.
