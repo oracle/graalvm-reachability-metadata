@@ -90,7 +90,7 @@ Library version update automation (§root/FS-library-version-update-automation).
 | **Dynamic access** | Reflection, JNI, resource access, serialization, or proxy use that GraalVM `native-image` cannot determine statically. |
 | **Dynamic-access report** | JSON written by Gradle task `generateDynamicAccessCoverageReport` to `tests/src/<group>/<artifact>/<version>/build/reports/dynamic-access/dynamic-access-coverage.json`, listing classes and per-class call sites that require dynamic-access metadata, marked covered/uncovered. |
 | **Dynamic-access exhaust report** | Durable coordinate-scoped JSON state for chunked dynamic-access work. It records the coordinate, issue number, class threshold, completed/skipped/exhausted/failed classes, and latest publication ID/branch. It is stored with the target test suite so orchestration can find it from the coordinate. It does not predefine chunks; each resume regenerates the report and filters processed classes. Legacy PR-number/commit fields remain readable during migration. Specified by §AR-dynamic-access-exhaust-report. |
-| **Chunked dynamic-access workflow** | Dynamic-access generation mode for oversized `library-new-request` issues and `library-update-request` issues routed to dynamic-access coverage improvement. `forge_metadata.py` owns the class threshold decision and passes the current chunk size to the workflow. The workflow processes at most that many uncovered classes, publishes that chunk, then resumes after the chunk PR merges. PR linking rules are in §AR-chunked-dynamic-access-pr-linking. |
+| **Chunked dynamic-access workflow** | Dynamic-access generation mode for oversized `library-new-request` issues and `library-update-request` issues routed to dynamic-access coverage improvement. `forge_metadata.py` passes the configured class boundary to the workflow. An iterative-only workflow receives a concrete class budget; an optimistic-first composite counts classes completed by bulk toward that boundary and lets iterative exploration fill only the shortfall. The workflow publishes the chunk, then resumes after the chunk PR merges. PR linking rules are in §AR-chunked-dynamic-access-pr-linking. |
 | **Source context** | Read-only files supplied to the agent. Types: `main` (library source), `test` (upstream tests), `documentation` (Javadoc). Selected by the strategy parameter `source-context-types`. |
 | **Library update target** | The metadata and test directories selected for a `library-update-request` coordinate (§AR-forge-driver-queues.2). Resolution records the requested coordinate, match type (`tested-version`, `metadata-version`, `default-for`, or `new-version`), matched index entry, resolved metadata version, resolved test version, and edit directories. |
 
@@ -625,8 +625,6 @@ The exit code is `0` for PR-eligible statuses and `1` for failure.
   and the post-repair exploration decision for `fails-javac-compile` and
   `fails-java-run` issues.
   The implementation-defined default is `15`.
-  If the current dynamic-access report has more uncovered classes than this
-  threshold, Forge uses chunked mode for new-library and library-update work.
   Java-fix reports cannot be generated before their primary repair succeeds, so
   `forge_metadata.py` passes the threshold to their shared driver; the composite
   workflow evaluates it immediately after the repair and skips oversized
@@ -634,25 +632,44 @@ The exit code is `0` for PR-eligible statuses and `1` for failure.
   `library-update-request` for the fixed version, parks it until the repair
   merges, and records the issue number as a typed follow-up fact in the
   descriptor; the Actions publisher only references it. That issue then enters
-  the ordinary library-update workflow, where dispatcher-owned chunking
-  regenerates the report and selects chunks. The skip is decided exactly once:
-  the composite records it on the continuation marker's `explore` phase, and
-  descriptor creation reads that phase instead of regenerating a report. The
-  marker also records the created issue number, so retries of one publication
-  ID reuse one follow-up issue. For ordinary chunked runs, `forge_metadata.py`
-  still computes the concrete chunk size rather than passing a generic workflow
-  policy.
+  the ordinary library-update workflow, where its selected exploration workflow
+  owns the chunk boundary. The skip is decided exactly once: the composite
+  records it on the continuation marker's `explore` phase, and descriptor
+  creation reads that phase instead of regenerating a report. The marker also
+  records the created issue number, so retries of one publication ID reuse one
+  follow-up issue.
 
 For `library-new-request` issues and `library-update-request` issues routed to
-dynamic-access coverage improvement, `forge_metadata.py` must run or refresh the
-dynamic-access report before choosing the execution mode. If the current report
-has more uncovered dynamic-access classes than the configured class threshold,
-`forge_metadata.py` must invoke the matching orchestration script with chunking
-flags: issue number and current chunk size.
-The current chunk size is normally equal to the threshold; when fewer
-unexhausted classes remain than the threshold, it is equal to the remaining
-class count. For example, with threshold `15` and `22` uncovered classes, the
-first chunk size is `15` and the second chunk size is `7`.
+dynamic-access coverage improvement, `forge_metadata.py` must invoke the
+matching orchestration script with the issue number and configured class
+threshold. An iterative-only workflow may use a dispatcher-refreshed report to
+reduce that value to the current remaining class count before it starts.
+
+A workflow with an optimistic bulk phase must make the chunk decision after the
+bulk iteration budget and its native-test gates. The bulk phase keeps its
+initial report as the baseline and uses the last successful iteration's already
+refreshed report as the final report; it must not run another report solely for
+the chunk decision. Classes uncovered in the baseline and covered in the final
+report are completed by bulk. The remaining set is the final report's uncovered
+classes minus the exhaust report and continuation marker's processed set.
+
+For an optimistic-first composite, `--chunk-class-count` is the total class
+boundary for one non-final run across both phases. If the final remainder is no
+larger than the configured boundary, iterative exploration finishes that
+remainder. Otherwise, if bulk completed at least the boundary, the workflow
+returns chunk-ready without starting iterative exploration. If bulk completed
+less, iterative exploration receives only the shortfall. Its completed,
+skipped, exhausted, and failed classes all count toward that shortfall. Thus,
+with a boundary of `15`, a bulk pass that completes `10` classes is followed by
+at most `5` iterative terminal classes, while a bulk pass that completes `20`
+classes stops before iterative exploration unless no more than `15` classes
+remain.
+
+A pure-bulk strategy has no iterative phase with which to fill a shortfall. It
+returns chunk-ready after a productive run when more than the threshold remain;
+if bulk covers no new class, or the remainder is no larger than the threshold,
+the run is final so Forge cannot publish an unbounded sequence of identical
+bulk chunks.
 
 Chunked mode is automatic after the issue is marked with the
 `chunked-dynamic-access` label. The normal project status remains the run-state
