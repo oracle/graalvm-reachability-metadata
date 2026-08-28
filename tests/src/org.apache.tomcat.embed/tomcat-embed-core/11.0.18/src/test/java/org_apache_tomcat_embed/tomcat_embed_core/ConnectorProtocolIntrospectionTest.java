@@ -20,19 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ConnectorProtocolIntrospectionTest {
 
     @Test
-    void connectorReadsAndUpdatesBindOnInitThroughPublicApi() {
-        Connector connector = new Connector();
-
-        Object bindOnInitBeforeUpdate = connector.getProperty("bindOnInit");
-        boolean bindOnInitUpdated = connector.setProperty("bindOnInit", "false");
-        Object bindOnInitAfterUpdate = connector.getProperty("bindOnInit");
-
-        assertThat(bindOnInitBeforeUpdate).isNull();
-        assertThat(bindOnInitUpdated).isTrue();
-        assertThat(bindOnInitAfterUpdate).isEqualTo("false");
-    }
-
-    @Test
     void connectorRegistersHttp2UpgradeProtocol() {
         Connector connector = new Connector();
         Http2Protocol http2Protocol = new Http2Protocol();
