@@ -178,5 +178,96 @@
     "artifacts": {
       "metadata_file": "metadata/org.bouncycastle/bc-fips/2.1.2/reachability-metadata.json"
     }
+  },
+  "improve_library_coverage:2026-08-27": {
+    "timestamp": "2026-08-27T20:05:45.928885Z",
+    "library": "org.bouncycastle:bc-fips:2.1.2",
+    "starting_commit": "617d1f64faaa5451d23c78f0fb85cc0b12e75645",
+    "ending_commit": "57b4366798b65d013397294519e86fa5e686529d",
+    "strategy_name": "library_update_dynamic_access_bulk_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.1.2",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.6,
+            "coveredCalls": 36,
+            "totalCalls": 60
+          },
+          "resources": {
+            "coverageRatio": 0.6,
+            "coveredCalls": 3,
+            "totalCalls": 5
+          }
+        },
+        "coverageRatio": 0.6,
+        "coveredCalls": 39,
+        "totalCalls": 65
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 178272,
+          "missed": 361254,
+          "ratio": 0.330423,
+          "total": 539526
+        },
+        "method": {
+          "covered": 5575,
+          "missed": 10878,
+          "ratio": 0.338844,
+          "total": 16453
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "action": "advisory_preparation",
+      "agent_guidance": "Register BouncyCastleFipsProvider before exercising JCA APIs. Configure Native Image with -H:AdditionalSecurityProviders=org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider. Set org.bouncycastle.native.cpu_variant=java for deterministic execution without platform-specific native code, and set jdk.util.jar.version=9 for the Java 9+ jar behavior used by this artifact. Exercise provider-backed algorithms through public JCA APIs and preserve reflection/serialization metadata discovered by the tests.",
+      "applied_setup": [],
+      "deterministic_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#5950 Support for org.bouncycastle:bc-fips:2.1.2; label=library-update-request; body_chars=301"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "28 existing test file path(s) included"
+        }
+      ],
+      "input_tokens_used": 315397,
+      "issue_label": "library-update-request",
+      "issue_number": 5950,
+      "library": "org.bouncycastle:bc-fips:2.1.2",
+      "model": "gpt-5.6-luna",
+      "output_tokens_used": 2433,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "risks": [
+        "Without AdditionalSecurityProviders, provider services may be unavailable in the native executable.",
+        "Without the java CPU variant, platform-native BC-FIPS loading may make builds or runtime behavior environment-dependent.",
+        "The artifact declares no Maven dependencies; bcutil-fips and other FIPS modules are only needed for APIs outside bc-fips itself."
+      ],
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.bouncycastle:bc-fips:2.1.2/library-preparation-preflight/codex-session-0lrsdlhm.log",
+      "status": "completed",
+      "summary": "BC-FIPS is self-contained, but meaningful Native Image coverage requires provider registration and BC-specific build/runtime properties."
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 0,
+      "cost_usd": 0.0,
+      "generated_loc": 1728,
+      "tested_library_loc": 0,
+      "metadata_entries": 895,
+      "test_only_metadata_entries": 70,
+      "code_coverage_percent": 33.04
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.bouncycastle/bc-fips/2.1.2/reachability-metadata.json"
+    }
   }
 }
