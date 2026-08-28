@@ -9,16 +9,19 @@ package com_oracle_database_jdbc.ojdbc11;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.sql.SQLException;
+import oracle.jdbc.OracleConnection;
 import oracle.jdbc.OracleConnectionWrapper;
 import org.junit.jupiter.api.Test;
 
 public class OracleConnectionWrapperTest {
     @Test
     void wrapsAnUnwrappedExtensionInterface() throws Exception {
-        OracleConnectionWrapper wrapper = new OracleConnectionWrapper(new ExtensionConnection());
+        ExtensionConnection connection = new ExtensionConnection();
+        OracleConnectionWrapper wrapper = new OracleConnectionWrapper(connection);
 
         ExtensionProbe probe = wrapper.unwrap(ExtensionProbe.class);
 
+        assertThat(connection.getWrapper()).isSameAs(wrapper);
         assertThat(probe.message()).isEqualTo("from-connection");
         assertThat(wrapper.unwrap(ExtensionProbe.class)).isSameAs(probe);
     }
@@ -30,9 +33,16 @@ public class OracleConnectionWrapperTest {
     public interface ExtensionProbe extends Extension {}
 
     private static final class ExtensionConnection extends OracleConnectionWrapper implements Extension {
+        private OracleConnection wrapper;
+
         @Override
         public String message() {
             return "from-connection";
+        }
+
+        @Override
+        public void setWrapper(OracleConnection wrapper) {
+            this.wrapper = wrapper;
         }
 
         @Override
@@ -41,6 +51,10 @@ public class OracleConnectionWrapperTest {
                 return iface.cast(new ExtensionProbeTarget());
             }
             return super.unwrap(iface);
+        }
+
+        private OracleConnection getWrapper() {
+            return wrapper;
         }
     }
 

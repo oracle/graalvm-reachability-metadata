@@ -8,10 +8,10 @@ package com_oracle_database_jdbc.ojdbc11;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import oracle.jdbc.internal.OracleConnection;
 import oracle.jdbc.internal.OracleOpaque;
+import oracle.jdbc.internal.OracleResultSet;
+import oracle.jdbc.internal.OracleStatement;
 import oracle.jdbc.proxy.ProxyFactory;
 import oracle.jdbc.replay.driver.TxnReplayableConnection;
 import oracle.jdbc.replay.driver.TxnReplayableOpaque;
@@ -28,9 +28,9 @@ public class AnnotationsRegistryInnerValueTest {
                 TxnReplayableResultSet.class,
                 TxnReplayableOpaque.class);
 
-        assertThat(factory.isProxied(Connection.class)).isTrue();
-        assertThat(factory.isProxied(Statement.class)).isTrue();
-        assertThat(factory.isProxied(ResultSet.class)).isTrue();
+        assertThat(factory.isProxied(OracleConnection.class)).isTrue();
+        assertThat(factory.isProxied(OracleStatement.class)).isTrue();
+        assertThat(factory.isProxied(OracleResultSet.class)).isTrue();
         assertThat(factory.isProxied(OracleOpaque.class)).isTrue();
         assertThat(factory.isProxied(String.class)).isFalse();
     }

@@ -9,6 +9,7 @@ package com_oracle_database_jdbc.ojdbc11;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.sql.SQLException;
+import oracle.jdbc.OracleConnection;
 import oracle.jdbc.OracleConnectionWrapper;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +21,7 @@ public class OracleConnectionWrapperInnerCloseInvocationHandlerTest {
 
         wrapper.unwrap(CloseProbe.class).close();
 
+        assertThat(connection.getWrapper()).isSameAs(wrapper);
         assertThat(connection.isCloseCalled()).isTrue();
     }
 
@@ -27,10 +29,16 @@ public class OracleConnectionWrapperInnerCloseInvocationHandlerTest {
 
     private static final class CloseTrackingConnection extends OracleConnectionWrapper {
         private boolean closeCalled;
+        private OracleConnection wrapper;
 
         @Override
         public void close() {
             closeCalled = true;
+        }
+
+        @Override
+        public void setWrapper(OracleConnection wrapper) {
+            this.wrapper = wrapper;
         }
 
         @Override
@@ -43,6 +51,10 @@ public class OracleConnectionWrapperInnerCloseInvocationHandlerTest {
 
         private boolean isCloseCalled() {
             return closeCalled;
+        }
+
+        private OracleConnection getWrapper() {
+            return wrapper;
         }
     }
 

@@ -22,18 +22,18 @@ public class ProxyFactoryTest {
         ProxyFactory factory = ProxyFactory.createProxyFactory(TxnReplayableOpaque.class);
         OPAQUE cachedDelegate = opaque(1);
 
-        OracleOpaque cachedProxy = factory.proxyFor(cachedDelegate);
-        assertThat(factory.proxyFor(cachedDelegate)).isSameAs(cachedProxy);
+        OracleOpaque cachedProxy = factory.<OracleOpaque>proxyFor(cachedDelegate);
+        assertThat(factory.<OracleOpaque>proxyFor(cachedDelegate)).isSameAs(cachedProxy);
         assertThat(delegateOf(cachedProxy)).isSameAs(cachedDelegate);
         assertThat(cachedProxy.getBytesValue()).containsExactly(1);
 
         OPAQUE createdDelegate = opaque(2);
-        OracleOpaque createdProxy = factory.proxyForCreate(createdDelegate);
+        OracleOpaque createdProxy = factory.<OracleOpaque>proxyForCreate(createdDelegate);
         assertThat(delegateOf(createdProxy)).isSameAs(createdDelegate);
 
         OPAQUE createCachedDelegate = opaque(3);
-        OracleOpaque createCachedProxy =
-                factory.proxyForCreateCache(createCachedDelegate, factory, null, null);
+        OracleOpaque createCachedProxy = factory.<OracleOpaque>proxyForCreateCache(
+                createCachedDelegate, factory, null, null);
         assertThat(delegateOf(createCachedProxy)).isSameAs(createCachedDelegate);
 
         assertThat(factory.<OracleOpaque>proxyForType(OracleOpaque.class)).isNotNull();
