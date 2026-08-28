@@ -168,7 +168,10 @@ The host must provide:
   distribution and plugin services, Maven Central, and the Docker registry and
   its auth endpoint. Reachability is checked over the route Forge's own tools
   take — directly, or through the proxy the environment configures for HTTPS —
-  so a proxied host is not reported as offline.
+  so a proxied host is not reported as offline. Every configured artifact
+  repository is checked at its exact base URL with an HTTP `HEAD` request and
+  must return `200`, so Forge proves the same DNS, proxy, TLS, and HTTP path the
+  issue-form artifact lookup will use before it claims an issue.
 - **Git transport** to the monitored branch from every checkout the run uses.
 - **A complete reachability repository** for anything that runs its Gradle
   tasks: testing, dynamic-access reporting, native metadata exploration,

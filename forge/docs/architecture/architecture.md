@@ -257,8 +257,10 @@ one manifest:
   `local_repositories/`, and temporary Gradle state.
 - **Network reachability** on 443, through the configured proxy when one is
   set: `github.com`, `api.github.com`, `chatgpt.com`, `services.gradle.org`,
-  `repo.maven.apache.org`, `plugins.gradle.org`, `registry-1.docker.io`,
-  `auth.docker.io`.
+  `plugins.gradle.org`, `registry-1.docker.io`, `auth.docker.io`. Each base URL
+  in `ARTIFACT_REPOSITORY_URLS` is checked separately with HTTP `HEAD` and must
+  return `200`; this currently covers `repo1.maven.org` and
+  `packages.confluent.io`, the exact hosts used by `check_issue_form()`.
 - **Git transport** to the monitored branch from each checkout, and access to
   the Docker daemon.
 
