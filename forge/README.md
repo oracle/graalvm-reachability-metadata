@@ -139,7 +139,7 @@ start its Rhei workspace with the terminal TUI and browser dashboard:
 
 Pass `rhei run` options after `--`, for example
 `./run-code-coverage-improvement.sh -- --parallel 2`. The launcher requires
-GitHub CLI 2.24.0 or newer, validates the coverage host requirements before
+GitHub CLI 2.39.0 or newer, validates the coverage host requirements before
 querying the issue queue, and validates the selected issue's exact-version test
 project before invoking Rhei.
 §FS-forge-host-requirements §AR-code-coverage-improvement.2

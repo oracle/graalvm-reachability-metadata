@@ -25,7 +25,7 @@ class RunCodeCoverageImprovementTests(unittest.TestCase):
             self,
             issue_number: str,
             *arguments: str,
-            gh_version: str = "2.24.0",
+            gh_version: str = "2.39.0",
             host_exit: int = 0,
             issue_title: str = f"Improve coverage for {EXISTING_COORDINATE}",
     ) -> tuple[
@@ -187,15 +187,15 @@ printf '%s\n' "$@" >> "$FAKE_RHEI_INVOCATION"
         self.assertIn("names 2 coordinates; expected exactly one", result.stderr)
         self.assertFalse(rhei_path.exists())
 
-    def test_rejects_gh_before_project_items_support(self) -> None:
+    def test_rejects_gh_before_supported_project_items_payload(self) -> None:
         result, gh_path, rhei_path, host_path, events_path = self._run_launcher(
             "9460",
-            gh_version="2.23.0",
+            gh_version="2.38.0",
         )
 
         self.assertEqual(1, result.returncode)
-        self.assertIn("gh 2.23.0 is too old", result.stderr)
-        self.assertIn("gh 2.24.0 or newer", result.stderr)
+        self.assertIn("gh 2.38.0 is too old", result.stderr)
+        self.assertIn("gh 2.39.0 or newer", result.stderr)
         self.assertFalse(gh_path.exists())
         self.assertFalse(host_path.exists())
         self.assertFalse(rhei_path.exists())
