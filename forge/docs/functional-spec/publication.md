@@ -9,6 +9,16 @@ push (§FS-local-branch-review), when the result needs maintainer judgment rathe
 than another automated attempt (§FS-human-intervention-policy), and the
 automated review the published PR receives (§FS-automated-pr-review).
 
+Publication readiness is consumed once per publication branch. After the
+trusted publisher opens the matching Forge pull request, identified by the
+exact head branch and publication ID, later pushes maintain that pull request;
+they are not new publication attempts and must not re-enter descriptor
+validation or privileged publication. This remains true when a force-pushed
+rebase makes GitHub's path comparison observe publication descriptors that
+arrived from the base branch. An open or merged matching Forge pull request is
+a successful no-op; an ambiguous match or a matching pull request closed
+without merge still fails for inspection. §GOAL-shorten-issue-to-shipped-metadata
+
 ## FS-local-ci-equivalent-verification: Local pre-publication verification
 
 Every Forge task must pass local verification before it is allowed to produce a
