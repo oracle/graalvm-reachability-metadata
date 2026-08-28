@@ -12,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import oracle.jdbc.OracleTypeMetaData;
 import oracle.jdbc.oracore.OracleTypeADT;
 import oracle.sql.SQLName;
 import oracle.sql.StructDescriptor;
@@ -37,8 +38,8 @@ public class TypeDescriptorTest {
         TypeDescriptor restored = roundTrip(original);
 
         assertThat(restored.getName()).isEqualTo("APP.TEST_OBJECT");
-        assertThat(restored.getTypeCode()).isEqualTo(original.getTypeCode());
-        assertThat(restored.getPickler()).isInstanceOf(OracleTypeADT.class);
+        assertThat(restored.getKind()).isEqualTo(OracleTypeMetaData.Kind.STRUCT);
+        assertThat(((OracleTypeADT) restored.getPickler()).getTOID()).containsExactly(typeId);
     }
 
     private static TypeDescriptor roundTrip(TypeDescriptor descriptor) throws Exception {

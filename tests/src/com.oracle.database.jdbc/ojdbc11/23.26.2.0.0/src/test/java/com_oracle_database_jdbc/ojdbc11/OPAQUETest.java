@@ -14,10 +14,8 @@ import java.util.Map;
 import oracle.jdbc.OracleData;
 import oracle.jdbc.OracleDataFactory;
 import oracle.jdbc.OracleTypes;
-import oracle.jdbc.oracore.OracleTypeOPAQUE;
 import oracle.sql.OPAQUE;
 import oracle.sql.OpaqueDescriptor;
-import oracle.sql.SQLName;
 import org.junit.jupiter.api.Test;
 
 public class OPAQUETest {
@@ -42,9 +40,7 @@ public class OPAQUETest {
     }
 
     private static OpaqueDescriptor descriptor() throws SQLException {
-        SQLName sqlName = new SQLName("APP", "TEST_OPAQUE", null);
-        OracleTypeOPAQUE type = new OracleTypeOPAQUE("APP.TEST_OPAQUE", null);
-        return new OpaqueDescriptor(sqlName, type, null);
+        return OpaqueDescriptor.createDescriptor("SYS.ANYTYPE", null);
     }
 
     public static final class GetStringValue {
