@@ -174,7 +174,7 @@ leaves enough context for human follow-up.
 separate responsibility from issue resolution: it reviews already-published PRs
 rather than producing them. This is the orchestration mechanics behind the
 review behavior contract in §FS-automated-pr-review. It is entered through
-`forge_metadata.py --review-pr <label> [--limit N] [--review-model <model>]
+`forge_metadata.py --review-pr <label> [--limit N]
 [--period <seconds|Nm|Nh|Nd>]`, and the do-work loop (§AR-do-work-loop) drives
 the same code path on its own schedule.
 
@@ -183,8 +183,9 @@ review queue; otherwise orchestration runs the default set of PR review queues,
 one per successful-result label — `library-new-request`, `library-update-request`,
 `fixes-javac-fail`, `fixes-java-run-fail`, `fixes-native-image-run-fail`, and the
 bulk-update label. Each queue has a per-label limit env var (defaulting to
-`FORGE_REVIEW_LIMIT`, default 1) and shares `FORGE_REVIEW_MODEL`. Setting a
-queue's limit to 0 disables it.
+`FORGE_REVIEW_LIMIT`, default 1). Setting a queue's limit to 0 disables it. The
+reviewer is the worker-configured analysis role, with no review-specific agent,
+model, provider, or thinking override (§FS-forge-agent-runtime-selection).
 
 **Candidate selection.** For each queue, orchestration fetches PRs carrying the
 queue label, plus PRs carrying `human-intervention-fixed`, and selects only
@@ -195,18 +196,18 @@ orchestration may dismiss stale requested-changes reviews and let normal merge
 gates proceed (§FS-automated-pr-review).
 
 **Isolated review run.** Before selecting review work, orchestration validates
-the parent process's GitHub CLI authentication and Pi's authentication without
-invoking a model (§FS-automated-pr-review). Each selected PR is reviewed in a
-throwaway detached worktree created from a freshly fetched base ref, with the
-PR checked out in detached HEAD. Forge invokes Pi through the shared
-`analysis_agent_run` path with a review-specific role environment and explicit
-access to the authenticated GitHub CLI. Pi reads PR metadata and checks and
-inspects the checked-out change against the fresh base ref without writing
-files or re-checking out. It returns only a structured approval or
-requested-changes decision; Forge validates and submits that decision through
-its own authenticated `gh` process. The shared runtime logs the run durably
-(§FS-durable-generation-logs) and the worktree is cleaned up afterward; a
-review timeout or non-zero Pi exit is a review failure, not an approval.
+the parent process's GitHub CLI authentication and the selected analysis
+backend's authentication without invoking a model (§FS-automated-pr-review).
+Each selected PR is reviewed in a throwaway detached worktree created from a
+freshly fetched base ref, with the PR checked out in detached HEAD.
+The selected analysis agent is trusted with the authenticated GitHub CLI, reads
+live PR metadata and checks, applies the label-specific checked-in rules, and
+uses targeted diffs against the fresh base before submitting the review itself.
+The shared analysis runtime owns invocation, durable logging, failures, and
+token accounting (§FS-durable-generation-logs); orchestration supplies only the
+review prompt, worktree, and GitHub-access capability. The worktree is cleaned
+up afterward, and a timeout or unsuccessful agent turn is a review failure, not
+an approval.
 
 **Scheduling and shutdown.** With `--period`, the review loop repeats after each
 interval; without it, it runs once. The loop checks the do-work stop markers

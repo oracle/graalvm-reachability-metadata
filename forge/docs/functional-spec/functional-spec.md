@@ -253,32 +253,22 @@ invocation. `do-work.sh` preserves the worker-configured selections across
 self-update and re-execution (§AR-do-work-loop); the concrete roles, families,
 and defaults are architecture (§AR-agent-api).
 
-**Pull-request assessment uses the analysis runtime.** Orchestration invokes the
-same backend-neutral analysis-role entry point used by recovery and diagnosis;
-it must not launch a reviewer backend directly. A published-PR review selects
-Pi, its configured review model, and its provider through an explicit per-turn
-analysis environment, so the shared adapter owns invocation, durable logs,
-structured results, and token accounting without retuning other analysis work
-(§FS-automated-pr-review).
+**A published-PR reviewer is a trusted analysis agent.** Orchestration invokes
+the worker-configured analysis role in an isolated review worktree and grants
+that turn the authenticated, non-interactive GitHub session. The selected agent
+acts on Forge's behalf: it reads the live pull-request metadata, discussion,
+checks, and targeted local diffs, applies the label-specific checked-in review
+rules, and submits its review directly to GitHub (§FS-automated-pr-review).
+Agent, family, model, provider, and thinking level remain entirely owned by the
+analysis role; review orchestration must not replace any part of that selection.
 
-The review turn starts in the isolated detached worktree. It uses the
-authenticated GitHub CLI for pull-request identity, body, labels, discussion,
-reviews, and status checks; reads the applicable label-specific checked-in
-rules; and compares the checked-out branch with the fresh base through targeted
-local diffs. It must not materialize or print the complete patch, write the
-worktree, change checkout state, submit a review, or otherwise mutate GitHub.
-It returns a structured approval or requested-changes decision for Forge to
-validate and submit. Missing inputs, unavailable tools, agent errors, timeouts,
-malformed output, or worktree changes fail the review without producing a
-verdict (§root/PRCPL-verify-inputs, §FS-human-intervention-policy).
-
-Ordinary setup and analysis turns do not receive GitHub credential channels.
-The published-PR review is the narrow exception: after deterministic host
-authentication succeeds, its analysis-runtime invocation explicitly opts into
-the already authenticated, non-interactive GitHub CLI environment required by
-§FS-automated-pr-review. The pre-push review (§FS-local-branch-review) continues
-to use the evidence available before publication; the two reviews share their
-label-specific rules, not one input transport.
+The pre-push review (§FS-local-branch-review) has no published pull request or
+GitHub review to submit. It continues to receive local evidence and return its
+structured verdict to publication. The two reviews share their label-specific
+rules, not an input transport or publication protocol. A published-PR review is
+therefore not brokered through a Forge-defined JSON decision: the trusted agent
+owns both the judgment and the GitHub review it submits, while the shared
+analysis runtime owns invocation, logs, failures, and token accounting.
 
 ## FS-forge-run-requirements: Run requirements
 

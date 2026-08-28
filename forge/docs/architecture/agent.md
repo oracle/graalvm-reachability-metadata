@@ -84,15 +84,13 @@ keeping the strategy/agent boundary intact (§AR-forge-strategy-agent-boundary).
 
 The three roles are configured from different places. `FORGE_ANALYSIS_AGENT` /
 `FORGE_ANALYSIS_FAMILY` / `FORGE_ANALYSIS_MODEL` / `FORGE_ANALYSIS_PROVIDER`
-select recovery, style, native-test, and post-generation work; the default is
-Codex with `gpt-5.6-luna` and high reasoning, and Claude Code answers to its
-`sonnet` model alias. Published-PR review is a specialized analysis turn that
-selects Pi, the review model, provider, and thinking level through a per-turn
-role environment. `FORGE_SETUP_*` selects artifact-URL discovery and the
-library-preparation preflight. The roles do not read each other: what a role
-leaves unset comes from the shared defaults, so retuning one never moves the
-other. The do-work loop exports these values unchanged across its self-update
-boundary (§AR-do-work-loop).
+select recovery, style, native-test, post-generation, and review work; the
+defaults are Codex with `gpt-5.6-luna` and high reasoning, and Claude Code
+answers to its `sonnet` model alias.
+`FORGE_SETUP_*` selects artifact-URL discovery and the library-preparation
+preflight. The roles do not read each other: what a role leaves unset comes from
+the shared defaults, so retuning one never moves the other. The do-work loop exports
+these values unchanged across its self-update boundary (§AR-do-work-loop).
 
 Every backend takes a reasoning effort, in its own spelling: Codex
 `-c reasoning.effort`, Claude Code `--effort`, Pi `--thinking`, and OpenCode a
@@ -112,22 +110,17 @@ strategy loader may replace only its machine-local `agent-command` through
 `FORGE_TEST_AGENT_ALIAS`, so a strategy name still denotes the agent behind the
 numbers recorded under it.
 
-Every analysis step, including published-PR assessment, calls one function:
-`agent_runtime.analysis_agent_run(working_dir, context, ...)`. The caller
-assembles the context, while role resolution, adapter construction, durable
-logging, result handling, and token accounting stay inside the shared runtime.
-Ordinary call sites inherit the worker selection. PR review supplies its
-dedicated Pi selection through the per-turn environment but never instantiates
-or invokes Pi directly. The test role never passes through `agent_runtime`: a
-driver's `init_agent` resolves the bundle's backend through `Agent.get_class`
-and hands the instance to the workflow engine, which owns it for the
-conversation.
-
-`agent_process_environment` strips GitHub tokens and redirects the CLI config
-for ordinary agent turns. Published-PR review sets one private, consumed-once
-environment switch so its Pi adapter retains the already authenticated,
-non-interactive `gh` session required by §FS-automated-pr-review; no other
-analysis or setup caller sets that switch (§FS-forge-agent-runtime-selection).
+Every step that invokes the analysis role, including published pull-request
+review, calls one function,
+`agent_runtime.analysis_agent_run(working_dir, context, ...)`: the caller assembles the
+context, because only the caller knows what failed, and role resolution and
+agent construction happen inside. No call site selects a backend, model,
+provider, or thinking level for itself. Published pull-request review adds only
+the trusted GitHub-access capability required by §FS-automated-pr-review; it
+does not create a separate review role or alter the analysis selection.
+The test role never passes through `agent_runtime`: a driver's `init_agent` resolves
+the bundle's backend through `Agent.get_class` and hands the instance to the
+workflow engine, which owns it for the conversation.
 
 Pi and OpenCode reach a model through a named **provider**: the analysis role
 takes it from `--analysis-provider` or `FORGE_ANALYSIS_PROVIDER` and defaults to
