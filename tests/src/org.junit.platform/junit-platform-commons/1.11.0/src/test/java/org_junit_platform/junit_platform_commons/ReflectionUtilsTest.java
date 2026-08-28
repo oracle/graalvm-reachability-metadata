@@ -46,15 +46,15 @@ public class ReflectionUtilsTest {
         assertThat(value).isEqualTo("field-value");
     }
 
-    @SuppressWarnings("deprecation")
     @Test
-    void resolvesOutermostInstanceFromInnerClass() {
+    void readsEnclosingInstanceFromInnerClass() throws Exception {
         OuterSubject outer = new OuterSubject("outer-value");
         OuterSubject.InnerSubject inner = outer.new InnerSubject();
 
-        Optional<Object> outermostInstance = ReflectionUtils.getOutermostInstance(inner, OuterSubject.class);
+        Object enclosingInstance = ReflectionUtils
+                .tryToReadFieldValue(OuterSubject.InnerSubject.class, "this$0", inner).get();
 
-        assertThat(outermostInstance).hasValueSatisfying(value -> assertThat(value).isSameAs(outer));
+        assertThat(enclosingInstance).isSameAs(outer);
     }
 
     @Test
@@ -85,6 +85,17 @@ public class ReflectionUtilsTest {
         Class<?> arrayType = ReflectionUtils.tryToLoadClass("java.util.UUID[][]").get();
 
         assertThat(arrayType).isEqualTo(UUID[][].class);
+    }
+
+    @Test
+    void resolvesPublicImplementationMethodToInterfaceMethod() throws Exception {
+        Method implementationMethod = ReflectionUtils.tryToGetMethod(InterfaceImplementation.class, "contractMethod")
+                .get();
+
+        Method interfaceMethod = ReflectionUtils.getInterfaceMethodIfPossible(implementationMethod, null);
+
+        assertThat(interfaceMethod.getDeclaringClass()).isEqualTo(Contract.class);
+        assertThat(interfaceMethod.getName()).isEqualTo("contractMethod");
     }
 
     public static class InstantiatedSubject {
@@ -152,5 +163,17 @@ public class ReflectionUtilsTest {
     public interface InterfaceMethodSubject {
 
         void interfaceMethod();
+    }
+
+    public interface Contract {
+
+        void contractMethod();
+    }
+
+    public static class InterfaceImplementation implements Contract {
+
+        @Override
+        public void contractMethod() {
+        }
     }
 }
