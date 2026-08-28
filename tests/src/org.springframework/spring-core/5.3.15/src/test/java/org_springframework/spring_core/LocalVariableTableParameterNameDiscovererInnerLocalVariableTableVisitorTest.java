@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
+import org.springframework.core.io.ByteArrayResource;
 
 /** Verifies executable resolution while reading local-variable tables. */
 @SuppressWarnings("deprecation")
@@ -21,23 +22,12 @@ public class LocalVariableTableParameterNameDiscovererInnerLocalVariableTableVis
     void resolvesMethodAndConstructorParameterNames() throws Exception {
         LocalVariableTableParameterNameDiscoverer discoverer =
                 new LocalVariableTableParameterNameDiscoverer();
-        Method method = ParameterFixture.class.getDeclaredMethod("format", String.class, int.class);
-        Constructor<ParameterFixture> constructor =
-                ParameterFixture.class.getDeclaredConstructor(String.class);
+        Method method = ByteArrayResource.class.getDeclaredMethod("equals", Object.class);
+        Constructor<ByteArrayResource> constructor =
+                ByteArrayResource.class.getDeclaredConstructor(byte[].class, String.class);
 
-        assertThat(discoverer.getParameterNames(method)).containsExactly("value", "count");
-        assertThat(discoverer.getParameterNames(constructor)).containsExactly("prefix");
-    }
-
-    public static final class ParameterFixture {
-        private final String prefix;
-
-        public ParameterFixture(String prefix) {
-            this.prefix = prefix;
-        }
-
-        public String format(String value, int count) {
-            return this.prefix + value.repeat(count);
-        }
+        assertThat(discoverer.getParameterNames(method)).containsExactly("other");
+        assertThat(discoverer.getParameterNames(constructor))
+                .containsExactly("byteArray", "description");
     }
 }

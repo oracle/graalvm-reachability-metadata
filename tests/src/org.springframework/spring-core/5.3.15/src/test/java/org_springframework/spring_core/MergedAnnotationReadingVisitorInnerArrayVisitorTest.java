@@ -8,10 +8,10 @@ package org_springframework.spring_core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.extension.ExecutionCondition;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.SimpleMetadataReaderFactory;
@@ -19,35 +19,15 @@ import org.springframework.core.type.classreading.SimpleMetadataReaderFactory;
 /** Verifies typed annotation-array materialization during ASM metadata reading. */
 public class MergedAnnotationReadingVisitorInnerArrayVisitorTest {
     @Test
-    void readsTypedEnumAndNestedAnnotationArrays() throws Exception {
+    void readsTypedClassArrayFromDependencyClass() throws Exception {
         MetadataReader reader = new SimpleMetadataReaderFactory(getClass().getClassLoader())
-                .getMetadataReader(AnnotatedFixture.class.getName());
-        MergedAnnotation<ArrayAnnotation> annotation =
-                reader.getAnnotationMetadata().getAnnotations().get(ArrayAnnotation.class);
+                .getMetadataReader(DisabledOnOs.class.getName());
+        MergedAnnotation<ExtendWith> annotation =
+                reader.getAnnotationMetadata().getAnnotations().get(ExtendWith.class);
 
-        assertThat(annotation.getEnumArray("modes", Mode.class)).containsExactly(Mode.FAST, Mode.SAFE);
-        assertThat(annotation.getAnnotationArray("nested", Nested.class)).hasSize(2);
+        Class<?>[] extensionTypes = annotation.getClassArray("value");
+
+        assertThat(extensionTypes).hasSize(1);
+        assertThat(ExecutionCondition.class).isAssignableFrom(extensionTypes[0]);
     }
-
-    public enum Mode {
-        FAST,
-        SAFE
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface Nested {
-        String value();
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface ArrayAnnotation {
-        Mode[] modes();
-
-        Nested[] nested();
-    }
-
-    @ArrayAnnotation(
-            modes = {Mode.FAST, Mode.SAFE},
-            nested = {@Nested("one"), @Nested("two")})
-    private static final class AnnotatedFixture {}
 }

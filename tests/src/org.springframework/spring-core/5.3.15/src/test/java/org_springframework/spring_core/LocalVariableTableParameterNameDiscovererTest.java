@@ -12,24 +12,19 @@ import java.lang.reflect.Method;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
+import org.springframework.core.io.ByteArrayResource;
 
 /** Verifies that parameter discovery reads the declaring class resource. */
 @SuppressWarnings("deprecation")
 public class LocalVariableTableParameterNameDiscovererTest {
     @Test
     void readsMethodParameterNamesFromClassResource() throws Exception {
-        Method method = ParameterFixture.class.getDeclaredMethod("join", String.class, String.class);
+        Method method = ByteArrayResource.class.getDeclaredMethod("equals", Object.class);
         LocalVariableTableParameterNameDiscoverer discoverer =
                 new LocalVariableTableParameterNameDiscoverer();
 
         String[] names = discoverer.getParameterNames(method);
 
-        assertThat(names).containsExactly("left", "right");
-    }
-
-    public static final class ParameterFixture {
-        public String join(String left, String right) {
-            return left + right;
-        }
+        assertThat(names).containsExactly("other");
     }
 }

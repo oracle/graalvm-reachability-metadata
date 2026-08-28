@@ -15,8 +15,8 @@ import org.springframework.asm.ClassReader;
 public class ClassReaderTest {
     @Test
     void readsClassFromSystemResource() throws Exception {
-        ClassReader reader = new ClassReader(ClassReaderTest.class.getName());
+        ClassReader reader = new ClassReader(ClassReader.class.getName());
 
-        assertThat(reader.getClassName()).isEqualTo("org_springframework/spring_core/ClassReaderTest");
+        assertThat(reader.getClassName()).isEqualTo("org/springframework/asm/ClassReader");
     }
 }
