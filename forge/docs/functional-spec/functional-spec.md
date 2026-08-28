@@ -201,6 +201,14 @@ GitHub access, because it mutates no GitHub state. Only the release-version
 comparison for the Java lanes is relaxable, and relaxing it never waives Native
 Image, the `native-image-agent`, or the reachability-metadata schema.
 
+Code-coverage work is a separate host-requirement mode because its operator
+entry point does not pass through `forge_metadata.py`. It needs the build
+capabilities used by issue work, but only one GraalVM distribution: use
+`GRAALVM_HOME`, taking the value of `JAVA_HOME` when it is unset, and require
+JDK 25 or newer with Native Image, native-image-agent, and the
+reachability-metadata schema. It does not require the three release-comparison
+lanes or `grype`.
+
 The gate must always print an operator-facing report. Each entry names the
 capability, whether the invoked mode requires it, the exact executable,
 environment variable, path, host, or permission checked, and — on failure —
@@ -210,11 +218,13 @@ explicitly and command output reduced to the relevant fact.
 The gate runs at the start of every work-starting `forge_metadata.py`
 invocation, not only from the worker loop, and because the worker re-execs
 itself between cycles, every new worker process revalidates the host before
-doing more work. Any failed required check stops the run with a non-zero exit
-before the first work cycle. Capabilities the mode does not need are reported as
-not required, a relaxed version mismatch does not fail startup, and commands
-that start no work — stop, resume, help, cache maintenance — do not run the gate
-at all.
+doing more work. A standalone work-starting entry point must invoke the same
+gate before its first queue query; the code-coverage launcher does so in its
+coverage mode before selecting an issue or creating a Rhei workspace. Any
+failed required check stops the run with a non-zero exit before the first work
+cycle. Capabilities the mode does not need are reported as not required, a
+relaxed version mismatch does not fail startup, and commands that start no work
+— stop, resume, help, cache maintenance — do not run the gate at all.
 
 ## FS-forge-agent-runtime-selection: Configurable agent roles
 
