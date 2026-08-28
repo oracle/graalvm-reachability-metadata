@@ -45,7 +45,7 @@ without starting work from `forge/`:
 
 ```bash
 python3 utility_scripts/host_requirements.py --forge-dir . \
-  --python-bin python3 --review-model gpt-5.6-luna \
+  --python-bin python3 --analysis-model gpt-5.6-luna \
   --graalvm-version-check strict
 ```
 

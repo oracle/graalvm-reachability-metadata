@@ -256,30 +256,22 @@ invocation. `do-work.sh` preserves the worker-configured selections across
 self-update and re-execution (§AR-do-work-loop); the concrete roles, families,
 and defaults are architecture (§AR-agent-api).
 
-**A reviewing agent reads a context file.** Before a pull-request
-agent starts, orchestration fetches the complete review input — pull-request
-identity and body, labels, changed-file list, patch, comments, reviews, status
-checks, and the label-specific checked-in rules — and persists it as a local
-context file in the isolated review worktree. The agent may read that file and
-the checked-out repository, and returns a structured review decision; Forge
-validates that decision and submits the review through its own authenticated
-process.
+**A published-PR reviewer is a trusted analysis agent.** Orchestration invokes
+the worker-configured analysis role in an isolated review worktree and grants
+that turn the authenticated, non-interactive GitHub session. The selected agent
+acts on Forge's behalf: it reads the live pull-request metadata, discussion,
+checks, and targeted local diffs, applies the label-specific checked-in review
+rules, and submits its review directly to GitHub (§FS-automated-pr-review).
+Agent, family, model, provider, and thinking level remain entirely owned by the
+analysis role; review orchestration must not replace any part of that selection.
 
-This is what lets one reviewer serve both reviews. The pre-push review
-(§FS-local-branch-review) has no pull request to query, so a reviewer that
-called GitHub for its inputs could not run there at all; a reviewer that reads a
-context file runs in both places from one rule set, with each caller building
-the file from what it has. It also makes a verdict reproducible — the exact
-input a review saw is a recorded artifact rather than whatever calls the model
-chose to make — and keeps a GitHub outage from becoming a verdict, which
-§FS-human-intervention-policy requires by classifying such failures as external.
-
-The context file is therefore a validated input, not a best-effort bundle
-(§root/PRCPL-verify-inputs). It is schema-checked before the agent starts, and a
-rule whose required input is absent fails the review outright rather than being
-silently skipped — an unapplied rule that nobody is told about is
-indistinguishable from a rule that passed. A prefetch that fails or validates
-incomplete stops the review before the agent is invoked.
+The pre-push review (§FS-local-branch-review) has no published pull request or
+GitHub review to submit. It continues to receive local evidence and return its
+structured verdict to publication. The two reviews share their label-specific
+rules, not an input transport or publication protocol. A published-PR review is
+therefore not brokered through a Forge-defined JSON decision: the trusted agent
+owns both the judgment and the GitHub review it submits, while the shared
+analysis runtime owns invocation, logs, failures, and token accounting.
 
 ## FS-forge-run-requirements: Run requirements
 

@@ -874,7 +874,6 @@ class HostRequirementsTests(unittest.TestCase):
                         "FORGE_ANALYSIS_AGENT",
                         "FORGE_ANALYSIS_FAMILY",
                         "FORGE_ANALYSIS_MODEL",
-                        "FORGE_REVIEW_MODEL",
                 ):
                     environment.pop(variable, None)
                 environment.update({
@@ -898,7 +897,7 @@ class HostRequirementsTests(unittest.TestCase):
         for extra_args, extra_environment in (
                 ([], {}),
                 (["--agent-family", "codex"], {}),
-                ([], {"FORGE_REVIEW_MODEL": "gpt-5.6-luna"}),
+                ([], {"FORGE_ANALYSIS_MODEL": "gpt-5.6-luna"}),
                 (["--setup-family", "pi", "--setup-model", "cheap-model"], {}),
         ):
             with self.subTest(extra_args=extra_args, extra_environment=extra_environment):
