@@ -69,42 +69,69 @@ the backstop (§PRCPL-prefer-algorithmic).
 
 ## 3. Coverage and metadata gates
 
-Coverage evidence is compared per label, always as percentages — a change in
-absolute covered or total call counts is never by itself a regression. The
-gates are musts; a breach blocks unless the contribution gives a concrete,
-credible explanation such as a changed upstream API surface.
+Coverage evidence is compared per label. New-library and library-update gates
+use percentages. The `fixes-*` repair gate also uses covered-call counts so a
+larger or equally covered dynamic-access surface is not rejected only because
+its percentage is lower. The gates are musts; a breach blocks unless the
+contribution gives a concrete, credible explanation such as a changed upstream
+API surface.
 
 | Label | Gate |
 | --- | --- |
 | `library-new-request` | Dynamic-access coverage above 20% when the report has calls to cover. |
 | `library-update-request` | Coverage percentage does not drop at all against the previously supported version. |
-| `fixes-javac-fail`, `fixes-java-run-fail`, `fixes-native-image-run-fail` | Coverage percentage does not drop by more than 20 percentage points against the previously tested version. |
+| `fixes-javac-fail`, `fixes-java-run-fail`, `fixes-native-image-run-fail` | Each overall or breakdown scope passes the repair comparison below. |
+
+For the `fixes-*` labels, apply this ordered comparison independently to the
+overall dynamic-access report and every breakdown present in either version.
+Treat `N/A` on either side of a comparison as `0/0`: zero total calls and zero
+covered calls.
+
+1. A new scope with no calls passes because no comparable call surface remains.
+2. A new scope with calls but zero covered calls fails.
+3. A scope passes when its new covered-call count is at least its previous
+   covered-call count, or when its new coverage percentage is at least its
+   previous percentage.
+4. When both the previous and new scope report fewer than 10 total calls, the
+   scope fails only when the previous covered-call count exceeds the new count
+   by more than two.
+5. Every other scope fails only when its coverage drops by more than 20
+   percentage points.
+
+The order is part of the rule: step 4 is reached only when both the covered-call
+count and percentage decreased, so its subtraction is always positive.
+
+When a scope fails, the reviewer must investigate why before deciding. The
+analysis uses available evidence such as the old and new stats, test diff,
+upstream API or runtime changes, and CI output. The review states the supported
+cause; when the evidence does not establish one, it states that the cause is
+unknown and asks for an explanation. A reviewer must not present speculation as
+the cause of a regression.
 
 PRs with the `chunked-dynamic-access` label are exempt from every percentage
-gate in this table, including the final chunk. A chunk covers only part of the
-library-wide dynamic-access report (§forge/FS-forge-chunked-dynamic-access), so
-its coverage gate fails only when the reported `dynamicAccess.coveredCalls` is
-zero. This exception does not relax any non-coverage rule or guardrail below.
+and repair-comparison gate in this section, including the final chunk. A chunk
+covers only part of the library-wide dynamic-access report
+(§forge/FS-forge-chunked-dynamic-access), so its coverage gate fails only when
+the reported `dynamicAccess.coveredCalls` is zero. This exception does not relax
+any non-coverage rule or guardrail below.
 
-Two guardrails accompany the gates:
+One guardrail accompanies the gates:
 
-- **Metadata entry count.** For the `fixes-*` repair labels, the new version's
-  total metadata entry count (library plus test-only, as reported in the PR
-  description) must not fall below 25% of the previous version's total.
 - **Entry-count mismatch.** For new libraries, a covered dynamic-access call
   count at least 75% higher than the PR-reported metadata entry total (library
   plus test-only) requires investigation before approval.
 
-Gates are computed from the reported evidence as-is: the stats files and the
-PR-description counts. Reviewers do not hand-count metadata entries, and do not
-second-guess the numbers through `user-code-filter.json`, agent configuration,
-or metadata file contents. Coverage numbers are a minimum gate, not proof of
-completeness — high coverage alone does not show the metadata is complete or
-necessary. When the tested version reports zero dynamic-access calls, the
-entry-count guardrail, the entry-count mismatch probe, and depth-of-coverage
-objections carry no signal and are not applied. That leniency covers only the
-numeric evidence: the Native Image execution contract and any issue-requested
-metadata gate still apply.
+Metadata entry-count changes are telemetry only for `fixes-*` reviews and never
+block a repair contribution. Gates are computed from the reported evidence
+as-is: the stats files and the PR-description counts. Reviewers do not
+hand-count metadata entries, and do not second-guess the numbers through
+`user-code-filter.json`, agent configuration, or metadata file contents.
+Coverage numbers are a minimum gate, not proof of completeness — high coverage
+alone does not show the metadata is complete or necessary. When the tested
+version reports zero dynamic-access calls, the entry-count mismatch probe and
+depth-of-coverage objections carry no signal and are not applied. That leniency
+covers only the numeric evidence: the Native Image execution contract and any
+issue-requested metadata gate still apply.
 
 ## 4. Cheating caught in review
 
