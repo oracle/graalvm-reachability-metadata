@@ -241,5 +241,80 @@ class OptimisticDynamicAccessChunkTests(unittest.TestCase):
             self.saved = True
 
 
+class OptimisticDynamicAccessRunTests(unittest.TestCase):
+    """The bulk loop must run on the report the run prepared for it."""
+
+    def test_usable_report_starts_bulk_iterations_without_a_fallback(self) -> None:
+        strategy, agent = self._runnable_strategy(reports=[self._usable_report()])
+        with patch.object(strategy, "_run_basic_iterative_fallback") as fallback:
+            status, iterations, generations = strategy.run(agent)
+
+        fallback.assert_not_called()
+        self.assertEqual(status, RUN_STATUS_SUCCESS)
+        self.assertEqual(generations, 1)
+        self.assertEqual(iterations, 1)
+        self.assertEqual(len(agent.prompts), 1)
+
+    def test_empty_report_bootstraps_through_the_fallback_then_runs_bulk(self) -> None:
+        # A report only becomes usable once tests exist; the fallback creates
+        # them and bulk continues on the refreshed report
+        # (§AR-dynamic-access-fallback-and-failure).
+        strategy, agent = self._runnable_strategy(
+            reports=[self._empty_report(), self._usable_report()],
+        )
+        with patch.object(
+                strategy,
+                "_run_basic_iterative_fallback",
+                return_value=(RUN_STATUS_SUCCESS, 2, 1),
+        ) as fallback:
+            status, iterations, generations = strategy.run(agent)
+
+        fallback.assert_called_once()
+        self.assertEqual(status, RUN_STATUS_SUCCESS)
+        self.assertEqual(generations, 2)
+        self.assertEqual(iterations, 3)
+        self.assertEqual(len(agent.prompts), 1)
+
+    def _runnable_strategy(
+            self,
+            reports: list[DynamicAccessCoverageReport],
+    ) -> tuple[OptimisticDynamicAccessStrategy, "OptimisticDynamicAccessRunTests._FakeAgent"]:
+        strategy = OptimisticDynamicAccessChunkTests._optimistic_strategy()
+        # One report per refresh: the initial one, then one per accepted iteration.
+        pending = list(reports) + [reports[-1]]
+        strategy._generate_dynamic_access_report = lambda *args, **kwargs: pending.pop(0)
+        strategy._render_prompt = lambda *args, **kwargs: "prompt"
+        strategy._commit_test_sources = lambda message: None
+        strategy.verify_native_test_gate = lambda output_dir: True
+        return strategy, self._FakeAgent()
+
+    @staticmethod
+    def _usable_report() -> DynamicAccessCoverageReport:
+        return OptimisticDynamicAccessChunkTests._report(["A", "B"], ["A", "B"])
+
+    @staticmethod
+    def _empty_report() -> DynamicAccessCoverageReport:
+        return DynamicAccessCoverageReport(
+            coordinate="org.example:lib:1.0.0",
+            has_dynamic_access=False,
+            total_calls=0,
+            covered_calls=0,
+            classes=[],
+        )
+
+    class _FakeAgent:
+        def __init__(self) -> None:
+            self.prompts: list[str] = []
+
+        def clear_context(self) -> None:
+            pass
+
+        def send_prompt(self, prompt: str) -> None:
+            self.prompts.append(prompt)
+
+        def run_test_command(self, command: str) -> str:
+            return "BUILD SUCCESSFUL"
+
+
 if __name__ == "__main__":
     unittest.main()

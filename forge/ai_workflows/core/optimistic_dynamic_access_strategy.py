@@ -106,6 +106,16 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
             fallback_successful_generations = fallback_result[2]
             initial_report = self._generate_dynamic_access_report()
             if not self._report_is_usable(initial_report):
+                # The bootstrap is terminal only for a report that is genuinely
+                # empty; an unavailable one is named as such
+                # (§AR-dynamic-access-fallback-and-failure).
+                self._print_message(
+                    "Bulk iterations have no report to steer by after the fallback: "
+                    "cause={cause} coordinate={library}".format(
+                        cause=self._last_dynamic_access_report_issue,
+                        library=self.library,
+                    )
+                )
                 self._mark_explore_after_primary(fallback_prompt_iterations)
                 return fallback_result
 
