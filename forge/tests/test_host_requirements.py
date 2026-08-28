@@ -15,6 +15,7 @@ from typing import Iterator
 from unittest.mock import Mock, patch
 
 from utility_scripts.host_requirements import (
+    ARTIFACT_REPOSITORY_URLS,
     GRAALVM_SCHEMA_PATH,
     HostRequirements,
     QueueRequirements,
@@ -30,6 +31,7 @@ from utility_scripts.host_requirements import (
     parse_grype_version,
     parse_args,
     parse_native_image_version,
+    probe_http_200,
     probe_proxied_host,
     resolve_graalvm_version_check,
     resolve_https_proxy,
@@ -430,7 +432,10 @@ class HostRequirementsTests(unittest.TestCase):
         ), patch(
             "utility_scripts.host_requirements.probe_tcp_host",
             return_value=(True, "reachable"),
-        ) as probe_host:
+        ) as probe_host, patch(
+            "utility_scripts.host_requirements.probe_http_200",
+            return_value=(True, "HTTP 200"),
+        ):
             host_requirements._check_write_permissions()
             host_requirements._check_network()
 
@@ -601,6 +606,7 @@ class HostRequirementsTests(unittest.TestCase):
         )
 
         with patch("utility_scripts.host_requirements.probe_tcp_host", return_value=(True, "reachable")), \
+                patch("utility_scripts.host_requirements.probe_http_200", return_value=(True, "HTTP 200")), \
                 patch.object(host_requirements, "_check_git_remote_access"):
             host_requirements._check_github()
             host_requirements._check_network()
@@ -610,6 +616,48 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertEqual("SKIP", result_by_name["github.com"].status)
         self.assertEqual("SKIP", result_by_name["api.github.com"].status)
         self.assertEqual("PASS", result_by_name["chatgpt.com"].status)
+
+    def test_issue_work_requires_http_200_from_every_artifact_repository(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            {},
+            requirements=QueueRequirements(issue_work=True, review_work=False, github_work=False),
+        )
+
+        with patch.object(host_requirements, "_check_git_remote_access"), \
+                patch("utility_scripts.host_requirements.probe_tcp_host", return_value=(True, "reachable")), \
+                patch(
+                    "utility_scripts.host_requirements.probe_http_200",
+                    side_effect=[(True, "HTTP 200"), (False, "HTTP 503")],
+                ) as probe_repository:
+            host_requirements._check_network()
+
+        self.assertEqual(
+            list(ARTIFACT_REPOSITORY_URLS),
+            [call.args[0] for call in probe_repository.call_args_list],
+        )
+        result_by_name = {result.name: result for result in host_requirements.results}
+        central = result_by_name[f"artifact repository {ARTIFACT_REPOSITORY_URLS[0]}"]
+        confluent = result_by_name[f"artifact repository {ARTIFACT_REPOSITORY_URLS[1]}"]
+        self.assertEqual("PASS", central.status)
+        self.assertEqual("FAIL", confluent.status)
+        self.assertTrue(confluent.blocks_work)
+
+    def test_http_repository_probe_requires_exactly_200(self) -> None:
+        response = Mock()
+        response.__enter__ = Mock(return_value=response)
+        response.__exit__ = Mock(return_value=False)
+        response.getcode.return_value = 204
+
+        with patch("utility_scripts.host_requirements.urllib.request.urlopen", return_value=response) as open_url:
+            passed, detail = probe_http_200("https://repo.example/maven")
+
+        self.assertFalse(passed)
+        self.assertIn("HTTP 204", detail)
+        request = open_url.call_args.args[0]
+        self.assertEqual("HEAD", request.get_method())
+        self.assertEqual("https://repo.example/maven/", request.full_url)
 
     def test_selected_repository_paths_are_checked_instead_of_the_forge_parent_checkout(self) -> None:
         with tempfile.TemporaryDirectory() as target_repo:
