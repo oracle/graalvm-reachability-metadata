@@ -718,13 +718,11 @@ for every finalization library (§AR-forge-driver-finalization):
    `./gradlew routeForeignMetadata` before allowed-package or agent repair, then
    reruns the check. A passing first check never scans or rewrites foreign
    ownership. Continue with style fix and checks, generated-test quality
-   screening, and `./gradlew generateLibraryStats`.
-5. Re-run all three native lanes with `clean` and without repair. These are the
-   publication proof after every metadata rewrite; a failure stops the run
-   instead of mutating the already-finalized tree
-   (§FS-local-ci-equivalent-verification.1).
-6. Commit the iteration, staging the coordinate's `tests/src`, the whole
-   `metadata/` tree, and the coordinate's `stats/`.
+   screening, and `./gradlew generateLibraryStats`. Ownership routing also
+   regenerates statistics for every affected owner coordinate.
+5. Commit the iteration, staging the coordinate's `tests/src` and the whole
+   `metadata/` and `stats/` trees. The pull request CI matrix provides the
+   independent native verification of the committed result.
 
 **The three native lanes, metadata validation, and Checkstyle route failure to
 the same repair.** A repairable check that fails calls `agent_fix()` on that

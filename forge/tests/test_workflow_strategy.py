@@ -62,33 +62,6 @@ class WorkflowStrategyTests(unittest.TestCase):
         self.assertEqual(commands[2][1]["JAVA_HOME"], "/dev/graalvm-25")
         self.assertNotIn("GVM_TCK_NATIVE_IMAGE_MODE", commands[2][1])
 
-    def test_final_clean_verification_does_not_repair_failure(self) -> None:
-        strategy = _TestWorkflowStrategy(
-            {"model": "test-model"},
-            reachability_repo_path="/tmp/reachability",
-            library="org.example:demo:1.0.0",
-        )
-        commands: list[str] = []
-
-        def run_command(command: str, _env: dict[str, str] | None = None) -> str:
-            commands.append(command)
-            return "> Task :nativeTest FAILED"
-
-        with patch.object(strategy, "_run_command_with_env", side_effect=run_command), \
-                patch("ai_workflows.core.workflow_strategy.run_metadata_fix") as metadata_fix, \
-                patch("ai_workflows.core.workflow_strategy.run_post_generation_fix") as post_fix, \
-                patch("ai_workflows.core.workflow_strategy.record_step_failure"):
-            status = strategy._run_test_with_retry(
-                "org.example:demo:1.0.0",
-                allow_repair=False,
-                clean=True,
-            )
-
-        self.assertEqual(status, RUN_STATUS_FAILURE)
-        self.assertEqual(commands, ["./gradlew clean test -Pcoordinates=org.example:demo:1.0.0"])
-        metadata_fix.assert_not_called()
-        post_fix.assert_not_called()
-
     def test_commit_library_iteration_stages_resolved_test_version(self) -> None:
         with tempfile.TemporaryDirectory() as repo:
             metadata_root = os.path.join(repo, "metadata", "org.example", "demo")
@@ -102,6 +75,7 @@ class WorkflowStrategyTests(unittest.TestCase):
                 ], index_file)
             os.makedirs(os.path.join(repo, "metadata", "org.example", "demo", "1.0.0"))
             os.makedirs(os.path.join(repo, "tests", "src", "org.example", "demo", "1.0.0"))
+            os.makedirs(os.path.join(repo, "stats", "org.example", "demo", "1.0.0"))
             strategy = _TestWorkflowStrategy(
                 {"model": "test-model"},
                 reachability_repo_path=repo,
@@ -126,6 +100,7 @@ class WorkflowStrategyTests(unittest.TestCase):
         self.assertEqual(git_add[:3], ["git", "add", "-A"])
         self.assertIn(os.path.join(repo, "tests", "src", "org.example", "demo", "1.0.0"), git_add)
         self.assertNotIn(os.path.join(repo, "tests", "src", "org.example", "demo", "1.0.1"), git_add)
+        self.assertIn(os.path.join(repo, "stats"), git_add)
 
     def test_finalization_libraries_include_resolved_metadata_coordinate(self) -> None:
         strategy = _TestWorkflowStrategy(
@@ -158,7 +133,6 @@ class WorkflowStrategyTests(unittest.TestCase):
         strategy.version = "1.0.1"
         strategy.reachability_repo_path = "/tmp/reachability"
         tested_libraries: list[str] = []
-        test_calls: list[tuple[str, dict[str, object]]] = []
         finalized_libraries: list[str] = []
         finalization_steps: list[str] = []
 
@@ -167,13 +141,6 @@ class WorkflowStrategyTests(unittest.TestCase):
             finalized_libraries.append(library)
             finalization_steps.append(f"finalize:{library}")
             return True
-
-        def fake_test(library: str, **kwargs: object) -> str:
-            tested_libraries.append(library)
-            test_calls.append((library, kwargs))
-            prefix = "final-test" if kwargs else "test"
-            finalization_steps.append(f"{prefix}:{library}")
-            return RUN_STATUS_SUCCESS
 
         with patch.object(
                     strategy,
@@ -184,7 +151,11 @@ class WorkflowStrategyTests(unittest.TestCase):
                 patch.object(
                     strategy,
                     "_run_test_with_retry",
-                    side_effect=fake_test,
+                    side_effect=lambda library: (
+                        tested_libraries.append(library)
+                        or finalization_steps.append(f"test:{library}")
+                        or RUN_STATUS_SUCCESS
+                    ),
                 ), \
                 patch.object(strategy, "_commit_library_iteration", return_value=True), \
                 patch("ai_workflows.core.workflow_strategy.run_library_finalization",
@@ -198,12 +169,7 @@ class WorkflowStrategyTests(unittest.TestCase):
         expected_libraries = ["org.example:demo:1.0.1", "org.example:demo:1.0.0"]
         self.assertEqual(status, RUN_STATUS_SUCCESS)
         self.assertEqual(checkpoint, "checkpoint")
-        self.assertEqual(tested_libraries, expected_libraries + expected_libraries)
-        self.assertEqual(
-            test_calls,
-            [(library, {}) for library in expected_libraries]
-            + [(library, {"allow_repair": False, "clean": True}) for library in expected_libraries],
-        )
+        self.assertEqual(tested_libraries, expected_libraries)
         self.assertEqual(finalized_libraries, expected_libraries)
         native_gate.assert_called_once()
         run_command.assert_not_called()
@@ -220,8 +186,6 @@ class WorkflowStrategyTests(unittest.TestCase):
                 "test:org.example:demo:1.0.0",
                 "finalize:org.example:demo:1.0.1",
                 "finalize:org.example:demo:1.0.0",
-                "final-test:org.example:demo:1.0.1",
-                "final-test:org.example:demo:1.0.0",
             ],
         )
 

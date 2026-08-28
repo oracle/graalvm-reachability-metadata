@@ -28,7 +28,6 @@ from utility_scripts.continuation_marker import (
 from utility_scripts.workflow_setup import build_graalvm_environment
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.gradle_test_runner import run_gradle_test_command
-from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.run_location import (
     PHASE_FINALIZATION as RUN_PHASE_FINALIZATION,
     STEP_AGENT_FIX,
@@ -235,7 +234,7 @@ class WorkflowStrategy(ABC):
     def _run_command_with_env(self, cmd: str, env: dict[str, str] | None = None) -> str:
         """Execute a shell command with optional environment overrides."""
         repo_path = getattr(self, "reachability_repo_path", os.getcwd())
-        if cmd.startswith(("./gradlew test ", "./gradlew clean test ")):
+        if cmd.startswith("./gradlew test "):
             return run_gradle_test_command(
                 cmd,
                 repo_path,
@@ -261,18 +260,10 @@ class WorkflowStrategy(ABC):
         match = re.search(pattern, output)
         return match.group(1) if match else None
 
-    def _run_test_with_retry(
-            self,
-            library: str,
-            *,
-            allow_repair: bool = True,
-            clean: bool = False,
-    ) -> str:
+    def _run_test_with_retry(self, library: str) -> str:
         """Run Gradle tests for a library and classify post-generation failures."""
-        if allow_repair:
-            self.post_generation_intervention = None
-        gradle_tasks = "clean test" if clean else "test"
-        test_cmd = f"./gradlew {gradle_tasks} -Pcoordinates={library}"
+        self.post_generation_intervention = None
+        test_cmd = f"./gradlew test -Pcoordinates={library}"
         repo_path = getattr(self, "reachability_repo_path", os.getcwd())
         final_status = RUN_STATUS_SUCCESS
 
@@ -292,10 +283,6 @@ class WorkflowStrategy(ABC):
                 """Locate this lane's unrepaired failure before returning it."""
                 record_step_failure()
                 return RUN_STATUS_FAILURE
-
-            if not allow_repair:
-                log_stage("post-generation-test", f"{stage_name} failed during final clean verification")
-                return record_lane_failure()
 
             # Repairing a failed post-generation lane is the finalization phase's
             # agent fix. §FS-forge-run-location-reporting.2
@@ -618,10 +605,6 @@ class WorkflowStrategy(ABC):
                 base_commit=base_commit,
             ):
                 return RUN_STATUS_FAILURE, None
-        for library in finalization_libraries:
-            final_test_status = self._run_test_with_retry(library, allow_repair=False, clean=True)
-            if final_test_status == RUN_STATUS_FAILURE:
-                return RUN_STATUS_FAILURE, None
         log_stage("commit-iteration", f"Running commit iteration for {self.library}")
         if not self._commit_library_iteration():
             return RUN_STATUS_FAILURE, None
@@ -651,11 +634,10 @@ class WorkflowStrategy(ABC):
                 self.artifact,
                 test_version,
             ),
-            # Whole `metadata/` tree, not the target artifact's directory: generation traces
-            # through transitive dependencies and can produce entries owned by another
-            # artifact, which artifact-scoped staging would drop (§AR-forge-driver-finalization).
+            # Routing can update a dependency owner's metadata and stats, so both trees are
+            # staged as one finalization result (§AR-forge-driver-finalization).
             os.path.join(self.reachability_repo_path, "metadata"),
-            stats_artifact_dir(self.reachability_repo_path, self.group, self.artifact),
+            os.path.join(self.reachability_repo_path, "stats"),
         ]
         existing_paths = [path for path in stage_paths if os.path.exists(path)]
         add_result = subprocess.run(

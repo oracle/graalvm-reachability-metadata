@@ -17,7 +17,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -211,7 +213,7 @@ class SplitTestOnlyMetadataTaskTests {
                 """
         );
 
-        runRouteTask(coordinate);
+        RecordingRouteForeignMetadataTask task = runRouteTask(coordinate);
 
         JsonNode inheritedMetadata = readJson("metadata/org.owner/engine/1.0.0/reachability-metadata.json");
         JsonNode exactMetadata = readJson("metadata/org.owner/engine/2.0.0/reachability-metadata.json");
@@ -229,6 +231,8 @@ class SplitTestOnlyMetadataTaskTests {
         assertThat(ownerIndex.get(1).get("tested-versions"))
                 .extracting(JsonNode::asText)
                 .containsExactly("2.0.0");
+        assertThat(task.generatedStatsCoordinates())
+                .containsExactly("org.owner:engine:2.0.0");
     }
 
     @Test
@@ -262,15 +266,29 @@ class SplitTestOnlyMetadataTaskTests {
         task.run();
     }
 
-    private void runRouteTask(String coordinate) {
+    private RecordingRouteForeignMetadataTask runRouteTask(String coordinate) {
         Project project = ProjectBuilder.builder()
                 .withProjectDir(tempDir.toFile())
                 .build();
-        RouteForeignMetadataTask task = project.getTasks()
-                .register("routeForeignMetadata", RouteForeignMetadataTask.class)
+        RecordingRouteForeignMetadataTask task = project.getTasks()
+                .register("routeForeignMetadata", RecordingRouteForeignMetadataTask.class)
                 .get();
         task.setCoordinatesOverride(List.of(coordinate));
         task.run();
+        return task;
+    }
+
+    public abstract static class RecordingRouteForeignMetadataTask extends RouteForeignMetadataTask {
+        private final Set<String> generatedStatsCoordinates = new LinkedHashSet<>();
+
+        @Override
+        protected void generateRelocatedOwnerStats(Set<String> relocatedOwners) {
+            generatedStatsCoordinates.addAll(relocatedOwners);
+        }
+
+        Set<String> generatedStatsCoordinates() {
+            return generatedStatsCoordinates;
+        }
     }
 
     private void writeMinimalTestProject(String group, String artifact, String version) throws IOException {

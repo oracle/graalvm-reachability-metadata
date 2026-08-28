@@ -22,7 +22,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Routes foreign-condition metadata after {@code checkMetadataFiles} fails.
+ * Routes foreign-condition metadata and regenerates affected owner statistics
+ * after {@code checkMetadataFiles} fails.
  * §FS-metadata
  */
 @SuppressWarnings("unused")
@@ -100,6 +101,7 @@ public abstract class RouteForeignMetadataTask extends CoordinatesAwareTask {
 
         validateRelocatedOwners(relocatedOwners);
         ownershipRouter.writeJson(metadataFile, libraryMetadata);
+        generateRelocatedOwnerStats(relocatedOwners);
         getLogger().lifecycle("routeForeignMetadata completed for {}; relocated owners: {}", coordinate, relocatedOwners);
     }
 
@@ -112,6 +114,19 @@ public abstract class RouteForeignMetadataTask extends CoordinatesAwareTask {
                 checker.run();
             } finally {
                 checker.setEnabled(false);
+            }
+        }
+    }
+
+    protected void generateRelocatedOwnerStats(Set<String> relocatedOwners) {
+        for (String owner : relocatedOwners) {
+            String taskName = "generateRelocatedStats_" + owner.replace(':', '_') + "_" + System.nanoTime();
+            GenerateLibraryStatsTask generator = getProject().getTasks().create(taskName, GenerateLibraryStatsTask.class);
+            generator.setCoordinatesOverride(List.of(owner));
+            try {
+                generator.generate();
+            } finally {
+                generator.setEnabled(false);
             }
         }
     }
