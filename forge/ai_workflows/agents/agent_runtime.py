@@ -34,6 +34,9 @@ DEFAULT_AGENT_BY_BACKEND = {
     "codex": "codex",
     "opencode": "opencode",
 }
+# Codex runs unattended with the writable tool access required by Forge.
+# §FS-forge-host-requirements
+CODEX_BYPASS_APPROVALS_AND_SANDBOX_FLAG = "--dangerously-bypass-approvals-and-sandbox"
 GITHUB_CREDENTIAL_ENV_VARS = (
     "GH_TOKEN",
     "GITHUB_TOKEN",
