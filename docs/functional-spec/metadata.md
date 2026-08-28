@@ -102,7 +102,9 @@ copying the inherited metadata before adding the new entry; older tested
 versions keep their original bucket unchanged. A successful metadata check
 never invokes ownership routing. When routing creates an exact metadata-version
 bucket, finalization also generates and commits that owner's matching library
-statistics using the bucket's resolved test version.
+statistics using the bucket's resolved test version. If the inherited owner
+bucket is marked `latest`, the exact bucket takes ownership of `latest` and its
+automation fields; the inherited bucket relinquishes them.
 
 An entry with no unique supported owner remains untouched and routing fails.
 The router never deletes an entry merely because its condition is foreign, and
