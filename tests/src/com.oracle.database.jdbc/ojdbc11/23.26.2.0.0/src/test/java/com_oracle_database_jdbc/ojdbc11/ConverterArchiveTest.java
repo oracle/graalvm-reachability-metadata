@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.UUID;
 import oracle.sql.ConverterArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -21,12 +22,17 @@ public class ConverterArchiveTest {
     @Test
     void storesAndReadsObjectsInSupportedArchiveFormats() throws Exception {
         ConverterArchive archive = new ConverterArchive();
-        Path singleObjectArchive = tempDirectory.resolve("single-object.zip");
-        archive.insertSingleObj(singleObjectArchive.toString(), "first-value", "first");
-        archive.insertSingleObj(singleObjectArchive.toString(), "second-value", "second");
+        Path singleObjectArchive = Path.of("converter-archive-" + UUID.randomUUID() + ".zip");
+        try {
+            archive.insertSingleObj(singleObjectArchive.toString(), "first-value", "first");
+            archive.insertSingleObj(singleObjectArchive.toString(), "second-value", "second");
 
-        assertThat(archive.readObj(singleObjectArchive.toString(), "first")).isEqualTo("first-value");
-        assertThat(archive.readObj(singleObjectArchive.toString(), "second")).isEqualTo("second-value");
+            assertThat(archive.readObj(singleObjectArchive.toString(), "first")).isEqualTo("first-value");
+            assertThat(archive.readObj(singleObjectArchive.toString(), "second")).isEqualTo("second-value");
+        } finally {
+            Files.deleteIfExists(singleObjectArchive);
+            Files.deleteIfExists(Path.of("gsstemp.zip"));
+        }
 
         Path streamedArchive = tempDirectory.resolve("streamed.zip");
         archive.openArchiveforInsert(streamedArchive.toString());
