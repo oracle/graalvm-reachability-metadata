@@ -28,7 +28,6 @@ from utility_scripts.continuation_marker import (
 from utility_scripts.workflow_setup import build_graalvm_environment
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.gradle_test_runner import run_gradle_test_command
-from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.run_location import (
     PHASE_FINALIZATION as RUN_PHASE_FINALIZATION,
     STEP_AGENT_FIX,
@@ -635,11 +634,10 @@ class WorkflowStrategy(ABC):
                 self.artifact,
                 test_version,
             ),
-            # Whole `metadata/` tree, not the target artifact's directory: generation traces
-            # through transitive dependencies and can produce entries owned by another
-            # artifact, which artifact-scoped staging would drop (§AR-forge-driver-finalization).
+            # Routing can update a dependency owner's metadata and stats, so both trees are
+            # staged as one finalization result (§AR-forge-driver-finalization).
             os.path.join(self.reachability_repo_path, "metadata"),
-            stats_artifact_dir(self.reachability_repo_path, self.group, self.artifact),
+            os.path.join(self.reachability_repo_path, "stats"),
         ]
         existing_paths = [path for path in stage_paths if os.path.exists(path)]
         add_result = subprocess.run(

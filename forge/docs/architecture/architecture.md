@@ -705,29 +705,24 @@ only when a step still fails.
 Finalization is the fixed end-of-generation sequence and must run in this order
 for every finalization library (§AR-forge-driver-finalization):
 
-1. `native_trace_gate()`, once. This is the terminal gate invocation every
+1. `native_trace_gate()`, once. This is the terminal trace invocation every
    workflow shares — finalization is the one phase all five drivers reach, so it
-   is where a repair workflow that never explored still proves its metadata on
-   Native Image. Metadata that has not passed it does not reach the lanes below
-   it, and nothing after this step may produce metadata that the gate has not
-   observed.
-2. The three native test lanes, in order: current-defaults on the latest
-   GraalVM, `future-defaults-all`, and current-defaults on the GraalVM 25
-   toolchain. The lanes live here, in generation, because the pre-publication
-   gate no longer reproduces the native test matrix
-   (§FS-local-ci-equivalent-verification.1). Each lane is its own proof: the
-   image mode and the toolchain change which accesses the binary needs, so
-   metadata proven under one lane is not proven under another. They run after
-   the gate, never in place of it — a lane judges metadata the gate has already
-   collected and verified.
+   is where a repair workflow that never explored still discovers its Native
+   Image metadata gaps.
+2. The three repair-capable native test lanes, in order: current-defaults on
+   the latest GraalVM, `future-defaults-all`, and current-defaults on the
+   GraalVM 25 toolchain. Each lane can add evidence-driven metadata.
 3. `./gradlew splitTestOnlyMetadata`, then reject any legacy
    `native-image.properties`-era test config the run touched.
-4. `./gradlew checkMetadataFiles`.
-5. Style fix and checks (Checkstyle, Spotless).
-6. Generated-test quality screening: suspicious targets are not shipped.
-7. `./gradlew generateLibraryStats`.
-8. Commit the iteration, staging the coordinate's `tests/src`, the whole
-   `metadata/` tree, and the coordinate's `stats/`.
+4. `./gradlew checkMetadataFiles`. A failure invokes
+   `./gradlew routeForeignMetadata` before allowed-package or agent repair, then
+   reruns the check. A passing first check never scans or rewrites foreign
+   ownership. Continue with style fix and checks, generated-test quality
+   screening, and `./gradlew generateLibraryStats`. Ownership routing also
+   regenerates statistics for every affected owner coordinate.
+5. Commit the iteration, staging the coordinate's `tests/src` and the whole
+   `metadata/` and `stats/` trees. The pull request CI matrix provides the
+   independent native verification of the committed result.
 
 **The three native lanes, metadata validation, and Checkstyle route failure to
 the same repair.** A repairable check that fails calls `agent_fix()` on that

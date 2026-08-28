@@ -55,6 +55,7 @@ import org.graalvm.internal.tck.harness.tasks.ValidateLibraryStatsTask
 import org.graalvm.internal.tck.harness.tasks.AnalyzeExternalLibraryDynamicAccessTask
 import org.graalvm.internal.tck.harness.tasks.GenerateReadmeBadgeSummaryTask
 import org.graalvm.internal.tck.harness.tasks.RunNativeTraceImageInvocationTask
+import org.graalvm.internal.tck.harness.tasks.RouteForeignMetadataTask
 import org.graalvm.internal.tck.harness.tasks.SplitTestOnlyMetadataTask
 import org.graalvm.internal.tck.utils.NativeImageConfigUtils
 import org.gradle.process.ExecOperations
@@ -915,7 +916,13 @@ tasks.register("generateMetadata", GenerateMetadataTask.class) { task ->
 
 // gradle splitTestOnlyMetadata -Pcoordinates=<maven-coordinates>
 tasks.register("splitTestOnlyMetadata", SplitTestOnlyMetadataTask.class) { task ->
-    task.setDescription("Moves test-only entries from library reachability metadata into test resources metadata.")
+    task.setDescription("Moves test-only metadata into test resources.")
+    task.setGroup(METADATA_GROUP)
+}
+
+// gradle routeForeignMetadata -Pcoordinates=<maven-coordinates>
+tasks.register("routeForeignMetadata", RouteForeignMetadataTask.class) { task ->
+    task.setDescription("Relocates foreign-condition metadata after metadata validation fails.")
     task.setGroup(METADATA_GROUP)
 }
 
