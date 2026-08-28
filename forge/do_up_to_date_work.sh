@@ -37,7 +37,6 @@ SETUP_FAMILY="${FORGE_SETUP_FAMILY:-}"
 # §FS-forge-agent-runtime-selection
 TEST_AGENT_ALIAS="${FORGE_TEST_AGENT_ALIAS:-}"
 AGENT_FAMILY="${FORGE_AGENT_FAMILY:-}"
-REVIEW_MODEL="${FORGE_REVIEW_MODEL:-}"
 FAIL_FAST="${FORGE_FAIL_FAST:-0}"
 USER_REQUESTED_ONLY="${FORGE_USER_REQUESTED_ISSUES_ONLY:-0}"
 GRAALVM_VERSION_CHECK="${FORGE_GRAALVM_VERSION_CHECK:-strict}"
@@ -510,13 +509,6 @@ export_work_configuration() {
         export FORGE_TEST_AGENT_ALIAS="$TEST_AGENT_ALIAS"
     else
         unset FORGE_TEST_AGENT_ALIAS
-    fi
-
-
-    if [[ -n "$REVIEW_MODEL" ]]; then
-        export FORGE_REVIEW_MODEL="$REVIEW_MODEL"
-    else
-        unset FORGE_REVIEW_MODEL
     fi
 
     if [[ -n "$REVIEW_LABEL" ]]; then
