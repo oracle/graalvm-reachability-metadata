@@ -93,6 +93,7 @@ class NativeImageRunDriverTests(unittest.TestCase):
             stack.enter_context(patch.object(
                 fix_ni_run.metrics_writer,
                 "create_java_run_fix_run_metrics_output_json",
+                autospec=True,
                 return_value={},
             ))
             stack.enter_context(patch.object(fix_ni_run.metrics_writer, "write_workflow_run_metrics"))

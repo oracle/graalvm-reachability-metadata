@@ -520,7 +520,6 @@ def main(argv=None) -> int:
             agent=agent,
             model_name=model_name,
             global_iterations=iterations,
-            tests_root=tests_root,
             strategy_name=args.strategy_name,
             status=finalize_status,
             starting_commit=checkpoint,
