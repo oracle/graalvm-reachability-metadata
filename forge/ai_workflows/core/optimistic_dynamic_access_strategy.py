@@ -87,9 +87,11 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
             "dynamic-access-coverage.json",
         )
 
-    def run(self, agent, **kwargs):
+    def run(self, agent: object, **kwargs: object) -> tuple[str, int, int]:
         initial_report = self._generate_dynamic_access_report()
-        if initial_report is None or not initial_report.has_dynamic_access or initial_report.total_calls == 0:
+        fallback_prompt_iterations = 0
+        fallback_successful_generations = 0
+        if not self._report_is_usable(initial_report):
             self._print_message(
                 "Falling back to basic iterative metadata flow: "
                 "cause={cause} coordinate={library}".format(
@@ -97,7 +99,17 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
                     library=self.library,
                 )
             )
-            return self._run_basic_iterative_fallback(agent, **kwargs)
+            fallback_result = self._run_basic_iterative_fallback(agent, **kwargs)
+            if fallback_result[0] != RUN_STATUS_SUCCESS:
+                return fallback_result
+            fallback_prompt_iterations = fallback_result[1]
+            fallback_successful_generations = fallback_result[2]
+            initial_report = self._generate_dynamic_access_report()
+            if not self._report_is_usable(initial_report):
+                self._mark_explore_after_primary(fallback_prompt_iterations)
+                return fallback_result
+
+        assert initial_report is not None
 
         save_phase_update(
             self.continuation_marker_path,
@@ -109,7 +121,7 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
         enter_phase(RUN_PHASE_EXPLORE)
         checkpoint = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
         successful_iterations = 0
-        prompt_iterations = 0
+        prompt_iterations = fallback_prompt_iterations
         current_report = initial_report
         last_successful_report: DynamicAccessCoverageReport | None = None
 
@@ -232,11 +244,8 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
             if not self.defer_dynamic_access_chunk_decision and self._pure_bulk_chunk_is_ready():
                 self.save_bulk_chunk_state()
                 workflow_status = RUN_STATUS_CHUNK_READY
-            save_phase_update(
-                self.continuation_marker_path,
-                lambda marker: marker.mark_phase_completed(PHASE_EXPLORE, iteration=prompt_iterations),
-            )
-            return workflow_status, prompt_iterations, successful_iterations
+            self._mark_explore_after_primary(prompt_iterations)
+            return workflow_status, prompt_iterations, fallback_successful_generations + successful_iterations
         save_phase_update(
             self.continuation_marker_path,
             lambda marker: marker.mark_phase_pending(PHASE_EXPLORE, iteration=prompt_iterations),
@@ -245,6 +254,32 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
             location=RunLocation(RUN_PHASE_EXPLORE, STEP_GENERATE_TESTS, self.library),
         )
         return RUN_STATUS_FAILURE, prompt_iterations, 0
+
+    @staticmethod
+    def _report_is_usable(report: DynamicAccessCoverageReport | None) -> bool:
+        """Return whether a report can steer dynamic-access generation."""
+        return bool(
+            report is not None
+            and report.has_dynamic_access
+            and report.total_calls > 0
+        )
+
+    def _mark_explore_after_primary(self, iteration: int) -> None:
+        """Persist the primary result without closing a composite exploration.
+
+        The class-by-class refinement owns the terminal transition in a
+        composite run (§AR-dynamic-access-composite).
+        """
+        if self.defer_dynamic_access_chunk_decision:
+            save_phase_update(
+                self.continuation_marker_path,
+                lambda marker: marker.mark_phase_running(PHASE_EXPLORE, iteration=iteration),
+            )
+            return
+        save_phase_update(
+            self.continuation_marker_path,
+            lambda marker: marker.mark_phase_completed(PHASE_EXPLORE, iteration=iteration),
+        )
 
     def _record_bulk_chunk_progress(
             self,
@@ -311,7 +346,7 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
             return
         self.dynamic_access_exhaust_report.save(self.dynamic_access_exhaust_report_path)
 
-    def _run_basic_iterative_fallback(self, agent, **kwargs):
+    def _run_basic_iterative_fallback(self, agent: object, **kwargs: object) -> tuple[str, int, int]:
         """Instantiate a BasicIterativeStrategy and delegate to it."""
         from ai_workflows.core.basic_iterative_strategy import (
             BASIC_ITERATIVE_PERSISTENT_INSTRUCTIONS_PATH,
@@ -324,7 +359,10 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
         fallback_obj["persistent-instructions"] = BASIC_ITERATIVE_PERSISTENT_INSTRUCTIONS_PATH
         fallback = BasicIterativeStrategy(fallback_obj, **self.context)
         agent.replace_persistent_instructions(fallback.persistent_instructions)
-        return fallback.run(agent, **kwargs)
+        try:
+            return fallback.run(agent, complete_explore_phase=False, **kwargs)
+        finally:
+            agent.replace_persistent_instructions(self.persistent_instructions)
 
     def _generate_dynamic_access_report(self, indent_level: int = 0):
         """Run the gradle task to generate a fresh DA coverage report."""
