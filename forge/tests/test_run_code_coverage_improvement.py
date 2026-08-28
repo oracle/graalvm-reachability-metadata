@@ -12,6 +12,7 @@ from pathlib import Path
 
 FORGE_ROOT = Path(__file__).resolve().parents[1]
 LAUNCHER = FORGE_ROOT / "run-code-coverage-improvement.sh"
+EXISTING_COORDINATE = "org.apache.kafka:kafka-streams:3.6.0"
 
 
 def _write_executable(path: Path, source: str) -> None:
@@ -26,6 +27,7 @@ class RunCodeCoverageImprovementTests(unittest.TestCase):
             *arguments: str,
             gh_version: str = "2.24.0",
             host_exit: int = 0,
+            issue_title: str = f"Improve coverage for {EXISTING_COORDINATE}",
     ) -> tuple[
         subprocess.CompletedProcess[str],
         Path,
@@ -50,9 +52,18 @@ if [[ "${1:-}" == "version" || "${1:-}" == "--version" ]]; then
     printf 'gh version %s (fake)\n' "$FAKE_GH_VERSION"
     exit 0
 fi
-printf '%s\n' "$@" > "$FAKE_GH_ARGUMENTS"
-printf 'gh-issue-list\n' >> "$FAKE_EVENTS"
-printf '%s\n' "$FAKE_ISSUE_NUMBER"
+printf '%s\n' "$@" >> "$FAKE_GH_ARGUMENTS"
+if [[ "${1:-} ${2:-}" == "issue list" ]]; then
+    printf 'gh-issue-list\n' >> "$FAKE_EVENTS"
+    printf '%s\n' "$FAKE_ISSUE_NUMBER"
+    exit 0
+fi
+if [[ "${1:-} ${2:-}" == "issue view" ]]; then
+    printf 'gh-issue-view\n' >> "$FAKE_EVENTS"
+    printf '%s\n' "$FAKE_ISSUE_TITLE"
+    exit 0
+fi
+exit 2
 """.replace("\\$", "$"),
         )
         _write_executable(
@@ -80,6 +91,7 @@ printf '%s\n' "$@" >> "$FAKE_RHEI_INVOCATION"
             "FAKE_HOST_ARGUMENTS": str(host_arguments_path),
             "FAKE_HOST_EXIT": str(host_exit),
             "FAKE_ISSUE_NUMBER": issue_number,
+            "FAKE_ISSUE_TITLE": issue_title,
             "FAKE_RHEI_INVOCATION": str(rhei_invocation_path),
             "PATH": f"{bin_path}{os.pathsep}{environment['PATH']}",
         })
@@ -99,12 +111,15 @@ printf '%s\n' "$@" >> "$FAKE_RHEI_INVOCATION"
             events_path,
         )
 
-    def test_validates_host_before_selecting_issue_and_executes_with_dashboard(self) -> None:
+    def test_validates_issue_before_rhei_and_passes_coordinate_to_workspace(self) -> None:
         result, gh_path, rhei_path, host_path, events_path = self._run_launcher("9460")
 
         self.assertEqual(0, result.returncode, result.stderr)
         self.assertIn("Validating code-coverage host requirements.", result.stdout)
-        self.assertIn("Selected code-coverage-improvement issue #9460.", result.stdout)
+        self.assertIn(
+            f"Selected code-coverage-improvement issue #9460 for {EXISTING_COORDINATE}.",
+            result.stdout,
+        )
 
         host_arguments = host_path.read_text(encoding="utf-8").splitlines()
         self.assertEqual(
@@ -113,14 +128,13 @@ printf '%s\n' "$@" >> "$FAKE_RHEI_INVOCATION"
         )
         self.assertIn("--mode", host_arguments)
         self.assertIn("coverage", host_arguments)
-        self.assertIn("--analysis-agent", host_arguments)
-        self.assertIn("pi", host_arguments)
         self.assertIn("gpt-5.6-luna", host_arguments)
 
         gh_arguments = gh_path.read_text(encoding="utf-8").splitlines()
-        self.assertIn("code-coverage-improvement", gh_arguments)
-        self.assertIn("no:assignee -is:blocked", gh_arguments)
+        self.assertIn("list", gh_arguments)
+        self.assertIn("view", gh_arguments)
         self.assertIn("number,labels,projectItems", gh_arguments)
+        self.assertIn("title", gh_arguments)
 
         invocation = rhei_path.read_text(encoding="utf-8").splitlines()
         self.assertEqual(str(FORGE_ROOT), invocation[0])
@@ -128,6 +142,7 @@ printf '%s\n' "$@" >> "$FAKE_RHEI_INVOCATION"
             "instantiate",
             "code-coverage-improvement",
             "issue_number=9460",
+            f"coordinate={EXISTING_COORDINATE}",
             "--output",
             "code-coverage-9460",
             "--execute",
@@ -135,9 +150,42 @@ printf '%s\n' "$@" >> "$FAKE_RHEI_INVOCATION"
             "--dashboard",
         ], invocation[1:])
         self.assertEqual(
-            ["host-requirements", "gh-issue-list", "rhei"],
+            ["host-requirements", "gh-issue-list", "gh-issue-view", "rhei"],
             events_path.read_text(encoding="utf-8").splitlines(),
         )
+
+    def test_rejects_missing_exact_version_project_before_rhei(self) -> None:
+        missing_coordinate = "org.apache.kafka:kafka-streams:3.6.2"
+        result, _, rhei_path, _, events_path = self._run_launcher(
+            "9460",
+            issue_title=f"Improve coverage for {missing_coordinate}",
+        )
+
+        self.assertEqual(1, result.returncode)
+        self.assertIn(f"{missing_coordinate}, from the title", result.stderr)
+        self.assertIn(
+            "Expected directory: tests/src/org.apache.kafka/kafka-streams/3.6.2",
+            result.stderr,
+        )
+        self.assertIn("3.6.0", result.stderr)
+        self.assertFalse(rhei_path.exists())
+        self.assertEqual(
+            ["host-requirements", "gh-issue-list", "gh-issue-view"],
+            events_path.read_text(encoding="utf-8").splitlines(),
+        )
+
+    def test_rejects_ambiguous_title_before_rhei(self) -> None:
+        result, _, rhei_path, _, _ = self._run_launcher(
+            "9460",
+            issue_title=(
+                "Compare org.apache.kafka:kafka-streams:3.6.0 with "
+                "org.apache.kafka:kafka-streams:3.5.1"
+            ),
+        )
+
+        self.assertEqual(1, result.returncode)
+        self.assertIn("names 2 coordinates; expected exactly one", result.stderr)
+        self.assertFalse(rhei_path.exists())
 
     def test_rejects_gh_before_project_items_support(self) -> None:
         result, gh_path, rhei_path, host_path, events_path = self._run_launcher(

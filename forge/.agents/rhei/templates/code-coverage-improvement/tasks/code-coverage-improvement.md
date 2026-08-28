@@ -42,26 +42,14 @@
   - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-convert.md`
 
 ### Task code-coverage-prepare: Prepare library
-**State:** prepare-test-project
+**State:** prepared
 **Prior:** Task code-coverage-convert
 
-- Source issue: `https://github.com/{{repo}}/issues/{{issue_number}}`
-- Coordinate override: `{{coordinate}}`
 - Source artifact: `runtime/code-coverage/issues/conversion.md`
 - Helper preference: reuse Forge path and source-context helpers before adding
   task-specific setup logic.
-- Purpose: require the coordinate's own test project, then create or verify the
-  dedicated code coverage test suite and prepare its context.
-- Execution: the deterministic `prepare-test-project` state validates the
-  test project before the task enters the agent-backed `execute` state.
-- Program:
-  - Resolve the coordinate from `{{coordinate}}` when it is set, otherwise from
-    the issue title, and require `tests/src/<group>/<artifact>/<version>` to
-    exist in the source checkout.
-  - Keep the check literal: a version backed only by another indexed test
-    project must be retitled to the version that owns its test project.
-- Failure handling: a missing exact-version test project is not repairable by
-  the preparation agent, so only exit 0 enters `execute`.
+- Purpose: create or verify the dedicated code coverage test suite and prepare
+  its context for the launcher-validated coordinate.
 - Required work:
   - Read the coordinate and canonical coverage-suite paths from the conversion
     artifact.

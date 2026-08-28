@@ -36,7 +36,7 @@ def _render_numeric_placeholders(source: str) -> str:
 
 class CodeCoverageRheiTemplateTests(unittest.TestCase):
 
-    def test_test_project_validation_belongs_to_prepare(self) -> None:
+    def test_launcher_preflights_are_not_rhei_states(self) -> None:
         forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         states_path: str = os.path.join(
             forge_root,
@@ -51,15 +51,7 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
         machine: dict = yaml.safe_load(_render_numeric_placeholders(source))
 
         self.assertNotIn("requirement-test-prepared", machine["states"])
-        prepare_program: str = machine["states"]["prepare-test-project"]["program"]
-        self.assertIn('["gh", "issue", "view"', prepare_program)
-        self.assertIn('"tests", "src"', prepare_program)
-        self.assertTrue(any(
-            transition["from"] == "prepare-test-project"
-            and transition["to"] == "execute"
-            and transition.get("exit_code") == 0
-            for transition in machine["transitions"]
-        ))
+        self.assertNotIn("prepare-test-project", machine["states"])
 
         tasks_path: str = os.path.join(
             forge_root,
@@ -74,7 +66,7 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
             tasks_source: str = tasks_file.read()
         self.assertIn(
             "### Task code-coverage-prepare: Prepare library\n"
-            "**State:** prepare-test-project",
+            "**State:** prepared",
             tasks_source,
         )
 

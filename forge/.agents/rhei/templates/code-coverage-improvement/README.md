@@ -12,7 +12,8 @@ the terminal TUI and browser dashboard:
 ```
 
 The launcher requires GitHub CLI 2.24.0 or newer and runs the coverage host gate
-before it queries eligible issues. A failed preflight creates no Rhei workspace.
+before it queries eligible issues. After selecting one issue, it validates the
+title coordinate and exact-version test project before creating a Rhei workspace.
 
 To instantiate a specific issue without immediately executing it, supply the
 issue number and, optionally, an explicit coordinate override:

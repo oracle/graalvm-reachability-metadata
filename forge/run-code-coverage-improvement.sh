@@ -132,10 +132,60 @@ if [[ ! "$issue_number" =~ ^[1-9][0-9]*$ ]]; then
     exit 1
 fi
 
-printf 'Selected %s issue #%s.\n' "$ISSUE_LABEL" "$issue_number"
+if ! issue_title="$(gh issue view "$issue_number" --repo "$REPO" --json title --jq .title)"; then
+    printf 'ERROR: Cannot read the title of %s issue #%s.\n' "$REPO" "$issue_number" >&2
+    exit 1
+fi
+
+readonly COORDINATE_PATTERN='[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.+-]+'
+remaining_title="$issue_title"
+coordinates=()
+while [[ "$remaining_title" =~ $COORDINATE_PATTERN ]]; do
+    coordinate_match="${BASH_REMATCH[0]}"
+    coordinates+=("$coordinate_match")
+    remaining_title="${remaining_title#*"$coordinate_match"}"
+done
+if (( ${#coordinates[@]} != 1 )); then
+    printf 'ERROR: The title of %s issue #%s names %s coordinates; expected exactly one: %q\n' \
+        "$REPO" "$issue_number" "${#coordinates[@]}" "$issue_title" >&2
+    exit 1
+fi
+coordinate="${coordinates[0]}"
+
+IFS=: read -r group artifact version <<< "$coordinate"
+artifact_root="$REPO_ROOT/tests/src/$group/$artifact"
+test_project="$artifact_root/$version"
+if [[ ! -d "$test_project" ]]; then
+    available_versions=()
+    if [[ -d "$artifact_root" ]]; then
+        for candidate in "$artifact_root"/*; do
+            [[ -d "$candidate" ]] || continue
+            available_versions+=("${candidate##*/}")
+        done
+    fi
+    available_text=""
+    for available_version in "${available_versions[@]}"; do
+        [[ -z "$available_text" ]] || available_text+=", "
+        available_text+="$available_version"
+    done
+
+    printf 'ERROR: %s, from the title of %s issue #%s, has no test project.\n' \
+        "$coordinate" "$REPO" "$issue_number" >&2
+    printf 'Expected directory: tests/src/%s/%s/%s\n' "$group" "$artifact" "$version" >&2
+    if [[ -n "$available_text" ]]; then
+        printf 'Fix: Retitle the issue to name a version with its own test project (%s).\n' \
+            "$available_text" >&2
+    else
+        printf 'Fix: Retitle the issue to name a version with its own test project for this artifact.\n' >&2
+    fi
+    exit 1
+fi
+
+printf 'Selected %s issue #%s for %s.\n' "$ISSUE_LABEL" "$issue_number" "$coordinate"
 
 cd "$SCRIPT_DIR"
 exec rhei instantiate "$ISSUE_LABEL" \
     "issue_number=$issue_number" \
+    "coordinate=$coordinate" \
     --output "code-coverage-$issue_number" \
     --execute -- --dashboard "$@"
