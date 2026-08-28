@@ -5,12 +5,11 @@
 
 This workspace converts `{{repo}}` issue `#{{issue_number}}` into a bounded
 code coverage improvement workflow for one already-supported library. The issue
-must carry `{{issue_label}}` and its title must name exactly one Maven
-coordinate in `group:artifact:version` form unless `{{coordinate}}` is
-provided.
+must carry `{{issue_label}}` and identify a Maven coordinate in
+`group:artifact:version` form unless `{{coordinate}}` is provided.
 
 The workflow keeps generated code coverage tests under the dedicated suite path
-`tests/src/<group>/<artifact>/<version>/code-coverage-improvement` (a tracked
+`tests/src/<group>/<artifact>/<test-version>/code-coverage-improvement` (a tracked
 extension suite inside the indexed test project), writes runtime evidence under
 `runtime/code-coverage/`, and runs two separately measured phases
 §AR-code-coverage-improvement. The first gives the agent 400 exact

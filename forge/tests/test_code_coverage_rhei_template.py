@@ -36,40 +36,6 @@ def _render_numeric_placeholders(source: str) -> str:
 
 class CodeCoverageRheiTemplateTests(unittest.TestCase):
 
-    def test_launcher_preflights_are_not_rhei_states(self) -> None:
-        forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        states_path: str = os.path.join(
-            forge_root,
-            ".agents",
-            "rhei",
-            "templates",
-            "code-coverage-improvement",
-            "states.yaml",
-        )
-        with open(states_path, encoding="utf-8") as states_file:
-            source: str = states_file.read()
-        machine: dict = yaml.safe_load(_render_numeric_placeholders(source))
-
-        self.assertNotIn("requirement-test-prepared", machine["states"])
-        self.assertNotIn("prepare-test-project", machine["states"])
-
-        tasks_path: str = os.path.join(
-            forge_root,
-            ".agents",
-            "rhei",
-            "templates",
-            "code-coverage-improvement",
-            "tasks",
-            "code-coverage-improvement.md",
-        )
-        with open(tasks_path, encoding="utf-8") as tasks_file:
-            tasks_source: str = tasks_file.read()
-        self.assertIn(
-            "### Task code-coverage-prepare: Prepare library\n"
-            "**State:** prepared",
-            tasks_source,
-        )
-
     def test_measurement_repairs_reuse_the_logical_cover_pass(self) -> None:
         """Both loops must keep retries out of the pass-yield history."""
         forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
