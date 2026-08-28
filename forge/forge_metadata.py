@@ -5186,7 +5186,7 @@ def prepare_dynamic_access_chunking(
         )
         if has_optimistic_bulk_phase:
             chunk_boundary: int = threshold
-            if active_chunk_remaining_budget is not None and active_chunk_remaining_budget > 0:
+            if active_chunk_remaining_budget is not None:
                 chunk_boundary = min(chunk_boundary, active_chunk_remaining_budget)
             log_stage(
                 "dynamic-access-chunking",
