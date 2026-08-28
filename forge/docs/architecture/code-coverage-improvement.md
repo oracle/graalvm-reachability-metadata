@@ -40,11 +40,12 @@ for a library that is already represented locally.
 
 The initial automation entry point should be a Rhei workspace template for one
 GitHub issue labeled `code-coverage-improvement`. The issue title must name
-exactly one Maven coordinate in `group:artifact:version` form. Template
-conversion resolves that coordinate, verifies that the library is already
-represented locally, creates or reuses a per-issue worktree, and generates
-bounded Rhei tasks for preparation, inventory, coverage generation, validation,
-discovery, finalization, and publication.
+exactly one Maven coordinate in `group:artifact:version` form. The operator
+launcher passes its validated coordinate into the template; direct template
+instantiation resolves the same coordinate from the title. Conversion verifies
+that the library is already represented locally, creates or reuses a per-issue
+worktree, and generates bounded Rhei tasks for preparation, inventory, coverage
+generation, validation, discovery, finalization, and publication.
 
 The operator entry point validates the coverage host requirements before its
 first GitHub query (§FS-forge-host-requirements). It also requires GitHub CLI
@@ -52,11 +53,14 @@ first GitHub query (§FS-forge-host-requirements). It also requires GitHub CLI
 `projectItems`, because eligibility is read from that field. It then considers
 only open, unassigned, unblocked `code-coverage-improvement` issues in Project
 status `Todo`, drains `high-priority`, then `priority`, then normal work, and
-selects the newest issue number within a tier. If validation fails or no issue
-is eligible, it fails before creating a workspace. For the selected issue it
-instantiates the required `code-coverage-<issue_number>` workspace and
-immediately executes it in the foreground with Rhei's browser dashboard
-enabled, preserving the terminal TUI and all ordinary run output.
+selects the newest issue number within a tier. It reads that issue's title,
+requires exactly one coordinate, and requires the coordinate's literal
+`tests/src/<group>/<artifact>/<version>` directory before invoking Rhei. If any
+validation fails or no issue is eligible, it creates no workspace. Otherwise it
+passes the validated coordinate into the required
+`code-coverage-<issue_number>` workspace and immediately executes it in the
+foreground with Rhei's browser dashboard enabled, preserving the terminal TUI
+and all ordinary run output.
 
 That worktree's branch is created from the HEAD of the source checkout, never
 from `origin/master`. Measurement resolves this workflow's own helpers from the
@@ -106,8 +110,8 @@ does not change the meaning of metadata-generation coverage.
 Generated code coverage tests are a tracked extension suite written under the
 coordinate's literal
 `tests/src/<group>/<artifact>/<version>/code-coverage-improvement` directory.
-Preparation rejects a coordinate without that exact-version test project
-before invoking its agent; it must not silently resolve another indexed test
+The operator launcher rejects a coordinate without that exact-version test
+project before Rhei starts; it must not silently resolve another indexed test
 project, because CI compiles the suite against the directory that owns it. The
 issue must instead be retitled to a version with its own project. The workflow
 may read the metadata-generation tests as context, but generated code coverage
@@ -469,9 +473,9 @@ The Rhei template should decompose the workflow into these phases:
 
 1. **Convert issue** — fetch one `code-coverage-improvement` issue, parse the
    coordinate, create or reuse the worktree, and record conversion rationale.
-2. **Prepare library** — deterministically require the coordinate's literal
-   test project before invoking the preparation agent, then create or verify the
-   code coverage suite, prepare source context, and record baseline facts.
+2. **Prepare library** — create or verify the code coverage suite, prepare
+   source context, and record baseline facts for the launcher-validated
+   coordinate.
 3. **Generate API inventory** — deterministically write compact JSON and
    Markdown reports for public user-callable API targets.
 4. **API coverage loop** — one task cycling deterministic measurement and an
