@@ -73,7 +73,8 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
      present in the PR or available on the branch.
    - Apply the following ordered comparison independently to the overall
      `dynamicAccess` report and every `dynamicAccess.breakdown` scope present in
-     either version:
+     either version. Treat `N/A` on either side as `0/0`: zero `totalCalls` and
+     zero `coveredCalls`.
      1. Pass when the new scope reports `totalCalls == 0`.
      2. Fail when the new scope reports `totalCalls > 0` and `coveredCalls == 0`.
      3. Pass when new `coveredCalls` is at least old `coveredCalls`, or when the
