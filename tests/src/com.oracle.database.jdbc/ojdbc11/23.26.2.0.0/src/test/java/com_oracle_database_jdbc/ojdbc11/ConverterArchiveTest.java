@@ -8,6 +8,7 @@ package com_oracle_database_jdbc.ojdbc11;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
@@ -41,7 +42,7 @@ public class ConverterArchiveTest {
         assertThat(archive.readObj(streamedArchive.toString(), "value")).isEqualTo("streamed-value");
 
         String serializedFile = "converter.ser";
-        archive.insertObjtoFile(tempDirectory.toString(), serializedFile, "file-value");
+        archive.insertObjtoFile(tempDirectory + File.separator, serializedFile, "file-value");
         assertThat(tempDirectory.resolve(serializedFile)).isRegularFile();
         assertThat(Files.size(tempDirectory.resolve(serializedFile))).isPositive();
     }
