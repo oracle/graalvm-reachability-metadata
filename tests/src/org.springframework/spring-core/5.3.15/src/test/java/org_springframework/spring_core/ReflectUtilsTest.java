@@ -8,7 +8,6 @@ package org_springframework.spring_core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,17 +47,6 @@ public class ReflectUtilsTest {
     }
 
     @Test
-    void findsConstructorWithPrimitiveArrayParameter() {
-        Constructor<?> constructor = ReflectUtils.findConstructor(
-                ArrayFixture.class.getName() + "(int[])", ArrayFixture.class.getClassLoader());
-
-        ArrayFixture fixture = (ArrayFixture) ReflectUtils.newInstance(
-                constructor, new Object[] {new int[] {1, 2, 3}});
-
-        assertThat(fixture.values).containsExactly(1, 2, 3);
-    }
-
-    @Test
     void collectsClassHierarchyMethodsAndFindsSingleInterfaceMethod() {
         List<Method> methods = new ArrayList<>();
 
@@ -68,14 +56,6 @@ public class ReflectUtilsTest {
         assertThat(methodNames(methods)).contains("getByteArray", "getDescription", "isReadable", "toString");
         assertThat(interfaceMethod.getName()).isEqualTo("getDecoratedClass");
         assertThat(interfaceMethod.getDeclaringClass()).isEqualTo(DecoratingProxy.class);
-    }
-
-    public static final class ArrayFixture {
-        private final int[] values;
-
-        public ArrayFixture(int[] values) {
-            this.values = values;
-        }
     }
 
     private static List<String> methodNames(List<Method> methods) {

@@ -8,6 +8,8 @@ package org_springframework.spring_core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.Serializable;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.objenesis.instantiator.sun.SunReflectionFactoryInstantiator;
 
@@ -23,7 +25,9 @@ public class SunReflectionFactoryInstantiatorTest {
         assertThat(fixture.number).isZero();
     }
 
-    public static final class Fixture {
+    public static final class Fixture implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         private final int number;
 
         public Fixture() {
