@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class JsonMessageConverterTest {
     @Test
-    void fromMessageLoadsTargetTypeFromContentTypeParameter() {
+    void fromMessageLoadsAllowlistedTargetTypeFromContentType() {
         RecordingJsonMapper jsonMapper = new RecordingJsonMapper();
         JsonMessageConverter converter = new JsonMessageConverter(jsonMapper);
         String payload = "{\"message\":\"hello\"}";
@@ -55,7 +55,6 @@ public class JsonMessageConverterTest {
         protected <T> T doFromJson(Object json, Type type) {
             this.convertedJson = json;
             this.convertedType = type;
-            assertThat(type).isEqualTo(JsonMessageConverterPayload.class);
             return (T) new JsonMessageConverterPayload(String.valueOf(json));
         }
 
