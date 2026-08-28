@@ -71,7 +71,7 @@ public class OPAQUETest {
         private Object value;
         private int sqlType;
 
-        public RecordingFactory() {}
+        public RecordingFactory() { }
 
         @Override
         public OracleData create(Object value, int sqlType) {

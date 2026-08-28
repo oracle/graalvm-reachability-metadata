@@ -24,7 +24,7 @@ public class DependencyDownloaderTest {
     }
 
     public static final class EmptyDependencyDownloader implements DependencyDownloader {
-        public EmptyDependencyDownloader() {}
+        public EmptyDependencyDownloader() { }
 
         @Override
         public List<DependencyInfo> listAvailableJDBCExtensions() {
