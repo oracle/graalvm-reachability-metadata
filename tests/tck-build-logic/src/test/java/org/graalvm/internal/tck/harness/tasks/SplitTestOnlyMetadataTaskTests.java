@@ -126,6 +126,28 @@ class SplitTestOnlyMetadataTaskTests {
     }
 
     @Test
+    void splitLeavesForeignConditionMetadataUntouched() throws IOException {
+        String coordinate = "com.example:root:2.0.0";
+        writeMinimalTestProject("com.example", "root", "2.0.0");
+        writeIndex("com.example", "root", "2.0.0", List.of("2.0.0"), List.of("com.example"));
+        writeIndex("org.owner", "engine", "2.0.0", List.of("2.0.0"), List.of("org.owner"));
+        writeJson(
+                "metadata/com.example/root/2.0.0/reachability-metadata.json",
+                foreignSerializationMetadata()
+        );
+        writeJson("metadata/org.owner/engine/2.0.0/reachability-metadata.json", "{}");
+
+        runSplitTask(coordinate);
+
+        JsonNode sourceMetadata = readJson("metadata/com.example/root/2.0.0/reachability-metadata.json");
+        JsonNode ownerMetadata = readJson("metadata/org.owner/engine/2.0.0/reachability-metadata.json");
+        assertThat(sourceMetadata.get("serialization"))
+                .extracting(entry -> entry.get("type").asText())
+                .containsExactly("org.owner.Engine$SerializedForm");
+        assertThat(ownerMetadata.isEmpty()).isTrue();
+    }
+
+    @Test
     void relocatesForeignConditionToExactSupportedOwner() throws IOException {
         String coordinate = "com.example:root:2.0.0";
         copyReachabilitySchemaFile();
@@ -152,7 +174,7 @@ class SplitTestOnlyMetadataTaskTests {
                 """
         );
 
-        runTask(coordinate);
+        runRouteTask(coordinate);
 
         JsonNode sourceMetadata = readJson("metadata/com.example/root/2.0.0/reachability-metadata.json");
         JsonNode ownerMetadata = readJson("metadata/org.owner/engine/2.0.0/reachability-metadata.json");
@@ -189,7 +211,7 @@ class SplitTestOnlyMetadataTaskTests {
                 """
         );
 
-        runTask(coordinate);
+        runRouteTask(coordinate);
 
         JsonNode inheritedMetadata = readJson("metadata/org.owner/engine/1.0.0/reachability-metadata.json");
         JsonNode exactMetadata = readJson("metadata/org.owner/engine/2.0.0/reachability-metadata.json");
@@ -219,7 +241,7 @@ class SplitTestOnlyMetadataTaskTests {
                 foreignSerializationMetadata()
         );
 
-        assertThatThrownBy(() -> runTask(coordinate))
+        assertThatThrownBy(() -> runRouteTask(coordinate))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("no supported artifact maps org.owner.Engine");
 
@@ -229,12 +251,23 @@ class SplitTestOnlyMetadataTaskTests {
                 .containsExactly("org.owner.Engine$SerializedForm");
     }
 
-    private void runTask(String coordinate) {
+    private void runSplitTask(String coordinate) {
         Project project = ProjectBuilder.builder()
                 .withProjectDir(tempDir.toFile())
                 .build();
         SplitTestOnlyMetadataTask task = project.getTasks()
                 .register("splitTestOnlyMetadata", SplitTestOnlyMetadataTask.class)
+                .get();
+        task.setCoordinatesOverride(List.of(coordinate));
+        task.run();
+    }
+
+    private void runRouteTask(String coordinate) {
+        Project project = ProjectBuilder.builder()
+                .withProjectDir(tempDir.toFile())
+                .build();
+        RouteForeignMetadataTask task = project.getTasks()
+                .register("routeForeignMetadata", RouteForeignMetadataTask.class)
                 .get();
         task.setCoordinatesOverride(List.of(coordinate));
         task.run();

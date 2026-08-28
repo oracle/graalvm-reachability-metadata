@@ -352,7 +352,7 @@ final class MetadataOwnershipRouter {
         return false;
     }
 
-    private void writeJson(Path file, JsonNode content) throws IOException {
+    void writeJson(Path file, JsonNode content) throws IOException {
         DefaultIndenter indenter = new DefaultIndenter("  ", "\n");
         DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
         prettyPrinter.indentObjectsWith(indenter);

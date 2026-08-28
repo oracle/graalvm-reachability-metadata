@@ -177,7 +177,8 @@ Tasks that create or update metadata, tests, and index entries.
 | `scaffold` | Create the test project and metadata skeleton for a new coordinate from the scaffold templates (§AR-build-infrastructure). |
 | `contribute` | Guided contribution flow for a new coordinate. |
 | `generateMetadata` | Generate metadata for a coordinate (optionally deriving `user-code-filter.json` from the resolved JAR). |
-| `splitTestOnlyMetadata` | Move test-only metadata into test resources and relocate uniquely owned foreign-condition entries to supported artifact/version buckets (§FS-repository-functional-spec.5.1, §FS-metadata). |
+| `splitTestOnlyMetadata` | Move test-only metadata into test resources (§FS-repository-functional-spec.5.1, §FS-metadata). |
+| `routeForeignMetadata` | After metadata validation fails, relocate uniquely owned foreign-condition entries to supported artifact/version buckets and validate the affected owners (§FS-metadata). |
 | `fixTestNativeImageRun` | Regenerate metadata for a new version failing a native-image run. |
 | `addTestedVersion` | Record a newly passing version in the artifact's `index.json` and refresh the mirrored stats and shared test sources; used by the compatibility workflow (§FS-repository-functional-spec.9). |
 | `addLibraryMetadataIndexJson`, `addLibraryAsLatestMetadataIndexJson`, `extractLibraryTestParams` | Lower-level index and parameter helpers. |

@@ -712,10 +712,12 @@ for every finalization library (§AR-forge-driver-finalization):
 2. The three repair-capable native test lanes, in order: current-defaults on
    the latest GraalVM, `future-defaults-all`, and current-defaults on the
    GraalVM 25 toolchain. Each lane can add evidence-driven metadata.
-3. `./gradlew splitTestOnlyMetadata`, which also relocates uniquely owned
-   foreign-condition entries, then reject any legacy `native-image.properties`-
-   era test config the run touched.
-4. `./gradlew checkMetadataFiles`, style fix and checks, generated-test quality
+3. `./gradlew splitTestOnlyMetadata`, then reject any legacy
+   `native-image.properties`-era test config the run touched.
+4. `./gradlew checkMetadataFiles`. A failure invokes
+   `./gradlew routeForeignMetadata` before allowed-package or agent repair, then
+   reruns the check. A passing first check never scans or rewrites foreign
+   ownership. Continue with style fix and checks, generated-test quality
    screening, and `./gradlew generateLibraryStats`.
 5. Re-run all three native lanes with `clean` and without repair. These are the
    publication proof after every metadata rewrite; a failure stops the run

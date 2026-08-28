@@ -204,21 +204,17 @@ def _run_check_metadata_files_with_allowed_packages_fix(
     seen_packages: set[str] = set()
     for attempt in range(1, 4):
         log_stage(log_stage_name, f"Running checkMetadataFiles attempt {attempt}/3 for {library}")
-        result = _run_gradle_command_with_output(
-            repo_path,
-            ["./gradlew", "checkMetadataFiles", f"-Pcoordinates={library}"],
-        )
-        if result.returncode == 0:
-            log_stage(log_stage_name, f"checkMetadataFiles passed for {library}")
-            return (True, result.stdout)
+        metadata_valid, metadata_output = _run_check_metadata_files(repo_path, library, log_stage_name)
+        if metadata_valid:
+            return (True, metadata_output)
 
         log_stage(log_stage_name, f"checkMetadataFiles failed for {library}; resolving missing allowed-packages")
-        missing_packages = _extract_missing_allowed_packages(result.stdout)
+        missing_packages = _extract_missing_allowed_packages(metadata_output)
         new_packages = missing_packages - seen_packages
         if not new_packages:
             log_stage(log_stage_name, "No new TypeReached packages found in checkMetadataFiles output")
-            print(result.stdout)
-            return (False, result.stdout)
+            print(metadata_output)
+            return (False, metadata_output)
         log_stage("allowed-packages", f"Adding allowed-packages for {library}: {', '.join(sorted(new_packages))}")
         if not _append_allowed_packages_to_metadata_index(
             repo_path=repo_path,
@@ -228,11 +224,23 @@ def _run_check_metadata_files_with_allowed_packages_fix(
             library_version=library_version,
             packages=new_packages,
         ):
-            print(result.stdout)
-            return (False, result.stdout)
+            print(metadata_output)
+            return (False, metadata_output)
         seen_packages.update(new_packages)
 
     print(f"ERROR: checkMetadataFiles still fails after updating allowed-packages for {library}.", file=sys.stderr)
+    return (False, metadata_output)
+
+
+def _run_check_metadata_files(repo_path: str, library: str, log_stage_name: str) -> tuple[bool, str]:
+    """Run one read-only metadata check and return its status and output."""
+    result = _run_gradle_command_with_output(
+        repo_path,
+        ["./gradlew", "checkMetadataFiles", f"-Pcoordinates={library}"],
+    )
+    if result.returncode == 0:
+        log_stage(log_stage_name, f"checkMetadataFiles passed for {library}")
+        return (True, result.stdout)
     return (False, result.stdout)
 
 
@@ -263,14 +271,23 @@ def run_library_finalization(
     if legacy_test_config_paths:
         print(format_legacy_test_native_image_config_error(sorted(legacy_test_config_paths)), file=sys.stderr)
         return False
-    metadata_valid, metadata_failure_output = _run_check_metadata_files_with_allowed_packages_fix(
-        repo_path=repo_path,
-        library=library,
-        group=group,
-        artifact=artifact,
-        library_version=library_version,
-        log_stage_name="check-metadata-files",
+    metadata_valid, metadata_failure_output = _run_check_metadata_files(
+        repo_path,
+        library,
+        "check-metadata-files",
     )
+    if not metadata_valid:
+        log_stage("route-foreign-metadata", f"Running routeForeignMetadata after validation failed for {library}")
+        if not _run_gradle_command(repo_path, ["./gradlew", "routeForeignMetadata", f"-Pcoordinates={library}"]):
+            return False
+        metadata_valid, metadata_failure_output = _run_check_metadata_files_with_allowed_packages_fix(
+            repo_path=repo_path,
+            library=library,
+            group=group,
+            artifact=artifact,
+            library_version=library_version,
+            log_stage_name="check-metadata-files",
+        )
     if not metadata_valid:
         for attempt in range(1, MAX_CHECK_METADATA_FIX_ATTEMPTS + 1):
             log_stage(
