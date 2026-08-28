@@ -1,0 +1,19 @@
+I could not complete the fix because execution and file-write permissions were denied.
+
+Findings:
+
+- Exact reproduction was blocked before Gradle started because `/tmp/metadata-forge-gradle` is read-only.
+- The provided full trace contains no `Caused by:` lines.
+- The actual cause is missing serialization metadata for `org.junit.platform.engine.UniqueId$SerializedForm`.
+- The required fix is a conditional entry:
+
+```json
+"serialization": [{
+  "condition": {
+    "typeReached": "org.junit.platform.engine.UniqueId"
+  },
+  "type": "org.junit.platform.engine.UniqueId$SerializedForm"
+}]
+```
+
+No files were changed.

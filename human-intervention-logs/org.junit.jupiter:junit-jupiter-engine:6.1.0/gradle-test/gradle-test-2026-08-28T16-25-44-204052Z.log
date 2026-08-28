@@ -1,0 +1,131 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.junit.jupiter:junit-jupiter-engine:6.1.0
+Command: `/home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9207-8eb1adc2/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 11 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :processTestResources UP-TO-DATE
+> Task :compileTestJava UP-TO-DATE
+> Task :testClasses UP-TO-DATE
+> Task :test UP-TO-DATE
+> Task :generateTestResourcesConfigFile UP-TO-DATE
+> Task :nativeTestCompile UP-TO-DATE
+
+> Task :nativeTest FAILED
+[junit-platform-native] WARNING: -djunit.platform.listeners.uid.tracking.output.dir not specified, trying to find test-ids on default Gradle/Maven locations. As this is a fallback mode, it could take a while. This should only happen if you are running tests executable manually and you didn't pass uid output directory with -djunit.platform.listeners.uid.tracking.output.dir=<path>.
+Exception in thread "main" com.oracle.svm.core.jdk.UnsupportedFeatureError: SerializationConstructorAccessor class not found for declaringClass: org.junit.platform.engine.UniqueId$SerializedForm (targetConstructorClass: java.lang.Object). Usually adding org.junit.platform.engine.UniqueId$SerializedForm to serialization-config.json fixes the problem.
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.util.VMError.unsupportedFeature(VMError.java:121)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.serialize.SerializationSupport.getSerializationConstructorAccessor(SerializationSupport.java:286)
+	at java.base@25.0.3/jdk.internal.reflect.ReflectionFactory.generateConstructor(ReflectionFactory.java:2439)
+	at java.base@25.0.3/jdk.internal.reflect.ReflectionFactory.newConstructorForSerialization(ReflectionFactory.java:297)
+	at java.base@25.0.3/java.io.ObjectStreamClass.getSerializableConstructor(ObjectStreamClass.java:1319)
+[junit-platform-native] WARNING: Using test-ids from default Gradle project location:/home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9207-8eb1adc2/tests/src/org.junit.jupiter/junit-jupiter-engine/5.8.2/build/test-results/test/testlist
+	at java.base@25.0.3/java.io.ObjectStreamClass.<init>(ObjectStreamClass.java:371)
+	at java.base@25.0.3/java.io.ObjectStreamClass$Caches$1.computeValue(ObjectStreamClass.java:93)
+	at java.base@25.0.3/java.io.ObjectStreamClass$Caches$1.computeValue(ObjectStreamClass.java:90)
+	at java.base@25.0.3/java.io.ClassCache$1.computeValue(ClassCache.java:78)
+	at java.base@25.0.3/java.io.ClassCache$1.computeValue(ClassCache.java:75)
+	at java.base@25.0.3/java.lang.ClassValue.get(JavaLangSubstitutions.java:542)
+	at java.base@25.0.3/java.io.ClassCache.get(ClassCache.java:89)
+	at java.base@25.0.3/java.io.ObjectStreamClass.lookup(ObjectStreamClass.java:76)
+	at java.base@25.0.3/java.io.ObjectStreamClass.lookup(ObjectStreamClass.java:227)
+	at org.junit.platform.engine.UniqueId.<clinit>(UniqueId.java:50)
+	at org.junit.platform.engine.discovery.DiscoverySelectors.selectUniqueId(DiscoverySelectors.java:1199)
+	at java.base@25.0.3/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:214)
+	at java.base@25.0.3/java.util.ArrayList$ArrayListSpliterator.forEachRemaining(ArrayList.java:1716)
+	at java.base@25.0.3/java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:803)
+	at java.base@25.0.3/java.util.stream.ReferencePipeline$7$1FlatMap.accept(ReferencePipeline.java:293)
+	at java.base@25.0.3/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:214)
+	at java.base@25.0.3/java.util.stream.ReferencePipeline$2$1.accept(ReferencePipeline.java:197)
+	at java.base@25.0.3/java.util.Iterator.forEachRemaining(Iterator.java:133)
+	at java.base@25.0.3/java.util.Spliterators$IteratorSpliterator.forEachRemaining(Spliterators.java:1939)
+	at java.base@25.0.3/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:570)
+	at java.base@25.0.3/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:560)
+	at java.base@25.0.3/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:921)
+	at java.base@25.0.3/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:265)
+	at java.base@25.0.3/java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:723)
+	at org.graalvm.junit.platform.NativeImageJUnitLauncher.getSelectors(NativeImageJUnitLauncher.java:166)
+	at org.graalvm.junit.platform.NativeImageJUnitLauncher.getTestPlan(NativeImageJUnitLauncher.java:145)
+	at org.graalvm.junit.platform.NativeImageJUnitLauncher.main(NativeImageJUnitLauncher.java:119)
+	at java.base@25.0.3/java.lang.invoke.LambdaForm$DMH/sa346b79c.invokeStaticInit(LambdaForm$DMH)
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9207-8eb1adc2/tests/src/org.junit.jupiter/junit-jupiter-engine/5.8.2/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':nativeTest'.
+> Process 'command '/home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9207-8eb1adc2/tests/src/org.junit.jupiter/junit-jupiter-engine/5.8.2/build/native/nativeTestCompile/org.junit.jupiter.junit-jupiter-engine_tests-tests'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 11s
+19 actionable tasks: 2 executed, 17 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9207-8eb1adc2/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.junit.jupiter:junit-jupiter-engine:6.1.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 14s
+9 actionable tasks: 1 executed, 8 up-to-date
