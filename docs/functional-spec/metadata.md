@@ -88,6 +88,22 @@ test project's
 The shipped metadata therefore stays free of test-only types, while the test
 native image still loads everything it needs from its own resources.
 
+### Foreign conditions are routed to supported owners
+
+Native tracing can observe an entry whose `condition.typeReached` belongs to a
+different artifact than the coordinate under test. `splitTestOnlyMetadata`
+handles that case deterministically before validation: it resolves candidate
+owners from checked-in `allowed-packages`, and may move the entry only when the
+same tested version is mapped by exactly one supported artifact. If that tested
+version shares a metadata bucket with other versions, the task forks an exact
+version bucket by copying the inherited metadata before adding the new entry;
+older tested versions keep their original bucket unchanged.
+
+An entry with no unique supported owner remains untouched and makes the task
+fail. The task never deletes an entry merely because its condition is foreign,
+and `checkMetadataFiles` remains the independent, read-only enforcement gate.
+§FS-repository-functional-spec.5.1
+
 ## 3. Provenance
 
 No file here is hand-trusted: each metadata entry is justified by a test in the

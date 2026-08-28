@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.graalvm.internal.tck.Coordinates;
+import org.graalvm.internal.tck.MetadataFilesCheckerTask;
 import org.graalvm.internal.tck.model.MetadataVersionsIndexEntry;
 import org.graalvm.internal.tck.utils.CoordinateUtils;
 import org.graalvm.internal.tck.utils.MetadataGenerationUtils;
@@ -73,8 +74,7 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         Path metadataDirectory = resolveMetadataDirectory(parsedCoordinates);
         if (metadataDirectory == null) {
             getLogger().lifecycle(
-                    "Skipping {}: library version {} does not have its own metadata directory. "
-                            + "splitTestOnlyMetadata only runs for versions that have their own metadata.",
+                    "Skipping {}: no metadata bucket supports library version {}.",
                     coordinate,
                     parsedCoordinates.version()
             );
@@ -106,23 +106,48 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
         splitSerialization(libraryMetadata, movedMetadata, testPackages);
         splitResources(libraryMetadata, movedMetadata, testPackages, testResources);
 
+        MetadataOwnershipRouter ownershipRouter = new MetadataOwnershipRouter(objectMapper, getLogger());
+        Set<String> relocatedOwners = ownershipRouter.route(
+                getProject().file("metadata").toPath(),
+                parsedCoordinates,
+                libraryMetadata
+        );
+        validateRelocatedOwners(relocatedOwners);
+
         ObjectNode finalTestMetadata = mergeReachabilityMetadata(retainedTestMetadata, movedMetadata);
+
+        writeJson(metadataFile, libraryMetadata);
 
         if (finalTestMetadata.isEmpty()) {
             deleteFileIfPresent(testMetadataFile);
-            getLogger().lifecycle("No test-only reachability metadata entries found for {}", coordinate);
+            getLogger().lifecycle(
+                    "No test-only reachability metadata entries found for {}; relocated owners: {}",
+                    coordinate,
+                    relocatedOwners
+            );
             return;
         }
 
-        writeJson(metadataFile, libraryMetadata);
         writeJson(testMetadataFile, finalTestMetadata);
-        getLogger().lifecycle("splitTestOnlyMetadata completed for {}", coordinate);
+        getLogger().lifecycle("splitTestOnlyMetadata completed for {}; relocated owners: {}", coordinate, relocatedOwners);
     }
 
-    private Path resolveMetadataDirectory(Coordinates parsedCoordinates) {
+    private Path resolveMetadataDirectory(Coordinates parsedCoordinates) throws IOException {
         Path conventional = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", parsedCoordinates)).toPath();
         if (Files.isDirectory(conventional)) {
             return conventional;
+        }
+
+        Path artifactDirectory = conventional.getParent();
+        Path indexFile = artifactDirectory.resolve("index.json");
+        if (!Files.isRegularFile(indexFile)) {
+            return null;
+        }
+        for (MetadataVersionsIndexEntry entry : readIndexEntries(indexFile)) {
+            if (entry.testedVersions() != null && entry.testedVersions().contains(parsedCoordinates.version())) {
+                Path sharedDirectory = artifactDirectory.resolve(entry.metadataVersion());
+                return Files.isDirectory(sharedDirectory) ? sharedDirectory : null;
+            }
         }
         return null;
     }
@@ -141,7 +166,10 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
 
         List<MetadataVersionsIndexEntry> entries = readIndexEntries(indexFile);
         for (MetadataVersionsIndexEntry entry : entries) {
-            if (!parsedCoordinates.version().equals(entry.metadataVersion())) {
+            boolean matchesMetadataVersion = parsedCoordinates.version().equals(entry.metadataVersion());
+            boolean matchesTestedVersion = entry.testedVersions() != null
+                    && entry.testedVersions().contains(parsedCoordinates.version());
+            if (!matchesMetadataVersion && !matchesTestedVersion) {
                 continue;
             }
             return resolveTestsDirectoryForEntry(parsedCoordinates, entry, indexFile);
@@ -165,6 +193,19 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
 
     private List<MetadataVersionsIndexEntry> readIndexEntries(Path indexFile) throws IOException {
         return objectMapper.readValue(indexFile.toFile(), new TypeReference<>() {});
+    }
+
+    private void validateRelocatedOwners(Set<String> relocatedOwners) {
+        for (String owner : relocatedOwners) {
+            String taskName = "checkRelocatedMetadata_" + owner.replace(':', '_') + "_" + System.nanoTime();
+            MetadataFilesCheckerTask checker = getProject().getTasks().create(taskName, MetadataFilesCheckerTask.class);
+            checker.setCoordinates(owner);
+            try {
+                checker.run();
+            } finally {
+                checker.setEnabled(false);
+            }
+        }
     }
 
     private Set<String> discoverTestResources(Path testsDirectory) throws IOException {
