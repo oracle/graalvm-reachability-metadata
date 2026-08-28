@@ -226,11 +226,17 @@ class SplitTestOnlyMetadataTaskTests {
         assertThat(ownerIndex.get(0).get("tested-versions"))
                 .extracting(JsonNode::asText)
                 .containsExactly("1.0.0");
+        assertThat(ownerIndex.get(0).has("latest")).isFalse();
+        assertThat(ownerIndex.get(0).has("auto-update")).isFalse();
+        assertThat(ownerIndex.get(0).has("high-priority")).isFalse();
         assertThat(ownerIndex.get(1).get("metadata-version").asText()).isEqualTo("2.0.0");
         assertThat(ownerIndex.get(1).get("test-version").asText()).isEqualTo("1.0.0");
         assertThat(ownerIndex.get(1).get("tested-versions"))
                 .extracting(JsonNode::asText)
                 .containsExactly("2.0.0");
+        assertThat(ownerIndex.get(1).get("latest").asBoolean()).isTrue();
+        assertThat(ownerIndex.get(1).get("auto-update").asBoolean()).isTrue();
+        assertThat(ownerIndex.get(1).get("high-priority").asBoolean()).isTrue();
         assertThat(task.generatedStatsCoordinates())
                 .containsExactly("org.owner:engine:2.0.0");
     }
@@ -316,6 +322,8 @@ class SplitTestOnlyMetadataTaskTests {
                 [
                   {
                     "latest": true,
+                    "auto-update": true,
+                    "high-priority": true,
                     "metadata-version": "%s",
                     "tested-versions": %s,
                     "allowed-packages": %s

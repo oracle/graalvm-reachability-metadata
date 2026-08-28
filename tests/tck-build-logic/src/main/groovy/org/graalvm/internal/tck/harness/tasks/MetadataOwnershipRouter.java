@@ -41,6 +41,7 @@ import java.util.stream.Stream;
 final class MetadataOwnershipRouter {
     private static final String INDEX_FILE = "index.json";
     private static final String METADATA_FILE = "reachability-metadata.json";
+    private static final List<String> LATEST_ONLY_FIELDS = List.of("latest", "auto-update", "high-priority");
     private static final List<SectionPath> SECTION_PATHS = List.of(
             new SectionPath("reflection", null),
             new SectionPath("resources", null),
@@ -232,7 +233,11 @@ final class MetadataOwnershipRouter {
         if (!exactEntry.hasNonNull("test-version")) {
             exactEntry.put("test-version", owner.metadataVersion());
         }
-        exactEntry.remove(List.of("latest", "auto-update", "high-priority"));
+        if (owner.entry().path("latest").asBoolean(false)) {
+            owner.entry().remove(LATEST_ONLY_FIELDS);
+        } else {
+            exactEntry.remove(LATEST_ONLY_FIELDS);
+        }
 
         ArrayNode retainedVersions = objectMapper.createArrayNode();
         testedVersions.stream()
