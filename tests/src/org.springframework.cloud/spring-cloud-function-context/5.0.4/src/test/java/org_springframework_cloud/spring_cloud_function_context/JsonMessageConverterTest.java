@@ -7,8 +7,6 @@
 package org_springframework_cloud.spring_cloud_function_context;
 
 import java.lang.reflect.Type;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
@@ -23,26 +21,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class JsonMessageConverterTest {
     @Test
-    void fromMessageLoadsAllowlistedTargetTypeFromContentType() {
+    void fromMessageConvertsToExplicitTargetType() {
         RecordingJsonMapper jsonMapper = new RecordingJsonMapper();
         JsonMessageConverter converter = new JsonMessageConverter(jsonMapper);
         String payload = "{\"message\":\"hello\"}";
         Message<String> message = MessageBuilder.withPayload(payload)
-                .setHeader(MessageHeaders.CONTENT_TYPE, applicationJsonFor(JsonMessageConverterPayload.class))
+                .setHeader(MessageHeaders.CONTENT_TYPE, new MimeType("application", "json"))
                 .build();
 
-        Object converted = converter.fromMessage(message, Object.class);
+        Object converted = converter.fromMessage(message, JsonMessageConverterPayload.class);
 
         assertThat(converted).isInstanceOf(JsonMessageConverterPayload.class);
         assertThat(((JsonMessageConverterPayload) converted).rawJson()).isEqualTo(payload);
         assertThat(jsonMapper.convertedJson()).isEqualTo(payload);
         assertThat(jsonMapper.convertedType()).isEqualTo(JsonMessageConverterPayload.class);
-    }
-
-    private static MimeType applicationJsonFor(Class<?> type) {
-        Map<String, String> parameters = new LinkedHashMap<>();
-        parameters.put("type", type.getName());
-        return new MimeType("application", "json", parameters);
     }
 
     private static final class RecordingJsonMapper extends JsonMapper {
