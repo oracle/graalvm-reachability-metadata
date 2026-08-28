@@ -234,7 +234,7 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 - **Declared Docker images.** Tests that use Docker must declare every image they need in `required-docker-images.txt`. Each image must already appear in `tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-<dockerImageName>`. Tests fail otherwise.
 - **Required lanes.** Tests must compile under JDK 25 and pass both `javaTest` and `nativeTest` lanes on every JDK/OS combination listed in `ci.json`.
 - **Recorded passing versions.** Newly added `tested-versions` entries are recorded in `index.json` only after they pass on **every** required environment (enforced by `verify-new-library-version-compatibility`).
-- **Coverage non-regression.** Dynamic-access coverage between consecutive tested versions of a library must hold the per-label gates of the contribution contract (§FS-contribution-contract.3): strict percentage non-regression for library updates, a bounded drop for the `fixes-*` repair labels, and a coverage floor for new libraries.
+- **Coverage non-regression.** Dynamic-access coverage between consecutive tested versions of a library must hold the per-label gates of the contribution contract (§FS-contribution-contract.3): strict percentage non-regression for library updates, the ordered repair comparison for the `fixes-*` labels, and a coverage floor for new libraries.
 
 ### 5.3 CI gates
 

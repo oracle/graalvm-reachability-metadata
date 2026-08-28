@@ -83,7 +83,9 @@ API surface.
 | `fixes-javac-fail`, `fixes-java-run-fail`, `fixes-native-image-run-fail` | Each overall or breakdown scope passes the repair comparison below. |
 
 For the `fixes-*` labels, apply this ordered comparison independently to the
-overall dynamic-access report and every breakdown present in either version:
+overall dynamic-access report and every breakdown present in either version.
+Treat `N/A` on either side of a comparison as `0/0`: zero total calls and zero
+covered calls.
 
 1. A new scope with no calls passes because no comparable call surface remains.
 2. A new scope with calls but zero covered calls fails.
