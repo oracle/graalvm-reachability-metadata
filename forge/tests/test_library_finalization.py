@@ -199,6 +199,44 @@ class LibraryFinalizationTests(unittest.TestCase):
             ["splitTestOnlyMetadata", "checkMetadataFiles", "routeForeignMetadata", "recheckMetadataFiles"],
         )
 
+    def test_route_failure_falls_through_to_analysis_repair(self) -> None:
+        def run_gradle(_repo_path: str, command: list[str]) -> bool:
+            return command[1] != "routeForeignMetadata"
+
+        with tempfile.TemporaryDirectory() as repo_path, patch(
+                "utility_scripts.library_finalization._run_gradle_command",
+                side_effect=run_gradle,
+        ), patch(
+                "utility_scripts.library_finalization.find_uncommitted_legacy_test_native_image_config_files_for_coordinate",
+                return_value=[],
+        ), patch(
+                "utility_scripts.library_finalization._run_check_metadata_files",
+                return_value=(False, "malformed metadata"),
+        ), patch(
+                "utility_scripts.library_finalization._run_check_metadata_files_with_allowed_packages_fix",
+                return_value=(True, "BUILD SUCCESSFUL"),
+        ) as check_metadata, patch(
+                "utility_scripts.library_finalization._run_check_metadata_fix",
+                return_value=True,
+        ) as analysis_fix, patch(
+                "utility_scripts.library_finalization.run_style_fix_and_checks",
+                return_value=True,
+        ), patch(
+                "utility_scripts.library_finalization.collect_generated_test_validity_issues",
+                return_value=[],
+        ):
+            result = run_library_finalization(
+                repo_path=repo_path,
+                library="org.example:demo:1.0.0",
+                group="org.example",
+                artifact="demo",
+                library_version="1.0.0",
+            )
+
+        self.assertTrue(result)
+        analysis_fix.assert_called_once_with(repo_path, "org.example:demo:1.0.0", "malformed metadata")
+        check_metadata.assert_called_once()
+
     def test_metadata_validation_passes_after_first_analysis_repair(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path, patch(
                 "utility_scripts.library_finalization._run_gradle_command",

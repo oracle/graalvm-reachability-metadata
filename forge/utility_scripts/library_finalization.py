@@ -278,16 +278,15 @@ def run_library_finalization(
     )
     if not metadata_valid:
         log_stage("route-foreign-metadata", f"Running routeForeignMetadata after validation failed for {library}")
-        if not _run_gradle_command(repo_path, ["./gradlew", "routeForeignMetadata", f"-Pcoordinates={library}"]):
-            return False
-        metadata_valid, metadata_failure_output = _run_check_metadata_files_with_allowed_packages_fix(
-            repo_path=repo_path,
-            library=library,
-            group=group,
-            artifact=artifact,
-            library_version=library_version,
-            log_stage_name="check-metadata-files",
-        )
+        if _run_gradle_command(repo_path, ["./gradlew", "routeForeignMetadata", f"-Pcoordinates={library}"]):
+            metadata_valid, metadata_failure_output = _run_check_metadata_files_with_allowed_packages_fix(
+                repo_path=repo_path,
+                library=library,
+                group=group,
+                artifact=artifact,
+                library_version=library_version,
+                log_stage_name="check-metadata-files",
+            )
     if not metadata_valid:
         for attempt in range(1, MAX_CHECK_METADATA_FIX_ATTEMPTS + 1):
             log_stage(
