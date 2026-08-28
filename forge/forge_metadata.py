@@ -317,6 +317,7 @@ SCRATCH_WORKTREE_DIRNAME = "forge_worktrees"
 PREFLIGHT_INFO_DIRNAME = "preflight_info"
 SCRATCH_REVIEW_WORKTREE_DIRNAME = "forge_review_worktrees"
 SCRATCH_FINAL_INDEX_VALIDATION_WORKTREE_DIRNAME = "forge_final_index_validation_worktrees"
+SCRATCH_CONFLICT_RESOLUTION_WORKTREE_DIRNAME = "forge_conflict_resolution_worktrees"
 SCRATCH_METRICS_DIRNAME = "forge_run_metrics"
 ISSUE_CLAIM_LOCK_DIRNAME = "metadata-forge-issue-claim-locks"
 ISSUE_CLAIM_CACHE_REASON_ASSIGNED = "assigned"
@@ -2191,6 +2192,8 @@ def get_pull_request_state(pr_number: int) -> dict:
           url
           body
           headRefOid
+          headRefName
+          isCrossRepository
           reviewDecision
           mergeStateStatus
           mergeable
@@ -2277,6 +2280,13 @@ def has_passing_pull_request_gates(pr: dict) -> bool:
         and pr.get("mergeStateStatus") == "CLEAN"
         and ci_state == "SUCCESS"
     )
+
+
+def has_successful_pull_request_ci(pr: dict) -> bool:
+    """Return True when the pull request's combined CI status is successful."""
+    status_check_rollup = pr.get("statusCheckRollup")
+    ci_state = status_check_rollup.get("state") if isinstance(status_check_rollup, dict) else None
+    return ci_state == "SUCCESS"
 
 
 def has_failed_pull_request_ci(pr: dict) -> bool:
@@ -2634,6 +2644,112 @@ def merge_pull_request(pr: dict, reachability_metadata_path: str | None = None) 
         apply_unblocked_issue_merge_follow_up(pr)
 
 
+def is_pull_request_conflicting(pull_request: dict) -> bool:
+    """Return True when GitHub reports the pull request as conflicting with its base."""
+    return pull_request.get("mergeable") == "CONFLICTING"
+
+
+def resolve_pull_request_merge_conflict(
+        pull_request: dict,
+        reachability_metadata_path: str,
+) -> bool:
+    """Merge the base branch into a conflicting PR head and push what git resolved.
+
+    Returns True only when the merge left no conflict behind and the result
+    reached the head branch. Anything git could not resolve on its own is a real
+    disagreement over content and stays for a maintainer (§FS-automated-pr-review).
+    """
+    pr_number = pull_request.get("number")
+    head_ref_name = pull_request.get("headRefName")
+    head_ref_oid = pull_request.get("headRefOid")
+    if not isinstance(pr_number, int) or not isinstance(head_ref_name, str) or not head_ref_name:
+        print(f"ERROR: Missing head branch metadata for pull request #{pr_number}.", file=sys.stderr)
+        raise RuntimeError(f"Missing head branch metadata for pull request #{pr_number}")
+    if pull_request.get("isCrossRepository"):
+        print(
+            f"[Leaving PR #{pr_number} conflicting: its head branch lives in a fork "
+            "that Forge cannot push to.]"
+        )
+        return False
+
+    repo_root = get_repo_root()
+    conflict_worktrees_root = os.path.join(
+        repo_root,
+        "local_repositories",
+        SCRATCH_CONFLICT_RESOLUTION_WORKTREE_DIRNAME,
+    )
+    os.makedirs(conflict_worktrees_root, exist_ok=True)
+    worktree_path = os.path.join(
+        conflict_worktrees_root,
+        f"conflict-pr-{pr_number}-{uuid.uuid4().hex[:8]}",
+    )
+
+    fetch_review_base_ref(reachability_metadata_path)
+    run_git_transport(
+        ["fetch", "--quiet", "origin", f"refs/pull/{pr_number}/head"],
+        cwd=reachability_metadata_path,
+    )
+    create_detached_worktree(
+        reachability_metadata_path,
+        worktree_path,
+        "FETCH_HEAD",
+        f"Failed to create conflict resolution worktree for PR #{pr_number}",
+    )
+    try:
+        fetched_head = run_checked_command(
+            ["git", "rev-parse", "HEAD"],
+            worktree_path,
+            f"Failed to resolve fetched PR #{pr_number} head for conflict resolution",
+        ).stdout.strip()
+        if fetched_head != head_ref_oid:
+            print(
+                (
+                    f"[Leaving PR #{pr_number} conflicting: head changed before resolution, "
+                    f"expected {head_ref_oid}, fetched {fetched_head}.]"
+                )
+            )
+            return False
+
+        # `--no-ff` so a head that is merely behind the base can never fast-forward
+        # onto it, which would leave the pull request with nothing to merge.
+        merge_result = subprocess.run(
+            [
+                "git", "merge", "--no-ff",
+                f"origin/{DEFAULT_WORKTREE_BASE_REF}",
+                "-m", f"Merge {DEFAULT_WORKTREE_BASE_REF} into {head_ref_name}",
+            ],
+            cwd=worktree_path,
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+        )
+        if merge_result.returncode != 0:
+            conflicted_paths = run_checked_command(
+                ["git", "diff", "--name-only", "--diff-filter=U"],
+                worktree_path,
+                f"Failed to list unresolved conflicts for PR #{pr_number}",
+            ).stdout.split()
+            subprocess.run(["git", "merge", "--abort"], cwd=worktree_path, check=False)
+            print(
+                f"[Leaving PR #{pr_number} conflicting: git could not resolve "
+                f"{', '.join(conflicted_paths) or 'the merge'}.]"
+            )
+            return False
+
+        run_git_transport(
+            ["push", "origin", f"HEAD:refs/heads/{head_ref_name}"],
+            cwd=worktree_path,
+        )
+        print(
+            f"[Merged {DEFAULT_WORKTREE_BASE_REF} into PR #{pr_number} and pushed it; "
+            "its checks restart, so the merge belongs to a later pass.]"
+        )
+        return True
+    finally:
+        remove_worktree(reachability_metadata_path, worktree_path)
+
+
 def reconcile_reviewed_pull_request(
         pr_number: int,
         reachability_metadata_path: str | None = None,
@@ -2692,6 +2808,14 @@ def reconcile_reviewed_pull_request(
                     f"[Skipping merge for approved PR #{pr_number}: CI failed, but no eligible "
                     "GitHub Actions workflow runs were found to rerun.]"
                 )
+            return True
+
+        if is_pull_request_conflicting(pr) and has_successful_pull_request_ci(pr):
+            # §FS-automated-pr-review: git resolves the ledger, the merge waits a pass.
+            resolve_pull_request_merge_conflict(
+                pr,
+                reachability_metadata_path or get_repo_root(),
+            )
             return True
 
         if not has_passing_pull_request_gates(pr):

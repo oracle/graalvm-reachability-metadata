@@ -4206,6 +4206,68 @@ class PullRequestReviewTests(unittest.TestCase):
         rerun_failed_jobs.assert_not_called()
         merge_pull_request.assert_not_called()
 
+    def test_reconcile_approved_conflicting_pr_resolves_the_conflict_instead_of_merging(self) -> None:
+        pr = {
+            "number": 3513,
+            "url": "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
+            "headRefOid": "abc123",
+            "headRefName": "ai/kimeta/demo",
+            "reviewDecision": "APPROVED",
+            "mergeable": "CONFLICTING",
+            "mergeStateStatus": "DIRTY",
+            "statusCheckRollup": {"state": "SUCCESS"},
+        }
+
+        with patch.object(forge_metadata, "get_pull_request_state", return_value=pr), \
+                patch.object(
+                    forge_metadata,
+                    "resolve_pull_request_merge_conflict",
+                    return_value=True,
+                ) as resolve_conflict, \
+                patch.object(forge_metadata, "merge_pull_request") as merge_pull_request:
+            self.assertTrue(forge_metadata.reconcile_reviewed_pull_request(3513, "/tmp/reachability"))
+
+        resolve_conflict.assert_called_once_with(pr, "/tmp/reachability")
+        merge_pull_request.assert_not_called()
+
+    def test_reconcile_conflicting_pr_without_successful_ci_is_left_untouched(self) -> None:
+        pr = {
+            "number": 3513,
+            "url": "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
+            "headRefOid": "abc123",
+            "headRefName": "ai/kimeta/demo",
+            "reviewDecision": "APPROVED",
+            "mergeable": "CONFLICTING",
+            "mergeStateStatus": "DIRTY",
+            "statusCheckRollup": {"state": "PENDING"},
+        }
+
+        with patch.object(forge_metadata, "get_pull_request_state", return_value=pr), \
+                patch.object(
+                    forge_metadata,
+                    "resolve_pull_request_merge_conflict",
+                ) as resolve_conflict, \
+                patch.object(forge_metadata, "merge_pull_request") as merge_pull_request:
+            self.assertTrue(forge_metadata.reconcile_reviewed_pull_request(3513, "/tmp/reachability"))
+
+        resolve_conflict.assert_not_called()
+        merge_pull_request.assert_not_called()
+
+    def test_resolve_pull_request_merge_conflict_leaves_fork_heads_alone(self) -> None:
+        pr = {
+            "number": 3513,
+            "headRefOid": "abc123",
+            "headRefName": "contributor-branch",
+            "isCrossRepository": True,
+        }
+
+        with patch.object(forge_metadata, "create_detached_worktree") as create_detached_worktree:
+            self.assertFalse(
+                forge_metadata.resolve_pull_request_merge_conflict(pr, "/tmp/reachability")
+            )
+
+        create_detached_worktree.assert_not_called()
+
     def test_rerun_failed_pull_request_workflow_jobs_reruns_failures_under_attempt_limit(self) -> None:
         workflow_runs = [
             {"id": 101, "conclusion": "failure", "run_attempt": 1},
