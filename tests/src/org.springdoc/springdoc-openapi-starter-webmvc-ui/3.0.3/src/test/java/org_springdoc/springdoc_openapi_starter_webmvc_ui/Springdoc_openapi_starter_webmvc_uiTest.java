@@ -28,11 +28,13 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.springdoc.core.models.GroupedOpenApi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -112,6 +114,18 @@ public class Springdoc_openapi_starter_webmvc_uiTest {
 
     @Test
     @Timeout(value = 59, unit = TimeUnit.SECONDS)
+    void generatesPathFilteredGroupedOpenApiDocument() throws Exception {
+        HttpResponse<String> apiDocs = get("/v3/api-docs/greetings", MediaType.APPLICATION_JSON_VALUE);
+
+        assertThat(apiDocs.statusCode()).isEqualTo(200);
+        assertThat(contentType(apiDocs)).startsWith(MediaType.APPLICATION_JSON_VALUE);
+        assertThat(apiDocs.body())
+                .contains("\"/greetings/{name}\"", "\"operationId\":\"greetByName\"")
+                .doesNotContain("\"/status\"");
+    }
+
+    @Test
+    @Timeout(value = 59, unit = TimeUnit.SECONDS)
     void servesSwaggerUiRedirectPageAssetsAndConfiguration() throws Exception {
         HttpResponse<String> redirect = get("/swagger-ui.html", MediaType.TEXT_HTML_VALUE);
 
@@ -153,13 +167,20 @@ public class Springdoc_openapi_starter_webmvc_uiTest {
 
     @SpringBootConfiguration(proxyBeanMethods = false)
     @EnableAutoConfiguration
-    @Import(GreetingController.class)
+    @Import({GreetingController.class, StatusController.class})
     @OpenAPIDefinition(
             info = @Info(
                     title = "Greeting API",
                     version = "current",
                     description = "API generated from an annotated Spring MVC controller"))
     public static class TestApplication {
+        @Bean
+        public GroupedOpenApi greetingsOpenApi() {
+            return GroupedOpenApi.builder()
+                    .group("greetings")
+                    .pathsToMatch("/greetings/**")
+                    .build();
+        }
     }
 
     @RestController
@@ -182,6 +203,14 @@ public class Springdoc_openapi_starter_webmvc_uiTest {
                         @RequestParam(name = "formal", defaultValue = "false") boolean formal) {
             String salutation = formal ? "Good day" : "Hello";
             return new Greeting(salutation + ", " + name + "!", name, formal);
+        }
+    }
+
+    @RestController
+    public static class StatusController {
+        @GetMapping(value = "/status", produces = MediaType.TEXT_PLAIN_VALUE)
+        public String status() {
+            return "ready";
         }
     }
 
