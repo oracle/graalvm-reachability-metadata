@@ -74,15 +74,17 @@ class AgentRunResult:
 def agent_process_environment(
         environment: dict[str, str] | None = None,
 ) -> dict[str, str]:
-    """Build the environment for an agent role invocation.
+    """Build the environment for one agent-role invocation.
 
-    Published-PR review opts into the authenticated GitHub CLI explicitly;
-    every other role loses GitHub credential channels.
+    Published pull-request review explicitly opts into the trusted GitHub
+    session; every other role loses GitHub credential channels.
     §FS-forge-agent-runtime-selection
     """
     source = os.environ if environment is None else environment
     sanitized = dict(source)
-    allow_github_access = sanitized.pop("_FORGE_AGENT_ALLOW_GITHUB_ACCESS", "") == "1"
+    allow_github_access: bool = (
+        sanitized.pop("_FORGE_AGENT_ALLOW_GITHUB_ACCESS", "") == "1"
+    )
     if not allow_github_access:
         for variable in GITHUB_CREDENTIAL_ENV_VARS:
             sanitized.pop(variable, None)

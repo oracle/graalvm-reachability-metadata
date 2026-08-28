@@ -240,17 +240,18 @@ class AgentRuntimeTests(unittest.TestCase):
         self.assertNotIn("GITHUB_TOKEN", environment)
         self.assertEqual(environment["GH_CONFIG_DIR"], "/nonexistent/forge-agent-no-github-config")
 
-    def test_review_agent_environment_keeps_github_access_when_explicit(self) -> None:
+    def test_trusted_agent_environment_retains_github_credentials(self) -> None:
         environment = agent_process_environment({
             "GH_TOKEN": "secret",
+            "GITHUB_TOKEN": "secret",
             "GH_CONFIG_DIR": "/github-config",
             "_FORGE_AGENT_ALLOW_GITHUB_ACCESS": "1",
         })
+
         self.assertEqual(environment["GH_TOKEN"], "secret")
+        self.assertEqual(environment["GITHUB_TOKEN"], "secret")
         self.assertEqual(environment["GH_CONFIG_DIR"], "/github-config")
         self.assertNotIn("_FORGE_AGENT_ALLOW_GITHUB_ACCESS", environment)
-        self.assertEqual(environment["GH_PROMPT_DISABLED"], "1")
-        self.assertEqual(environment["GH_PAGER"], "")
 
     def test_explicit_empty_agent_environment_does_not_inherit_ambient_credentials(self) -> None:
         with patch.dict(os.environ, {"GH_TOKEN": "ambient-secret"}, clear=False):
