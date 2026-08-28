@@ -161,5 +161,84 @@
       "test_file": "tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/src/test/java/tomcat/NamingContextListenerTest.java",
       "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/reachability-metadata.json"
     }
+  },
+  "improve_library_coverage:2026-08-28": {
+    "timestamp": "2026-08-28T18:41:51.301657Z",
+    "library": "org.apache.tomcat.embed:tomcat-embed-core:11.0.18",
+    "starting_commit": "d7ad71c286d92c572e60ba6596f96659fd3b48f5",
+    "ending_commit": "1c883e3441bd0425c89b0ae858a0aa06bda57356",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "11.0.18",
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 64429,
+          "missed": 281093,
+          "ratio": 0.186469,
+          "total": 345522
+        },
+        "line": {
+          "covered": 15765,
+          "missed": 65533,
+          "ratio": 0.193916,
+          "total": 81298
+        },
+        "method": {
+          "covered": 2960,
+          "missed": 9813,
+          "ratio": 0.231739,
+          "total": 12773
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8328,
+      "issue_label": "library-update-request",
+      "library": "org.apache.tomcat.embed:tomcat-embed-core:11.0.18",
+      "summary": "No extra Maven dependency, Docker image, or system property is required. The published POM has only tomcat-annotations-api:11.0.18, and Connector exposes the required in-process path through IntrospectionUtils. [Maven Central](https://central.sonatype.com/artifact/org.apache.tomcat.embed/tomcat-embed-core/11.0.18) [Tomcat Connector API](https://tomcat.apache.org/tomcat-11.0-doc/api/org/apache/catalina/connector/Connector.html)",
+      "deterministic_setup": [],
+      "agent_guidance": "Add focused test-code coverage using new Connector(), then call getProperty(\"bindOnInit\") and setProperty(\"bindOnInit\", \"false\"). Keep the test in-process; do not start a server or require Spring Boot, Docker, TOMCAT_STUFFED, CATALINA_BASE, network access, or JULI configuration. The full Tomcat AOT documentation's stuffed-distribution setup is unnecessary for this library-level path. [Tomcat AOT documentation](https://tomcat.apache.org/tomcat-11.0-doc/graal.html)",
+      "risks": [
+        "JVM tests alone may pass while native execution still lacks AbstractProtocol.getProperty(String) or setProperty(String, String) registration.",
+        "Starting the complete embedded server would introduce unrelated logging, filesystem, port, and lifecycle variables."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8328 Update existing library: org.apache.tomcat.embed:tomcat-embed-core:11.0.18; label=library-update-request; body_chars=2556"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "30 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 681175,
+      "output_tokens_used": 7231,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.apache.tomcat.embed:tomcat-embed-core:11.0.18/library-preparation-preflight/codex-session-4dgk82nn.log"
+    },
+    "metrics": {
+      "input_tokens_used": 472483,
+      "cached_input_tokens_used": 3939328,
+      "output_tokens_used": 31752,
+      "iterations": 4,
+      "cost_usd": 5.2847,
+      "generated_loc": 2298,
+      "tested_library_loc": 15765,
+      "metadata_entries": 1983,
+      "test_only_metadata_entries": 261,
+      "code_coverage_percent": 19.39
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/reachability-metadata.json"
+    }
   }
 }
