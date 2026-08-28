@@ -301,6 +301,15 @@ from a usable report, losing that report is a failure, not a fallback — the ru
 has already committed to measuring itself against something that no longer
 exists.
 
+The four fallback causes are distinct and are reported as such. A report task
+that fails, a missing file, and a report naming zero dynamic-access calls are
+different facts about the run, and only the last one is a statement about the
+library. The harness never writes a zero-call report over a dynamic-access input
+it could not produce (§root/AR-test-harness.8), so an exploration workflow may
+treat a zero-call report as the library's own shape and must report an
+unavailable report as unavailable rather than as a library without dynamic
+access.
+
 For optimistic exploration, a successful fallback is a bootstrap rather than
 an exit: the workflow refreshes the report and, when it is now usable, continues
 through bulk iterations before the composite's iterative refinement. The
