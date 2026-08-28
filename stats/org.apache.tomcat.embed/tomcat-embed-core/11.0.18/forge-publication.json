@@ -1,0 +1,154 @@
+{
+  "base_commit": "a2101a3a293a8e6b62caf52a666112857d9fb619",
+  "branch": "ai/kimeta/improve-coverage-org.apache.tomcat.embed-tomcat-embed-core-11.0.18-chunked-forge-8328-20260828184151301657-f3fa974bf323",
+  "follow_ups": [],
+  "forge": {
+    "branch": "restore-codex-bypass-invocation",
+    "commit": "a53b346e2653a2f3749c6ca9a9d709cf9bd2e76c",
+    "monitored_branch": "origin/restore-codex-bypass-invocation"
+  },
+  "issue_number": 8328,
+  "library": {
+    "artifact": "tomcat-embed-core",
+    "coordinates": "org.apache.tomcat.embed:tomcat-embed-core:11.0.18",
+    "group": "org.apache.tomcat.embed",
+    "version": "11.0.18"
+  },
+  "local_ci_verification": {
+    "base_commit": "a2101a3a293a8e6b62caf52a666112857d9fb619",
+    "commands": [],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "eec58a9ff4ba5891b8da3bbc544bc803df1657d7",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/src/test/resources/META-INF/native-image/reachability-metadata.json"
+    ],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "The two branch-added entries in tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/src/test/resources/META-INF/native-image/reachability-metadata.json registered JUnit /tmp/jaas-realm-file.config paths. Tests must not depend on Native Image resource metadata for machine-local paths.",
+    "finding_title": "Test-only metadata captures machine-local paths",
+    "fix_note": "Removed the two branch-added machine-local resource entries. The JAAS test creates the file through normal filesystem APIs, so these image-resource registrations are neither portable nor needed.",
+    "model": "gpt-5.6-terra",
+    "published_tree": "repaired",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the target-only diff, supplied successful local gate record, and render statistics. The issue-requested AbstractProtocol metadata is exercised through Connector's public API; no legacy metadata, native skip, version-pinned assertion, package bypass, or unrelated path change remains. The chunked dynamic-access rule does not report zero covered calls.",
+    "session_log_path": "logs/org.apache.tomcat.embed:tomcat-embed-core:11.0.18/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 3939328,
+      "code_coverage_percent": 19.39,
+      "cost_usd": 5.2847,
+      "generated_loc": 2298,
+      "input_tokens_used": 472483,
+      "iterations": 4,
+      "metadata_entries": 1983,
+      "output_tokens_used": 31752,
+      "test_only_metadata_entries": 261,
+      "tested_library_loc": 15765
+    },
+    "timestamp": "2026-08-28T18:41:51.301657Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-8328-20260828184151301657-f3fa974bf323",
+  "render": {
+    "alias_split": null,
+    "baseline_metadata_entries": 1960,
+    "baseline_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.57289,
+            "coveredCalls": 224,
+            "totalCalls": 391
+          },
+          "resources": {
+            "coverageRatio": 0.634146,
+            "coveredCalls": 26,
+            "totalCalls": 41
+          }
+        },
+        "coverageRatio": 0.578704,
+        "coveredCalls": 250,
+        "totalCalls": 432
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 63988,
+          "missed": 281534,
+          "ratio": 0.185192,
+          "total": 345522
+        },
+        "line": {
+          "covered": 15641,
+          "missed": 65657,
+          "ratio": 0.192391,
+          "total": 81298
+        },
+        "method": {
+          "covered": 2937,
+          "missed": 9836,
+          "ratio": 0.229938,
+          "total": 12773
+        }
+      },
+      "version": "11.0.18"
+    },
+    "baseline_test_only_entries": 257,
+    "current_metadata_entries": 1983,
+    "current_test_only_entries": 259,
+    "dynamic_access": null,
+    "library_stats": {
+      "dynamicAccess": "N/A",
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 64403,
+          "missed": 281119,
+          "ratio": 0.186393,
+          "total": 345522
+        },
+        "line": {
+          "covered": 15758,
+          "missed": 65540,
+          "ratio": 0.19383,
+          "total": 81298
+        },
+        "method": {
+          "covered": 2959,
+          "missed": 9814,
+          "ratio": 0.231661,
+          "total": 12773
+        }
+      },
+      "version": "11.0.18"
+    },
+    "library_update_target": {
+      "match_type": "tested-version",
+      "matched_metadata_version": "11.0.18",
+      "matched_test_version": "11.0.18",
+      "requested_coordinate": "org.apache.tomcat.embed:tomcat-embed-core:11.0.18",
+      "resolved_metadata_version": "11.0.18",
+      "resolved_test_version": "11.0.18"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+  "task_type": "library-update-request",
+  "template_type": "library-update-request",
+  "timestamp": "2026-08-28T18:41:51.301657Z"
+}
