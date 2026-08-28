@@ -48,9 +48,10 @@ public class ConverterArchiveTest {
     }
 
     @Test
-    void returnsNullWhenAConverterResourceIsAbsent() {
+    void readsSerializedConverterResourcesAndHandlesAnAbsentResource() {
         ConverterArchive archive = new ConverterArchive();
 
+        assertThat(archive.readObj("/converter-resource.ser")).isEqualTo("resource-value");
         assertThat(archive.readObj("/no-such-oracle-converter.ser")).isNull();
     }
 }
