@@ -3439,7 +3439,11 @@ class EnvironmentValidationTests(unittest.TestCase):
                 patch.object(forge_metadata, "resolve_reachability_repo_root", return_value="/repo"), \
                 patch.object(forge_metadata, "resolve_metrics_repo_root", return_value="/metrics"), \
                 patch.object(forge_metadata, "run_pull_request_review_loop") as review_loop, \
-                patch.object(sys, "argv", ["forge_metadata.py", "--review-pr", "library-new-request"]):
+                patch.object(sys, "argv", [
+                    "forge_metadata.py",
+                    "--review-pr", "library-new-request",
+                    "--review-model", "review-model",
+                ]):
             forge_metadata.main()
 
         ensure.assert_called_once()
@@ -3447,6 +3451,11 @@ class EnvironmentValidationTests(unittest.TestCase):
             host_requirements.QueueRequirements(issue_work=False, review_work=True, github_work=True),
             ensure.call_args.kwargs["requirements"],
         )
+        review_environment = ensure.call_args.kwargs["environment"]
+        self.assertEqual(review_environment["FORGE_ANALYSIS_AGENT"], "pi")
+        self.assertEqual(review_environment["FORGE_ANALYSIS_FAMILY"], "pi")
+        self.assertEqual(review_environment["FORGE_ANALYSIS_MODEL"], "review-model")
+        self.assertEqual(review_environment["FORGE_ANALYSIS_PROVIDER"], "openai-codex")
         review_loop.assert_called_once()
 
     def test_host_requirements_check_the_selected_repository_not_the_forge_parent(self) -> None:
@@ -3931,26 +3940,15 @@ class PullRequestReviewTests(unittest.TestCase):
             run.call_args.args[0],
         )
 
-    def test_review_pull_request_stops_before_agent_when_context_prefetch_fails(self) -> None:
+    def test_review_pull_request_stops_before_workspace_when_pi_authentication_fails(self) -> None:
         with patch.object(
                 forge_metadata,
-                "get_pull_request_url",
-                return_value="https://example.invalid/pr/3513",
+                "check_pi_review_authentication",
+                return_value=False,
         ), patch.object(
                 forge_metadata,
                 "create_review_workspace",
-                return_value="/review-worktree",
-        ), patch.object(
-                forge_metadata,
-                "write_review_context_file",
-                side_effect=forge_metadata.GitHubError("prefetch failed"),
-        ), patch.object(
-                forge_metadata,
-                "analysis_agent_run",
-        ) as run_agent, patch.object(
-                forge_metadata,
-                "cleanup_review_workspace",
-        ):
+        ) as create_review_workspace:
             self.assertFalse(
                 forge_metadata.review_pull_request(
                     3513,
@@ -3959,12 +3957,22 @@ class PullRequestReviewTests(unittest.TestCase):
                 )
             )
 
-        run_agent.assert_not_called()
+        create_review_workspace.assert_not_called()
 
-    def test_review_pull_request_prefetches_offline_and_forge_submits(self) -> None:
+    def test_review_pull_request_uses_analysis_runtime_and_forge_submits(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             log_path = os.path.join(temp_dir, "pi-review.log")
+            agent_result = AgentRunResult(
+                0,
+                log_path,
+                False,
+                '{"decision":"APPROVE","body":"No blocking issues."}',
+            )
             with patch.object(
+                    forge_metadata,
+                    "check_pi_review_authentication",
+                    return_value=True,
+            ) as check_authentication, patch.object(
                     forge_metadata,
                     "create_review_workspace",
                     return_value=temp_dir,
@@ -3973,27 +3981,12 @@ class PullRequestReviewTests(unittest.TestCase):
                     "cleanup_review_workspace",
             ) as cleanup_review_workspace, patch.object(
                     forge_metadata,
-                    "get_review_log_path",
-                    return_value=log_path,
-            ), patch.object(
-                    forge_metadata,
-                    "write_review_context_file",
-            ) as write_context, patch.object(
-                    forge_metadata,
                     "review_worktree_status",
                     return_value="",
             ), patch.object(
                     forge_metadata,
-                    "review_context_digest",
-                    return_value="stable-context",
-            ), patch(
-                    "ai_workflows.agents.agent_runtime.run_agent_task",
-                    return_value=AgentRunResult(
-                        0,
-                        log_path,
-                        False,
-                        '{"decision":"APPROVE","body":"No blocking issues."}',
-                    ),
+                    "analysis_agent_run",
+                    return_value=agent_result,
             ) as run_agent, patch.object(
                     forge_metadata,
                     "submit_pull_request_review",
@@ -4005,27 +3998,39 @@ class PullRequestReviewTests(unittest.TestCase):
                     forge_metadata.review_pull_request(
                         3513,
                         "/repo",
-                        "gpt-5.6-terra",
+                        "gpt-5.6-luna",
                         "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
                     )
                 )
 
-        write_context.assert_called_once()
-        self.assertEqual(run_agent.call_args.kwargs["selection"].backend, "codex")
-        self.assertEqual(run_agent.call_args.kwargs["selection"].thinking_level, "xhigh")
-        self.assertNotIn("gh ", run_agent.call_args.kwargs["prompt"])
+        check_authentication.assert_called_once_with("gpt-5.6-luna")
+        invocation = run_agent.call_args.kwargs
+        self.assertEqual(invocation["working_dir"], temp_dir)
+        self.assertEqual(invocation["task_type"], "pr-review")
+        self.assertEqual(invocation["library"], "pr-3513")
+        self.assertIn("gh pr view 3513", invocation["context"])
+        self.assertIn("git diff --name-status origin/master...HEAD", invocation["context"])
+        self.assertNotIn("gh pr diff", invocation["context"])
+        environment = invocation["environment"]
+        self.assertEqual(environment["FORGE_ANALYSIS_AGENT"], "pi")
+        self.assertEqual(environment["FORGE_ANALYSIS_FAMILY"], "pi")
+        self.assertEqual(environment["FORGE_ANALYSIS_MODEL"], "gpt-5.6-luna")
+        self.assertEqual(environment["FORGE_ANALYSIS_PROVIDER"], "openai-codex")
+        self.assertEqual(environment["FORGE_ANALYSIS_THINKING_LEVEL"], "medium")
+        self.assertEqual(environment["_FORGE_AGENT_ALLOW_GITHUB_ACCESS"], "1")
         submit_review.assert_called_once_with(3513, "APPROVE", "No blocking issues.", temp_dir)
         cleanup_review_workspace.assert_called_once_with("/repo", temp_dir, 3513)
 
-    def test_review_pull_request_preserves_backend_aware_model_without_override(self) -> None:
+    def test_review_pull_request_defaults_to_pi_terra_model(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir, patch.dict(
                 os.environ,
-                {
-                    "FORGE_ANALYSIS_AGENT": "my-claude",
-                    "FORGE_ANALYSIS_FAMILY": "claude-code",
-                },
+                {},
                 clear=True,
         ), patch.object(
+            forge_metadata,
+            "check_pi_review_authentication",
+            return_value=True,
+        ) as check_authentication, patch.object(
             forge_metadata,
             "create_review_workspace",
             return_value=temp_dir,
@@ -4034,21 +4039,11 @@ class PullRequestReviewTests(unittest.TestCase):
             "cleanup_review_workspace",
         ), patch.object(
             forge_metadata,
-            "get_review_log_path",
-            return_value=os.path.join(temp_dir, "review.log"),
-        ), patch.object(
-            forge_metadata,
-            "write_review_context_file",
-        ), patch.object(
-            forge_metadata,
             "review_worktree_status",
             return_value="",
         ), patch.object(
             forge_metadata,
-            "review_context_digest",
-            return_value="stable-context",
-        ), patch(
-            "ai_workflows.agents.agent_runtime.run_agent_task",
+            "analysis_agent_run",
             return_value=AgentRunResult(
                 0,
                 os.path.join(temp_dir, "review.log"),
@@ -4071,104 +4066,128 @@ class PullRequestReviewTests(unittest.TestCase):
                 )
             )
 
-        selection = run_agent.call_args.kwargs["selection"]
-        self.assertEqual(selection.backend, "claude-code")
-        self.assertEqual(selection.agent, "my-claude")
-        self.assertEqual(selection.model, "sonnet")
+        check_authentication.assert_called_once_with("gpt-5.6-terra")
+        environment = run_agent.call_args.kwargs["environment"]
+        self.assertEqual(environment["FORGE_ANALYSIS_MODEL"], "gpt-5.6-terra")
 
-    def test_review_pull_request_rejects_modified_context_snapshot(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            context_path = os.path.join(temp_dir, ".forge-review-context.json")
-
-            def write_context(**_kwargs) -> None:
-                with open(context_path, "w", encoding="utf-8") as context_file:
-                    context_file.write("original context\n")
-
-            def mutate_context(**_kwargs) -> AgentRunResult:
-                with open(context_path, "w", encoding="utf-8") as context_file:
-                    context_file.write("mutated context\n")
-                return AgentRunResult(
-                    0,
-                    os.path.join(temp_dir, "review.log"),
-                    False,
-                    '{"decision":"APPROVE","body":"No blocking issues."}',
+    def test_review_pull_request_rejects_agent_failure(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir, patch.object(
+                forge_metadata,
+                "check_pi_review_authentication",
+                return_value=True,
+        ), patch.object(
+            forge_metadata,
+            "create_review_workspace",
+            return_value=temp_dir,
+        ), patch.object(
+            forge_metadata,
+            "cleanup_review_workspace",
+        ), patch.object(
+            forge_metadata,
+            "review_worktree_status",
+            return_value="",
+        ), patch.object(
+            forge_metadata,
+            "analysis_agent_run",
+            return_value=AgentRunResult(
+                1,
+                os.path.join(temp_dir, "review.log"),
+                False,
+            ),
+        ), patch.object(
+            forge_metadata,
+            "submit_pull_request_review",
+        ) as submit_review:
+            self.assertFalse(
+                forge_metadata.review_pull_request(
+                    3513,
+                    "/repo",
+                    "gpt-5.6-terra",
+                    "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
                 )
-
-            with patch.object(
-                    forge_metadata,
-                    "create_review_workspace",
-                    return_value=temp_dir,
-            ), patch.object(
-                    forge_metadata,
-                    "cleanup_review_workspace",
-            ), patch.object(
-                    forge_metadata,
-                    "get_review_log_path",
-                    return_value=os.path.join(temp_dir, "review.log"),
-            ), patch.object(
-                    forge_metadata,
-                    "write_review_context_file",
-                    side_effect=write_context,
-            ), patch.object(
-                    forge_metadata,
-                    "review_worktree_status",
-                    return_value="",
-            ), patch.object(
-                    forge_metadata,
-                    "analysis_agent_run",
-                    side_effect=mutate_context,
-            ), patch.object(
-                    forge_metadata,
-                    "submit_pull_request_review",
-            ) as submit_review:
-                self.assertFalse(
-                    forge_metadata.review_pull_request(
-                        3513,
-                        "/repo",
-                        "gpt-5.6-terra",
-                        "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
-                    )
-                )
+            )
 
         submit_review.assert_not_called()
 
-    def test_review_context_materializes_complete_github_snapshot(self) -> None:
-        pull_request = {
-            "number": 3513,
-            "labels": [{"name": "library-new-request"}],
-            "comments": [{"body": "context"}],
-            "reviews": [{"state": "CHANGES_REQUESTED"}],
-            "statusCheckRollup": [{"name": "test", "conclusion": "SUCCESS"}],
-        }
-        with tempfile.TemporaryDirectory() as temp_dir:
-            context_path = os.path.join(temp_dir, ".forge-review-context.json")
-            with patch.object(forge_metadata, "gh_json", return_value=pull_request), \
-                    patch.object(
-                        forge_metadata,
-                        "gh",
-                        return_value=subprocess.CompletedProcess([], 0, stdout="diff --git a/A b/A\n"),
-                    ), patch.object(
-                        forge_metadata,
-                        "get_pull_request_changed_files",
-                        return_value=["tests/A.java"],
-                    ), patch.object(
-                        forge_metadata,
-                        "load_review_rules",
-                        return_value={"library-new-request": "rules"},
-                    ):
-                forge_metadata.write_review_context_file(
+    def test_review_pull_request_rejects_modified_worktree(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir, patch.object(
+                forge_metadata,
+                "check_pi_review_authentication",
+                return_value=True,
+        ), patch.object(
+            forge_metadata,
+            "create_review_workspace",
+            return_value=temp_dir,
+        ), patch.object(
+            forge_metadata,
+            "cleanup_review_workspace",
+        ), patch.object(
+            forge_metadata,
+            "review_worktree_status",
+            side_effect=["", " M tests/A.java"],
+        ), patch.object(
+            forge_metadata,
+            "analysis_agent_run",
+            return_value=AgentRunResult(
+                0,
+                os.path.join(temp_dir, "review.log"),
+                False,
+                '{"decision":"APPROVE","body":"No blocking issues."}',
+            ),
+        ), patch.object(
+            forge_metadata,
+            "submit_pull_request_review",
+        ) as submit_review:
+            self.assertFalse(
+                forge_metadata.review_pull_request(
                     3513,
-                    temp_dir,
-                    context_path,
                     "/repo",
+                    "gpt-5.6-terra",
+                    "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
                 )
-            with open(context_path, "r", encoding="utf-8") as context_file:
-                context = json.load(context_file)
+            )
 
-        self.assertEqual(context["pull_request"], pull_request)
-        self.assertEqual(context["changed_files"], ["tests/A.java"])
-        self.assertIn("diff --git", context["patch"])
-        self.assertEqual(context["review_rules"]["library-new-request"], "rules")
+        submit_review.assert_not_called()
+
+    def test_review_pull_request_rejects_pi_inspection_error(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir, patch.object(
+                forge_metadata,
+                "check_pi_review_authentication",
+                return_value=True,
+        ), patch.object(
+            forge_metadata,
+            "create_review_workspace",
+            return_value=temp_dir,
+        ), patch.object(
+            forge_metadata,
+            "cleanup_review_workspace",
+        ), patch.object(
+            forge_metadata,
+            "review_worktree_status",
+            return_value="",
+        ), patch.object(
+            forge_metadata,
+            "analysis_agent_run",
+            return_value=AgentRunResult(
+                0,
+                os.path.join(temp_dir, "review.log"),
+                False,
+                '{"error":"Unable to inspect the pull request."}',
+            ),
+        ), patch.object(
+            forge_metadata,
+            "submit_pull_request_review",
+        ) as submit_review:
+            self.assertFalse(
+                forge_metadata.review_pull_request(
+                    3513,
+                    "/repo",
+                    "gpt-5.6-terra",
+                    "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
+                )
+            )
+
+        submit_review.assert_not_called()
 
     def test_merge_pull_request_validates_index_candidate_before_merge(self) -> None:
         pr = {
@@ -4388,12 +4407,14 @@ class PullRequestReviewTests(unittest.TestCase):
             cwd="/repo",
         )
 
-    def test_review_prompt_uses_prefetched_context_and_structured_output(self) -> None:
+    def test_review_prompt_uses_isolated_worktree_and_structured_output(self) -> None:
         prompt = forge_metadata.build_review_prompt(3513)
 
-        self.assertIn(".forge-review-context.json", prompt)
-        self.assertIn("authoritative", prompt)
-        self.assertIn("Do not use GitHub, the network", prompt)
+        self.assertIn("gh pr view 3513", prompt)
+        self.assertIn("gh pr checks 3513", prompt)
+        self.assertIn("git diff --name-status origin/master...HEAD", prompt)
+        self.assertNotIn(".forge-review-context.json", prompt)
+        self.assertNotIn("gh pr diff", prompt)
         self.assertIn("APPROVE", prompt)
         self.assertIn("REQUEST_CHANGES", prompt)
         self.assertIn("Forge will validate and submit", prompt)

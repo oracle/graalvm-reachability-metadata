@@ -2762,11 +2762,6 @@ def select_ci_complete_review_pull_requests(
     return selected_pull_requests, incomplete_ci_count
 
 
-def get_review_log_path(pr_number: int, coordinates: str | None = None) -> str:
-    """Return the Pi review log path for the target pull request."""
-    return build_task_log_path("pr-review", coordinates, f"pi_pr_review_{pr_number}.log")
-
-
 def get_pull_request_url(pr_number: int) -> str:
     """Resolve the GitHub URL for the target pull request."""
     pull_request = gh_json(
@@ -2936,65 +2931,73 @@ def review_pull_request(
         pr_url: str | None = None,
         coordinates: str | None = None,
 ) -> bool:
-    """Run an offline analysis-agent review and submit its validated decision.
+    """Run Pi through the analysis runtime and submit its validated decision.
 
     §FS-automated-pr-review §FS-forge-agent-runtime-selection
     """
+    effective_review_model: str = (
+        review_model
+        or os.environ.get("FORGE_REVIEW_MODEL")
+        or "gpt-5.6-terra"
+    )
+    if not check_pi_review_authentication(effective_review_model):
+        return False
     if pr_url is None:
         pr_url = get_pull_request_url(pr_number)
-    review_worktree_path = create_review_workspace(reachability_metadata_path, pr_number)
-    selection = get_analysis_agent()
-    review_thinking_level = os.environ.get("FORGE_REVIEW_THINKING_LEVEL") or (
-        "xhigh" if selection.backend == "codex" else None
-    )
-    context_path = os.path.join(review_worktree_path, ".forge-review-context.json")
-    log_path_display = display_log_path(get_review_log_path(pr_number, coordinates))
+
+    review_environment: dict[str, str] = dict(os.environ)
+    review_environment.update({
+        "FORGE_ANALYSIS_AGENT": "pi",
+        "FORGE_ANALYSIS_FAMILY": "pi",
+        "FORGE_ANALYSIS_MODEL": effective_review_model,
+        "FORGE_ANALYSIS_PROVIDER": PI_REVIEW_PROVIDER,
+        "FORGE_ANALYSIS_THINKING_LEVEL": (
+            os.environ.get("FORGE_REVIEW_THINKING_LEVEL") or "medium"
+        ),
+        "_FORGE_AGENT_ALLOW_GITHUB_ACCESS": "1",
+    })
+    review_worktree_path: str = create_review_workspace(reachability_metadata_path, pr_number)
+    prompt: str = build_review_prompt(pr_number)
     print(
-        f"\n[Reviewing PR #{pr_number} with {selection.backend} in an isolated worktree; "
-        "Forge will submit the decision.]"
+        f"\n[Reviewing PR #{pr_number} with Pi through the analysis runtime "
+        "in an isolated worktree; Forge will submit the decision.]"
     )
     print(f"[PR link: {pr_url}]")
-    print(f"[Review log: {log_path_display}]")
     try:
-        write_review_context_file(
-            pr_number=pr_number,
-            review_worktree_path=review_worktree_path,
-            context_path=context_path,
-            reachability_metadata_path=reachability_metadata_path,
-        )
-        baseline_context_digest = review_context_digest(context_path)
-        baseline_status = review_worktree_status(review_worktree_path)
+        baseline_status: str = review_worktree_status(review_worktree_path)
         result = analysis_agent_run(
             working_dir=review_worktree_path,
-            context=build_review_prompt(pr_number, os.path.basename(context_path)),
+            context=prompt,
             task_type="pr-review",
             library=coordinates or f"pr-{pr_number}",
             timeout=REVIEW_TIMEOUT_SECONDS,
-            model=review_model,
-            thinking_level=review_thinking_level,
+            environment=review_environment,
         )
+        log_path_display: str = display_log_path(result.log_path)
+        print(f"[Pi review log: {log_path_display}]")
         if result.return_code != 0:
+            failure: str = (
+                f"timed out after {REVIEW_TIMEOUT_SECONDS} seconds"
+                if result.timed_out
+                else f"failed with exit code {result.return_code}"
+            )
             print(
                 (
-                    f"ERROR: {selection.backend} PR review failed for PR #{pr_number}. "
-                    f"PR: {pr_url}. Log: {display_log_path(result.log_path)}."
+                    f"ERROR: Pi PR review {failure} for PR #{pr_number}. "
+                    f"PR: {pr_url}. Log: {log_path_display}."
                 ),
                 file=sys.stderr,
             )
             return False
         if review_worktree_status(review_worktree_path) != baseline_status:
             print(
-                f"ERROR: Offline review agent modified the review worktree for PR #{pr_number}.",
-                file=sys.stderr,
-            )
-            return False
-        if review_context_digest(context_path) != baseline_context_digest:
-            print(
-                f"ERROR: Offline review agent modified the review context for PR #{pr_number}.",
+                f"ERROR: Pi review agent modified the review worktree for PR #{pr_number}.",
                 file=sys.stderr,
             )
             return False
 
+        decision: str
+        body: str
         decision, body = parse_review_decision(result.response)
         submit_pull_request_review(pr_number, decision, body, review_worktree_path)
         print(f"[Finished review for PR #{pr_number}: {pr_url}]")
@@ -3016,70 +3019,8 @@ def review_pull_request(
     finally:
         cleanup_review_workspace(reachability_metadata_path, review_worktree_path, pr_number)
 
-
-def write_review_context_file(
-        pr_number: int,
-        review_worktree_path: str,
-        context_path: str,
-        reachability_metadata_path: str,
-) -> None:
-    """Fetch every GitHub review input before the offline agent starts."""
-    pull_request = gh_json(
-        "pr", "view", str(pr_number), "--repo", REPO,
-        "--json",
-        "number,title,url,body,author,baseRefName,headRefName,headRefOid,labels,files,comments,reviews,statusCheckRollup",
-    )
-    patch_result = gh(
-        "pr", "diff", str(pr_number), "--repo", REPO, "--patch", quiet=True
-    )
-    changed_files = get_pull_request_changed_files(pr_number)
-    label_names = [
-        str(label.get("name"))
-        for label in pull_request.get("labels", [])
-        if isinstance(label, dict) and label.get("name")
-    ]
-    context = {
-        "schema_version": 1,
-        "repository": REPO,
-        "pull_request": pull_request,
-        "changed_files": changed_files,
-        "patch": patch_result.stdout,
-        "review_rules": load_review_rules(reachability_metadata_path, label_names),
-    }
-    with open(context_path, "w", encoding="utf-8") as context_file:
-        json.dump(context, context_file, indent=2, ensure_ascii=False)
-        context_file.write("\n")
-
-
-def load_review_rules(reachability_metadata_path: str, labels: list[str]) -> dict[str, str]:
-    """Load applicable checked-in review procedures into the context snapshot."""
-    skill_names = {
-        "library-new-request": "review-library-new-request",
-        "library-update-request": "review-library-update-request",
-        "fixes-javac-fail": "review-fixes-javac-fail",
-        "fixes-java-run-fail": "review-fixes-java-run-fail",
-        "fixes-native-image-run-fail": "review-fixes-native-image-run-fail",
-        "library-bulk-update": "review-library-bulk-update",
-    }
-    rules: dict[str, str] = {}
-    for label in labels:
-        skill_name = skill_names.get(label)
-        if skill_name is None:
-            continue
-        skill_path = os.path.join(reachability_metadata_path, "skills", skill_name, "SKILL.md")
-        if not os.path.isfile(skill_path):
-            skill_path = os.path.abspath(
-                os.path.join(os.path.dirname(__file__), "..", "skills", skill_name, "SKILL.md")
-            )
-        with open(skill_path, "r", encoding="utf-8") as skill_file:
-            rules[label] = skill_file.read()
-    if not rules:
-        raise RuntimeError(f"No checked-in review rules matched PR labels: {labels}")
-    return rules
-
-
 def review_worktree_status(review_worktree_path: str) -> str:
-    """Return stable status; the generated context file is verified by digest."""
+    """Return the isolated review worktree status."""
     result = subprocess.run(
         ["git", "status", "--porcelain", "--untracked-files=all"],
         cwd=review_worktree_path,
@@ -3088,16 +3029,7 @@ def review_worktree_status(review_worktree_path: str) -> str:
         text=True,
         check=True,
     )
-    return "\n".join(
-        line for line in result.stdout.splitlines()
-        if not line.endswith(" .forge-review-context.json")
-    )
-
-
-def review_context_digest(context_path: str) -> str:
-    """Return the authoritative review snapshot digest. §FS-forge-agent-runtime-selection"""
-    with open(context_path, "rb") as context_file:
-        return hashlib.sha256(context_file.read()).hexdigest()
+    return result.stdout.strip()
 
 
 def parse_review_decision(response: str) -> tuple[str, str]:
@@ -3133,20 +3065,27 @@ def submit_pull_request_review(
     )
 
 
-def build_review_prompt(pr_number: int, context_filename: str = ".forge-review-context.json") -> str:
-    """Build the prompt for an isolated, offline pull-request review."""
+def build_review_prompt(pr_number: int) -> str:
+    """Build the Pi prompt for an isolated pull-request review."""
     return (
         f"Review pull request #{pr_number} from the checked-out detached worktree. "
-        f"Read `{context_filename}` first. It is the complete, authoritative GitHub snapshot: identity, body, "
-        "labels, changed files, patch, comments, reviews, status checks, and applicable checked-in review rules. "
-        "Do not use GitHub, the network, a shell, MCPs, skills, or delegated agents. Do not edit any file. "
-        "Only request changes for a concrete violation of an enumerated review rule in the applicable review skill for this PR's label. "
-        "Do not block on self-formed test-quality, test-scope, or 'end-user behavior' judgments that are not backed by a specific enumerated rule; "
-        "in particular, do not require a test to exercise a chosen public API entry point when it already exercises the library's types, "
-        "including relocated or shaded types that ship in the library JAR. "
-        "Return only one JSON object with exactly two string fields: "
-        "`decision`, whose value is `APPROVE` or `REQUEST_CHANGES`, and `body`, a concise review summary. "
-        "Forge will validate and submit the result; you must not submit or mutate GitHub state."
+        "Use the applicable checked-in review skill selected by the PR label. "
+        f"Use `gh pr view {pr_number}` and `gh pr checks {pr_number}` for the PR description, "
+        "labels, discussion, reviews, and checks. Inspect the checked-out change against the "
+        "fresh `origin/master` with `git diff --name-status origin/master...HEAD`, `git diff --stat "
+        "origin/master...HEAD`, and targeted diffs for the files and hunks needed by the review. "
+        "Do not request or print the entire patch in one command. Do not run `gh pr checkout`, "
+        "`git checkout`, or `git switch`, and do not write files or mutate GitHub state. "
+        "Only request changes for a concrete violation of an enumerated review rule in the "
+        "applicable review skill for this PR's label. Do not block on self-formed test-quality, "
+        "test-scope, or 'end-user behavior' judgments that are not backed by a specific enumerated "
+        "rule; in particular, do not require a test to exercise a chosen public API entry point "
+        "when it already exercises the library's types, including relocated or shaded types that "
+        "ship in the library JAR. If you cannot inspect the PR metadata, applicable review skill, "
+        "or checked-out changes, return only a JSON object with one `error` string field. "
+        "Otherwise return only one JSON object with exactly two string fields: `decision`, whose "
+        "value is `APPROVE` or `REQUEST_CHANGES`, and `body`, a concise review summary. Forge will "
+        "validate and submit the result."
     )
 
 
@@ -9290,10 +9229,23 @@ def require_host_requirements(args: argparse.Namespace, reachability_metadata_pa
     checkout this run selected, which `--reachability-metadata-path` can move away from
     the checkout that contains Forge (§FS-forge-host-requirements).
     """
+    host_environment: dict[str, str] | None = None
+    if args.review_pr is not None:
+        host_environment = dict(os.environ)
+        host_environment["FORGE_ANALYSIS_AGENT"] = "pi"
+        host_environment["FORGE_ANALYSIS_FAMILY"] = "pi"
+        host_environment["FORGE_ANALYSIS_MODEL"] = (
+            args.review_model
+            or host_environment.get("FORGE_REVIEW_MODEL")
+            or "gpt-5.6-terra"
+        )
+        host_environment["FORGE_ANALYSIS_PROVIDER"] = PI_REVIEW_PROVIDER
+
     ensure_host_requirements(
         FORGE_DIR,
         requirements=resolve_host_requirement_queues(args),
         graalvm_version_check=resolve_graalvm_version_check(args.graalvm_version_check),
+        environment=host_environment,
         repo_dir=reachability_metadata_path,
         test_strategy_names=resolve_host_requirement_strategy_names(args),
     )
