@@ -27,7 +27,7 @@ public class CustomSSLSocketFactoryTest {
     Path walletDirectory;
 
     @Test
-    void createsAnSslSocketFactoryFromAnAutoLoginWallet() throws Exception {
+    void loadsKnownProviderForAnAutoLoginWallet() throws Exception {
         char[] password = "wallet-password".toCharArray();
         try {
             OracleWallet wallet = new OracleWallet();
@@ -53,6 +53,7 @@ public class CustomSSLSocketFactoryTest {
                         properties, null, CommonDiagnosable.getInstance());
 
                 assertThat(socketFactory.getDefaultCipherSuites()).isNotEmpty();
+                assertThat(Security.getProvider(oraclePkiProvider.getName())).isNull();
             } finally {
                 if (registeredProvider != null) {
                     Security.insertProviderAt(registeredProvider, registeredPosition);
