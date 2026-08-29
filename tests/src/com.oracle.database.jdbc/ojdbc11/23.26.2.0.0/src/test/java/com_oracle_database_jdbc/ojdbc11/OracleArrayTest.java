@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.sql.SQLException;
 import java.util.Map;
 import oracle.jdbc.OracleConnection;
 import oracle.jdbc.OracleData;
@@ -43,7 +44,18 @@ public class OracleArrayTest {
                 1,
                 null,
                 (oracle.jdbc.internal.OracleConnection) connection);
-        return new ArrayDescriptor(name, pickler, connection);
+        return new DetachedArrayDescriptor(name, pickler, connection);
+    }
+
+    private static final class DetachedArrayDescriptor extends ArrayDescriptor {
+        private DetachedArrayDescriptor(
+                SQLName name, OracleTypeCOLLECTION pickler, OracleConnection connection)
+                throws SQLException {
+            super(name, pickler, connection);
+        }
+
+        @Override
+        public void setConnection(java.sql.Connection connection) { }
     }
 
     private static OracleConnection connection() {
