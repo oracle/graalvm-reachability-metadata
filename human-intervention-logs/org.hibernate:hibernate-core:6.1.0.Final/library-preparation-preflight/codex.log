@@ -1,0 +1,10 @@
+{
+  "action": "no_action",
+  "summary": "No extra setup is needed: the existing scaffold already provides H2 and the JDBC classes required by the exercised dialect paths. Hibernate core itself does not bundle database drivers ([POM](https://central.sonatype.com/artifact/org.hibernate.orm/hibernate-core/6.1.0.Final)).",
+  "deterministic_setup": [],
+  "agent_guidance": "No Docker image, environment variable, or system property is required. Keep the in-memory H2 compatibility-mode tests and ensure persistence.xml and dialect reflection metadata are registered for Native Image.",
+  "risks": [
+    "H2 compatibility modes do not validate behavior against real vendor databases.",
+    "The reported failures are missing Native Image resource/reflection metadata, not missing runtime setup."
+  ]
+}
