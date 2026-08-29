@@ -326,6 +326,11 @@ issue must resolve a valid continuation marker on a preserved branch
 its exhaust report (§AR-dynamic-access-exhaust-report). A failed non-terminal
 precondition removes the worktree and releases the claim back to `Todo`.
 
+An operator may explicitly enable blocked-issue claiming for one invocation or
+worker configuration. The override is disabled by default and bypasses only the
+open-blocker condition: every other live claimability condition above remains
+mandatory.
+
 ### 3. Issue form
 
 The queue label decides the workflow, so the issue must be unambiguous before a
