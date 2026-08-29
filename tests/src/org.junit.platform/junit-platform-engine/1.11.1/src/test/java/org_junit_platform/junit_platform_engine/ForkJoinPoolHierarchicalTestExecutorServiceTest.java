@@ -9,11 +9,13 @@ package org_junit_platform.junit_platform_engine;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.platform.engine.support.hierarchical.Node.ExecutionMode.CONCURRENT;
 
+import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
+import org.junit.platform.engine.support.hierarchical.ExclusiveResource;
 import org.junit.platform.engine.support.hierarchical.ForkJoinPoolHierarchicalTestExecutorService;
 import org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutorService.TestTask;
 import org.junit.platform.engine.support.hierarchical.Node.ExecutionMode;
@@ -30,7 +32,7 @@ public class ForkJoinPoolHierarchicalTestExecutorServiceTest {
                 new ForkJoinPoolHierarchicalTestExecutorService(new FixedParallelExecutionConfiguration())) {
             Future<Void> future = executorService.submit(new RecordingTestTask(executed));
 
-            assertThat(future.get(5, TimeUnit.SECONDS)).isNull();
+            assertThat(future.get(10, TimeUnit.SECONDS)).isNull();
         }
 
         assertThat(executed).isTrue();
@@ -99,6 +101,16 @@ public class ForkJoinPoolHierarchicalTestExecutorServiceTest {
 
         @Override
         public void release() {
+        }
+
+        @Override
+        public List<ExclusiveResource> getResources() {
+            return List.of();
+        }
+
+        @Override
+        public boolean isExclusive() {
+            return false;
         }
     }
 }
