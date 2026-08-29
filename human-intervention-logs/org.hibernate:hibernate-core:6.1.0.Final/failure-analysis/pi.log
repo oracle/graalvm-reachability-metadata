@@ -1,0 +1,12 @@
+## Human intervention needed
+
+The automated `library-update-request` job for `org.hibernate:hibernate-core:6.1.0.Final` failed (`test_generation_failed`). Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9324-library-update-request-org.hibernate-hibernate-core-6.1.0.Final-114abbc2
+
+The likely failing stage was finalization metadata repair: `nativeTest` still failed after the repair with `MissingReflectionRegistrationError` for `java.lang.Object.<init>()` during `ObjectInputStream` deserialization. Three tests failed while 127/130 passed: `BoundedConcurrentHashMapTest`, `ConcurrentReferenceHashMapTest`, and `SerializationHelperInnerCustomObjectInputStreamTest`. Metrics recorded failure after 9 iterations with 0 generated LOC; dynamic-access coverage reached 219/428 (51.17%).
+
+Inspect `logs/org.hibernate:hibernate-core:6.1.0.Final/gradle-test/gradle-test-2026-08-29T01-41-23-453234Z.log`, `logs/org.hibernate:hibernate-core:6.1.0.Final/metadata-fix/pi.log`, and `logs/org.hibernate:hibernate-core:6.1.0.Final/post-gen/pi-generation-2026-08-29T01-41-23-434976Z.log`.
+
+Manual next steps:
+1. Check out the preserved branch and review the serialization tests and attempted metadata changes.
+2. Determine the supported Native Image configuration for this `ObjectInputStream` serialization path.
+3. Re-run `./gradlew test -Pcoordinates=org.hibernate:hibernate-core:6.1.0.Final` to verify the repair.
