@@ -12,6 +12,7 @@ import org.apache.calcite.adapter.enumerable.EnumerableRelImplementor;
 import org.apache.calcite.adapter.enumerable.EnumerableValues;
 import org.apache.calcite.jdbc.JavaTypeFactoryImpl;
 import org.apache.calcite.linq4j.tree.ClassDeclaration;
+import org.apache.calcite.plan.ConventionTraitDef;
 import org.apache.calcite.plan.RelOptCluster;
 import org.apache.calcite.plan.volcano.VolcanoPlanner;
 import org.apache.calcite.rel.type.RelDataType;
@@ -45,7 +46,9 @@ public class RexToLixTranslatorTest {
     void generatesFunctionContextConstructorForScalarFunction() {
         JavaTypeFactoryImpl typeFactory = new JavaTypeFactoryImpl();
         RexBuilder rexBuilder = new RexBuilder(typeFactory);
-        RelOptCluster cluster = RelOptCluster.create(new VolcanoPlanner(), rexBuilder);
+        VolcanoPlanner planner = new VolcanoPlanner();
+        planner.addRelTraitDef(ConventionTraitDef.INSTANCE);
+        RelOptCluster cluster = RelOptCluster.create(planner, rexBuilder);
         RelDataType integerType = typeFactory.createSqlType(SqlTypeName.INTEGER);
         RelDataType inputType = typeFactory.builder().add("v", integerType).build();
         RexLiteral one = rexBuilder.makeExactLiteral(BigDecimal.ONE, integerType);
