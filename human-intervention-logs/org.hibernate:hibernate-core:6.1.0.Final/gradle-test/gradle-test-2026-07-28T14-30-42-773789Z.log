@@ -1,0 +1,124 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.hibernate:hibernate-core:6.1.0.Final
+Command: `/home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9119-da8d3b1e/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 4 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+
+Note: /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9119-da8d3b1e/tests/src/org.hibernate/hibernate-core/6.1.0.Final/src/test/java/org_hibernate/hibernate_core/StatefulPersistenceContextTest.java uses or overrides a deprecated API.
+> Task :compileTestJava
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses
+
+> Task :test
+
+StatefulPersistenceContextTest > serializesAndDeserializesSessionPersistenceContext() FAILED
+    jakarta.persistence.PersistenceException: Converting `org.hibernate.HibernateException` to JPA `PersistenceException` : Generation of HibernateProxy instances at runtime is not allowed when the configured BytecodeProvider is 'none'; your model requires a more advanced BytecodeProvider to be enabled.
+        at app//org.hibernate.internal.ExceptionConverterImpl.convert(ExceptionConverterImpl.java:165)
+        at app//org.hibernate.internal.ExceptionConverterImpl.convert(ExceptionConverterImpl.java:175)
+        at app//org.hibernate.internal.ExceptionConverterImpl.convert(ExceptionConverterImpl.java:182)
+        at app//org.hibernate.internal.SessionImpl.getReference(SessionImpl.java:2438)
+        at app//org_hibernate.hibernate_core.StatefulPersistenceContextTest.serializesAndDeserializesSessionPersistenceContext(StatefulPersistenceContextTest.java:65)
+
+        Caused by:
+        org.hibernate.HibernateException: Generation of HibernateProxy instances at runtime is not allowed when the configured BytecodeProvider is 'none'; your model requires a more advanced BytecodeProvider to be enabled.
+            at app//org.hibernate.bytecode.internal.none.DisallowedProxyFactory.getProxy(DisallowedProxyFactory.java:34)
+            at app//org.hibernate.persister.entity.AbstractEntityPersister.createProxy(AbstractEntityPersister.java:4923)
+            at app//org.hibernate.event.internal.DefaultLoadEventListener.createProxy(DefaultLoadEventListener.java:464)
+            at app//org.hibernate.event.internal.DefaultLoadEventListener.createProxyIfNecessary(DefaultLoadEventListener.java:454)
+            at app//org.hibernate.event.internal.DefaultLoadEventListener.proxyOrLoad(DefaultLoadEventListener.java:356)
+            at app//org.hibernate.event.internal.DefaultLoadEventListener.doOnLoad(DefaultLoadEventListener.java:112)
+            at app//org.hibernate.event.internal.DefaultLoadEventListener.onLoad(DefaultLoadEventListener.java:74)
+            at app//org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:118)
+            at app//org.hibernate.internal.SessionImpl.fireLoadNoChecks(SessionImpl.java:1239)
+            at app//org.hibernate.internal.SessionImpl.fireLoad(SessionImpl.java:1227)
+            at app//org.hibernate.loader.access.IdentifierLoadAccessImpl.doGetReference(IdentifierLoadAccessImpl.java:144)
+            at app//org.hibernate.loader.access.IdentifierLoadAccessImpl.lambda$getReference$0(IdentifierLoadAccessImpl.java:79)
+            at app//org.hibernate.loader.access.IdentifierLoadAccessImpl.perform(IdentifierLoadAccessImpl.java:105)
+            at app//org.hibernate.loader.access.IdentifierLoadAccessImpl.getReference(IdentifierLoadAccessImpl.java:79)
+            at app//org.hibernate.internal.SessionImpl.getReference(SessionImpl.java:2432)
+            ... 1 more
+
+41 tests completed, 1 failed
+
+> Task :test FAILED
+
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9119-da8d3b1e/tests/src/org.hibernate/hibernate-core/6.1.0.Final/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+* What went wrong:
+16 actionable tasks: 3 executed, 13 up-to-date
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9119-da8d3b1e/tests/src/org.hibernate/hibernate-core/6.1.0.Final/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 19s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9119-da8d3b1e/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.hibernate:hibernate-core:6.1.0.Final failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 22s
+9 actionable tasks: 1 executed, 8 up-to-date

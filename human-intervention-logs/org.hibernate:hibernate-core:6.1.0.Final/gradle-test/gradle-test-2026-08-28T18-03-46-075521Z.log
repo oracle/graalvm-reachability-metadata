@@ -1,0 +1,127 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.hibernate:hibernate-core:6.1.0.Final
+Command: `/home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9324-3f57e34d/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 9 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+
+Note: Some input files use or override a deprecated API.
+> Task :compileTestJava
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources
+> Task :testClasses
+
+> Task :test
+
+ConnectionProviderInitiatorTest > instantiatesAndInjectsAnExplicitConnectionProvider() FAILED
+    org.opentest4j.AssertionFailedError: 
+    expected: "configured"
+     but was: null
+        at java.base@25.0.2/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+        at java.base@25.0.2/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+        at app//org_hibernate.hibernate_core.ConnectionProviderInitiatorTest.instantiatesAndInjectsAnExplicitConnectionProvider(ConnectionProviderInitiatorTest.java:42)
+
+EventListenerGroupImplTest > appendsAndPrependsListenerInstances() FAILED
+    java.lang.AssertionError: 
+    Expecting actual:
+      [org_hibernate.hibernate_core.EventListenerGroupImplTest$SecondListener@1c36ef49,
+        org.hibernate.event.internal.DefaultPreLoadEventListener@5dc579ac,
+        org_hibernate.hibernate_core.EventListenerGroupImplTest$FirstListener@6b0a2087]
+    to contain exactly (and in same order):
+      [org_hibernate.hibernate_core.EventListenerGroupImplTest$SecondListener@1c36ef49,
+        org_hibernate.hibernate_core.EventListenerGroupImplTest$FirstListener@6b0a2087]
+    but some elements were not expected:
+      [org.hibernate.event.internal.DefaultPreLoadEventListener@5dc579ac]
+        at org_hibernate.hibernate_core.EventListenerGroupImplTest.appendsAndPrependsListenerInstances(EventListenerGroupImplTest.java:38)
+
+GetterMethodImplTest > readsAPropertyThroughItsGetter() FAILED
+    org.hibernate.PropertyNotFoundException: Could not locate setter method for property [org_hibernate.hibernate_core.GetterMethodImplTest$PropertyValue#value]
+        at app//org.hibernate.internal.util.ReflectHelper.findSetterMethod(ReflectHelper.java:629)
+        at app//org.hibernate.property.access.internal.PropertyAccessBasicImpl.<init>(PropertyAccessBasicImpl.java:47)
+        at app//org.hibernate.property.access.internal.PropertyAccessStrategyBasicImpl.buildPropertyAccess(PropertyAccessStrategyBasicImpl.java:27)
+        at app//org_hibernate.hibernate_core.GetterMethodImplTest.readsAPropertyThroughItsGetter(GetterMethodImplTest.java:20)
+
+86 tests completed, 3 failed
+
+> Task :test
+ FAILED
+FAILURE: Build failed with an exception.
+
+
+* What went wrong:
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9324-3f57e34d/tests/src/org.hibernate/hibernate-core/6.1.0.Final/build/reports/problems/problems-report.html
+Execution failed for task ':test'.
+
+> There were failing tests. See the report at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9324-3f57e34d/tests/src/org.hibernate/hibernate-core/6.1.0.Final/build/reports/tests/test/index.html
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+16 actionable tasks: 4 executed, 12 up-to-date
+BUILD FAILED in 18s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9324-3f57e34d/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.hibernate:hibernate-core:6.1.0.Final failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 20s
+9 actionable tasks: 1 executed, 8 up-to-date
