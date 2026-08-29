@@ -410,6 +410,7 @@ class ClaimedIssue:
     worktree_path: str
     scratch_metrics_repo_path: str
     issue_coordinates: str
+    issue_base_commit: str = DEFAULT_WORKTREE_BASE_REF
     current_coordinates: str | None = None
     new_version: str | None = None
     preflight_info_path: str | None = None
@@ -4391,8 +4392,12 @@ def resolve_issue_continuation_marker(
 def checkout_continuation_branch(
         worktree_path: str,
         marker: ContinuationMarker,
+        issue_base_commit: str,
 ) -> bool:
-    """Check out and rebase the preserved branch into the isolated worktree."""
+    """Check out and rebase preserved work onto the pinned issue base.
+
+    §FS-forge-run-requirements.4
+    """
     branch_name = marker.preserved_branch
     if not branch_name:
         return False
@@ -4404,9 +4409,8 @@ def checkout_continuation_branch(
         env=git_env,
         check=True,
     )
-    base_ref = fetch_remote_branch(worktree_path, DEFAULT_WORKTREE_BASE_REF)
     rebase_result = subprocess.run(
-        ["git", "rebase", base_ref],
+        ["git", "rebase", issue_base_commit],
         cwd=worktree_path,
         env=git_env,
         stdout=subprocess.PIPE,
@@ -4423,12 +4427,18 @@ def checkout_continuation_branch(
     print(
         (
             f"ERROR: Could not rebase preserved branch {branch_name} onto "
-            f"{DEFAULT_WORKTREE_BASE_REF}; falling back to a clean run.\n{rebase_result.stdout}"
+            f"pinned issue base {issue_base_commit[:12]}; falling back to a clean run.\n"
+            f"{rebase_result.stdout}"
         ),
         file=sys.stderr,
     )
     subprocess.run(["git", "rebase", "--abort"], cwd=worktree_path, env=git_env, check=False)
-    subprocess.run(["git", "switch", "--detach", base_ref], cwd=worktree_path, env=git_env, check=True)
+    subprocess.run(
+        ["git", "switch", "--detach", issue_base_commit],
+        cwd=worktree_path,
+        env=git_env,
+        check=True,
+    )
     marker_path = continuation_marker_path(worktree_path)
     if os.path.exists(marker_path):
         os.remove(marker_path)
@@ -6171,8 +6181,8 @@ def create_detached_worktree(
         raise
 
 
-def fetch_review_base_ref(repo_path: str) -> None:
-    """Refresh the upstream PR base ref used by local review diffs."""
+def fetch_default_base_ref(repo_path: str, operation: str) -> str:
+    """Refresh and return the remote-tracking ref for the default issue base."""
     remote_tracking_ref = f"refs/remotes/origin/{DEFAULT_WORKTREE_BASE_REF}"
     try:
         run_git_transport(
@@ -6186,10 +6196,54 @@ def fetch_review_base_ref(repo_path: str) -> None:
         )
     except GitTransportError as exc:
         print(
-            f"ERROR: Failed to fetch origin/{DEFAULT_WORKTREE_BASE_REF} before PR review: {exc}",
+            f"ERROR: Failed to fetch origin/{DEFAULT_WORKTREE_BASE_REF} before {operation}: {exc}",
             file=sys.stderr,
         )
         raise
+    return remote_tracking_ref
+
+
+def resolve_git_commit(repo_path: str, ref: str) -> str:
+    """Resolve one Git ref to an immutable commit SHA."""
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--verify", f"{ref}^{{commit}}"],
+            cwd=repo_path,
+            env=git_env_limited_to_repo_root(repo_path),
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+        )
+    except subprocess.CalledProcessError as exc:
+        print(f"ERROR: Failed to resolve Git commit {ref}: {exc.stdout}", file=sys.stderr)
+        raise
+    commit = result.stdout.strip()
+    if not commit:
+        print(f"ERROR: Git ref {ref} resolved to an empty commit SHA", file=sys.stderr)
+        raise RuntimeError(f"Git ref {ref} resolved to an empty commit SHA")
+    return commit
+
+
+def fetch_issue_base_commit(repo_path: str) -> str:
+    """Fetch and pin the current origin/master commit before an issue claim.
+
+    The checkout containing Forge may be on a feature branch; only the fetched
+    remote-tracking ref supplies repository state for issue work
+    (§FS-forge-run-requirements.2).
+    """
+    remote_tracking_ref = fetch_default_base_ref(repo_path, "issue claim")
+    commit = resolve_git_commit(repo_path, remote_tracking_ref)
+    log_stage(
+        "issue-base",
+        f"Pinned origin/{DEFAULT_WORKTREE_BASE_REF} at {commit[:12]} for the next issue claim",
+    )
+    return commit
+
+
+def fetch_review_base_ref(repo_path: str) -> None:
+    """Refresh the upstream PR base ref used by local review diffs."""
+    fetch_default_base_ref(repo_path, "PR review")
 
 
 def remove_worktree(repo_path: str, worktree_path: str) -> None:
@@ -6264,8 +6318,12 @@ def create_issue_workspace(
         base_reachability_metadata_path: str,
         canonical_metrics_repo_path: str,
         issue_number: int,
+        issue_base_commit: str = DEFAULT_WORKTREE_BASE_REF,
 ) -> tuple[str, str]:
-    """Create isolated worktrees for reachability-metadata and metrics storage."""
+    """Create an isolated issue worktree from the pinned repository base.
+
+    §FS-forge-run-requirements.4
+    """
     repo_root = get_repo_root()
     worktrees_root = os.path.join(repo_root, "local_repositories", SCRATCH_WORKTREE_DIRNAME)
     os.makedirs(worktrees_root, exist_ok=True)
@@ -6276,8 +6334,8 @@ def create_issue_workspace(
     create_detached_worktree(
         base_reachability_metadata_path,
         worktree_path,
-        DEFAULT_WORKTREE_BASE_REF,
-        f"Failed to create worktree for issue #{issue_number}",
+        issue_base_commit,
+        f"Failed to create worktree for issue #{issue_number} from {issue_base_commit}",
     )
     try:
         require_complete_reachability_repo(worktree_path)
@@ -6598,7 +6656,7 @@ ISSUE_FORM_ACCEPTED = IssueFormVerdict()
 def check_issue_form(issue: dict, label: str, reachability_metadata_path: str) -> IssueFormVerdict:
     """Decide every issue-form rule from the payload and the repository.
 
-    Runs while the exclusive issue claim is held and before worktree creation.
+    Runs inside the pinned issue-base worktree while the exclusive claim is held.
     The rules are decided one at a time and the gate stops at the first failure,
     so the verdict always names the rule and the value that failed it. The only
     rule that leaves the machine is decided last
@@ -6798,6 +6856,28 @@ def reject_issue_form(
     return True
 
 
+def cleanup_claim_preparation_workspace(
+        base_reachability_metadata_path: str,
+        worktree_path: str | None,
+        preflight_info_path: str | None,
+) -> None:
+    """Remove workspace state when claim preparation does not reach dispatch.
+
+    §FS-forge-run-requirements.2
+    """
+    if preflight_info_path:
+        shutil.rmtree(preflight_info_path, ignore_errors=True)
+    if not worktree_path:
+        return
+    try:
+        remove_worktree(base_reachability_metadata_path, worktree_path)
+    except Exception as exc:
+        print(
+            f"ERROR: Failed to clean up unstarted issue worktree {worktree_path}: {exc!r}",
+            file=sys.stderr,
+        )
+
+
 def claim_issue_for_processing(
         issue: dict,
         label: str,
@@ -6808,174 +6888,175 @@ def claim_issue_for_processing(
 ) -> Optional[ClaimedIssue]:
     """Claim an issue and prepare its isolated execution workspace.
 
-    Claiming, assignment validation, and worktree creation are orchestration
-    responsibilities, not strategy logic (§AR-forge-control-plane). This is
-    where the run context of §FS-forge-run-requirements.4 is assembled; moving
-    the rest of it off the driver is
-    §ROADMAP-forge-dispatcher-owned-run-preconditions. Chunked
-    dynamic-access continuation derives its exhaust report from the coordinate
-    in the checked-out repository (§AR-dynamic-access-exhaust-report).
+    Forge code may run from a monitored feature branch, but repository-dependent
+    preconditions and generated work use one freshly fetched, pinned
+    `origin/master` commit (§FS-forge-run-requirements.2,
+    §FS-forge-run-requirements.4).
     """
     enter_phase(PHASE_CLAIM)
     if not refresh_issue_payload_for_claim(issue, label, authenticated_user):
         return None
 
+    try:
+        issue_base_commit = fetch_issue_base_commit(base_reachability_metadata_path)
+    except BaseException as exc:
+        if isinstance(exc, Exception):
+            return None
+        raise
+
     item_id = try_claim_issue(issue, authenticated_user, label, take_blocked_issues)
     if not item_id:
         return None
 
-    # The claim makes form rejection exclusive and no worktree exists yet.
-    # §FS-forge-run-requirements.3
+    worktree_path: str | None = None
+    scratch_metrics_repo_path: str | None = None
+    preflight_info_path: str | None = None
+    handoff_complete = False
+    failure_stage = "claim setup"
     try:
-        form_verdict = check_issue_form(issue, label, base_reachability_metadata_path)
-    except BaseException as exc:
-        revert_issue_claim(
-            item_id,
+        worktree_path, scratch_metrics_repo_path = create_issue_workspace(
+            base_reachability_metadata_path,
+            canonical_metrics_repo_path,
             issue["number"],
-            "issue-form check interrupted by Ctrl+C" if is_interrupt_exception(exc)
-            else f"issue-form check failure ({type(exc).__name__})",
+            issue_base_commit,
         )
-        if isinstance(exc, Exception):
+        preflight_info_path = create_preflight_info_dir(worktree_path)
+
+        # The claim makes form rejection exclusive, while the pinned worktree
+        # makes every repository lookup independent from the Forge code branch.
+        # §FS-forge-run-requirements.3
+        failure_stage = "issue-form check"
+        form_verdict = check_issue_form(issue, label, worktree_path)
+        if form_verdict.rejection is not None:
+            rejection_succeeded = reject_issue_form(issue, form_verdict.rejection)
+            if not rejection_succeeded:
+                revert_issue_claim(
+                    item_id,
+                    issue["number"],
+                    f"issue-form rule '{form_verdict.rejection.rule}' could not close the issue",
+                )
             return None
-        raise
-    if form_verdict.rejection is not None:
-        rejection_succeeded = reject_issue_form(issue, form_verdict.rejection)
-        if not rejection_succeeded:
+        if not form_verdict.accepted:
             revert_issue_claim(
                 item_id,
                 issue["number"],
-                f"issue-form rule '{form_verdict.rejection.rule}' could not close the issue",
+                "issue-form check was undecided",
             )
-        return None
-    if not form_verdict.accepted:
-        revert_issue_claim(
-            item_id,
-            issue["number"],
-            "issue-form check was undecided",
-        )
-        return None
+            return None
 
-    # Preparation now runs with the claim held, so an unexpected failure must
-    # return the issue to Todo just like an expected failed precondition.
-    # §FS-forge-run-requirements.2
-    try:
-        not_for_native_image: bool = maybe_handle_not_for_native_image_issue(
-            issue,
-            base_reachability_metadata_path,
-        )
+        failure_stage = "post-claim preparation"
+        not_for_native_image: bool = maybe_handle_not_for_native_image_issue(issue, worktree_path)
         claim_metadata: Optional[tuple[str, str | None, str | None]] = (
             None
             if not_for_native_image
-            else build_claim_metadata(issue, label, base_reachability_metadata_path)
+            else build_claim_metadata(issue, label, worktree_path)
         )
         continuation_marker: ContinuationMarker | None = (
             resolve_issue_continuation_marker(
                 issue,
                 label,
                 claim_metadata[0],
-                base_reachability_metadata_path,
+                worktree_path,
             )
             if claim_metadata is not None
             else None
         )
-    except BaseException as exc:
-        revert_issue_claim(
-            item_id,
-            issue["number"],
-            "post-claim preparation interrupted by Ctrl+C" if is_interrupt_exception(exc)
-            else f"post-claim preparation failure ({type(exc).__name__})",
-        )
-        if isinstance(exc, Exception):
+
+        if not_for_native_image:
+            revert_issue_claim(
+                item_id,
+                issue["number"],
+                "artifact is marked not-for-native-image",
+            )
             return None
-        raise
+        if claim_metadata is None:
+            revert_issue_claim(
+                item_id,
+                issue["number"],
+                "issue-form accepted but claim metadata could not be built",
+            )
+            return None
 
-    if not_for_native_image:
-        revert_issue_claim(
-            item_id,
-            issue["number"],
-            "artifact is marked not-for-native-image",
-        )
-        return None
+        issue_coordinates, current_coordinates, new_version = claim_metadata
+        if issue_is_resumable(issue) and continuation_marker is None:
+            log_stage(
+                "continuation",
+                (
+                    f"Skipping issue #{issue['number']}: label '{LABEL_RESUMABLE}' is present, "
+                    "but no valid continuation marker was found on a preserved branch."
+                ),
+            )
+            revert_issue_claim(
+                item_id,
+                issue["number"],
+                "resumable issue has no valid continuation marker",
+            )
+            return None
 
-    if claim_metadata is None:
-        revert_issue_claim(
-            item_id,
-            issue["number"],
-            "issue-form accepted but claim metadata could not be built",
-        )
-        return None
-    issue_coordinates, current_coordinates, new_version = claim_metadata
-    if issue_is_resumable(issue) and continuation_marker is None:
-        log_stage(
-            "continuation",
-            (
-                f"Skipping issue #{issue['number']}: label '{LABEL_RESUMABLE}' is present, "
-                "but no valid continuation marker was found on a preserved branch."
-            ),
-        )
-        revert_issue_claim(
-            item_id,
-            issue["number"],
-            "resumable issue has no valid continuation marker",
-        )
-        return None
-    try:
+        failure_stage = "chunked-dynamic-access setup"
         chunked_exhaust_report = resolve_chunked_dynamic_access_exhaust_report(
             issue,
-            base_reachability_metadata_path,
+            worktree_path,
             issue_coordinates,
             continuation_marker,
         )
-    except Exception as exc:
-        print(
-            f"ERROR: Cannot resume chunked-dynamic-access issue #{issue['number']}: {exc}",
-            file=sys.stderr,
-        )
-        revert_issue_claim(
-            item_id,
-            issue["number"],
-            f"chunked-dynamic-access setup failure ({type(exc).__name__})",
-        )
-        return None
 
-    try:
-        worktree_path, scratch_metrics_repo_path = create_issue_workspace(
-            base_reachability_metadata_path,
-            canonical_metrics_repo_path,
-            issue["number"],
-        )
-        preflight_info_path = create_preflight_info_dir(worktree_path)
-        if continuation_marker is not None and not checkout_continuation_branch(worktree_path, continuation_marker):
+        failure_stage = "claim setup"
+        if continuation_marker is not None and not checkout_continuation_branch(
+                worktree_path,
+                continuation_marker,
+                issue_base_commit,
+        ):
             continuation_marker = None
         if chunked_exhaust_report is not None:
             verify_chunked_dynamic_access_base_contains_published_commit(
                 chunked_exhaust_report,
                 worktree_path,
             )
+
+        claimed_issue = ClaimedIssue(
+            issue=issue,
+            label=label,
+            item_id=item_id,
+            base_reachability_metadata_path=base_reachability_metadata_path,
+            worktree_path=worktree_path,
+            scratch_metrics_repo_path=scratch_metrics_repo_path,
+            issue_coordinates=issue_coordinates,
+            issue_base_commit=issue_base_commit,
+            current_coordinates=current_coordinates,
+            new_version=new_version,
+            preflight_info_path=preflight_info_path,
+            continuation_marker=continuation_marker,
+        )
+        handoff_complete = True
+        return claimed_issue
     except BaseException as exc:
+        if failure_stage == "chunked-dynamic-access setup":
+            print(
+                f"ERROR: Cannot resume chunked-dynamic-access issue #{issue['number']}: {exc}",
+                file=sys.stderr,
+            )
+        else:
+            print(
+                f"ERROR: Issue #{issue['number']} {failure_stage} failed: {exc!r}",
+                file=sys.stderr,
+            )
         revert_issue_claim(
             item_id,
             issue["number"],
-            "claim setup interrupted by Ctrl+C" if is_interrupt_exception(exc)
-            else f"claim setup failure ({type(exc).__name__})",
+            f"{failure_stage} interrupted by Ctrl+C" if is_interrupt_exception(exc)
+            else f"{failure_stage} failure ({type(exc).__name__})",
         )
         if isinstance(exc, Exception):
             return None
         raise
-
-    return ClaimedIssue(
-        issue=issue,
-        label=label,
-        item_id=item_id,
-        base_reachability_metadata_path=base_reachability_metadata_path,
-        worktree_path=worktree_path,
-        scratch_metrics_repo_path=scratch_metrics_repo_path,
-        issue_coordinates=issue_coordinates,
-        current_coordinates=current_coordinates,
-        new_version=new_version,
-        preflight_info_path=preflight_info_path,
-        continuation_marker=continuation_marker,
-    )
+    finally:
+        if not handoff_complete:
+            cleanup_claim_preparation_workspace(
+                base_reachability_metadata_path,
+                worktree_path,
+                preflight_info_path,
+            )
 
 
 def build_fixture_claimed_issue(
@@ -7069,6 +7150,7 @@ def build_fixture_claimed_issue(
         worktree_path=worktree_path,
         scratch_metrics_repo_path=scratch_metrics_repo_path,
         issue_coordinates=issue_coordinates,
+        issue_base_commit=resolve_git_commit(worktree_path, "HEAD"),
         current_coordinates=current_coordinates,
         new_version=new_version,
         preflight_info_path=preflight_info_path,
