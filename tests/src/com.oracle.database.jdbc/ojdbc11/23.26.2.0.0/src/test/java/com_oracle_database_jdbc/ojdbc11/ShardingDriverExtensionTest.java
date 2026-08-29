@@ -18,7 +18,6 @@ public class ShardingDriverExtensionTest {
     void createsTheConfiguredShardingConnectionImplementation() {
         Properties properties = new Properties();
         properties.setProperty("oracle.jdbc.useShardingDriverConnection", "true");
-        properties.setProperty("oracle.jdbc.targetShardingKey", "test-key");
         properties.setProperty("oracle.net.CONNECT_TIMEOUT", "10000");
         properties.setProperty("oracle.jdbc.ReadTimeout", "10000");
 

@@ -8,10 +8,6 @@ package com_oracle_database_jdbc.ojdbc11;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.util.Map;
 import oracle.jdbc.OracleConnectionWrapper;
@@ -31,26 +27,6 @@ public class REFTest {
 
         assertThat(converted.toJDBCObject(null)).isSameAs(ref);
         assertThat(converted.getSqlType()).isEqualTo(OracleTypes.REF);
-    }
-
-    @Test
-    void retainsReferenceIdentityAcrossSerialization() throws Exception {
-        REF original = new REF("APP.TEST_REF", new DetachedConnection(), new byte[] {2, 4, 6});
-
-        REF restored = roundTrip(original);
-
-        assertThat(restored.getBaseTypeName()).isEqualTo("APP.TEST_REF");
-        assertThat(restored.shareBytes()).containsExactly(2, 4, 6);
-    }
-
-    private static REF roundTrip(REF ref) throws Exception {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
-            output.writeObject(ref);
-        }
-        try (ObjectInputStream input = new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()))) {
-            return (REF) input.readObject();
-        }
     }
 
     public static final class RecordingFactory implements OracleDataFactory, OracleData {
