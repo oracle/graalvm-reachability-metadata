@@ -144,6 +144,7 @@ from utility_scripts.continuation_marker import (
     CONTINUATION_MARKER_FILENAME,
     PHASE_EXPLORE,
     PHASE_PUBLICATION,
+    RESUMED_TREE_PHASES,
     ContinuationMarker,
     continuation_marker_path,
     load_continuation_marker,
@@ -159,7 +160,10 @@ from utility_scripts.library_preparation_preflight import (
     run_library_preparation_preflight as run_preflight_decision,
     write_library_preparation_preflight,
 )
-from utility_scripts.java_fix_coverage_follow_up import ensure_coverage_follow_up_issue
+from utility_scripts.java_fix_coverage_follow_up import (
+    ensure_coverage_follow_up_issue,
+    uncovered_dynamic_access_class_count,
+)
 from utility_scripts.library_update_alias_split import extract_follow_up_issue_numbers
 from utility_scripts.metadata_index import (
     coordinate_parts as metadata_coordinate_parts,
@@ -5130,16 +5134,73 @@ def _create_dynamic_access_exhaust_report(
     return exhaust_report, exhaust_report.default_path(claimed_issue.worktree_path)
 
 
+def _strategy_has_optimistic_bulk_phase(strategy_name: str | None) -> bool:
+    """Return whether the selected strategy makes the chunk decision after bulk."""
+    if not strategy_name:
+        return False
+    strategy: dict = require_strategy_by_name(strategy_name)
+    workflow_name: str | None = strategy.get("workflow")
+    return (
+        workflow_name == "optimistic_dynamic_access"
+        or (
+            workflow_name == "increase_dynamic_access_coverage"
+            and strategy.get("primary-workflow") == "optimistic_dynamic_access"
+        )
+    )
+
+
+def _continuation_resumes_existing_tree(marker: ContinuationMarker | None) -> bool:
+    """Return whether the run resumes a preserved tree the drivers keep as is."""
+    return marker is not None and marker.continue_from in RESUMED_TREE_PHASES
+
+
+def _prepare_dispatcher_dynamic_access_report(claimed_issue: ClaimedIssue) -> bool:
+    """Build the dynamic-access report input every chunk-eligible run measures.
+
+    Preparation precedes every chunk decision, including the ones deferred to an
+    optimistic bulk phase, so no workflow starts against a report that was never
+    built (§FS-forge-chunked-dynamic-access).
+    """
+    if _continuation_resumes_existing_tree(claimed_issue.continuation_marker):
+        log_stage(
+            "dynamic-access-chunking",
+            (
+                f"Issue #{claimed_issue.issue['number']} resumes a preserved tree; "
+                "refreshing the dynamic-access report without re-preparing it."
+            ),
+        )
+    elif claimed_issue.label == LABEL_LIBRARY_NEW:
+        if not _prepare_new_library_dynamic_access_report(claimed_issue):
+            return False
+    else:
+        _prepare_library_update_dynamic_access_report(claimed_issue)
+    _generate_dispatcher_dynamic_access_report(claimed_issue)
+    return True
+
+
+def _dispatcher_uncovered_class_count(claimed_issue: ClaimedIssue) -> str:
+    """Return the prepared report's uncovered class count, or that it is unavailable.
+
+    A library that reports no dynamic access counts zero; only a report that was
+    never written is unavailable (§FS-forge-chunked-dynamic-access).
+    """
+    try:
+        report = load_dynamic_access_coverage_report(_resolve_dynamic_access_report_path(claimed_issue))
+    except FileNotFoundError:
+        return "unavailable"
+    return str(uncovered_dynamic_access_class_count(report))
+
+
 def prepare_dynamic_access_chunking(
         claimed_issue: ClaimedIssue,
         strategy_name: str | None,
 ) -> int | None:
     """Return the iterative budget or optimistic post-bulk class boundary.
 
-    Iterative-only work keeps dispatcher-owned report selection. An optimistic
-    phase receives the configured boundary and decides after its gated bulk
-    loop, when its exact progress is known
-    (§FS-forge-chunked-dynamic-access).
+    Every chunk-eligible run prepares the same report input. Iterative-only work
+    then keeps dispatcher-owned report selection, while an optimistic phase
+    receives the configured boundary and decides after its gated bulk loop, when
+    its exact progress is known (§FS-forge-chunked-dynamic-access).
     """
     if claimed_issue.label not in {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE}:
         return None
@@ -5148,36 +5209,24 @@ def prepare_dynamic_access_chunking(
     active_chunk_remaining_budget: int | None = _continuation_active_chunk_remaining_budget(
         claimed_issue.continuation_marker,
     )
-    if strategy_name:
-        strategy: dict = require_strategy_by_name(strategy_name)
-        workflow_name: str | None = strategy.get("workflow")
-        has_optimistic_bulk_phase: bool = (
-            workflow_name == "optimistic_dynamic_access"
-            or (
-                workflow_name == "increase_dynamic_access_coverage"
-                and strategy.get("primary-workflow") == "optimistic_dynamic_access"
-            )
-        )
-        if has_optimistic_bulk_phase:
-            chunk_boundary: int = threshold
-            if active_chunk_remaining_budget is not None:
-                chunk_boundary = min(chunk_boundary, active_chunk_remaining_budget)
-            log_stage(
-                "dynamic-access-chunking",
-                "Deferring chunk selection for '{strategy}' until its optimistic bulk phase completes; "
-                "class_boundary={boundary}.".format(
-                    strategy=strategy_name,
-                    boundary=chunk_boundary,
-                ),
-            )
-            return chunk_boundary
+    if not _prepare_dispatcher_dynamic_access_report(claimed_issue):
+        return None
 
-    if claimed_issue.label == LABEL_LIBRARY_NEW:
-        if not _prepare_new_library_dynamic_access_report(claimed_issue):
-            return None
-    else:
-        _prepare_library_update_dynamic_access_report(claimed_issue)
-    _generate_dispatcher_dynamic_access_report(claimed_issue)
+    if _strategy_has_optimistic_bulk_phase(strategy_name):
+        chunk_boundary: int = threshold
+        if active_chunk_remaining_budget is not None:
+            chunk_boundary = min(chunk_boundary, active_chunk_remaining_budget)
+        log_stage(
+            "dynamic-access-chunking",
+            "Deferring chunk selection for '{strategy}' until its optimistic bulk phase completes; "
+            "uncovered_classes={uncovered}, class_boundary={boundary}.".format(
+                strategy=strategy_name,
+                uncovered=_dispatcher_uncovered_class_count(claimed_issue),
+                boundary=chunk_boundary,
+            ),
+        )
+        return chunk_boundary
+
     report = _load_dispatcher_dynamic_access_report(claimed_issue)
     if report is None:
         log_stage(

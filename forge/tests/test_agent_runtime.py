@@ -16,6 +16,7 @@ from ai_workflows.agents.codex_app_server import CodexAppServerClient
 from ai_workflows.agents.opencode_agent import OpenCodeAgent
 from ai_workflows.agents.agent_runtime import PROVIDER_AWARE_BACKENDS, resolve_provider
 from ai_workflows.agents.agent_runtime import (
+    CODEX_BYPASS_APPROVALS_AND_SANDBOX_FLAG,
     DEFAULT_AGENT,
     SUPPORTED_AGENT_BACKENDS,
     default_model_for_backend,
@@ -273,6 +274,25 @@ class AgentRuntimeTests(unittest.TestCase):
         self.assertEqual(agent._codex_command, "cdx")
         self.assertEqual(agent._reasoning_effort, "high")
 
+    def test_codex_agent_uses_the_unattended_bypass_flag(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir, patch.object(
+                Agent,
+                "_create_session_log_path",
+                return_value=os.path.join(temp_dir, "codex.log"),
+        ):
+            agent = CodexAgent(
+                "gpt-5.6-luna",
+                temp_dir,
+                environment={"FORGE_ANALYSIS_FAMILY": "codex"},
+                agent_name="cdx",
+            )
+
+        command = agent._build_exec_command("prompt")  # noqa: SLF001
+        self.assertIn(CODEX_BYPASS_APPROVALS_AND_SANDBOX_FLAG, command)
+        self.assertNotIn("--ignore-user-config", command)
+        self.assertFalse(any("approval_policy" in argument for argument in command))
+        self.assertFalse(any("sandbox_mode" in argument for argument in command))
+
     def test_url_discovery_uses_the_role_agent_executable(self) -> None:
         with patch.dict(
                 os.environ,
@@ -285,6 +305,9 @@ class AgentRuntimeTests(unittest.TestCase):
         ):
             command = url_fetch_agent_command()
         self.assertTrue(command.startswith("cdx exec "))
+        command_tokens = shlex.split(command)
+        self.assertIn(CODEX_BYPASS_APPROVALS_AND_SANDBOX_FLAG, command_tokens)
+        self.assertNotIn("--ignore-user-config", command_tokens)
 
     def test_url_discovery_honors_custom_executables_for_every_backend(self) -> None:
         for backend in SUPPORTED_AGENT_BACKENDS:

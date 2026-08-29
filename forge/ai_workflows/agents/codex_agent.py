@@ -9,7 +9,10 @@ import subprocess
 import tempfile
 import time
 from ai_workflows.agents.agent import Agent
-from ai_workflows.agents.agent_runtime import agent_process_environment
+from ai_workflows.agents.agent_runtime import (
+    CODEX_BYPASS_APPROVALS_AND_SANDBOX_FLAG,
+    agent_process_environment,
+)
 from ai_workflows.agents.codex_app_server import CodexAppServerClient
 from utility_scripts.gradle_test_runner import run_gradle_test_command
 
@@ -174,26 +177,7 @@ class CodexAgent(Agent):
     def send_prompt(self, prompt: str) -> str:
         self._print_session_log_once("Codex", self._session_log_path)
         original_thread_id = self._thread_id
-        config_args = self._build_config_args()
-        if self._thread_id is None:
-            cmd = [
-                self._codex_command, "exec",
-                "--ignore-user-config",
-                "--json",
-                *config_args,
-                "-m", self._model_name,
-                prompt,
-            ]
-        else:
-            cmd = [
-                self._codex_command, "exec", "resume",
-                "--ignore-user-config",
-                "--json",
-                *config_args,
-                "-m", self._model_name,
-                self._thread_id,
-                prompt,
-            ]
+        cmd = self._build_exec_command(prompt)
         try:
             returncode, output = self._run_codex_command(cmd)
         except subprocess.TimeoutExpired as exc:
@@ -386,8 +370,6 @@ class CodexAgent(Agent):
     def _build_config_args(self) -> list[str]:
         config = {
             "reasoning.effort": self._reasoning_effort,
-            "approval_policy": "never",
-            "sandbox_mode": "danger-full-access",
         }
         if self._persistent_instructions:
             config["developer_instructions"] = self._persistent_instructions
@@ -398,6 +380,21 @@ class CodexAgent(Agent):
             rendered = value if key in raw_keys else self._toml_string(value)
             args.extend(["-c", f"{key}={rendered}"])
         return args
+
+    def _build_exec_command(self, prompt: str) -> list[str]:
+        command = [self._codex_command, "exec"]
+        if self._thread_id is not None:
+            command.append("resume")
+        command.extend([
+            CODEX_BYPASS_APPROVALS_AND_SANDBOX_FLAG,
+            "--json",
+            *self._build_config_args(),
+            "-m", self._model_name,
+        ])
+        if self._thread_id is not None:
+            command.append(self._thread_id)
+        command.append(prompt)
+        return command
 
     @staticmethod
     def _toml_string(value: str) -> str:

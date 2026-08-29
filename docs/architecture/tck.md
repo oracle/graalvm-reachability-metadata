@@ -216,6 +216,14 @@ These emit the GitHub Actions matrices the workflows consume, all driven by
 | `generateLibraryStats`, `listTopCoordinatesByMetric`, `generateTopCoordinatesByMetricMatrix`, `generateReadmeBadgeSummary`, `generateDependencyGraph` | Produce and query the stats mirror, README badge inputs, and dependency graphs that feed the coverage dashboard (§AR-publish-scheduled-coverage). Library coverage analyzes only the coordinate's unclassified main JAR and includes both the regular and tracked extension suites. |
 | `package` | Zip the `metadata/` directory into the release artifact consumed by native-build-tools (§FS-repository-functional-spec.4). |
 
+`generateDynamicAccessCoverageReport` derives its call sites from the native
+test build's `dynamic-access` output. When that input cannot be produced — the
+underlying `generateDynamicAccessReport` build fails, or its output directory is
+absent afterwards — the task fails instead of writing a report over the missing
+input. An empty report therefore always means the library reported no
+dynamic access, never that nothing was built, so a consumer may treat a zero-call
+report as a property of the library (§forge/AR-dynamic-access-fallback-and-failure).
+
 Dynamic-access coverage normally marks a call site covered when its stack frame
 carries a source line and JaCoCo covered that line. Some jars are compiled
 without a `LineNumberTable`, so every dynamic-access frame is line-less
