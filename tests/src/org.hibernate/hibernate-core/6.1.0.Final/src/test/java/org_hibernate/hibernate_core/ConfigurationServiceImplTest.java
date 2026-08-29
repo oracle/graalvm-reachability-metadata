@@ -30,8 +30,7 @@ public class ConfigurationServiceImplTest {
             );
 
             assertThat(value.getValue()).isEqualTo("configured");
-        }
-        finally {
+        } finally {
             StandardServiceRegistryBuilder.destroy(registry);
         }
     }

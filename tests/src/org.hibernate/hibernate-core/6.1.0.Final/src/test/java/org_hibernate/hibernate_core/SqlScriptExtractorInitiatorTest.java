@@ -35,8 +35,7 @@ public class SqlScriptExtractorInitiatorTest {
 
             assertThat(extractor.extractCommands(new StringReader("select 1"), null))
                     .containsExactly("select 1");
-        }
-        finally {
+        } finally {
             StandardServiceRegistryBuilder.destroy(registry);
         }
     }

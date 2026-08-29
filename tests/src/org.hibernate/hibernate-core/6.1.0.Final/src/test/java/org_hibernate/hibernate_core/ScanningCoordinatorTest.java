@@ -64,8 +64,7 @@ public class ScanningCoordinatorTest {
                 Persistence.createEntityManagerFactory("StudentPU", properties);
         try {
             assertThat(factory.isOpen()).isTrue();
-        }
-        finally {
+        } finally {
             factory.close();
         }
     }

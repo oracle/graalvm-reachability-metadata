@@ -37,8 +37,7 @@ public class ManagedBeanRegistryInitiatorTest {
             assertThat(managedBeans.getBeanContainer()).isInstanceOf(RecordingBeanContainer.class);
             assertThat(value).isEmpty();
             managedBeans.getBeanContainer().stop();
-        }
-        finally {
+        } finally {
             StandardServiceRegistryBuilder.destroy(registry);
         }
     }

@@ -30,8 +30,7 @@ public class PersisterClassResolverInitiatorTest {
             );
 
             assertThat(resolver).isExactlyInstanceOf(StandardPersisterClassResolver.class);
-        }
-        finally {
+        } finally {
             StandardServiceRegistryBuilder.destroy(registry);
         }
     }

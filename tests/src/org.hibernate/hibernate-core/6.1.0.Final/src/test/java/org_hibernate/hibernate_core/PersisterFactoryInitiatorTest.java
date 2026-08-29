@@ -30,8 +30,7 @@ public class PersisterFactoryInitiatorTest {
             );
 
             assertThat(factory).isExactlyInstanceOf(PersisterFactoryImpl.class);
-        }
-        finally {
+        } finally {
             StandardServiceRegistryBuilder.destroy(registry);
         }
     }

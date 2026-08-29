@@ -31,8 +31,7 @@ public class AbstractServiceRegistryImplTest {
             InjectedService service = registry.getService(InjectedService.class);
 
             assertThat(service.getDependency()).isSameAs(dependency);
-        }
-        finally {
+        } finally {
             StandardServiceRegistryBuilder.destroy(registry);
         }
     }

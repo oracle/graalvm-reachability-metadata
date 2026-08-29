@@ -30,8 +30,7 @@ public class BatchBuilderInitiatorTest {
         try {
             assertThat(registry.getService(BatchBuilder.class))
                     .isInstanceOf(RecordingBatchBuilder.class);
-        }
-        finally {
+        } finally {
             StandardServiceRegistryBuilder.destroy(registry);
         }
     }

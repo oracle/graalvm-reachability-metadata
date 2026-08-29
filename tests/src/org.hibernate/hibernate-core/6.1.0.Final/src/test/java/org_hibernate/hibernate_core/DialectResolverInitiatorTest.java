@@ -31,8 +31,7 @@ public class DialectResolverInitiatorTest {
             Dialect dialect = registry.getService(DialectResolver.class).resolveDialect(null);
 
             assertThat(dialect).isInstanceOf(H2Dialect.class);
-        }
-        finally {
+        } finally {
             StandardServiceRegistryBuilder.destroy(registry);
         }
     }

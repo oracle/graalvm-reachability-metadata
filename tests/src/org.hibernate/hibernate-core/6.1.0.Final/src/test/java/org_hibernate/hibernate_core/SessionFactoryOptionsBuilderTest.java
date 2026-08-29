@@ -90,8 +90,7 @@ public class SessionFactoryOptionsBuilderTest {
                 assertThat(session.isOpen()).isTrue();
                 assertThat(BuilderInterceptor.instances).hasValue(1);
             }
-        }
-        finally {
+        } finally {
             StandardServiceRegistryBuilder.destroy(registry);
         }
     }

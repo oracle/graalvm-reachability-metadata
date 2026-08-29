@@ -39,8 +39,7 @@ public class ConnectionProviderInitiatorTest {
 
             assertThat(provider).isInstanceOf(ConfigurableConnectionProvider.class);
             assertThat(provider.isUnwrappableAs(ConfigurableConnectionProvider.class)).isTrue();
-        }
-        finally {
+        } finally {
             StandardServiceRegistryBuilder.destroy(registry);
         }
     }
@@ -65,8 +64,7 @@ public class ConnectionProviderInitiatorTest {
 
             assertThat(provider).isInstanceOf(ConfigurableConnectionProvider.class);
             assertThat(((ConfigurableConnectionProvider) provider).getLabel()).isEqualTo("configured");
-        }
-        finally {
+        } finally {
             StandardServiceRegistryBuilder.destroy(registry);
         }
     }

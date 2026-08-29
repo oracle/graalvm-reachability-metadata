@@ -33,8 +33,7 @@ public class ClassLoaderAccessImplTest {
                     .buildSessionFactory()) {
                 assertThat(factory.getMetamodel().entity(MetamodelRecord.class)).isNotNull();
             }
-        }
-        finally {
+        } finally {
             StandardServiceRegistryBuilder.destroy(registry);
         }
     }

@@ -41,8 +41,7 @@ public class EntityManagerFactoryBuilderImplTest {
         try {
             assertThat(factory.isOpen()).isTrue();
             assertThat(RecordingIntegratorProvider.instances).hasValue(1);
-        }
-        finally {
+        } finally {
             factory.close();
         }
     }

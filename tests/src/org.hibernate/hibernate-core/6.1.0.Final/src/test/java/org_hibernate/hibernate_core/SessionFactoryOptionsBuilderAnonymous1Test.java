@@ -38,8 +38,7 @@ public class SessionFactoryOptionsBuilderAnonymous1Test {
 
                 assertThat(translator).isInstanceOf(RecordingHqlTranslator.class);
             }
-        }
-        finally {
+        } finally {
             StandardServiceRegistryBuilder.destroy(registry);
         }
     }

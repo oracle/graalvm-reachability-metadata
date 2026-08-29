@@ -28,8 +28,7 @@ public class ReflectHelperTest {
             Thread.currentThread().setContextClassLoader(null);
             first = ReflectHelper.classForName(SampleValue.class.getName(), ReflectHelperTest.class);
             second = ReflectHelper.classForName(SampleValue.class.getName());
-        }
-        finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(original);
         }
 

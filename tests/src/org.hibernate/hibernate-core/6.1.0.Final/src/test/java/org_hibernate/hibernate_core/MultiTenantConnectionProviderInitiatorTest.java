@@ -38,8 +38,7 @@ public class MultiTenantConnectionProviderInitiatorTest {
 
             assertThat(provider).isExactlyInstanceOf(ConfiguredProvider.class);
             assertThat(provider.isUnwrappableAs(ConfiguredProvider.class)).isTrue();
-        }
-        finally {
+        } finally {
             StandardServiceRegistryBuilder.destroy(registry);
         }
     }

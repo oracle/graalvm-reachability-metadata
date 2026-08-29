@@ -43,8 +43,7 @@ public class ConfigHelperTest {
                 assertThat(resource.read()).isNotNegative();
                 assertThat(userResource.read()).isNotNegative();
             }
-        }
-        finally {
+        } finally {
             Thread.currentThread().setContextClassLoader(original);
         }
 
