@@ -34,8 +34,10 @@ public class ReflectiveConvertletTableTest {
     }
 
     private static String convertPlan(SqlRexConvertletTable convertletTable) throws Exception {
-        try (Planner planner = Frameworks.getPlanner(
-                Frameworks.newConfigBuilder().convertletTable(convertletTable).build())) {
+        try (Planner planner = Frameworks.getPlanner(Frameworks.newConfigBuilder()
+                .defaultSchema(Frameworks.createRootSchema(true))
+                .convertletTable(convertletTable)
+                .build())) {
             SqlNode parsed = planner.parse("SELECT 1 + 2");
             SqlNode validated = planner.validate(parsed);
             RelRoot root = planner.rel(validated);
