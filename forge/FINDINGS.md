@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-08-29 — org.junit.jupiter:junit-jupiter-params:6.1.0 (#9208)
+
+**Top-level test class is not public**
+
+tests/src/org.junit.jupiter/junit-jupiter-params/6.1.0/src/test/java/org_junit_jupiter/junit_jupiter_params/JunitJupiterParamsTest.java declared the top-level JunitJupiterParamsTest with package-private visibility. This concretely violates the public top-level test class requirement in §FS-test-contract.1.2.
+
 ## 2026-08-29 — org.apache.calcite:calcite-core:1.35.0 (#446)
 
 **Pre-push review unavailable**
