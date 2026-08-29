@@ -15,9 +15,9 @@ import org.springframework.core.SpringProperties;
 public class SpringPropertiesTest {
     @Test
     void storesAndReadsLocalProperty() {
-        SpringProperties.setProperty("spring.core.coverage", "enabled");
+        SpringProperties.setFlag("spring.core.coverage");
         try {
-            assertThat(SpringProperties.getProperty("spring.core.coverage")).isEqualTo("enabled");
+            assertThat(SpringProperties.getProperty("spring.core.coverage")).isEqualTo("true");
             assertThat(SpringProperties.getFlag("spring.core.coverage")).isTrue();
         } finally {
             SpringProperties.setProperty("spring.core.coverage", null);
