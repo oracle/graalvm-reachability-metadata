@@ -96,10 +96,10 @@
     }
   },
   "add_new_library_support:2026-08-29": {
-    "timestamp": "2026-08-29T16:51:13.446580Z",
+    "timestamp": "2026-08-29T21:04:25.584622Z",
     "library": "com.oracle.database.jdbc:ojdbc11:23.26.2.0.0",
-    "starting_commit": "6986003a741151b4fca7637516d9683f93998d63",
-    "ending_commit": "fd1192f670ae654a20a72cd0efed7b17ac2c83a0",
+    "starting_commit": "dd1c86771c82d4f97b7cb1daca380d8a27fe2e3c",
+    "ending_commit": "177a6bf5bc55876d7065166aa597d7820b892571",
     "strategy_name": "dynamic_access_bulk_pi_gpt-5.6-sol",
     "agent": "pi",
     "model": "gpt-5.6-sol",
@@ -109,8 +109,8 @@
       "dynamicAccess": {
         "breakdown": {
           "reflection": {
-            "coverageRatio": 0.566265,
-            "coveredCalls": 94,
+            "coverageRatio": 0.572289,
+            "coveredCalls": 95,
             "totalCalls": 166
           },
           "resources": {
@@ -119,42 +119,83 @@
             "totalCalls": 11
           }
         },
-        "coverageRatio": 0.587571,
-        "coveredCalls": 104,
+        "coverageRatio": 0.59322,
+        "coveredCalls": 105,
         "totalCalls": 177
       },
       "libraryCoverage": {
         "instruction": {
-          "covered": 81703,
-          "missed": 1407024,
-          "ratio": 0.054881,
+          "covered": 82243,
+          "missed": 1406484,
+          "ratio": 0.055244,
           "total": 1488727
         },
         "line": {
-          "covered": 11124,
-          "missed": 151515,
-          "ratio": 0.068397,
+          "covered": 11219,
+          "missed": 151420,
+          "ratio": 0.068981,
           "total": 162639
         },
         "method": {
-          "covered": 1857,
-          "missed": 36609,
-          "ratio": 0.048276,
+          "covered": 1873,
+          "missed": 36593,
+          "ratio": 0.048692,
           "total": 38466
         }
       }
     },
     "library_preparation_preflight": {
-      "status": "degraded",
-      "action": "no_action",
+      "status": "completed",
+      "action": "advisory_preparation",
       "issue_number": 9528,
       "issue_label": "library-new-request",
       "library": "com.oracle.database.jdbc:ojdbc11:23.26.2.0.0",
-      "summary": "Library preparation preflight did not produce usable advisory setup.",
-      "deterministic_setup": [],
-      "agent_guidance": "",
-      "risks": [],
-      "applied_setup": [],
+      "summary": "Optional sharding, wallet, and Jakarta JSON coverage requires companion test dependencies; no Oracle Docker image is needed.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.oracle.database.jdbc:ucp:23.26.2.0.0",
+          "scope": "testImplementation",
+          "reason": "Enables the UCP-backed sharding driver path documented by Oracle. [Oracle JDBC guide](https://docs.oracle.com/en/database/oracle/oracle-database/21/jjdbc/database-sharding.html)"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.oracle.database.security:oraclepki:23.26.2.0.0",
+          "scope": "testImplementation",
+          "reason": "Required to create and exercise Oracle Wallet-backed SSL setup. [Oracle Maven guide](https://www.oracle.com/database/technologies/maven-central-guide.html)"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "jakarta.json:jakarta.json-api:2.1.3",
+          "scope": "testImplementation",
+          "reason": "Required to exercise ojdbc11's Jakarta JSON detection and integration path."
+        }
+      ],
+      "agent_guidance": "Exercise sharding with oracle.jdbc.useShardingDriverConnection=true and True Cache with oracle.jdbc.useTrueCacheDriverConnection=true. Use a closed local endpoint with bounded oracle.net.CONNECT_TIMEOUT and oracle.jdbc.ReadTimeout so these tests do not require an Oracle server. Scope and restore oracle.jdbc.diagnostic.enableObservability when testing DMS. Create wallets under a temporary directory; do not require pre-existing wallet files or TNS_ADMIN.",
+      "risks": [
+        "Offline tests cannot validate real SQL, database authentication, sharding routing, or True Cache behavior.",
+        "Oracle documents ojdbc11 for JDK11, JDK17, JDK19, and JDK21; repository JDK25 verification remains authoritative. [Oracle Maven guide](https://www.oracle.com/database/technologies/maven-central-guide.html)"
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.oracle.database.jdbc:ucp:23.26.2.0.0",
+          "result": "already_present",
+          "target": "tests/src/com.oracle.database.jdbc/ojdbc11/23.26.2.0.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.oracle.database.security:oraclepki:23.26.2.0.0",
+          "result": "already_present",
+          "target": "tests/src/com.oracle.database.jdbc/ojdbc11/23.26.2.0.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "jakarta.json:jakarta.json-api:2.1.3",
+          "result": "already_present",
+          "target": "tests/src/com.oracle.database.jdbc/ojdbc11/23.26.2.0.0/build.gradle"
+        }
+      ],
       "input_evidence": [
         {
           "name": "issue",
@@ -162,26 +203,27 @@
         },
         {
           "name": "existing_tests",
-          "summary": "32 existing test file path(s) included"
+          "summary": "40 existing test file path(s) included"
         }
       ],
-      "failure_reason": "ValueError: preflight response requested unsafe preparation behavior",
       "model": "gpt-5.6-luna",
+      "input_tokens_used": 1469814,
+      "output_tokens_used": 11932,
       "prompt_path": "library-preflight-prompt.txt",
       "raw_response_path": "library-preflight-response.txt",
-      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/com.oracle.database.jdbc:ojdbc11:23.26.2.0.0/library-preparation-preflight/codex-session-m3kd5aqr.log"
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/com.oracle.database.jdbc:ojdbc11:23.26.2.0.0/library-preparation-preflight/codex-session-w_ns0d7v.log"
     },
     "metrics": {
-      "input_tokens_used": 949475,
-      "cached_input_tokens_used": 30170112,
-      "output_tokens_used": 71265,
-      "iterations": 7,
-      "cost_usd": 21.9705,
-      "generated_loc": 1215,
-      "tested_library_loc": 11124,
-      "metadata_entries": 2092,
+      "input_tokens_used": 1185905,
+      "cached_input_tokens_used": 32574464,
+      "output_tokens_used": 78351,
+      "iterations": 6,
+      "cost_usd": 24.5672,
+      "generated_loc": 1281,
+      "tested_library_loc": 11219,
+      "metadata_entries": 2122,
       "test_only_metadata_entries": 102,
-      "code_coverage_percent": 6.84
+      "code_coverage_percent": 6.9
     },
     "artifacts": {
       "metadata_file": "metadata/com.oracle.database.jdbc/ojdbc11/23.26.2.0.0/reachability-metadata.json"
