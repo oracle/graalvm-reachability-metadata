@@ -16,6 +16,9 @@ import org.apache.calcite.linq4j.tree.Expressions;
 import org.apache.calcite.plan.ConventionTraitDef;
 import org.apache.calcite.plan.RelOptCluster;
 import org.apache.calcite.plan.volcano.VolcanoPlanner;
+import org.apache.calcite.rel.metadata.DefaultRelMetadataProvider;
+import org.apache.calcite.rel.metadata.ProxyingMetadataHandlerProvider;
+import org.apache.calcite.rel.metadata.RelMetadataQuery;
 import org.apache.calcite.rel.type.RelDataType;
 import org.apache.calcite.rex.RexBuilder;
 import org.apache.calcite.rex.RexLiteral;
@@ -50,6 +53,8 @@ public class RexToLixTranslatorTest {
         VolcanoPlanner planner = new VolcanoPlanner();
         planner.addRelTraitDef(ConventionTraitDef.INSTANCE);
         RelOptCluster cluster = RelOptCluster.create(planner, rexBuilder);
+        cluster.setMetadataQuerySupplier(() -> new RelMetadataQuery(
+                new ProxyingMetadataHandlerProvider(DefaultRelMetadataProvider.INSTANCE)));
         RelDataType integerType = typeFactory.createSqlType(SqlTypeName.INTEGER);
         RelDataType inputType = typeFactory.builder().add("v", integerType).build();
         RexLiteral one = rexBuilder.makeExactLiteral(BigDecimal.ONE, integerType);
