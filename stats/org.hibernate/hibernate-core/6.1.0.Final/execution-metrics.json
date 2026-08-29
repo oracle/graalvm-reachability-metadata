@@ -154,28 +154,59 @@
     }
   },
   "improve_library_coverage:2026-08-29": {
-    "timestamp": "2026-08-29T01:41:39.275862Z",
+    "timestamp": "2026-08-29T04:21:29.313756Z",
     "library": "org.hibernate:hibernate-core:6.1.0.Final",
-    "starting_commit": "200d030aaafaee157f256abfc399bd6e7815b7f3",
-    "ending_commit": "200d030aaafaee157f256abfc399bd6e7815b7f3",
+    "starting_commit": "3bc59e6e8842ed9061793195893070a74baa441e",
+    "ending_commit": "17174d19ac4512ee571c6a589452044d842d608f",
     "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
     "agent": "pi",
     "model": "gpt-5.6-sol",
-    "status": "failure",
+    "status": "success",
+    "stats": {
+      "version": "6.1.0.Final",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.487685,
+            "coveredCalls": 198,
+            "totalCalls": 406
+          },
+          "resources": {
+            "coverageRatio": 0.909091,
+            "coveredCalls": 20,
+            "totalCalls": 22
+          }
+        },
+        "coverageRatio": 0.509346,
+        "coveredCalls": 218,
+        "totalCalls": 428
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 135536,
+          "missed": 515075,
+          "ratio": 0.208321,
+          "total": 650611
+        },
+        "line": {
+          "covered": 33845,
+          "missed": 127882,
+          "ratio": 0.209272,
+          "total": 161727
+        },
+        "method": {
+          "covered": 8946,
+          "missed": 34989,
+          "ratio": 0.203619,
+          "total": 43935
+        }
+      }
+    },
     "library_preparation_preflight": {
-      "status": "completed",
       "action": "no_action",
-      "issue_number": 9324,
-      "issue_label": "library-update-request",
-      "library": "org.hibernate:hibernate-core:6.1.0.Final",
-      "summary": "No extra setup is needed: the existing scaffold already provides H2 and the JDBC classes required by the exercised dialect paths. Hibernate core itself does not bundle database drivers ([POM](https://central.sonatype.com/artifact/org.hibernate.orm/hibernate-core/6.1.0.Final)).",
-      "deterministic_setup": [],
       "agent_guidance": "No Docker image, environment variable, or system property is required. Keep the in-memory H2 compatibility-mode tests and ensure persistence.xml and dialect reflection metadata are registered for Native Image.",
-      "risks": [
-        "H2 compatibility modes do not validate behavior against real vendor databases.",
-        "The reported failures are missing Native Image resource/reflection metadata, not missing runtime setup."
-      ],
       "applied_setup": [],
+      "deterministic_setup": [],
       "input_evidence": [
         {
           "name": "issue",
@@ -186,12 +217,21 @@
           "summary": "26 existing test file path(s) included"
         }
       ],
-      "model": "gpt-5.6-luna",
       "input_tokens_used": 1464234,
+      "issue_label": "library-update-request",
+      "issue_number": 9324,
+      "library": "org.hibernate:hibernate-core:6.1.0.Final",
+      "model": "gpt-5.6-luna",
       "output_tokens_used": 10214,
       "prompt_path": "library-preflight-prompt.txt",
       "raw_response_path": "library-preflight-response.txt",
-      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.hibernate:hibernate-core:6.1.0.Final/library-preparation-preflight/codex-session-osdadbie.log"
+      "risks": [
+        "H2 compatibility modes do not validate behavior against real vendor databases.",
+        "The reported failures are missing Native Image resource/reflection metadata, not missing runtime setup."
+      ],
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.hibernate:hibernate-core:6.1.0.Final/library-preparation-preflight/codex-session-osdadbie.log",
+      "status": "completed",
+      "summary": "No extra setup is needed: the existing scaffold already provides H2 and the JDBC classes required by the exercised dialect paths. Hibernate core itself does not bundle database drivers ([POM](https://central.sonatype.com/artifact/org.hibernate.orm/hibernate-core/6.1.0.Final))."
     },
     "metrics": {
       "input_tokens_used": 849074,
@@ -199,13 +239,14 @@
       "output_tokens_used": 123700,
       "iterations": 9,
       "cost_usd": 23.3965,
-      "generated_loc": 0,
-      "tested_library_loc": 0,
-      "metadata_entries": 0,
-      "code_coverage_percent": 0.0
+      "generated_loc": 4381,
+      "tested_library_loc": 33845,
+      "metadata_entries": 841,
+      "test_only_metadata_entries": 498,
+      "code_coverage_percent": 20.93
     },
     "artifacts": {
-      "metadata_file": "None"
+      "metadata_file": "metadata/org.hibernate/hibernate-core/6.1.0.Final/reachability-metadata.json"
     }
   }
 }
