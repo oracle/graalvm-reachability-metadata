@@ -12,6 +12,7 @@ import org.apache.calcite.adapter.enumerable.EnumerableRelImplementor;
 import org.apache.calcite.adapter.enumerable.EnumerableValues;
 import org.apache.calcite.jdbc.JavaTypeFactoryImpl;
 import org.apache.calcite.linq4j.tree.ClassDeclaration;
+import org.apache.calcite.linq4j.tree.Expressions;
 import org.apache.calcite.plan.ConventionTraitDef;
 import org.apache.calcite.plan.RelOptCluster;
 import org.apache.calcite.plan.volcano.VolcanoPlanner;
@@ -73,7 +74,7 @@ public class RexToLixTranslatorTest {
 
         ClassDeclaration declaration = implementor.implementRoot(calc, EnumerableRel.Prefer.ARRAY);
 
-        assertThat(declaration.toString())
+        assertThat(Expressions.toString(declaration))
                 .contains("ContextIncrement", "FunctionContexts.of");
     }
 
