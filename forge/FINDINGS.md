@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-08-29 — org.springframework.shell:spring-shell-jline:4.0.2 (#8406)
+
+**New-library contribution includes unrelated scope and zero dynamic-access coverage**
+
+Review Signal #1 / contribution-shape rule: metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json is outside org.springframework.shell:spring-shell-jline:4.0.2. Review Signal #6 / new-library coverage gate: stats/org.springframework.shell/spring-shell-jline/4.0.2/stats.json reports 0 covered calls out of 2 total calls (0%), while new-library PRs with calls to cover require coverage above 20%. The unresolved coverage violation requires stronger public-API tests and refreshed credible statistics.
+
 ## 2026-08-29 — org.junit.jupiter:junit-jupiter-params:6.1.0 (#9208)
 
 **Top-level test class is not public**
