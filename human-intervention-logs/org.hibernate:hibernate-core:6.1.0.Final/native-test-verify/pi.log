@@ -1,5 +1,0 @@
-- Reproduced first with the specified GraalVM. The full trace contained no `Caused by:` lines.
-- Root cause: `Proxy.newProxyInstance` rejected Hibernate’s `AggregatedClassLoader`, which cannot see the test’s `EchoService`; this is a custom-class-loader/proxy assumption unsupported in Native Image, not missing metadata.
-- Updated `tests/src/org.hibernate/hibernate-core/6.1.0.Final/src/test/java/org_hibernate/hibernate_core/ClassLoaderServiceImplTest.java` to remove proxy generation while retaining resource and package lookup coverage.
-
-Final exact reproduce command passed: **130/130 tests successful**, 0 failures.
