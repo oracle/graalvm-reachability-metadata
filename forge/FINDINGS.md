@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-08-29 — org.junit.platform:junit-platform-commons:1.12.0 (#9603)
+
+**Javac repair adds unrelated coverage behavior**
+
+The added discoversLicenseNoticeResources test in tests/src/org.junit.platform/junit-platform-commons/1.12.0/src/test/java/org_junit_platform/junit_platform_commons/ReflectionUtilsTest.java was unrelated to the ClassFilter compilation failure and broadened the repair with a new resource-coverage path, violating the enumerated no-scope-creep rule in the test contract.
+
 ## 2026-08-29 — org.apache.calcite:calcite-core:1.35.0 (#446)
 
 **Pre-push review unavailable**
