@@ -4,11 +4,13 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 import os
+import shutil
 import sys
+import uuid
 
 from ai_workflows.agents.agent_runtime import analysis_agent_run, get_analysis_agent
 from utility_scripts.stage_logger import log_stage
-from utility_scripts.task_logs import display_log_path
+from utility_scripts.task_logs import display_log_path, resolve_task_log_dir
 
 DEFAULT_POST_GENERATION_TIMEOUT_SECONDS = 600
 DEFAULT_MAX_TEST_OUTPUT_CHARS = 12000
@@ -22,10 +24,31 @@ def _trim_text(text: str, limit: int) -> str:
     return text[-limit:]
 
 
-def _build_intervention_path(reachability_metadata_path: str, coordinates: str) -> str:
-    """Build the intervention markdown path for a library."""
-    safe_name = coordinates.replace(":", "_")
-    return os.path.join(reachability_metadata_path, "post-gen-interventions", f"{safe_name}.md")
+POST_GENERATION_TASK_TYPE = "post-gen"
+
+
+def _build_scratch_intervention_path(reachability_metadata_path: str) -> str:
+    """Build the throwaway path the agent writes its report to.
+
+    The agent's only return channel is a file, and the report is consumed as
+    soon as it is read, so it is written under Forge's ignored scratch
+    directory instead of the published tree (§FS-forge-run-status).
+    """
+    return os.path.join(
+        reachability_metadata_path,
+        "forge",
+        "scratchpad",
+        f"post-generation-{uuid.uuid4().hex[:8]}",
+        "intervention.md",
+    )
+
+
+def _archive_intervention_report(scratch_path: str, coordinates: str) -> str:
+    """Copy the consumed report into the run's durable logs and return its path."""
+    log_dir = resolve_task_log_dir(POST_GENERATION_TASK_TYPE, coordinates)
+    archived_path = os.path.join(log_dir, "intervention.md")
+    shutil.copyfile(scratch_path, archived_path)
+    return archived_path
 
 
 def _repo_relative_path(path: str, repo_path: str) -> str:
@@ -102,12 +125,36 @@ def run_post_generation_fix(
     """
     backend = get_analysis_agent().backend
     log_stage("post-generation-fix", f"Running {backend} post-generation fix for {coordinates}")
-    intervention_path = _build_intervention_path(reachability_metadata_path, coordinates)
-    intervention_path_display = _repo_relative_path(intervention_path, reachability_metadata_path)
-    os.makedirs(os.path.dirname(intervention_path), exist_ok=True)
-    if os.path.exists(intervention_path):
-        os.remove(intervention_path)
+    scratch_path = _build_scratch_intervention_path(reachability_metadata_path)
+    os.makedirs(os.path.dirname(scratch_path), exist_ok=True)
+    try:
+        return _run_intervention_agent(
+            reachability_metadata_path=reachability_metadata_path,
+            coordinates=coordinates,
+            analysis_log_path=analysis_log_path,
+            test_output=test_output,
+            timeout_seconds=timeout_seconds,
+            max_test_output_chars=max_test_output_chars,
+            backend=backend,
+            scratch_path=scratch_path,
+        )
+    finally:
+        shutil.rmtree(os.path.dirname(scratch_path), ignore_errors=True)
 
+
+def _run_intervention_agent(
+        *,
+        reachability_metadata_path: str,
+        coordinates: str,
+        analysis_log_path: str,
+        test_output: str,
+        timeout_seconds: int,
+        max_test_output_chars: int,
+        backend: str,
+        scratch_path: str,
+) -> tuple[int, str, bool]:
+    """Prompt the agent, then validate and archive the report it wrote."""
+    intervention_path_display = _repo_relative_path(scratch_path, reachability_metadata_path)
     prompt = _build_prompt(
         coordinates=coordinates,
         analysis_log_path=display_log_path(analysis_log_path),
@@ -118,7 +165,7 @@ def run_post_generation_fix(
     result = analysis_agent_run(
         working_dir=reachability_metadata_path,
         context=prompt,
-        task_type="post-gen",
+        task_type=POST_GENERATION_TASK_TYPE,
         library=coordinates,
         timeout=timeout_seconds,
     )
@@ -128,23 +175,24 @@ def run_post_generation_fix(
             f"See {display_log_path(result.log_path)} for details.",
             file=sys.stderr,
         )
-        return (1, intervention_path, result.timed_out)
+        return (1, scratch_path, result.timed_out)
 
-    if not os.path.isfile(intervention_path):
+    if not os.path.isfile(scratch_path):
         print(
             f"ERROR: Post-generation intervention did not write report {intervention_path_display} for {coordinates}.",
             file=sys.stderr,
         )
-        return (1, intervention_path, False)
+        return (1, scratch_path, False)
 
-    with open(intervention_path, "r", encoding="utf-8") as intervention_file:
+    with open(scratch_path, "r", encoding="utf-8") as intervention_file:
         contents = intervention_file.read()
     if f"Library: {coordinates}" not in contents:
         print(
             f"ERROR: Intervention report {intervention_path_display} does not contain the library name for {coordinates}.",
             file=sys.stderr,
         )
-        return (1, intervention_path, False)
+        return (1, scratch_path, False)
 
+    archived_path = _archive_intervention_report(scratch_path, coordinates)
     log_stage("post-generation-fix", f"{backend} post-generation fix completed for {coordinates}")
-    return (0, intervention_path, False)
+    return (0, archived_path, False)
