@@ -9,45 +9,27 @@ package org_springframework.spring_core;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.reflect.Method;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.cglib.core.DuplicatesPredicate;
+import org.springframework.util.comparator.ComparableComparator;
 
 /** Verifies duplicate filtering for a compiler-generated bridge method. */
 public class DuplicatesPredicateTest {
     @Test
-    void rejectsUnnecessaryBridgeMethodAfterScanningDeclaringClass() throws Exception {
-        Method bridgeMethod = findBridgeMethod();
-        Method rootMethod = RootValue.class.getMethod("value");
+    void scansBridgeDeclaringClassAndFiltersDuplicateSignature() throws Exception {
+        Method bridgeMethod = Arrays.stream(ComparableComparator.class.getDeclaredMethods())
+                .filter(Method::isBridge)
+                .findFirst()
+                .orElseThrow(AssertionError::new);
+        Method interfaceMethod = Comparator.class.getMethod("compare", Object.class, Object.class);
 
-        DuplicatesPredicate predicate = new DuplicatesPredicate(List.of(bridgeMethod, rootMethod));
+        DuplicatesPredicate predicate =
+                new DuplicatesPredicate(Arrays.asList(bridgeMethod, interfaceMethod));
 
-        assertThat(predicate.evaluate(bridgeMethod)).isFalse();
-        assertThat(predicate.evaluate(rootMethod)).isTrue();
-    }
-
-    private static Method findBridgeMethod() {
-        for (Method method : StringValue.class.getDeclaredMethods()) {
-            if (method.isBridge()) {
-                return method;
-            }
-        }
-        throw new IllegalStateException("Expected compiler-generated bridge method");
-    }
-
-    private interface RootValue {
-        Object value();
-    }
-
-    private interface GenericValue<T> extends RootValue {
-        T value();
-    }
-
-    private static final class StringValue implements GenericValue<String> {
-        @Override
-        public String value() {
-            return "value";
-        }
+        assertThat(predicate.evaluate(bridgeMethod)).isTrue();
+        assertThat(predicate.evaluate(interfaceMethod)).isFalse();
     }
 }
