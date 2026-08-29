@@ -118,8 +118,17 @@ def _pull_request(
     }
 
 
-def _completed_status_check_rollup() -> list[dict]:
-    return [{"status": "COMPLETED"}]
+def _pull_request_state(number: int, ci_state: str, mergeable: str = "MERGEABLE") -> dict:
+    return {
+        "number": number,
+        "headRefOid": f"head-{number}",
+        "headRefName": f"ai/kimeta/pr-{number}",
+        "isCrossRepository": False,
+        "reviewDecision": "REVIEW_REQUIRED",
+        "mergeable": mergeable,
+        "mergeStateStatus": "CLEAN" if mergeable == "MERGEABLE" else "DIRTY",
+        "statusCheckRollup": {"state": ci_state},
+    }
 
 
 def _preflight(
@@ -2605,7 +2614,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
         self.assertEqual("number,title,url,author,labels", args[-1])
         self.assertNotIn("statusCheckRollup", args)
 
-    def test_process_pull_requests_fetches_ci_only_after_cheap_filters(self) -> None:
+    def test_process_pull_requests_fetches_state_only_after_cheap_filters(self) -> None:
         buried_pull_requests = [
             _pull_request(
                 number,
@@ -2629,9 +2638,9 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                 ) as get_pull_requests, \
                 patch.object(
                     forge_metadata,
-                    "get_pull_request_status_check_rollup",
-                    return_value=_completed_status_check_rollup(),
-                ) as get_status_checks, \
+                    "get_pull_request_state",
+                    return_value=_pull_request_state(100, "SUCCESS"),
+                ) as get_pull_request_state, \
                 patch.object(forge_metadata, "review_pull_request", return_value=True) as review_pull_request, \
                 patch.object(
                     forge_metadata,
@@ -2649,7 +2658,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
             call(forge_metadata.LABEL_LIBRARY_NEW, 20),
             call(forge_metadata.LABEL_LIBRARY_NEW, 40),
         ])
-        get_status_checks.assert_called_once_with(100)
+        get_pull_request_state.assert_called_once_with(100)
         review_pull_request.assert_called_once_with(
             100,
             "/tmp/reachability",
@@ -2657,6 +2666,77 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
             None,
         )
         reconcile_reviewed_pull_request.assert_called_once_with(100, "/tmp/reachability")
+
+    def test_process_pull_requests_reviews_only_successful_ci(self) -> None:
+        pull_requests = [
+            _pull_request(1, [forge_metadata.LABEL_LIBRARY_NEW]),
+            _pull_request(2, [forge_metadata.LABEL_LIBRARY_NEW]),
+            _pull_request(3, [forge_metadata.LABEL_LIBRARY_NEW]),
+        ]
+        states = {
+            1: _pull_request_state(1, "FAILURE"),
+            2: _pull_request_state(2, "PENDING"),
+            3: _pull_request_state(3, "SUCCESS"),
+        }
+
+        with patch.object(forge_metadata, "get_pull_requests_with_labels", return_value=[]), \
+                patch.object(forge_metadata, "get_pull_requests_with_label", return_value=pull_requests), \
+                patch.object(
+                    forge_metadata,
+                    "get_pull_request_state",
+                    side_effect=lambda number: states[number],
+                ), \
+                patch.object(
+                    forge_metadata,
+                    "reconcile_failed_ci_pull_request",
+                ) as reconcile_failed_ci, \
+                patch.object(forge_metadata, "review_pull_request", return_value=True) as review_pull_request, \
+                patch.object(
+                    forge_metadata,
+                    "reconcile_reviewed_pull_request",
+                    return_value=True,
+                ) as reconcile_reviewed_pull_request:
+            forge_metadata.process_pull_requests_with_label(
+                forge_metadata.LABEL_LIBRARY_NEW,
+                1,
+                "/tmp/reachability",
+                "automation-user",
+            )
+
+        self.assertEqual(1, reconcile_failed_ci.call_args.args[0]["number"])
+        review_pull_request.assert_called_once_with(
+            3,
+            "/tmp/reachability",
+            "https://github.com/oracle/graalvm-reachability-metadata/pull/3",
+            None,
+        )
+        reconcile_reviewed_pull_request.assert_called_once_with(3, "/tmp/reachability")
+
+    def test_process_pull_requests_refreshes_conflict_before_review(self) -> None:
+        pull_request = _pull_request(4, [forge_metadata.LABEL_LIBRARY_NEW])
+        state = _pull_request_state(4, "FAILURE", mergeable="CONFLICTING")
+
+        with patch.object(forge_metadata, "get_pull_requests_with_labels", return_value=[]), \
+                patch.object(forge_metadata, "get_pull_requests_with_label", return_value=[pull_request]), \
+                patch.object(forge_metadata, "get_pull_request_state", return_value=state), \
+                patch.object(
+                    forge_metadata,
+                    "resolve_pull_request_merge_conflict",
+                    return_value=True,
+                ) as resolve_conflict, \
+                patch.object(forge_metadata, "reconcile_failed_ci_pull_request") as reconcile_failed_ci, \
+                patch.object(forge_metadata, "review_pull_request") as review_pull_request:
+            forge_metadata.process_pull_requests_with_label(
+                forge_metadata.LABEL_LIBRARY_NEW,
+                1,
+                "/tmp/reachability",
+                "automation-user",
+            )
+
+        self.assertEqual(4, resolve_conflict.call_args.args[0]["number"])
+        self.assertEqual("/tmp/reachability", resolve_conflict.call_args.args[1])
+        reconcile_failed_ci.assert_not_called()
+        review_pull_request.assert_not_called()
 
 
 class IssueClaimCacheTests(unittest.TestCase):
@@ -4184,7 +4264,7 @@ class PullRequestReviewTests(unittest.TestCase):
         rerun_failed_jobs.assert_called_once_with(3513, "abc123")
         merge_pull_request.assert_not_called()
 
-    def test_reconcile_unapproved_pr_with_failed_ci_does_not_rerun_failed_jobs(self) -> None:
+    def test_reconcile_unapproved_pr_with_failed_ci_reruns_failed_jobs(self) -> None:
         pr = {
             "number": 3513,
             "url": "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
@@ -4199,11 +4279,11 @@ class PullRequestReviewTests(unittest.TestCase):
                 patch.object(
                     forge_metadata,
                     "rerun_failed_pull_request_workflow_jobs",
+                    return_value=1,
                 ) as rerun_failed_jobs, \
                 patch.object(forge_metadata, "merge_pull_request") as merge_pull_request:
             self.assertTrue(forge_metadata.reconcile_reviewed_pull_request(3513))
-
-        rerun_failed_jobs.assert_not_called()
+        rerun_failed_jobs.assert_called_once_with(3513, "abc123")
         merge_pull_request.assert_not_called()
 
     def test_reconcile_approved_conflicting_pr_resolves_the_conflict_instead_of_merging(self) -> None:
@@ -4230,7 +4310,7 @@ class PullRequestReviewTests(unittest.TestCase):
         resolve_conflict.assert_called_once_with(pr, "/tmp/reachability")
         merge_pull_request.assert_not_called()
 
-    def test_reconcile_conflicting_pr_without_successful_ci_is_left_untouched(self) -> None:
+    def test_reconcile_conflicting_pr_refreshes_before_ci_succeeds(self) -> None:
         pr = {
             "number": 3513,
             "url": "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
@@ -4249,8 +4329,7 @@ class PullRequestReviewTests(unittest.TestCase):
                 ) as resolve_conflict, \
                 patch.object(forge_metadata, "merge_pull_request") as merge_pull_request:
             self.assertTrue(forge_metadata.reconcile_reviewed_pull_request(3513, "/tmp/reachability"))
-
-        resolve_conflict.assert_not_called()
+        resolve_conflict.assert_called_once_with(pr, "/tmp/reachability")
         merge_pull_request.assert_not_called()
 
     def test_resolve_pull_request_merge_conflict_leaves_fork_heads_alone(self) -> None:

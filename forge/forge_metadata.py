@@ -431,6 +431,13 @@ class ReviewQueueConfig:
 
 
 @dataclass(frozen=True)
+class ReviewQueueSelection:
+    ready: list[dict]
+    failed: list[dict]
+    waiting_count: int
+
+
+@dataclass(frozen=True)
 class IssueClaimPreflight:
     issue_number: int
     item_id: str | None
@@ -1033,33 +1040,23 @@ def get_pull_requests_with_labels(labels: list[str], fetch_limit: int) -> list[d
     return data
 
 
-def get_pull_request_status_check_rollup(pr_number: int) -> list[dict]:
-    """Fetch status check details for one pull request."""
-    data = gh_json(
-        "pr", "view",
-        str(pr_number),
-        "--repo", REPO,
-        "--json", "statusCheckRollup",
-    )
-    status_checks = data.get("statusCheckRollup")
-    return status_checks if isinstance(status_checks, list) else []
 
 
-def attach_pull_request_status_check_rollup(
+def attach_pull_request_state(
         pull_request: dict,
-        status_check_cache: dict[int, list[dict]],
+        state_cache: dict[int, dict],
 ) -> dict:
-    """Return a pull request payload enriched with status check details."""
+    """Return a pull request payload enriched with review, merge, and CI state."""
     pr_number = pull_request.get("number")
     if not isinstance(pr_number, int):
-        print("ERROR: Missing pull request number while fetching status checks.", file=sys.stderr)
-        raise RuntimeError("Missing pull request number while fetching status checks")
+        print("ERROR: Missing pull request number while fetching state.", file=sys.stderr)
+        raise RuntimeError("Missing pull request number while fetching state")
 
-    if pr_number not in status_check_cache:
-        status_check_cache[pr_number] = get_pull_request_status_check_rollup(pr_number)
+    if pr_number not in state_cache:
+        state_cache[pr_number] = get_pull_request_state(pr_number)
 
     enriched_pull_request = dict(pull_request)
-    enriched_pull_request["statusCheckRollup"] = status_check_cache[pr_number]
+    enriched_pull_request.update(state_cache[pr_number])
     return enriched_pull_request
 
 
@@ -2169,20 +2166,6 @@ def is_authored_by_user(pr: dict, username: str) -> bool:
     return author.get("login") == username
 
 
-def has_completed_ci_tasks(pr: dict) -> bool:
-    """Return True when the pull request has CI checks and none are still pending."""
-    status_checks = pr.get("statusCheckRollup")
-    if not isinstance(status_checks, list) or not status_checks:
-        return False
-
-    for status_check in status_checks:
-        if not isinstance(status_check, dict):
-            return False
-        if status_check.get("status") != "COMPLETED":
-            return False
-
-    return True
-
 
 def get_pull_request_state(pr_number: int) -> dict:
     """Fetch the latest review and merge state for a pull request."""
@@ -2754,6 +2737,43 @@ def resolve_pull_request_merge_conflict(
         remove_worktree(reachability_metadata_path, worktree_path)
 
 
+def reconcile_failed_ci_pull_request(pull_request: dict) -> None:
+    """Handle failed CI deterministically without launching a review agent."""
+    pr_number = pull_request.get("number")
+    head_sha = pull_request.get("headRefOid")
+    if not isinstance(pr_number, int) or not isinstance(head_sha, str) or not head_sha:
+        print(f"ERROR: Missing head metadata for failed-CI PR #{pr_number}.", file=sys.stderr)
+        raise RuntimeError(f"Missing head metadata for failed-CI PR #{pr_number}")
+
+    if not has_failed_pull_request_ci(pull_request):
+        print(f"[Skipping failed-CI follow-up for PR #{pr_number}: CI state changed.]")
+        return
+
+    chunked_issue = resolve_non_final_chunked_dynamic_access_issue(pull_request)
+    rerun_count = rerun_failed_pull_request_workflow_jobs(pr_number, head_sha)
+    if rerun_count:
+        if chunked_issue is not None:
+            print(
+                f"[Reran failed GitHub Actions job(s) in {rerun_count} workflow run(s) "
+                f"for chunked PR #{pr_number}; keeping the backing issue in progress for this pass.]"
+            )
+        else:
+            print(
+                f"[Reran failed GitHub Actions job(s) in {rerun_count} workflow run(s) "
+                f"for PR #{pr_number}; review waits for successful CI.]"
+            )
+        return
+
+    if chunked_issue is not None:
+        apply_chunked_dynamic_access_failed_ci_follow_up(pull_request)
+        return
+
+    print(
+        f"[Skipping review for PR #{pr_number}: CI failed and no eligible "
+        "GitHub Actions workflow runs were found to rerun.]"
+    )
+
+
 def reconcile_reviewed_pull_request(
         pr_number: int,
         reachability_metadata_path: str | None = None,
@@ -2772,19 +2792,20 @@ def reconcile_reviewed_pull_request(
             f"ci={((pr.get('statusCheckRollup') or {}).get('state'))}]"
         )
 
-        if has_failed_pull_request_ci(pr) and resolve_non_final_chunked_dynamic_access_issue(pr) is not None:
-            head_sha = pr.get("headRefOid")
-            if not isinstance(head_sha, str) or not head_sha:
-                print(f"ERROR: Missing head SHA for chunked PR #{pr_number} with failed CI.", file=sys.stderr)
-                raise RuntimeError(f"Missing head SHA for chunked PR #{pr_number} with failed CI")
-            rerun_count = rerun_failed_pull_request_workflow_jobs(pr_number, head_sha)
-            if rerun_count:
+        if is_pull_request_conflicting(pr):
+            if not resolve_pull_request_merge_conflict(
+                    pr,
+                    reachability_metadata_path or get_repo_root(),
+            ):
+                add_pull_request_label(pr_number, LABEL_HUMAN_INTERVENTION)
                 print(
-                    f"[Reran failed GitHub Actions job(s) in {rerun_count} workflow run(s) "
-                    f"for chunked PR #{pr_number}; keeping the backing issue in progress for this pass.]"
+                    f"[Added label '{LABEL_HUMAN_INTERVENTION}' to conflicting "
+                    f"PR #{pr_number}; git could not refresh its head without judgment.]"
                 )
-                return True
-            apply_chunked_dynamic_access_failed_ci_follow_up(pr)
+            return True
+
+        if has_failed_pull_request_ci(pr):
+            reconcile_failed_ci_pull_request(pr)
             return True
 
         if review_decision == "CHANGES_REQUESTED":
@@ -2794,32 +2815,6 @@ def reconcile_reviewed_pull_request(
 
         if review_decision != "APPROVED":
             print(f"[Skipping merge for PR #{pr_number}: review decision is '{review_decision}'.]")
-            return True
-
-        if has_failed_pull_request_ci(pr):
-            head_sha = pr.get("headRefOid")
-            if not isinstance(head_sha, str) or not head_sha:
-                print(f"ERROR: Missing head SHA for approved PR #{pr_number} with failed CI.", file=sys.stderr)
-                raise RuntimeError(f"Missing head SHA for approved PR #{pr_number} with failed CI")
-            rerun_count = rerun_failed_pull_request_workflow_jobs(pr_number, head_sha)
-            if rerun_count:
-                print(
-                    f"[Reran failed GitHub Actions job(s) in {rerun_count} workflow run(s) "
-                    f"for approved PR #{pr_number}; skipping merge for this pass.]"
-                )
-            else:
-                print(
-                    f"[Skipping merge for approved PR #{pr_number}: CI failed, but no eligible "
-                    "GitHub Actions workflow runs were found to rerun.]"
-                )
-            return True
-
-        if is_pull_request_conflicting(pr) and has_successful_pull_request_ci(pr):
-            # §FS-automated-pr-review: git resolves the ledger, the merge waits a pass.
-            resolve_pull_request_merge_conflict(
-                pr,
-                reachability_metadata_path or get_repo_root(),
-            )
             return True
 
         if not has_passing_pull_request_gates(pr):
@@ -2853,37 +2848,63 @@ def is_review_pull_request_eligible(pull_request: dict, authenticated_user: str)
     """Return True when the review queue may process the pull request."""
     return (
         is_review_pull_request_base_eligible(pull_request, authenticated_user)
-        and has_completed_ci_tasks(pull_request)
+        and has_successful_pull_request_ci(pull_request)
     )
 
 
-def select_ci_complete_review_pull_requests(
+def select_review_pull_requests(
         pull_requests: list[dict],
         authenticated_user: str,
         limit: int,
-        status_check_cache: dict[int, list[dict]],
+        state_cache: dict[int, dict],
+        reachability_metadata_path: str,
         excluded_labels: tuple[str, ...] = (),
-) -> tuple[list[dict], int]:
-    """Select review candidates, fetching CI details only after cheap filters pass."""
-    selected_pull_requests: list[dict] = []
-    incomplete_ci_count = 0
+) -> ReviewQueueSelection:
+    """Classify review candidates after deterministic conflict maintenance."""
+    ready_pull_requests: list[dict] = []
+    failed_pull_requests: list[dict] = []
+    waiting_count = 0
 
     for pull_request in pull_requests:
-        if len(selected_pull_requests) >= limit:
+        if len(ready_pull_requests) >= limit:
             break
         if not is_review_pull_request_base_eligible(pull_request, authenticated_user, excluded_labels):
             continue
 
-        enriched_pull_request = attach_pull_request_status_check_rollup(
+        enriched_pull_request = attach_pull_request_state(
             pull_request,
-            status_check_cache,
+            state_cache,
         )
-        if has_completed_ci_tasks(enriched_pull_request):
-            selected_pull_requests.append(enriched_pull_request)
+        if is_pull_request_conflicting(enriched_pull_request):
+            pr_number = enriched_pull_request["number"]
+            if not resolve_pull_request_merge_conflict(
+                    enriched_pull_request,
+                    reachability_metadata_path,
+            ):
+                add_pull_request_label(pr_number, LABEL_HUMAN_INTERVENTION)
+                print(
+                    f"[Added label '{LABEL_HUMAN_INTERVENTION}' to conflicting "
+                    f"PR #{pr_number}; git could not refresh its head without judgment.]"
+                )
+            state_cache[pr_number] = {
+                **enriched_pull_request,
+                "mergeable": "UNKNOWN",
+                "mergeStateStatus": "UNKNOWN",
+                "statusCheckRollup": {"state": "PENDING"},
+            }
+            waiting_count += 1
+        elif has_successful_pull_request_ci(enriched_pull_request):
+            ready_pull_requests.append(enriched_pull_request)
+        elif has_failed_pull_request_ci(enriched_pull_request):
+            failed_pull_requests.append(enriched_pull_request)
         else:
-            incomplete_ci_count += 1
+            waiting_count += 1
 
-    return selected_pull_requests, incomplete_ci_count
+    return ReviewQueueSelection(
+        ready=ready_pull_requests,
+        failed=failed_pull_requests,
+        waiting_count=waiting_count,
+    )
 
 
 def get_pull_request_url(pr_number: int) -> str:
@@ -3136,22 +3157,26 @@ def process_pull_requests_with_label(
         reachability_metadata_path: str,
         authenticated_user: str,
 ) -> None:
-    """Review labeled pull requests that are CI-complete, not self-authored, and need no human intervention."""
-    status_check_cache: dict[int, list[dict]] = {}
+    """Process labeled PRs, launching review agents only after successful CI.
+
+    §FS-automated-pr-review
+    """
+    state_cache: dict[int, dict] = {}
     fetch_limit = max(limit, 20)
     fixed_pull_requests = get_pull_requests_with_labels(
         [label, LABEL_HUMAN_INTERVENTION_FIXED],
         fetch_limit,
     )
-    fixed_candidate_pull_requests, fixed_incomplete_ci_count = select_ci_complete_review_pull_requests(
+    fixed_selection = select_review_pull_requests(
         fixed_pull_requests,
         authenticated_user,
         limit,
-        status_check_cache,
+        state_cache,
+        reachability_metadata_path,
     )
-    while len(fixed_candidate_pull_requests) < limit and len(fixed_pull_requests) == fetch_limit:
+    while len(fixed_selection.ready) < limit and len(fixed_pull_requests) == fetch_limit:
         print(
-            f"[Found {len(fixed_candidate_pull_requests)} eligible "
+            f"[Found {len(fixed_selection.ready)} eligible "
             f"'{LABEL_HUMAN_INTERVENTION_FIXED}' PR(s) after filtering "
             f"{len(fixed_pull_requests)} fetched PR(s); "
             "fetching more.]"
@@ -3161,19 +3186,32 @@ def process_pull_requests_with_label(
             [label, LABEL_HUMAN_INTERVENTION_FIXED],
             fetch_limit,
         )
-        fixed_candidate_pull_requests, fixed_incomplete_ci_count = select_ci_complete_review_pull_requests(
+        fixed_selection = select_review_pull_requests(
             fixed_pull_requests,
             authenticated_user,
             limit,
-            status_check_cache,
+            state_cache,
+            reachability_metadata_path,
         )
 
     failed_reviews: list[int] = []
-    fixed_pull_requests_to_merge = fixed_candidate_pull_requests[:limit]
-    if fixed_incomplete_ci_count:
+    for pull_request in fixed_selection.failed:
+        try:
+            reconcile_failed_ci_pull_request(pull_request)
+        except Exception as exc:
+            pr_number = pull_request.get("number")
+            print(
+                f"ERROR: Failed CI follow-up for PR #{pr_number}: {exc!r}",
+                file=sys.stderr,
+            )
+            if isinstance(pr_number, int):
+                failed_reviews.append(pr_number)
+
+    fixed_pull_requests_to_merge = fixed_selection.ready[:limit]
+    if fixed_selection.waiting_count:
         print(
-            f"[Skipping {fixed_incomplete_ci_count} '{LABEL_HUMAN_INTERVENTION_FIXED}' "
-            "candidate PR(s) without completed CI tasks.]"
+            f"[Skipping {fixed_selection.waiting_count} "
+            f"'{LABEL_HUMAN_INTERVENTION_FIXED}' candidate PR(s) while CI is pending.]"
         )
     for pull_request in fixed_pull_requests_to_merge:
         pr_number = pull_request["number"]
@@ -3216,27 +3254,41 @@ def process_pull_requests_with_label(
 
     fetch_limit = max(remaining_limit, 20)
     pull_requests = get_pull_requests_with_label(label, fetch_limit)
-    candidate_pull_requests, incomplete_ci_count = select_ci_complete_review_pull_requests(
+    selection = select_review_pull_requests(
         pull_requests,
         authenticated_user,
         remaining_limit,
-        status_check_cache,
+        state_cache,
+        reachability_metadata_path,
         excluded_labels=(LABEL_HUMAN_INTERVENTION_FIXED,),
     )
-    while len(candidate_pull_requests) < remaining_limit and len(pull_requests) == fetch_limit:
+    while len(selection.ready) < remaining_limit and len(pull_requests) == fetch_limit:
         print(
-            f"[Found {len(candidate_pull_requests)} eligible PR(s) after filtering "
+            f"[Found {len(selection.ready)} eligible PR(s) after filtering "
             f"{len(pull_requests)} fetched PR(s); fetching more.]"
         )
         fetch_limit *= 2
         pull_requests = get_pull_requests_with_label(label, fetch_limit)
-        candidate_pull_requests, incomplete_ci_count = select_ci_complete_review_pull_requests(
+        selection = select_review_pull_requests(
             pull_requests,
             authenticated_user,
             remaining_limit,
-            status_check_cache,
+            state_cache,
+            reachability_metadata_path,
             excluded_labels=(LABEL_HUMAN_INTERVENTION_FIXED,),
         )
+
+    for pull_request in selection.failed:
+        try:
+            reconcile_failed_ci_pull_request(pull_request)
+        except Exception as exc:
+            pr_number = pull_request.get("number")
+            print(
+                f"ERROR: Failed CI follow-up for PR #{pr_number}: {exc!r}",
+                file=sys.stderr,
+            )
+            if isinstance(pr_number, int):
+                failed_reviews.append(pr_number)
 
     authored_pull_requests = [
         pull_request for pull_request in pull_requests
@@ -3246,7 +3298,7 @@ def process_pull_requests_with_label(
         pull_request for pull_request in pull_requests
         if pull_request_has_label(pull_request, LABEL_HUMAN_INTERVENTION)
     ]
-    filtered_pull_requests = candidate_pull_requests[:remaining_limit]
+    filtered_pull_requests = selection.ready[:remaining_limit]
 
     if authored_pull_requests:
         print(f"[Skipping {len(authored_pull_requests)} PR(s) authored by {authenticated_user}.]")
@@ -3255,15 +3307,21 @@ def process_pull_requests_with_label(
             f"[Skipping {len(human_intervention_pull_requests)} PR(s) labeled "
             f"'{LABEL_HUMAN_INTERVENTION}'.]"
         )
-    if incomplete_ci_count:
-        print(f"[Skipping {incomplete_ci_count} candidate PR(s) without completed CI tasks.]")
+    if selection.waiting_count:
+        print(f"[Skipping {selection.waiting_count} candidate PR(s) while CI is pending.]")
 
     if not filtered_pull_requests and not fixed_pull_requests_to_merge:
         print(
             f"\n[No open pull requests found with label '{label}' that lack the "
-            f"'{LABEL_HUMAN_INTERVENTION}' label, have completed CI tasks, and are not "
+            f"'{LABEL_HUMAN_INTERVENTION}' label, have successful CI, and are not "
             f"authored by {authenticated_user}.]"
         )
+        if failed_reviews:
+            print(
+                f"ERROR: Pull request processing failed for pull request(s): {failed_reviews}",
+                file=sys.stderr,
+            )
+            sys.exit(1)
         return
 
     for pull_request in filtered_pull_requests:
