@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-08-29 — org.hibernate:hibernate-core:6.1.0.Final (#9324)
+
+**Serialization metadata omits Object constructor registration**
+
+`metadata/org.hibernate/hibernate-core/6.1.0.Final/reachability-metadata.json` registered `java.lang.Object` when `SerializationHelper` is reached but omitted its no-argument constructor. The local intervention record documented resulting `MissingReflectionRegistrationError` failures in three normal Hibernate serialization tests, violating the required native-execution gate.
+
 ## 2026-08-28 — org.junit.platform:junit-platform-commons:1.11.0 (#9209)
 
 **Resource dynamic-access coverage regresses beyond the fixes-javac limit**
