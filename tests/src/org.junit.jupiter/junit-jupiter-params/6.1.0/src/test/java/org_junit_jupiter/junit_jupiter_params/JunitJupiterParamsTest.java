@@ -17,7 +17,7 @@ import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class JunitJupiterParamsTest {
+public class JunitJupiterParamsTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"alpha", "beta"})
