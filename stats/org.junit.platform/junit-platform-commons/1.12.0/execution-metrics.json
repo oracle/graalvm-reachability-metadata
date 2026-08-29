@@ -1,0 +1,143 @@
+{
+  "fix_javac_fail:2026-08-29": {
+    "timestamp": "2026-08-29T16:34:41.342064Z",
+    "library": "org.junit.platform:junit-platform-commons:1.12.0",
+    "starting_commit": "2ff005b3bb58b60d578f62462a6085cbcbc61101",
+    "ending_commit": "ea139457ed3cc962b6a447141825c6b2ad589916",
+    "previous_library": "org.junit.platform:junit-platform-commons:1.11.0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.12.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 25,
+            "totalCalls": 25
+          },
+          "resources": {
+            "coverageRatio": 0.75,
+            "coveredCalls": 3,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.965517,
+        "coveredCalls": 28,
+        "totalCalls": 29
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 3169,
+          "missed": 5091,
+          "ratio": 0.383656,
+          "total": 8260
+        },
+        "line": {
+          "covered": 666,
+          "missed": 1034,
+          "ratio": 0.391765,
+          "total": 1700
+        },
+        "method": {
+          "covered": 226,
+          "missed": 385,
+          "ratio": 0.369885,
+          "total": 611
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.11.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 25,
+            "totalCalls": 25
+          },
+          "resources": {
+            "coverageRatio": 0.666667,
+            "coveredCalls": 2,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 0.964286,
+        "coveredCalls": 27,
+        "totalCalls": 28
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2917,
+          "missed": 5113,
+          "ratio": 0.363263,
+          "total": 8030
+        },
+        "line": {
+          "covered": 615,
+          "missed": 1041,
+          "ratio": 0.371377,
+          "total": 1656
+        },
+        "method": {
+          "covered": 196,
+          "missed": 392,
+          "ratio": 0.333333,
+          "total": 588
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9603,
+      "issue_label": "fails-javac-compile",
+      "library": "org.junit.platform:junit-platform-commons:1.12.0",
+      "summary": "No extra setup is needed. The compile failure is caused by ClassFilter moving packages in 1.12.0, not by missing dependencies or runtime configuration.",
+      "deterministic_setup": [],
+      "agent_guidance": "Update the generated test import to org.junit.platform.commons.support.scanning.ClassFilter. No additional Maven dependency, Docker image, environment variable, or system property is indicated. JUnit 1.12.0's published POM only adds apiguardian-api transitively.",
+      "risks": [
+        "ClassFilter is an internal API in 1.11 but a support.scanning API in 1.12.0; version-specific test source adaptation is required. [JUnit 5.11 API](https://docs.junit.org/5.11.1/api/org.junit.platform.commons/org/junit/platform/commons/util/ClassFilter.html) [JUnit 5.12 API](https://docs.junit.org/5.12.0/api/org.junit.platform.commons/org/junit/platform/commons/support/scanning/ClassFilter.html)",
+        "JUnit artifacts should remain version-aligned if additional platform modules are introduced. [JUnit 5.12 User Guide](https://docs.junit.org/5.12.0/user-guide/)"
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9603 [Automation] javac compile fails for org.junit.platform:junit-platform-commons:1.12.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "12 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.junit.platform:junit-platform-commons:1.11.0",
+      "new_version": "1.12.0",
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 998679,
+      "output_tokens_used": 5123,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.junit.platform:junit-platform-commons:1.12.0/library-preparation-preflight/codex-session-d7en8lut.log"
+    },
+    "metrics": {
+      "input_tokens_used": 256130,
+      "cached_input_tokens_used": 2899968,
+      "output_tokens_used": 25564,
+      "iterations": 4,
+      "cost_usd": 3.4976,
+      "tested_library_loc": 666,
+      "metadata_entries": 21,
+      "test_only_metadata_entries": 95,
+      "previous_library_metadata_entries": 19,
+      "previous_library_test_only_metadata_entries": 70,
+      "code_coverage_percent": 39.18,
+      "previous_library_coverage_percent": 37.14
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.junit.platform/junit-platform-commons/1.12.0/reachability-metadata.json"
+    }
+  }
+}
