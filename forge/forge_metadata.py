@@ -251,6 +251,10 @@ DEFAULT_ISSUE_SCAN_BATCH_SIZE = 25
 ISSUE_SCAN_PROGRESS_LOG_INTERVAL = 100
 GITHUB_API_MAX_PAGE_SIZE = 100
 GITHUB_SEARCH_MAX_RESULTS = 1000
+# Issue queues scan by creation date so an issue Forge itself touches cannot bump
+# itself back to the head of the queue and starve the rest of the backlog.
+ISSUE_SEARCH_SORT = "created"
+ISSUE_SEARCH_ORDER = "desc"
 DEFAULT_TAKE_BLOCKED_ISSUES = False
 # GitHub validates GraphQL node cost against worst-case first values; 5 issues can exceed 500k here.
 ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE = 4
@@ -890,8 +894,8 @@ def fetch_issue_search_page(query: str, page: int, per_page: int) -> list[dict]:
     data = gh_json(
         "api", "--method", "GET", "/search/issues",
         "-f", f"q={query}",
-        "-f", "sort=updated",
-        "-f", "order=desc",
+        "-f", f"sort={ISSUE_SEARCH_SORT}",
+        "-f", f"order={ISSUE_SEARCH_ORDER}",
         "-F", f"per_page={per_page}",
         "-F", f"page={page}",
     )
@@ -907,7 +911,9 @@ def get_issue_search_page(query: str, page: int, per_page: int) -> list[dict]:
         return fetch_issue_search_page(query, page, per_page)
 
     ttl_seconds = get_issue_search_cache_ttl_seconds()
-    cache_key = build_issue_search_cache_key("page", query, "updated", "desc", page, per_page)
+    cache_key = build_issue_search_cache_key(
+        "page", query, ISSUE_SEARCH_SORT, ISSUE_SEARCH_ORDER, page, per_page
+    )
     now = time.time()
     cached_payload = _read_issue_search_cache_payload()
     if cached_payload is not None:

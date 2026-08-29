@@ -1248,7 +1248,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                 f"q=repo:{forge_metadata.REPO} is:issue is:open "
                 f'label:"{forge_metadata.LABEL_LIBRARY_NEW}" -label:"{forge_metadata.LABEL_NOT_FOR_NATIVE_IMAGE}"'
             ),
-            "-f", "sort=updated",
+            "-f", "sort=created",
             "-f", "order=desc",
             "-F", "per_page=100",
             "-F", "page=3",
@@ -1278,7 +1278,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                 f"q=repo:{forge_metadata.REPO} is:issue is:open "
                 f'label:"{forge_metadata.LABEL_LIBRARY_NEW}" -label:"{forge_metadata.LABEL_NOT_FOR_NATIVE_IMAGE}"'
             ),
-            "-f", "sort=updated",
+            "-f", "sort=created",
             "-f", "order=desc",
             "-F", "per_page=100",
             "-F", "page=1",
