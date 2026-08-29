@@ -57,6 +57,13 @@ local operator controls outside of the Python issue dispatcher
 (§AR-forge-control-plane) while preventing individual workflows from learning
 about worker sleep, branch monitoring, or stop markers.
 
+The monitored branch supplies the Forge implementation and may be a feature
+branch. It does not supply the repository state for issue work: orchestration
+fetches and pins `origin/master` independently before each claim attempt and
+creates the issue worktree from that commit (§FS-forge-run-requirements.2).
+Self-updating a feature branch therefore changes the code under evaluation
+without making that branch the metadata base.
+
 When invoked with `--user-requested-only`, or with
 `FORGE_USER_REQUESTED_ISSUES_ONLY=1`, the worker asks orchestration to fetch
 only user-requested issue queue items. The filter is applied by the dispatcher,
