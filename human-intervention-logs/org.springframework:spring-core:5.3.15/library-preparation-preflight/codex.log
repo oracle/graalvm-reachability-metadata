@@ -1,0 +1,17 @@
+{
+  "action": "advisory_preparation",
+  "summary": "JBoss VFS is required to exercise spring-core's VfsResource and VfsUtils integration.",
+  "deterministic_setup": [
+    {
+      "kind": "dependency",
+      "coordinate": "org.jboss:jboss-vfs:3.2.6.Final",
+      "scope": "testImplementation",
+      "reason": "Spring's VFS resource APIs detect and reflectively invoke org.jboss.vfs classes; the published spring-core artifact does not provide them."
+    }
+  ],
+  "agent_guidance": "",
+  "risks": [
+    "VFS support is optional in normal Spring applications, so coverage should keep the dependency scoped to tests.",
+    "VfsUtils initialization depends on the JBoss VFS API being present at runtime."
+  ]
+}

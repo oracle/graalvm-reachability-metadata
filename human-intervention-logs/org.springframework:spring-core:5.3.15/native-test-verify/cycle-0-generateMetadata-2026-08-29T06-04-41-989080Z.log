@@ -1,0 +1,144 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :generateMetadata
+[34m[INFO] Generating user-code-filter.json...[0m
+[34m[INFO] Configuring agent block in: build.gradle...[0m
+[34m[INFO] Agent block already present in: build.gradle - skipping...[0m
+[34m[INFO] Generating metadata...[0m
+
+> Task :generateMetadata FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2183-55450c2f/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':generateMetadata'.
+> Cannot generate metadata. See output:
+  > Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+  > Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+  > Task :tck-build-logic:compileJava UP-TO-DATE
+  > Task :tck-build-logic:compileGroovy UP-TO-DATE
+  > Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+  > Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+  > Task :tck-build-logic:processResources UP-TO-DATE
+  > Task :tck-build-logic:classes UP-TO-DATE
+  > Task :tck-build-logic:jar UP-TO-DATE
+  > Task :tck-test-support:compileJava UP-TO-DATE
+  > Task :checkTestTimeoutAnnotations
+  > Task :tck-test-support:processResources UP-TO-DATE
+  > Task :tck-test-support:classes UP-TO-DATE
+  > Task :compileJava NO-SOURCE
+  > Task :tck-test-support:jar UP-TO-DATE
+  > Task :processResources NO-SOURCE
+  > Task :classes UP-TO-DATE
+  > Task :compileTestJava UP-TO-DATE
+  > Task :processTestResources UP-TO-DATE
+  > Task :testClasses UP-TO-DATE
+  
+  > Task :test
+  [native-image-plugin] Instrumenting task with the native-image-agent: test
+  [0.615s][warning][jni,resolve] Re-registering of platform native method: jdk.internal.misc.Unsafe.allocateInstance(Ljava/lang/Class;)Ljava/lang/Object; from code in a different classloader
+  
+  SerializableTypeWrapperInnerFieldTypeProviderTest > restoresGenericField() FAILED
+      java.lang.IllegalArgumentException: Failed to serialize object of type: class org.springframework.core.ResolvableType
+          at org.springframework.util.SerializationUtils.serialize(SerializationUtils.java:51)
+          at org_springframework.spring_core.SerializableTypeWrapperInnerFieldTypeProviderTest.roundTrip(SerializableTypeWrapperInnerFieldTypeProviderTest.java:32)
+          at org_springframework.spring_core.SerializableTypeWrapperInnerFieldTypeProviderTest.restoresGenericField(SerializableTypeWrapperInnerFieldTypeProviderTest.java:25)
+  
+          Caused by:
+          java.io.NotSerializableException: sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl
+              at java.base/java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1085)
+              at java.base/java.io.ObjectOutputStream.defaultWriteFields(ObjectOutputStream.java:1451)
+              at java.base/java.io.ObjectOutputStream.writeSerialData(ObjectOutputStream.java:1408)
+              at java.base/java.io.ObjectOutputStream.writeOrdinaryObject(ObjectOutputStream.java:1317)
+              at java.base/java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1079)
+              at java.base/java.io.ObjectOutputStream.writeObject(ObjectOutputStream.java:325)
+              at org.springframework.util.SerializationUtils.serialize(SerializationUtils.java:47)
+              ... 2 more
+  
+  SerializableTypeWrapperInnerMethodParameterTypeProviderTest > restoresGenericConstructorParameter() FAILED
+      java.lang.IllegalArgumentException: Failed to serialize object of type: class org.springframework.core.ResolvableType
+          at org.springframework.util.SerializationUtils.serialize(SerializationUtils.java:51)
+          at org_springframework.spring_core.SerializableTypeWrapperInnerMethodParameterTypeProviderTest.roundTrip(SerializableTypeWrapperInnerMethodParameterTypeProviderTest.java:48)
+          at org_springframework.spring_core.SerializableTypeWrapperInnerMethodParameterTypeProviderTest.restoresGenericConstructorParameter(SerializableTypeWrapperInnerMethodParameterTypeProviderTest.java:41)
+  
+          Caused by:
+          java.io.NotSerializableException: sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl
+              at java.base/java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1085)
+              at java.base/java.io.ObjectOutputStream.defaultWriteFields(ObjectOutputStream.java:1451)
+              at java.base/java.io.ObjectOutputStream.writeSerialData(ObjectOutputStream.java:1408)
+              at java.base/java.io.ObjectOutputStream.writeOrdinaryObject(ObjectOutputStream.java:1317)
+              at java.base/java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1079)
+              at java.base/java.io.ObjectOutputStream.writeObject(ObjectOutputStream.java:325)
+              at org.springframework.util.SerializationUtils.serialize(SerializationUtils.java:47)
+              ... 2 more
+  
+  SerializableTypeWrapperInnerMethodParameterTypeProviderTest > restoresGenericMethodParameter() FAILED
+      java.lang.IllegalArgumentException: Failed to serialize object of type: class org.springframework.core.ResolvableType
+          at org.springframework.util.SerializationUtils.serialize(SerializationUtils.java:51)
+          at org_springframework.spring_core.SerializableTypeWrapperInnerMethodParameterTypeProviderTest.roundTrip(SerializableTypeWrapperInnerMethodParameterTypeProviderTest.java:48)
+          at org_springframework.spring_core.SerializableTypeWrapperInnerMethodParameterTypeProviderTest.restoresGenericMethodParameter(SerializableTypeWrapperInnerMethodParameterTypeProviderTest.java:28)
+  
+          Caused by:
+          java.io.NotSerializableException: sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl
+              at java.base/java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1085)
+              at java.base/java.io.ObjectOutputStream.defaultWriteFields(ObjectOutputStream.java:1451)
+              at java.base/java.io.ObjectOutputStream.writeSerialData(ObjectOutputStream.java:1408)
+              at java.base/java.io.ObjectOutputStream.writeOrdinaryObject(ObjectOutputStream.java:1317)
+              at java.base/java.io.ObjectOutputStream.writeObject0(ObjectOutputStream.java:1079)
+              at java.base/java.io.ObjectOutputStream.writeObject(ObjectOutputStream.java:325)
+              at org.springframework.util.SerializationUtils.serialize(SerializationUtils.java:47)
+              ... 2 more
+  
+  76 tests completed, 3 failed
+  
+  > Task :test FAILED
+  
+  [Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2183-55450c2f/tests/src/org.springframework/spring-core/5.3.15/build/reports/problems/problems-report.html
+  
+  FAILURE: Build failed with an exception.
+  
+  * What went wrong:
+  Execution failed for task ':test'.
+  > There were failing tests. See the report at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2183-55450c2f/tests/src/org.springframework/spring-core/5.3.15/build/reports/tests/test/index.html
+  
+  * Try:
+  > Run with --scan to generate a Build Scan (Powered by Develocity).
+  
+  Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+  
+  You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+  BUILD FAILED in 25s
+  
+  
+  For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+  15 actionable tasks: 2 executed, 13 up-to-date
+
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 28s
+9 actionable tasks: 1 executed, 8 up-to-date
