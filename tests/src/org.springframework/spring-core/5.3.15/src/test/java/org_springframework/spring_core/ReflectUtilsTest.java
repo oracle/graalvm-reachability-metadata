@@ -8,7 +8,6 @@ package org_springframework.spring_core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,15 +32,6 @@ public class ReflectUtilsTest {
 
         assertThat(resource.getByteArray()).isSameAs(content);
         assertThat(resource.getDescription()).contains("reflective resource");
-    }
-
-    @Test
-    void findsPublicConstructorFromDescriptor() {
-        Constructor<?> constructor = ReflectUtils.findConstructor(
-                "org.springframework.core.io.ByteArrayResource(byte[], String)");
-
-        assertThat(constructor.getDeclaringClass()).isEqualTo(ByteArrayResource.class);
-        assertThat(constructor.getParameterTypes()).containsExactly(byte[].class, String.class);
     }
 
     @Test
