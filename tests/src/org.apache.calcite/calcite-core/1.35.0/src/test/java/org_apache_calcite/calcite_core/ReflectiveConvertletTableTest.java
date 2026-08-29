@@ -6,8 +6,9 @@
  */
 package org_apache_calcite.calcite_core;
 
-import org.apache.calcite.plan.RelOptUtil;
 import org.apache.calcite.rel.RelRoot;
+import org.apache.calcite.rel.core.Values;
+import org.apache.calcite.rex.RexLiteral;
 import org.apache.calcite.rex.RexNode;
 import org.apache.calcite.sql.SqlBasicCall;
 import org.apache.calcite.sql.SqlBinaryOperator;
@@ -25,17 +26,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ReflectiveConvertletTableTest {
     @Test
     void invokesConvertletRegisteredByCallType() throws Exception {
-        assertThat(convertPlan(new CallTypeConvertletTable()))
-                .contains("LogicalValues(tuples=[[{ 1 }]])");
+        assertThat(projectedValue(new CallTypeConvertletTable())).isEqualTo(1);
     }
 
     @Test
     void invokesConvertletRegisteredByOperatorType() throws Exception {
-        assertThat(convertPlan(new OperatorTypeConvertletTable()))
-                .contains("LogicalValues(tuples=[[{ 1 }]])");
+        assertThat(projectedValue(new OperatorTypeConvertletTable())).isEqualTo(1);
     }
 
-    private static String convertPlan(SqlRexConvertletTable convertletTable) throws Exception {
+    private static int projectedValue(SqlRexConvertletTable convertletTable) throws Exception {
         try (Planner planner = Frameworks.getPlanner(Frameworks.newConfigBuilder()
                 .defaultSchema(Frameworks.createRootSchema(true))
                 .convertletTable(convertletTable)
@@ -43,7 +42,10 @@ public class ReflectiveConvertletTableTest {
             SqlNode parsed = planner.parse("SELECT 1 + 2");
             SqlNode validated = planner.validate(parsed);
             RelRoot root = planner.rel(validated);
-            return RelOptUtil.toString(root.rel);
+            assertThat(root.rel).isInstanceOf(Values.class);
+            RexNode projection = ((Values) root.rel).getTuples().get(0).get(0);
+            assertThat(projection).isInstanceOf(RexLiteral.class);
+            return ((RexLiteral) projection).getValueAs(Integer.class);
         }
     }
 
