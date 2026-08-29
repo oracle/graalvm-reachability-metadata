@@ -64,7 +64,7 @@ public class OraclePooledConnectionTest {
                         "jdbc:oracle:thin:@//127.0.0.1:1/test-service");
                 connectionProperties.setProperty("oracle.net.CONNECT_TIMEOUT", "10000");
                 connectionProperties.setProperty("oracle.jdbc.ReadTimeout", "10000");
-                Hashtable<String, Object> pooledProperties = new Hashtable<>();
+                Hashtable<Object, Object> pooledProperties = new Properties();
                 pooledProperties.put(
                         OraclePooledConnection.connection_properties_string, connectionProperties);
                 ((OraclePooledConnection) arguments[0]).setProperties(pooledProperties);
