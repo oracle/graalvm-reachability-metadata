@@ -1,0 +1,142 @@
+{
+  "base_commit": "a78cca0eb72bc4c75f3ecdf26a1b5c1050887415",
+  "branch": "ai/kimeta/add-lib-support-org.springframework.shell-spring-shell-jline-4.0.2-forge-8406-20260829215833779915-60e523fd99b3",
+  "follow_ups": [],
+  "forge": {
+    "branch": "mm/forge-publication-fixes",
+    "commit": "8a4907dda111971cc66334f53d8fc0da6b68bfa3",
+    "monitored_branch": "origin/mm/forge-publication-fixes"
+  },
+  "issue_number": 8406,
+  "library": {
+    "artifact": "spring-shell-jline",
+    "coordinates": "org.springframework.shell:spring-shell-jline:4.0.2",
+    "group": "org.springframework.shell",
+    "version": "4.0.2"
+  },
+  "local_ci_verification": {
+    "base_commit": "a78cca0eb72bc4c75f3ecdf26a1b5c1050887415",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmphf6zmfyl"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-08-29T22-14-10-069487Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/8406-1281a04d/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.springframework.shell:spring-shell-jline"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-08-29T22-14-12-653930Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.springframework.shell/spring-shell-jline/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/8406-1281a04d/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "2fdef1d09df619f3b88a500c9b151d5f986dd57a",
+    "fixups": [],
+    "human_intervention_required": true,
+    "repo_fix_paths": [
+      "metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json"
+    ],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json"
+    ],
+    "decision": "changes_requested",
+    "failed_step": null,
+    "finding_body": "Review Signal #1 / contribution-shape rule: metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json is outside org.springframework.shell:spring-shell-jline:4.0.2. Review Signal #6 / new-library coverage gate: stats/org.springframework.shell/spring-shell-jline/4.0.2/stats.json reports 0 covered calls out of 2 total calls (0%), while new-library PRs with calls to cover require coverage above 20%. The unresolved coverage violation requires stronger public-API tests and refreshed credible statistics.",
+    "finding_title": "New-library contribution includes unrelated scope and zero dynamic-access coverage",
+    "fix_note": "Restored metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json to the base commit, removing the unrelated coordinate from the eventual PR diff. I did not alter the Spring Shell test because no smallest safe edit was established that would cover the reported reflective call sites through the public API without violating the test contract.",
+    "model": "gpt-5.6-sol",
+    "published_tree": "repaired",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the supplied commit range, the test and build files, index/metadata scope, resolved statistics, and local gate evidence. The test is library-specific, native-enabled, version-agnostic, and in a separate package; only reachability-metadata.json is added. I removed the unrelated Hibernate Validator change, but the resulting Spring Shell contribution still cannot be approved because its reported dynamic-access coverage is 0/2 (0%), below the required above-20% new-library gate. A fresh local dynamic-access coverage report reproduced 0/2.",
+    "session_log_path": "logs/org.springframework.shell:spring-shell-jline:4.0.2/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.springframework.shell/spring-shell-jline/4.0.2/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1452544,
+      "code_coverage_percent": 5.13,
+      "cost_usd": 2.6127,
+      "generated_loc": 43,
+      "input_tokens_used": 246254,
+      "iterations": 3,
+      "metadata_entries": 0,
+      "output_tokens_used": 21835,
+      "tested_library_loc": 349
+    },
+    "timestamp": "2026-08-29T21:58:33.779915Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": true
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-8406-20260829215833779915-60e523fd99b3",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": null,
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 0.0,
+        "coveredCalls": 0,
+        "totalCalls": 2
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2122,
+          "missed": 30880,
+          "ratio": 0.064299,
+          "total": 33002
+        },
+        "line": {
+          "covered": 349,
+          "missed": 6455,
+          "ratio": 0.051293,
+          "total": 6804
+        },
+        "method": {
+          "covered": 53,
+          "missed": 1644,
+          "ratio": 0.031232,
+          "total": 1697
+        }
+      },
+      "version": "4.0.2"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "dynamic_access_bulk_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-08-29T21:58:33.779915Z"
+}

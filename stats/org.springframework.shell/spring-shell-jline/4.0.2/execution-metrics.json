@@ -1,0 +1,92 @@
+{
+  "add_new_library_support:2026-08-29": {
+    "timestamp": "2026-08-29T21:58:33.779915Z",
+    "library": "org.springframework.shell:spring-shell-jline:4.0.2",
+    "starting_commit": "9e4940c82d72981cb7b3dd644bb12c3aad5f7d3d",
+    "ending_commit": "4db114070ad82289f864d3eb88cbc5d9f1b0e3c0",
+    "strategy_name": "dynamic_access_bulk_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "4.0.2",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 0.0,
+        "coveredCalls": 0,
+        "totalCalls": 2
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2122,
+          "missed": 30880,
+          "ratio": 0.064299,
+          "total": 33002
+        },
+        "line": {
+          "covered": 349,
+          "missed": 6455,
+          "ratio": 0.051293,
+          "total": 6804
+        },
+        "method": {
+          "covered": 53,
+          "missed": 1644,
+          "ratio": 0.031232,
+          "total": 1697
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8406,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.shell:spring-shell-jline:4.0.2",
+      "summary": "No extra Maven dependency, Docker image, or external service is needed. Meaningful JLine/TUI coverage should use an in-memory dumb terminal fixture; the published POM already supplies the required runtime APIs ([POM](https://repo.maven.apache.org/maven2/org/springframework/shell/spring-shell-jline/4.0.2/spring-shell-jline-4.0.2.pom)).",
+      "deterministic_setup": [],
+      "agent_guidance": "Construct org.jline.terminal.impl.DumbTerminal with byte-array or piped streams and a fixed terminal size, then use it with LineReaderBuilder, JLineInputReader, ComponentFlow, TUI components, styling, completion, and table APIs. Clean up terminals and helper threads. Avoid relying on a real TTY or default native provider selection. If testing DefaultJLineShellConfiguration.terminal(), set org.jline.terminal.provider=dumb before terminal creation. Follow the upstream fixture pattern ([upstream tests](https://github.com/spring-projects/spring-shell/tree/v4.0.2/spring-shell-jline/src/test/java/org/springframework/shell/jline)).",
+      "risks": [
+        "Default TerminalBuilder behavior may probe FFM, JNI, Jansi, JNA, or exec providers and be platform-dependent; local Native Image verification remains authoritative.",
+        "Spring Boot auto-configuration belongs to Spring Shell Core Autoconfigure; do not add it solely for direct spring-shell-jline API coverage ([documentation](https://docs.spring.io/spring-shell/reference/building.html))."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8406 Support for org.springframework.shell:spring-shell-jline:4.0.2; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 3326116,
+      "output_tokens_used": 14112,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.springframework.shell:spring-shell-jline:4.0.2/library-preparation-preflight/codex-session-rn3d14yg.log"
+    },
+    "metrics": {
+      "input_tokens_used": 246254,
+      "cached_input_tokens_used": 1452544,
+      "output_tokens_used": 21835,
+      "iterations": 3,
+      "cost_usd": 2.6127,
+      "generated_loc": 43,
+      "tested_library_loc": 349,
+      "metadata_entries": 0,
+      "code_coverage_percent": 5.13
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.shell/spring-shell-jline/4.0.2/reachability-metadata.json"
+    }
+  }
+}
