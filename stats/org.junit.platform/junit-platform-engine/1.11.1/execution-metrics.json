@@ -1,0 +1,132 @@
+{
+  "fix_javac_fail:2026-08-29": {
+    "timestamp": "2026-08-29T23:00:14.429747Z",
+    "library": "org.junit.platform:junit-platform-engine:1.11.1",
+    "starting_commit": "6a4314bbd847fd5aec4c658176c54abb0fdff0a5",
+    "ending_commit": "c97e31986b1be636848febc5303ad450a8db61c3",
+    "previous_library": "org.junit.platform:junit-platform-engine:1.11.0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.11.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 3017,
+          "missed": 7823,
+          "ratio": 0.278321,
+          "total": 10840
+        },
+        "line": {
+          "covered": 711,
+          "missed": 1612,
+          "ratio": 0.30607,
+          "total": 2323
+        },
+        "method": {
+          "covered": 286,
+          "missed": 633,
+          "ratio": 0.311208,
+          "total": 919
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.11.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2854,
+          "missed": 7580,
+          "ratio": 0.273529,
+          "total": 10434
+        },
+        "line": {
+          "covered": 675,
+          "missed": 1564,
+          "ratio": 0.301474,
+          "total": 2239
+        },
+        "method": {
+          "covered": 276,
+          "missed": 614,
+          "ratio": 0.310112,
+          "total": 890
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9604,
+      "issue_label": "fails-javac-compile",
+      "library": "org.junit.platform:junit-platform-engine:1.11.1",
+      "summary": "No extra dependency, Docker image, or system property is needed. The published artifact has only normal transitive dependencies, and JUnit documentation describes standard JVM/API usage. The failure is a test-source incompatibility with ResourceLock API changes in 1.11.1. [POM](https://repo.maven.apache.org/maven2/org/junit/platform/junit-platform-engine/1.11.1/junit-platform-engine-1.11.1.pom) [Documentation](https://docs.junit.org/5.11.1/user-guide/index.html)",
+      "deterministic_setup": [],
+      "agent_guidance": "No special test setup. Adapt NoOpResourceLock for the 1.11.1 contract, preserving its no-op behavior by implementing getResources() and isExclusive() appropriately.",
+      "risks": [
+        "The compile repair must preserve the existing executor coverage and native-image test path."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9604 [Automation] javac compile fails for org.junit.platform:junit-platform-engine:1.11.1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "7 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.junit.platform:junit-platform-engine:1.11.0",
+      "new_version": "1.11.1",
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 954587,
+      "output_tokens_used": 7045,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.junit.platform:junit-platform-engine:1.11.1/library-preparation-preflight/codex-session-49ay9qjc.log"
+    },
+    "metrics": {
+      "input_tokens_used": 63954,
+      "cached_input_tokens_used": 384000,
+      "output_tokens_used": 2137,
+      "iterations": 1,
+      "cost_usd": 0.5759,
+      "tested_library_loc": 711,
+      "metadata_entries": 2,
+      "test_only_metadata_entries": 2,
+      "previous_library_metadata_entries": 2,
+      "previous_library_test_only_metadata_entries": 2,
+      "code_coverage_percent": 30.61,
+      "previous_library_coverage_percent": 30.15
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.junit.platform/junit-platform-engine/1.11.1/reachability-metadata.json"
+    }
+  }
+}
