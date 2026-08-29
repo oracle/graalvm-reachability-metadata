@@ -37,7 +37,7 @@ public class ModifiablePojoPropertiesFactoryInnerModifiablePojoPropertiesTest {
         private int id;
         private String label;
 
-        public MutableEntry() {}
+        public MutableEntry() { }
 
         @Override
         public int id() {

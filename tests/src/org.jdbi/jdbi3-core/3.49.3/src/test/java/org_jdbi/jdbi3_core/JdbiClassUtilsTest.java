@@ -30,7 +30,7 @@ public class JdbiClassUtilsTest {
     }
 
     public static class EmptyValue {
-        public EmptyValue() {}
+        public EmptyValue() { }
 
         public boolean ready() {
             return true;

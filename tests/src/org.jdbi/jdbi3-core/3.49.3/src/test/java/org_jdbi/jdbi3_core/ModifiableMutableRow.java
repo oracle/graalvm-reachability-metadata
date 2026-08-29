@@ -10,7 +10,7 @@ public final class ModifiableMutableRow implements JdbiImmutablesTest.MutableRow
     private int id;
     private String label;
 
-    public ModifiableMutableRow() {}
+    public ModifiableMutableRow() { }
 
     @Override
     public int id() {

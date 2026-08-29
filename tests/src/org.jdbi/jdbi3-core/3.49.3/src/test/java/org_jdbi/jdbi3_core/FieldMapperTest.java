@@ -29,7 +29,7 @@ public class FieldMapperTest {
         private int id;
         private String label;
 
-        public Account() {}
+        public Account() { }
 
         public int id() {
             return id;

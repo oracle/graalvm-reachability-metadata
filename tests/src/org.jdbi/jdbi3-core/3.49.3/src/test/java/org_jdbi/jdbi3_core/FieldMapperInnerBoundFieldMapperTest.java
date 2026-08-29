@@ -29,7 +29,7 @@ public class FieldMapperInnerBoundFieldMapperTest {
         private int sequence;
         private String body;
 
-        public Message() {}
+        public Message() { }
 
         public int sequence() {
             return sequence;
