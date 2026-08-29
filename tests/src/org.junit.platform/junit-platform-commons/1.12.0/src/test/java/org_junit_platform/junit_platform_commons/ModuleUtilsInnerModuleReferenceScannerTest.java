@@ -9,7 +9,7 @@ package org_junit_platform.junit_platform_commons;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.util.ClassFilter;
+import org.junit.platform.commons.support.scanning.ClassFilter;
 import org.junit.platform.commons.util.ModuleUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;

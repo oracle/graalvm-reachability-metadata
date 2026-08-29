@@ -11,9 +11,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.support.ReflectionSupport;
+import org.junit.platform.commons.support.Resource;
 import org.junit.platform.commons.util.ReflectionUtils;
 import org.junit.platform.commons.util.ReflectionUtils.HierarchyTraversalMode;
 
@@ -85,6 +88,13 @@ public class ReflectionUtilsTest {
         Class<?> arrayType = ReflectionUtils.tryToLoadClass("java.util.UUID[][]").get();
 
         assertThat(arrayType).isEqualTo(UUID[][].class);
+    }
+
+    @Test
+    void discoversLicenseNoticeResources() throws Exception {
+        Set<Resource> resources = ReflectionSupport.tryToGetResources("/META-INF/LICENSE-notice.md").get();
+
+        assertThat(resources).isNotEmpty().extracting(Resource::getName).containsOnly("META-INF/LICENSE-notice.md");
     }
 
     @Test
