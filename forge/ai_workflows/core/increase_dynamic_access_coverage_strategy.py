@@ -10,7 +10,7 @@ from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_SUCCESS,
     WorkflowStrategy,
 )
-from utility_scripts.continuation_marker import PHASE_FIX, save_phase_update
+from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
 from utility_scripts.dynamic_access_report import BulkDynamicAccessProgress, DynamicAccessCoverageReport
 from utility_scripts.java_fix_coverage_follow_up import uncovered_dynamic_access_class_count
 
@@ -80,6 +80,10 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
             if self.primary_workflow_name == "optimistic_dynamic_access":
                 current_report, iterative_chunk_count, chunk_ready = self._route_after_optimistic_bulk()
                 if chunk_ready:
+                    save_phase_update(
+                        self.continuation_marker_path,
+                        lambda marker: marker.mark_phase_completed(PHASE_EXPLORE),
+                    )
                     status = RUN_STATUS_CHUNK_READY
                     self._print_message(
                         "bulk filled the dynamic-access chunk boundary; skipping iterative exploration"
@@ -126,6 +130,10 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
                 return (status, iterations) + result[2:]
 
         if skip_dynamic_access_phase:
+            save_phase_update(
+                self.continuation_marker_path,
+                lambda marker: marker.mark_phase_completed(PHASE_EXPLORE),
+            )
             phase_ok, da_iterations = True, 0
             self._print_message("all dynamic-access classes are covered after bulk")
         else:
@@ -171,6 +179,10 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
 
         if has_issue_requested_metadata:
             self._print_message("starting reporter-requested metadata phase")
+            save_phase_update(
+                self.continuation_marker_path,
+                lambda marker: marker.mark_phase_running(PHASE_EXPLORE),
+            )
             issue_phase_ok, issue_iterations = da._run_issue_requested_metadata_phase(agent)
             iterations += issue_iterations
             self._print_message(
@@ -182,6 +194,10 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
             )
             if not issue_phase_ok:
                 status = RUN_STATUS_FAILURE
+                save_phase_update(
+                    self.continuation_marker_path,
+                    lambda marker: marker.mark_phase_pending(PHASE_EXPLORE, iteration=iterations),
+                )
                 if self.primary is None:
                     return status, iterations
                 if len(result) == 2:
@@ -189,6 +205,16 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
                 return (status, iterations) + result[2:]
             if status not in {RUN_STATUS_CHUNK_READY, RUN_STATUS_FAILURE}:
                 status = RUN_STATUS_SUCCESS
+            if status == RUN_STATUS_FAILURE:
+                save_phase_update(
+                    self.continuation_marker_path,
+                    lambda marker: marker.mark_phase_pending(PHASE_EXPLORE, iteration=iterations),
+                )
+            else:
+                save_phase_update(
+                    self.continuation_marker_path,
+                    lambda marker: marker.mark_phase_completed(PHASE_EXPLORE, iteration=iterations),
+                )
 
         if self.primary is None:
             return status, iterations
@@ -211,8 +237,10 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
             "bulk_chunk_progress",
             None,
         )
-        if self.chunk_class_count <= 0 or progress is None:
+        if progress is None:
             return None, None, False
+        if self.chunk_class_count <= 0:
+            return progress.final_report, None, False
 
         completed_class_count: int = len(progress.completed_classes)
         remaining_class_count: int = len(progress.remaining_classes)

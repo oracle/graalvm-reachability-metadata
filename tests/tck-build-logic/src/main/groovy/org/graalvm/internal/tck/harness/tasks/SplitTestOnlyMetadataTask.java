@@ -6,7 +6,6 @@
  */
 package org.graalvm.internal.tck.harness.tasks;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -70,11 +69,14 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
 
     private void splitMetadata(String coordinate) throws IOException {
         Coordinates parsedCoordinates = Coordinates.parse(coordinate);
-        Path metadataDirectory = resolveMetadataDirectory(parsedCoordinates);
+        Path metadataDirectory = MetadataCoordinateSupport.resolveMetadataDirectory(
+                getProject(),
+                objectMapper,
+                parsedCoordinates
+        );
         if (metadataDirectory == null) {
             getLogger().lifecycle(
-                    "Skipping {}: library version {} does not have its own metadata directory. "
-                            + "splitTestOnlyMetadata only runs for versions that have their own metadata.",
+                    "Skipping {}: no metadata bucket supports library version {}.",
                     coordinate,
                     parsedCoordinates.version()
             );
@@ -108,23 +110,16 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
 
         ObjectNode finalTestMetadata = mergeReachabilityMetadata(retainedTestMetadata, movedMetadata);
 
+        writeJson(metadataFile, libraryMetadata);
+
         if (finalTestMetadata.isEmpty()) {
             deleteFileIfPresent(testMetadataFile);
             getLogger().lifecycle("No test-only reachability metadata entries found for {}", coordinate);
             return;
         }
 
-        writeJson(metadataFile, libraryMetadata);
         writeJson(testMetadataFile, finalTestMetadata);
         getLogger().lifecycle("splitTestOnlyMetadata completed for {}", coordinate);
-    }
-
-    private Path resolveMetadataDirectory(Coordinates parsedCoordinates) {
-        Path conventional = getProject().file(CoordinateUtils.replace("metadata/$group$/$artifact$/$version$", parsedCoordinates)).toPath();
-        if (Files.isDirectory(conventional)) {
-            return conventional;
-        }
-        return null;
     }
 
     private Path resolveTestsDirectoryForMetadataVersion(Coordinates parsedCoordinates) throws IOException {
@@ -139,9 +134,12 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
                     + " does not exist and no index.json is present at " + indexFile);
         }
 
-        List<MetadataVersionsIndexEntry> entries = readIndexEntries(indexFile);
+        List<MetadataVersionsIndexEntry> entries = MetadataCoordinateSupport.readIndexEntries(objectMapper, indexFile);
         for (MetadataVersionsIndexEntry entry : entries) {
-            if (!parsedCoordinates.version().equals(entry.metadataVersion())) {
+            boolean matchesMetadataVersion = parsedCoordinates.version().equals(entry.metadataVersion());
+            boolean matchesTestedVersion = entry.testedVersions() != null
+                    && entry.testedVersions().contains(parsedCoordinates.version());
+            if (!matchesMetadataVersion && !matchesTestedVersion) {
                 continue;
             }
             return resolveTestsDirectoryForEntry(parsedCoordinates, entry, indexFile);
@@ -161,10 +159,6 @@ public class SplitTestOnlyMetadataTask extends CoordinatesAwareTask {
                     + " in " + indexFile + " has no test-version or metadata-version");
         }
         return getProject().file(CoordinateUtils.replace("tests/src/$group$/$artifact$/" + testVersion, parsedCoordinates)).toPath();
-    }
-
-    private List<MetadataVersionsIndexEntry> readIndexEntries(Path indexFile) throws IOException {
-        return objectMapper.readValue(indexFile.toFile(), new TypeReference<>() {});
     }
 
     private Set<String> discoverTestResources(Path testsDirectory) throws IOException {

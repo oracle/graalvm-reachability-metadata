@@ -13,3 +13,8 @@ In `stats/org.junit.platform/junit-platform-commons/1.11.0/stats.json`, resource
 **New-library change included unrelated library metadata**
 
 Review Signal #1 requires a new-library change to contain only one target library and its supporting test files, but metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json was also modified alongside the org.springdoc addition.
+## 2026-08-27 — io.netty:netty-common:5.0.0.Alpha2 (#9307)
+
+**Dynamic-access resource coverage regresses by 25 percentage points**
+
+In stats/io.netty/netty-common/5.0.0.Alpha2/stats.json, resources coverage is 75% (3/4), versus 100% (1/1) for 5.0.0.Alpha1. That 25-point drop exceeds the fixes-javac-fail limit, and the supplied evidence gives no concrete explanation or replacement coverage. Restore resource coverage or provide a concrete, credible explanation for the regression.

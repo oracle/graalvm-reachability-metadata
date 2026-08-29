@@ -226,10 +226,20 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         if current_report is None:
             current_report = self._generate_dynamic_access_report()
         if self._should_fallback_to_basic_flow(current_report):
-            save_phase_update(
-                self.continuation_marker_path,
-                lambda marker: marker.mark_phase_skipped(PHASE_EXPLORE),
-            )
+            if self.has_issue_requested_metadata_context():
+                save_phase_update(
+                    self.continuation_marker_path,
+                    lambda marker: (
+                        marker.mark_phase_skipped_if_pending(PHASE_FIX),
+                        marker.mark_phase_running(PHASE_EXPLORE),
+                    ),
+                )
+                enter_phase(RUN_PHASE_EXPLORE)
+            else:
+                save_phase_update(
+                    self.continuation_marker_path,
+                    lambda marker: marker.mark_phase_skipped(PHASE_EXPLORE),
+                )
             return True, 0
         save_phase_update(
             self.continuation_marker_path,

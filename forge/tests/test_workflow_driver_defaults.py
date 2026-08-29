@@ -3,11 +3,35 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+import io
 import unittest
+from contextlib import redirect_stdout
 from unittest.mock import patch
 
 import forge_metadata
+from utility_scripts.dynamic_access_report import DynamicAccessClass, DynamicAccessCoverageReport
 from utility_scripts.strategy_loader import load_predefined_strategies
+
+
+def _report(uncovered_class_count: int) -> DynamicAccessCoverageReport:
+    classes = [
+        DynamicAccessClass(
+            class_name=f"g.a.Class{index}",
+            source_file=None,
+            resolved_source_file=None,
+            total_calls=1,
+            covered_calls=0,
+            call_sites=[],
+        )
+        for index in range(uncovered_class_count)
+    ]
+    return DynamicAccessCoverageReport(
+        coordinate="g:a:2.0",
+        has_dynamic_access=True,
+        total_calls=uncovered_class_count,
+        covered_calls=0,
+        classes=classes,
+    )
 
 
 def _claimed_issue(
@@ -43,20 +67,67 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
             "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
         )
 
-    def test_optimistic_strategies_defer_chunk_selection_to_bulk(self) -> None:
+    def test_optimistic_strategies_prepare_the_report_before_deferring_selection(self) -> None:
+        # The deferred decision is the chunk boundary, not the report the bulk
+        # phase measures itself against (§FS-forge-chunked-dynamic-access).
         strategies = (
             "dynamic_access_bulk_pi_gpt-5.6-sol",
             "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
         )
-        with patch.object(forge_metadata, "_prepare_new_library_dynamic_access_report") as prepare_report:
+        with patch.object(forge_metadata, "_prepare_new_library_dynamic_access_report", return_value=True) \
+                as prepare_report, \
+                patch.object(forge_metadata, "_generate_dispatcher_dynamic_access_report") as generate_report, \
+                patch.object(forge_metadata, "_resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
+                patch.object(forge_metadata, "load_dynamic_access_coverage_report", return_value=_report(3)):
             for strategy_name in strategies:
                 with self.subTest(strategy=strategy_name):
-                    chunk_count = forge_metadata.prepare_dynamic_access_chunking(
-                        _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW),
-                        strategy_name,
-                    )
+                    output = io.StringIO()
+                    with redirect_stdout(output):
+                        chunk_count = forge_metadata.prepare_dynamic_access_chunking(
+                            _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW),
+                            strategy_name,
+                        )
                     self.assertEqual(chunk_count, 15)
-        prepare_report.assert_not_called()
+                    self.assertIn("uncovered_classes=3, class_boundary=15", output.getvalue())
+        self.assertEqual(prepare_report.call_count, len(strategies))
+        self.assertEqual(generate_report.call_count, len(strategies))
+
+    def test_optimistic_deferral_names_an_unavailable_report(self) -> None:
+        with patch.object(forge_metadata, "_prepare_new_library_dynamic_access_report", return_value=True), \
+                patch.object(forge_metadata, "_generate_dispatcher_dynamic_access_report"), \
+                patch.object(forge_metadata, "_resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
+                patch.object(forge_metadata, "load_dynamic_access_coverage_report", side_effect=FileNotFoundError):
+            output = io.StringIO()
+            with redirect_stdout(output):
+                chunk_count = forge_metadata.prepare_dynamic_access_chunking(
+                    _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW),
+                    "dynamic_access_bulk_pi_gpt-5.6-sol",
+                )
+        self.assertEqual(chunk_count, 15)
+        self.assertIn("uncovered_classes=unavailable", output.getvalue())
+
+    def test_optimistic_new_library_outside_native_image_disables_chunking(self) -> None:
+        with patch.object(forge_metadata, "_prepare_new_library_dynamic_access_report", return_value=False), \
+                patch.object(forge_metadata, "_generate_dispatcher_dynamic_access_report") as generate_report:
+            chunk_count = forge_metadata.prepare_dynamic_access_chunking(
+                _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW),
+                "dynamic_access_bulk_pi_gpt-5.6-sol",
+            )
+        self.assertIsNone(chunk_count)
+        generate_report.assert_not_called()
+
+    def test_library_update_preparation_precedes_the_deferred_decision(self) -> None:
+        with patch.object(forge_metadata, "_prepare_library_update_dynamic_access_report") as prepare_target, \
+                patch.object(forge_metadata, "_generate_dispatcher_dynamic_access_report") as generate_report, \
+                patch.object(forge_metadata, "_resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
+                patch.object(forge_metadata, "load_dynamic_access_coverage_report", return_value=_report(2)):
+            chunk_count = forge_metadata.prepare_dynamic_access_chunking(
+                _claimed_issue(forge_metadata.LABEL_LIBRARY_UPDATE),
+                "library_update_optimistic_pi_gpt-5.6-sol",
+            )
+        self.assertEqual(chunk_count, 15)
+        prepare_target.assert_called_once()
+        generate_report.assert_called_once()
 
     def test_optimistic_resume_uses_remaining_active_chunk_budget(self) -> None:
         marker = forge_metadata.ContinuationMarker.create(
@@ -76,6 +147,9 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         )
 
         with patch.object(forge_metadata, "_prepare_new_library_dynamic_access_report") as prepare_report, \
+                patch.object(forge_metadata, "_generate_dispatcher_dynamic_access_report") as generate_report, \
+                patch.object(forge_metadata, "_resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
+                patch.object(forge_metadata, "load_dynamic_access_coverage_report", return_value=_report(3)), \
                 patch.dict(
                     "os.environ",
                     {"FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD": "15"},
@@ -88,6 +162,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
 
         self.assertEqual(chunk_count, 3)
         prepare_report.assert_not_called()
+        generate_report.assert_called_once()
 
     def test_optimistic_resume_preserves_exhausted_active_chunk_budget(self) -> None:
         marker = forge_metadata.ContinuationMarker.create(
@@ -107,6 +182,9 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         )
 
         with patch.object(forge_metadata, "_prepare_new_library_dynamic_access_report") as prepare_report, \
+                patch.object(forge_metadata, "_generate_dispatcher_dynamic_access_report") as generate_report, \
+                patch.object(forge_metadata, "_resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
+                patch.object(forge_metadata, "load_dynamic_access_coverage_report", return_value=_report(3)), \
                 patch.dict(
                     "os.environ",
                     {"FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD": "15"},
@@ -119,6 +197,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
 
         self.assertEqual(chunk_count, 0)
         prepare_report.assert_not_called()
+        generate_report.assert_called_once()
 
     def test_coverage_composites_declare_the_reporter_metadata_prompt(self) -> None:
         # A library-update issue body may carry reporter-requested metadata, and

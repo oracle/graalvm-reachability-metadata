@@ -177,7 +177,8 @@ Tasks that create or update metadata, tests, and index entries.
 | `scaffold` | Create the test project and metadata skeleton for a new coordinate from the scaffold templates (§AR-build-infrastructure). |
 | `contribute` | Guided contribution flow for a new coordinate. |
 | `generateMetadata` | Generate metadata for a coordinate (optionally deriving `user-code-filter.json` from the resolved JAR). |
-| `splitTestOnlyMetadata` | Move test-only metadata into the test resources file (§FS-repository-functional-spec.5.1, §FS-metadata). |
+| `splitTestOnlyMetadata` | Move test-only metadata into test resources (§FS-repository-functional-spec.5.1, §FS-metadata). |
+| `routeForeignMetadata` | After metadata validation fails, relocate uniquely owned foreign-condition entries to supported artifact/version buckets, validate the affected owners, and regenerate their statistics (§FS-metadata). |
 | `fixTestNativeImageRun` | Regenerate metadata for a new version failing a native-image run. |
 | `addTestedVersion` | Record a newly passing version in the artifact's `index.json` and refresh the mirrored stats and shared test sources; used by the compatibility workflow (§FS-repository-functional-spec.9). |
 | `addLibraryMetadataIndexJson`, `addLibraryAsLatestMetadataIndexJson`, `extractLibraryTestParams` | Lower-level index and parameter helpers. |
@@ -214,6 +215,14 @@ These emit the GitHub Actions matrices the workflows consume, all driven by
 | `runNativeTestPGO` | Run the sampling image and write its sampled `.iprof` to the required absolute `pgoProfilePath`. |
 | `generateLibraryStats`, `listTopCoordinatesByMetric`, `generateTopCoordinatesByMetricMatrix`, `generateReadmeBadgeSummary`, `generateDependencyGraph` | Produce and query the stats mirror, README badge inputs, and dependency graphs that feed the coverage dashboard (§AR-publish-scheduled-coverage). Library coverage analyzes only the coordinate's unclassified main JAR and includes both the regular and tracked extension suites. |
 | `package` | Zip the `metadata/` directory into the release artifact consumed by native-build-tools (§FS-repository-functional-spec.4). |
+
+`generateDynamicAccessCoverageReport` derives its call sites from the native
+test build's `dynamic-access` output. When that input cannot be produced — the
+underlying `generateDynamicAccessReport` build fails, or its output directory is
+absent afterwards — the task fails instead of writing a report over the missing
+input. An empty report therefore always means the library reported no
+dynamic access, never that nothing was built, so a consumer may treat a zero-call
+report as a property of the library (§forge/AR-dynamic-access-fallback-and-failure).
 
 Dynamic-access coverage normally marks a call site covered when its stack frame
 carries a source line and JaCoCo covered that line. Some jars are compiled

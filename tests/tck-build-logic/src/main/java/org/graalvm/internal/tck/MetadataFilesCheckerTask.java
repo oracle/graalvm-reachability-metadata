@@ -15,6 +15,7 @@ import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
 import groovy.json.JsonSlurper;
 import org.graalvm.internal.tck.utils.CoordinateUtils;
+import org.graalvm.internal.tck.utils.MetadataEntryOwnership;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.RegularFileProperty;
 import org.gradle.api.tasks.InputFiles;
@@ -50,10 +51,6 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
 
     private final Set<String> EXPECTED_FILES = new HashSet<>(List.of(
             REACHABILITY_METADATA_FILE_NAME));
-
-    private final Set<String> ILLEGAL_TYPE_VALUES = new HashSet<>(List.of("java.lang"));
-
-    private final Set<String> PREDEFINED_ALLOWED_PACKAGES = new HashSet<>(List.of("java.lang", "java.util"));
 
     Coordinates coordinates;
     private List<String> allowedPackages;
@@ -287,19 +284,19 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
     }
 
     private boolean checkTypeReached(JsonNode entry, File file) {
-        String typeReached = getEntryTypeReached(entry);
+        String typeReached = MetadataEntryOwnership.typeReached(entry);
         if (typeReached == null) {
             return false;
         }
 
-        String entryDescription = describeEntry(entry);
-        if (isAllowedPredefinedEntry(typeReached, entry)) {
+        String entryDescription = MetadataEntryOwnership.describeEntry(entry);
+        if (MetadataEntryOwnership.isAllowedPredefinedEntry(typeReached, entry)) {
             return false;
         }
 
-        if (ILLEGAL_TYPE_VALUES.stream().anyMatch(typeReached::startsWith)) {
+        if (MetadataEntryOwnership.isIllegalTypeReached(typeReached)) {
             System.out.println("ERROR: In file " + file.toURI() + " entry: " + entryDescription + " contains illegal typeReached value. Field" +
-                    " typeReached cannot be any of the following values: " + ILLEGAL_TYPE_VALUES);
+                    " typeReached cannot be any of the following values: " + MetadataEntryOwnership.illegalTypeValues());
             return true;
         }
 
@@ -307,17 +304,13 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
     }
 
     private boolean containsEntriesNotFromLibrary(JsonNode entry, File file) {
-        String typeReached = getEntryTypeReached(entry);
+        String typeReached = MetadataEntryOwnership.typeReached(entry);
         if (typeReached == null) {
             return false;
         }
 
-        String entryDescription = describeEntry(entry);
-        if (isAllowedPredefinedEntry(typeReached, entry)) {
-            return false;
-        }
-
-        if (this.allowedPackages.stream().noneMatch(typeReached::contains)) {
+        String entryDescription = MetadataEntryOwnership.describeEntry(entry);
+        if (!MetadataEntryOwnership.isAllowed(entry, this.allowedPackages)) {
             System.out.println("ERROR: In file " + file.toURI() + "\n" +
                     "Entry: " + entryDescription + "\n" +
                     "TypeReached: " + typeReached + "\n" +
@@ -328,63 +321,8 @@ public abstract class MetadataFilesCheckerTask extends DefaultTask {
         return false;
     }
 
-    private boolean isAllowedPredefinedEntry(String typeReached, JsonNode entry) {
-        String entryName = getEntryName(entry);
-        return entryName != null
-                && PREDEFINED_ALLOWED_PACKAGES.stream().anyMatch(typeReached::contains)
-                && PREDEFINED_ALLOWED_PACKAGES.stream().anyMatch(entryName::contains);
-    }
-
-    private String getEntryTypeReached(JsonNode entry) {
-        JsonNode condition = entry.path("condition");
-        if (!condition.isObject() || !condition.hasNonNull("typeReached")) {
-            return null;
-        }
-        return condition.get("typeReached").asText();
-    }
-
-    private String getEntryName(JsonNode entry) {
-        if (entry.hasNonNull("name")) {
-            return entry.get("name").asText();
-        }
-        if (entry.has("type") && entry.get("type").isTextual()) {
-            return entry.get("type").asText();
-        }
-        return null;
-    }
-
     private String describeEntry(JsonNode entry) {
-        if (entry == null || entry.isMissingNode() || entry.isNull()) {
-            return "<missing>";
-        }
-        if (entry.hasNonNull("name")) {
-            return entry.get("name").asText();
-        }
-        if (entry.hasNonNull("glob")) {
-            return entry.get("glob").asText();
-        }
-        if (entry.hasNonNull("bundle")) {
-            return entry.get("bundle").asText();
-        }
-        if (entry.hasNonNull("class")) {
-            return entry.get("class").asText();
-        }
-        if (entry.hasNonNull("method")) {
-            return entry.get("method").asText();
-        }
-        if (entry.has("type")) {
-            JsonNode type = entry.get("type");
-            if (type.isTextual()) {
-                return type.asText();
-            }
-            if (type.has("proxy")) {
-                return type.get("proxy").toString();
-            }
-            if (type.has("lambda")) {
-                return type.get("lambda").toString();
-            }
-        }
-        return entry.toString();
+        return MetadataEntryOwnership.describeEntry(entry);
     }
 
     @SuppressWarnings("unchecked")

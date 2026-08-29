@@ -75,6 +75,7 @@ class WorkflowStrategyTests(unittest.TestCase):
                 ], index_file)
             os.makedirs(os.path.join(repo, "metadata", "org.example", "demo", "1.0.0"))
             os.makedirs(os.path.join(repo, "tests", "src", "org.example", "demo", "1.0.0"))
+            os.makedirs(os.path.join(repo, "stats", "org.example", "demo", "1.0.0"))
             strategy = _TestWorkflowStrategy(
                 {"model": "test-model"},
                 reachability_repo_path=repo,
@@ -99,6 +100,7 @@ class WorkflowStrategyTests(unittest.TestCase):
         self.assertEqual(git_add[:3], ["git", "add", "-A"])
         self.assertIn(os.path.join(repo, "tests", "src", "org.example", "demo", "1.0.0"), git_add)
         self.assertNotIn(os.path.join(repo, "tests", "src", "org.example", "demo", "1.0.1"), git_add)
+        self.assertIn(os.path.join(repo, "stats"), git_add)
 
     def test_finalization_libraries_include_resolved_metadata_coordinate(self) -> None:
         strategy = _TestWorkflowStrategy(
