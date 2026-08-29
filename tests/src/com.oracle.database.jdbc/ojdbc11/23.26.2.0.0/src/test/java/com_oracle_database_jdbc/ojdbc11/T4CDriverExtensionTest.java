@@ -16,7 +16,18 @@ import org.junit.jupiter.api.Test;
 public class T4CDriverExtensionTest {
     @Test
     void createsTheThinConnectionImplementation() {
+        assertConnectionAttemptFails(new Properties());
+    }
+
+    @Test
+    void createsTheConfiguredTrueCacheConnectionImplementation() {
         Properties properties = new Properties();
+        properties.setProperty("oracle.jdbc.useTrueCacheDriverConnection", "true");
+
+        assertConnectionAttemptFails(properties);
+    }
+
+    private static void assertConnectionAttemptFails(Properties properties) {
         properties.setProperty("oracle.net.CONNECT_TIMEOUT", "10000");
         properties.setProperty("oracle.jdbc.ReadTimeout", "10000");
 
