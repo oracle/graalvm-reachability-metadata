@@ -19,6 +19,7 @@ import org.springframework.lang.NonNullApi;
 /** Verifies typed annotation arrays read from library class bytecode. */
 public class MergedAnnotationReadingVisitorInnerArrayVisitorTest {
     @Test
+    @SuppressWarnings("annotationAccess")
     void readsEnumArrayFromClassMetadata() throws Exception {
         AnnotationMetadata metadata = new SimpleMetadataReaderFactory()
                 .getMetadataReader(NonNullApi.class.getName())

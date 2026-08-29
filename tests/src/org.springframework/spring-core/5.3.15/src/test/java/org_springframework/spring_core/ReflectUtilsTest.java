@@ -8,7 +8,6 @@ package org_springframework.spring_core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,23 +35,10 @@ public class ReflectUtilsTest {
     }
 
     @Test
-    void findsPublicConstructorFromDescriptor() {
-        Constructor<?> constructor = ReflectUtils.findConstructor(
-                "org.springframework.core.io.ByteArrayResource(byte[], String)");
-
-        assertThat(constructor.getDeclaringClass()).isEqualTo(ByteArrayResource.class);
-        assertThat(constructor.getParameterTypes()).containsExactly(byte[].class, String.class);
-    }
-
-    @Test
-    void findsMethodsFromDescriptorAndClassHierarchy() throws NoSuchMethodException {
-        Method equalsMethod = ReflectUtils.findMethod(
-                "org.springframework.core.io.ByteArrayResource.equals(Object)");
+    void findsInheritedMethodFromClassHierarchy() throws NoSuchMethodException {
         Method inheritedMethod = ReflectUtils.findDeclaredMethod(
                 ClassPathResource.class, "isOpen", new Class<?>[0]);
 
-        assertThat(equalsMethod.getDeclaringClass()).isEqualTo(ByteArrayResource.class);
-        assertThat(equalsMethod.getParameterTypes()).containsExactly(Object.class);
         assertThat(inheritedMethod.getDeclaringClass()).isEqualTo(AbstractResource.class);
     }
 

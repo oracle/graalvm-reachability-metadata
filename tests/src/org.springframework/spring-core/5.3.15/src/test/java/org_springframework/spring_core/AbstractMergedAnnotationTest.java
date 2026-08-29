@@ -17,6 +17,7 @@ import org.springframework.core.annotation.MergedAnnotation;
 /** Verifies typed enum-array access from merged annotations. */
 public class AbstractMergedAnnotationTest {
     @Test
+    @SuppressWarnings("annotationAccess")
     void returnsTypedEnumArray() {
         Modes annotation = Annotated.class.getAnnotation(Modes.class);
         MergedAnnotation<Modes> merged = MergedAnnotation.from(annotation);

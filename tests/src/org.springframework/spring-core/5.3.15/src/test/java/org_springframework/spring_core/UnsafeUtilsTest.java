@@ -22,6 +22,6 @@ public class UnsafeUtilsTest {
     }
 
     public static final class Fixture {
-        private Fixture(String ignored) {}
+        private Fixture(String ignored) { }
     }
 }

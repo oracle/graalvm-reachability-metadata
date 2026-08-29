@@ -26,6 +26,6 @@ public class ConstantsTest {
         public static final String MODE_FAST = "fast";
         public static final int RETRY_COUNT = 3;
 
-        private FixtureConstants() {}
+        private FixtureConstants() { }
     }
 }

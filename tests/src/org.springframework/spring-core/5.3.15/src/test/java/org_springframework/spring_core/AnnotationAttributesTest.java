@@ -17,6 +17,7 @@ import org.springframework.core.annotation.AnnotationAttributes;
 /** Verifies annotation type loading and scalar-to-array adaptation. */
 public class AnnotationAttributesTest {
     @Test
+    @SuppressWarnings("annotationAccess")
     void loadsAnnotationTypeAndAdaptsSingleAnnotationToArray() {
         AnnotationAttributes attributes = new AnnotationAttributes(
                 Marker.class.getName(), Marker.class.getClassLoader());

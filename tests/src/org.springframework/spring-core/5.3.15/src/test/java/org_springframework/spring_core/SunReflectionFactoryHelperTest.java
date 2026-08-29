@@ -8,6 +8,8 @@ package org_springframework.spring_core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.Serializable;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.objenesis.instantiator.sun.SunReflectionFactoryInstantiator;
 
@@ -21,7 +23,9 @@ public class SunReflectionFactoryHelperTest {
         assertThat(instantiator).isNotNull();
     }
 
-    public static final class ConstructorBypassedType {
+    public static final class ConstructorBypassedType implements Serializable {
+        private static final long serialVersionUID = 1L;
+
         public ConstructorBypassedType() { }
     }
 }

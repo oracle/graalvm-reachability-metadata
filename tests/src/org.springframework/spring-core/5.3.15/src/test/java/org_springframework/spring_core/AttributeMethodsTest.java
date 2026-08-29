@@ -17,6 +17,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 /** Verifies reflective validation of annotation attributes. */
 public class AttributeMethodsTest {
     @Test
+    @SuppressWarnings("annotationAccess")
     void validatesClassValuedAnnotationAttribute() {
         Component annotation = Annotated.class.getAnnotation(Component.class);
 
