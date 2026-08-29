@@ -10,11 +10,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.InputStream;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Target;
 
-import org.assertj.core.internal.bytebuddy.asm.Advice.AssignReturned.ToFields.ToField;
 import org.junit.jupiter.api.Test;
+import org.springframework.asm.AnnotationVisitor;
 import org.springframework.asm.ClassReader;
+import org.springframework.asm.Type;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.type.classreading.AnnotationMetadataReadingVisitor;
@@ -35,13 +35,20 @@ public class RecursiveAnnotationArrayVisitorTest {
     }
 
     @Test
-    void readsExplicitlyEmptyArrayUsingAnnotationReturnType() throws Exception {
-        AnnotationMetadataReadingVisitor visitor = readMetadata(ToField.class);
+    void visitsExplicitlyEmptyArrayUsingAnnotationReturnType() {
+        AnnotationMetadataReadingVisitor visitor =
+                new AnnotationMetadataReadingVisitor(getClass().getClassLoader());
+        AnnotationVisitor annotation =
+                visitor.visitAnnotation(Type.getDescriptor(EmptyArrayAnnotation.class), true);
+        AnnotationVisitor array = annotation.visitArray("value");
+
+        array.visitEnd();
+        annotation.visitEnd();
         AnnotationAttributes attributes =
-                visitor.getAnnotationAttributes(Target.class.getName(), false);
+                visitor.getAnnotationAttributes(EmptyArrayAnnotation.class.getName(), false);
 
         assertThat(attributes).isNotNull();
-        assertThat((ElementType[]) attributes.get("value")).isEmpty();
+        assertThat((String[]) attributes.get("value")).isEmpty();
     }
 
     private static AnnotationMetadataReadingVisitor readMetadata(Class<?> type) throws Exception {
@@ -52,5 +59,9 @@ public class RecursiveAnnotationArrayVisitorTest {
             new ClassReader(input).accept(visitor, ClassReader.SKIP_CODE);
         }
         return visitor;
+    }
+
+    public @interface EmptyArrayAnnotation {
+        String[] value();
     }
 }
