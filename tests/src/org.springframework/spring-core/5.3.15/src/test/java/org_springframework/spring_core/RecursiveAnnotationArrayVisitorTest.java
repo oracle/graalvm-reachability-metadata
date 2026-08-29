@@ -10,7 +10,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.InputStream;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
 
+import org.assertj.core.internal.bytebuddy.asm.Advice.AssignReturned.ToFields.ToField;
 import org.junit.jupiter.api.Test;
 import org.springframework.asm.ClassReader;
 import org.springframework.core.annotation.AnnotationAttributes;
@@ -34,12 +36,12 @@ public class RecursiveAnnotationArrayVisitorTest {
 
     @Test
     void readsExplicitlyEmptyArrayUsingAnnotationReturnType() throws Exception {
-        AnnotationMetadataReadingVisitor visitor = readMetadata(EmptyArrayAnnotatedType.class);
+        AnnotationMetadataReadingVisitor visitor = readMetadata(ToField.class);
         AnnotationAttributes attributes =
-                visitor.getAnnotationAttributes(EmptyArrayAnnotation.class.getName(), false);
+                visitor.getAnnotationAttributes(Target.class.getName(), false);
 
         assertThat(attributes).isNotNull();
-        assertThat((String[]) attributes.get("value")).isEmpty();
+        assertThat((ElementType[]) attributes.get("value")).isEmpty();
     }
 
     private static AnnotationMetadataReadingVisitor readMetadata(Class<?> type) throws Exception {
@@ -51,11 +53,4 @@ public class RecursiveAnnotationArrayVisitorTest {
         }
         return visitor;
     }
-
-    public @interface EmptyArrayAnnotation {
-        String[] value();
-    }
-
-    @EmptyArrayAnnotation({})
-    public static final class EmptyArrayAnnotatedType {}
 }
