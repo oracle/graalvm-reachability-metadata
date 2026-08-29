@@ -97,33 +97,34 @@ public class Micrometer_observationTest {
     }
 
     @Test
-    void manualScopesCanBeResetMadeCurrentAndNested() {
+    void manualScopesCanBeNestedAndRestorePreviousScope() {
         ObservationRegistry registry = ObservationRegistry.create();
         RecordingHandler handler = new RecordingHandler("manual", context -> true);
         registry.observationConfig().observationHandler(handler);
 
         Observation parent = Observation.start("manual.parent", registry);
-        Observation.Scope parentScope = parent.openScope();
-        Observation child = Observation.createNotStarted("manual.child", registry).start();
-        Observation.Scope childScope = child.openScope();
-
-        assertThat(child.getContext().getParentObservation()).isSameAs(parent);
-        assertThat(childScope.getPreviousObservationScope()).isSameAs(parentScope);
-        assertThat(child.getEnclosingScope()).isSameAs(childScope);
-        assertThat(registry.getCurrentObservation()).isSameAs(child);
-
-        childScope.reset();
+        try (Observation.Scope parentScope = parent.openScope()) {
+            Observation child = Observation.createNotStarted("manual.child", registry).start();
+            try (Observation.Scope childScope = child.openScope()) {
+                assertThat(child.getContext().getParentObservation()).isSameAs(parent);
+                assertThat(childScope.getPreviousObservationScope()).isSameAs(parentScope);
+                assertThat(childScope.getCurrentObservation()).isSameAs(child);
+                assertThat(registry.getCurrentObservation()).isSameAs(child);
+            }
+            assertThat(registry.getCurrentObservation()).isSameAs(parent);
+            child.stop();
+        }
         assertThat(registry.getCurrentObservation()).isNull();
-        assertThat(handler.events).contains("manual:scope-reset:manual.child");
-
-        childScope.makeCurrent();
-        assertThat(registry.getCurrentObservation()).isSameAs(child);
-        childScope.close();
-        assertThat(registry.getCurrentObservation()).isSameAs(parent);
-        parentScope.close();
-        assertThat(registry.getCurrentObservation()).isNull();
-        child.stop();
         parent.stop();
+        assertThat(handler.events).containsSubsequence(
+                "manual:start:manual.parent",
+                "manual:scope-opened:manual.parent",
+                "manual:start:manual.child",
+                "manual:scope-opened:manual.child",
+                "manual:scope-closed:manual.child",
+                "manual:stop:manual.child",
+                "manual:scope-closed:manual.parent",
+                "manual:stop:manual.parent");
     }
 
     @Test
