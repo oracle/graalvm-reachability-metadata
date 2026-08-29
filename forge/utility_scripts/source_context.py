@@ -29,6 +29,7 @@ from typing import Any
 
 from ai_workflows.agents.opencode_agent import opencode_config
 from ai_workflows.agents.agent_runtime import (
+    CODEX_BYPASS_APPROVALS_AND_SANDBOX_FLAG,
     DEFAULT_AGENT_PROVIDER,
     agent_process_environment,
     get_setup_agent,
@@ -213,8 +214,8 @@ def url_fetch_agent_command() -> str:
     if selection.backend == "codex":
         executable = selection.agent or "codex"
         return (
-            f"{shlex.quote(executable)} exec --ignore-user-config -s danger-full-access "
-            "-c approval_policy=\"never\" "
+            f"{shlex.quote(executable)} exec "
+            f"{CODEX_BYPASS_APPROVALS_AND_SANDBOX_FLAG} "
             + (f"-c reasoning.effort={thinking} " if thinking else "")
             + f"-m {model}"
         )

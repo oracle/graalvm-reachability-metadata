@@ -120,14 +120,22 @@ feature branch and must not create or modify GitHub resources. The title and
 body it publishes come from the shared non-mutating renderer
 (§AR-pr-preview-builders), never from a second rendering path.
 
-Its push trigger is scoped to the descriptor path, so it fires only on the push
-that carries a `forge-publication.json`. A publication is the only push it can
-act on: every validation reads the tip-committed descriptor, and a push without
-one fails the first check with nothing to publish. Because Actions reports a
-push-triggered job as a check run on the pushed commit, an unscoped trigger also
-made every later push to a published branch report a failing check on the open
-pull request. That check gates publication, not the pull request, so a
-maintainer repairing a published branch must not see it re-run and fail there.
+Its push trigger is scoped to the descriptor path, which excludes ordinary
+repair pushes. A force-pushed rebase can still match that path when GitHub's
+push comparison includes descriptors that arrived from the new base. Both
+workflows therefore query pull requests for the exact head branch before they
+validate: an open or merged Forge pull request whose publication-ID trailer
+matches the branch is a successful no-op, while a branch with no such pull
+request follows the strict validation path. A closed-unmerged or ambiguous
+matching pull request still fails for inspection. This keeps post-publication
+maintenance out of both descriptor validation and privileged publication even
+when the path filter starts a run (§FS-forge-publication-readiness).
+
+Because Actions reports a push-triggered job as a check run on the pushed
+commit, an unscoped trigger made every later push to a published branch report
+a failing check on the open pull request. That check gates publication, not the
+pull request, so a maintainer repairing a published branch must not see it
+re-run and fail there.
 
 A Branch Ready failure leaves the branch, issue assignment, labels, and project
 status unchanged. Its job summary and logs must identify the exact SHA and each

@@ -28,6 +28,8 @@ MAX_BODY_CHARS = 60_000
 MAX_TEST_DIFF_CHARS = 12_000
 SEVERE_METADATA_DROP_RATIO = 0.25
 DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_RATIO = 1.75
+PUBLISHER_LOGIN = "graalvmbot"
+PUBLICATION_ID_SUFFIX = re.compile(r"(forge-\d+-\d{14,20}-[0-9a-f]{12})$")
 ROUTE_LABELS = {
     "library-new-request": ["GenAI", "library-new-request"],
     "library-update-request": ["GenAI", "library-update-request"],
@@ -69,6 +71,54 @@ def git(*args: str) -> str:
 def gh_json(*args: str) -> Any:
     output = run(["gh", *args])
     return json.loads(output) if output.strip() else None
+
+
+def _pull_requests_for_branch(branch: str) -> list[dict[str, Any]]:
+    """Return pull requests whose head is the exact upstream branch."""
+    owner: str = REPOSITORY.split("/", 1)[0]
+    response: Any = gh_json(
+        "api", f"repos/{REPOSITORY}/pulls", "--method", "GET",
+        "-f", "state=all", "-f", f"head={owner}:{branch}", "-f", "per_page=100",
+    )
+    if not isinstance(response, list) or any(
+            not isinstance(pull_request, dict) for pull_request in response
+    ):
+        raise TypeError("Expected a list of pull requests for the publication branch")
+    return response
+
+
+def find_existing_publication(branch: str) -> dict[str, Any] | None:
+    """Resolve a Forge PR that already consumed this publication branch.
+
+    Post-publication pushes maintain the PR and must not re-enter descriptor
+    validation or privileged publication (§forge/FS-forge-publication-readiness).
+    """
+    publication_match: re.Match[str] | None = PUBLICATION_ID_SUFFIX.search(branch)
+    if publication_match is None:
+        return None
+
+    publication_id: str = publication_match.group(1)
+    trailer: str = f"Forge-Publication-ID: {publication_id}"
+    existing: list[dict[str, Any]] = _pull_requests_for_branch(branch)
+    matching: list[dict[str, Any]] = [
+        pull_request
+        for pull_request in existing
+        if str((pull_request.get("user") or {}).get("login")) == PUBLISHER_LOGIN
+        and trailer in str(pull_request.get("body") or "").splitlines()
+    ]
+    if len(matching) > 1:
+        raise RuntimeError("Ambiguous pull requests for publication identity")
+    if not matching:
+        if existing:
+            raise RuntimeError("Head branch already has a PR with a different publication identity")
+        return None
+
+    pull_request: dict[str, Any] = matching[0]
+    if pull_request.get("merged_at"):
+        return pull_request
+    if pull_request.get("state") != "open":
+        raise RuntimeError("Matching publication PR is closed without merge")
+    return pull_request
 
 
 def load_schema() -> dict[str, Any]:
@@ -1373,29 +1423,12 @@ def publish(
     if mode == "shadow":
         return title, body, None
 
-    head = f"{REPOSITORY.split('/', 1)[0]}:{descriptor['branch']}"
-    existing = gh_json(
-        "api", f"repos/{REPOSITORY}/pulls", "--method", "GET",
-        "-f", "state=all", "-f", f"head={head}", "-f", "per_page=100",
-    )
-    trailer = f"Forge-Publication-ID: {descriptor['publication_id']}"
-    matching = [
-        pull_request
-        for pull_request in existing
-        if trailer in str(pull_request.get("body") or "").splitlines()
-    ]
-    if len(matching) > 1:
-        raise RuntimeError("Ambiguous pull requests for publication identity")
-    if matching:
-        pull_request = matching[0]
-        if pull_request.get("merged_at"):
-            return title, body, str(pull_request["html_url"])
-        if pull_request.get("state") != "open":
-            raise RuntimeError("Matching publication PR is closed without merge")
-        _ensure_pull_request_metadata(pull_request, descriptor, reviewers)
-        return title, body, str(pull_request["html_url"])
-    if existing:
-        raise RuntimeError("Head branch already has a PR with a different publication identity")
+    existing: dict[str, Any] | None = find_existing_publication(descriptor["branch"])
+    if existing is not None:
+        if existing.get("merged_at"):
+            return title, body, str(existing["html_url"])
+        _ensure_pull_request_metadata(existing, descriptor, reviewers)
+        return title, body, str(existing["html_url"])
 
     pull_request = gh_json(
         "api", f"repos/{REPOSITORY}/pulls", "--method", "POST",
@@ -1449,6 +1482,32 @@ def _ensure_pull_request_metadata(
             input_text=json.dumps({"reviewers": reviewer_names}),
         )
 
+
+def write_existing_publication_evidence(
+        branch: str,
+        head_sha: str,
+        pull_request: dict[str, Any],
+) -> None:
+    """Record that this publication branch already has its Forge PR."""
+    number: int = int(pull_request["number"])
+    url: str = str(pull_request["html_url"])
+    evidence: str = textwrap.dedent(f"""\
+        # Forge publication already exists
+
+        Branch `{branch}` already has [pull request #{number}]({url}).
+        Descriptor validation and privileged publication were skipped.
+        """)
+    Path("publication.md").write_text(evidence, encoding="utf-8")
+    summary_path: str | None = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary_path:
+        with open(summary_path, "a", encoding="utf-8") as summary:
+            summary.write("## Forge publication already exists\n\n")
+            summary.write(f"- SHA: `{head_sha}`\n")
+            summary.write(f"- Branch: `{branch}`\n")
+            summary.write(f"- Pull request: {url}\n")
+            summary.write("- Result: skipped descriptor validation and publication\n")
+
+
 def write_evidence(title: str, body: str, validated: ValidatedPublication, pr_url: str | None) -> None:
     evidence = f"# {title}\n\n{body}\n"
     Path("publication.md").write_text(evidence, encoding="utf-8")
@@ -1477,6 +1536,13 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> int:
     args = build_parser().parse_args()
     try:
+        if args.repository != REPOSITORY:
+            raise ValueError(f"Unexpected head repository: {args.repository}")
+        existing: dict[str, Any] | None = find_existing_publication(args.branch)
+        if existing is not None:
+            write_existing_publication_evidence(args.branch, args.sha, existing)
+            return 0
+
         validated = validate_publication(
             head_sha=args.sha,
             branch=args.branch,

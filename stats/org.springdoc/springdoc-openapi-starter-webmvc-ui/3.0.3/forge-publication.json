@@ -1,0 +1,147 @@
+{
+  "base_commit": "1a6fe22f12a6b3467f0bdfbf065a25189604a34e",
+  "branch": "ai/kimeta/add-lib-support-org.springdoc-springdoc-openapi-starter-webmvc-ui-3.0.3-forge-7020-20260828081330645015-8bd0aca713e4",
+  "follow_ups": [],
+  "forge": {
+    "branch": "mm/fuse-forge-9562-9566-9568-9570",
+    "commit": "43b4c44bc552a8112ea0529b6f56f95e21ac04bb",
+    "monitored_branch": "origin/mm/fuse-forge-9562-9566-9568-9570"
+  },
+  "issue_number": 7020,
+  "library": {
+    "artifact": "springdoc-openapi-starter-webmvc-ui",
+    "coordinates": "org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3",
+    "group": "org.springdoc",
+    "version": "3.0.3"
+  },
+  "local_ci_verification": {
+    "base_commit": "1a6fe22f12a6b3467f0bdfbf065a25189604a34e",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpw4oahktu"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-08-28T08-39-05-979650Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7020-f9bac35a/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.springdoc:springdoc-openapi-starter-webmvc-ui"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-08-28T08-39-08-309444Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.springdoc/springdoc-openapi-starter-webmvc-ui/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/7020-f9bac35a/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "ccc20d7de9d7a8b26afa7f0d368b4118a5fabd96",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json"
+    ],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "Review Signal #1 requires a new-library change to contain only one target library and its supporting test files, but metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json was also modified alongside the org.springdoc addition.",
+    "finding_title": "New-library change included unrelated library metadata",
+    "fix_note": "Restored metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json to the base revision, leaving the resulting change scoped to org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3.",
+    "model": "gpt-5.6-sol",
+    "published_tree": "repaired",
+    "repair_reverted": false,
+    "review_comment": "Approved after repair. I checked the eventual PR diff for single-library scope, test scaffold/native-execution/version/package/JVM-override rules, metadata file shape, and the recorded coverage evidence. The test exercises the target library through a separate public test package and passes on both JVM and Native Image. The reported dynamic-access result is the valid 0/0 no-calls case, so no percentage or metadata-count mismatch gate applies. Targeted validateIndexFiles, checkMetadataFiles, and test verification passed on the repaired tree.",
+    "session_log_path": "logs/org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.springdoc/springdoc-openapi-starter-webmvc-ui/3.0.3/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 2128896,
+      "code_coverage_percent": 4.23,
+      "cost_usd": 3.2198,
+      "generated_loc": 38,
+      "input_tokens_used": 278550,
+      "iterations": 3,
+      "metadata_entries": 34,
+      "output_tokens_used": 25421,
+      "tested_library_loc": 6
+    },
+    "timestamp": "2026-08-28T08:13:30.645015Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-7020-20260828081330645015-8bd0aca713e4",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `org.springdoc.webmvc.ui.SwaggerResourceResolver` is reached, make `ch.qos.logback.classic.BasicConfigurator.<init>()` available for reflection",
+        "when `org.springdoc.webmvc.ui.SwaggerResourceResolver` is reached, make `ch.qos.logback.classic.spi.LogbackServiceProvider` available for reflection",
+        "when `org.springdoc.webmvc.ui.SwaggerResourceResolver` is reached, make `ch.qos.logback.classic.util.DefaultJoranConfigurator.<init>()` available for reflection",
+        "when `org.springdoc.webmvc.ui.SwaggerResourceResolver` is reached, make `org.apache.commons.logging.LogFactory` available for reflection",
+        "when `org.springdoc.webmvc.ui.SwaggerResourceResolver` is reached, make `org.apache.commons.logging.impl.Slf4jLogFactory.<init>()` available for reflection",
+        "when `org.springdoc.webmvc.ui.SwaggerResourceResolver` is reached, make `org.apache.commons.logging.impl.WeakHashtable.<init>()` available for reflection",
+        "when `org.springdoc.webmvc.ui.SwaggerResourceResolver` is reached, make `org.apache.logging.log4j.util.EnvironmentPropertySource` available for reflection",
+        "when `org.springdoc.webmvc.ui.SwaggerResourceResolver` is reached, make `org.apache.logging.log4j.util.SystemPropertiesPropertySource` available for reflection",
+        "... and 5 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 14,
+          "missed": 571,
+          "ratio": 0.023932,
+          "total": 585
+        },
+        "line": {
+          "covered": 6,
+          "missed": 136,
+          "ratio": 0.042254,
+          "total": 142
+        },
+        "method": {
+          "covered": 2,
+          "missed": 58,
+          "ratio": 0.033333,
+          "total": 60
+        }
+      },
+      "version": "3.0.3"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "dynamic_access_bulk_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-08-28T08:13:30.645015Z"
+}

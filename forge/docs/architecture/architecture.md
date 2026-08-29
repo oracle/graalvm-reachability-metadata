@@ -109,7 +109,14 @@ sequenceDiagram
 
     rect rgba(148, 163, 184, 0.12)
     Note over D,GH: explore
-    alt report lists classes with uncovered dynamic access
+    alt initial report is unavailable or has no dynamic-access calls
+        WC->>AG: run_basic_iterative_fallback()
+        AG-->>WC: failed, or generated tests pass the native trace gate
+        opt fallback succeeded
+            WC->>WC: refresh_dynamic_access_report()
+        end
+    end
+    opt report lists classes with uncovered dynamic access
         loop bulk pass, up to max-optimistic-iterations
             WC->>AG: generate_tests(report_with_every_class)
             AG-->>WC: failed task or pass
@@ -155,8 +162,6 @@ sequenceDiagram
                 end
             end
         end
-    else library produces no dynamic-access report
-        WC->>AG: run_basic_iterative_fallback()
     end
     end
 

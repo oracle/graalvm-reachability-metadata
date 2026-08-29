@@ -4,14 +4,15 @@ on:
   push:
     branches:
       - "ai/**"
-    # Only a descriptor push can publish. An unscoped push-triggered check failed
-    # on the open PR whenever a maintainer repaired the published branch
+    # The path filter excludes ordinary repairs; a force-pushed rebase can still
+    # match upstream descriptors, so the trusted publisher no-ops existing PRs
     # (§forge/AR-actions-publication).
     paths:
       - "stats/*/*/*/forge-publication.json"
 
 permissions:
   contents: read
+  pull-requests: read
 
 jobs:
   validate:
@@ -38,6 +39,7 @@ jobs:
 
       - name: Validate publication descriptor and diff
         env:
+          GH_TOKEN: ${{ github.token }}
           HEAD_SHA: ${{ github.sha }}
           HEAD_BRANCH: ${{ github.ref_name }}
           HEAD_ACTOR: ${{ github.actor }}
