@@ -20,7 +20,8 @@ public class DMSFactoryTest {
             DMSFactory factory = DMSFactory.getInstance();
 
             assertThat(factory).isNotNull();
-            assertThat(DMSFactory.getDMSVersion()).isNotNull();
+            assertThat(DMSFactory.isDMSEnabled()).isTrue();
+            assertThat(DMSFactory.getDMSVersion()).isNotEqualTo(DMSFactory.DMSVersion.NONE);
             assertThat(factory.createNoun("database", "test")).isNotNull();
         } finally {
             if (previousValue == null) {
