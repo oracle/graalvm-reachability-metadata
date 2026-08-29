@@ -69,6 +69,13 @@ When invoked with `--user-requested-only`, or with
 only user-requested issue queue items. The filter is applied by the dispatcher,
 not by individual workflow drivers (§AR-forge-orchestration).
 
+When invoked with `--take-blocked-issues`, or with
+`FORGE_TAKE_BLOCKED_ISSUES=1`, the worker forwards the explicit operator
+override through every cycle and re-execution to `forge_metadata.py`. The
+dispatcher then bypasses only the open-blocker claim predicate; the override is
+disabled by default and every other claimability condition remains mandatory
+(§FS-forge-run-requirements.2).
+
 The do-work loop is architectural rather than behavioral: it does not need a
 separate component functional spec unless worker semantics grow beyond
 bootstrap, self-update, and cycle scheduling.

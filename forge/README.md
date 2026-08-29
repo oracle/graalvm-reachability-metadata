@@ -51,6 +51,7 @@ Common options:
 - `--random-offset`: start new-library issue scans at a random offset instead of the newest issues first.
 - `--priority {high,priority,normal}`: process only the selected issue priority tier.
 - `--user-requested-only`: fetch only user-requested issue queue items, excluding configured automation and maintainer authors.
+- `--take-blocked-issues`: claim issues with open blockers; disabled by default.
 - `--graalvm-version-check {strict,warn,off}`: how a GraalVM version mismatch is treated. Default: `strict`.
 - `--once`: run a single update/work cycle through `do_up_to_date_work.sh` and exit.
 - `--fail-fast`: return nonzero on the first unsuccessful work cycle.
@@ -83,9 +84,9 @@ FORGE_REVIEW_LABEL=library-new-request ./do-work.sh --review-limit 2
 The same limits can be controlled with environment variables such as
 `FORGE_WORK_LIMIT`, `FORGE_JAVAC_WORK_LIMIT`, `FORGE_JAVA_RUN_WORK_LIMIT`,
 `FORGE_NI_RUN_WORK_LIMIT`, `FORGE_PARALLELISM`, `FORGE_REVIEW_LIMIT`,
-`FORGE_BULK_UPDATE_REVIEW_LIMIT`, `FORGE_USER_REQUESTED_ISSUES_ONLY`, and
-`DO_WORK_SLEEP_SECONDS`. Set `FORGE_DO_WORK_STOP_FILE` to override the shared
-stop marker path.
+`FORGE_BULK_UPDATE_REVIEW_LIMIT`, `FORGE_USER_REQUESTED_ISSUES_ONLY`,
+`FORGE_TAKE_BLOCKED_ISSUES`, and `DO_WORK_SLEEP_SECONDS`. Set
+`FORGE_DO_WORK_STOP_FILE` to override the shared stop marker path.
 §AR-do-work-loop
 
 ## Setup
