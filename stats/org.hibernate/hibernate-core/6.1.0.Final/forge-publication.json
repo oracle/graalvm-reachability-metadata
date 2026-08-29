@@ -1,0 +1,170 @@
+{
+  "base_commit": "17e4d6284e97d871763e3989e20a2576acbd7078",
+  "branch": "ai/kimeta/improve-coverage-org.hibernate-hibernate-core-6.1.0.Final-chunked-forge-9324-20260829042129313756-1fb6e7b94105",
+  "follow_ups": [],
+  "forge": {
+    "branch": "restore-codex-bypass-invocation",
+    "commit": "695f13b0339446cfa966f9ffbf3de90d2a20b6cb",
+    "monitored_branch": "origin/restore-codex-bypass-invocation"
+  },
+  "issue_number": 9324,
+  "library": {
+    "artifact": "hibernate-core",
+    "coordinates": "org.hibernate:hibernate-core:6.1.0.Final",
+    "group": "org.hibernate",
+    "version": "6.1.0.Final"
+  },
+  "local_ci_verification": {
+    "base_commit": "17e4d6284e97d871763e3989e20a2576acbd7078",
+    "commands": [],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "f478d18a81d76de14a67594da4e4b4f666fe5662",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "metadata/org.hibernate/hibernate-core/6.1.0.Final/reachability-metadata.json"
+    ],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "`metadata/org.hibernate/hibernate-core/6.1.0.Final/reachability-metadata.json` registered `java.lang.Object` when `SerializationHelper` is reached but omitted its no-argument constructor. The local intervention record documented resulting `MissingReflectionRegistrationError` failures in three normal Hibernate serialization tests, violating the required native-execution gate.",
+    "finding_title": "Serialization metadata omits Object constructor registration",
+    "fix_note": "Approved after adding the conditional `java.lang.Object.<init>()` registration for `org.hibernate.internal.util.SerializationHelper`; the coordinate's metadata validation and complete test lane now pass.",
+    "model": "gpt-5.6-terra",
+    "published_tree": "repaired",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the target-only diff, metadata formats and conditions, generated test quality/native behavior, and local gate evidence. Dynamic-access coverage increased from 11.4486% to 50.9346%; no legacy metadata files, native skips, version-pinned assertions, or package-boundary violations were found. The repaired tree passes `./gradlew checkMetadataFiles test -Pcoordinates=org.hibernate:hibernate-core:6.1.0.Final` (130 native/JVM tests).",
+    "session_log_path": "logs/org.hibernate:hibernate-core:6.1.0.Final/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.hibernate/hibernate-core/6.1.0.Final/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 30880256,
+      "code_coverage_percent": 20.93,
+      "cost_usd": 23.3965,
+      "generated_loc": 4381,
+      "input_tokens_used": 849074,
+      "iterations": 9,
+      "metadata_entries": 841,
+      "output_tokens_used": 123700,
+      "test_only_metadata_entries": 498,
+      "tested_library_loc": 33845
+    },
+    "timestamp": "2026-08-29T04:21:29.313756Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9324-20260829042129313756-1fb6e7b94105",
+  "render": {
+    "alias_split": null,
+    "baseline_metadata_entries": 9,
+    "baseline_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.103448,
+            "coveredCalls": 42,
+            "totalCalls": 406
+          },
+          "resources": {
+            "coverageRatio": 0.318182,
+            "coveredCalls": 7,
+            "totalCalls": 22
+          }
+        },
+        "coverageRatio": 0.114486,
+        "coveredCalls": 49,
+        "totalCalls": 428
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 116992,
+          "missed": 533619,
+          "ratio": 0.179819,
+          "total": 650611
+        },
+        "line": {
+          "covered": 29136,
+          "missed": 132591,
+          "ratio": 0.180155,
+          "total": 161727
+        },
+        "method": {
+          "covered": 7862,
+          "missed": 36073,
+          "ratio": 0.178946,
+          "total": 43935
+        }
+      },
+      "version": "6.1.0.Final"
+    },
+    "baseline_test_only_entries": 34,
+    "current_metadata_entries": 842,
+    "current_test_only_entries": 498,
+    "dynamic_access": null,
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.487685,
+            "coveredCalls": 198,
+            "totalCalls": 406
+          },
+          "resources": {
+            "coverageRatio": 0.909091,
+            "coveredCalls": 20,
+            "totalCalls": 22
+          }
+        },
+        "coverageRatio": 0.509346,
+        "coveredCalls": 218,
+        "totalCalls": 428
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 135536,
+          "missed": 515075,
+          "ratio": 0.208321,
+          "total": 650611
+        },
+        "line": {
+          "covered": 33845,
+          "missed": 127882,
+          "ratio": 0.209272,
+          "total": 161727
+        },
+        "method": {
+          "covered": 8946,
+          "missed": 34989,
+          "ratio": 0.203619,
+          "total": 43935
+        }
+      },
+      "version": "6.1.0.Final"
+    },
+    "library_update_target": {
+      "match_type": "tested-version",
+      "matched_metadata_version": "6.1.0.Final",
+      "matched_test_version": "6.1.0.Final",
+      "requested_coordinate": "org.hibernate:hibernate-core:6.1.0.Final",
+      "resolved_metadata_version": "6.1.0.Final",
+      "resolved_test_version": "6.1.0.Final"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+  "task_type": "library-update-request",
+  "template_type": "library-update-request",
+  "timestamp": "2026-08-29T04:21:29.313756Z"
+}
