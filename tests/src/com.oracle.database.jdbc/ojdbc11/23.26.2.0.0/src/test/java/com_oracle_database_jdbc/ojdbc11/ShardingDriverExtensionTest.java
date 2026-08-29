@@ -15,9 +15,10 @@ import org.junit.jupiter.api.Test;
 
 public class ShardingDriverExtensionTest {
     @Test
-    void createsTheConfiguredShardingConnectionImplementation() {
+    void fallsBackToThinConnectionForAnExplicitTargetShardingKey() {
         Properties properties = new Properties();
         properties.setProperty("oracle.jdbc.useShardingDriverConnection", "true");
+        properties.setProperty("oracle.jdbc.targetShardingKey", "region=west");
         properties.setProperty("oracle.net.CONNECT_TIMEOUT", "10000");
         properties.setProperty("oracle.jdbc.ReadTimeout", "10000");
 

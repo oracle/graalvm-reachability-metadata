@@ -12,7 +12,9 @@ import java.nio.file.Path;
 import java.security.Provider;
 import java.security.Security;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.Properties;
+import java.util.Set;
 import javax.net.ssl.SSLSocketFactory;
 import oracle.jdbc.OracleConnection;
 import oracle.jdbc.diagnostics.CommonDiagnosable;
@@ -45,8 +47,11 @@ public class CustomSSLSocketFactoryTest {
                     "SSO");
 
             String oraclePkiProviderName = new OraclePKIProvider().getName();
-            ProviderRegistration[] registrations = removeProvidersFor("KeyStore.SSO");
+            ProviderRegistration[] registrations =
+                    removeProvidersFor("KeyStore.SSO", oraclePkiProviderName);
             try {
+                assertThat(Security.getProviders("KeyStore.SSO")).isNull();
+
                 SSLSocketFactory socketFactory = CustomSSLSocketFactory.getSSLSocketFactory(
                         properties, null, CommonDiagnosable.getInstance());
 
@@ -60,16 +65,22 @@ public class CustomSSLSocketFactoryTest {
         }
     }
 
-    private static ProviderRegistration[] removeProvidersFor(String filter) {
-        Provider[] providers = Security.getProviders(filter);
-        if (providers == null) {
-            return new ProviderRegistration[0];
+    private static ProviderRegistration[] removeProvidersFor(
+            String filter, String knownProviderName) {
+        Set<Provider> providers = new LinkedHashSet<>();
+        Provider[] providersForFilter = Security.getProviders(filter);
+        if (providersForFilter != null) {
+            providers.addAll(Arrays.asList(providersForFilter));
+        }
+        Provider knownProvider = Security.getProvider(knownProviderName);
+        if (knownProvider != null) {
+            providers.add(knownProvider);
         }
 
-        ProviderRegistration[] registrations = new ProviderRegistration[providers.length];
-        for (int index = 0; index < providers.length; index++) {
-            Provider provider = providers[index];
-            registrations[index] =
+        ProviderRegistration[] registrations = new ProviderRegistration[providers.size()];
+        int index = 0;
+        for (Provider provider : providers) {
+            registrations[index++] =
                     new ProviderRegistration(provider, providerPosition(provider.getName()));
         }
         for (Provider provider : providers) {
