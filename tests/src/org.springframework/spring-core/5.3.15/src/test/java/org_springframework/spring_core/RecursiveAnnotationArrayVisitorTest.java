@@ -32,6 +32,16 @@ public class RecursiveAnnotationArrayVisitorTest {
                 .containsExactly(ElementType.METHOD, ElementType.PARAMETER);
     }
 
+    @Test
+    void readsExplicitlyEmptyArrayUsingAnnotationReturnType() throws Exception {
+        AnnotationMetadataReadingVisitor visitor = readMetadata(EmptyArrayAnnotatedType.class);
+        AnnotationAttributes attributes =
+                visitor.getAnnotationAttributes(EmptyArrayAnnotation.class.getName(), false);
+
+        assertThat(attributes).isNotNull();
+        assertThat((String[]) attributes.get("value")).isEmpty();
+    }
+
     private static AnnotationMetadataReadingVisitor readMetadata(Class<?> type) throws Exception {
         String path = type.getName().replace('.', '/') + ".class";
         AnnotationMetadataReadingVisitor visitor =
@@ -41,4 +51,11 @@ public class RecursiveAnnotationArrayVisitorTest {
         }
         return visitor;
     }
+
+    public @interface EmptyArrayAnnotation {
+        String[] value();
+    }
+
+    @EmptyArrayAnnotation({})
+    public static final class EmptyArrayAnnotatedType {}
 }

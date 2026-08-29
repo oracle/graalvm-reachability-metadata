@@ -38,5 +38,9 @@ public class CoreBridgeMethodResolverTest {
         public String handle(String value) {
             return value.toUpperCase();
         }
+
+        public String handle(Integer value) {
+            return value.toString();
+        }
     }
 }
