@@ -94,5 +94,115 @@
     "artifacts": {
       "metadata_file": "metadata/org.springframework/spring-core/5.3.15/reachability-metadata.json"
     }
+  },
+  "add_new_library_support:2026-08-29": {
+    "timestamp": "2026-08-29T07:59:33.507970Z",
+    "library": "org.springframework:spring-core:5.3.15",
+    "starting_commit": "a2101a3a293a8e6b62caf52a666112857d9fb619",
+    "ending_commit": "5a723441a30b85f527a181516b1a82a4093cb6ee",
+    "strategy_name": "dynamic_access_bulk_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "5.3.15",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.717949,
+            "coveredCalls": 140,
+            "totalCalls": 195
+          },
+          "resources": {
+            "coverageRatio": 0.909091,
+            "coveredCalls": 20,
+            "totalCalls": 22
+          }
+        },
+        "coverageRatio": 0.737327,
+        "coveredCalls": 160,
+        "totalCalls": 217
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 19160,
+          "missed": 102831,
+          "ratio": 0.157061,
+          "total": 121991
+        },
+        "line": {
+          "covered": 4481,
+          "missed": 23147,
+          "ratio": 0.162191,
+          "total": 27628
+        },
+        "method": {
+          "covered": 1005,
+          "missed": 5091,
+          "ratio": 0.164862,
+          "total": 6096
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 2183,
+      "issue_label": "library-new-request",
+      "library": "org.springframework:spring-core:5.3.15",
+      "summary": "JBoss VFS is required to exercise spring-core's VfsResource and VfsUtils integration.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.jboss:jboss-vfs:3.2.6.Final",
+          "scope": "testImplementation",
+          "reason": "Spring's VFS resource APIs detect and reflectively invoke org.jboss.vfs classes; the published spring-core artifact does not provide them."
+        }
+      ],
+      "agent_guidance": "",
+      "risks": [
+        "VFS support is optional in normal Spring applications, so coverage should keep the dependency scoped to tests.",
+        "VfsUtils initialization depends on the JBoss VFS API being present at runtime."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.jboss:jboss-vfs:3.2.6.Final",
+          "result": "already_present",
+          "target": "tests/src/org.springframework/spring-core/5.3.15/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#2183 Support for org.springframework:spring-core:5.3.15; label=library-new-request; body_chars=183"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "18 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 590781,
+      "output_tokens_used": 5084,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.springframework:spring-core:5.3.15/library-preparation-preflight/codex-session-7pwqbsxb.log"
+    },
+    "metrics": {
+      "input_tokens_used": 499377,
+      "cached_input_tokens_used": 14094848,
+      "output_tokens_used": 77105,
+      "iterations": 8,
+      "cost_usd": 11.8575,
+      "generated_loc": 1966,
+      "tested_library_loc": 4481,
+      "metadata_entries": 156,
+      "test_only_metadata_entries": 159,
+      "code_coverage_percent": 16.22
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework/spring-core/5.3.15/reachability-metadata.json"
+    }
   }
 }
