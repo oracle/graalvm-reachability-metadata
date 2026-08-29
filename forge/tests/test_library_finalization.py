@@ -137,8 +137,9 @@ class LibraryFinalizationTests(unittest.TestCase):
                 file.write("[]\n")
             base = _commit_all(repo_path, "existing legacy config")
 
-            with patch("utility_scripts.library_finalization._run_gradle_command", return_value=True), \
-                    patch("utility_scripts.library_finalization._run_check_metadata_files_with_allowed_packages_fix", return_value=(True, "")) as check_metadata, \
+            with patch("utility_scripts.library_finalization._run_gradle_command", return_value=True) as gradle_command, \
+                    patch("utility_scripts.library_finalization._run_check_metadata_files", return_value=(True, "")) as check_metadata, \
+                    patch("utility_scripts.library_finalization._run_check_metadata_files_with_allowed_packages_fix") as metadata_fix, \
                     patch("utility_scripts.library_finalization.run_style_fix_and_checks", return_value=True) as style_checks:
                 result = run_library_finalization(
                     repo_path=repo_path,
@@ -151,7 +152,90 @@ class LibraryFinalizationTests(unittest.TestCase):
 
         self.assertTrue(result)
         check_metadata.assert_called_once()
+        metadata_fix.assert_not_called()
+        self.assertNotIn(
+            ["./gradlew", "routeForeignMetadata", "-Pcoordinates=org.example:demo:1.0.0"],
+            [call.args[1] for call in gradle_command.call_args_list],
+        )
         style_checks.assert_called_once()
+
+    def test_routes_foreign_metadata_only_after_initial_check_fails(self) -> None:
+        events: list[str] = []
+
+        def run_gradle(_repo_path: str, command: list[str]) -> bool:
+            events.append(command[1])
+            return True
+
+        with tempfile.TemporaryDirectory() as repo_path, patch(
+                "utility_scripts.library_finalization._run_gradle_command",
+                side_effect=run_gradle,
+        ), patch(
+                "utility_scripts.library_finalization.find_uncommitted_legacy_test_native_image_config_files_for_coordinate",
+                return_value=[],
+        ), patch(
+                "utility_scripts.library_finalization._run_check_metadata_files",
+                side_effect=lambda *_args: events.append("checkMetadataFiles") or (False, "foreign package"),
+        ), patch(
+                "utility_scripts.library_finalization._run_check_metadata_files_with_allowed_packages_fix",
+                side_effect=lambda **_kwargs: events.append("recheckMetadataFiles") or (True, "BUILD SUCCESSFUL"),
+        ), patch(
+                "utility_scripts.library_finalization.run_style_fix_and_checks",
+                return_value=True,
+        ), patch(
+                "utility_scripts.library_finalization.collect_generated_test_validity_issues",
+                return_value=[],
+        ):
+            result = run_library_finalization(
+                repo_path=repo_path,
+                library="org.example:demo:1.0.0",
+                group="org.example",
+                artifact="demo",
+                library_version="1.0.0",
+            )
+
+        self.assertTrue(result)
+        self.assertEqual(
+            events[:4],
+            ["splitTestOnlyMetadata", "checkMetadataFiles", "routeForeignMetadata", "recheckMetadataFiles"],
+        )
+
+    def test_route_failure_falls_through_to_analysis_repair(self) -> None:
+        def run_gradle(_repo_path: str, command: list[str]) -> bool:
+            return command[1] != "routeForeignMetadata"
+
+        with tempfile.TemporaryDirectory() as repo_path, patch(
+                "utility_scripts.library_finalization._run_gradle_command",
+                side_effect=run_gradle,
+        ), patch(
+                "utility_scripts.library_finalization.find_uncommitted_legacy_test_native_image_config_files_for_coordinate",
+                return_value=[],
+        ), patch(
+                "utility_scripts.library_finalization._run_check_metadata_files",
+                return_value=(False, "malformed metadata"),
+        ), patch(
+                "utility_scripts.library_finalization._run_check_metadata_files_with_allowed_packages_fix",
+                return_value=(True, "BUILD SUCCESSFUL"),
+        ) as check_metadata, patch(
+                "utility_scripts.library_finalization._run_check_metadata_fix",
+                return_value=True,
+        ) as analysis_fix, patch(
+                "utility_scripts.library_finalization.run_style_fix_and_checks",
+                return_value=True,
+        ), patch(
+                "utility_scripts.library_finalization.collect_generated_test_validity_issues",
+                return_value=[],
+        ):
+            result = run_library_finalization(
+                repo_path=repo_path,
+                library="org.example:demo:1.0.0",
+                group="org.example",
+                artifact="demo",
+                library_version="1.0.0",
+            )
+
+        self.assertTrue(result)
+        analysis_fix.assert_called_once_with(repo_path, "org.example:demo:1.0.0", "malformed metadata")
+        check_metadata.assert_called_once()
 
     def test_metadata_validation_passes_after_first_analysis_repair(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path, patch(
@@ -160,6 +244,9 @@ class LibraryFinalizationTests(unittest.TestCase):
         ), patch(
                 "utility_scripts.library_finalization.find_uncommitted_legacy_test_native_image_config_files_for_coordinate",
                 return_value=[],
+        ), patch(
+                "utility_scripts.library_finalization._run_check_metadata_files",
+                return_value=(False, "foreign package"),
         ), patch(
                 "utility_scripts.library_finalization._run_check_metadata_files_with_allowed_packages_fix",
                 side_effect=[(False, "schema failure"), (True, "BUILD SUCCESSFUL")],
@@ -198,6 +285,9 @@ class LibraryFinalizationTests(unittest.TestCase):
         ), patch(
                 "utility_scripts.library_finalization.find_uncommitted_legacy_test_native_image_config_files_for_coordinate",
                 return_value=[],
+        ), patch(
+                "utility_scripts.library_finalization._run_check_metadata_files",
+                return_value=(False, "foreign package"),
         ), patch(
                 "utility_scripts.library_finalization._run_check_metadata_files_with_allowed_packages_fix",
                 side_effect=failures,

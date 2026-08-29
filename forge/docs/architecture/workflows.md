@@ -111,7 +111,9 @@ It is not the workflow for any issue queue. It exists as the fallback the
 dynamic-access workflows delegate to when no usable report exists at the start
 of a run (§AR-dynamic-access-fallback-and-failure). Because its loop accepts a
 failing native test as progress, the terminal gate is doing all the real
-validation for this workflow.
+validation for this workflow. The fallback is exploration, not repair: it skips
+`fix`, reports its steps under `explore`, and leaves `explore` running when its
+caller has more exploration work to perform.
 
 Parameters: generation and test-iteration budgets
 (§FS-predefined-strategy-parameter-families). Families: `basic_iterative_*`.
@@ -218,6 +220,15 @@ native test task resets to the checkpoint and the next iteration may try again.
 An iteration that does reach it regenerates the report, commits the attempt, and
 runs the terminal gate.
 
+When the initial report cannot steer generation, optimistic exploration first
+runs the gated basic-iterative fallback to create a real test surface, then
+refreshes the report. A usable refreshed report enters the normal bulk iteration
+budget; the composite subsequently hands the final gated report to iterative
+class-by-class exploration. If the fallback succeeds but the refreshed report
+still has no dynamic-access calls, its gated result is terminal because neither
+bulk nor class-scoped exploration has a target
+(§AR-dynamic-access-fallback-and-failure).
+
 Unlike iterative exploration, this workflow does not commit per class and does
 not record exhausted classes — a bulk attempt is accepted or reset whole. It
 succeeds only if at least one iteration reached the accepted state. For a
@@ -270,6 +281,12 @@ therefore gives iterative the whole boundary. When no more than the boundary
 remain, iterative exploration receives the entire remainder and finishes the
 final chunk even if bulk already met the boundary.
 
+Optimistic bulk and iterative refinement are one `explore` phase. The
+optimistic primary leaves that phase running when the composite owns the next
+transition. The composite completes it only when the bulk result is already a
+chunk boundary or covers the whole report; otherwise the iterative workflow
+completes or leaves pending the same phase (§FS-forge-run-continuation.1).
+
 Parameters: the primary workflow's parameters plus the iterative exploration
 parameters, from one bundle. Families: composite coverage strategies, Java-fix
 composite strategies.
@@ -283,6 +300,21 @@ disabled, or the report names zero dynamic-access calls. Once a phase has begun
 from a usable report, losing that report is a failure, not a fallback — the run
 has already committed to measuring itself against something that no longer
 exists.
+
+The four fallback causes are distinct and are reported as such. A report task
+that fails, a missing file, and a report naming zero dynamic-access calls are
+different facts about the run, and only the last one is a statement about the
+library. The harness never writes a zero-call report over a dynamic-access input
+it could not produce (§root/AR-test-harness.8), so an exploration workflow may
+treat a zero-call report as the library's own shape and must report an
+unavailable report as unavailable rather than as a library without dynamic
+access.
+
+For optimistic exploration, a successful fallback is a bootstrap rather than
+an exit: the workflow refreshes the report and, when it is now usable, continues
+through bulk iterations before the composite's iterative refinement. The
+fallback's prompts, gate, and iterations remain part of `explore`; it never
+claims or completes `fix`.
 
 Falling back does not skip native-image validation. `basic_iterative` runs the
 same terminal gate, so a fallback run still reaches native metadata tracing for

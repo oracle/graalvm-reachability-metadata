@@ -9,7 +9,7 @@ import subprocess
 from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
 from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
 from utility_scripts.run_location import (
-    PHASE_FIX as RUN_PHASE_FIX,
+    PHASE_EXPLORE as RUN_PHASE_EXPLORE,
     STEP_GENERATE_TESTS,
     STEP_NATIVE_TRACE_GATE,
     RunLocation,
@@ -157,14 +157,23 @@ class BasicIterativeStrategy(WorkflowStrategy):
 
     def run(
             self,
-            agent,
-            checkpoint_commit_hash,
-    ):
+            agent: object,
+            checkpoint_commit_hash: str,
+            complete_explore_phase: bool = True,
+    ) -> tuple[str, int, int]:
+        """Generate unguided tests as exploration.
+
+        The caller may retain phase ownership for later bulk or iterative work
+        (§FS-forge-run-continuation.1).
+        """
         save_phase_update(
             self.continuation_marker_path,
-            lambda marker: marker.mark_phase_running(PHASE_FIX),
+            lambda marker: (
+                marker.mark_phase_skipped_if_pending(PHASE_FIX),
+                marker.mark_phase_running(PHASE_EXPLORE),
+            ),
         )
-        enter_phase(RUN_PHASE_FIX)
+        enter_phase(RUN_PHASE_EXPLORE)
         global_iterations = 0
         failed_iterations = 0
         unittest_number = 0
@@ -178,7 +187,7 @@ class BasicIterativeStrategy(WorkflowStrategy):
                     max_attempts=self.max_failed_generations,
                 )
             )
-            with run_step(RUN_PHASE_FIX, STEP_GENERATE_TESTS, operand=self.library):
+            with run_step(RUN_PHASE_EXPLORE, STEP_GENERATE_TESTS, operand=self.library):
                 if failed_iterations > 0:
                     self._print_detail("agent: running failed-iteration prompt")
                     agent.send_prompt(self.prompt_after_failed)
@@ -191,7 +200,7 @@ class BasicIterativeStrategy(WorkflowStrategy):
             global_iterations += 1
             save_phase_update(
                 self.continuation_marker_path,
-                lambda marker: marker.record_iteration(PHASE_FIX, global_iterations),
+                lambda marker: marker.record_iteration(PHASE_EXPLORE, global_iterations),
             )
             reached_native_test = False
             for test_iter in range(self.max_test_iterations):
@@ -250,35 +259,33 @@ class BasicIterativeStrategy(WorkflowStrategy):
         if unittest_number == 0:
             save_phase_update(
                 self.continuation_marker_path,
-                lambda marker: marker.mark_phase_pending(PHASE_FIX, iteration=global_iterations),
+                lambda marker: marker.mark_phase_pending(PHASE_EXPLORE, iteration=global_iterations),
             )
             record_step_failure(
-                location=RunLocation(RUN_PHASE_FIX, STEP_GENERATE_TESTS, self.library),
+                location=RunLocation(RUN_PHASE_EXPLORE, STEP_GENERATE_TESTS, self.library),
             )
             return RUN_STATUS_FAILURE, global_iterations, unittest_number
 
         # The loop above accepts a failing nativeTest as progress, so the gate is what
         # validates native-image behavior and traces misses this workflow cannot see —
         # including transitive-dependency metadata (§AR-basic-iterative).
-        with run_step(RUN_PHASE_FIX, STEP_NATIVE_TRACE_GATE, operand=self.library):
+        with run_step(RUN_PHASE_EXPLORE, STEP_NATIVE_TRACE_GATE, operand=self.library):
             gate_passed = self.verify_native_test_gate(global_output_dir(
                 self.reachability_repo_path, self.group, self.artifact, self.test_version,
             ))
         if not gate_passed:
             save_phase_update(
                 self.continuation_marker_path,
-                lambda marker: marker.mark_phase_pending(PHASE_FIX, iteration=global_iterations),
+                lambda marker: marker.mark_phase_pending(PHASE_EXPLORE, iteration=global_iterations),
             )
             record_step_failure(
-                location=RunLocation(RUN_PHASE_FIX, STEP_NATIVE_TRACE_GATE, self.library),
+                location=RunLocation(RUN_PHASE_EXPLORE, STEP_NATIVE_TRACE_GATE, self.library),
             )
             return RUN_STATUS_FAILURE, global_iterations, unittest_number
 
-        save_phase_update(
-            self.continuation_marker_path,
-            lambda marker: (
-                marker.mark_phase_completed(PHASE_FIX, iteration=global_iterations),
-                marker.mark_phase_skipped(PHASE_EXPLORE),
-            ),
-        )
+        if complete_explore_phase:
+            save_phase_update(
+                self.continuation_marker_path,
+                lambda marker: marker.mark_phase_completed(PHASE_EXPLORE, iteration=global_iterations),
+            )
         return RUN_STATUS_SUCCESS, global_iterations, unittest_number

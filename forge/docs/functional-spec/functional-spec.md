@@ -647,6 +647,17 @@ matching orchestration script with the issue number and configured class
 threshold. An iterative-only workflow may use a dispatcher-refreshed report to
 reduce that value to the current remaining class count before it starts.
 
+Preparation is not the decision. Before it decides anything, `forge_metadata.py`
+must prepare the same dynamic-access report input for every chunk-eligible
+issue, whichever workflow was selected: it materializes the coordinate's test
+project — scaffolding a new library, or resolving the library-update target —
+and refreshes the report from it. A run resumed on a preserved tree keeps that
+tree and only refreshes the report. Deferring the chunk decision to a bulk phase
+must not skip this preparation, so no workflow starts against a report that was
+never built (§AR-dynamic-access-fallback-and-failure). The deferral is
+logged with the prepared report's uncovered class count alongside the boundary,
+so the log records what was measured and not only what was configured.
+
 A workflow with an optimistic bulk phase must make the chunk decision after the
 bulk iteration budget and its native-test gates. The bulk phase keeps its
 initial report as the baseline and uses the last successful iteration's already

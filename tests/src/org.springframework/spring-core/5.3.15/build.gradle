@@ -12,8 +12,13 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "org.springframework:spring-core:$libraryVersion"
+    testImplementation 'org.apiguardian:apiguardian-api:1.1.2'
     testImplementation 'org.assertj:assertj-core:3.22.0'
     testImplementation 'org.jboss:jboss-vfs:3.2.6.Final'
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgs += ["--add-opens=java.base/java.io=ALL-UNNAMED"]
 }
 
 graalvmNative {
@@ -23,6 +28,11 @@ graalvmNative {
             conditional {
                 userCodeFilterPath = "user-code-filter.json"
             }
+        }
+    }
+    binaries {
+        all {
+            buildArgs.addAll(["--add-opens=java.base/java.io=ALL-UNNAMED"])
         }
     }
 }

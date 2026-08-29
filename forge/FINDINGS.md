@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-08-29 — org.apache.calcite:calcite-core:1.35.0 (#446)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+
 ## 2026-08-28 — org.junit.platform:junit-platform-commons:1.11.0 (#9209)
 
 **Resource dynamic-access coverage regresses beyond the fixes-javac limit**
@@ -13,3 +19,13 @@ In `stats/org.junit.platform/junit-platform-commons/1.11.0/stats.json`, resource
 **Repair drops below the metadata-entry guardrail**
 
 The resolved evidence reports 4 library metadata entries plus 13 test-only entries for 5.11.4 (17 total), versus 70 for 5.8.2. Since 17 is below 25% of 70 (17.5), this violates the fixes-java-run-fail metadata-entry guardrail. Regenerate enough justified metadata to clear the threshold or provide a concrete, credible explanation of the changed API/runtime surface.
+## 2026-08-28 — org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3 (#7020)
+
+**New-library change included unrelated library metadata**
+
+Review Signal #1 requires a new-library change to contain only one target library and its supporting test files, but metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json was also modified alongside the org.springdoc addition.
+## 2026-08-27 — io.netty:netty-common:5.0.0.Alpha2 (#9307)
+
+**Dynamic-access resource coverage regresses by 25 percentage points**
+
+In stats/io.netty/netty-common/5.0.0.Alpha2/stats.json, resources coverage is 75% (3/4), versus 100% (1/1) for 5.0.0.Alpha1. That 25-point drop exceeds the fixes-javac-fail limit, and the supplied evidence gives no concrete explanation or replacement coverage. Restore resource coverage or provide a concrete, credible explanation for the regression.
