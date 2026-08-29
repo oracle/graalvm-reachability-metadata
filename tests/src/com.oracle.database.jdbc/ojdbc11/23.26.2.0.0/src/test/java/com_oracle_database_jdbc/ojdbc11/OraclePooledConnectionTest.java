@@ -13,6 +13,7 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import oracle.jdbc.TraceEventListener;
 import oracle.jdbc.driver.OracleConnection;
 import oracle.jdbc.pool.OraclePooledConnection;
 import org.junit.jupiter.api.Test;
@@ -53,6 +54,11 @@ public class OraclePooledConnectionTest {
 
         @Override
         public void clearClientIdentifier(String clientIdentifier) { }
+
+        @Override
+        public TraceEventListener getTraceEventListener() {
+            return null;
+        }
 
         @Override
         public void getPropertyForPooledConnection(OraclePooledConnection pooledConnection) {

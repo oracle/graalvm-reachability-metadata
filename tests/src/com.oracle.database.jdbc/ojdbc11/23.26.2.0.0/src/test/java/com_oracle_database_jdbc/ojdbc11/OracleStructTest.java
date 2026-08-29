@@ -14,6 +14,7 @@ import java.util.Map;
 import oracle.jdbc.OracleData;
 import oracle.jdbc.OracleDataFactory;
 import oracle.jdbc.OracleTypes;
+import oracle.jdbc.TraceEventListener;
 import oracle.jdbc.driver.OracleConnection;
 import oracle.jdbc.driver.OracleStruct;
 import oracle.jdbc.oracore.OracleTypeADT;
@@ -83,6 +84,11 @@ public class OracleStructTest {
 
         @Override
         public void clearClientIdentifier(String clientIdentifier) { }
+
+        @Override
+        public TraceEventListener getTraceEventListener() {
+            return null;
+        }
 
         @Override
         public TestConnection physicalConnectionWithin() {
