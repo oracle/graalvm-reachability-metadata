@@ -1,0 +1,24 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org_springframework.spring_core;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.util.ObjectUtils;
+
+/** Verifies reflective array adaptation utilities. */
+public class ObjectUtilsTest {
+    @Test
+    void extendsObjectArrayAndBoxesPrimitiveArray() {
+        String[] extended = ObjectUtils.addObjectToArray(new String[] {"spring"}, "core");
+        Object[] boxed = ObjectUtils.toObjectArray(new int[] {2, 4, 8});
+
+        assertThat(extended).containsExactly("spring", "core");
+        assertThat(boxed).containsExactly(2, 4, 8);
+    }
+}
