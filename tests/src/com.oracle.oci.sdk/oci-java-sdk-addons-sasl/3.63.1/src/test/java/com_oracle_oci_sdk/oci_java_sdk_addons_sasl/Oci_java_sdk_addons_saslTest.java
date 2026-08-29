@@ -12,6 +12,7 @@ import com.google.protobuf.ByteString;
 import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.sasl.OciAuthProviderCallback;
+import com.oracle.bmc.auth.sasl.OciLoginModule;
 import com.oracle.bmc.auth.sasl.OciMechanism;
 import com.oracle.bmc.auth.sasl.OciSaslClient;
 import com.oracle.bmc.auth.sasl.OciSaslClientProvider;
@@ -38,6 +39,7 @@ import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
+import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.sasl.Sasl;
 import javax.security.sasl.SaslClient;
@@ -104,6 +106,46 @@ public class Oci_java_sdk_addons_saslTest {
             assertThat(client.isComplete()).isTrue();
             assertThat(verifySignature(keyPair, challengeBytes, response)).isTrue();
             assertThat(client.evaluateChallenge(new byte[0])).isEmpty();
+        } finally {
+            client.dispose();
+        }
+    }
+
+    @Test
+    void standardPasswordCallbackResolvesCachedAuthenticationProvider() throws Exception {
+        KeyPair keyPair = createRsaKeyPair();
+        byte[] privateKey = encodePrivateKey(keyPair);
+        BasicAuthenticationDetailsProvider authenticationProvider =
+                SimpleAuthenticationDetailsProvider.builder()
+                        .tenantId(TENANCY_ID)
+                        .userId(USER_ID)
+                        .fingerprint(FINGERPRINT)
+                        .privateKeySupplier(new ByteArrayPrivateKeySupplier(privateKey))
+                        .build();
+        Subject subject = new Subject();
+        OciLoginModule loginModule = new TestLoginModule(authenticationProvider);
+        loginModule.initialize(
+                subject,
+                null,
+                Collections.emptyMap(),
+                Collections.singletonMap("intent", INTENT));
+        String cachedProviderKey =
+                subject.getPrivateCredentials(String.class).iterator().next();
+
+        SaslClient client =
+                Sasl.createSaslClient(
+                        new String[] {OciMechanism.OCI_RSA_SHA256.mechanismName()},
+                        null,
+                        "oci",
+                        "localhost",
+                        Collections.emptyMap(),
+                        new StandardCallbackHandler(INTENT, cachedProviderKey));
+
+        assertThat(client).isInstanceOf(OciSaslClient.class);
+        try {
+            Key key = Key.parseFrom(client.evaluateChallenge(new byte[0]));
+            assertThat(key.getKeyId()).isEqualTo(authenticationProvider.getKeyId());
+            assertThat(key.getIntent()).isEqualTo(INTENT);
         } finally {
             client.dispose();
         }
@@ -203,6 +245,43 @@ public class Oci_java_sdk_addons_saslTest {
         @Override
         public InputStream get() {
             return new ByteArrayInputStream(privateKey);
+        }
+    }
+
+    private static final class TestLoginModule extends OciLoginModule {
+        private final BasicAuthenticationDetailsProvider authenticationProvider;
+
+        private TestLoginModule(BasicAuthenticationDetailsProvider authenticationProvider) {
+            this.authenticationProvider = authenticationProvider;
+        }
+
+        @Override
+        protected BasicAuthenticationDetailsProvider loadAuthenticationProvider(
+                Map<String, ?> options) {
+            return authenticationProvider;
+        }
+    }
+
+    private static final class StandardCallbackHandler implements CallbackHandler {
+        private final String intent;
+        private final String cachedProviderKey;
+
+        private StandardCallbackHandler(String intent, String cachedProviderKey) {
+            this.intent = intent;
+            this.cachedProviderKey = cachedProviderKey;
+        }
+
+        @Override
+        public void handle(Callback[] callbacks) throws UnsupportedCallbackException {
+            for (Callback callback : callbacks) {
+                if (callback instanceof NameCallback) {
+                    ((NameCallback) callback).setName(intent);
+                } else if (callback instanceof PasswordCallback) {
+                    ((PasswordCallback) callback).setPassword(cachedProviderKey.toCharArray());
+                } else {
+                    throw new UnsupportedCallbackException(callback);
+                }
+            }
         }
     }
 
