@@ -205,7 +205,10 @@ PR bodies must remain publishable through GitHub. The shared publication helper
 therefore bounds optional generated detail below GitHub's body limit while
 preserving the issue link, summary, metrics, intervention record, and local CI
 evidence. Version-to-version test comparisons include a diff stat and a bounded
-excerpt; reviewers use the PR's **Files changed** tab for the complete diff.
+excerpt of the new version's test suite against the previous version's suite,
+not a commit-range addition of the new directory. When the new suite exists but
+the previous suite does not, the body says that no baseline suite is available;
+reviewers use the PR's **Files changed** tab for the complete diff.
 
 ### New library support and coverage improvement
 
