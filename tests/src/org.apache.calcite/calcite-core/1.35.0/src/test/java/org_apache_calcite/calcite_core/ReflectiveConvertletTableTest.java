@@ -25,12 +25,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ReflectiveConvertletTableTest {
     @Test
     void invokesConvertletRegisteredByCallType() throws Exception {
-        assertThat(convertPlan(new CallTypeConvertletTable())).contains("EXPR$0=[1]");
+        assertThat(convertPlan(new CallTypeConvertletTable()))
+                .contains("LogicalValues(tuples=[[{ 1 }]])");
     }
 
     @Test
     void invokesConvertletRegisteredByOperatorType() throws Exception {
-        assertThat(convertPlan(new OperatorTypeConvertletTable())).contains("EXPR$0=[1]");
+        assertThat(convertPlan(new OperatorTypeConvertletTable()))
+                .contains("LogicalValues(tuples=[[{ 1 }]])");
     }
 
     private static String convertPlan(SqlRexConvertletTable convertletTable) throws Exception {
