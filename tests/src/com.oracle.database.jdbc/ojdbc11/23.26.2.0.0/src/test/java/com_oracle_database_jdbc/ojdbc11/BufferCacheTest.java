@@ -33,7 +33,7 @@ public class BufferCacheTest {
 
     private static final class DetachedT2CConnection extends T2CConnection {
         private DetachedT2CConnection(Properties properties) throws SQLException {
-            super("", properties, null);
+            super("jdbc:oracle:oci:@", properties, null);
         }
     }
 }
