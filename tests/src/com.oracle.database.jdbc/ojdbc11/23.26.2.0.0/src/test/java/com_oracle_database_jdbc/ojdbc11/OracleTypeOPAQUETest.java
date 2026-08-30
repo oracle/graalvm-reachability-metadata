@@ -45,6 +45,11 @@ public class OracleTypeOPAQUETest {
         }
 
         @Override
+        public String getClientInfo(String name) {
+            return null;
+        }
+
+        @Override
         public String getProtocolType() {
             return "thin";
         }
