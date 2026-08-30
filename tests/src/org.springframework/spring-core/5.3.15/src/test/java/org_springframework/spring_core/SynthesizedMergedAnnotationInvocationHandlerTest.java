@@ -8,23 +8,23 @@ package org_springframework.spring_core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.core.annotation.MergedAnnotation;
 
-/** Verifies synthesis of a bootstrap-loaded annotation type. */
+import org_springframework.spring_core.TypeMappedAnnotationTest.NestedAnnotation;
+
+/** Verifies synthesis of an application-loaded annotation type. */
 public class SynthesizedMergedAnnotationInvocationHandlerTest {
     @Test
-    void synthesizesBootstrapLoadedAnnotation() {
-        MergedAnnotation<Retention> mergedAnnotation = MergedAnnotation.of(
-                Retention.class, Collections.singletonMap("value", RetentionPolicy.RUNTIME));
+    void synthesizesApplicationLoadedAnnotation() {
+        MergedAnnotation<NestedAnnotation> mergedAnnotation =
+                MergedAnnotation.of(NestedAnnotation.class, Collections.singletonMap("value", "native"));
 
-        Retention synthesized = mergedAnnotation.synthesize();
+        NestedAnnotation synthesized = mergedAnnotation.synthesize();
 
-        assertThat(synthesized.annotationType()).isEqualTo(Retention.class);
-        assertThat(synthesized.value()).isEqualTo(RetentionPolicy.RUNTIME);
+        assertThat(synthesized.annotationType()).isEqualTo(NestedAnnotation.class);
+        assertThat(synthesized.value()).isEqualTo("native");
     }
 }
