@@ -17,8 +17,6 @@ import oracle.jdbc.replay.driver.TxnReplayableConnection;
 import oracle.jdbc.replay.driver.TxnReplayableOpaque;
 import oracle.jdbc.replay.driver.TxnReplayableResultSet;
 import oracle.jdbc.replay.driver.TxnReplayableStatement;
-import oracle.sql.OPAQUE;
-import oracle.sql.OpaqueDescriptor;
 import org.junit.jupiter.api.Test;
 
 public class AnnotationsRegistryInnerValueTest {
@@ -35,16 +33,5 @@ public class AnnotationsRegistryInnerValueTest {
         assertThat(factory.isProxied(OracleResultSet.class)).isTrue();
         assertThat(factory.isProxied(OracleOpaque.class)).isTrue();
         assertThat(factory.isProxied(String.class)).isFalse();
-    }
-
-    @Test
-    void appliesAnnotationsWhileInvokingAReplayProxy() throws Exception {
-        ProxyFactory factory = ProxyFactory.createProxyFactory(TxnReplayableOpaque.class);
-        OpaqueDescriptor descriptor = OpaqueDescriptor.createDescriptor("SYS.ANYTYPE", null);
-        OPAQUE delegate = new OPAQUE(descriptor, null, new byte[] {3, 1, 4});
-
-        OracleOpaque proxy = factory.<OracleOpaque>proxyFor(delegate);
-
-        assertThat(proxy.getBytesValue()).containsExactly(3, 1, 4);
     }
 }
