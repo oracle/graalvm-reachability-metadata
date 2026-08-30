@@ -74,7 +74,7 @@ def _with_post_generation_intervention(run_metrics: dict) -> dict:
     run_metrics = dict(run_metrics)
     run_metrics["post_generation_intervention"] = {
         "stage": "metadata_fix_failed",
-        "intervention_file": "post-gen-interventions/org.example_demo_1.0.0.md",
+        "intervention_file": "logs/org.example:demo:1.0.0/post-gen/intervention.md",
         "analysis_markdown": "Manual intervention report.",
     }
     return run_metrics

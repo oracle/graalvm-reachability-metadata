@@ -188,9 +188,13 @@ reviewer is the worker-configured analysis role, with no review-specific agent,
 model, provider, or thinking override (§FS-forge-agent-runtime-selection).
 
 **Candidate selection.** For each queue, orchestration fetches PRs carrying the
-queue label, plus PRs carrying `human-intervention-fixed`, and selects only
-those that are CI-complete, not authored by the authenticated review user, and
-not still blocked by `human-intervention`. PRs labeled `human-intervention` are
+queue label, plus PRs carrying `human-intervention-fixed`. It first refreshes a
+conflicting same-repository head when git can merge the base without judgment,
+then selects for agent review only PRs whose CI checks all completed
+successfully, which are not authored by the authenticated review user, and
+which are not still blocked by `human-intervention`. Running checks wait, while
+failed checks enter deterministic retry or failure follow-up without launching
+an agent or consuming a review slot. PRs labeled `human-intervention` are
 skipped until a maintainer marks them `human-intervention-fixed`, at which point
 orchestration may dismiss stale requested-changes reviews and let normal merge
 gates proceed (§FS-automated-pr-review).

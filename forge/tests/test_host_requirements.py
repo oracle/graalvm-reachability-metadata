@@ -855,6 +855,70 @@ class HostRequirementsTests(unittest.TestCase):
 
         self.assertLess(startup, first_cycle)
 
+    def test_worker_forwards_take_blocked_issues_to_dispatcher(self) -> None:
+        """The do-work override reaches every work queue (§FS-forge-run-requirements.2)."""
+        worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"
+
+        def run_worker(
+                extra_args: list[str],
+                take_blocked_environment: str | None = None,
+        ) -> list[str]:
+            with tempfile.TemporaryDirectory() as temp_dir:
+                fake_python = os.path.join(temp_dir, "python3")
+                fake_git = os.path.join(temp_dir, "git")
+                fake_gh = os.path.join(temp_dir, "gh")
+                args_path = os.path.join(temp_dir, "args.txt")
+                with open(fake_python, "w", encoding="utf-8") as output_file:
+                    output_file.write(
+                        "#!/usr/bin/env bash\n"
+                        "if [[ \"$1\" == */forge_metadata.py ]]; then\n"
+                        "  shift\n"
+                        "  printf '%s\\n' \"$@\" > \"$FORGE_TEST_ARGS_FILE\"\n"
+                        "fi\n"
+                        "exit 0\n"
+                    )
+                with open(fake_git, "w", encoding="utf-8") as output_file:
+                    output_file.write("#!/usr/bin/env bash\nexit 0\n")
+                with open(fake_gh, "w", encoding="utf-8") as output_file:
+                    output_file.write("#!/usr/bin/env bash\nprintf '{\"resources\":{}}\\n'\n")
+                os.chmod(fake_python, 0o755)
+                os.chmod(fake_git, 0o755)
+                os.chmod(fake_gh, 0o755)
+
+                environment = dict(os.environ)
+                environment.pop("FORGE_TAKE_BLOCKED_ISSUES", None)
+                environment.update({
+                    "PYTHON_BIN": fake_python,
+                    "PATH": f"{temp_dir}{os.pathsep}{environment['PATH']}",
+                    "FORGE_TEST_ARGS_FILE": args_path,
+                    "FORGE_DO_WORK_STOP_FILE": os.path.join(temp_dir, "stop"),
+                    "DO_WORK_CLEAN_LOCAL_REPOSITORIES_EVERY": "99",
+                    "FORGE_WORK_LIMIT": "0",
+                    "FORGE_JAVAC_WORK_LIMIT": "0",
+                    "FORGE_JAVA_RUN_WORK_LIMIT": "0",
+                    "FORGE_NI_RUN_WORK_LIMIT": "0",
+                    "FORGE_LIBRARY_UPDATE_WORK_LIMIT": "0",
+                    "FORGE_REVIEW_LIMIT": "0",
+                })
+                if take_blocked_environment is not None:
+                    environment["FORGE_TAKE_BLOCKED_ISSUES"] = take_blocked_environment
+
+                result = subprocess.run(
+                    [str(worker_path), "--once", *extra_args],
+                    env=environment,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    check=False,
+                )
+                self.assertEqual(0, result.returncode, result.stderr)
+                with open(args_path, encoding="utf-8") as input_file:
+                    return input_file.read().splitlines()
+
+        self.assertNotIn("--take-blocked-issues", run_worker([]))
+        self.assertIn("--take-blocked-issues", run_worker(["--take-blocked-issues"]))
+        self.assertIn("--take-blocked-issues", run_worker([], "1"))
+
     def test_worker_propagates_the_analysis_role_selection(self) -> None:
         worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"
         with tempfile.TemporaryDirectory() as temp_dir:

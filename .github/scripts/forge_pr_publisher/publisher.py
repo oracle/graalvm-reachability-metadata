@@ -26,6 +26,13 @@ REPOSITORY = "oracle/graalvm-reachability-metadata"
 BASE_BRANCH = "master"
 MAX_BODY_CHARS = 60_000
 MAX_TEST_DIFF_CHARS = 12_000
+TEST_DIFF_PATHS: tuple[str, ...] = (
+    "build.gradle",
+    "settings.gradle",
+    "setting.gradle",
+    ":(glob)src/test/java/**",
+    ":(glob)*user-code-filter*",
+)
 SEVERE_METADATA_DROP_RATIO = 0.25
 DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_RATIO = 1.75
 PUBLISHER_LOGIN = "graalvmbot"
@@ -1373,17 +1380,41 @@ def _format_forge_metrics_summary_section(descriptor: dict[str, Any]) -> str:
 
 
 def _format_bounded_test_diff_section(validated: ValidatedPublication | None) -> str:
+    """Compare previous/current test trees for reviewable fix PRs.
+
+    §forge/FS-forge-publication-readiness §forge/AR-pr-body
+    """
     if validated is None:
         return ""
     descriptor = validated.descriptor
     library = descriptor["library"]
-    pathspec = f"tests/src/{library['group']}/{library['artifact']}"
-    base_commit = descriptor["base_commit"]
-    stat = git("diff", "--stat", base_commit, validated.head_sha, "--", pathspec).strip()
-    diff = git(
-        "diff", "--no-ext-diff", "--unified=3",
-        base_commit, validated.head_sha, "--", pathspec,
-    ).strip()
+    previous_library = descriptor["previous_library"]
+    previous_path = _test_tree_path(previous_library)
+    current_path = _test_tree_path(library)
+    previous_tree = f"{validated.head_sha}:{previous_path}"
+    current_tree = f"{validated.head_sha}:{current_path}"
+
+    if not _git_object_exists(current_tree):
+        return ""
+    if not _git_object_exists(previous_tree):
+        return (
+            "\n### Test-Source Comparison\n\n"
+            f"No previous test suite exists for `{previous_library['coordinates']}`; "
+            "a version-to-version comparison is unavailable.\n"
+        )
+
+    diff_args = (
+        "--no-ext-diff",
+        "--find-renames",
+        f"--src-prefix=a/{previous_path}/",
+        f"--dst-prefix=b/{current_path}/",
+        previous_tree,
+        current_tree,
+        "--",
+        *TEST_DIFF_PATHS,
+    )
+    stat = git("diff", "--stat", *diff_args).strip()
+    diff = git("diff", "--unified=3", *diff_args).strip()
     if not stat and not diff:
         return ""
     if len(diff) > MAX_TEST_DIFF_CHARS:
@@ -1393,6 +1424,23 @@ def _format_bounded_test_diff_section(validated: ValidatedPublication | None) ->
         f"```text\n{stat or 'No test-source stat available.'}\n```\n\n"
         f"```diff\n{diff or 'No inline test-source diff available.'}\n```\n"
     )
+
+
+def _test_tree_path(library: dict[str, Any]) -> str:
+    """Return the versioned test-tree path represented by a library descriptor."""
+    return (
+        f"tests/src/{library['group']}/{library['artifact']}/{library['version']}"
+    )
+
+
+def _git_object_exists(revision_path: str) -> bool:
+    """Return whether a tree or blob exists without reading feature-branch contents."""
+    return subprocess.run(
+        ["git", "cat-file", "-e", revision_path],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    ).returncode == 0
 
 
 def _has_severe_metadata_drop(descriptor: dict[str, Any]) -> bool:

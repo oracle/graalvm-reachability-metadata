@@ -310,25 +310,36 @@ exit before it scans a queue, not fail one issue at a time.
 
 Claiming is exclusive, and the decision must be made against live GitHub state
 rather than the scan results that led to it (§AR-forge-orchestration).
+Before claiming, orchestration must fetch `origin/master`, pin the fetched
+commit as the issue base, and leave the issue untouched when that base cannot
+be resolved. The branch supplying the running Forge implementation does not
+select the repository state an issue targets.
 The issue payload is re-read at claim time and must still be open, still carry
 the queue label, be unassigned or assigned only to the authenticated user, carry
 no open blockers, and sit in project status `Todo`. Once those live conditions
-hold, the issue is assigned and moved to `In Progress`. While that exclusive
-claim is held and before a worktree is created, the issue-form gate runs, a
-`resumable` issue must resolve a valid continuation marker on a preserved
-branch (§FS-forge-run-continuation), and a `chunked-dynamic-access` issue must
-resolve its exhaust report (§AR-dynamic-access-exhaust-report). A failed
-non-terminal precondition releases the claim back to `Todo`.
+hold, the issue is assigned and moved to `In Progress`, and an isolated
+worktree is created from the pinned issue-base commit. While that exclusive
+claim is held and before a driver runs, the issue-form gate and every
+repository-dependent precondition run against that worktree: a `resumable`
+issue must resolve a valid continuation marker on a preserved branch
+(§FS-forge-run-continuation), and a `chunked-dynamic-access` issue must resolve
+its exhaust report (§AR-dynamic-access-exhaust-report). A failed non-terminal
+precondition removes the worktree and releases the claim back to `Todo`.
+
+An operator may explicitly enable blocked-issue claiming for one invocation or
+worker configuration. The override is disabled by default and bypasses only the
+open-blocker condition: every other live claimability condition above remains
+mandatory.
 
 ### 3. Issue form
 
 The queue label decides the workflow, so the issue must be unambiguous before a
 driver starts (§AR-forge-driver-queues). Every rule below is decided from the
-issue payload and the repository alone, so all of them are checked by one
-deterministic gate after the exclusive claim and before the worktree or driver
-run (§root/PRCPL-prefer-algorithmic, §root/PRCPL-verify-inputs). The claim makes
-the terminal decision exclusive, so two workers cannot both reject the same
-issue.
+issue payload and the pinned issue-base worktree alone, so all of them are
+checked by one deterministic gate after the exclusive claim and before the
+driver runs (§root/PRCPL-prefer-algorithmic,
+§root/PRCPL-verify-inputs). The claim makes the terminal decision exclusive,
+so two workers cannot both reject the same issue.
 
 - The issue carries **exactly one workflow label**. An issue carrying two queue
   labels is processed once per queue that matches it, so the same issue can be
@@ -407,14 +418,16 @@ preserves no branch (§FS-human-intervention-policy).
 ### 4. Run context
 
 A driver must be handed a complete run context and must not resolve, clone, or
-re-derive any part of it: the resolved coordinates, validated strategy,
-isolated reachability worktree, scratch metrics repository, setup-evidence
+re-derive any part of it: the freshly fetched and pinned `origin/master`
+commit, resolved coordinates, validated strategy, isolated reachability
+worktree created from that commit, scratch metrics repository, setup-evidence
 directory, issue context, one GraalVM environment pinned for the whole run, and
-the continuation marker (§FS-forge-run-continuation). The driver owns normal
-and neural setup inside that context, including the persisted library
-preparation result; it does not own queue policy or repository resolution. The
-gap between this requirement and the current implementation is
-§ROADMAP-forge-dispatcher-owned-run-preconditions.
+the continuation marker (§FS-forge-run-continuation). The pinned commit keeps
+repository-dependent checks and generated work on one base even if `master`
+advances during the run. The driver owns normal and neural setup inside that
+context, including the persisted library preparation result; it does not own
+queue policy or repository resolution. The gap between this requirement and
+the current implementation is §ROADMAP-forge-dispatcher-owned-run-preconditions.
 
 ## FS-forge-outputs: Run outputs
 
@@ -613,7 +626,7 @@ Every workflow records one of these statuses:
 | Status | Meaning |
 | --- | --- |
 | `RUN_STATUS_SUCCESS` | All generation gates and the local CI-equivalent verification passed; metadata and tests committed (see §FS-local-ci-equivalent-verification). |
-| `SUCCESS_WITH_INTERVENTION_STATUS` | Tests succeeded after the built-in post-generation recovery modified the working tree (an analysis-agent metadata repair, then the same role removing unsupported failing tests as a last resort), and the local CI-equivalent verification (§FS-local-ci-equivalent-verification) passed. The intervention's record is included in the run-metrics and PR description. PR-eligible; distinct from the `human-intervention` label unless §FS-human-intervention-policy separately requires that label. |
+| `SUCCESS_WITH_INTERVENTION_STATUS` | Tests succeeded after the built-in post-generation recovery modified the working tree (an analysis-agent metadata repair, then the same role removing unsupported failing tests as a last resort), and the local CI-equivalent verification (§FS-local-ci-equivalent-verification) passed. The intervention's record is included in the run-metrics and PR description, and is written to the run's durable logs rather than into the tree Forge publishes, so a recovered run carries no Forge run artifact into its pull request and cannot be classified as a repository-level change by that artifact alone (§FS-human-intervention-policy). PR-eligible; distinct from the `human-intervention` label unless §FS-human-intervention-policy separately requires that label. |
 | `RUN_STATUS_CHUNK_READY` | A chunked dynamic-access run reached a reviewable class boundary and §FS-local-ci-equivalent-verification passed for the current part. The current part is PR-eligible, and the issue must not be resumed until the part PR has merged. |
 | `RUN_STATUS_FAILURE` | The workflow could not converge or a quality gate failed; the feature branch is reset to its workflow recovery checkpoint and no PR is opened. Iterative dynamic-access exploration advances that checkpoint after each committed class (§AR-dynamic-access-fallback-and-failure); other workflows retain their specified checkpoint behavior. |
 
