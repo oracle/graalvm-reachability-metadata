@@ -201,8 +201,8 @@ public class Httpcore5_h2Test {
                 new BasicHeader("accept", "text/plain"),
                 new BasicHeader("x-unicode", "h\u00e4llo"),
                 new BasicHeader("authorization", "secret", true));
-        HPackEncoder encoder = new HPackEncoder(StandardCharsets.UTF_8);
-        HPackDecoder decoder = new HPackDecoder(StandardCharsets.UTF_8);
+        HPackEncoder encoder = new HPackEncoder(4096, StandardCharsets.UTF_8);
+        HPackDecoder decoder = new HPackDecoder(4096, StandardCharsets.UTF_8);
         encoder.setMaxTableSize(512);
         decoder.setMaxTableSize(512);
 
@@ -229,7 +229,7 @@ public class Httpcore5_h2Test {
                 "secret");
         assertThat(decoded.get(6).isSensitive()).isTrue();
 
-        HPackDecoder constrainedDecoder = new HPackDecoder(StandardCharsets.UTF_8);
+        HPackDecoder constrainedDecoder = new HPackDecoder(4096, StandardCharsets.UTF_8);
         constrainedDecoder.setMaxListSize(1);
         assertThatThrownBy(() -> constrainedDecoder.decodeHeaders(
                 ByteBuffer.wrap(encoded.array(), 0, encoded.length())))
@@ -308,13 +308,16 @@ public class Httpcore5_h2Test {
                 new BasicHeader(H2PseudoRequestHeaders.PATH, "/"),
                 new BasicHeader("Connection", "close"))))
                 .isInstanceOf(ProtocolException.class)
-                .hasMessageContaining("contains uppercase characters");
-        BasicHttpRequest invalidTe = new BasicHttpRequest(Method.GET, "/");
-        invalidTe.setScheme("https");
-        invalidTe.addHeader("TE", "gzip");
-        assertThatThrownBy(() -> converter.convert(invalidTe))
-                .isInstanceOf(ProtocolException.class)
-                .hasMessageContaining("illegal for HTTP/2 messages");
+                .hasMessageContaining("Header name")
+                .hasMessageContaining("Connection");
+        BasicHttpRequest teRequest = new BasicHttpRequest(Method.GET, "/");
+        teRequest.setScheme("https");
+        teRequest.addHeader("TE", "gzip");
+        Header teHeader = converter.convert(teRequest).stream()
+                .filter(header -> "te".equals(header.getName()))
+                .findFirst()
+                .orElseThrow();
+        assertThat(teHeader.getValue()).isEqualTo("gzip");
     }
 
     @Test
