@@ -1,6 +1,6 @@
 {
-  "base_commit": "4a5c2a25993baecb6a5226670d348e2f1c0ac453",
-  "branch": "ai/kimeta/add-lib-support-com.oracle.database.jdbc-ojdbc11-23.26.2.0.0-chunked-forge-9528-20260829235101658701-1922bd485ca1",
+  "base_commit": "98a34ce2b4a2682bbe5e0d80fdc73bba6b26e403",
+  "branch": "ai/kimeta/add-lib-support-com.oracle.database.jdbc-ojdbc11-23.26.2.0.0-chunked-forge-9528-20260830020602606555-097e9147c5ec",
   "follow_ups": [],
   "forge": {
     "branch": "mm/forge-publication-fixes",
@@ -15,11 +15,11 @@
     "version": "23.26.2.0.0"
   },
   "local_ci_verification": {
-    "base_commit": "4a5c2a25993baecb6a5226670d348e2f1c0ac453",
+    "base_commit": "98a34ce2b4a2682bbe5e0d80fdc73bba6b26e403",
     "commands": [],
     "failure_command": null,
     "failure_gate": null,
-    "final_commit": "c0b9fc0e1d525a62a1ff0038332512afb8cd7bb8",
+    "final_commit": "068bdeb518902b4283cfd32f720494e2d5acd7bc",
     "fixups": [],
     "human_intervention_required": false,
     "repo_fix_paths": [],
@@ -35,7 +35,7 @@
     "model": "gpt-5.6-sol",
     "published_tree": "verified",
     "repair_reverted": false,
-    "review_comment": "Reviewed the specified diff and local evidence against all relevant enumerated new-library rules. The change remains scoped to com.oracle.database.jdbc:ojdbc11:23.26.2.0.0, uses only reachability-metadata.json, and adds non-scaffold tests in a separate test package without version pinning, Native Image skips, or tolerated native failures. The chunked-dynamic-access evidence reports 112 covered calls, so its coverage gate passes; the reported 2,263 combined library and test-only metadata entries do not trigger the entry-count mismatch check. Local gate status is successful with no recorded failure or required intervention.",
+    "review_comment": "Reviewed the specified commit diff and local evidence. The changes stay within the single com.oracle.database.jdbc:ojdbc11:23.26.2.0.0 coordinate, use only reachability-metadata.json, and add library-specific tests in a separate test package without scaffold placeholders, native-image skips, unverified Error catches, JVM overrides, or version-pinned assertions. The chunked dynamic-access evidence reports 125 covered calls out of 177, so the nonzero covered-call gate passes; the reported 2,601 total metadata entries do not trigger the entry-count mismatch check. Local gate evidence reports success. No enumerated blocking violation was found.",
     "session_log_path": "logs/com.oracle.database.jdbc:ojdbc11:23.26.2.0.0/local-branch-review/pi.log",
     "status": "completed"
   },
@@ -44,18 +44,18 @@
     "model": "gpt-5.6-sol",
     "path": "stats/com.oracle.database.jdbc/ojdbc11/23.26.2.0.0/execution-metrics.json",
     "summary": {
-      "cached_input_tokens_used": 28661760,
-      "code_coverage_percent": 7.04,
-      "cost_usd": 20.5952,
-      "generated_loc": 1891,
-      "input_tokens_used": 829301,
-      "iterations": 7,
-      "metadata_entries": 2138,
-      "output_tokens_used": 70594,
-      "test_only_metadata_entries": 125,
-      "tested_library_loc": 11453
+      "cached_input_tokens_used": 29689856,
+      "code_coverage_percent": 7.27,
+      "cost_usd": 22.5833,
+      "generated_loc": 1970,
+      "input_tokens_used": 1158037,
+      "iterations": 6,
+      "metadata_entries": 2474,
+      "output_tokens_used": 64940,
+      "test_only_metadata_entries": 127,
+      "tested_library_loc": 11818
     },
-    "timestamp": "2026-08-29T23:51:01.658701Z"
+    "timestamp": "2026-08-30T02:06:02.606555Z"
   },
   "modifiers": {
     "chunk_final": false,
@@ -63,7 +63,7 @@
     "human_intervention": false
   },
   "producer": "kimeta",
-  "publication_id": "forge-9528-20260829235101658701-1922bd485ca1",
+  "publication_id": "forge-9528-20260830020602606555-097e9147c5ec",
   "render": {
     "dynamic_access": {
       "classThreshold": 15,
@@ -105,30 +105,31 @@
         "oracle.jdbc.driver.OracleStruct",
         "oracle.jdbc.pool.OraclePooledConnection",
         "oracle.sql.ARRAY",
-        "oracle.sql.STRUCT"
+        "oracle.sql.STRUCT",
+        "oracle.jdbc.driver.BufferCache"
       ],
       "coordinate": "com.oracle.database.jdbc:ojdbc11:23.26.2.0.0",
       "currentChunkClassCount": 15,
       "exhaustedClasses": [],
       "failedClasses": [],
       "issueNumber": 9528,
-      "latestChunkBranch": "ai/kimeta/add-lib-support-com.oracle.database.jdbc-ojdbc11-23.26.2.0.0-chunked-forge-9528-20260829235101658701-1922bd485ca1",
+      "latestChunkBranch": "ai/kimeta/add-lib-support-com.oracle.database.jdbc-ojdbc11-23.26.2.0.0-chunked-forge-9528-20260830020602606555-097e9147c5ec",
       "latestChunkCommit": null,
-      "latestChunkPublicationId": "forge-9528-20260829235101658701-1922bd485ca1",
+      "latestChunkPublicationId": "forge-9528-20260830020602606555-097e9147c5ec",
       "latestChunkPullRequest": null,
       "skippedClasses": []
     },
     "dynamic_access_evidence": {
       "covered_call_sites": [
-        "[reflection] java.lang.Class#getDeclaredMethod(java.lang.String, java.lang.Class[]) <- oracle.jdbc.proxy.AnnotationsRegistry$Value.checkReturnTypesMismatch(AnnotationsRegistry.java:550) (line 550)",
-        "[reflection] java.lang.Class#getDeclaredMethods() <- oracle.jdbc.proxy.AnnotationsRegistry$Value.checkReturnTypesMismatch(AnnotationsRegistry.java:588) (line 588)",
-        "[reflection] java.lang.Class#getDeclaredMethods() <- oracle.jdbc.proxy.AnnotationsRegistry$Value.parseAnnotations(AnnotationsRegistry.java:850) (line 850)",
-        "[reflection] java.lang.Class#getMethods() <- oracle.jdbc.proxy.AnnotationsRegistry$Value.parseAnnotationProxyAccess(AnnotationsRegistry.java:437) (line 437)",
-        "[reflection] java.io.ObjectOutputStream#writeObject(java.lang.Object) <- oracle.sql.REF.writeObject(REF.java:534) (line 534)",
-        "[reflection] java.lang.Class#newInstance() <- oracle.sql.REF.toClass(REF.java:425) (line 425)",
-        "[reflection] java.lang.Class#getConstructor(java.lang.Class[]) <- oracle.jdbc.OracleConnectionWrapper.proxyFor(OracleConnectionWrapper.java:1456) (line 1456)",
-        "[reflection] java.lang.reflect.Constructor#newInstance(java.lang.Object[]) <- oracle.jdbc.OracleConnectionWrapper.proxyFor(OracleConnectionWrapper.java:1457) (line 1457)",
-        "... and 104 more"
+        "[reflection] java.lang.Class#forName(java.lang.String) <- oracle.jdbc.driver.PhysicalConnection.classForNameAndSchema(PhysicalConnection.java:7431) (line 7431)",
+        "[reflection] java.lang.Class#forName(java.lang.String) <- oracle.jdbc.driver.PhysicalConnection.registerSQLType(PhysicalConnection.java:4821) (line 4821)",
+        "[reflection] java.lang.Class#getDeclaredFields() <- oracle.jdbc.driver.PhysicalConnection.getProperties(PhysicalConnection.java:2264) (line 2264)",
+        "[reflection] java.lang.Class#getField(java.lang.String) <- oracle.jdbc.driver.PhysicalConnection.getProperties(PhysicalConnection.java:2280) (line 2280)",
+        "[reflection] java.lang.Class#newInstance() <- oracle.jdbc.driver.PhysicalConnection.getJavaObject(PhysicalConnection.java:4867) (line 4867)",
+        "[reflection] java.lang.reflect.Field#get(java.lang.Object) <- oracle.jdbc.driver.PhysicalConnection.getProperties(PhysicalConnection.java:2287) (line 2287)",
+        "[reflection] java.lang.reflect.Field#get(java.lang.Object) <- oracle.jdbc.driver.PhysicalConnection.getProperties(PhysicalConnection.java:2308) (line 2308)",
+        "[reflection] java.lang.reflect.Field#get(java.lang.Object) <- oracle.jdbc.driver.PhysicalConnection.getProperties(PhysicalConnection.java:2327) (line 2327)",
+        "... and 117 more"
       ],
       "metadata_rules": [
         "when `oracle.jdbc.diagnostics.OracleDiagnosticsMXBean` is reached, make `boolean[]` available for reflection",
@@ -137,17 +138,17 @@
         "when `oracle.jdbc.driver.OracleDriver` is reached, make `byte[]` available for reflection",
         "when `oracle.jdbc.oracore.OracleTypeADT` is reached, make `byte[]` available for reflection",
         "when `oracle.jdbc.diagnostics.OracleDiagnosticsMXBean` is reached, make `char[]` available for reflection",
+        "when `oracle.jdbc.driver.BufferCache` is reached, make `char[]` available for reflection",
         "when `oracle.jdbc.driver.OracleDriver` is reached, make `char[]` available for reflection",
-        "when `oracle.net.nt.ExtendedSSLContext` is reached, make `com.sun.crypto.provider.AESCipher$General.<init>()` available for reflection",
-        "... and 434 more"
+        "... and 437 more"
       ]
     },
     "library_stats": {
       "dynamicAccess": {
         "breakdown": {
           "reflection": {
-            "coverageRatio": 0.614458,
-            "coveredCalls": 102,
+            "coverageRatio": 0.692771,
+            "coveredCalls": 115,
             "totalCalls": 166
           },
           "resources": {
@@ -156,27 +157,27 @@
             "totalCalls": 11
           }
         },
-        "coverageRatio": 0.632768,
-        "coveredCalls": 112,
+        "coverageRatio": 0.706215,
+        "coveredCalls": 125,
         "totalCalls": 177
       },
       "libraryCoverage": {
         "instruction": {
-          "covered": 83074,
-          "missed": 1405653,
-          "ratio": 0.055802,
+          "covered": 84644,
+          "missed": 1404083,
+          "ratio": 0.056857,
           "total": 1488727
         },
         "line": {
-          "covered": 11453,
-          "missed": 151186,
-          "ratio": 0.07042,
+          "covered": 11818,
+          "missed": 150821,
+          "ratio": 0.072664,
           "total": 162639
         },
         "method": {
-          "covered": 1914,
-          "missed": 36552,
-          "ratio": 0.049758,
+          "covered": 1959,
+          "missed": 36507,
+          "ratio": 0.050928,
           "total": 38466
         }
       },
@@ -187,5 +188,5 @@
   "strategy_name": "dynamic_access_bulk_pi_gpt-5.6-sol",
   "task_type": "library-new-request",
   "template_type": "library-new-request",
-  "timestamp": "2026-08-29T23:51:01.658701Z"
+  "timestamp": "2026-08-30T02:06:02.606555Z"
 }
