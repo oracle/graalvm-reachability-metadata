@@ -15,6 +15,8 @@ import oracle.jdbc.driver.T2CConnection;
 import oracle.jdbc.oracore.OracleType;
 import oracle.jdbc.oracore.OracleTypeOPAQUE;
 import oracle.sql.OPAQUE;
+import oracle.sql.OpaqueDescriptor;
+import oracle.sql.SQLName;
 import oracle.xdb.XMLType;
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +25,9 @@ public class OracleTypeOPAQUETest {
     void restoresXmlTypeFromItsOpaqueImage() throws Exception {
         DetachedT2CConnection connection = new DetachedT2CConnection();
         OracleTypeOPAQUE oracleType = new OracleTypeOPAQUE("SYS.XMLTYPE", connection);
+        SQLName sqlName = new SQLName("SYS", "XMLTYPE", connection);
+        OpaqueDescriptor descriptor = new OpaqueDescriptor(sqlName, oracleType, connection);
+        connection.putDescriptor(sqlName.getName(), descriptor);
         XMLType xml = XMLType.createXML(connection, "<message>oracle</message>");
 
         byte[] image = oracleType.linearize(xml);
