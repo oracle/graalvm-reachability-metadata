@@ -22,7 +22,10 @@ public class ShardingDriverExtensionTest {
         properties.setProperty("oracle.jdbc.ReadTimeout", "10000");
 
         assertThatThrownBy(() -> new OracleDriver()
-                        .connect("jdbc:oracle:thin:@//127.0.0.1:1/test-service", properties))
+                        .connect(
+                                "jdbc:oracle:thin:@//127.0.0.1:1/"
+                                        + "test-service?SHARDING_KEY=test-key",
+                                properties))
                 .isInstanceOf(SQLException.class);
     }
 }
