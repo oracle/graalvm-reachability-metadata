@@ -59,18 +59,25 @@ sequenceDiagram
     D->>D: check_strategy_and_model()
     D->>GH: scan_issue_queue(label, priority)
     GH-->>D: candidate issues
-    D->>GH: claim_issue()
-    GH-->>D: assigned, status In Progress
-    D->>D: check_issue_form()
-    alt issue is malformed
-        D->>GH: post the predefined comment for the failed rule
-        D->>GH: close_issue()
-        D->>GH: clear Forge assignee
-    else artifact repository did not answer
-        D->>GH: release_claim()
-    else issue form is valid
-        D->>D: create_issue_workspace()
-        D->>DR: route_to_driver(coordinates, strategy)
+    D->>D: fetch origin/master and pin commit
+    alt issue base cannot be resolved
+        D->>D: leave candidate untouched
+    else issue base is pinned
+        D->>GH: claim_issue()
+        GH-->>D: assigned, status In Progress
+        D->>D: create_issue_workspace(pinned commit)
+        D->>D: check_issue_form(worktree)
+        alt issue is malformed
+            D->>GH: post the predefined comment for the failed rule
+            D->>GH: close_issue()
+            D->>GH: clear Forge assignee
+            D->>D: remove worktree
+        else artifact repository did not answer
+            D->>GH: release_claim()
+            D->>D: remove worktree
+        else issue form is valid
+            D->>DR: route_to_driver(coordinates, strategy)
+        end
     end
     end
 
@@ -293,9 +300,10 @@ The queue label decides the workflow, so the issue must be unambiguous before a
 driver starts (§FS-forge-run-requirements.3, §AR-forge-driver-queues). The
 issue is the run's input, and a malformed one is rejected at the boundary
 instead of failing inside a driver (§root/PRCPL-verify-inputs). The gate runs
-after `claim_issue()` holds the exclusive claim and before
-`create_issue_workspace()`, so a rejected issue is never given a worktree and
-never reaches a driver:
+after `claim_issue()` holds the exclusive claim, inside the
+isolated worktree pinned to the freshly fetched issue base, and before driver
+dispatch. A rejected issue never reaches a driver, and cleanup removes its
+worktree while returning the claim to `Todo`:
 
 - `single-workflow-label` — **exactly one workflow label.** An issue carrying
   two queue labels is processed once per queue that matches it, so it would be
@@ -375,21 +383,27 @@ live GitHub state rather than trusted from the scan
 (§FS-forge-run-requirements.2), and must still be open, still carry the queue
 label, be unassigned or assigned only to the authenticated user, have no open
 blockers, and sit in project status `Todo`. Only then is it assigned and moved
-to `In Progress`. The issue-form gate runs while that exclusive claim is held;
-only an accepted form is given an isolated worktree plus scratch metrics
-repository. A `resumable` issue additionally requires a valid continuation
-marker on a preserved branch (§FS-forge-run-continuation), and a
-`chunked-dynamic-access` issue requires its exhaust report
-(§AR-dynamic-access-exhaust-report).
+to `In Progress`. Before that mutation, orchestration fetches and pins
+`origin/master`; failure leaves the issue untouched. After the claim, it
+creates an isolated worktree from that pinned commit and runs the issue-form
+gate and repository-dependent preconditions there. A `resumable` issue
+additionally requires a valid continuation marker on a preserved branch
+(§FS-forge-run-continuation), and a `chunked-dynamic-access` issue requires its
+exhaust report (§AR-dynamic-access-exhaust-report). Any non-terminal
+preparation failure cleans the worktree and returns the claim to `Todo`.
 
 ### create_issue_workspace()
 
 **Algorithmic.**
 
-The dispatcher, not the driver, prepares the ground a run executes on: an
-isolated worktree of the reachability repository, a scratch metrics repository,
-and the per-run setup-evidence directory. It also validates that the issue
-GraalVM lanes are present before any driver is invoked
+The dispatcher, not the driver, prepares the ground a run executes on. Before
+each claim attempt it fetches `origin/master` without switching the checkout
+that supplies Forge code, resolves the fetched commit, and creates the issue's
+isolated reachability worktree from that immutable commit after the claim is
+held. Repository-dependent preparation reads from the isolated worktree, never
+from the monitored Forge branch. The dispatcher also prepares the scratch
+metrics repository and per-run setup-evidence directory and validates that the
+issue GraalVM lanes are present before any driver is invoked
 (§FS-forge-run-requirements.4, §AR-forge-control-plane,
 §AR-forge-orchestration). Drivers are given the resulting paths.
 
@@ -1001,12 +1015,12 @@ The dispatcher routes issue work by issue labels, not by PR labels:
 | `fails-java-run` | `ai_workflows/drivers/fix_java_run_fail.py` | `fixes-java-run-fail` |
 | `fails-native-image-run` | `ai_workflows/drivers/fix_ni_run.py` | `fixes-native-image-run-fail` |
 
-The control plane treats a claimed issue as exclusive work. Claiming,
-assignment checks, worktree creation, and final unassignment all belong in
-`forge_metadata.py` and the GitHub helper layer rather than in individual
-workflow engines. Workflow drivers should receive already-resolved
-coordinates, paths, and strategy names; they should not reimplement queue
-policy.
+The control plane treats a claimed issue as exclusive work. Fresh issue-base
+resolution, claiming, assignment checks, worktree creation, and final
+unassignment all belong in `forge_metadata.py` and the GitHub helper layer
+rather than in individual workflow engines. Workflow drivers should receive
+already-resolved coordinates, paths, and strategy names; they should not
+reimplement queue policy.
 
 ```mermaid
 flowchart LR

@@ -27,12 +27,19 @@ class PostGenerationFixTests(unittest.TestCase):
     def setUp(self) -> None:
         self.repo = tempfile.mkdtemp(prefix="repo-")
         self.addCleanup(shutil.rmtree, self.repo, ignore_errors=True)
+        self.log_dir = tempfile.mkdtemp(prefix="logs-")
+        self.addCleanup(shutil.rmtree, self.log_dir, ignore_errors=True)
+
+    def _prompted_report_path(self, prompt: str) -> Path:
+        """Resolve the report path the prompt tells the agent to write."""
+        marker = "- Intervention report path: "
+        line = next(line for line in prompt.splitlines() if line.startswith(marker))
+        return Path(self.repo) / line[len(marker):].strip()
 
     def _run(self, agent_result: AgentRunResult, report: str | None):
         def write_report(**kwargs):
             if report is not None:
-                path = Path(self.repo) / "post-gen-interventions" / "g_a_1.0.md"
-                path.write_text(report, encoding="utf-8")
+                self._prompted_report_path(kwargs["context"]).write_text(report, encoding="utf-8")
             return agent_result
 
         with patch(
@@ -40,7 +47,10 @@ class PostGenerationFixTests(unittest.TestCase):
                 side_effect=write_report,
         ) as agent, patch(
                 "ai_workflows.core.post_generation_fix.get_analysis_agent"
-        ) as selection:
+        ) as selection, patch(
+                "ai_workflows.core.post_generation_fix.resolve_task_log_dir",
+                return_value=self.log_dir,
+        ):
             selection.return_value.backend = "codex"
             result = run_post_generation_fix(
                 reachability_metadata_path=self.repo,
@@ -87,6 +97,20 @@ class PostGenerationFixTests(unittest.TestCase):
         )
 
         self.assertEqual(rc, 1)
+
+    def test_report_is_archived_to_the_logs_and_leaves_no_tree_artifact(self) -> None:
+        # A record left in the tree is swept into the published branch and reads
+        # as a repository-level change (§FS-forge-run-status).
+        report = f"Library: {_LIBRARY}\n\nRemoved the failing test.\n"
+        (rc, path, _timed_out), _agent = self._run(
+            AgentRunResult(0, "/tmp/post-gen.log", False, "done"), report,
+        )
+
+        self.assertEqual(rc, 0)
+        self.assertEqual(Path(path).parent, Path(self.log_dir))
+        self.assertEqual(Path(path).read_text(encoding="utf-8"), report)
+        self.assertFalse((Path(self.repo) / "post-gen-interventions").exists())
+        self.assertEqual(list((Path(self.repo) / "forge" / "scratchpad").iterdir()), [])
 
     def test_workflow_base_class_passes_parameters_this_function_accepts(self) -> None:
         """The caller drifted from this signature once; keep them bound."""

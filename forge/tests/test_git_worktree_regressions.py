@@ -197,6 +197,8 @@ class GitWorktreeRegressionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_dir:
             reachability_repo = _create_reachability_repo(os.path.join(temp_dir, "graalvm-reachability-metadata"))
             metrics_root = os.path.join(reachability_repo, "forge")
+            base_commit = _git(["rev-parse", "HEAD"], cwd=reachability_repo).stdout.strip()
+            _commit_file(reachability_repo, "newer.txt", "newer state\n", "advance local branch")
 
             with patch.object(forge_metadata, "get_repo_root", return_value=metrics_root), \
                     patch.object(forge_metadata, "require_complete_reachability_repo") as validate:
@@ -204,8 +206,12 @@ class GitWorktreeRegressionTests(unittest.TestCase):
                     reachability_repo,
                     metrics_root,
                     issue_number=1412,
+                    issue_base_commit=base_commit,
                 )
 
+            worktree_head = _git(["rev-parse", "HEAD"], cwd=worktree_path).stdout.strip()
+            self.assertEqual(worktree_head, base_commit)
+            self.assertFalse(os.path.exists(os.path.join(worktree_path, "newer.txt")))
             self.assertEqual(scratch_metrics_path, os.path.join(worktree_path, "forge"))
             validate.assert_called_once_with(worktree_path)
             _git(["worktree", "remove", "--force", worktree_path], cwd=reachability_repo)

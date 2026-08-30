@@ -251,6 +251,10 @@ DEFAULT_ISSUE_SCAN_BATCH_SIZE = 25
 ISSUE_SCAN_PROGRESS_LOG_INTERVAL = 100
 GITHUB_API_MAX_PAGE_SIZE = 100
 GITHUB_SEARCH_MAX_RESULTS = 1000
+# Issue queues scan by creation date so an issue Forge itself touches cannot bump
+# itself back to the head of the queue and starve the rest of the backlog.
+ISSUE_SEARCH_SORT = "created"
+ISSUE_SEARCH_ORDER = "desc"
 DEFAULT_TAKE_BLOCKED_ISSUES = False
 # GitHub validates GraphQL node cost against worst-case first values; 5 issues can exceed 500k here.
 ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE = 4
@@ -410,6 +414,7 @@ class ClaimedIssue:
     worktree_path: str
     scratch_metrics_repo_path: str
     issue_coordinates: str
+    issue_base_commit: str = DEFAULT_WORKTREE_BASE_REF
     current_coordinates: str | None = None
     new_version: str | None = None
     preflight_info_path: str | None = None
@@ -428,6 +433,13 @@ class WorkQueueConfig:
 class ReviewQueueConfig:
     label: str
     limit: int
+
+
+@dataclass(frozen=True)
+class ReviewQueueSelection:
+    ready: list[dict]
+    failed: list[dict]
+    waiting_count: int
 
 
 @dataclass(frozen=True)
@@ -882,8 +894,8 @@ def fetch_issue_search_page(query: str, page: int, per_page: int) -> list[dict]:
     data = gh_json(
         "api", "--method", "GET", "/search/issues",
         "-f", f"q={query}",
-        "-f", "sort=updated",
-        "-f", "order=desc",
+        "-f", f"sort={ISSUE_SEARCH_SORT}",
+        "-f", f"order={ISSUE_SEARCH_ORDER}",
         "-F", f"per_page={per_page}",
         "-F", f"page={page}",
     )
@@ -899,7 +911,9 @@ def get_issue_search_page(query: str, page: int, per_page: int) -> list[dict]:
         return fetch_issue_search_page(query, page, per_page)
 
     ttl_seconds = get_issue_search_cache_ttl_seconds()
-    cache_key = build_issue_search_cache_key("page", query, "updated", "desc", page, per_page)
+    cache_key = build_issue_search_cache_key(
+        "page", query, ISSUE_SEARCH_SORT, ISSUE_SEARCH_ORDER, page, per_page
+    )
     now = time.time()
     cached_payload = _read_issue_search_cache_payload()
     if cached_payload is not None:
@@ -1033,33 +1047,23 @@ def get_pull_requests_with_labels(labels: list[str], fetch_limit: int) -> list[d
     return data
 
 
-def get_pull_request_status_check_rollup(pr_number: int) -> list[dict]:
-    """Fetch status check details for one pull request."""
-    data = gh_json(
-        "pr", "view",
-        str(pr_number),
-        "--repo", REPO,
-        "--json", "statusCheckRollup",
-    )
-    status_checks = data.get("statusCheckRollup")
-    return status_checks if isinstance(status_checks, list) else []
 
 
-def attach_pull_request_status_check_rollup(
+def attach_pull_request_state(
         pull_request: dict,
-        status_check_cache: dict[int, list[dict]],
+        state_cache: dict[int, dict],
 ) -> dict:
-    """Return a pull request payload enriched with status check details."""
+    """Return a pull request payload enriched with review, merge, and CI state."""
     pr_number = pull_request.get("number")
     if not isinstance(pr_number, int):
-        print("ERROR: Missing pull request number while fetching status checks.", file=sys.stderr)
-        raise RuntimeError("Missing pull request number while fetching status checks")
+        print("ERROR: Missing pull request number while fetching state.", file=sys.stderr)
+        raise RuntimeError("Missing pull request number while fetching state")
 
-    if pr_number not in status_check_cache:
-        status_check_cache[pr_number] = get_pull_request_status_check_rollup(pr_number)
+    if pr_number not in state_cache:
+        state_cache[pr_number] = get_pull_request_state(pr_number)
 
     enriched_pull_request = dict(pull_request)
-    enriched_pull_request["statusCheckRollup"] = status_check_cache[pr_number]
+    enriched_pull_request.update(state_cache[pr_number])
     return enriched_pull_request
 
 
@@ -2169,20 +2173,6 @@ def is_authored_by_user(pr: dict, username: str) -> bool:
     return author.get("login") == username
 
 
-def has_completed_ci_tasks(pr: dict) -> bool:
-    """Return True when the pull request has CI checks and none are still pending."""
-    status_checks = pr.get("statusCheckRollup")
-    if not isinstance(status_checks, list) or not status_checks:
-        return False
-
-    for status_check in status_checks:
-        if not isinstance(status_check, dict):
-            return False
-        if status_check.get("status") != "COMPLETED":
-            return False
-
-    return True
-
 
 def get_pull_request_state(pr_number: int) -> dict:
     """Fetch the latest review and merge state for a pull request."""
@@ -2754,6 +2744,43 @@ def resolve_pull_request_merge_conflict(
         remove_worktree(reachability_metadata_path, worktree_path)
 
 
+def reconcile_failed_ci_pull_request(pull_request: dict) -> None:
+    """Handle failed CI deterministically without launching a review agent."""
+    pr_number = pull_request.get("number")
+    head_sha = pull_request.get("headRefOid")
+    if not isinstance(pr_number, int) or not isinstance(head_sha, str) or not head_sha:
+        print(f"ERROR: Missing head metadata for failed-CI PR #{pr_number}.", file=sys.stderr)
+        raise RuntimeError(f"Missing head metadata for failed-CI PR #{pr_number}")
+
+    if not has_failed_pull_request_ci(pull_request):
+        print(f"[Skipping failed-CI follow-up for PR #{pr_number}: CI state changed.]")
+        return
+
+    chunked_issue = resolve_non_final_chunked_dynamic_access_issue(pull_request)
+    rerun_count = rerun_failed_pull_request_workflow_jobs(pr_number, head_sha)
+    if rerun_count:
+        if chunked_issue is not None:
+            print(
+                f"[Reran failed GitHub Actions job(s) in {rerun_count} workflow run(s) "
+                f"for chunked PR #{pr_number}; keeping the backing issue in progress for this pass.]"
+            )
+        else:
+            print(
+                f"[Reran failed GitHub Actions job(s) in {rerun_count} workflow run(s) "
+                f"for PR #{pr_number}; review waits for successful CI.]"
+            )
+        return
+
+    if chunked_issue is not None:
+        apply_chunked_dynamic_access_failed_ci_follow_up(pull_request)
+        return
+
+    print(
+        f"[Skipping review for PR #{pr_number}: CI failed and no eligible "
+        "GitHub Actions workflow runs were found to rerun.]"
+    )
+
+
 def reconcile_reviewed_pull_request(
         pr_number: int,
         reachability_metadata_path: str | None = None,
@@ -2772,19 +2799,20 @@ def reconcile_reviewed_pull_request(
             f"ci={((pr.get('statusCheckRollup') or {}).get('state'))}]"
         )
 
-        if has_failed_pull_request_ci(pr) and resolve_non_final_chunked_dynamic_access_issue(pr) is not None:
-            head_sha = pr.get("headRefOid")
-            if not isinstance(head_sha, str) or not head_sha:
-                print(f"ERROR: Missing head SHA for chunked PR #{pr_number} with failed CI.", file=sys.stderr)
-                raise RuntimeError(f"Missing head SHA for chunked PR #{pr_number} with failed CI")
-            rerun_count = rerun_failed_pull_request_workflow_jobs(pr_number, head_sha)
-            if rerun_count:
+        if is_pull_request_conflicting(pr):
+            if not resolve_pull_request_merge_conflict(
+                    pr,
+                    reachability_metadata_path or get_repo_root(),
+            ):
+                add_pull_request_label(pr_number, LABEL_HUMAN_INTERVENTION)
                 print(
-                    f"[Reran failed GitHub Actions job(s) in {rerun_count} workflow run(s) "
-                    f"for chunked PR #{pr_number}; keeping the backing issue in progress for this pass.]"
+                    f"[Added label '{LABEL_HUMAN_INTERVENTION}' to conflicting "
+                    f"PR #{pr_number}; git could not refresh its head without judgment.]"
                 )
-                return True
-            apply_chunked_dynamic_access_failed_ci_follow_up(pr)
+            return True
+
+        if has_failed_pull_request_ci(pr):
+            reconcile_failed_ci_pull_request(pr)
             return True
 
         if review_decision == "CHANGES_REQUESTED":
@@ -2794,32 +2822,6 @@ def reconcile_reviewed_pull_request(
 
         if review_decision != "APPROVED":
             print(f"[Skipping merge for PR #{pr_number}: review decision is '{review_decision}'.]")
-            return True
-
-        if has_failed_pull_request_ci(pr):
-            head_sha = pr.get("headRefOid")
-            if not isinstance(head_sha, str) or not head_sha:
-                print(f"ERROR: Missing head SHA for approved PR #{pr_number} with failed CI.", file=sys.stderr)
-                raise RuntimeError(f"Missing head SHA for approved PR #{pr_number} with failed CI")
-            rerun_count = rerun_failed_pull_request_workflow_jobs(pr_number, head_sha)
-            if rerun_count:
-                print(
-                    f"[Reran failed GitHub Actions job(s) in {rerun_count} workflow run(s) "
-                    f"for approved PR #{pr_number}; skipping merge for this pass.]"
-                )
-            else:
-                print(
-                    f"[Skipping merge for approved PR #{pr_number}: CI failed, but no eligible "
-                    "GitHub Actions workflow runs were found to rerun.]"
-                )
-            return True
-
-        if is_pull_request_conflicting(pr) and has_successful_pull_request_ci(pr):
-            # §FS-automated-pr-review: git resolves the ledger, the merge waits a pass.
-            resolve_pull_request_merge_conflict(
-                pr,
-                reachability_metadata_path or get_repo_root(),
-            )
             return True
 
         if not has_passing_pull_request_gates(pr):
@@ -2853,37 +2855,63 @@ def is_review_pull_request_eligible(pull_request: dict, authenticated_user: str)
     """Return True when the review queue may process the pull request."""
     return (
         is_review_pull_request_base_eligible(pull_request, authenticated_user)
-        and has_completed_ci_tasks(pull_request)
+        and has_successful_pull_request_ci(pull_request)
     )
 
 
-def select_ci_complete_review_pull_requests(
+def select_review_pull_requests(
         pull_requests: list[dict],
         authenticated_user: str,
         limit: int,
-        status_check_cache: dict[int, list[dict]],
+        state_cache: dict[int, dict],
+        reachability_metadata_path: str,
         excluded_labels: tuple[str, ...] = (),
-) -> tuple[list[dict], int]:
-    """Select review candidates, fetching CI details only after cheap filters pass."""
-    selected_pull_requests: list[dict] = []
-    incomplete_ci_count = 0
+) -> ReviewQueueSelection:
+    """Classify review candidates after deterministic conflict maintenance."""
+    ready_pull_requests: list[dict] = []
+    failed_pull_requests: list[dict] = []
+    waiting_count = 0
 
     for pull_request in pull_requests:
-        if len(selected_pull_requests) >= limit:
+        if len(ready_pull_requests) >= limit:
             break
         if not is_review_pull_request_base_eligible(pull_request, authenticated_user, excluded_labels):
             continue
 
-        enriched_pull_request = attach_pull_request_status_check_rollup(
+        enriched_pull_request = attach_pull_request_state(
             pull_request,
-            status_check_cache,
+            state_cache,
         )
-        if has_completed_ci_tasks(enriched_pull_request):
-            selected_pull_requests.append(enriched_pull_request)
+        if is_pull_request_conflicting(enriched_pull_request):
+            pr_number = enriched_pull_request["number"]
+            if not resolve_pull_request_merge_conflict(
+                    enriched_pull_request,
+                    reachability_metadata_path,
+            ):
+                add_pull_request_label(pr_number, LABEL_HUMAN_INTERVENTION)
+                print(
+                    f"[Added label '{LABEL_HUMAN_INTERVENTION}' to conflicting "
+                    f"PR #{pr_number}; git could not refresh its head without judgment.]"
+                )
+            state_cache[pr_number] = {
+                **enriched_pull_request,
+                "mergeable": "UNKNOWN",
+                "mergeStateStatus": "UNKNOWN",
+                "statusCheckRollup": {"state": "PENDING"},
+            }
+            waiting_count += 1
+        elif has_successful_pull_request_ci(enriched_pull_request):
+            ready_pull_requests.append(enriched_pull_request)
+        elif has_failed_pull_request_ci(enriched_pull_request):
+            failed_pull_requests.append(enriched_pull_request)
         else:
-            incomplete_ci_count += 1
+            waiting_count += 1
 
-    return selected_pull_requests, incomplete_ci_count
+    return ReviewQueueSelection(
+        ready=ready_pull_requests,
+        failed=failed_pull_requests,
+        waiting_count=waiting_count,
+    )
 
 
 def get_pull_request_url(pr_number: int) -> str:
@@ -3136,22 +3164,26 @@ def process_pull_requests_with_label(
         reachability_metadata_path: str,
         authenticated_user: str,
 ) -> None:
-    """Review labeled pull requests that are CI-complete, not self-authored, and need no human intervention."""
-    status_check_cache: dict[int, list[dict]] = {}
+    """Process labeled PRs, launching review agents only after successful CI.
+
+    §FS-automated-pr-review
+    """
+    state_cache: dict[int, dict] = {}
     fetch_limit = max(limit, 20)
     fixed_pull_requests = get_pull_requests_with_labels(
         [label, LABEL_HUMAN_INTERVENTION_FIXED],
         fetch_limit,
     )
-    fixed_candidate_pull_requests, fixed_incomplete_ci_count = select_ci_complete_review_pull_requests(
+    fixed_selection = select_review_pull_requests(
         fixed_pull_requests,
         authenticated_user,
         limit,
-        status_check_cache,
+        state_cache,
+        reachability_metadata_path,
     )
-    while len(fixed_candidate_pull_requests) < limit and len(fixed_pull_requests) == fetch_limit:
+    while len(fixed_selection.ready) < limit and len(fixed_pull_requests) == fetch_limit:
         print(
-            f"[Found {len(fixed_candidate_pull_requests)} eligible "
+            f"[Found {len(fixed_selection.ready)} eligible "
             f"'{LABEL_HUMAN_INTERVENTION_FIXED}' PR(s) after filtering "
             f"{len(fixed_pull_requests)} fetched PR(s); "
             "fetching more.]"
@@ -3161,19 +3193,32 @@ def process_pull_requests_with_label(
             [label, LABEL_HUMAN_INTERVENTION_FIXED],
             fetch_limit,
         )
-        fixed_candidate_pull_requests, fixed_incomplete_ci_count = select_ci_complete_review_pull_requests(
+        fixed_selection = select_review_pull_requests(
             fixed_pull_requests,
             authenticated_user,
             limit,
-            status_check_cache,
+            state_cache,
+            reachability_metadata_path,
         )
 
     failed_reviews: list[int] = []
-    fixed_pull_requests_to_merge = fixed_candidate_pull_requests[:limit]
-    if fixed_incomplete_ci_count:
+    for pull_request in fixed_selection.failed:
+        try:
+            reconcile_failed_ci_pull_request(pull_request)
+        except Exception as exc:
+            pr_number = pull_request.get("number")
+            print(
+                f"ERROR: Failed CI follow-up for PR #{pr_number}: {exc!r}",
+                file=sys.stderr,
+            )
+            if isinstance(pr_number, int):
+                failed_reviews.append(pr_number)
+
+    fixed_pull_requests_to_merge = fixed_selection.ready[:limit]
+    if fixed_selection.waiting_count:
         print(
-            f"[Skipping {fixed_incomplete_ci_count} '{LABEL_HUMAN_INTERVENTION_FIXED}' "
-            "candidate PR(s) without completed CI tasks.]"
+            f"[Skipping {fixed_selection.waiting_count} "
+            f"'{LABEL_HUMAN_INTERVENTION_FIXED}' candidate PR(s) while CI is pending.]"
         )
     for pull_request in fixed_pull_requests_to_merge:
         pr_number = pull_request["number"]
@@ -3216,27 +3261,41 @@ def process_pull_requests_with_label(
 
     fetch_limit = max(remaining_limit, 20)
     pull_requests = get_pull_requests_with_label(label, fetch_limit)
-    candidate_pull_requests, incomplete_ci_count = select_ci_complete_review_pull_requests(
+    selection = select_review_pull_requests(
         pull_requests,
         authenticated_user,
         remaining_limit,
-        status_check_cache,
+        state_cache,
+        reachability_metadata_path,
         excluded_labels=(LABEL_HUMAN_INTERVENTION_FIXED,),
     )
-    while len(candidate_pull_requests) < remaining_limit and len(pull_requests) == fetch_limit:
+    while len(selection.ready) < remaining_limit and len(pull_requests) == fetch_limit:
         print(
-            f"[Found {len(candidate_pull_requests)} eligible PR(s) after filtering "
+            f"[Found {len(selection.ready)} eligible PR(s) after filtering "
             f"{len(pull_requests)} fetched PR(s); fetching more.]"
         )
         fetch_limit *= 2
         pull_requests = get_pull_requests_with_label(label, fetch_limit)
-        candidate_pull_requests, incomplete_ci_count = select_ci_complete_review_pull_requests(
+        selection = select_review_pull_requests(
             pull_requests,
             authenticated_user,
             remaining_limit,
-            status_check_cache,
+            state_cache,
+            reachability_metadata_path,
             excluded_labels=(LABEL_HUMAN_INTERVENTION_FIXED,),
         )
+
+    for pull_request in selection.failed:
+        try:
+            reconcile_failed_ci_pull_request(pull_request)
+        except Exception as exc:
+            pr_number = pull_request.get("number")
+            print(
+                f"ERROR: Failed CI follow-up for PR #{pr_number}: {exc!r}",
+                file=sys.stderr,
+            )
+            if isinstance(pr_number, int):
+                failed_reviews.append(pr_number)
 
     authored_pull_requests = [
         pull_request for pull_request in pull_requests
@@ -3246,7 +3305,7 @@ def process_pull_requests_with_label(
         pull_request for pull_request in pull_requests
         if pull_request_has_label(pull_request, LABEL_HUMAN_INTERVENTION)
     ]
-    filtered_pull_requests = candidate_pull_requests[:remaining_limit]
+    filtered_pull_requests = selection.ready[:remaining_limit]
 
     if authored_pull_requests:
         print(f"[Skipping {len(authored_pull_requests)} PR(s) authored by {authenticated_user}.]")
@@ -3255,15 +3314,21 @@ def process_pull_requests_with_label(
             f"[Skipping {len(human_intervention_pull_requests)} PR(s) labeled "
             f"'{LABEL_HUMAN_INTERVENTION}'.]"
         )
-    if incomplete_ci_count:
-        print(f"[Skipping {incomplete_ci_count} candidate PR(s) without completed CI tasks.]")
+    if selection.waiting_count:
+        print(f"[Skipping {selection.waiting_count} candidate PR(s) while CI is pending.]")
 
     if not filtered_pull_requests and not fixed_pull_requests_to_merge:
         print(
             f"\n[No open pull requests found with label '{label}' that lack the "
-            f"'{LABEL_HUMAN_INTERVENTION}' label, have completed CI tasks, and are not "
+            f"'{LABEL_HUMAN_INTERVENTION}' label, have successful CI, and are not "
             f"authored by {authenticated_user}.]"
         )
+        if failed_reviews:
+            print(
+                f"ERROR: Pull request processing failed for pull request(s): {failed_reviews}",
+                file=sys.stderr,
+            )
+            sys.exit(1)
         return
 
     for pull_request in filtered_pull_requests:
@@ -4333,8 +4398,12 @@ def resolve_issue_continuation_marker(
 def checkout_continuation_branch(
         worktree_path: str,
         marker: ContinuationMarker,
+        issue_base_commit: str,
 ) -> bool:
-    """Check out and rebase the preserved branch into the isolated worktree."""
+    """Check out and rebase preserved work onto the pinned issue base.
+
+    §FS-forge-run-requirements.4
+    """
     branch_name = marker.preserved_branch
     if not branch_name:
         return False
@@ -4346,9 +4415,8 @@ def checkout_continuation_branch(
         env=git_env,
         check=True,
     )
-    base_ref = fetch_remote_branch(worktree_path, DEFAULT_WORKTREE_BASE_REF)
     rebase_result = subprocess.run(
-        ["git", "rebase", base_ref],
+        ["git", "rebase", issue_base_commit],
         cwd=worktree_path,
         env=git_env,
         stdout=subprocess.PIPE,
@@ -4365,12 +4433,18 @@ def checkout_continuation_branch(
     print(
         (
             f"ERROR: Could not rebase preserved branch {branch_name} onto "
-            f"{DEFAULT_WORKTREE_BASE_REF}; falling back to a clean run.\n{rebase_result.stdout}"
+            f"pinned issue base {issue_base_commit[:12]}; falling back to a clean run.\n"
+            f"{rebase_result.stdout}"
         ),
         file=sys.stderr,
     )
     subprocess.run(["git", "rebase", "--abort"], cwd=worktree_path, env=git_env, check=False)
-    subprocess.run(["git", "switch", "--detach", base_ref], cwd=worktree_path, env=git_env, check=True)
+    subprocess.run(
+        ["git", "switch", "--detach", issue_base_commit],
+        cwd=worktree_path,
+        env=git_env,
+        check=True,
+    )
     marker_path = continuation_marker_path(worktree_path)
     if os.path.exists(marker_path):
         os.remove(marker_path)
@@ -6113,8 +6187,8 @@ def create_detached_worktree(
         raise
 
 
-def fetch_review_base_ref(repo_path: str) -> None:
-    """Refresh the upstream PR base ref used by local review diffs."""
+def fetch_default_base_ref(repo_path: str, operation: str) -> str:
+    """Refresh and return the remote-tracking ref for the default issue base."""
     remote_tracking_ref = f"refs/remotes/origin/{DEFAULT_WORKTREE_BASE_REF}"
     try:
         run_git_transport(
@@ -6128,10 +6202,54 @@ def fetch_review_base_ref(repo_path: str) -> None:
         )
     except GitTransportError as exc:
         print(
-            f"ERROR: Failed to fetch origin/{DEFAULT_WORKTREE_BASE_REF} before PR review: {exc}",
+            f"ERROR: Failed to fetch origin/{DEFAULT_WORKTREE_BASE_REF} before {operation}: {exc}",
             file=sys.stderr,
         )
         raise
+    return remote_tracking_ref
+
+
+def resolve_git_commit(repo_path: str, ref: str) -> str:
+    """Resolve one Git ref to an immutable commit SHA."""
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--verify", f"{ref}^{{commit}}"],
+            cwd=repo_path,
+            env=git_env_limited_to_repo_root(repo_path),
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+        )
+    except subprocess.CalledProcessError as exc:
+        print(f"ERROR: Failed to resolve Git commit {ref}: {exc.stdout}", file=sys.stderr)
+        raise
+    commit = result.stdout.strip()
+    if not commit:
+        print(f"ERROR: Git ref {ref} resolved to an empty commit SHA", file=sys.stderr)
+        raise RuntimeError(f"Git ref {ref} resolved to an empty commit SHA")
+    return commit
+
+
+def fetch_issue_base_commit(repo_path: str) -> str:
+    """Fetch and pin the current origin/master commit before an issue claim.
+
+    The checkout containing Forge may be on a feature branch; only the fetched
+    remote-tracking ref supplies repository state for issue work
+    (§FS-forge-run-requirements.2).
+    """
+    remote_tracking_ref = fetch_default_base_ref(repo_path, "issue claim")
+    commit = resolve_git_commit(repo_path, remote_tracking_ref)
+    log_stage(
+        "issue-base",
+        f"Pinned origin/{DEFAULT_WORKTREE_BASE_REF} at {commit[:12]} for the next issue claim",
+    )
+    return commit
+
+
+def fetch_review_base_ref(repo_path: str) -> None:
+    """Refresh the upstream PR base ref used by local review diffs."""
+    fetch_default_base_ref(repo_path, "PR review")
 
 
 def remove_worktree(repo_path: str, worktree_path: str) -> None:
@@ -6206,8 +6324,12 @@ def create_issue_workspace(
         base_reachability_metadata_path: str,
         canonical_metrics_repo_path: str,
         issue_number: int,
+        issue_base_commit: str = DEFAULT_WORKTREE_BASE_REF,
 ) -> tuple[str, str]:
-    """Create isolated worktrees for reachability-metadata and metrics storage."""
+    """Create an isolated issue worktree from the pinned repository base.
+
+    §FS-forge-run-requirements.4
+    """
     repo_root = get_repo_root()
     worktrees_root = os.path.join(repo_root, "local_repositories", SCRATCH_WORKTREE_DIRNAME)
     os.makedirs(worktrees_root, exist_ok=True)
@@ -6218,8 +6340,8 @@ def create_issue_workspace(
     create_detached_worktree(
         base_reachability_metadata_path,
         worktree_path,
-        DEFAULT_WORKTREE_BASE_REF,
-        f"Failed to create worktree for issue #{issue_number}",
+        issue_base_commit,
+        f"Failed to create worktree for issue #{issue_number} from {issue_base_commit}",
     )
     try:
         require_complete_reachability_repo(worktree_path)
@@ -6540,7 +6662,7 @@ ISSUE_FORM_ACCEPTED = IssueFormVerdict()
 def check_issue_form(issue: dict, label: str, reachability_metadata_path: str) -> IssueFormVerdict:
     """Decide every issue-form rule from the payload and the repository.
 
-    Runs while the exclusive issue claim is held and before worktree creation.
+    Runs inside the pinned issue-base worktree while the exclusive claim is held.
     The rules are decided one at a time and the gate stops at the first failure,
     so the verdict always names the rule and the value that failed it. The only
     rule that leaves the machine is decided last
@@ -6740,6 +6862,28 @@ def reject_issue_form(
     return True
 
 
+def cleanup_claim_preparation_workspace(
+        base_reachability_metadata_path: str,
+        worktree_path: str | None,
+        preflight_info_path: str | None,
+) -> None:
+    """Remove workspace state when claim preparation does not reach dispatch.
+
+    §FS-forge-run-requirements.2
+    """
+    if preflight_info_path:
+        shutil.rmtree(preflight_info_path, ignore_errors=True)
+    if not worktree_path:
+        return
+    try:
+        remove_worktree(base_reachability_metadata_path, worktree_path)
+    except Exception as exc:
+        print(
+            f"ERROR: Failed to clean up unstarted issue worktree {worktree_path}: {exc!r}",
+            file=sys.stderr,
+        )
+
+
 def claim_issue_for_processing(
         issue: dict,
         label: str,
@@ -6750,174 +6894,175 @@ def claim_issue_for_processing(
 ) -> Optional[ClaimedIssue]:
     """Claim an issue and prepare its isolated execution workspace.
 
-    Claiming, assignment validation, and worktree creation are orchestration
-    responsibilities, not strategy logic (§AR-forge-control-plane). This is
-    where the run context of §FS-forge-run-requirements.4 is assembled; moving
-    the rest of it off the driver is
-    §ROADMAP-forge-dispatcher-owned-run-preconditions. Chunked
-    dynamic-access continuation derives its exhaust report from the coordinate
-    in the checked-out repository (§AR-dynamic-access-exhaust-report).
+    Forge code may run from a monitored feature branch, but repository-dependent
+    preconditions and generated work use one freshly fetched, pinned
+    `origin/master` commit (§FS-forge-run-requirements.2,
+    §FS-forge-run-requirements.4).
     """
     enter_phase(PHASE_CLAIM)
     if not refresh_issue_payload_for_claim(issue, label, authenticated_user):
         return None
 
+    try:
+        issue_base_commit = fetch_issue_base_commit(base_reachability_metadata_path)
+    except BaseException as exc:
+        if isinstance(exc, Exception):
+            return None
+        raise
+
     item_id = try_claim_issue(issue, authenticated_user, label, take_blocked_issues)
     if not item_id:
         return None
 
-    # The claim makes form rejection exclusive and no worktree exists yet.
-    # §FS-forge-run-requirements.3
+    worktree_path: str | None = None
+    scratch_metrics_repo_path: str | None = None
+    preflight_info_path: str | None = None
+    handoff_complete = False
+    failure_stage = "claim setup"
     try:
-        form_verdict = check_issue_form(issue, label, base_reachability_metadata_path)
-    except BaseException as exc:
-        revert_issue_claim(
-            item_id,
+        worktree_path, scratch_metrics_repo_path = create_issue_workspace(
+            base_reachability_metadata_path,
+            canonical_metrics_repo_path,
             issue["number"],
-            "issue-form check interrupted by Ctrl+C" if is_interrupt_exception(exc)
-            else f"issue-form check failure ({type(exc).__name__})",
+            issue_base_commit,
         )
-        if isinstance(exc, Exception):
+        preflight_info_path = create_preflight_info_dir(worktree_path)
+
+        # The claim makes form rejection exclusive, while the pinned worktree
+        # makes every repository lookup independent from the Forge code branch.
+        # §FS-forge-run-requirements.3
+        failure_stage = "issue-form check"
+        form_verdict = check_issue_form(issue, label, worktree_path)
+        if form_verdict.rejection is not None:
+            rejection_succeeded = reject_issue_form(issue, form_verdict.rejection)
+            if not rejection_succeeded:
+                revert_issue_claim(
+                    item_id,
+                    issue["number"],
+                    f"issue-form rule '{form_verdict.rejection.rule}' could not close the issue",
+                )
             return None
-        raise
-    if form_verdict.rejection is not None:
-        rejection_succeeded = reject_issue_form(issue, form_verdict.rejection)
-        if not rejection_succeeded:
+        if not form_verdict.accepted:
             revert_issue_claim(
                 item_id,
                 issue["number"],
-                f"issue-form rule '{form_verdict.rejection.rule}' could not close the issue",
+                "issue-form check was undecided",
             )
-        return None
-    if not form_verdict.accepted:
-        revert_issue_claim(
-            item_id,
-            issue["number"],
-            "issue-form check was undecided",
-        )
-        return None
+            return None
 
-    # Preparation now runs with the claim held, so an unexpected failure must
-    # return the issue to Todo just like an expected failed precondition.
-    # §FS-forge-run-requirements.2
-    try:
-        not_for_native_image: bool = maybe_handle_not_for_native_image_issue(
-            issue,
-            base_reachability_metadata_path,
-        )
+        failure_stage = "post-claim preparation"
+        not_for_native_image: bool = maybe_handle_not_for_native_image_issue(issue, worktree_path)
         claim_metadata: Optional[tuple[str, str | None, str | None]] = (
             None
             if not_for_native_image
-            else build_claim_metadata(issue, label, base_reachability_metadata_path)
+            else build_claim_metadata(issue, label, worktree_path)
         )
         continuation_marker: ContinuationMarker | None = (
             resolve_issue_continuation_marker(
                 issue,
                 label,
                 claim_metadata[0],
-                base_reachability_metadata_path,
+                worktree_path,
             )
             if claim_metadata is not None
             else None
         )
-    except BaseException as exc:
-        revert_issue_claim(
-            item_id,
-            issue["number"],
-            "post-claim preparation interrupted by Ctrl+C" if is_interrupt_exception(exc)
-            else f"post-claim preparation failure ({type(exc).__name__})",
-        )
-        if isinstance(exc, Exception):
+
+        if not_for_native_image:
+            revert_issue_claim(
+                item_id,
+                issue["number"],
+                "artifact is marked not-for-native-image",
+            )
             return None
-        raise
+        if claim_metadata is None:
+            revert_issue_claim(
+                item_id,
+                issue["number"],
+                "issue-form accepted but claim metadata could not be built",
+            )
+            return None
 
-    if not_for_native_image:
-        revert_issue_claim(
-            item_id,
-            issue["number"],
-            "artifact is marked not-for-native-image",
-        )
-        return None
+        issue_coordinates, current_coordinates, new_version = claim_metadata
+        if issue_is_resumable(issue) and continuation_marker is None:
+            log_stage(
+                "continuation",
+                (
+                    f"Skipping issue #{issue['number']}: label '{LABEL_RESUMABLE}' is present, "
+                    "but no valid continuation marker was found on a preserved branch."
+                ),
+            )
+            revert_issue_claim(
+                item_id,
+                issue["number"],
+                "resumable issue has no valid continuation marker",
+            )
+            return None
 
-    if claim_metadata is None:
-        revert_issue_claim(
-            item_id,
-            issue["number"],
-            "issue-form accepted but claim metadata could not be built",
-        )
-        return None
-    issue_coordinates, current_coordinates, new_version = claim_metadata
-    if issue_is_resumable(issue) and continuation_marker is None:
-        log_stage(
-            "continuation",
-            (
-                f"Skipping issue #{issue['number']}: label '{LABEL_RESUMABLE}' is present, "
-                "but no valid continuation marker was found on a preserved branch."
-            ),
-        )
-        revert_issue_claim(
-            item_id,
-            issue["number"],
-            "resumable issue has no valid continuation marker",
-        )
-        return None
-    try:
+        failure_stage = "chunked-dynamic-access setup"
         chunked_exhaust_report = resolve_chunked_dynamic_access_exhaust_report(
             issue,
-            base_reachability_metadata_path,
+            worktree_path,
             issue_coordinates,
             continuation_marker,
         )
-    except Exception as exc:
-        print(
-            f"ERROR: Cannot resume chunked-dynamic-access issue #{issue['number']}: {exc}",
-            file=sys.stderr,
-        )
-        revert_issue_claim(
-            item_id,
-            issue["number"],
-            f"chunked-dynamic-access setup failure ({type(exc).__name__})",
-        )
-        return None
 
-    try:
-        worktree_path, scratch_metrics_repo_path = create_issue_workspace(
-            base_reachability_metadata_path,
-            canonical_metrics_repo_path,
-            issue["number"],
-        )
-        preflight_info_path = create_preflight_info_dir(worktree_path)
-        if continuation_marker is not None and not checkout_continuation_branch(worktree_path, continuation_marker):
+        failure_stage = "claim setup"
+        if continuation_marker is not None and not checkout_continuation_branch(
+                worktree_path,
+                continuation_marker,
+                issue_base_commit,
+        ):
             continuation_marker = None
         if chunked_exhaust_report is not None:
             verify_chunked_dynamic_access_base_contains_published_commit(
                 chunked_exhaust_report,
                 worktree_path,
             )
+
+        claimed_issue = ClaimedIssue(
+            issue=issue,
+            label=label,
+            item_id=item_id,
+            base_reachability_metadata_path=base_reachability_metadata_path,
+            worktree_path=worktree_path,
+            scratch_metrics_repo_path=scratch_metrics_repo_path,
+            issue_coordinates=issue_coordinates,
+            issue_base_commit=issue_base_commit,
+            current_coordinates=current_coordinates,
+            new_version=new_version,
+            preflight_info_path=preflight_info_path,
+            continuation_marker=continuation_marker,
+        )
+        handoff_complete = True
+        return claimed_issue
     except BaseException as exc:
+        if failure_stage == "chunked-dynamic-access setup":
+            print(
+                f"ERROR: Cannot resume chunked-dynamic-access issue #{issue['number']}: {exc}",
+                file=sys.stderr,
+            )
+        else:
+            print(
+                f"ERROR: Issue #{issue['number']} {failure_stage} failed: {exc!r}",
+                file=sys.stderr,
+            )
         revert_issue_claim(
             item_id,
             issue["number"],
-            "claim setup interrupted by Ctrl+C" if is_interrupt_exception(exc)
-            else f"claim setup failure ({type(exc).__name__})",
+            f"{failure_stage} interrupted by Ctrl+C" if is_interrupt_exception(exc)
+            else f"{failure_stage} failure ({type(exc).__name__})",
         )
         if isinstance(exc, Exception):
             return None
         raise
-
-    return ClaimedIssue(
-        issue=issue,
-        label=label,
-        item_id=item_id,
-        base_reachability_metadata_path=base_reachability_metadata_path,
-        worktree_path=worktree_path,
-        scratch_metrics_repo_path=scratch_metrics_repo_path,
-        issue_coordinates=issue_coordinates,
-        current_coordinates=current_coordinates,
-        new_version=new_version,
-        preflight_info_path=preflight_info_path,
-        continuation_marker=continuation_marker,
-    )
+    finally:
+        if not handoff_complete:
+            cleanup_claim_preparation_workspace(
+                base_reachability_metadata_path,
+                worktree_path,
+                preflight_info_path,
+            )
 
 
 def build_fixture_claimed_issue(
@@ -7011,6 +7156,7 @@ def build_fixture_claimed_issue(
         worktree_path=worktree_path,
         scratch_metrics_repo_path=scratch_metrics_repo_path,
         issue_coordinates=issue_coordinates,
+        issue_base_commit=resolve_git_commit(worktree_path, "HEAD"),
         current_coordinates=current_coordinates,
         new_version=new_version,
         preflight_info_path=preflight_info_path,

@@ -1,0 +1,117 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package com_oracle_database_jdbc.ojdbc11;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.nio.file.Path;
+import java.security.Provider;
+import java.security.Security;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Properties;
+import java.util.Set;
+import javax.net.ssl.SSLSocketFactory;
+import oracle.jdbc.OracleConnection;
+import oracle.jdbc.diagnostics.CommonDiagnosable;
+import oracle.net.nt.CustomSSLSocketFactory;
+import oracle.security.pki.OraclePKIProvider;
+import oracle.security.pki.OracleWallet;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+public class CustomSSLSocketFactoryTest {
+    @TempDir
+    Path walletDirectory;
+
+    @Test
+    void loadsKnownProviderForAnAutoLoginWallet() throws Exception {
+        char[] password = "wallet-password".toCharArray();
+        try {
+            OracleWallet wallet = new OracleWallet();
+            wallet.create(password);
+            wallet.saveAs(walletDirectory.toString());
+            wallet.createSSO();
+            wallet.saveSSO();
+
+            Properties properties = new Properties();
+            properties.setProperty(
+                    OracleConnection.CONNECTION_PROPERTY_THIN_JAVAX_NET_SSL_KEYSTORE,
+                    walletDirectory.resolve("cwallet.sso").toString());
+            properties.setProperty(
+                    OracleConnection.CONNECTION_PROPERTY_THIN_JAVAX_NET_SSL_KEYSTORETYPE,
+                    "SSO");
+
+            String oraclePkiProviderName = new OraclePKIProvider().getName();
+            ProviderRegistration[] registrations =
+                    removeProvidersFor("KeyStore.SSO", oraclePkiProviderName);
+            try {
+                assertThat(Security.getProviders("KeyStore.SSO")).isNull();
+
+                SSLSocketFactory socketFactory = CustomSSLSocketFactory.getSSLSocketFactory(
+                        properties, null, CommonDiagnosable.getInstance());
+
+                assertThat(socketFactory.getDefaultCipherSuites()).isNotEmpty();
+                assertThat(Security.getProvider(oraclePkiProviderName)).isNull();
+            } finally {
+                restoreProviders(registrations);
+            }
+        } finally {
+            Arrays.fill(password, '\0');
+        }
+    }
+
+    private static ProviderRegistration[] removeProvidersFor(
+            String filter, String knownProviderName) {
+        Set<Provider> providers = new LinkedHashSet<>();
+        Provider[] providersForFilter = Security.getProviders(filter);
+        if (providersForFilter != null) {
+            providers.addAll(Arrays.asList(providersForFilter));
+        }
+        Provider knownProvider = Security.getProvider(knownProviderName);
+        if (knownProvider != null) {
+            providers.add(knownProvider);
+        }
+
+        ProviderRegistration[] registrations = new ProviderRegistration[providers.size()];
+        int index = 0;
+        for (Provider provider : providers) {
+            registrations[index++] =
+                    new ProviderRegistration(provider, providerPosition(provider.getName()));
+        }
+        for (Provider provider : providers) {
+            Security.removeProvider(provider.getName());
+        }
+        return registrations;
+    }
+
+    private static void restoreProviders(ProviderRegistration[] registrations) {
+        for (ProviderRegistration registration : registrations) {
+            Security.insertProviderAt(registration.provider, registration.position);
+        }
+    }
+
+    private static int providerPosition(String providerName) {
+        Provider[] providers = Security.getProviders();
+        for (int index = 0; index < providers.length; index++) {
+            if (providers[index].getName().equals(providerName)) {
+                return index + 1;
+            }
+        }
+        return providers.length + 1;
+    }
+
+    private static final class ProviderRegistration {
+        private final Provider provider;
+        private final int position;
+
+        private ProviderRegistration(Provider provider, int position) {
+            this.provider = provider;
+            this.position = position;
+        }
+    }
+}

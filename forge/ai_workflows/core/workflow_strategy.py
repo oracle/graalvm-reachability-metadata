@@ -49,6 +49,7 @@ from utility_scripts.native_test_verification import (
     verify_native_test_passes,
 )
 from utility_scripts.issue_requested_metadata import NO_REPORTER_METADATA_CONTEXT
+from utility_scripts.task_logs import display_log_path
 from utility_scripts.library_preparation_preflight import NO_LIBRARY_PREPARATION_PREFLIGHT_CONTEXT
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_stage
@@ -331,7 +332,9 @@ class WorkflowStrategy(ABC):
             if self.post_generation_intervention is None:
                 self.post_generation_intervention = {
                     "stage": POST_GENERATION_STAGE_METADATA_FIX_FAILED,
-                    "intervention_file": os.path.relpath(intervention_path, repo_path),
+                    # The record lives with the run's logs, not in the published
+                    # tree (§FS-forge-run-status).
+                    "intervention_file": display_log_path(intervention_path),
                     "analysis_markdown": intervention_markdown,
                 }
             return SUCCESS_WITH_INTERVENTION_STATUS

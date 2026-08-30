@@ -118,8 +118,17 @@ def _pull_request(
     }
 
 
-def _completed_status_check_rollup() -> list[dict]:
-    return [{"status": "COMPLETED"}]
+def _pull_request_state(number: int, ci_state: str, mergeable: str = "MERGEABLE") -> dict:
+    return {
+        "number": number,
+        "headRefOid": f"head-{number}",
+        "headRefName": f"ai/kimeta/pr-{number}",
+        "isCrossRepository": False,
+        "reviewDecision": "REVIEW_REQUIRED",
+        "mergeable": mergeable,
+        "mergeStateStatus": "CLEAN" if mergeable == "MERGEABLE" else "DIRTY",
+        "statusCheckRollup": {"state": ci_state},
+    }
 
 
 def _preflight(
@@ -1239,7 +1248,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                 f"q=repo:{forge_metadata.REPO} is:issue is:open "
                 f'label:"{forge_metadata.LABEL_LIBRARY_NEW}" -label:"{forge_metadata.LABEL_NOT_FOR_NATIVE_IMAGE}"'
             ),
-            "-f", "sort=updated",
+            "-f", "sort=created",
             "-f", "order=desc",
             "-F", "per_page=100",
             "-F", "page=3",
@@ -1269,7 +1278,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                 f"q=repo:{forge_metadata.REPO} is:issue is:open "
                 f'label:"{forge_metadata.LABEL_LIBRARY_NEW}" -label:"{forge_metadata.LABEL_NOT_FOR_NATIVE_IMAGE}"'
             ),
-            "-f", "sort=updated",
+            "-f", "sort=created",
             "-f", "order=desc",
             "-F", "per_page=100",
             "-F", "page=1",
@@ -1868,9 +1877,56 @@ class IssueFormRejectionTests(unittest.TestCase):
 
 
 class IssueFormGateClaimOrderTests(unittest.TestCase):
-    """The form gate runs with a claim and before any worktree."""
+    """Claim preparation pins a fresh base and checks the isolated worktree."""
 
-    def test_malformed_issue_is_claimed_before_rejection(self) -> None:
+    def test_issue_base_is_fetched_and_resolved(self) -> None:
+        completed_process = subprocess.CompletedProcess(args=[], returncode=0, stdout="")
+
+        with patch.object(
+                forge_metadata,
+                "run_git_transport",
+                return_value=completed_process,
+        ) as run, patch.object(
+                forge_metadata,
+                "resolve_git_commit",
+                return_value="base-sha",
+        ) as resolve:
+            commit = forge_metadata.fetch_issue_base_commit("/repo")
+
+        self.assertEqual(commit, "base-sha")
+        run.assert_called_once_with(
+            [
+                "fetch",
+                "--quiet",
+                "origin",
+                "+master:refs/remotes/origin/master",
+            ],
+            cwd="/repo",
+        )
+        resolve.assert_called_once_with("/repo", "refs/remotes/origin/master")
+
+    def test_base_fetch_failure_leaves_issue_unclaimed(self) -> None:
+        with patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
+                patch.object(
+                    forge_metadata,
+                    "fetch_issue_base_commit",
+                    side_effect=RuntimeError("origin unavailable"),
+                ), \
+                patch.object(forge_metadata, "try_claim_issue") as claim, \
+                patch.object(forge_metadata, "create_issue_workspace") as workspace:
+            claimed_issue = forge_metadata.claim_issue_for_processing(
+                _form_issue(),
+                forge_metadata.LABEL_LIBRARY_NEW,
+                "/repo",
+                "/metrics",
+                "runner",
+            )
+
+        self.assertIsNone(claimed_issue)
+        claim.assert_not_called()
+        workspace.assert_not_called()
+
+    def test_malformed_issue_uses_pinned_worktree_before_rejection(self) -> None:
         issue = _form_issue(title="Add support for Widget")
         rejection = forge_metadata.IssueFormRejection(
             rule=forge_metadata.ISSUE_FORM_RULE_MAVEN_COORDINATES,
@@ -1882,14 +1938,24 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
         with patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
                 patch.object(
                     forge_metadata,
-                    "maybe_handle_not_for_native_image_issue",
-                    return_value=False,
+                    "fetch_issue_base_commit",
+                    side_effect=lambda *_args: events.append("base") or "base-sha",
                 ), \
                 patch.object(
                     forge_metadata,
                     "try_claim_issue",
                     side_effect=lambda *_args: events.append("claim") or "item-4242",
-                ) as claim, \
+                ), \
+                patch.object(
+                    forge_metadata,
+                    "create_issue_workspace",
+                    side_effect=lambda *_args: events.append("workspace") or ("/worktree", "/metrics"),
+                ) as workspace, \
+                patch.object(
+                    forge_metadata,
+                    "create_preflight_info_dir",
+                    return_value="/preflight",
+                ), \
                 patch.object(
                     forge_metadata,
                     "check_issue_form",
@@ -1897,13 +1963,17 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
                         events.append("check")
                         or forge_metadata.IssueFormVerdict(rejection=rejection)
                     ),
-                ), \
+                ) as check, \
                 patch.object(
                     forge_metadata,
                     "reject_issue_form",
                     side_effect=lambda *_args: events.append("reject") or True,
                 ) as reject, \
-                patch.object(forge_metadata, "create_issue_workspace") as workspace:
+                patch.object(
+                    forge_metadata,
+                    "cleanup_claim_preparation_workspace",
+                    side_effect=lambda *_args: events.append("cleanup"),
+                ) as cleanup:
             claimed_issue = forge_metadata.claim_issue_for_processing(
                 issue,
                 forge_metadata.LABEL_LIBRARY_NEW,
@@ -1913,19 +1983,26 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
             )
 
         self.assertIsNone(claimed_issue)
-        self.assertEqual(events, ["claim", "check", "reject"])
-        claim.assert_called_once()
+        self.assertEqual(events, ["base", "claim", "workspace", "check", "reject", "cleanup"])
+        workspace.assert_called_once_with("/repo", "/metrics", 4242, "base-sha")
+        check.assert_called_once_with(issue, forge_metadata.LABEL_LIBRARY_NEW, "/worktree")
         reject.assert_called_once_with(issue, rejection)
-        workspace.assert_not_called()
+        cleanup.assert_called_once_with("/repo", "/worktree", "/preflight")
 
-    def test_undecided_form_releases_the_claim_without_a_worktree(self) -> None:
+    def test_undecided_form_releases_claim_and_worktree(self) -> None:
         with patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
+                patch.object(forge_metadata, "fetch_issue_base_commit", return_value="base-sha"), \
+                patch.object(forge_metadata, "try_claim_issue", return_value="item-4242"), \
                 patch.object(
                     forge_metadata,
-                    "maybe_handle_not_for_native_image_issue",
-                    return_value=False,
+                    "create_issue_workspace",
+                    return_value=("/worktree", "/metrics"),
                 ), \
-                patch.object(forge_metadata, "try_claim_issue", return_value="item-4242") as claim, \
+                patch.object(
+                    forge_metadata,
+                    "create_preflight_info_dir",
+                    return_value="/preflight",
+                ), \
                 patch.object(
                     forge_metadata,
                     "check_issue_form",
@@ -1935,7 +2012,7 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
                 ), \
                 patch.object(forge_metadata, "reject_issue_form") as reject, \
                 patch.object(forge_metadata, "revert_issue_claim") as revert, \
-                patch.object(forge_metadata, "create_issue_workspace") as workspace:
+                patch.object(forge_metadata, "cleanup_claim_preparation_workspace") as cleanup:
             claimed_issue = forge_metadata.claim_issue_for_processing(
                 _form_issue(),
                 forge_metadata.LABEL_LIBRARY_NEW,
@@ -1945,35 +2022,37 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
             )
 
         self.assertIsNone(claimed_issue)
-        claim.assert_called_once()
         reject.assert_not_called()
-        revert.assert_called_once_with(
-            "item-4242",
-            4242,
-            "issue-form check was undecided",
-        )
-        workspace.assert_not_called()
+        revert.assert_called_once_with("item-4242", 4242, "issue-form check was undecided")
+        cleanup.assert_called_once_with("/repo", "/worktree", "/preflight")
 
-    def test_failed_rejection_releases_the_claim_for_retry(self) -> None:
+    def test_failed_rejection_releases_claim_and_worktree(self) -> None:
         rejection = forge_metadata.IssueFormRejection(
             rule=forge_metadata.ISSUE_FORM_RULE_MAVEN_COORDINATES,
             offending_value="Add support for Widget",
             requirement="Name the coordinates.",
         )
         with patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
+                patch.object(forge_metadata, "fetch_issue_base_commit", return_value="base-sha"), \
+                patch.object(forge_metadata, "try_claim_issue", return_value="item-4242"), \
                 patch.object(
                     forge_metadata,
-                    "maybe_handle_not_for_native_image_issue",
-                    return_value=False,
+                    "create_issue_workspace",
+                    return_value=("/worktree", "/metrics"),
                 ), \
-                patch.object(forge_metadata, "try_claim_issue", return_value="item-4242"), \
+                patch.object(
+                    forge_metadata,
+                    "create_preflight_info_dir",
+                    return_value="/preflight",
+                ), \
                 patch.object(
                     forge_metadata,
                     "check_issue_form",
                     return_value=forge_metadata.IssueFormVerdict(rejection=rejection),
                 ), \
                 patch.object(forge_metadata, "reject_issue_form", return_value=False), \
-                patch.object(forge_metadata, "revert_issue_claim") as revert:
+                patch.object(forge_metadata, "revert_issue_claim") as revert, \
+                patch.object(forge_metadata, "cleanup_claim_preparation_workspace") as cleanup:
             claimed_issue = forge_metadata.claim_issue_for_processing(
                 _form_issue(title="Add support for Widget"),
                 forge_metadata.LABEL_LIBRARY_NEW,
@@ -1988,10 +2067,22 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
             4242,
             "issue-form rule 'maven-coordinates' could not close the issue",
         )
+        cleanup.assert_called_once_with("/repo", "/worktree", "/preflight")
 
-    def test_unexpected_post_claim_failure_releases_the_claim(self) -> None:
+    def test_unexpected_post_claim_failure_releases_claim_and_worktree(self) -> None:
         with patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
+                patch.object(forge_metadata, "fetch_issue_base_commit", return_value="base-sha"), \
                 patch.object(forge_metadata, "try_claim_issue", return_value="item-4242"), \
+                patch.object(
+                    forge_metadata,
+                    "create_issue_workspace",
+                    return_value=("/worktree", "/metrics"),
+                ), \
+                patch.object(
+                    forge_metadata,
+                    "create_preflight_info_dir",
+                    return_value="/preflight",
+                ), \
                 patch.object(
                     forge_metadata,
                     "check_issue_form",
@@ -2006,11 +2097,148 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
                     forge_metadata,
                     "build_claim_metadata",
                     side_effect=RuntimeError("invalid metadata index"),
-                ), \
+                ) as build_metadata, \
                 patch.object(forge_metadata, "revert_issue_claim") as revert, \
-                patch.object(forge_metadata, "create_issue_workspace") as workspace:
+                patch.object(forge_metadata, "cleanup_claim_preparation_workspace") as cleanup:
             claimed_issue = forge_metadata.claim_issue_for_processing(
                 _form_issue(),
+                forge_metadata.LABEL_LIBRARY_NEW,
+                "/repo",
+                "/metrics",
+                "runner",
+            )
+
+        self.assertIsNone(claimed_issue)
+        build_metadata.assert_called_once_with(
+            unittest.mock.ANY,
+            forge_metadata.LABEL_LIBRARY_NEW,
+            "/worktree",
+        )
+        revert.assert_called_once_with(
+            "item-4242",
+            4242,
+            "post-claim preparation failure (RuntimeError)",
+        )
+        cleanup.assert_called_once_with("/repo", "/worktree", "/preflight")
+
+    def test_successful_claim_uses_one_pinned_base_for_all_repository_state(self) -> None:
+        issue = _form_issue()
+        with patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
+                patch.object(forge_metadata, "fetch_issue_base_commit", return_value="base-sha"), \
+                patch.object(forge_metadata, "try_claim_issue", return_value="item-4242"), \
+                patch.object(
+                    forge_metadata,
+                    "create_issue_workspace",
+                    return_value=("/worktree", "/metrics"),
+                ) as workspace, \
+                patch.object(
+                    forge_metadata,
+                    "create_preflight_info_dir",
+                    return_value="/preflight",
+                ), \
+                patch.object(
+                    forge_metadata,
+                    "check_issue_form",
+                    return_value=forge_metadata.ISSUE_FORM_ACCEPTED,
+                ) as check, \
+                patch.object(
+                    forge_metadata,
+                    "maybe_handle_not_for_native_image_issue",
+                    return_value=False,
+                ) as native_image, \
+                patch.object(
+                    forge_metadata,
+                    "build_claim_metadata",
+                    return_value=("org.example:widget:1.2.3", None, None),
+                ) as build_metadata, \
+                patch.object(
+                    forge_metadata,
+                    "resolve_issue_continuation_marker",
+                    return_value=None,
+                ) as continuation, \
+                patch.object(
+                    forge_metadata,
+                    "resolve_chunked_dynamic_access_exhaust_report",
+                    return_value=None,
+                ) as exhaust_report, \
+                patch.object(forge_metadata, "cleanup_claim_preparation_workspace") as cleanup:
+            claimed_issue = forge_metadata.claim_issue_for_processing(
+                issue,
+                forge_metadata.LABEL_LIBRARY_NEW,
+                "/repo",
+                "/canonical-metrics",
+                "runner",
+            )
+
+        self.assertIsNotNone(claimed_issue)
+        assert claimed_issue is not None
+        self.assertEqual(claimed_issue.issue_base_commit, "base-sha")
+        self.assertEqual(claimed_issue.worktree_path, "/worktree")
+        workspace.assert_called_once_with("/repo", "/canonical-metrics", 4242, "base-sha")
+        check.assert_called_once_with(issue, forge_metadata.LABEL_LIBRARY_NEW, "/worktree")
+        native_image.assert_called_once_with(issue, "/worktree")
+        build_metadata.assert_called_once_with(issue, forge_metadata.LABEL_LIBRARY_NEW, "/worktree")
+        continuation.assert_called_once_with(
+            issue,
+            forge_metadata.LABEL_LIBRARY_NEW,
+            "org.example:widget:1.2.3",
+            "/worktree",
+        )
+        exhaust_report.assert_called_once_with(
+            issue,
+            "/worktree",
+            "org.example:widget:1.2.3",
+            None,
+        )
+        cleanup.assert_not_called()
+
+    def test_missing_chunk_report_returns_claim_to_todo(self) -> None:
+        issue = _form_issue(label_names=[
+            forge_metadata.LABEL_LIBRARY_NEW,
+            forge_metadata.LABEL_CHUNKED_DYNAMIC_ACCESS,
+        ])
+        with patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
+                patch.object(forge_metadata, "fetch_issue_base_commit", return_value="base-sha"), \
+                patch.object(forge_metadata, "try_claim_issue", return_value="item-4242"), \
+                patch.object(
+                    forge_metadata,
+                    "create_issue_workspace",
+                    return_value=("/worktree", "/metrics"),
+                ), \
+                patch.object(
+                    forge_metadata,
+                    "create_preflight_info_dir",
+                    return_value="/preflight",
+                ), \
+                patch.object(
+                    forge_metadata,
+                    "check_issue_form",
+                    return_value=forge_metadata.ISSUE_FORM_ACCEPTED,
+                ), \
+                patch.object(
+                    forge_metadata,
+                    "maybe_handle_not_for_native_image_issue",
+                    return_value=False,
+                ), \
+                patch.object(
+                    forge_metadata,
+                    "build_claim_metadata",
+                    return_value=("org.example:widget:1.2.3", None, None),
+                ), \
+                patch.object(
+                    forge_metadata,
+                    "resolve_issue_continuation_marker",
+                    return_value=None,
+                ), \
+                patch.object(
+                    forge_metadata,
+                    "resolve_chunked_dynamic_access_exhaust_report",
+                    side_effect=RuntimeError("missing report"),
+                ), \
+                patch.object(forge_metadata, "revert_issue_claim") as revert, \
+                patch.object(forge_metadata, "cleanup_claim_preparation_workspace") as cleanup:
+            claimed_issue = forge_metadata.claim_issue_for_processing(
+                issue,
                 forge_metadata.LABEL_LIBRARY_NEW,
                 "/repo",
                 "/metrics",
@@ -2021,9 +2249,47 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
         revert.assert_called_once_with(
             "item-4242",
             4242,
-            "post-claim preparation failure (RuntimeError)",
+            "chunked-dynamic-access setup failure (RuntimeError)",
         )
-        workspace.assert_not_called()
+        cleanup.assert_called_once_with("/repo", "/worktree", "/preflight")
+
+    def test_continuation_rebases_onto_pinned_base_without_refetching_master(self) -> None:
+        marker = SimpleNamespace(
+            preserved_branch="ai/runner/preserved",
+            issue_number=4242,
+            continue_from="explore",
+        )
+        completed = subprocess.CompletedProcess(args=[], returncode=0, stdout="")
+
+        with patch.object(
+                forge_metadata,
+                "fetch_remote_branch",
+                return_value="refs/remotes/origin/ai/runner/preserved",
+        ) as fetch_branch, patch.object(
+                forge_metadata.subprocess,
+                "run",
+                return_value=completed,
+        ) as run:
+            resumed = forge_metadata.checkout_continuation_branch(
+                "/worktree",
+                marker,
+                "base-sha",
+            )
+
+        self.assertTrue(resumed)
+        fetch_branch.assert_called_once_with("/worktree", "ai/runner/preserved")
+        self.assertIn(
+            call(
+                ["git", "rebase", "base-sha"],
+                cwd="/worktree",
+                env=unittest.mock.ANY,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                check=False,
+            ),
+            run.call_args_list,
+        )
 
 
 class SingleIssueProcessingTests(unittest.TestCase):
@@ -2605,7 +2871,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
         self.assertEqual("number,title,url,author,labels", args[-1])
         self.assertNotIn("statusCheckRollup", args)
 
-    def test_process_pull_requests_fetches_ci_only_after_cheap_filters(self) -> None:
+    def test_process_pull_requests_fetches_state_only_after_cheap_filters(self) -> None:
         buried_pull_requests = [
             _pull_request(
                 number,
@@ -2629,9 +2895,9 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                 ) as get_pull_requests, \
                 patch.object(
                     forge_metadata,
-                    "get_pull_request_status_check_rollup",
-                    return_value=_completed_status_check_rollup(),
-                ) as get_status_checks, \
+                    "get_pull_request_state",
+                    return_value=_pull_request_state(100, "SUCCESS"),
+                ) as get_pull_request_state, \
                 patch.object(forge_metadata, "review_pull_request", return_value=True) as review_pull_request, \
                 patch.object(
                     forge_metadata,
@@ -2649,7 +2915,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
             call(forge_metadata.LABEL_LIBRARY_NEW, 20),
             call(forge_metadata.LABEL_LIBRARY_NEW, 40),
         ])
-        get_status_checks.assert_called_once_with(100)
+        get_pull_request_state.assert_called_once_with(100)
         review_pull_request.assert_called_once_with(
             100,
             "/tmp/reachability",
@@ -2657,6 +2923,77 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
             None,
         )
         reconcile_reviewed_pull_request.assert_called_once_with(100, "/tmp/reachability")
+
+    def test_process_pull_requests_reviews_only_successful_ci(self) -> None:
+        pull_requests = [
+            _pull_request(1, [forge_metadata.LABEL_LIBRARY_NEW]),
+            _pull_request(2, [forge_metadata.LABEL_LIBRARY_NEW]),
+            _pull_request(3, [forge_metadata.LABEL_LIBRARY_NEW]),
+        ]
+        states = {
+            1: _pull_request_state(1, "FAILURE"),
+            2: _pull_request_state(2, "PENDING"),
+            3: _pull_request_state(3, "SUCCESS"),
+        }
+
+        with patch.object(forge_metadata, "get_pull_requests_with_labels", return_value=[]), \
+                patch.object(forge_metadata, "get_pull_requests_with_label", return_value=pull_requests), \
+                patch.object(
+                    forge_metadata,
+                    "get_pull_request_state",
+                    side_effect=lambda number: states[number],
+                ), \
+                patch.object(
+                    forge_metadata,
+                    "reconcile_failed_ci_pull_request",
+                ) as reconcile_failed_ci, \
+                patch.object(forge_metadata, "review_pull_request", return_value=True) as review_pull_request, \
+                patch.object(
+                    forge_metadata,
+                    "reconcile_reviewed_pull_request",
+                    return_value=True,
+                ) as reconcile_reviewed_pull_request:
+            forge_metadata.process_pull_requests_with_label(
+                forge_metadata.LABEL_LIBRARY_NEW,
+                1,
+                "/tmp/reachability",
+                "automation-user",
+            )
+
+        self.assertEqual(1, reconcile_failed_ci.call_args.args[0]["number"])
+        review_pull_request.assert_called_once_with(
+            3,
+            "/tmp/reachability",
+            "https://github.com/oracle/graalvm-reachability-metadata/pull/3",
+            None,
+        )
+        reconcile_reviewed_pull_request.assert_called_once_with(3, "/tmp/reachability")
+
+    def test_process_pull_requests_refreshes_conflict_before_review(self) -> None:
+        pull_request = _pull_request(4, [forge_metadata.LABEL_LIBRARY_NEW])
+        state = _pull_request_state(4, "FAILURE", mergeable="CONFLICTING")
+
+        with patch.object(forge_metadata, "get_pull_requests_with_labels", return_value=[]), \
+                patch.object(forge_metadata, "get_pull_requests_with_label", return_value=[pull_request]), \
+                patch.object(forge_metadata, "get_pull_request_state", return_value=state), \
+                patch.object(
+                    forge_metadata,
+                    "resolve_pull_request_merge_conflict",
+                    return_value=True,
+                ) as resolve_conflict, \
+                patch.object(forge_metadata, "reconcile_failed_ci_pull_request") as reconcile_failed_ci, \
+                patch.object(forge_metadata, "review_pull_request") as review_pull_request:
+            forge_metadata.process_pull_requests_with_label(
+                forge_metadata.LABEL_LIBRARY_NEW,
+                1,
+                "/tmp/reachability",
+                "automation-user",
+            )
+
+        self.assertEqual(4, resolve_conflict.call_args.args[0]["number"])
+        self.assertEqual("/tmp/reachability", resolve_conflict.call_args.args[1])
+        reconcile_failed_ci.assert_not_called()
+        review_pull_request.assert_not_called()
 
 
 class IssueClaimCacheTests(unittest.TestCase):
@@ -4184,7 +4521,7 @@ class PullRequestReviewTests(unittest.TestCase):
         rerun_failed_jobs.assert_called_once_with(3513, "abc123")
         merge_pull_request.assert_not_called()
 
-    def test_reconcile_unapproved_pr_with_failed_ci_does_not_rerun_failed_jobs(self) -> None:
+    def test_reconcile_unapproved_pr_with_failed_ci_reruns_failed_jobs(self) -> None:
         pr = {
             "number": 3513,
             "url": "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
@@ -4199,11 +4536,11 @@ class PullRequestReviewTests(unittest.TestCase):
                 patch.object(
                     forge_metadata,
                     "rerun_failed_pull_request_workflow_jobs",
+                    return_value=1,
                 ) as rerun_failed_jobs, \
                 patch.object(forge_metadata, "merge_pull_request") as merge_pull_request:
             self.assertTrue(forge_metadata.reconcile_reviewed_pull_request(3513))
-
-        rerun_failed_jobs.assert_not_called()
+        rerun_failed_jobs.assert_called_once_with(3513, "abc123")
         merge_pull_request.assert_not_called()
 
     def test_reconcile_approved_conflicting_pr_resolves_the_conflict_instead_of_merging(self) -> None:
@@ -4230,7 +4567,7 @@ class PullRequestReviewTests(unittest.TestCase):
         resolve_conflict.assert_called_once_with(pr, "/tmp/reachability")
         merge_pull_request.assert_not_called()
 
-    def test_reconcile_conflicting_pr_without_successful_ci_is_left_untouched(self) -> None:
+    def test_reconcile_conflicting_pr_refreshes_before_ci_succeeds(self) -> None:
         pr = {
             "number": 3513,
             "url": "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
@@ -4249,8 +4586,7 @@ class PullRequestReviewTests(unittest.TestCase):
                 ) as resolve_conflict, \
                 patch.object(forge_metadata, "merge_pull_request") as merge_pull_request:
             self.assertTrue(forge_metadata.reconcile_reviewed_pull_request(3513, "/tmp/reachability"))
-
-        resolve_conflict.assert_not_called()
+        resolve_conflict.assert_called_once_with(pr, "/tmp/reachability")
         merge_pull_request.assert_not_called()
 
     def test_resolve_pull_request_merge_conflict_leaves_fork_heads_alone(self) -> None:

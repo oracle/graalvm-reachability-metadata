@@ -39,6 +39,9 @@ TEST_AGENT_ALIAS="${FORGE_TEST_AGENT_ALIAS:-}"
 AGENT_FAMILY="${FORGE_AGENT_FAMILY:-}"
 FAIL_FAST="${FORGE_FAIL_FAST:-0}"
 USER_REQUESTED_ONLY="${FORGE_USER_REQUESTED_ISSUES_ONLY:-0}"
+# Explicitly bypass only the open-blocker claim predicate.
+# §FS-forge-run-requirements.2
+TAKE_BLOCKED_ISSUES="${FORGE_TAKE_BLOCKED_ISSUES:-0}"
 GRAALVM_VERSION_CHECK="${FORGE_GRAALVM_VERSION_CHECK:-strict}"
 WORK_STRATEGY_NAME="${FORGE_STRATEGY_NAME:-dynamic_access_bulk_pi_gpt-5.6-sol}"
 GITHUB_RATE_LIMIT_EXIT_CODE=75
@@ -162,6 +165,9 @@ Options:
       Fetch only user-requested issue queue items by excluding configured
       automation and maintainer issue authors. Defaults to
       FORGE_USER_REQUESTED_ISSUES_ONLY, then 0.
+  --take-blocked-issues
+      Claim issues even when GitHub shows open blocking issues. This bypasses
+      only the blocker check. Defaults to FORGE_TAKE_BLOCKED_ISSUES, then 0.
   --graalvm-version-check {strict,warn,off}
       How host validation treats a GraalVM version mismatch: strict stops the
       worker, warn reports it, off skips the version match. Native Image and the
@@ -208,6 +214,9 @@ Environment:
   FORGE_USER_REQUESTED_ISSUES_ONLY
       Set to 1 to fetch only user-requested issue queue items, or 0 to process
       all eligible issue authors. Defaults to 0.
+  FORGE_TAKE_BLOCKED_ISSUES
+      Set to 1 to claim issues with open blockers, or 0 to leave them queued.
+      Defaults to 0.
   FORGE_LIBRARY_REVIEW_LIMIT, FORGE_JAVAC_REVIEW_LIMIT, FORGE_JAVA_RUN_REVIEW_LIMIT,
   FORGE_NI_RUN_REVIEW_LIMIT, FORGE_BULK_UPDATE_REVIEW_LIMIT
       Override FORGE_REVIEW_LIMIT for one default review queue.
@@ -474,6 +483,7 @@ export_work_configuration() {
     export FORGE_ANALYSIS_PROVIDER="$ANALYSIS_PROVIDER"
     export FORGE_FAIL_FAST="$FAIL_FAST"
     export FORGE_USER_REQUESTED_ISSUES_ONLY="$USER_REQUESTED_ONLY"
+    export FORGE_TAKE_BLOCKED_ISSUES="$TAKE_BLOCKED_ISSUES"
     export FORGE_GRAALVM_VERSION_CHECK="$GRAALVM_VERSION_CHECK"
 
     if [[ -n "$AGENT_FAMILY" ]]; then
@@ -526,6 +536,9 @@ process_work_queues() {
     )
     if [[ -n "$PRIORITY_TIER" ]]; then
         forge_metadata_args+=("--priority" "$PRIORITY_TIER")
+    fi
+    if [[ "$TAKE_BLOCKED_ISSUES" == "1" ]]; then
+        forge_metadata_args+=("--take-blocked-issues")
     fi
 
     run_step "Processing configured work queues via forge_metadata." \
@@ -834,6 +847,10 @@ while [[ "$#" -gt 0 ]]; do
             USER_REQUESTED_ONLY=1
             shift
             ;;
+        --take-blocked-issues)
+            TAKE_BLOCKED_ISSUES=1
+            shift
+            ;;
         --graalvm-version-check)
             require_option_value "$1" "${2:-}"
             GRAALVM_VERSION_CHECK="$2"
@@ -984,6 +1001,11 @@ fi
 
 if [[ "$USER_REQUESTED_ONLY" != "0" && "$USER_REQUESTED_ONLY" != "1" ]]; then
     echo "FORGE_USER_REQUESTED_ISSUES_ONLY must be 0 or 1." >&2
+    exit 1
+fi
+
+if [[ "$TAKE_BLOCKED_ISSUES" != "0" && "$TAKE_BLOCKED_ISSUES" != "1" ]]; then
+    echo "FORGE_TAKE_BLOCKED_ISSUES must be 0 or 1." >&2
     exit 1
 fi
 
