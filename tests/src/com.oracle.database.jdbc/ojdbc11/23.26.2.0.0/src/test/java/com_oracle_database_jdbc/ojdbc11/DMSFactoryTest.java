@@ -9,6 +9,7 @@ package com_oracle_database_jdbc.ojdbc11;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import oracle.jdbc.driver.DMSFactory;
+import oracle.jdbc.driver.LiveDMSFactory;
 import org.junit.jupiter.api.Test;
 
 public class DMSFactoryTest {
@@ -19,7 +20,7 @@ public class DMSFactoryTest {
         try {
             DMSFactory factory = DMSFactory.getInstance();
 
-            assertThat(factory).isNotNull();
+            assertThat(factory).isInstanceOf(LiveDMSFactory.class);
             assertThat(DMSFactory.getDMSVersion()).isNotNull();
             assertThat(factory.createNoun("database", "test")).isNotNull();
         } finally {
