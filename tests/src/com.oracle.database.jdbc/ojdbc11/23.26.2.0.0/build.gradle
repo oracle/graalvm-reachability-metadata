@@ -18,6 +18,16 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+String observabilityProperty = "oracle.jdbc.diagnostic.enableObservability"
+
+tasks.withType(Test).configureEach {
+    systemProperty observabilityProperty, "true"
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-D$observabilityProperty=true")
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
