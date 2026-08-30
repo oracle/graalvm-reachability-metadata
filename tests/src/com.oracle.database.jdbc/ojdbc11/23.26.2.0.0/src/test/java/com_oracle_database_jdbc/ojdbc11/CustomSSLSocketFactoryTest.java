@@ -12,7 +12,9 @@ import java.nio.file.Path;
 import java.security.Provider;
 import java.security.Security;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.Properties;
+import java.util.Set;
 import javax.net.ssl.SSLSocketFactory;
 import oracle.jdbc.OracleConnection;
 import oracle.jdbc.diagnostics.CommonDiagnosable;
@@ -44,23 +46,52 @@ public class CustomSSLSocketFactoryTest {
                     OracleConnection.CONNECTION_PROPERTY_THIN_JAVAX_NET_SSL_KEYSTORETYPE,
                     "SSO");
 
-            Provider oraclePkiProvider = new OraclePKIProvider();
-            Provider registeredProvider = Security.getProvider(oraclePkiProvider.getName());
-            int registeredPosition = providerPosition(oraclePkiProvider.getName());
-            Security.removeProvider(oraclePkiProvider.getName());
+            String oraclePkiProviderName = new OraclePKIProvider().getName();
+            ProviderRegistration[] registrations =
+                    removeProvidersFor("KeyStore.SSO", oraclePkiProviderName);
             try {
+                assertThat(Security.getProviders("KeyStore.SSO")).isNull();
+
                 SSLSocketFactory socketFactory = CustomSSLSocketFactory.getSSLSocketFactory(
                         properties, null, CommonDiagnosable.getInstance());
 
                 assertThat(socketFactory.getDefaultCipherSuites()).isNotEmpty();
-                assertThat(Security.getProvider(oraclePkiProvider.getName())).isNull();
+                assertThat(Security.getProvider(oraclePkiProviderName)).isNull();
             } finally {
-                if (registeredProvider != null) {
-                    Security.insertProviderAt(registeredProvider, registeredPosition);
-                }
+                restoreProviders(registrations);
             }
         } finally {
             Arrays.fill(password, '\0');
+        }
+    }
+
+    private static ProviderRegistration[] removeProvidersFor(
+            String filter, String knownProviderName) {
+        Set<Provider> providers = new LinkedHashSet<>();
+        Provider[] providersForFilter = Security.getProviders(filter);
+        if (providersForFilter != null) {
+            providers.addAll(Arrays.asList(providersForFilter));
+        }
+        Provider knownProvider = Security.getProvider(knownProviderName);
+        if (knownProvider != null) {
+            providers.add(knownProvider);
+        }
+
+        ProviderRegistration[] registrations = new ProviderRegistration[providers.size()];
+        int index = 0;
+        for (Provider provider : providers) {
+            registrations[index++] =
+                    new ProviderRegistration(provider, providerPosition(provider.getName()));
+        }
+        for (Provider provider : providers) {
+            Security.removeProvider(provider.getName());
+        }
+        return registrations;
+    }
+
+    private static void restoreProviders(ProviderRegistration[] registrations) {
+        for (ProviderRegistration registration : registrations) {
+            Security.insertProviderAt(registration.provider, registration.position);
         }
     }
 
@@ -72,5 +103,15 @@ public class CustomSSLSocketFactoryTest {
             }
         }
         return providers.length + 1;
+    }
+
+    private static final class ProviderRegistration {
+        private final Provider provider;
+        private final int position;
+
+        private ProviderRegistration(Provider provider, int position) {
+            this.provider = provider;
+            this.position = position;
+        }
     }
 }
