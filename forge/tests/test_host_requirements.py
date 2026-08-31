@@ -37,6 +37,7 @@ from utility_scripts.host_requirements import (
     resolve_graalvm_version_check,
     resolve_https_proxy,
     resolve_queue_requirements,
+    run_command,
 )
 
 
@@ -643,6 +644,91 @@ class HostRequirementsTests(unittest.TestCase):
         push_target = result_by_name["generated-branch push target"]
         self.assertTrue(push_target.passed)
         self.assertIn("oracle/graalvm-reachability-metadata", push_target.detail)
+
+    @patch("utility_scripts.host_requirements.run_command")
+    def test_build_work_requires_noninteractive_git_https_credentials(
+            self,
+            command: Mock,
+    ) -> None:
+        command.side_effect = [
+            subprocess.CompletedProcess(
+                ["git", "remote", "get-url", "origin"],
+                0,
+                "https://github.com/oracle/graalvm-reachability-metadata.git\n",
+                "",
+            ),
+            subprocess.CompletedProcess(
+                ["git", "credential", "fill"],
+                128,
+                "",
+                "fatal: could not read Username for https://github.com",
+            ),
+        ]
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            {},
+            requirements=COVERAGE_REQUIREMENTS,
+        )
+
+        host_requirements._check_git_https_credentials()
+
+        result = host_requirements.results[-1]
+        self.assertTrue(result.required)
+        self.assertFalse(result.passed)
+        self.assertIn("credential=unavailable", result.detail)
+        self.assertIn("gh auth setup-git --hostname github.com", result.remediation)
+        credential_call = command.call_args_list[-1]
+        self.assertEqual(
+            "protocol=https\nhost=github.com\n"
+            "path=oracle/graalvm-reachability-metadata.git\n\n",
+            credential_call.kwargs["input_text"],
+        )
+
+    @patch("utility_scripts.host_requirements.run_command")
+    def test_git_https_credential_probe_never_reports_the_secret(
+            self,
+            command: Mock,
+    ) -> None:
+        secret = "github-token-that-must-not-be-logged"
+        command.side_effect = [
+            subprocess.CompletedProcess(
+                ["git", "remote", "get-url", "origin"],
+                0,
+                "https://github.com/oracle/graalvm-reachability-metadata.git\n",
+                "",
+            ),
+            subprocess.CompletedProcess(
+                ["git", "credential", "fill"],
+                0,
+                f"protocol=https\nhost=github.com\nusername=forge-user\npassword={secret}\n",
+                "",
+            ),
+        ]
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            {},
+            requirements=COVERAGE_REQUIREMENTS,
+        )
+
+        host_requirements._check_git_https_credentials()
+
+        result = host_requirements.results[-1]
+        self.assertTrue(result.passed)
+        self.assertIn("credential=available", result.detail)
+        self.assertNotIn(secret, result.detail)
+        self.assertNotIn("forge-user", result.detail)
+
+    @patch("utility_scripts.host_requirements.subprocess.run")
+    def test_probe_commands_disable_git_terminal_prompts(self, command: Mock) -> None:
+        command.return_value = subprocess.CompletedProcess(["git"], 1, "", "failed")
+
+        run_command(["git", "credential", "fill"], {}, input_text="protocol=https\n\n")
+
+        environment = command.call_args.kwargs["env"]
+        self.assertEqual("0", environment["GIT_TERMINAL_PROMPT"])
+        self.assertEqual("protocol=https\n\n", command.call_args.kwargs["input"])
 
     def test_required_failure_stops_before_work_and_prints_remediation(self) -> None:
         environment = {

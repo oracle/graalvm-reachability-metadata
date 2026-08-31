@@ -981,6 +981,89 @@ class HostRequirements:
             self.separate_repository,
             f"{self.repo_dir} is the checkout that contains Forge; covered by the Forge self-update check",
         )
+        self._check_git_https_credentials()
+
+    def _check_git_https_credentials(self) -> None:
+        """Require noninteractive credentials for an HTTPS publication remote.
+
+        A public `git ls-remote` can succeed anonymously, so it does not prove
+        that the later generated-branch push can authenticate
+        (§FS-forge-host-requirements).
+        """
+        name: str = "generated-branch Git HTTPS credentials"
+        required: bool = self.requirements.build_work and self.requirements.github_work
+        if not required:
+            self._add(
+                "github",
+                name,
+                False,
+                None,
+                "this run does not publish a generated branch",
+            )
+            return
+
+        remote_result: subprocess.CompletedProcess[str] = run_command(
+            ["git", "-C", self.repo_dir, "remote", "get-url", "origin"],
+            self.environment,
+        )
+        remote_url: str = first_output_line(remote_result)
+        if remote_result.returncode != 0 or not remote_url:
+            self._add(
+                "github",
+                name,
+                True,
+                False,
+                f"checkout={self.repo_dir}, origin URL unavailable",
+                "Configure the selected repository's `origin` remote, then run "
+                "`gh auth setup-git --hostname github.com`.",
+            )
+            return
+
+        parsed_url: urllib.parse.ParseResult = urllib.parse.urlparse(remote_url)
+        if parsed_url.scheme != "https" or parsed_url.hostname != "github.com":
+            self._add(
+                "github",
+                name,
+                True,
+                True,
+                f"checkout={self.repo_dir}, origin does not use GitHub HTTPS",
+            )
+            return
+
+        credential_input: list[str] = [
+            "protocol=https",
+            "host=github.com",
+        ]
+        remote_path: str = parsed_url.path.lstrip("/")
+        if remote_path:
+            credential_input.append(f"path={remote_path}")
+        credential_result: subprocess.CompletedProcess[str] = run_command(
+            ["git", "-C", self.repo_dir, "credential", "fill"],
+            self.environment,
+            input_text="\n".join(credential_input) + "\n\n",
+        )
+        credentials: dict[str, str] = {}
+        for line in credential_result.stdout.splitlines():
+            key: str
+            separator: str
+            value: str
+            key, separator, value = line.partition("=")
+            if separator:
+                credentials[key] = value
+        passed: bool = (
+            credential_result.returncode == 0
+            and bool(credentials.get("username"))
+            and bool(credentials.get("password"))
+        )
+        self._add(
+            "github",
+            name,
+            True,
+            passed,
+            f"checkout={self.repo_dir}, host=github.com, "
+            f"credential={'available' if passed else 'unavailable'}",
+            "Run `gh auth setup-git --hostname github.com` for the active Forge account.",
+        )
 
     def _check_git_remote(self, name: str, checkout: str, required: bool, skip_detail: str) -> None:
         """Check that one checkout reaches the monitored branch through its own origin remote."""
@@ -1504,11 +1587,13 @@ def run_command(
         command: Sequence[str],
         environment: Mapping[str, str],
         timeout: int = 20,
+        input_text: str | None = None,
 ) -> subprocess.CompletedProcess[str]:
     """Run one deterministic probe command without a shell or interactive prompt."""
     command_environment = dict(environment)
     command_environment["GH_PROMPT_DISABLED"] = "1"
     command_environment["GH_PAGER"] = ""
+    command_environment["GIT_TERMINAL_PROMPT"] = "0"
     try:
         return subprocess.run(
             list(command),
@@ -1517,6 +1602,7 @@ def run_command(
             timeout=timeout,
             check=False,
             env=command_environment,
+            input=input_text,
         )
     except (OSError, subprocess.TimeoutExpired) as exc:
         return subprocess.CompletedProcess(list(command), 1, "", str(exc))
