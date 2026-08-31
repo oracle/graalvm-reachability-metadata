@@ -29,7 +29,7 @@ public class CustomSSLSocketFactoryTest {
     Path walletDirectory;
 
     @Test
-    void loadsKnownProviderForAnAutoLoginWallet() throws Exception {
+    void loadsKnownProviderForAnAutoLoginTrustStore() throws Exception {
         char[] password = "wallet-password".toCharArray();
         try {
             OracleWallet wallet = new OracleWallet();
@@ -38,12 +38,15 @@ public class CustomSSLSocketFactoryTest {
             wallet.createSSO();
             wallet.saveSSO();
 
+            Path autoLoginWallet = walletDirectory.resolve("cwallet.sso");
+            assertThat(autoLoginWallet).isRegularFile();
+
             Properties properties = new Properties();
             properties.setProperty(
-                    OracleConnection.CONNECTION_PROPERTY_THIN_JAVAX_NET_SSL_KEYSTORE,
-                    walletDirectory.resolve("cwallet.sso").toString());
+                    OracleConnection.CONNECTION_PROPERTY_THIN_JAVAX_NET_SSL_TRUSTSTORE,
+                    autoLoginWallet.toString());
             properties.setProperty(
-                    OracleConnection.CONNECTION_PROPERTY_THIN_JAVAX_NET_SSL_KEYSTORETYPE,
+                    OracleConnection.CONNECTION_PROPERTY_THIN_JAVAX_NET_SSL_TRUSTSTORETYPE,
                     "SSO");
 
             String oraclePkiProviderName = new OraclePKIProvider().getName();
