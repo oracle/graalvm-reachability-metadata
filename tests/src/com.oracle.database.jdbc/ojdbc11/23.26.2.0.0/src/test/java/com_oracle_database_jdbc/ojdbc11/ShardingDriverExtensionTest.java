@@ -6,7 +6,8 @@
  */
 package com_oracle_database_jdbc.ojdbc11;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowableOfType;
 
 import java.sql.SQLException;
 import java.util.Properties;
@@ -21,11 +22,14 @@ public class ShardingDriverExtensionTest {
         properties.setProperty("oracle.net.CONNECT_TIMEOUT", "10000");
         properties.setProperty("oracle.jdbc.ReadTimeout", "10000");
 
-        assertThatThrownBy(() -> new OracleDriver()
+        SQLException failure = catchThrowableOfType(
+                () -> new OracleDriver()
                         .connect(
                                 "jdbc:oracle:thin:@//127.0.0.1:1/"
                                         + "test-service?SHARDING_KEY=test-key",
-                                properties))
-                .isInstanceOf(SQLException.class);
+                                properties),
+                SQLException.class);
+
+        assertThat(failure.getErrorCode()).isEqualTo(12541);
     }
 }
