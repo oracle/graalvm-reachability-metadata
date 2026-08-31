@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-08-31 — org.apache.tomcat.embed:tomcat-embed-core:11.0.18 (#8328)
+
+**Reporter-requested AbstractProtocol.setProperty metadata was not shipped**
+
+Issue #8328 requests AbstractProtocol.getProperty(String) and setProperty(String,String), exercised through Connector. The branch added setProperty only to tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/src/test/resources/META-INF/native-image/reachability-metadata.json under a test-class condition, while metadata/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/reachability-metadata.json still omitted it. Test-only metadata is not delivered to consumers, violating the rule that issue-requested metadata must be present in shipped metadata.
+
 ## 2026-08-29 — org.junit.platform:junit-platform-commons:1.12.0 (#9603)
 
 **Javac repair adds unrelated coverage behavior**
