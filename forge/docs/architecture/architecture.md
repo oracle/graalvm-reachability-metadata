@@ -124,7 +124,7 @@ sequenceDiagram
         end
     end
     opt report lists classes with uncovered dynamic access
-        loop bulk pass, up to max-optimistic-iterations
+        loop bulk pass, up to max-bulk-iterations
             WC->>AG: generate_tests(report_with_every_class)
             AG-->>WC: failed task or pass
             WC->>WC: refresh_dynamic_access_report()

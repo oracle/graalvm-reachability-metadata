@@ -1129,7 +1129,7 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertEqual(
             strategy_values,
             [
-                "dynamic_access_bulk_pi_gpt-5.6-sol",
+                "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
                 "dynamic_access_main_sources_codex_gpt-5.6-sol",
             ],
         )

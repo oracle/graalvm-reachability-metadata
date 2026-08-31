@@ -23,7 +23,7 @@ Forge registers six workflows:
 | `javac_iterative` | Repair test sources that no longer compile against a bumped version. |
 | `java_run_iterative` | Repair JVM-mode test failures against a bumped version. |
 | `dynamic_access_iterative` | Explore a dynamic-access report one uncovered class at a time. |
-| `optimistic_dynamic_access` | Explore the whole dynamic-access report in one broad pass. |
+| `bulk_dynamic_access` | Explore the whole dynamic-access report in one broad pass. |
 | `increase_dynamic_access_coverage` | Composite: run a primary workflow, then explore what it left uncovered. |
 
 Most Forge work is one of two shapes. A **fix** workflow makes a broken test
@@ -169,16 +169,16 @@ is what advances the run.
 Forge explores in two ways, and they trade the same thing against each other.
 **Iterative** exploration prompts one uncovered class at a time with that
 class's remaining call sites, so every attempt has a precise target and a
-precise measurement, and progress commits per class. **Optimistic** exploration
+precise measurement, and progress commits per class. **Bulk** exploration
 hands the agent the entire report and asks for one broad pass, which is far
-cheaper when the library is easy and wasteful when it is not. A driver that
-wants both runs them through the composite, bulk first and iterative to refine
-what the bulk pass missed.
+cheaper when the library is easy and wasteful when it is not. An optimistic
+composite runs both, bulk first and iterative to refine what the bulk pass
+missed.
 
 ### 1. Chunking
 
 An oversized report is not explored in one run. An iterative-only run receives
-a concrete class budget before it starts. A run with an optimistic bulk phase
+a concrete class budget before it starts. A run with a bulk phase
 receives the configured class boundary and decides after bulk: classes completed
 by bulk count first, iterative exploration fills only the shortfall, and a final
 remainder no larger than the boundary is finished in the same run. The workflow
@@ -211,16 +211,16 @@ Parameters: prompt-attempt budget per class, test-iteration budget per class,
 source-context types, native-test verification budget. Families:
 `dynamic_access_*`, library-update coverage strategies.
 
-## AR-dynamic-access-bulk: Optimistic exploration
+## AR-dynamic-access-bulk: Bulk exploration
 
-`optimistic_dynamic_access` refreshes the report, gives the agent all of it, and
+`bulk_dynamic_access` refreshes the report, gives the agent all of it, and
 asks for a broad pass. Test failures before the native test task go back to the
 agent until the retry budget is exhausted; an iteration that never reaches the
 native test task resets to the checkpoint and the next iteration may try again.
 An iteration that does reach it regenerates the report, commits the attempt, and
 runs the terminal gate.
 
-When the initial report cannot steer generation, optimistic exploration first
+When the initial report cannot steer generation, bulk exploration first
 runs the gated basic-iterative fallback to create a real test surface, then
 refreshes the report. A usable refreshed report enters the normal bulk iteration
 budget; the composite subsequently hands the final gated report to iterative
@@ -244,7 +244,7 @@ threshold still remaining returns chunk-ready. A zero-yield pass is final, as
 is a pass whose remainder is no larger than the threshold, because no iterative
 phase exists to make a stronger class-scoped attempt.
 
-Optimistic exploration is the right first attempt when the library is expected
+Bulk exploration is the right first phase when the library is expected
 to be easy, when a coverage improvement should be cheap, and for runs that
 supply a larger source graph as context (§GOAL-shorten-issue-to-shipped-metadata).
 
@@ -271,7 +271,7 @@ chunk-ready, the composite returns that immediately — a chunk is a reviewable
 boundary, and work that depends on reaching final success waits for the resumed
 run rather than blocking the chunk.
 
-When the primary workflow is `optimistic_dynamic_access`, the composite takes
+When the primary workflow is `bulk_dynamic_access`, the composite takes
 the chunk boundary after the bulk loop and its gates, before iterative
 exploration. Bulk-completed classes count toward the invocation's class
 boundary. If more than the boundary remain and bulk already met the boundary,
@@ -281,8 +281,8 @@ therefore gives iterative the whole boundary. When no more than the boundary
 remain, iterative exploration receives the entire remainder and finishes the
 final chunk even if bulk already met the boundary.
 
-Optimistic bulk and iterative refinement are one `explore` phase. The
-optimistic primary leaves that phase running when the composite owns the next
+The bulk primary and iterative refinement are one `explore` phase. The bulk
+primary leaves that phase running when the composite owns the next
 transition. The composite completes it only when the bulk result is already a
 chunk boundary or covers the whole report; otherwise the iterative workflow
 completes or leaves pending the same phase (§FS-forge-run-continuation.1).
@@ -310,7 +310,7 @@ treat a zero-call report as the library's own shape and must report an
 unavailable report as unavailable rather than as a library without dynamic
 access.
 
-For optimistic exploration, a successful fallback is a bootstrap rather than
+For bulk exploration, a successful fallback is a bootstrap rather than
 an exit: the workflow refreshes the report and, when it is now usable, continues
 through bulk iterations before the composite's iterative refinement. The
 fallback's prompts, gate, and iterations remain part of `explore`; it never
@@ -363,7 +363,7 @@ directory to scope it to. The budget is the strategy parameter
 | Engine | When it invokes the gate | Output-dir scope |
 | --- | --- | --- |
 | `dynamic_access_iterative` (§AR-dynamic-access-iterative) | after classes with a coverage gain — resolved or partial — flushed in batches of `native-test-verification-batch-size`, and again at phase wrap-up for any pending classes | one directory per class |
-| `optimistic_dynamic_access` (§AR-dynamic-access-bulk) | after **every** accepted bulk iteration, once the attempt is committed and checkpointed — not once per run | one directory per coordinate |
+| `bulk_dynamic_access` (§AR-dynamic-access-bulk) | after **every** accepted bulk iteration, once the attempt is committed and checkpointed — not once per run | one directory per coordinate |
 | `javac_iterative` (§AR-java-fail-fix-workflow) | once, after the compilation repair succeeds | one directory per coordinate |
 | `java_run_iterative` (§AR-java-fail-fix-workflow) | once, after the agent's final edit, when the JVM fix succeeded | one directory per coordinate |
 | `basic_iterative` (§AR-basic-iterative) | once, after the loop commits at least one test suite | one directory per coordinate |

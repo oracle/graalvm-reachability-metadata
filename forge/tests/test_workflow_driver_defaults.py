@@ -6,6 +6,7 @@
 import io
 import unittest
 from contextlib import redirect_stdout
+from pathlib import Path
 from unittest.mock import patch
 
 import forge_metadata
@@ -67,7 +68,16 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
             "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
         )
 
-    def test_optimistic_strategies_prepare_the_report_before_deferring_selection(self) -> None:
+    def test_do_work_defaults_new_libraries_to_the_sol_composite(self) -> None:
+        script_path: Path = Path(__file__).parents[1] / "do_up_to_date_work.sh"
+        script: str = script_path.read_text(encoding="utf-8")
+        self.assertIn(
+            'WORK_STRATEGY_NAME="${FORGE_STRATEGY_NAME:-'
+            'optimistic_dynamic_access_iterative_pi_gpt-5.6-sol}"',
+            script,
+        )
+
+    def test_bulk_phase_strategies_prepare_report_before_deferring_selection(self) -> None:
         # The deferred decision is the chunk boundary, not the report the bulk
         # phase measures itself against (§FS-forge-chunked-dynamic-access).
         strategies = (
@@ -92,7 +102,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         self.assertEqual(prepare_report.call_count, len(strategies))
         self.assertEqual(generate_report.call_count, len(strategies))
 
-    def test_optimistic_deferral_names_an_unavailable_report(self) -> None:
+    def test_bulk_deferral_names_an_unavailable_report(self) -> None:
         with patch.object(forge_metadata, "_prepare_new_library_dynamic_access_report", return_value=True), \
                 patch.object(forge_metadata, "_generate_dispatcher_dynamic_access_report"), \
                 patch.object(forge_metadata, "_resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
@@ -106,7 +116,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         self.assertEqual(chunk_count, 15)
         self.assertIn("uncovered_classes=unavailable", output.getvalue())
 
-    def test_optimistic_new_library_outside_native_image_disables_chunking(self) -> None:
+    def test_bulk_new_library_outside_native_image_disables_chunking(self) -> None:
         with patch.object(forge_metadata, "_prepare_new_library_dynamic_access_report", return_value=False), \
                 patch.object(forge_metadata, "_generate_dispatcher_dynamic_access_report") as generate_report:
             chunk_count = forge_metadata.prepare_dynamic_access_chunking(
@@ -206,7 +216,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         coverage_composites = [
             strategy for strategy in load_predefined_strategies()
             if strategy.get("workflow") == "increase_dynamic_access_coverage"
-            and strategy.get("primary-workflow") in {None, "optimistic_dynamic_access"}
+            and strategy.get("primary-workflow") in {None, "bulk_dynamic_access"}
         ]
         self.assertTrue(coverage_composites)
         for strategy in coverage_composites:

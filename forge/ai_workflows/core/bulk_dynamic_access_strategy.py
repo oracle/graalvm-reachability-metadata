@@ -39,15 +39,15 @@ from utility_scripts.strategy_loader import load_strategy_by_name
 FALLBACK_STRATEGY_NAME = "basic_iterative_pi_gpt-5.6-sol"
 
 
-@WorkflowStrategy.register("optimistic_dynamic_access")
-class OptimisticDynamicAccessStrategy(WorkflowStrategy):
+@WorkflowStrategy.register("bulk_dynamic_access")
+class BulkDynamicAccessStrategy(WorkflowStrategy):
     """Bulk dynamic-access coverage strategy that shows the full report to the agent.
 
     Implements the bulk engine of §AR-dynamic-access-bulk.
     """
 
-    REQUIRED_PROMPTS = ["optimistic-dynamic-access-iteration"]
-    REQUIRED_PARAMS = ["max-optimistic-iterations", "max-test-iterations"]
+    REQUIRED_PROMPTS = ["bulk-dynamic-access-iteration"]
+    REQUIRED_PARAMS = ["max-bulk-iterations", "max-test-iterations"]
 
     def __init__(self, strategy_obj: dict, **context):
         super().__init__(strategy_obj, **context)
@@ -58,7 +58,7 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
             self.context.get("test_version")
             or resolve_test_version(self.reachability_repo_path, self.group, self.artifact, self.version)
         )
-        self.max_optimistic_iterations = self.parameters["max-optimistic-iterations"]
+        self.max_bulk_iterations = self.parameters["max-bulk-iterations"]
         self.max_test_iterations = self.parameters["max-test-iterations"]
         self.chunk_class_count: int = int(self.context.get("chunk_class_count") or 0)
         if self.chunk_class_count < 0:
@@ -135,12 +135,12 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
         current_report = initial_report
         last_successful_report: DynamicAccessCoverageReport | None = None
 
-        for iteration in range(self.max_optimistic_iterations):
+        for iteration in range(self.max_bulk_iterations):
             agent.clear_context()
             self._print_message(
                 "iteration {current}/{max} — {uncovered} uncovered across {classes} classes".format(
                     current=iteration + 1,
-                    max=self.max_optimistic_iterations,
+                    max=self.max_bulk_iterations,
                     uncovered=current_report.total_calls - current_report.covered_calls,
                     classes=sum(1 for c in current_report.classes if c.uncovered_calls > 0),
                 )
@@ -149,18 +149,18 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
             full_report_text = format_full_report(current_report)
             iteration_progress = "- Iteration: {current}/{max}\n- Overall coverage: {covered}/{total}".format(
                 current=iteration + 1,
-                max=self.max_optimistic_iterations,
+                max=self.max_bulk_iterations,
                 covered=current_report.covered_calls,
                 total=current_report.total_calls,
             )
 
             prompt = self._render_prompt(
-                "optimistic-dynamic-access-iteration",
+                "bulk-dynamic-access-iteration",
                 dynamic_access_full_report=full_report_text,
                 iteration_progress=iteration_progress,
             )
             with run_step(RUN_PHASE_EXPLORE, STEP_GENERATE_TESTS, operand=self.library):
-                self._print_detail("agent: sending optimistic prompt")
+                self._print_detail("agent: sending bulk prompt")
                 agent.send_prompt(prompt)
                 self._print_detail("agent: complete")
             prompt_iterations += 1
@@ -218,7 +218,7 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
                 break
 
             self._commit_test_sources(
-                "Optimistic dynamic-access coverage ({covered}/{total})".format(
+                "Bulk dynamic-access coverage ({covered}/{total})".format(
                     covered=current_report.covered_calls,
                     total=current_report.total_calls,
                 )
@@ -466,11 +466,11 @@ class OptimisticDynamicAccessStrategy(WorkflowStrategy):
 
     @staticmethod
     def _print_message(message: str) -> None:
-        log_stage("optimistic-da", message)
+        log_stage("bulk-da", message)
 
     @classmethod
     def _print_detail(cls, message: str, indent_level: int = 1) -> None:
-        log_stage("optimistic-da", message, indent_level=indent_level)
+        log_stage("bulk-da", message, indent_level=indent_level)
 
     @classmethod
     def _print_failure_analysis(cls, stage: str, issue: str, indent_level: int = 1, **details) -> None:
