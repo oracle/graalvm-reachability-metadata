@@ -82,6 +82,8 @@ class NativeTestVerificationResult:
     last_native_test_exit_code: int | None = None
     accepted_run_dirs: list[str] = field(default_factory=list)
     intervention_records: list[InterventionRecord] = field(default_factory=list)
+    failure_detail: str | None = None
+    failure_log_path: str | None = None
 
 
 DEFAULT_CYCLE_TIMEOUT_SECONDS = 30 * 60
@@ -98,12 +100,12 @@ def run_native_test_fix(
         env: dict[str, str],
         graalvm_home: str | None = None,
         failure_log_path: str | None = None,
-) -> tuple[int, str, bool]:
+) -> tuple[int, str, bool, str | None]:
     """Run a quick analysis-agent fixup for a failing native test.
 
-    Returns ``(return_code, log_path, timed_out)``. The reproduction command and
-    GraalVM home are pinned to the environment that produced the failed native
-    run so the repair uses the exact same distribution.
+    Returns ``(return_code, log_path, timed_out, failure_message)``. The
+    reproduction command and GraalVM home are pinned to the environment that
+    produced the failed native run so the repair uses the exact same distribution.
     """
     prompt = _build_native_test_fix_prompt(
         coordinates, reproduction_command, graalvm_home, failure_log_path
@@ -121,7 +123,12 @@ def run_native_test_fix(
             f"ERROR: Native-test fix failed for {coordinates}. "
             f"See {display_log_path(result.log_path)}.",
         )
-    return (result.return_code, result.log_path, result.timed_out)
+    return (
+        result.return_code,
+        result.log_path,
+        result.timed_out,
+        result.failure_message,
+    )
 
 
 def _build_native_test_fix_prompt(
@@ -209,7 +216,12 @@ def verify_native_test_passes(
     last_log_path: str | None = None
     last_binary_rc: int | None = None
 
-    def _make_result(status: str, iterations_used: int) -> NativeTestVerificationResult:
+    def _make_result(
+            status: str,
+            iterations_used: int,
+            failure_detail: str | None = None,
+            failure_log_path: str | None = None,
+    ) -> NativeTestVerificationResult:
         return NativeTestVerificationResult(
             status=status,
             output_dir=output_dir,
@@ -218,6 +230,8 @@ def verify_native_test_passes(
             last_native_test_exit_code=last_binary_rc,
             accepted_run_dirs=list(accepted_run_dirs),
             intervention_records=intervention_records,
+            failure_detail=failure_detail,
+            failure_log_path=failure_log_path,
         )
 
     def _route_to_analysis_agent(
@@ -238,7 +252,7 @@ def verify_native_test_passes(
             f"{stage}: {reason}; routing to the analysis agent (terminal)",
         )
         require_complete_reachability_repo(reachability_repo_path)
-        fix_rc, fix_log_path, fix_timed_out = run_native_test_fix(
+        fix_rc, fix_log_path, fix_timed_out, fix_failure_message = run_native_test_fix(
             reachability_repo_path,
             coordinate,
             reproduction_command=reproduction_command,
@@ -259,7 +273,15 @@ def verify_native_test_passes(
                 f"{analysis_backend} did not converge "
                 f"(timed_out={fix_timed_out}, rc={fix_rc}); FAILED",
             )
-            return _make_result(STATUS_FAILED, iterations_used)
+            failure_detail = fix_failure_message or (
+                f"{analysis_backend} agent failed with exit code {fix_rc}"
+            )
+            return _make_result(
+                STATUS_FAILED,
+                iterations_used,
+                failure_detail=failure_detail,
+                failure_log_path=fix_log_path,
+            )
         require_complete_reachability_repo(reachability_repo_path)
         log_stage(
             _GATE_STAGE,

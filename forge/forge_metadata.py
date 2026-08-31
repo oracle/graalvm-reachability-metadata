@@ -93,7 +93,7 @@ from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
 )
-from ai_workflows.agents.agent import AgentTimeoutError
+from ai_workflows.agents.agent import AgentFailureError
 from ai_workflows.agents.codex_agent import extract_codex_token_usage
 from ai_workflows.agents.agent_runtime import (
     analysis_agent_run,
@@ -7213,15 +7213,15 @@ def run_claimed_issue(
             raise KeyboardInterrupt from exc
         # The location the step annotated onto the exception leads its detail.
         # §FS-forge-run-location-reporting.3
-        error_detail = str(exc) if isinstance(exc, AgentTimeoutError) else (
+        error_detail = str(exc) if isinstance(exc, AgentFailureError) else (
             f"Issue #{claimed_issue.issue['number']} workflow raised an exception: {exc!r}"
         )
         report_run_failure(
             resolve_failure_location(exc),
             error_detail,
-            log_path=exc.log_path if isinstance(exc, AgentTimeoutError) else None,
+            log_path=exc.log_path if isinstance(exc, AgentFailureError) else None,
         )
-        if not isinstance(exc, AgentTimeoutError):
+        if not isinstance(exc, AgentFailureError):
             traceback.print_exc()
         success = False
         failure_was_external = is_external_failure_exception(exc)

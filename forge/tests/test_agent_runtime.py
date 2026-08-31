@@ -10,7 +10,7 @@ import shlex
 import subprocess
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from ai_workflows.agents import Agent
 from ai_workflows.agents.agent import AgentTimeoutError
@@ -21,6 +21,7 @@ from ai_workflows.agents.opencode_agent import OpenCodeAgent
 from ai_workflows.agents.agent_runtime import PROVIDER_AWARE_BACKENDS, resolve_provider
 from ai_workflows.agents.agent_runtime import (
     CODEX_BYPASS_APPROVALS_AND_SANDBOX_FLAG,
+    AgentSelection,
     DEFAULT_AGENT,
     SUPPORTED_AGENT_BACKENDS,
     default_model_for_backend,
@@ -28,6 +29,7 @@ from ai_workflows.agents.agent_runtime import (
     get_setup_agent,
     agent_process_environment,
     normalize_backend_name,
+    run_agent_task,
 )
 from utility_scripts.source_context import url_fetch_agent_command
 from utility_scripts.strategy_loader import (
@@ -65,6 +67,41 @@ class AgentRuntimeTests(unittest.TestCase):
         self.assertIn("log:", rendered)
         self.assertNotIn("partial private output", rendered)
         self.assertEqual(raised.exception.timeout_seconds, 1200)
+
+    def test_one_shot_agent_failure_preserves_message(self) -> None:
+        failed_agent = Mock()
+        failed_agent.send_prompt_for_action.side_effect = AgentTimeoutError(
+            "native_test_verify()",
+            1800,
+            "/tmp/native-session.log",
+        )
+        failed_agent.total_tokens_sent = 0
+        failed_agent.total_tokens_received = 0
+        failed_agent.cached_input_tokens_used = 0
+        failed_agent._session_log_path = "/tmp/native-session.log"
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            task_log_path = os.path.join(temp_dir, "native-task.log")
+            with patch(
+                    "ai_workflows.agents.agent_runtime.create_agent",
+                    return_value=failed_agent,
+            ), patch(
+                    "ai_workflows.agents.agent_runtime.build_task_log_path",
+                    return_value=task_log_path,
+            ):
+                result = run_agent_task(
+                    selection=AgentSelection(backend="codex", model="test-model"),
+                    working_dir=temp_dir,
+                    prompt="repair",
+                    task_type="native-test-verify",
+                    library="g:a:1.0",
+                    timeout=1800,
+                )
+
+        self.assertEqual(
+            result.failure_message,
+            "Agent native_test_verify() timed out after 30:00",
+        )
 
     def test_the_environment_selects_the_analysis_role_only(self) -> None:
         """The worker configures analysis; a bundle owns the test role it declares."""

@@ -10,6 +10,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from ai_workflows.agents.agent import AgentFailureError
 from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_CHUNK_READY,
     RUN_STATUS_FAILURE,
@@ -17,6 +18,7 @@ from ai_workflows.core.workflow_strategy import (
     SUCCESS_WITH_INTERVENTION_STATUS,
     WorkflowStrategy,
 )
+from utility_scripts.native_test_verification import NativeTestVerificationResult
 
 
 class _TestWorkflowStrategy(WorkflowStrategy):
@@ -25,6 +27,33 @@ class _TestWorkflowStrategy(WorkflowStrategy):
 
 
 class WorkflowStrategyTests(unittest.TestCase):
+    def test_native_gate_agent_failure_reaches_terminal_reporter(self) -> None:
+        strategy = _TestWorkflowStrategy(
+            {"model": "test-model"},
+            reachability_repo_path="/tmp/reachability",
+            library="org.example:demo:1.0.0",
+        )
+        strategy.library = "org.example:demo:1.0.0"
+        failed_result = NativeTestVerificationResult(
+            status="FAILED",
+            output_dir="/tmp/output",
+            iterations_used=1,
+            failure_detail="Agent native_test_verify() timed out after 30:00",
+            failure_log_path="/tmp/native-agent.log",
+        )
+
+        with patch(
+                "ai_workflows.core.workflow_strategy.verify_native_test_passes",
+                return_value=failed_result,
+        ), self.assertRaises(AgentFailureError) as raised:
+            strategy.verify_native_test_gate("/tmp/output")
+
+        self.assertEqual(
+            str(raised.exception),
+            "native-trace-gate agent failed with: Agent native_test_verify() timed out after 30:00",
+        )
+        self.assertEqual(raised.exception.log_path, "/tmp/native-agent.log")
+
     def test_post_generation_tests_run_latest_and_graalvm_25_current_defaults_lanes(self) -> None:
         strategy = _TestWorkflowStrategy(
             {"model": "test-model"},

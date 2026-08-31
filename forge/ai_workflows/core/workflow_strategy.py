@@ -11,6 +11,7 @@ import subprocess
 import sys
 from typing import Callable
 
+from ai_workflows.agents.agent import AgentFailureError
 from ai_workflows.core.metadata_fix import run_metadata_fix
 from ai_workflows.core.post_generation_fix import (
     DEFAULT_MAX_TEST_OUTPUT_CHARS,
@@ -200,6 +201,13 @@ class WorkflowStrategy(ABC):
                 f"native-test gate FAILED{label_suffix} after {result.iterations_used} cycles "
                 f"(last log: {log_path})",
             )
+            # Preserve the agent cause and log through the terminal boundary.
+            # §FS-forge-run-output-legibility.2
+            if result.failure_detail is not None:
+                raise AgentFailureError(
+                    f"native-trace-gate agent failed with: {result.failure_detail}",
+                    result.failure_log_path,
+                )
             return False
         log_stage(
             "native-test-verify",

@@ -72,6 +72,7 @@ class AgentRunResult:
     output_tokens: int = 0
     cached_input_tokens: int | None = None
     session_log_path: str | None = None
+    failure_message: str | None = None
 
 
 def agent_process_environment(
@@ -319,7 +320,13 @@ def run_agent_task(
         timed_out = "timed out" in str(exc).lower()
         with open(log_path, "a", encoding="utf-8") as log_file:
             log_file.write(f"Agent failure: {exc}\n")
-        return AgentRunResult(1, log_path, timed_out, **_agent_usage(agent))
+        return AgentRunResult(
+            1,
+            log_path,
+            timed_out,
+            failure_message=str(exc),
+            **_agent_usage(agent),
+        )
 
     with open(log_path, "w", encoding="utf-8") as log_file:
         log_file.write(response)

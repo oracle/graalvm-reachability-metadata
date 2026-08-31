@@ -17,14 +17,27 @@ from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import display_log_path, resolve_task_log_dir
 
 
-class AgentTimeoutError(RuntimeError):
+class AgentFailureError(RuntimeError):
+    """Agent failure carrying the durable log needed by terminal output.
+
+    §FS-forge-run-output-legibility.2
+    """
+
+    def __init__(self, message: str, log_path: str | None) -> None:
+        self.log_path = log_path
+        super().__init__(message)
+
+
+class AgentTimeoutError(AgentFailureError):
     """Agent timeout carrying the action and durable log needed by failure output."""
 
     def __init__(self, action: str, timeout_seconds: int, log_path: str | None) -> None:
         self.action = action
         self.timeout_seconds = timeout_seconds
-        self.log_path = log_path
-        super().__init__(f"Agent {action} timed out after {_format_elapsed(timeout_seconds)}")
+        super().__init__(
+            f"Agent {action} timed out after {_format_elapsed(timeout_seconds)}",
+            log_path,
+        )
 
 
 class Agent(ABC):
