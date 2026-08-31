@@ -18,6 +18,8 @@ jobs:
   validate:
     name: Validate exact Forge branch SHA
     runs-on: ubuntu-latest
+    outputs:
+      local_review_attestation: ${{ steps.validate.outputs.local_review_attestation }}
     steps:
       - name: Check out trusted publisher
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
@@ -38,6 +40,7 @@ jobs:
         run: python3 -m pip install --disable-pip-version-check jsonschema==4.25.1
 
       - name: Validate publication descriptor and diff
+        id: validate
         env:
           GH_TOKEN: ${{ github.token }}
           HEAD_SHA: ${{ github.sha }}
@@ -58,3 +61,16 @@ jobs:
           path: publication.md
           if-no-files-found: error
           retention-days: 14
+
+  # False eligibility skips this check without failing publication.
+  # §forge/FS-automated-pr-review
+  local-review-attestation:
+    name: Forge Local Review Attestation
+    needs: validate
+    if: needs.validate.outputs.local_review_attestation == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Attest safe local review for exact SHA
+        env:
+          HEAD_SHA: ${{ github.sha }}
+        run: echo "Safe local review attested for $HEAD_SHA"

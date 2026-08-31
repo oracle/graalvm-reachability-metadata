@@ -36,6 +36,7 @@ TEST_DIFF_PATHS: tuple[str, ...] = (
 SEVERE_METADATA_DROP_RATIO = 0.25
 DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_RATIO = 1.75
 PUBLISHER_LOGIN = "graalvmbot"
+LOCAL_REVIEW_ATTESTATION_OUTPUT = "local_review_attestation"
 PUBLICATION_ID_SUFFIX = re.compile(r"(forge-\d+-\d{14,20}-[0-9a-f]{12})$")
 ROUTE_LABELS = {
     "library-new-request": ["GenAI", "library-new-request"],
@@ -53,6 +54,35 @@ class ValidatedPublication:
     descriptor: dict[str, Any]
     descriptor_path: str
     head_sha: str
+
+
+def local_review_attestation_eligible(validated: ValidatedPublication) -> bool:
+    """Return whether a validated descriptor carries a safe local approval.
+
+    §forge/FS-automated-pr-review
+    """
+    descriptor: dict[str, Any] = validated.descriptor
+    local_review: Any = descriptor.get("local_review")
+    local_ci_verification: Any = descriptor.get("local_ci_verification")
+    return (
+        isinstance(local_review, dict)
+        and isinstance(local_ci_verification, dict)
+        and local_review.get("status") == "completed"
+        and local_review.get("decision") == "approved"
+        and local_review.get("repair_reverted") is False
+        and local_ci_verification.get("status") == "success"
+    )
+
+
+def write_local_review_attestation_output(eligible: bool) -> None:
+    """Expose attestation eligibility to the calling Actions step."""
+    output_path: str | None = os.environ.get("GITHUB_OUTPUT")
+    if output_path is None:
+        return
+    with open(output_path, "a", encoding="utf-8") as output_file:
+        output_file.write(
+            f"{LOCAL_REVIEW_ATTESTATION_OUTPUT}={'true' if eligible else 'false'}\n"
+        )
 
 
 def run(command: list[str], *, input_text: str | None = None) -> str:
@@ -1583,6 +1613,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     args = build_parser().parse_args()
+    local_review_attestation: bool = False
     try:
         if args.repository != REPOSITORY:
             raise ValueError(f"Unexpected head repository: {args.repository}")
@@ -1597,6 +1628,7 @@ def main() -> int:
             actor=args.actor,
             repository=args.repository,
         )
+        local_review_attestation = local_review_attestation_eligible(validated)
         if args.command == "publish":
             title, body, pr_url = publish(validated, args.mode, args.reviewers)
         else:
@@ -1611,6 +1643,9 @@ def main() -> int:
             with open(summary_path, "a", encoding="utf-8") as summary:
                 summary.write(f"## Forge publication validation failed\n\n- SHA: `{args.sha}`\n- Error: `{exc}`\n")
         return 1
+    finally:
+        if args.command == "validate":
+            write_local_review_attestation_output(local_review_attestation)
 
 
 if __name__ == "__main__":

@@ -131,6 +131,31 @@ def _pull_request_state(number: int, ci_state: str, mergeable: str = "MERGEABLE"
     }
 
 
+def _local_review_attestation_check(head_sha: str) -> dict:
+    return {
+        "__typename": "CheckRun",
+        "name": forge_metadata.LOCAL_REVIEW_ATTESTATION_CHECK_NAME,
+        "status": "COMPLETED",
+        "conclusion": "SUCCESS",
+        "checkSuite": {
+            "app": {"slug": forge_metadata.GITHUB_ACTIONS_APP_SLUG},
+            "commit": {"oid": head_sha},
+            "workflowRun": {
+                "event": "push",
+                "workflow": {"name": forge_metadata.FORGE_BRANCH_READY_WORKFLOW_NAME},
+                "file": {"path": forge_metadata.FORGE_BRANCH_READY_WORKFLOW_PATH},
+            },
+        },
+    }
+
+
+def _add_local_review_attestation(state: dict, check_run: dict | None = None) -> dict:
+    state["statusCheckRollup"]["contexts"] = {
+        "nodes": [check_run or _local_review_attestation_check(state["headRefOid"])],
+    }
+    return state
+
+
 def _preflight(
         *,
         issue_number: int = 1412,
@@ -2860,6 +2885,68 @@ class WorkQueueSchedulerTests(unittest.TestCase):
 
 
 class PullRequestReviewSelectionTests(unittest.TestCase):
+    def test_pull_request_state_loads_named_check_provenance(self) -> None:
+        payload = {
+            "data": {
+                "repository": {
+                    "pullRequest": _pull_request_state(9656, "SUCCESS"),
+                },
+            },
+        }
+        with patch.object(forge_metadata, "gh_json", return_value=payload) as gh_json:
+            forge_metadata.get_pull_request_state(9656)
+
+        query_argument = gh_json.call_args.args[-1]
+        self.assertIn("contexts(first: 100)", query_argument)
+        self.assertIn("checkSuite", query_argument)
+        self.assertIn("workflowRun", query_argument)
+        self.assertIn("commit", query_argument)
+
+    def test_trusted_current_head_attestation_is_accepted(self) -> None:
+        state = _add_local_review_attestation(_pull_request_state(9656, "SUCCESS"))
+        self.assertTrue(forge_metadata.has_trusted_local_review_attestation(state))
+
+    def test_non_current_or_untrusted_attestation_is_rejected(self) -> None:
+        cases = {
+            "older-sha": ("checkSuite", "commit", "oid", "older-head"),
+            "failed": (None, None, "conclusion", "FAILURE"),
+            "skipped": (None, None, "conclusion", "SKIPPED"),
+            "untrusted-app": ("checkSuite", "app", "slug", "other-app"),
+            "wrong-workflow": (
+                "checkSuite", "workflowRun", "workflow", {"name": "Other Workflow"},
+            ),
+            "wrong-workflow-path": (
+                "checkSuite",
+                "workflowRun",
+                "file",
+                {"path": ".github/workflows/other.yml"},
+            ),
+        }
+        for name, (outer, section, key, value) in cases.items():
+            with self.subTest(name=name):
+                state = _pull_request_state(9656, "SUCCESS")
+                check_run = _local_review_attestation_check(state["headRefOid"])
+                if outer is None:
+                    check_run[key] = value
+                else:
+                    check_run[outer][section][key] = value
+                _add_local_review_attestation(state, check_run)
+                self.assertFalse(forge_metadata.has_trusted_local_review_attestation(state))
+
+        self.assertFalse(
+            forge_metadata.has_trusted_local_review_attestation(
+                _pull_request_state(9656, "SUCCESS")
+            )
+        )
+
+    def test_attested_approval_targets_exact_head_commit(self) -> None:
+        state = _pull_request_state(9656, "SUCCESS")
+        with patch.object(forge_metadata, "gh") as gh:
+            forge_metadata.approve_pull_request_from_local_review_attestation(state)
+
+        self.assertIn("commit_id=head-9656", gh.call_args.args)
+        self.assertIn("event=APPROVE", gh.call_args.args)
+
     def test_bulk_pull_request_list_omits_status_check_rollup(self) -> None:
         with patch.object(forge_metadata, "gh_json", return_value=[]) as gh_json:
             self.assertEqual(
@@ -2870,6 +2957,135 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
         args = gh_json.call_args.args
         self.assertEqual("number,title,url,author,labels", args[-1])
         self.assertNotIn("statusCheckRollup", args)
+
+    def test_current_head_attestation_approves_without_agent(self) -> None:
+        pull_request = _pull_request(9656, [forge_metadata.LABEL_LIBRARY_NEW])
+        state = _add_local_review_attestation(_pull_request_state(9656, "SUCCESS"))
+
+        with patch.object(forge_metadata, "get_pull_requests_with_labels", return_value=[]), \
+                patch.object(
+                    forge_metadata,
+                    "get_pull_requests_with_label",
+                    return_value=[pull_request],
+                ), \
+                patch.object(forge_metadata, "get_pull_request_state", return_value=state), \
+                patch.object(
+                    forge_metadata,
+                    "approve_pull_request_from_local_review_attestation",
+                ) as approve, \
+                patch.object(forge_metadata, "review_pull_request") as review, \
+                patch.object(
+                    forge_metadata,
+                    "reconcile_reviewed_pull_request",
+                    return_value=True,
+                ) as reconcile:
+            forge_metadata.process_pull_requests_with_label(
+                forge_metadata.LABEL_LIBRARY_NEW,
+                1,
+                "/tmp/reachability",
+                "automation-user",
+            )
+
+        approve.assert_called_once()
+        self.assertEqual(9656, approve.call_args.args[0]["number"])
+        review.assert_not_called()
+        reconcile.assert_called_once_with(9656, "/tmp/reachability")
+
+    def test_non_attested_cases_use_agent(self) -> None:
+        missing = _pull_request_state(9656, "SUCCESS")
+        older = _pull_request_state(9656, "SUCCESS")
+        _add_local_review_attestation(older, _local_review_attestation_check("older-head"))
+        skipped = _pull_request_state(9656, "SUCCESS")
+        skipped_check = _local_review_attestation_check(skipped["headRefOid"])
+        skipped_check["conclusion"] = "SKIPPED"
+        _add_local_review_attestation(skipped, skipped_check)
+        failed = _pull_request_state(9656, "SUCCESS")
+        failed_check = _local_review_attestation_check(failed["headRefOid"])
+        failed_check["conclusion"] = "FAILURE"
+        _add_local_review_attestation(failed, failed_check)
+        untrusted = _pull_request_state(9656, "SUCCESS")
+        untrusted_check = _local_review_attestation_check(untrusted["headRefOid"])
+        untrusted_check["checkSuite"]["app"]["slug"] = "other-app"
+        _add_local_review_attestation(untrusted, untrusted_check)
+        malformed = _pull_request_state(9656, "SUCCESS")
+        _add_local_review_attestation(malformed, {"name": "malformed"})
+
+        cases = {
+            "missing": missing,
+            "older-sha": older,
+            "skipped": skipped,
+            "failed": failed,
+            "untrusted": untrusted,
+            "malformed": malformed,
+        }
+        for name, state in cases.items():
+            with self.subTest(name=name):
+                pull_request = _pull_request(9656, [forge_metadata.LABEL_LIBRARY_NEW])
+                with patch.object(
+                        forge_metadata,
+                        "get_pull_requests_with_labels",
+                        return_value=[],
+                ), patch.object(
+                        forge_metadata,
+                        "get_pull_requests_with_label",
+                        return_value=[pull_request],
+                ), patch.object(
+                        forge_metadata,
+                        "get_pull_request_state",
+                        return_value=state,
+                ), patch.object(
+                        forge_metadata,
+                        "approve_pull_request_from_local_review_attestation",
+                ) as approve, patch.object(
+                        forge_metadata,
+                        "review_pull_request",
+                        return_value=True,
+                ) as review, patch.object(
+                        forge_metadata,
+                        "reconcile_reviewed_pull_request",
+                        return_value=True,
+                ):
+                    forge_metadata.process_pull_requests_with_label(
+                        forge_metadata.LABEL_LIBRARY_NEW,
+                        1,
+                        "/tmp/reachability",
+                        "automation-user",
+                    )
+
+                approve.assert_not_called()
+                review.assert_called_once()
+
+    def test_direct_approval_failure_stops_review_processing(self) -> None:
+        pull_request = _pull_request(9656, [forge_metadata.LABEL_LIBRARY_NEW])
+        state = _add_local_review_attestation(_pull_request_state(9656, "SUCCESS"))
+
+        with patch.object(forge_metadata, "get_pull_requests_with_labels", return_value=[]), \
+                patch.object(
+                    forge_metadata,
+                    "get_pull_requests_with_label",
+                    return_value=[pull_request],
+                ), \
+                patch.object(forge_metadata, "get_pull_request_state", return_value=state), \
+                patch.object(
+                    forge_metadata,
+                    "approve_pull_request_from_local_review_attestation",
+                    side_effect=RuntimeError("approval failed"),
+                ), \
+                patch.object(forge_metadata, "review_pull_request") as review, \
+                patch.object(
+                    forge_metadata,
+                    "reconcile_reviewed_pull_request",
+                ) as reconcile, \
+                self.assertRaisesRegex(SystemExit, "1"):
+            forge_metadata.process_pull_requests_with_label(
+                forge_metadata.LABEL_LIBRARY_NEW,
+                1,
+                "/tmp/reachability",
+                "automation-user",
+            )
+
+        review.assert_not_called()
+        reconcile.assert_not_called()
 
     def test_process_pull_requests_fetches_state_only_after_cheap_filters(self) -> None:
         buried_pull_requests = [

@@ -392,6 +392,10 @@ DEFAULT_WORK_QUEUE_STRATEGY_NAME = "optimistic_dynamic_access_iterative_pi_gpt-5
 FAILURE_ANALYSIS_TIMEOUT_SECONDS = 1800
 REVIEW_TIMEOUT_SECONDS = 1800
 DEFAULT_WORKTREE_BASE_REF = "master"
+LOCAL_REVIEW_ATTESTATION_CHECK_NAME = "Forge Local Review Attestation"
+FORGE_BRANCH_READY_WORKFLOW_NAME = "Forge Branch Ready"
+FORGE_BRANCH_READY_WORKFLOW_PATH = ".github/workflows/forge-branch-ready.yml"
+GITHUB_ACTIONS_APP_SLUG = "github-actions"
 # The GraalVM lanes are named once in `host_requirements`, in this order.
 DEV_GRAALVM_ENV_VAR, POST_GENERATION_GRAALVM_ENV_VAR, LATEST_EA_GRAALVM_ENV_VAR = ISSUE_GRAALVM_ENV_VARS
 FORGE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -2194,6 +2198,33 @@ def get_pull_request_state(pr_number: int) -> dict:
           isMergeQueueEnabled
           statusCheckRollup {{
             state
+            contexts(first: 100) {{
+              nodes {{
+                __typename
+                ... on CheckRun {{
+                  name
+                  status
+                  conclusion
+                  checkSuite {{
+                    app {{
+                      slug
+                    }}
+                    commit {{
+                      oid
+                    }}
+                    workflowRun {{
+                      event
+                      workflow {{
+                        name
+                      }}
+                      file {{
+                        path
+                      }}
+                    }}
+                  }}
+                }}
+              }}
+            }}
           }}
           repository {{
             viewerDefaultMergeMethod
@@ -2288,6 +2319,80 @@ def has_failed_pull_request_ci(pr: dict) -> bool:
     status_check_rollup = pr.get("statusCheckRollup")
     ci_state = status_check_rollup.get("state") if isinstance(status_check_rollup, dict) else None
     return ci_state in FAILED_CI_STATES
+
+
+def has_trusted_local_review_attestation(pull_request: dict) -> bool:
+    """Return whether the current PR head has the trusted local-review check.
+
+    §FS-automated-pr-review
+    """
+    head_sha = pull_request.get("headRefOid")
+    status_check_rollup = pull_request.get("statusCheckRollup")
+    contexts = (
+        status_check_rollup.get("contexts")
+        if isinstance(status_check_rollup, dict)
+        else None
+    )
+    nodes = contexts.get("nodes") if isinstance(contexts, dict) else None
+    if not isinstance(head_sha, str) or not head_sha or not isinstance(nodes, list):
+        return False
+
+    for check_run in nodes:
+        if not isinstance(check_run, dict):
+            continue
+        check_suite = check_run.get("checkSuite")
+        if not isinstance(check_suite, dict):
+            continue
+        app = check_suite.get("app")
+        commit = check_suite.get("commit")
+        workflow_run = check_suite.get("workflowRun")
+        if not all(isinstance(value, dict) for value in (app, commit, workflow_run)):
+            continue
+        workflow = workflow_run.get("workflow")
+        workflow_file = workflow_run.get("file")
+        if not isinstance(workflow, dict) or not isinstance(workflow_file, dict):
+            continue
+        if (
+            check_run.get("__typename") == "CheckRun"
+            and check_run.get("name") == LOCAL_REVIEW_ATTESTATION_CHECK_NAME
+            and check_run.get("status") == "COMPLETED"
+            and check_run.get("conclusion") == "SUCCESS"
+            and commit.get("oid") == head_sha
+            and app.get("slug") == GITHUB_ACTIONS_APP_SLUG
+            and workflow_run.get("event") == "push"
+            and workflow.get("name") == FORGE_BRANCH_READY_WORKFLOW_NAME
+            and workflow_file.get("path") == FORGE_BRANCH_READY_WORKFLOW_PATH
+        ):
+            return True
+    return False
+
+
+def approve_pull_request_from_local_review_attestation(pull_request: dict) -> None:
+    """Approve the exact attested PR head without launching a review agent.
+
+    §FS-automated-pr-review
+    """
+    pr_number = pull_request.get("number")
+    head_sha = pull_request.get("headRefOid")
+    if not isinstance(pr_number, int) or not isinstance(head_sha, str) or not head_sha:
+        print(
+            f"ERROR: Missing head metadata for attested PR #{pr_number}.",
+            file=sys.stderr,
+        )
+        raise RuntimeError(f"Missing head metadata for attested PR #{pr_number}")
+
+    gh(
+        "api",
+        "--method",
+        "POST",
+        f"/repos/{REPO}/pulls/{pr_number}/reviews",
+        "-f",
+        f"commit_id={head_sha}",
+        "-f",
+        "event=APPROVE",
+        "-f",
+        f"body=Approved from the trusted local review attestation for commit {head_sha}.",
+    )
 
 
 def get_pull_request_workflow_runs(head_sha: str) -> list[dict]:
@@ -3336,7 +3441,21 @@ def process_pull_requests_with_label(
         pr_url = pull_request.get("url") if isinstance(pull_request.get("url"), str) else None
         pr_title = pull_request.get("title") if isinstance(pull_request.get("title"), str) else ""
         coordinates = extract_maven_coordinates(pr_title)
-        if not review_pull_request(
+        if has_trusted_local_review_attestation(pull_request):
+            print(
+                f"[Approving PR #{pr_number} from trusted local review attestation "
+                f"on {pull_request['headRefOid']}; no review agent launched.]"
+            )
+            try:
+                approve_pull_request_from_local_review_attestation(pull_request)
+            except Exception as exc:
+                print(
+                    f"ERROR: Failed attested approval for PR #{pr_number}: {exc!r}",
+                    file=sys.stderr,
+                )
+                failed_reviews.append(pr_number)
+                continue
+        elif not review_pull_request(
                 pr_number,
                 reachability_metadata_path,
                 pr_url,
