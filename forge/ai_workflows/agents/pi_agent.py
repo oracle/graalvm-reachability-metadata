@@ -95,7 +95,7 @@ class PiAgent(Agent):
         return result
 
     def send_prompt(self, prompt: str) -> str:
-        self._ensure_failure_log_path()
+        self._ensure_session_log_path()
         self._print_session_log_once("Pi", self._session_log_path)
         with self._agent_activity("Pi"):
             original_session_path = self._session_path
@@ -116,8 +116,6 @@ class PiAgent(Agent):
             finally:
                 self._clear_live_status()
             self._session_path = result.session_file
-            if self._session_path != original_session_path:
-                self._set_session_log_path(self._build_generation_log_path())
             self._update_token_counters(result.session_stats)
             self._print_session_log_once("Pi", self._session_log_path)
             self._write_turn_log(self._session_path or original_session_path, prompt, result)
@@ -423,8 +421,11 @@ class PiAgent(Agent):
         self._session_log_path = log_path
         self._session_log_announced = False
 
-    def _ensure_failure_log_path(self) -> None:
-        """Ensure failures are written to a generation log file."""
+    def _ensure_session_log_path(self) -> None:
+        """Choose the stable log path used by every turn of this agent instance.
+
+        §FS-durable-generation-logs
+        """
         if self._session_log_path is not None:
             return
         self._set_session_log_path(self._build_generation_log_path())

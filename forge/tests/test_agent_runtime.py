@@ -18,6 +18,8 @@ from ai_workflows.agents.claude_code_agent import ClaudeCodeAgent
 from ai_workflows.agents.codex_agent import CodexAgent
 from ai_workflows.agents.codex_app_server import CodexAppServerClient
 from ai_workflows.agents.opencode_agent import OpenCodeAgent
+from ai_workflows.agents.pi_agent import PiAgent
+from ai_workflows.agents.pi_rpc_client import PromptResult
 from ai_workflows.agents.agent_runtime import PROVIDER_AWARE_BACKENDS, resolve_provider
 from ai_workflows.agents.agent_runtime import (
     CODEX_BYPASS_APPROVALS_AND_SANDBOX_FLAG,
@@ -102,6 +104,36 @@ class AgentRuntimeTests(unittest.TestCase):
             result.failure_message,
             "Agent native_test_verify() timed out after 30:00",
         )
+
+    def test_pi_reuses_the_first_log_path_for_every_turn(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            log_path = os.path.join(temp_dir, "pi-generation.log")
+            agent = PiAgent(
+                model_name="test-model",
+                working_dir=temp_dir,
+                library="g:a:1.0",
+                task_type="native-test-verify",
+            )
+            agent._rpc_client = Mock()
+            agent._rpc_client.run_prompt.side_effect = [
+                PromptResult("first", "/tmp/pi-session-1", {"tokens": {}}),
+                PromptResult("second", "/tmp/pi-session-2", {"tokens": {}}),
+            ]
+
+            with patch.object(
+                    agent,
+                    "_build_generation_log_path",
+                    return_value=log_path,
+            ) as build_log_path, contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(agent.send_prompt("first prompt"), "first")
+                self.assertEqual(agent.send_prompt("second prompt"), "second")
+
+            with open(log_path, "r", encoding="utf-8") as log_file:
+                durable_log = log_file.read()
+
+        build_log_path.assert_called_once_with()
+        self.assertEqual(agent._session_log_path, log_path)
+        self.assertEqual(durable_log.count("Timestamp:"), 2)
 
     def test_the_environment_selects_the_analysis_role_only(self) -> None:
         """The worker configures analysis; a bundle owns the test role it declares."""
