@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-08-31 — org.apache.tomcat.embed:tomcat-embed-core:11.0.18 (#8328)
+
+**Reporter-requested metadata shipped only as test metadata**
+
+The issue-required org.apache.coyote.AbstractProtocol.setProperty(String, String) registration was present only in tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/src/test/resources/META-INF/native-image/reachability-metadata.json, while metadata/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/reachability-metadata.json shipped getProperty but not setProperty. Test-only metadata masked the missing consumer registration, violating the rule that issue-requested metadata must be present in shipped metadata and exercised through the library's public API.
+
 ## 2026-08-29 — org.junit.platform:junit-platform-commons:1.12.0 (#9603)
 
 **Javac repair adds unrelated coverage behavior**
