@@ -90,7 +90,7 @@ Library version update automation (§root/FS-library-version-update-automation).
 | **Dynamic access** | Reflection, JNI, resource access, serialization, or proxy use that GraalVM `native-image` cannot determine statically. |
 | **Dynamic-access report** | JSON written by Gradle task `generateDynamicAccessCoverageReport` to `tests/src/<group>/<artifact>/<version>/build/reports/dynamic-access/dynamic-access-coverage.json`, listing classes and per-class call sites that require dynamic-access metadata, marked covered/uncovered. |
 | **Dynamic-access exhaust report** | Durable coordinate-scoped JSON state for chunked dynamic-access work. It records the coordinate, issue number, class threshold, completed/skipped/exhausted/failed classes, and latest publication ID/branch. It is stored with the target test suite so orchestration can find it from the coordinate. It does not predefine chunks; each resume regenerates the report and filters processed classes. Legacy PR-number/commit fields remain readable during migration. Specified by §AR-dynamic-access-exhaust-report. |
-| **Chunked dynamic-access workflow** | Dynamic-access generation mode for oversized `library-new-request` issues and `library-update-request` issues routed to dynamic-access coverage improvement. `forge_metadata.py` passes the configured class boundary to the workflow. An iterative-only workflow receives a concrete class budget; an optimistic-first composite counts classes completed by bulk toward that boundary and lets iterative exploration fill only the shortfall. The workflow publishes the chunk, then resumes after the chunk PR merges. PR linking rules are in §AR-chunked-dynamic-access-pr-linking. |
+| **Chunked dynamic-access workflow** | Dynamic-access generation mode for oversized `library-new-request` issues and `library-update-request` issues routed to dynamic-access coverage improvement. `forge_metadata.py` passes the configured class boundary to the workflow. An iterative-only workflow receives a concrete class budget; an optimistic composite counts classes completed by its bulk phase toward that boundary and lets iterative exploration fill only the shortfall. The workflow publishes the chunk, then resumes after the chunk PR merges. PR linking rules are in §AR-chunked-dynamic-access-pr-linking. |
 | **Source context** | Read-only files supplied to the agent. Types: `main` (library source), `test` (upstream tests), `documentation` (Javadoc). Selected by the strategy parameter `source-context-types`. |
 | **Library update target** | The metadata and test directories selected for a `library-update-request` coordinate (§AR-forge-driver-queues.2). Resolution records the requested coordinate, match type (`tested-version`, `metadata-version`, `default-for`, or `new-version`), matched index entry, resolved metadata version, resolved test version, and edit directories. |
 
@@ -671,15 +671,15 @@ never built (§AR-dynamic-access-fallback-and-failure). The deferral is
 logged with the prepared report's uncovered class count alongside the boundary,
 so the log records what was measured and not only what was configured.
 
-A workflow with an optimistic bulk phase must make the chunk decision after the
-bulk iteration budget and its native-test gates. The bulk phase keeps its
+A workflow with a bulk phase must make the chunk decision after the bulk
+iteration budget and its native-test gates. The bulk phase keeps its
 initial report as the baseline and uses the last successful iteration's already
 refreshed report as the final report; it must not run another report solely for
 the chunk decision. Classes uncovered in the baseline and covered in the final
 report are completed by bulk. The remaining set is the final report's uncovered
 classes minus the exhaust report and continuation marker's processed set.
 
-For an optimistic-first composite, `--chunk-class-count` is the total class
+For an optimistic composite, `--chunk-class-count` is the total class
 boundary for one non-final run across both phases. If the final remainder is no
 larger than the configured boundary, iterative exploration finishes that
 remainder. Otherwise, if bulk completed at least the boundary, the workflow
