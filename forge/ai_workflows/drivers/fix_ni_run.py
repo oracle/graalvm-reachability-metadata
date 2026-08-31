@@ -35,6 +35,7 @@ from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_preparation_preflight import (
     prepare_library_preparation_preflight,
 )
+from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
 from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
 from utility_scripts.native_test_verification import global_output_dir
@@ -125,17 +126,26 @@ def run_fix_test_native_image_run(
         reachability_metadata_path: str,
         current_coordinates: str,
         new_version: str,
-) -> subprocess.CompletedProcess[str]:
-    """Run the fixTestNativeImageRun Gradle task."""
+) -> LoggedCommandResult:
+    """Run the fixTestNativeImageRun task with durable quiet output.
+
+    §FS-forge-run-output-legibility §FS-durable-generation-logs
+    """
     require_complete_reachability_repo(reachability_metadata_path)
-    return subprocess.run(
+    group, artifact, _ = current_coordinates.split(":", 2)
+    library = f"{group}:{artifact}:{new_version}"
+    return run_logged_command(
         [
             "./gradlew", "fixTestNativeImageRun",
             f"-PtestLibraryCoordinates={current_coordinates}",
             f"-PnewLibraryVersion={new_version}",
         ],
         cwd=reachability_metadata_path,
+        task_type="native-image-run-fix",
+        subject=library,
+        action="fixTestNativeImageRun",
         env=gradle_command_environment(reachability_metadata_path),
+        stage="native-image-run-fix",
     )
 
 
@@ -175,20 +185,23 @@ def commit_checkpoint(reachability_metadata_path: str, library: str) -> str:
 def run_dynamic_access_coverage_report(
         reachability_metadata_path: str,
         library: str,
-) -> subprocess.CompletedProcess[str]:
-    """Generate the dynamic-access coverage report for the new coordinate."""
+) -> LoggedCommandResult:
+    """Generate the dynamic-access report with durable quiet output.
+
+    §FS-forge-run-output-legibility §FS-durable-generation-logs
+    """
     require_complete_reachability_repo(reachability_metadata_path)
-    return subprocess.run(
+    return run_logged_command(
         [
             "./gradlew", "generateDynamicAccessCoverageReport",
             f"-Pcoordinates={library}",
         ],
         cwd=reachability_metadata_path,
+        task_type="dynamic-access-report",
+        subject=library,
+        action="generateDynamicAccessCoverageReport",
         env=gradle_command_environment(reachability_metadata_path),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
+        stage="dynamic-access",
     )
 
 
@@ -204,7 +217,6 @@ def should_explore_new_version(reachability_metadata_path: str, group: str, arti
     result = run_dynamic_access_coverage_report(reachability_metadata_path, library)
     if result.returncode != 0:
         log_stage("coverage-gate", f"Dynamic-access report unavailable for {library}; skipping exploration")
-        print(result.stdout)
         return False
 
     test_version = resolve_test_version(reachability_metadata_path, group, artifact, version)

@@ -50,6 +50,7 @@ from utility_scripts.continuation_marker import (
     save_phase_update,
 )
 from utility_scripts.dynamic_access_exhaust_report import resolve_workflow_exhaust_report
+from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.issue_requested_metadata import (
     NO_REPORTER_METADATA_CONTEXT,
     format_issue_requested_test_requirements,
@@ -58,6 +59,7 @@ from utility_scripts.library_preparation_preflight import (
     prepare_library_preparation_preflight,
 )
 from utility_scripts.library_stats import stats_artifact_dir
+from utility_scripts.logged_command import run_logged_command
 from utility_scripts.metadata_index import (
     MATCH_NEW_VERSION,
     LibraryUpdateTarget,
@@ -420,16 +422,25 @@ def _write_index_entries(repo_path: str, group: str, artifact: str, entries: lis
 
 
 def _run_scaffold(repo_path: str, coordinate: str) -> None:
-    """Run the Gradle scaffold task with a clear failure message."""
+    """Run scaffold quietly with a durable log and clear failure.
+
+    §FS-forge-run-output-legibility §FS-durable-generation-logs
+    """
     command = ["./gradlew", "scaffold", "--coordinates", coordinate]
-    log_stage("library-update-target", f"Running scaffold command: {' '.join(command)}")
-    try:
-        subprocess.run(command, cwd=repo_path, check=True)
-    except subprocess.CalledProcessError as error:
+    result = run_logged_command(
+        command,
+        cwd=repo_path,
+        task_type="library-update-target",
+        subject=coordinate,
+        action="scaffold",
+        env=gradle_command_environment(repo_path),
+        stage="library-update-target",
+    )
+    if result.returncode != 0:
         raise RuntimeError(
             "Failed to scaffold library-update target "
-            f"{coordinate}; command exited with status {error.returncode}: {' '.join(command)}"
-        ) from error
+            f"{coordinate}; command exited with status {result.returncode}: {' '.join(command)}"
+        )
 
 
 def clone_library_update_support(

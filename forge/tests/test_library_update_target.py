@@ -724,10 +724,11 @@ class LibraryUpdateTargetTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as repo:
             _write_index(repo, [])
 
-            def fail_scaffold(command, **kwargs):  # type: ignore[no-untyped-def]
-                raise subprocess.CalledProcessError(17, command)
-
-            with patch("ai_workflows.drivers.improve_library_coverage.subprocess.run", side_effect=fail_scaffold):
+            failed_result = subprocess.CompletedProcess(["./gradlew"], 17)
+            with patch(
+                    "ai_workflows.drivers.improve_library_coverage.run_logged_command",
+                    return_value=failed_result,
+            ):
                 with self.assertRaisesRegex(
                         RuntimeError,
                         "Failed to scaffold library-update target org.example:demo:9.9.9",

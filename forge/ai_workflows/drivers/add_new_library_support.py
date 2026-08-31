@@ -55,6 +55,7 @@ from utility_scripts.library_preparation_preflight import (
     apply_library_preparation_setup,
     prepare_library_preparation_preflight,
 )
+from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
 from utility_scripts.metadata_index import is_not_for_native_image, write_not_for_native_image_marker
 from utility_scripts.native_image_artifact import evaluate_native_image_eligibility
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
@@ -296,30 +297,33 @@ def prepare_native_image_eligible_artifact(reachability_repo_path: str, library:
     return False
 
 
-def _metadata_already_exists(scaffold_proc: subprocess.CompletedProcess) -> bool:
+def _metadata_already_exists(scaffold_proc: LoggedCommandResult) -> bool:
     """Return True when Gradle reports that metadata for the library already exists."""
-    output = "\n".join(
-        value for value in (scaffold_proc.stdout, scaffold_proc.stderr) if value
-    )
+    output = scaffold_proc.stdout
     return "already exists" in output and "Use --force to overwrite existing metadata" in output
 
 
 def run_scaffold(library: str) -> bool:
-    require_complete_reachability_repo(os.getcwd())
-    log_stage("scaffold", f"Running scaffold for {library}")
-    # Run scaffold for the given coordinates
-    scaffold_proc = subprocess.run(
-        f"./gradlew scaffold --coordinates={library} --rerun-tasks",
-        shell=True,
-        env=gradle_command_environment(os.getcwd()),
-        capture_output=True,
-        text=True
+    """Run scaffold quietly while preserving its complete output.
+
+    §FS-forge-run-output-legibility §FS-durable-generation-logs
+    """
+    repo_path = os.getcwd()
+    require_complete_reachability_repo(repo_path)
+    scaffold_proc = run_logged_command(
+        ["./gradlew", "scaffold", f"--coordinates={library}", "--rerun-tasks"],
+        cwd=repo_path,
+        task_type="scaffold",
+        subject=library,
+        action="scaffold",
+        env=gradle_command_environment(repo_path),
+        stage="scaffold",
     )
     if scaffold_proc.returncode == 0:
         return True
     if _metadata_already_exists(scaffold_proc):
         return False
-    raise ScaffoldError(scaffold_proc.stderr or scaffold_proc.stdout or "Gradle scaffold task failed")
+    raise ScaffoldError(scaffold_proc.stdout or "Gradle scaffold task failed")
 
 
 def init_agent(

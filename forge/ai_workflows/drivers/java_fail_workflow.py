@@ -35,6 +35,7 @@ from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_preparation_preflight import (
     prepare_library_preparation_preflight,
 )
+from utility_scripts.logged_command import run_logged_command
 from utility_scripts.metadata_index import is_newer_than_latest_metadata_version
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
@@ -244,11 +245,24 @@ def copy_and_prepare_project_dir(
 
 
 def run_gradle_task(task: str, coordinates: str) -> None:
-    """Run a Gradle task for the provided dependency coordinates."""
+    """Run a Gradle task quietly with durable output for the coordinates.
+
+    §FS-forge-run-output-legibility §FS-durable-generation-logs
+    """
     repo_path = os.getcwd()
     require_complete_reachability_repo(repo_path)
-    command = f"./gradlew {task} -Pcoordinates={coordinates}"
-    subprocess.run(command, shell=True, env=gradle_command_environment(repo_path), check=True)
+    command = ["./gradlew", task, f"-Pcoordinates={coordinates}"]
+    result = run_logged_command(
+        command,
+        cwd=repo_path,
+        task_type="java-fail-setup",
+        subject=coordinates,
+        action=task,
+        env=gradle_command_environment(repo_path),
+        stage="java-fail-setup",
+    )
+    if result.returncode != 0:
+        raise subprocess.CalledProcessError(result.returncode, command, output=result.stdout)
 
 
 def update_metadata_index_json(
