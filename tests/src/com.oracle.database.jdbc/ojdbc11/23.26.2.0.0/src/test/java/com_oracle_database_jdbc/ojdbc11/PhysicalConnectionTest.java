@@ -20,6 +20,7 @@ public class PhysicalConnectionTest {
         Properties configuration = new Properties();
         configuration.setProperty(
                 OracleConnection.CONNECTION_PROPERTY_DEFAULT_ROW_PREFETCH, "37");
+        configuration.setProperty(OracleConnection.CONNECTION_PROPERTY_DATABASE, "test-database");
         configuration.setProperty(
                 OracleConnection.CONNECTION_PROPERTY_WALLET_LOCATION, "test-wallet");
         DetachedT2CConnection connection = new DetachedT2CConnection(configuration);
@@ -27,6 +28,8 @@ public class PhysicalConnectionTest {
         assertThat(connection.getProperties())
                 .containsEntry(
                         OracleConnection.CONNECTION_PROPERTY_DEFAULT_ROW_PREFETCH, "37")
+                .containsEntry(
+                        OracleConnection.CONNECTION_PROPERTY_DATABASE, "test-database")
                 .containsEntry(
                         OracleConnection.CONNECTION_PROPERTY_WALLET_LOCATION, "test-wallet");
 
