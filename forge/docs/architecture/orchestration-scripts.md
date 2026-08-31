@@ -190,20 +190,34 @@ model, provider, or thinking override (§FS-forge-agent-runtime-selection).
 **Candidate selection.** For each queue, orchestration fetches PRs carrying the
 queue label, plus PRs carrying `human-intervention-fixed`. It first refreshes a
 conflicting same-repository head when git can merge the base without judgment,
-then selects for agent review only PRs whose CI checks all completed
-successfully, which are not authored by the authenticated review user, and
-which are not still blocked by `human-intervention`. Running checks wait, while
-failed checks enter deterministic retry or failure follow-up without launching
-an agent or consuming a review slot. PRs labeled `human-intervention` are
-skipped until a maintainer marks them `human-intervention-fixed`, at which point
-orchestration may dismiss stale requested-changes reviews and let normal merge
-gates proceed (§FS-automated-pr-review).
+then selects for review only PRs whose CI checks all completed successfully,
+which are not authored by the authenticated review user, and which are not
+still blocked by `human-intervention`. The loaded current-head state retains
+named check-run details and their Actions workflow provenance. Running checks
+wait, while failed checks enter deterministic retry or failure follow-up
+without launching an agent or consuming a review slot. PRs labeled
+`human-intervention` are skipped until a maintainer marks them
+`human-intervention-fixed`, at which point orchestration may dismiss stale
+requested-changes reviews and let normal merge gates proceed
+(§FS-automated-pr-review).
 
-**Isolated review run.** Before selecting review work, orchestration validates
+**Attested direct approval.** Before creating a review worktree, orchestration
+looks for one successful `Forge Local Review Attestation` check attached to the
+candidate's current `headRefOid`. The check is trusted only when its check suite
+belongs to GitHub Actions and its workflow run identifies the repository's
+`Forge Branch Ready` workflow. On a match, Forge creates a pull-request review
+with event `APPROVE` and an explicit `commit_id` equal to that head SHA, then
+calls the ordinary post-review reconciliation. Missing or unverifiable
+provenance, any other conclusion, malformed data, or an attestation on another
+commit leaves the candidate on the agent path. A failed direct-approval request
+records that PR as failed and does not reconcile it.
+
+**Isolated review run.** Before selecting agent review work, orchestration validates
 the parent process's GitHub CLI authentication and the selected analysis
 backend's authentication without invoking a model (§FS-automated-pr-review).
-Each selected PR is reviewed in a throwaway detached worktree created from a
-freshly fetched base ref, with the PR checked out in detached HEAD.
+Each selected PR without a reusable attestation is reviewed in a throwaway
+detached worktree created from a freshly fetched base ref, with the PR checked
+out in detached HEAD.
 The selected analysis agent is trusted with the authenticated GitHub CLI, reads
 live PR metadata and checks, applies the label-specific checked-in rules, and
 uses targeted diffs against the fresh base before submitting the review itself.
