@@ -30,6 +30,17 @@ public class ConnectorProtocolIntrospectionTest {
         assertThat(bindOnInitAfterUpdate).isEqualTo("false");
     }
 
+    @Test
+    void connectorConvertsStringValuesForTypedProtocolProperties() {
+        Connector connector = new Connector();
+
+        boolean connectionTimeoutUpdated = connector.setProperty("connectionTimeout", "15000");
+        Object connectionTimeout = connector.getProperty("connectionTimeout");
+
+        assertThat(connectionTimeoutUpdated).isTrue();
+        assertThat(connectionTimeout).isEqualTo(15_000);
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"HTTP/1.1", "org.apache.coyote.http11.Http11NioProtocol",
             "org.apache.coyote.http11.Http11Nio2Protocol"})
