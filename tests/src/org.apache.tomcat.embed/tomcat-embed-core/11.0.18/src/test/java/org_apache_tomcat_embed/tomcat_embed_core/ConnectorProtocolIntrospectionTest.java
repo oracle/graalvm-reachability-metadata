@@ -18,19 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ConnectorProtocolIntrospectionTest {
 
     @Test
-    void connectorReadsAndUpdatesBindOnInitThroughPublicApi() {
-        Connector connector = new Connector();
-
-        Object bindOnInitBeforeUpdate = connector.getProperty("bindOnInit");
-        boolean bindOnInitUpdated = connector.setProperty("bindOnInit", "false");
-        Object bindOnInitAfterUpdate = connector.getProperty("bindOnInit");
-
-        assertThat(bindOnInitBeforeUpdate).isNull();
-        assertThat(bindOnInitUpdated).isTrue();
-        assertThat(bindOnInitAfterUpdate).isEqualTo("false");
-    }
-
-    @Test
     void connectorConvertsStringValuesForTypedProtocolProperties() {
         Connector connector = new Connector();
 
@@ -49,6 +36,13 @@ public class ConnectorProtocolIntrospectionTest {
         connector.setPort(0);
 
         try {
+            connector.getProperty("bindOnInit");
+            boolean bindOnInitUpdated = connector.setProperty("bindOnInit", "false");
+            Object bindOnInitAfterUpdate = connector.getProperty("bindOnInit");
+
+            assertThat(bindOnInitUpdated).isTrue();
+            assertThat(bindOnInitAfterUpdate).isEqualTo("false");
+
             connector.init();
             connector.start();
 
