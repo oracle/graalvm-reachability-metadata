@@ -84,7 +84,7 @@ class DynamicAccessCoverageReport:
 
 @dataclass(frozen=True)
 class BulkDynamicAccessProgress:
-    """Post-gate class progress from one optimistic bulk phase.
+    """Post-gate class progress from one bulk phase.
 
     The workflow compares its baseline with the last successfully gated report
     and carries that exact report into the composite boundary
@@ -101,7 +101,7 @@ def compute_bulk_dynamic_access_progress(
         final_report: DynamicAccessCoverageReport,
         processed_classes: set[str],
 ) -> BulkDynamicAccessProgress:
-    """Return completed and still-eligible classes after optimistic bulk."""
+    """Return completed and still-eligible classes after bulk."""
     initial_uncovered_classes: set[str] = {
         class_coverage.class_name
         for class_coverage in initial_report.classes

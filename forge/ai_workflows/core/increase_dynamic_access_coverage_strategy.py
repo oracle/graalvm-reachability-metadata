@@ -40,7 +40,7 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
         if self.primary_workflow_name:
             PrimaryClass = WorkflowStrategy.get_class(self.primary_workflow_name)
             primary_context: dict = dict(context)
-            if self.primary_workflow_name == "optimistic_dynamic_access":
+            if self.primary_workflow_name == "bulk_dynamic_access":
                 primary_context["defer_dynamic_access_chunk_decision"] = True
             self.primary = PrimaryClass(strategy_obj, **primary_context)
         else:
@@ -77,8 +77,8 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
                 return result
 
             agent.clear_context()
-            if self.primary_workflow_name == "optimistic_dynamic_access":
-                current_report, iterative_chunk_count, chunk_ready = self._route_after_optimistic_bulk()
+            if self.primary_workflow_name == "bulk_dynamic_access":
+                current_report, iterative_chunk_count, chunk_ready = self._route_after_bulk()
                 if chunk_ready:
                     save_phase_update(
                         self.continuation_marker_path,
@@ -223,10 +223,10 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
             return status, iterations
         return (status, iterations) + result[2:]
 
-    def _route_after_optimistic_bulk(
+    def _route_after_bulk(
             self,
     ) -> tuple[DynamicAccessCoverageReport | None, int | None, bool]:
-        """Choose the iterative shortfall or publish after optimistic bulk.
+        """Choose the iterative shortfall or publish after the bulk phase.
 
         Bulk completion contributes to the invocation-wide class boundary; the
         iterative phase receives only what is still needed to fill it

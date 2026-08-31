@@ -36,7 +36,7 @@ file rather than by prefix.
 | [§AR-java-fail-fix-workflow](workflows.md#ar-java-fail-fix-workflow-java-fix-workflows) | Java fix workflows |
 | [§AR-dynamic-access-workflow](workflows.md#ar-dynamic-access-workflow-dynamic-access-exploration) | Dynamic-access exploration |
 | [§AR-dynamic-access-iterative](workflows.md#ar-dynamic-access-iterative-iterative-exploration) | Iterative exploration |
-| [§AR-dynamic-access-bulk](workflows.md#ar-dynamic-access-bulk-optimistic-exploration) | Optimistic exploration |
+| [§AR-dynamic-access-bulk](workflows.md#ar-dynamic-access-bulk-bulk-exploration) | Bulk exploration |
 | [§AR-dynamic-access-composite](workflows.md#ar-dynamic-access-composite-composite-fix-then-explore) | Composite fix-then-explore |
 | [§AR-dynamic-access-fallback-and-failure](workflows.md#ar-dynamic-access-fallback-and-failure-fallback-and-failure) | Fallback and failure |
 | [§AR-dynamic-access-exhaust-report](workflows.md#ar-dynamic-access-exhaust-report-exhaust-report) | Exhaust report |

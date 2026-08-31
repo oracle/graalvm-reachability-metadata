@@ -9,7 +9,7 @@ from unittest.mock import patch
 from ai_workflows.core.increase_dynamic_access_coverage_strategy import (
     IncreaseDynamicAccessCoverageStrategy,
 )
-from ai_workflows.core.optimistic_dynamic_access_strategy import OptimisticDynamicAccessStrategy
+from ai_workflows.core.bulk_dynamic_access_strategy import BulkDynamicAccessStrategy
 from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS
 from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport
 from utility_scripts.dynamic_access_report import (
@@ -20,7 +20,7 @@ from utility_scripts.dynamic_access_report import (
 )
 
 
-class OptimisticDynamicAccessChunkTests(unittest.TestCase):
+class BulkDynamicAccessChunkTests(unittest.TestCase):
     def test_bulk_progress_compares_gated_report_and_excludes_processed_classes(self) -> None:
         initial_report = self._report(["A", "B", "C", "D"], [])
         final_report = self._report(["A", "B", "C", "D"], ["A", "B"])
@@ -41,7 +41,7 @@ class OptimisticDynamicAccessChunkTests(unittest.TestCase):
             issue_number=1412,
         )
         exhaust_report.mark_skipped("D")
-        strategy = self._optimistic_strategy(
+        strategy = self._bulk_strategy(
             chunk_class_count=15,
             dynamic_access_exhaust_report=exhaust_report,
         )
@@ -71,7 +71,7 @@ class OptimisticDynamicAccessChunkTests(unittest.TestCase):
                 primary = self._FakePrimary(self._progress(completed, remaining))
                 strategy.primary = primary
 
-                report, iterative_budget, chunk_ready = strategy._route_after_optimistic_bulk()
+                report, iterative_budget, chunk_ready = strategy._route_after_bulk()
 
                 self.assertIs(report, primary.bulk_chunk_progress.final_report)
                 self.assertEqual(iterative_budget, expected_budget)
@@ -82,7 +82,7 @@ class OptimisticDynamicAccessChunkTests(unittest.TestCase):
         strategy = self._composite_strategy()
         primary = self._FakePrimary(self._progress(10, 90))
         strategy.primary = primary
-        strategy.primary_workflow_name = "optimistic_dynamic_access"
+        strategy.primary_workflow_name = "bulk_dynamic_access"
         captured_context: dict[str, object] = {}
         captured_reports: list[DynamicAccessCoverageReport] = []
 
@@ -160,13 +160,13 @@ class OptimisticDynamicAccessChunkTests(unittest.TestCase):
                 self.assertEqual(reporter_phase_calls, [True] if has_reporter_context else [])
 
     @staticmethod
-    def _optimistic_strategy(**context: object) -> OptimisticDynamicAccessStrategy:
-        return OptimisticDynamicAccessStrategy(
+    def _bulk_strategy(**context: object) -> BulkDynamicAccessStrategy:
+        return BulkDynamicAccessStrategy(
             {
                 "model": "test-model",
-                "prompts": {"optimistic-dynamic-access-iteration": "unused"},
+                "prompts": {"bulk-dynamic-access-iteration": "unused"},
                 "parameters": {
-                    "max-optimistic-iterations": 3,
+                    "max-bulk-iterations": 3,
                     "max-test-iterations": 2,
                 },
             },
@@ -188,7 +188,7 @@ class OptimisticDynamicAccessChunkTests(unittest.TestCase):
             library="org.example:lib:1.0.0",
             chunk_class_count=15,
         )
-        strategy.primary_workflow_name = "optimistic_dynamic_access"
+        strategy.primary_workflow_name = "bulk_dynamic_access"
         return strategy
 
     @classmethod
@@ -241,7 +241,7 @@ class OptimisticDynamicAccessChunkTests(unittest.TestCase):
             self.saved = True
 
 
-class OptimisticDynamicAccessRunTests(unittest.TestCase):
+class BulkDynamicAccessRunTests(unittest.TestCase):
     """The bulk loop must run on the report the run prepared for it."""
 
     def test_usable_report_starts_bulk_iterations_without_a_fallback(self) -> None:
@@ -278,8 +278,8 @@ class OptimisticDynamicAccessRunTests(unittest.TestCase):
     def _runnable_strategy(
             self,
             reports: list[DynamicAccessCoverageReport],
-    ) -> tuple[OptimisticDynamicAccessStrategy, "OptimisticDynamicAccessRunTests._FakeAgent"]:
-        strategy = OptimisticDynamicAccessChunkTests._optimistic_strategy()
+    ) -> tuple[BulkDynamicAccessStrategy, "BulkDynamicAccessRunTests._FakeAgent"]:
+        strategy = BulkDynamicAccessChunkTests._bulk_strategy()
         # One report per refresh: the initial one, then one per accepted iteration.
         pending = list(reports) + [reports[-1]]
         strategy._generate_dynamic_access_report = lambda *args, **kwargs: pending.pop(0)
@@ -290,7 +290,7 @@ class OptimisticDynamicAccessRunTests(unittest.TestCase):
 
     @staticmethod
     def _usable_report() -> DynamicAccessCoverageReport:
-        return OptimisticDynamicAccessChunkTests._report(["A", "B"], ["A", "B"])
+        return BulkDynamicAccessChunkTests._report(["A", "B"], ["A", "B"])
 
     @staticmethod
     def _empty_report() -> DynamicAccessCoverageReport:

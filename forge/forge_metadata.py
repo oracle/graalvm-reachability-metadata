@@ -5208,17 +5208,17 @@ def _create_dynamic_access_exhaust_report(
     return exhaust_report, exhaust_report.default_path(claimed_issue.worktree_path)
 
 
-def _strategy_has_optimistic_bulk_phase(strategy_name: str | None) -> bool:
+def _strategy_has_bulk_phase(strategy_name: str | None) -> bool:
     """Return whether the selected strategy makes the chunk decision after bulk."""
     if not strategy_name:
         return False
     strategy: dict = require_strategy_by_name(strategy_name)
     workflow_name: str | None = strategy.get("workflow")
     return (
-        workflow_name == "optimistic_dynamic_access"
+        workflow_name == "bulk_dynamic_access"
         or (
             workflow_name == "increase_dynamic_access_coverage"
-            and strategy.get("primary-workflow") == "optimistic_dynamic_access"
+            and strategy.get("primary-workflow") == "bulk_dynamic_access"
         )
     )
 
@@ -5231,8 +5231,8 @@ def _continuation_resumes_existing_tree(marker: ContinuationMarker | None) -> bo
 def _prepare_dispatcher_dynamic_access_report(claimed_issue: ClaimedIssue) -> bool:
     """Build the dynamic-access report input every chunk-eligible run measures.
 
-    Preparation precedes every chunk decision, including the ones deferred to an
-    optimistic bulk phase, so no workflow starts against a report that was never
+    Preparation precedes every chunk decision, including the ones deferred to a
+    bulk phase, so no workflow starts against a report that was never
     built (§FS-forge-chunked-dynamic-access).
     """
     if _continuation_resumes_existing_tree(claimed_issue.continuation_marker):
@@ -5269,10 +5269,10 @@ def prepare_dynamic_access_chunking(
         claimed_issue: ClaimedIssue,
         strategy_name: str | None,
 ) -> int | None:
-    """Return the iterative budget or optimistic post-bulk class boundary.
+    """Return the iterative budget or deferred post-bulk class boundary.
 
     Every chunk-eligible run prepares the same report input. Iterative-only work
-    then keeps dispatcher-owned report selection, while an optimistic phase
+    then keeps dispatcher-owned report selection, while a bulk phase
     receives the configured boundary and decides after its gated bulk loop, when
     its exact progress is known (§FS-forge-chunked-dynamic-access).
     """
@@ -5286,13 +5286,13 @@ def prepare_dynamic_access_chunking(
     if not _prepare_dispatcher_dynamic_access_report(claimed_issue):
         return None
 
-    if _strategy_has_optimistic_bulk_phase(strategy_name):
+    if _strategy_has_bulk_phase(strategy_name):
         chunk_boundary: int = threshold
         if active_chunk_remaining_budget is not None:
             chunk_boundary = min(chunk_boundary, active_chunk_remaining_budget)
         log_stage(
             "dynamic-access-chunking",
-            "Deferring chunk selection for '{strategy}' until its optimistic bulk phase completes; "
+            "Deferring chunk selection for '{strategy}' until its bulk phase completes; "
             "uncovered_classes={uncovered}, class_boundary={boundary}.".format(
                 strategy=strategy_name,
                 uncovered=_dispatcher_uncovered_class_count(claimed_issue),

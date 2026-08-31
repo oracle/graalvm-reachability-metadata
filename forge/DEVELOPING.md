@@ -454,7 +454,7 @@ Composite strategies (run a primary workflow, then refine dynamic-access coverag
 | Strategy name | Agent | Primary workflow |
 |---|---|---|
 | `javac_iterative_with_coverage_sources_pi_gpt-5.4` | `pi` | `javac_iterative` |
-| `optimistic_dynamic_access_iterative_pi_gpt-5.4` | `pi` | `optimistic_dynamic_access` |
+| `optimistic_dynamic_access_iterative_pi_gpt-5.4` | `pi` | `bulk_dynamic_access` |
 
 #### Running a dynamic-access strategy
 

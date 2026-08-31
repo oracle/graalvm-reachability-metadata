@@ -105,7 +105,7 @@ and `opencode`; §FS-forge-agent-runtime-selection allows do-work runtime
 aliasing of the test agent's executable without rewriting strategy JSON.
 The currently configured workflows are `basic_iterative`,
 `dynamic_access_iterative` (§AR-dynamic-access-workflow),
-`optimistic_dynamic_access` (§AR-dynamic-access-bulk),
+`bulk_dynamic_access` (§AR-dynamic-access-bulk),
 `increase_dynamic_access_coverage` (§AR-dynamic-access-composite),
 `javac_iterative`, and `java_run_iterative`
 (§AR-java-fail-fix-workflow).
@@ -116,9 +116,9 @@ The exact active bundle list lives in `forge/strategies/predefined_strategies.js
 this document keeps one representative example to show the architecture shape
 defined in §FS-forge-predefined-strategy-contract without duplicating the
 configuration file. `library_update_dynamic_access_bulk_pi_gpt-5.6-sol` selects the
-`optimistic_dynamic_access` workflow (§AR-dynamic-access-bulk), the `pi`
+`bulk_dynamic_access` workflow (§AR-dynamic-access-bulk), the `pi`
 agent, model `gpt-5.6-sol`, main-source read-only context, the
-`optimistic-dynamic-access-iteration` prompt, and parameters for optimistic
+`bulk-dynamic-access-iteration` prompt, and parameters for bulk
 iterations, test retries, source-context materialization, and the native-test
 verification retry budget (§AR-native-test-verification-callers).
 
@@ -148,8 +148,8 @@ set `max-test-iterations` and `source-context-types`. Per-class dynamic-access
 bundles set `max-iterations`, `max-class-test-iterations`, and
 `source-context-types`; they may also set `native-test-verification-batch-size`,
 which decides how many coverage-gaining classes accumulate before the gate is
-flushed (§AR-native-test-verification-callers). Optimistic dynamic-access bundles set
-`max-optimistic-iterations`, `max-test-iterations`, and `source-context-types`;
+flushed (§AR-native-test-verification-callers). Bulk dynamic-access bundles set
+`max-bulk-iterations`, `max-test-iterations`, and `source-context-types`;
 Graphify variants also set `graphify-context`, and
 `library_update_dynamic_access_bulk_pi_gpt-5.6-sol` also sets
 `max-native-test-verification-iterations`, used by
