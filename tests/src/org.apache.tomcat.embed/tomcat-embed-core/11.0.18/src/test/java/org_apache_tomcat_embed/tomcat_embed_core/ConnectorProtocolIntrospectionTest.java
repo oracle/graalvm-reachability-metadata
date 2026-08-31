@@ -9,12 +9,26 @@ package org_apache_tomcat_embed.tomcat_embed_core;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleState;
 import org.apache.catalina.connector.Connector;
+import org.apache.coyote.http2.Http2Protocol;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConnectorProtocolIntrospectionTest {
+
+    @Test
+    void connectorRegistersHttp2UpgradeProtocol() {
+        Connector connector = new Connector();
+        Http2Protocol http2Protocol = new Http2Protocol();
+
+        connector.addUpgradeProtocol(http2Protocol);
+
+        assertThat(connector.findUpgradeProtocols()).containsExactly(http2Protocol);
+        assertThat(http2Protocol.getHttpUpgradeName(false)).isEqualTo("h2c");
+        assertThat(http2Protocol.getAlpnName()).isEqualTo("h2");
+    }
 
     @ParameterizedTest
     @ValueSource(strings = {"HTTP/1.1", "org.apache.coyote.http11.Http11NioProtocol",
