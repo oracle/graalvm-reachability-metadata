@@ -120,6 +120,16 @@ feature branch and must not create or modify GitHub resources. The title and
 body it publishes come from the shared non-mutating renderer
 (§AR-pr-preview-builders), never from a second rendering path.
 
+Strict validation also computes the local-review attestation output for the
+triggering SHA. The publisher helper reads only the validated descriptor and
+returns true exactly for the four safe local review and verification values in
+§FS-automated-pr-review. The validation job exposes that result as a job output;
+a separate `Forge Local Review Attestation` job runs only for true and succeeds
+without reading feature-branch code. A false result skips that job rather than
+failing Branch Ready. The existing-publication no-op is resolved before strict
+validation and exports false, so a maintenance push cannot turn an old
+descriptor verdict into a new current-SHA attestation.
+
 Its push trigger is scoped to the descriptor path, which excludes ordinary
 repair pushes. A force-pushed rebase can still match that path when GitHub's
 push comparison includes descriptors that arrived from the new base. Both

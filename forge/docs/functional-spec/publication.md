@@ -553,13 +553,37 @@ from the phase that failed instead of regenerating from scratch
 Forge review automation processes open pull requests by their PR labels only
 after CI has completed successfully. A pull request with running checks waits;
 a pull request with failed checks is handled by deterministic CI-failure
-follow-up and must not launch a review agent. It is the second review a
-generated branch receives; the first runs before the push, against evidence
-this one cannot see (§FS-local-branch-review). It is a PR review workflow, not
-an issue-resolution workflow:
-it must inspect an already published PR, use an isolated review worktree,
-compare the PR diff and status checks against the label-specific review rules,
-and submit either an approval or a requested-changes review on GitHub.
+follow-up and must not launch a review agent. A generated branch is reviewed
+locally before the push, against evidence a post-push reviewer cannot see
+(§FS-local-branch-review). The published-PR workflow either reuses a trusted,
+current-head attestation of that approval or launches the existing second
+review. It is a PR review workflow, not an issue-resolution workflow: it must
+satisfy the applicable label-specific review rules, submit an approval or a
+requested-changes review on GitHub, and retain the existing post-review
+reconciliation and merge gates.
+
+**A safe local approval may satisfy published-PR review.** The trusted `Forge
+Branch Ready` workflow may attest the exact push commit only after strict
+publication validation proves that the expected `forge-publication.json`
+changed in `HEAD`. The descriptor need not be the commit's only changed file.
+The attestation is eligible only when `local_review.status` is `completed`,
+`local_review.decision` is `approved`, `local_review.repair_reverted` is
+`false`, and `local_ci_verification.status` is `success`. It is a separate
+check named `Forge Local Review Attestation`: the check succeeds when all four
+facts hold and is skipped when they do not. An existing-publication no-op must
+not emit a fresh attestation, even when the descriptor still carries an older
+approval. GitHub's check association binds the successful attestation to the
+triggering commit.
+
+After successful PR CI, Forge may reuse only a successful `Forge Local Review
+Attestation` check on the pull request's current `headRefOid`, produced by the
+trusted `Forge Branch Ready` Actions workflow. It submits a deterministic
+approval explicitly against that head commit without launching an agent, then
+runs the same post-review reconciliation and merge-gate logic as an agent
+review. A missing, skipped, failed, malformed, untrusted, or older-SHA check
+must fall back to the existing isolated review-agent path. Failure to submit
+the direct approval is a review-processing failure: Forge must not reconcile or
+treat the pull request as reviewed.
 
 Review labels select the review rule set. `library-new-request`,
 `library-update-request`, `fixes-javac-fail`, `fixes-java-run-fail`,
@@ -590,7 +614,8 @@ interactive approval boundary, inspect the live pull request and its checked-out
 diff, and submit the approval or requested-changes review itself. Forge does not
 parse an agent verdict and resubmit it through a second GitHub client. An
 authentication failure, timeout, or unsuccessful agent turn must stop processing
-that review rather than being treated as an approval.
+that review rather than being treated as an approval. This agent contract is
+unchanged for every pull request without a reusable attestation.
 
 Automated review may add or request the `human-intervention` PR label only when
 the applicable label-specific review rules say the result cannot be handled by
